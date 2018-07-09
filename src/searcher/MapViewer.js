@@ -12,7 +12,7 @@ import axios from 'axios';
 
 let config = {};
 config.params = {
-  center: [5.240,-74.35],//Mariquita-Tolima
+  center: [5.2500,-74.9167],//Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {
@@ -216,7 +216,7 @@ class MapViewer extends React.Component {
     // const layerStyle = this.getStyle();
     // TODO: Ajustar el zoom para que tenga límites sobre el mapa
     return (
-    <Map className="mapViewer" ref={this.mapRef} center={config.params.center} zoom={6} onClick={this.onMapClick}>
+    <Map ref={this.mapRef} center={config.params.center} zoom={5.5} onClick={this.onMapClick}>
     <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

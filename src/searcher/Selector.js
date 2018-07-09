@@ -7,7 +7,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FileUploadIcon from '@material-ui/icons/FileUpload';
-import RateReviewIcon from '@material-ui/icons/RateReview';
+import RateReviewIcon from '@material-ui/icons/Edit';
 import Autocomplete from './Autocompletar';
 //import jsonData from './prueba.geojson'; // Fuente: https://github.com/decolector/bta-geodata/blob/master/local.geojson
 
@@ -15,11 +15,11 @@ class Selector extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      expanded: 'Seleccione una geocerca',  // Inicia con 'Seleccione una geocerca' activa
+      expanded: 'Geocercas',  // Inicia con 'Geocercas' activa
       subExpanded: null,
       innerExpanded: null,
     };
-    this.props.panelLayer('Seleccione una geocerca'); // Inicia con 'Seleccione una geocerca' activa
+    this.props.panelLayer('Geocercas'); // Inicia con 'Geocercas' activa
   }
 
   handleChange = panel => (event, expanded) => {
@@ -49,20 +49,20 @@ class Selector extends React.Component {
 
   render() {
     const { expanded, subExpanded /*, innerExpanded, onClick, value */} = this.state;
-    this.handleChange('Seleccione una geocerca');
+    this.handleChange('Geocercas');
     // alert('estadoMenu: '+this.props.estadoMenu);
     return (
       // TODO: Crear un arreglo dinámico del tipo de componente a agregar,
       // URL, contenido del texto y jerarquía para mostrar en el menú de la página
       <div className="selector">
         {/* {alert("Selector")} */}
-        <h1>Consultas</h1>
+        <h1>Consultas geográficas</h1>
         <p>Explore mediante el mapa o las siguientes opciones:</p>
         <ExpansionPanel id='panel1-Geocerca'
-          expanded= {expanded === 'Seleccione una geocerca'}  // Inicia con 'Seleccione una geocerca' activa
-          onChange={this.handleChange('Seleccione una geocerca')}>
+          expanded= {expanded === 'Geocercas'}  // Inicia con 'Geocercas' activa
+          onChange={this.handleChange('Geocercas')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          Seleccione una geocerca
+          Geocercas
           </ExpansionPanelSummary>
           {/* El id='geocercas' se utiliza en la hoja de estilos, para mostrar todos los elementos listados*/}
           <ExpansionPanelDetails id='geocercas'>
@@ -72,33 +72,27 @@ class Selector extends React.Component {
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   {/* <ExpansionPanel id='innerPanel111-Licenciados' expanded= {innerExpanded === 'Licenciados'} onChange={this.innerHandleChange('Licenciados')}> */}
-                  <ExpansionPanel id='innerPanel111-Licenciados'>
+                  <ExpansionPanel id='innerPanel111-Norte'>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    Licenciados
+                    Norte
                     </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      {/*TODO: Create new component: Geofence
-                        <Geofence data={jsonData} value={"Sogamoso - EEB"} /> {'\n'}*/}
-                      <button onClick={() => this.props.innerPanelLayer('Sogamoso - EEB')}> Sogamoso - EEB </button> {'\n'}
-                    </ExpansionPanelDetails>
                   </ExpansionPanel>
                   {/* <ExpansionPanel expanded= {innerExpanded === 'innerPanel112'} onChange={this.innerHandleChange('innerPanel112')}> */}
-                  <ExpansionPanel >
+                  <ExpansionPanel id='innerPanel112-Centro'>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    En licenciamiento
+                    Centro
                     </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      - Sin proyectos -
-                    </ExpansionPanelDetails>
                   </ExpansionPanel>
                   {/* <ExpansionPanel expanded= {innerExpanded === 'innerPanel113'} onChange={this.innerHandleChange('innerPanel113')}> */}
-                  <ExpansionPanel >
+                  <ExpansionPanel  id='innerPanel113-Occidente'>
                     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    En diagnóstico AA
+                    Occidente
                     </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      - Sin proyectos -
-                    </ExpansionPanelDetails>
+                  </ExpansionPanel>
+                  <ExpansionPanel  id='innerPanel114-Oriente'>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    Oriente
+                    </ExpansionPanelSummary>
                   </ExpansionPanel>
                 </ExpansionPanelDetails>
               </ExpansionPanel>

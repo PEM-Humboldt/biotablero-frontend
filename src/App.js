@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
 import Header from './Header';
-import Footer from './common/Footer';
 import Main from './Main';
 import './common/main.css';
 
 class App extends Component {
+  // TODO: Pasar el nombre del módulo activo al título
   render () {
     return (
       <div>
         <Header />
-        <div className="wrapper">
-         <Main />
-        </div>
-        <Footer />
+        <Main />
       </div>
     );
   }

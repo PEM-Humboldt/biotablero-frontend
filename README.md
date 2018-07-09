@@ -1,3 +1,6 @@
+# biotablero-consultas
+Repositorio que almacena la versión en desarrollo del módulo de consultas del Biotablero.
+
 Este proyecto ha sido desarrollado por el Instituto Humboldt http://www.humboldt.org.co, utilizando React.js y paquetes como [Create React App](https://github.com/facebookincubator/create-react-app), [React-scripts](https://www.npmjs.com/package/react-scripts) [D3](https://d3js.org), [Material-UI](https://material-ui.com), [VX](https://vx-demo.now.sh/), [Leaflet](https://leafletjs.com/), [React-leaflet](https://react-leaflet.js.org) y [Axios](https://alligator.io/react/axios-react/)
 
 ## 1. Instrucciones

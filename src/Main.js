@@ -2,7 +2,7 @@ import React from 'react';
 import Home from './Home';
 import ShortInfo from './ShortInfo';
 import Description from './home/Description';
-import Searcher from './searcher/Searcher';
+import Searcher from './Searcher';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Parte 2 de 3 del enrutador: Definir las rutas y componentes a enrutar

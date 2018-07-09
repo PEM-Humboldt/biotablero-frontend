@@ -18,7 +18,7 @@ import InfoGraph from './drawer/InfoGraph';
 
 function TabContainer(props) {
   return (
-    <Typography component="div" style={{ padding: 8 * 4 }}>
+    <Typography component="div" style={{ padding: 8 * 3 }}>
       {props.children}
     </Typography>
   );
@@ -30,7 +30,7 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
   root: {
-    flexGrow: 2,
+    flexGrow: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
@@ -51,13 +51,13 @@ class Drawer extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar id="appBar" position="static" color="default">
+        <AppBar position="static" color="default">
           <Tabs
             value={value}
             onChange={this.handleChange}
             indicatorColor="primary"
             textColor="primary"
-            center
+            centered
           >
             <Tab label="Paisaje" icon={<PersonPinIcon />} />
             <Tab label="Ecosistemas" icon={<GraphI />} />

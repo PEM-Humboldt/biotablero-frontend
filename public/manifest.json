@@ -1,9 +1,6 @@
 {
-  "viewport": "width=device-width, initial-scale=1, shrink-to-fit=no",
-  "short_name": "BioTablero",
-  "name": "BioTablero :: Instituto Humboldt",
-  "description": "Sistema de soporte a la toma de decisiones (SSTD)",
-  "author": "Instituto Humboldt Colombia",
+  "short_name": "Consultas",
+  "name": "Consultas :: Biotablero",
   "icons": [
     {
       "src": "favicon.ico",

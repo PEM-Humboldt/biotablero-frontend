@@ -1,5 +1,6 @@
 import React from 'react';
 import Drawer from './Drawer';
+import BackIcon from '@material-ui/icons/FirstPage';
 
 class Informer extends React.Component {
   constructor(props){
@@ -12,21 +13,13 @@ class Informer extends React.Component {
     };
   }
 
-  // componentDidUpdate(){
-  //   if (this.props.data != null && this.props.data){
-  //     this.setState({
-  //       nombre: this.props.data.NOMCAR,
-  //     });
-  //   }
-  // }
-
   render() {
     return (
       <div className="informer">
       <hr className="stlegrad"></hr>
       {/* TODO: Cambiar el zoom en el mapa para ver todo el país*/}
-      <button onClick={() => this.props.verMenu("Selector")}>
-        Volver al menú </button>
+      <button className="backbtn" onClick={() => this.props.verMenu("Selector")} ><BackIcon />
+      </button>
         <h3>{'\n'}Información general</h3>
           <b>Nombre:</b> {this.props.nombre +'\n'}
           <b>Designación: </b> {this.props.designacion +'\n'}

@@ -4,8 +4,10 @@ import { letterFrequency } from '@vx/mock-data';
 import { Group } from '@vx/group';
 import { Bar } from '@vx/shape';
 import { scaleLinear, scaleBand } from '@vx/scale';
+// import BulletChart from 'BulletChart';
+// import './infoGraph.css';
 
-// // Valores para llamar  a la funcion bulletchart
+// // Valores para llamar a la funcion BulletChart
 //
 // const margin = {top: 5, right: 40, bottom: 20, left: 120},
 //     width = 960 - margin.left - margin.right,

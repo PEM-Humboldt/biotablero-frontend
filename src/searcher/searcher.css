@@ -15,8 +15,8 @@ h1, h2, h3, h4 {
   min-height: 100vh;
 }
 /*Map container*/
-.mapViewer {
-	margin: 2px;
+.viewfinder {
+  margin: 2px;
   padding: 5px;
   border: 0px solid #cccc33;
   background-color: #eeeeec;
@@ -28,8 +28,6 @@ h1, h2, h3, h4 {
 /*All information container*/
 .contentView {
 	overflow: auto; /* TODO: Ajustar ancho de Selector.js de acuerdo a este estilo*/
-  margin: 2px;
-  white-space: pre;
   -webkit-flex: 3 1 40%;
           flex: 3 1 40%;
   flex-direction: column;
@@ -48,7 +46,24 @@ h1, h2, h3, h4 {
 .selector {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	padding: 5px 8px 0;
+}
+
+.selector h1 {
+  padding: 20px;
+  background-color: #e84a5f;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 28px;
+  margin: 0;
+}
+
+.selector p {
+    line-height: 1.5;
+    font-size: 15px;
+    color: #2a363b;
+    padding: 0 25px;
+    max-width: 60%;
 }
 /*Belongs to filter*/
 .informer {
@@ -93,13 +108,14 @@ h1, h2, h3, h4 {
     display: block !important;
 }
 
-/* .MuiExpansionPanelDetails-root-63 {
-    display: block !important;
-} */
+.MuiPaper-root-4 {
+    margin: 0 !important;
+    color: #2a363b;
+    font-size: 14px;
+}
 
 .leaflet-container {
 	height: auto;
-	margin: 2px;
 	padding: 5px;
 	border: 0px solid #cccc33;
 	background-color: #eeeeec;
@@ -107,8 +123,70 @@ h1, h2, h3, h4 {
 					flex: 3 1 60%;
  -webkit-order: 1;
 				 order: 1;
-    }
-
-#appBar {
-	display: block !important;
+  font-family: 'Roboto', sans-serif !important;
 }
+
+.leaflet-control-zoom a {
+  background-color: #e84a5f;
+  color: #fff;
+  font-weight: 300;
+  border-radius: 0 !important;
+}
+
+.leaflet-bar {
+  border: 0 !important;
+}
+
+
+#panel1-Geocerca > div:nth-child(1),
+#panel2 > div:nth-child(1),
+#panel3 > div:nth-child(1) {
+  font-size: 15px;
+  text-transform: uppercase;
+  background-color: #2a363b;
+  color: #fff !important;
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+#panel1-Geocerca > div:nth-child(1) .MuiSvgIcon-root-46 {
+  color: #e84a5f;
+}
+
+.disabled {
+  background-color: #000;
+}
+
+#geocercas {
+  padding-top: 0;
+}
+
+.backbtn {
+  border: none;
+  background-color: transparent;
+  color: #e84a5f;
+  outline: none;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.backbtn svg {
+  font-size: 30px;
+}
+
+.backbtn:hover {
+  color: #2a363b;
+  border-bottom: 1px solid #2a363b; 
+}
+
+div[class*="MuiExpansionPanelSummary-expanded-"] {
+  text-transform: uppercase;
+}
+
+/*#root {
+  height: calc(100vh - 200px);
+  overflow-y: scroll;
+}
+
+*/
+
+
