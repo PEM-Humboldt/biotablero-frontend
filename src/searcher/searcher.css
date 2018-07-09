@@ -1,0 +1,114 @@
+html {
+	-webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+	font-family: 'Lato', sans-serif;
+}
+
+.appSearcher {
+  background-color: #eeeeec;
+  display: -webkit-flex;
+  display:         flex;
+  -webkit-flex-flow: row;
+          flex-flow: row;
+  min-height: 100vh;
+}
+/*Map container*/
+.mapViewer {
+	margin: 2px;
+  padding: 5px;
+  border: 0px solid #cccc33;
+  background-color: #eeeeec;
+  -webkit-flex: 3 1 60%;
+          flex: 3 1 60%;
+ -webkit-order: 1;
+         order: 1;
+}
+/*All information container*/
+.contentView {
+	overflow: auto; /* TODO: Ajustar ancho de Selector.js de acuerdo a este estilo*/
+  margin: 2px;
+  white-space: pre;
+  -webkit-flex: 3 1 40%;
+          flex: 3 1 40%;
+  flex-direction: column;
+  -webkit-order: 2;
+          order: 2;
+}
+/*Belongs to contentView*/
+.filter {
+  background-color: #eeeeec;
+  -webkit-flex: 3 1 40%;
+          flex: 3 1 40%;
+ -webkit-order: 1;
+         order: 1;
+}
+/*Belongs to filter*/
+.selector {
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+	padding: 5px 8px 0;
+}
+/*Belongs to filter*/
+.informer {
+	font-family: 'Roboto', sans-serif;
+	font-size: 12px;
+	padding: 5px 8px 0;
+	resize: both;
+}
+
+.informer h3 {
+	padding: 0;
+  margin: 0;
+  text-align: center;
+	font-weight: bold;
+	height: auto;
+	font-size: 12px;
+  color: #4a585f;
+}
+/*Belongs to contentView*/
+.drawer {
+  background-color: #eeeeec;
+  font-family: 'Open Sans', sans-serif;
+	font-size: 12px;
+	padding: 5px 8px 0;
+  -webkit-flex: 3 1 60%;
+          flex: 3 1 60%;
+ -webkit-order: 2;
+         order: 2;
+}
+
+.drawer h3 {
+	padding: 0;
+  margin: 0;
+  text-align: center;
+	font-weight: bold;
+	height: auto;
+	font-size: 12px;
+  color: #4a585f;
+}
+
+#geocercas {
+    display: block !important;
+}
+
+/* .MuiExpansionPanelDetails-root-63 {
+    display: block !important;
+} */
+
+.leaflet-container {
+	height: auto;
+	margin: 2px;
+	padding: 5px;
+	border: 0px solid #cccc33;
+	background-color: #eeeeec;
+	-webkit-flex: 3 1 60%;
+					flex: 3 1 60%;
+ -webkit-order: 1;
+				 order: 1;
+    }
+
+#appBar {
+	display: block !important;
+}
