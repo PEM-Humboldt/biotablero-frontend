@@ -79,8 +79,7 @@ class Searcher extends Component {
           subPanelLayer = {this.subPanelLayer}
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
-          actualizarCapaActiva= {this.actualizarCapaActiva}
-        />
+          actualizarCapaActiva= {this.actualizarCapaActiva}/>
         </div>
       </div>
     );

@@ -56,8 +56,12 @@ class Selector extends React.Component {
       // URL, contenido del texto y jerarquía para mostrar en el menú de la página
       <div className="selector">
         {/* {alert("Selector")} */}
+        <div className="iconsection"></div>
         <h1>Consultas geográficas</h1>
-        <p>Explore mediante el mapa o las siguientes opciones:</p>
+        <p>En esta sección podrás encontrar información sobre <b>ecosistemas</b>, <b>especies</b> y <b>paisaje</b>, de 3 distintas maneras:</p>
+        <p><i>1</i> Selecciona una <b>geocerca</b> predeterminada (departamentos, jurisdicciones, etc.)</p>
+        <p><i>2</i> Sube tu propio <b>polígono</b> (usuarios registrados)</p>
+        <p><i>3</i> Dibuja tu propia <b>línea o polígono</b> (usuarios registrados)</p>
         <ExpansionPanel id='panel1-Geocerca'
           expanded= {expanded === 'Geocercas'}  // Inicia con 'Geocercas' activa
           onChange={this.handleChange('Geocercas')}>
@@ -71,29 +75,10 @@ class Selector extends React.Component {
                 Zonas
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  {/* <ExpansionPanel id='innerPanel111-Licenciados' expanded= {innerExpanded === 'Licenciados'} onChange={this.innerHandleChange('Licenciados')}> */}
-                  <ExpansionPanel id='innerPanel111-Norte'>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    Norte
-                    </ExpansionPanelSummary>
-                  </ExpansionPanel>
-                  {/* <ExpansionPanel expanded= {innerExpanded === 'innerPanel112'} onChange={this.innerHandleChange('innerPanel112')}> */}
-                  <ExpansionPanel id='innerPanel112-Centro'>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    Centro
-                    </ExpansionPanelSummary>
-                  </ExpansionPanel>
-                  {/* <ExpansionPanel expanded= {innerExpanded === 'innerPanel113'} onChange={this.innerHandleChange('innerPanel113')}> */}
-                  <ExpansionPanel  id='innerPanel113-Occidente'>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    Occidente
-                    </ExpansionPanelSummary>
-                  </ExpansionPanel>
-                  <ExpansionPanel  id='innerPanel114-Oriente'>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                    Oriente
-                    </ExpansionPanelSummary>
-                  </ExpansionPanel>
+                  <button>Norte</button>
+                  <button>Centro</button>
+                  <button>Suroccidente</button>
+                  <button>Occidente</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
               <ExpansionPanel expanded= {subExpanded === 'subPanel2'} onChange={this.subHandleChange('subPanel2')}>
@@ -101,10 +86,10 @@ class Selector extends React.Component {
                 Áreas de manejo especial
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <button>ANP</button> {'\n'}
-                  <button>Pedets</button>{'\n'}
-                  <button>Bosques de Paz</button>{'\n'}
-                  <button>Reservas campesinas</button>{'\n'}
+                  <button>ANP</button> 
+                  <button>Pedets</button>
+                  <button>Bosques de Paz</button>
+                  <button>Reservas campesinas</button>
                   <button>Territorios colectivos</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
@@ -256,19 +241,19 @@ class Selector extends React.Component {
                 Ecosistemas estratégicos
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                  <button>Bosques secos</button>{'\n'}
-                  <button>Humedales</button>{'\n'}
-                  <button>Páramos</button>{'\n'}
+                  <button>Bosques secos</button>
+                  <button>Humedales</button>
+                  <button>Páramos</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel disabled expanded= {expanded === 'panel2'} onChange={this.handleChange('panel2')}>
+        <ExpansionPanel id="panel2" disabled expanded= {expanded === 'panel2'} onChange={this.handleChange('panel2')}>
           <ExpansionPanelSummary expandIcon={<FileUploadIcon />}>
           Subir polígono
           </ExpansionPanelSummary>
         </ExpansionPanel>
-        <ExpansionPanel disabled expanded= {expanded === 'panel3'} onChange={this.handleChange('panel3')}>
+        <ExpansionPanel id="panel3" disabled expanded= {expanded === 'panel3'} onChange={this.handleChange('panel3')}>
           <ExpansionPanelSummary expandIcon={<RateReviewIcon />}>
           Dibujar polígono / Línea
           </ExpansionPanelSummary>

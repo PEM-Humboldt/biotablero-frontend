@@ -776,7 +776,7 @@ button.rel8{
 footer {
 	width: 100%;
 	min-height: 100px;
-	padding: 30px 0;
+	padding: 30px 0 0;
 	background-color: #22231c;
 	display: -webkit-flex;
 	display: -moz-flex;
@@ -785,6 +785,19 @@ footer {
 	display: flex;
 	justify-content: space-between;
 	z-index: 20;
+}
+
+.footersm {
+	width: 100%;
+	min-height: 50px;
+	background-color: #22231c;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+	z-index: 2;
 }
 
 footer a {
@@ -800,15 +813,35 @@ footer h4 {
 	line-height: 0;
 	font-size: 13px;
 }
+
+.footersm {
+	padding: 10px 25px 0;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.footersm a {
+	line-height: 15px;
+	vertical-align: baseline;
+	color: #fff;
+	font-weight: 400;
+	font-size: 15px;
+}
+
 footer h3 {
 	text-align: right;
 	margin: 15px 5px 0 0;
 }
 
-footer h3 a {
+.footersm h3 {
+	line-height: 32px;
+	vertical-align: middle;
+}
+
+footer h3 a, .footersm h3 a {
 	color: #e84a5f;
-	font-weight: 400;
-	font-weight: 12px;
+	font-size: 15px;
 }
 
 
