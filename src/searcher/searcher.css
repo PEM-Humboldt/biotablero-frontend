@@ -160,7 +160,7 @@ h1, h2, h3, h4 {
   padding-top: 0;
 }
 
-.backbtn {
+.geobtn {
   border: none;
   background-color: transparent;
   color: #e84a5f;
@@ -169,13 +169,13 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid transparent;
 }
 
-.backbtn svg {
+.geobtn svg {
   font-size: 30px;
 }
 
-.backbtn:hover {
+.geobtn:hover {
   color: #2a363b;
-  border-bottom: 1px solid #2a363b; 
+  border-bottom: 1px solid #2a363b;
 }
 
 div[class*="MuiExpansionPanelSummary-expanded-"] {
@@ -188,5 +188,3 @@ div[class*="MuiExpansionPanelSummary-expanded-"] {
 }
 
 */
-
-

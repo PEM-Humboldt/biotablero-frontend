@@ -18,7 +18,7 @@ class Informer extends React.Component {
       <div className="informer">
       <hr className="stlegrad"></hr>
       {/* TODO: Cambiar el zoom en el mapa para ver todo el país*/}
-      <button className="backbtn" onClick={() => this.props.verMenu("Selector")} ><BackIcon />
+      <button className="button" onClick={() => this.props.verMenu("Selector")} ><BackIcon />
       </button>
         <h3>{'\n'}Información general</h3>
           <b>Nombre:</b> {this.props.nombre +'\n'}

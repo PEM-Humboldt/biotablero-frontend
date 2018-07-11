@@ -1,0 +1,818 @@
+[
+	{
+		"bioma_iavh": "Helobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 4597.98517126,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Helobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Suárez",
+		"area_szh": 479.06731303,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Helobioma Altoandino influencia llanera",
+		"nom_szh": "Río Pauto",
+		"area_szh": 356.18133363,
+		"fc_valor": 7.5
+	}, {
+		"bioma_iavh": "Helobioma Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 5.68243892,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Helobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 13494.21897562,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Helobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Río Negro",
+		"area_szh": 709.92066616,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Helobioma Nechí-San Lucas",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 2814.7113513099994,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Helobioma Nechí-San Lucas",
+		"nom_szh": "Río Negro",
+		"area_szh": 190.21381007,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Helobioma Uwa",
+		"nom_szh": "Lago de Tota",
+		"area_szh": 1523.6433960099998,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Helobioma Uwa",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 123.30460597,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Helobioma Uwa",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 107.08485818,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 62.41301946,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 1217.8128538600001,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 45.2749068,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino cordillera oriental",
+		"nom_szh": "Río Suárez",
+		"area_szh": 471.42335336,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino influencia llanera",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 309.83084133,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino influencia llanera",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 107.07008062,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino influencia llanera",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 146.63269585,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino influencia llanera",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 259.09310505,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Altoandino influencia llanera",
+		"nom_szh": "Río Upía",
+		"area_szh": 60.70287655,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 1184.4062814400002,
+		"fc_valor": 4.25
+	}, {
+		"bioma_iavh": "Hidrobioma Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Negro",
+		"area_szh": 0.31466257999999997,
+		"fc_valor": 4.25
+	}, {
+		"bioma_iavh": "Hidrobioma Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 1098.30990734,
+		"fc_valor": 4.25
+	}, {
+		"bioma_iavh": "Hidrobioma Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 719.4110138799999,
+		"fc_valor": 4.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Directos Magdalena Medio entre ríos La Miel y Nare",
+		"area_szh": 252.72596734,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Directos Magdalena entre Ríos Guarinó y La Miel",
+		"area_szh": 21.60958293,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 3062.5449220299993,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Directos al Magdalena entre Ríos Seco y Negro (md)",
+		"area_szh": 0.060590660000000005,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Rió San Bartolo y otros directos al Magdalena Medio",
+		"area_szh": 63.37654214999999,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 0.83254447,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Magdalena medio y depresión momposina",
+		"nom_szh": "Río Negro",
+		"area_szh": 194.41279268,
+		"fc_valor": 5.25
+	}, {
+		"bioma_iavh": "Hidrobioma Nechí-San Lucas",
+		"nom_szh": "Directos Magdalena Medio entre ríos La Miel y Nare",
+		"area_szh": 504.6924325,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Nechí-San Lucas",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 1874.9558722000004,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Nechí-San Lucas",
+		"nom_szh": "Directos al Magdalena entre Ríos Seco y Negro (md)",
+		"area_szh": 0.00227249,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Nechí-San Lucas",
+		"nom_szh": "Río Negro",
+		"area_szh": 827.03466476,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Piedemonte Orinoquia",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 164.12467281,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Piedemonte Orinoquia",
+		"nom_szh": "Río Pauto",
+		"area_szh": 67.79267367,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Piedemonte Orinoquia",
+		"nom_szh": "Río Upía",
+		"area_szh": 356.70349696999995,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Lago de Tota",
+		"area_szh": 5860.126814810001,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 129.29376646,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Río Casanare",
+		"area_szh": 151.01522643,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 143.6363316,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 55.92733476,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Uwa",
+		"nom_szh": "Río Pauto",
+		"area_szh": 275.07696264000003,
+		"fc_valor": 4.5
+	}, {
+		"bioma_iavh": "Hidrobioma Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Casanare",
+		"area_szh": 8.8975E-4,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 56.90508529,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 287.37412706000003,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Hidrobioma Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Pauto",
+		"area_szh": 74.62997112,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 10913.08903401,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 45548.096778989995,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Fonce",
+		"area_szh": 1449.23947481,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 8199.358120300001,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Suárez",
+		"area_szh": 40008.24479286999,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 12296.80557937,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Casanare",
+		"area_szh": 776.81307307,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 1129.28645355,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 16426.2378355,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 2378.64649909,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 32428.53573735,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Pauto",
+		"area_szh": 7350.35441877,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Altoandino influencia llanera",
+		"nom_szh": "Río Upía",
+		"area_szh": 6716.99055397,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 2751.4151729499995,
+		"fc_valor": 8.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 15286.714758369999,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Guane-Yariguíes",
+		"nom_szh": "Río Fonce",
+		"area_szh": 173.40083692000002,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 58023.36376113,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Andino Piedemonte Orinoquia",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 14.500843490000001,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Piedemonte Orinoquia",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 163.52081912,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Piedemonte Orinoquia",
+		"nom_szh": "Río Túa y otros directos al Meta",
+		"area_szh": 55.2995144,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Piedemonte Orinoquia",
+		"nom_szh": "Río Upía",
+		"area_szh": 5799.904276380001,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Tamá",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 15.45679779,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Lago de Tota",
+		"area_szh": 2177.28454874,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 2074.93642383,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Casanare",
+		"area_szh": 2796.92783121,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 20252.279912180005,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 7131.980178739999,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 4411.28912506,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 3442.2461598,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 9762.53477105,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Pauto",
+		"area_szh": 3699.6982774300004,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Uwa",
+		"nom_szh": "Río Upía",
+		"area_szh": 1964.1215306699999,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Casanare",
+		"area_szh": 3.9573206599999997,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 3895.2409110000003,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 393.71862404,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 22305.15353329,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Pauto",
+		"area_szh": 2118.6593152499995,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Andino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Upía",
+		"area_szh": 15131.83371359,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 206056.19440524996,
+		"fc_valor": 8.25
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 1630.98438427,
+		"fc_valor": 8.25
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Altoandino cordillera oriental",
+		"nom_szh": "Río Suárez",
+		"area_szh": 34081.38904269,
+		"fc_valor": 8.25
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 11015.39670209,
+		"fc_valor": 8.5
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 1843.4711973300002,
+		"fc_valor": 8.5
+	}, {
+		"bioma_iavh": "Orobioma Azonal Andino Uwa",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 29821.04190037,
+		"fc_valor": 8.5
+	}, {
+		"bioma_iavh": "Orobioma Azonal Subandino Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 2882.07167973,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Orobioma Azonal Subandino Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 2259.68163125,
+		"fc_valor": 7.5
+	}, {
+		"bioma_iavh": "Orobioma Azonal Subandino Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 23391.720330049993,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino cordillera oriental",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 7413.04238085,
+		"fc_valor": 8.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 55.17556425,
+		"fc_valor": 8.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino influencia llanera",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 979.54524266,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino influencia llanera",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 1655.97695142,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino influencia llanera",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 1011.36703795,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Altoandino influencia llanera",
+		"nom_szh": "Río Pauto",
+		"area_szh": 329.37617963,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Cordillera oriental Magdalena medio",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 513.89906352,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 87598.98660124,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Negro",
+		"area_szh": 9766.53242973,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Guane-Yariguíes",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 217.50244084,
+		"fc_valor": 7.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 1030.6969008199999,
+		"fc_valor": 7.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 35727.83429639,
+		"fc_valor": 7.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Nechí-San Lucas",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 2942.5038232300003,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Nechí-San Lucas",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 579.7581704500001,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Nechí-San Lucas",
+		"nom_szh": "Río Negro",
+		"area_szh": 3762.7252259300003,
+		"fc_valor": 6.75
+	}, {
+		"bioma_iavh": "Orobioma Subandino Piedemonte Orinoquia",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 6093.6209202300015,
+		"fc_valor": 8.0
+	}, {
+		"bioma_iavh": "Orobioma Subandino Piedemonte Orinoquia",
+		"nom_szh": "Río Pauto",
+		"area_szh": 0.00196542,
+		"fc_valor": 8.0
+	}, {
+		"bioma_iavh": "Orobioma Subandino Piedemonte Orinoquia",
+		"nom_szh": "Río Upía",
+		"area_szh": 20438.557516650002,
+		"fc_valor": 8.0
+	}, {
+		"bioma_iavh": "Orobioma Subandino Uwa",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 697.85949335,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Uwa",
+		"nom_szh": "Río Pauto",
+		"area_szh": 120.38918394999999,
+		"fc_valor": 6.5
+	}, {
+		"bioma_iavh": "Orobioma Subandino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Casanare",
+		"area_szh": 1.3296030699999999,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Subandino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 1103.63108597,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Subandino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 19672.839744130004,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Subandino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Pauto",
+		"area_szh": 2669.8248914,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma Subandino Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Upía",
+		"area_szh": 3527.7327746,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino cordillera oriental",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 75631.91198557992,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino cordillera oriental",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 260.92601853,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino cordillera oriental",
+		"nom_szh": "Río Fonce",
+		"area_szh": 7345.455799970001,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino cordillera oriental",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 1758.4383045599998,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino cordillera oriental",
+		"nom_szh": "Río Suárez",
+		"area_szh": 22188.20390386,
+		"fc_valor": 6.25
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 116.37455502,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Casanare",
+		"area_szh": 0.38884923,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 739.85517964,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 2147.4899664799996,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 18.00752993,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 3804.8157483500004,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Pauto",
+		"area_szh": 4684.43383202,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Altoandino influencia llanera",
+		"nom_szh": "Río Upía",
+		"area_szh": 1607.96696073,
+		"fc_valor": 5.75
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Guane-Yariguíes",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 755.57604291,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Guane-Yariguíes",
+		"nom_szh": "Río Fonce",
+		"area_szh": 12.17004,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Guane-Yariguíes",
+		"nom_szh": "Río Suárez",
+		"area_szh": 906.9100113099998,
+		"fc_valor": 5.5
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Lago de Tota",
+		"area_szh": 12999.958983260001,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Bojabá",
+		"area_szh": 55232.404337379994,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Casanare",
+		"area_szh": 10881.3684165,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Chicamocha",
+		"area_szh": 169927.86901733,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Chítaga",
+		"area_szh": 49.20185509,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Cobugón - Río Cobaría",
+		"area_szh": 36751.45466793,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 28460.27580905,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 20023.27227147,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Garagoa",
+		"area_szh": 37.41591237,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 14355.74593363,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Pauto",
+		"area_szh": 19550.13395072,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Uwa",
+		"nom_szh": "Río Upía",
+		"area_szh": 19841.03170471,
+		"fc_valor": 6.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cravo Sur",
+		"area_szh": 7.857E-5,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Cusiana",
+		"area_szh": 0.00177869,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Lengupá",
+		"area_szh": 650.32485147,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Pauto",
+		"area_szh": 7.121E-5,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+		"nom_szh": "Río Upía",
+		"area_szh": 65.07547138,
+		"fc_valor": 5.0
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Cordillera oriental Magdalena medio",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 297.79720935,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 36320.437770439996,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Cordillera oriental Magdalena medio",
+		"nom_szh": "Río Negro",
+		"area_szh": 6.9864213699999995,
+		"fc_valor": 7.25
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Magdalena medio y depresión momposina",
+		"nom_szh": "Directos Magdalena Medio entre ríos La Miel y Nare",
+		"area_szh": 0.11056171,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Magdalena medio y depresión momposina",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 18144.7866985,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Magdalena medio y depresión momposina",
+		"nom_szh": "Río Negro",
+		"area_szh": 2257.35092547,
+		"fc_valor": 7.75
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Nechí-San Lucas",
+		"nom_szh": "Directos al Magdalena Medio entre ríos Negro",
+		"area_szh": 89792.16935635,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Nechí-San Lucas",
+		"nom_szh": "Río Carare (Minero)",
+		"area_szh": 2000.99258258,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Nechí-San Lucas",
+		"nom_szh": "Río Negro",
+		"area_szh": 16114.627093840001,
+		"fc_valor": 7.0
+	}, {
+		"bioma_iavh": "Zonobioma Humedo Tropical Piedemonte Orinoquia",
+		"nom_szh": "Río Upía",
+		"area_szh": 425.01185958,
+		"fc_valor": 8.75
+	}
+]
