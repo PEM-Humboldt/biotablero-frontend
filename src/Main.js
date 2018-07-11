@@ -1,5 +1,6 @@
 import React from 'react';
 import Home from './Home';
+import Footersm from './common/Footersm';
 import ShortInfo from './ShortInfo';
 import Description from './home/Description';
 import Searcher from './Searcher';
@@ -17,8 +18,9 @@ const Main = () => (
       {() => window.location.href = 'http://192.168.205.198:3000/index.html'}
       /> */}
       <Route path='/Consultas' component={Searcher}/>
-      <Redirect from="/" to="/Home" />
+      <Redirect from="/" to="/Home"/>
     </Switch>
+    <Footersm />
   </main>
 )
 

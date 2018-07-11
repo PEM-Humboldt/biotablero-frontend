@@ -80,7 +80,7 @@ class Searcher extends Component {
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
           actualizarCapaActiva= {this.actualizarCapaActiva}
-        />
+          geocerca= {this.state.geojsonCapa2}/>
         </div>
       </div>
     );
