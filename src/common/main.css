@@ -211,7 +211,7 @@ header h3 {
 
 .userBox {
 	display: inline-block;
-  position: relative;
+    position: relative;
 	padding: 4px 5px 0;
 	resize: both;
 	color: #c3c3c3;
@@ -220,6 +220,13 @@ header h3 {
 
 .userBox:hover {
 	color: #e84a5f;
+}
+
+.logoGEB {
+	height: 52px;
+	width: 113px;
+	background: url(./img/LogoGEB.png) no-repeat center;
+	display: inline-block;
 }
 
 header h4 {

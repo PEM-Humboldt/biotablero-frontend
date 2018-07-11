@@ -6,10 +6,12 @@ class Uim extends React.Component {
 
   render(){
     return(
-      <div className="userBox">
+      <div>
+      	<a href="https://www.grupoenergiabogota.com/" target="_blank" className="logoGEB" />
         <AccountCircle className="userBox"
           style={{fontSize: '40px'}}/>
       </div>
+
     )
   }
 }

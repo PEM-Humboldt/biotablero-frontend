@@ -10,9 +10,9 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import GraphI from '@material-ui/icons/Camera';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import PersonPinIcon from '@material-ui/icons/PersonPin';
+import Ecosistemas from '@material-ui/icons/Nature';
+import Especies from '@material-ui/icons/FilterVintage';
+import Paisaje from '@material-ui/icons/FilterHdr';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 
@@ -59,9 +59,9 @@ class Drawer extends React.Component {
             textColor="primary"
             centered
           >
-            <Tab label="Paisaje" icon={<PersonPinIcon />} />
-            <Tab label="Ecosistemas" icon={<GraphI />} />
-            <Tab label="Especies" icon={<FavoriteIcon />} />
+            <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />
+            <Tab className="tabs" label="Ecosistemas" icon={<Ecosistemas />} />
+            <Tab className="tabs" label="Especies" icon={<Especies />} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>

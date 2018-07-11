@@ -40,10 +40,8 @@ class Filter extends React.Component {
     // TODO: Enviar y recibir de MapViewer la información de pertenencia
     //  a zonas hidrográficas, para representarlo en el resumen dentro de Informer
     return <Informer verMenu={this.cambiarMenu}
+      geocerca={this.props.geocerca}
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
-      area={this.props.dataCapaActiva.AREA}
-      designacion= {'Instituto Humboldt'}
-      administrador= {'Instituto Humboldt'}
       />
   }
 

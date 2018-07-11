@@ -48,7 +48,7 @@ h1, h2, h3, h4 {
 	font-size: 12px;
 }
 
-.selector h1 {
+.selector h1, .informer h1 {
   padding: 20px;
   background-color: #e84a5f;
   color: #fff;
@@ -57,6 +57,11 @@ h1, h2, h3, h4 {
   font-size: 2.2em;
   text-align: left;
   margin: 0;
+}
+
+.informer h1 {
+  font-size: 1.3em;
+  font-weight: 400;
 }
 
 .iconsection {
@@ -73,7 +78,7 @@ h1, h2, h3, h4 {
     font-size: 15px;
     color: #2a363b;
     padding: 0 25px;
-    max-width: 76%;
+    max-width: 71%;
     margin-top: 12px;
 }
 
@@ -89,7 +94,7 @@ h1, h2, h3, h4 {
 .informer {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	padding: 5px 8px 0;
+	padding: 5px 0;
 	resize: both;
 }
 
@@ -191,6 +196,38 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   padding-top: 0;
 }
 
+div[class*="MuiExpansionPanelSummary-expanded-"] {
+  text-transform: uppercase;
+}
+
+.inlineb {
+  display: inline-block !important;
+}
+
+div[id*="panel"] button {
+  border: none;
+  border-right: 1px solid #2a363b;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 300;
+  cursor: pointer;
+  outline: none;
+  width: 120px;
+  min-height: 42px;
+  vertical-align: top;
+  font-weight: 600;
+  color: #979797;
+  margin-bottom: 3px;
+}
+
+div[id*="panel"] button:hover {
+  border-right: 1px solid transparent;
+  color: #fff;
+  background-color: #e84a5f;
+}
+
+/*2do menu graficas*/
+
 .geobtn {
   border: none;
   background-color: transparent;
@@ -209,35 +246,20 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   border-bottom: 1px solid #2a363b; 
 }
 
-div[class*="MuiExpansionPanelSummary-expanded-"] {
-  text-transform: uppercase;
-}
-
-div[class*=".MuiExpansionPanelDetails-root-"] {
-  display: initial;
-}
-
-div[id*="panel"] button {
-  border: none;
-  border-right: 1px solid #2a363b;
-  padding: 5px 12px;
-  font-size: 13px;
-  font-weight: 300;
-  cursor: pointer;
-  outline: none;
-  display: inline-block;
-  width: 120px;
-  min-height: 42px;
+.tabs {
+  width: 33.33%;
   vertical-align: top;
-  font-weight: 600;
-  color: #979797;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-div[id*="panel"] button:hover {
-  border-right: 1px solid transparent;
-  color: #fff;
-  background-color: #e84a5f;
+button[class*="MuiTab-selected-"] {
+  color: #e84a5f !important;
 }
 
-
-
+header[class*="MuiPaper-elevation4"] {
+  box-shadow: none !important;
+  height: auto;
+  padding: 0;
+}

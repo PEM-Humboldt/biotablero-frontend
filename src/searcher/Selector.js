@@ -70,22 +70,22 @@ class Selector extends React.Component {
           </ExpansionPanelSummary>
           {/* El id='geocercas' se utiliza en la hoja de estilos, para mostrar todos los elementos listados*/}
           <ExpansionPanelDetails id='geocercas'>
-              <ExpansionPanel id='subPanel11-Proyectos' expanded= {subExpanded === 'Proyectos'} onChange={this.subHandleChange('Proyectos')}>
+              <ExpansionPanel id='Zonas GEB' expanded= {subExpanded === 'Zonas GEB'} onChange={this.subHandleChange('Zonas GEB')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                Zonas
+                Zonas GEB
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails class="inlineb">
                   <button>Norte</button>
                   <button>Centro</button>
                   <button>Suroccidente</button>
                   <button>Occidente</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'subPanel2'} onChange={this.subHandleChange('subPanel2')}>
+              <ExpansionPanel expanded= {subExpanded === 'Manejo Especial'} onChange={this.subHandleChange('Manejo Especial')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Áreas de manejo especial
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails class="inlineb">
                   <button>ANP</button> 
                   <button>Pedets</button>
                   <button>Bosques de Paz</button>
@@ -93,7 +93,7 @@ class Selector extends React.Component {
                   <button>Territorios colectivos</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'subPanel31'} onChange={this.subHandleChange('subPanel31')}>
+              <ExpansionPanel expanded= {subExpanded === 'Departamentos'} onChange={this.subHandleChange('Departamentos')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Departamentos
               </ExpansionPanelSummary>ANP
@@ -186,7 +186,7 @@ class Selector extends React.Component {
                 />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'subPanel51'} onChange={this.subHandleChange('subPanel51')}>
+              <ExpansionPanel expanded= {subExpanded === 'Zonas hidrográficas'} onChange={this.subHandleChange('Zonas hidrográficas')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Zonas hidrográficas
                 </ExpansionPanelSummary>
@@ -236,11 +236,11 @@ class Selector extends React.Component {
                   }/>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'subPanel61'} onChange={this.subHandleChange('subPanel61')}>
+              <ExpansionPanel expanded= {subExpanded === 'estratégicos'} onChange={this.subHandleChange('estratégicos')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Ecosistemas estratégicos
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
+                <ExpansionPanelDetails class="inlineb">
                   <button>Bosques secos</button>
                   <button>Humedales</button>
                   <button>Páramos</button>
