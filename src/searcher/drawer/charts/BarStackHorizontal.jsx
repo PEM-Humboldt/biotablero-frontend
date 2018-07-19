@@ -24,16 +24,16 @@ export default withTooltip(
     tooltipData,
     hideTooltip,
     showTooltip,
-    actualizarBiomaActivo();
+    props
   }) => {
     if (width < 10) return null;
     // accessors
     const y = d => 1;
     // const x = d => d.value;
 
-    const actualizarSubArea = (key) => {
-      return actualizarBiomaActivo(key);
-    }
+    // const actualizarSubArea = (key) => {
+    //   return props.actualizarBiomaActivo(key);
+    // }
 
     const prepareDara = (data, setName) => {
        const transformedData = {
@@ -103,9 +103,9 @@ export default withTooltip(
               yScale={yScale}
               zScale={zScale}
               onClick={data => event => {
-                // if (!events) return;
+                if (!events) return;
                 alert(`clicked: ${JSON.stringify(data)}`);
-                actualizarSubArea(data.key);
+                // actualizarSubArea(data.key);
               }}
               onMouseLeave={data => event => {
                 tooltipTimeout = setTimeout(() => {

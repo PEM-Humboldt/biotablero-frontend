@@ -105,7 +105,6 @@ class MapViewer extends React.Component {
 
 	mifunc2(e){
     this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
-    console.log('Hice click')
 	}
 
   // TODO: Cambiar método de carga, para incluir carga asincrónica de axios
