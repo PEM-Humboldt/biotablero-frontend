@@ -65,7 +65,7 @@ h1, h2, h3, h4 {
 }
 
 .iconsection {
-  background-image: url(../common/img/geografico.png);
+  background-image: url(../common/img/compensaciones.png);
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
@@ -131,8 +131,9 @@ h1, h2, h3, h4 {
   color: #4a585f;
 }
 
-#geocercas {
+#proyectos {
     display: block !important;
+		padding-top: 0;
 }
 
 div[class*="MuiPaper-root-"] {
@@ -169,11 +170,11 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   border: 0 !important;
 }
 
-#panel1-Geocerca {
+#panel1-Centro {
   margin-top: 15px !important;
 }
 
-#panel1-Geocerca > div:nth-child(1),
+#panel1-Centro > div:nth-child(1),
 #panel2 > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;
@@ -182,7 +183,7 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   font-family: 'Open Sans', sans-serif !important;
 }
 
-#panel1-Geocerca > div:nth-child(1) svg,
+#panel1-Centro > div:nth-child(1) svg,
 #panel2 > div:nth-child(1) svg,
 #panel3 > div:nth-child(1) svg {
   color: #e84a5f;
@@ -190,10 +191,6 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
 
 .disabled {
   background-color: #000;
-}
-
-#geocercas {
-  padding-top: 0;
 }
 
 div[class*="MuiExpansionPanelSummary-expanded-"] {
@@ -229,7 +226,7 @@ div[id*="panel"] button:hover {
 
 /*2do menu graficas*/
 
-.geobtn {
+.compbtn {
   border: none;
   background-color: transparent;
   color: #e84a5f;
@@ -238,11 +235,11 @@ div[id*="panel"] button:hover {
   border-bottom: 1px solid transparent;
 }
 
-.geobtn svg {
+.compbtn svg {
   font-size: 30px;
 }
 
-.geobtn:hover {
+.compbtn:hover {
   color: #2a363b;
   border-bottom: 1px solid #2a363b;
 }

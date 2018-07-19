@@ -1,5 +1,5 @@
 import React from 'react';
-import Option from './Option'
+import LinkOption from './LinkOption';
 
 class Menu extends React.Component {
 
@@ -11,11 +11,11 @@ class Menu extends React.Component {
 			    <span></span>
 			    <span></span>
         <ul id="menu">
-          <Option url="/" name="Inicio"/>
-          <Option url="/Consultas" name="Consultas"/>
-          <Option url="./filters.html" name="Indicadores"/>
-          <Option url="./compensaciones.html" name="Compensaciones"/>
-          <Option url="./alertas.html" name="Alertas"/>
+          <LinkOption url="/" name="Inicio"/>
+          <LinkOption url="/Consultas" name="Consultas"/>
+          <LinkOption url="./filters.html" name="Indicadores"/>
+          <LinkOption url="/Compensaciones" name="Compensaciones"/>
+          <LinkOption url="./alertas.html" name="Alertas"/>
         </ul>
       </div>
     );

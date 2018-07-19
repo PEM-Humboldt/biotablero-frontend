@@ -26,6 +26,7 @@ class MapViewer extends React.Component {
 
     };
     this.setGeoJSONLayer = this.setGeoJSONLayer.bind(this);
+    this.cargarCapaGeoJSON = this.cargarCapaGeoJSON.bind(this);
 
     this.onEachFeature = this.onEachFeature.bind(this);
     this.hexagonosOnEachFeature = this.hexagonosOnEachFeature.bind(this);
@@ -69,17 +70,20 @@ class MapViewer extends React.Component {
 
 	highlightFeature(e){
 		var layer = e.target;
+    if(e.target.feature.properties.IDCAR !== 'CORPOBOYACA')
+    e.target.bindPopup(e.target.feature.properties.IDCAR);
 		layer.setStyle(
 			{
 				weight : 1,
-				color : 'red',
-				fillColor : 'red',
-				fillOpacity : 0.2
+				fillOpacity : 1
 			}
 		);
 		if(!L.Browser.ie && !L.Browser.opera){
 			layer.bringToFront();
 		}
+    if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
+    e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
+      +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
 	}
 
 	resetHighlight(e){
@@ -91,18 +95,17 @@ class MapViewer extends React.Component {
 	}
 
 	mifunc(e){
-		alert(e.target.feature.properties.IDCAR);
 		if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
       this.MostrarCapa(this.CapaCorpoBoyaca, true);
       this.MostrarCapa(this.CapaJurisdicciones, false);
-      // console.log('this.props.capasMontadas[2]: '+this.props.capasMontadas[2]);
-      this.props.capaActiva(this.CapaCorpoBoyaca);
+      console.log('this.props.capasMontadas[2]: '+this.props.capasMontadas[2]);
+      this.props.capaActiva('CORPOBOYACA');
     }
 	}
 
 	mifunc2(e){
-    e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
-      +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
+    this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
+    console.log('Hice click')
 	}
 
   // TODO: Cambiar método de carga, para incluir carga asincrónica de axios
@@ -110,19 +113,35 @@ class MapViewer extends React.Component {
   setGeoJSONLayer(URL) {
     let capa = null;
     axios.get(URL)
-      .then(res => {
+      .then((res) => {
         capa = res.data;
         this.setState({ geoJsonLayer: capa,
           // geoJsonLayerAvailable: [...this.state.geoJsonLayerAvailable, capa]
         });
         if (this.state.geoJsonLayer
               .features[0].id==='jurisdicciones_low.1'){
-          this.CapaJurisdicciones=L.geoJSON(this.state.geoJsonLayer,{style:{stroke:false, color:'#ffd8e2',opacity:0.2,fillOpacity:0.6},onEachFeature:this.hexagonosOnEachFeature}).addTo(this.mapRef.current.leafletElement);
+          this.CapaJurisdicciones=L.geoJSON(this.state.geoJsonLayer,
+            {
+              style:
+              {
+                color:'#e84a5f', weight: 0.5, fillColor:'#ffd8e2', opacity:0.6,fillOpacity:0.4
+            },
+            onEachFeature:this.hexagonosOnEachFeature,
+          })
+            .addTo(this.mapRef.current.leafletElement);
           this.MostrarCapa(this.CapaJurisdicciones, false);
         }
         if (this.state.geoJsonLayer
           .features[0].id==='Corpoboyaca-Biomas-IaVH-1.1'){
-          this.CapaCorpoBoyaca=L.geoJSON(this.state.geoJsonLayer,{style:{color:'green',opacity:0.6,fillOpacity:0.3},onEachFeature:this.onEachFeature}).addTo(this.mapRef.current.leafletElement);
+          this.CapaCorpoBoyaca=L.geoJSON(this.state.geoJsonLayer,
+            {
+              style:
+              {
+            stroke:false, fillColor:'#7b56a5',opacity:0.6,fillOpacity:0.4
+          },
+          onEachFeature:this.onEachFeature,
+        })
+        .addTo(this.mapRef.current.leafletElement);
           this.MostrarCapa(this.CapaCorpoBoyaca, false);
         }
       })
@@ -153,6 +172,7 @@ class MapViewer extends React.Component {
     //  sobre el mapa.
     this.CapaJurisdicciones=null;
     this.CapaCorpoBoyaca=null;
+    // TODO: Manejar la promesa, para que espere las capas a cargar
     this.setGeoJSONLayer('http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
     this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`);
     // console.log('datosJSON: '+datosJSON);
@@ -172,7 +192,6 @@ class MapViewer extends React.Component {
       this.MostrarCapa(this.CapaJurisdicciones, false);
       this.MostrarCapa(this.CapaCorpoBoyaca, false);
     }
-    console.log('Datos: '+this.props.capasMontadas[2]);
     if(this.props.capasMontadas[2] === 'Sogamoso - EEB' ||
         this.props.capasMontadas[2] ==='CORPOBOYACA'
         // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')

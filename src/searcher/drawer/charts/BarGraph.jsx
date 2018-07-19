@@ -1,24 +1,3 @@
-// import React from 'react';
-// import { letterFrequency } from '@vx/mock-data';
-// import { Group } from '@vx/group';
-// import { Bar } from '@vx/shape';
-// import { scaleLinear, scaleBand } from '@vx/scale';
-//
-// class Tab extends React.Component {
-//
-//   render(){
-//     return(
-//       <div>
-//         {this.props.texto}
-//         {/* {alert(this.props.datosJSON)} */}
-//       </div>
-//   );
-//   }
-// }
-//
-// export default Tab;
-
-
 import React from 'react';
 import { letterFrequency } from '@vx/mock-data';
 import { Group } from '@vx/group';
@@ -78,6 +57,3 @@ function BarGraph(props) {
     </svg>
   );
 }
-
-// ... somewhere else, render it ...
-// <BarGraph />

@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import MapViewer from './searcher/MapViewer';
-import Filter from './searcher/Filter';
-import './searcher/searcher.css';
+import ProjectFilter from './compensator/ProjectFilter';
+import './compensator/compensator.css';
 
-class Searcher extends Component {
+class Compensator extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -86,7 +86,7 @@ class Searcher extends Component {
             capaActiva={this.actualizarCapaActiva}
             biomaActivo={this.actualizarBiomaActivo}/>
         <div className="contentView">
-          <Filter panelLayer = {this.panelLayer}
+          <ProjectFilter panelLayer = {this.panelLayer}
           subPanelLayer = {this.subPanelLayer}
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
@@ -100,4 +100,4 @@ class Searcher extends Component {
   }
 }
 
-export default Searcher;
+export default Compensator;

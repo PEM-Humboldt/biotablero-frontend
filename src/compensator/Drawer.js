@@ -10,15 +10,12 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Ecosistemas from '@material-ui/icons/Nature';
-import Especies from '@material-ui/icons/FilterVintage';
-import Paisaje from '@material-ui/icons/FilterHdr';
+import QueIcon from '@material-ui/icons/AddLocation';
+import DondeIcon from '@material-ui/icons/Navigation';
+import ComoIcon from '@material-ui/icons/Place';
+import CarritoIcon from '@material-ui/icons/AddShoppingCart';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
-
-var biomas = require('./data/CORPOBOYACAByBiomaArea.json');
-var distritos = require('./data/CORPOBOYACAByDistritoArea.json');
-var fc = require('./data/CORPOBOYACAByFCArea.json');
 
 function TabContainer(props) {
   return (
@@ -45,17 +42,9 @@ class Drawer extends React.Component {
     value: 0,
   };
 
-  mostrarGraficos(subArea, data, labelY, graph){
-    if(subArea===null) {
-      return (<InfoGraph
-        graphType={graph}
-        name={subArea}
-        data={data}
-        labelY={labelY}
-        actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
-      />);
-    } else {
-
+  mostrarGraficos(param){
+    if(param===1) {
+      return (<InfoGraph />);
     }
   }
 
@@ -77,20 +66,18 @@ class Drawer extends React.Component {
             textColor="primary"
             centered
           >
-            <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />
-            <Tab className="tabs" label="Ecosistemas" icon={<Ecosistemas />} />
-            <Tab className="tabs" label="Especies" icon={<Especies />} />
+            <Tab className="tabs" label="¿Qué y cuánto?" icon={<QueIcon />} />
+            <Tab className="tabs" label="¿Dónde?" icon={<DondeIcon />} />
+            <Tab className="tabs" label="¿Cómo?" icon={<ComoIcon />} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
-          {this.mostrarGraficos(this.props.subArea, biomas.data, 'biomas', 'BarStackHorizontal')}
-          {this.mostrarGraficos(this.props.subArea, distritos.data, 'distritos', 'BarStackHorizontal')}
-          {this.mostrarGraficos(this.props.subArea, fc.data, 'F C', 'BarStackHorizontal')}
+          {this.mostrarGraficos(1)}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
-        {value === 1 && <TabContainer>Gráfico</TabContainer>}
-        {value === 2 && <TabContainer>Gráfico</TabContainer>}
+        {value === 1 && <TabContainer>Gráfico "Dónde"</TabContainer>}
+        {value === 2 && <TabContainer>Tabla "Cómo" - <CarritoIcon /> </TabContainer>}
       </div>
     );
   }

@@ -7,14 +7,11 @@ class Informer extends React.Component {
     return (
       <div className="informer">
       {/* TODO: Cambiar el zoom en el mapa para ver todo el país*/}
-      <button className="geobtn"
-        onClick={() => this.props.verMenu("Selector")}>
+      <button className="compbtn" onClick={() => this.props.verMenu("Selector")}>
         <BackIcon />
       </button>
           <h1> {this.props.geocerca} / {this.props.nombre} <br></br> <b>{this.props.bioma}</b></h1>
-          <Drawer
-            subArea={this.props.bioma}
-            actualizarBiomaActivo={this.props.actualizarBiomaActivo}/>
+          <Drawer />
       </div>
     );
   }

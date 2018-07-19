@@ -7,7 +7,9 @@ class Uim extends React.Component {
   render(){
     return(
       <div>
-      	<a href="https://www.grupoenergiabogota.com/" target="_blank" className="logoGEB" />
+      	<a href="https://www.grupoenergiabogota.com/"
+        rel="noopener noreferrer"
+        target="_blank" className="logoGEB"> </a>
         <AccountCircle className="userBox"
           style={{fontSize: '40px'}}/>
       </div>

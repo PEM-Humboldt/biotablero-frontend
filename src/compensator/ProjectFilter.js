@@ -1,8 +1,8 @@
 import React from 'react';
-import Selector from './Selector';
+import ProjectSelector from './ProjectSelector';
 import Informer from './Informer';
 
-class Filter extends React.Component {
+class ProjectFilter extends React.Component {
   constructor(props){
     super(props);
     this.state = {
@@ -25,7 +25,7 @@ class Filter extends React.Component {
         // alert(this.state.menuActivo),
         // alert(this.props.dataCapaActiva),
         // TODO: Revisar despliegue errado mediante estilo
-        <Selector
+        <ProjectSelector
         panelLayer = {this.props.panelLayer}
         subPanelLayer = {this.props.subPanelLayer}
         innerPanelLayer = {this.props.innerPanelLayer}
@@ -44,7 +44,6 @@ class Filter extends React.Component {
       geocerca={this.props.geocerca}
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
       bioma={this.props.bioma}
-      actualizarBiomaActivo={this.actualizarBiomaActivo}
       />
   }
 
@@ -62,4 +61,4 @@ class Filter extends React.Component {
   }
 }
 
-export default Filter;
+export default ProjectFilter;
