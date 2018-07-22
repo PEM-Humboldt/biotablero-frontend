@@ -6,9 +6,6 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileUploadIcon from '@material-ui/icons/FileUpload';
-import RateReviewIcon from '@material-ui/icons/Edit';
-import Autocomplete from './Autocompletar';
 //import jsonData from './prueba.geojson'; // Fuente: https://github.com/decolector/bta-geodata/blob/master/local.geojson
 
 class ProjectSelector extends React.Component {

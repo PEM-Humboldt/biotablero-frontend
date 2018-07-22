@@ -93,7 +93,7 @@ class Searcher extends Component {
           actualizarCapaActiva= {this.actualizarCapaActiva}
           actualizarBiomaActivo={this.actualizarBiomaActivo}
           geocerca= {this.state.geojsonCapa2}
-          bioma={this.state.geojsonCapa4}/>
+          subArea={this.state.geojsonCapa4}/>
         </div>
       </div>
     );

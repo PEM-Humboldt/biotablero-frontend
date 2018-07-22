@@ -29,6 +29,9 @@ export default withTooltip(
     if (width < 10) return null;
     // accessors
     const y = d => 1;
+    // console.log('dataJSON: '+dataJSON.then((biomas2) => {console.log('biomas= '+ JSON.stringify(biomas2.data));}))
+    // dataJSON = dataJSON.then((res)=>{return res.data;});
+    // console.log('dataJSON: '+dataJSON);
     // const x = d => d.value;
 
     // const actualizarSubArea = (key) => {
@@ -39,10 +42,14 @@ export default withTooltip(
        const transformedData = {
          key: setName,
        }
-       data.aggregations.areas.buckets.forEach(item => {
-         transformedData[item['key']] = `${item.area.value}`
+       data.then((res)=>{
+         console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));
+         res.aggregations.areas.buckets.forEach(item => {
+           transformedData[item['key']] = `${item.area.value}`
+         })
+         console.log('Data: '+ JSON.stringify(res));
+         return transformedData;
        })
-       return transformedData;
     }
 
     function toTitleCase(str) {
@@ -54,9 +61,21 @@ export default withTooltip(
     // console.log("DataDist: "+ JSON.stringify(dataJSON));
     // console.log("DataTotal: "+ dataJSON.aggregations.total_area.value);
 
-    const data = [prepareDara(dataJSON, labelY)];
-    const keys = Object.keys(data[0]).filter(d => d !== 'key');
-    const totals = dataJSON.aggregations.total_area.value;
+
+    let keys = null;
+    let totals = null;
+    let data = null;
+    let domainY = null;
+
+    dataJSON.then((res)=>{console.log('RES_BarSH= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));});
+
+    // dataJSON.then((res)=>{
+    //   console.log('RES_dataJSON= '+ JSON.stringify(res));
+    //   data = [prepareDara(res, labelY)].slice(0);
+    //   keys = Object.keys(data[0].filter(d => d !== 'key'));
+    //   totals = res.aggregations.total_area.value;
+    //   domainY = data.map(y);
+    // });
 
     // bounds
     const xMax = width - margin.left - margin.right;
@@ -70,7 +89,7 @@ export default withTooltip(
     });
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
-      domain: data.map(y),
+      domain: domainY,
       padding: 0.2,
       // tickFormat: () => val => formatDate(val),
       tickFormat: () => val => toTitleCase(labelY),

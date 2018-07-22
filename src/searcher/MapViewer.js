@@ -107,7 +107,7 @@ class MapViewer extends React.Component {
     this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
 	}
 
-  // TODO: Cambiar método de carga, para incluir carga asincrónica de axios
+  // TODO: Cambiar método de carga, para forzar carga sincrónica de axios
   //  revisando la carga
   setGeoJSONLayer(URL) {
     let capa = null;
@@ -146,9 +146,9 @@ class MapViewer extends React.Component {
       })
   }
 
-  async cargarCapaGeoJSON(URL_JSON){
+  cargarCapaGeoJSON(URL_JSON){
     // TODO: Centralizar la carga de capas en esta función
-    const res = await axios.get(URL_JSON);
+    const res = axios.get(URL_JSON).then((r)=>{return r;});
     // console.log("cargarCapaGeoJSON(URL_JSON): "+ JSON.stringify(res.data));
     this.setState({
       geoJsonLayer: res.data,
@@ -160,7 +160,7 @@ class MapViewer extends React.Component {
     }
   }
 
-  componentDidMount() {
+  componentWillMount() {
     // this.cargarCapaGeoJSON('http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
     // this.cargarCapaGeoJSON('http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson');
     // this.setState({
@@ -174,7 +174,7 @@ class MapViewer extends React.Component {
     // TODO: Manejar la promesa, para que espere las capas a cargar
     this.setGeoJSONLayer('http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
     this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`);
-    // console.log('datosJSON: '+datosJSON);
+
     // this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`);
     // this.setGeoJSONLayer(this.state.capasMontadas[1].url);
   }

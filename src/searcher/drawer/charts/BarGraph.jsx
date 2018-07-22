@@ -37,7 +37,7 @@ const xPoint = compose(xScale, x);
 const yPoint = compose(yScale, y);
 
 // Finally we'll embed it all in an SVG
-function BarGraph(props) {
+export default (props) => {
   return (
     <svg width={width} height={height}>
       {data.map((d, i) => {
