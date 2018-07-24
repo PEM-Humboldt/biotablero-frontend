@@ -5,7 +5,8 @@
   "dependencies": {
     "@vx/responsive": "0.0.165",
     "create-react-app": "^1.5.2",
-    "npm": "^6.1.0"
+    "npm": "^6.1.0",
+    "react-easy-chart": "^1.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

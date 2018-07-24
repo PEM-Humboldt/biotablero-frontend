@@ -77,8 +77,6 @@ class ProjectSelector extends React.Component {
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               Licenciados
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails className="inlineb">
-              </ExpansionPanelDetails>
             </ExpansionPanel>
             <ExpansionPanel id='enLicenciamiento'
               expanded= {subExpanded === 'EnLicenciamiento'}

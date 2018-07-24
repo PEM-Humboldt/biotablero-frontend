@@ -82,6 +82,9 @@ class MapViewer extends React.Component {
 			layer.bringToFront();
 		}
     if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
+    console.log('this.props.capasMontadas[1]: '+this.props.capasMontadas[1]);
+      console.log('this.props.capasMontadas[2]: '+this.props.capasMontadas[2]);
+    console.log('highlightFeature:' +JSON.stringify(e.target.feature.properties));
     e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
       +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
 	}
@@ -98,13 +101,14 @@ class MapViewer extends React.Component {
 		if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
       this.MostrarCapa(this.CapaCorpoBoyaca, true);
       this.MostrarCapa(this.CapaJurisdicciones, false);
-      console.log('this.props.capasMontadas[2]: '+this.props.capasMontadas[2]);
       this.props.capaActiva('CORPOBOYACA');
     }
 	}
 
 	mifunc2(e){
-    this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
+    if(this.props.capasMontadas[2]!== null){
+      this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
+    }
 	}
 
   // TODO: Cambiar método de carga, para forzar carga sincrónica de axios
@@ -196,6 +200,10 @@ class MapViewer extends React.Component {
         // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
       ) {
       this.MostrarCapa(this.CapaCorpoBoyaca, true);
+      this.MostrarCapa(this.CapaJurisdicciones, false);
+    } else if (this.CapaCorpoBoyaca!==null
+      && this.props.capasMontadas[1] === null){
+      this.MostrarCapa(this.CapaCorpoBoyaca, false);
       this.MostrarCapa(this.CapaJurisdicciones, false);
     }
   }

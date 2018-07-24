@@ -3,31 +3,41 @@ import BarStackHorizontal from './charts/BarStackHorizontal';
 import BarGraph from './charts/BarGraph';
 import './infoGraph.css';
 
-const prepareDara = (data, setName) => {
-   const transformedData = {
-     key: setName,
-     total_area: `${data.aggregations.total_area.value}`
-   }
-   data.aggregations.areas.buckets.forEach(item => {
-     transformedData[item['key']] = `${item.area.value}`
-   })
-   return transformedData;
-}
-
 class InfoGraph extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      data: this.props.data,
+    }
+  }
+
+  componentWillMount(){
+    // this.setState({
+    //   data: this.props.data,
+    // });
+    // console.log('RES_InfoGraph= '+ JSON.stringify(this.state.data));
+  }
 
   showGraph()
     {
+      // console.log('Parent.width: '+ this.props.width);
       if (this.props.graphType==='BarVertical') {
-        return <BarGraph />
+        return (
+        <BarGraph dataJSON={this.state.data}
+          width={this.props.width}
+        />
+      )
       } else if (this.props.graphType==='BarStackHorizontal'){
         // TODO: Usar this.props.name en el gráfico
         return <BarStackHorizontal
-          dataJSON={this.props.data.then((res)=>{
-            // console.log('RES_InfoGraph= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));
-            return res.data;})}
+          dataJSON={this.state.data}
+          // dataJSON={this.props.data.then((res)=>{
+          //   // console.log('RES_InfoGraph= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));
+          //   return res.data;})}
           labelY={this.props.labelY}
-          width='500' height='200'
+          // width='500'
+          width={this.props.width}
+          height='200'
           actualizarBiomaActivo= {this.props.actualizarBiomaActivo}/>
         }
     }

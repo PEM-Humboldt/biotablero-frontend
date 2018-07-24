@@ -24,15 +24,10 @@ export default withTooltip(
     tooltipData,
     hideTooltip,
     showTooltip,
-    props
   }) => {
     if (width < 10) return null;
     // accessors
     const y = d => 1;
-    // console.log('dataJSON: '+dataJSON.then((biomas2) => {console.log('biomas= '+ JSON.stringify(biomas2.data));}))
-    // dataJSON = dataJSON.then((res)=>{return res.data;});
-    // console.log('dataJSON: '+dataJSON);
-    // const x = d => d.value;
 
     // const actualizarSubArea = (key) => {
     //   return props.actualizarBiomaActivo(key);
@@ -42,14 +37,11 @@ export default withTooltip(
        const transformedData = {
          key: setName,
        }
-       data.then((res)=>{
-         console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));
-         res.aggregations.areas.buckets.forEach(item => {
+         data.aggregations.areas.buckets.forEach(item => {
            transformedData[item['key']] = `${item.area.value}`
          })
-         console.log('Data: '+ JSON.stringify(res));
+         // console.log('transformedData: '+JSON.stringify(transformedData));
          return transformedData;
-       })
     }
 
     function toTitleCase(str) {
@@ -58,26 +50,22 @@ export default withTooltip(
       });
     }
 
-    // console.log("DataDist: "+ JSON.stringify(dataJSON));
-    // console.log("DataTotal: "+ dataJSON.aggregations.total_area.value);
+    function sortByKey(array, key) {
+      return array.sort(function(a, b) {
+          var x = a[key]; var y = b[key];
+          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      });
+    }
 
+    let data = [prepareDara(dataJSON.data, labelY)].slice(0);
+    let keys = Object.keys(data[0]);
+    keys = sortByKey(keys, keys);
+    // console.log("DataDist1: "+ JSON.stringify(keys));
+    let totals =  dataJSON.data.aggregations.total_area.value;
 
-    let keys = null;
-    let totals = null;
-    let data = null;
-    let domainY = null;
-
-    dataJSON.then((res)=>{console.log('RES_BarSH= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));});
-
-    // dataJSON.then((res)=>{
-    //   console.log('RES_dataJSON= '+ JSON.stringify(res));
-    //   data = [prepareDara(res, labelY)].slice(0);
-    //   keys = Object.keys(data[0].filter(d => d !== 'key'));
-    //   totals = res.aggregations.total_area.value;
-    //   domainY = data.map(y);
-    // });
-
+    // console.log("DataTotal: "+ dataJSON.data.aggregations.total_area.value);
     // bounds
+    // console.log('width: '+width);
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
 
@@ -86,11 +74,12 @@ export default withTooltip(
       rangeRound: [0, xMax],
       domain: [0, totals], // TODO: Cambiar "0" por funcion min de d3-array
       nice: true,
+      clamp: false,
     });
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
-      domain: domainY,
-      padding: 0.2,
+      domain: data.map(y),
+      padding: 0.3,
       // tickFormat: () => val => formatDate(val),
       tickFormat: () => val => toTitleCase(labelY),
     });
@@ -116,6 +105,7 @@ export default withTooltip(
             <BarStackHorizontal
               data={data}
               keys={keys}
+              width={xMax}
               height={yMax}
               y={y}
               xScale={xScale}

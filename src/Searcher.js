@@ -57,11 +57,17 @@ class Searcher extends Component {
   }
 
   actualizarCapaActiva(campo){
-    this.setState({
-      geojsonCapa3: campo,
-      infoCapaActiva: campo,
-    });
-    console.log("capaActiva: "+ campo);
+    if(campo===null){
+      this.setState({
+        geojsonCapa2: null,
+        geojsonCapa3: null,
+        infoCapaActiva: null,
+      });
+    } else {
+      this.setState({
+        infoCapaActiva: campo,
+      });
+    }
   }
 
   actualizarBiomaActivo(campo){
@@ -74,15 +80,14 @@ class Searcher extends Component {
 
   render() {
     let layer = this.state.geojson;
-    let capasSeleccionadas = [
-      this.state.geojsonCapa1,
-      this.state.geojsonCapa2,
-      this.state.geojsonCapa3,
-      this.state.geojsonCapa4];
     return (
       <div className="appSearcher">
           <MapViewer mostrarJSON={layer}
-            capasMontadas={capasSeleccionadas}
+            capasMontadas={[
+                  this.state.geojsonCapa1,
+                  this.state.geojsonCapa2,
+                  this.state.geojsonCapa3,
+                  this.state.geojsonCapa4]}
             capaActiva={this.actualizarCapaActiva}
             biomaActivo={this.actualizarBiomaActivo}/>
         <div className="contentView">

@@ -1,11 +1,14 @@
 import React from 'react';
+import ScatterChart from './ScatterChart';
 import './infoGraph.css';
 
 class InfoGraph extends React.Component {
-  render(){        
+  render(){
     return(
       <div>
-        Gráfico "Qué"
+        <ScatterChart
+          width={this.props.width}
+          height={this.props.height}/>
       </div>
   );
   }

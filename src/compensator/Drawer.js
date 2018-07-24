@@ -11,11 +11,11 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import QueIcon from '@material-ui/icons/AddLocation';
-import DondeIcon from '@material-ui/icons/Navigation';
-import ComoIcon from '@material-ui/icons/Place';
+import DondeIcon from '@material-ui/icons/Place';
 import CarritoIcon from '@material-ui/icons/AddShoppingCart';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
+import { ParentSize } from "@vx/responsive";
 
 function TabContainer(props) {
   return (
@@ -44,7 +44,17 @@ class Drawer extends React.Component {
 
   mostrarGraficos(param){
     if(param===1) {
-      return (<InfoGraph />);
+      return (
+        <ParentSize>
+          {
+            parent => (
+              <InfoGraph
+              width={parent.width}
+              height={parent.height}/>
+              )
+          }
+        </ParentSize>
+      );
     }
   }
 
@@ -67,17 +77,18 @@ class Drawer extends React.Component {
             centered
           >
             <Tab className="tabs" label="¿Qué y cuánto?" icon={<QueIcon />} />
-            <Tab className="tabs" label="¿Dónde?" icon={<DondeIcon />} />
-            <Tab className="tabs" label="¿Cómo?" icon={<ComoIcon />} />
+            <Tab className="tabs" label="¿Dónde y cómo?" icon={<DondeIcon />} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
-          {this.mostrarGraficos(1)}
+          Gráfico ¿Qué y cuánto?
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
-        {value === 1 && <TabContainer>Gráfico "Dónde"</TabContainer>}
-        {value === 2 && <TabContainer>Tabla "Cómo" - <CarritoIcon /> </TabContainer>}
+        {value === 1 && <TabContainer>
+          {this.mostrarGraficos(1)}
+          Tabla "Cómo" - <CarritoIcon />
+        </TabContainer>}
       </div>
     );
   }
