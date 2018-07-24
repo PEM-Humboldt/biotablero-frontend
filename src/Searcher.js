@@ -1,7 +1,7 @@
 // TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
-import MapViewer from './searcher/MapViewer';
+import MapViewer from './MapViewer';
 import Filter from './searcher/Filter';
 import './searcher/searcher.css';
 

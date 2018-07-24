@@ -59,7 +59,7 @@ class MapViewer extends React.Component {
     return capas;
   }
 
-	MostrarCapa(capa, estado){
+	mostrarCapa(capa, estado){
     if(estado === false){ // Si estado === false : Ocultar capa
       this.mapRef.current.leafletElement.removeLayer(capa);
     }
@@ -99,8 +99,8 @@ class MapViewer extends React.Component {
 
 	mifunc(e){
 		if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
-      this.MostrarCapa(this.CapaCorpoBoyaca, true);
-      this.MostrarCapa(this.CapaJurisdicciones, false);
+      this.mostrarCapa(this.CapaCorpoBoyaca, true);
+      this.mostrarCapa(this.CapaJurisdicciones, false);
       this.props.capaActiva('CORPOBOYACA');
     }
 	}
@@ -132,7 +132,7 @@ class MapViewer extends React.Component {
             onEachFeature:this.hexagonosOnEachFeature,
           })
             .addTo(this.mapRef.current.leafletElement);
-          this.MostrarCapa(this.CapaJurisdicciones, false);
+          this.mostrarCapa(this.CapaJurisdicciones, false);
         }
         if (this.state.geoJsonLayer
           .features[0].id==='Corpoboyaca-Biomas-IaVH-1.1'){
@@ -145,7 +145,20 @@ class MapViewer extends React.Component {
           onEachFeature:this.onEachFeature,
         })
         .addTo(this.mapRef.current.leafletElement);
-          this.MostrarCapa(this.CapaCorpoBoyaca, false);
+          this.mostrarCapa(this.CapaCorpoBoyaca, false);
+        }
+        if (this.state.geoJsonLayer
+          .features[0].id==='Sogamoso_84.1'){
+          this.CapaSogamoso=L.geoJSON(this.state.geoJsonLayer,
+            {
+              style:
+              {
+            stroke:true, fillColor:'#56a58e',opacity:0.6,fillOpacity:0.4
+          },
+          onEachFeature:this.hexagonosOnEachFeature,
+        })
+        .addTo(this.mapRef.current.leafletElement);
+          this.mostrarCapa(this.CapaSogamoso, false);
         }
       })
   }
@@ -175,36 +188,39 @@ class MapViewer extends React.Component {
     //  sobre el mapa.
     this.CapaJurisdicciones=null;
     this.CapaCorpoBoyaca=null;
+    this.CapaSogamoso=null;
     // TODO: Manejar la promesa, para que espere las capas a cargar
     this.setGeoJSONLayer('http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
     this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`);
+    this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson`);
 
     // this.setGeoJSONLayer(`http://192.168.205.192:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`);
     // this.setGeoJSONLayer(this.state.capasMontadas[1].url);
   }
 
   componentDidUpdate() {
+
     // adevia - Comentarios: Esta función se ejecuta siempre que hay evento en el componente MapViewer
     // Verificadores de capa seleccionada en el selector
     if(this.props.capasMontadas[1] === 'Jurisdicciones') {
-      this.MostrarCapa(this.CapaJurisdicciones, true);
-      this.MostrarCapa(this.CapaCorpoBoyaca, false);
+      this.mostrarCapa(this.CapaJurisdicciones, true);
+      this.mostrarCapa(this.CapaCorpoBoyaca, false);
     }
-    else if(this.props.capasMontadas[1] !== 'Jurisdicciones'
-  && this.props.capasMontadas[1] !== null) {
-      this.MostrarCapa(this.CapaJurisdicciones, false);
-      this.MostrarCapa(this.CapaCorpoBoyaca, false);
-    }
-    if(this.props.capasMontadas[2] === 'Sogamoso - EEB' ||
-        this.props.capasMontadas[2] ==='CORPOBOYACA'
+    if(this.props.capasMontadas[2] ==='CORPOBOYACA') {
         // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
-      ) {
-      this.MostrarCapa(this.CapaCorpoBoyaca, true);
-      this.MostrarCapa(this.CapaJurisdicciones, false);
+      this.mostrarCapa(this.CapaCorpoBoyaca, true);
+      this.mostrarCapa(this.CapaJurisdicciones, false);
     } else if (this.CapaCorpoBoyaca!==null
       && this.props.capasMontadas[1] === null){
-      this.MostrarCapa(this.CapaCorpoBoyaca, false);
-      this.MostrarCapa(this.CapaJurisdicciones, false);
+      this.mostrarCapa(this.CapaCorpoBoyaca, false);
+      this.mostrarCapa(this.CapaJurisdicciones, false);
+    } if (this.CapaSogamoso !== null && this.props.capasMontadas[2] === 'Sogamoso'){
+      this.mostrarCapa(this.CapaSogamoso, true);
+      // TODO: Implementar arreglo "capasActivas" para evitar crear por cada capa, un mostrarCapa(capa, false)
+        if (this.CapaCorpoBoyaca !== null && this.CapaJurisdicciones !== null){ // Esto se hace al ser la capa más pesada en descargar
+          this.mostrarCapa(this.CapaCorpoBoyaca, false);
+          this.mostrarCapa(this.CapaJurisdicciones, false);
+      }
     }
   }
 

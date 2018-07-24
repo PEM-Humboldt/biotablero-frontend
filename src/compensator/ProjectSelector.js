@@ -16,7 +16,9 @@ class ProjectSelector extends React.Component {
       subExpanded: null,
       innerExpanded: null,
     };
-    this.props.panelLayer('Centro'); // Inicia con 'Geocercas' activa
+    this.props.panelLayer('Centro'); // Inicia activa
+    this.props.subPanelLayer('En Licenciamiento'); // Inicia activa
+    this.props.innerPanelLayer('Sogamoso');
   }
 
   handleChange = panel => (event, expanded) => {
@@ -79,8 +81,8 @@ class ProjectSelector extends React.Component {
               </ExpansionPanelSummary>
             </ExpansionPanel>
             <ExpansionPanel id='enLicenciamiento'
-              expanded= {subExpanded === 'EnLicenciamiento'}
-              onChange={this.subHandleChange('EnLicenciamiento')}>
+              expanded= {subExpanded === 'En Licenciamiento'}
+              onChange={this.subHandleChange('En Licenciamiento')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               En licenciamiento
               </ExpansionPanelSummary>
