@@ -17,6 +17,8 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 
+var dataJSON = require('./data/donde.json');
+
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -31,27 +33,37 @@ TabContainer.propTypes = {
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
 });
 
 class Drawer extends React.Component {
-  state = {
-    value: 0,
-  };
+  constructor(props){
+    super(props);
+    this.state = {
+        value: 0,
+        // data: null,
+      };
+  }
 
-  mostrarGraficos(param){
+  mostrarGraficos(param, data, labelY, graph){
     if(param===1) {
       return (
         <ParentSize>
           {
             parent => (
+              parent.width
+              &&
               <InfoGraph
               width={parent.width}
-              height={parent.height}/>
-              )
+              height={parent.height}
+              graphType={graph}
+              data={data}
+              labelY={labelY}
+              actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
+              />
+            )
           }
         </ParentSize>
       );
@@ -86,8 +98,8 @@ class Drawer extends React.Component {
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
         {value === 1 && <TabContainer>
-          {this.mostrarGraficos(1)}
           Tabla "Cómo" - <CarritoIcon />
+          {this.mostrarGraficos(1, dataJSON, 'F C', 'ScatterChart')}
         </TabContainer>}
       </div>
     );

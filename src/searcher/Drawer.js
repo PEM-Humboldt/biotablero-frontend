@@ -21,6 +21,7 @@ import { ParentSize } from "@vx/responsive";
 var biomas = require('./data/CORPOBOYACAByBiomaArea.json');
 var distritos = require('./data/CORPOBOYACAByDistritoArea.json');
 var fc = require('./data/CORPOBOYACAByFCArea.json');
+var uwa = require('./data/CORPOBOYACABySZH_Orobioma de Paramo Uwa.json');
 
 function TabContainer(props) {
   return (
@@ -39,6 +40,7 @@ const styles = theme => ({
     flexGrow: 1,
     width: '100%',
     backgroundColor: theme.palette.background.paper,
+    color: '#ffffff',
   },
 });
 
@@ -49,7 +51,7 @@ class Drawer extends React.Component {
     super(props);
     this.state = {
         value: 0,
-        data: null,
+        // data: null,
       };
       this.cargarDatosJSON = this.cargarDatosJSON.bind(this);
   }
@@ -94,8 +96,8 @@ class Drawer extends React.Component {
       //   console.log(this.state.data);
       // }
       // );
+            setInterval(this.inc, 1000);
 
-      setInterval(this.inc, 1000);
       // biomas.then((biomas2) => {console.log('biomas= '+ JSON.stringify(biomas2.data.aggregations.areas.buckets.map((element) => element.key)));})
   }
 
@@ -104,19 +106,28 @@ class Drawer extends React.Component {
   }
 
 
-  checkGraph(subArea, data, labelY, graph){
+  checkGraph(data, labelY, graph){
     // data.then((res)=>{console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)))});
-    if(subArea!==null && graph==='BarVertical') {
+    if(graph==='BarVertical') {
       return (
-        <InfoGraph
-          graphType={graph}
-          name={subArea}
-          data={data}
-          labelY={'labelY'}
-          actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
-        />
+        <ParentSize>
+          {
+            (parent) => (
+              parent.width
+              &&
+              <InfoGraph
+                width={parent.width}
+                height={parent.height}
+                graphType={graph}
+                data={data}
+                labelY={labelY}
+                actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
+              />
+            )
+          }
+        </ParentSize>
       );
-    } else if (subArea===null && graph!=='BarVertical') {
+    } else{
       return (
         <ParentSize>
           {
@@ -124,8 +135,8 @@ class Drawer extends React.Component {
               parent.width &&
               <InfoGraph
                 width={parent.width}
+                height={this.height}
                 graphType={graph}
-                name={subArea}
                 data={data}
                 labelY={labelY}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
@@ -145,9 +156,10 @@ class Drawer extends React.Component {
     const { classes } = this.props;
     const { value } = this.state;
 
-    return (
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
+    if (this.props.subArea === null){
+      return (
+        <div className={classes.root}>
+          <AppBar position="static" color="default">
           <Tabs
             value={value}
             onChange={this.handleChange}
@@ -160,21 +172,24 @@ class Drawer extends React.Component {
             <Tab className="tabs" label="Especies" icon={<Especies />} />
           </Tabs>
         </AppBar>
-        { value === 0 && <TabContainer>
-          {
-            this.checkGraph(this.props.subArea,
-            biomas,
-           'biomas', 'BarStackHorizontal')}
-          {this.checkGraph(this.props.subArea, distritos, 'distritos', 'BarStackHorizontal')}
-          {this.checkGraph(this.props.subArea, fc, 'F C', 'BarStackHorizontal')}
-          {this.checkGraph(this.props.subArea, fc, 'F C', 'BarVertical')}
+        {value === 0 && <TabContainer >
+          {this.checkGraph(biomas,'biomas', 'BarStackHorizontal')}
+          {this.checkGraph(distritos, 'distritos', 'BarStackHorizontal')}
+          {this.checkGraph(fc, 'F C', 'BarStackHorizontal')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
-        {value === 1 && <TabContainer>Gráfico</TabContainer>}
-        {value === 2 && <TabContainer>Gráfico</TabContainer>}
+          {value === 1 && <TabContainer>Gráfico</TabContainer>}
+          {value === 2 && <TabContainer>Gráfico</TabContainer>}
+          </div>
+        );
+      } else {
+        return (
+          <div className={classes.root}>
+            {this.checkGraph(uwa, 'Subzona Hidrográfica', 'BarVertical')}
       </div>
-    );
+      );
+    }
   }
 }
 

@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { ScatterplotChart, ToolTip } from 'react-easy-chart';
+// import { ScatterplotChart} from 'react-easy-chart';
+// import { withTooltip, Tooltip } from '@vx/tooltip';
 
 export default class ScatterplotContainer extends PureComponent {
   constructor(props) {
@@ -12,6 +14,7 @@ export default class ScatterplotContainer extends PureComponent {
     this.toggleState = this.toggleState.bind(this);
     this.turnOffRandomData = this.turnOffRandomData.bind(this);
     this.turnOnRandomData = this.turnOnRandomData.bind(this);
+    this.prepareData = this.prepareData.bind(this);
 
     this.state = {
       dataDisplay: '',
@@ -20,7 +23,9 @@ export default class ScatterplotContainer extends PureComponent {
       windowWidth: 400,
       componentWidth: 500,
     };
-    this.data = this.generateData();
+    console.log("this.props.dataJSON: "+this.props.dataJSON);
+    this.data = this.prepareData(this.props.dataJSON);
+    // this.data = this.generateData();
   }
 
   componentDidMount() {
@@ -36,19 +41,38 @@ export default class ScatterplotContainer extends PureComponent {
     return Math.random() * (max - min) + min;
   }
 
-generateData() {
-    const data = [];
-    const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-
-    keys.forEach((key) => {
-      data.push({
-        type: key,
-        x: this.getRandomArbitrary(1, 1000),
-        y: this.getRandomArbitrary(1, 1000)
-      });
-    });
-    return data;
+  prepareData = (data) => {
+     const transformedData = [];
+       data.forEach(item => {
+         console.log('item.area_afectada: '+item.area)
+         console.log('item.fc: '+item.fc)
+         transformedData.push(
+           {
+             type:`${item.nombre}`,
+             x: `${item.fc}`,
+             y: `${item.fc}`
+            });
+       })
+       return transformedData;
   }
+
+  // Se preparan los datos para el gráfico
+  // const data = prepareData(props.dataJSON, props.area);
+  // keys = Object.keys(this.data[0]);
+
+// generateData() {
+//     const data = [];
+//     const keys = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+//
+//     keys.forEach((key) => {
+//       data.push({
+//         type: key,
+//         x: this.getRandomArbitrary(1, 1000),
+//         y: this.getRandomArbitrary(1, 1000)
+//       });
+//     });
+//     return data;
+//   }
 
   handleResize() {
     this.setState({
@@ -101,14 +125,32 @@ generateData() {
     });
   }
 
+  // createTooltip() {
+  //   if (this.state.showToolTip) {
+  //     return (
+  //       <ToolTip
+  //         top={this.state.top}
+  //         left={this.state.left}
+  //       >
+  //           The x value is {this.state.x} and the y value is {this.state.y}
+  //       </ToolTip>
+  //     );
+  //   }
+  //   return false;
+  // }
   createTooltip() {
     if (this.state.showToolTip) {
       return (
+        console.log("ToolTip"),
         <ToolTip
-          top={this.state.top}
-          left={this.state.left}
+          // top={this.state.top}
+          top={this.props.height}
+          // left={this.state.left}
+          left={this.props.width}
         >
-            The x value is {this.state.x} and the y value is {this.state.y}
+          <div>The x value is {this.state.x}</div>
+          <div>the y value is {this.state.y}</div>
+
         </ToolTip>
       );
     }
@@ -125,6 +167,9 @@ generateData() {
         margin={{ top: 10, right: 10, bottom: 30, left: 60 }}
         width={this.state.componentWidth}
         height={this.state.componentWidth / 2}
+        onMouseMove={data => event => {
+          this.createTooltip();
+        }}
       />
     );
   }

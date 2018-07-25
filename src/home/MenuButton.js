@@ -7,7 +7,9 @@ class MenuButton extends React.Component{
     return(
     <Link to={this.props.localLink}> {/* Props obligatorio */}
       <button className={this.props.styles}
-        onClick={() => console.log("Prueba")}>
+        onClick={() =>
+          // TODO: Pasar el nombre del módulo como subtítulo
+          console.log("Prueba")}>
         {this.props.value} <b>{this.props.valueB}</b>
       </button>
     </Link>

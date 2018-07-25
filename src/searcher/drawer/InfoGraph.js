@@ -23,11 +23,15 @@ class InfoGraph extends React.Component {
       // console.log('Parent.width: '+ this.props.width);
       if (this.props.graphType==='BarVertical') {
         return (
-        <BarGraph dataJSON={this.state.data}
+        <BarGraph
+          dataJSON={this.state.data}
+          area={this.props.labelY}
           width={this.props.width}
+          height={this.props.height}
         />
       )
-      } else if (this.props.graphType==='BarStackHorizontal'){
+      } else
+      if (this.props.graphType==='BarStackHorizontal'){
         // TODO: Usar this.props.name en el gráfico
         return <BarStackHorizontal
           dataJSON={this.state.data}
@@ -37,7 +41,7 @@ class InfoGraph extends React.Component {
           labelY={this.props.labelY}
           // width='500'
           width={this.props.width}
-          height='200'
+          height="180"
           actualizarBiomaActivo= {this.props.actualizarBiomaActivo}/>
         }
     }

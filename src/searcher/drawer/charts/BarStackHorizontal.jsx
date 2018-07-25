@@ -16,7 +16,7 @@ export default withTooltip(
       top: 40,
       left: 70,
       right: 40,
-      bottom: 100,
+      bottom: 20,
     },
     tooltipOpen,
     tooltipLeft,
@@ -33,7 +33,7 @@ export default withTooltip(
     //   return props.actualizarBiomaActivo(key);
     // }
 
-    const prepareDara = (data, setName) => {
+    const prepareData = (data, setName) => {
        const transformedData = {
          key: setName,
        }
@@ -57,7 +57,7 @@ export default withTooltip(
       });
     }
 
-    let data = [prepareDara(dataJSON.data, labelY)].slice(0);
+    let data = [prepareData(dataJSON.data, labelY)].slice(0);
     let keys = Object.keys(data[0]);
     keys = sortByKey(keys, keys);
     // console.log("DataDist1: "+ JSON.stringify(keys));
@@ -93,14 +93,6 @@ export default withTooltip(
     return (
       <div style={{ position: 'relative' }}>
         <svg width={width} height={height}>
-          <rect
-            x={"5"}
-            y={0}
-            width={width}
-            height={height}
-            fill="#eaedff"
-            rx={14}
-          />
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
               data={data}
@@ -122,6 +114,7 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={data => event => {
+                console.log('Data: '+JSON.stringify(data));
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 showTooltip({
                   tooltipData: data,
@@ -156,17 +149,6 @@ export default withTooltip(
             />
           </Group>
         </svg>
-        <div
-          style={{
-            position: 'absolute',
-            top: margin.top / 2 - 10,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            fontSize: '14px',
-          }}
-        >
-        </div>
         {tooltipOpen && (
           <Tooltip
             top={tooltipTop}

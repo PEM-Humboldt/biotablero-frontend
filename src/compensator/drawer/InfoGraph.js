@@ -1,12 +1,17 @@
 import React from 'react';
 import ScatterChart from './ScatterChart';
+import './infoGraph.css';
 
 class InfoGraph extends React.Component {
   render(){
     return(
       <div>
         <ScatterChart
-          width={this.props.width}/>
+          dataJSON={this.props.data}
+          area={this.props.labelY}
+          width={this.props.width}
+          height={this.props.height}
+        />
       </div>
   );
   }
