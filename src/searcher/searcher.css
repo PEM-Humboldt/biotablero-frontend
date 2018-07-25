@@ -64,6 +64,12 @@ h1, h2, h3, h4 {
   font-weight: 400;
 }
 
+.informer h1 b {
+  text-transform: none;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
 .iconsection {
   background-image: url(../common/img/geografico.png);
   -webkit-background-size: contain;
@@ -78,7 +84,7 @@ h1, h2, h3, h4 {
     font-size: 15px;
     color: #2a363b;
     padding: 0 25px;
-    max-width: 71%;
+    max-width: 75%;
     margin-top: 12px;
 }
 
@@ -202,6 +208,7 @@ div[class*="MuiExpansionPanelSummary-expanded-"] {
 
 .inlineb {
   display: inline-block !important;
+  margin: 10px 20px;
 }
 
 div[id*="panel"] button {
@@ -262,4 +269,22 @@ header[class*="MuiPaper-elevation4"] {
   box-shadow: none !important;
   height: auto;
   padding: 0;
+}
+
+div[class*="Drawer-root-"]{
+  background-color: transparent;
+}
+
+div[class*="MuiTypography-body1"]{
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background-color: #fff;
+}
+
+.graphcard h2 {
+  border-bottom: 1px solid #e84a5f;
+  padding-bottom: 10px;
+  display: block;
+  text-align: left;
 }

@@ -121,10 +121,10 @@ nav a:hover {
   width: 33px;
   height: 4px;
   margin-bottom: 5px;
-  position: relative;
-  background: #c3c3c3;
+  position: relative; 
+  background: #335b6b;
   border-radius: 3px;
-  z-index: 1;
+  z-index: 1;  
   transform-origin: 4px 0px;
   transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
               background 0.5s cubic-bezier(0.77,0.2,0.05,1.0),
@@ -156,7 +156,7 @@ nav a:hover {
 
 #menu {
   position: absolute;
-  width: 220px;
+  width: 230px;
   margin: -100px 0 0 -50px;
   padding: 112px 30px 30px 55px;
   background: #ededed;
@@ -165,6 +165,9 @@ nav a:hover {
   transform-origin: 0% 0%;
   transform: translate(-100%, 0);
   transition: transform 0.5s cubic-bezier(0.77,0.2,0.05,1.0);
+  background: #fff;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
 }
 
 #menu li {
@@ -212,7 +215,7 @@ header h3 {
 .userBox {
 	display: inline-block;
     position: relative;
-	padding: 4px 5px 0;
+	padding: 4px 10px 0;
 	resize: both;
 	color: #c3c3c3;
 	cursor: pointer;

@@ -19,7 +19,7 @@ class Menu extends React.Component {
         </ul>
       </div>
     );
-  }s
+  }
 }
 
 export default Menu;
