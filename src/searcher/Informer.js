@@ -3,18 +3,18 @@ import Drawer from './Drawer';
 import BackIcon from '@material-ui/icons/FirstPage';
 
 class Informer extends React.Component {
-  constructor(props){
-    super(props);
-  }
-
   render() {
     return (
       <div className="informer">
       {/* TODO: Cambiar el zoom en el mapa para ver todo el país*/}
-      <button className="geobtn" onClick={() => this.props.verMenu("Selector")} ><BackIcon />
+      <button className="geobtn"
+        onClick={() => this.props.verMenu("Selector")}>
+        <BackIcon />
       </button>
-          <h1> {this.props.geocerca} / {this.props.nombre}</h1>
-          <Drawer />
+          <h1> {this.props.geocerca} / {this.props.nombre} <br></br> <b>{this.props.subArea}</b></h1>
+          <Drawer
+            subArea={this.props.subArea}
+            actualizarBiomaActivo={this.props.actualizarBiomaActivo}/>
       </div>
     );
   }

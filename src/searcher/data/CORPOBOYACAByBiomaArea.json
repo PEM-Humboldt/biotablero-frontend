@@ -1,0 +1,324 @@
+{
+	"data": {
+		"took": 15,
+		"timed_out": false,
+		"_shards": {
+			"total": 16,
+			"successful": 16,
+			"skipped": 0,
+			"failed": 0
+		},
+		"hits": {
+			"total": 1415,
+			"max_score": 0,
+			"hits": []
+		},
+		"aggregations": {
+			"total_area": {
+				"value": 1611034.0934433704
+			},
+			"areas": {
+				"doc_count_error_upper_bound": 0,
+				"sum_other_doc_count": 0,
+				"buckets": [{
+					"key": "Helobioma Altoandino cordillera oriental",
+					"doc_count": 11,
+					"area": {
+						"value": 5077.0524842717
+					}
+				}, {
+					"key": "Helobioma Altoandino influencia llanera",
+					"doc_count": 1,
+					"area": {
+						"value": 356.18133363
+					}
+				}, {
+					"key": "Helobioma Guane-Yariguíes",
+					"doc_count": 2,
+					"area": {
+						"value": 5.68243891954
+					}
+				}, {
+					"key": "Helobioma Magdalena medio y depresión momposina",
+					"doc_count": 22,
+					"area": {
+						"value": 14204.13964179026
+					}
+				}, {
+					"key": "Helobioma Nechí-San Lucas",
+					"doc_count": 18,
+					"area": {
+						"value": 3004.92516139264
+					}
+				}, {
+					"key": "Helobioma Uwa",
+					"doc_count": 10,
+					"area": {
+						"value": 1754.0328601683
+					}
+				}, {
+					"key": "Hidrobioma Altoandino cordillera oriental",
+					"doc_count": 23,
+					"area": {
+						"value": 1796.9241334823698
+					}
+				}, {
+					"key": "Hidrobioma Altoandino influencia llanera",
+					"doc_count": 9,
+					"area": {
+						"value": 883.32959939388
+					}
+				}, {
+					"key": "Hidrobioma Cordillera oriental Magdalena medio",
+					"doc_count": 14,
+					"area": {
+						"value": 1184.72094402124
+					}
+				}, {
+					"key": "Hidrobioma Guane-Yariguíes",
+					"doc_count": 33,
+					"area": {
+						"value": 1817.7209212038001
+					}
+				}, {
+					"key": "Hidrobioma Magdalena medio y depresión momposina",
+					"doc_count": 33,
+					"area": {
+						"value": 3595.5629422615493
+					}
+				}, {
+					"key": "Hidrobioma Nechí-San Lucas",
+					"doc_count": 26,
+					"area": {
+						"value": 3206.6852419510897
+					}
+				}, {
+					"key": "Hidrobioma Piedemonte Orinoquia",
+					"doc_count": 11,
+					"area": {
+						"value": 588.6208434374
+					}
+				}, {
+					"key": "Hidrobioma Uwa",
+					"doc_count": 17,
+					"area": {
+						"value": 6615.07643670634
+					}
+				}, {
+					"key": "Hidrobioma Vertiente llanera cordillera oriental",
+					"doc_count": 13,
+					"area": {
+						"value": 418.91007323362
+					}
+				}, {
+					"key": "Orobioma Andino Altoandino cordillera oriental",
+					"doc_count": 164,
+					"area": {
+						"value": 106118.02820101003
+					}
+				}, {
+					"key": "Orobioma Andino Altoandino influencia llanera",
+					"doc_count": 41,
+					"area": {
+						"value": 79503.67015065803
+					}
+				}, {
+					"key": "Orobioma Andino Cordillera oriental Magdalena medio",
+					"doc_count": 13,
+					"area": {
+						"value": 2751.41517294797
+					}
+				}, {
+					"key": "Orobioma Andino Guane-Yariguíes",
+					"doc_count": 36,
+					"area": {
+						"value": 73483.4793564103
+					}
+				}, {
+					"key": "Orobioma Andino Piedemonte Orinoquia",
+					"doc_count": 16,
+					"area": {
+						"value": 6033.2254533807
+					}
+				}, {
+					"key": "Orobioma Andino Tamá",
+					"doc_count": 2,
+					"area": {
+						"value": 15.456797789489999
+					}
+				}, {
+					"key": "Orobioma Andino Uwa",
+					"doc_count": 123,
+					"area": {
+						"value": 57713.298758708326
+					}
+				}, {
+					"key": "Orobioma Andino Vertiente llanera cordillera oriental",
+					"doc_count": 32,
+					"area": {
+						"value": 43848.56341783319
+					}
+				}, {
+					"key": "Orobioma Azonal Andino Altoandino cordillera oriental",
+					"doc_count": 82,
+					"area": {
+						"value": 241768.56783221365
+					}
+				}, {
+					"key": "Orobioma Azonal Andino Guane-Yariguíes",
+					"doc_count": 41,
+					"area": {
+						"value": 12858.86789944045
+					}
+				}, {
+					"key": "Orobioma Azonal Andino Uwa",
+					"doc_count": 32,
+					"area": {
+						"value": 29821.041900352102
+					}
+				}, {
+					"key": "Orobioma Azonal Subandino Altoandino cordillera oriental",
+					"doc_count": 17,
+					"area": {
+						"value": 2882.07167972578
+					}
+				}, {
+					"key": "Orobioma Azonal Subandino Cordillera oriental Magdalena medio",
+					"doc_count": 3,
+					"area": {
+						"value": 2259.68163125439
+					}
+				}, {
+					"key": "Orobioma Azonal Subandino Guane-Yariguíes",
+					"doc_count": 21,
+					"area": {
+						"value": 23391.720330057768
+					}
+				}, {
+					"key": "Orobioma Subandino Altoandino cordillera oriental",
+					"doc_count": 10,
+					"area": {
+						"value": 7468.2179451048705
+					}
+				}, {
+					"key": "Orobioma Subandino Altoandino influencia llanera",
+					"doc_count": 28,
+					"area": {
+						"value": 3976.2654116739604
+					}
+				}, {
+					"key": "Orobioma Subandino Cordillera oriental Magdalena medio",
+					"doc_count": 34,
+					"area": {
+						"value": 97879.4180944772
+					}
+				}, {
+					"key": "Orobioma Subandino Guane-Yariguíes",
+					"doc_count": 18,
+					"area": {
+						"value": 36976.03363804035
+					}
+				}, {
+					"key": "Orobioma Subandino Nechí-San Lucas",
+					"doc_count": 34,
+					"area": {
+						"value": 7284.98721959956
+					}
+				}, {
+					"key": "Orobioma Subandino Piedemonte Orinoquia",
+					"doc_count": 13,
+					"area": {
+						"value": 26532.180402298512
+					}
+				}, {
+					"key": "Orobioma Subandino Uwa",
+					"doc_count": 4,
+					"area": {
+						"value": 818.2486772983699
+					}
+				}, {
+					"key": "Orobioma Subandino Vertiente llanera cordillera oriental",
+					"doc_count": 29,
+					"area": {
+						"value": 26975.35809917551
+					}
+				}, {
+					"key": "Orobioma de Paramo Altoandino cordillera oriental",
+					"doc_count": 129,
+					"area": {
+						"value": 107184.93601248572
+					}
+				}, {
+					"key": "Orobioma de Paramo Altoandino influencia llanera",
+					"doc_count": 50,
+					"area": {
+						"value": 13119.332621413869
+					}
+				}, {
+					"key": "Orobioma de Paramo Guane-Yariguíes",
+					"doc_count": 14,
+					"area": {
+						"value": 1674.65609422322
+					}
+				}, {
+					"key": "Orobioma de Paramo Uwa",
+					"doc_count": 99,
+					"area": {
+						"value": 388110.1328594511
+					}
+				}, {
+					"key": "Orobioma de Paramo Vertiente llanera cordillera oriental",
+					"doc_count": 7,
+					"area": {
+						"value": 715.40225132329
+					}
+				}, {
+					"key": "Zonobioma Humedo Tropical Cordillera oriental Magdalena medio",
+					"doc_count": 36,
+					"area": {
+						"value": 36625.22140116238
+					}
+				}, {
+					"key": "Zonobioma Humedo Tropical Magdalena medio y depresión momposina",
+					"doc_count": 17,
+					"area": {
+						"value": 20402.24818566905
+					}
+				}, {
+					"key": "Zonobioma Humedo Tropical Nechí-San Lucas",
+					"doc_count": 10,
+					"area": {
+						"value": 107907.78903275196
+					}
+				}, {
+					"key": "Zonobioma Humedo Tropical Piedemonte Orinoquia",
+					"doc_count": 7,
+					"area": {
+						"value": 425.01185957574
+					}
+				}]
+			}
+		}
+	},
+	"status": 200,
+	"statusText": "OK",
+	"headers": {
+		"content-type": "application/json; charset=UTF-8"
+	},
+	"config": {
+		"transformRequest": {},
+		"transformResponse": {},
+		"timeout": 0,
+		"xsrfCookieName": "XSRF-TOKEN",
+		"xsrfHeaderName": "X-XSRF-TOKEN",
+		"maxContentLength": -1,
+		"headers": {
+			"Accept": "application/json, text/plain, */*",
+			"Content-Type": "application/json;charset=utf-8"
+		},
+		"method": "post",
+		"url": "http://192.168.205.190:9200/_search/template",
+		"data": "{\"id\":\"carByBiomaArea\",\"params\":{\"id_car\":\"CORPOBOYACA\"}}"
+	},
+	"request": {}
+}

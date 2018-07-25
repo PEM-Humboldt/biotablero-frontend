@@ -4,6 +4,7 @@ import Footersm from './common/Footersm';
 import ShortInfo from './ShortInfo';
 import Description from './home/Description';
 import Searcher from './Searcher';
+import Compensator from './Compensator';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 // Parte 2 de 3 del enrutador: Definir las rutas y componentes a enrutar
@@ -18,6 +19,7 @@ const Main = () => (
       {() => window.location.href = 'http://192.168.205.198:3000/index.html'}
       /> */}
       <Route path='/Consultas' component={Searcher}/>
+      <Route path='/Compensaciones' component={Compensator}/>
       <Redirect from="/" to="/Home"/>
     </Switch>
     <Footersm />

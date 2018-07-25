@@ -16,6 +16,7 @@ class Filter extends React.Component {
       menuActivo: "",
     });
     this.props.actualizarCapaActiva(null);
+    this.props.actualizarBiomaActivo(null);
   }
 
   mostrarMenu(){
@@ -42,6 +43,8 @@ class Filter extends React.Component {
     return <Informer verMenu={this.cambiarMenu}
       geocerca={this.props.geocerca}
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
+      subArea={this.props.subArea}
+      actualizarBiomaActivo={this.actualizarBiomaActivo}
       />
   }
 

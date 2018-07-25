@@ -74,7 +74,7 @@ class Selector extends React.Component {
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Zonas GEB
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails class="inlineb">
+                <ExpansionPanelDetails className="inlineb">
                   <button>Norte</button>
                   <button>Centro</button>
                   <button>Suroccidente</button>
@@ -85,8 +85,8 @@ class Selector extends React.Component {
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Áreas de manejo especial
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails class="inlineb">
-                  <button>ANP</button> 
+                <ExpansionPanelDetails className="inlineb">
+                  <button>ANP</button>
                   <button>Pedets</button>
                   <button>Bosques de Paz</button>
                   <button>Reservas campesinas</button>
@@ -240,7 +240,7 @@ class Selector extends React.Component {
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Ecosistemas estratégicos
                 </ExpansionPanelSummary>
-                <ExpansionPanelDetails class="inlineb">
+                <ExpansionPanelDetails className="inlineb">
                   <button>Bosques secos</button>
                   <button>Humedales</button>
                   <button>Páramos</button>

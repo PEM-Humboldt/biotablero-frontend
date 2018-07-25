@@ -1,0 +1,156 @@
+{
+	"data": {
+		"took": 9,
+		"timed_out": false,
+		"_shards": {
+			"total": 16,
+			"successful": 16,
+			"skipped": 0,
+			"failed": 0
+		},
+		"hits": {
+			"total": 1415,
+			"max_score": 0,
+			"hits": []
+		},
+		"aggregations": {
+			"total_area": {
+				"value": 1611034.0934433704
+			},
+			"areas": {
+				"doc_count_error_upper_bound": 0,
+				"sum_other_doc_count": 0,
+				"buckets": [{
+					"key": 4.25,
+					"doc_count": 47,
+					"area": {
+						"value": 3002.4418652250397
+					}
+				}, {
+					"key": 4.5,
+					"doc_count": 17,
+					"area": {
+						"value": 6615.07643670634
+					}
+				}, {
+					"key": 5,
+					"doc_count": 29,
+					"area": {
+						"value": 2017.64192395079
+					}
+				}, {
+					"key": 5.25,
+					"doc_count": 56,
+					"area": {
+						"value": 5392.48707574392
+					}
+				}, {
+					"key": 5.5,
+					"doc_count": 51,
+					"area": {
+						"value": 5469.96217961171
+					}
+				}, {
+					"key": 5.75,
+					"doc_count": 50,
+					"area": {
+						"value": 13119.332621413869
+					}
+				}, {
+					"key": 6,
+					"doc_count": 224,
+					"area": {
+						"value": 445838.8884159489
+					}
+				}, {
+					"key": 6.25,
+					"doc_count": 206,
+					"area": {
+						"value": 184042.08298287512
+					}
+				}, {
+					"key": 6.5,
+					"doc_count": 34,
+					"area": {
+						"value": 4800.196527891871
+					}
+				}, {
+					"key": 6.75,
+					"doc_count": 132,
+					"area": {
+						"value": 183663.85705672568
+					}
+				}, {
+					"key": 7,
+					"doc_count": 38,
+					"area": {
+						"value": 115866.91319674945
+					}
+				}, {
+					"key": 7.25,
+					"doc_count": 64,
+					"area": {
+						"value": 41384.17942272332
+					}
+				}, {
+					"key": 7.5,
+					"doc_count": 22,
+					"area": {
+						"value": 39591.89660292474
+					}
+				}, {
+					"key": 7.75,
+					"doc_count": 237,
+					"area": {
+						"value": 238603.83412294654
+					}
+				}, {
+					"key": 8,
+					"doc_count": 26,
+					"area": {
+						"value": 29283.59557524648
+					}
+				}, {
+					"key": 8.25,
+					"doc_count": 82,
+					"area": {
+						"value": 241768.56783221365
+					}
+				}, {
+					"key": 8.5,
+					"doc_count": 83,
+					"area": {
+						"value": 50148.12774489742
+					}
+				}, {
+					"key": 8.75,
+					"doc_count": 7,
+					"area": {
+						"value": 425.01185957574
+					}
+				}]
+			}
+		}
+	},
+	"status": 200,
+	"statusText": "OK",
+	"headers": {
+		"content-type": "application/json; charset=UTF-8"
+	},
+	"config": {
+		"transformRequest": {},
+		"transformResponse": {},
+		"timeout": 0,
+		"xsrfCookieName": "XSRF-TOKEN",
+		"xsrfHeaderName": "X-XSRF-TOKEN",
+		"maxContentLength": -1,
+		"headers": {
+			"Accept": "application/json, text/plain, */*",
+			"Content-Type": "application/json;charset=utf-8"
+		},
+		"method": "post",
+		"url": "http://192.168.205.190:9200/_search/template",
+		"data": "{\"id\":\"carByFCArea\",\"params\":{\"id_car\":\"CORPOBOYACA\"}}"
+	},
+	"request": {}
+}

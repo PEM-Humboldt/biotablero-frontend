@@ -208,7 +208,7 @@ div[class*="MuiExpansionPanelSummary-expanded-"] {
 
 .inlineb {
   display: inline-block !important;
-  margin: 10px 20px;
+	margin: 10px 20px;
 }
 
 div[id*="panel"] button {
@@ -275,16 +275,43 @@ div[class*="Drawer-root-"]{
   background-color: transparent;
 }
 
-div[class*="MuiTypography-body1"]{
-  margin: 10px;
+div[class*="MuiTypography-body1"] {
+  margin: 0;
+  padding: 15px !important;
+}
+
+.invisible {
+  color:red !important;
+}
+
+.graphcard {
+  margin: 10px 0;
   border-radius: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   background-color: #fff;
+  position: relative;
 }
 
 .graphcard h2 {
   border-bottom: 1px solid #e84a5f;
-  padding-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
   display: block;
-  text-align: left;
+  text-align: right;
+  color: #fff;
+  font-weight: 400;
+  background-color: #2a363b;
+}
+
+.leaflet-popup-tip {
+  background-color: rgba(0,0,0,0.9);
+}
+.leaflet-popup-content-wrapper {
+  background-color: rgba(0,0,0,0.9);
+  color: #fff;
+  padding: 12;
+  line-height: 1.5;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
 }
