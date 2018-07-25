@@ -4,8 +4,20 @@ import { ScatterplotChart, ToolTip } from 'react-easy-chart';
 // import { withTooltip, Tooltip } from '@vx/tooltip';
 
 export default class ScatterplotContainer extends PureComponent {
-  constructor(props) {
-    super(props);
+  constructor({tooltipOpen,
+  tooltipLeft,
+  tooltipTop,
+  tooltipData,
+  hideTooltip,
+  showTooltip,
+  ...props}) {
+    super({tooltipOpen,
+    tooltipLeft,
+    tooltipTop,
+    tooltipData,
+    hideTooltip,
+    showTooltip,
+    ...props});
 
     this.mouseOverHandler = this.mouseOverHandler.bind(this);
     this.mouseOutHandler = this.mouseOutHandler.bind(this);
@@ -92,8 +104,10 @@ export default class ScatterplotContainer extends PureComponent {
   }
 
   mouseMoveHandler(e) {
+
+      console.log("ToolTip");
     if (this.state.showToolTip) {
-      this.setState({ top: `${e.y - 10}px`, left: `${e.x + 10}px` });
+      this.setState({ top: `${e.y + 10}px`, left: `${e.x + 10}px` });
     }
   }
 
@@ -141,7 +155,6 @@ export default class ScatterplotContainer extends PureComponent {
   createTooltip() {
     if (this.state.showToolTip) {
       return (
-        console.log("ToolTip"),
         <ToolTip
           // top={this.state.top}
           top={this.props.height}
@@ -167,9 +180,7 @@ export default class ScatterplotContainer extends PureComponent {
         margin={{ top: 10, right: 10, bottom: 30, left: 60 }}
         width={this.state.componentWidth}
         height={this.state.componentWidth / 2}
-        onMouseMove={data => event => {
-          this.createTooltip();
-        }}
+        // onMouseMove={this.createTooltip()}
       />
     );
   }

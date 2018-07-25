@@ -53,7 +53,7 @@ class Drawer extends React.Component {
         <ParentSize>
           {
             parent => (
-              parent.width
+              parent.width && parent.height
               &&
               <InfoGraph
               width={parent.width}
