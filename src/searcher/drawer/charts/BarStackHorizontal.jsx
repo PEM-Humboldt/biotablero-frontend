@@ -29,6 +29,7 @@ export default withTooltip(
     if (width < 10) return null;
     // accessors
     const y = d => 1;
+    const x = d => Number(d.value);
 
     // const actualizarSubArea = (key) => {
     //   return props.actualizarBiomaActivo(key);
@@ -62,6 +63,7 @@ export default withTooltip(
     let keys = Object.keys(data[0]);
     keys = sortByKey(keys, keys);
     // console.log("DataDist1: "+ JSON.stringify(keys));
+
     let totals =  dataJSON.data.aggregations.total_area.value;
 
     // console.log("DataTotal: "+ dataJSON.data.aggregations.total_area.value);
@@ -70,12 +72,15 @@ export default withTooltip(
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
 
+
+    console.log('Totals: '+totals);
+    console.log('xMax: '+xMax);
+
     // // scales
     const xScale = scaleLinear({
       rangeRound: [0, xMax],
       domain: [0, totals], // TODO: Cambiar "0" por funcion min de d3-array
       nice: true,
-      clamp: false,
     });
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
@@ -126,6 +131,7 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={data => event => {
+                console.log('X: '+x);
                 console.log('Data: '+JSON.stringify(data));
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 showTooltip({
