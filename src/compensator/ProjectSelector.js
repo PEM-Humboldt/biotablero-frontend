@@ -18,7 +18,7 @@ class ProjectSelector extends React.Component {
     };
     this.props.panelLayer('Centro'); // Inicia activa
     this.props.subPanelLayer('En Licenciamiento'); // Inicia activa
-    this.props.innerPanelLayer('Sogamoso');
+    // this.props.innerPanelLayer('Sogamoso');
   }
 
   handleChange = panel => (event, expanded) => {
@@ -53,7 +53,7 @@ class ProjectSelector extends React.Component {
       // TODO: Crear un arreglo dinámico del tipo de componente a agregar,
       // URL, contenido del texto y jerarquía para mostrar en el menú de la página
       <div className="selector">
-        <div className="iconsection"></div>
+        <div className="iconsec2"></div>
         <h1>Compensaciones</h1>
         <p>En esta sección podrás encontrar información por <b>zonas</b> de los proyectos:</p>
         <p><i>1</i> Licenciados </p>
@@ -72,7 +72,7 @@ class ProjectSelector extends React.Component {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           Centro
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails id="proyectos">
+          <ExpansionPanelDetails className="acordeon" id="proyectos">
             <ExpansionPanel id='licenciados'
               expanded= {subExpanded === 'Licenciados'}
               onChange={this.subHandleChange('Licenciados')}>

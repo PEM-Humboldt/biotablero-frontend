@@ -181,8 +181,18 @@ class Drawer extends React.Component {
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
-          {value === 1 && <TabContainer>Gráfico</TabContainer>}
-          {value === 2 && <TabContainer>Gráfico</TabContainer>}
+          {value === 1 && <TabContainer>
+                            <div className="graphcard">
+                              <h2>Gráficas en construcción</h2>
+                              <p>Pronto más información</p>
+                            </div>
+                          </TabContainer>}
+          {value === 2 && <TabContainer>
+                            <div className="graphcard">
+                              <h2>Gráficas en construcción</h2>
+                              <p>Pronto más información</p>
+                            </div>
+                          </TabContainer>}
           </div>
         );
       } else {

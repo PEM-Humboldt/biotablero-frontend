@@ -11,6 +11,7 @@ class Informer extends React.Component {
         onClick={() => this.props.verMenu("Selector")}>
         <BackIcon />
       </button>
+          <div className="iconsection mt2"></div>
           <h1> {this.props.geocerca} / {this.props.nombre} <br></br> <b>{this.props.subArea}</b></h1>
           <Drawer
             subArea={this.props.subArea}

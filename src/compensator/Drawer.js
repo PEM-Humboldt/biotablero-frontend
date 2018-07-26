@@ -10,9 +10,9 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import QueIcon from '@material-ui/icons/AddLocation';
-import DondeIcon from '@material-ui/icons/Place';
-import CarritoIcon from '@material-ui/icons/AddShoppingCart';
+import QueIcon from '@material-ui/icons/LiveHelp';
+import DondeIcon from '@material-ui/icons/Beenhere';
+import CarritoIcon from '@material-ui/icons/AddLocation';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
@@ -88,8 +88,8 @@ class Drawer extends React.Component {
             textColor="primary"
             centered
           >
-            <Tab className="tabs" label="¿Qué y cuánto?" icon={<QueIcon />} />
-            <Tab className="tabs" label="¿Dónde y cómo?" icon={<DondeIcon />} />
+            <Tab className="tabs tabs2" label="Qué · Cuánto" icon={<QueIcon />} />
+            <Tab className="tabs tabs2" label="Dónde · Cómo" icon={<DondeIcon />} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
