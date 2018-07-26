@@ -81,7 +81,6 @@ export default withTooltip(
     const xScale = scaleLinear({
       rangeRound: [0, xMax],
       domain: [0, totals], // TODO: Cambiar "0" por funcion min de d3-array
-      nice: true,
     });
     const yScale = scaleBand({
       rangeRound: [yMax, 0],

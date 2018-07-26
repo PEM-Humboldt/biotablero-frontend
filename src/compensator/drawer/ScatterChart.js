@@ -97,11 +97,14 @@ export default class ScatterplotContainer extends PureComponent {
   mouseOverHandler(d, e) {
     this.setState({
       showToolTip: true,
-      top: `${e.screenY + 10 }px`,
-      left: `${e.screenX + 10}px`,
+      top: `${e.clientY}px`,
+      left: `${e.clientX}px`,
       y: d.y,
       x: d.x });
-      console.log("The x value is "+Number(this.state.x).toFixed(2));
+      console.log("e.screenY "
+      +e.screenY);
+      console.log("e.clientY "
+      +e.clientY);
   }
 
   mouseMoveHandler(e) {
@@ -170,6 +173,7 @@ export default class ScatterplotContainer extends PureComponent {
   }
 
   render() {
+    this.createTooltip()
     return (
       <ScatterplotChart
         data={this.data}
