@@ -265,7 +265,7 @@ class MapViewer extends React.Component {
     />
     <WMSTileLayer
      layers='Biotablero:Regiones_geb'
-     url={"http://192.168.205.192:8080/geoserver/Biotablero/wms?service=WMS"}
+     url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS"}
      opacity={0.2} alt={"Regiones"}/>
   </Map>
 );}

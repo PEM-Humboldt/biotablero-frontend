@@ -35,8 +35,8 @@ export default class ScatterplotContainer extends PureComponent {
       windowWidth: 400,
       componentWidth: 500,
     };
-    console.log("this.props.dataJSON: "+this.props.dataJSON);
-    this.data = this.prepareData(this.props.dataJSON);
+    // console.log("this.props.dataJSON: "+JSON.stringify(this.props.dataJSON));
+    this.data = this.prepareData(this.props.dataJSON.hits.hits);
     // this.data = this.generateData();
   }
 
@@ -56,13 +56,13 @@ export default class ScatterplotContainer extends PureComponent {
   prepareData = (data) => {
      const transformedData = [];
        data.forEach(item => {
-         console.log('item.area_afectada: '+item.area)
-         console.log('item.fc: '+item.fc)
+         // console.log('item.porcentajeAfectacion: '+JSON.stringify(item))
+         // console.log('item.fc: '+item._source.FACT_COMP)
          transformedData.push(
            {
-             type:`${item.nombre}`,
-             x: `${item.fc}`,
-             y: `${item.fc}`
+             type:`${item._source.BIOMA_IAVH}`,
+             x: `${item._source.PORCENT_AFECTACION}`,
+             y: `${item._source.FACT_COMP}`
             });
        })
        return transformedData;
@@ -97,15 +97,14 @@ export default class ScatterplotContainer extends PureComponent {
   mouseOverHandler(d, e) {
     this.setState({
       showToolTip: true,
-      top: `${e.screenY - 10}px`,
+      top: `${e.screenY + 10 }px`,
       left: `${e.screenX + 10}px`,
       y: d.y,
       x: d.x });
+      console.log("The x value is "+Number(this.state.x).toFixed(2));
   }
 
   mouseMoveHandler(e) {
-
-      console.log("ToolTip");
     if (this.state.showToolTip) {
       this.setState({ top: `${e.y + 10}px`, left: `${e.x + 10}px` });
     }
@@ -181,6 +180,9 @@ export default class ScatterplotContainer extends PureComponent {
         width={this.state.componentWidth}
         height={this.state.componentWidth / 2}
         // onMouseMove={this.createTooltip()}
+        mouseOverHandler={this.mouseOverHandler}
+        mouseOutHandler={this.mouseOutHandler}
+        mouseMoveHandler={this.mouseMoveHandler}
       />
     );
   }

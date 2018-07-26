@@ -143,7 +143,7 @@ export default withTooltip((
             {tooltipData.name}
           </strong>
         </div>
-        <div>{tooltipData.area_V} Ha</div>
+        <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
       </Tooltip>
     )}
         </div>

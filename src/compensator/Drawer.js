@@ -17,7 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 
-var dataJSON = require('./data/donde.json');
+var dataJSON = require('./data/dondeCompensar.json');
 
 function TabContainer(props) {
   return (
