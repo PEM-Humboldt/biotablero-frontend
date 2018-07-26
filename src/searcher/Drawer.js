@@ -109,7 +109,7 @@ class Drawer extends React.Component {
     // data.then((res)=>{console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)))});
     if(graph==='BarVertical') {
       return (
-        <ParentSize className="">
+        <ParentSize>
           {
             (parent) => (
               parent.width
@@ -176,7 +176,7 @@ class Drawer extends React.Component {
         {value === 0 && <TabContainer>
           {this.checkGraph(fc, 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
           {this.checkGraph(biomas,'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
-          {this.checkGraph(distritos, 'Distritos', 'BarStackHorizontal', 'Distritos')}
+          {this.checkGraph(distritos, 'distritos', 'BarStackHorizontal', 'Distritos')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}

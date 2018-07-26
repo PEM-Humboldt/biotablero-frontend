@@ -280,10 +280,6 @@ div[class*="MuiTypography-body1"] {
   padding: 15px !important;
 }
 
-.invisible {
-  color:red !important;
-}
-
 .graphcard {
   margin: 10px 0;
   border-radius: 5px;

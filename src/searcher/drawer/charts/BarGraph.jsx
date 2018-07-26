@@ -53,7 +53,7 @@ export default withTooltip((
   });
   const zScale = scaleOrdinal({
     domain: keys,
-    range: ['#6c5efb'],
+    range: ['#ea495f'],
   });
 
   // Junta las escalas y el accesor para construir cada punto
@@ -77,7 +77,7 @@ export default withTooltip((
               y={yMax - barHeight}
               height={barHeight}
               width={xScale.bandwidth()}
-              fill='#fc2e1c'
+              fill='#4a8fb8'
               onMouseLeave={data => event => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
@@ -98,15 +98,15 @@ export default withTooltip((
             <AxisBottom
               scale={xScale}
               top={yMax}
-              stroke="#a44afe"
-              tickStroke="#a44afe"
+              stroke="#ea495f"
+              tickStroke="#ea495f"
               tickLabelProps=
                 {
                 (area_V, index) => (
                 {
-                fill: '#ffffff',
+                fill: 'none',
                 fontSize: 11,
-                textAnchor: 'middle',
+                textAnchor: 'end',
                 }
               )
             }
@@ -136,6 +136,8 @@ export default withTooltip((
           minWidth: 60,
           backgroundColor: 'rgba(0,0,0,0.9)',
           color: 'white',
+          padding: 12,
+          lineHeight: '1.5',
         }}
       >
         <div style={{ color: zScale(tooltipData.name) }}>
