@@ -4,8 +4,20 @@ import { ScatterplotChart, ToolTip } from 'react-easy-chart';
 // import { withTooltip, Tooltip } from '@vx/tooltip';
 
 export default class ScatterplotContainer extends PureComponent {
-  constructor(props) {
-    super(props);
+  constructor({tooltipOpen,
+  tooltipLeft,
+  tooltipTop,
+  tooltipData,
+  hideTooltip,
+  showTooltip,
+  ...props}) {
+    super({tooltipOpen,
+    tooltipLeft,
+    tooltipTop,
+    tooltipData,
+    hideTooltip,
+    showTooltip,
+    ...props});
 
     this.mouseOverHandler = this.mouseOverHandler.bind(this);
     this.mouseOutHandler = this.mouseOutHandler.bind(this);
@@ -23,8 +35,8 @@ export default class ScatterplotContainer extends PureComponent {
       windowWidth: 400,
       componentWidth: 500,
     };
-    console.log("this.props.dataJSON: "+this.props.dataJSON);
-    this.data = this.prepareData(this.props.dataJSON);
+    // console.log("this.props.dataJSON: "+JSON.stringify(this.props.dataJSON));
+    this.data = this.prepareData(this.props.dataJSON.hits.hits);
     // this.data = this.generateData();
   }
 
@@ -44,13 +56,13 @@ export default class ScatterplotContainer extends PureComponent {
   prepareData = (data) => {
      const transformedData = [];
        data.forEach(item => {
-         console.log('item.area_afectada: '+item.area)
-         console.log('item.fc: '+item.fc)
+         // console.log('item.porcentajeAfectacion: '+JSON.stringify(item))
+         // console.log('item.fc: '+item._source.FACT_COMP)
          transformedData.push(
            {
-             type:`${item.nombre}`,
-             x: `${item.fc}`,
-             y: `${item.fc}`
+             type:`${item._source.BIOMA_IAVH}`,
+             x: `${item._source.PORCENT_AFECTACION}`,
+             y: `${item._source.FACT_COMP}`
             });
        })
        return transformedData;
@@ -85,15 +97,16 @@ export default class ScatterplotContainer extends PureComponent {
   mouseOverHandler(d, e) {
     this.setState({
       showToolTip: true,
-      top: `${e.screenY - 10}px`,
+      top: `${e.screenY + 10 }px`,
       left: `${e.screenX + 10}px`,
       y: d.y,
       x: d.x });
+      console.log("The x value is "+Number(this.state.x).toFixed(2));
   }
 
   mouseMoveHandler(e) {
     if (this.state.showToolTip) {
-      this.setState({ top: `${e.y - 10}px`, left: `${e.x + 10}px` });
+      this.setState({ top: `${e.y + 10}px`, left: `${e.x + 10}px` });
     }
   }
 
@@ -141,7 +154,6 @@ export default class ScatterplotContainer extends PureComponent {
   createTooltip() {
     if (this.state.showToolTip) {
       return (
-        console.log("ToolTip"),
         <ToolTip
           // top={this.state.top}
           top={this.props.height}
@@ -167,9 +179,10 @@ export default class ScatterplotContainer extends PureComponent {
         margin={{ top: 10, right: 10, bottom: 30, left: 60 }}
         width={this.state.componentWidth}
         height={this.state.componentWidth / 2}
-        onMouseMove={data => event => {
-          this.createTooltip();
-        }}
+        // onMouseMove={this.createTooltip()}
+        mouseOverHandler={this.mouseOverHandler}
+        mouseOutHandler={this.mouseOutHandler}
+        mouseMoveHandler={this.mouseMoveHandler}
       />
     );
   }

@@ -105,11 +105,11 @@ class Drawer extends React.Component {
   }
 
 
-  checkGraph(data, labelY, graph, titulo){
+  checkGraph(data, labelY, graph, titulo) {
     // data.then((res)=>{console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)))});
     if(graph==='BarVertical') {
       return (
-        <ParentSize>
+        <ParentSize className="nocolor">
           {
             (parent) => (
               parent.width
@@ -127,15 +127,16 @@ class Drawer extends React.Component {
           }
         </ParentSize>
       );
-    } else{
+    } else {
       return (
-        <ParentSize>
+        <ParentSize className="nocolor">
           {
             (parent) => (
-              parent.width &&
+              parent.width
+              &&
               <InfoGraph
                 width={parent.width}
-                height={this.height}
+                height={parent.height}
                 graphType={graph}
                 data={data}
                 labelY={labelY}
@@ -176,7 +177,7 @@ class Drawer extends React.Component {
         {value === 0 && <TabContainer>
           {this.checkGraph(fc, 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
           {this.checkGraph(biomas,'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
-          {this.checkGraph(distritos, 'distritos', 'BarStackHorizontal', 'Distritos')}
+          {this.checkGraph(distritos, 'Distritos', 'BarStackHorizontal', 'Distritos')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
@@ -187,7 +188,7 @@ class Drawer extends React.Component {
       } else {
         return (
         <div className={classes.root}>
-          {this.checkGraph(uwa, 'Subzona Hidrográfica', 'BarVertical')}
+          {this.checkGraph(uwa, 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
         </div>
       );
     }

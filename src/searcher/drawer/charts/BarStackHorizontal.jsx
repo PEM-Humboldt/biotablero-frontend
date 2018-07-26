@@ -29,6 +29,7 @@ export default withTooltip(
     if (width < 10) return null;
     // accessors
     const y = d => 1;
+    const x = d => Number(d.value);
 
     // const actualizarSubArea = (key) => {
     //   return props.actualizarBiomaActivo(key);
@@ -45,13 +46,14 @@ export default withTooltip(
          return transformedData;
     }
 
-    function toTitleCase(str) {
-      return str.replace(/\w\S*/g, function(txt){
-          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      });
+    function comparingValues(a, b) {
+      return a - b;
     }
 
     function sortByKey(array, key) {
+      if(titulo === 'Factor de Compensación' || labelY==='F C'){
+        keys = keys.sort(comparingValues);
+      }
       return array.sort(function(a, b) {
           var x = a[key]; var y = b[key];
           return ((x < y) ? -1 : ((x > y) ? 1 : 0));
@@ -60,8 +62,9 @@ export default withTooltip(
 
     let data = [prepareData(dataJSON.data, labelY)].slice(0);
     let keys = Object.keys(data[0]);
-    keys = sortByKey(keys, keys);
     // console.log("DataDist1: "+ JSON.stringify(keys));
+    //Organizar los datos alfabética o numéricamente
+    data = sortByKey(data, keys);
     let totals =  dataJSON.data.aggregations.total_area.value;
 
     // console.log("DataTotal: "+ dataJSON.data.aggregations.total_area.value);
@@ -70,12 +73,15 @@ export default withTooltip(
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
 
-    // // scales
+
+    console.log('Totals: '+totals);
+    console.log('xMax: '+xMax);
+
+    // scales
     const xScale = scaleLinear({
       rangeRound: [0, xMax],
       domain: [0, totals], // TODO: Cambiar "0" por funcion min de d3-array
-      nice: true,
-      clamp: false,
+      nice: false,
     });
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
@@ -126,6 +132,7 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={data => event => {
+                console.log('X: '+x);
                 console.log('Data: '+JSON.stringify(data));
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 showTooltip({
@@ -179,7 +186,7 @@ export default withTooltip(
             <div style={{ color: zScale(tooltipData.key) }}>
               <strong>{tooltipData.key}</strong>
             </div>
-            <div>{tooltipData.data[tooltipData.key]} Ha</div>
+            <div>{Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha</div>
             <div>
               <small>{tooltipData.xFormatted}</small>
             </div>

@@ -17,7 +17,7 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 
-var dataJSON = require('./data/donde.json');
+var dataJSON = require('./data/dondeCompensar.json');
 
 function TabContainer(props) {
   return (
@@ -53,7 +53,7 @@ class Drawer extends React.Component {
         <ParentSize>
           {
             parent => (
-              parent.width
+              parent.width && parent.height
               &&
               <InfoGraph
               width={parent.width}

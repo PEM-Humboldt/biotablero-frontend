@@ -3,7 +3,7 @@ import { Group } from '@vx/group';
 import { Bar } from '@vx/shape';
 import { scaleLinear, scaleBand, scaleOrdinal } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
-import { AxisBottom } from '@vx/axis';
+import { AxisBottom, AxisLeft } from '@vx/axis';
 
 // Se exporta el SGV construido
 export default withTooltip((
@@ -13,6 +13,8 @@ export default withTooltip((
   tooltipData,
   hideTooltip,
   showTooltip,
+  labelY,
+  titulo,
   ...props}) => {
   if (props.width < 10) return null;
 
@@ -30,8 +32,8 @@ export default withTooltip((
 
   // Define las dimensiones y márgenes del gráfico
   const width = props.width;
-  const height = 600;
-  const margin = { top: 20, bottom: 20, left: 20, right: 20 };
+  const height = 380;
+  const margin = { top: 40, bottom: 40, left: 40, right: 50 };
 
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
@@ -45,11 +47,13 @@ export default withTooltip((
   const xScale = scaleBand({
     rangeRound: [0, xMax],
     domain: data.map(x),
-    padding: 0.4,
+    padding: 0.2,
+    nice: false,
   });
   const yScale = scaleLinear({
     rangeRound: [yMax, 0],
     domain: [0, Math.max(...data.map(y))],
+    nice: false,
   });
   const zScale = scaleOrdinal({
     domain: keys,
@@ -64,7 +68,9 @@ export default withTooltip((
   let tooltipTimeout;
 
   return (
+    <div className="graphcontainer">
     <div className="graphcard">
+    <h2>{titulo}</h2>
     <svg width={width} height={height}>
       {data.map((d, i) => {
         const barHeight = yMax - yPoint(d);
@@ -77,7 +83,7 @@ export default withTooltip((
               y={yMax - barHeight}
               height={barHeight}
               width={xScale.bandwidth()}
-              fill='#4a8fb8'
+              fill='#345b6b'
               onMouseLeave={data => event => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
@@ -94,6 +100,22 @@ export default withTooltip((
                   tooltipLeft: margin.left + xScale(x(d)),
                 });
               }}
+            />
+            <AxisLeft
+              left={30}
+              hideAxisLine={true}
+              hideTicks={true}
+              scale={yScale}
+              label={labelY}
+              labelProps={{
+                fill: '#e84a5f',
+                fontSize: 13,
+                textAnchor: 'middle',
+                fontWeight: 300,
+              }}
+              tickLabelProps={(value, index) => ({
+                fill: 'none',
+              })}
             />
             <AxisBottom
               scale={xScale}
@@ -145,9 +167,10 @@ export default withTooltip((
             {tooltipData.name}
           </strong>
         </div>
-        <div>{tooltipData.area_V} Ha</div>
+        <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
       </Tooltip>
     )}
+        </div>
         </div>
   );
 });

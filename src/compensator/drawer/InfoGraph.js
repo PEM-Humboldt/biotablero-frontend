@@ -1,5 +1,6 @@
 import React from 'react';
 import ScatterChart from './ScatterChart';
+// import ScatterChart from './d3_scatterplot';
 import './infoGraph.css';
 
 class InfoGraph extends React.Component {

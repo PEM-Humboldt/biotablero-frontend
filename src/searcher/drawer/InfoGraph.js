@@ -1,6 +1,7 @@
 import React from 'react';
 import BarStackHorizontal from './charts/BarStackHorizontal';
 import BarGraph from './charts/BarGraph';
+// import Pie from './charts/Pie';
 import './infoGraph.css';
 
 class InfoGraph extends React.Component {
@@ -23,9 +24,16 @@ class InfoGraph extends React.Component {
       // console.log('Parent.width: '+ this.props.width);
       if (this.props.graphType==='BarVertical') {
         return (
+        // <Pie
+        //   dataJSON={this.state.data}
+        //   area={this.props.labelY}
+        //   width={this.props.width}
+        //   height={this.props.height}
+        // />
         <BarGraph
           dataJSON={this.state.data}
-          area={this.props.labelY}
+          titulo={this.props.titulo}
+          labelY={this.props.labelY}
           width={this.props.width}
           height={this.props.height}
         />
