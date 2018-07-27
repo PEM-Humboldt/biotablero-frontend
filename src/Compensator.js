@@ -90,6 +90,7 @@ class Compensator extends Component {
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
           actualizarCapaActiva= {this.actualizarCapaActiva}
+          biomaActivo={this.actualizarBiomaActivo}
           actualizarBiomaActivo={this.actualizarBiomaActivo}
           geocerca= {this.state.geojsonCapa2}
           zonageb={'GEB Centro'}/>

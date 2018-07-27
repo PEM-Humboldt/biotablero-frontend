@@ -19,22 +19,7 @@ export default withTooltip(props => {
   const yMax = height - 80;
   if (width < 10) return null;
 
-  const prepareData = (data) => {
-    const transformedData = [];
-    data.forEach(item => {
-      transformedData.push(
-        {
-          name:`${item._source.BIOMA_IAVH}`,
-          percentageAffect: `${item._source.PORCENT_AFECTACION}`,
-          fc: `${item._source.FACT_COMP}`,
-          z: `${item._source.FACT_COMP}`,// TODO: Cambiar por porcentajeAreaNatural
-        }
-      );
-    });
-    return transformedData;
-  };
-
-  let points = prepareData(props.dataJSON.hits.hits);
+  let points = props.dataJSON;
 
   const xScale = scaleLinear({
     domain: [0, Math.max(...points.map(x))],
@@ -94,7 +79,7 @@ export default withTooltip(props => {
                 left={margin.left + xScale(x(point))}
                 top={yScale(y(point))}
                 size={xScale(x(point))}
-                xScale={xScale}
+                // xScale={xScale}
                 // zScale={zScale}
                 onMouseEnter={() => event => {
                   if (tooltipTimeout) {
@@ -161,7 +146,7 @@ export default withTooltip(props => {
       </svg>
       {props.tooltipOpen &&
         <Tooltip
-          left={props.tooltipLeft}
+          left={xScale(x(props.tooltipData))+ margin.left}
           top={props.tooltipTop}
           style={{
             minWidth: 60,
@@ -173,13 +158,13 @@ export default withTooltip(props => {
           >
             <div style={{ color: checkColorFC(y(props.tooltipData))}}>
               <strong>Bioma IAvH: </strong> <br></br>
-              {name(props.tooltipData)}
+              {/* {name(props.tooltipData)} */}
               <div>{x(props.tooltipData)} Ha</div>
               <select>
-                <option value="SZH">Volvo</option>
+                <option value="SZH">SZH</option>
               </select>
               <select>
-                <option value="CAR">Saab</option>
+                <option value="CAR">CAR</option>
               </select>
             </div>
           </Tooltip>}

@@ -14,6 +14,7 @@ class InfoGraph extends React.Component {
           labelY={this.props.labelY}
           width={this.props.width}
           height="280"
+          actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
         />
         {/* <ScatterChart
           dataJSON={this.props.data}

@@ -45,6 +45,26 @@ export default withTooltip(
          })
          // console.log('transformedData: '+JSON.stringify(transformedData));
          return transformedData;
+    //    if(setName !== 'Biomas'){
+    //      const transformedData = {
+    //        key: setName,
+    //      }
+    //        data.aggregations.areas.buckets.forEach(item => {
+    //          transformedData[item['key']] = `${item.area.value}`
+    //        })
+    //        // console.log('transformedData: '+JSON.stringify(transformedData));
+    //        return transformedData;
+    //    } else {
+    //      const transformedData = {
+    //        key: setName,
+    //      }
+    //        data.aggregations.areas.buckets.forEach(item => {
+    //           // TODO: Implementar estrategia con los datos para mostrar el mismo color entre biomas que tengan el mismo FC
+    //          transformedData[item['key']] = `${item.area.value}`
+    //        })
+    //        // console.log('transformedData: '+JSON.stringify(transformedData));
+    //        return transformedData;
+    //      }
     }
 
     function comparingValues(a, b) {

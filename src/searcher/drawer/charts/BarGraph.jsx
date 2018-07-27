@@ -100,8 +100,7 @@ export default withTooltip((
                   tooltipTop: margin.top + yScale(y(d)),
                   tooltipLeft: margin.left + xScale(x(d)),
                 });
-              }}
-            />
+              }}/>
             <AxisLeft
               left={30}
               hideAxisLine={true}
@@ -115,8 +114,7 @@ export default withTooltip((
               }}
               tickLabelProps={(value, index) => ({
                 fill: 'none',
-              })}
-            />
+              })}/>
             <AxisBottom
               scale={xScale}
               top={yMax}
@@ -150,8 +148,7 @@ export default withTooltip((
                 tooltipTop: margin.top + yScale(y(d)),
                 tooltipLeft: margin.left + xScale(x(d)),
               });
-            }}
-            />
+            }}/>
           </Group>
         );
       })}

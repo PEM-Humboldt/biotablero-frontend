@@ -44,6 +44,8 @@ class ProjectFilter extends React.Component {
       zonageb={this.props.zonageb}
       geocerca={this.props.geocerca}
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
+      biomaActivo={this.props.biomaActivo}
+      actualizarBiomaActivo= {this.props.actualizarBiomaActivo}
       />
   }
 
