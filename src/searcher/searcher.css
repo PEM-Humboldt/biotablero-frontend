@@ -275,13 +275,11 @@ div[class*="Drawer-root-"]{
   background-color: transparent;
 }
 
-div[class*="MuiTypography-body1"] {
+div[class*="MuiTypography-body1"],
+.graphcontainer {
   margin: 0;
   padding: 15px !important;
-}
-
-.invisible {
-  color:red !important;
+  overflow: hidden;
 }
 
 .graphcard {
@@ -314,4 +312,8 @@ div[class*="MuiTypography-body1"] {
   border-radius: 4px;
   font-weight: 500;
   font-size: 14px;
+}
+
+.nocolor {
+  color: transparent;
 }

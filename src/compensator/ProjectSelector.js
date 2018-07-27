@@ -17,7 +17,6 @@ class ProjectSelector extends React.Component {
       innerExpanded: null,
     };
     this.props.panelLayer('Centro'); // Inicia activa
-    this.props.subPanelLayer('En Licenciamiento'); // Inicia activa
     this.props.innerPanelLayer('Sogamoso');
   }
 
