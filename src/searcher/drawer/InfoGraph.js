@@ -33,6 +33,7 @@ class InfoGraph extends React.Component {
         <BarGraph
           dataJSON={this.state.data}
           titulo={this.props.titulo}
+          labelX={this.props.labelX}
           labelY={this.props.labelY}
           width={this.props.width}
           height={this.props.height}
@@ -47,6 +48,7 @@ class InfoGraph extends React.Component {
           //   // console.log('RES_InfoGraph= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)));
           //   return res.data;})}
           titulo={this.props.titulo}
+          labelX={this.props.labelX}
           labelY={this.props.labelY}
           // width='500'
           width={this.props.width}

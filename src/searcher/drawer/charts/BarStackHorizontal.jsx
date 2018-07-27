@@ -8,6 +8,7 @@ import { withTooltip, Tooltip } from '@vx/tooltip';
 export default withTooltip(
   ({
     dataJSON,
+    labelX,
     labelY,
     width,
     height,
@@ -160,7 +161,13 @@ export default withTooltip(
             />
             <AxisBottom
               scale={xScale}
-              top={yMax}
+              top={yMax-10}
+              label={labelX}
+              labelProps={{
+                fill: '#e84a5f',
+                fontSize: 9,
+                textAnchor: 'middle',
+              }}
               stroke="#e84a5f"
               tickStroke="#e84a5f"
               tickLabelProps={(value, index) => ({

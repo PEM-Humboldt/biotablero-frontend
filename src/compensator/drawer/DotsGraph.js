@@ -3,14 +3,12 @@ import { AxisBottom, AxisLeft } from '@vx/axis';
 import { Grid } from '@vx/grid';
 import { Group } from '@vx/group';
 import { GlyphCircle } from '@vx/glyph';
-import { scaleLinear, scaleBand, scaleOrdinal } from '@vx/scale';
-import { genRandomNormalPoints } from '@vx/mock-data';
+import { scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
 const name = d => d.name;
 const x = d => d.percentageAffect;
 const y = d => d.fc;
-const z = d => d.z;
 
 let tooltipTimeout;
 
@@ -29,8 +27,7 @@ export default withTooltip(props => {
           name:`${item._source.BIOMA_IAVH}`,
           percentageAffect: `${item._source.PORCENT_AFECTACION}`,
           fc: `${item._source.FACT_COMP}`,
-          z: `${item._source.PORCENT_AFECTACION}`,
-
+          z: `${item._source.FACT_COMP}`,// TODO: Cambiar por porcentajeAreaNatural
         }
       );
     });
@@ -51,20 +48,14 @@ export default withTooltip(props => {
   });
   const zScale = scaleOrdinal({
     domain: points.map(y),
-    range: ['#7b56a5',
-    '#6256a5',
-    '#5564a4',
-    '#4a8fb8',
-    '#51b4c1',
-    '#81bb47',
-    '#a4c051',
-    '#b1b559',
-    '#eabc47',
-    '#d5753d',
-    '#ea5948',
-    '#ea495f',
-    '#c3374d',],
+    range: ['#eabc47','#51b4c1','#ea495f',],
   });
+
+  const checkColorFC = (value) =>{
+    if (value < 6) return zScale(0);
+    if (value < 8) return zScale(1);
+    return zScale(2);
+  }
 
   return (
     <div>
@@ -98,7 +89,8 @@ export default withTooltip(props => {
               <GlyphCircle
                 className="dot"
                 key={point.name}
-                fill={zScale(y(point))}
+                // fill={zScale(y(point))}
+                fill={checkColorFC(y(point))}
                 left={margin.left + xScale(x(point))}
                 top={yScale(y(point))}
                 size={xScale(x(point))}
@@ -125,7 +117,7 @@ export default withTooltip(props => {
                 onMouseLeave={() => event => {
                   tooltipTimeout = setTimeout(() => {
                     props.hideTooltip();
-                  }, 5000);
+                  }, 500);
                 }}
               />
             );
@@ -135,7 +127,7 @@ export default withTooltip(props => {
             scale={yScale}
             stroke="#edc2c7"
             tickStroke="#edc2c7"
-            label={'Factor de Compensación'}
+            label={props.labelY}
             labelProps={{
               fill: '#e84a5f',
               fontSize: 13,
@@ -150,8 +142,14 @@ export default withTooltip(props => {
           <AxisBottom
             left={margin.left}
             scale={xScale}
-            top={yMax}
+            top={yMax-10}
             stroke="#edc2c7"
+            label={props.labelX}
+            labelProps={{
+              fill: '#e84a5f',
+              fontSize: 13,
+              textAnchor: 'middle',
+            }}
             tickStroke="#edc2c7"
             tickLabelProps={(value, index) => ({
               fill: '#e84a5f',
@@ -173,15 +171,15 @@ export default withTooltip(props => {
             lineHeight: '1.5',
           }}
           >
-            <div style={{ color: zScale(y(props.tooltipData))}}>
+            <div style={{ color: checkColorFC(y(props.tooltipData))}}>
               <strong>Bioma IAvH: </strong> <br></br>
-              {props.tooltipData.name}
-              <div>{props.tooltipData.x} Ha</div>
+              {name(props.tooltipData)}
+              <div>{x(props.tooltipData)} Ha</div>
               <select>
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
+                <option value="SZH">Volvo</option>
+              </select>
+              <select>
+                <option value="CAR">Saab</option>
               </select>
             </div>
           </Tooltip>}

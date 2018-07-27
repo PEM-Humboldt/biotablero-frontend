@@ -105,7 +105,7 @@ class Drawer extends React.Component {
   }
 
 
-  checkGraph(data, labelY, graph, titulo) {
+  checkGraph(data, labelX, labelY, graph, titulo) {
     // data.then((res)=>{console.log('RES= '+ JSON.stringify(res.aggregations.areas.buckets.map((element) => element.key)))});
     if(graph==='BarVertical') {
       return (
@@ -119,6 +119,7 @@ class Drawer extends React.Component {
                 height={parent.height}
                 graphType={graph}
                 data={data}
+                labelX={labelX}
                 labelY={labelY}
                 titulo={titulo}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
@@ -139,6 +140,7 @@ class Drawer extends React.Component {
                 height={parent.height}
                 graphType={graph}
                 data={data}
+                labelX={labelX}
                 labelY={labelY}
                 titulo={titulo}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
@@ -175,20 +177,30 @@ class Drawer extends React.Component {
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
-          {this.checkGraph(fc, 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-          {this.checkGraph(biomas,'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
-          {this.checkGraph(distritos, 'Distritos', 'BarStackHorizontal', 'Distritos')}
+          {this.checkGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
+          {this.checkGraph(biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
+          {this.checkGraph(distritos, 'Hectáreas', 'Distritos', 'BarStackHorizontal', 'Distritos')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
-          {value === 1 && <TabContainer>Gráfico</TabContainer>}
-          {value === 2 && <TabContainer>Gráfico</TabContainer>}
+          {value === 1 && <TabContainer>
+                            <div className="graphcard">
+                              <h2>Gráficas en construcción</h2>
+                              <p>Pronto más información</p>
+                            </div>
+                          </TabContainer>}
+          {value === 2 && <TabContainer>
+                            <div className="graphcard">
+                              <h2>Gráficas en construcción</h2>
+                              <p>Pronto más información</p>
+                            </div>
+                          </TabContainer>}
           </div>
         );
       } else {
         return (
         <div className={classes.root}>
-          {this.checkGraph(uwa, 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+          {this.checkGraph(uwa, 'Biomas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
         </div>
       );
     }

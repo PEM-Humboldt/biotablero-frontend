@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import MapViewer from './MapViewer';
 import ProjectFilter from './compensator/ProjectFilter';
-import './compensator/compensator.css';
 
 class Compensator extends Component {
   constructor(props){

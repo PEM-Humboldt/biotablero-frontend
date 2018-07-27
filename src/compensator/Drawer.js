@@ -10,12 +10,13 @@ import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import QueIcon from '@material-ui/icons/AddLocation';
-import DondeIcon from '@material-ui/icons/Place';
-import CarritoIcon from '@material-ui/icons/AddShoppingCart';
+import QueIcon from '@material-ui/icons/LiveHelp';
+import DondeIcon from '@material-ui/icons/Beenhere';
+import CarritoIcon from '@material-ui/icons/AddLocation';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
+import PopMenu from './drawer/PopMenu';
 
 var dataJSON = require('./data/dondeCompensar.json');
 
@@ -47,7 +48,12 @@ class Drawer extends React.Component {
       };
   }
 
-  mostrarGraficos(param, data, labelY, graph){
+  totalACompensar = (data) => {
+    let total = '5000000000'; // Dato de prueba
+    return total;
+  }
+
+  mostrarGraficos(param, data, labelX, labelY, graph){
     if(param===1) {
       return (
         <ParentSize>
@@ -60,6 +66,7 @@ class Drawer extends React.Component {
               height={parent.height}
               graphType={graph}
               data={data}
+              labelX={labelX}
               labelY={labelY}
               actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
               />
@@ -88,8 +95,8 @@ class Drawer extends React.Component {
             textColor="primary"
             centered
           >
-            <Tab className="tabs" label="¿Qué y cuánto?" icon={<QueIcon />} />
-            <Tab className="tabs" label="¿Dónde y cómo?" icon={<DondeIcon />} />
+            <Tab className="tabs tabs2" label="Qué · Cuánto" icon={<QueIcon />} />
+            <Tab className="tabs tabs2" label="Dónde · Cómo" icon={<DondeIcon />} />
           </Tabs>
         </AppBar>
         {value === 0 && <TabContainer>
@@ -98,8 +105,11 @@ class Drawer extends React.Component {
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
         {value === 1 && <TabContainer>
-          Tabla "Cómo" - <CarritoIcon />
-          {this.mostrarGraficos(1, dataJSON, 'F C', 'ScatterChart')}
+          {this.mostrarGraficos(1, dataJSON, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
+          <p>
+            Total a compensar: {this.totalACompensar(dataJSON)}
+          </p>
+          <CarritoIcon />
         </TabContainer>}
       </div>
     );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group } from '@vx/group';
 import { Bar } from '@vx/shape';
-import { scaleLinear, scaleBand, scaleOrdinal } from '@vx/scale';
+import { scaleLinear, scaleBand } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import { AxisBottom, AxisLeft } from '@vx/axis';
 
@@ -13,6 +13,7 @@ export default withTooltip((
   tooltipData,
   hideTooltip,
   showTooltip,
+  labelX,
   labelY,
   titulo,
   ...props}) => {
@@ -28,11 +29,11 @@ export default withTooltip((
 
   // Se preparan los datos para el gráfico
   const data = prepareData(props.dataJSON, props.area);
-  let keys = Object.keys(data[0]);
+  // let keys = Object.keys(data[0]);
 
   // Define las dimensiones y márgenes del gráfico
   const width = props.width;
-  const height = 380;
+  const height = 300;
   const margin = { top: 40, bottom: 40, left: 40, right: 50 };
 
   // Crea los límites del gráfico
@@ -55,10 +56,10 @@ export default withTooltip((
     domain: [0, Math.max(...data.map(y))],
     nice: false,
   });
-  const zScale = scaleOrdinal({
-    domain: keys,
-    range: ['#ea495f'],
-  });
+  // const zScale = scaleOrdinal({
+  //   domain: keys,
+  //   range: ['#ea495f'],
+  // });
 
   // Junta las escalas y el accesor para construir cada punto
   const compose = (scale, accessor) => (data) => scale(accessor(data));
@@ -111,7 +112,6 @@ export default withTooltip((
                 fill: '#e84a5f',
                 fontSize: 13,
                 textAnchor: 'middle',
-                fontWeight: 300,
               }}
               tickLabelProps={(value, index) => ({
                 fill: 'none',
@@ -120,6 +120,12 @@ export default withTooltip((
             <AxisBottom
               scale={xScale}
               top={yMax}
+              label={labelX}
+              labelProps={{
+                fill: '#e84a5f',
+                fontSize: 9,
+                textAnchor: 'middle',
+              }}
               stroke="#ea495f"
               tickStroke="#ea495f"
               tickLabelProps=
@@ -166,7 +172,6 @@ export default withTooltip((
           <strong>Bioma IAvH: </strong> <br></br>
           {tooltipData.name}
           <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
-          <button>Hola!</button>
         </div>
       </Tooltip>}
         {/* <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div> */}

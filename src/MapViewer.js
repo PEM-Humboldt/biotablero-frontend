@@ -103,12 +103,14 @@ class MapViewer extends React.Component {
       this.mostrarCapa(this.CapaJurisdicciones, false);
       this.props.capaActiva('CORPOBOYACA');
     }
+    this.resetHighlight(e);
 	}
 
 	mifunc2(e){
     if(this.props.capasMontadas[2]!== null){
       this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
     }
+    this.resetHighlight2(e);
 	}
 
   // TODO: Cambiar método de carga, para forzar carga sincrónica de axios
@@ -153,7 +155,7 @@ class MapViewer extends React.Component {
             {
               style:
               {
-            stroke:true, fillColor:'#56a58e',opacity:0.6,fillOpacity:0.4
+            stroke:true, color:'#ea495f', fillColor:'#ea495f',opacity:0.6,fillOpacity:0.4
           },
           onEachFeature:this.hexagonosOnEachFeature,
         })
@@ -229,7 +231,7 @@ class MapViewer extends React.Component {
       {
         mouseover : this.highlightFeature,
         mouseout : this.resetHighlight,
-        click : this.mifunc
+        click : this.mifunc,
       }
     );
   }
@@ -239,7 +241,7 @@ class MapViewer extends React.Component {
 			{
 				mouseover : this.highlightFeature,
 				mouseout : this.resetHighlight2,
-				click : this.mifunc2
+				click : this.mifunc2,
 			}
 		);
 	}
