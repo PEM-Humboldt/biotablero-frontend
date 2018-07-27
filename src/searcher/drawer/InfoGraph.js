@@ -35,8 +35,7 @@ class InfoGraph extends React.Component {
           titulo={this.props.titulo}
           labelY={this.props.labelY}
           width={this.props.width}
-          height={this.props.height}
-        />
+          height={this.props.height}/>
       )
       } else
       if (this.props.graphType==='BarStackHorizontal'){

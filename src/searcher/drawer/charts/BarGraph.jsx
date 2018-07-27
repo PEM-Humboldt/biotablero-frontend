@@ -99,8 +99,7 @@ export default withTooltip((
                   tooltipTop: margin.top + yScale(y(d)),
                   tooltipLeft: margin.left + xScale(x(d)),
                 });
-              }}
-            />
+              }}/>
             <AxisLeft
               left={30}
               hideAxisLine={true}
@@ -115,8 +114,7 @@ export default withTooltip((
               }}
               tickLabelProps={(value, index) => ({
                 fill: 'none',
-              })}
-            />
+              })}/>
             <AxisBottom
               scale={xScale}
               top={yMax}
@@ -144,8 +142,7 @@ export default withTooltip((
                 tooltipTop: margin.top + yScale(y(d)),
                 tooltipLeft: margin.left + xScale(x(d)),
               });
-            }}
-            />
+            }}/>
           </Group>
         );
       })}
@@ -160,8 +157,7 @@ export default withTooltip((
           color: 'white',
           padding: 12,
           lineHeight: '1.5',
-        }}
-      >
+        }}>
         <div style={{ color: zScale(tooltipData.name) }}>
           <strong>
             {tooltipData.name}
