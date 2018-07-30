@@ -49,7 +49,15 @@ class Drawer extends React.Component {
       totalACompensar: '5000000000', // TODO: Dato de prueba, agregar desde el JSON
       jurisdiccion: null,
       szh: null,
+      biomaColor: "white",
     };
+  }
+
+  biomaColor(biomaColor) {
+console.log("biomaColor: "+biomaColor);
+    this.setState({
+      color: biomaColor,
+    });
   }
 
   obtenerDatosDonde = (data) => {
@@ -106,8 +114,8 @@ class Drawer extends React.Component {
     this.obtenerDatosDonde(dataCompensaciones);
   }
 
-  mostrarGraficos(param, data, labelX, labelY, graph){
-    if(param===1) {
+  mostrarGraficos(param, data, labelX, labelY, graph, colors){
+    if(param===1 && graph==="Dots") {
       return (
         <ParentSize>
           {
@@ -117,12 +125,14 @@ class Drawer extends React.Component {
               <InfoGraph
                 width={parent.width}
                 height={parent.height}
+                colors= {colors}
                 graphType={graph}
                 data={data}
                 labelX={labelX}
                 labelY={labelY}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
                 biomaActivo={this.props.biomaActivo}
+                biomaColor = {this.biomaColor}
               />
             )
           }
@@ -131,7 +141,7 @@ class Drawer extends React.Component {
     }
   }
 
-  showSelector = (data, total) => {
+  showSelector = (data, total, color) => {
     // TODO: Finalizar muestra de selector de szh y CAR
     if(total!==0) {
       return (
@@ -145,6 +155,7 @@ class Drawer extends React.Component {
                 subArea= {this.props.subArea}
                 szh= {this.props.szh}
                 jurisdiccion= {this.props.jurisdiccion}
+                color = {this.state.color}
               />
             )
           }
@@ -181,11 +192,12 @@ class Drawer extends React.Component {
             // datosJSON={this.props.datosJSON} */}
           </TabContainer>}
           {value === 1 && <TabContainer>
-            {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
+            {/* {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')} */}
+            {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'Dots', ['#eabc47','#51b4c1','#ea495f'])}
             <p>
-              Total a compensar: {this.state.totalACompensar}
+              Total a compensar: {Number(this.state.totalACompensar).toFixed(2)}
             </p>
-            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
+            {this.showSelector(this.state.datosDonde, this.state.totalACompensar, this.state.biomaColor)}
             <CarritoIcon />
           </TabContainer>}
         </div>
