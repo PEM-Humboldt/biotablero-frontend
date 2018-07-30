@@ -8,9 +8,9 @@ Este proyecto ha sido desarrollado por el Instituto Humboldt http://www.humboldt
 Debe tener instalado npm o yarn en su equipo local, para la instalación de paquetes y ejecución del proyecto. Clone el proyecto en su equipo e ingrese por línea de comandos al directorio donde clonó el repositorio.
 
 ### 1.1. Instalación de paquetes:
-Dentro del directorio del repositorio, inicie línea de comandos y ejecute la siguiente línea para instalar los paquetes requeridos:
+Dentro del directorio del repositorio, inicie línea de comandos y ejecute la siguiente línea para instalar las dependencias del proyecto:
 
-- npm install react react-scripts axios react-dom react-easy-chart react-router-dom react-select leaflet react-leaflet @material-ui/core @material-ui/icons d3 @vx/axis @vx/group @vx/grid @vx/glyph @vx/responsive @vx/shape @vx/scale @vx/mock-data @vx/tooltip -D --save
+- npm install
 
 ### 1.2. Ejecución:
 Posterior a la instalación de paquetes, ejecute la siguiente instrucción:
@@ -18,3 +18,7 @@ Posterior a la instalación de paquetes, ejecute la siguiente instrucción:
 - npm start
 
 La instrucción iniciará el proyecto en su equipo local y se abrirá en el navegador.
+
+### 1.3. Problemas
+
+En caso de tener inconvenientes al ejecutar npm start en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
