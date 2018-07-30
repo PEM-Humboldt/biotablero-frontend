@@ -12,11 +12,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
-import CarritoIcon from '@material-ui/icons/AddLocation';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
-// import PopMenu from './drawer/PopMenu';
+import PopMenu from './drawer/PopMenu';
 // var dataCompensaciones = require('./data/dondeCompensar.json');
 var dataCompensaciones = require('./data/que_y_donde_compensar.json');
 var dataSogamoso = require('./data/donde_compensar_sogamoso.json');
@@ -47,7 +46,17 @@ class Drawer extends React.Component {
       value: 0,
       datosDonde: [],
       totalACompensar: '5000000000', // TODO: Dato de prueba, agregar desde el JSON
+      jurisdiccion: null,
+      szh: null,
+      biomaColor: "white",
     };
+  }
+
+  biomaColor(biomaColor) {
+console.log("biomaColor: "+biomaColor);
+    this.setState({
+      color: biomaColor,
+    });
   }
 
   obtenerDatosDonde = (data) => {
@@ -104,10 +113,10 @@ class Drawer extends React.Component {
     this.obtenerDatosDonde(dataCompensaciones);
   }
 
-  mostrarGraficos(param, data, labelX, labelY, graph){
-    if(param===1) {
+  mostrarGraficos(param, data, labelX, labelY, graph, colors){
+    if(param===1 && graph==="Dots") {
       return (
-        <ParentSize>
+        <ParentSize className="nocolor">
           {
             parent => (
               parent.width && parent.height
@@ -115,12 +124,14 @@ class Drawer extends React.Component {
               <InfoGraph
                 width={parent.width}
                 height={parent.height}
+                colors= {colors}
                 graphType={graph}
                 data={data}
                 labelX={labelX}
                 labelY={labelY}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
                 biomaActivo={this.props.biomaActivo}
+                biomaColor = {this.biomaColor}
               />
             )
           }
@@ -129,16 +140,27 @@ class Drawer extends React.Component {
     }
   }
 
-  showSelector(data, total) {
-  // TODO: Finalizar muestra de selector de szh y CAR
-    // return
-    // (
-    //   <PopMenu
-    //     actualizarBiomaActivo= {this.props.actualizarBiomaActivo}
-    //     biomaActivo={this.props.biomaActivo}
-    //     options= {this.}
-    //   />
-    // );
+  showSelector = (data, total, color) => {
+    // TODO: Finalizar muestra de selector de szh y CAR
+    if(total!==0) {
+      return (
+        <ParentSize className="nocolor">
+          {
+            parent => (
+              parent.width && parent.height
+              &&
+              <PopMenu
+                actualizarBiomaActivo={this.props.actualizarBiomaActivo}
+                subArea= {this.props.subArea}
+                szh= {this.props.szh}
+                jurisdiccion= {this.props.jurisdiccion}
+                color = {this.state.color}
+              />
+            )
+          }
+        </ParentSize>
+      );
+    }
   }
 
   handleChange = (event, value) => {
@@ -169,12 +191,16 @@ class Drawer extends React.Component {
             // datosJSON={this.props.datosJSON} */}
           </TabContainer>}
           {value === 1 && <TabContainer>
-            {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
-            <p>
-              Total a compensar: {this.state.totalACompensar}
-              {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
-            </p>
-            <CarritoIcon />
+            <div className="total">
+            <h3>Total a compensar</h3>
+            <h4>{Number(this.state.totalACompensar).toFixed(2)}</h4>
+            </div>
+            <div className="total carrito">
+            <h3>Áreas seleccionadas</h3>
+            <h4>0</h4>
+            </div>
+            {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'Dots', ['#eabc47','#51b4c1','#ea495f'])}
+            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
           </TabContainer>}
         </div>
       );

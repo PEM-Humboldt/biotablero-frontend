@@ -55,11 +55,11 @@ class ProjectSelector extends React.Component {
       <div className="selector">
         <div className="iconsec2"></div>
         <h1>Compensaciones</h1>
-        <p>En esta sección podrás encontrar información por <b>zonas</b> de los proyectos:</p>
-        <p><i>1</i> Licenciados </p>
-        <p><i>2</i> En licenciamiento </p>
-        <p><i>3</i> DAA </p>
-        <p></p>
+        <p>En esta sección podrás encontrar información sobre <b>¿Qué y cuánto compensar?</b>, <b>¿Dónde y cómo compensar?</b>, para esto:</p>
+        <p><i>1</i> Selecciona una <b>Zona GEB</b></p>
+        <p><i>2</i> Selecciona un <b>proyecto</b> (licenciado, en licenciamiento o diagnóstico) o crea un <b>nuevo proyecto</b></p>
+        <p><i>3</i> Consulta el qué y cuánto (proyectos previamente analizados)</p>
+        <p><i>4</i> Selecciona el dónde y cómo para alcanzar las metas de compensación (proyectos previamente analizados)</p>
         <ExpansionPanel id='panel1-Norte' disabled
           expanded= {expanded === 'Norte'}
           onChange={this.handleChange('Norte')}>
