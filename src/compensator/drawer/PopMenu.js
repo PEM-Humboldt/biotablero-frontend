@@ -43,8 +43,8 @@ class PopMenu extends Component {
           onChange={this.handleChange('BiomaSeleccionado')}> */}
           <CarritoIcon />
           <div className="Biomatit">{(this.props.subArea) ? this.props.subArea : "Seleccione un bioma del gráfico"}</div>
-            <Select options={options} />
-            <Select options={options2} />
+            <Select placeholder={"SubZona Hidrográfica"} options={options} />
+            <Select placeholder={"CAR"} options={options2} />
 
         {/* </ExpansionPanel> */}
       </div>

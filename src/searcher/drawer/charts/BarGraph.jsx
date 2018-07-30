@@ -4,6 +4,7 @@ import { Bar } from '@vx/shape';
 import { scaleLinear, scaleBand } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import { AxisBottom, AxisLeft } from '@vx/axis';
+import Descargar from '@material-ui/icons/Save';
 
 // Se exporta el SGV construido
 export default withTooltip((
@@ -71,7 +72,7 @@ export default withTooltip((
   return (
     <div className="graphcontainer">
     <div className="graphcard">
-    <h2>{titulo}</h2>
+    <h2><Descargar className="icondown" />{titulo}</h2>
     <svg width={width} height={height}>
       {data.map((d, i) => {
         const barHeight = yMax - yPoint(d);

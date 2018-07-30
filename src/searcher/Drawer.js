@@ -178,8 +178,8 @@ class Drawer extends React.Component {
         </AppBar>
         {value === 0 && <TabContainer>
           {this.checkGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-          {this.checkGraph(biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
-          {this.checkGraph(distritos, 'Hectáreas', 'Distritos', 'BarStackHorizontal', 'Distritos')}
+          {this.checkGraph(biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
+          {this.checkGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
