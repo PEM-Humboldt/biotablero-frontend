@@ -36,7 +36,7 @@ class PopMenu extends Component {
           </select>
           <br></br>
           <select>
-            <option value="CAR"> Seleccione CAR...</option>
+            <option disabled value="CAR"> Seleccione CAR...</option>
           </select>
 
         {/* </ExpansionPanel> */}

@@ -9,6 +9,7 @@ import { withTooltip, Tooltip } from '@vx/tooltip';
 const name = d => d.name;
 const x = d => d.percentageAffect;
 const y = d => d.fc;
+const z = d => d.natural_afectada;
 
 let tooltipTimeout;
 
@@ -32,14 +33,16 @@ export default withTooltip(props => {
     clamp: true,
   });
   const zScale = scaleOrdinal({
-    domain: points.map(y),
-    range: ['#eabc47','#51b4c1','#ea495f',],
+    domain: points.map(z),
+    range: props.colors,
   });
 
   const checkColorFC = (value) =>{
-    if (value < 6) return zScale(0);
-    if (value < 8) return zScale(1);
-    return zScale(2);
+    if(props.labelX === "Area afectada") {
+      if (value < 6) return zScale(0);
+      if (value < 8) return zScale(1);
+      return zScale(2);
+    } else return zScale(value);
   }
 
   return (
@@ -80,7 +83,7 @@ export default withTooltip(props => {
                   top={yScale(y(point))}
                   size={xScale(x(point))}
                   // xScale={xScale}
-                  // zScale={zScale}
+                  zScale={zScale}
                   onMouseEnter={() => event => {
                     if (tooltipTimeout) {
                       clearTimeout(tooltipTimeout);
@@ -91,6 +94,7 @@ export default withTooltip(props => {
                       });
                     }
                     props.actualizarBiomaActivo(name(point));
+                    props.biomaColor(checkColorFC(zScale(z(point))));
                   }}
                   // onTouchStart={() => event => {
                   //   if (tooltipTimeout) clearTimeout(tooltipTimeout);
@@ -157,9 +161,10 @@ export default withTooltip(props => {
             }}
             >
               <div style={{ color: checkColorFC(y(props.tooltipData))}}>
-                <strong>Bioma IAvH: </strong> <br></br>
                 {/* {name(props.tooltipData)} */}
-                <div>{x(props.tooltipData)} Ha</div>
+                <div><b> Afectación: </b>{Number(x(props.tooltipData)).toFixed(2)} %</div>
+                <div><b> FC: </b>{Number(y(props.tooltipData)).toFixed(2)}</div>
+                <div><b> Natural: </b>{Number(z(props.tooltipData)).toFixed(2)} Ha</div>
               </div>
             </Tooltip>}
           </div>
