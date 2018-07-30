@@ -63,111 +63,106 @@ export default withTooltip(props => {
           strokeOpacity={0.2}
           xOffset={xScale / 2}
         />
-      <Group top={margin.top} width={width - margin.left}
-        onTouchStart={() => event => {
-          if (tooltipTimeout) clearTimeout(tooltipTimeout);
-          props.hideTooltip();
-        }}
-        >
-          {points.map((point, i) => {
-            return (
-              <GlyphCircle
-                className="dot"
-                key={point.name}
-                // fill={zScale(y(point))}
-                fill={checkColorFC(y(point))}
-                left={margin.left + xScale(x(point))}
-                top={yScale(y(point))}
-                size={xScale(x(point))}
-                // xScale={xScale}
-                // zScale={zScale}
-                onMouseEnter={() => event => {
-                  if (tooltipTimeout) {
-                    clearTimeout(tooltipTimeout);
-                    props.showTooltip({
-                      tooltipLeft: margin.left + point.width + 75,
-                      tooltipTop: margin.top + yScale(y(point)),
-                      tooltipData: point
-                    });
-                  }
-                }}
-                // onTouchStart={() => event => {
-                //   if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                //   props.showTooltip({
-                //     tooltipLeft: xScale(x(point)),
-                //     tooltipTop: yScale(y(point)) - 30,
-                //     tooltipData: point
-                //   });
-                // }}
-                onMouseLeave={() => event => {
-                  tooltipTimeout = setTimeout(() => {
-                    props.hideTooltip();
-                  }, 500);
-                }}
-              />
-            );
-          })}
-          <AxisLeft
-            left={margin.left}
-            scale={yScale}
-            stroke="#edc2c7"
-            tickStroke="#edc2c7"
-            label={props.labelY}
-            labelProps={{
-              fill: '#e84a5f',
-              fontSize: 13,
-              textAnchor: 'middle',
-            }}
-            tickLabelProps={(value, index) => ({
-              fill: '#e84a5f',
-              fontSize: 10,
-              textAnchor: 'end',
-            })}
-          />
-          <AxisBottom
-            left={margin.left}
-            scale={xScale}
-            top={yMax-10}
-            stroke="#edc2c7"
-            label={props.labelX}
-            labelProps={{
-              fill: '#e84a5f',
-              fontSize: 13,
-              textAnchor: 'middle',
-            }}
-            tickStroke="#edc2c7"
-            tickLabelProps={(value, index) => ({
-              fill: '#e84a5f',
-              fontSize: 10,
-              textAnchor: 'end',
-            })}
-          />
-        </Group>
-      </svg>
-      {props.tooltipOpen &&
-        <Tooltip
-          left={xScale(x(props.tooltipData))+ margin.left}
-          top={props.tooltipTop}
-          style={{
-            minWidth: 60,
-            backgroundColor: 'rgba(0,0,0,0.9)',
-            color: 'white',
-            padding: 12,
-            lineHeight: '1.5',
+        <Group top={margin.top} width={width - margin.left}
+          onTouchStart={() => event => {
+            if (tooltipTimeout) clearTimeout(tooltipTimeout);
+            props.hideTooltip();
           }}
           >
-            <div style={{ color: checkColorFC(y(props.tooltipData))}}>
-              <strong>Bioma IAvH: </strong> <br></br>
-              {/* {name(props.tooltipData)} */}
-              <div>{x(props.tooltipData)} Ha</div>
-              <select>
-                <option value="SZH">SZH</option>
-              </select>
-              <select>
-                <option value="CAR">CAR</option>
-              </select>
-            </div>
-          </Tooltip>}
-        </div>
-      );
-    });
+            {points.map((point, i) => {
+              return (
+                <GlyphCircle
+                  className="dot"
+                  key={point.name}
+                  // fill={zScale(y(point))}
+                  fill={checkColorFC(y(point))}
+                  left={margin.left + xScale(x(point))}
+                  top={yScale(y(point))}
+                  size={xScale(x(point))}
+                  // xScale={xScale}
+                  // zScale={zScale}
+                  onMouseEnter={() => event => {
+                    if (tooltipTimeout) {
+                      clearTimeout(tooltipTimeout);
+                      props.showTooltip({
+                        tooltipLeft: margin.left + point.width + 75,
+                        tooltipTop: margin.top + yScale(y(point)),
+                        tooltipData: point
+                      });
+                    }
+                    props.actualizarBiomaActivo(name(point));
+                  }}
+                  // onTouchStart={() => event => {
+                  //   if (tooltipTimeout) clearTimeout(tooltipTimeout);
+                  //   props.showTooltip({
+                  //     tooltipLeft: xScale(x(point)),
+                  //     tooltipTop: yScale(y(point)) - 30,
+                  //     tooltipData: point
+                  //   });
+                  // }}
+                  onMouseLeave={() => event => {
+                    tooltipTimeout = setTimeout(() => {
+                      props.hideTooltip();
+                    }, 500);
+                  }}
+                />
+              );
+            })}
+            <AxisLeft
+              left={margin.left}
+              scale={yScale}
+              stroke="#edc2c7"
+              tickStroke="#edc2c7"
+              label={props.labelY}
+              labelProps={{
+                fill: '#e84a5f',
+                fontSize: 13,
+                textAnchor: 'middle',
+              }}
+              tickLabelProps={(value, index) => ({
+                fill: '#e84a5f',
+                fontSize: 10,
+                textAnchor: 'end',
+              })}
+            />
+            <AxisBottom
+              left={margin.left}
+              scale={xScale}
+              top={yMax-10}
+              stroke="#edc2c7"
+              label={props.labelX}
+              labelProps={{
+                fill: '#e84a5f',
+                fontSize: 13,
+                textAnchor: 'middle',
+              }}
+              tickStroke="#edc2c7"
+              tickLabelProps={(value, index) => ({
+                fill: '#e84a5f',
+                fontSize: 10,
+                textAnchor: 'end',
+              })}
+            />
+          </Group>
+        </svg>
+        {props.tooltipOpen &&
+          <Tooltip
+            left={xScale(x(props.tooltipData))+ margin.left}
+            top={props.tooltipTop}
+            style={{
+              minWidth: 60,
+              backgroundColor: 'rgba(0,0,0,0.9)',
+              color: 'white',
+              padding: 12,
+              lineHeight: '1.5',
+            }}
+            >
+              <div style={{ color: checkColorFC(y(props.tooltipData))}}>
+                <strong>Bioma IAvH: </strong> <br></br>
+                {/* {name(props.tooltipData)} */}
+                <div>{x(props.tooltipData)} Ha</div>
+              </div>
+            </Tooltip>}
+          </div>
+        );
+      });

@@ -5,7 +5,7 @@ import MapViewer from './MapViewer';
 import ProjectFilter from './compensator/ProjectFilter';
 
 class Compensator extends Component {
-  constructor(props){
+    constructor (props){
     super(props);
     this.state = {
       hasShape: false,
@@ -90,9 +90,9 @@ class Compensator extends Component {
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
           actualizarCapaActiva= {this.actualizarCapaActiva}
-          biomaActivo={this.actualizarBiomaActivo}
           actualizarBiomaActivo={this.actualizarBiomaActivo}
           geocerca= {this.state.geojsonCapa2}
+          subArea={this.state.geojsonCapa4}
           zonageb={'GEB Centro'}/>
         </div>
       </div>

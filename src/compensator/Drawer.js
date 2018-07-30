@@ -16,7 +16,7 @@ import CarritoIcon from '@material-ui/icons/AddLocation';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
-// import PopMenu from './drawer/PopMenu';
+import PopMenu from './drawer/PopMenu';
 // var dataCompensaciones = require('./data/dondeCompensar.json');
 var dataCompensaciones = require('./data/que_y_donde_compensar.json');
 var dataSogamoso = require('./data/donde_compensar_sogamoso.json');
@@ -47,6 +47,8 @@ class Drawer extends React.Component {
       value: 0,
       datosDonde: [],
       totalACompensar: '5000000000', // TODO: Dato de prueba, agregar desde el JSON
+      jurisdiccion: null,
+      szh: null,
     };
   }
 
@@ -129,16 +131,26 @@ class Drawer extends React.Component {
     }
   }
 
-  showSelector(data, total) {
-  // TODO: Finalizar muestra de selector de szh y CAR
-    // return
-    // (
-    //   <PopMenu
-    //     actualizarBiomaActivo= {this.props.actualizarBiomaActivo}
-    //     biomaActivo={this.props.biomaActivo}
-    //     options= {this.}
-    //   />
-    // );
+  showSelector = (data, total) => {
+    // TODO: Finalizar muestra de selector de szh y CAR
+    if(total!==0) {
+      return (
+        <ParentSize>
+          {
+            parent => (
+              parent.width && parent.height
+              &&
+              <PopMenu
+                actualizarBiomaActivo={this.props.actualizarBiomaActivo}
+                subArea= {this.props.subArea}
+                szh= {this.props.szh}
+                jurisdiccion= {this.props.jurisdiccion}
+              />
+            )
+          }
+        </ParentSize>
+      );
+    }
   }
 
   handleChange = (event, value) => {
@@ -172,8 +184,8 @@ class Drawer extends React.Component {
             {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
             <p>
               Total a compensar: {this.state.totalACompensar}
-              {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             </p>
+            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             <CarritoIcon />
           </TabContainer>}
         </div>
