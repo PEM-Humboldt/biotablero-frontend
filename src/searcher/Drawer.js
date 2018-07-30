@@ -200,7 +200,7 @@ class Drawer extends React.Component {
       } else {
         return (
         <div className={classes.root}>
-          {this.checkGraph(uwa, 'Biomas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+          {this.checkGraph(uwa, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
         </div>
       );
     }

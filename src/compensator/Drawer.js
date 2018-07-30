@@ -152,8 +152,7 @@ console.log("biomaColor: "+biomaColor);
               <PopMenu
                 actualizarBiomaActivo={this.props.actualizarBiomaActivo}
                 subArea= {this.props.subArea}
-                szh= {this.props.szh}
-                jurisdiccion= {this.props.jurisdiccion}
+                szh= {this.props.actualizarBiomaActivo}
                 color = {this.state.color}
               />
             )
@@ -199,7 +198,7 @@ console.log("biomaColor: "+biomaColor);
             <h3>Áreas seleccionadas</h3>
             <h4>0</h4>
             </div>
-            {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'Dots', ['#eabc47','#51b4c1','#ea495f'])}
+            {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
             {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
           </TabContainer>}
         </div>

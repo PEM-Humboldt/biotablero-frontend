@@ -20,6 +20,7 @@ const Main = () => (
       /> */}
       <Route path='/Consultas' component={Searcher}/>
       <Route path='/Compensaciones' component={Compensator}/>
+      <Route path='/Alertas' component={Home}/>
       <Redirect from="/" to="/Home"/>
     </Switch>
     <Footersm />

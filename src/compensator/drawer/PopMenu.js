@@ -5,13 +5,22 @@ import CarritoIcon from '@material-ui/icons/AddLocation';
 import Select from 'react-select';
 
 const options = [
-  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'Río Bogotá', label: 'Río Bogotá' },
+  { value: 'Río Suarez', label: 'Río Suarez' },
+  { value: 'Río Opón', label: '70% - Río Opón' }
+]
+
+const bogota = [
+  { value: 'Orobioma Andino Altoandino cordillera oriental',
+  label: 'Orobioma Andino Altoandino cordillera oriental' },
+]
+const suarez = [
+  { value: 'Orobioma Andino Altoandino cordillera oriental',
+  label: 'Orobioma Andino Altoandino cordillera oriental' },
   { value: 'strawberry', label: 'Strawberry' },
   { value: 'vanilla', label: 'Vanilla' }
 ]
-
-const options2 = [
-  { value: 'chocolate', label: 'Chocolate' },
+const opon = [
   { value: 'strawberry', label: 'Strawberry' },
   { value: 'vanilla', label: 'Vanilla' }
 ]
@@ -20,37 +29,62 @@ class PopMenu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      expanded: null,
-      subExpanded: null,
       sumArea: null,
+      szhSelected: null,
+      subList: null,
+      jurisdiccionSelected: null,
     }
   }
 
+  handleChange = (szhSelected) => {
+    this.setState({ szhSelected: szhSelected });
+  }
 
-  handleChange = panel => (event, expanded) => {
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
-    this.props.panelLayer(panel);
-  };
+  handleChangeCAR = (jurisdiccionSelected) => {
+    this.setState({ jurisdiccionSelected: jurisdiccionSelected });
+  }
 
-  render () {
-    const { expanded, subExpanded /*, innerExpanded, onClick, value */} = this.state;
-    return (
-      <div className="complist">
-        {/* <ExpansionPanel id='panel1-PopMenu' disabled
-          expanded= {expanded === 'BiomaSeleccionado'}
-          onChange={this.handleChange('BiomaSeleccionado')}> */}
-          <CarritoIcon />
-          <div className="Biomatit">{(this.props.subArea) ? this.props.subArea : "Seleccione un bioma del gráfico"}</div>
-            <Select placeholder={"SubZona Hidrográfica"} options={options} />
-            <Select placeholder={"CAR"} options={options2} />
+evaluateCAR = (nameSZH) => {
+  if (nameSZH === 'Río Bogotá') {
+    return (<Select
+      value={this.state.jurisdiccionSelected}
+      onChange={this.handleChangeCAR}
+      placeholder={"Seleccione CAR"}
+      options={bogota} />);
+    }
+    if (nameSZH === 'Río Suarez') {
+      return (<Select
+        placeholder={"Seleccione CAR"}
+        options={suarez} />);
+      }
+      if (nameSZH === 'Río Opón') {
+        return (<Select
+          placeholder={"Seleccione CAR"}
+          options={opon} />);
+        }
+      }
 
-        {/* </ExpansionPanel> */}
+render () {
+  return (
+    <div className="complist">
+      <CarritoIcon />
+      <div className="Biomatit">{(this.props.subArea) ? this.props.subArea : "Seleccione un bioma del gráfico"}</div>
+      <Select
+        value={this.state.szhSelected}
+        onChange={this.handleChange}
+        placeholder={"SubZona Hidrográfica"}
+        options={options} />
+        {this.state.szhSelected ? this.evaluateCAR(this.state.szhSelected.value) : ""}
+        {this.state.jurisdiccionSelected ? <button
+          className="geobtn"
+          onClick={() => {
+            this.props.szh(this.state.szhSelected.value);
+            this.props.actualizarBiomaActivo(this.state.jurisdiccionSelected.value);
+          }}
+          > Agregar </button> : ""}
       </div>
     );
   }
-
 }
 
 export default PopMenu;
