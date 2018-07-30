@@ -227,6 +227,7 @@ div[class*="MuiExpansionPanelSummary-expanded-"] {
 }
 
 div[id*="panel"] button {
+background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
   padding: 5px 12px;
