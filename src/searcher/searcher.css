@@ -12,7 +12,7 @@ h1, h2, h3, h4 {
   display:         flex;
   -webkit-flex-flow: row;
           flex-flow: row;
-  min-height: 100vh;
+  height: calc(100vh - 141px);
 }
 /*Map container*/
 .viewfinder {
@@ -48,14 +48,48 @@ h1, h2, h3, h4 {
 	font-size: 12px;
 }
 
-.selector h1 {
+.selector h1, .informer h1 {
   padding: 20px;
   background-color: #e84a5f;
   color: #fff;
   text-transform: uppercase;
   font-weight: 300;
-  font-size: 28px;
+  font-size: 2.2em;
+  text-align: left;
   margin: 0;
+}
+
+.informer h1 {
+  font-size: 1.3em;
+  font-weight: 400;
+}
+
+.informer h1 b {
+  text-transform: none;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.iconsection {
+  background-image: url(../common/img/geografico.png);
+  -webkit-background-size: contain;
+  background-size: contain;
+  float: right;
+  width: 65px;
+  height: 65px;
+}
+
+.iconsec2 {
+  background-image: url(../common/img/compensaciones.png);
+  -webkit-background-size: contain;
+  background-size: contain;
+  float: right;
+  width: 65px;
+  height: 65px;
+}
+
+.mt2 {
+  margin-top: 35px;
 }
 
 .selector p {
@@ -63,13 +97,23 @@ h1, h2, h3, h4 {
     font-size: 15px;
     color: #2a363b;
     padding: 0 25px;
-    max-width: 60%;
+    max-width: 75%;
+    margin-top: 12px;
 }
+
+.selector p i {
+  font-style: normal;
+  padding: 0 5px;
+  margin-right: 3px;
+  border: 1px solid #2a363b;
+  color: #2a363b;
+}
+
 /*Belongs to filter*/
 .informer {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
-	padding: 5px 8px 0;
+	padding: 5px 0;
 	resize: both;
 }
 
@@ -82,7 +126,9 @@ h1, h2, h3, h4 {
 	font-size: 12px;
   color: #4a585f;
 }
+
 /*Belongs to contentView*/
+
 .drawer {
   background-color: #eeeeec;
   font-family: 'Open Sans', sans-serif;
@@ -104,14 +150,22 @@ h1, h2, h3, h4 {
   color: #4a585f;
 }
 
-#geocercas {
+#geocercas,
+#proyectos {
     display: block !important;
+    padding-top: 0;
 }
 
-.MuiPaper-root-4 {
+
+
+div[class*="MuiPaper-root-"] {
     margin: 0 !important;
     color: #2a363b;
     font-size: 14px;
+}
+
+div[class*="MuiPaper-root-"]:nth-child(1) {
+    margin-top:10px;
 }
 
 .leaflet-container {
@@ -124,6 +178,7 @@ h1, h2, h3, h4 {
  -webkit-order: 1;
 				 order: 1;
   font-family: 'Roboto', sans-serif !important;
+  z-index: 0;
 }
 
 .leaflet-control-zoom a {
@@ -137,18 +192,24 @@ h1, h2, h3, h4 {
   border: 0 !important;
 }
 
+#panel1-Geocerca {
+  margin-top: 15px !important;
+}
 
 #panel1-Geocerca > div:nth-child(1),
+#panel1-Centro > div:nth-child(1),
 #panel2 > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;
-  text-transform: uppercase;
   background-color: #2a363b;
   color: #fff !important;
   font-family: 'Open Sans', sans-serif !important;
 }
 
-#panel1-Geocerca > div:nth-child(1) .MuiSvgIcon-root-46 {
+#panel1-Geocerca > div:nth-child(1) svg,
+#panel1-Centro > div:nth-child(1) svg,
+#panel2 > div:nth-child(1) svg,
+#panel3 > div:nth-child(1) svg {
   color: #e84a5f;
 }
 
@@ -156,11 +217,40 @@ h1, h2, h3, h4 {
   background-color: #000;
 }
 
-#geocercas {
-  padding-top: 0;
+div[class*="MuiExpansionPanelSummary-expanded-"] {
+  text-transform: uppercase;
 }
 
-.backbtn {
+.inlineb {
+  display: inline-block !important;
+	margin: 10px 20px;
+}
+
+div[id*="panel"] button {
+  border: none;
+  border-right: 1px solid #2a363b;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 300;
+  cursor: pointer;
+  outline: none;
+  width: 120px;
+  min-height: 42px;
+  vertical-align: top;
+  font-weight: 600;
+  color: #979797;
+  margin-bottom: 3px;
+}
+
+div[id*="panel"] button:hover {
+  border-right: 1px solid transparent;
+  color: #fff;
+  background-color: #e84a5f;
+}
+
+/*2do menu graficas*/
+
+.geobtn {
   border: none;
   background-color: transparent;
   color: #e84a5f;
@@ -169,24 +259,92 @@ h1, h2, h3, h4 {
   border-bottom: 1px solid transparent;
 }
 
-.backbtn svg {
+.geobtn svg {
   font-size: 30px;
 }
 
-.backbtn:hover {
+.geobtn:hover {
   color: #2a363b;
-  border-bottom: 1px solid #2a363b; 
+  border-bottom: 1px solid #2a363b;
 }
 
-div[class*="MuiExpansionPanelSummary-expanded-"] {
-  text-transform: uppercase;
+.tabs {
+  width: 33.33%;
+  vertical-align: top;
+  margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
-/*#root {
-  height: calc(100vh - 200px);
-  overflow-y: scroll;
+.tabs2 {
+  width: 50%;
+  max-width: auto;
 }
 
-*/
+button[class*="MuiTab-selected-"] {
+  color: #e84a5f !important;
+}
 
+header[class*="MuiPaper-elevation4"] {
+  box-shadow: none !important;
+  height: auto;
+  padding: 0;
+}
 
+div[class*="Drawer-root-"]{
+  background-color: transparent;
+}
+
+div[class*="MuiTypography-body1"],
+.graphcontainer {
+  margin: 0;
+  padding: 15px !important;
+  overflow: hidden;
+}
+
+button[class*="MuiTab-root"] {
+  max-width: 500px !important;
+}
+
+.graphcard {
+  margin: 10px 0;
+  border-radius: 5px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  background-color: #fff;
+  position: relative;
+}
+
+.graphcard h2 {
+  border-bottom: 1px solid #e84a5f;
+  padding: 10px;
+  font-size: 16px;
+  display: block;
+  text-align: right;
+  color: #fff;
+  font-weight: 400;
+  background-color: #2a363b;
+}
+
+.graphcard p {
+  padding: 10px;
+  text-align: right;
+  font-size: 14px;
+  color: #424242;
+}
+
+.leaflet-popup-tip {
+  background-color: rgba(0,0,0,0.9);
+}
+.leaflet-popup-content-wrapper {
+  background-color: rgba(0,0,0,0.9);
+  color: #fff;
+  padding: 12;
+  line-height: 1.5;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.nocolor {
+  color: transparent;
+}

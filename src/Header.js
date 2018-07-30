@@ -10,9 +10,7 @@ class Header extends React.Component {
 		  <header>
           <div>
             <nav>
-              <div className="menuToggle">
                 <Menu />
-              </div>
             </nav>
             <Title title='BioTablero' subTitle='Prueba'/>
           </div>

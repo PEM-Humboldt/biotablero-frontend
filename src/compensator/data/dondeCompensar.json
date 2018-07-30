@@ -1,0 +1,174 @@
+{
+    "hits": {
+        "hits": [
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0009308789",
+                    "FACT_COMP": "5.25",
+                    "BIOMA_IAVH": "Hidrobioma Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0502126523",
+                    "FACT_COMP": "8.0",
+                    "BIOMA_IAVH": "Orobioma Andino Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0045243727",
+                    "FACT_COMP": "8.5",
+                    "BIOMA_IAVH": "Orobioma Subandino Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0505686751",
+                    "FACT_COMP": "7.5",
+                    "BIOMA_IAVH": "Orobioma Subandino Guane-Yariguíes"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0071412399",
+                    "FACT_COMP": "7.75",
+                    "BIOMA_IAVH": "Helobioma Magdalena medio y depresión momposina"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0071604362",
+                    "FACT_COMP": "4.25",
+                    "BIOMA_IAVH": "Hidrobioma Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0022849402",
+                    "FACT_COMP": "7.5",
+                    "BIOMA_IAVH": "Orobioma Azonal Subandino Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0413877471",
+                    "FACT_COMP": "7.25",
+                    "BIOMA_IAVH": "Zonobioma Humedo Tropical Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0054200491",
+                    "FACT_COMP": "7.0",
+                    "BIOMA_IAVH": "Zonobioma Humedo Tropical Guane-Yariguíes"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.154365364",
+                    "FACT_COMP": "7.75",
+                    "BIOMA_IAVH": "Zonobioma Humedo Tropical Magdalena medio y depresión momposina"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.122691117",
+                    "FACT_COMP": "7.0",
+                    "BIOMA_IAVH": "Zonobioma Humedo Tropical Nechí-San Lucas"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0033827725",
+                    "FACT_COMP": "7.0",
+                    "BIOMA_IAVH": "Helobioma Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0052069074",
+                    "FACT_COMP": "5.5",
+                    "BIOMA_IAVH": "Hidrobioma Nechí-San Lucas"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0018855966",
+                    "FACT_COMP": "7.25",
+                    "BIOMA_IAVH": "Orobioma Andino Tolima grande"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0725510668",
+                    "FACT_COMP": "8.25",
+                    "BIOMA_IAVH": "Orobioma Azonal Andino Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0048084917",
+                    "FACT_COMP": "9.0",
+                    "BIOMA_IAVH": "Orobioma Azonal Subandino Tolima grande"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.1337640974",
+                    "FACT_COMP": "6.75",
+                    "BIOMA_IAVH": "Orobioma Andino Guane-Yariguíes"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0001627757",
+                    "FACT_COMP": "8.0",
+                    "BIOMA_IAVH": "Orobioma Azonal Andino Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0204861344",
+                    "FACT_COMP": "6.25",
+                    "BIOMA_IAVH": "Orobioma de Paramo Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0117934174",
+                    "FACT_COMP": "7.75",
+                    "BIOMA_IAVH": "Orobioma Subandino Cordillera oriental Magdalena medio"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0002281215",
+                    "FACT_COMP": "4.25",
+                    "BIOMA_IAVH": "Hidrobioma Guane-Yariguíes"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0426375506",
+                    "FACT_COMP": "5.25",
+                    "BIOMA_IAVH": "Hidrobioma Magdalena medio y depresión momposina"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.2383690781",
+                    "FACT_COMP": "7.75",
+                    "BIOMA_IAVH": "Orobioma Andino Altoandino cordillera oriental"
+                }
+            },
+            {
+                "_source": {
+                    "PORCENT_AFECTACION": "0.0180365174",
+                    "FACT_COMP": "8.25",
+                    "BIOMA_IAVH": "Orobioma Azonal Andino Tolima grande"
+                }
+            }
+        ]
+    }
+}

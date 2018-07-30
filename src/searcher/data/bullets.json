@@ -1,0 +1,7 @@
+[
+ { "vertical":false,
+   "title" :"Biomas por zonas",
+  "charts":[{"title":"Revenue","subtitle":"US$, in thousands","ranges":[150,225,300],"measures":[220,270],"markers":[250]},
+  {"title":"Profit","subtitle":"%","ranges":[20,25,30],"measures":[21,23],"markers":[26],"reverse":true}
+ ]}
+]

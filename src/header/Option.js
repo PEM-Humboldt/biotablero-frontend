@@ -5,7 +5,7 @@ function Option(props) {
   return (
     <div>
       {/* Parte 3 de 3 del enrutador: Llamar las rutas a enrutar*/}
-      <li><Link to={props.url}>{props.name}</Link></li>
+      <Link to={props.url}><li>{props.name}</li></Link>
     </div>
   );
 }

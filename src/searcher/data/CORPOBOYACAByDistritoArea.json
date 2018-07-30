@@ -1,0 +1,108 @@
+{
+	"data": {
+		"took": 5,
+		"timed_out": false,
+		"_shards": {
+			"total": 16,
+			"successful": 16,
+			"skipped": 0,
+			"failed": 0
+		},
+		"hits": {
+			"total": 1415,
+			"max_score": 0,
+			"hits": []
+		},
+		"aggregations": {
+			"total_area": {
+				"value": 1611034.09333048
+			},
+			"areas": {
+				"doc_count_error_upper_bound": 0,
+				"sum_other_doc_count": 0,
+				"buckets": [{
+					"key": "Altoandino cordillera oriental",
+					"doc_count": 1,
+					"area": {
+						"value": 472295.798552602
+					}
+				}, {
+					"key": "Altoandino influencia llanera",
+					"doc_count": 1,
+					"area": {
+						"value": 97838.9009363924
+					}
+				}, {
+					"key": "Cordillera oriental Magdalena medio",
+					"doc_count": 1,
+					"area": {
+						"value": 140700.457068481
+					}
+				}, {
+					"key": "Guane-Yariguíes",
+					"doc_count": 1,
+					"area": {
+						"value": 150208.160518632
+					}
+				}, {
+					"key": "Magdalena medio y depresión momposina",
+					"doc_count": 1,
+					"area": {
+						"value": 38201.9507832119
+					}
+				}, {
+					"key": "Nechí-San Lucas",
+					"doc_count": 1,
+					"area": {
+						"value": 121404.38682252
+					}
+				}, {
+					"key": "Piedemonte Orinoquia",
+					"doc_count": 1,
+					"area": {
+						"value": 33579.0385081472
+					}
+				}, {
+					"key": "Tamá",
+					"doc_count": 1,
+					"area": {
+						"value": 15.45679778943
+					}
+				}, {
+					"key": "Uwa",
+					"doc_count": 1,
+					"area": {
+						"value": 484831.842011808
+					}
+				}, {
+					"key": "Vertiente llanera cordillera oriental",
+					"doc_count": 1,
+					"area": {
+						"value": 71958.101330896
+					}
+				}]
+			}
+		}
+	},
+	"status": 200,
+	"statusText": "OK",
+	"headers": {
+		"content-type": "application/json; charset=UTF-8"
+	},
+	"config": {
+		"transformRequest": {},
+		"transformResponse": {},
+		"timeout": 0,
+		"xsrfCookieName": "XSRF-TOKEN",
+		"xsrfHeaderName": "X-XSRF-TOKEN",
+		"maxContentLength": -1,
+		"headers": {
+			"Accept": "application/json, text/plain, */*",
+			"Content-Type": "application/json;charset=utf-8"
+		},
+		"method": "post",
+		"url": "http://192.168.205.190:9200/_search/template",
+		"data": "{\"id\":\"carByDistritoArea\",\"params\":{\"id_car\":\"CORPOBOYACA\"}}"
+	},
+	"request": {}
+}
