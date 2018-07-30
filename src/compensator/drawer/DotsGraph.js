@@ -14,9 +14,9 @@ let tooltipTimeout;
 
 export default withTooltip(props => {
   const { width, height } = props;
-  const margin = { top: 40, bottom: 40, left: 60, right: 50 };
+  const margin = { top: 0, bottom: 40, left: 80, right: 40 };
   const xMax = width - margin.left - margin.right;
-  const yMax = height - 80;
+  const yMax = height - 65;
   if (width < 10) return null;
 
   let points = props.dataJSON;
@@ -50,7 +50,7 @@ export default withTooltip(props => {
           y={0}
           width={width}
           height={height}
-          fill={'white'}
+          fill={'transparent'}
         />
         <Grid
           top={margin.top}
@@ -109,9 +109,9 @@ export default withTooltip(props => {
               );
             })}
             <AxisLeft
-              left={margin.left}
+              left={margin.left-10}
               scale={yScale}
-              stroke="#edc2c7"
+              stroke="none"
               tickStroke="#edc2c7"
               label={props.labelY}
               labelProps={{
@@ -128,8 +128,8 @@ export default withTooltip(props => {
             <AxisBottom
               left={margin.left}
               scale={xScale}
-              top={yMax-10}
-              stroke="#edc2c7"
+              top={yMax+10}
+              stroke="none"
               label={props.labelX}
               labelProps={{
                 fill: '#e84a5f',
@@ -152,7 +152,6 @@ export default withTooltip(props => {
             style={{
               minWidth: 60,
               backgroundColor: 'rgba(0,0,0,0.9)',
-              color: 'white',
               padding: 12,
               lineHeight: '1.5',
             }}

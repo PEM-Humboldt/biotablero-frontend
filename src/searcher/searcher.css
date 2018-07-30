@@ -192,7 +192,7 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   border: 0 !important;
 }
 
-#panel1-Geocerca {
+#panel1-Geocerca, #panel1-Norte {
   margin-top: 15px !important;
 }
 
@@ -332,6 +332,32 @@ button[class*="MuiTab-root"] {
   color: #424242;
 }
 
+p.legcomp {
+  padding-top: 0;
+}
+
+.legcomp b {
+  color: #ea495f;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.legcomp i {
+  font-style: normal;
+  font-weight: 600;
+  color: #eabc47;
+  margin-right: 10px;
+}
+.legcomp em {
+  font-style: normal;
+  font-weight: 600;
+  color: #51b4c1;
+  margin-right: 10px;
+}
+
+.pb {
+  padding-bottom: 0;
+}
+
 .leaflet-popup-tip {
   background-color: rgba(0,0,0,0.9);
 }
@@ -347,4 +373,26 @@ button[class*="MuiTab-root"] {
 
 .nocolor {
   color: transparent;
+}
+
+.total {
+  padding: 10px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  display: inline-block;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.total h3 {
+  text-transform: uppercase;
+  font-size: 22px;
+  color: #ea495f;
+  font-weight: 400;
+  padding-bottom: 5px;
+  text-align: left;
+}
+
+.total h4 {
+  font-size: 30px;
+  text-align: left;
 }

@@ -181,10 +181,11 @@ class Drawer extends React.Component {
             // datosJSON={this.props.datosJSON} */}
           </TabContainer>}
           {value === 1 && <TabContainer>
+            <div className="total">
+            <h3>Total a compensar</h3>
+            <h4>{this.state.totalACompensar}</h4>
+            </div>
             {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
-            <p>
-              Total a compensar: {this.state.totalACompensar}
-            </p>
             {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             <CarritoIcon />
           </TabContainer>}
