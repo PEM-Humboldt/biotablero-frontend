@@ -12,7 +12,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
-import CarritoIcon from '@material-ui/icons/AddLocation';
 import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
@@ -109,7 +108,7 @@ class Drawer extends React.Component {
   mostrarGraficos(param, data, labelX, labelY, graph){
     if(param===1) {
       return (
-        <ParentSize>
+        <ParentSize className="nocolor">
           {
             parent => (
               parent.width && parent.height
@@ -135,7 +134,7 @@ class Drawer extends React.Component {
     // TODO: Finalizar muestra de selector de szh y CAR
     if(total!==0) {
       return (
-        <ParentSize>
+        <ParentSize className="nocolor">
           {
             parent => (
               parent.width && parent.height
@@ -185,9 +184,12 @@ class Drawer extends React.Component {
             <h3>Total a compensar</h3>
             <h4>{this.state.totalACompensar}</h4>
             </div>
+            <div className="total carrito">
+            <h3>Áreas seleccionadas</h3>
+            <h4>0</h4>
+            </div>
             {this.mostrarGraficos(1, this.state.datosDonde, 'Area afectada', 'Factor de Compensación', 'ScatterChart')}
             {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
-            <CarritoIcon />
           </TabContainer>}
         </div>
       );
