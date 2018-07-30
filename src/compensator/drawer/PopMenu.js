@@ -2,6 +2,19 @@
 import React, { Component } from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import CarritoIcon from '@material-ui/icons/AddLocation';
+import Select from 'react-select';
+
+const options = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
+
+const options2 = [
+  { value: 'chocolate', label: 'Chocolate' },
+  { value: 'strawberry', label: 'Strawberry' },
+  { value: 'vanilla', label: 'Vanilla' }
+]
 
 class PopMenu extends Component {
   constructor(props) {
@@ -30,14 +43,8 @@ class PopMenu extends Component {
           onChange={this.handleChange('BiomaSeleccionado')}> */}
           <CarritoIcon />
           <div className="Biomatit">{(this.props.subArea) ? this.props.subArea : "Seleccione un bioma del gráfico"}</div>
-          <br></br>
-          <select>
-            <option value="SZH"> Seleccione SZH...</option>
-          </select>
-          <br></br>
-          <select>
-            <option disabled value="CAR"> Seleccione CAR...</option>
-          </select>
+            <Select options={options} />
+            <Select options={options2} />
 
         {/* </ExpansionPanel> */}
       </div>
