@@ -19,8 +19,7 @@ class Footersm extends React.Component {
   }
 
 function Link(props) {
-  return (<a href={props.url}>Instituto de Recursos Biológicos<br></br><b>Alexander von Humboldt</b></a>);
+  return (<a href={props.url}>Instituto de Investigación de Recursos Biológicos<br></br><b>Alexander von Humboldt</b></a>);
 }
 
 export default Footersm;
-

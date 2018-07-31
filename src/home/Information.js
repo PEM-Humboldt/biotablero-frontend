@@ -51,7 +51,7 @@ class Information extends React.Component {
       <div className="geocont invisible">
         <div className="content cont1">
           <h1>¿Qué son las consultas geográficas?</h1>
-          <p>Cambiar texto.</p>
+          <p>Las consultas geográficas permiten visualizar información existente para unos límites geográficos predeterminados. Técnicamente es una sobreposición de información geográfica, en donde dada una entrada definida por el usuario, por ejemplo, un departamento, una cuenta hidrográfica, una jurisdicción ambiental, se busca la información disponible en el Instituto Humboldt y se presenta una síntesis para las siguientes temáticas: ecología del paisaje, especies y ecosistemas.</p>
         </div>
         <div className="content cont2">
           <h1>¿Por qué este modulo?</h1>

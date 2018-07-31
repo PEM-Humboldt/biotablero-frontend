@@ -12,13 +12,14 @@ function Content(props) {
         localLink="/Consultas"/>
       <MenuButton styles={"finder ind"}
         value="indicadores de" valueB="biodiversidad"
-        localLink="./filters.html"/>
+        localLink="Indicadores"
+        externalLink="http://humboldt-156715.appspot.com/filters.html"/>
       <MenuButton styles={"finder com"}
         value="compensación" valueB="ambiental"
         localLink="/Compensaciones"/>
       <MenuButton styles={"finder ale"}
         value="alertas" valueB="tempranas"
-        localLink="./alertas.html"/>
+        localLink="./Alertas"/>
     </div>
   );
 }

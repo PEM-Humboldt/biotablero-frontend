@@ -35,7 +35,7 @@ export default withTooltip((
   // Define las dimensiones y márgenes del gráfico
   const width = props.width;
   const height = 300;
-  const margin = { top: 40, bottom: 40, left: 40, right: 50 };
+  const margin = { top: 40, bottom: 60, left: 40, right: 50 };
 
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
@@ -122,7 +122,7 @@ export default withTooltip((
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
-                fontSize: 9,
+                fontSize: 13,
                 textAnchor: 'middle',
               }}
               stroke="#ea495f"
