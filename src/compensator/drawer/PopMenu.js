@@ -76,13 +76,14 @@ render () {
         placeholder={"SubZona Hidrográfica"}
         options={options} />
         {this.state.szhSelected ? this.evaluateCAR(this.state.szhSelected.value) : ""}
-        {this.state.jurisdiccionSelected ? <button
-          className="geobtn"
+        {this.state.jurisdiccionSelected ? 
+        <button
+          className="addbioma"
           onClick={() => {
             this.props.szh(this.state.szhSelected.value);
             this.props.actualizarBiomaActivo(this.state.jurisdiccionSelected.value);
           }}
-          > Agregar </button> : ""}
+          >+</button> : ""}
       </div>
     );
   }
