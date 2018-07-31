@@ -477,7 +477,8 @@ class Drawer extends React.Component {
             {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             <br></br>
             <button className="backgraph"
-              onClick={() => this.props.verMenu("Selector")}>
+              // onClick={() => this.props.verMenu("Selector")}
+>
               <BackGraph/> Ir al gráfico
               </button>
               <div className="titecositema">
@@ -485,7 +486,7 @@ class Drawer extends React.Component {
                 <b>SZH:</b> Río Suárez<br></br>
                 <b>Jurisdicción:</b> Corporacion Autonoma Regional de Cundinamarca
               </div>
-            <How />         
+            <How />
           </TabContainer>}
         </div>
       );
