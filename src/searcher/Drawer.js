@@ -83,7 +83,7 @@ class Drawer extends React.Component {
 
   componentWillMount () {
     this.cargarDatosJSON(
-      'http://192.168.205.190:9200/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
+      'http://192.168.11.63:9200/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       'carByBiomaArea', "CORPOBOYACA");
       // console.log(this.state.data);
       // .then((res)=>{

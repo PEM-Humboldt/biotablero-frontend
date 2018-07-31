@@ -1,6 +1,5 @@
 // TODO: Administrar las opciones seleccionadas
 import React, { Component } from 'react';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import CarritoIcon from '@material-ui/icons/AddLocation';
 import Select from 'react-select';
 
@@ -11,18 +10,20 @@ const options = [
 ]
 
 const bogota = [
-  { value: 'Orobioma Andino Altoandino cordillera oriental',
-  label: 'Orobioma Andino Altoandino cordillera oriental' },
+  { value: 'CAR - Corporación Autónoma Regional',
+  label: 'CAR - Corporación Autónoma Regional' },
 ]
 const suarez = [
-  { value: 'Orobioma Andino Altoandino cordillera oriental',
-  label: 'Orobioma Andino Altoandino cordillera oriental' },
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
+  { value: 'CAR - Corporación Autónoma Regional',
+  label: 'CAR - Corporación Autónoma Regional' },
+  { value: 'CAS - Corporación Autónoma Regional de Santander',
+  label: 'CAS - Corporación Autónoma Regional de Santander' },
 ]
 const opon = [
-  { value: 'strawberry', label: 'Strawberry' },
-  { value: 'vanilla', label: 'Vanilla' }
+  { value: 'CAR - Corporación Autónoma Regional',
+  label: 'CAR - Corporación Autónoma Regional' },
+  { value: 'CAS - Corporación Autónoma Regional de Santander',
+  label: 'CAS - Corporación Autónoma Regional de Santander' },
 ]
 
 class PopMenu extends Component {

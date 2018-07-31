@@ -167,8 +167,7 @@ export default withTooltip((
         }}
         >
         <div>
-          <strong>Bioma IAvH: </strong> <br></br>
-          {tooltipData.name}
+          <strong>{tooltipData.name}</strong><br></br>
           <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
         </div>
       </Tooltip>}

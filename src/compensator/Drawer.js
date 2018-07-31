@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 import PopMenu from './drawer/PopMenu';
+
 // var dataCompensaciones = require('./data/dondeCompensar.json');
 var dataCompensaciones = require('./data/que_y_donde_compensar.json');
 var dataSogamoso = require('./data/donde_compensar_sogamoso.json');

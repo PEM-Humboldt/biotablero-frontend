@@ -83,7 +83,7 @@ export default withTooltip(props => {
                   top={yScale(y(point))}
                   size={xScale(x(point))}
                   // xScale={xScale}
-                  zScale={zScale}
+                  // zScale={zScale}
                   onMouseEnter={() => event => {
                     if (tooltipTimeout) {
                       clearTimeout(tooltipTimeout);

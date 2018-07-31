@@ -1,6 +1,6 @@
 import React from 'react';
-import Element from './InfoButton';
-import Description from './Description';
+// import Element from './InfoButton';
+// import Description from './Description';
 // import '../common/ScriptHome';
 var $ = require ('jquery');
 
