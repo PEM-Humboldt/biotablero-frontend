@@ -415,3 +415,74 @@ p.legcomp {
   color: #ea495f;
   float: left;
 }
+
+.Select-menu-outer { top: auto; bottom: 100%; }
+
+.Select-option.is-focused  {
+    background-color: rgba(234, 73, 95, 0.15) !important;
+}
+
+.icondown {
+  float: left;
+  cursor: pointer;
+  margin-top: -3px;
+}
+
+table.graphcard {
+  width: 100%;
+  font-size: 12px;
+  padding: 7px;
+}
+
+.graphcard th {
+  color: #ea495f;
+  border-bottom: 1px solid #ea495f;
+  text-transform: uppercase;
+  font-size: 13px;
+  padding: 5px 3px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.graphcard td {
+  color: #345b6b;
+  padding: 1px 3px;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+tr.row2table:nth-child(odd){
+  background-color: rgba(234, 73, 95, 0.15);
+}
+
+.graphcard tr.row3table td {
+  background-color: #345b6b;
+  font-weight: 600;
+  color: #fff !important;
+}
+
+.addbioma {
+  background: transparent;
+  color: #ea495f;
+  outline: none;
+  cursor: pointer;
+  border: 2px solid #ea495f;
+  font-weight: 600;
+  height: 25px;
+  width: 30px;
+  border-radius: 50%;
+  line-height: 0;
+  text-align: center;
+  font-size: 32px;
+  margin-top: 5px;
+  vertical-align: top;
+  padding-bottom: 5px;
+  -webkit-box-sizing: initial;
+  -moz-box-sizing: initial;
+  box-sizing: initial;
+}
+
+.addbioma:hover {
+  background-color: #ea495f;
+  color: #fff;
+}

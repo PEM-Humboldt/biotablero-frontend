@@ -101,6 +101,16 @@ class ProjectSelector extends React.Component {
                 <button disabled onClick={() => this.props.innerPanelLayer('San Fernando')}>San Fernando</button>
               </ExpansionPanelDetails>
             </ExpansionPanel>
+            <ExpansionPanel id='daa'
+              expanded= {subExpanded === 'DAA'}
+              onChange={this.subHandleChange('DAA')}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              + Agregar nuevo proyecto
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails className="inlineb">
+                <button disabled onClick={() => this.props.innerPanelLayer('San Fernando')}>San Fernando</button>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
           </ExpansionPanelDetails>
         </ExpansionPanel>
         <ExpansionPanel id="panel1-Occidente" disabled

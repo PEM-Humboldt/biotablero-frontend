@@ -33,16 +33,16 @@ export default withTooltip(props => {
     clamp: true,
   });
   const zScale = scaleOrdinal({
-    domain: points.map(z),
+    domain: points.map(x),
     range: props.colors,
   });
 
-  const checkColorFC = (value) =>{
-    if(props.labelX === "Area afectada") {
-      if (value < 6) return zScale(0);
-      if (value < 8) return zScale(1);
-      return zScale(2);
-    } else return zScale(value);
+  const checkColorFC = (value1, value2) =>{
+    if(props.labelX === "% Area afectada") {
+      if ((value1 > 6.5) && (value2 > 0.12)) return zScale(2);
+      if ((value1 > 6.5) && (value2 < 0.12)) return zScale(1);
+      if ((value1 < 6.4) && (value2 < 0.12)) return zScale(0);
+    }
   }
 
   return (
@@ -78,23 +78,22 @@ export default withTooltip(props => {
                   className="dot"
                   key={point.name}
                   // fill={zScale(y(point))}
-                  fill={checkColorFC(y(point))}
+                  fill={checkColorFC(y(point), x(point))}
                   left={margin.left + xScale(x(point))}
                   top={yScale(y(point))}
                   size={xScale(x(point))}
                   // xScale={xScale}
-                  zScale={zScale}
+                  // zScale={zScale}
                   onMouseEnter={() => event => {
                     if (tooltipTimeout) {
                       clearTimeout(tooltipTimeout);
                       props.showTooltip({
-                        tooltipLeft: margin.left + point.width + 75,
                         tooltipTop: margin.top + yScale(y(point)),
                         tooltipData: point
                       });
                     }
                     props.actualizarBiomaActivo(name(point));
-                    props.biomaColor(checkColorFC(zScale(z(point))));
+                    // props.biomaColor(checkColorFC(zScale(z(point)), 1));
                   }}
                   // onTouchStart={() => event => {
                   //   if (tooltipTimeout) clearTimeout(tooltipTimeout);
@@ -151,7 +150,7 @@ export default withTooltip(props => {
         </svg>
         {props.tooltipOpen &&
           <Tooltip
-            left={xScale(x(props.tooltipData))+ margin.left}
+            left={(xScale(x(props.tooltipData)) > margin.left) ? xScale(x(props.tooltipData)) : xScale(x(props.tooltipData))+ margin.left}
             top={props.tooltipTop}
             style={{
               minWidth: 60,
@@ -160,7 +159,8 @@ export default withTooltip(props => {
               lineHeight: '1.5',
             }}
             >
-              <div style={{ color: checkColorFC(y(props.tooltipData))}}>
+              <div style={{ color: checkColorFC(y(props.tooltipData), x(props.tooltipData))}}>
+                {console.log("checkColorFC(y(props.tooltipData), x(props.tooltipData)): "+y(props.tooltipData)+" "+x(props.tooltipData))}
                 {/* {name(props.tooltipData)} */}
                 <div><b> Afectación: </b>{Number(x(props.tooltipData)).toFixed(2)} %</div>
                 <div><b> FC: </b>{Number(y(props.tooltipData)).toFixed(2)}</div>

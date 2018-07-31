@@ -4,6 +4,7 @@ import { Bar } from '@vx/shape';
 import { scaleLinear, scaleBand } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import { AxisBottom, AxisLeft } from '@vx/axis';
+import Descargar from '@material-ui/icons/Save';
 
 // Se exporta el SGV construido
 export default withTooltip((
@@ -34,7 +35,7 @@ export default withTooltip((
   // Define las dimensiones y márgenes del gráfico
   const width = props.width;
   const height = 300;
-  const margin = { top: 40, bottom: 40, left: 40, right: 50 };
+  const margin = { top: 40, bottom: 60, left: 40, right: 50 };
 
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
@@ -71,7 +72,7 @@ export default withTooltip((
   return (
     <div className="graphcontainer">
     <div className="graphcard">
-    <h2>{titulo}</h2>
+    <h2><Descargar className="icondown" />{titulo}</h2>
     <svg width={width} height={height}>
       {data.map((d, i) => {
         const barHeight = yMax - yPoint(d);
@@ -121,7 +122,7 @@ export default withTooltip((
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
-                fontSize: 9,
+                fontSize: 13,
                 textAnchor: 'middle',
               }}
               stroke="#ea495f"
@@ -166,8 +167,7 @@ export default withTooltip((
         }}
         >
         <div>
-          <strong>Bioma IAvH: </strong> <br></br>
-          {tooltipData.name}
+          <strong>{tooltipData.name}</strong><br></br>
           <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
         </div>
       </Tooltip>}

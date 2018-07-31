@@ -23,7 +23,7 @@ class MapViewer extends React.Component {
       tileLayer: null,
       geoJsonLayerAvailable: [],
       geoJson: null,
-
+      geoJsonId: null,
     };
     this.setGeoJSONLayer = this.setGeoJSONLayer.bind(this);
     this.cargarCapaGeoJSON = this.cargarCapaGeoJSON.bind(this);
@@ -117,10 +117,14 @@ mifunc2(e){
 //  revisando la carga
 setGeoJSONLayer(URL) {
   let capa = null;
-  axios.get(URL)
-  .then((res) => {
+  axios.get(URL, {
+    method: 'HEAD',
+    'Access-Control-Allow-Origin': '*',
+  }).then((res) => {
     capa = res.data;
-    this.setState({ geoJsonLayer: capa,
+    this.setState({
+      geoJsonLayer: capa,
+      geoJsonId: capa.features[0].id,
       // geoJsonLayerAvailable: [...this.state.geoJsonLayerAvailable, capa]
     });
     if (this.state.geoJsonLayer
@@ -162,119 +166,135 @@ setGeoJSONLayer(URL) {
                   .addTo(this.mapRef.current.leafletElement);
                   this.mostrarCapa(this.CapaSogamoso, false);
                 }
-              })
-            }
-
-            cargarCapaGeoJSON(URL_JSON){
-              // TODO: Centralizar la carga de capas en esta función
-              const res = axios.get(URL_JSON).then((r)=>{return r;});
-              // console.log("cargarCapaGeoJSON(URL_JSON): "+ JSON.stringify(res.data));
-              this.setState({
-                geoJsonLayer: res.data,
-                geoJsonLayerAvailable: [...this.state.geoJsonLayerAvailable, res.data]
-              });
-              console.log('Capas disponibles: '+ JSON.stringify(this.state.geoJsonLayerAvailable[0].features[0].id));
-              if(this.state.geoJsonLayerAvailable[1]){
-                console.log('Capas disponibles: '+ JSON.stringify(this.state.geoJsonLayerAvailable[1].features[1].id));
-              }
-            }
-
-            componentWillMount() {
-              // this.cargarCapaGeoJSON('http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
-              // this.cargarCapaGeoJSON('http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson');
-              // this.setState({
-              //   capasMontadas: local,
-              // });
-              // TODO: Iniciar la carga del módulo de consultas con la capa / imagen
-              //  de las 4 regiones precargada y que permita elegir la jurisdicción
-              //  sobre el mapa.
-              this.CapaJurisdicciones=null;
-              this.CapaCorpoBoyaca=null;
-              this.CapaSogamoso=null;
-              // TODO: Manejar la promesa, para que espere las capas a cargar
-              this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson`);
-              this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`);
-              this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson`);
-
-              // this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`);
-              // this.setGeoJSONLayer(this.state.capasMontadas[1].url);
-            }
-
-            componentDidUpdate() {
-
-              // adevia - Comentarios: Esta función se ejecuta siempre que hay evento en el componente MapViewer
-              // Verificadores de capa seleccionada en el selector
-              if(this.CapaJurisdicciones !== null
-                && this.props.capasMontadas[1] === 'Jurisdicciones') {
-                this.mostrarCapa(this.CapaJurisdicciones, true);
-                this.mostrarCapa(this.CapaCorpoBoyaca, false);
-              }
-              if(this.CapaCorpoBoyaca !== null
-                && this.props.capasMontadas[2] ==='CORPOBOYACA') {
-                  // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
-                  this.mostrarCapa(this.CapaCorpoBoyaca, true);
-                  this.mostrarCapa(this.CapaJurisdicciones, false);
-                } else if (this.CapaCorpoBoyaca!==null
-                  && this.props.capasMontadas[1] === null){
-                    this.mostrarCapa(this.CapaCorpoBoyaca, false);
-                    this.mostrarCapa(this.CapaJurisdicciones, false);
-                  } if (this.CapaSogamoso !== null 
-                    && this.props.capasMontadas[2] === 'Sogamoso'){
-                    this.mostrarCapa(this.CapaSogamoso, true);
-                    // TODO: Implementar arreglo "capasActivas" para evitar crear por cada capa, un mostrarCapa(capa, false)
-                    if (this.CapaCorpoBoyaca !== null
-                      && this.CapaJurisdicciones !== null){ // Esto se hace al ser la capa más pesada en descargar
-                      this.mostrarCapa(this.CapaCorpoBoyaca, false);
-                      this.mostrarCapa(this.CapaJurisdicciones, false);
+                if (this.state.geoJsonLayer
+                  .features[0].id==='Sogamoso_Biomas.1'){
+                    this.CapaBiomasSogamoso=L.geoJSON(this.state.geoJsonLayer,
+                      {
+                        style:
+                        {
+                          stroke:false, fillColor:'#7b56a5',opacity:0.6,fillOpacity:0.4
+                        },
+                        onEachFeature:this.hexagonosOnEachFeature,
+                      })
+                      .addTo(this.mapRef.current.leafletElement);
+                      this.mostrarCapa(this.CapaBiomasSogamoso, false);
                     }
+                  })
+                }
+
+                cargarCapaGeoJSON(URL_JSON){
+                  // TODO: Centralizar la carga de capas en esta función
+                  const res = axios.get(URL_JSON).then((r)=>{return r;});
+                  // console.log("cargarCapaGeoJSON(URL_JSON): "+ JSON.stringify(res.data));
+                  this.setState({
+                    geoJsonLayer: res.data,
+                    geoJsonLayerAvailable: [...this.state.geoJsonLayerAvailable, res.data]
+                  });
+                  console.log('Capas disponibles: '+ JSON.stringify(this.state.geoJsonLayerAvailable[0].features[0].id));
+                  if(this.state.geoJsonLayerAvailable[1]){
+                    console.log('Capas disponibles: '+ JSON.stringify(this.state.geoJsonLayerAvailable[1].features[1].id));
                   }
                 }
 
-                hexagonosOnEachFeature(feature, layer){
-                  layer.on(
-                    {
-                      mouseover : this.highlightFeature,
-                      mouseout : this.resetHighlight,
-                      click : this.mifunc,
-                    }
-                  );
+                componentDidMount() {
+                  // this.cargarCapaGeoJSON('http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson');
+                  // this.cargarCapaGeoJSON('http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson');
+                  // this.setState({
+                  //   capasMontadas: local,
+                  // });
+                  // TODO: Iniciar la carga del módulo de consultas con la capa / imagen
+                  //  de las 4 regiones precargada y que permita elegir la jurisdicción
+                  //  sobre el mapa.
+                  this.CapaJurisdicciones=null;
+                  this.CapaCorpoBoyaca=null;
+                  this.CapaSogamoso=null;
+                  this.CapaBiomasSogamoso=null;
+                  // TODO: Manejar la promesa, para que espere las capas a cargar
+                  this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_Biomas&maxFeatures=50&outputFormat=application%2Fjson`);
+                  this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson`);
+                  this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`);
+                  this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson`);
+
+                  // this.setGeoJSONLayer(`http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`);
+                  // this.setGeoJSONLayer(this.state.capasMontadas[1].url);
                 }
 
-                onEachFeature(feature, layer){
-                  layer.on(
-                    {
-                      mouseover : this.highlightFeature,
-                      mouseout : this.resetHighlight2,
-                      click : this.mifunc2,
-                    }
-                  );
-                }
+    componentDidUpdate() {
+      // adevia - Comentarios: Esta función se ejecuta siempre que hay evento en el componente MapViewer
+      // Verificadores de capa seleccionada en el selector
+      if(this.CapaJurisdicciones !== null
+        && this.props.capasMontadas[1] === 'Jurisdicciones') {
+          this.mostrarCapa(this.CapaJurisdicciones, true);
+          this.mostrarCapa(this.CapaCorpoBoyaca, false);
+        }
+        if(this.CapaCorpoBoyaca !== null
+          && this.props.capasMontadas[2] ==='CORPOBOYACA') {
+            // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
+            this.mostrarCapa(this.CapaCorpoBoyaca, true);
+            this.mostrarCapa(this.CapaJurisdicciones, false);
+        } else if (this.CapaCorpoBoyaca!==null
+          && this.props.capasMontadas[1] === null){
+            this.mostrarCapa(this.CapaCorpoBoyaca, false);
+            this.mostrarCapa(this.CapaJurisdicciones, false);
+        } if (this.CapaSogamoso !== null
+          && this.props.capasMontadas[2] === 'Sogamoso'){
+            this.mostrarCapa(this.CapaSogamoso, true);
+            // TODO: Implementar arreglo "capasActivas" para evitar crear por cada capa, un mostrarCapa(capa, false)
+        if (this.CapaCorpoBoyaca !== null
+          && this.CapaJurisdicciones !== null){ // Esto se hace al ser la capa más pesada en descargar
+            this.mostrarCapa(this.CapaCorpoBoyaca, false);
+            this.mostrarCapa(this.CapaJurisdicciones, false);
+            this.mostrarCapa(this.CapaBiomasSogamoso, true);
+          }
+        }
+      }
 
-                getStyle(feature, layer) {
-                  //TODO: Ajustar función de estilo para pasarala a componentes react-leaflet
-                  console.log('Si entré a estilo');
-                  return {
-                    color: '#006400',
-                    weight: 5,
-                    opacity: 0.65
-                  }
-                }
+    hexagonosOnEachFeature(feature, layer){
+      layer.on(
+        {
+          mouseover : this.highlightFeature,
+          mouseout : this.resetHighlight,
+          click : this.mifunc,
+        }
+      );
+    }
 
-                render () {
-                  // const layerStyle = this.getStyle();
-                  // TODO: Ajustar el zoom para que tenga límites sobre el mapa
-                  return (
-                    <Map ref={this.mapRef} center={config.params.center} zoom={5.5} onClick={this.onMapClick}>
-                      <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                      />
-                      <WMSTileLayer
-                        layers='Biotablero:Regiones_geb'
-                        url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS"}
-                        opacity={0.2} alt={"Regiones"}/>
-                      </Map>
-                    );}
-                  }
+    onEachFeature(feature, layer){
+      layer.on(
+        {
+          mouseover : this.highlightFeature,
+          mouseout : this.resetHighlight2,
+          click : this.mifunc2,
+        }
+      );
+    }
 
-                  export default MapViewer;
+    getStyle(feature, layer) {
+      //TODO: Ajustar función de estilo para pasarala a componentes react-leaflet
+      console.log('Si entré a estilo');
+      return {
+        color: '#006400',
+        weight: 5,
+        opacity: 0.65
+      }
+    }
+
+    render () {
+      // const layerStyle = this.getStyle();
+      // TODO: Ajustar el zoom para que tenga límites sobre el mapa
+      return (
+        <Map ref={this.mapRef} center={config.params.center} zoom={5.5} onClick={this.onMapClick}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+          />
+          <WMSTileLayer
+            layers='Biotablero:Regiones_geb'
+            url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS"}
+            opacity={0.2} alt={"Regiones"}/>
+          </Map>
+        );
+    }
+}
+
+export default MapViewer;

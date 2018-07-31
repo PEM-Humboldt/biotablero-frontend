@@ -15,7 +15,6 @@
     "@vx/glyph": "0.0.170",
     "@vx/grid": "0.0.170",
     "@vx/group": "0.0.165",
-    "@vx/mock-data": "0.0.165",
     "@vx/responsive": "0.0.165",
     "@vx/scale": "0.0.165",
     "@vx/shape": "0.0.168",
