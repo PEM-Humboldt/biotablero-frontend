@@ -12,7 +12,7 @@ class How extends React.Component {
     let areaSeleccionada = 0;
     let valorLocal = 0;
     return (
-      <table className="graphcard">
+      <table className="graphcard special">
         <tbody>
           <tr className="row1table">
             <th>Estrategia</th>
@@ -31,7 +31,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -49,7 +49,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -66,7 +66,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -83,7 +83,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -100,7 +100,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -117,7 +117,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -134,7 +134,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -151,7 +151,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className= "addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
@@ -168,7 +168,7 @@ class How extends React.Component {
             type="text"
             // checked={this.state.isGoing}
             onChange={this.handleInputChange} />
-            <button className="addbioma"
+            <button className="addbioma smbtn"
             onClick={() => {
               this.agregarArea(valorLocal);
             }}

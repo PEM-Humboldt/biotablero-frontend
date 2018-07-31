@@ -461,10 +461,68 @@ tr.row2table:nth-child(odd){
   text-align: center;
   font-size: 32px;
   margin-top: 5px;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 .addbioma:hover {
   background-color: #ea495f;
   color: #fff;
+}
+
+.smbtn {
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+  font-size: 22px;
+  margin-left: 10px;
+  margin-top: 0;
+}
+
+.graphcard td input {
+  width: 100px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ea495f;
+}
+
+.graphcard td input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.special .row2table td:nth-child(3) {
+  white-space: nowrap;
+}
+
+.special {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.titecositema {
+  margin-bottom: -13px;
+  background-color: #2a363b;
+  padding: 10px 10px 15px;
+  margin-top: 10px;
+  color: #fff;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.backgraph {
+  color: #2a363b;
+  vertical-align: middle;
+  font-size: 16px;
+  border: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  line-height: 20px;
+  margin-top: 10px;
+}
+
+.backgraph svg {
+  height: 20px;
+  width: 20px;
+ vertical-align: top;
 }

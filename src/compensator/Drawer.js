@@ -18,6 +18,7 @@ import { ParentSize } from "@vx/responsive";
 import PopMenu from './drawer/PopMenu';
 import How from './How';
 import BackIcon from '@material-ui/icons/FirstPage';
+import BackGraph from '@material-ui/icons/Timeline';
 
 // var dataCompensaciones = require('./data/dondeCompensar.json');
 var dataCompensaciones = require('./data/que_y_donde_compensar.json');
@@ -472,17 +473,19 @@ class Drawer extends React.Component {
               <h3>Áreas seleccionadas</h3>
               <h4>0</h4>
             </div>
-            {/* {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
-            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)} */}
+            {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
+            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             <br></br>
-            <button className="geobtn"
+            <button className="backgraph"
               onClick={() => this.props.verMenu("Selector")}>
-              <BackIcon /> Regresar al gráfico "Dónde compensar"
-            </button><br></br>
-              <strong>Bioma:</strong> Orobioma Andino Altoandino cordillera oriental <br></br>
-              <strong>SZH:</strong> Río Suárez <br></br>
-              <strong>Jurisdicción:</strong> Corporacion Autonoma Regional de Cundinamarca
-            <How actualizarTotalACompensar={this.actualizarTotalACompensar} />
+              <BackGraph/> Ir al gráfico
+              </button>
+              <div className="titecositema">
+                <b>Bioma:</b> Orobioma Andino Altoandino cordillera oriental<br></br>
+                <b>SZH:</b> Río Suárez<br></br>
+                <b>Jurisdicción:</b> Corporacion Autonoma Regional de Cundinamarca
+              </div>
+            <How />         
           </TabContainer>}
         </div>
       );
