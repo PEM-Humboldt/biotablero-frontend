@@ -75,7 +75,7 @@ class Searcher extends Component {
       geojsonCapa4: campo,
       // infoCapaActiva: campo,
     });
-    console.log("biomaActivo: "+ campo);
+    // console.log("biomaActivo: "+ campo);
   }
 
   render() {

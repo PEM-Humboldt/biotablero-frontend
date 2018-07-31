@@ -290,6 +290,11 @@ setGeoJSONLayer(URL) {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
           />
+          {/* TODO: Mostrar bajo este formato los raster de cada estrategia de Compensaciones
+            <WMSTileLayer srs={ 'EPSG:4326' }
+                     layers='Biotablero:strategy_sogamoso_111_1_c'
+                     url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS&styles=raster_strategy"}
+                     opacity={1} alt={"Regiones"} styles={"raster_strategy"} format={'image/png'} transparent={true}/> */}
           <WMSTileLayer
             layers='Biotablero:Regiones_geb'
             url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS"}

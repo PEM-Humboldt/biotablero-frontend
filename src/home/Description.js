@@ -1,3 +1,5 @@
+// TODO: no se usa
+
 import React from 'react';
 import Card from './Card';
 

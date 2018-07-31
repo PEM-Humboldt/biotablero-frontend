@@ -10,18 +10,18 @@ const options = [
 ]
 
 const bogota = [
-  { value: 'CAR - Corporación Autónoma Regional',
-  label: 'CAR - Corporación Autónoma Regional' },
+  { value: 'CAR - Corporacion Autonoma Regional de Cundinamarca',
+  label: 'CAR - Corporacion Autonoma Regional de Cundinamarca' },
 ]
 const suarez = [
-  { value: 'CAR - Corporación Autónoma Regional',
-  label: 'CAR - Corporación Autónoma Regional' },
+  { value: 'CAR - Corporacion Autonoma Regional de Cundinamarca',
+  label: 'CAR - Corporacion Autonoma Regional de Cundinamarca' },
   { value: 'CAS - Corporación Autónoma Regional de Santander',
   label: 'CAS - Corporación Autónoma Regional de Santander' },
 ]
 const opon = [
-  { value: 'CAR - Corporación Autónoma Regional',
-  label: 'CAR - Corporación Autónoma Regional' },
+  { value: 'CAR - Corporacion Autonoma Regional de Cundinamarca',
+  label: 'CAR - Corporacion Autonoma Regional de Cundinamarca' },
   { value: 'CAS - Corporación Autónoma Regional de Santander',
   label: 'CAS - Corporación Autónoma Regional de Santander' },
 ]
@@ -88,16 +88,16 @@ evaluateCAR = (nameSZH) => {
 mostrarEstrategia = () => {
   // this.props.szh(this.state.szhSelected.value);
   // this.props.actualizarBiomaActivo(this.state.jurisdiccionSelected.value);
-  this.props.ocultarDatosGrafico(true, this.state.szhSelected.value, this.state.jurisdiccionSelected.value)
+  this.props.cargarEstrategia(true, this.state.szhSelected.value, this.state.jurisdiccionSelected.value);
 }
 
   componentDidUpdate() {
     if (this.state.jurisdiccionSelected && !this.state.szhSelected.value) {
       this.setState({jurisdiccionSelected: null,});
     }
-    if (this.props.subArea && this.state.szhSelected) {
-      this.setState({szhSelected: null,});
-    }
+    // if (this.props.subArea && this.state.szhSelected) {
+    //   this.setState({szhSelected: null,});
+    // }
   }
 
 render () {
@@ -108,11 +108,11 @@ render () {
         {(this.props.subArea) ? this.evaluateSZH(this.props.subArea) : ""}
         {(this.state.szhSelected ? this.evaluateCAR(this.state.szhSelected.value) : "")}
         {this.state.jurisdiccionSelected ?
-          <button className="geobtn"
+          <button className="addbioma"
           onClick={() => {
             this.mostrarEstrategia(this.state.szhSelected.value, this.state.jurisdiccionSelected.value);
           }}
-          > Agregar </button> : ""}
+          >+</button> : ""}
       </div>
     );
   }

@@ -460,3 +460,25 @@ tr.row2table:nth-child(odd){
   font-weight: 600;
   color: #fff !important;
 }
+
+.addbioma {
+  background: transparent;
+  color: #ea495f;
+  outline: none;
+  cursor: pointer;
+  border: 2px solid #ea495f;
+  font-weight: 600;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  line-height: 30px;
+  text-align: center;
+  font-size: 32px;
+  margin-top: 5px;
+  vertical-align: middle;
+}
+
+.addbioma:hover {
+  background-color: #ea495f;
+  color: #fff;
+}

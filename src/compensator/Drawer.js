@@ -16,6 +16,8 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 import PopMenu from './drawer/PopMenu';
+import How from './How';
+import BackIcon from '@material-ui/icons/FirstPage';
 
 // var dataCompensaciones = require('./data/dondeCompensar.json');
 var dataCompensaciones = require('./data/que_y_donde_compensar.json');
@@ -50,7 +52,7 @@ class Drawer extends React.Component {
       jurisdiccion: null,
       szh: null,
       biomaColor: "white",
-      estadoGrafico: null,
+      mostrarDatosEnGrafico: null,
       areaSeleccionada: null,
     };
   }
@@ -82,11 +84,16 @@ class Drawer extends React.Component {
     return transformedData;
   };
 
-  ocultarDatosGrafico = (estado, szh, jurisdiccion) => {
-    console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
+  ocultarDatosGrafico = () => {
+    // console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
     this.setState ({
-      estadoGrafico: estado,
+      mostrarDatosEnGrafico: false, // Ocultar el gráfico
     });
+  }
+
+  cargarEstrategia = (estado, szh, jurisdiccion) => {
+    // console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
+    this.ocultarDatosGrafico();
   }
 
   obtenerDatosQue = (data) => {
@@ -119,7 +126,7 @@ class Drawer extends React.Component {
   }
 
   componentDidUpdate () {
-    if (this.state.estadoGrafico) {
+    if (this.state.mostrarDatosEnGrafico) {
       // actualizarTotalACompensar(dataJSON, );
 }
 }
@@ -170,7 +177,7 @@ class Drawer extends React.Component {
                 subArea= {this.props.subArea}
                 szh= {this.props.actualizarBiomaActivo}
                 color = {this.state.color}
-                ocultarDatosGrafico = {this.ocultarDatosGrafico}
+                cargarEstrategia = {this.cargarEstrategia}
               />
             )
           }
@@ -465,8 +472,17 @@ class Drawer extends React.Component {
               <h3>Áreas seleccionadas</h3>
               <h4>0</h4>
             </div>
-            {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
-            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
+            {/* {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])} */}
+            {/* {this.showSelector(this.state.datosDonde, this.state.totalACompensar)} */}
+            <br></br>
+            <button className="geobtn"
+              onClick={() => this.props.verMenu("Selector")}>
+              <BackIcon /> Regresar al gráfico "Dónde compensar"
+            </button><br></br>
+              <strong>Bioma:</strong> Orobioma Andino Altoandino cordillera oriental <br></br>
+              <strong>SZH:</strong> Río Suárez <br></br>
+              <strong>Jurisdicción:</strong> Corporacion Autonoma Regional de Cundinamarca
+            <How />
           </TabContainer>}
         </div>
       );

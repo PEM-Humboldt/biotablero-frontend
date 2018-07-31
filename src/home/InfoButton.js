@@ -1,3 +1,5 @@
+// TODO: averiguar que hace
+
 import React from 'react';
 
 class InfoButton extends React.Component{
