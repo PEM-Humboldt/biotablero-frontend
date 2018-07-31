@@ -39,6 +39,7 @@ export default withTooltip(props => {
 
   const checkColorFC = (value1, value2) =>{
     if(props.labelX === "% Area afectada") {
+      // if ((value2 > 0.22)) return 0; // TODO: Habiltar cambio de color a "negro" si el punto ha sido seleccionado previamente
       if ((value1 > 6.5) && (value2 > 0.12)) return zScale(2);
       if ((value1 > 6.5) && (value2 < 0.12)) return zScale(1);
       if ((value1 < 6.4) && (value2 < 0.12)) return zScale(0);
