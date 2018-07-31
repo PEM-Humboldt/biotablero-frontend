@@ -62,7 +62,7 @@ class Selector extends React.Component {
         <p><i>1</i> Selecciona una <b>geocerca</b> predeterminada (departamentos, jurisdicciones, etc.)</p>
         <p><i>2</i> Sube tu propio <b>polígono</b> (usuarios registrados)</p>
         <p><i>3</i> Dibuja tu propia <b>línea o polígono</b> (usuarios registrados)</p>
-        <ExpansionPanel id='panel1-Geocerca'
+        <ExpansionPanel className="m0" id='panel1-Geocerca'
           expanded= {expanded === 'Geocercas'}  // Inicia con 'Geocercas' activa
           onChange={this.handleChange('Geocercas')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -70,7 +70,7 @@ class Selector extends React.Component {
           </ExpansionPanelSummary>
           {/* El id='geocercas' se utiliza en la hoja de estilos, para mostrar todos los elementos listados*/}
           <ExpansionPanelDetails id='geocercas'>
-              <ExpansionPanel id='Zonas GEB' expanded= {subExpanded === 'Zonas GEB'} onChange={this.subHandleChange('Zonas GEB')}>
+              <ExpansionPanel className="m0" id='Zonas GEB' expanded= {subExpanded === 'Zonas GEB'} onChange={this.subHandleChange('Zonas GEB')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Zonas GEB
                 </ExpansionPanelSummary>
@@ -81,7 +81,7 @@ class Selector extends React.Component {
                   <button>Occidente</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'Manejo Especial'} onChange={this.subHandleChange('Manejo Especial')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'Manejo Especial'} onChange={this.subHandleChange('Manejo Especial')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Áreas de manejo especial
                 </ExpansionPanelSummary>
@@ -93,7 +93,7 @@ class Selector extends React.Component {
                   <button>Territorios colectivos</button>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'Departamentos'} onChange={this.subHandleChange('Departamentos')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'Departamentos'} onChange={this.subHandleChange('Departamentos')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Departamentos
               </ExpansionPanelSummary>ANP
@@ -136,7 +136,7 @@ class Selector extends React.Component {
                   />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'Jurisdicciones'} onChange={this.subHandleChange('Jurisdicciones')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'Jurisdicciones'} onChange={this.subHandleChange('Jurisdicciones')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Jurisdicciones ambientales
                 </ExpansionPanelSummary>
@@ -186,7 +186,7 @@ class Selector extends React.Component {
                 />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'Zonas hidrográficas'} onChange={this.subHandleChange('Zonas hidrográficas')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'Zonas hidrográficas'} onChange={this.subHandleChange('Zonas hidrográficas')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Zonas hidrográficas
                 </ExpansionPanelSummary>
@@ -236,7 +236,7 @@ class Selector extends React.Component {
                   }/>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel expanded= {subExpanded === 'estratégicos'} onChange={this.subHandleChange('estratégicos')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'estratégicos'} onChange={this.subHandleChange('estratégicos')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Ecosistemas estratégicos
                 </ExpansionPanelSummary>
@@ -248,12 +248,12 @@ class Selector extends React.Component {
               </ExpansionPanel>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel id="panel2" disabled expanded= {expanded === 'panel2'} onChange={this.handleChange('panel2')}>
+        <ExpansionPanel className="m0" id="panel2" disabled expanded= {expanded === 'panel2'} onChange={this.handleChange('panel2')}>
           <ExpansionPanelSummary expandIcon={<FileUploadIcon />}>
           Subir polígono
           </ExpansionPanelSummary>
         </ExpansionPanel>
-        <ExpansionPanel id="panel3" disabled expanded= {expanded === 'panel3'} onChange={this.handleChange('panel3')}>
+        <ExpansionPanel className="m0" id="panel3" disabled expanded= {expanded === 'panel3'} onChange={this.handleChange('panel3')}>
           <ExpansionPanelSummary expandIcon={<RateReviewIcon />}>
           Dibujar polígono / Línea
           </ExpansionPanelSummary>

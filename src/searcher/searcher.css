@@ -157,15 +157,10 @@ h1, h2, h3, h4 {
 }
 
 
-
-div[class*="MuiPaper-root-"] {
+.m0 {
     margin: 0 !important;
     color: #2a363b;
     font-size: 14px;
-}
-
-div[class*="MuiPaper-root-"]:nth-child(1) {
-    margin-top:10px;
 }
 
 .leaflet-container {
@@ -217,9 +212,9 @@ div[class*="MuiPaper-root-"]:nth-child(1) {
   background-color: #000;
 }
 
-div[class*="MuiExpansionPanelSummary-expanded-"] {
+/*div[class*="MuiExpansionPanelSummary-expanded-"] {
   text-transform: uppercase;
-}
+}*/
 
 .inlineb {
   display: inline-block !important;
@@ -227,7 +222,7 @@ div[class*="MuiExpansionPanelSummary-expanded-"] {
 }
 
 div[id*="panel"] button {
-background-color: transparent;
+  background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
   padding: 5px 12px;
@@ -270,40 +265,31 @@ div[id*="panel"] button:hover {
 }
 
 .tabs {
-  width: 33.33%;
-  vertical-align: top;
-  margin: 0;
-  padding: 0;
-  text-align: left;
+  width: 33.33% !important;
+  vertical-align: top !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .tabs2 {
-  width: 50%;
-  max-width: auto;
+  width: 50% !important;
+  max-width: auto !important;
 }
 
-button[class*="MuiTab-selected-"] {
-  color: #e84a5f !important;
-}
-
-header[class*="MuiPaper-elevation4"] {
+.informer header{
   box-shadow: none !important;
   height: auto;
   padding: 0;
 }
 
-div[class*="Drawer-root-"]{
-  background-color: transparent;
-}
-
-div[class*="MuiTypography-body1"],
+/*div[class*="MuiTypography-body1"],*/
 .graphcontainer {
   margin: 0;
   padding: 15px !important;
   overflow: hidden;
 }
 
-button[class*="MuiTab-root"] {
+.informer header button{
   max-width: 500px !important;
 }
 
@@ -477,9 +463,6 @@ tr.row2table:nth-child(odd){
   margin-top: 5px;
   vertical-align: top;
   padding-bottom: 5px;
-  -webkit-box-sizing: initial;
-  -moz-box-sizing: initial;
-  box-sizing: initial;
 }
 
 .addbioma:hover {

@@ -36,7 +36,7 @@ TabContainer.propTypes = {
 const styles = theme => ({
   root: {
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "transparent",
   },
 });
 
@@ -177,8 +177,8 @@ console.log("biomaColor: "+biomaColor);
           <Tabs
             value={value}
             onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
+            indicatorColor="secondary"
+            textColor="secondary"
             centered
             >
               <Tab className="tabs tabs2" label="Qué · Cuánto" icon={<QueIcon />} />
