@@ -7,7 +7,7 @@ class MenuButton extends React.Component{
     if(this.props.externalLink) {
       return (
         <a href={this.props.externalLink}> {/* Props obligatorio */}
-        <button className={this.props.styles}
+        <button className={this.props.styles} id={this.props.idBtn} onMouseOver = {this.props.myfunction}
           onClick={() =>
             // TODO: Pasar el nombre del módulo como subtítulo
             console.log("Prueba")}>
@@ -19,7 +19,7 @@ class MenuButton extends React.Component{
     else {
       return (
         <Link to={this.props.localLink}> {/* Props obligatorio */}
-        <button className={this.props.styles}
+        <button className={this.props.styles} id={this.props.idBtn} onMouseOver = {this.props.myfunction}
           onClick={() =>
             // TODO: Pasar el nombre del módulo como subtítulo
             console.log("Prueba")}>
