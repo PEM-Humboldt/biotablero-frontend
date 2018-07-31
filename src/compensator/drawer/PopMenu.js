@@ -38,12 +38,28 @@ class PopMenu extends Component {
   }
 
   handleChange = (szhSelected) => {
-    this.setState({ szhSelected: szhSelected });
+    this.setState({
+      szhSelected: szhSelected,
+      jurisdiccionSelected: null,
+    });
   }
 
   handleChangeCAR = (jurisdiccionSelected) => {
     this.setState({ jurisdiccionSelected: jurisdiccionSelected });
   }
+
+  evaluateSZH = (nameBioma) => {
+    if (nameBioma) {
+      // TODO: Actualizar listado de SZH por Bioma seleccionado
+      return (
+        <Select
+          value={this.state.szhSelected}
+          onChange={this.handleChange}
+          placeholder={"SubZona Hidrográfica"}
+          options={options} />
+        );
+      }
+    }
 
 evaluateCAR = (nameSZH) => {
   if (nameSZH === 'Río Bogotá') {
@@ -53,34 +69,48 @@ evaluateCAR = (nameSZH) => {
       placeholder={"Seleccione CAR"}
       options={bogota} />);
     }
-    if (nameSZH === 'Río Suarez') {
-      return (<Select
-        placeholder={"Seleccione CAR"}
-        options={suarez} />);
-      }
-      if (nameSZH === 'Río Opón') {
-        return (<Select
-          placeholder={"Seleccione CAR"}
-          options={opon} />);
-        }
-      }
+  if (nameSZH === 'Río Suarez') {
+    return (<Select
+      value={this.state.jurisdiccionSelected}
+      onChange={this.handleChangeCAR}
+      placeholder={"Seleccione CAR"}
+      options={suarez} />);
+    }
+  if (nameSZH === 'Río Opón') {
+    return (<Select
+      value={this.state.jurisdiccionSelected}
+      onChange={this.handleChangeCAR}
+      placeholder={"Seleccione CAR"}
+      options={opon} />);
+  }
+}
+
+mostrarEstrategia = () => {
+  // this.props.szh(this.state.szhSelected.value);
+  // this.props.actualizarBiomaActivo(this.state.jurisdiccionSelected.value);
+  this.props.ocultarDatosGrafico(true, this.state.szhSelected.value, this.state.jurisdiccionSelected.value)
+}
+
+  componentDidUpdate() {
+    if (this.state.jurisdiccionSelected && !this.state.szhSelected.value) {
+      this.setState({jurisdiccionSelected: null,});
+    }
+    if (this.props.subArea && this.state.szhSelected) {
+      this.setState({szhSelected: null,});
+    }
+  }
 
 render () {
   return (
     <div className="complist">
       <CarritoIcon />
       <div className="Biomatit">{(this.props.subArea) ? this.props.subArea : "Seleccione un bioma del gráfico"}</div>
-      <Select
-        value={this.state.szhSelected}
-        onChange={this.handleChange}
-        placeholder={"SubZona Hidrográfica"}
-        options={options} />
-        {this.state.szhSelected ? this.evaluateCAR(this.state.szhSelected.value) : ""}
-        {this.state.jurisdiccionSelected ? <button
-          className="geobtn"
+        {(this.props.subArea) ? this.evaluateSZH(this.props.subArea) : ""}
+        {(this.state.szhSelected ? this.evaluateCAR(this.state.szhSelected.value) : "")}
+        {this.state.jurisdiccionSelected ?
+          <button className="geobtn"
           onClick={() => {
-            this.props.szh(this.state.szhSelected.value);
-            this.props.actualizarBiomaActivo(this.state.jurisdiccionSelected.value);
+            this.mostrarEstrategia(this.state.szhSelected.value, this.state.jurisdiccionSelected.value);
           }}
           > Agregar </button> : ""}
       </div>

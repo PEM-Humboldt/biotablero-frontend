@@ -160,7 +160,9 @@ export default withTooltip(props => {
             }}
             >
               <div style={{ color: checkColorFC(y(props.tooltipData), x(props.tooltipData))}}>
-                {console.log("checkColorFC(y(props.tooltipData), x(props.tooltipData)): "+y(props.tooltipData)+" "+x(props.tooltipData))}
+                { // TODO: Cambiar el color en Drawer del nombre del bioma de acuerdo al color seleccionado en el gráfico
+                //  console.log("checkColorFC(y(props.tooltipData), x(props.tooltipData)): "+y(props.tooltipData)+" "+x(props.tooltipData))
+                }
                 {/* {name(props.tooltipData)} */}
                 <div><b> Afectación: </b>{Number(x(props.tooltipData)).toFixed(2)} %</div>
                 <div><b> FC: </b>{Number(y(props.tooltipData)).toFixed(2)}</div>

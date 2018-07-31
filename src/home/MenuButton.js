@@ -6,7 +6,7 @@ class MenuButton extends React.Component{
   render(){
     if(this.props.externalLink) {
       return (
-        <a href={this.props.externalLink}> {/* Props obligatorio */}
+        <a href={this.props.externalLink} target="blank"> {/* Props obligatorio */}
         <button className={this.props.styles}
           onClick={() =>
             // TODO: Pasar el nombre del módulo como subtítulo
@@ -18,6 +18,7 @@ class MenuButton extends React.Component{
     }
     else {
       return (
+        {/* Parte 3 de 3 del enrutador: Llamar las rutas a enrutar*/},
         <Link to={this.props.localLink}> {/* Props obligatorio */}
         <button className={this.props.styles}
           onClick={() =>

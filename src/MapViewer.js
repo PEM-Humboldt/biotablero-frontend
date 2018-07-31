@@ -64,6 +64,8 @@ mostrarCapa(capa, estado){
     this.mapRef.current.leafletElement.removeLayer(capa);
   }
   else{ // Mostrar capa
+    // TODO: Ajustar límites y agregar función .setView()
+    // let bounds =
     this.mapRef.current.leafletElement.addLayer(capa);
   }
 }
