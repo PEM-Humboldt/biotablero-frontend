@@ -33,16 +33,16 @@ export default withTooltip(props => {
     clamp: true,
   });
   const zScale = scaleOrdinal({
-    domain: points.map(x),
+    // domain: points.map(x),
     range: props.colors,
   });
 
-  const checkColorFC = (value1, value2) =>{
+  const checkColorFC = (value1, areaAfectada) =>{
     if(props.labelX === "% Area afectada") {
-      // if ((value2 > 0.22)) return 0; // TODO: Habiltar cambio de color a "negro" si el punto ha sido seleccionado previamente
-      if ((value1 > 6.5) && (value2 > 0.12)) return zScale(2);
-      if ((value1 > 6.5) && (value2 < 0.12)) return zScale(1);
-      if ((value1 < 6.4) && (value2 < 0.12)) return zScale(0);
+      // if ((areaAfectada > 0.22)) return 0; // TODO: Habiltar cambio de color a "negro" si el punto ha sido seleccionado previamente
+      if ((value1 > 6.5) && (areaAfectada > 12)) return zScale(2);
+      if ((value1 > 6.5) && (areaAfectada < 12)) return zScale(1);
+      if ((value1 < 6.4) && (areaAfectada < 12)) return zScale(0);
     }
   }
 

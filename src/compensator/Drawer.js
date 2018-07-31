@@ -71,7 +71,7 @@ class Drawer extends React.Component {
       transformedData.push(
         {
           name:`${item.fields.BIOMA_IAVH}`,
-          percentageAffect: `${item.fields.PORCENT_AFECTACION}`,
+          percentageAffect: `${100 * item.fields.PORCENT_AFECTACION}`,
           fc: `${item.fields.FACT_COMP}`,
           natural_afectada: `${item.fields.NATURAL_AFECTADA}`,
           total_afectada: `${item.fields.TOTAL_AFECTADA}`,
