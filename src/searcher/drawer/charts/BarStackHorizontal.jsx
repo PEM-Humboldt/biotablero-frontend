@@ -186,7 +186,7 @@ export default withTooltip(
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
-                fontSize: 9,
+                fontSize: 13,
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"

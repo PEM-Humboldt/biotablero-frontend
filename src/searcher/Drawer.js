@@ -39,7 +39,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "transparent",
   },
 });
 
@@ -83,7 +83,7 @@ class Drawer extends React.Component {
 
   componentWillMount () {
     this.cargarDatosJSON(
-      'http://192.168.11.63:9200/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
+      'http://192.168.11.63:9250/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       'carByBiomaArea', "CORPOBOYACA");
       // console.log(this.state.data);
       // .then((res)=>{
@@ -167,8 +167,8 @@ class Drawer extends React.Component {
           <Tabs
             value={value}
             onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
+            indicatorColor="secondary"
+            textColor="secondary"
             centered
           >
             <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />

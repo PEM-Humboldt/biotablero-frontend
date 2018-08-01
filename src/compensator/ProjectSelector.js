@@ -60,27 +60,27 @@ class ProjectSelector extends React.Component {
         <p><i>2</i> Selecciona un <b>proyecto</b> (licenciado, en licenciamiento o diagnóstico) o crea un <b>nuevo proyecto</b></p>
         <p><i>3</i> Consulta el qué y cuánto (proyectos previamente analizados)</p>
         <p><i>4</i> Selecciona el dónde y cómo para alcanzar las metas de compensación (proyectos previamente analizados)</p>
-        <ExpansionPanel id='panel1-Norte' disabled
+        <ExpansionPanel className="m0" id='panel1-Norte' disabled
           expanded= {expanded === 'Norte'}
           onChange={this.handleChange('Norte')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           Norte
           </ExpansionPanelSummary>
         </ExpansionPanel>
-        <ExpansionPanel id="panel1-Centro"
+        <ExpansionPanel className="m0" id="panel1-Centro"
           expanded= {expanded === 'Centro'} onChange={this.handleChange('Centro')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           Centro
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className="acordeon" id="proyectos">
-            <ExpansionPanel id='licenciados'
+            <ExpansionPanel className="m0" id='licenciados'
               expanded= {subExpanded === 'Licenciados'}
               onChange={this.subHandleChange('Licenciados')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
               Licenciados
               </ExpansionPanelSummary>
             </ExpansionPanel>
-            <ExpansionPanel id='enLicenciamiento'
+            <ExpansionPanel className="m0" id='enLicenciamiento'
               expanded= {subExpanded === 'En Licenciamiento'}
               onChange={this.subHandleChange('En Licenciamiento')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -91,7 +91,7 @@ class ProjectSelector extends React.Component {
                 <button disabled onClick={() => this.props.innerPanelLayer('Nortechivor')}>Nortechivor</button>
               </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel id='daa'
+            <ExpansionPanel className="m0" id='daa'
               expanded= {subExpanded === 'DAA'}
               onChange={this.subHandleChange('DAA')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -101,7 +101,7 @@ class ProjectSelector extends React.Component {
                 <button disabled onClick={() => this.props.innerPanelLayer('San Fernando')}>San Fernando</button>
               </ExpansionPanelDetails>
             </ExpansionPanel>
-            <ExpansionPanel id='daa'
+            <ExpansionPanel className="m0" id='daa'
               expanded= {subExpanded === 'DAA'}
               onChange={this.subHandleChange('DAA')}>
               <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -113,14 +113,14 @@ class ProjectSelector extends React.Component {
             </ExpansionPanel>
           </ExpansionPanelDetails>
         </ExpansionPanel>
-        <ExpansionPanel id="panel1-Occidente" disabled
+        <ExpansionPanel className="m0" id="panel1-Occidente" disabled
           expanded= {expanded === 'Occidente'}
           onChange={this.handleChange('Occidente')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           Occidente
           </ExpansionPanelSummary>
         </ExpansionPanel>
-        <ExpansionPanel id="panel1-Suroccidente" disabled
+        <ExpansionPanel className="m0" id="panel1-Suroccidente" disabled
           expanded= {expanded === 'Suroccidente'}
           onChange={this.handleChange('Suroccidente')}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

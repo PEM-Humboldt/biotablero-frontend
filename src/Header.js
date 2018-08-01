@@ -7,7 +7,7 @@ import './common/main.css';
 class Header extends React.Component {
   render() {
     return (
-		  <header>
+		  <header className="cabezote">
           <div>
             <nav>
                 <Menu />

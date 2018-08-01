@@ -33,15 +33,16 @@ export default withTooltip(props => {
     clamp: true,
   });
   const zScale = scaleOrdinal({
-    domain: points.map(x),
+    // domain: points.map(x),
     range: props.colors,
   });
 
-  const checkColorFC = (value1, value2) =>{
+  const checkColorFC = (value1, areaAfectada) =>{
     if(props.labelX === "% Area afectada") {
-      if ((value1 > 6.5) && (value2 > 0.12)) return zScale(2);
-      if ((value1 > 6.5) && (value2 < 0.12)) return zScale(1);
-      if ((value1 < 6.4) && (value2 < 0.12)) return zScale(0);
+      // if ((areaAfectada > 0.22)) return 0; // TODO: Habiltar cambio de color a "negro" si el punto ha sido seleccionado previamente
+      if ((value1 > 6.5) && (areaAfectada > 12)) return zScale(2);
+      if ((value1 > 6.5) && (areaAfectada < 12)) return zScale(1);
+      if ((value1 < 6.4) && (areaAfectada < 12)) return zScale(0);
     }
   }
 
@@ -160,7 +161,9 @@ export default withTooltip(props => {
             }}
             >
               <div style={{ color: checkColorFC(y(props.tooltipData), x(props.tooltipData))}}>
-                {console.log("checkColorFC(y(props.tooltipData), x(props.tooltipData)): "+y(props.tooltipData)+" "+x(props.tooltipData))}
+                { // TODO: Cambiar el color en Drawer del nombre del bioma de acuerdo al color seleccionado en el gráfico
+                //  console.log("checkColorFC(y(props.tooltipData), x(props.tooltipData)): "+y(props.tooltipData)+" "+x(props.tooltipData))
+                }
                 {/* {name(props.tooltipData)} */}
                 <div><b> Afectación: </b>{Number(x(props.tooltipData)).toFixed(2)} %</div>
                 <div><b> FC: </b>{Number(y(props.tooltipData)).toFixed(2)}</div>

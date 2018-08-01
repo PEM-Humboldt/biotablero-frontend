@@ -8,6 +8,7 @@ class ProjectFilter extends React.Component {
     this.state = {
       menuActivo: "",
     };
+    // TODO: Cambiar bind por funciones arrow, para evitar firmas por función en los constructores de cada componente tipo clase
     this.cambiarMenu = this.cambiarMenu.bind(this);
   }
 
