@@ -317,7 +317,7 @@
 			"Content-Type": "application/json;charset=utf-8"
 		},
 		"method": "post",
-		"url": "http://192.168.205.190:9200/_search/template",
+		"url": "http://192.168.11.63:9250/_search/template",
 		"data": "{\"id\":\"carByBiomaArea\",\"params\":{\"id_car\":\"CORPOBOYACA\"}}"
 	},
 	"request": {}

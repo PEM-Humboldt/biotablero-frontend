@@ -38,7 +38,7 @@ class Searcher extends Component {
       test: 'Biotablero',
       geojsonCapa2: nombre,
     });
-    console.log('subPanel: ' + nombre);
+    // console.log('subPanel: ' + nombre);
   }
 
   innerPanelLayer(nombre){
@@ -47,7 +47,7 @@ class Searcher extends Component {
       geojsonCapa3: nombre,
       infoCapaActiva: nombre,
     });
-    console.log('innerPanel: ' + nombre);
+    // console.log('innerPanel: ' + nombre);
   }
 
   eventoDelMapa(latLong){
@@ -75,7 +75,7 @@ class Searcher extends Component {
       geojsonCapa4: campo,
       // infoCapaActiva: campo,
     });
-    console.log("biomaActivo: "+ campo);
+    // console.log("biomaActivo: "+ campo);
   }
 
   render() {

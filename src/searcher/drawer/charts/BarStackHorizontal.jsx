@@ -4,6 +4,7 @@ import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft } from '@vx/axis';
 import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
+import Descargar from '@material-ui/icons/Save';
 
 export default withTooltip(
   ({
@@ -130,7 +131,7 @@ export default withTooltip(
 
     return (
       <div className="graphcard">
-      <h2>{titulo}</h2>
+      <h2><Descargar className="icondown" />{titulo}</h2>
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
@@ -185,7 +186,7 @@ export default withTooltip(
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
-                fontSize: 9,
+                fontSize: 13,
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"

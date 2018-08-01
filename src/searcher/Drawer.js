@@ -39,7 +39,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: "transparent",
   },
 });
 
@@ -83,7 +83,7 @@ class Drawer extends React.Component {
 
   componentWillMount () {
     this.cargarDatosJSON(
-      'http://192.168.205.190:9200/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
+      'http://192.168.11.63:9250/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       'carByBiomaArea', "CORPOBOYACA");
       // console.log(this.state.data);
       // .then((res)=>{
@@ -167,8 +167,8 @@ class Drawer extends React.Component {
           <Tabs
             value={value}
             onChange={this.handleChange}
-            indicatorColor="primary"
-            textColor="primary"
+            indicatorColor="secondary"
+            textColor="secondary"
             centered
           >
             <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />
@@ -178,8 +178,8 @@ class Drawer extends React.Component {
         </AppBar>
         {value === 0 && <TabContainer>
           {this.checkGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-          {this.checkGraph(biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas IaVH')}
-          {this.checkGraph(distritos, 'Hectáreas', 'Distritos', 'BarStackHorizontal', 'Distritos')}
+          {this.checkGraph(biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
+          {this.checkGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
                      {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
                      // datosJSON={this.props.datosJSON} */}
                  </TabContainer>}
@@ -200,7 +200,7 @@ class Drawer extends React.Component {
       } else {
         return (
         <div className={classes.root}>
-          {this.checkGraph(uwa, 'Biomas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+          {this.checkGraph(uwa, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
         </div>
       );
     }

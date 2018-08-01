@@ -5,7 +5,7 @@ import MapViewer from './MapViewer';
 import ProjectFilter from './compensator/ProjectFilter';
 
 class Compensator extends Component {
-  constructor(props){
+    constructor (props){
     super(props);
     this.state = {
       hasShape: false,
@@ -37,7 +37,7 @@ class Compensator extends Component {
       test: 'Biotablero',
       geojsonCapa2: nombre,
     });
-    console.log('subPanel: ' + nombre);
+    // console.log('subPanel: ' + nombre);
   }
 
   innerPanelLayer(nombre){
@@ -46,7 +46,7 @@ class Compensator extends Component {
       geojsonCapa3: nombre,
       infoCapaActiva: nombre,
     });
-    console.log('innerPanel: ' + nombre);
+    // console.log('innerPanel: ' + nombre);
   }
 
   eventoDelMapa(latLong){
@@ -60,7 +60,7 @@ class Compensator extends Component {
       geojsonCapa3: campo,
       infoCapaActiva: campo,
     });
-    console.log("capaActiva: "+ campo);
+    // console.log("capaActiva: "+ campo);
   }
 
   actualizarBiomaActivo(campo){
@@ -68,7 +68,7 @@ class Compensator extends Component {
       geojsonCapa4: campo,
       // infoCapaActiva: campo,
     });
-    console.log("biomaActivo: "+ campo);
+    // console.log("biomaActivo: "+ campo);
   }
 
   render() {
@@ -90,9 +90,9 @@ class Compensator extends Component {
           innerPanelLayer = {this.innerPanelLayer}
           dataCapaActiva={this.state.infoCapaActiva}
           actualizarCapaActiva= {this.actualizarCapaActiva}
-          biomaActivo={this.actualizarBiomaActivo}
           actualizarBiomaActivo={this.actualizarBiomaActivo}
           geocerca= {this.state.geojsonCapa2}
+          subArea={this.state.geojsonCapa4}
           zonageb={'GEB Centro'}/>
         </div>
       </div>
