@@ -35,7 +35,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -53,7 +53,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -70,7 +70,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -87,7 +87,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -104,7 +104,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -121,7 +121,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -138,7 +138,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">
@@ -155,7 +155,7 @@ class How extends React.Component {
             onClick={() => {
               this.agregarArea(valorLocal);
             }}
-            >+</button>
+            ></button>
           </td>
           </tr>
           <tr className="row2table">

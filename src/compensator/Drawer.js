@@ -17,7 +17,6 @@ import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 import PopMenu from './drawer/PopMenu';
 import How from './How';
-import BackIcon from '@material-ui/icons/FirstPage';
 import BackGraph from '@material-ui/icons/Timeline';
 
 // var dataCompensaciones = require('./data/dondeCompensar.json');

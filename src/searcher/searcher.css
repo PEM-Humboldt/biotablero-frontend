@@ -562,5 +562,13 @@ tr.row2table:nth-child(odd){
 .backgraph svg {
   height: 20px;
   width: 20px;
- vertical-align: top;
+  vertical-align: top;
+}
+
+tspan, .vx-axis-label {
+  font-smooth: always !important;
+  border: none !important;  
+  font-weight: 300 !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
