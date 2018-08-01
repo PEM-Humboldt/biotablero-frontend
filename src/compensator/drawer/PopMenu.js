@@ -6,7 +6,7 @@ import Select from 'react-select';
 const options = [
   { value: 'Río Bogotá', label: 'Río Bogotá' },
   { value: 'Río Suarez', label: 'Río Suarez' },
-  { value: 'Río Opón', label: '70% - Río Opón' }
+  { value: 'Río Opón', label: 'Río Opón' }
 ]
 
 const bogota = [

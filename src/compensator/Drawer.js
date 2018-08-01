@@ -71,7 +71,7 @@ class Drawer extends React.Component {
       transformedData.push(
         {
           name:`${item.fields.BIOMA_IAVH}`,
-          percentageAffect: `${item.fields.PORCENT_AFECTACION}`,
+          percentageAffect: `${100 * item.fields.PORCENT_AFECTACION}`,
           fc: `${item.fields.FACT_COMP}`,
           natural_afectada: `${item.fields.NATURAL_AFECTADA}`,
           total_afectada: `${item.fields.TOTAL_AFECTADA}`,
@@ -473,11 +473,12 @@ class Drawer extends React.Component {
               <h3>Áreas seleccionadas</h3>
               <h4>0</h4>
             </div>
-            {/* {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])} */}
-            {/* {this.showSelector(this.state.datosDonde, this.state.totalACompensar)} */}
+            {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
+            {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
             <br></br>
             <button className="backgraph"
-              onClick={() => this.props.verMenu("Selector")}>
+              // onClick={() => this.props.verMenu("Selector")}
+>
               <BackGraph/> Ir al gráfico
               </button>
               <div className="titecositema">
