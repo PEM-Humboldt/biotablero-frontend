@@ -36,7 +36,6 @@ class MapViewer extends React.Component {
     this.mifunc = this.mifunc.bind(this);
     this.mifunc2 = this.mifunc2.bind(this);
     this.capasDisponibles = this.capasDisponibles.bind(this);
-
     // TODO: Analizar estrategia con props.capasMontadas y props.capaActiva
     // const capasCargadas = null;
   }
@@ -183,7 +182,7 @@ class MapViewer extends React.Component {
         ).addTo(this.mapRef.current.leafletElement);
         this.mostrarCapa(this.CapaBiomasSogamoso, false);
       }
-    })
+    });
   }
 
   cargarCapaGeoJSON(URL_JSON){
@@ -226,22 +225,23 @@ class MapViewer extends React.Component {
   componentDidUpdate() {
     // adevia - Comentarios: Esta función se ejecuta siempre que hay evento en el componente MapViewer
     // Verificadores de capa seleccionada en el selector
-    if(this.CapaJurisdicciones !== null
+    if(this.CapaJurisdicciones !== null && this.CapaCorpoBoyaca !== null
       && this.props.capasMontadas[1] === 'Jurisdicciones') {
       this.mostrarCapa(this.CapaJurisdicciones, true);
       this.mostrarCapa(this.CapaCorpoBoyaca, false);
     }
-    if(this.CapaCorpoBoyaca !== null
+    if(this.CapaCorpoBoyaca !== null && this.CapaJurisdicciones !== null
       && this.props.capasMontadas[2] ==='CORPOBOYACA') {
       // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
       this.mostrarCapa(this.CapaCorpoBoyaca, true);
       this.mostrarCapa(this.CapaJurisdicciones, false);
-    } else if (this.CapaCorpoBoyaca!==null
-      && this.props.capasMontadas[1] === null){
+    } else if (this.CapaCorpoBoyaca!== null && this.CapaJurisdicciones !== null
+      && this.props.capasMontadas[1] === null) {
       this.mostrarCapa(this.CapaCorpoBoyaca, false);
       this.mostrarCapa(this.CapaJurisdicciones, false);
-    } if (this.CapaSogamoso !== null
-      && this.props.capasMontadas[2] === 'Sogamoso'){
+    }
+    if (this.CapaSogamoso !== null
+      && this.props.capasMontadas[2] === 'Sogamoso') {
       this.mostrarCapa(this.CapaSogamoso, true);
       // TODO: Implementar arreglo "capasActivas" para evitar crear por cada capa, un mostrarCapa(capa, false)
       if (this.CapaCorpoBoyaca !== null
