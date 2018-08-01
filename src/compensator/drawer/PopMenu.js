@@ -112,7 +112,7 @@ render () {
           onClick={() => {
             this.mostrarEstrategia(this.state.szhSelected.value, this.state.jurisdiccionSelected.value);
           }}
-          >+</button> : ""}
+          ></button> : ""}
       </div>
     );
   }
