@@ -92,9 +92,6 @@ export default withTooltip((
                     }, 300);
                   }}
                   onMouseMove={data => event => {
-                    console.log("d: "+JSON.stringify(d.name));
-                    console.log('y: '+y);
-                    console.log('yMax: '+yMax);
                     if (tooltipTimeout) clearTimeout(tooltipTimeout);
                     showTooltip({
                       tooltipData: d,
@@ -147,7 +144,7 @@ export default withTooltip((
             );
           })}
         </svg>
-      
+
         {tooltipOpen &&
           <Tooltip
             left={tooltipLeft}

@@ -9,7 +9,6 @@ class How extends React.Component {
   }
 
   render () {
-    let areaSeleccionada = 0;
     let valorLocal = 0;
     return (
       <table className="graphcard special">
