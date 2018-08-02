@@ -31,7 +31,6 @@ export default withTooltip(
     if (width < 10) return null;
     // accessors
     const y = d => 1;
-    const x = d => Number(d.value);
 
     // const actualizarSubArea = (key) => {
     //   return props.actualizarBiomaActivo(key);
@@ -95,10 +94,6 @@ export default withTooltip(
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
 
-
-    console.log('Totals: '+totals);
-    console.log('xMax: '+xMax);
-
     // scales
     const xScale = scaleLinear({
       rangeRound: [0, xMax],
@@ -154,8 +149,6 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={data => event => {
-                console.log('X: '+x);
-                console.log('Data: '+JSON.stringify(data));
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 showTooltip({
                   tooltipData: data,

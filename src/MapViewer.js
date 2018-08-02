@@ -87,9 +87,6 @@ class MapViewer extends React.Component {
       layer.bringToFront();
     }
     if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
-    console.log('this.props.capasMontadas[1]: '+this.props.capasMontadas[1]);
-    console.log('this.props.capasMontadas[2]: '+this.props.capasMontadas[2]);
-    console.log('highlightFeature:' +JSON.stringify(e.target.feature.properties));
     e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
     +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
   }
@@ -171,6 +168,8 @@ class MapViewer extends React.Component {
           ).addTo(this.mapRef.current.leafletElement);
           this.mostrarCapa(this.CapaBiomasSogamoso, false);
         break;
+        default:
+          return;
       }
     });
   }
@@ -237,7 +236,6 @@ class MapViewer extends React.Component {
 
   getStyle(feature, layer) {
     //TODO: Ajustar función de estilo para pasarala a componentes react-leaflet
-    console.log('Si entré a estilo');
     return {
       color: '#006400',
       weight: 5,
