@@ -31,7 +31,7 @@
     "react-scripts": "1.1.4",
     "react-select": "1.3.0"
   },
-  "devDpendencies": {
+  "devDependencies": {
     "react-scripts": "1.1.0"
   }
 }
