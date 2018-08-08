@@ -32,39 +32,14 @@ export default withTooltip(
     // accessors
     const y = d => 1;
 
-    // const actualizarSubArea = (key) => {
-    //   return props.actualizarBiomaActivo(key);
-    // }
-
     const prepareData = (data, setName) => {
-       const transformedData = {
-         key: setName,
-       }
-         data.aggregations.areas.buckets.forEach(item => {
-           transformedData[item['key']] = `${item.area.value}`
-         })
-         // console.log('transformedData: '+JSON.stringify(transformedData));
-         return transformedData;
-    //    if(setName !== 'Biomas'){
-    //      const transformedData = {
-    //        key: setName,
-    //      }
-    //        data.aggregations.areas.buckets.forEach(item => {
-    //          transformedData[item['key']] = `${item.area.value}`
-    //        })
-    //        // console.log('transformedData: '+JSON.stringify(transformedData));
-    //        return transformedData;
-    //    } else {
-    //      const transformedData = {
-    //        key: setName,
-    //      }
-    //        data.aggregations.areas.buckets.forEach(item => {
-    //           // TODO: Implementar estrategia con los datos para mostrar el mismo color entre biomas que tengan el mismo FC
-    //          transformedData[item['key']] = `${item.area.value}`
-    //        })
-    //        // console.log('transformedData: '+JSON.stringify(transformedData));
-    //        return transformedData;
-    //      }
+      const transformedData = {
+        key: setName,
+      }
+      data.aggregations.areas.buckets.forEach(item => {
+        transformedData[item['key']] = `${item.area.value}`
+      })
+      return transformedData;
     }
 
     function comparingValues(a, b) {
@@ -81,16 +56,14 @@ export default withTooltip(
       });
     }
 
-    let data = [prepareData(dataJSON.data, labelY)].slice(0);
+    let data = [prepareData(dataJSON, labelY)].slice(0);
     let keys = Object.keys(data[0]);
-    // console.log("DataDist1: "+ JSON.stringify(keys));
+
     //Organizar los datos alfabética o numéricamente
     data = sortByKey(data, keys);
-    let totals =  dataJSON.data.aggregations.total_area.value;
+    let totals =  dataJSON.aggregations.total_area.value;
 
-    // console.log("DataTotal: "+ dataJSON.data.aggregations.total_area.value);
     // bounds
-    // console.log('width: '+width);
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;
 
