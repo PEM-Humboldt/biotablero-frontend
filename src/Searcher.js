@@ -82,23 +82,24 @@ class Searcher extends Component {
     let layer = this.state.geojson;
     return (
       <div className="appSearcher">
-          <MapViewer mostrarJSON={layer}
-            capasMontadas={[
-                  this.state.geojsonCapa1,
-                  this.state.geojsonCapa2,
-                  this.state.geojsonCapa3,
-                  this.state.geojsonCapa4]}
-            capaActiva={this.actualizarCapaActiva}
-            biomaActivo={this.actualizarBiomaActivo}/>
+        <MapViewer mostrarJSON={layer}
+          capasMontadas={[
+                this.state.geojsonCapa1,
+                this.state.geojsonCapa2,
+                this.state.geojsonCapa3,
+                this.state.geojsonCapa4]}
+          capaActiva={this.actualizarCapaActiva}
+          biomaActivo={this.actualizarBiomaActivo}
+        />
         <div className="contentView">
           <Filter panelLayer = {this.panelLayer}
-          subPanelLayer = {this.subPanelLayer}
-          innerPanelLayer = {this.innerPanelLayer}
-          dataCapaActiva={this.state.infoCapaActiva}
-          actualizarCapaActiva= {this.actualizarCapaActiva}
-          actualizarBiomaActivo={this.actualizarBiomaActivo}
-          geocerca= {this.state.geojsonCapa2}
-          subArea={this.state.geojsonCapa4}/>
+            subPanelLayer = {this.subPanelLayer}
+            innerPanelLayer = {this.innerPanelLayer}
+            dataCapaActiva={this.state.infoCapaActiva}
+            actualizarCapaActiva= {this.actualizarCapaActiva}
+            geocerca= {this.state.geojsonCapa2}
+            subArea={this.state.geojsonCapa4}
+          />
         </div>
       </div>
     );

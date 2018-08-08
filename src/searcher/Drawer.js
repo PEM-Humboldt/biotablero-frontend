@@ -122,7 +122,6 @@ class Drawer extends React.Component {
                 labelX={labelX}
                 labelY={labelY}
                 titulo={titulo}
-                actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
               />
             )
           }
@@ -143,7 +142,6 @@ class Drawer extends React.Component {
               labelX={labelX}
               labelY={labelY}
               titulo={titulo}
-              actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
             />
           )
         }
@@ -158,51 +156,54 @@ class Drawer extends React.Component {
   render() {
     const { classes } = this.props;
     const { value } = this.state;
+    const { subArea } = this.props;
 
-    if (this.props.subArea === null){
+    if (subArea === null) {
       return (
         <div className={classes.root}>
           <AppBar position="static" color="default">
-          <Tabs
-            value={value}
-            onChange={this.handleChange}
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered
-          >
-            <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />
-            <Tab className="tabs" label="Ecosistemas" icon={<Ecosistemas />} />
-            <Tab className="tabs" label="Especies" icon={<Especies />} />
-          </Tabs>
-        </AppBar>
-        {value === 0 && <TabContainer>
-          {this.checkGraph('fc', this.fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-          {this.checkGraph('biomas', this.biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
-          {this.checkGraph('distritos', this.distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
-                     {/* // tipoG="(Bullet Charts, https://bl.ocks.org/mbostock/4061961)"
-                     // datosJSON={this.props.datosJSON} */}
-                 </TabContainer>}
-          {value === 1 && <TabContainer>
-                            <div className="graphcard">
-                              <h2>Gráficas en construcción</h2>
-                              <p>Pronto más información</p>
-                            </div>
-                          </TabContainer>}
-          {value === 2 && <TabContainer>
-                            <div className="graphcard">
-                              <h2>Gráficas en construcción</h2>
-                              <p>Pronto más información</p>
-                            </div>
-                          </TabContainer>}
-          </div>
-        );
-      } else {
-        return (
-        <div className={classes.root}>
-          {this.checkGraph(uwa, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+            <Tabs
+              value={value}
+              onChange={this.handleChange}
+              indicatorColor="secondary"
+              textColor="secondary"
+              centered
+            >
+              <Tab className="tabs" label="Paisaje" icon={<Paisaje />} />
+              <Tab className="tabs" label="Ecosistemas" icon={<Ecosistemas />} />
+              <Tab className="tabs" label="Especies" icon={<Especies />} />
+            </Tabs>
+          </AppBar>
+          {value === 0 &&
+            <TabContainer>
+              {this.checkGraph('fc', this.fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
+              {this.checkGraph('biomas', this.biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
+              {this.checkGraph('distritos', this.distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
+            </TabContainer>}
+          {value === 1 &&
+            <TabContainer>
+              <div className="graphcard">
+                <h2>Gráficas en construcción</h2>
+                <p>Pronto más información</p>
+              </div>
+            </TabContainer>}
+          {value === 2 &&
+            <TabContainer>
+              <div className="graphcard">
+                <h2>Gráficas en construcción</h2>
+                <p>Pronto más información</p>
+              </div>
+            </TabContainer>}
         </div>
       );
+    } else if (subArea !== null) {
+
     }
+    return (
+      <div className={classes.root}>
+        {this.checkGraph('biomaBySZH', uwa, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+      </div>
+    );
   }
 }
 

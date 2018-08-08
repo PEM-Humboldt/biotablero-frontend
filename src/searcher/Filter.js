@@ -44,8 +44,7 @@ class Filter extends React.Component {
       geocerca={this.props.geocerca}
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
       subArea={this.props.subArea}
-      actualizarBiomaActivo={this.actualizarBiomaActivo}
-      />
+    />
   }
 
   componentDidUpdate() {
