@@ -5,6 +5,30 @@ const ELASTIC_PORT = '9250'
 
 class ElasticAPI {
   /**
+   * Request the template with information about 'donde compensar' in Sogamoso project
+   */
+  static requestDondeCompensarSogamoso = () => {
+    return ElasticAPI.makeRequest(
+      `${ELASTIC_HOST}:${ELASTIC_PORT}/proyecto_sogamoso/_search/template?filter_path=aggregations.car.buckets.key,aggregations.car.buckets.szh.buckets.key,aggregations.car.buckets.szh.buckets.results.hits.hits._source`,
+      {
+        id: 'donde_compensar_sogamoso'
+      }
+    );
+  }
+
+  /**
+   * Request the template with information about 'Que y Cuanto compensar'
+   */
+  static requestQueYCuantoCompensar = () => {
+    return ElasticAPI.makeRequest(
+      `${ELASTIC_HOST}:${ELASTIC_PORT}/biomas_compensaciones/_search/template?filter_path=hits.hits.fields,aggregations`,
+      {
+        id: 'queYCuantoCompensar'
+      }
+    );
+  }
+
+  /**
    * Request the template to load a given bioma by subzona hidrografica.
    * Here is defined the filter_path options for this template
    *

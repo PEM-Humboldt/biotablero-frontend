@@ -19,9 +19,7 @@ import PopMenu from './drawer/PopMenu';
 import How from './How';
 import BackGraph from '@material-ui/icons/Timeline';
 
-// var dataCompensaciones = require('./data/dondeCompensar.json');
-var dataCompensaciones = require('./data/que_y_donde_compensar.json');
-var dataSogamoso = require('./data/donde_compensar_sogamoso.json');
+import ElasticAPI from '../api/elastic';
 
 function TabContainer(props) {
   return (
@@ -64,7 +62,10 @@ class Drawer extends React.Component {
     });
   }
 
-  obtenerDatosDonde = (data) => {
+  /**
+   * Clean up loaded data used for 'Que y Cuanto' and 'Donde'
+   */
+  cleanQueCuantoDondeData = (data) => {
     const transformedData = [];
     data.hits.hits.forEach(item => {
       transformedData.push(
@@ -76,10 +77,6 @@ class Drawer extends React.Component {
           total_afectada: `${item.fields.TOTAL_AFECTADA}`,
         }
       );
-    });
-    this.setState ({
-      datosDonde: transformedData,
-      totalACompensar: data.aggregations.total_area.value,
     });
     return transformedData;
   };
@@ -95,10 +92,6 @@ class Drawer extends React.Component {
     // console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
     this.ocultarDatosGrafico();
   }
-
-  obtenerDatosQue = (data) => {
-    // TODO: Realizar esta función
-  };
 
   actualizarTotalACompensar = (data) => {
     // TODO: Actualizar desde el PopMenu
@@ -126,8 +119,17 @@ class Drawer extends React.Component {
   }
 
   componentDidMount () {
-    this.obtenerDatosQue(dataSogamoso);
-    this.obtenerDatosDonde(dataCompensaciones);
+    ElasticAPI.requestDondeCompensarSogamoso()
+      .then((res) => {
+
+      })
+    ElasticAPI.requestQueYCuantoCompensar()
+      .then((res) => {
+        this.setState ({
+          datosDonde: this.cleanQueCuantoDondeData(res),
+          totalACompensar: res.aggregations.total_area.value,
+        });
+      })
   }
 
   mostrarGraficos(param, data, labelX, labelY, graph, colors){
