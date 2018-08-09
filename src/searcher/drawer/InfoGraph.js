@@ -5,26 +5,12 @@ import BarGraph from './charts/BarGraph';
 import './infoGraph.css';
 
 class InfoGraph extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      data: this.props.data,
-    }
-  }
-
-  componentWillMount(){
-    // this.setState({
-    //   data: this.props.data,
-    // });
-    // console.log('RES_InfoGraph= '+ JSON.stringify(this.state.data));
-  }
-
   showGraph()
     {
       if (this.props.graphType==='BarVertical') {
         return (
           <BarGraph
-            dataJSON={this.state.data}
+            dataJSON={this.props.data}
             titulo={this.props.titulo}
             labelX={this.props.labelX}
             labelY={this.props.labelY}
@@ -36,7 +22,7 @@ class InfoGraph extends React.Component {
         // TODO: Usar this.props.name en el gráfico
         return (
           <BarStackHorizontal
-            dataJSON={this.state.data}
+            dataJSON={this.props.data}
             titulo={this.props.titulo}
             labelX={this.props.labelX}
             labelY={this.props.labelY}

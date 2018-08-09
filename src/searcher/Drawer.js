@@ -19,8 +19,6 @@ import { ParentSize } from "@vx/responsive";
 
 import ElasticAPI from '../api/elastic';
 
-var uwa = require('./data/CORPOBOYACABySZH_Orobioma de Paramo Uwa.json');
-
 function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
@@ -53,11 +51,11 @@ class Drawer extends React.Component {
           biomas: false,
           distritos: false,
           fc: false
-        },
+        }
       };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     ElasticAPI.requestCarByBiomaArea('CORPOBOYACA')
       .then((res) => {
         this.biomas = res
@@ -97,12 +95,11 @@ class Drawer extends React.Component {
           }
         })
       });
-
   }
 
   checkGraph(graphKey, data, labelX, labelY, graph, titulo) {
     // While data is being retrieved from server
-    if(!this.state.data_loaded[graphKey]) {
+    if(graphKey !== 'subarea' && !this.state.data_loaded[graphKey]) {
       return (
         <div>Loading data...</div>
       )
@@ -156,9 +153,9 @@ class Drawer extends React.Component {
   render() {
     const { classes } = this.props;
     const { value } = this.state;
-    const { subArea } = this.props;
+    const { biomaActivo, biomaActivoData } = this.props;
 
-    if (subArea === null) {
+    if (biomaActivo === null) {
       return (
         <div className={classes.root}>
           <AppBar position="static" color="default">
@@ -196,12 +193,18 @@ class Drawer extends React.Component {
             </TabContainer>}
         </div>
       );
-    } else if (subArea !== null) {
-
+    }
+    if(biomaActivo !== null && biomaActivoData !== null) {
+      return (
+        <div className={classes.root}>
+          {this.checkGraph('subarea', biomaActivoData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+        </div>
+      );
     }
     return (
       <div className={classes.root}>
-        {this.checkGraph('biomaBySZH', uwa, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+        {/*TODO: esto probablemente nunca se ejecute, no quemar el mensae*/}
+        Por favor seleccione un bioma en el mapa
       </div>
     );
   }

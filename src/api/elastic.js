@@ -5,6 +5,22 @@ const ELASTIC_PORT = '9250'
 
 class ElasticAPI {
   /**
+   * Request the template to load a given bioma by subzona hidrografica.
+   * Here is defined the filter_path options for this template
+   *
+   * @param {String} bioma bioma's name to request
+   */
+  static requestBiomaBySZH = (bioma) => {
+    return ElasticAPI.makeRequest(
+      `${ELASTIC_HOST}:${ELASTIC_PORT}/corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area`,
+      {
+        id: 'biomaBySZH',
+        params: { bioma }
+      }
+    );
+  }
+
+  /**
    * Request the template to load CAR by distritos Area.
    * Here is defined the filter_path options for this template
    *

@@ -15,6 +15,7 @@ class Searcher extends Component {
       geojsonCapa2: null,
       geojsonCapa3: null,
       geojsonCapa4: null,
+      biomaActivoData: null,
       ubicacionMapa: null,
       infoCapaActiva: null,
     };
@@ -22,7 +23,6 @@ class Searcher extends Component {
     this.subPanelLayer = this.subPanelLayer.bind(this);
     this.innerPanelLayer = this.innerPanelLayer.bind(this);
     this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.actualizarBiomaActivo = this.actualizarBiomaActivo.bind(this);
     this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
@@ -70,12 +70,17 @@ class Searcher extends Component {
     }
   }
 
-  actualizarBiomaActivo(campo){
+  /**
+   * Update information about the active bioma
+   *
+   * @param {String} bioma bioma's name
+   * @param {Object} data bioma's data (usually it's info about szh)
+   */
+  actualizarBiomaActivo = (bioma, data) => {
     this.setState({
-      geojsonCapa4: campo,
-      // infoCapaActiva: campo,
+      geojsonCapa4: bioma,
+      biomaActivoData: data
     });
-    // console.log("biomaActivo: "+ campo);
   }
 
   render() {
@@ -89,7 +94,7 @@ class Searcher extends Component {
                 this.state.geojsonCapa3,
                 this.state.geojsonCapa4]}
           capaActiva={this.actualizarCapaActiva}
-          biomaActivo={this.actualizarBiomaActivo}
+          setBiomaActivo={this.actualizarBiomaActivo}
         />
         <div className="contentView">
           <Filter panelLayer = {this.panelLayer}
@@ -98,7 +103,8 @@ class Searcher extends Component {
             dataCapaActiva={this.state.infoCapaActiva}
             actualizarCapaActiva= {this.actualizarCapaActiva}
             geocerca= {this.state.geojsonCapa2}
-            subArea={this.state.geojsonCapa4}
+            biomaActivo={this.state.geojsonCapa4}
+            biomaActivoData={this.state.biomaActivoData}
           />
         </div>
       </div>
