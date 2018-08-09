@@ -102,6 +102,7 @@ class Searcher extends Component {
             innerPanelLayer = {this.innerPanelLayer}
             dataCapaActiva={this.state.infoCapaActiva}
             actualizarCapaActiva= {this.actualizarCapaActiva}
+            actualizarBiomaActivo={this.actualizarBiomaActivo}
             geocerca= {this.state.geojsonCapa2}
             biomaActivo={this.state.geojsonCapa4}
             biomaActivoData={this.state.biomaActivoData}

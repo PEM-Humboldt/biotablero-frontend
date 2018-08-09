@@ -16,7 +16,7 @@ class Filter extends React.Component {
       menuActivo: "",
     });
     this.props.actualizarCapaActiva(null);
-    this.props.actualizarBiomaActivo(null);
+    this.props.actualizarBiomaActivo(null, null);
   }
 
   mostrarMenu(){
