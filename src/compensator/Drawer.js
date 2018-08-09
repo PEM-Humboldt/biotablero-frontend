@@ -125,13 +125,7 @@ class Drawer extends React.Component {
     // return transformedData;
   }
 
-  componentDidUpdate () {
-    if (this.state.mostrarDatosEnGrafico) {
-      // actualizarTotalACompensar(dataJSON, );
-}
-}
-
-  componentWillMount () {
+  componentDidMount () {
     this.obtenerDatosQue(dataSogamoso);
     this.obtenerDatosDonde(dataCompensaciones);
   }
@@ -154,7 +148,6 @@ class Drawer extends React.Component {
                 labelY={labelY}
                 actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
                 biomaActivo={this.props.biomaActivo}
-                biomaColor = {this.biomaColor}
               />
             )
           }

@@ -19,7 +19,6 @@ class InfoGraph extends React.Component {
           height="280"
           actualizarBiomaActivo = {this.props.actualizarBiomaActivo}
           colors = {this.props.colors}
-          biomaColor = {this.props.biomaColor}
         />
         {/* <ScatterChart
           dataJSON={this.props.data}
