@@ -23,7 +23,11 @@ class ElasticAPI {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/biomas_compensaciones/_search/template?filter_path=hits.hits.fields,aggregations`,
       {
-        id: 'queYCuantoCompensar'
+        id: 'queYCuantoCompensar',
+        "params": {
+          "field": "BIOMA_IAVH",
+          "order": "asc"
+        }
       }
     );
   }
