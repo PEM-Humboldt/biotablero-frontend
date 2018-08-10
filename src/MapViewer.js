@@ -100,6 +100,7 @@ class MapViewer extends React.Component {
   }
 
   mifunc(e){
+    console.log('es click?', e)
     if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
       this.mostrarCapa(this.CapaCorpoBoyaca, true);
       this.mostrarCapa(this.CapaJurisdicciones, false);

@@ -21,7 +21,6 @@ class Compensator extends Component {
     this.subPanelLayer = this.subPanelLayer.bind(this);
     this.innerPanelLayer = this.innerPanelLayer.bind(this);
     this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.actualizarBiomaActivo = this.actualizarBiomaActivo.bind(this);
     this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
@@ -63,7 +62,7 @@ class Compensator extends Component {
     // console.log("capaActiva: "+ campo);
   }
 
-  actualizarBiomaActivo(campo){
+  actualizarBiomaActivo = (campo) => {
     this.setState({
       geojsonCapa4: campo,
       // infoCapaActiva: campo,

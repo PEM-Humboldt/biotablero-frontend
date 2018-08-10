@@ -47,10 +47,12 @@ class Drawer extends React.Component {
       value: 0,
       datosDonde: [],
       totales: {},
+      datosSogamoso: null,
       jurisdiccion: null,
       szh: null,
+      car: null,
+      estrategias: [],
       biomaColor: "white",
-      mostrarDatosEnGrafico: null,
       areaSeleccionada: null,
     };
   }
@@ -107,48 +109,36 @@ class Drawer extends React.Component {
     };
   };
 
-  ocultarDatosGrafico = () => {
-    // console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
-    this.setState ({
-      mostrarDatosEnGrafico: false, // Ocultar el gráfico
-    });
-  }
-
-  cargarEstrategia = (estado, szh, jurisdiccion) => {
-    // console.log('bioma, szh, jurisdiccion: '+ this.props.subArea, szh, jurisdiccion);
-    this.ocultarDatosGrafico();
+  cargarEstrategia = (szh, car) => {
+    if (!szh || !car) return;
+    const estrategias = this.state.datosSogamoso[szh][car].results.hits.hits.filter(
+        obj => obj._source.BIOMA_IAvH === this.props.subArea)
+    this.setState({
+      szh,
+      car,
+      estrategias
+    })
   }
 
   actualizarTotalACompensar = (data) => {
     // TODO: Actualizar desde el PopMenu
   }
 
-  obtenerSubzonas = (data) => {
-    // TODO: Obtener de dataSogamoso el arreglo correspondiente al biomaActivo
-    // const transformedData = [];
-    // data.aggregations.car.buckets[0].forEach(item => {
-    //   transformedData.push(
-    //     {
-    //       name:`${item.fields.BIOMA_IAVH}`,
-    //       percentageAffect: `${item.fields.PORCENT_AFECTACION}`,
-    //       fc: `${item.fields.FACT_COMP}`,
-    //       natural_afectada: `${item.fields.NATURAL_AFECTADA}`,
-    //       total_afectada: `${item.fields.TOTAL_AFECTADA}`,
-    //     }
-    //   );
-    // });
-    // this.setState ({
-    //   datosDonde: transformedData,
-    //   totalACompensar: data.aggregations.total_area.value,
-    // });
-    // return transformedData;
+  cleanDatosSogamoso = (data) => {
+    const cleanData = {}
+    data.aggregations.szh.buckets.forEach(szh => {
+      const cleanCar = {}
+      szh.car.buckets.forEach(car => {
+        cleanCar[car.key] = car
+      })
+      cleanData[szh.key] = cleanCar
+    })
+    return cleanData;
   }
 
   componentDidMount () {
     ElasticAPI.requestDondeCompensarSogamoso()
-      .then((res) => {
-
-      })
+      .then(res => this.setState({ datosSogamoso: this.cleanDatosSogamoso(res) }))
     ElasticAPI.requestQueYCuantoCompensar()
       .then((res) => {
         const { biomas, totals } = this.cleanQueCuantoDondeData(res);
@@ -200,6 +190,7 @@ class Drawer extends React.Component {
                 szh= {this.props.actualizarBiomaActivo}
                 color = {this.state.color}
                 cargarEstrategia = {this.cargarEstrategia}
+                data ={data}
               />
             )
           }
@@ -288,19 +279,21 @@ class Drawer extends React.Component {
                 <h4>0</h4>
               </div>
               {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
-              {this.showSelector(this.state.datosDonde, this.state.totalACompensar)}
+              {this.showSelector(this.state.datosSogamoso, this.state.totalACompensar)}
               <br></br>
               <button className="backgraph"
                 // onClick={() => this.props.verMenu("Selector")}
               >
                 <BackGraph/> Ir al gráfico
               </button>
-              <div className="titecositema">
-                <b>Bioma:</b> Orobioma Andino Altoandino cordillera oriental<br></br>
-                <b>SZH:</b> Río Suárez<br></br>
-                <b>Jurisdicción:</b> Corporacion Autonoma Regional de Cundinamarca
-              </div>
-              <How />
+              { this.props.subArea && this.state.szh && this.state.car && this.state.estrategias &&
+                <How
+                  bioma={this.props.subArea}
+                  szh={this.state.szh}
+                  car={this.state.car}
+                  estrategias={this.state.estrategias}
+                />
+              }
             </TabContainer>
           }
         </div>

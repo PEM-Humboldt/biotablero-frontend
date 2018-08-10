@@ -9,7 +9,7 @@ class ElasticAPI {
    */
   static requestDondeCompensarSogamoso = () => {
     return ElasticAPI.makeRequest(
-      `${ELASTIC_HOST}:${ELASTIC_PORT}/proyecto_sogamoso/_search/template?filter_path=aggregations.car.buckets.key,aggregations.car.buckets.szh.buckets.key,aggregations.car.buckets.szh.buckets.results.hits.hits._source`,
+      `${ELASTIC_HOST}:${ELASTIC_PORT}/proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source`,
       {
         id: 'donde_compensar_sogamoso'
       }
