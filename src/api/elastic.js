@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const ELASTIC_HOST = 'http://192.168.11.63'
-const ELASTIC_PORT = '9250'
+const ELASTIC_HOST = 'http://192.168.11.63';
+const ELASTIC_PORT = '9250';
 
 class ElasticAPI {
   /**
@@ -9,29 +9,29 @@ class ElasticAPI {
    *
    * @param {String} bioma bioma's name to request
    */
-  static requestDondeCompensarSogamoso = (bioma) => {
+  static requestDondeCompensarSogamoso(bioma) {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source`,
       {
         id: 'donde_compensar_sogamoso',
-        params: { bioma_name: bioma }
-      }
+        params: { bioma_name: bioma },
+      },
     );
   }
 
   /**
    * Request the template with information about 'Que y Cuanto compensar'
    */
-  static requestQueYCuantoCompensar = () => {
+  static requestQueYCuantoCompensar() {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/biomas_compensaciones/_search/template?filter_path=hits.hits.fields,aggregations`,
       {
         id: 'queYCuantoCompensar',
         params: {
           field: 'BIOMA_IAVH',
-          order: 'asc'
-        }
-      }
+          order: 'asc',
+        },
+      },
     );
   }
 
@@ -41,13 +41,13 @@ class ElasticAPI {
    *
    * @param {String} bioma bioma's name to request
    */
-  static requestBiomaBySZH = (bioma) => {
+  static requestBiomaBySZH(bioma) {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area`,
       {
         id: 'biomaBySZH',
-        params: { bioma }
-      }
+        params: { bioma },
+      },
     );
   }
 
@@ -57,13 +57,13 @@ class ElasticAPI {
    *
    * @param {String} idCAR id CAR to request
    */
-  static requestCarByDistritosArea = (idCAR) => {
+  static requestCarByDistritosArea(idCAR) {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/corporacion_distritos/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area`,
       {
         id: 'carByDistritoArea',
-        params: { id_car: idCAR }
-      }
+        params: { id_car: idCAR },
+      },
     );
   }
 
@@ -73,13 +73,13 @@ class ElasticAPI {
    *
    * @param {String} idCAR id CAR to request
    */
-  static requestCarByFCArea = (idCAR) => {
+  static requestCarByFCArea(idCAR) {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area`,
       {
         id: 'carByFCArea',
-        params: { id_car: idCAR }
-      }
+        params: { id_car: idCAR },
+      },
     );
   }
 
@@ -89,13 +89,13 @@ class ElasticAPI {
    *
    * @param {String} idCAR id CAR to request
    */
-  static requestCarByBiomaArea = (idCAR) => {
+  static requestCarByBiomaArea(idCAR) {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets.key,aggregations.areas.buckets.area,aggregations.areas.buckets.fc.hits.hits._source,aggregations.total_area`,
       {
         id: 'carByBiomaArea',
-        params: { id_car: idCAR }
-      }
+        params: { id_car: idCAR },
+      },
     );
   }
 
@@ -105,11 +105,9 @@ class ElasticAPI {
    * @param {String} url endpoint url
    * @param {Object} requestBody JSON object with the request body
    */
-  static makeRequest = (url, requestBody) => {
+  static makeRequest(url, requestBody) {
     return axios.post(url, requestBody)
-      .then( res => {
-        return res.data
-      });
+      .then(res => res.data);
   }
 }
 
