@@ -15,6 +15,7 @@ class Informer extends React.Component {
         <Drawer
         actualizarBiomaActivo={this.props.actualizarBiomaActivo}
         subArea= {this.props.subArea}
+        datosSogamoso={this.props.datosSogamoso}
         panelLayer = {this.props.panelLayer}
         />
       </div>

@@ -33,6 +33,8 @@ class PopMenu extends Component {
    * @param {String} nameBioma Name of the bioma to list options
    */
   evaluateSZH = (nameBioma) => {
+    if (!this.props.data) return;
+
     const options = Object.keys(this.props.data).map(szh => ({ value: szh, label: szh }))
     if (nameBioma) {
       // TODO: Actualizar listado de SZH por Bioma seleccionado
@@ -54,6 +56,8 @@ class PopMenu extends Component {
    * @param {String} nameSZH Name of the szh to list options
    */
   evaluateCAR = (nameSZH) => {
+    if (!this.props.data || !this.props.data[nameSZH]) return;
+
     const options = Object.keys(this.props.data[nameSZH]).map(car => ({ value: car, label: car }))
     return (
       <Select

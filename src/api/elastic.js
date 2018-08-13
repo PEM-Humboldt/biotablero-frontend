@@ -6,12 +6,15 @@ const ELASTIC_PORT = '9250'
 class ElasticAPI {
   /**
    * Request the template with information about 'donde compensar' in Sogamoso project
+   *
+   * @param {String} bioma bioma's name to request
    */
-  static requestDondeCompensarSogamoso = () => {
+  static requestDondeCompensarSogamoso = (bioma) => {
     return ElasticAPI.makeRequest(
       `${ELASTIC_HOST}:${ELASTIC_PORT}/proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source`,
       {
-        id: 'donde_compensar_sogamoso'
+        id: 'donde_compensar_sogamoso',
+        params: { bioma_name: bioma }
       }
     );
   }
@@ -24,9 +27,9 @@ class ElasticAPI {
       `${ELASTIC_HOST}:${ELASTIC_PORT}/biomas_compensaciones/_search/template?filter_path=hits.hits.fields,aggregations`,
       {
         id: 'queYCuantoCompensar',
-        "params": {
-          "field": "BIOMA_IAVH",
-          "order": "asc"
+        params: {
+          field: 'BIOMA_IAVH',
+          order: 'asc'
         }
       }
     );

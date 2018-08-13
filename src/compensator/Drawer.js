@@ -47,7 +47,6 @@ class Drawer extends React.Component {
       value: 0,
       datosDonde: [],
       totales: {},
-      datosSogamoso: null,
       jurisdiccion: null,
       szh: null,
       car: null,
@@ -111,12 +110,11 @@ class Drawer extends React.Component {
 
   cargarEstrategia = (szh, car) => {
     if (!szh || !car) return;
-    const estrategias = this.state.datosSogamoso[szh][car].results.hits.hits.filter(
-        obj => obj._source.BIOMA_IAvH === this.props.subArea)
+    const data = this.cleanDatosSogamoso(this.props.datosSogamoso)
     this.setState({
       szh,
       car,
-      estrategias
+      estrategias: data[szh][car].results.hits.hits
     })
   }
 
@@ -125,6 +123,8 @@ class Drawer extends React.Component {
   }
 
   cleanDatosSogamoso = (data) => {
+    if(!data || !data.aggregations) return {};
+
     const cleanData = {}
     data.aggregations.szh.buckets.forEach(szh => {
       const cleanCar = {}
@@ -136,9 +136,7 @@ class Drawer extends React.Component {
     return cleanData;
   }
 
-  componentDidMount () {
-    ElasticAPI.requestDondeCompensarSogamoso()
-      .then(res => this.setState({ datosSogamoso: this.cleanDatosSogamoso(res) }))
+  componentDidMount() {
     ElasticAPI.requestQueYCuantoCompensar()
       .then((res) => {
         const { biomas, totals } = this.cleanQueCuantoDondeData(res);
@@ -279,7 +277,7 @@ class Drawer extends React.Component {
                 <h4>0</h4>
               </div>
               {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
-              {this.showSelector(this.state.datosSogamoso, this.state.totalACompensar)}
+              {this.showSelector(this.cleanDatosSogamoso(this.props.datosSogamoso), this.state.totalACompensar)}
               <br></br>
               <button className="backgraph"
                 // onClick={() => this.props.verMenu("Selector")}
