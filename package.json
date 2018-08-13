@@ -10,7 +10,7 @@
     "lint": "./node_modules/eslint/bin/eslint.js src/*"
   },
   "dependencies": {
-    "@material-ui/core": "1.4.2",
+    "@material-ui/core": "^1.4.2",
     "@material-ui/icons": "1.1.0",
     "@vx/axis": "0.0.170",
     "@vx/glyph": "0.0.170",
