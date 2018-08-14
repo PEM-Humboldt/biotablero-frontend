@@ -16,7 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import InfoGraph from './drawer/InfoGraph';
 import { ParentSize } from "@vx/responsive";
 import PopMenu from './drawer/PopMenu';
-import How from './How';
+import TableStylized from './TableStylized';
 import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
@@ -111,10 +111,29 @@ class Drawer extends React.Component {
   cargarEstrategia = (szh, car) => {
     if (!szh || !car) return;
     const data = this.cleanDatosSogamoso(this.props.datosSogamoso)
+    const estrategias = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
+      key: obj.GROUPS,
+      values: [
+        obj.ESTRATEGIA,
+        obj.HA_ES_EJ,
+        <div>
+          <input
+            name="isGoing"
+            type="text"
+            defaultValue={obj.HA_ES_EJ}
+            onChange={this.handleInputChange} />
+          <button className= "addbioma smbtn"
+            onClick={() => {
+              {/* this.agregarArea(valorLocal); */}
+            }}>
+          </button>
+        </div>
+      ],
+    }));
     this.setState({
       szh,
       car,
-      estrategias: data[szh][car].results.hits.hits
+      estrategias
     })
   }
 
@@ -205,17 +224,18 @@ class Drawer extends React.Component {
     const { classes } = this.props;
     const { value, datosDonde, totales } = this.state;
 
-    const tableRows = datosDonde.map((bioma, i) => (
-      <tr className="row2table" key={`que-${i}`}>
-        <td>{bioma.name}</td>
-        <td>{bioma.fc}</td>
-        <td>{bioma.natural_afectada}</td>
-        <td>{bioma.secundaria_afectada}</td>
-        <td>{bioma.transformada_afectada}</td>
-        <td>{bioma.porcentaje_affectada}%</td>
-        <td>{bioma.total_compensar}</td>
-      </tr>
-    ));
+    const tableRows = datosDonde.map((bioma, i) => ({
+      key: `que-${i}`,
+      values: [
+        bioma.name,
+        bioma.fc,
+        bioma.natural_afectada,
+        bioma.secundaria_afectada,
+        bioma.transformada_afectada,
+        `${bioma.porcentaje_affectada}%`,
+        bioma.total_compensar,
+      ],
+    }));
 
     return (
       <div className={classes.root}>
@@ -237,33 +257,13 @@ class Drawer extends React.Component {
                 <h3>Total a compensar</h3>
                 <h4>{totales.total_compensar}</h4>
               </div>
-              <table className="graphcard">
-                <thead>
-                  <tr className="row1table">
-                    <th>BIOMA IAVH</th>
-                    <th>F.C.</th>
-                    <th>NAT.</th>
-                    <th>SEC.</th>
-                    <th>TRANS.</th>
-                    <th>AFECT.</th>
-                    <th>TOTAL</th>
-                  </tr>
-                </thead>
-                <tfoot>
-                  <tr className="row3table">
-                    <td>{totales.name}</td>
-                    <td>{totales.fc}</td>
-                    <td>{totales.natural_afectada}</td>
-                    <td>{totales.secundaria_afectada}</td>
-                    <td>{totales.transformada_afectada}</td>
-                    <td>{totales.porcentaje_affectada}%</td>
-                    <td>{totales.total_compensar}</td>
-                  </tr>
-                </tfoot>
-                <tbody>
-                  {tableRows}
-                </tbody>
-              </table>
+              <TableStylized
+                headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
+                rows={tableRows}
+                footers={[totales.name, totales.fc, totales.natural_afectada,
+                  totales.secundaria_afectada, totales.transformada_afectada,
+                  `${totales.porcentaje_affectada}%`, totales.total_compensar,]}
+              />
             </TabContainer>
           }
           {value === 1 &&
@@ -285,11 +285,15 @@ class Drawer extends React.Component {
                 <BackGraph/> Ir al gráfico
               </button>
               { this.props.subArea && this.state.szh && this.state.car && this.state.estrategias &&
-                <How
-                  bioma={this.props.subArea}
-                  szh={this.state.szh}
-                  car={this.state.car}
-                  estrategias={this.state.estrategias}
+                <TableStylized
+                  description={{
+                    Bioma: this.props.subArea,
+                    SZH: this.state.szh,
+                    Jurisdicción: this.state.car,
+                  }}
+                  headers={['Estrategia', 'Héctareas', 'Agregar']}
+                  rows={this.state.estrategias}
+                  classTable='special'
                 />
               }
             </TabContainer>
