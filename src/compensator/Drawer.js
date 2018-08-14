@@ -49,11 +49,11 @@ class Drawer extends React.Component {
       totales: {},
       jurisdiccion: null,
       szh: null,
-      car: null,
-      estrategias: [],
+      strategies: [],
       biomaColor: "white",
-      areaSeleccionada: null,
+      selectedArea: 0,
     };
+    this.referencesStrategies = [];
   }
 
   biomaColor(biomaColor) {
@@ -67,7 +67,7 @@ class Drawer extends React.Component {
    *
    * @param {Array} data array of objects with information about compensations
    */
-  cleanQueCuantoDondeData = (data) => {
+  cleanQueCuantoDondeData(data) {
     const biomas = data.hits.hits.map(({ fields }) => {
       const { BIOMA_IAVH, PORCENT_AFECTACION, FACT_COMP, NATURAL_AFECTADA, TOTAL_COMPENSAR,
         SECUNDARIA_AFECTADA, TRANSFORMADA_AFECTADA } = fields
@@ -108,32 +108,50 @@ class Drawer extends React.Component {
     };
   };
 
+  /**
+   * Validate if the value in the array is lower or equal to maxValue,
+   * and add it to selectedArea
+   *
+   * @param {number} index index for referencesStrategies
+   * @param {number} maxValue maximum allowed value
+   */
+  addArea(index, maxValue) {
+    const value = Number(this.referencesStrategies[index].current.value);
+    if(value <= maxValue) {
+      this.setState((prevState) => ({selectedArea: value + prevState.selectedArea}))
+    }
+  }
+
   cargarEstrategia = (szh, car) => {
     if (!szh || !car) return;
-    const data = this.cleanDatosSogamoso(this.props.datosSogamoso)
-    const estrategias = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
-      key: obj.GROUPS,
-      values: [
-        obj.ESTRATEGIA,
-        obj.HA_ES_EJ,
-        <div>
-          <input
-            name="isGoing"
-            type="text"
-            defaultValue={obj.HA_ES_EJ}
-            onChange={this.handleInputChange} />
-          <button className= "addbioma smbtn"
-            onClick={() => {
-              {/* this.agregarArea(valorLocal); */}
-            }}>
-          </button>
-        </div>
-      ],
-    }));
+    const data = this.cleanDatosSogamoso(this.props.datosSogamoso);
+    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }, indexRef) => {
+      this.referencesStrategies.push(React.createRef());
+      return {
+        key: obj.GROUPS,
+        values: [
+          obj.ESTRATEGIA,
+          obj.HA_ES_EJ,
+          <div>
+            <input
+              name={obj.GROUPS}
+              max={obj.HA_ES_EJ}
+              ref= {this.referencesStrategies[indexRef]}
+              type="text"
+              placeholder='0'/>
+            <button className= "addbioma smbtn"
+              onClick={() => {
+                this.addArea(indexRef,obj.HA_ES_EJ);
+              }}>
+            </button>
+          </div>
+        ],
+      }
+    });
     this.setState({
       szh,
       car,
-      estrategias
+      strategies
     })
   }
 
@@ -274,7 +292,9 @@ class Drawer extends React.Component {
               </div>
               <div className="total carrito">
                 <h3>Áreas seleccionadas</h3>
-                <h4>0</h4>
+                <h4 className={(this.state.selectedArea >= totales.total_compensar) ? "areaCompleted" : ""}>
+                  {this.state.selectedArea}
+                </h4>
               </div>
               {this.mostrarGraficos(1, this.state.datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1','#eabc47','#ea495f'])}
               {this.showSelector(this.cleanDatosSogamoso(this.props.datosSogamoso), this.state.totalACompensar)}
@@ -284,7 +304,7 @@ class Drawer extends React.Component {
               >
                 <BackGraph/> Ir al gráfico
               </button>
-              { this.props.subArea && this.state.szh && this.state.car && this.state.estrategias &&
+              { this.props.subArea && this.state.szh && this.state.car && this.state.strategies &&
                 <TableStylized
                   description={{
                     Bioma: this.props.subArea,
@@ -292,7 +312,7 @@ class Drawer extends React.Component {
                     Jurisdicción: this.state.car,
                   }}
                   headers={['Estrategia', 'Héctareas', 'Agregar']}
-                  rows={this.state.estrategias}
+                  rows={this.state.strategies}
                   classTable='special'
                 />
               }
