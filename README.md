@@ -20,7 +20,15 @@ Posterior a la instalación de paquetes, ejecute la siguiente instrucción:
 
 La instrucción iniciará el proyecto en su equipo local y se abrirá en el navegador.
 
-### 1.3. Problemas
+### 1.3. Verificar reglas de estilo (airbnb)
+
+Ejecutar la siguiente linea:
+
+    npm run lint -- <folder/archivo>
+
+Reemplazar <folder/archivo> con el path del folder o del archivo sobre el cual desea verificar los estilos.
+
+### 1.4. Problemas
 
 En caso de tener inconvenientes al ejecutar npm start en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
 
