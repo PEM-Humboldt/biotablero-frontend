@@ -49,13 +49,13 @@ class MapViewer extends React.Component {
     // pero recibido desde el arreglo de capas, como una propiedad
     const capas = [
       { nombre: 'Jurisdicciones',
-        url: 'http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson',
+        url: 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson',
         capa: null,
       },
       {
         nombre: 'CORPOBOYACA',
-        url: `http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`,
-        // url: `http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`,
+        url: `http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`,
+        // url: `http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`,
         capa: null,
       }
     ];
@@ -176,10 +176,10 @@ class MapViewer extends React.Component {
 
   componentDidMount() {
     Promise.all([
-      this.setGeoJSONLayer('Sogamoso_Biomas', 'http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_Biomas&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('jurisdicciones', 'http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('Corpoboyaca', 'http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('Sogamoso', 'http://192.168.11.63:8080/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson')
+      this.setGeoJSONLayer('Sogamoso_Biomas', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_Biomas&maxFeatures=50&outputFormat=application%2Fjson'),
+      this.setGeoJSONLayer('jurisdicciones', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson'),
+      this.setGeoJSONLayer('Corpoboyaca', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson'),
+      this.setGeoJSONLayer('Sogamoso', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson')
     ]).then(() => this.forceUpdate())
   }
 
@@ -255,11 +255,11 @@ class MapViewer extends React.Component {
         {/* TODO: Mostrar bajo este formato los raster de cada estrategia de Compensaciones
           <WMSTileLayer srs={ 'EPSG:4326' }
                     layers='Biotablero:strategy_sogamoso_111_1_c'
-                    url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS&styles=raster_strategy"}
+                    url={"http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS&styles=raster_strategy"}
                     opacity={1} alt={"Regiones"} styles={"raster_strategy"} format={'image/png'} transparent={true}/> */}
         <WMSTileLayer
           layers='Biotablero:Regiones_geb'
-          url={"http://192.168.11.63:8080/geoserver/Biotablero/wms?service=WMS"}
+          url={"http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS"}
           opacity={0.2} alt={"Regiones"}/>
         </Map>
     );
