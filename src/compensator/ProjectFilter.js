@@ -47,6 +47,7 @@ class ProjectFilter extends React.Component {
       nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
       actualizarBiomaActivo={this.props.actualizarBiomaActivo}
       subArea= {this.props.subArea}
+      datosSogamoso={this.props.datosSogamoso}
       panelLayer = {this.props.panelLayer}
       />
   }

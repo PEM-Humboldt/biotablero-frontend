@@ -30,7 +30,6 @@ export default withTooltip((
 
   // Se preparan los datos para el gráfico
   const data = prepareData(props.dataJSON, props.area);
-  // let keys = Object.keys(data[0]);
 
   // Define las dimensiones y márgenes del gráfico
   const width = props.width;
@@ -98,7 +97,8 @@ export default withTooltip((
                       tooltipTop: margin.top + yScale(y(d)),
                       tooltipLeft: margin.left + xScale(x(d)),
                     });
-                  }}/>
+                  }}
+                />
                 <AxisLeft
                   hideAxisLine={true}
                   hideTicks={true}
@@ -112,7 +112,8 @@ export default withTooltip((
                   }}
                   tickLabelProps={(value, index) => ({
                     fill: 'none',
-                  })}/>
+                  })}
+                />
                 <AxisBottom
                   scale={xScale}
                   top={yMax}
@@ -126,20 +127,8 @@ export default withTooltip((
                   tickStroke="#ea495f"
                   tickLabelProps={(area_V, index) => ({
                     fill: 'none',
-                  })}/>
-                onMouseLeave={data => event => {
-                  tooltipTimeout = setTimeout(() => {
-                    hideTooltip();
-                  }, 300);
-                }}
-                onMouseMove={data => event => {
-                  if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                  showTooltip({
-                    tooltipData: d,
-                    tooltipTop: margin.top + yScale(y(d)),
-                    tooltipLeft: margin.left + xScale(x(d)),
-                  });
-                }}
+                  })}
+                />
               </Group>
             );
           })}

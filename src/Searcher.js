@@ -15,6 +15,7 @@ class Searcher extends Component {
       geojsonCapa2: null,
       geojsonCapa3: null,
       geojsonCapa4: null,
+      biomaActivoData: null,
       ubicacionMapa: null,
       infoCapaActiva: null,
     };
@@ -22,7 +23,6 @@ class Searcher extends Component {
     this.subPanelLayer = this.subPanelLayer.bind(this);
     this.innerPanelLayer = this.innerPanelLayer.bind(this);
     this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.actualizarBiomaActivo = this.actualizarBiomaActivo.bind(this);
     this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
@@ -70,35 +70,43 @@ class Searcher extends Component {
     }
   }
 
-  actualizarBiomaActivo(campo){
+  /**
+   * Update information about the active bioma
+   *
+   * @param {String} bioma bioma's name
+   * @param {Object} data bioma's data (usually it's info about szh)
+   */
+  actualizarBiomaActivo = (bioma, data) => {
     this.setState({
-      geojsonCapa4: campo,
-      // infoCapaActiva: campo,
+      geojsonCapa4: bioma,
+      biomaActivoData: data
     });
-    // console.log("biomaActivo: "+ campo);
   }
 
   render() {
     let layer = this.state.geojson;
     return (
       <div className="appSearcher">
-          <MapViewer mostrarJSON={layer}
-            capasMontadas={[
-                  this.state.geojsonCapa1,
-                  this.state.geojsonCapa2,
-                  this.state.geojsonCapa3,
-                  this.state.geojsonCapa4]}
-            capaActiva={this.actualizarCapaActiva}
-            biomaActivo={this.actualizarBiomaActivo}/>
+        <MapViewer mostrarJSON={layer}
+          capasMontadas={[
+                this.state.geojsonCapa1,
+                this.state.geojsonCapa2,
+                this.state.geojsonCapa3,
+                this.state.geojsonCapa4]}
+          capaActiva={this.actualizarCapaActiva}
+          setBiomaActivo={this.actualizarBiomaActivo}
+        />
         <div className="contentView">
           <Filter panelLayer = {this.panelLayer}
-          subPanelLayer = {this.subPanelLayer}
-          innerPanelLayer = {this.innerPanelLayer}
-          dataCapaActiva={this.state.infoCapaActiva}
-          actualizarCapaActiva= {this.actualizarCapaActiva}
-          actualizarBiomaActivo={this.actualizarBiomaActivo}
-          geocerca= {this.state.geojsonCapa2}
-          subArea={this.state.geojsonCapa4}/>
+            subPanelLayer = {this.subPanelLayer}
+            innerPanelLayer = {this.innerPanelLayer}
+            dataCapaActiva={this.state.infoCapaActiva}
+            actualizarCapaActiva= {this.actualizarCapaActiva}
+            actualizarBiomaActivo={this.actualizarBiomaActivo}
+            geocerca= {this.state.geojsonCapa2}
+            biomaActivo={this.state.geojsonCapa4}
+            biomaActivoData={this.state.biomaActivoData}
+          />
         </div>
       </div>
     );

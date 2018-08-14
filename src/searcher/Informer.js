@@ -14,8 +14,9 @@ class Informer extends React.Component {
           <div className="iconsection mt2"></div>
           <h1> {this.props.geocerca} / {this.props.nombre} <br></br> <b>{this.props.subArea}</b></h1>
           <Drawer
-            subArea={this.props.subArea}
-            actualizarBiomaActivo={this.props.actualizarBiomaActivo}/>
+            biomaActivo={this.props.biomaActivo}
+            biomaActivoData={this.props.biomaActivoData}
+          />
       </div>
     );
   }

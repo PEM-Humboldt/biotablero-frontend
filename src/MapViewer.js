@@ -7,6 +7,8 @@ import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import axios from 'axios';
+
+import ElasticAPI from './api/elastic'
 // TODO: Recibir esta información JSON
 // import datosJSON from './data/biomas-iavh-szh.json';
 
@@ -30,13 +32,11 @@ class MapViewer extends React.Component {
     this.CapaSogamoso=null;
     this.CapaBiomasSogamoso=null;
 
-    this.onEachFeature = this.onEachFeature.bind(this);
     this.hexagonosOnEachFeature = this.hexagonosOnEachFeature.bind(this);
     this.resetHighlight = this.resetHighlight.bind(this);
     this.resetHighlight2 = this.resetHighlight2.bind(this);
     this.highlightFeature = this.highlightFeature.bind(this);
     this.mifunc = this.mifunc.bind(this);
-    this.mifunc2 = this.mifunc2.bind(this);
     this.capasDisponibles = this.capasDisponibles.bind(this);
     // TODO: Analizar estrategia con props.capasMontadas y props.capaActiva
     // const capasCargadas = null;
@@ -100,6 +100,7 @@ class MapViewer extends React.Component {
   }
 
   mifunc(e){
+    console.log('es click?', e)
     if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
       this.mostrarCapa(this.CapaCorpoBoyaca, true);
       this.mostrarCapa(this.CapaJurisdicciones, false);
@@ -108,9 +109,22 @@ class MapViewer extends React.Component {
     this.resetHighlight(e);
   }
 
-  mifunc2(e){
-    if(this.props.capasMontadas[2]!== null){
-      this.props.biomaActivo(e.target.feature.properties.BIOMA_IAvH);
+  /**
+   * When a click event occurs on a bioma layer in the searches module,
+   *  request info by szh on that bioma
+   *
+   * @param {Object} e event object
+   */
+  handleClickOnBioma = (e) => {
+    if(this.props.capasMontadas[2] !==  null) {
+      const bioma = e.target.feature.properties.BIOMA_IAvH
+      //This is necessary until the utf-8 is fixed in the geoserver
+      const correctlyEncodedBioma =
+        decodeURIComponent(escape(decodeURIComponent(escape(bioma))))
+      ElasticAPI.requestBiomaBySZH(correctlyEncodedBioma)
+        .then(res => {
+          this.props.setBiomaActivo(correctlyEncodedBioma, res)
+        });
     }
     this.resetHighlight2(e);
   }
@@ -224,12 +238,12 @@ class MapViewer extends React.Component {
     );
   }
 
-  onEachFeature(feature, layer){
+  onEachFeature = (feature, layer) => {
     layer.on(
       {
         mouseover : this.highlightFeature,
         mouseout : this.resetHighlight2,
-        click : this.mifunc2,
+        click : this.handleClickOnBioma
       }
     );
   }

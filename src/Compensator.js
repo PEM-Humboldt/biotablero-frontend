@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import MapViewer from './MapViewer';
 import ProjectFilter from './compensator/ProjectFilter';
 
+import ElasticAPI from './api/elastic'
+
 class Compensator extends Component {
     constructor (props){
     super(props);
@@ -21,7 +23,6 @@ class Compensator extends Component {
     this.subPanelLayer = this.subPanelLayer.bind(this);
     this.innerPanelLayer = this.innerPanelLayer.bind(this);
     this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.actualizarBiomaActivo = this.actualizarBiomaActivo.bind(this);
     this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
@@ -63,12 +64,14 @@ class Compensator extends Component {
     // console.log("capaActiva: "+ campo);
   }
 
-  actualizarBiomaActivo(campo){
-    this.setState({
-      geojsonCapa4: campo,
-      // infoCapaActiva: campo,
-    });
-    // console.log("biomaActivo: "+ campo);
+  actualizarBiomaActivo = (campo) => {
+    ElasticAPI.requestDondeCompensarSogamoso(campo)
+      .then((res) => {
+        this.setState({
+          geojsonCapa4: campo,
+          datosSogamoso: res
+        });
+      });
   }
 
   render() {
@@ -93,6 +96,7 @@ class Compensator extends Component {
           actualizarBiomaActivo={this.actualizarBiomaActivo}
           geocerca= {this.state.geojsonCapa2}
           subArea={this.state.geojsonCapa4}
+          datosSogamoso={this.state.datosSogamoso}
           zonageb={'GEB Centro'}/>
         </div>
       </div>

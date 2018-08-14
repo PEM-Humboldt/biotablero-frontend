@@ -16,7 +16,7 @@ class Filter extends React.Component {
       menuActivo: "",
     });
     this.props.actualizarCapaActiva(null);
-    this.props.actualizarBiomaActivo(null);
+    this.props.actualizarBiomaActivo(null, null);
   }
 
   mostrarMenu(){
@@ -37,20 +37,14 @@ class Filter extends React.Component {
 
   mostrarInformacion(infoCapaActiva) {
     // TODO: Validar información: Designación y Administrado por
-    if (this.props.dataCapaActiva)
-    // TODO: Enviar y recibir de MapViewer la información de pertenencia
-    //  a zonas hidrográficas, para representarlo en el resumen dentro de Informer
-    return <Informer verMenu={this.cambiarMenu}
-      geocerca={this.props.geocerca}
-      nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
-      subArea={this.props.subArea}
-      actualizarBiomaActivo={this.actualizarBiomaActivo}
-      />
-  }
-
-  componentDidUpdate() {
-    // alert("this.state.menuActivo: "+this.state.menuActivo);
-    // this.mostrarMenu();
+    if (this.props.dataCapaActiva) {
+      return (<Informer verMenu={this.cambiarMenu}
+        geocerca={this.props.geocerca}
+        nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
+        biomaActivo={this.props.biomaActivo}
+        biomaActivoData={this.props.biomaActivoData}
+      />)
+    }
   }
 
   render() {

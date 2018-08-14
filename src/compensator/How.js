@@ -9,173 +9,46 @@ class How extends React.Component {
   }
 
   render () {
+    const { bioma, szh, car, estrategias } = this.props
+    const estrategiasData = estrategias.map(({ _source: obj }) => (
+      <tr className="row2table" key={obj.GROUPS}>
+        <td>{obj.ESTRATEGIA}</td>
+        <td>{obj.HA_ES_EJ}</td>
+        <td>
+          <input
+            name="isGoing"
+            type="text"
+            defaultValue={obj.HA_ES_EJ}
+            onChange={this.handleInputChange} />
+          <button className= "addbioma smbtn"
+            onClick={() => {
+              this.agregarArea(valorLocal);
+            }}>
+          </button>
+        </td>
+      </tr>
+    ))
     let valorLocal = 0;
     return (
+      <div>
+      <div className="titecositema">
+        <b>Bioma:</b> {bioma}<br></br>
+        <b>SZH:</b> {szh}<br></br>
+        <b>Jurisdicción:</b> {car}
+      </div>
       <table className="graphcard special">
-        <tbody>
+        <thead>
           <tr className="row1table">
             <th>Estrategia</th>
-            {/* <th>SZH</th>
-            <th>Jurisdicción</th> */}
             <th>Héctareas</th>
             <th>Agregar</th>
           </tr>
-          <tr className="row2table">
-            <td>Preservación mediante la ampliación de áreas declaradas</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>37761.41</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Recuperación fuera de áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>200.55</td>
-            <td><input
-            name="isGoing"
-            // type="checkbox"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Preservación dentro de áreas declaradas</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>3176.32</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Recuperación en áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>3523.40</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Restauración fuera de áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>2198.32</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Rehabilitación en áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>573.16</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Rehabilitación fuera de áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>735.68</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Áreas de interes regional para la posible declaración de áreas protegidas</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>57903.50</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className= "addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
-          <tr className="row2table">
-            <td>Restauración en áreas SINAP</td>
-            {/* <td>Río Suárez</td>
-            <td>Corporacion Autonoma Regional de Cundinamarca</td> */}
-            <td>7718.66</td>
-            <td><input
-            name="isGoing"
-            type="text"
-            // checked={this.state.isGoing}
-            onChange={this.handleInputChange} />
-            <button className="addbioma smbtn"
-            onClick={() => {
-              this.agregarArea(valorLocal);
-            }}
-            ></button>
-          </td>
-          </tr>
+        </thead>
+        <tbody>
+          {estrategiasData}
         </tbody>
       </table>
+      </div>
     );
   }
 }
