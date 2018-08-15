@@ -2,9 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Descargar from '@material-ui/icons/Save';
-import BarStackHorizontal from './searcher/drawer/charts/BarStackHorizontal';
-import BarGraph from './searcher/drawer/charts/BarGraph';
-import DotsGraph from './compensator/drawer/DotsGraph';
+import BarStackHorizontal from './charts/BarStackHorizontal';
+import BarGraph from './charts/BarGraph';
+import DotsGraph from './charts/DotsGraph';
 
 const GraphLoader = (
   {
@@ -81,18 +81,20 @@ const GraphLoader = (
 );
 
 GraphLoader.propTypes = {
-  actualizarBiomaActivo: PropTypes.string.isRequired,
+  actualizarBiomaActivo: PropTypes.func,
   colors: PropTypes.array,
   graphType: PropTypes.string.isRequired,
-  graphTitle: PropTypes.string.isRequired,
+  graphTitle: PropTypes.string,
   data: PropTypes.object.isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.string,
-  height: PropTypes.string,
+  width: PropTypes.number,
+  height: PropTypes.number,
 };
 
 GraphLoader.defaultProps = {
+  actualizarBiomaActivo: () => {},
+  graphTitle: '',
   colors: ['blue'],
   labelX: '',
   labelY: '',
