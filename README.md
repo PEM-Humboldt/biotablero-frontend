@@ -36,7 +36,7 @@ En caso de tener inconvenientes al ejecutar npm start en ubuntu revisar [este is
 
 Para desplegar como contenedor de Docker es necesario contar la versión 17.05.0 o superior de [Docker](https://www.docker.com/)
 
-### 2.1 Construcción de la imagen
+### 2.1. Construcción de la imagen
 
 Descargar el repositorio en el servidor donde se desplegará el servicio.
 
@@ -44,11 +44,17 @@ Ejecutar la siguiente instrucción para construir la imagen:
 
     docker build -t <nombre imagen>:<version> .
 
-### 2.2 Despliegue del servicio
+### 2.2. Despliegue del servicio
 
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> <nombre imagen>
+
+## 3. Eslint verified files
+
+src/compensator/Drawer.jsx
+src/compensator/InputCompensation.jsx
+src/compensator/TableStylized.jsx
 
 ***
 
