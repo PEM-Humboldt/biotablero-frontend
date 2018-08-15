@@ -1,3 +1,4 @@
+/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import Descargar from '@material-ui/icons/Save';
