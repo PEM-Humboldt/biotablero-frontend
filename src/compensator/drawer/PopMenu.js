@@ -19,12 +19,12 @@ class PopMenu extends Component {
       szhSelected: szhSelected.value,
       jurisdiccionSelected: null,
     });
-    this.props.cargarEstrategia(szhSelected.value, null);
+    this.props.loadStrategies(szhSelected.value, null);
   }
 
   handleChangeCAR = (jurisdiccionSelected) => {
     this.setState({ jurisdiccionSelected: jurisdiccionSelected.value });
-    this.props.cargarEstrategia(this.state.szhSelected, jurisdiccionSelected.value);
+    this.props.loadStrategies(this.state.szhSelected, jurisdiccionSelected.value);
   }
 
   /**
@@ -85,7 +85,7 @@ render () {
         {this.state.jurisdiccionSelected ?
           <button className="addbioma"
             onClick={() => {
-              this.props.cargarEstrategia(this.state.szhSelected, this.state.jurisdiccionSelected);
+              this.props.loadStrategies(this.state.szhSelected, this.state.jurisdiccionSelected);
             }}
           ></button> : ""}
       </div>
