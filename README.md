@@ -56,6 +56,7 @@ src/compensator/TableStylized.jsx
 src/GraphLoader.jsx
 src/compensator/Drawer.jsx
 src/compensator/InputCompensation.jsx
+src/compensator/TableStylized.jsx
 
 ***
 
