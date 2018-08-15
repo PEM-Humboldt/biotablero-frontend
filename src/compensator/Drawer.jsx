@@ -1,3 +1,5 @@
+/** eslint verified */
+
 /* TODO: Habilitar ESTAS lineas en <Tabs /> cuando
 se tenga más de tres tipos de gráficos:
 scrollable
@@ -18,6 +20,7 @@ import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
 import InfoGraph from './drawer/InfoGraph';
+import InputCompensation from './InputCompensation';
 import PopMenu from './drawer/PopMenu';
 import TableStylized from './TableStylized';
 
@@ -98,6 +101,7 @@ class Drawer extends React.Component {
       szh: null,
       strategies: [],
       selectedArea: 0,
+      tableError: '',
     };
     this.referencesStrategies = [];
   }
@@ -114,17 +118,34 @@ class Drawer extends React.Component {
   }
 
   /**
-   * Validate if the value in the array is lower or equal to maxValue,
-   * and add it to selectedArea
+   * Add or subtract a value to selectedArea
    *
    * @param {number} index index for referencesStrategies
    * @param {number} maxValue maximum allowed value
    */
-  addArea = (index, maxValue) => {
-    const value = Number(this.referencesStrategies[index].current.value);
-    if (value <= maxValue) {
-      this.setState(prevState => ({ selectedArea: value + prevState.selectedArea }));
+  operateArea = (value, operator) => {
+    switch (operator) {
+      case '+':
+        this.setState(prevState => ({
+          selectedArea: value + prevState.selectedArea,
+          tableError: '',
+        }));
+        break;
+      case '-':
+        this.setState(prevState => ({ selectedArea: prevState.selectedArea - value }));
+        break;
+      default:
+        break;
     }
+  }
+
+  /**
+   * Set an error message above the compensations table
+   *
+   * @param {String} message message to set
+   */
+  reportTableError = (message) => {
+    this.setState({ tableError: message });
   }
 
   /**
@@ -138,29 +159,19 @@ class Drawer extends React.Component {
     if (!szh || !car) return;
     const { datosSogamoso } = this.props;
     const data = this.cleanDatosSogamoso(datosSogamoso);
-    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }, indexRef) => {
+    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => {
       this.referencesStrategies.push(React.createRef());
       return {
         key: obj.GROUPS,
         values: [
           obj.ESTRATEGIA,
           obj.HA_ES_EJ,
-          <div>
-            <input
-              name={obj.GROUPS}
-              max={obj.HA_ES_EJ}
-              ref={this.referencesStrategies[indexRef]}
-              type="text"
-              placeholder="0"
-            />
-            <button
-              className="addbioma smbtn"
-              type="button"
-              onClick={() => {
-                this.addArea(indexRef, obj.HA_ES_EJ);
-              }}
-            />
-          </div>,
+          <InputCompensation
+            name={obj.GROUPS}
+            maxValue={Number(obj.HA_ES_EJ)}
+            operateArea={this.operateArea}
+            reportError={this.reportTableError}
+          />,
         ],
       };
     });
@@ -231,14 +242,14 @@ class Drawer extends React.Component {
     return null;
   }
 
-  handleChange = (event, value) => {
+  handleChangeTab = (event, value) => {
     this.setState({ value });
   };
 
   render() {
     const { classes, datosSogamoso, subArea } = this.props;
     const {
-      value, datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies,
+      value, datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError
     } = this.state;
 
     const tableRows = datosDonde.map((bioma, i) => ({
@@ -259,7 +270,7 @@ class Drawer extends React.Component {
         <AppBar position="static" color="default">
           <Tabs
             value={value}
-            onChange={this.handleChange}
+            onChange={this.handleChangeTab}
             indicatorColor="secondary"
             textColor="secondary"
             centered
@@ -316,6 +327,11 @@ class Drawer extends React.Component {
               <BackGraph />
               Ir al gráfico
             </button>
+            {tableError && (
+              <div className="tableError">
+                {tableError}
+              </div>
+            )}
             { subArea && szh && car && strategies && (
               <TableStylized
                 description={{

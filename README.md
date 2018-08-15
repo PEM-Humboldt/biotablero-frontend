@@ -53,6 +53,8 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 ## 3. Eslint verified files
 
 TableStylized.jsx
+Drawer.jsx
+InputCompensation.jsx
 
 ***
 
