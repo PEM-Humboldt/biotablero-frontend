@@ -19,6 +19,7 @@ export default withTooltip(props => {
   const xMax = width - margin.left - margin.right;
   const yMax = height - 65;
   if (width < 10) return null;
+  if (height < 10) return null;
 
   let points = props.dataJSON;
 

@@ -16,7 +16,7 @@ export default withTooltip((
   showTooltip,
   labelX,
   labelY,
-  titulo,
+  graphTitle,
   ...props}) => {
   if (props.width < 10) return null;
 
@@ -71,7 +71,7 @@ export default withTooltip((
   return (
     <div className="graphcontainer">
       <div className="graphcard">
-        <h2><Descargar className="icondown" />{titulo}</h2>
+        <h2><Descargar className="icondown" />{graphTitle}</h2>
         <svg width={width} height={height}>
           {data.map((d, i) => {
             const barHeight = yMax - yPoint(d);

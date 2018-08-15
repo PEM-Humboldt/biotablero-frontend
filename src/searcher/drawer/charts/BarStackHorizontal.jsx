@@ -13,7 +13,7 @@ export default withTooltip(
     labelY,
     width,
     height,
-    titulo,
+    graphTitle,
     events = false,
     margin = {
       top: 0,
@@ -47,7 +47,7 @@ export default withTooltip(
     }
 
     function sortByKey(array, key) {
-      if(titulo === 'Factor de Compensación' || labelY==='F C'){
+      if(graphTitle === 'Factor de Compensación' || labelY==='F C'){
         keys = keys.sort(comparingValues);
       }
       return array.sort(function(a, b) {
@@ -99,7 +99,7 @@ export default withTooltip(
 
     return (
       <div className="graphcard">
-      <h2><Descargar className="icondown" />{titulo}</h2>
+      <h2><Descargar className="icondown" />{graphTitle}</h2>
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal

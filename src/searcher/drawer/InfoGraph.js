@@ -11,7 +11,7 @@ class InfoGraph extends React.Component {
         return (
           <BarGraph
             dataJSON={this.props.data}
-            titulo={this.props.titulo}
+            graphTitle={this.props.titulo}
             labelX={this.props.labelX}
             labelY={this.props.labelY}
             width={this.props.width}
@@ -23,7 +23,7 @@ class InfoGraph extends React.Component {
         return (
           <BarStackHorizontal
             dataJSON={this.props.data}
-            titulo={this.props.titulo}
+            graphTitle={this.props.titulo}
             labelX={this.props.labelX}
             labelY={this.props.labelY}
             width={this.props.width}
