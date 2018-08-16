@@ -22,7 +22,7 @@ import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
 import InputCompensation from './InputCompensation';
 import PopMenu from '../charts/PopMenu';
-import TableStylized from './TableStylized';
+import TableStylized from '../TableStylized';
 
 function TabContainer({ children }) {
   return (
