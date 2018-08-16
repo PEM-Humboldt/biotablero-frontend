@@ -103,7 +103,7 @@ class ElasticAPI {
   /**
    * Request an endpoint to the elasticsearch server
    *
-   * @param {String} url endpoint url
+   * @param {String} endpoint endpoint to attach to url
    * @param {Object} requestBody JSON object with the request body
    */
   static makeRequest(endpoint, requestBody) {
