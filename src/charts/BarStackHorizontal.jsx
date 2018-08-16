@@ -1,4 +1,5 @@
 /** eslint verified */
+// TODO: onClick in BarStackHorizontal should highlight area selected on the map
 import React from 'react';
 import { BarStackHorizontal } from '@vx/shape';
 import { Group } from '@vx/group';
@@ -15,7 +16,6 @@ export default withTooltip(
     width,
     height,
     graphTitle,
-    // events = false,
     margin = {
       top: 0,
       left: 40,
@@ -43,29 +43,8 @@ export default withTooltip(
       return transformedData;
     };
 
-    function comparingValues(a, b) {
-      return a - b;
-    }
-
-    let data = [prepareData(dataJSON, labelY)].slice(0);
-    let keys = Object.keys(data[0]);
-
-    function sortByKey(array, key) {
-      if (graphTitle === 'Factor de Compensación' || labelY === 'F C') {
-        keys = keys.sort(comparingValues);
-      }
-      return array.sort((a, b) => {
-        const x1 = a[key];
-        const y1 = b[key];
-        if (x1 < y1) {
-          return -1;
-        } if (x1 > y1) {
-          return 1;
-        } return 0;
-      });
-    }
-    // Sort data in alphabetical or numerical order
-    data = sortByKey(data, keys);
+    const data = [prepareData(dataJSON, labelY)];
+    const keys = Object.keys(data[0]);
     const totals = dataJSON.aggregations.total_area.value;
 
     // bounds
@@ -119,12 +98,6 @@ export default withTooltip(
               xScale={xScale}
               yScale={yScale}
               zScale={zScale}
-              // onClick={data => (event) => {
-              //   // TODO: onClick should highlight area selected on the map
-              //   // if (events) return;
-              //   // alert(`clicked: ${JSON.stringify(data)}`);
-              //   // actualizarSubArea(data.key);
-              // }}
               onMouseLeave={() => () => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
