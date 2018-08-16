@@ -1,3 +1,4 @@
+/** eslint verified */
 import axios from 'axios';
 
 const GEOSERVER_HOST = 'http://indicadores.humboldt.org.co';

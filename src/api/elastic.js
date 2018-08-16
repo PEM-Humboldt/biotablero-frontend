@@ -1,3 +1,4 @@
+/** eslint verified */
 import axios from 'axios';
 
 const ELASTIC_HOST = 'http://192.168.11.63';
