@@ -8,7 +8,8 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
 import axios from 'axios';
 
-import ElasticAPI from './api/elastic'
+import ElasticAPI from './api/elastic';
+import GeoServerAPI from './api/geoserver';
 // TODO: Recibir esta información JSON
 // import datosJSON from './data/biomas-iavh-szh.json';
 
@@ -109,6 +110,7 @@ class MapViewer extends React.Component {
     this.resetHighlight(e);
   }
 
+  // TODO: Esto lo deberíamos manejar desde el Search, porque es algo exclusivo del search
   /**
    * When a click event occurs on a bioma layer in the searches module,
    *  request info by szh on that bioma
@@ -116,14 +118,13 @@ class MapViewer extends React.Component {
    * @param {Object} e event object
    */
   handleClickOnBioma = (e) => {
-    if(this.props.capasMontadas[2] !==  null) {
-      const bioma = e.target.feature.properties.BIOMA_IAvH
-      //This is necessary until the utf-8 is fixed in the geoserver
-      const correctlyEncodedBioma =
-        decodeURIComponent(escape(decodeURIComponent(escape(bioma))))
-      ElasticAPI.requestBiomaBySZH(correctlyEncodedBioma)
-        .then(res => {
-          this.props.setBiomaActivo(correctlyEncodedBioma, res)
+    const { capasMontadas, setBiomaActivo } = this.props;
+    const secondLayer = capasMontadas[2];
+    if (secondLayer !== null) {
+      const bioma = e.target.feature.properties.BIOMA_IAvH;
+      ElasticAPI.requestBiomaBySZH(bioma)
+        .then((res) => {
+          setBiomaActivo(bioma, res);
         });
     }
     this.resetHighlight2(e);
@@ -131,70 +132,64 @@ class MapViewer extends React.Component {
 
   /**
    * Fucntion to load necessary layers from GeoServer
-   *
-   * @param layerName string identifier to store the layer data into a variable
-   * @param URL string endpoint to request the given layer
    */
-  setGeoJSONLayer = (layerName, URL) => {
-    return axios.get(URL, {
-      method: 'HEAD',
-      'Access-Control-Allow-Origin': '*',
-    }).then((res) => {
-      const layerResult = res.data
-      switch (layerName) {
-        case 'jurisdicciones':
-          this.CapaJurisdicciones = L.geoJSON(
-            layerResult,
-            {
-              style: { color:'#e84a5f', weight: 0.5, fillColor:'#ffd8e2', opacity:0.6,fillOpacity:0.4 },
-              onEachFeature: this.hexagonosOnEachFeature,
-            }
-          ).addTo(this.mapRef.current.leafletElement);
-          this.mostrarCapa(this.CapaJurisdicciones, false);
-        break;
-        case 'Corpoboyaca':
-          this.CapaCorpoBoyaca=L.geoJSON(
-            layerResult,
-            {
-              style: { stroke:false, fillColor:'#7b56a5',opacity:0.6,fillOpacity:0.4 },
-              onEachFeature:this.onEachFeature,
-            }
-          ).addTo(this.mapRef.current.leafletElement);
-          this.mostrarCapa(this.CapaCorpoBoyaca, false);
-        break;
-        case 'Sogamoso':
-          this.CapaSogamoso=L.geoJSON(
-            layerResult,
-            {
-              style: { stroke:true, color:'#ea495f', fillColor:'#ea495f',opacity:0.6,fillOpacity:0.4 },
-              onEachFeature:this.hexagonosOnEachFeature,
-            }
-          ).addTo(this.mapRef.current.leafletElement);
-          this.mostrarCapa(this.CapaSogamoso, false);
-        break;
-        case 'Sogamoso_Biomas':
-          this.CapaBiomasSogamoso=L.geoJSON(
-            layerResult,
-            {
-              style: { stroke:false, fillColor:'#7b56a5',opacity:0.6,fillOpacity:0.4 },
-              onEachFeature:this.hexagonosOnEachFeature,
-            }
-          ).addTo(this.mapRef.current.leafletElement);
-          this.mostrarCapa(this.CapaBiomasSogamoso, false);
-        break;
-        default:
-          return;
-      }
-    });
+  setGeoJSONLayers = () => {
+    GeoServerAPI.requestBiomasSogamoso()
+      .then((res) => {
+        this.CapaBiomasSogamoso = L.geoJSON(
+          res,
+          {
+            style: {
+              stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4,
+            },
+            onEachFeature: this.hexagonosOnEachFeature,
+          },
+        ).addTo(this.mapRef.current.leafletElement);
+        this.mostrarCapa(this.CapaBiomasSogamoso, false);
+      });
+    GeoServerAPI.requestJurisdicciones()
+      .then((res) => {
+        this.CapaJurisdicciones = L.geoJSON(
+          res,
+          {
+            style: {
+              color: '#e84a5f', weight: 0.5, fillColor: '#ffd8e2', opacity: 0.6, fillOpacity: 0.4,
+            },
+            onEachFeature: this.hexagonosOnEachFeature,
+          },
+        ).addTo(this.mapRef.current.leafletElement);
+        this.mostrarCapa(this.CapaJurisdicciones, false);
+      });
+    GeoServerAPI.requestCorpoboyaca()
+      .then((res) => {
+        this.CapaCorpoBoyaca = L.geoJSON(
+          res,
+          {
+            style: {
+              stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4
+            },
+            onEachFeature: this.onEachFeature,
+          },
+        ).addTo(this.mapRef.current.leafletElement);
+        this.mostrarCapa(this.CapaCorpoBoyaca, false);
+      });
+    GeoServerAPI.requestSogamoso()
+      .then((res) => {
+        this.CapaSogamoso = L.geoJSON(
+          res,
+          {
+            style: {
+              stroke: true, color: '#ea495f', fillColor: '#ea495f', opacity: 0.6, fillOpacity: 0.4
+            },
+            onEachFeature: this.hexagonosOnEachFeature,
+          },
+        ).addTo(this.mapRef.current.leafletElement);
+        this.mostrarCapa(this.CapaSogamoso, false);
+      });
   }
 
   componentDidMount() {
-    Promise.all([
-      this.setGeoJSONLayer('Sogamoso_Biomas', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_Biomas&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('jurisdicciones', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('Corpoboyaca', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson'),
-      this.setGeoJSONLayer('Sogamoso', 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Sogamoso_84&maxFeatures=50&outputFormat=application%2Fjson')
-    ]).then(() => this.forceUpdate())
+    this.setGeoJSONLayers();
   }
 
   componentDidUpdate() {
