@@ -8,16 +8,17 @@ import Descargar from '@material-ui/icons/Save';
 
 // Se exporta el SGV construido
 export default withTooltip((
-  {tooltipOpen,
-  tooltipLeft,
-  tooltipTop,
-  tooltipData,
-  hideTooltip,
-  showTooltip,
-  labelX,
-  labelY,
-  graphTitle,
-  ...props}) => {
+  {
+    tooltipOpen,
+    tooltipLeft,
+    tooltipTop,
+    tooltipData,
+    hideTooltip,
+    showTooltip,
+    labelX,
+    labelY,
+    graphTitle,
+    ...props}) => {
   if (props.width < 10) return null;
 
   const prepareData = (data, setName) => {

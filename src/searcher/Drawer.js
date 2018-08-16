@@ -14,7 +14,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import Typography from '@material-ui/core/Typography';
-import InfoGraph from './drawer/InfoGraph';
+import GraphLoader from '../GraphLoader';
 import { ParentSize } from "@vx/responsive";
 
 import ElasticAPI from '../api/elastic';
@@ -97,7 +97,7 @@ class Drawer extends React.Component {
       });
   }
 
-  checkGraph(graphKey, data, labelX, labelY, graph, titulo) {
+  checkGraph(graphKey, data, labelX, labelY, graph, graphTitle) {
     // While data is being retrieved from server
     if(graphKey !== 'subarea' && !this.state.data_loaded[graphKey]) {
       return (
@@ -111,14 +111,14 @@ class Drawer extends React.Component {
             (parent) => (
               parent.width
               &&
-              <InfoGraph
+              <GraphLoader
                 width={parent.width}
                 height={parent.height}
                 graphType={graph}
                 data={data}
                 labelX={labelX}
                 labelY={labelY}
-                titulo={titulo}
+                graphTitle={graphTitle}
               />
             )
           }
@@ -131,14 +131,14 @@ class Drawer extends React.Component {
           (parent) => (
             parent.width
             &&
-            <InfoGraph
+            <GraphLoader
               width={parent.width}
               height={parent.height}
               graphType={graph}
               data={data}
               labelX={labelX}
               labelY={labelY}
-              titulo={titulo}
+              graphTitle={graphTitle}
             />
           )
         }
