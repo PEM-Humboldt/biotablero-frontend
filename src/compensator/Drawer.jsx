@@ -19,9 +19,9 @@ import { ParentSize } from '@vx/responsive';
 import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
-import InfoGraph from './drawer/InfoGraph';
+import GraphLoader from '../GraphLoader';
 import InputCompensation from './InputCompensation';
-import PopMenu from './drawer/PopMenu';
+import PopMenu from '../charts/PopMenu';
 import TableStylized from './TableStylized';
 
 function TabContainer({ children }) {
@@ -224,7 +224,7 @@ class Drawer extends React.Component {
         <ParentSize className="nocolor">
           {parent => (
             parent.width && parent.height && (
-              <InfoGraph
+              <GraphLoader
                 width={parent.width}
                 height={parent.height}
                 colors={colors}

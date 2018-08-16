@@ -1,3 +1,5 @@
+/** eslint verified */
+// TODO: onClick in BarStackHorizontal should highlight area selected on the map
 import React from 'react';
 import { BarStackHorizontal } from '@vx/shape';
 import { Group } from '@vx/group';
@@ -14,7 +16,6 @@ export default withTooltip(
     width,
     height,
     graphTitle,
-    events = false,
     margin = {
       top: 0,
       left: 40,
@@ -30,38 +31,21 @@ export default withTooltip(
   }) => {
     if (width < 10) return null;
     // accessors
-    const y = d => 1;
+    const y = () => 1;
 
     const prepareData = (data, setName) => {
       const transformedData = {
         key: setName,
-      }
-      data.aggregations.areas.buckets.forEach(item => {
-        transformedData[item['key']] = `${item.area.value}`
-      })
-      return transformedData;
-    }
-
-    function comparingValues(a, b) {
-      return a - b;
-    }
-
-    function sortByKey(array, key) {
-      if(graphTitle === 'Factor de Compensación' || labelY==='F C'){
-        keys = keys.sort(comparingValues);
-      }
-      return array.sort(function(a, b) {
-          var x = a[key]; var y = b[key];
-          return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      };
+      data.aggregations.areas.buckets.forEach((item) => {
+        transformedData[item.key] = `${item.area.value}`;
       });
-    }
+      return transformedData;
+    };
 
-    let data = [prepareData(dataJSON, labelY)].slice(0);
-    let keys = Object.keys(data[0]);
-
-    //Organizar los datos alfabética o numéricamente
-    data = sortByKey(data, keys);
-    let totals =  dataJSON.aggregations.total_area.value;
+    const data = [prepareData(dataJSON, labelY)];
+    const keys = Object.keys(data[0]);
+    const totals = dataJSON.aggregations.total_area.value;
 
     // bounds
     const xMax = width - margin.left - margin.right;
@@ -81,25 +65,28 @@ export default withTooltip(
     const zScale = scaleOrdinal({
       domain: keys,
       range: ['#7b56a5',
-              '#6256a5',
-              '#5564a4',
-              '#4a8fb8',
-              '#51b4c1',
-              '#81bb47',
-              '#a4c051',
-              '#b1b559',
-              '#eabc47',
-              '#d5753d',
-              '#ea5948',
-              '#ea495f',
-              '#c3374d',],
+        '#6256a5',
+        '#5564a4',
+        '#4a8fb8',
+        '#51b4c1',
+        '#81bb47',
+        '#a4c051',
+        '#b1b559',
+        '#eabc47',
+        '#d5753d',
+        '#ea5948',
+        '#ea495f',
+        '#c3374d'],
     });
 
     let tooltipTimeout;
 
     return (
       <div className="graphcard">
-      <h2><Descargar className="icondown" />{graphTitle}</h2>
+        <h2>
+          <Descargar className="icondown" />
+          {graphTitle}
+        </h2>
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
@@ -111,30 +98,25 @@ export default withTooltip(
               xScale={xScale}
               yScale={yScale}
               zScale={zScale}
-              onClick={data => event => {
-                if (!events) return;
-                alert(`clicked: ${JSON.stringify(data)}`);
-                // actualizarSubArea(data.key);
-              }}
-              onMouseLeave={data => event => {
+              onMouseLeave={() => () => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
                 }, 300);
               }}
-              onMouseMove={data => event => {
+              onMouseMove={dataSelected => () => {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
                 showTooltip({
-                  tooltipData: data,
-                  tooltipTop: margin.top + yScale(y(data.data)),
-                  tooltipLeft: margin.left + data.width + 75,
+                  tooltipData: dataSelected,
+                  tooltipTop: margin.top + yScale(y(dataSelected.data)),
+                  tooltipLeft: margin.left + dataSelected.width + 75,
                 });
               }}
             />
             <AxisLeft
               top={margin.top}
               left={30}
-              hideAxisLine={true}
-              hideTicks={true}
+              hideAxisLine
+              hideTicks
               scale={yScale}
               label={labelY}
               labelProps={{
@@ -142,13 +124,13 @@ export default withTooltip(
                 fontSize: 13,
                 textAnchor: 'middle',
               }}
-              tickLabelProps={(value, index) => ({
+              tickLabelProps={() => ({
                 fill: 'none',
               })}
             />
             <AxisBottom
               scale={xScale}
-              top={yMax-10}
+              top={yMax - 10}
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
@@ -157,7 +139,7 @@ export default withTooltip(
               }}
               stroke="#e84a5f"
               tickStroke="#e84a5f"
-              tickLabelProps={(value, index) => ({
+              tickLabelProps={() => ({
                 fill: '#e84a5f',
                 fontSize: 10,
                 textAnchor: 'end',
@@ -178,15 +160,22 @@ export default withTooltip(
             }}
           >
             <div style={{ color: zScale(tooltipData.key) }}>
-              <strong>{tooltipData.key}</strong>
+              <strong>
+                {tooltipData.key}
+              </strong>
             </div>
-            <div>{Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha</div>
             <div>
-              <small>{tooltipData.xFormatted}</small>
+              {Number(tooltipData.data[tooltipData.key]).toFixed(2)}
+                Ha
+            </div>
+            <div>
+              <small>
+                {tooltipData.xFormatted}
+              </small>
             </div>
           </Tooltip>
         )}
       </div>
     );
-  }
+  },
 );
