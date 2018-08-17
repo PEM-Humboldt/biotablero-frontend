@@ -1,5 +1,4 @@
 /** eslint verified */
-// TODO: onClick in BarStackHorizontal should highlight area selected on the map
 import React from 'react';
 import { BarStackHorizontal } from '@vx/shape';
 import { Group } from '@vx/group';
@@ -98,6 +97,7 @@ export default withTooltip(
               xScale={xScale}
               yScale={yScale}
               zScale={zScale}
+              // TODO: onClick should highlight area selected on the map
               onMouseLeave={() => () => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
