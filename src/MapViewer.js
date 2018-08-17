@@ -1,6 +1,7 @@
 // TODO: Estilos diferentes entre elementos de cada capa
 // TODO: Organizar eventos, para que no dependa del tipo de capa, sino que sea genérico
-// TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos activos), con los elementos cargados
+// TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
+//  activos), con los elementos cargados
 
 import React from 'react';
 import 'leaflet/dist/leaflet.css';
@@ -9,87 +10,41 @@ import L from 'leaflet';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
-// TODO: Recibir esta información JSON
-// import datosJSON from './data/biomas-iavh-szh.json';
 
-let config = {};
+const config = {};
 config.params = {
   center: [5.2500, -74.9167], // Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      map: null,
-      tileLayer: null,
-      geoJsonLayerAvailable: [],
-      geoJson: null,
-    };
+  mapRef = React.createRef();
 
-    this.CapaJurisdicciones=null;
-    this.CapaCorpoBoyaca=null;
-    this.CapaSogamoso=null;
-    this.CapaBiomasSogamoso=null;
+  constructor(props) {
+    super(props);
+
+    this.CapaJurisdicciones = null;
+    this.CapaCorpoBoyaca = null;
+    this.CapaSogamoso = null;
+    this.CapaBiomasSogamoso = null;
 
     this.hexagonosOnEachFeature = this.hexagonosOnEachFeature.bind(this);
     this.resetHighlight = this.resetHighlight.bind(this);
     this.resetHighlight2 = this.resetHighlight2.bind(this);
     this.highlightFeature = this.highlightFeature.bind(this);
     this.mifunc = this.mifunc.bind(this);
-    this.capasDisponibles = this.capasDisponibles.bind(this);
     // TODO: Analizar estrategia con props.capasMontadas y props.capaActiva
     // const capasCargadas = null;
   }
 
-  mapRef = React.createRef();
-
-  capasDisponibles(){
-    // TODO: Crear arreglo de objetos de las capas disponibles y a cargar,
-    // pero recibido desde el arreglo de capas, como una propiedad
-    const capas = [
-      { nombre: 'Jurisdicciones',
-        url: 'http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:jurisdicciones_low&maxFeatures=50&outputFormat=application%2Fjson',
-        capa: null,
-      },
-      {
-        nombre: 'CORPOBOYACA',
-        url: `http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-Biomas-IaVH-1&maxFeatures=50&outputFormat=application%2Fjson`,
-        // url: `http://indicadores.humboldt.org.co/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:Corpoboyaca-agrupado&maxFeatures=50&outputFormat=application%2Fjson`,
-        capa: null,
-      }
-    ];
-    return capas;
-  }
-
-  mostrarCapa(capa, estado){
-    if(estado === false){ // Si estado === false : Ocultar capa
-      this.mapRef.current.leafletElement.removeLayer(capa);
-    }
-    else{ // Mostrar capa
+  mostrarCapa = (layer, state) => {
+    if (state === false) { // false : Hide layer
+      this.mapRef.current.leafletElement.removeLayer(layer);
+    } else { // Show layer
       // TODO: Ajustar límites y agregar función .setView()
-      // let bounds =
-      this.mapRef.current.leafletElement.addLayer(capa);
+      this.mapRef.current.leafletElement.addLayer(layer);
     }
   }
 
-  highlightFeature(e){
-    var layer = e.target;
-    if(e.target.feature.properties.IDCAR !== 'CORPOBOYACA')
-    e.target.bindPopup(e.target.feature.properties.IDCAR);
-    layer.setStyle(
-      {
-        weight : 1,
-        fillOpacity : 1
-      }
-    );
-    if(!L.Browser.ie && !L.Browser.opera){
-      layer.bringToFront();
-    }
-    if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
-    e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
-    +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
-  }
 
   resetHighlight(e){
     this.CapaJurisdicciones.resetStyle(e.target);
@@ -99,10 +54,14 @@ class MapViewer extends React.Component {
     this.CapaCorpoBoyaca.resetStyle(e.target);
   }
 
-  mifunc(e){
-    console.log('es click?', e)
-    if(e.target.feature.properties.IDCAR==="CORPOBOYACA"){
-      this.mostrarCapa(this.CapaCorpoBoyaca, true);
+  mifunc(e) {
+    console.log('es click?', e);
+    if (e.target.feature.properties.IDCAR === "CORPOBOYACA") {
+      this.mostrarCapa(e, this.CapaCorpoBoyaca, true);
+      // TODO: Move fitBounds to mostrarCapa function
+      console.log('Mapa', this.mapRef.current.leafletElement);
+      this.mapRef.current.leafletElement.fitBounds(e.target.getBounds());
+      // this.mapRef.fitBounds(e.target.layer.getBounds());
       this.mostrarCapa(this.CapaJurisdicciones, false);
       this.props.capaActiva('CORPOBOYACA');
     }
@@ -129,6 +88,23 @@ class MapViewer extends React.Component {
     this.resetHighlight2(e);
   }
 
+  highlightFeature = (e) => {
+    const layer = e.target;
+    if(e.target.feature.properties.IDCAR !== 'CORPOBOYACA')
+    e.target.bindPopup(e.target.feature.properties.IDCAR);
+    layer.setStyle(
+      {
+        weight : 1,
+        fillOpacity : 1
+      }
+    );
+    if(!L.Browser.ie && !L.Browser.opera){
+      layer.bringToFront();
+    }
+    if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
+    e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
+    +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
+  }
   /**
    * Fucntion to load necessary layers from GeoServer
    */
