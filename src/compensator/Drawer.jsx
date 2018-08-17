@@ -10,7 +10,7 @@ import BackGraph from '@material-ui/icons/Timeline';
 import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
 import InputCompensation from './InputCompensation';
-import PopMenu from '../charts/PopMenu';
+import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
 
@@ -79,6 +79,7 @@ class Drawer extends React.Component {
       strategies: [],
       selectedArea: 0,
       tableError: '',
+      showGraphs: { graphDonde: true },
     };
     this.referencesStrategies = [];
   }
@@ -152,11 +153,15 @@ class Drawer extends React.Component {
         ],
       };
     });
-    this.setState({
+    this.setState(prevState => ({
       szh,
       car,
       strategies,
-    });
+      showGraphs: {
+        ...prevState.showGraphs,
+        graphDonde: false,
+      },
+    }));
   }
 
   cleanDatosSogamoso = (data) => {
@@ -172,7 +177,10 @@ class Drawer extends React.Component {
     return cleanData;
   }
 
-  showSelector = (data, total) => {
+  /**
+   * Function to render graphs when necessary
+   */
+  renderSelector = (data, total) => {
     const { subArea } = this.props;
     const { color } = this.state;
     if (total !== 0) {
@@ -194,9 +202,13 @@ class Drawer extends React.Component {
     return null;
   }
 
-  mostrarGraficos = (param, data, labelX, labelY, graph, colors) => {
+  /**
+   * Function to render graphs when necessary
+   */
+  renderGraphs = (data, labelX, labelY, graph, colors) => {
+    const { showGraphs: { graphDonde } } = this.state;
     const { graphListener } = this.props;
-    if (param === 1 && graph === 'Dots') {
+    if (graph === 'Dots' && graphDonde) {
       return (
         <ParentSize className="nocolor">
           {parent => (
@@ -284,13 +296,20 @@ class Drawer extends React.Component {
                   {selectedArea}
                 </h4>
               </div>
-              {this.mostrarGraficos(1, datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
-              {this.showSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
+              {this.renderGraphs(datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+              {this.renderSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
               <br />
               <button
                 className="backgraph"
                 type="button"
-                // onClick={() => this.props.verMenu("Selector")}
+                onClick={() => this.setState(prevState => (
+                  {
+                    showGraphs: {
+                      ...prevState.showGraphs,
+                      graphDonde: true,
+                    },
+                  }
+                ))}
               >
                 <BackGraph />
                 Ir al gráfico
