@@ -59,6 +59,7 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/compensator/InputCompensation.jsx
 * src/compensator/TableStylized.jsx
 * src/GraphLoader.jsx
+* src/TabContainer.jsx
 
 ***
 

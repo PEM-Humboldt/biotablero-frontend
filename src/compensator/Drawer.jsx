@@ -1,11 +1,4 @@
 /** eslint verified */
-
-/* TODO: Habilitar ESTAS lineas en <Tabs /> cuando
-se tenga más de tres tipos de gráficos:
-scrollable
-scrollButtons="on"
-*/
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
