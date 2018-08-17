@@ -10,6 +10,7 @@ class PopMenu extends Component {
     this.state = {
       szhSelected: null,
       carSelected: null,
+      showButton: true,
     };
   }
 
@@ -48,7 +49,10 @@ class PopMenu extends Component {
    * Event handler when a CAR option is selected
    */
   handleChangeCAR = (carSelected) => {
-    this.setState({ carSelected: carSelected.value });
+    this.setState({
+      carSelected: carSelected.value,
+      showButton: true,
+    });
     const { loadStrategies } = this.props;
     loadStrategies();
   }
@@ -76,7 +80,7 @@ class PopMenu extends Component {
 
   render() {
     const { subArea, loadStrategies } = this.props;
-    const { szhSelected, carSelected } = this.state;
+    const { szhSelected, carSelected, showButton } = this.state;
     return (
       <div className="complist">
         <CarritoIcon />
@@ -85,11 +89,14 @@ class PopMenu extends Component {
         </div>
         {subArea ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {carSelected ? (
+        {(carSelected && showButton) ? (
           <button
             className="addbioma"
             type="button"
-            onClick={() => loadStrategies(szhSelected, carSelected)}
+            onClick={() => {
+              this.setState({ showButton: false });
+              loadStrategies(szhSelected, carSelected);
+            }}
           />
         ) : ''}
       </div>

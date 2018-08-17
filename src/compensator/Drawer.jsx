@@ -315,7 +315,6 @@ class Drawer extends React.Component {
               </div>
               {this.renderGraphs(datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
               {this.renderSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
-              <br />
               { !graphDonde && (
                 <button
                   className="backgraph"
