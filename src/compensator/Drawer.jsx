@@ -35,7 +35,7 @@ class Drawer extends React.Component {
       } = fields;
       return {
         name: BIOMA_IAVH[0],
-        porcentaje_affectada: (100 * PORCENT_AFECTACION[0]).toFixed(2),
+        porcentaje_afectada: (100 * PORCENT_AFECTACION[0]).toFixed(2),
         fc: FACT_COMP[0],
         natural_afectada: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
         total_compensar: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
@@ -48,13 +48,13 @@ class Drawer extends React.Component {
         natural_afectada: acc.natural_afectada + bioma.fields.NATURAL_AFECTADA[0],
         secundaria_afectada: acc.secundaria_afectada + bioma.fields.SECUNDARIA_AFECTADA[0],
         transformada_afectada: acc.transformada_afectada + bioma.fields.TRANSFORMADA_AFECTADA[0],
-        porcentaje_affectada: acc.porcentaje_affectada + bioma.fields.PORCENT_AFECTACION[0],
+        porcentaje_afectada: acc.porcentaje_afectada + bioma.fields.PORCENT_AFECTACION[0],
       }),
       {
         natural_afectada: 0,
         secundaria_afectada: 0,
         transformada_afectada: 0,
-        porcentaje_affectada: 0,
+        porcentaje_afectada: 0,
       },
     );
     return {
@@ -65,7 +65,7 @@ class Drawer extends React.Component {
         secundaria_afectada: totals.secundaria_afectada.toFixed(2),
         transformada_afectada: totals.transformada_afectada.toFixed(2),
         total_compensar: data.aggregations.total_area.value.toFixed(2),
-        porcentaje_affectada: totals.porcentaje_affectada * 100,
+        porcentaje_afectada: totals.porcentaje_afectada * 100,
       },
     };
   }
@@ -262,7 +262,7 @@ class Drawer extends React.Component {
         bioma.natural_afectada,
         bioma.secundaria_afectada,
         bioma.transformada_afectada,
-        `${bioma.porcentaje_affectada}%`,
+        `${bioma.porcentaje_afectada}%`,
         bioma.total_compensar,
       ],
     }));
@@ -291,7 +291,7 @@ class Drawer extends React.Component {
                 rows={tableRows}
                 footers={[totales.name, totales.fc, totales.natural_afectada,
                   totales.secundaria_afectada, totales.transformada_afectada,
-                  `${totales.porcentaje_affectada}%`, totales.total_compensar]}
+                  `${totales.porcentaje_afectada}%`, totales.total_compensar]}
               />
             </div>
           ),
