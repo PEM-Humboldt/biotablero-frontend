@@ -7,7 +7,6 @@ import App from './App';
 // import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render((
-  // Parte 1 de 3 del enrutador: Importar el componente BrowserRouter
   <BrowserRouter>
     <App />
   </BrowserRouter>)
