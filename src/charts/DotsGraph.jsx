@@ -42,7 +42,7 @@ export default withTooltip(({
 
   const checkColorFC = (value1, areaAfectada) => {
     if (labelX === '% Area afectada') {
-      // TODO: Habiltar cambio de color a "negro" si el punto ha sido seleccionado previamente
+      // TODO: Include another color border for item selected and item in cart
       if ((value1 > 6.5) && (areaAfectada > 12)) return zScale(2);
       if ((value1 > 6.5) && (areaAfectada < 12)) return zScale(1);
       if ((value1 < 6.4) && (areaAfectada < 12)) return zScale(0);
