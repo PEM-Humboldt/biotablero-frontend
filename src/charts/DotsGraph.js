@@ -94,13 +94,13 @@ export default withTooltip(props => {
                       tooltipData: point
                     });
                   }
-                  props.actualizarBiomaActivo(name(point));
                 }}
                 onMouseLeave={() => event => {
                   tooltipTimeout = setTimeout(() => {
                     props.hideTooltip();
                   }, 500);
                 }}
+                onClick={() => event => props.dotOnClick(name(point))}
               />
             );
           })}

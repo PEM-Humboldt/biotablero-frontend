@@ -76,6 +76,7 @@ class Drawer extends React.Component {
       datosDonde: [],
       totales: {},
       szh: null,
+      car: null,
       strategies: [],
       selectedArea: 0,
       tableError: '',
@@ -134,7 +135,19 @@ class Drawer extends React.Component {
    * @param {String} car CAR name
    */
   loadStrategies = (szh, car) => {
-    if (!szh || !car) return;
+    if (!szh || !car) {
+      this.setState(prevState => ({
+        szh,
+        car,
+        strategies: [],
+        showGraphs: {
+          ...prevState.showGraphs,
+          graphDonde: true,
+        },
+      }));
+      return;
+    }
+
     const { datosSogamoso } = this.props;
     const data = this.cleanDatosSogamoso(datosSogamoso);
     const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => {
@@ -207,7 +220,7 @@ class Drawer extends React.Component {
    */
   renderGraphs = (data, labelX, labelY, graph, colors) => {
     const { showGraphs: { graphDonde } } = this.state;
-    const { graphListener } = this.props;
+    const { updateActiveBioma } = this.props;
     if (graph === 'Dots' && graphDonde) {
       return (
         <ParentSize className="nocolor">
@@ -221,7 +234,10 @@ class Drawer extends React.Component {
                 data={data}
                 labelX={labelX}
                 labelY={labelY}
-                actualizarBiomaActivo={graphListener}
+                elementOnClick={(name) => {
+                  this.setState({ szh: null, car: null, strategies: [] });
+                  return updateActiveBioma(name);
+                }}
               />
             )
           )}
@@ -235,6 +251,7 @@ class Drawer extends React.Component {
     const { classes, datosSogamoso, subArea } = this.props;
     const {
       datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
+      showGraphs: { graphDonde }
     } = this.state;
 
     const tableRows = datosDonde.map((bioma, i) => ({
@@ -299,21 +316,23 @@ class Drawer extends React.Component {
               {this.renderGraphs(datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
               {this.renderSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
               <br />
-              <button
-                className="backgraph"
-                type="button"
-                onClick={() => this.setState(prevState => (
-                  {
-                    showGraphs: {
-                      ...prevState.showGraphs,
-                      graphDonde: true,
-                    },
-                  }
-                ))}
-              >
-                <BackGraph />
-                Ir al gráfico
-              </button>
+              { !graphDonde && (
+                <button
+                  className="backgraph"
+                  type="button"
+                  onClick={() => this.setState(prevState => (
+                    {
+                      showGraphs: {
+                        ...prevState.showGraphs,
+                        graphDonde: true,
+                      },
+                    }
+                  ))}
+                >
+                  <BackGraph />
+                  {' Ir al gráfico'}
+                </button>
+              )}
               {tableError && (
                 <div className="tableError">
                   {tableError}
@@ -344,14 +363,14 @@ Drawer.propTypes = {
   // Data from elastic result for "donde compensar sogamoso"
   datosSogamoso: PropTypes.object,
   // Function to handle onClick event on the graph
-  graphListener: PropTypes.func,
+  updateActiveBioma: PropTypes.func,
   subArea: PropTypes.string,
 
 };
 
 Drawer.defaultProps = {
   datosSogamoso: {},
-  graphListener: () => {},
+  updateActiveBioma: () => {},
   subArea: '',
 };
 

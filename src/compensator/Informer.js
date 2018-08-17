@@ -13,7 +13,7 @@ class Informer extends React.Component {
         <div className="iconsec2 mt2"></div>
         <h1> {this.props.zonageb} / {this.props.geocerca} <br></br> <b>{this.props.nombre}</b></h1>
         <Drawer
-        graphListener={this.props.actualizarBiomaActivo}
+        updateActiveBioma={this.props.actualizarBiomaActivo}
         subArea= {this.props.subArea}
         datosSogamoso={this.props.datosSogamoso}
         panelLayer = {this.props.panelLayer}

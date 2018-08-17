@@ -57,6 +57,7 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/charts/BarStackHorizontal.jsx
 * src/compensator/Drawer.jsx
 * src/compensator/InputCompensation.jsx
+* src/compensator/PopMenu.jsx
 * src/compensator/TableStylized.jsx
 * src/GraphLoader.jsx
 * src/TabContainer.jsx
