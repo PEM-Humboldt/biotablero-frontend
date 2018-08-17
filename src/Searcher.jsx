@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import MapViewer from './MapViewer';
 import Filter from './searcher/Filter';
+import Footer from './Footer';
 import './searcher/searcher.css';
 
 class Searcher extends Component {
@@ -86,29 +87,32 @@ class Searcher extends Component {
   render() {
     let layer = this.state.geojson;
     return (
-      <div className="appSearcher">
-        <MapViewer mostrarJSON={layer}
-          capasMontadas={[
-                this.state.geojsonCapa1,
-                this.state.geojsonCapa2,
-                this.state.geojsonCapa3,
-                this.state.geojsonCapa4]}
-          capaActiva={this.actualizarCapaActiva}
-          setBiomaActivo={this.actualizarBiomaActivo}
-        />
-        <div className="contentView">
-          <Filter panelLayer = {this.panelLayer}
-            subPanelLayer = {this.subPanelLayer}
-            innerPanelLayer = {this.innerPanelLayer}
-            dataCapaActiva={this.state.infoCapaActiva}
-            actualizarCapaActiva= {this.actualizarCapaActiva}
-            actualizarBiomaActivo={this.actualizarBiomaActivo}
-            geocerca= {this.state.geojsonCapa2}
-            biomaActivo={this.state.geojsonCapa4}
-            biomaActivoData={this.state.biomaActivoData}
+      <div>
+        <div className="appSearcher">
+          <MapViewer mostrarJSON={layer}
+            capasMontadas={[
+                  this.state.geojsonCapa1,
+                  this.state.geojsonCapa2,
+                  this.state.geojsonCapa3,
+                  this.state.geojsonCapa4]}
+            capaActiva={this.actualizarCapaActiva}
+            setBiomaActivo={this.actualizarBiomaActivo}
           />
+          <div className="contentView">
+            <Filter panelLayer = {this.panelLayer}
+              subPanelLayer = {this.subPanelLayer}
+              innerPanelLayer = {this.innerPanelLayer}
+              dataCapaActiva={this.state.infoCapaActiva}
+              actualizarCapaActiva= {this.actualizarCapaActiva}
+              actualizarBiomaActivo={this.actualizarBiomaActivo}
+              geocerca= {this.state.geojsonCapa2}
+              biomaActivo={this.state.geojsonCapa4}
+              biomaActivoData={this.state.biomaActivoData}
+            />
+          </div>
         </div>
-      </div>
+      <Footer showLogos={false}/>
+    </div>
     );
   }
 }

@@ -6,7 +6,6 @@ import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
-import axios from 'axios';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
@@ -15,7 +14,7 @@ import GeoServerAPI from './api/geoserver';
 
 let config = {};
 config.params = {
-  center: [5.2500,-74.9167],//Mariquita-Tolima
+  center: [5.2500, -74.9167], // Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {

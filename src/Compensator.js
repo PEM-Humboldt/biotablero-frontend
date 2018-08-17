@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import MapViewer from './MapViewer';
 import ProjectFilter from './compensator/ProjectFilter';
+import Footer from './Footer';
 
 import ElasticAPI from './api/elastic'
 
@@ -82,23 +83,26 @@ class Compensator extends Component {
       this.state.geojsonCapa3,
       this.state.geojsonCapa4];
     return (
-      <div className="appSearcher">
+      <div>
+        <div className="appSearcher">
           <MapViewer mostrarJSON={layer}
             capasMontadas={capasSeleccionadas}
             capaActiva={this.actualizarCapaActiva}
             biomaActivo={this.actualizarBiomaActivo}/>
-        <div className="contentView">
-          <ProjectFilter panelLayer = {this.panelLayer}
-          subPanelLayer = {this.subPanelLayer}
-          innerPanelLayer = {this.innerPanelLayer}
-          dataCapaActiva={this.state.infoCapaActiva}
-          actualizarCapaActiva= {this.actualizarCapaActiva}
-          actualizarBiomaActivo={this.actualizarBiomaActivo}
-          geocerca= {this.state.geojsonCapa2}
-          subArea={this.state.geojsonCapa4}
-          datosSogamoso={this.state.datosSogamoso}
-          zonageb={'GEB Centro'}/>
-        </div>
+            <div className="contentView">
+              <ProjectFilter panelLayer = {this.panelLayer}
+                subPanelLayer = {this.subPanelLayer}
+                innerPanelLayer = {this.innerPanelLayer}
+                dataCapaActiva={this.state.infoCapaActiva}
+                actualizarCapaActiva= {this.actualizarCapaActiva}
+                actualizarBiomaActivo={this.actualizarBiomaActivo}
+                geocerca= {this.state.geojsonCapa2}
+                subArea={this.state.geojsonCapa4}
+                datosSogamoso={this.state.datosSogamoso}
+                zonageb={'GEB Centro'}/>
+            </div>
+          </div>
+        <Footer showLogos={false}/>
       </div>
     );
   }
