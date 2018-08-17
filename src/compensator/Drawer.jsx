@@ -9,12 +9,8 @@ scrollButtons="on"
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
-import Typography from '@material-ui/core/Typography';
 import { ParentSize } from '@vx/responsive';
 import BackGraph from '@material-ui/icons/Timeline';
 
@@ -22,19 +18,8 @@ import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
 import InputCompensation from './InputCompensation';
 import PopMenu from '../charts/PopMenu';
+import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
-
-function TabContainer({ children }) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {children}
-    </Typography>
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 const styles = () => ({
   root: {
@@ -95,7 +80,6 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
       datosDonde: [],
       totales: {},
       szh: null,
@@ -242,14 +226,10 @@ class Drawer extends React.Component {
     return null;
   }
 
-  handleChangeTab = (event, value) => {
-    this.setState({ value });
-  };
-
   render() {
     const { classes, datosSogamoso, subArea } = this.props;
     const {
-      value, datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
+      datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
     } = this.state;
 
     const tableRows = datosDonde.map((bioma, i) => ({
@@ -266,87 +246,83 @@ class Drawer extends React.Component {
     }));
 
     return (
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={value}
-            onChange={this.handleChangeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered
-          >
-            <Tab className="tabs tabs2" label="Qué · Cuánto" icon={<QueIcon />} />
-            <Tab className="tabs tabs2" label="Dónde · Cómo" icon={<DondeIcon />} />
-          </Tabs>
-        </AppBar>
-        {value === 0 && (
-          <TabContainer>
-            <div className="total">
-              <h3>
-                Total a compensar
-              </h3>
-              <h4>
-                {totales.total_compensar}
-              </h4>
-            </div>
-            <TableStylized
-              headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
-              rows={tableRows}
-              footers={[totales.name, totales.fc, totales.natural_afectada,
-                totales.secundaria_afectada, totales.transformada_afectada,
-                `${totales.porcentaje_affectada}%`, totales.total_compensar]}
-            />
-          </TabContainer>
-        )}
-        {value === 1 && (
-          <TabContainer>
-            <div className="total">
-              <h3>
-                Total a compensar
-              </h3>
-              <h4>
-                {totales.total_compensar}
-              </h4>
-            </div>
-            <div className="total carrito">
-              <h3>
-                Áreas seleccionadas
-              </h3>
-              <h4 className={(selectedArea >= totales.total_compensar) ? 'areaCompleted' : ''}>
-                {selectedArea}
-              </h4>
-            </div>
-            {this.mostrarGraficos(1, datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
-            {this.showSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
-            <br />
-            <button
-              className="backgraph"
-              type="button"
-              // onClick={() => this.props.verMenu("Selector")}
-            >
-              <BackGraph />
-              Ir al gráfico
-            </button>
-            {tableError && (
-              <div className="tableError">
-                {tableError}
+      <TabContainer
+        classes={classes}
+        titles={[
+          { label: 'Qué · Cuánto', icon: (<QueIcon />) },
+          { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
+        ]}
+      >
+        {[
+          (
+            <div key="1">
+              <div className="total">
+                <h3>
+                  Total a compensar
+                </h3>
+                <h4>
+                  {totales.total_compensar}
+                </h4>
               </div>
-            )}
-            { subArea && szh && car && strategies && (
               <TableStylized
-                description={{
-                  Bioma: subArea,
-                  SZH: szh,
-                  Jurisdicción: car,
-                }}
-                headers={['Estrategia', 'Héctareas', 'Agregar']}
-                rows={strategies}
-                classTable="special"
+                headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
+                rows={tableRows}
+                footers={[totales.name, totales.fc, totales.natural_afectada,
+                  totales.secundaria_afectada, totales.transformada_afectada,
+                  `${totales.porcentaje_affectada}%`, totales.total_compensar]}
               />
-            )}
-          </TabContainer>
-        )}
-      </div>
+            </div>
+          ),
+          (
+            <div key="2">
+              <div className="total">
+                <h3>
+                  Total a compensar
+                </h3>
+                <h4>
+                  {totales.total_compensar}
+                </h4>
+              </div>
+              <div className="total carrito">
+                <h3>
+                  Áreas seleccionadas
+                </h3>
+                <h4 className={(selectedArea >= totales.total_compensar) ? 'areaCompleted' : ''}>
+                  {selectedArea}
+                </h4>
+              </div>
+              {this.mostrarGraficos(1, datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+              {this.showSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
+              <br />
+              <button
+                className="backgraph"
+                type="button"
+                // onClick={() => this.props.verMenu("Selector")}
+              >
+                <BackGraph />
+                Ir al gráfico
+              </button>
+              {tableError && (
+                <div className="tableError">
+                  {tableError}
+                </div>
+              )}
+              { subArea && szh && car && strategies && (
+                <TableStylized
+                  description={{
+                    Bioma: subArea,
+                    SZH: szh,
+                    Jurisdicción: car,
+                  }}
+                  headers={['Estrategia', 'Héctareas', 'Agregar']}
+                  rows={strategies}
+                  classTable="special"
+                />
+              )}
+            </div>
+          ),
+        ]}
+      </TabContainer>
     );
   }
 }
