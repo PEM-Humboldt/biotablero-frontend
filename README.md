@@ -52,18 +52,20 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 
 ## 3. Eslint verified files
 
-src/api/elastic.js
-src/api/geoserver.js
-src/App.jsx
-src/charts/BarStackHorizontal.jsx
-src/compensator/TableStylized.jsx
-src/compensator/Drawer.jsx
-src/compensator/InputCompensation.jsx
-src/compensator/TableStylized.jsx
-src/Footer.jsx
-src/GraphLoader.jsx
-src/Home.jsx
-src/Main.jsx
+* src/api/elastic.js
+* src/api/geoserver.js
+* src/App.jsx
+* src/charts/BarStackHorizontal.jsx
+* src/charts/DotsGraph.jsx
+* src/compensator/Drawer.jsx
+* src/compensator/InputCompensation.jsx
+* src/compensator/PopMenu.jsx
+* src/compensator/TableStylized.jsx
+* src/Footer.jsx
+* src/GraphLoader.jsx
+* src/Home.jsx
+* src/Main.jsx
+* src/TabContainer.jsx
 
 ***
 

@@ -1,40 +1,18 @@
 /** eslint verified */
-
-/* TODO: Habilitar ESTAS lineas en <Tabs /> cuando
-se tenga más de tres tipos de gráficos:
-scrollable
-scrollButtons="on"
-*/
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
-import Typography from '@material-ui/core/Typography';
 import { ParentSize } from '@vx/responsive';
 import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
 import InputCompensation from './InputCompensation';
-import PopMenu from '../charts/PopMenu';
-import TableStylized from './TableStylized';
-
-function TabContainer({ children }) {
-  return (
-    <Typography component="div" style={{ padding: 8 * 3 }}>
-      {children}
-    </Typography>
-  );
-}
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+import PopMenu from './PopMenu';
+import TabContainer from '../TabContainer';
+import TableStylized from '../TableStylized';
 
 const styles = () => ({
   root: {
@@ -49,7 +27,7 @@ class Drawer extends React.Component {
    *
    * @param {Array} data array of objects with information about compensations
    */
-  static cleanQueCuantoDondeData = (data) => {
+  static cleanWhatWhereData = (data) => {
     const biomas = data.hits.hits.map(({ fields }) => {
       const {
         BIOMA_IAVH, PORCENT_AFECTACION, FACT_COMP, NATURAL_AFECTADA, TOTAL_COMPENSAR,
@@ -57,37 +35,37 @@ class Drawer extends React.Component {
       } = fields;
       return {
         name: BIOMA_IAVH[0],
-        porcentaje_affectada: (100 * PORCENT_AFECTACION[0]).toFixed(2),
+        affected_percentage: (100 * PORCENT_AFECTACION[0]).toFixed(2),
         fc: FACT_COMP[0],
-        natural_afectada: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
-        total_compensar: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
-        secundaria_afectada: Math.ceil(SECUNDARIA_AFECTADA[0]) ? SECUNDARIA_AFECTADA[0].toFixed(2) : '',
-        transformada_afectada: Math.ceil(TRANSFORMADA_AFECTADA[0]) ? TRANSFORMADA_AFECTADA[0].toFixed(2) : '',
+        affected_natural: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
+        total_compensate: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
+        affected_secondary: Math.ceil(SECUNDARIA_AFECTADA[0]) ? SECUNDARIA_AFECTADA[0].toFixed(2) : '',
+        affected_transformed: Math.ceil(TRANSFORMADA_AFECTADA[0]) ? TRANSFORMADA_AFECTADA[0].toFixed(2) : '',
       };
     });
     const totals = data.hits.hits.reduce(
       (acc, bioma) => ({
-        natural_afectada: acc.natural_afectada + bioma.fields.NATURAL_AFECTADA[0],
-        secundaria_afectada: acc.secundaria_afectada + bioma.fields.SECUNDARIA_AFECTADA[0],
-        transformada_afectada: acc.transformada_afectada + bioma.fields.TRANSFORMADA_AFECTADA[0],
-        porcentaje_affectada: acc.porcentaje_affectada + bioma.fields.PORCENT_AFECTACION[0],
+        affected_natural: acc.affected_natural + bioma.fields.NATURAL_AFECTADA[0],
+        affected_secondary: acc.affected_secondary + bioma.fields.SECUNDARIA_AFECTADA[0],
+        affected_transformed: acc.affected_transformed + bioma.fields.TRANSFORMADA_AFECTADA[0],
+        affected_percentage: acc.affected_percentage + bioma.fields.PORCENT_AFECTACION[0],
       }),
       {
-        natural_afectada: 0,
-        secundaria_afectada: 0,
-        transformada_afectada: 0,
-        porcentaje_affectada: 0,
+        affected_natural: 0,
+        affected_secondary: 0,
+        affected_transformed: 0,
+        affected_percentage: 0,
       },
     );
     return {
       biomas,
       totals: {
         name: 'TOTALES (CUANTO)',
-        natural_afectada: totals.natural_afectada.toFixed(2),
-        secundaria_afectada: totals.secundaria_afectada.toFixed(2),
-        transformada_afectada: totals.transformada_afectada.toFixed(2),
-        total_compensar: data.aggregations.total_area.value.toFixed(2),
-        porcentaje_affectada: totals.porcentaje_affectada * 100,
+        affected_natural: totals.affected_natural.toFixed(2),
+        affected_secondary: totals.affected_secondary.toFixed(2),
+        affected_transformed: totals.affected_transformed.toFixed(2),
+        total_compensate: data.aggregations.total_area.value.toFixed(2),
+        affected_percentage: totals.affected_percentage * 100,
       },
     };
   }
@@ -95,13 +73,14 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
-      datosDonde: [],
-      totales: {},
+      whereData: [],
+      totals: {},
       szh: null,
+      car: null,
       strategies: [],
       selectedArea: 0,
       tableError: '',
+      showGraphs: { DotsWhere: true },
     };
     this.referencesStrategies = [];
   }
@@ -109,10 +88,10 @@ class Drawer extends React.Component {
   componentDidMount() {
     ElasticAPI.requestQueYCuantoCompensar()
       .then((res) => {
-        const { biomas, totals } = Drawer.cleanQueCuantoDondeData(res);
+        const { biomas, totals } = Drawer.cleanWhatWhereData(res);
         this.setState({
-          datosDonde: biomas,
-          totales: totals,
+          whereData: biomas,
+          totals,
         });
       });
   }
@@ -149,16 +128,28 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'datosSogamoso' construct an array with strategies info for the given szh
+   * From data loaded in 'projectData' construct an array with strategies info for the given szh
    * and car
    *
    * @param {String} szh SZH name
    * @param {String} car CAR name
    */
   loadStrategies = (szh, car) => {
-    if (!szh || !car) return;
-    const { datosSogamoso } = this.props;
-    const data = this.cleanDatosSogamoso(datosSogamoso);
+    if (!szh || !car) {
+      this.setState(prevState => ({
+        szh,
+        car,
+        strategies: [],
+        showGraphs: {
+          ...prevState.showGraphs,
+          DotsWhere: true,
+        },
+      }));
+      return;
+    }
+
+    const { projectData } = this.props;
+    const data = this.cleanSogamosoData(projectData);
     const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => {
       this.referencesStrategies.push(React.createRef());
       return {
@@ -175,14 +166,18 @@ class Drawer extends React.Component {
         ],
       };
     });
-    this.setState({
+    this.setState(prevState => ({
       szh,
       car,
       strategies,
-    });
+      showGraphs: {
+        ...prevState.showGraphs,
+        DotsWhere: false,
+      },
+    }));
   }
 
-  cleanDatosSogamoso = (data) => {
+  cleanSogamosoData = (data) => {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
@@ -195,7 +190,10 @@ class Drawer extends React.Component {
     return cleanData;
   }
 
-  showSelector = (data, total) => {
+  /**
+   * Function to render graphs when necessary
+   */
+  renderSelector = (data, total) => {
     const { subArea } = this.props;
     const { color } = this.state;
     if (total !== 0) {
@@ -217,9 +215,13 @@ class Drawer extends React.Component {
     return null;
   }
 
-  mostrarGraficos = (param, data, labelX, labelY, graph, colors) => {
-    const { graphListener } = this.props;
-    if (param === 1 && graph === 'Dots') {
+  /**
+   * Function to render graphs when necessary
+   */
+  renderGraphs = (data, labelX, labelY, graph, colors) => {
+    const { showGraphs: { DotsWhere } } = this.state;
+    const { updateActiveBioma } = this.props;
+    if (graph === 'Dots' && DotsWhere) {
       return (
         <ParentSize className="nocolor">
           {parent => (
@@ -232,7 +234,10 @@ class Drawer extends React.Component {
                 data={data}
                 labelX={labelX}
                 labelY={labelY}
-                actualizarBiomaActivo={graphListener}
+                elementOnClick={(name) => {
+                  this.setState({ szh: null, car: null, strategies: [] });
+                  return updateActiveBioma(name);
+                }}
               />
             )
           )}
@@ -242,111 +247,112 @@ class Drawer extends React.Component {
     return null;
   }
 
-  handleChangeTab = (event, value) => {
-    this.setState({ value });
-  };
-
   render() {
-    const { classes, datosSogamoso, subArea } = this.props;
+    const { classes, projectData, subArea } = this.props;
     const {
-      value, datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
+      whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
+      showGraphs: { DotsWhere },
     } = this.state;
 
-    const tableRows = datosDonde.map((bioma, i) => ({
+    const tableRows = whereData.map((bioma, i) => ({
       key: `que-${i}`,
       values: [
         bioma.name,
         bioma.fc,
-        bioma.natural_afectada,
-        bioma.secundaria_afectada,
-        bioma.transformada_afectada,
-        `${bioma.porcentaje_affectada}%`,
-        bioma.total_compensar,
+        bioma.affected_natural,
+        bioma.affected_secondary,
+        bioma.affected_transformed,
+        `${bioma.affected_percentage}%`,
+        bioma.total_compensate,
       ],
     }));
 
     return (
-      <div className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={value}
-            onChange={this.handleChangeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered
-          >
-            <Tab className="tabs tabs2" label="Qué · Cuánto" icon={<QueIcon />} />
-            <Tab className="tabs tabs2" label="Dónde · Cómo" icon={<DondeIcon />} />
-          </Tabs>
-        </AppBar>
-        {value === 0 && (
-          <TabContainer>
-            <div className="total">
-              <h3>
-                Total a compensar
-              </h3>
-              <h4>
-                {totales.total_compensar}
-              </h4>
-            </div>
-            <TableStylized
-              headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
-              rows={tableRows}
-              footers={[totales.name, totales.fc, totales.natural_afectada,
-                totales.secundaria_afectada, totales.transformada_afectada,
-                `${totales.porcentaje_affectada}%`, totales.total_compensar]}
-            />
-          </TabContainer>
-        )}
-        {value === 1 && (
-          <TabContainer>
-            <div className="total">
-              <h3>
-                Total a compensar
-              </h3>
-              <h4>
-                {totales.total_compensar}
-              </h4>
-            </div>
-            <div className="total carrito">
-              <h3>
-                Áreas seleccionadas
-              </h3>
-              <h4 className={(selectedArea >= totales.total_compensar) ? 'areaCompleted' : ''}>
-                {selectedArea}
-              </h4>
-            </div>
-            {this.mostrarGraficos(1, datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
-            {this.showSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
-            <br />
-            <button
-              className="backgraph"
-              type="button"
-              // onClick={() => this.props.verMenu("Selector")}
-            >
-              <BackGraph />
-              Ir al gráfico
-            </button>
-            {tableError && (
-              <div className="tableError">
-                {tableError}
+      <TabContainer
+        classes={classes}
+        titles={[
+          { label: 'Qué · Cuánto', icon: (<QueIcon />) },
+          { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
+        ]}
+      >
+        {[
+          (
+            <div key="1">
+              <div className="total">
+                <h3>
+                  Total a compensar
+                </h3>
+                <h4>
+                  {totals.total_compensate}
+                </h4>
               </div>
-            )}
-            { subArea && szh && car && strategies && (
               <TableStylized
-                description={{
-                  Bioma: subArea,
-                  SZH: szh,
-                  Jurisdicción: car,
-                }}
-                headers={['Estrategia', 'Héctareas', 'Agregar']}
-                rows={strategies}
-                classTable="special"
+                headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
+                rows={tableRows}
+                footers={[totals.name, totals.fc, totals.affected_natural,
+                  totals.affected_secondary, totals.affected_transformed,
+                  `${totals.affected_percentage}%`, totals.total_compensate]}
               />
-            )}
-          </TabContainer>
-        )}
-      </div>
+            </div>
+          ),
+          (
+            <div key="2">
+              <div className="total">
+                <h3>
+                  Total a compensar
+                </h3>
+                <h4>
+                  {totals.total_compensate}
+                </h4>
+              </div>
+              <div className="total carrito">
+                <h3>
+                  Áreas seleccionadas
+                </h3>
+                <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
+                  {selectedArea}
+                </h4>
+              </div>
+              {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+              {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
+              { !DotsWhere && (
+                <button
+                  className="backgraph"
+                  type="button"
+                  onClick={() => this.setState(prevState => (
+                    {
+                      showGraphs: {
+                        ...prevState.showGraphs,
+                        DotsWhere: true,
+                      },
+                    }
+                  ))}
+                >
+                  <BackGraph />
+                  {' Ir al gráfico'}
+                </button>
+              )}
+              {tableError && (
+                <div className="tableError">
+                  {tableError}
+                </div>
+              )}
+              { subArea && szh && car && strategies && (
+                <TableStylized
+                  description={{
+                    Bioma: subArea,
+                    SZH: szh,
+                    Jurisdicción: car,
+                  }}
+                  headers={['Estrategia', 'Héctareas', 'Agregar']}
+                  rows={strategies}
+                  classTable="special"
+                />
+              )}
+            </div>
+          ),
+        ]}
+      </TabContainer>
     );
   }
 }
@@ -354,16 +360,16 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   classes: PropTypes.object.isRequired,
   // Data from elastic result for "donde compensar sogamoso"
-  datosSogamoso: PropTypes.object,
+  projectData: PropTypes.object,
   // Function to handle onClick event on the graph
-  graphListener: PropTypes.func,
+  updateActiveBioma: PropTypes.func,
   subArea: PropTypes.string,
 
 };
 
 Drawer.defaultProps = {
-  datosSogamoso: {},
-  graphListener: () => {},
+  projectData: {},
+  updateActiveBioma: () => {},
   subArea: '',
 };
 
