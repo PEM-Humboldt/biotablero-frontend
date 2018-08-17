@@ -85,7 +85,8 @@ GraphLoader.propTypes = {
   colors: PropTypes.array,
   graphType: PropTypes.string.isRequired,
   graphTitle: PropTypes.string,
-  data: PropTypes.object.isRequired,
+  // Array or object, depending on graphType
+  data: PropTypes.any.isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   width: PropTypes.number,

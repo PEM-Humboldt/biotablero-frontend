@@ -251,7 +251,7 @@ class Drawer extends React.Component {
     const { classes, datosSogamoso, subArea } = this.props;
     const {
       datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
-      showGraphs: { graphDonde }
+      showGraphs: { graphDonde },
     } = this.state;
 
     const tableRows = datosDonde.map((bioma, i) => ({
