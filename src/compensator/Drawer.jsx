@@ -268,6 +268,7 @@ class Drawer extends React.Component {
     }));
 
     return (
+      // TODO: Create the shopping cart list, saving header as guide element
       <TabContainer
         classes={classes}
         titles={[
@@ -286,6 +287,7 @@ class Drawer extends React.Component {
                   {totals.total_compensate}
                 </h4>
               </div>
+              { /** TODO: Save values typed for each row by bioma */ }
               <TableStylized
                 headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
                 rows={tableRows}
@@ -329,7 +331,8 @@ class Drawer extends React.Component {
                   ))}
                 >
                   <BackGraph />
-                  {' Ir al gráfico'}
+                  { // TODO: Fix transition between Graph and Shopping Cart
+                    ' Ir al gráfico'}
                 </button>
               )}
               {tableError && (

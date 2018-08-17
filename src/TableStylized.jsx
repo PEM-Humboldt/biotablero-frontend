@@ -8,6 +8,7 @@ const TableStylized = ({
   <div>
     <div className="titecositema">
       {
+        // TODO: Create texts, icons and actions for list of biomas in Shopping Cart
         Object.keys(description).map(title => (
           <span key={`description-${title}`}>
             <b>
