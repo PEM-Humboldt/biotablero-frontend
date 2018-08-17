@@ -19,7 +19,7 @@ class PopMenu extends Component {
    */
   handleChangeSZH = (szhSelected) => {
     this.setState({
-      szhSelected: szhSelected.value,
+      szhSelected: szhSelected ? szhSelected.value : '',
       carSelected: null,
     });
     const { loadStrategies } = this.props;
@@ -50,7 +50,7 @@ class PopMenu extends Component {
    */
   handleChangeCAR = (carSelected) => {
     this.setState({
-      carSelected: carSelected.value,
+      carSelected: carSelected ? carSelected.value : '',
       showButton: true,
     });
     const { loadStrategies } = this.props;

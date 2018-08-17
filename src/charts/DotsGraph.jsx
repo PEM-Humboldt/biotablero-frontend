@@ -8,9 +8,9 @@ import { scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
 const name = d => d.name;
-const x = d => d.porcentaje_afectada;
+const x = d => d.affected_percentage;
 const y = d => d.fc;
-const z = d => d.natural_afectada;
+const z = d => d.affected_natural;
 
 let tooltipTimeout;
 

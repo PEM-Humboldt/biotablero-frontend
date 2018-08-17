@@ -27,7 +27,7 @@ class Drawer extends React.Component {
    *
    * @param {Array} data array of objects with information about compensations
    */
-  static cleanQueCuantoDondeData = (data) => {
+  static cleanWhatWhereData = (data) => {
     const biomas = data.hits.hits.map(({ fields }) => {
       const {
         BIOMA_IAVH, PORCENT_AFECTACION, FACT_COMP, NATURAL_AFECTADA, TOTAL_COMPENSAR,
@@ -35,37 +35,37 @@ class Drawer extends React.Component {
       } = fields;
       return {
         name: BIOMA_IAVH[0],
-        porcentaje_afectada: (100 * PORCENT_AFECTACION[0]).toFixed(2),
+        affected_percentage: (100 * PORCENT_AFECTACION[0]).toFixed(2),
         fc: FACT_COMP[0],
-        natural_afectada: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
-        total_compensar: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
-        secundaria_afectada: Math.ceil(SECUNDARIA_AFECTADA[0]) ? SECUNDARIA_AFECTADA[0].toFixed(2) : '',
-        transformada_afectada: Math.ceil(TRANSFORMADA_AFECTADA[0]) ? TRANSFORMADA_AFECTADA[0].toFixed(2) : '',
+        affected_natural: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
+        total_compensate: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
+        affected_secondary: Math.ceil(SECUNDARIA_AFECTADA[0]) ? SECUNDARIA_AFECTADA[0].toFixed(2) : '',
+        affected_transformed: Math.ceil(TRANSFORMADA_AFECTADA[0]) ? TRANSFORMADA_AFECTADA[0].toFixed(2) : '',
       };
     });
     const totals = data.hits.hits.reduce(
       (acc, bioma) => ({
-        natural_afectada: acc.natural_afectada + bioma.fields.NATURAL_AFECTADA[0],
-        secundaria_afectada: acc.secundaria_afectada + bioma.fields.SECUNDARIA_AFECTADA[0],
-        transformada_afectada: acc.transformada_afectada + bioma.fields.TRANSFORMADA_AFECTADA[0],
-        porcentaje_afectada: acc.porcentaje_afectada + bioma.fields.PORCENT_AFECTACION[0],
+        affected_natural: acc.affected_natural + bioma.fields.NATURAL_AFECTADA[0],
+        affected_secondary: acc.affected_secondary + bioma.fields.SECUNDARIA_AFECTADA[0],
+        affected_transformed: acc.affected_transformed + bioma.fields.TRANSFORMADA_AFECTADA[0],
+        affected_percentage: acc.affected_percentage + bioma.fields.PORCENT_AFECTACION[0],
       }),
       {
-        natural_afectada: 0,
-        secundaria_afectada: 0,
-        transformada_afectada: 0,
-        porcentaje_afectada: 0,
+        affected_natural: 0,
+        affected_secondary: 0,
+        affected_transformed: 0,
+        affected_percentage: 0,
       },
     );
     return {
       biomas,
       totals: {
         name: 'TOTALES (CUANTO)',
-        natural_afectada: totals.natural_afectada.toFixed(2),
-        secundaria_afectada: totals.secundaria_afectada.toFixed(2),
-        transformada_afectada: totals.transformada_afectada.toFixed(2),
-        total_compensar: data.aggregations.total_area.value.toFixed(2),
-        porcentaje_afectada: totals.porcentaje_afectada * 100,
+        affected_natural: totals.affected_natural.toFixed(2),
+        affected_secondary: totals.affected_secondary.toFixed(2),
+        affected_transformed: totals.affected_transformed.toFixed(2),
+        total_compensate: data.aggregations.total_area.value.toFixed(2),
+        affected_percentage: totals.affected_percentage * 100,
       },
     };
   }
@@ -73,14 +73,14 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      datosDonde: [],
-      totales: {},
+      whereData: [],
+      totals: {},
       szh: null,
       car: null,
       strategies: [],
       selectedArea: 0,
       tableError: '',
-      showGraphs: { graphDonde: true },
+      showGraphs: { DotsWhere: true },
     };
     this.referencesStrategies = [];
   }
@@ -88,10 +88,10 @@ class Drawer extends React.Component {
   componentDidMount() {
     ElasticAPI.requestQueYCuantoCompensar()
       .then((res) => {
-        const { biomas, totals } = Drawer.cleanQueCuantoDondeData(res);
+        const { biomas, totals } = Drawer.cleanWhatWhereData(res);
         this.setState({
-          datosDonde: biomas,
-          totales: totals,
+          whereData: biomas,
+          totals,
         });
       });
   }
@@ -128,7 +128,7 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'datosSogamoso' construct an array with strategies info for the given szh
+   * From data loaded in 'projectData' construct an array with strategies info for the given szh
    * and car
    *
    * @param {String} szh SZH name
@@ -142,14 +142,14 @@ class Drawer extends React.Component {
         strategies: [],
         showGraphs: {
           ...prevState.showGraphs,
-          graphDonde: true,
+          DotsWhere: true,
         },
       }));
       return;
     }
 
-    const { datosSogamoso } = this.props;
-    const data = this.cleanDatosSogamoso(datosSogamoso);
+    const { projectData } = this.props;
+    const data = this.cleanSogamosoData(projectData);
     const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => {
       this.referencesStrategies.push(React.createRef());
       return {
@@ -172,12 +172,12 @@ class Drawer extends React.Component {
       strategies,
       showGraphs: {
         ...prevState.showGraphs,
-        graphDonde: false,
+        DotsWhere: false,
       },
     }));
   }
 
-  cleanDatosSogamoso = (data) => {
+  cleanSogamosoData = (data) => {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
@@ -219,9 +219,9 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderGraphs = (data, labelX, labelY, graph, colors) => {
-    const { showGraphs: { graphDonde } } = this.state;
+    const { showGraphs: { DotsWhere } } = this.state;
     const { updateActiveBioma } = this.props;
-    if (graph === 'Dots' && graphDonde) {
+    if (graph === 'Dots' && DotsWhere) {
       return (
         <ParentSize className="nocolor">
           {parent => (
@@ -248,22 +248,22 @@ class Drawer extends React.Component {
   }
 
   render() {
-    const { classes, datosSogamoso, subArea } = this.props;
+    const { classes, projectData, subArea } = this.props;
     const {
-      datosDonde, totales, selectedArea, totalACompensar, szh, car, strategies, tableError,
-      showGraphs: { graphDonde },
+      whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
+      showGraphs: { DotsWhere },
     } = this.state;
 
-    const tableRows = datosDonde.map((bioma, i) => ({
+    const tableRows = whereData.map((bioma, i) => ({
       key: `que-${i}`,
       values: [
         bioma.name,
         bioma.fc,
-        bioma.natural_afectada,
-        bioma.secundaria_afectada,
-        bioma.transformada_afectada,
-        `${bioma.porcentaje_afectada}%`,
-        bioma.total_compensar,
+        bioma.affected_natural,
+        bioma.affected_secondary,
+        bioma.affected_transformed,
+        `${bioma.affected_percentage}%`,
+        bioma.total_compensate,
       ],
     }));
 
@@ -283,15 +283,15 @@ class Drawer extends React.Component {
                   Total a compensar
                 </h3>
                 <h4>
-                  {totales.total_compensar}
+                  {totals.total_compensate}
                 </h4>
               </div>
               <TableStylized
                 headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
                 rows={tableRows}
-                footers={[totales.name, totales.fc, totales.natural_afectada,
-                  totales.secundaria_afectada, totales.transformada_afectada,
-                  `${totales.porcentaje_afectada}%`, totales.total_compensar]}
+                footers={[totals.name, totals.fc, totals.affected_natural,
+                  totals.affected_secondary, totals.affected_transformed,
+                  `${totals.affected_percentage}%`, totals.total_compensate]}
               />
             </div>
           ),
@@ -302,20 +302,20 @@ class Drawer extends React.Component {
                   Total a compensar
                 </h3>
                 <h4>
-                  {totales.total_compensar}
+                  {totals.total_compensate}
                 </h4>
               </div>
               <div className="total carrito">
                 <h3>
                   Áreas seleccionadas
                 </h3>
-                <h4 className={(selectedArea >= totales.total_compensar) ? 'areaCompleted' : ''}>
+                <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
                   {selectedArea}
                 </h4>
               </div>
-              {this.renderGraphs(datosDonde, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
-              {this.renderSelector(this.cleanDatosSogamoso(datosSogamoso), totalACompensar)}
-              { !graphDonde && (
+              {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+              {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
+              { !DotsWhere && (
                 <button
                   className="backgraph"
                   type="button"
@@ -323,7 +323,7 @@ class Drawer extends React.Component {
                     {
                       showGraphs: {
                         ...prevState.showGraphs,
-                        graphDonde: true,
+                        DotsWhere: true,
                       },
                     }
                   ))}
@@ -360,7 +360,7 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   classes: PropTypes.object.isRequired,
   // Data from elastic result for "donde compensar sogamoso"
-  datosSogamoso: PropTypes.object,
+  projectData: PropTypes.object,
   // Function to handle onClick event on the graph
   updateActiveBioma: PropTypes.func,
   subArea: PropTypes.string,
@@ -368,7 +368,7 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  datosSogamoso: {},
+  projectData: {},
   updateActiveBioma: () => {},
   subArea: '',
 };
