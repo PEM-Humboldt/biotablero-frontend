@@ -1,9 +1,3 @@
-/* TODO: Habilitar ESTAS lineas en <Tabs /> cuando
-  se tenga más de tres tipos de gráficos:
-scrollable
-scrollButtons="on"
-*/
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,10 +8,10 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import Typography from '@material-ui/core/Typography';
-import GraphLoader from '../GraphLoader';
 import { ParentSize } from "@vx/responsive";
 
 import ElasticAPI from '../api/elastic';
+import GraphLoader from '../GraphLoader';
 
 function TabContainer(props) {
   return (
@@ -97,7 +91,7 @@ class Drawer extends React.Component {
       });
   }
 
-  checkGraph(graphKey, data, labelX, labelY, graph, graphTitle) {
+  checkGraph = (graphKey, data, labelX, labelY, graph, graphTitle) => {
     // While data is being retrieved from server
     if(graphKey !== 'subarea' && !this.state.data_loaded[graphKey]) {
       return (
@@ -107,10 +101,8 @@ class Drawer extends React.Component {
     if(graph==='BarVertical') {
       return (
         <ParentSize className="nocolor">
-          {
-            (parent) => (
-              parent.width
-              &&
+          {parent => (
+            parent.width &&
               <GraphLoader
                 width={parent.width}
                 height={parent.height}
@@ -120,17 +112,14 @@ class Drawer extends React.Component {
                 labelY={labelY}
                 graphTitle={graphTitle}
               />
-            )
-          }
+          )}
         </ParentSize>
       );
     }
     return (
       <ParentSize className="nocolor">
-        {
-          (parent) => (
-            parent.width
-            &&
+        {parent => (
+          parent.width && (
             <GraphLoader
               width={parent.width}
               height={parent.height}
@@ -141,7 +130,7 @@ class Drawer extends React.Component {
               graphTitle={graphTitle}
             />
           )
-        }
+        )}
       </ParentSize>
     );
   }
