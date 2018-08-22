@@ -9,7 +9,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import L from 'leaflet';
 
 import ElasticAPI from './api/elastic';
-import GeoServerAPI from './api/geoserver';
+// import GeoServerAPI from './api/geoserver';
 
 const config = {};
 config.params = {
@@ -17,15 +17,17 @@ config.params = {
 };
 
 class MapViewer extends React.Component {
-  mapRef = React.createRef();
-
   constructor(props) {
     super(props);
+    this.state = {
+      layers: null,
+    };
 
+    this.mapRef = React.createRef();
     this.CapaJurisdicciones = null;
     this.CapaCorpoBoyaca = null;
-    this.CapaSogamoso = null;
-    this.CapaBiomasSogamoso = null;
+    // this.CapaSogamoso = null;
+    // this.CapaBiomasSogamoso = null;
 
     this.hexagonosOnEachFeature = this.hexagonosOnEachFeature.bind(this);
     this.resetHighlight = this.resetHighlight.bind(this);
@@ -36,33 +38,27 @@ class MapViewer extends React.Component {
     // const capasCargadas = null;
   }
 
-  mostrarCapa = (layer, state) => {
-    if (state === false) { // false : Hide layer
+  /**
+   *  Defines what layer to show and actions derivate from the selection
+   *
+   * @param {Object} layer receives leaflet object and e.target as the layer
+   * @param {Boolean} state if it's false, then the layer should be hidden
+   */
+  showLayer = (layer, state) => {
+    if (state === false) {
       this.mapRef.current.leafletElement.removeLayer(layer);
-    } else { // Show layer
-      // TODO: Ajustar límites y agregar función .setView()
+      this.mapRef.current.leafletElement.setView(config.params.center, 5.5);
+    } else {
       this.mapRef.current.leafletElement.addLayer(layer);
+      this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
     }
-  }
-
-
-  resetHighlight(e){
-    this.CapaJurisdicciones.resetStyle(e.target);
-  }
-
-  resetHighlight2(e){
-    this.CapaCorpoBoyaca.resetStyle(e.target);
   }
 
   mifunc(e) {
     console.log('es click?', e);
     if (e.target.feature.properties.IDCAR === "CORPOBOYACA") {
-      this.mostrarCapa(e, this.CapaCorpoBoyaca, true);
-      // TODO: Move fitBounds to mostrarCapa function
-      console.log('Mapa', this.mapRef.current.leafletElement);
-      this.mapRef.current.leafletElement.fitBounds(e.target.getBounds());
-      // this.mapRef.fitBounds(e.target.layer.getBounds());
-      this.mostrarCapa(this.CapaJurisdicciones, false);
+      this.showLayer(e.target, true);
+      this.showLayer(this.CapaJurisdicciones, false);
       this.props.capaActiva('CORPOBOYACA');
     }
     this.resetHighlight(e);
@@ -105,96 +101,72 @@ class MapViewer extends React.Component {
     e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
     +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
   }
-  /**
-   * Fucntion to load necessary layers from GeoServer
-   */
-  setGeoJSONLayers = () => {
-    GeoServerAPI.requestBiomasSogamoso()
-      .then((res) => {
-        this.CapaBiomasSogamoso = L.geoJSON(
-          res,
-          {
-            style: {
-              stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4,
-            },
-            onEachFeature: this.hexagonosOnEachFeature,
-          },
-        ).addTo(this.mapRef.current.leafletElement);
-        this.mostrarCapa(this.CapaBiomasSogamoso, false);
-      });
-    GeoServerAPI.requestJurisdicciones()
-      .then((res) => {
-        this.CapaJurisdicciones = L.geoJSON(
-          res,
-          {
-            style: {
-              color: '#e84a5f', weight: 0.5, fillColor: '#ffd8e2', opacity: 0.6, fillOpacity: 0.4,
-            },
-            onEachFeature: this.hexagonosOnEachFeature,
-          },
-        ).addTo(this.mapRef.current.leafletElement);
-        this.mostrarCapa(this.CapaJurisdicciones, false);
-      });
-    GeoServerAPI.requestCorpoboyaca()
-      .then((res) => {
-        this.CapaCorpoBoyaca = L.geoJSON(
-          res,
-          {
-            style: {
-              stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4
-            },
-            onEachFeature: this.onEachFeature,
-          },
-        ).addTo(this.mapRef.current.leafletElement);
-        this.mostrarCapa(this.CapaCorpoBoyaca, false);
-      });
-    GeoServerAPI.requestSogamoso()
-      .then((res) => {
-        this.CapaSogamoso = L.geoJSON(
-          res,
-          {
-            style: {
-              stroke: true, color: '#ea495f', fillColor: '#ea495f', opacity: 0.6, fillOpacity: 0.4
-            },
-            onEachFeature: this.hexagonosOnEachFeature,
-          },
-        ).addTo(this.mapRef.current.leafletElement);
-        this.mostrarCapa(this.CapaSogamoso, false);
-      });
+
+  resetHighlight(e) {
+    this.CapaJurisdicciones.resetStyle(e.target);
   }
 
+  resetHighlight2(e) {
+    this.CapaCorpoBoyaca.resetStyle(e.target);
+  }
+  /**
+   * Function to load necessary layers from GeoServer
+   */
+  // setGeoJSONLayers = () => {
+  //   GeoServerAPI.requestJurisdicciones()
+  //     .then((res) => {
+  //       this.CapaJurisdicciones = L.geoJSON(
+  //         res,
+  //         {
+  //           style: {
+  //             color: '#e84a5f', weight: 0.5, fillColor: '#ffd8e2', opacity: 0.6, fillOpacity: 0.4,
+  //           },
+  //           onEachFeature: this.hexagonosOnEachFeature,
+  //         },
+  //       ).addTo(this.mapRef.current.leafletElement);
+  //       this.showLayer(this.CapaJurisdicciones, false);
+  //     });
+  //   GeoServerAPI.requestCorpoboyaca()
+  //     .then((res) => {
+  //       this.CapaCorpoBoyaca = L.geoJSON(
+  //         res,
+  //         {
+  //           style: {
+  //             stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4
+  //           },
+  //           onEachFeature: this.onEachFeature,
+  //         },
+  //       ).addTo(this.mapRef.current.leafletElement);
+  //       this.showLayer(this.CapaCorpoBoyaca, false);
+  //     });
+  // }
+  //
   componentDidMount() {
-    this.setGeoJSONLayers();
+    // this.setGeoJSONLayers();
   }
 
   componentDidUpdate() {
-    // adevia - Comentarios: Esta función se ejecuta siempre que hay evento en el componente MapViewer
-    // Verificadores de capa seleccionada en el selector
+    if (this.props.activeLayers) {
+      Object.keys(this.props.activeLayers).forEach((layerName) => {
+        if (this.props.activeLayers[layerName]) this.showLayer(this.state.layers[layerName], true);
+        else this.showLayer(this.state.layers[layerName], false);
+      });
+    }
+
     if(this.CapaJurisdicciones !== null && this.CapaCorpoBoyaca !== null
       && this.props.capasMontadas[1] === 'Jurisdicciones') {
-      this.mostrarCapa(this.CapaJurisdicciones, true);
-      this.mostrarCapa(this.CapaCorpoBoyaca, false);
+      this.showLayer(this.CapaJurisdicciones, true);
+      this.showLayer(this.CapaCorpoBoyaca, false);
     }
     if(this.CapaCorpoBoyaca !== null && this.CapaJurisdicciones !== null
       && this.props.capasMontadas[2] ==='CORPOBOYACA') {
       // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
-      this.mostrarCapa(this.CapaCorpoBoyaca, true);
-      this.mostrarCapa(this.CapaJurisdicciones, false);
+      this.showLayer(this.CapaCorpoBoyaca, true);
+      this.showLayer(this.CapaJurisdicciones, false);
     } else if (this.CapaCorpoBoyaca!== null && this.CapaJurisdicciones !== null
       && this.props.capasMontadas[1] === null) {
-      this.mostrarCapa(this.CapaCorpoBoyaca, false);
-      this.mostrarCapa(this.CapaJurisdicciones, false);
-    }
-    if (this.CapaSogamoso !== null
-      && this.props.capasMontadas[2] === 'Sogamoso') {
-      this.mostrarCapa(this.CapaSogamoso, true);
-      // TODO: Implementar arreglo "capasActivas" para evitar crear por cada capa, un mostrarCapa(capa, false)
-      if (this.CapaCorpoBoyaca !== null
-        && this.CapaJurisdicciones !== null){ // Esto se hace al ser la capa más pesada en descargar
-        this.mostrarCapa(this.CapaCorpoBoyaca, false);
-        this.mostrarCapa(this.CapaJurisdicciones, false);
-        this.mostrarCapa(this.CapaBiomasSogamoso, true);
-      }
+      this.showLayer(this.CapaCorpoBoyaca, false);
+      this.showLayer(this.CapaJurisdicciones, false);
     }
   }
 
@@ -218,6 +190,22 @@ class MapViewer extends React.Component {
     );
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { layers } = nextProps;
+    const { layers: oldLayers } = prevState;
+    if (oldLayers === null) {
+      return { layers };
+    }
+    Object.keys(oldLayers).forEach((name) => {
+      if (layers[name] !== oldLayers[name]) {
+        if (oldLayers[name]) {
+          oldLayers[name].remove();
+        }
+      }
+    });
+    return { layers };
+  }
+
   getStyle(feature, layer) {
     //TODO: Ajustar función de estilo para pasarala a componentes react-leaflet
     return {
@@ -227,7 +215,7 @@ class MapViewer extends React.Component {
     }
   }
 
-  render () {
+  render() {
     // const layerStyle = this.getStyle();
     // TODO: Ajustar el zoom para que tenga límites sobre el mapa
     return (
@@ -236,11 +224,13 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {/* TODO: Mostrar bajo este formato los raster de cada estrategia de Compensaciones
+        {/* TODO: Mostrar bajo este formato los rathis.CapaBiomasSogamososter de cada estrategia de Compensaciones
           <WMSTileLayer srs={ 'EPSG:4326' }
                     layers='Biotablero:strategy_sogamoso_111_1_c'
                     url={"http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS&styles=raster_strategy"}
                     opacity={1} alt={"Regiones"} styles={"raster_strategy"} format={'image/png'} transparent={true}/> */}
+        {/** TODO: La carga del WMSTileLayer depende del usuario activo,
+            se debe ajustar esta carga cuando se implementen los usuarios*/}
         <WMSTileLayer
           layers='Biotablero:Regiones_geb'
           url={"http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS"}
