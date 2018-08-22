@@ -8,15 +8,6 @@ class Filter extends React.Component {
     this.state = {
       menuActivo: "",
     };
-    this.cambiarMenu = this.cambiarMenu.bind(this);
-  }
-
-  cambiarMenu(campo){
-    this.setState({
-      menuActivo: "",
-    });
-    this.props.actualizarCapaActiva(null);
-    this.props.actualizarBiomaActivo(null, null);
   }
 
   mostrarMenu(){
@@ -38,7 +29,7 @@ class Filter extends React.Component {
   mostrarInformacion(infoCapaActiva) {
     // TODO: Validar información: Designación y Administrado por
     if (this.props.dataCapaActiva) {
-      return (<Informer verMenu={this.cambiarMenu}
+      return (<Informer back={this.props.handlerBackButton}
         geocerca={this.props.geocerca}
         nombre={this.props.dataCapaActiva.NOMCAR || this.props.dataCapaActiva}
         biomaActivo={this.props.biomaActivo}

@@ -27,7 +27,6 @@ class ProjectSelector extends React.Component {
     });
     this.props.panelLayer(panel);
     this.props.subPanelLayer(null);
-    // this.props.innerPanelLayer(null);
   };
 
   subHandleChange = subPanel => (event, expanded) => {
@@ -35,7 +34,6 @@ class ProjectSelector extends React.Component {
       subExpanded: expanded ? subPanel : false,
     });
     this.props.subPanelLayer(subPanel);
-    // this.props.innerPanelLayer(null);
   };
 
   innerHandleChange = innerPanel => (event, expanded) => {

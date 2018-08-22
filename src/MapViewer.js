@@ -47,7 +47,7 @@ class MapViewer extends React.Component {
   showLayer = (layer, state) => {
     if (state === false) {
       this.mapRef.current.leafletElement.removeLayer(layer);
-      this.mapRef.current.leafletElement.setView(config.params.center, 5.5);
+      this.mapRef.current.leafletElement.setView(config.params.center, 5);
     } else {
       this.mapRef.current.leafletElement.addLayer(layer);
       this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
@@ -108,41 +108,6 @@ class MapViewer extends React.Component {
 
   resetHighlight2(e) {
     this.CapaCorpoBoyaca.resetStyle(e.target);
-  }
-  /**
-   * Function to load necessary layers from GeoServer
-   */
-  // setGeoJSONLayers = () => {
-  //   GeoServerAPI.requestJurisdicciones()
-  //     .then((res) => {
-  //       this.CapaJurisdicciones = L.geoJSON(
-  //         res,
-  //         {
-  //           style: {
-  //             color: '#e84a5f', weight: 0.5, fillColor: '#ffd8e2', opacity: 0.6, fillOpacity: 0.4,
-  //           },
-  //           onEachFeature: this.hexagonosOnEachFeature,
-  //         },
-  //       ).addTo(this.mapRef.current.leafletElement);
-  //       this.showLayer(this.CapaJurisdicciones, false);
-  //     });
-  //   GeoServerAPI.requestCorpoboyaca()
-  //     .then((res) => {
-  //       this.CapaCorpoBoyaca = L.geoJSON(
-  //         res,
-  //         {
-  //           style: {
-  //             stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4
-  //           },
-  //           onEachFeature: this.onEachFeature,
-  //         },
-  //       ).addTo(this.mapRef.current.leafletElement);
-  //       this.showLayer(this.CapaCorpoBoyaca, false);
-  //     });
-  // }
-  //
-  componentDidMount() {
-    // this.setGeoJSONLayers();
   }
 
   componentDidUpdate() {
@@ -219,7 +184,7 @@ class MapViewer extends React.Component {
     // const layerStyle = this.getStyle();
     // TODO: Ajustar el zoom para que tenga límites sobre el mapa
     return (
-      <Map ref={this.mapRef} center={config.params.center} zoom={5.5} onClick={this.onMapClick}>
+      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

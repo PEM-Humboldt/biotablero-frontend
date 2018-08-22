@@ -1,10 +1,13 @@
 // TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
+import L from 'leaflet';
 import MapViewer from './MapViewer';
 import Filter from './searcher/Filter';
 import Footer from './Footer';
 import './searcher/searcher.css';
+
+import GeoServerAPI from './api/geoserver';
 
 class Searcher extends Component {
   constructor(props){
@@ -19,36 +22,107 @@ class Searcher extends Component {
       biomaActivoData: null,
       ubicacionMapa: null,
       infoCapaActiva: null,
+      layers: null,
+      activeLayers: null,
     };
-    this.panelLayer = this.panelLayer.bind(this);
-    this.subPanelLayer = this.subPanelLayer.bind(this);
-    this.innerPanelLayer = this.innerPanelLayer.bind(this);
     this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
     this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
-  panelLayer(nombre){
+  componentDidMount() {
+    Promise.all([
+      GeoServerAPI.requestJurisdicciones(),
+      GeoServerAPI.requestCorpoboyaca(),
+    ]).then((res) => {
+      this.setState(prevState => (
+        {
+          activeLayers: {
+            jurisdicciones: false,
+            corpoBoyaca: false,
+          },
+          layers: {
+            ...prevState.layers,
+            jurisdicciones: L.geoJSON(
+              res[0],
+              {
+                style: {
+                  color: '#e84a5f',
+                  weight: 0.5,
+                  fillColor: '#ffd8e2',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                // onEachFeature: (feature, layer) => (
+                //   this.featureActions(feature, layer, 'jurisdicciones')
+                // ),
+              },
+            ),
+            corpoBoyaca: L.geoJSON(
+              res[1],
+              {
+                style: {
+                  stroke: false,
+                  fillColor: '#7b56a5',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                // onEachFeature: (feature, layer) => (
+                //   this.featureActions(feature, layer, 'corpoBoyaca')
+                // ),
+              },
+            ),
+          },
+        }
+      ));
+    });
+  }
+
+  handlerBackButton = () => {
+    this.setState(prevState => (
+      {
+        activeLayers: {
+          ...prevState.activeLayers,
+          jurisdicciones: false,
+          corpoBoyaca: false,
+        },
+        biomaActivoData: null,
+        geojsonCapa2: null,
+        geojsonCapa3: null,
+        geojsonCapa4: null,
+        infoCapaActiva: null,
+      }
+    ));
+  }
+
+  panelLayer = (nombre) => {
     this.setState({
-      test: 'Biotablero',
       geojsonCapa1: nombre,
     });
   }
 
-  subPanelLayer(nombre){
-    this.setState({
-      test: 'Biotablero',
-      geojsonCapa2: nombre,
+  subPanelLayer = (name) => {
+    this.setState(prevState => {
+      const { jurisdicciones } = prevState.activeLayers;
+      return {
+        activeLayers: {
+          ...prevState.activeLayers,
+          jurisdicciones: !jurisdicciones,
+        },
+        geojsonCapa2: name,
+      }
     });
-    // console.log('subPanel: ' + nombre);
   }
 
-  innerPanelLayer(nombre){
-    this.setState({
-      test: 'Biotablero',
-      geojsonCapa3: nombre,
-      infoCapaActiva: nombre,
-    });
-    // console.log('innerPanel: ' + nombre);
+  innerPanelLayer = (name) => {
+    this.setState(prevState => ({
+      activeLayers: {
+        ...prevState.activeLayers,
+        jurisdicciones: false,
+        corpoBoyaca: true,
+      },
+      geojsonCapa3: name,
+      infoCapaActiva: name,
+    }));
   }
 
   eventoDelMapa(latLong){
@@ -85,11 +159,12 @@ class Searcher extends Component {
   }
 
   render() {
-    let layer = this.state.geojson;
     return (
       <div>
         <div className="appSearcher">
-          <MapViewer mostrarJSON={layer}
+          <MapViewer
+            layers = {this.state.layers}
+            activeLayers = {this.state.activeLayers}
             capasMontadas={[
                   this.state.geojsonCapa1,
                   this.state.geojsonCapa2,
@@ -99,7 +174,9 @@ class Searcher extends Component {
             setBiomaActivo={this.actualizarBiomaActivo}
           />
           <div className="contentView">
-            <Filter panelLayer = {this.panelLayer}
+            <Filter
+              handlerBackButton={this.handlerBackButton}
+              panelLayer = {this.panelLayer}
               subPanelLayer = {this.subPanelLayer}
               innerPanelLayer = {this.innerPanelLayer}
               dataCapaActiva={this.state.infoCapaActiva}
