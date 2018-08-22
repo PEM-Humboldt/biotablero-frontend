@@ -34,86 +34,58 @@ const styles = theme => ({
 });
 
 class Drawer extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.biomas = null
-    this.fc = null
-    this.distritos = null
     this.state = {
-        value: 0,
-        data_loaded: {
-          biomas: false,
-          distritos: false,
-          fc: false
-        }
-      };
+      value: 0,
+      data: {
+        biomas: null,
+        distritos: null,
+        fc: null,
+      },
+    };
   }
 
   componentDidMount() {
     ElasticAPI.requestCarByBiomaArea('CORPOBOYACA')
       .then((res) => {
-        this.biomas = res
-        this.setState((prevState, props) => {
-          return {
-            ...prevState,
-            data_loaded: {
-              ...prevState.data_loaded,
-              biomas: true
-            }
-          }
-        })
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            biomas: res,
+          },
+        }));
       });
     ElasticAPI.requestCarByFCArea('CORPOBOYACA')
       .then((res) => {
-        this.fc = res
-        this.setState((prevState, props) => {
-          return {
-            ...prevState,
-            data_loaded: {
-              ...prevState.data_loaded,
-              fc: true
-            }
-          }
-        })
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            fc: res,
+          },
+        }));
       });
     ElasticAPI.requestCarByDistritosArea('CORPOBOYACA')
       .then((res) => {
-        this.distritos = res
-        this.setState((prevState, props) => {
-          return {
-            ...prevState,
-            data_loaded: {
-              ...prevState.data_loaded,
-              distritos: true
-            }
-          }
-        })
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            distritos: res,
+          },
+        }));
       });
   }
 
-  checkGraph = (graphKey, data, labelX, labelY, graph, graphTitle) => {
+  checkGraph = (data, labelX, labelY, graph, graphTitle) => {
     // While data is being retrieved from server
-    if(graphKey !== 'subarea' && !this.state.data_loaded[graphKey]) {
+    if (!data) {
       return (
-        <div>Loading data...</div>
-      )
-    }
-    if(graph==='BarVertical') {
-      return (
-        <ParentSize className="nocolor">
-          {parent => (
-            parent.width &&
-              <GraphLoader
-                width={parent.width}
-                height={parent.height}
-                graphType={graph}
-                data={data}
-                labelX={labelX}
-                labelY={labelY}
-                graphTitle={graphTitle}
-              />
-          )}
-        </ParentSize>
+        <div>
+          Loading data...
+        </div>
       );
     }
     return (
@@ -141,7 +113,9 @@ class Drawer extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { value } = this.state;
+    const {
+      value, data: { fc, biomas, distritos },
+    } = this.state;
     const { biomaActivo, biomaActivoData } = this.props;
 
     if (biomaActivo === null) {
@@ -160,39 +134,50 @@ class Drawer extends React.Component {
               <Tab className="tabs" label="Especies" icon={<Especies />} />
             </Tabs>
           </AppBar>
-          {value === 0 &&
+          {value === 0 && (
             <TabContainer>
-              {this.checkGraph('fc', this.fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-              {this.checkGraph('biomas', this.biomas,'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
-              {this.checkGraph('distritos', this.distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
-            </TabContainer>}
-          {value === 1 &&
-            <TabContainer>
-              <div className="graphcard">
-                <h2>Gráficas en construcción</h2>
-                <p>Pronto más información</p>
-              </div>
-            </TabContainer>}
-          {value === 2 &&
+              {this.checkGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
+              {this.checkGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
+              {this.checkGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
+            </TabContainer>
+          )}
+          {value === 1 && (
             <TabContainer>
               <div className="graphcard">
-                <h2>Gráficas en construcción</h2>
-                <p>Pronto más información</p>
+                <h2>
+                  Gráficas en construcción
+                </h2>
+                <p>
+                  Pronto más información
+                </p>
               </div>
-            </TabContainer>}
+            </TabContainer>
+          )}
+          {value === 2 && (
+            <TabContainer>
+              <div className="graphcard">
+                <h2>
+                  Gráficas en construcción
+                </h2>
+                <p>
+                  Pronto más información
+                </p>
+              </div>
+            </TabContainer>
+          )}
         </div>
       );
     }
-    if(biomaActivo !== null && biomaActivoData !== null) {
+    if (biomaActivo !== null && biomaActivoData !== null) {
       return (
         <div className={classes.root}>
-          {this.checkGraph('subarea', biomaActivoData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+          {this.checkGraph(biomaActivoData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
         </div>
       );
     }
     return (
       <div className={classes.root}>
-        {/*TODO: esto probablemente nunca se ejecute, no quemar el mensae*/}
+        {/* TODO: esto probablemente nunca se ejecute, no quemar el mensae */}
         Por favor seleccione un bioma en el mapa
       </div>
     );
@@ -201,6 +186,13 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   classes: PropTypes.object.isRequired,
+  biomaActivo: PropTypes.string,
+  biomaActivoData: PropTypes.object,
+};
+
+Drawer.defaultProps = {
+  biomaActivo: '',
+  biomaActivoData: null,
 };
 
 export default withStyles(styles)(Drawer);
