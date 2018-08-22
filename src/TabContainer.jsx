@@ -22,7 +22,9 @@ class TabContainer extends React.Component {
   };
 
   render() {
-    const { classes, children, titles } = this.props;
+    const {
+      classes, children, titles, tabClasses,
+    } = this.props;
     const { value } = this.state;
     return (
       <div className={classes.root}>
@@ -35,7 +37,7 @@ class TabContainer extends React.Component {
             centered
           >
             {titles.map(({ label, icon }, i) => (
-              <Tab className="tabs tabs2" label={label} icon={icon} key={i} />
+              <Tab className={`tabs ${tabClasses}`} label={label} icon={icon} key={i} />
             ))}
           </Tabs>
         </AppBar>
@@ -55,8 +57,14 @@ TabContainer.propTypes = {
   // Array of elements to print in each tab content (order should match titles order)
   children: PropTypes.node.isRequired,
   classes: PropTypes.object.isRequired,
-  // Array of objects with info for each tab title
+  // Array of objects with info for each tab title (attributes: label, icon)
   titles: PropTypes.array.isRequired,
+  // Extra clases for 'Tab' component
+  tabClasses: PropTypes.string,
+};
+
+TabContainer.defaultProps = {
+  tabClasses: '',
 };
 
 export default TabContainer;
