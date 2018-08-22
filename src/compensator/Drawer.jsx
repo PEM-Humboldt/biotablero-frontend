@@ -272,6 +272,7 @@ class Drawer extends React.Component {
     return (
       <TabContainer
         classes={classes}
+        tabClasses="tabs2"
         titles={[
           { label: 'Qué · Cuánto', icon: (<QueIcon />) },
           { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
