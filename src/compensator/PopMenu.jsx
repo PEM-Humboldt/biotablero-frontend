@@ -7,11 +7,27 @@ import Select from 'react-select';
 class PopMenu extends Component {
   constructor(props) {
     super(props);
+    const { subArea } = props;
     this.state = {
       szhSelected: null,
       carSelected: null,
-      showButton: true,
+      showButton: false,
+      subArea,
     };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { subArea } = nextProps;
+    const { subArea: oldSubArea } = prevState;
+    if (oldSubArea !== subArea) {
+      return {
+        szhSelected: null,
+        carSelected: null,
+        showButton: false,
+        subArea,
+      };
+    }
+    return null;
   }
 
   /**
@@ -51,7 +67,7 @@ class PopMenu extends Component {
   handleChangeCAR = (carSelected) => {
     this.setState({
       carSelected: carSelected ? carSelected.value : '',
-      showButton: true,
+      showButton: Boolean(carSelected),
     });
     const { loadStrategies } = this.props;
     loadStrategies();
@@ -79,8 +95,10 @@ class PopMenu extends Component {
   }
 
   render() {
-    const { subArea, loadStrategies } = this.props;
-    const { szhSelected, carSelected, showButton } = this.state;
+    const { loadStrategies } = this.props;
+    const {
+      subArea, szhSelected, carSelected, showButton,
+    } = this.state;
     return (
       <div className="complist">
         <CarritoIcon />
@@ -89,7 +107,7 @@ class PopMenu extends Component {
         </div>
         {subArea ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {(carSelected && showButton) ? (
+        {showButton ? (
           <button
             className="addbioma"
             type="button"

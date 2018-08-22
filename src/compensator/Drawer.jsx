@@ -331,8 +331,7 @@ class Drawer extends React.Component {
                   ))}
                 >
                   <BackGraph />
-                  { // TODO: Fix transition between Graph and Shopping Cart
-                    ' Ir al gráfico'}
+                  {' Ir al gráfico'}
                 </button>
               )}
               {tableError && (
