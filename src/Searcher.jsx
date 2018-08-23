@@ -52,9 +52,9 @@ class Searcher extends Component {
                   opacity: 0.6,
                   fillOpacity: 0.4,
                 },
-                // onEachFeature: (feature, layer) => (
-                //   this.featureActions(feature, layer, 'jurisdicciones')
-                // ),
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'jurisdicciones')
+                ),
               },
             ),
             corpoBoyaca: L.geoJSON(
@@ -66,15 +66,57 @@ class Searcher extends Component {
                   opacity: 0.6,
                   fillOpacity: 0.4,
                 },
-                // onEachFeature: (feature, layer) => (
-                //   this.featureActions(feature, layer, 'corpoBoyaca')
-                // ),
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'corpoBoyaca')
+                ),
               },
             ),
           },
         }
       ));
     });
+  }
+
+  featureActions = (feature, layer, parentLayer) => {
+    layer.on(
+      {
+        mouseover: event => this.highlightFeature(event, parentLayer),
+        mouseout: event => this.resetHighlight(event, parentLayer),
+        click: this.clickFeature,
+      },
+    );
+  }
+
+  highlightFeature = (event, parentLayer) => {
+    const feature = event.target;
+    feature.setStyle({
+      weight: 1,
+      fillOpacity: 1,
+    });
+    switch (parentLayer) {
+      case 'jurisdicciones':
+        event.target.bindPopup(event.target.feature.properties.IDCAR);
+        break;
+      case 'corpoBoyaca':
+        event.target.bindPopup(
+          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
+        );
+        break;
+      default:
+        break;
+    }
+    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
+  }
+
+  resetHighlight = (event, layer) => {
+    const feature = event.target;
+    const { layers } = this.state;
+    layers[layer].resetStyle(feature);
+  }
+
+  clickFeature = (event) => {
+    // TODO: Activate bioma inside dotsWhere and dotsWhat
+    this.highlightFeature(event);
   }
 
   handlerBackButton = () => {

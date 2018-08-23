@@ -24,16 +24,6 @@ class MapViewer extends React.Component {
     };
 
     this.mapRef = React.createRef();
-    this.CapaJurisdicciones = null;
-    this.CapaCorpoBoyaca = null;
-    // this.CapaSogamoso = null;
-    // this.CapaBiomasSogamoso = null;
-
-    this.hexagonosOnEachFeature = this.hexagonosOnEachFeature.bind(this);
-    this.resetHighlight = this.resetHighlight.bind(this);
-    this.resetHighlight2 = this.resetHighlight2.bind(this);
-    this.highlightFeature = this.highlightFeature.bind(this);
-    this.mifunc = this.mifunc.bind(this);
     // TODO: Analizar estrategia con props.capasMontadas y props.capaActiva
     // const capasCargadas = null;
   }
@@ -54,16 +44,6 @@ class MapViewer extends React.Component {
     }
   }
 
-  mifunc(e) {
-    console.log('es click?', e);
-    if (e.target.feature.properties.IDCAR === "CORPOBOYACA") {
-      this.showLayer(e.target, true);
-      this.showLayer(this.CapaJurisdicciones, false);
-      this.props.capaActiva('CORPOBOYACA');
-    }
-    this.resetHighlight(e);
-  }
-
   // TODO: Esto lo deberíamos manejar desde el Search, porque es algo exclusivo del search
   /**
    * When a click event occurs on a bioma layer in the searches module,
@@ -81,78 +61,17 @@ class MapViewer extends React.Component {
           setBiomaActivo(bioma, res);
         });
     }
-    this.resetHighlight2(e);
-  }
-
-  highlightFeature = (e) => {
-    const layer = e.target;
-    if(e.target.feature.properties.IDCAR !== 'CORPOBOYACA')
-    e.target.bindPopup(e.target.feature.properties.IDCAR);
-    layer.setStyle(
-      {
-        weight : 1,
-        fillOpacity : 1
-      }
-    );
-    if(!L.Browser.ie && !L.Browser.opera){
-      layer.bringToFront();
-    }
-    if(e.target.feature.properties.IDCAR === 'CORPOBOYACA')
-    e.target.bindPopup("Bioma: "+ e.target.feature.properties.BIOMA_IAvH
-    +"<br>Factor de compensación: " + e.target.feature.properties.FC_Valor);
-  }
-
-  resetHighlight(e) {
-    this.CapaJurisdicciones.resetStyle(e.target);
-  }
-
-  resetHighlight2(e) {
-    this.CapaCorpoBoyaca.resetStyle(e.target);
   }
 
   componentDidUpdate() {
-    if (this.props.activeLayers) {
-      Object.keys(this.props.activeLayers).forEach((layerName) => {
-        if (this.props.activeLayers[layerName]) this.showLayer(this.state.layers[layerName], true);
-        else this.showLayer(this.state.layers[layerName], false);
+    const { activeLayers } = this.props;
+    const { layers } = this.state;
+    if (activeLayers) {
+      Object.keys(activeLayers).forEach((layerName) => {
+        if (activeLayers[layerName]) this.showLayer(layers[layerName], true);
+        else this.showLayer(layers[layerName], false);
       });
     }
-
-    if(this.CapaJurisdicciones !== null && this.CapaCorpoBoyaca !== null
-      && this.props.capasMontadas[1] === 'Jurisdicciones') {
-      this.showLayer(this.CapaJurisdicciones, true);
-      this.showLayer(this.CapaCorpoBoyaca, false);
-    }
-    if(this.CapaCorpoBoyaca !== null && this.CapaJurisdicciones !== null
-      && this.props.capasMontadas[2] ==='CORPOBOYACA') {
-      // || (this.props.capasMontadas[0] && this.props.capasMontadas[2].feature.properties.IDCAR ==='CORPOBOYACA')
-      this.showLayer(this.CapaCorpoBoyaca, true);
-      this.showLayer(this.CapaJurisdicciones, false);
-    } else if (this.CapaCorpoBoyaca!== null && this.CapaJurisdicciones !== null
-      && this.props.capasMontadas[1] === null) {
-      this.showLayer(this.CapaCorpoBoyaca, false);
-      this.showLayer(this.CapaJurisdicciones, false);
-    }
-  }
-
-  hexagonosOnEachFeature(feature, layer){
-    layer.on(
-      {
-        mouseover : this.highlightFeature,
-        mouseout : this.resetHighlight,
-        click : this.mifunc,
-      }
-    );
-  }
-
-  onEachFeature = (feature, layer) => {
-    layer.on(
-      {
-        mouseover : this.highlightFeature,
-        mouseout : this.resetHighlight2,
-        click : this.handleClickOnBioma
-      }
-    );
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -171,7 +90,7 @@ class MapViewer extends React.Component {
     return { layers };
   }
 
-  getStyle(feature, layer) {
+  static getStyle(feature, layer) {
     //TODO: Ajustar función de estilo para pasarala a componentes react-leaflet
     return {
       color: '#006400',
