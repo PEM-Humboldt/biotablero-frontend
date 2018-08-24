@@ -36,13 +36,6 @@ class Selector extends React.Component {
     this.props.subPanelLayer(subPanel);
   };
 
-  innerHandleChange = innerPanel => (event, expanded) => {
-    this.setState({
-      innerExpanded: expanded ? innerPanel : false,
-    });
-    this.props.innerPanelLayer(innerPanel);
-  };
-
 
   render() {
     const { expanded, subExpanded /*, innerExpanded, onClick, value */} = this.state;
@@ -140,7 +133,9 @@ class Selector extends React.Component {
                 <ExpansionPanelDetails>
                   <Autocomplete
                     name='jurisdiccion'
-                    valueSelected={this.props.innerPanelLayer} // Envía al componente Padre el valor seleccionado
+                    valueSelected={(v) => {
+                      return this.props.innerPanelLayer(v, 'corpoBoyaca')
+                      }} // Envía al componente Padre el valor seleccionado
                     data={[
                     { label: 'CORPOBOYACA' },
                     { label: 'AMBA' },

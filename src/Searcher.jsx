@@ -10,7 +10,7 @@ import './searcher/searcher.css';
 import GeoServerAPI from './api/geoserver';
 
 class Searcher extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       hasShape: false,
@@ -20,13 +20,10 @@ class Searcher extends Component {
       geojsonCapa3: null,
       geojsonCapa4: null,
       biomaActivoData: null,
-      ubicacionMapa: null,
       infoCapaActiva: null,
       layers: null,
       activeLayers: null,
     };
-    this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
   componentDidMount() {
@@ -74,7 +71,13 @@ class Searcher extends Component {
           },
         }
       ));
-    });
+    })
+      .catch(() => (
+        this.setState({
+          activeLayers: {},
+          layers: {},
+        })
+      ));
   }
 
   featureActions = (feature, layer, parentLayer) => {
@@ -119,21 +122,25 @@ class Searcher extends Component {
     this.highlightFeature(event);
   }
 
+  // TODO: Return from bioma to jurisdicción
   handlerBackButton = () => {
-    this.setState(prevState => (
-      {
-        activeLayers: {
-          ...prevState.activeLayers,
-          jurisdicciones: false,
-          corpoBoyaca: false,
-        },
+    this.setState((prevState) => {
+      let newState = { ...prevState };
+      const { layers } = prevState;
+      if (Object.keys(layers).length !== 0) {
+        newState.activeLayers.jurisdicciones = false;
+        newState.activeLayers.corpoBoyaca = false;
+      }
+      newState = {
+        ...newState,
         biomaActivoData: null,
         geojsonCapa2: null,
         geojsonCapa3: null,
         geojsonCapa4: null,
         infoCapaActiva: null,
-      }
-    ));
+      };
+      return newState;
+    });
   }
 
   panelLayer = (nombre) => {
@@ -143,48 +150,28 @@ class Searcher extends Component {
   }
 
   subPanelLayer = (name) => {
-    this.setState(prevState => {
-      const { jurisdicciones } = prevState.activeLayers;
-      return {
-        activeLayers: {
-          ...prevState.activeLayers,
-          jurisdicciones: !jurisdicciones,
-        },
-        geojsonCapa2: name,
-      }
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const layerStatus = prevState.activeLayers[name];
+      const newState = { ...prevState };
+      if (layers[name]) newState.activeLayers[name] = !layerStatus;
+
+      newState.geojsonCapa2 = name;
+      return newState;
     });
   }
 
-  innerPanelLayer = (name) => {
-    this.setState(prevState => ({
-      activeLayers: {
-        ...prevState.activeLayers,
-        jurisdicciones: false,
-        corpoBoyaca: true,
-      },
-      geojsonCapa3: name,
-      infoCapaActiva: name,
-    }));
-  }
+  innerPanelLayer = (nameToOff, nameToOn) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
+      if (layers[nameToOn]) newState.activeLayers[nameToOn] = true;
 
-  eventoDelMapa(latLong){
-    this.setState({
-      ubicacionMapa: latLong,
+      newState.geojsonCapa3 = nameToOn;
+      newState.infoCapaActiva = nameToOn;
+      return newState;
     });
-  }
-
-  actualizarCapaActiva(campo){
-    if(campo===null){
-      this.setState({
-        geojsonCapa2: null,
-        geojsonCapa3: null,
-        infoCapaActiva: null,
-      });
-    } else {
-      this.setState({
-        infoCapaActiva: campo,
-      });
-    }
   }
 
   /**
@@ -196,7 +183,7 @@ class Searcher extends Component {
   actualizarBiomaActivo = (bioma, data) => {
     this.setState({
       geojsonCapa4: bioma,
-      biomaActivoData: data
+      biomaActivoData: data,
     });
   }
 
@@ -212,7 +199,6 @@ class Searcher extends Component {
                   this.state.geojsonCapa2,
                   this.state.geojsonCapa3,
                   this.state.geojsonCapa4]}
-            capaActiva={this.actualizarCapaActiva}
             setBiomaActivo={this.actualizarBiomaActivo}
           />
           <div className="contentView">
@@ -222,7 +208,6 @@ class Searcher extends Component {
               subPanelLayer = {this.subPanelLayer}
               innerPanelLayer = {this.innerPanelLayer}
               dataCapaActiva={this.state.infoCapaActiva}
-              actualizarCapaActiva= {this.actualizarCapaActiva}
               actualizarBiomaActivo={this.actualizarBiomaActivo}
               geocerca= {this.state.geojsonCapa2}
               biomaActivo={this.state.geojsonCapa4}

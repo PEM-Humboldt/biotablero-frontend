@@ -6,10 +6,8 @@
 import React from 'react';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
-import L from 'leaflet';
 
 import ElasticAPI from './api/elastic';
-// import GeoServerAPI from './api/geoserver';
 
 const config = {};
 config.params = {
@@ -24,8 +22,6 @@ class MapViewer extends React.Component {
     };
 
     this.mapRef = React.createRef();
-    // TODO: Analizar estrategia con props.capasMontadas y props.capaActiva
-    // const capasCargadas = null;
   }
 
   /**
