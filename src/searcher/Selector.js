@@ -27,8 +27,6 @@ class Selector extends React.Component {
       expanded: expanded ? panel : false,
     });
     this.props.panelLayer(panel);
-    this.props.subPanelLayer(null);
-    this.props.innerPanelLayer(null);
   };
 
   subHandleChange = subPanel => (event, expanded) => {
