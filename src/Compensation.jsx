@@ -1,31 +1,26 @@
-// TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
+/** eslint verified */
+// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 import React, { Component } from 'react';
-// import Viewfinder from './Viewfinder';
 import L from 'leaflet';
 import MapViewer from './MapViewer';
-import ProjectFilter from './compensation/ProjectFilter';
+import ProjectSelector from './compensation/ProjectSelector';
+import Drawer from './compensation/Drawer';
 import Footer from './Footer';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 
 class Compensation extends Component {
-    constructor (props){
+  constructor(props) {
     super(props);
     this.state = {
-      hasShape: false,
-      test: null,
       geojsonCapa1: null,
       geojsonCapa2: null,
       geojsonCapa3: null,
       geojsonCapa4: null,
-      ubicacionMapa: null,
-      infoCapaActiva: null,
       layers: null,
       activeLayers: null,
     };
-    this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
   componentDidMount() {
@@ -108,7 +103,6 @@ class Compensation extends Component {
           biomasSogamoso: false,
         },
         geojsonCapa3: null,
-        infoCapaActiva: null,
       }
     ));
   }
@@ -134,58 +128,58 @@ class Compensation extends Component {
           biomasSogamoso: true,
         },
         geojsonCapa3: name,
-        infoCapaActiva: name,
       }
     ));
   }
 
-  eventoDelMapa(latLong){
-    this.setState({
-      ubicacionMapa: latLong,
-    });
-  }
-
-  actualizarCapaActiva(campo){
-    this.setState({
-      geojsonCapa3: campo,
-      infoCapaActiva: campo,
-    });
-  }
-
-  actualizarBiomaActivo = (campo) => {
+  updateActiveBioma = (campo) => {
     ElasticAPI.requestDondeCompensarSogamoso(campo)
       .then((res) => {
         this.setState({
           geojsonCapa4: campo,
-          datosSogamoso: res
+          datosSogamoso: res,
         });
       });
   }
 
   render() {
+    const {
+      datosSogamoso, geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4,
+      layers, activeLayers,
+    } = this.state;
     return (
       <div>
         <div className="appSearcher">
           <MapViewer
-            layers = {this.state.layers}
-            activeLayers = {this.state.activeLayers}
+            layers={layers}
+            activeLayers={activeLayers}
           />
-            <div className="contentView">
-              <ProjectFilter panelLayer = {this.panelLayer}
-                subPanelLayer = {this.subPanelLayer}
-                innerPanelLayer = {this.innerPanelLayer}
-                dataCapaActiva={this.state.infoCapaActiva}
-                handlerBackButton= {this.handlerBackButton}
-                // actualizarCapaActiva= {this.actualizarCapaActiva}
-                actualizarBiomaActivo={this.actualizarBiomaActivo}
-                geocerca= {this.state.geojsonCapa2}
-                subArea={this.state.geojsonCapa4}
-                datosSogamoso={this.state.datosSogamoso}
-                zonageb={'GEB Centro'}
+          <div className="contentView">
+            {
+              !geojsonCapa3 && (
+              <ProjectSelector
+                panelLayer={this.panelLayer}
+                subPanelLayer={this.subPanelLayer}
+                innerPanelLayer={this.innerPanelLayer}
               />
-            </div>
+              )
+            }
+            {
+              geojsonCapa3 && (
+              <Drawer
+                areaName={`GEB ${geojsonCapa1}`}
+                back={this.handlerBackButton}
+                basinName={geojsonCapa3.NOMCAR || geojsonCapa3}
+                layerName={geojsonCapa4}
+                projectData={datosSogamoso}
+                subAreaName={geojsonCapa2}
+                updateActiveBioma={this.updateActiveBioma}
+              />
+              )
+            }
           </div>
-        <Footer showLogos={false}/>
+        </div>
+        <Footer showLogos={false} />
       </div>
     );
   }
