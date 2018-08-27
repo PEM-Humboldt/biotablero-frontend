@@ -1,4 +1,5 @@
 /** eslint verified */
+// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 import React, { Component } from 'react';
 import L from 'leaflet';
 import MapViewer from './MapViewer';
