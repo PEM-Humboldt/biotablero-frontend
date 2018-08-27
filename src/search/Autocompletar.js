@@ -169,13 +169,10 @@ class Autocomplete extends React.Component {
   };
 
   handleChange = name => value => {
+    console.log('value', value)
     this.setState({
       [name]: value,
     });
-    // adevia - Comentarios:
-    // Envía los valores seleccionados de la lista,
-    // siempre que se haya configurado el valor para "valueSelected"
-    // en el componente que llama a Autocomplete
     if(this.props.valueSelected) this.props.valueSelected(value);
   };
 
@@ -183,7 +180,7 @@ class Autocomplete extends React.Component {
     const { classes } = this.props;
     // const name = this.props.name;
     const elements = this.props.data.map(elements => ({
-      value: elements.label,
+      value: elements.value,
       label: elements.label,
     }));
     return (

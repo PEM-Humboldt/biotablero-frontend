@@ -11,6 +11,8 @@ import './search/search.css';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
+import { description, selectorData } from './search/assets/selectorData';
+
 
 class Search extends Component {
   constructor(props) {
@@ -83,6 +85,10 @@ class Search extends Component {
       ));
   }
 
+  /** ************************ */
+  /** LISTENERS FOR MAP LAYERS */
+  /** ************************ */
+
   featureActions = (feature, layer, parentLayer) => {
     layer.on(
       {
@@ -126,6 +132,69 @@ class Search extends Component {
     if (parentLayer === 'corpoBoyaca') this.handleClickOnBioma(event);
   }
 
+  /**
+   * When a click event occurs on a bioma layer in the searches module,
+   *  request info by szh on that bioma
+   *
+   * @param {Object} event event object
+   */
+  handleClickOnBioma = (event) => {
+    const bioma = event.target.feature.properties.BIOMA_IAvH;
+    ElasticAPI.requestBiomaBySZH(bioma)
+      .then((res) => {
+        this.setState(prevState => ({
+          geojsonCapa4: bioma,
+          activeLayers: {
+            ...prevState.activeLayers,
+
+          },
+          biomaActivoData: res,
+        }));
+      });
+  }
+
+  /** ****************************** */
+  /** LISTENERS FOR SELECTOR CHANGES */
+  /** ****************************** */
+  firstLevelChange = (nombre) => {
+    this.setState({
+      geojsonCapa1: nombre,
+    });
+  }
+
+  secondLevelChange = (name) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const layerStatus = prevState.activeLayers[name];
+      const newState = { ...prevState };
+      if (layers[name]) newState.activeLayers[name] = !layerStatus;
+
+      newState.geojsonCapa2 = name;
+      return newState;
+    });
+  }
+
+  innerElementChange = (nameToOff, nameToOn) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      if (layers) {
+        if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
+        if (layers[nameToOn]) {
+          newState.activeLayers[nameToOn] = true;
+          newState.infoCapaActiva = nameToOn;
+        }
+      }
+
+      newState.geojsonCapa3 = nameToOn;
+      return newState;
+    });
+  }
+
+  /** ***************************************** */
+  /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
+  /** ***************************************** */
+
   // TODO: Return from bioma to jurisdicción
   handlerBackButton = () => {
     this.setState((prevState) => {
@@ -147,67 +216,13 @@ class Search extends Component {
     });
   }
 
-  panelLayer = (nombre) => {
-    this.setState({
-      geojsonCapa1: nombre,
-    });
-  }
-
-  subPanelLayer = (name) => {
-    const { layers } = this.state;
-    this.setState((prevState) => {
-      const layerStatus = prevState.activeLayers[name];
-      const newState = { ...prevState };
-      if (layers[name]) newState.activeLayers[name] = !layerStatus;
-
-      newState.geojsonCapa2 = name;
-      return newState;
-    });
-  }
-
-  innerPanelLayer = (nameToOff, nameToOn) => {
-    const { layers } = this.state;
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
-      if (layers[nameToOn]) newState.activeLayers[nameToOn] = true;
-
-      newState.geojsonCapa3 = nameToOn;
-      newState.infoCapaActiva = nameToOn;
-      return newState;
-    });
-  }
-
-  /**
-   * When a click event occurs on a bioma layer in the searches module,
-   *  request info by szh on that bioma
-   *
-   * @param {Object} event event object
-   */
-  handleClickOnBioma = (event) => {
-    const bioma = event.target.feature.properties.BIOMA_IAvH;
-    ElasticAPI.requestBiomaBySZH(bioma)
-      .then((res) => {
-        this.setState(prevState => {
-          return {
-            geojsonCapa4: bioma,
-            activeLayers: {
-              ...prevState.activeLayers,
-
-            },
-            biomaActivoData: res,
-          }
-        });
-      });
-  }
-
   render() {
     return (
       <div>
         <div className="appSearcher">
           <MapViewer
-            layers = {this.state.layers}
-            activeLayers = {this.state.activeLayers}
+            layers={this.state.layers}
+            activeLayers={this.state.activeLayers}
             capasMontadas={[
                   this.state.geojsonCapa1,
                   this.state.geojsonCapa2,
@@ -217,14 +232,18 @@ class Search extends Component {
           <div className="contentView">
             <Filter
               handlerBackButton={this.handlerBackButton}
-              panelLayer = {this.panelLayer}
-              subPanelLayer = {this.subPanelLayer}
-              innerPanelLayer = {this.innerPanelLayer}
+              handlers={[
+                this.firstLevelChange,
+                this.secondLevelChange,
+                this.innerElementChange,
+              ]}
               dataCapaActiva={this.state.infoCapaActiva}
               actualizarBiomaActivo={this.actualizarBiomaActivo}
               geocerca= {this.state.geojsonCapa2}
               biomaActivo={this.state.geojsonCapa4}
               biomaActivoData={this.state.biomaActivoData}
+              selectorDescription={description}
+              selectorData={selectorData}
             />
           </div>
         </div>
