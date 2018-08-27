@@ -126,16 +126,14 @@ class Selector extends React.Component {
                   />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel className="m0" expanded= {subExpanded === 'Jurisdicciones'} onChange={this.subHandleChange('Jurisdicciones')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'jurisdicciones'} onChange={this.subHandleChange('jurisdicciones')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Jurisdicciones ambientales
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Autocomplete
                     name='jurisdiccion'
-                    valueSelected={(v) => {
-                      return this.props.innerPanelLayer(v, 'corpoBoyaca')
-                      }} // Envía al componente Padre el valor seleccionado
+                    valueSelected={() => this.props.innerPanelLayer('jurisdicciones', 'corpoBoyaca')} // Envía al componente Padre el valor seleccionado
                     data={[
                     { label: 'CORPOBOYACA' },
                     { label: 'AMBA' },
