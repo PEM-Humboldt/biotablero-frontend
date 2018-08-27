@@ -4,14 +4,14 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Drawer from './Drawer';
 
 const Informer = ({
-  geocerca, nombre, verMenu, biomaActivo, biomaActivoData,
+  geocerca, nombre, verMenu, biomaActivo, biomaActivoData, back
 }) => (
   <div className="informer">
     {/* TODO: Cambiar el zoom en el mapa para ver todo el país */}
     <button
       className="geobtn"
       type="button"
-      onClick={() => verMenu('Selector')}
+      onClick={back}
     >
       <BackIcon />
     </button>

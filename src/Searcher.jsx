@@ -1,13 +1,19 @@
 // TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
+// TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
+//  activos), con los elementos cargados
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
+import L from 'leaflet';
 import MapViewer from './MapViewer';
 import Filter from './searcher/Filter';
 import Footer from './Footer';
 import './searcher/searcher.css';
 
+import ElasticAPI from './api/elastic';
+import GeoServerAPI from './api/geoserver';
+
 class Searcher extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       hasShape: false,
@@ -17,93 +23,204 @@ class Searcher extends Component {
       geojsonCapa3: null,
       geojsonCapa4: null,
       biomaActivoData: null,
-      ubicacionMapa: null,
       infoCapaActiva: null,
+      layers: null,
+      activeLayers: null,
     };
-    this.panelLayer = this.panelLayer.bind(this);
-    this.subPanelLayer = this.subPanelLayer.bind(this);
-    this.innerPanelLayer = this.innerPanelLayer.bind(this);
-    this.actualizarCapaActiva = this.actualizarCapaActiva.bind(this);
-    this.eventoDelMapa = this.eventoDelMapa.bind(this);
   }
 
-  panelLayer(nombre){
+  componentDidMount() {
+    Promise.all([
+      GeoServerAPI.requestJurisdicciones(),
+      GeoServerAPI.requestCorpoboyaca(),
+    ]).then((res) => {
+      this.setState(prevState => (
+        {
+          activeLayers: {
+            jurisdicciones: false,
+            corpoBoyaca: false,
+          },
+          layers: {
+            ...prevState.layers,
+            jurisdicciones: L.geoJSON(
+              res[0],
+              {
+                style: {
+                  color: '#e84a5f',
+                  weight: 0.5,
+                  fillColor: '#ffd8e2',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'jurisdicciones')
+                ),
+              },
+            ),
+            corpoBoyaca: L.geoJSON(
+              res[1],
+              {
+                style: {
+                  stroke: false,
+                  fillColor: '#7b56a5',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'corpoBoyaca')
+                ),
+              },
+            ),
+          },
+        }
+      ));
+    })
+      .catch(() => (
+        this.setState({
+          activeLayers: {},
+          layers: {},
+        })
+      ));
+  }
+
+  featureActions = (feature, layer, parentLayer) => {
+    layer.on(
+      {
+        mouseover: event => this.highlightFeature(event, parentLayer),
+        mouseout: event => this.resetHighlight(event, parentLayer),
+        click: event => this.clickFeature(event, parentLayer),
+      },
+    );
+  }
+
+  highlightFeature = (event, parentLayer) => {
+    const feature = event.target;
+    feature.setStyle({
+      weight: 1,
+      fillOpacity: 1,
+    });
+    switch (parentLayer) {
+      case 'jurisdicciones':
+        event.target.bindPopup(event.target.feature.properties.IDCAR);
+        break;
+      case 'corpoBoyaca':
+        event.target.bindPopup(
+          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
+        );
+        break;
+      default:
+        break;
+    }
+    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
+  }
+
+  resetHighlight = (event, layer) => {
+    const feature = event.target;
+    const { layers } = this.state;
+    layers[layer].resetStyle(feature);
+  }
+
+  clickFeature = (event, parentLayer) => {
+    // TODO: Activate bioma inside dotsWhere and dotsWhat
+    this.highlightFeature(event);
+    if (parentLayer === 'corpoBoyaca') this.handleClickOnBioma(event);
+  }
+
+  // TODO: Return from bioma to jurisdicción
+  handlerBackButton = () => {
+    this.setState((prevState) => {
+      let newState = { ...prevState };
+      const { layers } = prevState;
+      if (Object.keys(layers).length !== 0) {
+        newState.activeLayers.jurisdicciones = false;
+        newState.activeLayers.corpoBoyaca = false;
+      }
+      newState = {
+        ...newState,
+        biomaActivoData: null,
+        geojsonCapa2: null,
+        geojsonCapa3: null,
+        geojsonCapa4: null,
+        infoCapaActiva: null,
+      };
+      return newState;
+    });
+  }
+
+  panelLayer = (nombre) => {
     this.setState({
-      test: 'Biotablero',
       geojsonCapa1: nombre,
     });
   }
 
-  subPanelLayer(nombre){
-    this.setState({
-      test: 'Biotablero',
-      geojsonCapa2: nombre,
-    });
-    // console.log('subPanel: ' + nombre);
-  }
+  subPanelLayer = (name) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const layerStatus = prevState.activeLayers[name];
+      const newState = { ...prevState };
+      if (layers[name]) newState.activeLayers[name] = !layerStatus;
 
-  innerPanelLayer(nombre){
-    this.setState({
-      test: 'Biotablero',
-      geojsonCapa3: nombre,
-      infoCapaActiva: nombre,
-    });
-    // console.log('innerPanel: ' + nombre);
-  }
-
-  eventoDelMapa(latLong){
-    this.setState({
-      ubicacionMapa: latLong,
+      newState.geojsonCapa2 = name;
+      return newState;
     });
   }
 
-  actualizarCapaActiva(campo){
-    if(campo===null){
-      this.setState({
-        geojsonCapa2: null,
-        geojsonCapa3: null,
-        infoCapaActiva: null,
-      });
-    } else {
-      this.setState({
-        infoCapaActiva: campo,
-      });
-    }
+  innerPanelLayer = (nameToOff, nameToOn) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
+      if (layers[nameToOn]) newState.activeLayers[nameToOn] = true;
+
+      newState.geojsonCapa3 = nameToOn;
+      newState.infoCapaActiva = nameToOn;
+      return newState;
+    });
   }
 
   /**
-   * Update information about the active bioma
+   * When a click event occurs on a bioma layer in the searches module,
+   *  request info by szh on that bioma
    *
-   * @param {String} bioma bioma's name
-   * @param {Object} data bioma's data (usually it's info about szh)
+   * @param {Object} event event object
    */
-  actualizarBiomaActivo = (bioma, data) => {
-    this.setState({
-      geojsonCapa4: bioma,
-      biomaActivoData: data
-    });
+  handleClickOnBioma = (event) => {
+    const bioma = event.target.feature.properties.BIOMA_IAvH;
+    ElasticAPI.requestBiomaBySZH(bioma)
+      .then((res) => {
+        this.setState(prevState => {
+          return {
+            geojsonCapa4: bioma,
+            activeLayers: {
+              ...prevState.activeLayers,
+
+            },
+            biomaActivoData: res,
+          }
+        });
+      });
   }
 
   render() {
-    let layer = this.state.geojson;
     return (
       <div>
         <div className="appSearcher">
-          <MapViewer mostrarJSON={layer}
+          <MapViewer
+            layers = {this.state.layers}
+            activeLayers = {this.state.activeLayers}
             capasMontadas={[
                   this.state.geojsonCapa1,
                   this.state.geojsonCapa2,
                   this.state.geojsonCapa3,
                   this.state.geojsonCapa4]}
-            capaActiva={this.actualizarCapaActiva}
-            setBiomaActivo={this.actualizarBiomaActivo}
           />
           <div className="contentView">
-            <Filter panelLayer = {this.panelLayer}
+            <Filter
+              handlerBackButton={this.handlerBackButton}
+              panelLayer = {this.panelLayer}
               subPanelLayer = {this.subPanelLayer}
               innerPanelLayer = {this.innerPanelLayer}
               dataCapaActiva={this.state.infoCapaActiva}
-              actualizarCapaActiva= {this.actualizarCapaActiva}
               actualizarBiomaActivo={this.actualizarBiomaActivo}
               geocerca= {this.state.geojsonCapa2}
               biomaActivo={this.state.geojsonCapa4}

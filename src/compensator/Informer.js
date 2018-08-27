@@ -1,13 +1,13 @@
 import React from 'react';
-import Drawer from './Drawer';
 import BackIcon from '@material-ui/icons/FirstPage';
+import Drawer from './Drawer';
 
 class Informer extends React.Component {
   render() {
     return (
       <div className="informer">
         {/* TODO: Cambiar el zoom en el mapa para ver todo el país*/}
-        <button className="geobtn" onClick={() => this.props.verMenu("Selector")}>
+        <button className="geobtn" onClick={() => this.props.back()}>
           <BackIcon />
         </button>
         <div className="iconsec2 mt2"></div>

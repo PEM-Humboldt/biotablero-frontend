@@ -27,8 +27,6 @@ class Selector extends React.Component {
       expanded: expanded ? panel : false,
     });
     this.props.panelLayer(panel);
-    this.props.subPanelLayer(null);
-    this.props.innerPanelLayer(null);
   };
 
   subHandleChange = subPanel => (event, expanded) => {
@@ -36,14 +34,6 @@ class Selector extends React.Component {
       subExpanded: expanded ? subPanel : false,
     });
     this.props.subPanelLayer(subPanel);
-    this.props.innerPanelLayer(null);
-  };
-
-  innerHandleChange = innerPanel => (event, expanded) => {
-    this.setState({
-      innerExpanded: expanded ? innerPanel : false,
-    });
-    this.props.innerPanelLayer(innerPanel);
   };
 
 
@@ -136,14 +126,14 @@ class Selector extends React.Component {
                   />
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <ExpansionPanel className="m0" expanded= {subExpanded === 'Jurisdicciones'} onChange={this.subHandleChange('Jurisdicciones')}>
+              <ExpansionPanel className="m0" expanded= {subExpanded === 'jurisdicciones'} onChange={this.subHandleChange('jurisdicciones')}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                 Jurisdicciones ambientales
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <Autocomplete
                     name='jurisdiccion'
-                    valueSelected={this.props.innerPanelLayer} // Envía al componente Padre el valor seleccionado
+                    valueSelected={() => this.props.innerPanelLayer('jurisdicciones', 'corpoBoyaca')} // Envía al componente Padre el valor seleccionado
                     data={[
                     { label: 'CORPOBOYACA' },
                     { label: 'AMBA' },
