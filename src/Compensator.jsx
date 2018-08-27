@@ -123,7 +123,6 @@ class Compensator extends Component {
     this.setState({
       geojsonCapa2: nombre,
     });
-    // console.log('subPanel: ' + nombre);test: 'Biotablero',
   }
 
   innerPanelLayer = (name) => {
@@ -138,7 +137,6 @@ class Compensator extends Component {
         infoCapaActiva: name,
       }
     ));
-    // console.log('innerPanel: ' + nombre);
   }
 
   eventoDelMapa(latLong){
@@ -152,7 +150,6 @@ class Compensator extends Component {
       geojsonCapa3: campo,
       infoCapaActiva: campo,
     });
-    // console.log("capaActiva: "+ campo);
   }
 
   actualizarBiomaActivo = (campo) => {
