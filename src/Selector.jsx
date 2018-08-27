@@ -7,7 +7,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import PropTypes from 'prop-types';
 
-import Autocomplete from './Autocompletar';
+import Autocomplete from './Autocomplete';
 
 class Selector extends React.Component {
   constructor(props) {

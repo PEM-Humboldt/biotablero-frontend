@@ -1,5 +1,5 @@
 import React from 'react';
-import Selector from './Selector';
+import Selector from '../Selector';
 import Informer from './Informer';
 
 class Filter extends React.Component {
