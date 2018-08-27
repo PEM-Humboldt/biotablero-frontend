@@ -65,6 +65,7 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/GraphLoader.jsx
 * src/Home.jsx
 * src/Main.jsx
+* src/MapViewer.jsx
 * src/searcher/Drawer.jsx
 * src/TabContainer.jsx
 

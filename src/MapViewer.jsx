@@ -1,3 +1,4 @@
+/** eslint verified */
 // TODO: Estilos diferentes entre elementos de cada capa
 
 import React from 'react';
