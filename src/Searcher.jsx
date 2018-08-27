@@ -1,4 +1,6 @@
 // TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
+// TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
+//  activos), con los elementos cargados
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import L from 'leaflet';
@@ -7,6 +9,7 @@ import Filter from './searcher/Filter';
 import Footer from './Footer';
 import './searcher/searcher.css';
 
+import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 
 class Searcher extends Component {
@@ -85,7 +88,7 @@ class Searcher extends Component {
       {
         mouseover: event => this.highlightFeature(event, parentLayer),
         mouseout: event => this.resetHighlight(event, parentLayer),
-        click: this.clickFeature,
+        click: event => this.clickFeature(event, parentLayer),
       },
     );
   }
@@ -117,9 +120,10 @@ class Searcher extends Component {
     layers[layer].resetStyle(feature);
   }
 
-  clickFeature = (event) => {
+  clickFeature = (event, parentLayer) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
     this.highlightFeature(event);
+    if (parentLayer === 'corpoBoyaca') this.handleClickOnBioma(event);
   }
 
   // TODO: Return from bioma to jurisdicción
@@ -175,16 +179,26 @@ class Searcher extends Component {
   }
 
   /**
-   * Update information about the active bioma
+   * When a click event occurs on a bioma layer in the searches module,
+   *  request info by szh on that bioma
    *
-   * @param {String} bioma bioma's name
-   * @param {Object} data bioma's data (usually it's info about szh)
+   * @param {Object} event event object
    */
-  actualizarBiomaActivo = (bioma, data) => {
-    this.setState({
-      geojsonCapa4: bioma,
-      biomaActivoData: data,
-    });
+  handleClickOnBioma = (event) => {
+    const bioma = event.target.feature.properties.BIOMA_IAvH;
+    ElasticAPI.requestBiomaBySZH(bioma)
+      .then((res) => {
+        this.setState(prevState => {
+          return {
+            geojsonCapa4: bioma,
+            activeLayers: {
+              ...prevState.activeLayers,
+
+            },
+            biomaActivoData: res,
+          }
+        });
+      });
   }
 
   render() {
@@ -199,7 +213,6 @@ class Searcher extends Component {
                   this.state.geojsonCapa2,
                   this.state.geojsonCapa3,
                   this.state.geojsonCapa4]}
-            setBiomaActivo={this.actualizarBiomaActivo}
           />
           <div className="contentView">
             <Filter
