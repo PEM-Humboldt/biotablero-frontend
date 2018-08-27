@@ -57,10 +57,11 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/App.jsx
 * src/charts/BarStackHorizontal.jsx
 * src/charts/DotsGraph.jsx
-* src/compensator/Drawer.jsx
-* src/compensator/InputCompensation.jsx
-* src/compensator/PopMenu.jsx
-* src/compensator/TableStylized.jsx
+* src/compensation/Drawer.jsx
+* src/compensation/InputCompensation.jsx
+* src/compensation/PopMenu.jsx
+* src/compensation/TableStylized.jsx
+* src/Compensation.jsx
 * src/Footer.jsx
 * src/GraphLoader.jsx
 * src/Home.jsx

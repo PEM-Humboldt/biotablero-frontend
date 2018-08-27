@@ -7,24 +7,24 @@ import Select from 'react-select';
 class PopMenu extends Component {
   constructor(props) {
     super(props);
-    const { subArea } = props;
+    const { layerName } = props;
     this.state = {
       szhSelected: null,
       carSelected: null,
       showButton: false,
-      subArea,
+      layerName,
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { subArea } = nextProps;
-    const { subArea: oldSubArea } = prevState;
-    if (oldSubArea !== subArea) {
+    const { layerName } = nextProps;
+    const { layerName: oldSubArea } = prevState;
+    if (oldSubArea !== layerName) {
       return {
         szhSelected: null,
         carSelected: null,
         showButton: false,
-        subArea,
+        layerName,
       };
     }
     return null;
@@ -97,15 +97,15 @@ class PopMenu extends Component {
   render() {
     const { loadStrategies } = this.props;
     const {
-      subArea, szhSelected, carSelected, showButton,
+      layerName, szhSelected, carSelected, showButton,
     } = this.state;
     return (
       <div className="complist">
         <CarritoIcon />
         <div className="Biomatit">
-          {subArea || 'Seleccione un bioma del gráfico'}
+          {layerName || 'Seleccione un bioma del gráfico'}
         </div>
-        {subArea ? this.listSZHOptions() : ''}
+        {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
         {showButton ? (
           <button
@@ -123,14 +123,14 @@ class PopMenu extends Component {
 }
 
 PopMenu.propTypes = {
-  subArea: PropTypes.string,
+  layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
 };
 
 PopMenu.defaultProps = {
-  subArea: '',
+  layerName: '',
 };
 
 export default PopMenu;
