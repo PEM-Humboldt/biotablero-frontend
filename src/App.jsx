@@ -2,7 +2,7 @@
 import React from 'react';
 import Header from './Header';
 import Main from './Main';
-import './common/main.css';
+import './assets/main.css';
 
 const App = () => (
   /** TODO: Sending active module's name at the header */

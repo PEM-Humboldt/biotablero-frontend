@@ -71,7 +71,7 @@ h1, h2, h3, h4 {
 }
 
 .iconsection {
-  background-image: url(../common/img/geografico.png);
+  background-image: url(../assets/img/geografico.png);
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
@@ -80,7 +80,7 @@ h1, h2, h3, h4 {
 }
 
 .iconsec2 {
-  background-image: url(../common/img/compensaciones.png);
+  background-image: url(../assets/img/compensaciones.png);
   -webkit-background-size: contain;
   background-size: contain;
   float: right;

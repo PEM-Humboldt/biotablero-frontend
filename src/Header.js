@@ -2,7 +2,7 @@ import React from 'react';
 import Menu from './header/Menu';
 import Title from './header/Title';
 import Uim from './header/Uim';
-import './common/main.css';
+import './assets/main.css';
 
 class Header extends React.Component {
   render() {
