@@ -2,7 +2,7 @@
 import React from 'react';
 import Content from './home/Content';
 import Information from './home/Information';
-import ShortInfo from './ShortInfo';
+import ShortInfo from './home/ShortInfo';
 import Footer from './Footer';
 
 const Home = () => (

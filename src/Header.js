@@ -1,7 +1,7 @@
 import React from 'react';
 import Menu from './header/Menu';
 import Title from './header/Title';
-import User from './header/Uim';
+import Uim from './header/Uim';
 import './common/main.css';
 
 class Header extends React.Component {
@@ -17,7 +17,7 @@ class Header extends React.Component {
           {/*TODO: Crear componente para manejo de usuarios,
              con actualización de la imagen y usuario en el
              Header en la página */}
-          <User value='Uim'/>
+          <Uim value='Uim'/>
 		  </header>
     );
   }
