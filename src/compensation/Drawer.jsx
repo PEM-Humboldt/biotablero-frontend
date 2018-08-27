@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
+import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import BackGraph from '@material-ui/icons/Timeline';
 
@@ -196,7 +197,7 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderSelector = (data, total) => {
-    const { subArea } = this.props;
+    const { layerName } = this.props;
     const { color } = this.state;
     if (total !== 0) {
       return (
@@ -204,7 +205,7 @@ class Drawer extends React.Component {
           {parent => (
             parent.width && parent.height && (
               <PopMenu
-                subArea={subArea}
+                layerName={layerName}
                 color={color}
                 loadStrategies={this.loadStrategies}
                 data={data}
@@ -250,7 +251,9 @@ class Drawer extends React.Component {
   }
 
   render() {
-    const { classes, projectData, subArea } = this.props;
+    const {
+      classes, projectData, layerName, back, basinName, areaName, subAreaName,
+    } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
       showGraphs: { DotsWhere },
@@ -270,110 +273,129 @@ class Drawer extends React.Component {
     }));
 
     return (
-      <TabContainer
-        classes={classes}
-        tabClasses="tabs2"
-        titles={[
-          { label: 'Qué · Cuánto', icon: (<QueIcon />) },
-          { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
-        ]}
-      >
-        {[
-          (
-            <div key="1">
-              <div className="total">
-                <h3>
-                  Total a compensar
-                </h3>
-                <h4>
-                  {totals.total_compensate}
-                </h4>
-              </div>
-              <TableStylized
-                headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
-                rows={tableRows}
-                footers={[totals.name, totals.fc, totals.affected_natural,
-                  totals.affected_secondary, totals.affected_transformed,
-                  `${totals.affected_percentage}%`, totals.total_compensate]}
-              />
-            </div>
-          ),
-          (
-            <div key="2">
-              <div className="total">
-                <h3>
-                  Total a compensar
-                </h3>
-                <h4>
-                  {totals.total_compensate}
-                </h4>
-              </div>
-              <div className="total carrito">
-                <h3>
-                  Áreas seleccionadas
-                </h3>
-                <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
-                  {selectedArea}
-                </h4>
-              </div>
-              {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
-              {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
-              { !DotsWhere && (
-                <button
-                  className="backgraph"
-                  type="button"
-                  onClick={() => this.setState(prevState => (
-                    {
-                      showGraphs: {
-                        ...prevState.showGraphs,
-                        DotsWhere: true,
-                      },
-                    }
-                  ))}
-                >
-                  <BackGraph />
-                  {' Ir al gráfico'}
-                </button>
-              )}
-              {tableError && (
-                <div className="tableError">
-                  {tableError}
+      <div className="informer">
+        <button type="button" className="geobtn" onClick={() => back()}>
+          <BackIcon />
+        </button>
+        <h1>
+          {`${areaName} / ${subAreaName}`}
+          <br />
+          <b>
+            {basinName}
+          </b>
+        </h1>
+        <TabContainer
+          classes={classes}
+          tabClasses="tabs2"
+          titles={[
+            { label: 'Qué · Cuánto', icon: (<QueIcon />) },
+            { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
+          ]}
+        >
+          {[
+            (
+              <div key="1">
+                <div className="total">
+                  <h3>
+                    Total a compensar
+                  </h3>
+                  <h4>
+                    {totals.total_compensate}
+                  </h4>
                 </div>
-              )}
-              { subArea && szh && car && strategies && (
                 <TableStylized
-                  description={{
-                    Bioma: subArea,
-                    SZH: szh,
-                    Jurisdicción: car,
-                  }}
-                  headers={['Estrategia', 'Héctareas', 'Agregar']}
-                  rows={strategies}
-                  classTable="special"
+                  headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
+                  rows={tableRows}
+                  footers={[totals.name, totals.fc, totals.affected_natural,
+                    totals.affected_secondary, totals.affected_transformed,
+                    `${totals.affected_percentage}%`, totals.total_compensate]}
                 />
-              )}
-            </div>
-          ),
-        ]}
-      </TabContainer>
+              </div>
+            ),
+            (
+              <div key="2">
+                <div className="total">
+                  <h3>
+                    Total a compensar
+                  </h3>
+                  <h4>
+                    {totals.total_compensate}
+                  </h4>
+                </div>
+                <div className="total carrito">
+                  <h3>
+                    Áreas seleccionadas
+                  </h3>
+                  <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
+                    {selectedArea}
+                  </h4>
+                </div>
+                {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+                {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
+                { !DotsWhere && (
+                  <button
+                    className="backgraph"
+                    type="button"
+                    onClick={() => this.setState(prevState => (
+                      {
+                        showGraphs: {
+                          ...prevState.showGraphs,
+                          DotsWhere: true,
+                        },
+                      }
+                    ))}
+                  >
+                    <BackGraph />
+                    {' Ir al gráfico'}
+                  </button>
+                )}
+                {tableError && (
+                  <div className="tableError">
+                    {tableError}
+                  </div>
+                )}
+                { layerName && szh && car && strategies && (
+                  <TableStylized
+                    description={{
+                      Bioma: layerName,
+                      SZH: szh,
+                      Jurisdicción: car,
+                    }}
+                    headers={['Estrategia', 'Héctareas', 'Agregar']}
+                    rows={strategies}
+                    classTable="special"
+                  />
+                )}
+              </div>
+            ),
+          ]}
+        </TabContainer>
+      </div>
     );
   }
 }
 
 Drawer.propTypes = {
+  areaName: PropTypes.string,
+  back: PropTypes.func,
+  basinName: PropTypes.string,
   classes: PropTypes.object.isRequired,
+  // Function to handle onClick event on the graph
+  layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   projectData: PropTypes.object,
-  // Function to handle onClick event on the graph
+  subAreaName: PropTypes.string,
   updateActiveBioma: PropTypes.func,
-  subArea: PropTypes.string,
-
 };
 
 Drawer.defaultProps = {
+  areaName: '',
+  back: () => {},
+  basinName: '',
   projectData: {},
   updateActiveBioma: () => {},
-  subArea: '',
+  layerName: '',
+  subAreaName: '',
 };
 
 export default withStyles(styles)(Drawer);

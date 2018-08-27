@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^1.4.2",
-    "@material-ui/icons": "1.1.0",
+    "@material-ui/icons": "^1.1.0",
     "@vx/axis": "0.0.170",
     "@vx/glyph": "0.0.170",
     "@vx/grid": "0.0.170",
