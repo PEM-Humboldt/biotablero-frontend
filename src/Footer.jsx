@@ -1,9 +1,9 @@
 /** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
-import logohumboldt from './common/img/logohumboldt.png';
-import logosiac from './common/img/logosiac.png';
-import './common/main.css';
+import logohumboldt from './assets/img/logohumboldt.png';
+import logosiac from './assets/img/logosiac.png';
+import './assets/main.css';
 
 const Footer = (
   {

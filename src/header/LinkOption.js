@@ -1,7 +1,8 @@
+// TODO: Implement external link from menu header
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function Option(props) {
+function LinkOption(props) {
   return (
     <div>
       {/* Parte 3 de 3 del enrutador: Llamar las rutas a enrutar*/}
@@ -10,4 +11,4 @@ function Option(props) {
   );
 }
 
-export default Option;
+export default LinkOption;
