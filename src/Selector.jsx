@@ -1,6 +1,5 @@
-// adevia
+/** eslint verified */
 // TODO: Ajustar evento del Autocompletar sobre el mapa
-
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';

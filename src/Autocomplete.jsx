@@ -1,6 +1,6 @@
-// adevia
-
+/** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
@@ -9,7 +9,7 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ClearIcon from '@material-ui/icons/Clear';
 import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
-import Option from './search/Option';
+import AutocompleteOption from './AutocompleteOption';
 import 'react-select/dist/react-select.css';
 
 const ITEM_HEIGHT = 22;
@@ -75,7 +75,7 @@ const styles = theme => ({
       display: 'flex',
       alignItems: 'center',
       fontSize: 12,
-	    fontFamily: 'Roboto, sans-serif',
+      fontFamily: 'Roboto, sans-serif',
       padding: 0,
     },
     '.Select-placeholder': {
@@ -126,16 +126,16 @@ function SelectWrapped(props) {
 
   return (
     <Select
-      optionComponent={Option}
-      noResultsText={'Sin resultados'}
-      arrowRenderer={arrowProps => {
-        return arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />;
-      }}
+      optionComponent={AutocompleteOption}
+      noResultsText="Sin resultados"
+      arrowRenderer={arrowProps => (
+        arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
+      )}
       clearRenderer={() => <ClearIcon />}
-      valueComponent={valueProps => {
+      valueComponent={(valueProps) => {
         const { value, children, onRemove } = valueProps;
 
-        const onDelete = event => {
+        const onDelete = (event) => {
           event.preventDefault();
           event.stopPropagation();
           onRemove(value);
@@ -153,46 +153,53 @@ function SelectWrapped(props) {
           );
         }
 
-        return <div className="Select-value">{children}</div>;
+        return (
+          <div className="Select-value">
+            {children}
+          </div>
+        );
       }}
       {...other}
     />
   );
 }
 
-class Autocomplete extends React.Component {
-  // constructor(props){
-  //   super(props);// name, data
-  // }
-  state = {
-    multiLabel: null,
-  };
+SelectWrapped.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
 
-  handleChange = name => value => {
-    console.log('value', value)
+class Autocomplete extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      multiLabel: null,
+    };
+  }
+
+  handleChange = name => (value) => {
     this.setState({
       [name]: value,
     });
-    if(this.props.valueSelected) this.props.valueSelected(value);
+    const { valueSelected } = this.props;
+    if (valueSelected) valueSelected(value);
   };
 
   render() {
-    const { classes } = this.props;
-    // const name = this.props.name;
-    const elements = this.props.data.map(elements => ({
-      value: elements.value,
-      label: elements.label,
+    const { classes, data } = this.props;
+    const { multiLabel } = this.state;
+    const elements = data.map(element => ({
+      value: element.value,
+      label: element.label,
     }));
     return (
-      //TODO: Limpiar Autocomplete cuando cambia a otro tipo de geocerca (capa2, subPanelLayer)
       <div className={classes.root}>
         <TextField
           fullWidth
-          value={this.state.multiLabel}
+          value={multiLabel}
           onChange={this.handleChange('multiLabel')}
-          placeholder={'Seleccionar múltiples '}
+          placeholder="Seleccionar múltiples"
           name="react-select-chip-label"
-          label={"Escriba el nombre a buscar"}
+          label="Escriba el nombre a buscar"
           InputLabelProps={{
             shrink: true,
           }}
@@ -212,4 +219,15 @@ class Autocomplete extends React.Component {
     );
   }
 }
+
+Autocomplete.propTypes = {
+  valueSelected: PropTypes.func.isRequired,
+  classes: PropTypes.object,
+  data: PropTypes.array.isRequired,
+};
+
+Autocomplete.defaultProps = {
+  classes: '',
+};
+
 export default withStyles(styles)(Autocomplete);
