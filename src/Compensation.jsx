@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import L from 'leaflet';
 import MapViewer from './MapViewer';
-import ProjectFilter from './compensator/ProjectFilter';
+import ProjectFilter from './compensation/ProjectFilter';
 import Footer from './Footer';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 
-class Compensator extends Component {
+class Compensation extends Component {
     constructor (props){
     super(props);
     this.state = {
@@ -191,4 +191,4 @@ class Compensator extends Component {
   }
 }
 
-export default Compensator;
+export default Compensation;

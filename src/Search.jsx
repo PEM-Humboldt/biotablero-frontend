@@ -5,14 +5,14 @@ import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import L from 'leaflet';
 import MapViewer from './MapViewer';
-import Filter from './searcher/Filter';
+import Filter from './search/Filter';
 import Footer from './Footer';
-import './searcher/searcher.css';
+import './search/search.css';
 
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 
-class Searcher extends Component {
+class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -234,4 +234,4 @@ class Searcher extends Component {
   }
 }
 
-export default Searcher;
+export default Search;

@@ -567,7 +567,7 @@ tr.row2table:nth-child(odd){
 
 tspan, .vx-axis-label {
   font-smooth: always !important;
-  border: none !important;  
+  border: none !important;
   font-weight: 300 !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
