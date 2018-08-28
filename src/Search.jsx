@@ -111,8 +111,7 @@ class Search extends Component {
         break;
       case 'corpoBoyaca':
         event.target.bindPopup(
-          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}
-          <br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
+          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
         );
         break;
       default:
@@ -244,6 +243,8 @@ class Search extends Component {
                 ]}
                 description={description}
                 data={selectorData}
+                expandedId={0}
+                iconClass="iconsection"
               />
             )}
             { activeLayerName && (
