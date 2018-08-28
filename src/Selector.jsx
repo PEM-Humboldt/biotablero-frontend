@@ -11,8 +11,11 @@ import Autocomplete from './Autocomplete';
 class Selector extends React.Component {
   constructor(props) {
     super(props);
+    const data = props.data || [];
+    const expandedId = props.expandedId || 0;
+    const expandedByDefault = data[expandedId] || {};
     this.state = {
-      expanded: props.data[0].id,
+      expanded: expandedByDefault.id,
       subExpanded: null,
     };
   }
@@ -43,6 +46,8 @@ class Selector extends React.Component {
           <button
             type="button"
             key={`${type}-${label}`}
+            name={name}
+            onClick={event => handlers[2](parent, event.target.name)}
           >
             {label}
           </button>
@@ -62,11 +67,13 @@ class Selector extends React.Component {
   }
 
   render() {
-    const { description, data } = this.props;
+    const { description, iconClass } = this.props;
+    let { data } = this.props;
+    data = data || [];
     const { expanded, subExpanded } = this.state;
     return (
       <div className="selector">
-        <div className="iconsection" />
+        <div className={iconClass} />
         {description}
         {data.map((firstLevel) => {
           const {
@@ -85,7 +92,9 @@ class Selector extends React.Component {
               <ExpansionPanelSummary expandIcon={expandIcon}>
                 {label}
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails id={detailId}>
+              <ExpansionPanelDetails
+                id={detailId}
+              >
                 {options.map((secondLevel) => {
                   const {
                     id: subId, label: subLabel, detailClass: subClasses,
@@ -128,12 +137,16 @@ Selector.propTypes = {
   })),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
+  expandedId: PropTypes.number,
+  iconClass: PropTypes.string,
 };
 
 Selector.defaultProps = {
   data: [],
   handlers: [],
   description: {},
+  expandedId: 0,
+  iconClass: '',
 };
 
 export default Selector;

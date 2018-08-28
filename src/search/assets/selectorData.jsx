@@ -1,3 +1,4 @@
+/** eslint verified */
 import React from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FileUploadIcon from '@material-ui/icons/FileUpload';
@@ -258,7 +259,7 @@ const selectorData = [
               { label: 'Napo', value: 'Napo' },
               { label: 'Mira', value: 'Mira' },
               { label: 'Patía', value: 'Patia' },
-              { label: 'Amarales - Dagua - Directos', value: 'Amarales-Dagua-Directos'},
+              { label: 'Amarales - Dagua - Directos', value: 'Amarales-Dagua-Directos' },
               { label: 'San Juan', value: 'SanJuan' },
               { label: 'Baudó - Directos Pacífico', value: 'Baudo-DirectosPacifico' },
               { label: 'Pacífico - Directos', value: 'Pacifico-Directos' },
