@@ -1,11 +1,13 @@
-// TODO: Ajustar transiciones en proyecto HOME y embeber este proyecto
+/** eslint verified */
+// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 // TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
 //  activos), con los elementos cargados
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
 import L from 'leaflet';
 import MapViewer from './MapViewer';
-import Filter from './search/Filter';
+import Selector from './Selector';
+import Drawer from './search/Drawer';
 import Footer from './Footer';
 import './search/search.css';
 
@@ -18,14 +20,12 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasShape: false,
-      test: null,
       geojsonCapa1: null,
       geojsonCapa2: null,
       geojsonCapa3: null,
       geojsonCapa4: null,
-      biomaActivoData: null,
-      infoCapaActiva: null,
+      basinData: null,
+      activeLayerName: null,
       layers: null,
       activeLayers: null,
     };
@@ -129,7 +129,7 @@ class Search extends Component {
   clickFeature = (event, parentLayer) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
     this.highlightFeature(event);
-    if (parentLayer === 'corpoBoyaca') this.handleClickOnBioma(event);
+    if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
   }
 
   /**
@@ -138,7 +138,7 @@ class Search extends Component {
    *
    * @param {Object} event event object
    */
-  handleClickOnBioma = (event) => {
+  handleClickOnArea = (event) => {
     const bioma = event.target.feature.properties.BIOMA_IAvH;
     ElasticAPI.requestBiomaBySZH(bioma)
       .then((res) => {
@@ -148,7 +148,7 @@ class Search extends Component {
             ...prevState.activeLayers,
 
           },
-          biomaActivoData: res,
+          basinData: res,
         }));
       });
   }
@@ -182,7 +182,7 @@ class Search extends Component {
         if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
         if (layers[nameToOn]) {
           newState.activeLayers[nameToOn] = true;
-          newState.infoCapaActiva = nameToOn;
+          newState.activeLayerName = nameToOn;
         }
       }
 
@@ -206,49 +206,60 @@ class Search extends Component {
       }
       newState = {
         ...newState,
-        biomaActivoData: null,
+        basinData: null,
         geojsonCapa2: null,
         geojsonCapa3: null,
         geojsonCapa4: null,
-        infoCapaActiva: null,
+        activeLayerName: null,
       };
       return newState;
     });
   }
 
   render() {
+    const {
+      geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4, activeLayerName,
+      layers, activeLayers, basinData,
+    } = this.state;
     return (
       <div>
         <div className="appSearcher">
           <MapViewer
-            layers={this.state.layers}
-            activeLayers={this.state.activeLayers}
+            layers={layers}
+            activeLayers={activeLayers}
             capasMontadas={[
-                  this.state.geojsonCapa1,
-                  this.state.geojsonCapa2,
-                  this.state.geojsonCapa3,
-                  this.state.geojsonCapa4]}
+              geojsonCapa1,
+              geojsonCapa2,
+              geojsonCapa3,
+              geojsonCapa4]}
           />
           <div className="contentView">
-            <Filter
+            { !activeLayerName && (
+              <Selector
+                handlers={[
+                  this.firstLevelChange,
+                  this.secondLevelChange,
+                  this.innerElementChange,
+                ]}
+                description={description}
+                data={selectorData}
+                expandedId={0}
+                iconClass="iconsection"
+              />
+            )}
+            { activeLayerName && (
+            <Drawer
+              basinData={basinData}
+              basinName={activeLayerName.NOMCAR || activeLayerName}
               handlerBackButton={this.handlerBackButton}
-              handlers={[
-                this.firstLevelChange,
-                this.secondLevelChange,
-                this.innerElementChange,
-              ]}
-              dataCapaActiva={this.state.infoCapaActiva}
-              actualizarBiomaActivo={this.actualizarBiomaActivo}
-              geocerca= {this.state.geojsonCapa2}
-              biomaActivo={this.state.geojsonCapa4}
-              biomaActivoData={this.state.biomaActivoData}
-              selectorDescription={description}
-              selectorData={selectorData}
+              layerName={geojsonCapa4}
+              subAreaName={geojsonCapa2}
             />
+            )}
           </div>
         </div>
-      <Footer showLogos={false}/>
-    </div>
+        <Footer showLogos={false} />
+      </div>
     );
   }
 }
