@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
@@ -95,60 +96,71 @@ class Drawer extends React.Component {
   render() {
     const { classes } = this.props;
     const { data: { fc, biomas, distritos } } = this.state;
-    const { biomaActivo, biomaActivoData } = this.props;
-    if (biomaActivo === null) {
-      return (
-        <TabContainer
-          classes={classes}
-          titles={[
-            { label: 'Paisaje', icon: (<Paisaje />) },
-            { label: 'Ecosistemas', icon: (<Ecosistemas />) },
-            { label: 'Especies', icon: (<Especies />) },
-          ]}
-        >
-          {[
-            (
-              <div key="1">
-                {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-                {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
-                {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
-              </div>
-            ),
-            (
-              <div className="graphcard" key="2">
-                <h2>
-                  Gráficas en construcción
-                </h2>
-                <p>
-                  Pronto más información
-                </p>
-              </div>
-            ),
-            (
-              <div className="graphcard" key="3">
-                <h2>
-                  Gráficas en construcción
-                </h2>
-                <p>
-                  Pronto más información
-                </p>
-              </div>
-            ),
-          ]}
-        </TabContainer>
-      );
-    }
-    if (biomaActivo !== null && biomaActivoData !== null) {
-      return (
-        <div className={classes.root}>
-          {this.renderGraph(biomaActivoData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
-        </div>
-      );
-    }
+    const {
+      layerName, basinData, handlerBackButton, basinName, subAreaName,
+    } = this.props;
     return (
-      <div className={classes.root}>
-        {/* TODO: esto probablemente nunca se ejecute, no quemar el mensae */}
-        Por favor seleccione un bioma en el mapa
+      <div className="informer">
+        <button
+          className="geobtn"
+          type="button"
+          onClick={handlerBackButton}
+        >
+          <BackIcon />
+        </button>
+        <div className="iconsection mt2" />
+        <h1>
+          {`${subAreaName} / ${basinName}`}
+          <br />
+          <b>
+            {layerName}
+          </b>
+        </h1>
+        { !layerName && (
+          <TabContainer
+            classes={classes}
+            titles={[
+              { label: 'Paisaje', icon: (<Paisaje />) },
+              { label: 'Ecosistemas', icon: (<Ecosistemas />) },
+              { label: 'Especies', icon: (<Especies />) },
+            ]}
+          >
+            {[
+              (
+                <div key="1">
+                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
+                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
+                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
+                </div>
+              ),
+              (
+                <div className="graphcard" key="2">
+                  <h2>
+                    Gráficas en construcción
+                  </h2>
+                  <p>
+                    Pronto más información
+                  </p>
+                </div>
+              ),
+              (
+                <div className="graphcard" key="3">
+                  <h2>
+                    Gráficas en construcción
+                  </h2>
+                  <p>
+                    Pronto más información
+                  </p>
+                </div>
+              ),
+            ]}
+          </TabContainer>
+        )}
+        { layerName && basinData && (
+          <div className={classes.root}>
+            {this.renderGraph(basinData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+          </div>
+        )}
       </div>
     );
   }
@@ -156,13 +168,19 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   classes: PropTypes.object.isRequired,
-  biomaActivo: PropTypes.string,
-  biomaActivoData: PropTypes.object,
+  layerName: PropTypes.string,
+  basinData: PropTypes.object,
+  handlerBackButton: PropTypes.func,
+  basinName: PropTypes.string,
+  subAreaName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
-  biomaActivo: '',
-  biomaActivoData: null,
+  layerName: '',
+  basinData: null,
+  handlerBackButton: () => {},
+  basinName: '',
+  subAreaName: '',
 };
 
 export default withStyles(styles)(Drawer);

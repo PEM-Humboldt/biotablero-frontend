@@ -42,7 +42,7 @@ h1, h2, h3, h4 {
  -webkit-order: 1;
          order: 1;
 }
-/*Belongs to filter*/
+
 .selector {
 	font-family: 'Roboto', sans-serif;
 	font-size: 12px;
@@ -107,14 +107,6 @@ h1, h2, h3, h4 {
   margin-right: 3px;
   border: 1px solid #2a363b;
   color: #2a363b;
-}
-
-/*Belongs to filter*/
-.informer {
-	font-family: 'Roboto', sans-serif;
-	font-size: 12px;
-	padding: 5px 0;
-	resize: both;
 }
 
 .informer h3 {
