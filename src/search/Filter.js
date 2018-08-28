@@ -1,5 +1,5 @@
 import React from 'react';
-import Selector from './Selector';
+import Selector from '../Selector';
 import Informer from './Informer';
 
 class Filter extends React.Component {
@@ -17,10 +17,10 @@ class Filter extends React.Component {
         // alert(this.props.dataCapaActiva),
         // TODO: Revisar despliegue errado mediante estilo
         <Selector
-        panelLayer = {this.props.panelLayer}
-        subPanelLayer = {this.props.subPanelLayer}
-        innerPanelLayer = {this.props.innerPanelLayer}
+        handlers = {this.props.handlers}
         estadoMenu= {this.state.menuActivo}
+        description={this.props.selectorDescription}
+        data={this.props.selectorData}
       />
     );
     } else { return this.mostrarInformacion(this.props.dataCapaActiva)}
