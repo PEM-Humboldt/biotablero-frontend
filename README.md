@@ -55,6 +55,8 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/api/elastic.js
 * src/api/geoserver.js
 * src/App.jsx
+* src/AutocompleteOption.jsx
+* src/Autocomplete.jsx
 * src/charts/BarStackHorizontal.jsx
 * src/charts/DotsGraph.jsx
 * src/compensation/Drawer.jsx
@@ -67,7 +69,8 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/Home.jsx
 * src/Main.jsx
 * src/MapViewer.jsx
-* src/searcher/Drawer.jsx
+* src/searche/Drawer.jsx
+* src/Selector.jsx
 * src/TabContainer.jsx
 
 ***
