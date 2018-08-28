@@ -252,7 +252,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      classes, projectData, layerName, back, basinName, areaName, subAreaName,
+      classes, projectData, layerName, back, basinName, areaName, subAreaName, colors,
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
@@ -330,7 +330,7 @@ class Drawer extends React.Component {
                     {selectedArea}
                   </h4>
                 </div>
-                {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', ['#51b4c1', '#eabc47', '#ea495f'])}
+                {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
                 {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
                 { !DotsWhere && (
                   <button
@@ -379,6 +379,7 @@ Drawer.propTypes = {
   areaName: PropTypes.string,
   back: PropTypes.func,
   basinName: PropTypes.string,
+  colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   // Function to handle onClick event on the graph
   layerName: PropTypes.string,
@@ -392,6 +393,7 @@ Drawer.defaultProps = {
   areaName: '',
   back: () => {},
   basinName: '',
+  colors: ['#eabc47'],
   projectData: {},
   updateActiveBioma: () => {},
   layerName: '',

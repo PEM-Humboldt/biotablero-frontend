@@ -40,12 +40,12 @@ export default withTooltip(({
     range: colors,
   });
 
-  const checkColorFC = (value1, areaAfectada) => {
+  const checkColor = (value1, value2) => {
     if (labelX === '% Area afectada') {
       // TODO: Include another color border for item selected and item in cart
-      if ((value1 > 6.5) && (areaAfectada > 12)) return zScale(2);
-      if ((value1 > 6.5) && (areaAfectada < 12)) return zScale(1);
-      if ((value1 < 6.4) && (areaAfectada < 12)) return zScale(0);
+      if ((value1 > 6.5) && (value2 > 12)) return zScale(2); // high
+      if ((value1 > 6.5) && (value2 < 12)) return zScale(1); // low
+      if ((value1 < 6.4) && (value2 < 12)) return zScale(0); // medium
     }
     return null;
   };
@@ -79,7 +79,7 @@ export default withTooltip(({
             <GlyphCircle
               className="dot"
               key={point.name}
-              fill={checkColorFC(y(point), x(point))}
+              fill={checkColor(y(point), x(point))}
               left={margin.left + xScale(x(point))}
               top={yScale(y(point))}
               size={xScale(x(point))}
@@ -147,7 +147,7 @@ export default withTooltip(({
             lineHeight: '1.5',
           }}
         >
-          <div style={{ color: checkColorFC(y(tooltipData), x(tooltipData)) }}>
+          <div style={{ color: checkColor(y(tooltipData), x(tooltipData)) }}>
             <div>
               <b>
                 {'Afectación: '}

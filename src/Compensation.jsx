@@ -20,6 +20,7 @@ class Compensation extends Component {
       geojsonCapa4: null,
       layers: null,
       activeLayers: null,
+      colors: ['#eabc47', '#51b4c1', '#ea495f', '#2a363b'],
     };
   }
 
@@ -37,8 +38,8 @@ class Compensation extends Component {
               {
                 style: {
                   stroke: true,
-                  color: '#ea495f',
-                  fillColor: '#ea495f',
+                  color: '#7b56a5',
+                  fillColor: '#7b56a5',
                   opacity: 0.6,
                   fillOpacity: 0.4,
                 },
@@ -50,9 +51,7 @@ class Compensation extends Component {
             biomasSogamoso: L.geoJSON(
               res[1],
               {
-                style: {
-                  stroke: false, fillColor: '#7b56a5', opacity: 0.6, fillOpacity: 0.4,
-                },
+                style: this.featureStyle,
                 onEachFeature: (feature, layer) => (
                   this.featureActions(feature, layer, 'biomasSogamoso')
                 ),
@@ -64,23 +63,57 @@ class Compensation extends Component {
     });
   }
 
+  featureStyle = (feature) => {
+    const { colors } = this.state;
+    if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P > 12) {
+      return { // high
+        stroke: false, fillColor: colors[2], opacity: 0.6, fillOpacity: 0.6,
+      };
+    } if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P < 12) {
+      return { // low
+        stroke: false, fillColor: colors[1], opacity: 0.6, fillOpacity: 0.6,
+      };
+    } return { // medium
+      stroke: false, fillColor: colors[0], opacity: 0.6, fillOpacity: 0.6,
+    };
+  }
+
   featureActions = (feature, layer, parentLayer) => {
     layer.on(
       {
-        mouseover: this.highlightFeature,
-        mouseout: e => this.resetHighlight(e, parentLayer),
+        mouseover: event => this.highlightFeature(event, parentLayer),
+        mouseout: event => this.resetHighlight(event, parentLayer),
         click: this.clickFeature,
       },
     );
   }
 
-  highlightFeature = (event) => {
-    const feature = event.target;
-    feature.setStyle({
+  highlightFeature = (event, parentLayer) => {
+  // TODO: highlight basin inside dotsWhere and dotsWhat at the time with the graph
+    const area = event.target;
+    area.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
-    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
+    switch (parentLayer) {
+      case 'sogamoso':
+        area.bindPopup(
+          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO}
+           <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
+        );
+        break;
+      case 'biomasSogamoso':
+        area.bindPopup(
+          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}
+          <br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}
+          <br><b>Factor de compensación:</b> ${area.feature.properties.FC_Valor}
+          <br><b>% de afectación:</b> ${area.feature.properties.AFFECTED_P}`,
+        );
+        break;
+      default:
+        break;
+    }
+    if (!L.Browser.ie && !L.Browser.opera) area.bringToFront();
   }
 
   resetHighlight = (event, layer) => {
@@ -145,7 +178,7 @@ class Compensation extends Component {
   render() {
     const {
       datosSogamoso, geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4,
-      layers, activeLayers,
+      colors, layers, activeLayers,
     } = this.state;
     return (
       <div>
@@ -170,6 +203,7 @@ class Compensation extends Component {
                 areaName={`GEB ${geojsonCapa1}`}
                 back={this.handlerBackButton}
                 basinName={geojsonCapa3.NOMCAR || geojsonCapa3}
+                colors={colors}
                 layerName={geojsonCapa4}
                 projectData={datosSogamoso}
                 subAreaName={geojsonCapa2}
