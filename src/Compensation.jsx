@@ -2,13 +2,14 @@
 // TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 import React, { Component } from 'react';
 import L from 'leaflet';
+
 import MapViewer from './MapViewer';
-import ProjectSelector from './compensation/ProjectSelector';
 import Drawer from './compensation/Drawer';
 import Footer from './Footer';
-
+import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
+import { description, selectorData } from './compensation/assets/selectorData';
 
 class Compensation extends Component {
   constructor(props) {
@@ -31,6 +32,10 @@ class Compensation extends Component {
     ]).then((res) => {
       this.setState(prevState => (
         {
+          activeLayers: {
+            sogamoso: false,
+            biomasSogamoso: false,
+          },
           layers: {
             ...prevState.layers,
             sogamoso: L.geoJSON(
@@ -77,6 +82,10 @@ class Compensation extends Component {
       stroke: false, fillColor: colors[0], opacity: 0.6, fillOpacity: 0.6,
     };
   }
+
+  /** ************************ */
+  /** LISTENERS FOR MAP LAYERS */
+  /** ************************ */
 
   featureActions = (feature, layer, parentLayer) => {
     layer.on(
@@ -127,6 +136,10 @@ class Compensation extends Component {
     this.highlightFeature(event);
   }
 
+  /** ***************************************** */
+  /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
+  /** ***************************************** */
+
   handlerBackButton = () => {
     this.setState(prevState => (
       {
@@ -140,29 +153,38 @@ class Compensation extends Component {
     ));
   }
 
-  panelLayer = (nombre) => {
+  /** ****************************** */
+  /** LISTENERS FOR SELECTOR CHANGES */
+  /** ****************************** */
+
+  firstLevelChange = (name) => {
     this.setState({
-      geojsonCapa1: nombre,
+      geojsonCapa1: name,
     });
   }
 
-  subPanelLayer = (nombre) => {
+  secondLevelChange = (name) => {
     this.setState({
-      geojsonCapa2: nombre,
+      geojsonCapa2: name,
     });
   }
 
-  innerPanelLayer = (name) => {
-    this.setState(prevState => (
-      {
-        activeLayers: {
-          ...prevState.activeLayers,
-          sogamoso: true,
-          biomasSogamoso: true,
-        },
-        geojsonCapa3: name,
+  innerElementChange = (nameToOff, nameToOn) => {
+    const { layers } = this.state;
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      if (layers) {
+        if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
+        if (layers[nameToOn]) {
+          newState.activeLayers[nameToOn] = true;
+          // Don't know if this can be improved (two layers behaving the same)
+          if (nameToOn === 'sogamoso') newState.activeLayers.biomasSogamoso = true;
+        }
       }
-    ));
+
+      newState.geojsonCapa3 = nameToOn;
+      return newState;
+    });
   }
 
   updateActiveBioma = (campo) => {
@@ -190,10 +212,16 @@ class Compensation extends Component {
           <div className="contentView">
             {
               !geojsonCapa3 && (
-              <ProjectSelector
-                panelLayer={this.panelLayer}
-                subPanelLayer={this.subPanelLayer}
-                innerPanelLayer={this.innerPanelLayer}
+              <Selector
+                handlers={[
+                  this.firstLevelChange,
+                  this.secondLevelChange,
+                  this.innerElementChange,
+                ]}
+                description={description}
+                expandedId={1}
+                data={selectorData}
+                iconClass="iconsec2"
               />
               )
             }
