@@ -65,7 +65,13 @@ class Compensation extends Component {
           },
         }
       ));
-    });
+    })
+      .catch(() => (
+        this.setState({
+          activeLayers: {},
+          layers: {},
+        })
+      ));
   }
 
   featureStyle = (feature) => {
