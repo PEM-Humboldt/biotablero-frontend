@@ -42,6 +42,15 @@ class Drawer extends React.Component {
             biomas: res,
           },
         }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            biomas: false,
+          },
+        }));
       });
     ElasticAPI.requestCarByFCArea('CORPOBOYACA')
       .then((res) => {
@@ -50,6 +59,15 @@ class Drawer extends React.Component {
           data: {
             ...prevState.data,
             fc: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            fc: false,
           },
         }));
       });
@@ -62,15 +80,38 @@ class Drawer extends React.Component {
             distritos: res,
           },
         }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            distritos: false,
+          },
+        }));
       });
   }
 
+  /**
+   * Function to render a graph
+   *
+   * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
+   *  or an Object with the data.
+   * @param {string} labelX axis X label
+   * @param {string} labelY axis Y label
+   * @param {string} graph graph type
+   * @param {string} graphTitle graph title
+   */
   renderGraph = (data, labelX, labelY, graph, graphTitle) => {
     // While data is being retrieved from server
-    if (!data) {
+    let errorMessage = null;
+    if (data === null) errorMessage = 'Loading data...';
+    else if (!data) errorMessage = `Data for ${graphTitle} not available`;
+    if (errorMessage) {
+      // TODO: ask Cesar to make this message nicer
       return (
-        <div>
-          Loading data...
+        <div className="errorData">
+          {errorMessage}
         </div>
       );
     }
