@@ -4,16 +4,16 @@
 //  activos), con los elementos cargados
 import React, { Component } from 'react';
 // import Viewfinder from './Viewfinder';
+
 import L from 'leaflet';
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
-import Footer from './Footer';
 import './search/search.css';
-
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 import { description, selectorData } from './search/assets/selectorData';
+import Layout from './Layout';
 
 
 class Search extends Component {
@@ -224,7 +224,10 @@ class Search extends Component {
       layers, activeLayers, basinData,
     } = this.state;
     return (
-      <div>
+      <Layout
+        moduleName="Consultas"
+        showFooterLogos={false}
+      >
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -260,8 +263,7 @@ class Search extends Component {
             )}
           </div>
         </div>
-        <Footer showLogos={false} />
-      </div>
+      </Layout>
     );
   }
 }

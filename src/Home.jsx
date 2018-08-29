@@ -3,10 +3,10 @@ import React from 'react';
 import Content from './home/Content';
 import Information from './home/Information';
 import ShortInfo from './home/ShortInfo';
-import Footer from './Footer';
+import Layout from './Layout';
 
 const Home = () => (
-  <div>
+  <Layout showFooterLogos>
     <div className="wrapper">
       <ShortInfo />
       <h1 className="maint">
@@ -15,8 +15,7 @@ const Home = () => (
       <Content />
       <Information />
     </div>
-    <Footer showLogos />
-  </div>
+  </Layout>
 );
 
 export default Home;

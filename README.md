@@ -66,8 +66,11 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/compensation/PopMenu.jsx
 * src/Footer.jsx
 * src/GraphLoader.jsx
+* src/Header.jsx
+* src/header/Menu.jsx
+* src/header/Title.jsx
 * src/Home.jsx
-* src/Main.jsx
+* src/Layout.jsx
 * src/MapViewer.jsx
 * src/Search.jsx
 * src/search/assets/selectorData.jsx
