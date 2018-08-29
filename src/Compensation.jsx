@@ -212,7 +212,7 @@ class Compensation extends Component {
     } = this.state;
     return (
       <Layout
-        moduleName="Compesaciones"
+        moduleName="Compensaciones"
         showFooterLogos={false}
       >
         <div className="appSearcher">
