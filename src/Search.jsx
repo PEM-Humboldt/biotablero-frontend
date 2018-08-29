@@ -28,19 +28,32 @@ class Search extends Component {
       activeLayerName: null,
       layers: null,
       activeLayers: null,
-      colors: ['#7b56a5',
-        '#6256a5',
-        '#5564a4',
-        '#4a8fb8',
-        '#51b4c1',
-        '#81bb47',
-        '#a4c051',
-        '#b1b559',
-        '#eabc47',
-        '#d5753d',
-        '#ea5948',
-        '#ea495f',
-        '#c3374d'],
+      colors: ['#d49242',
+        '#e9c948',
+        '#b3b638',
+        '#acbf3b',
+        '#92ba3a',
+        '#70b438',
+        '#5f8f2c',
+        '#59651f',
+        '#62591e',
+        '#7b6126'],
+      colorSZH: ['#345b6b'],
+      colorsFC: [
+        { 4: '#7b56a5' },
+        { 4.5: '#6256a5' },
+        { 5: '#5564a4' },
+        { 5.5: '#4a8fb8' },
+        { 6: '#51b4c1' },
+        { 6.5: '#81bb47' },
+        { 7: '#a4c051' },
+        { 7.5: '#b1b559' },
+        { 8: '#eabc47' },
+        { 8.5: '#d5753d' },
+        { 9: '#ea5948' },
+        { 9.5: '#ea495f' },
+        { 10: '#c3374d' },
+      ],
     };
   }
 
@@ -94,25 +107,23 @@ class Search extends Component {
   }
 
   featureStyle = (feature) => {
-    const { colors } = this.state;
-    const valueFC = feature.properties.FC_Valor;
-    // {
-    //   stroke: false,
-    //   fillColor:'#7b56a5',
-    //   opacity: 0.6,
-    //   fillOpacity: 0.4,
-    // },
-    if (valueFC >= 4 || valueFC > 4.5) {
-      return { // high
-        stroke: false, fillColor: colors[0], fillOpacity: 0.8,
-      };
-    } if (valueFC >= 4.5 || valueFC > 5) {
-      return { // high
-        stroke: false, fillColor: colors[1], fillOpacity: 0.8,
-      };
-    } return { // medium
-      stroke: false, fillColor: colors[0], opacity: 0.6, fillOpacity: 0.6,
+    const { colorsFC } = this.state;
+    const valueFC = Math.min((Math.floor((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
+    const colorFound = colorsFC.map(obj => Object.keys(obj)[0])[valueFC];
+    const styleReturn = {
+      stroke: false,
+      fillColor: colorFound,
+      fillOpacity: 1,
     };
+    console.log('valueFC', valueFC, 'style', styleReturn);
+    console.log('color', colorsFC.map(obj => Object.values(obj)[0])[valueFC]);
+    console.log('color1', colorsFC.map(obj => Object.values(obj)[0]));
+    colorsFC.find((obj) => {
+      console.log('color2', Object.values(obj));
+      if (Object.keys(obj) === valueFC) return Object.values(obj);
+      return false;
+    });
+    return styleReturn;
   }
 
   /** ************************ */
@@ -130,24 +141,24 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const feature = event.target;
-    feature.setStyle({
+    const point = event.target;
+    point.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
     switch (parentLayer) {
       case 'jurisdicciones':
-        event.target.bindPopup(event.target.feature.properties.IDCAR);
+        point.bindPopup(point.feature.properties.IDCAR);
         break;
       case 'corpoBoyaca':
-        event.target.bindPopup(
-          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
+        point.bindPopup(
+          `Bioma: ${point.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${point.feature.properties.FC_Valor}`,
         );
         break;
       default:
         break;
     }
-    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
+    if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
 
   resetHighlight = (event, layer) => {
@@ -251,7 +262,7 @@ class Search extends Component {
   render() {
     const {
       geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4, activeLayerName,
-      layers, activeLayers, basinData,
+      layers, activeLayers, basinData, colors, colorsFC, colorSZH,
     } = this.state;
     return (
       <div>
@@ -271,11 +282,7 @@ class Search extends Component {
                 handlers={[
                   this.firstLevelChange,
                   this.secondLevelChange,
-                  this.innerElementChange,if (feature.properties.FC_Valor) {
-      return { // low
-        stroke: false, fillColor: colors[1], opacity: 0.6, fillOpacity: 0.6,
-      };
-    }
+                  this.innerElementChange,
                 ]}
                 description={description}
                 data={selectorData}
@@ -287,6 +294,9 @@ class Search extends Component {
             <Drawer
               basinData={basinData}
               basinName={activeLayerName.NOMCAR || activeLayerName}
+              colors={colors}
+              colorsFC={colorsFC.map(obj => Object.values(obj)[0])} // Sort appropriately the colors
+              colorSZH={colorSZH}
               handlerBackButton={this.handlerBackButton}
               layerName={geojsonCapa4}
               subAreaName={geojsonCapa2}

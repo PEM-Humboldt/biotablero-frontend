@@ -102,7 +102,7 @@ class Drawer extends React.Component {
    * @param {string} graph graph type
    * @param {string} graphTitle graph title
    */
-  renderGraph = (data, labelX, labelY, graph, graphTitle) => {
+  renderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
     // While data is being retrieved from server
     let errorMessage = null;
     if (data === null) errorMessage = 'Loading data...';
@@ -127,6 +127,7 @@ class Drawer extends React.Component {
               labelX={labelX}
               labelY={labelY}
               graphTitle={graphTitle}
+              colors={colors}
             />
           )
         )}
@@ -135,11 +136,11 @@ class Drawer extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { data: { fc, biomas, distritos } } = this.state;
     const {
-      layerName, basinData, handlerBackButton, basinName, subAreaName,
+      basinName, basinData, colors, colorSZH, colorsFC,
+      classes, handlerBackButton, layerName, subAreaName,
     } = this.props;
+    const { data: { fc, biomas, distritos } } = this.state;
     return (
       <div className="informer">
         <button
@@ -169,9 +170,9 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación')}
-                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas')}
-                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas')}
+                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
+                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
+                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
                 </div>
               ),
               (
@@ -199,7 +200,8 @@ class Drawer extends React.Component {
         )}
         { layerName && basinData && (
           <div className={classes.root}>
-            {this.renderGraph(basinData, 'Subzonas Hidrográficas', 'Hectáreas', 'BarVertical', 'HAs por Subzonas Hidrográficas')}
+            {this.renderGraph(basinData, 'Subzonas Hidrográficas', 'Hectáreas',
+              'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH)}
           </div>
         )}
       </div>
@@ -208,19 +210,21 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  layerName: PropTypes.string,
   basinData: PropTypes.object,
-  handlerBackButton: PropTypes.func,
   basinName: PropTypes.string,
+  colors: PropTypes.array,
+  classes: PropTypes.object.isRequired,
+  handlerBackButton: PropTypes.func,
+  layerName: PropTypes.string,
   subAreaName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
-  layerName: '',
   basinData: null,
-  handlerBackButton: () => {},
   basinName: '',
+  colors: ['#345b6b'],
+  layerName: '',
+  handlerBackButton: () => {},
   subAreaName: '',
 };
 

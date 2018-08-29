@@ -10,11 +10,12 @@ import Descargar from '@material-ui/icons/Save';
 export default withTooltip(
   ({
     dataJSON,
-    labelX,
-    labelY,
     width,
+    colors,
     height,
     graphTitle,
+    labelX,
+    labelY,
     margin = {
       top: 0,
       left: 40,
@@ -63,19 +64,7 @@ export default withTooltip(
     });
     const zScale = scaleOrdinal({
       domain: keys,
-      range: ['#7b56a5',
-        '#6256a5',
-        '#5564a4',
-        '#4a8fb8',
-        '#51b4c1',
-        '#81bb47',
-        '#a4c051',
-        '#b1b559',
-        '#eabc47',
-        '#d5753d',
-        '#ea5948',
-        '#ea495f',
-        '#c3374d'],
+      range: colors,
     });
 
     let tooltipTimeout;
