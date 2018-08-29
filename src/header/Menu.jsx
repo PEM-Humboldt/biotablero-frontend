@@ -1,21 +1,53 @@
+/** eslint verified */
 import React from 'react';
-import LinkOption from './LinkOption';
+import { Link } from 'react-router-dom';
 
 class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openMenu: false,
+    };
+  }
 
-  render(){
+  changeMenuState = () => {
+    this.setState(prevState => ({ openMenu: !prevState.openMenu }));
+  }
+
+  render() {
+    const { openMenu } = this.state;
     return (
       <div id="menuToggle">
-        <input type="checkbox" />
-			    <span></span>
-			    <span></span>
-			    <span></span>
+        <input type="checkbox" checked={openMenu} onClick={this.changeMenuState} />
+        <span />
+        <span />
+        <span />
         <ul id="menu">
-          <LinkOption url="/" name="Inicio"/>
-          <LinkOption url="/Consultas" name="Consultas"/>
-          <LinkOption url="./filters.html" name="Indicadores"/>
-          <LinkOption url="/Compensaciones" name="Compensaciones"/>
-          <LinkOption url="./alertas.html" name="Alertas"/>
+          <Link to="/" onClick={this.changeMenuState}>
+            <li>
+              Inicio
+            </li>
+          </Link>
+          <Link to="/Consultas" onClick={this.changeMenuState}>
+            <li>
+              Consultas
+            </li>
+          </Link>
+          <a href="http://humboldt-156715.appspot.com/filters.html" onClick={this.changeMenuState}>
+            <li>
+              Indicadores
+            </li>
+          </a>
+          <Link to="/Compensaciones" onClick={this.changeMenuState}>
+            <li>
+              Compensaciones
+            </li>
+          </Link>
+          <Link to="./Alertas" onClick={this.changeMenuState}>
+            <li>
+              Alertas
+            </li>
+          </Link>
         </ul>
       </div>
     );
