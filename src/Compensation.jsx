@@ -201,6 +201,8 @@ class Compensation extends Component {
           datosSogamoso: res,
         });
       });
+    // TODO: When the promise is rejected, we need to show a "Data not available" error
+    // (in the SZH selector). But the application won't break as it currently is
   }
 
   render() {

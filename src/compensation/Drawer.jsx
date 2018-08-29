@@ -97,6 +97,8 @@ class Drawer extends React.Component {
           totals,
         });
       });
+    // TODO: When the promise is rejected, we need to show a "Data not available" error
+    // (in the table). But the application won't break as it currently is
   }
 
   /**
