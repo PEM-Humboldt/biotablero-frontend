@@ -5,10 +5,10 @@ import L from 'leaflet';
 
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
-import Footer from './Footer';
 import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
+import Layout from './Layout';
 import { description, selectorData } from './compensation/assets/selectorData';
 
 class Compensation extends Component {
@@ -211,7 +211,10 @@ class Compensation extends Component {
       colors, layers, activeLayers,
     } = this.state;
     return (
-      <div>
+      <Layout
+        moduleName="Compesaciones"
+        showFooterLogos={false}
+      >
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -249,8 +252,7 @@ class Compensation extends Component {
             }
           </div>
         </div>
-        <Footer showLogos={false} />
-      </div>
+      </Layout>
     );
   }
 }
