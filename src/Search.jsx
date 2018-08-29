@@ -28,6 +28,19 @@ class Search extends Component {
       activeLayerName: null,
       layers: null,
       activeLayers: null,
+      colors: ['#7b56a5',
+        '#6256a5',
+        '#5564a4',
+        '#4a8fb8',
+        '#51b4c1',
+        '#81bb47',
+        '#a4c051',
+        '#b1b559',
+        '#eabc47',
+        '#d5753d',
+        '#ea5948',
+        '#ea495f',
+        '#c3374d'],
     };
   }
 
@@ -62,12 +75,7 @@ class Search extends Component {
             corpoBoyaca: L.geoJSON(
               res[1],
               {
-                style: {
-                  stroke: false,
-                  fillColor: '#7b56a5',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
-                },
+                style: this.featureStyle,
                 onEachFeature: (feature, layer) => (
                   this.featureActions(feature, layer, 'corpoBoyaca')
                 ),
@@ -83,6 +91,28 @@ class Search extends Component {
           layers: {},
         })
       ));
+  }
+
+  featureStyle = (feature) => {
+    const { colors } = this.state;
+    const valueFC = feature.properties.FC_Valor;
+    // {
+    //   stroke: false,
+    //   fillColor:'#7b56a5',
+    //   opacity: 0.6,
+    //   fillOpacity: 0.4,
+    // },
+    if (valueFC >= 4 || valueFC > 4.5) {
+      return { // high
+        stroke: false, fillColor: colors[0], fillOpacity: 0.8,
+      };
+    } if (valueFC >= 4.5 || valueFC > 5) {
+      return { // high
+        stroke: false, fillColor: colors[1], fillOpacity: 0.8,
+      };
+    } return { // medium
+      stroke: false, fillColor: colors[0], opacity: 0.6, fillOpacity: 0.6,
+    };
   }
 
   /** ************************ */
@@ -239,7 +269,11 @@ class Search extends Component {
                 handlers={[
                   this.firstLevelChange,
                   this.secondLevelChange,
-                  this.innerElementChange,
+                  this.innerElementChange,if (feature.properties.FC_Valor) {
+      return { // low
+        stroke: false, fillColor: colors[1], opacity: 0.6, fillOpacity: 0.6,
+      };
+    }
                 ]}
                 description={description}
                 data={selectorData}
