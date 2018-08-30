@@ -35,8 +35,8 @@ class Search extends Component {
         '#92ba3a',
         '#70b438',
         '#5f8f2c',
-        '#59651f',
-        '#62591e',
+        '#667521',
+        '#75680f',
         '#7b6126'],
       colorSZH: ['#345b6b'],
       colorsFC: [
@@ -106,6 +106,12 @@ class Search extends Component {
       ));
   }
 
+  /**
+   * Choose the right color for the bioma inside the map, according
+   *  with colorsFC state
+   *
+   * @param {Object} feature target object
+   */
   featureStyle = (feature) => {
     const { colorsFC } = this.state;
     const valueFC = Math.min((Math.ceil((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
@@ -140,7 +146,10 @@ class Search extends Component {
     });
     switch (parentLayer) {
       case 'jurisdicciones':
-        point.bindPopup(point.feature.properties.IDCAR);
+        point.bindPopup(
+          `<b>${point.feature.properties.IDCAR}</b>
+          <br>${point.feature.properties.NOMCAR}`,
+        );
         break;
       case 'corpoBoyaca':
         point.bindPopup(
@@ -153,39 +162,41 @@ class Search extends Component {
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
 
-  resetHighlight = (event, layer) => {
+  resetHighlight = (event, parentLayer) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[layer].resetStyle(feature);
+    layers[parentLayer].resetStyle(feature);
+    if (parentLayer === 'jurisdicciones') feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
     this.highlightFeature(event);
-    if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
-  }
+    switch (parentLayer) {
+      case 'corpoBoyaca': {
+        const bioma = event.target.feature.properties.BIOMA_IAvH;
+        ElasticAPI.requestBiomaBySZH(bioma)
+          .then((res) => {
+            this.setState(prevState => ({
+              geojsonCapa4: bioma,
+              activeLayers: {
+                ...prevState.activeLayers,
 
-  /**
-   * When a click event occurs on a bioma layer in the searches module,
-   *  request info by szh on that bioma
-   *
-   * @param {Object} event event object
-   */
-  handleClickOnArea = (event) => {
-    const bioma = event.target.feature.properties.BIOMA_IAvH;
-    ElasticAPI.requestBiomaBySZH(bioma)
-      .then((res) => {
-        this.setState(prevState => ({
-          geojsonCapa4: bioma,
-          activeLayers: {
-            ...prevState.activeLayers,
-
-          },
-          basinData: res,
-        }));
-      });
-    // TODO: When the promise is rejected, we need to show a "Data not available" error
-    // (in the table). But the application won't break as it currently is
+              },
+              basinData: res,
+            }));
+          });
+        // TODO: When the promise is rejected, we need to show a "Data not available" error
+        // (in the table). But the application won't break as it currently is
+        break;
+      }
+      case 'jurisdicciones': {
+        // TODO: Activate this IDCAR in the selector
+        break;
+      }
+      default:
+        break;
+    }
   }
 
   /** ****************************** */
