@@ -81,7 +81,7 @@ const selectorData = [
         options: [
           {
             type: 'button',
-            name: 'Sogamoso',
+            name: 'sogamoso',
             label: 'Sogamoso',
           },
           {

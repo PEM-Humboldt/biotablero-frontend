@@ -205,12 +205,12 @@ class Search extends Component {
     });
   }
 
-  secondLevelChange = (name, layerName) => {
+  secondLevelChange = (name) => {
     const { layers } = this.state;
     this.setState((prevState) => {
-      const layerStatus = prevState.activeLayers[layerName];
+      const layerStatus = prevState.activeLayers[name];
       const newState = { ...prevState };
-      if (layers[layerName]) newState.activeLayers[layerName] = !layerStatus;
+      if (layers[name]) newState.activeLayers[name] = !layerStatus;
 
       newState.geojsonCapa2 = name;
       return newState;
