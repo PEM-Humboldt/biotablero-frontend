@@ -175,7 +175,7 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (nameToOff, nameToOn) => {
+  innerElementChange = (nameToOff, nameToOn, layerName) => {
     const { layers } = this.state;
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -188,7 +188,7 @@ class Compensation extends Component {
         }
       }
 
-      newState.geojsonCapa3 = nameToOn;
+      newState.geojsonCapa3 = layerName;
       return newState;
     });
   }
