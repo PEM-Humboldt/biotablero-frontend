@@ -147,14 +147,11 @@ class Search extends Component {
     switch (parentLayer) {
       case 'jurisdicciones':
         point.bindPopup(
-          `<b>${point.feature.properties.IDCAR}</b>
-          <br>${point.feature.properties.NOMCAR}`,
+          `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
         );
         break;
       case 'corpoBoyaca':
-        point.bindPopup(
-          `Bioma: ${point.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${point.feature.properties.FC_Valor}`,
-        );
+        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${point.feature.properties.FC_Valor}`);
         break;
       default:
         break;
@@ -171,33 +168,33 @@ class Search extends Component {
 
   clickFeature = (event, parentLayer) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
+    // TODO: Create function for jurisdicciones layer
     this.highlightFeature(event);
-    switch (parentLayer) {
-      case 'corpoBoyaca': {
-        const bioma = event.target.feature.properties.BIOMA_IAvH;
-        ElasticAPI.requestBiomaBySZH(bioma)
-          .then((res) => {
-            this.setState(prevState => ({
-              geojsonCapa4: bioma,
-              activeLayers: {
-                ...prevState.activeLayers,
-
-              },
-              basinData: res,
-            }));
-          });
-        // TODO: When the promise is rejected, we need to show a "Data not available" error
-        // (in the table). But the application won't break as it currently is
-        break;
-      }
-      case 'jurisdicciones': {
-        // TODO: Activate this IDCAR in the selector
-        break;
-      }
-      default:
-        break;
-    }
+    if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
   }
+
+  /**
+     * When a click event occurs on a bioma layer in the searches module,
+     *  request info by szh on that bioma
+     *
+     * @param {Object} event event object
+     */
+    handleClickOnArea = (event) => {
+      const bioma = event.target.feature.properties.BIOMA_IAvH;
+      ElasticAPI.requestBiomaBySZH(bioma)
+        .then((res) => {
+          this.setState(prevState => ({
+            geojsonCapa4: bioma,
+            activeLayers: {
+              ...prevState.activeLayers,
+
+            },
+            basinData: res,
+          }));
+        });
+      // TODO: When the promise is rejected, we need to show a "Data not available" error
+      // (in the table). But the application won't break as it currently is
+    }
 
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
