@@ -48,7 +48,7 @@ class Selector extends React.Component {
             type="button"
             key={`${type}-${label}`}
             name={name}
-            onClick={event => handlers[2](parent, event.target.name)}
+            onClick={event => handlers[2](parent, event.target.name, label)}
           >
             {label}
           </button>
