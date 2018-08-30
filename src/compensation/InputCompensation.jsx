@@ -17,13 +17,13 @@ class InputCompensation extends React.Component {
    *
    * @param {String} action action performed
    */
-  switchAction = (action, error = false) => {
+  switchAction = (action) => {
     this.setState(prevState => ({
       add: !prevState.add,
-      inputError: error,
+      inputError: false,
     }));
     if (action === '-') {
-      this.inputRef.current.value = null;
+      this.inputRef.current.value = 0;
     }
   }
 
@@ -47,14 +47,13 @@ class InputCompensation extends React.Component {
           type="button"
           onClick={() => {
             const value = Number(this.inputRef.current.value);
-            const action = add ? '+' : '-';
-            if (value <= maxValue) {
+            if (value > 0 && value <= maxValue) {
+              const action = add ? '+' : '-';
               operateArea(value, action);
               this.switchAction(action);
-            } else {
-              if (add) reportError(`No puede agregar más de ${maxValue}`);
-              else operateArea(0, '-');
-              this.switchAction(action, add);
+            } else if (value > maxValue) {
+              reportError(`No puede agregar más de ${maxValue}`);
+              this.setState({ inputError: true });
             }
           }}
         />
