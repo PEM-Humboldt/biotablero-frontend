@@ -34,7 +34,7 @@ class Selector extends React.Component {
     this.setState({
       subExpanded: expanded ? subPanel : false,
     });
-    handlers[1](subLabel);
+    handlers[1](subLabel, subPanel);
   };
 
   renderInnerElement = parent => ({
@@ -113,7 +113,7 @@ class Selector extends React.Component {
                         {subLabel}
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails className={subClasses}>
-                        {subOptions.map(this.renderInnerElement(label))}
+                        {subOptions.map(this.renderInnerElement(subId))}
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                   );
