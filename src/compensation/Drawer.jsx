@@ -108,19 +108,20 @@ class Drawer extends React.Component {
    * @param {number} maxValue maximum allowed value
    */
   operateArea = (value, operator) => {
-    switch (operator) {
-      case '+':
-        this.setState(prevState => ({
-          selectedArea: value + prevState.selectedArea,
-          tableError: '',
-        }));
-        break;
-      case '-':
-        this.setState(prevState => ({ selectedArea: prevState.selectedArea - value }));
-        break;
-      default:
-        break;
-    }
+    this.setState((prevState) => {
+      let { selectedArea } = prevState;
+      switch (operator) {
+        case '+':
+          selectedArea += value;
+          break;
+        case '-':
+          selectedArea -= value;
+          break;
+        default:
+          break;
+      }
+      return { selectedArea, tableError: '' };
+    });
   }
 
   /**
