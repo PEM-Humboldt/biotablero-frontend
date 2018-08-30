@@ -18,6 +18,7 @@ export default withTooltip((
     labelX,
     labelY,
     graphTitle,
+    colors,
     ...props}) => {
   if (props.width < 10) return null;
 
@@ -57,10 +58,6 @@ export default withTooltip((
     domain: [0, Math.max(...data.map(y))],
     nice: false,
   });
-  // const zScale = scaleOrdinal({
-  //   domain: keys,
-  //   range: ['#ea495f'],
-  // });
 
   // Junta las escalas y el accesor para construir cada punto
   const compose = (scale, accessor) => (data) => scale(accessor(data));
@@ -85,7 +82,7 @@ export default withTooltip((
                   y={yMax - barHeight}
                   height={barHeight}
                   width={xScale.bandwidth()}
-                  fill='#345b6b'
+                  fill={colors}
                   onMouseLeave={data => event => {
                     tooltipTimeout = setTimeout(() => {
                       hideTooltip();

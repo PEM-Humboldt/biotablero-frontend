@@ -18,6 +18,7 @@ const GraphLoader = (
         <div className="graphcard pb">
           <BarGraph
             dataJSON={data}
+            colors={colors}
             graphTitle={graphTitle}
             labelX={labelX}
             labelY={labelY}
@@ -33,6 +34,7 @@ const GraphLoader = (
       <div className="graphcard pb">
         <BarStackHorizontal
           dataJSON={data}
+          colors={colors}
           graphTitle={graphTitle}
           labelX={labelX}
           labelY={labelY}

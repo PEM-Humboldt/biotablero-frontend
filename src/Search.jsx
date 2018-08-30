@@ -28,6 +28,32 @@ class Search extends Component {
       activeLayerName: null,
       layers: null,
       activeLayers: null,
+      colors: ['#d49242',
+        '#e9c948',
+        '#b3b638',
+        '#acbf3b',
+        '#92ba3a',
+        '#70b438',
+        '#5f8f2c',
+        '#667521',
+        '#75680f',
+        '#7b6126'],
+      colorSZH: ['#345b6b'],
+      colorsFC: [
+        { 4: '#7b56a5' },
+        { 4.5: '#6256a5' },
+        { 5: '#5564a4' },
+        { 5.5: '#4a8fb8' },
+        { 6: '#51b4c1' },
+        { 6.5: '#81bb47' },
+        { 7: '#a4c051' },
+        { 7.5: '#b1b559' },
+        { 8: '#eabc47' },
+        { 8.5: '#d5753d' },
+        { 9: '#ea5948' },
+        { 9.5: '#ea495f' },
+        { 10: '#c3374d' },
+      ],
     };
   }
 
@@ -62,12 +88,7 @@ class Search extends Component {
             corpoBoyaca: L.geoJSON(
               res[1],
               {
-                style: {
-                  stroke: false,
-                  fillColor: '#7b56a5',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
-                },
+                style: this.featureStyle,
                 onEachFeature: (feature, layer) => (
                   this.featureActions(feature, layer, 'corpoBoyaca')
                 ),
@@ -85,6 +106,24 @@ class Search extends Component {
       ));
   }
 
+  /**
+   * Choose the right color for the bioma inside the map, according
+   *  with colorsFC state
+   *
+   * @param {Object} feature target object
+   */
+  featureStyle = (feature) => {
+    const { colorsFC } = this.state;
+    const valueFC = Math.min((Math.ceil((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
+    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
+    const styleReturn = {
+      stroke: false,
+      fillColor: colorFound,
+      fillOpacity: 1,
+    };
+    return styleReturn;
+  }
+
   /** ************************ */
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
@@ -100,60 +139,62 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const feature = event.target;
-    feature.setStyle({
+    const point = event.target;
+    point.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
     switch (parentLayer) {
       case 'jurisdicciones':
-        event.target.bindPopup(event.target.feature.properties.IDCAR);
+        point.bindPopup(
+          `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
+        );
         break;
       case 'corpoBoyaca':
-        event.target.bindPopup(
-          `Bioma: ${event.target.feature.properties.BIOMA_IAvH}<br>Factor de compensación: ${event.target.feature.properties.FC_Valor}`,
-        );
+        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${point.feature.properties.FC_Valor}`);
         break;
       default:
         break;
     }
-    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
+    if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
 
-  resetHighlight = (event, layer) => {
+  resetHighlight = (event, parentLayer) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[layer].resetStyle(feature);
+    layers[parentLayer].resetStyle(feature);
+    if (parentLayer === 'jurisdicciones') feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
+    // TODO: Create function for jurisdicciones layer
     this.highlightFeature(event);
     if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
   }
 
   /**
-   * When a click event occurs on a bioma layer in the searches module,
-   *  request info by szh on that bioma
-   *
-   * @param {Object} event event object
-   */
-  handleClickOnArea = (event) => {
-    const bioma = event.target.feature.properties.BIOMA_IAvH;
-    ElasticAPI.requestBiomaBySZH(bioma)
-      .then((res) => {
-        this.setState(prevState => ({
-          geojsonCapa4: bioma,
-          activeLayers: {
-            ...prevState.activeLayers,
+     * When a click event occurs on a bioma layer in the searches module,
+     *  request info by szh on that bioma
+     *
+     * @param {Object} event event object
+     */
+    handleClickOnArea = (event) => {
+      const bioma = event.target.feature.properties.BIOMA_IAvH;
+      ElasticAPI.requestBiomaBySZH(bioma)
+        .then((res) => {
+          this.setState(prevState => ({
+            geojsonCapa4: bioma,
+            activeLayers: {
+              ...prevState.activeLayers,
 
-          },
-          basinData: res,
-        }));
-      });
-    // TODO: When the promise is rejected, we need to show a "Data not available" error
-    // (in the table). But the application won't break as it currently is
-  }
+            },
+            basinData: res,
+          }));
+        });
+      // TODO: When the promise is rejected, we need to show a "Data not available" error
+      // (in the table). But the application won't break as it currently is
+    }
 
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
@@ -221,7 +262,7 @@ class Search extends Component {
   render() {
     const {
       geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4, activeLayerName,
-      layers, activeLayers, basinData,
+      layers, activeLayers, basinData, colors, colorsFC, colorSZH,
     } = this.state;
     return (
       <Layout
@@ -256,6 +297,9 @@ class Search extends Component {
             <Drawer
               basinData={basinData}
               basinName={activeLayerName.NOMCAR || activeLayerName}
+              colors={colors}
+              colorsFC={colorsFC.map(obj => Object.values(obj)[0])} // Sort appropriately the colors
+              colorSZH={colorSZH}
               handlerBackButton={this.handlerBackButton}
               layerName={geojsonCapa4}
               subAreaName={geojsonCapa2}
