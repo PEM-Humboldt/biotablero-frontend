@@ -13,27 +13,28 @@ class Selector extends React.Component {
     super(props);
     const data = props.data || [];
     const expandedId = props.expandedId || 0;
-    const expandedByDefault = data[expandedId] || {};
+    const expandedByDefault = data[expandedId] || { id: null, label: null };
     this.state = {
       expanded: expandedByDefault.id,
       subExpanded: null,
     };
+    props.handlers[0](expandedByDefault.label);
   }
 
-  firstLevelChange = panel => (event, expanded) => {
+  firstLevelChange = (panel, label) => (event, expanded) => {
     const { handlers } = this.props;
     this.setState({
       expanded: expanded ? panel : false,
     });
-    handlers[0](panel);
+    handlers[0](label);
   };
 
-  secondLevelChange = subPanel => (event, expanded) => {
+  secondLevelChange = (subPanel, subLabel) => (event, expanded) => {
     const { handlers } = this.props;
     this.setState({
       subExpanded: expanded ? subPanel : false,
     });
-    handlers[1](subPanel);
+    handlers[1](subLabel, subPanel);
   };
 
   renderInnerElement = parent => ({
@@ -86,7 +87,7 @@ class Selector extends React.Component {
               id={id}
               expanded={expanded === id}
               disabled={disabled}
-              onChange={this.firstLevelChange(id)}
+              onChange={this.firstLevelChange(id, label)}
               key={id}
             >
               <ExpansionPanelSummary expandIcon={expandIcon}>
@@ -105,7 +106,7 @@ class Selector extends React.Component {
                       className="m0"
                       id={subId}
                       expanded={subExpanded === subId}
-                      onChange={this.secondLevelChange(subId)}
+                      onChange={this.secondLevelChange(subId, subLabel)}
                       key={subId}
                     >
                       <ExpansionPanelSummary expandIcon={expandIcon}>
