@@ -242,24 +242,9 @@ class Search extends Component {
     });
   }
 
-  /**
-   * Construct an object with just one value corresponding to a desired attribute
-   *
-   * @param {string} key attribute to choose, see attributes of layers inner objects
-   */
-  infoFromLayers = (key) => {
-    const responseObj = {};
-    const { layers } = this.state;
-    Object.keys(layers).forEach((layerKey) => {
-      responseObj[layerKey] = layers[layerKey][key];
-    });
-
-    return responseObj;
-  }
-
   render() {
     const {
-      subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH,
+      subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH, layers,
     } = this.state;
     return (
       <Layout
@@ -268,8 +253,7 @@ class Search extends Component {
       >
         <div className="appSearcher">
           <MapViewer
-            layers={this.infoFromLayers('layer')}
-            activeLayers={this.infoFromLayers('active')}
+            layers={layers}
           />
           <div className="contentView">
             { !activeLayerName && (
