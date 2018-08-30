@@ -217,6 +217,8 @@ Drawer.propTypes = {
   handlerBackButton: PropTypes.func,
   layerName: PropTypes.string,
   subAreaName: PropTypes.string,
+  colorSZH: PropTypes.array,
+  colorsFC: PropTypes.array,
 };
 
 Drawer.defaultProps = {
@@ -226,6 +228,8 @@ Drawer.defaultProps = {
   layerName: '',
   handlerBackButton: () => {},
   subAreaName: '',
+  colorSZH: [],
+  colorsFC: [],
 };
 
 export default withStyles(styles)(Drawer);
