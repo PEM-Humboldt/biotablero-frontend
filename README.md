@@ -70,6 +70,7 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 * src/header/Menu.jsx
 * src/header/Title.jsx
 * src/Home.jsx
+* src/index.js
 * src/Layout.jsx
 * src/MapViewer.jsx
 * src/Search.jsx
