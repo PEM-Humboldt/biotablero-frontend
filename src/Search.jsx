@@ -119,7 +119,7 @@ class Search extends Component {
     const styleReturn = {
       stroke: false,
       fillColor: colorFound,
-      fillOpacity: 1,
+      fillOpacity: 0.7,
     };
     return styleReturn;
   }
