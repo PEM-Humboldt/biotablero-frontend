@@ -486,6 +486,39 @@ tr.row2table:nth-child(odd){
   background-color: #fff;
 }
 
+.subbioma {
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border: 2px solid #345b6b;
+  margin-top: 10px;
+}
+
+.subbioma::after {
+  content: " ";
+  position: absolute;
+  display: block;
+  background-color: #345b6b;
+  height: 4px;
+  margin-top: -2px;
+  top: 50%;
+  left: 5px;
+  right: 5px;
+  z-index: 9;
+}
+
+.subbioma:hover {
+  background-color: #345b6b;
+}
+
+.subbioma:hover::after {
+  background-color: #fff;
+}
+
 .smbtn {
   width: 20px;
   height: 20px;
@@ -506,6 +539,47 @@ tr.row2table:nth-child(odd){
   top: 3px;
   bottom: 3px;
 
+}
+
+.tableError {
+  position: absolute;
+  background-color: #c2374d;
+  color: #fff;
+  padding: 3px 10px;
+  float: left;
+  z-index: 200;
+  margin-top:82px;
+  margin-left: -10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.inputError {
+  color: #c2374d;
+  font-weight: 600;
+}
+
+.areaCompleted {
+  color: #62591e;
+}
+
+.errorData {
+  border: 1px solid #c2374d;
+  padding: 10px;
+  font-size: 16px;
+  display: block;
+  text-align: right;
+  color: #c2374d;
+  font-weight: 400;
+  background-color: #fff;
+  margin-top: 5px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.errorData:before {
+  content: 'X';
+  float: left;
+  font-weight: 700;
 }
 
 .graphcard td input {
