@@ -154,8 +154,7 @@ export default withTooltip(
               </strong>
             </div>
             <div>
-              {Number(tooltipData.data[tooltipData.key]).toFixed(2)}
-                Ha
+              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
             </div>
             <div>
               <small>

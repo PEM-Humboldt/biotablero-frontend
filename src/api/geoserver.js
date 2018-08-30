@@ -40,7 +40,7 @@ class GeoServerAPI {
    */
   static requestWFSBiotablero(subType) {
     return GeoServerAPI.makeRequest(
-      `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&maxFeatures=50&outputFormat=application%2Fjson`,
+      `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
     );
   }
 

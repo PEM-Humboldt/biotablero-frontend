@@ -108,21 +108,13 @@ class Search extends Component {
 
   featureStyle = (feature) => {
     const { colorsFC } = this.state;
-    const valueFC = Math.min((Math.floor((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
-    const colorFound = colorsFC.map(obj => Object.keys(obj)[0])[valueFC];
+    const valueFC = Math.min((Math.ceil((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
+    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
     const styleReturn = {
       stroke: false,
       fillColor: colorFound,
       fillOpacity: 1,
     };
-    console.log('valueFC', valueFC, 'style', styleReturn);
-    console.log('color', colorsFC.map(obj => Object.values(obj)[0])[valueFC]);
-    console.log('color1', colorsFC.map(obj => Object.values(obj)[0]));
-    colorsFC.find((obj) => {
-      console.log('color2', Object.values(obj));
-      if (Object.keys(obj) === valueFC) return Object.values(obj);
-      return false;
-    });
     return styleReturn;
   }
 
