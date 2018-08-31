@@ -162,7 +162,7 @@ class Drawer extends React.Component {
         key: obj.GROUPS,
         values: [
           obj.ESTRATEGIA,
-          obj.HA_ES_EJ,
+          Number(obj.HA_ES_EJ).toFixed(2),
           <InputCompensation
             name={obj.GROUPS}
             maxValue={Number(obj.HA_ES_EJ)}
