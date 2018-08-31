@@ -7,36 +7,38 @@ import { withTooltip, Tooltip } from '@vx/tooltip';
 import Descargar from '@material-ui/icons/Save';
 
 // Se exporta el SGV construido
-export default withTooltip((
-  {
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
-    tooltipData,
-    hideTooltip,
-    showTooltip,
-    labelX,
-    labelY,
-    graphTitle,
-    colors,
-    ...props}) => {
-  if (props.width < 10) return null;
+export default withTooltip(({
+  tooltipOpen,
+  tooltipLeft,
+  tooltipTop,
+  tooltipData,
+  hideTooltip,
+  showTooltip,
+  labelX,
+  labelY,
+  graphTitle,
+  colors,
+  ...props
+}) => {
+  const { width, dataJSON, area } = props;
+  if (width < 10) return null;
 
-  const prepareData = (data, setName) => {
-     const transformedData = [];
-       data.aggregations.areas.buckets.forEach(item => {
-         transformedData.push({name:`${item.key}`, area_V: `${item.area.value}`});
-       })
-       return transformedData;
-  }
+  const prepareData = (data) => {
+    const transformedData = [];
+    data.aggregations.areas.buckets.forEach((item) => {
+      transformedData.push({ name: `${item.key}`, area_V: `${item.area.value}` });
+    });
+    return transformedData;
+  };
 
   // Se preparan los datos para el gráfico
-  const data = prepareData(props.dataJSON, props.area);
+  const data = prepareData(dataJSON, area);
 
   // Define las dimensiones y márgenes del gráfico
-  const width = props.width;
   const height = 300;
-  const margin = { top: 40, bottom: 60, left: 40, right: 50 };
+  const margin = {
+    top: 40, bottom: 60, left: 40, right: 50,
+  };
 
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
@@ -60,7 +62,7 @@ export default withTooltip((
   });
 
   // Junta las escalas y el accesor para construir cada punto
-  const compose = (scale, accessor) => (data) => scale(accessor(data));
+  const compose = (scale, accessor) => value => scale(accessor(value));
   const xPoint = compose(xScale, x);
   const yPoint = compose(yScale, y);
 
@@ -69,26 +71,31 @@ export default withTooltip((
   return (
     <div className="graphcontainer">
       <div className="graphcard">
-        <h2><Descargar className="icondown" />{graphTitle}</h2>
+        <h2>
+          <Descargar className="icondown" />
+          {graphTitle}
+        </h2>
         <svg width={width} height={height}>
           {data.map((d, i) => {
             const barHeight = yMax - yPoint(d);
             return (
-              <Group top={margin.top}
-                left={margin.left} key={`bar-${i}`}
-                >
+              <Group
+                top={margin.top}
+                left={margin.left}
+                key={`bar-${i}`}
+              >
                 <Bar
                   x={xPoint(d)}
                   y={yMax - barHeight}
                   height={barHeight}
                   width={xScale.bandwidth()}
                   fill={colors}
-                  onMouseLeave={data => event => {
+                  onMouseLeave={() => () => {
                     tooltipTimeout = setTimeout(() => {
                       hideTooltip();
                     }, 300);
                   }}
-                  onMouseMove={data => event => {
+                  onMouseMove={() => () => {
                     if (tooltipTimeout) clearTimeout(tooltipTimeout);
                     showTooltip({
                       tooltipData: d,
@@ -98,8 +105,8 @@ export default withTooltip((
                   }}
                 />
                 <AxisLeft
-                  hideAxisLine={true}
-                  hideTicks={true}
+                  hideAxisLine
+                  hideTicks
                   scale={yScale}
                   label={labelY}
                   labelOffset={5}
@@ -108,7 +115,7 @@ export default withTooltip((
                     fontSize: 13,
                     textAnchor: 'middle',
                   }}
-                  tickLabelProps={(value, index) => ({
+                  tickLabelProps={() => ({
                     fill: 'none',
                   })}
                 />
@@ -123,7 +130,7 @@ export default withTooltip((
                   }}
                   stroke="#ea495f"
                   tickStroke="#ea495f"
-                  tickLabelProps={(area_V, index) => ({
+                  tickLabelProps={() => ({
                     fill: 'none',
                   })}
                 />
@@ -131,8 +138,7 @@ export default withTooltip((
             );
           })}
         </svg>
-
-        {tooltipOpen &&
+        {tooltipOpen && (
           <Tooltip
             left={tooltipLeft}
             top={tooltipTop}
@@ -143,14 +149,18 @@ export default withTooltip((
               padding: 12,
               lineHeight: '1.5',
             }}
-            >
+          >
             <div>
-              <strong>{tooltipData.name}</strong><br></br>
-              <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div>
+              <strong>
+                {tooltipData.name}
+              </strong>
+              <br />
+              <div>
+                {`${Number(tooltipData.area_V).toFixed(2)} Ha`}
+              </div>
             </div>
-          </Tooltip>}
-            {/* <div>{Number(tooltipData.area_V).toFixed(2)} Ha</div> */}
-
+          </Tooltip>
+        )}
       </div>
     </div>
   );

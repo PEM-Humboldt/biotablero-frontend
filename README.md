@@ -50,36 +50,6 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> <nombre imagen>
 
-## 3. Eslint verified files
-
-* src/api/elastic.js
-* src/api/geoserver.js
-* src/App.jsx
-* src/AutocompleteOption.jsx
-* src/Autocomplete.jsx
-* src/charts/BarStackHorizontal.jsx
-* src/charts/DotsGraph.jsx
-* src/Compensation.jsx
-* src/compensation/assets/selectorData.jsx
-* src/compensation/Drawer.jsx
-* src/compensation/InputCompensation.jsx
-* src/compensation/PopMenu.jsx
-* src/Footer.jsx
-* src/GraphLoader.jsx
-* src/Header.jsx
-* src/header/Menu.jsx
-* src/header/Title.jsx
-* src/Home.jsx
-* src/index.js
-* src/Layout.jsx
-* src/MapViewer.jsx
-* src/Search.jsx
-* src/search/assets/selectorData.jsx
-* src/search/Drawer.jsx
-* src/Selector.jsx
-* src/TabContainer.jsx
-* src/TableStylized.jsx
-
 ***
 
 *Ingeniería de Datos y Desarrollo
