@@ -1,8 +1,9 @@
+/** eslint verified */
 import React from 'react';
 import '../assets/main.css';
 
 class ShortInfo extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       rotate_button: true,
@@ -11,20 +12,36 @@ class ShortInfo extends React.Component {
   }
 
   handleClick = () => {
-    this.setState({ rotate_button: !this.state.rotate_button,
-      hide_text: !this.state.hide_text});
+    const { rotate_button: rotateButton, hide_text: hideText } = this.state;
+    this.setState({
+      rotate_button: !rotateButton,
+      hide_text: !hideText,
+    });
   }
 
   render() {
+    const { hide_text: hideText } = this.state;
     return (
       <div>
-        <div className={'hidden-' + this.state.hide_text}>
-            <p>Que es <b>BioTablero</b> vinculada tanto a Institutos de Investigación como a Instituciones Académicas.
-            Una batería mínima de Indicadores de Biodiversidad</p>
+        <div
+          className={`hidden-${hideText}`}
+        >
+          <p>
+            {'Que es '}
+            <b>
+              BioTablero
+            </b>
+            {' vinculada tanto a Institutos de Investigación como a Instituciones Académicas. Una batería mínima de Indicadores de Biodiversidad'}
+          </p>
         </div>
-        <button id="showHome" className={'showHome rotate-' + this.state.hide_text}
-          data-tooltip title="¿Qué es BioTablero?"
-          onClick={this.handleClick}></button>
+        <button
+          type="button"
+          id="showHome"
+          className={`showHome rotate-${hideText}`}
+          data-tooltip
+          title="¿Qué es BioTablero?"
+          onClick={this.handleClick}
+        />
       </div>
     );
   }

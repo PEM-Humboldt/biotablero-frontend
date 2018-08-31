@@ -1,3 +1,4 @@
+/** eslint verified */
 import React from 'react';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 

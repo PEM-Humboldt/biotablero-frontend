@@ -1,29 +1,62 @@
+/** eslint verified */
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-class MenuButton extends React.Component{
-  //adevia
-  render(){
-    if(this.props.externalLink) {
-      return (
-        <a href={this.props.externalLink} target="_blank"> {/* Props obligatorio */}
-        <button className={this.props.styles} id={this.props.idBtn} onMouseOver = {this.props.myfunction}>
-            {this.props.value} <b>{this.props.valueB}</b>
-          </button>
-        </a>
-      )
-    }
-    else {
-      return (
-        {/* Parte 3 de 3 del enrutador: Llamar las rutas a enrutar*/},
-        <Link to={this.props.localLink}> {/* Props obligatorio */}
-        <button className={this.props.styles} id={this.props.idBtn} onMouseOver = {this.props.myfunction}>
-            {this.props.value} <b>{this.props.valueB}</b>
-          </button>
-        </Link>
-      )
-    }
+const MenuButton = ({
+  buttonStyles, idBtn, focusCallback, firstLineContent, secondLineContent, externalLink, localLink,
+}) => {
+  const content = (
+    <button
+      type="button"
+      className={buttonStyles}
+      id={idBtn}
+      onMouseOver={focusCallback}
+      onFocus={focusCallback}
+    >
+      {`${firstLineContent} `}
+      <b>
+        {secondLineContent}
+      </b>
+    </button>
+  );
+
+  if (externalLink) {
+    return (
+      <a
+        href={externalLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {content}
+      </a>
+    );
   }
-}
+  return (
+    <Link to={localLink}>
+      {content}
+    </Link>
+  );
+};
+
+MenuButton.propTypes = {
+  buttonStyles: PropTypes.string,
+  idBtn: PropTypes.string,
+  focusCallback: PropTypes.func,
+  firstLineContent: PropTypes.string,
+  secondLineContent: PropTypes.string,
+  externalLink: PropTypes.string,
+  localLink: PropTypes.string,
+};
+
+MenuButton.defaultProps = {
+  buttonStyles: '',
+  idBtn: '',
+  focusCallback: null,
+  firstLineContent: '',
+  secondLineContent: '',
+  externalLink: '',
+  localLink: '',
+};
 
 export default MenuButton;
