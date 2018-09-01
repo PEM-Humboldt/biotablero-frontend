@@ -20,13 +20,11 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      geojsonCapa1: null,
-      geojsonCapa2: null,
-      geojsonCapa3: null,
-      geojsonCapa4: null,
+      layers: {},
+      subAreaName: null,
+      layerName: null,
       basinData: null,
       activeLayerName: null,
-      layers: null,
       activeLayers: null,
       colors: ['#d49242',
         '#e9c948',
@@ -62,15 +60,14 @@ class Search extends Component {
       GeoServerAPI.requestJurisdicciones(),
       GeoServerAPI.requestCorpoboyaca(),
     ]).then((res) => {
-      this.setState(prevState => (
-        {
-          activeLayers: {
-            jurisdicciones: false,
-            corpoBoyaca: false,
-          },
-          layers: {
-            ...prevState.layers,
-            jurisdicciones: L.geoJSON(
+      this.setState(prevState => ({
+        layers: {
+          ...prevState.layers,
+          // the key is the id that communicates with other components and should match selectorData
+          jurisdicciones: {
+            displayName: 'Jurisdicciones',
+            active: false,
+            layer: L.geoJSON(
               res[0],
               {
                 style: {
@@ -85,7 +82,12 @@ class Search extends Component {
                 ),
               },
             ),
-            corpoBoyaca: L.geoJSON(
+          },
+          // the key is the id that communicates with other components and should match selectorData
+          corpoBoyaca: {
+            displayName: 'CorpoBoyaca',
+            active: false,
+            layer: L.geoJSON(
               res[1],
               {
                 style: this.featureStyle,
@@ -95,15 +97,9 @@ class Search extends Component {
               },
             ),
           },
-        }
-      ));
-    })
-      .catch(() => (
-        this.setState({
-          activeLayers: {},
-          layers: {},
-        })
-      ));
+        },
+      }));
+    }); // We don't need a catch, because on error we must literally do nothing
   }
 
   /**
@@ -162,7 +158,7 @@ class Search extends Component {
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[parentLayer].resetStyle(feature);
+    layers[parentLayer].layer.resetStyle(feature);
     if (parentLayer === 'jurisdicciones') feature.closePopup();
   }
 
@@ -183,14 +179,10 @@ class Search extends Component {
       const bioma = event.target.feature.properties.BIOMA_IAvH;
       ElasticAPI.requestBiomaBySZH(bioma)
         .then((res) => {
-          this.setState(prevState => ({
-            geojsonCapa4: bioma,
-            activeLayers: {
-              ...prevState.activeLayers,
-
-            },
+          this.setState({
+            layerName: bioma,
             basinData: res,
-          }));
+          });
         });
       // TODO: When the promise is rejected, we need to show a "Data not available" error
       // (in the table). But the application won't break as it currently is
@@ -199,20 +191,15 @@ class Search extends Component {
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
-  firstLevelChange = (nombre) => {
-    this.setState({
-      geojsonCapa1: nombre,
-    });
-  }
-
-  secondLevelChange = (name, layerName) => {
+  secondLevelChange = (name) => {
     const { layers } = this.state;
     this.setState((prevState) => {
-      const layerStatus = prevState.activeLayers[layerName];
       const newState = { ...prevState };
-      if (layers[layerName]) newState.activeLayers[layerName] = !layerStatus;
+      if (layers[name]) {
+        newState.layers[name].active = !prevState.layers[name].active;
+        newState.subAreaName = newState.layers[name].displayName;
+      }
 
-      newState.geojsonCapa2 = name;
       return newState;
     });
   }
@@ -221,15 +208,12 @@ class Search extends Component {
     const { layers } = this.state;
     this.setState((prevState) => {
       const newState = { ...prevState };
-      if (layers) {
-        if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
-        if (layers[nameToOn]) {
-          newState.activeLayers[nameToOn] = true;
-          newState.activeLayerName = nameToOn;
-        }
+      if (layers[nameToOff]) newState.layers[nameToOff].active = false;
+      if (layers[nameToOn]) {
+        newState.layers[nameToOn].active = true;
+        newState.activeLayerName = newState.layers[nameToOn].displayName;
       }
 
-      newState.geojsonCapa3 = nameToOn;
       return newState;
     });
   }
@@ -243,16 +227,15 @@ class Search extends Component {
     this.setState((prevState) => {
       let newState = { ...prevState };
       const { layers } = prevState;
-      if (Object.keys(layers).length !== 0) {
-        newState.activeLayers.jurisdicciones = false;
-        newState.activeLayers.corpoBoyaca = false;
-      }
+      Object.keys(layers).forEach((layerKey) => {
+        newState.layers[layerKey].active = false;
+      });
+
       newState = {
         ...newState,
         basinData: null,
-        geojsonCapa2: null,
-        geojsonCapa3: null,
-        geojsonCapa4: null,
+        subAreaName: null,
+        layerName: null,
         activeLayerName: null,
       };
       return newState;
@@ -261,8 +244,7 @@ class Search extends Component {
 
   render() {
     const {
-      geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4, activeLayerName,
-      layers, activeLayers, basinData, colors, colorsFC, colorSZH,
+      subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH, layers,
     } = this.state;
     return (
       <Layout
@@ -272,18 +254,12 @@ class Search extends Component {
         <div className="appSearcher">
           <MapViewer
             layers={layers}
-            activeLayers={activeLayers}
-            capasMontadas={[
-              geojsonCapa1,
-              geojsonCapa2,
-              geojsonCapa3,
-              geojsonCapa4]}
           />
           <div className="contentView">
             { !activeLayerName && (
               <Selector
                 handlers={[
-                  this.firstLevelChange,
+                  () => {},
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
@@ -301,8 +277,8 @@ class Search extends Component {
               colorsFC={colorsFC.map(obj => Object.values(obj)[0])} // Sort appropriately the colors
               colorSZH={colorSZH}
               handlerBackButton={this.handlerBackButton}
-              layerName={geojsonCapa4}
-              subAreaName={geojsonCapa2}
+              layerName={layerName}
+              subAreaName={subAreaName}
             />
             )}
           </div>
