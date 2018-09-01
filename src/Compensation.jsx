@@ -15,12 +15,11 @@ class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      geojsonCapa1: null,
-      geojsonCapa2: null,
-      geojsonCapa3: null,
-      geojsonCapa4: null,
-      layers: null,
-      activeLayers: null,
+      company: null,
+      projectType: null,
+      projectName: null,
+      layerName: null,
+      layers: {},
       colors: ['#eabc47', '#51b4c1', '#ea495f', '#2a363b'],
     };
   }
@@ -30,15 +29,14 @@ class Compensation extends Component {
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestBiomasSogamoso(),
     ]).then((res) => {
-      this.setState(prevState => (
-        {
-          activeLayers: {
-            sogamoso: false,
-            biomasSogamoso: false,
-          },
-          layers: {
-            ...prevState.layers,
-            sogamoso: L.geoJSON(
+      this.setState(prevState => ({
+        layers: {
+          ...prevState.layers,
+          // the key is the id that communicates with other components and should match selectorData
+          sogamoso: {
+            displayName: 'Sogamoso',
+            active: false,
+            layer: L.geoJSON(
               res[0],
               {
                 style: {
@@ -53,7 +51,12 @@ class Compensation extends Component {
                 ),
               },
             ),
-            biomasSogamoso: L.geoJSON(
+          },
+          // the key is the id that communicates with other components and should match selectorData
+          biomasSogamoso: {
+            displayName: 'BiomasSogamoso',
+            active: false,
+            layer: L.geoJSON(
               res[1],
               {
                 style: this.featureStyle,
@@ -63,15 +66,9 @@ class Compensation extends Component {
               },
             ),
           },
-        }
-      ));
-    })
-      .catch(() => (
-        this.setState({
-          activeLayers: {},
-          layers: {},
-        })
-      ));
+        },
+      }));
+    });
   }
 
   featureStyle = (feature) => {
@@ -113,16 +110,12 @@ class Compensation extends Component {
     switch (parentLayer) {
       case 'sogamoso':
         area.bindPopup(
-          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO}
-           <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
+          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO} <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
         );
         break;
       case 'biomasSogamoso':
         area.bindPopup(
-          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}
-          <br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}
-          <br><b>Factor de compensación:</b> ${area.feature.properties.FC_Valor}
-          <br><b>% de afectación:</b> ${area.feature.properties.AFFECTED_P}`,
+          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}<br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${area.feature.properties.FC_Valor}<br><b>% de afectación:</b> ${area.feature.properties.AFFECTED_P}`,
         );
         break;
       default:
@@ -134,7 +127,7 @@ class Compensation extends Component {
   resetHighlight = (event, layer) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[layer].resetStyle(feature);
+    layers[layer].layer.resetStyle(feature);
   }
 
   clickFeature = (event) => {
@@ -147,16 +140,16 @@ class Compensation extends Component {
   /** ***************************************** */
 
   handlerBackButton = () => {
-    this.setState(prevState => (
-      {
-        activeLayers: {
-          ...prevState.activeLayers,
-          sogamoso: false,
-          biomasSogamoso: false,
-        },
-        geojsonCapa3: null,
-      }
-    ));
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      const { layers } = prevState;
+      Object.keys(layers).forEach((layerKey) => {
+        newState.layers[layerKey].active = false;
+      });
+
+      newState.projectName = null;
+      return newState;
+    });
   }
 
   /** ****************************** */
@@ -165,30 +158,26 @@ class Compensation extends Component {
 
   firstLevelChange = (name) => {
     this.setState({
-      geojsonCapa1: name,
+      company: name,
     });
   }
 
   secondLevelChange = (name) => {
     this.setState({
-      geojsonCapa2: name,
+      projectType: name,
     });
   }
 
-  innerElementChange = (nameToOff, nameToOn, layerName) => {
+  innerElementChange = (nameToOff, nameToOn) => {
     const { layers } = this.state;
     this.setState((prevState) => {
       const newState = { ...prevState };
-      if (layers) {
-        if (layers[nameToOff]) newState.activeLayers[nameToOff] = false;
-        if (layers[nameToOn]) {
-          newState.activeLayers[nameToOn] = true;
-          // Don't know if this can be improved (two layers behaving the same)
-          if (nameToOn === 'sogamoso') newState.activeLayers.biomasSogamoso = true;
-        }
+      if (layers[nameToOff]) newState.layers[nameToOff].active = false;
+      if (layers[nameToOn]) {
+        newState.layers[nameToOn].active = true;
+        if (nameToOn === 'sogamoso') newState.layers.biomasSogamoso.active = true;
+        newState.projectName = newState.layers[nameToOn].displayName;
       }
-
-      newState.geojsonCapa3 = layerName;
       return newState;
     });
   }
@@ -197,7 +186,7 @@ class Compensation extends Component {
     ElasticAPI.requestDondeCompensarSogamoso(campo)
       .then((res) => {
         this.setState({
-          geojsonCapa4: campo,
+          layerName: campo,
           datosSogamoso: res,
         });
       });
@@ -207,8 +196,8 @@ class Compensation extends Component {
 
   render() {
     const {
-      datosSogamoso, geojsonCapa1, geojsonCapa2, geojsonCapa3, geojsonCapa4,
-      colors, layers, activeLayers,
+      datosSogamoso, company, projectType, projectName, layerName,
+      colors, layers,
     } = this.state;
     return (
       <Layout
@@ -218,11 +207,10 @@ class Compensation extends Component {
         <div className="appSearcher">
           <MapViewer
             layers={layers}
-            activeLayers={activeLayers}
           />
           <div className="contentView">
             {
-              !geojsonCapa3 && (
+              !projectName && (
               <Selector
                 handlers={[
                   this.firstLevelChange,
@@ -237,15 +225,15 @@ class Compensation extends Component {
               )
             }
             {
-              geojsonCapa3 && (
+              projectName && (
               <Drawer
-                areaName={`GEB ${geojsonCapa1}`}
+                areaName={`GEB ${company}`}
                 back={this.handlerBackButton}
-                basinName={geojsonCapa3.NOMCAR || geojsonCapa3}
+                basinName={projectName}
                 colors={colors}
-                layerName={geojsonCapa4}
+                layerName={layerName}
                 projectData={datosSogamoso}
-                subAreaName={geojsonCapa2}
+                subAreaName={projectType}
                 updateActiveBioma={this.updateActiveBioma}
               />
               )

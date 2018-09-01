@@ -12,6 +12,23 @@ config.params = {
 };
 
 class MapViewer extends React.Component {
+  /**
+   * Construct an object with just one value corresponding to a desired attribute
+   *
+   * @param {object} layers layers from props,
+   *  this param is to make the function callable from getDerivedStateFromProps
+   * @param {string} key attribute to choose,
+   *  see attributes of layers inner objects in Search and Compensation.
+   */
+  static infoFromLayers = (layers, key) => {
+    const responseObj = {};
+    Object.keys(layers).forEach((layerKey) => {
+      responseObj[layerKey] = layers[layerKey][key];
+    });
+
+    return responseObj;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -22,7 +39,8 @@ class MapViewer extends React.Component {
   }
 
   componentDidUpdate() {
-    const { activeLayers } = this.props;
+    let { layers: activeLayers } = this.props;
+    activeLayers = MapViewer.infoFromLayers(activeLayers, 'active');
     const { layers } = this.state;
     if (activeLayers) {
       Object.keys(activeLayers).forEach((layerName) => {
@@ -37,7 +55,7 @@ class MapViewer extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { layers } = nextProps;
+    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
     const { layers: oldLayers } = prevState;
     if (oldLayers === null) {
       return { layers };
@@ -100,12 +118,11 @@ class MapViewer extends React.Component {
 }
 
 MapViewer.propTypes = {
-  // {layerName: layerValue} syntax for each layer to be loaded
-  activeLayers: PropTypes.object,
+  layers: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
-  activeLayers: null,
+  layers: {},
 };
 
 export default MapViewer;

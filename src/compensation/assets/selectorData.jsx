@@ -75,7 +75,7 @@ const selectorData = [
         expandIcon: (<ExpandMoreIcon />),
       },
       {
-        id: 'enLicenciamiento',
+        id: 'En Licenciamiento',
         label: 'En licenciamiento',
         expandIcon: (<ExpandMoreIcon />),
         options: [
