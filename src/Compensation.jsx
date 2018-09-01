@@ -182,11 +182,11 @@ class Compensation extends Component {
     });
   }
 
-  updateActiveBioma = (campo) => {
-    ElasticAPI.requestDondeCompensarSogamoso(campo)
+  updateActiveBioma = (name) => {
+    ElasticAPI.requestDondeCompensarSogamoso(name)
       .then((res) => {
         this.setState({
-          layerName: campo,
+          layerName: name,
           datosSogamoso: res,
         });
       });
