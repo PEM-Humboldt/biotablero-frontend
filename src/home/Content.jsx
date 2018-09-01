@@ -1,52 +1,21 @@
 /** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import MenuButton from './MenuButton';
 
-const $ = require('jquery');
-
-const geobtnFn = () => {
-  $('.invisible').css('display', 'none');
-  $('.finder').removeClass('activeicon');
-  $('#geobtn').addClass('activeicon');
-  $('.geocont').css('display', 'block');
-};
-
-const indbtnFn = () => {
-  $('.invisible').css('display', 'none');
-  $('.finder').removeClass('activeicon');
-  $('#indbtn').addClass('activeicon');
-  $('.indicont').css('display', 'block');
-};
-
-const combtnFn = () => {
-  $('.invisible').css('display', 'none');
-  $('.finder').removeClass('activeicon');
-  $('#combtn').addClass('activeicon');
-  $('.compcont').css('display', 'block');
-};
-
-const alebtnFn = () => {
-  $('.invisible').css('display', 'none');
-  $('.finder').removeClass('activeicon');
-  $('#alebtn').addClass('activeicon');
-  $('.alertcont').css('display', 'block');
-};
-
-// TODO: Cambiar esta función a una clase, para definir dinámicamente
-//  los estilos de imagen resaltada
-const Content = () => (
+const Content = ({ activeModule, setActiveModule }) => (
   <div className="finderline">
     <MenuButton
-      focusCallback={geobtnFn}
-      buttonStyles="finder geo activeicon"
+      focusCallback={() => setActiveModule('search')}
+      buttonStyles={`finder geo ${(activeModule === 'search') ? 'activeicon' : ''}`}
       idBtn="geobtn"
       firstLineContent="consultas"
       secondLineContent="geográficas"
       localLink="/Consultas"
     />
     <MenuButton
-      focusCallback={indbtnFn}
-      buttonStyles="finder ind"
+      focusCallback={() => setActiveModule('indicator')}
+      buttonStyles={`finder ind ${(activeModule === 'indicator') ? 'activeicon' : ''}`}
       idBtn="indbtn"
       firstLineContent="indicadores de"
       secondLineContent="biodiversidad"
@@ -54,16 +23,16 @@ const Content = () => (
       externalLink="http://humboldt-156715.appspot.com/filters.html"
     />
     <MenuButton
-      focusCallback={combtnFn}
-      buttonStyles="finder com"
+      focusCallback={() => setActiveModule('compensation')}
+      buttonStyles={`finder com ${(activeModule === 'compensation') ? 'activeicon' : ''}`}
       idBtn="combtn"
       firstLineContent="compensación"
       secondLineContent="ambiental"
       localLink="/Compensaciones"
     />
     <MenuButton
-      focusCallback={alebtnFn}
-      buttonStyles="finder ale"
+      focusCallback={() => setActiveModule('alert')}
+      buttonStyles={`finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`}
       idBtn="alebtn"
       firstLineContent="alertas"
       secondLineContent="tempranas"
@@ -71,5 +40,15 @@ const Content = () => (
     />
   </div>
 );
+
+Content.propTypes = {
+  activeModule: PropTypes.string,
+  setActiveModule: PropTypes.func,
+};
+
+Content.defaultProps = {
+  activeModule: 'search',
+  setActiveModule: null,
+};
 
 export default Content;
