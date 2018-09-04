@@ -1,14 +1,20 @@
+/* eslint-env browser */
+/** eslint verified */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom'
-import './index.css';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+// TODO: Habilitar registerServiceWorker cuando esté habilitado el dominio en HTTPS
+// import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render((
-  // Parte 1 de 3 del enrutador: Importar el componente BrowserRouter
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>)
-  , document.getElementById('root'));
-registerServiceWorker();
+// Eslint disallows JSX in .js files. But create-react-app only accepts index.js as entry point
+/* eslint-disable react/jsx-filename-extension */
+ReactDOM.render(
+  (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  ),
+  document.getElementById('root'),
+);
+// registerServiceWorker();
