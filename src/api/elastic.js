@@ -1,8 +1,8 @@
 /** eslint verified */
 import axios from 'axios';
 
-const ELASTIC_HOST = 'http://192.168.11.63';
-const ELASTIC_PORT = '9250';
+const ELASTIC_HOST = 'http://biotablero.humboldt.org.co/elastic/';
+const ELASTIC_PORT = null;
 
 class ElasticAPI {
   /**
@@ -107,7 +107,8 @@ class ElasticAPI {
    * @param {Object} requestBody JSON object with the request body
    */
   static makeRequest(endpoint, requestBody) {
-    const url = `${ELASTIC_HOST}:${ELASTIC_PORT}/${endpoint}`;
+    const port = ELASTIC_PORT ? `:${ELASTIC_PORT}` : '';
+    const url = `${ELASTIC_HOST}${port}/${endpoint}`;
     return axios.post(url, requestBody)
       .then(res => res.data);
   }

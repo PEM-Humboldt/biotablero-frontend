@@ -207,6 +207,7 @@ class Compensation extends Component {
         <div className="appSearcher">
           <MapViewer
             layers={layers}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
             {
