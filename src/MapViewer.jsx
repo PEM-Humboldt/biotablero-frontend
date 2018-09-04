@@ -121,6 +121,7 @@ class MapViewer extends React.Component {
 
 MapViewer.propTypes = {
   layers: PropTypes.object,
+  geoServerUrl: PropTypes.string.isRequired,
 };
 
 MapViewer.defaultProps = {
