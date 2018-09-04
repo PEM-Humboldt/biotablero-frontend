@@ -15,7 +15,7 @@ const GraphLoader = (
   <div>
     {
       (graphType === 'BarVertical') ? (
-        <div className="graphcard pb">
+        <div>
           <BarGraph
             dataJSON={data}
             colors={colors}

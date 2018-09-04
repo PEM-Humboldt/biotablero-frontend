@@ -1,8 +1,8 @@
 /** eslint verified */
 import axios from 'axios';
 
-const GEOSERVER_HOST = 'http://indicadores.humboldt.org.co';
-const GEOSERVER_PORT = '80';
+const GEOSERVER_HOST = 'http://biotablero.humboldt.org.co/geoserver';
+const GEOSERVER_PORT = null;
 
 class GeoServerAPI {
   /**
@@ -65,8 +65,16 @@ class GeoServerAPI {
       );
     }
     return GeoServerAPI.makeRequest(
-      `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
+      `/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
     );
+  }
+
+  /**
+   * Request the base layer 'Regiones_geb'
+   */
+  static getRequestURL() {
+    const port = GEOSERVER_PORT ? `:${GEOSERVER_PORT}` : '';
+    return `${GEOSERVER_HOST}${port}`;
   }
 
   /**
@@ -76,8 +84,7 @@ class GeoServerAPI {
    * @param {Object} requestBody JSON object with the request body
    */
   static makeRequest(endpoint) {
-    const url = `${GEOSERVER_HOST}:${GEOSERVER_PORT}/${endpoint}`;
-    return axios.get(url)
+    return axios.get(`${this.getRequestURL()}/${endpoint}`)
       .then(res => res.data);
   }
 }

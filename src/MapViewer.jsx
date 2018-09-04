@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 
+
 const config = {};
 config.params = {
   center: [5.2500, -74.9167], // Mariquita-Tolima
@@ -86,6 +87,7 @@ class MapViewer extends React.Component {
   }
 
   render() {
+    const { geoServerUrl } = this.props;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <TileLayer
@@ -108,7 +110,7 @@ class MapViewer extends React.Component {
             se debe ajustar esta carga cuando se implementen los usuarios */}
         <WMSTileLayer
           layers="Biotablero:Regiones_geb"
-          url="http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS"
+          url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
           opacity={0.2}
           alt="Regiones"
         />
@@ -119,6 +121,7 @@ class MapViewer extends React.Component {
 
 MapViewer.propTypes = {
   layers: PropTypes.object,
+  geoServerUrl: PropTypes.string.isRequired,
 };
 
 MapViewer.defaultProps = {

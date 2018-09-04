@@ -1,17 +1,17 @@
-# base image
-FROM node:8.11.3-alpine
+# Build stage
+FROM node:8.11.3-alpine as build
+MAINTAINER Daniel Lopez "dlopez@humboldt.org.co"
 
-# set working directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+ENV NPM_CONFIG_LOGLEVEL warn
+COPY package.json package.json
+RUN npm install --production
+COPY . .
+RUN npm run build --production
 
-# add `/usr/src/app/node_modules/.bin` to $PATH
-ENV PATH /usr/src/app/node_modules/.bin:$PATH
+# Release stage
+FROM node:8.11.3-alpine as release
 
-# install and cache app dependencies
-COPY package.json /usr/src/app/package.json
-RUN npm install --silent
-RUN npm install react-scripts@1.1.1 -g --silent
-
-# start app
-CMD ["npm", "start"]
+COPY --from=build /build ./build
+RUN npm install -g serve
+EXPOSE 5000
+CMD [ "serve", "-s", "build" ]

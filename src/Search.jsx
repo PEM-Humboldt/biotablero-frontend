@@ -8,7 +8,6 @@ import L from 'leaflet';
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
-import './search/search.css';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 import { description, selectorData } from './search/assets/selectorData';
@@ -253,6 +252,7 @@ class Search extends Component {
         <div className="appSearcher">
           <MapViewer
             layers={layers}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
             { !activeLayerName && (

@@ -35,7 +35,6 @@ class Compensation extends Component {
       Object.keys(res[0].features).forEach(
         (index) => {
           const project = {};
-          console.log(res[0].features[index].properties);
           project.values = [
             res[0].features[index].properties.ESTADO,
             res[0].features[index].properties.PROYECTO,
@@ -52,7 +51,7 @@ class Compensation extends Component {
           // the key is the id that communicates with other components and should match selectorData
           projectsGEB: {
             displayName: 'projectsGEB',
-            active: true,
+            active: false,
             layer: L.geoJSON(
               res[0],
               {
@@ -169,7 +168,10 @@ class Compensation extends Component {
 
   clickFeature = (event) => {
     // TODO: Activate bioma inside dotsWhere and dotsWhat
+    const area = event.target;
+    console.log(event);
     this.highlightFeature(event);
+    this.updateActiveBioma(area.feature.properties.BIOMA_IAvH);
   }
 
   /** ***************************************** */
@@ -245,6 +247,7 @@ class Compensation extends Component {
         <div className="appSearcher">
           <MapViewer
             layers={layers}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
             {
