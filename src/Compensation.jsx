@@ -1,5 +1,4 @@
 /** eslint verified */
-// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 import React, { Component } from 'react';
 import L from 'leaflet';
 
@@ -15,29 +14,67 @@ class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentCategory: null,
       company: null,
       projectType: null,
       projectName: null,
       layerName: null,
       layers: {},
-      colors: ['#eabc47', '#51b4c1', '#ea495f', '#2a363b'],
+      projects: [],
+      colors: ['#eabc47', '#51b4c1', '#ea495f', '#2a363b'], // Colors for ecosystems
     };
   }
 
   componentDidMount() {
     Promise.all([
+      GeoServerAPI.requestProjectsGEB(),
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestBiomasSogamoso(),
     ]).then((res) => {
+      const projectsFound = [];
+      Object.keys(res[0].features).forEach(
+        (index) => {
+          const project = {};
+          console.log(res[0].features[index].properties);
+          project.values = [
+            res[0].features[index].properties.ESTADO,
+            res[0].features[index].properties.PROYECTO,
+            res[0].features[index].properties.AREA_ha];
+          project.key = res[0].features[index].properties.NOM_GEN;
+          projectsFound.push(project);
+        },
+      );
       this.setState(prevState => ({
+        company: 'GEB',
+        projects: projectsFound,
         layers: {
           ...prevState.layers,
+          // the key is the id that communicates with other components and should match selectorData
+          projectsGEB: {
+            displayName: 'projectsGEB',
+            active: true,
+            layer: L.geoJSON(
+              res[0],
+              {
+                style: {
+                  stroke: true,
+                  color: '#7b56a5',
+                  fillColor: '#7b56a5',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'projectsGEB')
+                ),
+              },
+            ),
+          },
           // the key is the id that communicates with other components and should match selectorData
           sogamoso: {
             displayName: 'Sogamoso',
             active: false,
             layer: L.geoJSON(
-              res[0],
+              res[1],
               {
                 style: {
                   stroke: true,
@@ -57,7 +94,7 @@ class Compensation extends Component {
             displayName: 'BiomasSogamoso',
             active: false,
             layer: L.geoJSON(
-              res[1],
+              res[2],
               {
                 style: this.featureStyle,
                 onEachFeature: (feature, layer) => (
@@ -158,7 +195,7 @@ class Compensation extends Component {
 
   firstLevelChange = (name) => {
     this.setState({
-      company: name,
+      currentCategory: name,
     });
   }
 
@@ -195,8 +232,9 @@ class Compensation extends Component {
   }
 
   render() {
+    console.log(this.state);
     const {
-      datosSogamoso, company, projectType, projectName, layerName,
+      datosSogamoso, currentCategory, projectType, projectName, layerName,
       colors, layers,
     } = this.state;
     return (
@@ -227,7 +265,7 @@ class Compensation extends Component {
             {
               projectName && (
               <Drawer
-                areaName={`GEB ${company}`}
+                areaName={`GEB ${currentCategory}`}
                 back={this.handlerBackButton}
                 basinName={projectName}
                 colors={colors}

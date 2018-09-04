@@ -1,5 +1,4 @@
 /** eslint verified */
-// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 // TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
 //  activos), con los elementos cargados
 import React, { Component } from 'react';

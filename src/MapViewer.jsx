@@ -92,7 +92,7 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {/** TODO: Mostrar bajo este formato los rathis.CapaBiomasSogamososter de cada estrategia de
+        {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
           Compensaciones */}
         {/* <WMSTileLayer
           srs="EPSG:4326"
