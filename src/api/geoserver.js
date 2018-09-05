@@ -10,18 +10,7 @@ class GeoServerAPI {
    */
   static requestProjectsGEB(projectName) {
     if (projectName) return GeoServerAPI.requestWFSBiotablero('User_GEB_projects', `CQL_FILTER=NOM_GEN='${projectName}'`);
-    // const projects = [];
     const response = GeoServerAPI.requestWFSBiotablero('User_GEB_projects');
-    // response.then(res => Object.keys(res.features).forEach(
-    //   (index) => {
-    //     const project = {};
-    //     console.log(res.features[index].properties);
-    //     project.key = res.features[index].properties.NOM_GEN;
-    //     project.value = res.features[index].properties.ESTADO;
-    //     projects.push(project);
-    //   },
-    // ));
-    // console.log('projects', projects.sort());
     return response;
   }
 

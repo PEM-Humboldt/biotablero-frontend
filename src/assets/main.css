@@ -190,7 +190,7 @@ header h3 {
 	display: inline-block;
 }
 
-header h3 a {	
+header h3 a {
 	color: #e84a5f;
 }
 
@@ -1404,11 +1404,11 @@ p.legcomp {
 }
 
 .leaflet-popup-tip {
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0,0,0,0.9) !important;
 }
 .leaflet-popup-content-wrapper {
-  background-color: rgba(0,0,0,0.9);
-  color: #fff;
+  background-color: rgba(0,0,0,0.9) !important;
+  color: #fff !important;
   padding: 12;
   line-height: 1.5;
   border-radius: 4px;
