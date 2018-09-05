@@ -9,7 +9,7 @@ import DotsGraph from './charts/DotsGraph';
 const GraphLoader = (
   {
     graphType, data, graphTitle, labelX, labelY, width, height,
-    elementOnClick, colors,
+    elementOnClick, colors, layerName,
   },
 ) => (
   <div>
@@ -75,6 +75,7 @@ const GraphLoader = (
             height="280"
             dotOnClick={elementOnClick}
             colors={colors}
+            layerName={layerName}
           />
         </div>
       ) : ('')
@@ -89,6 +90,7 @@ GraphLoader.propTypes = {
   graphTitle: PropTypes.string,
   // Array or object, depending on graphType
   data: PropTypes.any.isRequired,
+  layerName: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   width: PropTypes.number,
@@ -99,6 +101,7 @@ GraphLoader.defaultProps = {
   elementOnClick: () => {},
   graphTitle: '',
   colors: ['blue'],
+  layerName: '',
   labelX: '',
   labelY: '',
   width: 400,

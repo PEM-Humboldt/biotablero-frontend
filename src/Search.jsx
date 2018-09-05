@@ -2,7 +2,6 @@
 // TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
 //  activos), con los elementos cargados
 import React, { Component } from 'react';
-// import Viewfinder from './Viewfinder';
 
 import L from 'leaflet';
 import MapViewer from './MapViewer';

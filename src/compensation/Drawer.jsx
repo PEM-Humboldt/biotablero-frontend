@@ -224,7 +224,7 @@ class Drawer extends React.Component {
   /**
    * Function to render graphs when necessary
    */
-  renderGraphs = (data, labelX, labelY, graph, colors) => {
+  renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
     const { showGraphs: { DotsWhere } } = this.state;
     const { updateActiveBioma } = this.props;
     if (graph === 'Dots' && DotsWhere) {
@@ -238,6 +238,7 @@ class Drawer extends React.Component {
                 colors={colors}
                 graphType={graph}
                 data={data}
+                layerName={layerName}
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
@@ -333,7 +334,7 @@ class Drawer extends React.Component {
                     {selectedArea}
                   </h4>
                 </div>
-                {this.renderGraphs(whereData, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
+                {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
                 {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
                 { !DotsWhere && (
                   <button

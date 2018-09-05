@@ -190,7 +190,7 @@ header h3 {
 	display: inline-block;
 }
 
-header h3 a {	
+header h3 a {
 	color: #e84a5f;
 }
 
@@ -1093,7 +1093,7 @@ a#reset-filters {
 }
 /*All information container*/
 .contentView {
-	overflow: auto; /* TODO: Ajustar ancho de Selector.js de acuerdo a este estilo*/
+	overflow: auto; /* TODO: Revisar con César: ¿Se requiere ajustar ancho de Selector.js de acuerdo a este estilo?*/
   -webkit-flex: 3 1 40%;
           flex: 3 1 40%;
   flex-direction: column;
@@ -1404,11 +1404,11 @@ p.legcomp {
 }
 
 .leaflet-popup-tip {
-  background-color: rgba(0,0,0,0.9);
+  background-color: rgba(0,0,0,0.9) !important;
 }
 .leaflet-popup-content-wrapper {
-  background-color: rgba(0,0,0,0.9);
-  color: #fff;
+  background-color: rgba(0,0,0,0.9) !important;
+  color: #fff !important;
   padding: 12;
   line-height: 1.5;
   border-radius: 4px;
