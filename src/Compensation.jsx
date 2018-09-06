@@ -177,7 +177,7 @@ class Compensation extends Component {
       layers[parentLayer] && layerName && (layerName !== area.feature.properties.BIOMA_IAvH)
     ) {
       layers[parentLayer].layer.resetStyle(area);
-    }
+    } else if (!layerName) layers[parentLayer].layer.resetStyle(area);
   }
 
   clickFeature = (event, parentLayer) => {
