@@ -1,5 +1,6 @@
 /** eslint verified */
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 const Title = ({ title, subTitle }) => {
@@ -8,9 +9,11 @@ const Title = ({ title, subTitle }) => {
     result = (
       <div className="interna">
         <h3>
-          <b>
-            {title}
-          </b>
+          <Link to="/">
+            <b>
+              {title}
+            </b>
+          </Link>
         </h3>
         <h5>
           {subTitle}
@@ -20,9 +23,11 @@ const Title = ({ title, subTitle }) => {
   } else {
     result = (
       <h3>
-        <b>
-          {title}
-        </b>
+        <Link to="/">
+          <b>
+            {title}
+          </b>
+        </Link>
       </h3>
     );
   }

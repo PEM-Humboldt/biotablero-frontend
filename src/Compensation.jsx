@@ -1,5 +1,4 @@
 /** eslint verified */
-// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 import React, { Component } from 'react';
 import L from 'leaflet';
 
@@ -15,26 +14,50 @@ class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentCategory: null,
       company: null,
       projectType: null,
       projectName: null,
       layerName: null,
       layers: {},
-      colors: ['#eabc47', '#51b4c1', '#ea495f', '#2a363b'],
+      projects: [],
+      colors: [
+        { medium: '#eabc47' },
+        { low: '#51b4c1' },
+        { high: '#ea495f' },
+        { selected: '#2a363b' },
+      ], // Colors for ecosystems types
     };
   }
 
   componentDidMount() {
     Promise.all([
-      GeoServerAPI.requestSogamoso(),
+      GeoServerAPI.requestProjectsGEB(),
       GeoServerAPI.requestBiomasSogamoso(),
+      GeoServerAPI.requestSogamoso(),
     ]).then((res) => {
+      const projectsFound = [];
+      // TODO: Finalize new projects load structure
+      Object.keys(res[0].features).forEach(
+        (index) => {
+          const project = {};
+          project.values = [
+            res[0].features[index].properties.ESTADO,
+            res[0].features[index].properties.PROYECTO,
+            res[0].features[index].properties.AREA_ha,
+          ];
+          project.key = res[0].features[index].properties.NOM_GEN;
+          projectsFound.push(project);
+        },
+      );
       this.setState(prevState => ({
+        company: 'GEB',
+        projects: projectsFound,
         layers: {
           ...prevState.layers,
           // the key is the id that communicates with other components and should match selectorData
-          sogamoso: {
-            displayName: 'Sogamoso',
+          projectsGEB: {
+            displayName: 'projectsGEB',
             active: false,
             layer: L.geoJSON(
               res[0],
@@ -47,7 +70,7 @@ class Compensation extends Component {
                   fillOpacity: 0.4,
                 },
                 onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'sogamoso')
+                  this.featureActions(feature, layer, 'projectsGEB')
                 ),
               },
             ),
@@ -66,24 +89,48 @@ class Compensation extends Component {
               },
             ),
           },
+          // the key is the id that communicates with other components and should match selectorData
+          sogamoso: {
+            displayName: 'Sogamoso',
+            active: false,
+            layer: L.geoJSON(
+              res[2],
+              {
+                style: {
+                  stroke: true,
+                  color: '#7b56a5',
+                  fillColor: '#7b56a5',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'sogamoso')
+                ),
+              },
+            ),
+          },
         },
       }));
     });
   }
 
   featureStyle = (feature) => {
-    const { colors } = this.state;
-    if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P > 12) {
-      return { // high
-        stroke: false, fillColor: colors[2], opacity: 0.6, fillOpacity: 0.6,
-      };
-    } if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P < 12) {
-      return { // low
-        stroke: false, fillColor: colors[1], opacity: 0.6, fillOpacity: 0.6,
-      };
-    } return { // medium
-      stroke: false, fillColor: colors[0], opacity: 0.6, fillOpacity: 0.6,
+    const { colors, layerName } = this.state;
+    const styleResponse = {
+      stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
+    if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
+      styleResponse.fillOpacity = 1;
+      styleResponse.weight = 1;
+    }
+    if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P > 12) {
+      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'high'));
+    } else if (feature.properties.FC_Valor < 6.5 && feature.properties.AFFECTED_P < 12) {
+      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'low'));
+    } else {
+      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'medium'));
+    }
+    return styleResponse;
   }
 
   /** ************************ */
@@ -94,7 +141,7 @@ class Compensation extends Component {
     layer.on(
       {
         mouseover: event => this.highlightFeature(event, parentLayer),
-        mouseout: event => this.resetHighlight(event, parentLayer),
+        mouseout: event => this.resetHighlight(event.target, parentLayer),
         click: this.clickFeature,
       },
     );
@@ -124,15 +171,19 @@ class Compensation extends Component {
     if (!L.Browser.ie && !L.Browser.opera) area.bringToFront();
   }
 
-  resetHighlight = (event, layer) => {
-    const feature = event.target;
-    const { layers } = this.state;
-    layers[layer].layer.resetStyle(feature);
+  resetHighlight = (area, parentLayer) => {
+    const { layerName, layers } = this.state;
+    if (
+      layers[parentLayer] && layerName && (layerName !== area.feature.properties.BIOMA_IAvH)
+    ) {
+      layers[parentLayer].layer.resetStyle(area);
+    }
   }
 
-  clickFeature = (event) => {
-    // TODO: Activate bioma inside dotsWhere and dotsWhat
-    this.highlightFeature(event);
+  clickFeature = (event, parentLayer) => {
+    const area = event.target;
+    this.updateActiveBioma(area.feature.properties.BIOMA_IAvH);
+    this.highlightFeature(event, parentLayer);
   }
 
   /** ***************************************** */
@@ -158,7 +209,7 @@ class Compensation extends Component {
 
   firstLevelChange = (name) => {
     this.setState({
-      company: name,
+      currentCategory: name,
     });
   }
 
@@ -183,12 +234,22 @@ class Compensation extends Component {
   }
 
   updateActiveBioma = (name) => {
+    const { layers: { biomasSogamoso } } = this.state;
     ElasticAPI.requestDondeCompensarSogamoso(name)
       .then((res) => {
         this.setState({
           layerName: name,
           datosSogamoso: res,
         });
+      }).then(() => {
+        const currentLayers = biomasSogamoso.layer.getLayers();
+        const currentClasses = Object.values(currentLayers)
+          .filter(obj => obj.feature.properties.BIOMA_IAvH === name);
+        currentClasses.forEach(currentClass => currentClass.setStyle({
+          weight: 1,
+          fillOpacity: 1,
+        }));
+        currentLayers.forEach(area => this.resetHighlight(area, 'biomasSogamoso'));
       });
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the SZH selector). But the application won't break as it currently is
@@ -196,7 +257,7 @@ class Compensation extends Component {
 
   render() {
     const {
-      datosSogamoso, company, projectType, projectName, layerName,
+      datosSogamoso, currentCategory, projectType, projectName, layerName,
       colors, layers,
     } = this.state;
     return (
@@ -228,10 +289,10 @@ class Compensation extends Component {
             {
               projectName && (
               <Drawer
-                areaName={`GEB ${company}`}
+                areaName={`GEB ${currentCategory}`}
                 back={this.handlerBackButton}
                 basinName={projectName}
-                colors={colors}
+                colors={colors.map(obj => Object.values(obj)[0])}
                 layerName={layerName}
                 projectData={datosSogamoso}
                 subAreaName={projectType}

@@ -1,6 +1,4 @@
 /** eslint verified */
-// TODO: Estilos diferentes entre elementos de cada capa
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import 'leaflet/dist/leaflet.css';
@@ -9,7 +7,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 
 const config = {};
 config.params = {
-  center: [5.2500, -74.9167], // Mariquita-Tolima
+  center: [5.2500, -74.9167], // Location: Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {
@@ -94,7 +92,8 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {/** TODO: Mostrar bajo este formato los rathis.CapaBiomasSogamososter de cada estrategia de
+        {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
+        {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
           Compensaciones */}
         {/* <WMSTileLayer
           srs="EPSG:4326"

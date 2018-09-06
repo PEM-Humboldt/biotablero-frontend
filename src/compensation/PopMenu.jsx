@@ -1,6 +1,6 @@
 /** eslint verified */
 import React, { Component } from 'react';
-import CarritoIcon from '@material-ui/icons/AddLocation';
+import AddIcon from '@material-ui/icons/AddLocation';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
@@ -101,7 +101,7 @@ class PopMenu extends Component {
     } = this.state;
     return (
       <div className="complist">
-        <CarritoIcon />
+        <AddIcon />
         <div className="Biomatit">
           {layerName || 'Seleccione un bioma del gráfico'}
         </div>

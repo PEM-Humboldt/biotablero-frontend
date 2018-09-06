@@ -6,6 +6,15 @@ const GEOSERVER_PORT = null;
 
 class GeoServerAPI {
   /**
+   * Request the GEB layers, all projects or by project ID
+   */
+  static requestProjectsGEB(projectName) {
+    if (projectName) return GeoServerAPI.requestWFSBiotablero('User_GEB_projects', `CQL_FILTER=NOM_GEN='${projectName}'`);
+    const response = GeoServerAPI.requestWFSBiotablero('User_GEB_projects');
+    return response;
+  }
+
+  /**
    * Request the layer for 'Sogamoso'
    */
   static requestSogamoso() {
@@ -38,7 +47,12 @@ class GeoServerAPI {
    *
    * @param {string} subType subtype name
    */
-  static requestWFSBiotablero(subType) {
+  static requestWFSBiotablero(subType, params) {
+    if (params) {
+      return GeoServerAPI.makeRequest(
+        `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&${params}&outputFormat=application%2Fjson`,
+      );
+    }
     return GeoServerAPI.makeRequest(
       `/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
     );
