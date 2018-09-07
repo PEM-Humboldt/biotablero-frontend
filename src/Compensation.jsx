@@ -150,7 +150,6 @@ class Compensation extends Component {
     const area = event.target;
     area.setStyle({
       fillOpacity: 1,
-      weight: 0,
     });
     switch (parentLayer) {
       case 'sogamoso':
@@ -166,7 +165,6 @@ class Compensation extends Component {
       default:
         break;
     }
-    if (!L.Browser.ie && !L.Browser.opera) area.bringToFront();
   }
 
   resetHighlight = (area, parentLayer) => {
@@ -176,6 +174,7 @@ class Compensation extends Component {
     ) {
       layers[parentLayer].layer.resetStyle(area);
     } else if (!layerName) layers[parentLayer].layer.resetStyle(area);
+    layers.sogamoso.layer.bringToFront();
   }
 
   clickFeature = (event, parentLayer) => {
