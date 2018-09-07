@@ -147,8 +147,6 @@ class Compensation extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    console.log(parentLayer);
-    const { layers } = this.state;
     const area = event.target;
     area.setStyle({
       fillOpacity: 1,
@@ -163,13 +161,10 @@ class Compensation extends Component {
         area.bindPopup(
           `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}<br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${area.feature.properties.FC_Valor}<br><b>% de afectación:</b> ${area.feature.properties.AFFECTED_P}`,
         );
-        area.bringToBack();
-        console.log('layer', layers.biomasSogamoso.layer, 'area', area);
         break;
       default:
         break;
     }
-    if (!L.Browser.ie && !L.Browser.opera) area.bringToFront();
   }
 
   resetHighlight = (area, parentLayer) => {
@@ -179,14 +174,13 @@ class Compensation extends Component {
     ) {
       layers[parentLayer].layer.resetStyle(area);
     } else if (!layerName) layers[parentLayer].layer.resetStyle(area);
-    if (parentLayer === 'biomasSogamoso') area.bringToBack();
+    layers.sogamoso.layer.bringToFront();
   }
 
   clickFeature = (event, parentLayer) => {
     const area = event.target;
     this.updateActiveBioma(area.feature.properties.BIOMA_IAvH);
     this.highlightFeature(event, parentLayer);
-    area.bringToBack();
   }
 
   /** ***************************************** */
