@@ -121,7 +121,6 @@ class Compensation extends Component {
     };
     if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
       styleResponse.fillOpacity = 1;
-      styleResponse.weight = 1;
     }
     if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P > 12) {
       styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'high'));
@@ -148,11 +147,10 @@ class Compensation extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-  // TODO: highlight basin inside dotsWhere and dotsWhat at the time with the graph
     const area = event.target;
     area.setStyle({
-      weight: 1,
       fillOpacity: 1,
+      weight: 0,
     });
     switch (parentLayer) {
       case 'sogamoso':
@@ -246,7 +244,6 @@ class Compensation extends Component {
         const currentClasses = Object.values(currentLayers)
           .filter(obj => obj.feature.properties.BIOMA_IAvH === name);
         currentClasses.forEach(currentClass => currentClass.setStyle({
-          weight: 1,
           fillOpacity: 1,
         }));
         currentLayers.forEach(area => this.resetHighlight(area, 'biomasSogamoso'));
