@@ -1,7 +1,8 @@
 /** eslint verified */
 import axios from 'axios';
 
-const ELASTIC_HOST = 'http://biotablero.humboldt.org.co/elastic/';
+// TODO: put this in a config file
+const ELASTIC_HOST = 'http://biotablero.humboldt.org.co/elastic-dev/';
 const ELASTIC_PORT = null;
 
 class ElasticAPI {
@@ -23,14 +24,15 @@ class ElasticAPI {
   /**
    * Request the template with information about 'Que y Cuanto compensar'
    */
-  static requestQueYCuantoCompensar() {
+  static requestQueYCuantoCompensar(project) {
     return ElasticAPI.makeRequest(
-      'biomas_compensaciones/_search/template?filter_path=hits.hits.fields,aggregations',
+      'biomas_compensaciones/_search/template?filter_path=hits.hits._source',
       {
         id: 'queYCuantoCompensar',
         params: {
           field: 'BIOMA_IAVH',
           order: 'asc',
+          project_name: project,
         },
       },
     );

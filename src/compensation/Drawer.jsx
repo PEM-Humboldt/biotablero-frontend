@@ -31,33 +31,35 @@ class Drawer extends React.Component {
    * @param {Array} data array of objects with information about compensations
    */
   static cleanWhatWhereData = (data) => {
-    const biomas = data.hits.hits.map(({ fields }) => {
+    const biomas = data.hits.hits.map(({ _source: fields }) => {
       const {
-        BIOMA_IAVH, PORCENT_AFECTACION, FACT_COMP, NATURAL_AFECTADA, TOTAL_COMPENSAR,
-        SECUNDARIA_AFECTADA, TRANSFORMADA_AFECTADA,
+        BIOMA_IAVH, PORCENT_AFECTACION, FC, NATURAL, TOTAL_COMPENSAR,
+        SECUNDARIA, TRANSFORMADO,
       } = fields;
       return {
-        name: BIOMA_IAVH[0],
-        affected_percentage: (100 * PORCENT_AFECTACION[0]).toFixed(2),
-        fc: FACT_COMP[0],
-        affected_natural: Math.ceil(NATURAL_AFECTADA[0]) ? NATURAL_AFECTADA[0].toFixed(2) : '',
-        total_compensate: Math.ceil(TOTAL_COMPENSAR[0]) ? TOTAL_COMPENSAR[0].toFixed(2) : '',
-        affected_secondary: Math.ceil(SECUNDARIA_AFECTADA[0]) ? SECUNDARIA_AFECTADA[0].toFixed(2) : '',
-        affected_transformed: Math.ceil(TRANSFORMADA_AFECTADA[0]) ? TRANSFORMADA_AFECTADA[0].toFixed(2) : '',
+        name: BIOMA_IAVH,
+        affected_percentage: (100 * PORCENT_AFECTACION).toFixed(2),
+        fc: FC,
+        affected_natural: Math.ceil(NATURAL) ? Number(NATURAL).toFixed(2) : '',
+        total_compensate: Math.ceil(TOTAL_COMPENSAR) ? Number(TOTAL_COMPENSAR).toFixed(2) : '',
+        affected_secondary: Math.ceil(SECUNDARIA) ? Number(SECUNDARIA).toFixed(2) : '',
+        affected_transformed: Math.ceil(TRANSFORMADO) ? Number(TRANSFORMADO).toFixed(2) : '',
       };
     });
     const totals = data.hits.hits.reduce(
-      (acc, bioma) => ({
-        affected_natural: acc.affected_natural + bioma.fields.NATURAL_AFECTADA[0],
-        affected_secondary: acc.affected_secondary + bioma.fields.SECUNDARIA_AFECTADA[0],
-        affected_transformed: acc.affected_transformed + bioma.fields.TRANSFORMADA_AFECTADA[0],
-        affected_percentage: acc.affected_percentage + bioma.fields.PORCENT_AFECTACION[0],
+      (acc, { _source: fields }) => ({
+        affected_natural: acc.affected_natural + Number(fields.NATURAL),
+        affected_secondary: acc.affected_secondary + Number(fields.SECUNDARIA),
+        affected_transformed: acc.affected_transformed + Number(fields.TRANSFORMADO),
+        affected_percentage: acc.affected_percentage + Number(fields.PORCENT_AFECTACION),
+        total_compensate: acc.total_compensate + Number(fields.TOTAL_COMPENSAR),
       }),
       {
         affected_natural: 0,
         affected_secondary: 0,
         affected_transformed: 0,
         affected_percentage: 0,
+        total_compensate: 0,
       },
     );
     return {
@@ -67,8 +69,8 @@ class Drawer extends React.Component {
         affected_natural: totals.affected_natural.toFixed(2),
         affected_secondary: totals.affected_secondary.toFixed(2),
         affected_transformed: totals.affected_transformed.toFixed(2),
-        total_compensate: data.aggregations.total_area.value.toFixed(2),
-        affected_percentage: totals.affected_percentage * 100,
+        affected_percentage: totals.affected_percentage.toFixed(2),
+        total_compensate: totals.total_compensate.toFixed(2),
       },
     };
   }
@@ -89,7 +91,7 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    ElasticAPI.requestQueYCuantoCompensar()
+    ElasticAPI.requestQueYCuantoCompensar('SOGAMOSO')
       .then((res) => {
         const { biomas, totals } = Drawer.cleanWhatWhereData(res);
         this.setState({
