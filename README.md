@@ -44,6 +44,8 @@ Ejecutar la siguiente instrucción para construir la imagen:
 
     docker build -t <nombre imagen>:<version> .
 
+Es recomendable usar la versión del release en la versión de la imagen que se está construyendo.
+
 ### 2.2. Despliegue del servicio
 
 Una vez esté creada la imagen, se despliega de la siguiente manera:
