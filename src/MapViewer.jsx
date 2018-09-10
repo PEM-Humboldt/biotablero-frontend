@@ -1,6 +1,4 @@
 /** eslint verified */
-// TODO: Estilos diferentes entre elementos de cada capa
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import 'leaflet/dist/leaflet.css';
@@ -9,7 +7,7 @@ import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 
 const config = {};
 config.params = {
-  center: [5.2500, -74.9167], // Mariquita-Tolima
+  center: [5.2500, -74.9167], // Location: Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {
@@ -87,14 +85,15 @@ class MapViewer extends React.Component {
   }
 
   render() {
-    const { geoServerUrl } = this.props;
+    const { geoServerUrl, userLogged } = this.props;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {/** TODO: Mostrar bajo este formato los rathis.CapaBiomasSogamososter de cada estrategia de
+        {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
+        {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
           Compensaciones */}
         {/* <WMSTileLayer
           srs="EPSG:4326"
@@ -108,12 +107,15 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        <WMSTileLayer
-          layers="Biotablero:Regiones_geb"
-          url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
-          opacity={0.2}
-          alt="Regiones"
-        />
+        { userLogged ? ( // TODO: Implementing WMSTileLayer load from Compensator
+          <WMSTileLayer
+            layers="Biotablero:Regiones_geb"
+            url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
+            opacity={0.2}
+            alt="Regiones"
+          />
+        )
+          : '' }
       </Map>
     );
   }
@@ -122,10 +124,12 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
   layers: PropTypes.object,
   geoServerUrl: PropTypes.string.isRequired,
+  userLogged: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
   layers: {},
+  userLogged: null,
 };
 
 export default MapViewer;
