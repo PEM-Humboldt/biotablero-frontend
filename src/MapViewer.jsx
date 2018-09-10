@@ -85,7 +85,7 @@ class MapViewer extends React.Component {
   }
 
   render() {
-    const { geoServerUrl } = this.props;
+    const { geoServerUrl, userLogged } = this.props;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <TileLayer
@@ -107,12 +107,15 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        <WMSTileLayer
-          layers="Biotablero:Regiones_geb"
-          url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
-          opacity={0.2}
-          alt="Regiones"
-        />
+        { userLogged ? ( // TODO: Implementing WMSTileLayer load from Compensator
+          <WMSTileLayer
+            layers="Biotablero:Regiones_geb"
+            url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
+            opacity={0.2}
+            alt="Regiones"
+          />
+        )
+          : '' }
       </Map>
     );
   }
@@ -121,10 +124,12 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
   layers: PropTypes.object,
   geoServerUrl: PropTypes.string.isRequired,
+  userLogged: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
   layers: {},
+  userLogged: null,
 };
 
 export default MapViewer;

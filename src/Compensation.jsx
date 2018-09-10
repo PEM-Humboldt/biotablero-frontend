@@ -265,6 +265,7 @@ class Compensation extends Component {
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
+            userLogged // TODO: Implementing customized loads per users
           />
           <div className="contentView">
             {

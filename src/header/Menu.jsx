@@ -1,5 +1,6 @@
 /** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 class Menu extends React.Component {
@@ -15,6 +16,7 @@ class Menu extends React.Component {
   }
 
   render() {
+    const { userLogged } = this.props; // TODO: Implementing user validation
     const { openMenu } = this.state;
     return (
       <div id="menuToggle">
@@ -43,11 +45,14 @@ class Menu extends React.Component {
               Indicadores
             </li>
           </a>
-          <Link to="/Compensaciones" onClick={this.changeMenuState}>
-            <li>
-              Compensaciones
-            </li>
-          </Link>
+          { userLogged ? (
+            <Link to="/Compensaciones" onClick={this.changeMenuState}>
+              <li>
+                Compensaciones
+              </li>
+            </Link>
+          )
+            : '' }
           <Link to="./Alertas" onClick={this.changeMenuState}>
             <li>
               Alertas
@@ -58,5 +63,13 @@ class Menu extends React.Component {
     );
   }
 }
+
+Menu.propTypes = {
+  userLogged: PropTypes.object,
+};
+
+Menu.defaultProps = {
+  userLogged: null,
+};
 
 export default Menu;
