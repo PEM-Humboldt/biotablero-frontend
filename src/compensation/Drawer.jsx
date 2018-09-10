@@ -84,6 +84,7 @@ class Drawer extends React.Component {
       car: null,
       strategies: [],
       selectedArea: 0,
+      strategiesSelectedByArea: [],
       tableError: '',
       showGraphs: { DotsWhere: true },
     };
@@ -199,6 +200,18 @@ class Drawer extends React.Component {
   }
 
   /**
+   * Function to include an strategy at the strategiesSelectedByArea state
+   */
+  saveStrategy = (strategies) => {
+    this.setState(prevState => ({
+      strategiesSelectedByArea: {
+        ...prevState.strategiesSelectedByArea,
+        strategies,
+      },
+    }));
+  }
+
+  /**
    * Function to render graphs when necessary
    */
   renderSelector = (data, total) => {
@@ -258,7 +271,8 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      classes, projectData, layerName, back, basinName, areaName, subAreaName, colors,
+      areaName, back, basinName, colors, classes, layerName, projectData,
+      subAreaName, strategySuggested,
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
@@ -336,8 +350,16 @@ class Drawer extends React.Component {
                     {selectedArea}
                   </h4>
                 </div>
+                {layerName ? (
+                  <div className="total carrito">
+                    <h2>
+                      {`Estrategia sugerida: ${strategySuggested || 'Restauración'}` /** TODO: Define value by default */}
+                    </h2>
+                    {this.renderSelector(this.cleanSogamosoData(projectData),
+                      totalACompensar)}
+                  </div>
+                ) : '' }
                 {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
                 { !DotsWhere && (
                   <button
                     className="backgraph"
@@ -370,6 +392,7 @@ class Drawer extends React.Component {
                     headers={['Estrategia', 'Héctareas', 'Agregar']}
                     rows={strategies}
                     classTable="special"
+                    dataSelected={this.saveStrategy}
                   />
                 )}
               </div>
@@ -391,6 +414,7 @@ Drawer.propTypes = {
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   projectData: PropTypes.object,
+  strategySuggested: PropTypes.string,
   subAreaName: PropTypes.string,
   updateActiveBioma: PropTypes.func,
 };
@@ -403,6 +427,7 @@ Drawer.defaultProps = {
   projectData: {},
   updateActiveBioma: () => {},
   layerName: '',
+  strategySuggested: '',
   subAreaName: '',
 };
 
