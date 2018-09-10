@@ -6,7 +6,7 @@ const TableStylized = ({
   headers, rows, footers, description, classTable,
 }) => (
   <div>
-    <div className="titecositema">
+    <div className={(Object.getOwnPropertyNames(description).length > 0) ? 'titecositema' : ''}>
       {
         // TODO: Create texts, icons and actions for list of biomas in Shopping Cart
         Object.keys(description).map(title => (

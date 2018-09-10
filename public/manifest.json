@@ -1,6 +1,6 @@
 {
-  "short_name": "Consultas",
-  "name": "Consultas :: Biotablero",
+  "short_name": "BioTablero",
+  "name": "BioTablero",
   "icons": [
     {
       "src": "favicon.ico",

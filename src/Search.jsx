@@ -1,15 +1,12 @@
 /** eslint verified */
-// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
 // TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
 //  activos), con los elementos cargados
 import React, { Component } from 'react';
-// import Viewfinder from './Viewfinder';
 
 import L from 'leaflet';
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
-import './search/search.css';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 import { description, selectorData } from './search/assets/selectorData';
