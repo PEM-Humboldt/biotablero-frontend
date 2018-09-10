@@ -7,7 +7,7 @@ import Title from './header/Title';
 import Uim from './header/Uim';
 import './assets/main.css';
 
-const Header = ({ activeModule }) => (
+const Header = ({ activeModule, userLogged }) => (
   <header className="cabezote">
     <div>
       <nav>
@@ -15,19 +15,20 @@ const Header = ({ activeModule }) => (
       </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
-    {/* TODO: Crear componente para manejo de usuarios,
-        con actualización de la imagen y usuario en el
-        Header en la página */}
-    <Uim value="Uim" />
+    {/* TODO: Sending active user information: image, userName, ...
+        to be upload when user is active */}
+    <Uim value="Uim" userLogged={userLogged} />
   </header>
 );
 
 Header.propTypes = {
   activeModule: PropTypes.string,
+  userLogged: PropTypes.object,
 };
 
 Header.defaultProps = {
   activeModule: '',
+  userLogged: null,
 };
 
 export default Header;
