@@ -1,6 +1,7 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import L from 'leaflet';
+import PropTypes from 'prop-types';
 
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
@@ -252,6 +253,7 @@ class Compensation extends Component {
   }
 
   render() {
+    const { userLogged } = this.props;
     const {
       datosSogamoso, currentCategory, projectType, projectName, layerName,
       colors, layers,
@@ -260,12 +262,13 @@ class Compensation extends Component {
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
+        userLogged={userLogged}
       >
         <div className="appSearcher">
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
-            userLogged
+            userLogged={userLogged}
           />
           <div className="contentView">
             {
@@ -303,5 +306,13 @@ class Compensation extends Component {
     );
   }
 }
+
+Compensation.propTypes = {
+  userLogged: PropTypes.object,
+};
+
+Compensation.defaultProps = {
+  userLogged: null,
+};
 
 export default Compensation;
