@@ -4,12 +4,14 @@
 import React, { Component } from 'react';
 
 import L from 'leaflet';
+import PropTypes from 'prop-types';
+
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
-import { description, selectorData } from './search/assets/selectorData';
+import { description, selectorData, dataGEB } from './search/assets/selectorData';
 import Layout from './Layout';
 
 
@@ -53,6 +55,7 @@ class Search extends Component {
   }
 
   componentDidMount() {
+    const { userLogged } = this.props;
     Promise.all([
       GeoServerAPI.requestJurisdicciones(),
       GeoServerAPI.requestCorpoboyaca(),
@@ -97,6 +100,9 @@ class Search extends Component {
         },
       }));
     }); // We don't need a catch, because on error we must literally do nothing
+    if (userLogged) {
+      selectorData[0].options.unshift(dataGEB);
+    }
   }
 
   /**
@@ -240,6 +246,7 @@ class Search extends Component {
   }
 
   render() {
+    const { userLogged } = this.props;
     const {
       subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH, layers,
     } = this.state;
@@ -247,6 +254,7 @@ class Search extends Component {
       <Layout
         moduleName="Consultas"
         showFooterLogos={false}
+        userLogged={userLogged}
       >
         <div className="appSearcher">
           <MapViewer
@@ -285,5 +293,13 @@ class Search extends Component {
     );
   }
 }
+
+Search.propTypes = {
+  userLogged: PropTypes.object,
+};
+
+Search.defaultProps = {
+  userLogged: null,
+};
 
 export default Search;
