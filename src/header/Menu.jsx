@@ -18,7 +18,7 @@ class Menu extends React.Component {
     const { openMenu } = this.state;
     return (
       <div id="menuToggle">
-        <input type="checkbox" checked={openMenu} onClick={this.changeMenuState} />
+        <input type="checkbox" checked={openMenu} onChange={this.changeMenuState} />
         <span />
         <span />
         <span />
