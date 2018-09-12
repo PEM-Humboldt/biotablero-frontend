@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MenuButton from './MenuButton';
 
-const Content = ({ activeModule, setActiveModule }) => (
+const Content = ({ activeModule, setActiveModule, userLogged }) => (
   <div className="finderline">
     <MenuButton
       focusCallback={() => setActiveModule('search')}
@@ -22,14 +22,17 @@ const Content = ({ activeModule, setActiveModule }) => (
       localLink="Indicadores"
       externalLink="http://humboldt-156715.appspot.com/filters.html"
     />
-    <MenuButton
-      focusCallback={() => setActiveModule('compensation')}
-      buttonStyles={`finder com ${(activeModule === 'compensation') ? 'activeicon' : ''}`}
-      idBtn="combtn"
-      firstLineContent="compensación"
-      secondLineContent="ambiental"
-      localLink="/Compensaciones"
-    />
+    { userLogged ? ( // TODO: Implementing user validation
+      <MenuButton
+        focusCallback={() => setActiveModule('compensation')}
+        buttonStyles={`finder com ${(activeModule === 'compensation') ? 'activeicon' : ''}`}
+        idBtn="combtn"
+        firstLineContent="compensación"
+        secondLineContent="ambiental"
+        localLink="/Compensaciones"
+      />
+    )
+      : '' }
     <MenuButton
       focusCallback={() => setActiveModule('alert')}
       buttonStyles={`finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`}
@@ -44,11 +47,13 @@ const Content = ({ activeModule, setActiveModule }) => (
 Content.propTypes = {
   activeModule: PropTypes.string,
   setActiveModule: PropTypes.func,
+  userLogged: PropTypes.object,
 };
 
 Content.defaultProps = {
   activeModule: 'search',
   setActiveModule: null,
+  userLogged: null,
 };
 
 export default Content;

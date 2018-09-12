@@ -8,13 +8,27 @@ import Search from './Search';
 import Compensation from './Compensation';
 import './assets/main.css';
 
+const loadSearch = props => (
+  <Search
+    userLogged={null}
+    {...props}
+  />
+);
+
+const loadCompensator = props => (
+  <Compensation
+    userLogged={{ value: true }}
+    {...props}
+  />
+);
+
 const App = () => (
   <main>
     <Switch>
       <Route exact path="/" component={Home} />
       <Route path="/ShortInfo" component={ShortInfo} />
-      <Route path="/Consultas" component={Search} />
-      <Route path="/Compensaciones" component={Compensation} />
+      <Route path="/Consultas" render={loadSearch} />
+      <Route path="/Compensaciones" render={loadCompensator} />
       <Route path="/Alertas" component={Home} />
     </Switch>
   </main>

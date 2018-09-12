@@ -1,5 +1,6 @@
 /** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import Content from './home/Content';
 import Information from './home/Information';
 import ShortInfo from './home/ShortInfo';
@@ -18,6 +19,7 @@ class Home extends React.Component {
   }
 
   render() {
+    const { userLogged } = this.props;
     const { activeModule } = this.state;
     return (
       <Layout showFooterLogos>
@@ -29,6 +31,7 @@ class Home extends React.Component {
           <Content
             activeModule={activeModule}
             setActiveModule={this.setActiveModule}
+            userLogged={userLogged}
           />
           <Information activeModule={activeModule} />
         </div>
@@ -36,5 +39,13 @@ class Home extends React.Component {
     );
   }
 }
+
+Home.propTypes = {
+  userLogged: PropTypes.object,
+};
+
+Home.defaultProps = {
+  userLogged: null,
+};
 
 export default Home;
