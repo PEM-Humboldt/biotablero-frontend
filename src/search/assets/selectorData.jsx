@@ -66,30 +66,6 @@ const selectorData = [
     expandIcon: (<ExpandMoreIcon />),
     options: [
       {
-        id: 'Zonas_GEB',
-        label: 'Zonas GEB',
-        expandIcon: (<ExpandMoreIcon />),
-        detailClass: 'inlineb',
-        options: [
-          {
-            type: 'button',
-            label: 'Norte',
-          },
-          {
-            type: 'button',
-            label: 'Centro',
-          },
-          {
-            type: 'button',
-            label: 'Suroccidente',
-          },
-          {
-            type: 'button',
-            label: 'Occidente',
-          },
-        ],
-      },
-      {
         id: 'areas-manejo-especial',
         label: 'Áreas de manejo especial',
         expandIcon: (<ExpandMoreIcon />),
@@ -306,4 +282,29 @@ const selectorData = [
   },
 ];
 
-export { description, selectorData };
+const dataGEB = {
+  id: 'Zonas_GEB',
+  label: 'Zonas GEB',
+  expandIcon: (<ExpandMoreIcon />),
+  detailClass: 'inlineb',
+  options: [
+    {
+      type: 'button',
+      label: 'Norte',
+    },
+    {
+      type: 'button',
+      label: 'Centro',
+    },
+    {
+      type: 'button',
+      label: 'Suroccidente',
+    },
+    {
+      type: 'button',
+      label: 'Occidente',
+    },
+  ],
+};
+
+export { description, selectorData, dataGEB };

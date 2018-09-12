@@ -1,9 +1,6 @@
 /** eslint verified */
 import axios from 'axios';
 
-const GEOSERVER_HOST = 'http://biotablero.humboldt.org.co/geoserver';
-const GEOSERVER_PORT = null;
-
 class GeoServerAPI {
   /**
    * Request the GEB layers, all projects or by project ID
@@ -62,8 +59,8 @@ class GeoServerAPI {
    * Request the base layer 'Regiones_geb'
    */
   static getRequestURL() {
-    const port = GEOSERVER_PORT ? `:${GEOSERVER_PORT}` : '';
-    return `${GEOSERVER_HOST}${port}`;
+    const port = process.env.REACT_APP_GEOSERVER_PORT ? `:${process.env.REACT_APP_GEOSERVER_PORT}` : '';
+    return `${process.env.REACT_APP_GEOSERVER_HOST}${port}`;
   }
 
   /**

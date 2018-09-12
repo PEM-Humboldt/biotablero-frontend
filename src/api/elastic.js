@@ -1,10 +1,6 @@
 /** eslint verified */
 import axios from 'axios';
 
-// TODO: put this in a config file
-const ELASTIC_HOST = 'http://biotablero.humboldt.org.co/elastic-dev/';
-const ELASTIC_PORT = null;
-
 class ElasticAPI {
   /**
    * Request the template with information about 'donde compensar' in Sogamoso project
@@ -109,8 +105,8 @@ class ElasticAPI {
    * @param {Object} requestBody JSON object with the request body
    */
   static makeRequest(endpoint, requestBody) {
-    const port = ELASTIC_PORT ? `:${ELASTIC_PORT}` : '';
-    const url = `${ELASTIC_HOST}${port}/${endpoint}`;
+    const port = process.env.REACT_APP_ELASTIC_PORT ? `:${process.env.REACT_APP_ELASTIC_PORT}` : '';
+    const url = `${process.env.REACT_APP_ELASTIC_HOST}${port}/${endpoint}`;
     return axios.post(url, requestBody)
       .then(res => res.data);
   }
