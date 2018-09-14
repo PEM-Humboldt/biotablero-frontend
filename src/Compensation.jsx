@@ -51,6 +51,7 @@ class Compensation extends Component {
           projectsFound.push(project);
         },
       );
+      console.log(projectsFound);
       this.setState(prevState => ({
         company: 'GEB',
         projects: projectsFound,
@@ -59,7 +60,7 @@ class Compensation extends Component {
           // the key is the id that communicates with other components and should match selectorData
           projectsGEB: {
             displayName: 'projectsGEB',
-            active: false,
+            active: true,
             layer: L.geoJSON(
               res[0],
               {
@@ -180,7 +181,7 @@ class Compensation extends Component {
 
   clickFeature = (event, parentLayer) => {
     const area = event.target;
-    this.updateActiveBioma(area.feature.properties.BIOMA_IAvH);
+    this.updateActiveBiome(area.feature.properties.BIOMA_IAvH);
     this.highlightFeature(event, parentLayer);
   }
 
@@ -231,7 +232,7 @@ class Compensation extends Component {
     });
   }
 
-  updateActiveBioma = (name) => {
+  updateActiveBiome = (name) => {
     const { layers: { biomasSogamoso } } = this.state;
     ElasticAPI.requestDondeCompensarSogamoso(name)
       .then((res) => {
@@ -296,7 +297,7 @@ class Compensation extends Component {
                 layerName={layerName}
                 projectData={datosSogamoso}
                 subAreaName={projectType}
-                updateActiveBioma={this.updateActiveBioma}
+                updateActiveBiome={this.updateActiveBiome}
               />
               )
             }

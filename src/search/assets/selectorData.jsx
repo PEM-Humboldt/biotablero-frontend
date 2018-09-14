@@ -62,7 +62,7 @@ const selectorData = [
     id: 'panel1-Geocerca',
     // id='geocercas' se utiliza en la hoja de estilos, para mostrar todos los elementos listados
     detailId: 'geocercas',
-    label: 'Geocercas',
+    label: 'Área de consulta',
     expandIcon: (<ExpandMoreIcon />),
     options: [
       {

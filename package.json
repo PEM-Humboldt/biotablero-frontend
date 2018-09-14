@@ -27,7 +27,6 @@
     "prop-types": "15.6.2",
     "react": "16.4.1",
     "react-dom": "^16.4.2",
-    "react-easy-chart": "1.0.0",
     "react-leaflet": "2.0.0",
     "react-router-dom": "4.3.1",
     "react-scripts": "^1.1.4",
@@ -36,8 +35,11 @@
   "devDependencies": {
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jsx-a11y": "6.1.1",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.11.0",
     "eslint-config-react-app": "^2.1.0"
+  },
+  "dependenciesComments": {
+    "eslint-plugin-jsx-a11y": "Keep in ^5.1.1 version to avoid warnings"
   }
 }

@@ -12,6 +12,15 @@ class GeoServerAPI {
   }
 
   /**
+   * Request the GEB layers, all projects or by project ID
+   */
+  static requestEnvironmentalEntities(envEntity) {
+    if (envEntity) return GeoServerAPI.requestWFSBiotablero('BIOMAS_BY_CAR_MP', `CQL_FILTER=GroupByCar%20like%20"%'${envEntity}'"`);
+    const response = GeoServerAPI.requestWFSBiotablero('BIOMAS_BY_CAR_MP');
+    return response;
+  }
+
+  /**
    * Request the layer for 'Sogamoso'
    */
   static requestSogamoso() {
