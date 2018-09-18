@@ -80,7 +80,7 @@ class Selector extends React.Component {
           const {
             id, label, disabled, expandIcon, detailId,
           } = firstLevel;
-          const options = firstLevel.options || [];
+          const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
             <ExpansionPanel
               className="m0"
@@ -100,7 +100,7 @@ class Selector extends React.Component {
                   const {
                     id: subId, label: subLabel, detailClass: subClasses,
                   } = secondLevel;
-                  const subOptions = secondLevel.options || [];
+                  const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
                     <ExpansionPanel
                       className="m0"

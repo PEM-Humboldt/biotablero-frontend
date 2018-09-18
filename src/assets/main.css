@@ -1245,12 +1245,12 @@ a#reset-filters {
   border: 0 !important;
 }
 
-#panel1-Geocerca, #panel1-Norte {
+#panel1-Geocerca, #panel1-ZonaOccidente {
   margin-top: 15px !important;
 }
 
 #panel1-Geocerca > div:nth-child(1),
-#panel1-Centro > div:nth-child(1),
+#panel1-ZonaCentro > div:nth-child(1),
 #panel2 > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;

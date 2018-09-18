@@ -1,15 +1,15 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import L from 'leaflet';
-import PropTypes from 'prop-types';
 
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
 import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
 import Layout from './Layout';
-import { description, selectorData } from './compensation/assets/selectorData';
+import { description } from './compensation/assets/selectorData';
 
 class Compensation extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class Compensation extends Component {
       projectName: null,
       layerName: null,
       layers: {},
-      projects: [],
+      regions: [],
       colors: [
         { medium: '#eabc47' },
         { low: '#51b4c1' },
@@ -33,34 +33,20 @@ class Compensation extends Component {
 
   componentDidMount() {
     Promise.all([
-      GeoServerAPI.requestProjectsGEB(),
+      GeoServerAPI.requestProjectLayersByCompany('GEB'),
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
+      GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
     ]).then((res) => {
-      const projectsFound = [];
-      // TODO: Finalize new projects load structure
-      Object.keys(res[0].features).forEach(
-        (index) => {
-          const project = {};
-          project.values = [
-            res[0].features[index].properties.ESTADO,
-            res[0].features[index].properties.PROYECTO,
-            res[0].features[index].properties.AREA_ha,
-          ];
-          project.key = res[0].features[index].properties.NOM_GEN;
-          projectsFound.push(project);
-        },
-      );
-      console.log(projectsFound);
       this.setState(prevState => ({
+        regions: res[3],
         company: 'GEB',
-        projects: projectsFound,
         layers: {
           ...prevState.layers,
           // the key is the id that communicates with other components and should match selectorData
           projectsGEB: {
             displayName: 'projectsGEB',
-            active: true,
+            active: false,
             layer: L.geoJSON(
               res[0],
               {
@@ -113,6 +99,47 @@ class Compensation extends Component {
           },
         },
       }));
+      this.setDataForSelector();
+    });
+  }
+
+  setDataForSelector = () => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      const { regions } = prevState;
+      Object.keys(regions).forEach((regionKey) => {
+        const regionFound = newState.regions[regionKey];
+        regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
+        regionFound.id = `panel1-${regionFound.label.replace(/ /g, '')}`;
+        regionFound.detailId = 'proyectos'; // TODO: Fix styles with Cesar
+        regionFound.expandedIcon = (<ExpandMoreIcon />);
+        Object.keys(regionFound
+          .projectsStates).forEach((stateKey) => {
+          const stateFound = regionFound.projectsStates[stateKey];
+          stateFound.label = `${stateFound
+            .id.toLowerCase().split(' ').map(str => (
+              (!str[2] || str[4]) ? str[0].toUpperCase() + str.slice(1) : str.toUpperCase())).join(' ')}`;
+          stateFound.expandedIcon = (<ExpandMoreIcon />);
+          stateFound.id = this.firstLetterUpperCase(stateFound.label).replace(/ /g, '');
+          stateFound.detailId = stateFound.id;
+          Object.keys(stateFound.projects).forEach((projectKey) => {
+            stateFound.projects[projectKey].type = 'button';
+            stateFound.projects[projectKey].label = `${this.firstLetterUpperCase(stateFound.projects[projectKey].name)}`;
+          });
+        });
+        regionFound.projectsStates.push({
+          id: 'addProject',
+          label: '+ Agregar nuevo proyecto',
+          expandIcon: (<ExpandMoreIcon />),
+          options: [ // TODO: Implementing handler for options inside projectState elements
+            { // TODO: Setting up CRUD for projects in the current state and region
+              type: 'button',
+              label: 'Agregar',
+            },
+          ],
+        });
+      });
+      return newState;
     });
   }
 
@@ -253,23 +280,23 @@ class Compensation extends Component {
     // (in the SZH selector). But the application won't break as it currently is
   }
 
+  firstLetterUpperCase = sentence => sentence.toLowerCase()
+    .split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
+
   render() {
-    const { userLogged } = this.props;
     const {
       datosSogamoso, currentCategory, projectType, projectName, layerName,
-      colors, layers,
+      colors, layers, regions,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
-        userLogged={userLogged}
       >
         <div className="appSearcher">
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
-            userLogged={userLogged}
           />
           <div className="contentView">
             {
@@ -282,7 +309,7 @@ class Compensation extends Component {
                 ]}
                 description={description}
                 expandedId={1}
-                data={selectorData}
+                data={regions}
                 iconClass="iconsec2"
               />
               )
@@ -307,13 +334,5 @@ class Compensation extends Component {
     );
   }
 }
-
-Compensation.propTypes = {
-  userLogged: PropTypes.object,
-};
-
-Compensation.defaultProps = {
-  userLogged: null,
-};
 
 export default Compensation;
