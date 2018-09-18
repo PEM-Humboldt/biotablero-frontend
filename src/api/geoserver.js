@@ -41,9 +41,12 @@ class GeoServerAPI {
   /**
    * Request the project layers names, all projects or by project ID
    */
-  static requestProjectsByCompany(companyName) {
+  static requestProjectsByCompany(companyName, projectName) {
     if (companyName === 'GEB') {
-      const response = Promise.resolve(GeoServerAPI.requestWFSBiotablero('User_GEB_projects'))
+      const request = projectName
+        ? GeoServerAPI.requestWFSBiotablero('User_GEB_projects', `CQL_FILTER=NOM_GEN='${projectName}'`)
+        : GeoServerAPI.requestWFSBiotablero('User_GEB_projects');
+      const response = Promise.resolve(request)
         .then((res) => {
           const projectsFound = [];
           // TODO: Finalize new projects load structure
@@ -130,6 +133,17 @@ class GeoServerAPI {
    */
   static makeRequest(endpoint) {
     return axios.get(`${this.getRequestURL()}/${endpoint}`)
+      .then(res => res.data);
+  }
+
+  /**
+   * Request an endpoint to the geoserver server
+   *
+   * @param {String} url endpoint url
+   * @param {Object} requestBody JSON object with the request body
+   */
+  static makeRequestTest(endpoint) {
+    return axios.get(`${endpoint}`)
       .then(res => res.data);
   }
 }

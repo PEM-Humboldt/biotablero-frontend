@@ -15,8 +15,9 @@ class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentCategory: null,
-      company: null,
+      currentCompany: null,
+      currentRegion: null,
+      currentProject: null,
       projectType: null,
       projectName: null,
       layerName: null,
@@ -37,10 +38,11 @@ class Compensation extends Component {
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
+      // GeoServerAPI.makeRequestTest('http://192.168.205.190:4000/geofences/ea/CORPOBOYACA'),
     ]).then((res) => {
       this.setState(prevState => ({
         regions: res[3],
-        company: 'GEB',
+        currentCompany: 'GEB',
         layers: {
           ...prevState.layers,
           // the key is the id that communicates with other components and should match selectorData
@@ -110,18 +112,18 @@ class Compensation extends Component {
       Object.keys(regions).forEach((regionKey) => {
         const regionFound = newState.regions[regionKey];
         regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
-        regionFound.id = `panel1-${regionFound.label.replace(/ /g, '')}`;
-        regionFound.detailId = 'proyectos'; // TODO: Fix styles with Cesar
-        regionFound.expandedIcon = (<ExpandMoreIcon />);
+        regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
+        regionFound.expandIcon = (<ExpandMoreIcon />);
+        regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
         Object.keys(regionFound
           .projectsStates).forEach((stateKey) => {
           const stateFound = regionFound.projectsStates[stateKey];
           stateFound.label = `${stateFound
             .id.toLowerCase().split(' ').map(str => (
               (!str[2] || str[4]) ? str[0].toUpperCase() + str.slice(1) : str.toUpperCase())).join(' ')}`;
-          stateFound.expandedIcon = (<ExpandMoreIcon />);
-          stateFound.id = this.firstLetterUpperCase(stateFound.label).replace(/ /g, '');
-          stateFound.detailId = stateFound.id;
+          stateFound.expandIcon = (<ExpandMoreIcon />);
+          stateFound.idLabel = this.firstLetterUpperCase(stateFound.label).replace(/ /g, '');
+          stateFound.detailId = 'state';
           Object.keys(stateFound.projects).forEach((projectKey) => {
             stateFound.projects[projectKey].type = 'button';
             stateFound.projects[projectKey].label = `${this.firstLetterUpperCase(stateFound.projects[projectKey].name)}`;
@@ -223,8 +225,9 @@ class Compensation extends Component {
       Object.keys(layers).forEach((layerKey) => {
         newState.layers[layerKey].active = false;
       });
-
       newState.projectName = null;
+      newState.projectName = null;
+      newState.currentProject = null;
       return newState;
     });
   }
@@ -235,7 +238,7 @@ class Compensation extends Component {
 
   firstLevelChange = (name) => {
     this.setState({
-      currentCategory: name,
+      currentRegion: name,
     });
   }
 
@@ -245,32 +248,41 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (nameToOff, nameToOn) => {
-    const { layers } = this.state;
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      if (layers[nameToOff]) newState.layers[nameToOff].active = false;
-      if (layers[nameToOn]) {
-        newState.layers[nameToOn].active = true;
-        if (nameToOn === 'sogamoso') newState.layers.biomasSogamoso.active = true;
-        newState.projectName = newState.layers[nameToOn].displayName;
-      }
-      return newState;
+  innerElementChange = (nameToOff, nameToOnU) => {
+    const nameToOn = nameToOnU.toLowerCase();
+    const { currentCompany, layers } = this.state;
+    Promise.resolve(
+      GeoServerAPI.requestProjectsByCompany(
+        currentCompany, nameToOn.toUpperCase(),
+      ),
+    ).then((res) => {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        if (layers[nameToOff]) newState.layers[nameToOff].active = false;
+        if (layers[nameToOn]) {
+          newState.layers[nameToOn].active = true;
+          if (nameToOn === 'sogamoso') newState.layers.biomasSogamoso.active = true;
+          newState.projectName = newState.layers[nameToOn].displayName;
+          newState.currentProject = res;
+        }
+        return newState;
+      });
     });
   }
 
-  updateActiveBiome = (name) => {
+  updateActiveBiome = (biomeName) => {
     const { layers: { biomasSogamoso } } = this.state;
-    ElasticAPI.requestDondeCompensarSogamoso(name)
+    ElasticAPI.requestDondeCompensarSogamoso(biomeName)
       .then((res) => {
         this.setState({
-          layerName: name,
+          layerName: biomeName,
+          // currentProject: GeoServerAPI.requestBiomeByProject(currentProject, biomeName),
           datosSogamoso: res,
         });
       }).then(() => {
         const currentLayers = biomasSogamoso.layer.getLayers();
         const currentClasses = Object.values(currentLayers)
-          .filter(obj => obj.feature.properties.BIOMA_IAvH === name);
+          .filter(obj => obj.feature.properties.BIOMA_IAvH === biomeName);
         currentClasses.forEach(currentClass => currentClass.setStyle({
           fillOpacity: 1,
         }));
@@ -285,7 +297,7 @@ class Compensation extends Component {
 
   render() {
     const {
-      datosSogamoso, currentCategory, projectType, projectName, layerName,
+      datosSogamoso, currentCompany, currentRegion, projectType, projectName, layerName,
       colors, layers, regions,
     } = this.state;
     return (
@@ -307,9 +319,11 @@ class Compensation extends Component {
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
-                description={description}
-                expandedId={1}
+                description={description(currentCompany)}
                 data={regions}
+                expandedId={
+                  regions.findIndex(region => region.id === currentRegion)
+                }
                 iconClass="iconsec2"
               />
               )
@@ -317,7 +331,7 @@ class Compensation extends Component {
             {
               projectName && (
               <Drawer
-                areaName={`GEB ${currentCategory}`}
+                areaName={`${currentCompany} ${currentRegion}`}
                 back={this.handlerBackButton}
                 basinName={projectName}
                 colors={colors.map(obj => Object.values(obj)[0])}
