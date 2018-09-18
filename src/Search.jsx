@@ -20,6 +20,7 @@ class Search extends Component {
     super(props);
     this.state = {
       layers: {},
+      currentCompany: null,
       subAreaName: null,
       layerName: null,
       basinData: null,
@@ -248,7 +249,8 @@ class Search extends Component {
   render() {
     const { userLogged } = this.props;
     const {
-      subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH, layers,
+      subAreaName, layerName, activeLayerName, basinData, currentCompany,
+      colors, colorsFC, colorSZH, layers,
     } = this.state;
     return (
       <Layout
@@ -269,7 +271,7 @@ class Search extends Component {
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
-                description={description}
+                description={description(currentCompany)}
                 data={selectorData}
                 expandedId={0}
                 iconClass="iconsection"

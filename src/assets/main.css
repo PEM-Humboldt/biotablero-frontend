@@ -1208,8 +1208,8 @@ a#reset-filters {
   color: #4a585f;
 }
 
-#geocercas,
-#proyectos {
+#geofences,
+#region {
     display: block !important;
     padding-top: 0;
 }
@@ -1249,8 +1249,8 @@ a#reset-filters {
   margin-top: 15px !important;
 }
 
-#panel1-Geocerca > div:nth-child(1),
 #panel1-ZonaCentro > div:nth-child(1),
+#panel1-Geocerca > div:nth-child(1),
 #panel2 > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;
@@ -1260,7 +1260,7 @@ a#reset-filters {
 }
 
 #panel1-Geocerca > div:nth-child(1) svg,
-#panel1-Centro > div:nth-child(1) svg,
+#panel1-ZonaCentro > div:nth-child(1) svg,
 #panel2 > div:nth-child(1) svg,
 #panel3 > div:nth-child(1) svg {
   color: #e84a5f;

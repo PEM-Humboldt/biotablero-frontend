@@ -2,7 +2,7 @@
 import React from 'react';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-const description = (
+const description = companyName => (
   <div>
     <h1>
       Compensaciones
@@ -24,7 +24,8 @@ const description = (
       </i>
       {' Selecciona una '}
       <b>
-        Zona GEB
+        Zona
+        {companyName ? ` ${companyName}` : ''}
       </b>
     </p>
     <p>
