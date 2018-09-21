@@ -12,9 +12,6 @@ class SelectedBiome extends Component {
     this.state = {
       rows,
       strategiesSelectedByArea: [],
-      // strategies: [],
-      // classTable: 'special',
-      // dataSelected: null,
       selectedArea: 0,
       tableError: '',
     };
@@ -52,22 +49,6 @@ class SelectedBiome extends Component {
     this.setState({ tableError: message });
   }
 
-  // showStrategies = (data) => {
-  //   const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
-  //     key: obj.GROUPS,
-  //     values: [
-  //       obj.ESTRATEGIA,
-  //       Number(obj.HA_ES_EJ).toFixed(2),
-  //       <InputCompensation
-  //         name={obj.GROUPS}
-  //         maxValue={Number(obj.HA_ES_EJ)}
-  //         operateArea={this.operateArea}
-  //         reportError={this.reportTableError}
-  //       />,
-  //     ],
-  //   }));
-  // }
-
   /**
    * Function to include an strategy at the strategiesSelectedByArea state
    */
@@ -104,7 +85,6 @@ class SelectedBiome extends Component {
   }
 
   render() {
-    // console.log(this.state.strategiesSelectedByArea);
     const { rows, selectedArea, tableError } = this.state;
     const {
       biome, car, strategySuggested, szh,

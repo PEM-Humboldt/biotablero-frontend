@@ -109,7 +109,6 @@ class Drawer extends React.Component {
       car={car}
       rows={strategies}
       operateArea={this.operateArea}
-    // updateArea={this.}
     />
   )
 

@@ -1460,7 +1460,7 @@ p.legcomp {
   float: left;
 }
 
-/* .Select-menu-outer { top: auto; bottom: 100%; } */
+.Select-menu-outer { top: auto; bottom: 100%; }
 
 .Select-option.is-focused  {
     background-color: rgba(234, 73, 95, 0.15) !important;

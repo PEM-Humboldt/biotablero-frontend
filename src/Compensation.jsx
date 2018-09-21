@@ -38,7 +38,6 @@ class Compensation extends Component {
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
-      // GeoServerAPI.makeRequestTest('http://192.168.205.190:4000/geofences/ea/CORPOBOYACA'),
     ]).then((res) => {
       this.setState(prevState => ({
         regions: res[3],
