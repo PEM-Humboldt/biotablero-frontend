@@ -18,6 +18,7 @@ class Compensation extends Component {
       currentCompany: null,
       currentRegion: null,
       currentProject: null,
+      currentBiome: null,
       projectType: null,
       projectName: null,
       layerName: null,
@@ -270,13 +271,13 @@ class Compensation extends Component {
   }
 
   updateActiveBiome = (biomeName) => {
-    const { layers: { biomasSogamoso } } = this.state;
-    ElasticAPI.requestDondeCompensarSogamoso(biomeName)
+    const { layers: { biomasSogamoso }, currentProject } = this.state;
+    console.log('currentProject', currentProject);
+    ElasticAPI.requestProjectStrategiesByBiome(currentProject[0].name, biomeName)
       .then((res) => {
         this.setState({
           layerName: biomeName,
-          // currentProject: GeoServerAPI.requestBiomeByProject(currentProject, biomeName),
-          datosSogamoso: res,
+          currentBiome: res,
         });
       }).then(() => {
         const currentLayers = biomasSogamoso.layer.getLayers();
@@ -296,7 +297,7 @@ class Compensation extends Component {
 
   render() {
     const {
-      datosSogamoso, currentCompany, currentRegion, projectType, projectName, layerName,
+      currentBiome, currentCompany, currentRegion, projectType, projectName, layerName,
       colors, layers, regions,
     } = this.state;
     return (
@@ -335,7 +336,7 @@ class Compensation extends Component {
                 basinName={projectName}
                 colors={colors.map(obj => Object.values(obj)[0])}
                 layerName={layerName}
-                projectData={datosSogamoso}
+                biomeData={currentBiome}
                 subAreaName={projectType}
                 updateActiveBiome={this.updateActiveBiome}
               />

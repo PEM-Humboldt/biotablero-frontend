@@ -113,9 +113,9 @@ class SelectedBiome extends Component {
             {<EraseIcon />}
           </div>
           <div>
-            <h2>
-              {`Estrategia sugerida: ${strategySuggested || 'Restauración'}` /** TODO: Define value by default */}
-            </h2>
+            <h3>
+              {`Estrategia sugerida: ${strategySuggested || 'Restauración en áreas SINAP'}` /** TODO: Define value by default */}
+            </h3>
           </div>
         </div>
         {tableError && (

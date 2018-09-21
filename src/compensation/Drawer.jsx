@@ -79,6 +79,7 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      biomesSelected: [],
       whereData: [],
       totals: {},
       szh: null,
@@ -86,6 +87,8 @@ class Drawer extends React.Component {
       selectedArea: 0,
       tableError: '',
       showGraphs: { DotsWhere: true },
+      // classTable: 'special',
+      // dataSelected: null,
     };
   }
 
@@ -102,15 +105,36 @@ class Drawer extends React.Component {
     // (in the table). But the application won't break as it currently is
   }
 
-  newBiome = (layerName, szh, car, strategies) => (
-    <SelectedBiome
-      biome={layerName}
-      szh={szh}
-      car={car}
-      rows={strategies}
-      operateArea={this.operateArea}
-    />
-  )
+  newBiome = (layerName, szh, car, strategies) => {
+    console.log('strategies', strategies);
+    return (
+      <SelectedBiome
+        biome={layerName}
+        szh={szh}
+        car={car}
+        strategySuggested="Rehabilitación en áreas SINAP"
+        // TODO: Set strategySuggested inside TableStylized from biome data
+        rows={strategies}
+        operateArea={this.operateArea}
+      />
+    );
+  }
+
+  // showStrategies = (data) => {
+  //   const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
+  //     key: obj.GROUPS,
+  //     values: [
+  //       obj.ESTRATEGIA,
+  //       Number(obj.HA_ES_EJ).toFixed(2),
+  //       <InputCompensation
+  //         name={obj.GROUPS}
+  //         maxValue={Number(obj.HA_ES_EJ)}
+  //         operateArea={this.operateArea}
+  //         reportError={this.reportTableError}
+  //       />,
+  //     ],
+  //   }));
+  // }
 
   /**
    * Add or subtract a value to selectedArea
@@ -145,7 +169,7 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'projectData' construct an array with strategies info for the given szh
+   * From data loaded in 'biomeData' construct an array with strategies info for the given szh
    * and car
    *
    * @param {String} szh SZH name
@@ -165,8 +189,9 @@ class Drawer extends React.Component {
       return;
     }
 
-    const { projectData } = this.props;
-    const data = this.cleanSogamosoData(projectData);
+    const { biomeData } = this.props;
+    console.log('biomeData', biomeData);
+    const data = this.cleanBiomeData(biomeData);
     const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
       key: obj.GROUPS,
       values: [
@@ -191,7 +216,7 @@ class Drawer extends React.Component {
     }));
   }
 
-  cleanSogamosoData = (data) => {
+  cleanBiomeData = (data) => {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
@@ -264,7 +289,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, layerName, projectData,
+      areaName, back, basinName, colors, classes, layerName, biomeData,
       subAreaName,
     } = this.props;
     const {
@@ -344,7 +369,7 @@ class Drawer extends React.Component {
                   </h4>
                 </div>
                 {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
+                {this.renderSelector(this.cleanBiomeData(biomeData), totalACompensar)}
                 { !DotsWhere && (
                   <button
                     className="backgraph"
@@ -388,7 +413,7 @@ Drawer.propTypes = {
   // Function to handle onClick event on the graph
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
-  projectData: PropTypes.object,
+  biomeData: PropTypes.object,
   subAreaName: PropTypes.string,
   updateActiveBiome: PropTypes.func,
 };
@@ -398,7 +423,7 @@ Drawer.defaultProps = {
   back: () => {},
   basinName: '',
   colors: ['#eabc47'],
-  projectData: {},
+  biomeData: {},
   updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',

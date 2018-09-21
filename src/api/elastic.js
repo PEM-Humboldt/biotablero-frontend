@@ -7,14 +7,16 @@ class ElasticAPI {
    *
    * @param {String} biome biome's name to request
    */
-  static requestDondeCompensarSogamoso(biome) {
-    return ElasticAPI.makeRequest(
-      'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source',
-      {
-        id: 'donde_compensar_sogamoso',
-        params: { bioma_name: biome },
-      },
-    );
+  static requestProjectStrategiesByBiome(projectName, biomeName) {
+    if (projectName === 'SOGAMOSO') {
+      return ElasticAPI.makeRequest(
+        'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source',
+        {
+          id: 'donde_compensar_sogamoso',
+          params: { bioma_name: biomeName },
+        },
+      );
+    } return null; // TODO: Set this request for a generical search and keeping response structure
   }
 
   /**

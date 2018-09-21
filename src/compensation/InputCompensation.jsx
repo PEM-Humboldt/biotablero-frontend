@@ -43,7 +43,7 @@ class InputCompensation extends React.Component {
           className={inputError ? 'inputError' : ''}
         />
         <button
-          className={`${add ? 'addbioma' : 'subbioma'} smbtn`}
+          className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
           onClick={() => {
             const value = Number(this.inputRef.current.value);

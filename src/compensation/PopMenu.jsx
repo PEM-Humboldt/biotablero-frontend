@@ -109,7 +109,7 @@ class PopMenu extends Component {
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
         {showButton ? (
           <button
-            className="addbioma"
+            className="addbiome"
             type="button"
             onClick={() => {
               this.setState({ showButton: false });

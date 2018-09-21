@@ -1505,7 +1505,7 @@ tr.row2table:nth-child(odd){
   color: #fff !important;
 }
 
-.addbioma {
+.addbiome {
   outline: none;
   background: transparent;
   cursor: pointer;
@@ -1517,7 +1517,7 @@ tr.row2table:nth-child(odd){
   margin-top: 10px;
 }
 
-.addbioma::after {
+.addbiome::after {
   content: " ";
   position: absolute;
   display: block;
@@ -1530,7 +1530,7 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.addbioma::before {
+.addbiome::before {
   content: " ";
   position: absolute;
   display: block;
@@ -1543,16 +1543,16 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.addbioma:hover {
+.addbiome:hover {
   background-color: #ea495f;
 }
 
-.addbioma:hover::after,
-.addbioma:hover::before {
+.addbiome:hover::after,
+.addbiome:hover::before {
   background-color: #fff;
 }
 
-.subbioma {
+.subbiome {
   outline: none;
   background: transparent;
   cursor: pointer;
@@ -1564,7 +1564,7 @@ tr.row2table:nth-child(odd){
   margin-top: 10px;
 }
 
-.subbioma::after {
+.subbiome::after {
   content: " ";
   position: absolute;
   display: block;
@@ -1577,11 +1577,11 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.subbioma:hover {
+.subbiome:hover {
   background-color: #345b6b;
 }
 
-.subbioma:hover::after {
+.subbiome:hover::after {
   background-color: #fff;
 }
 
