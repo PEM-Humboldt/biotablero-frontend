@@ -45,7 +45,7 @@ class ElasticAPI {
       'corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       {
         id: 'biomaBySZH',
-        params: { biome },
+        params: { bioma: biome },
       },
     );
   }
@@ -88,7 +88,7 @@ class ElasticAPI {
    *
    * @param {String} idCAR id CAR to request
    */
-  static requestCarByBiomaArea(idCAR) {
+  static requestCarByBiomeArea(idCAR) {
     return ElasticAPI.makeRequest(
       'corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets.key,aggregations.areas.buckets.area,aggregations.areas.buckets.fc.hits.hits._source,aggregations.total_area',
       {

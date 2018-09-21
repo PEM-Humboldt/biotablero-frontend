@@ -33,7 +33,7 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    ElasticAPI.requestCarByBiomaArea('CORPOBOYACA')
+    ElasticAPI.requestCarByBiomeArea('CORPOBOYACA')
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
