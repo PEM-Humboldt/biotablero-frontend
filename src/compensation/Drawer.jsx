@@ -1,6 +1,6 @@
 /** eslint verified */
 // FEATURE: Create the shopping cart list, saving header as guide element,
-// saving values typed for each row by bioma
+// saving values typed for each row by biome
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,6 +16,7 @@ import InputCompensation from './InputCompensation';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
+import SelectedBiome from './SelectedBiome';
 
 const styles = () => ({
   root: {
@@ -31,7 +32,7 @@ class Drawer extends React.Component {
    * @param {Array} data array of objects with information about compensations
    */
   static cleanWhatWhereData = (data) => {
-    const biomas = data.hits.hits.map(({ _source: fields }) => {
+    const biomes = data.hits.hits.map(({ _source: fields }) => {
       const {
         BIOMA_IAVH, PORCENT_AFECTACION, FC, NATURAL, TOTAL_COMPENSAR,
         SECUNDARIA, TRANSFORMADO,
@@ -63,7 +64,7 @@ class Drawer extends React.Component {
       },
     );
     return {
-      biomas,
+      biomes,
       totals: {
         name: 'TOTALES (CUANTO)',
         affected_natural: totals.affected_natural.toFixed(2),
@@ -82,20 +83,18 @@ class Drawer extends React.Component {
       totals: {},
       szh: null,
       car: null,
-      strategies: [],
       selectedArea: 0,
       tableError: '',
       showGraphs: { DotsWhere: true },
     };
-    this.referencesStrategies = [];
   }
 
   componentDidMount() {
     ElasticAPI.requestQueYCuantoCompensar('SOGAMOSO')
       .then((res) => {
-        const { biomas, totals } = Drawer.cleanWhatWhereData(res);
+        const { biomes, totals } = Drawer.cleanWhatWhereData(res);
         this.setState({
-          whereData: biomas,
+          whereData: biomes,
           totals,
         });
       });
@@ -103,11 +102,21 @@ class Drawer extends React.Component {
     // (in the table). But the application won't break as it currently is
   }
 
+  newBiome = (layerName, szh, car, strategies) => (
+    <SelectedBiome
+      biome={layerName}
+      szh={szh}
+      car={car}
+      rows={strategies}
+      operateArea={this.operateArea}
+    />
+  )
+
   /**
    * Add or subtract a value to selectedArea
    *
-   * @param {number} index index for referencesStrategies
-   * @param {number} maxValue maximum allowed value
+   * @param {number} value amount to operate in the selectedArea
+   * @param {number} operator indicates the operation to realize with the value
    */
   operateArea = (value, operator) => {
     this.setState((prevState) => {
@@ -158,22 +167,19 @@ class Drawer extends React.Component {
 
     const { projectData } = this.props;
     const data = this.cleanSogamosoData(projectData);
-    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => {
-      this.referencesStrategies.push(React.createRef());
-      return {
-        key: obj.GROUPS,
-        values: [
-          obj.ESTRATEGIA,
-          Number(obj.HA_ES_EJ).toFixed(2),
-          <InputCompensation
-            name={obj.GROUPS}
-            maxValue={Number(obj.HA_ES_EJ)}
-            operateArea={this.operateArea}
-            reportError={this.reportTableError}
-          />,
-        ],
-      };
-    });
+    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
+      key: obj.GROUPS,
+      values: [
+        obj.ESTRATEGIA,
+        Number(obj.HA_ES_EJ).toFixed(2),
+        <InputCompensation
+          name={obj.GROUPS}
+          maxValue={Number(obj.HA_ES_EJ)}
+          operateArea={this.operateArea}
+          reportError={this.reportTableError}
+        />,
+      ],
+    }));
     this.setState(prevState => ({
       szh,
       car,
@@ -228,7 +234,7 @@ class Drawer extends React.Component {
    */
   renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
     const { showGraphs: { DotsWhere } } = this.state;
-    const { updateActiveBioma } = this.props;
+    const { updateActiveBiome } = this.props;
     if (graph === 'Dots' && DotsWhere) {
       return (
         <ParentSize className="nocolor">
@@ -245,7 +251,7 @@ class Drawer extends React.Component {
                 labelY={labelY}
                 elementOnClick={(name) => {
                   this.setState({ szh: null, car: null, strategies: [] });
-                  return updateActiveBioma(name);
+                  return updateActiveBiome(name);
                 }}
               />
             )
@@ -258,23 +264,24 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      classes, projectData, layerName, back, basinName, areaName, subAreaName, colors,
+      areaName, back, basinName, colors, classes, layerName, projectData,
+      subAreaName,
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
       showGraphs: { DotsWhere },
     } = this.state;
 
-    const tableRows = whereData.map((bioma, i) => ({
+    const tableRows = whereData.map((biome, i) => ({
       key: `que-${i}`,
       values: [
-        bioma.name,
-        bioma.fc,
-        bioma.affected_natural,
-        bioma.affected_secondary,
-        bioma.affected_transformed,
-        `${bioma.affected_percentage}%`,
-        bioma.total_compensate,
+        biome.name,
+        biome.fc,
+        biome.affected_natural,
+        biome.affected_secondary,
+        biome.affected_transformed,
+        `${biome.affected_percentage}%`,
+        biome.total_compensate,
       ],
     }));
 
@@ -361,16 +368,7 @@ class Drawer extends React.Component {
                   </div>
                 )}
                 { layerName && szh && car && strategies && (
-                  <TableStylized
-                    description={{
-                      Bioma: layerName,
-                      SZH: szh,
-                      Jurisdicción: car,
-                    }}
-                    headers={['Estrategia', 'Héctareas', 'Agregar']}
-                    rows={strategies}
-                    classTable="special"
-                  />
+                  this.newBiome(layerName, szh, car, strategies)
                 )}
               </div>
             ),
@@ -392,7 +390,7 @@ Drawer.propTypes = {
   // Data from elastic result for "donde compensar sogamoso"
   projectData: PropTypes.object,
   subAreaName: PropTypes.string,
-  updateActiveBioma: PropTypes.func,
+  updateActiveBiome: PropTypes.func,
 };
 
 Drawer.defaultProps = {
@@ -401,7 +399,7 @@ Drawer.defaultProps = {
   basinName: '',
   colors: ['#eabc47'],
   projectData: {},
-  updateActiveBioma: () => {},
+  updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',
 };

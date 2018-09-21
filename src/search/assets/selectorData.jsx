@@ -4,7 +4,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import FileUploadIcon from '@material-ui/icons/FileUpload';
 import RateReviewIcon from '@material-ui/icons/Edit';
 
-const description = (
+const description = companyName => (
   <div>
     <h1>
       Consultas geográficas
@@ -28,10 +28,11 @@ const description = (
       <i>
         1
       </i>
-      {' Selecciona una '}
+      {' Selecciona un '}
       <b>
-        geocerca
+        área de consulta
       </b>
+      { companyName ? ` de la empresa ${companyName} o ` : ''}
       {' predeterminada (departamentos, jurisdicciones, etc.)'}
     </p>
     <p>
@@ -59,10 +60,11 @@ const description = (
 
 const selectorData = [
   {
-    id: 'panel1-Geocerca',
-    // id='geocercas' se utiliza en la hoja de estilos, para mostrar todos los elementos listados
-    detailId: 'geocercas',
-    label: 'Geocercas',
+    id: 'Geocerca',
+    idLabel: 'panel1-Geocerca',
+    // id='geofences' se utiliza en la hoja de estilos, para mostrar todos los elementos listados
+    detailId: 'geofences',
+    label: 'Área de consulta',
     expandIcon: (<ExpandMoreIcon />),
     options: [
       {

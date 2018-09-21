@@ -5,14 +5,14 @@ class ElasticAPI {
   /**
    * Request the template with information about 'donde compensar' in Sogamoso project
    *
-   * @param {String} bioma bioma's name to request
+   * @param {String} biome biome's name to request
    */
-  static requestDondeCompensarSogamoso(bioma) {
+  static requestDondeCompensarSogamoso(biome) {
     return ElasticAPI.makeRequest(
       'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source',
       {
         id: 'donde_compensar_sogamoso',
-        params: { bioma_name: bioma },
+        params: { bioma_name: biome },
       },
     );
   }
@@ -35,17 +35,17 @@ class ElasticAPI {
   }
 
   /**
-   * Request the template to load a given bioma by subzona hidrografica.
+   * Request the template to load a given biome by subzona hidrografica.
    * Here is defined the filter_path options for this template
    *
-   * @param {String} bioma bioma's name to request
+   * @param {String} biome biome's name to request
    */
-  static requestBiomaBySZH(bioma) {
+  static requestBiomeBySZH(biome) {
     return ElasticAPI.makeRequest(
       'corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       {
         id: 'biomaBySZH',
-        params: { bioma },
+        params: { biome },
       },
     );
   }
@@ -83,7 +83,7 @@ class ElasticAPI {
   }
 
   /**
-   * Request the template to load CAR by bioma Area.
+   * Request the template to load CAR by biome Area.
    * Here is defined the filter_path options for this template
    *
    * @param {String} idCAR id CAR to request

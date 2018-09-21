@@ -15,7 +15,7 @@ class Selector extends React.Component {
     const expandedId = props.expandedId || 0;
     const expandedByDefault = data[expandedId] || { id: null, label: null };
     this.state = {
-      expanded: expandedByDefault.id,
+      expanded: expandedByDefault.id === -1 ? 0 : expandedByDefault.id,
       subExpanded: null,
     };
     props.handlers[0](expandedByDefault.label);
@@ -78,13 +78,13 @@ class Selector extends React.Component {
         {description}
         {data.map((firstLevel) => {
           const {
-            id, label, disabled, expandIcon, detailId,
+            id, label, disabled, expandIcon, detailId, idLabel,
           } = firstLevel;
-          const options = firstLevel.options || [];
+          const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
             <ExpansionPanel
               className="m0"
-              id={id}
+              id={idLabel}
               expanded={expanded === id}
               disabled={disabled}
               onChange={this.firstLevelChange(id)}
@@ -100,7 +100,7 @@ class Selector extends React.Component {
                   const {
                     id: subId, label: subLabel, detailClass: subClasses,
                   } = secondLevel;
-                  const subOptions = secondLevel.options || [];
+                  const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
                     <ExpansionPanel
                       className="m0"

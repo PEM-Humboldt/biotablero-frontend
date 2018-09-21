@@ -103,7 +103,7 @@ class PopMenu extends Component {
       <div className="complist">
         <AddIcon />
         <div className="Biomatit">
-          {layerName || 'Seleccione un bioma del gráfico'}
+          {layerName || 'Seleccione un bioma del gráfico o del mapa'}
         </div>
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
