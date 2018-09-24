@@ -39,7 +39,8 @@ class PopMenu extends Component {
       carSelected: null,
     });
     const { loadStrategies } = this.props;
-    loadStrategies(szhSelected.value);
+    if (szhSelected) loadStrategies(szhSelected.value);
+    else loadStrategies(null, null);
   }
 
   /**
@@ -65,12 +66,14 @@ class PopMenu extends Component {
    * Event handler when a CAR option is selected
    */
   handleChangeCAR = (carSelected) => {
+    const { szhSelected } = this.state;
     this.setState({
       carSelected: carSelected ? carSelected.value : '',
       showButton: Boolean(carSelected),
     });
     const { loadStrategies } = this.props;
-    loadStrategies();
+    if (carSelected) loadStrategies(szhSelected, carSelected.value);
+    else loadStrategies(szhSelected, null);
   }
 
   /**

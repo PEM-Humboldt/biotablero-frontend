@@ -82,13 +82,11 @@ class Drawer extends React.Component {
       whereData: [],
       totals: {},
       szh: null,
-      car: null,
+      ea: null,
       strategiesData: [],
       selectedArea: 0,
       tableError: '',
       showGraphs: { DotsWhere: true },
-      // classTable: 'special',
-      // dataSelected: null,
     };
   }
 
@@ -105,20 +103,37 @@ class Drawer extends React.Component {
     // (in the table). But the application won't break as it currently is
   }
 
-  newBiome = (layerName, szh, car, strategiesData) => {
-    console.log('strategies', strategiesData);
-    return (
-      <SelectedBiome
-        biome={layerName}
-        szh={szh}
-        car={car}
-        strategySuggested="Rehabilitación en áreas SINAP"
-        // TODO: Set strategySuggested inside TableStylized from biome data
-        data={strategiesData}
-        operateArea={this.operateArea}
-      />
-    );
-  }
+  /**
+   * Create a new Biome to operate in the interface
+   *
+   * @param {String} layerName current bioma name showed and selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   * @param {Array} strategiesData strategies data to list
+   * @param {Function} operateSelectedAreas operate total selected area
+   */
+  newBiome = (layerName, szh, ea, strategiesData) => (
+    <SelectedBiome
+      biome={layerName}
+      szh={szh}
+      ea={ea}
+      data={strategiesData}
+      operateSelectedAreas={this.operateSelectedAreas}
+    />
+  );
+
+  /**
+   * Hold and show Biomes previously added to the plan
+   *
+   * @param {String} layerName current bioma name showed and selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   * @param {Array} strategiesData strategies data to list
+   * @param {Function} operateSelectedAreas operate total selected area
+   */
+
+  // TODO: Implement it with biomesSelected state
+  showBiomes = () => true;
 
   /**
    * Add or subtract a value to selectedArea
@@ -126,7 +141,7 @@ class Drawer extends React.Component {
    * @param {number} value amount to operate in the selectedArea
    * @param {number} operator indicates the operation to realize with the value
    */
-  operateArea = (value, operator) => {
+  operateSelectedAreas = (value, operator) => {
     this.setState((prevState) => {
       let { selectedArea } = prevState;
       switch (operator) {
@@ -154,16 +169,16 @@ class Drawer extends React.Component {
 
   /**
    * From data loaded in 'biomeData' construct an array with strategies info for the given szh
-   * and car
+   * and ea
    *
    * @param {String} szh SZH name
-   * @param {String} car CAR name
+   * @param {String} ea CAR name
    */
-  loadStrategies = (szh, car) => {
-    if (!szh || !car) {
+  loadStrategies = (szh, ea) => {
+    if (!szh || !ea) {
       this.setState(prevState => ({
         szh,
-        car,
+        ea,
         showGraphs: {
           ...prevState.showGraphs,
           DotsWhere: true,
@@ -173,13 +188,12 @@ class Drawer extends React.Component {
     }
 
     const { biomeData } = this.props;
-    console.log('biomeData', biomeData);
     const data = this.cleanBiomeFilterList(biomeData);
     if (data) {
       this.setState(prevState => ({
         szh,
-        car,
-        strategiesData: data[szh][car].results.hits.hits,
+        ea,
+        strategiesData: data[szh][ea].results.hits.hits,
         showGraphs: {
           ...prevState.showGraphs,
           DotsWhere: false,
@@ -193,8 +207,9 @@ class Drawer extends React.Component {
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
       const cleanCar = {};
-      szh.car.buckets.forEach((car) => {
-        cleanCar[car.key] = car;
+      // TODO: Replace name "car" for "ea"
+      szh.car.buckets.forEach((ea) => {
+        cleanCar[ea.key] = ea;
       });
       cleanData[szh.key] = cleanCar;
     });
@@ -247,7 +262,7 @@ class Drawer extends React.Component {
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
-                  this.setState({ szh: null, car: null, strategies: [] });
+                  this.setState({ szh: null, ea: null, strategiesData: [] });
                   return updateActiveBiome(name);
                 }}
               />
@@ -265,8 +280,8 @@ class Drawer extends React.Component {
       subAreaName,
     } = this.props;
     const {
-      whereData, totals, selectedArea, totalACompensar, szh, car, tableError,
-      showGraphs: { DotsWhere }, biomesSelected,
+      whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
+      showGraphs: { DotsWhere }, strategiesData, biomesSelected,
     } = this.state;
 
     const tableRows = whereData.map((biome, i) => ({
@@ -356,7 +371,8 @@ class Drawer extends React.Component {
                     ))}
                   >
                     <BackGraph />
-                    {' Ir al gráfico'}
+                    {' Ir al gráfico' // TODO: Move this functionality to SelectedBiome button
+                    }
                   </button>
                 )}
                 {tableError && (
@@ -364,12 +380,12 @@ class Drawer extends React.Component {
                     {tableError}
                   </div>
                 )}
-                { layerName && szh && car && biomeData && (
-                  this.newBiome(layerName, szh, car, biomeData)
+                { layerName && szh && ea && strategiesData && (
+                  this.newBiome(layerName, szh, ea, strategiesData)
                 )}
-                {/* { biomesSelected && (
-                  this.showBiomes(biomesSelected) // TODO: Create showBiomes(biomesSelected)
-                )} */}
+                { biomesSelected && (
+                  this.showBiomes() // TODO: Create showBiomes(biomesSelected)
+                )}
               </div>
             ),
           ]}

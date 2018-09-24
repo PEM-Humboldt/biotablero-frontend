@@ -48,7 +48,9 @@ class InputCompensation extends React.Component {
           onClick={() => {
             const value = Number(this.inputRef.current.value);
             const action = add ? '+' : '-';
-            if (value <= maxValue) {
+            if (value <= 0) {
+              reportError('No puede ingresar valores menores a cero');
+            } else if (value <= maxValue) {
               operateArea(value, action);
               this.switchAction(action);
             } else {

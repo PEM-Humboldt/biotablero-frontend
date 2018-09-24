@@ -1472,6 +1472,27 @@ p.legcomp {
   margin-top: -3px;
 }
 
+.icongraph {
+	color: #ffffff;
+	float: right;
+	cursor: pointer;
+	border: 0;
+	background-color: transparent;
+}
+
+.icondelete {
+	color: #ffffff;
+	float: right;
+	cursor: pointer;
+	border: 0;
+	background-color: transparent;
+}
+
+.icondelete:disabled {
+	color: #757474;
+	outline: 0;
+}
+
 table.graphcard {
   width: 100%;
   font-size: 12px;

@@ -11,39 +11,50 @@ class SelectedBiome extends Component {
     super(props);
     const { data } = this.props;
     this.state = {
-      data,
-      strategies: [],
+      strategies: this.showStrategies(data),
+      strategySuggested: 'Rehabilitación en áreas SINAP', // default value
       strategiesSelected: [],
       selectedArea: 0,
       tableError: '',
+      show_table: true,
     };
   }
 
+  /**
+   * Function to add an input and review if is an strategy suggested for each strategy
+   *
+   * @param {Array} data input with all strategies information, just one strategy suggested
+   */
   showStrategies = (data) => {
-    console.log('data', data)
-    const strategies = data.map(({ _source: obj }) => ({
-      key: obj.GROUPS,
-      values: [
-        obj.ESTRATEGIA,
-        Number(obj.HA_ES_EJ).toFixed(2),
-        <InputCompensation
-          name={obj.GROUPS}
-          maxValue={Number(obj.HA_ES_EJ)}
-          operateArea={this.operateArea}
-          reportError={this.reportTableError}
-        />,
-      ],
-    }));
-    this.setState(prevState => ({
-      strategies,
-      showGraphs: {
-        ...prevState.showGraphs,
-        DotsWhere: false,
-      },
-    }));
+    const strategies = data.map(({ _source: obj }) => {
+    // TODO: Set strategySuggested inside TableStylized from biome data
+      if (obj.SUGERIDA) {
+        const name = obj.ESTRATEGIA;
+        this.setState(prevState => ({
+          strategySuggested: {
+            ...prevState.strategySuggested,
+            name,
+          },
+        }));
+      }
+      return ({
+        key: obj.GROUPS,
+        values: [
+          obj.ESTRATEGIA,
+          Number(obj.HA_ES_EJ).toFixed(2),
+          <InputCompensation
+            name={obj.GROUPS}
+            maxValue={Number(obj.HA_ES_EJ)}
+            operateArea={this.operateArea}
+            reportError={this.reportTableError}
+          />,
+        ],
+      });
+    });
+    return strategies;
   }
 
-  /** tableError
+  /**
   * Set an error message above the compensations table
   *
   * @param {String} message message to set
@@ -54,6 +65,8 @@ class SelectedBiome extends Component {
 
   /**
    * Function to include an strategy at the strategiesSelected state
+   *
+   * @param {Array} strategies set of strategies selected
    */
   saveStrategy = (strategies) => {
     this.setState(prevState => ({
@@ -71,32 +84,55 @@ class SelectedBiome extends Component {
    * @param {number} operator indicates the operation to realize with the value
    */
   operateArea = (value, operator) => {
-    this.setState((prevState) => {
-      let { selectedArea } = prevState;
-      switch (operator) {
-        case '+':
-          selectedArea += value;
-          break;
-        case '-':
-          selectedArea -= value;
-          break;
-        default:
-          break;
-      }
-      return { selectedArea, tableError: '' };
+    const { operateSelectedAreas } = this.props;
+    if (value > 0) {
+      operateSelectedAreas(value, operator);
+      this.setState((prevState) => {
+        let { selectedArea } = prevState;
+        switch (operator) {
+          case '+':
+            selectedArea += value;
+            break;
+          case '-':
+            selectedArea -= value;
+            break;
+          default:
+            break;
+        }
+        return { selectedArea, tableError: '' };
+      });
+    }
+  }
+
+  switchTable = () => {
+    const { show_table: showTable } = this.state;
+    this.setState({
+      show_table: !showTable,
     });
   }
 
   render() {
-    const { data, selectedArea, tableError } = this.state;
     const {
-      biome, car, strategySuggested, szh,
+      strategies, selectedArea, tableError, strategySuggested,
+    } = this.state;
+    const {
+      biome, ea, szh,
     } = this.props;
     const headers = ['Estrategia', 'Héctareas', 'Agregar'];
     return (
       <div>
         <div className="titecositema">
           <div>
+            {
+              <button
+                className="icondelete"
+                type="button"
+                data-tooltip
+                title="Eliminar bioma"
+              >
+                <EraseIcon />
+              </button>
+            }
             <b>Bioma: </b>
             {` ${biome}`}
             <br />
@@ -104,21 +140,28 @@ class SelectedBiome extends Component {
             {` ${szh}`}
             <br />
             <b>Jurisdicción:</b>
-            {` ${car}`}
+            {` ${ea}`}
             {// TODO: Create texts, icons and actions for list of biomas in Shopping Cart
             }
           </div>
-          <div align="right">
+          <div align="center">
             <b>
               {`${selectedArea} HAs`}
             </b>
-            {<ExpandMoreIcon />}
-            {<EraseIcon />}
-          </div>
-          <div>
-            <h3>
-              {`Estrategia sugerida: ${strategySuggested || 'Restauración en áreas SINAP'}` /** TODO: Define value by default */}
-            </h3>
+            {
+              <button
+                className="icongraph"
+                type="button"
+                onClick={() => this.switchTable()}
+                onFocus={() => {
+                  console.log('Hola1');
+                }}
+                data-tooltip
+                title="Mostrar / Ocultar estrategia"
+              >
+                <ExpandMoreIcon />
+              </button>
+            }
           </div>
         </div>
         {tableError && (
@@ -126,10 +169,11 @@ class SelectedBiome extends Component {
             {tableError}
           </div>
         )}
-        {(selectedArea < 10)
+        {(selectedArea < 1000)
           && (<TableStylized
             headers={headers}
-            rows={this.showStrategies(data)}
+            rows={strategies}
+            remarkedElement={strategySuggested}
             classTable="special"
             dataSelected={this.saveStrategy}
           />
@@ -143,14 +187,10 @@ class SelectedBiome extends Component {
 // headers and rows.values must have the same length
 SelectedBiome.propTypes = {
   biome: PropTypes.string.isRequired,
-  car: PropTypes.string.isRequired,
+  ea: PropTypes.string.isRequired,
   data: PropTypes.array.isRequired,
-  strategySuggested: PropTypes.string,
   szh: PropTypes.string.isRequired,
-};
-
-SelectedBiome.defaultProps = {
-  strategySuggested: '',
+  operateSelectedAreas: PropTypes.func.isRequired,
 };
 
 export default SelectedBiome;
