@@ -4,40 +4,43 @@ import PropTypes from 'prop-types';
 import EraseIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TableStylized from '../TableStylized';
+import InputCompensation from './InputCompensation';
 
 class SelectedBiome extends Component {
   constructor(props) {
     super(props);
-    const { rows } = this.props;
+    const { data } = this.props;
     this.state = {
-      rows,
-      strategiesSelectedByArea: [],
+      data,
+      strategies: [],
+      strategiesSelected: [],
       selectedArea: 0,
       tableError: '',
     };
   }
 
-  /**
-   * Add or subtract a value to selectedArea
-   *
-   * @param {number} value amount to operate in the selectedArea
-   * @param {number} operator indicates the operation to realize with the value
-   */
-  operateArea = (value, operator) => {
-    this.setState((prevState) => {
-      let { selectedArea } = prevState;
-      switch (operator) {
-        case '+':
-          selectedArea += value;
-          break;
-        case '-':
-          selectedArea -= value;
-          break;
-        default:
-          break;
-      }
-      return { selectedArea, tableError: '' };
-    });
+  showStrategies = (data) => {
+    console.log('data', data)
+    const strategies = data.map(({ _source: obj }) => ({
+      key: obj.GROUPS,
+      values: [
+        obj.ESTRATEGIA,
+        Number(obj.HA_ES_EJ).toFixed(2),
+        <InputCompensation
+          name={obj.GROUPS}
+          maxValue={Number(obj.HA_ES_EJ)}
+          operateArea={this.operateArea}
+          reportError={this.reportTableError}
+        />,
+      ],
+    }));
+    this.setState(prevState => ({
+      strategies,
+      showGraphs: {
+        ...prevState.showGraphs,
+        DotsWhere: false,
+      },
+    }));
   }
 
   /** tableError
@@ -50,12 +53,12 @@ class SelectedBiome extends Component {
   }
 
   /**
-   * Function to include an strategy at the strategiesSelectedByArea state
+   * Function to include an strategy at the strategiesSelected state
    */
   saveStrategy = (strategies) => {
     this.setState(prevState => ({
-      strategiesSelectedByArea: {
-        ...prevState.strategiesSelectedByArea,
+      strategiesSelected: {
+        ...prevState.strategiesSelected,
         strategies,
       },
     }));
@@ -85,7 +88,7 @@ class SelectedBiome extends Component {
   }
 
   render() {
-    const { rows, selectedArea, tableError } = this.state;
+    const { data, selectedArea, tableError } = this.state;
     const {
       biome, car, strategySuggested, szh,
     } = this.props;
@@ -126,7 +129,7 @@ class SelectedBiome extends Component {
         {(selectedArea < 10)
           && (<TableStylized
             headers={headers}
-            rows={rows}
+            rows={this.showStrategies(data)}
             classTable="special"
             dataSelected={this.saveStrategy}
           />
@@ -141,7 +144,7 @@ class SelectedBiome extends Component {
 SelectedBiome.propTypes = {
   biome: PropTypes.string.isRequired,
   car: PropTypes.string.isRequired,
-  rows: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   strategySuggested: PropTypes.string,
   szh: PropTypes.string.isRequired,
 };

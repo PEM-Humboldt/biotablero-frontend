@@ -12,7 +12,6 @@ import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
-import InputCompensation from './InputCompensation';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
@@ -84,6 +83,7 @@ class Drawer extends React.Component {
       totals: {},
       szh: null,
       car: null,
+      strategiesData: [],
       selectedArea: 0,
       tableError: '',
       showGraphs: { DotsWhere: true },
@@ -105,8 +105,8 @@ class Drawer extends React.Component {
     // (in the table). But the application won't break as it currently is
   }
 
-  newBiome = (layerName, szh, car, strategies) => {
-    console.log('strategies', strategies);
+  newBiome = (layerName, szh, car, strategiesData) => {
+    console.log('strategies', strategiesData);
     return (
       <SelectedBiome
         biome={layerName}
@@ -114,27 +114,11 @@ class Drawer extends React.Component {
         car={car}
         strategySuggested="Rehabilitación en áreas SINAP"
         // TODO: Set strategySuggested inside TableStylized from biome data
-        rows={strategies}
+        data={strategiesData}
         operateArea={this.operateArea}
       />
     );
   }
-
-  // showStrategies = (data) => {
-  //   const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
-  //     key: obj.GROUPS,
-  //     values: [
-  //       obj.ESTRATEGIA,
-  //       Number(obj.HA_ES_EJ).toFixed(2),
-  //       <InputCompensation
-  //         name={obj.GROUPS}
-  //         maxValue={Number(obj.HA_ES_EJ)}
-  //         operateArea={this.operateArea}
-  //         reportError={this.reportTableError}
-  //       />,
-  //     ],
-  //   }));
-  // }
 
   /**
    * Add or subtract a value to selectedArea
@@ -180,7 +164,6 @@ class Drawer extends React.Component {
       this.setState(prevState => ({
         szh,
         car,
-        strategies: [],
         showGraphs: {
           ...prevState.showGraphs,
           DotsWhere: true,
@@ -191,32 +174,21 @@ class Drawer extends React.Component {
 
     const { biomeData } = this.props;
     console.log('biomeData', biomeData);
-    const data = this.cleanBiomeData(biomeData);
-    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
-      key: obj.GROUPS,
-      values: [
-        obj.ESTRATEGIA,
-        Number(obj.HA_ES_EJ).toFixed(2),
-        <InputCompensation
-          name={obj.GROUPS}
-          maxValue={Number(obj.HA_ES_EJ)}
-          operateArea={this.operateArea}
-          reportError={this.reportTableError}
-        />,
-      ],
-    }));
-    this.setState(prevState => ({
-      szh,
-      car,
-      strategies,
-      showGraphs: {
-        ...prevState.showGraphs,
-        DotsWhere: false,
-      },
-    }));
+    const data = this.cleanBiomeFilterList(biomeData);
+    if (data) {
+      this.setState(prevState => ({
+        szh,
+        car,
+        strategiesData: data[szh][car].results.hits.hits,
+        showGraphs: {
+          ...prevState.showGraphs,
+          DotsWhere: false,
+        },
+      }));
+    }
   }
 
-  cleanBiomeData = (data) => {
+  cleanBiomeFilterList = (data) => {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
@@ -293,8 +265,8 @@ class Drawer extends React.Component {
       subAreaName,
     } = this.props;
     const {
-      whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
-      showGraphs: { DotsWhere },
+      whereData, totals, selectedArea, totalACompensar, szh, car, tableError,
+      showGraphs: { DotsWhere }, biomesSelected,
     } = this.state;
 
     const tableRows = whereData.map((biome, i) => ({
@@ -369,7 +341,7 @@ class Drawer extends React.Component {
                   </h4>
                 </div>
                 {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector(this.cleanBiomeData(biomeData), totalACompensar)}
+                {this.renderSelector(this.cleanBiomeFilterList(biomeData), totalACompensar)}
                 { !DotsWhere && (
                   <button
                     className="backgraph"
@@ -392,9 +364,12 @@ class Drawer extends React.Component {
                     {tableError}
                   </div>
                 )}
-                { layerName && szh && car && strategies && (
-                  this.newBiome(layerName, szh, car, strategies)
+                { layerName && szh && car && biomeData && (
+                  this.newBiome(layerName, szh, car, biomeData)
                 )}
+                {/* { biomesSelected && (
+                  this.showBiomes(biomesSelected) // TODO: Create showBiomes(biomesSelected)
+                )} */}
               </div>
             ),
           ]}
@@ -410,11 +385,11 @@ Drawer.propTypes = {
   basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
-  // Function to handle onClick event on the graph
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   biomeData: PropTypes.object,
   subAreaName: PropTypes.string,
+  // Function to handle onClick event on the graph
   updateActiveBiome: PropTypes.func,
 };
 
