@@ -16,7 +16,7 @@ class SelectedBiome extends Component {
       strategiesSelected: [],
       selectedArea: 0,
       tableError: '',
-      show_table: true,
+      showTable: true,
     };
   }
 
@@ -83,7 +83,8 @@ class SelectedBiome extends Component {
    * @param {number} value amount to operate in the selectedArea
    * @param {number} operator indicates the operation to realize with the value
    */
-  operateArea = (value, operator) => {
+  operateArea = (value, operator, name) => {
+    // TODO: Save value for this strategy according with its name
     const { operateSelectedAreas } = this.props;
     if (value > 0) {
       operateSelectedAreas(value, operator);
@@ -104,16 +105,33 @@ class SelectedBiome extends Component {
     }
   }
 
+  /**
+   * Update state for hiding strategies table
+   *
+   */
   switchTable = () => {
-    const { show_table: showTable } = this.state;
+    const { showTable } = this.state;
     this.setState({
-      show_table: !showTable,
+      showTable: !showTable,
     });
+  }
+
+  /**
+   * Add or subtract a value to selectedArea
+   *
+   * @param {number} value amount to operate in the selectedArea
+   * @param {number} operator indicates the operation to realize with the value
+   */
+  deleteBiome = (area, biome, ea, szh) => {
+    const { deleteSelectedBiome } = this.props;
+    this.operateArea(area, '-');
+    this.switchTable();
+    deleteSelectedBiome(biome, ea, szh);
   }
 
   render() {
     const {
-      strategies, selectedArea, tableError, strategySuggested,
+      strategies, selectedArea, tableError, strategySuggested, showTable,
     } = this.state;
     const {
       biome, ea, szh,
@@ -121,18 +139,13 @@ class SelectedBiome extends Component {
     const headers = ['Estrategia', 'Héctareas', 'Agregar'];
     return (
       <div>
-        <div className="titecositema">
+        <div
+          className="titecositema"
+          onClick={() => this.switchTable()}
+          onKeyDown={this.switchTable}
+          role="presentation"
+        >
           <div>
-            {
-              <button
-                className="icondelete"
-                type="button"
-                data-tooltip
-                title="Eliminar bioma"
-              >
-                <EraseIcon />
-              </button>
-            }
             <b>Bioma: </b>
             {` ${biome}`}
             <br />
@@ -148,37 +161,48 @@ class SelectedBiome extends Component {
             <b>
               {`${selectedArea} HAs`}
             </b>
-            {
+          </div>
+          {!showTable
+            && (
+            <div>
               <button
                 className="icongraph"
                 type="button"
                 onClick={() => this.switchTable()}
-                onFocus={() => {
-                  console.log('Hola1');
-                }}
                 data-tooltip
                 title="Mostrar / Ocultar estrategia"
               >
+                {'Mostrar bioma'}
                 <ExpandMoreIcon />
               </button>
-            }
-          </div>
+              <button
+                className="icondelete"
+                type="button"
+                data-tooltip
+                title="Eliminar bioma"
+                onClick={() => this.deleteBiome(selectedArea, biome, ea, szh)}
+              >
+                {'Eliminar bioma'}
+                <EraseIcon />
+              </button>
+            </div>
+            )
+          }
         </div>
         {tableError && (
           <div className="tableError">
             {tableError}
           </div>
         )}
-        {(selectedArea < 1000)
-          && (<TableStylized
+        {showTable && (
+          <TableStylized
             headers={headers}
             rows={strategies}
             remarkedElement={strategySuggested}
             classTable="special"
             dataSelected={this.saveStrategy}
           />
-          )
-        }
+        )}
       </div>
     );
   }
@@ -191,6 +215,7 @@ SelectedBiome.propTypes = {
   data: PropTypes.array.isRequired,
   szh: PropTypes.string.isRequired,
   operateSelectedAreas: PropTypes.func.isRequired,
+  deleteSelectedBiome: PropTypes.func.isRequired,
 };
 
 export default SelectedBiome;

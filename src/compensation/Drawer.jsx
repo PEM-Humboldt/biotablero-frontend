@@ -78,7 +78,7 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      biomesSelected: [],
+      selectedBiomes: [],
       whereData: [],
       totals: {},
       szh: null,
@@ -86,7 +86,7 @@ class Drawer extends React.Component {
       strategiesData: [],
       selectedArea: 0,
       tableError: '',
-      showGraphs: { DotsWhere: true },
+      graphStatus: { DotsWhere: true },
     };
   }
 
@@ -101,6 +101,27 @@ class Drawer extends React.Component {
       });
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the table). But the application won't break as it currently is
+  }
+
+  /**
+   * Delete an indicated biome from selectedBiomes
+   *
+   * @param {String} biome current bioma selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   */
+  deleteSelectedBiome = (biome, ea, szh) => {
+    this.setState(prevState => (
+      {
+        selectedBiomes: {
+          ...prevState.selectedBiomes.filter(
+            element => (element.biome !== biome
+            && element.ea !== ea && element.szh !== szh),
+          ),
+        },
+      }
+    ));
+    this.switchDotsGraph();
   }
 
   /**
@@ -119,6 +140,7 @@ class Drawer extends React.Component {
       ea={ea}
       data={strategiesData}
       operateSelectedAreas={this.operateSelectedAreas}
+      deleteSelectedBiome={this.deleteSelectedBiome}
     />
   );
 
@@ -132,8 +154,22 @@ class Drawer extends React.Component {
    * @param {Function} operateSelectedAreas operate total selected area
    */
 
-  // TODO: Implement it with biomesSelected state
+  // TODO: Implement it with selectedBiomes state
   showBiomes = () => true;
+
+  /**
+   * Switch between on / off the DotsGraph
+   *
+   */
+
+  switchDotsGraph = () => this.setState(prevState => (
+    {
+      graphStatus: {
+        ...prevState.graphStatus,
+        DotsWhere: true,
+      },
+    }
+  ));
 
   /**
    * Add or subtract a value to selectedArea
@@ -179,8 +215,8 @@ class Drawer extends React.Component {
       this.setState(prevState => ({
         szh,
         ea,
-        showGraphs: {
-          ...prevState.showGraphs,
+        graphStatus: {
+          ...prevState.graphStatus,
           DotsWhere: true,
         },
       }));
@@ -194,8 +230,8 @@ class Drawer extends React.Component {
         szh,
         ea,
         strategiesData: data[szh][ea].results.hits.hits,
-        showGraphs: {
-          ...prevState.showGraphs,
+        graphStatus: {
+          ...prevState.graphStatus,
           DotsWhere: false,
         },
       }));
@@ -245,7 +281,7 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
-    const { showGraphs: { DotsWhere } } = this.state;
+    const { graphStatus: { DotsWhere } } = this.state;
     const { updateActiveBiome } = this.props;
     if (graph === 'Dots' && DotsWhere) {
       return (
@@ -281,7 +317,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
-      showGraphs: { DotsWhere }, strategiesData, biomesSelected,
+      graphStatus: { DotsWhere }, strategiesData, selectedBiomes,
     } = this.state;
 
     const tableRows = whereData.map((biome, i) => ({
@@ -361,14 +397,7 @@ class Drawer extends React.Component {
                   <button
                     className="backgraph"
                     type="button"
-                    onClick={() => this.setState(prevState => (
-                      {
-                        showGraphs: {
-                          ...prevState.showGraphs,
-                          DotsWhere: true,
-                        },
-                      }
-                    ))}
+                    onClick={() => this.switchDotsGraph()}
                   >
                     <BackGraph />
                     {' Ir al gráfico' // TODO: Move this functionality to SelectedBiome button
@@ -383,8 +412,8 @@ class Drawer extends React.Component {
                 { layerName && szh && ea && strategiesData && (
                   this.newBiome(layerName, szh, ea, strategiesData)
                 )}
-                { biomesSelected && (
-                  this.showBiomes() // TODO: Create showBiomes(biomesSelected)
+                { selectedBiomes && (
+                  this.showBiomes() // TODO: Create showBiomes(selectedBiomes)
                 )}
               </div>
             ),

@@ -29,7 +29,7 @@ class InputCompensation extends React.Component {
 
   render() {
     const {
-      name, maxValue, operateArea, reportError,
+      name, maxValue, operateArea, reportError, value,
     } = this.props;
     const { add, inputError } = this.state;
     return (
@@ -41,17 +41,18 @@ class InputCompensation extends React.Component {
           placeholder="0"
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
+          defaultValue={value}
         />
         <button
           className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
           onClick={() => {
-            const value = Number(this.inputRef.current.value);
+            const inputValue = Number(this.inputRef.current.value);
             const action = add ? '+' : '-';
-            if (value <= 0) {
+            if (inputValue <= 0) {
               reportError('No puede ingresar valores menores a cero');
-            } else if (value <= maxValue) {
-              operateArea(value, action);
+            } else if (inputValue <= maxValue) {
+              operateArea(inputValue, action, name);
               this.switchAction(action);
             } else {
               if (add) reportError(`No puede agregar más de ${maxValue}`);
@@ -67,9 +68,14 @@ class InputCompensation extends React.Component {
 
 InputCompensation.propTypes = {
   name: PropTypes.string.isRequired,
+  value: PropTypes.number,
   maxValue: PropTypes.number.isRequired,
   operateArea: PropTypes.func.isRequired,
   reportError: PropTypes.func.isRequired,
+};
+
+InputCompensation.defaultProps = {
+  value: null,
 };
 
 export default InputCompensation;

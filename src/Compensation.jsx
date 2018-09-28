@@ -272,7 +272,7 @@ class Compensation extends Component {
 
   updateActiveBiome = (biomeName) => {
     const { layers: { biomasSogamoso }, currentProject } = this.state;
-    console.log('currentProject', currentProject);
+    // TODO: Save biomes and its strategies on the selectedProject
     ElasticAPI.requestProjectStrategiesByBiome(currentProject[0].name, biomeName)
       .then((res) => {
         this.setState({
