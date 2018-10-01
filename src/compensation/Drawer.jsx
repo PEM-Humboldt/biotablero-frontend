@@ -113,12 +113,12 @@ class Drawer extends React.Component {
   deleteSelectedBiome = (biome, ea, szh) => {
     this.setState(prevState => (
       {
-        selectedBiomes: {
+        selectedBiomes: [
           ...prevState.selectedBiomes.filter(
             element => (element.biome !== biome
             && element.ea !== ea && element.szh !== szh),
           ),
-        },
+        ],
       }
     ));
     this.switchDotsGraph();
@@ -133,8 +133,28 @@ class Drawer extends React.Component {
    * @param {Array} strategiesData strategies data to list
    * @param {Function} operateSelectedAreas operate total selected area
    */
-  newBiome = (layerName, szh, ea, strategiesData) => (
-    <SelectedBiome
+  newBiome = (layerName, szh, ea, strategiesData) => {
+    const { selectedBiomes } = this.state;
+    const tempBiome = selectedBiomes.map(
+      element => (element.biome !== layerName
+      && element.ea !== ea && element.szh !== szh),
+    );
+    console.log('tempBiome', typeof tempBiome, tempBiome.length);
+    if (typeof tempBiome === 'undefined') {
+      const loadBiome = {};
+      loadBiome.biome = layerName;
+      loadBiome.ea = ea;
+      loadBiome.szh = szh;
+      this.setState(prevState => (
+        {
+          selectedBiomes: [
+            ...prevState.selectedBiomes,
+            loadBiome,
+          ],
+        }
+      ));
+    }
+    return (<SelectedBiome
       biome={layerName}
       szh={szh}
       ea={ea}
@@ -142,8 +162,8 @@ class Drawer extends React.Component {
       operateSelectedAreas={this.operateSelectedAreas}
       deleteSelectedBiome={this.deleteSelectedBiome}
     />
-  );
-
+    );
+  }
   /**
    * Hold and show Biomes previously added to the plan
    *
@@ -155,7 +175,7 @@ class Drawer extends React.Component {
    */
 
   // TODO: Implement it with selectedBiomes state
-  showBiomes = () => true;
+  showBiomes = () => console.log(this.state);
 
   /**
    * Switch between on / off the DotsGraph

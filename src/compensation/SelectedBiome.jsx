@@ -68,13 +68,17 @@ class SelectedBiome extends Component {
    *
    * @param {Array} strategies set of strategies selected
    */
-  saveStrategy = (strategies) => {
-    this.setState(prevState => ({
-      strategiesSelected: {
-        ...prevState.strategiesSelected,
-        strategies,
-      },
-    }));
+  saveStrategy = (value, nameStrategy) => {
+    const tempStrategy = {};
+    tempStrategy[nameStrategy] = value;
+    console.log('tempStrategy', tempStrategy);
+    // this.setState(prevState => ({
+    //   strategiesSelected: {
+    //     ...prevState.strategiesSelected,
+    //     tempStrategy,
+    //   },
+    // }));
+    console.log('status', this.status);
   }
 
   /**
@@ -83,11 +87,12 @@ class SelectedBiome extends Component {
    * @param {number} value amount to operate in the selectedArea
    * @param {number} operator indicates the operation to realize with the value
    */
-  operateArea = (value, operator, name) => {
+  operateArea = (value, operator, nameStrategy) => {
     // TODO: Save value for this strategy according with its name
     const { operateSelectedAreas } = this.props;
     if (value > 0) {
       operateSelectedAreas(value, operator);
+      this.saveStrategy(value, nameStrategy);
       this.setState((prevState) => {
         let { selectedArea } = prevState;
         switch (operator) {
@@ -200,7 +205,6 @@ class SelectedBiome extends Component {
             rows={strategies}
             remarkedElement={strategySuggested}
             classTable="special"
-            dataSelected={this.saveStrategy}
           />
         )}
       </div>
