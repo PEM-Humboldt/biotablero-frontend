@@ -140,7 +140,7 @@ class Drawer extends React.Component {
       && element.ea !== ea && element.szh !== szh),
     );
     console.log('tempBiome', typeof tempBiome, tempBiome.length);
-    if (typeof tempBiome === 'undefined') {
+    if (tempBiome.length === 0) {
       const loadBiome = {};
       loadBiome.biome = layerName;
       loadBiome.ea = ea;

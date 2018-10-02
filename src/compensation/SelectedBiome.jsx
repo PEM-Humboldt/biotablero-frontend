@@ -72,12 +72,12 @@ class SelectedBiome extends Component {
     const tempStrategy = {};
     tempStrategy[nameStrategy] = value;
     console.log('tempStrategy', tempStrategy);
-    // this.setState(prevState => ({
-    //   strategiesSelected: {
-    //     ...prevState.strategiesSelected,
-    //     tempStrategy,
-    //   },
-    // }));
+    this.setState(prevState => ({
+      strategiesSelected: {
+        ...prevState.strategiesSelected,
+        tempStrategy,
+      },
+    }));
     console.log('status', this.status);
   }
 

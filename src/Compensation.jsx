@@ -8,6 +8,7 @@ import Drawer from './compensation/Drawer';
 import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
+import RestAPI from './api/REST';
 import Layout from './Layout';
 import { description } from './compensation/assets/selectorData';
 
@@ -252,7 +253,7 @@ class Compensation extends Component {
     const nameToOn = nameToOnU.toLowerCase();
     const { currentCompany, layers } = this.state;
     Promise.resolve(
-      GeoServerAPI.requestProjectsByCompany(
+      RestAPI.requestProjectsByCompany(
         currentCompany, nameToOn.toUpperCase(),
       ),
     ).then((res) => {
