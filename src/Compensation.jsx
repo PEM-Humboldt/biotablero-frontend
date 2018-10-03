@@ -17,8 +17,10 @@ class Compensation extends Component {
     super(props);
     this.state = {
       currentCompany: null,
+      currentCompanyId: null,
       currentRegion: null,
       currentProject: null,
+      currentProjectId: null,
       currentBiome: null,
       projectType: null,
       projectName: null,
@@ -40,10 +42,12 @@ class Compensation extends Component {
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
+      // RestAPI.requestProjectNamesOrganizedByCompany(1),
     ]).then((res) => {
       this.setState(prevState => ({
         regions: res[3],
         currentCompany: 'GEB',
+        currentCompanyId: 1,
         layers: {
           ...prevState.layers,
           // the key is the id that communicates with other components and should match selectorData
@@ -252,8 +256,12 @@ class Compensation extends Component {
   innerElementChange = (nameToOff, nameToOnU) => {
     const nameToOn = nameToOnU.toLowerCase();
     const { currentCompany, layers } = this.state;
+    // TODO: Change GeoServerAPI to RestAPI
+    // const { currentCompanyId, currentProjectId, layers } = this.state;
     Promise.resolve(
-      RestAPI.requestProjectsByCompany(
+      // RestAPI.requestProjectsByCompany(
+      GeoServerAPI.requestProjectsByCompany(
+        // currentCompanyId, currentProjectId,
         currentCompany, nameToOn.toUpperCase(),
       ),
     ).then((res) => {
@@ -274,11 +282,12 @@ class Compensation extends Component {
   updateActiveBiome = (biomeName) => {
     const { layers: { biomasSogamoso }, currentProject } = this.state;
     // TODO: Save biomes and its strategies on the selectedProject
+    console.log('currentProject[0]', this.state, currentProject);
     ElasticAPI.requestProjectStrategiesByBiome(currentProject[0].name, biomeName)
       .then((res) => {
         this.setState({
           layerName: biomeName,
-          currentBiome: res,
+          currentBiome: res, // TODO: Change strategies data structure
         });
       }).then(() => {
         const currentLayers = biomasSogamoso.layer.getLayers();

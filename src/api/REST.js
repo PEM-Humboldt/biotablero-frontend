@@ -12,7 +12,7 @@ class RestAPI {
    */
   static requestProjectStrategiesByBiome(projectName, biomeName) {
     // if (projectName === 'SOGAMOSO') {
-    //   return RestAPI.makeRequest(
+    //   return RestAPI.makeGetRequest(
     //     'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets
     // .key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car
     // .buckets.results.hits.hits._source',
@@ -34,7 +34,7 @@ class RestAPI {
   * @param {Integer} projectName project's name to request
   */
   static requestQueYCuantoCompensar(projectName) {
-    // return RestAPI.makeRequest(
+    // return RestAPI.makeGetRequest(
     //   'biomas_compensaciones/_search/template?filter_path=hits.hits._source',
     //   {
     //     id: 'queYCuantoCompensar',
@@ -57,7 +57,7 @@ class RestAPI {
    * @param {String} biome biome's name to request
    */
   static requestBiomeBySZH(biome) {
-    // return RestAPI.makeRequest(
+    // return RestAPI.makeGetRequest(
     //   'corporacion_biomas/_search/template?filter_path=aggregations.areas
     // .buckets,aggregations.total_area',
     //   {
@@ -77,7 +77,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByDistritosArea(idCAR) {
-    // return RestAPI.makeRequest(
+    // return RestAPI.makeGetRequest(
     //   'corporacion_distritos/_search/template?filter_path=aggregations
     // .areas.buckets,aggregations.total_area',
     //   {
@@ -97,7 +97,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByFCArea(idCAR) {
-    // return RestAPI.makeRequest(
+    // return RestAPI.makeGetRequest(
     //   'corporacion_biomas/_search/template?filter_path=aggregations
     // .areas.buckets,aggregations.total_area',
     //   {
@@ -117,7 +117,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByBiomeArea(idCAR) {
-    // return RestAPI.makeRequest(
+    // return RestAPI.makeGetRequest(
     //   'corporacion_biomas/_search/template?filter_path=aggregations
     // .areas.buckets.key,aggregations.areas.buckets.area,aggregations
     // .areas.buckets.fc.hits.hits._source,aggregations.total_area',
@@ -139,26 +139,27 @@ class RestAPI {
    */
   static requestProjectsByCompany(companyId, projectId) {
     const request = projectId
-      ? RestAPI.makeRequest(`/company/'${companyId}'/projects/'${projectId}'`)
-      : RestAPI.makeRequest(`/company/'${companyId}'/projects`);
+      ? RestAPI.makeGetRequest(`company/${companyId}/projects/${projectId}`)
+      : RestAPI.makeGetRequest(`company/${companyId}/projects`);
     const response = Promise.resolve(request)
       .then((res) => {
         const projectsFound = [];
         // TODO: Finalize new projects load structure
-        res.features.forEach(
+        res.forEach(
           (element) => {
             const project = {
-              id_project: element.properties.gid,
-              name: element.properties.label,
-              state: element.properties.prj_status,
-              region: element.properties.region,
-              area: element.properties.area_ha,
-              id_company: element.properties.id_company,
-              project: element.properties.name,
+              id_project: element.gid,
+              name: element.label,
+              state: element.prj_status,
+              region: element.region,
+              area: element.area_ha,
+              id_company: element.id_company,
+              project: element.name,
             };
             projectsFound.push(project);
           },
         );
+        console.log('projectsFound', projectsFound);
         return projectsFound;
       });
     console.log('response', response);
@@ -166,16 +167,48 @@ class RestAPI {
   }
 
   /**
+   * Request the project names by company, organized by region and state
+   */
+  static requestProjectNamesOrganizedByCompany(companyId) {
+    const response = Promise.resolve(RestAPI.requestProjectsByCompany(companyId))
+      .then((res) => {
+        const regions = [...new Set(res.map((item) => {
+          if (item.region) {
+            return (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
+          }
+          return '(REGION SIN ASIGNAR)';
+        }))];
+        const states = [...new Set(res.map((item) => {
+          if (item.state) return item.state;
+          return '(ESTADO SIN ASIGNAR)';
+        }))];
+        const projectsSelectorData = regions.map(region => (
+          {
+            id: region,
+            projectsStates: states.map(state => (
+              {
+                id: state,
+                projects: res.filter(project => project.region
+                  === region && project.state === state),
+              })),
+          }));
+        return projectsSelectorData;
+      });
+    return response;
+  }
+
+  /**
    * Request an endpoint to the elasticsearch server
    *
    * @param {String} endpoint endpoint to attach to url
-   * @param {Object} requestBody JSON object with the request body
    */
-  static makeRequest(endpoint, requestBody) {
+  static makeGetRequest(endpoint) {
     const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
-    return axios.post(url, requestBody)
-      .then(res => res.data);
+    // const url = 'http://192.168.205.190:4000/company/1/projects';
+    return axios.get(url)
+      .then(res => res.data)
+      .catch((e) => { console.log(e); });
   }
 }
 

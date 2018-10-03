@@ -18,9 +18,9 @@ class GeoServerAPI {
    * Request the project names by company, organized by region and state
    */
   static requestProjectNamesOrganizedByCompany(companyName) {
-    console.log('companyName', companyName);
     const response = Promise.resolve(GeoServerAPI.requestProjectsByCompany(companyName))
       .then((res) => {
+        console.log(res);
         const regions = [...new Set(res.map(item => (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ')))];
         const states = [...new Set(res.map(item => item.state))];
         const projectsSelectorData = regions.map(region => (
@@ -65,7 +65,6 @@ class GeoServerAPI {
           );
           return projectsFound;
         });
-      console.log('response', response);
       return response;
     } return null;
   }

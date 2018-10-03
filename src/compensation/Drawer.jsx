@@ -335,6 +335,7 @@ class Drawer extends React.Component {
       areaName, back, basinName, colors, classes, layerName, biomeData,
       subAreaName,
     } = this.props;
+    console.log('props Drawer', layerName, biomeData, subAreaName, basinName);
     const {
       whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
       graphStatus: { DotsWhere }, strategiesData, selectedBiomes,
