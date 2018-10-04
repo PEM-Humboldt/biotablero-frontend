@@ -26,6 +26,7 @@ class Compensation extends Component {
       projectName: null,
       layerName: null,
       layers: {},
+      projects: [],
       regions: [],
       colors: [
         { medium: '#eabc47' },
@@ -42,10 +43,12 @@ class Compensation extends Component {
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
       GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
-      // RestAPI.requestProjectNamesOrganizedByCompany(1),
+      // RestAPI.requestProjectsAndRegionsByCompany(1),
     ]).then((res) => {
       this.setState(prevState => ({
         regions: res[3],
+        // projects: res[3][0],
+        // regions: res[3][1],
         currentCompany: 'GEB',
         currentCompanyId: 1,
         layers: {
@@ -255,9 +258,10 @@ class Compensation extends Component {
 
   innerElementChange = (nameToOff, nameToOnU) => {
     const nameToOn = nameToOnU.toLowerCase();
-    const { currentCompany, layers } = this.state;
     // TODO: Change GeoServerAPI to RestAPI
     // const { currentCompanyId, currentProjectId, layers } = this.state;
+    const { currentCompany, layers } = this.state;
+    // const tempProjectId =
     Promise.resolve(
       // RestAPI.requestProjectsByCompany(
       GeoServerAPI.requestProjectsByCompany(

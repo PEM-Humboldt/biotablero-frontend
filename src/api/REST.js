@@ -159,17 +159,15 @@ class RestAPI {
             projectsFound.push(project);
           },
         );
-        console.log('projectsFound', projectsFound);
         return projectsFound;
       });
-    console.log('response', response);
     return response;
   }
 
   /**
    * Request the project names by company, organized by region and state
    */
-  static requestProjectNamesOrganizedByCompany(companyId) {
+  static requestProjectsAndRegionsByCompany(companyId) {
     const response = Promise.resolve(RestAPI.requestProjectsByCompany(companyId))
       .then((res) => {
         const regions = [...new Set(res.map((item) => {
@@ -192,7 +190,7 @@ class RestAPI {
                   === region && project.state === state),
               })),
           }));
-        return projectsSelectorData;
+        return [res, projectsSelectorData];
       });
     return response;
   }
@@ -205,10 +203,9 @@ class RestAPI {
   static makeGetRequest(endpoint) {
     const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
-    // const url = 'http://192.168.205.190:4000/company/1/projects';
     return axios.get(url)
       .then(res => res.data)
-      .catch((e) => { console.log(e); });
+      .catch((e) => { console.error(e.message); });
   }
 }
 

@@ -111,8 +111,12 @@ class Drawer extends React.Component {
    * @param {String} ea enviromental autority selected
    */
   deleteSelectedBiome = (biome, ea, szh) => {
+    console.log('biome, ea, szh', biome, ea, szh);
     this.setState(prevState => (
       {
+        szh: null,
+        ea: null,
+        strategiesData: [],
         selectedBiomes: [
           ...prevState.selectedBiomes.filter(
             element => (element.biome !== biome
@@ -175,7 +179,20 @@ class Drawer extends React.Component {
    */
 
   // TODO: Implement it with selectedBiomes state
-  showBiomes = () => console.log(this.state);
+  showBiomes = () => {
+    console.log(this.state);
+    return (
+      <button
+        className="backgraph"
+        type="button"
+        onClick={() => this.switchDotsGraph()}
+      >
+        <BackGraph />
+        {' Ir al gráfico' // TODO: Move this functionality to SelectedBiome button
+        }
+      </button>
+    );
+  };
 
   /**
    * Switch between on / off the DotsGraph
@@ -414,28 +431,17 @@ class Drawer extends React.Component {
                 </div>
                 {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
                 {this.renderSelector(this.cleanBiomeFilterList(biomeData), totalACompensar)}
-                { !DotsWhere && (
-                  <button
-                    className="backgraph"
-                    type="button"
-                    onClick={() => this.switchDotsGraph()}
-                  >
-                    <BackGraph />
-                    {' Ir al gráfico' // TODO: Move this functionality to SelectedBiome button
-                    }
-                  </button>
-                )}
                 {tableError && (
                   <div className="tableError">
                     {tableError}
                   </div>
                 )}
-                { layerName && szh && ea && strategiesData && (
+                { (layerName && szh && ea && strategiesData && (
                   this.newBiome(layerName, szh, ea, strategiesData)
-                )}
-                { selectedBiomes && (
+                )) || (selectedBiomes && (
                   this.showBiomes() // TODO: Create showBiomes(selectedBiomes)
-                )}
+                ))
+                }
               </div>
             ),
           ]}

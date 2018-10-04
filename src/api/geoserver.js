@@ -20,7 +20,6 @@ class GeoServerAPI {
   static requestProjectNamesOrganizedByCompany(companyName) {
     const response = Promise.resolve(GeoServerAPI.requestProjectsByCompany(companyName))
       .then((res) => {
-        console.log(res);
         const regions = [...new Set(res.map(item => (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ')))];
         const states = [...new Set(res.map(item => item.state))];
         const projectsSelectorData = regions.map(region => (
