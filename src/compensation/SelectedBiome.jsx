@@ -9,14 +9,14 @@ import InputCompensation from './InputCompensation';
 class SelectedBiome extends Component {
   constructor(props) {
     super(props);
-    const { data } = this.props;
+    const { collapseTable, data } = this.props;
     this.state = {
       strategies: this.showStrategies(data),
       strategySuggested: 'Rehabilitación en áreas SINAP', // default value
       strategiesSelected: [],
       selectedArea: 0,
       tableError: '',
-      showTable: true,
+      showTable: !collapseTable,
     };
   }
 
@@ -28,6 +28,7 @@ class SelectedBiome extends Component {
   showStrategies = (data) => {
     const strategies = data.map(({ _source: obj }) => {
     // TODO: Set strategySuggested inside TableStylized from biome data
+      console.log('obj', obj);
       if (obj.SUGERIDA) {
         const name = obj.ESTRATEGIA;
         this.setState(prevState => ({
@@ -47,6 +48,7 @@ class SelectedBiome extends Component {
             maxValue={Number(obj.HA_ES_EJ)}
             operateArea={this.operateArea}
             reportError={this.reportTableError}
+            // value={}
           />,
         ],
       });
@@ -66,19 +68,18 @@ class SelectedBiome extends Component {
   /**
    * Function to include an strategy at the strategiesSelected state
    *
-   * @param {Array} strategies set of strategies selected
+   * @param {Number} value hectares indicated to save
+   * @param {String} idStrategy id of strategies selected
    */
-  saveStrategy = (value, nameStrategy) => {
-    const tempStrategy = {};
-    tempStrategy[nameStrategy] = value;
-    console.log('tempStrategy', tempStrategy);
+  saveStrategy = (value, idStrategy) => {
+    const toAddStrategy = {};
+    toAddStrategy[idStrategy] = value;
     this.setState(prevState => ({
       strategiesSelected: [
         ...prevState.strategiesSelected,
-        tempStrategy,
+        toAddStrategy,
       ],
     }));
-    console.log('status', this.status);
   }
 
   /**
@@ -220,6 +221,11 @@ SelectedBiome.propTypes = {
   szh: PropTypes.string.isRequired,
   operateSelectedAreas: PropTypes.func.isRequired,
   deleteSelectedBiome: PropTypes.func.isRequired,
+  collapseTable: PropTypes.bool,
+};
+
+SelectedBiome.defaultProps = {
+  collapseTable: false,
 };
 
 export default SelectedBiome;
