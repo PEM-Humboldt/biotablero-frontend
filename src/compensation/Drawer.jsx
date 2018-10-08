@@ -205,12 +205,24 @@ class Drawer extends React.Component {
   switchDotsGraph = (value) => {
     this.setState(prevState => (
       {
+        ...prevState,
+        ea: null,
+        szh: null,
         graphStatus: {
-          ...prevState.graphStatus,
           DotsWhere: value,
         },
       }
     ));
+    console.log('Grafo: ', this.state);
+  }
+
+  /**
+   * Switch between on / off the DotsGraph
+   * @param {Boolean} value graph state: true = on / false = off
+   *
+   */
+  downloadPlan = () => {
+    // TODO: Implement plan download
   }
 
   /**
@@ -309,6 +321,8 @@ class Drawer extends React.Component {
                 layerName={layerName}
                 color={color}
                 loadStrategies={this.loadStrategies}
+                switchDotsGraph={this.switchDotsGraph}
+                downloadPlan={this.downloadPlan}
                 data={data}
               />
             )

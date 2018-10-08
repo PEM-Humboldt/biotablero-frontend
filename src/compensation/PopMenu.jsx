@@ -1,6 +1,8 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
+import BackGraphIcon from '@material-ui/icons/Timeline';
+import DownloadIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
@@ -11,7 +13,7 @@ class PopMenu extends Component {
     this.state = {
       szhSelected: null,
       carSelected: null,
-      showButton: false,
+      showAddButton: false,
       layerName,
     };
   }
@@ -23,7 +25,7 @@ class PopMenu extends Component {
       return {
         szhSelected: null,
         carSelected: null,
-        showButton: false,
+        showAddButton: false,
         layerName,
       };
     }
@@ -69,7 +71,7 @@ class PopMenu extends Component {
     const { szhSelected } = this.state;
     this.setState({
       carSelected: carSelected ? carSelected.value : '',
-      showButton: Boolean(carSelected),
+      showAddButton: Boolean(carSelected),
     });
     const { loadStrategies } = this.props;
     if (carSelected) loadStrategies(szhSelected, carSelected.value);
@@ -98,9 +100,9 @@ class PopMenu extends Component {
   }
 
   render() {
-    const { loadStrategies } = this.props;
+    const { loadStrategies, switchDotsGraph, downloadPlan } = this.props;
     const {
-      layerName, szhSelected, carSelected, showButton,
+      layerName, szhSelected, carSelected, showAddButton,
     } = this.state;
     return (
       <div className="complist">
@@ -110,15 +112,33 @@ class PopMenu extends Component {
         </div>
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {showButton ? (
-          <button
-            className="addbiome"
-            type="button"
-            onClick={() => {
-              this.setState({ showButton: false });
-              loadStrategies(szhSelected, carSelected);
-            }}
-          />
+        {showAddButton ? (
+          <div>
+            <button
+              className="addbiome"
+              type="button"
+              onClick={() => {
+                this.setState({ showAddButton: false });
+                loadStrategies(szhSelected, carSelected);
+              }}
+            />
+            <button
+              className="downgraph"
+              type="button"
+              onClick={() => downloadPlan(true)}
+            >
+              <DownloadIcon className="icondown" />
+              {' Descargar plan'}
+            </button>
+            <button
+              className="backgraph"
+              type="button"
+              onClick={() => switchDotsGraph(true)}
+            >
+              <BackGraphIcon />
+              {' Ir al gráfico'}
+            </button>
+          </div>
         ) : ''}
       </div>
     );
@@ -130,6 +150,8 @@ PopMenu.propTypes = {
   // Data from elastic result for "donde compensar sogamoso"
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
+  downloadPlan: PropTypes.func.isRequired,
+  switchDotsGraph: PropTypes.func.isRequired,
 };
 
 PopMenu.defaultProps = {

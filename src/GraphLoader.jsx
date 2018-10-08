@@ -1,7 +1,7 @@
 /** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
-import Descargar from '@material-ui/icons/Save';
+import DownloadIcon from '@material-ui/icons/Save';
 import BarStackHorizontal from './charts/BarStackHorizontal';
 import BarGraph from './charts/BarGraph';
 import DotsGraph from './charts/DotsGraph';
@@ -48,7 +48,7 @@ const GraphLoader = (
       (graphType === 'Dots') ? (
         <div className="graphcard pb">
           <h2>
-            <Descargar className="icondown" />
+            <DownloadIcon className="icondown" />
               Ecosistémas Equivalentes
           </h2>
           { !showOnlyTitle && (

@@ -1709,6 +1709,18 @@ tr.row2table:nth-child(odd){
   cursor: pointer;
   line-height: 20px;
   margin-top: 10px;
+	float: right;
+}
+
+.downgraph {
+  color: #2a363b;
+  vertical-align: middle;
+  font-size: 14px;
+  border: none;
+  background-color: transparent;
+  line-height: 20px;
+  cursor: pointer;
+	float: left;
 }
 
 .backgraph svg {
