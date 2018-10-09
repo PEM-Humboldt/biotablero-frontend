@@ -1086,27 +1086,19 @@ a#reset-filters {
   padding: 5px;
   border: 0px solid #cccc33;
   background-color: #eeeeec;
-  -webkit-flex: 3 1 60%;
-          flex: 3 1 60%;
+  -webkit-flex: 1 1 60%;
+          flex: 1 1 60%;
  -webkit-order: 1;
          order: 1;
 }
 /*All information container*/
 .contentView {
 	overflow: auto; /* TODO: Revisar con César: ¿Se requiere ajustar ancho de Selector.js de acuerdo a este estilo?*/
-  -webkit-flex: 3 1 40%;
-          flex: 3 1 40%;
+  -webkit-flex: 1 1 40%;
+          flex: 1 1 40%;
   flex-direction: column;
   -webkit-order: 2;
           order: 2;
-}
-/*Belongs to contentView*/
-.filter {
-  background-color: #eeeeec;
-  -webkit-flex: 3 1 40%;
-          flex: 3 1 40%;
- -webkit-order: 1;
-         order: 1;
 }
 
 .selector {
@@ -1818,6 +1810,26 @@ tspan, .vx-axis-label {
 	}
 	.backgraph {
 		margin-right: 5px;
+	}
+
+	.viewfinder {
+	  -webkit-flex: 0 1 0%;
+	          flex: 0 1 0%;
+	}
+
+	.contentView {
+	  -webkit-flex: 1 0 100%;
+	          flex: 1 0 100%;
+	}
+
+	.viewfinderShow {
+	  -webkit-flex: 1 0 100%;
+	          flex: 1 0 100%;
+	}
+
+	.contentViewHide {
+	  -webkit-flex: 0 1 0%;
+	          flex: 0 1 0%;
 	}
 }
 
