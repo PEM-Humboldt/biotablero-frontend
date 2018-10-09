@@ -113,22 +113,14 @@ class PopMenu extends Component {
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
         {showAddButton ? (
-          <div>
-            <button
-              className="addbiome"
-              type="button"
-              onClick={() => {
-                this.setState({ showAddButton: false });
-                loadStrategies(szhSelected, carSelected);
-              }}
-            />
+          <div className="popbtns">
             <button
               className="downgraph"
               type="button"
               onClick={() => downloadPlan(true)}
             >
               <DownloadIcon className="icondown" />
-              {' Descargar plan'}
+              {'Descargar plan'}
             </button>
             <button
               className="backgraph"
@@ -136,7 +128,7 @@ class PopMenu extends Component {
               onClick={() => switchDotsGraph(true)}
             >
               <BackGraphIcon />
-              {' Ir al gráfico'}
+              {'Gráfico Biomas'}
             </button>
           </div>
         ) : ''}

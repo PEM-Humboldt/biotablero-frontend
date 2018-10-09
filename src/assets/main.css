@@ -1426,13 +1426,12 @@ p.legcomp {
   background-color: #fff;
   border-radius: 5px;
   margin-right: 5px;
-  min-width: 120px;
+  min-width: 190px;
   display: inline-block;
   margin-bottom: 5px;
 }
 
 .total h3 {
-  text-transform: uppercase;
   font-size: 18px;
   color: #ea495f;
   font-weight: 400;
@@ -1445,25 +1444,37 @@ p.legcomp {
   text-align: left;
 }
 
-.carrito h3, .carrito h4{
-  text-align: right;
-}
-
 .Biomatit {
   color: #424242;
   padding: 5px;
   border-bottom: 1px solid #ea495f;
 }
 
+.complist {
+	margin-top: 5px;
+}
+
+.popbtns {
+	padding: 10px 0;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+}
+
 .complist svg {
   color: #ea495f;
   float: left;
+  width: 30px;
+  height: 30px;
 }
 
 .Select-menu-outer { top: auto; bottom: 100%; }
 
 .Select-option.is-focused  {
-    background-color: rgba(234, 73, 95, 0.15) !important;
+    background-color: rgba(252, 228, 232) !important;
 }
 
 .icondown {
@@ -1472,19 +1483,15 @@ p.legcomp {
   margin-top: -3px;
 }
 
-.icongraph {
-	color: #ffffff;
+.icongraph, .icondelete {
+	color: #fff;
 	cursor: pointer;
 	border: 0;
 	background-color: transparent;
-}
-
-.icondelete {
-	color: #ffffff;
+	text-align: right;
+	display: inline-block;
 	float: right;
-	cursor: pointer;
-	border: 0;
-	background-color: transparent;
+	outline: none;
 }
 
 .icondelete:disabled {
@@ -1690,43 +1697,66 @@ tr.row2table:nth-child(odd){
 }
 
 .titecositema {
-  margin-bottom: -13px;
+  margin-bottom: -9px;
   background-color: #2a363b;
   padding: 10px 10px 15px;
-  margin-top: 20px;
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
-.backgraph {
+.titeco2 {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+}
+
+.HasSelected {
+	background: #fff;
+	color: #e84a5f;
+	white-space: nowrap;
+	padding: 5px 8px;
+	height: 22px !important;
+	margin-left: 10px;
+	text-align: right;
+	font-size: 18px;
+	border-radius: 3px;
+	font-weight: 500;
+	margin-bottom: 5px;
+}
+
+.addedBioma {
+	color: #51b4c1;
+}
+
+.backgraph, .downgraph {
   color: #2a363b;
   vertical-align: middle;
-  font-size: 16px;
-  border: none;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid #fff;
+  border-radius: 3px;
   background-color: transparent;
   outline: none;
   cursor: pointer;
   line-height: 20px;
-  margin-top: 10px;
-	float: right;
+	text-transform: uppercase;
+	padding: 5px 8px;
 }
 
-.downgraph {
-  color: #2a363b;
-  vertical-align: middle;
-  font-size: 14px;
-  border: none;
-  background-color: transparent;
-  line-height: 20px;
-  cursor: pointer;
-	float: left;
+.downgraph svg, .backgraph svg {
+	height: 20px;
+	width: 20px;
+	margin-top: 0;
+	margin-right: 3px;
 }
 
-.backgraph svg {
-  height: 20px;
-  width: 20px;
-  vertical-align: top;
+.backgraph:hover, .downgraph:hover {
+	background-color: #fff;
 }
 
 tspan, .vx-axis-label {
@@ -1773,6 +1803,22 @@ tspan, .vx-axis-label {
     }
 }
 
+
+@media screen and (max-width: 940px){
+	.popbtns {
+		display: block;
+	}
+
+	.backgraph, .downgraph {
+		width: 162px;
+	}
+	.downgraph {
+		margin-right: 5px;
+	}
+	.backgraph {
+		margin-top: 5px;
+	}
+}
 
 @media screen and (max-width: 910px){
     .menuline {
