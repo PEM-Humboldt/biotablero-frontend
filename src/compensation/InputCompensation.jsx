@@ -54,9 +54,11 @@ class InputCompensation extends React.Component {
             } else if (inputValue <= maxValue) {
               operateArea(inputValue, action, name);
               this.switchAction(action);
+            } else if (add) {
+              reportError(`No puede agregar más de ${maxValue}`);
+              this.inputRef.current.value = 0;
             } else {
-              if (add) reportError(`No puede agregar más de ${maxValue}`);
-              else operateArea(0, '-');
+              operateArea(0, '-');
               this.switchAction(action, add);
             }
           }}

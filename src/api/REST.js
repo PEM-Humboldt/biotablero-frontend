@@ -139,27 +139,29 @@ class RestAPI {
    */
   static requestProjectsByCompany(companyId, projectId) {
     const request = projectId
-      ? RestAPI.makeGetRequest(`company/${companyId}/projects/${projectId}`)
-      : RestAPI.makeGetRequest(`company/${companyId}/projects`);
+      ? RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`)
+      : RestAPI.makeGetRequest(`companies/${companyId}/projects`);
     const response = Promise.resolve(request)
       .then((res) => {
         const projectsFound = [];
         // TODO: Finalize new projects load structure
-        res.forEach(
-          (element) => {
-            const project = {
-              id_project: element.gid,
-              name: element.label,
-              state: element.prj_status,
-              region: element.region,
-              area: element.area_ha,
-              id_company: element.id_company,
-              project: element.name,
-            };
-            projectsFound.push(project);
-          },
-        );
-        return projectsFound;
+        if (res.length !== undefined) {
+          res.forEach(
+            (element) => {
+              const project = {
+                id_project: element.gid,
+                name: element.label,
+                state: element.prj_status,
+                region: element.region,
+                area: element.area_ha,
+                id_company: element.id_company,
+                project: element.name,
+              };
+              projectsFound.push(project);
+            },
+          );
+          return projectsFound;
+        } return res;
       });
     return response;
   }

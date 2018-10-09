@@ -1100,14 +1100,6 @@ a#reset-filters {
   -webkit-order: 2;
           order: 2;
 }
-/*Belongs to contentView*/
-.filter {
-  background-color: #eeeeec;
-  -webkit-flex: 3 1 40%;
-          flex: 3 1 40%;
- -webkit-order: 1;
-         order: 1;
-}
 
 .selector {
 	font-family: 'Roboto', sans-serif;
@@ -1676,7 +1668,7 @@ tr.row2table:nth-child(odd){
 }
 
 .graphcard td input {
-  width: 100px;
+  width: 75px;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #ea495f;
@@ -1818,6 +1810,16 @@ tspan, .vx-axis-label {
 	}
 	.backgraph {
 		margin-right: 5px;
+	}
+	.viewfinder {
+	  -webkit-flex: 3 1 0%;
+	          flex: 3 1 0%;
+	 -webkit-order: 1;
+	         order: 1;
+	}
+	.contentView {
+		-webkit-flex: 3 1 100%;
+	          flex: 3 1 100%;
 	}
 }
 

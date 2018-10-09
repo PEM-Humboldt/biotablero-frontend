@@ -42,13 +42,13 @@ class Compensation extends Component {
       GeoServerAPI.requestProjectLayersByCompany('GEB'),
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
-      GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
-      // RestAPI.requestProjectsAndRegionsByCompany(1),
+      // GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
+      RestAPI.requestProjectsAndRegionsByCompany(1),
     ]).then((res) => {
       this.setState(prevState => ({
-        regions: res[3],
-        // projects: res[3][0],
-        // regions: res[3][1],
+        // regions: res[3],
+        projects: res[3][0],
+        regions: res[3][1],
         currentCompany: 'GEB',
         currentCompanyId: 1,
         layers: {
@@ -256,27 +256,27 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (nameToOff, nameToOnU) => {
-    const nameToOn = nameToOnU.toLowerCase();
+  innerElementChange = (nameToOff, nameToOn) => {
+    // TODO: Remove nameToOnL, to use projectId for layer search
+    const nameToOnL = nameToOn.toLowerCase();
     // TODO: Change GeoServerAPI to RestAPI
-    // const { currentCompanyId, currentProjectId, layers } = this.state;
-    const { currentCompany, layers } = this.state;
-    // const tempProjectId =
+    const { currentCompanyId, layers, projects } = this.state;
+    const tempProject = projects
+      .find(element => element.name === nameToOn);
     Promise.resolve(
-      // RestAPI.requestProjectsByCompany(
-      GeoServerAPI.requestProjectsByCompany(
-        // currentCompanyId, currentProjectId,
-        currentCompany, nameToOn.toUpperCase(),
+      RestAPI.requestProjectsByCompany(
+        currentCompanyId, tempProject.id_project,
       ),
     ).then((res) => {
       this.setState((prevState) => {
         const newState = { ...prevState };
         if (layers[nameToOff]) newState.layers[nameToOff].active = false;
-        if (layers[nameToOn]) {
-          newState.layers[nameToOn].active = true;
-          if (nameToOn === 'sogamoso') newState.layers.biomasSogamoso.active = true;
-          newState.projectName = newState.layers[nameToOn].displayName;
+        if (layers[nameToOnL]) {
+          newState.layers[nameToOnL].active = true;
+          if (nameToOnL === 'sogamoso') newState.layers.biomasSogamoso.active = true;
+          newState.projectName = tempProject.name;
           newState.currentProject = res;
+          newState.currentProjectId = tempProject.id_project;
         }
         return newState;
       });
@@ -287,7 +287,7 @@ class Compensation extends Component {
     const { layers: { biomasSogamoso }, currentProject } = this.state;
     // TODO: Save biomes and its strategies on the selectedProject
     console.log('currentProject[0]', this.state, currentProject);
-    ElasticAPI.requestProjectStrategiesByBiome(currentProject[0].name, biomeName)
+    ElasticAPI.requestProjectStrategiesByBiome(currentProject.name, biomeName)
       .then((res) => {
         this.setState({
           layerName: biomeName,

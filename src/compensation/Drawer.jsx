@@ -125,6 +125,7 @@ class Drawer extends React.Component {
         ],
       }
     ));
+    // TODO: Fix deleting algorithm to validate biome to delete
     console.log('selectedBiomes', selectedBiomes.length, selectedBiomes.length < 1);
     return (selectedBiomes.length < 1) ? true : this.showDotsGraph(true);
   }
@@ -223,7 +224,7 @@ class Drawer extends React.Component {
    *
    */
   downloadPlan = () => {
-    // TODO: Implement plan download
+    // TODO: Implement plan download, with tolerance =0
   }
 
   /**
@@ -259,8 +260,8 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'biomeData' construct an array with strategies info for the given szh
-   * and ea
+   * From data loaded in 'biomeData' construct an array with
+   * strategies info for the given szh and ea
    *
    * @param {String} szh SZH name
    * @param {String} ea CAR name
