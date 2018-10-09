@@ -125,6 +125,7 @@ class Drawer extends React.Component {
         ],
       }
     ));
+    console.log('selectedBiomes', selectedBiomes.length, selectedBiomes.length < 1);
     return (selectedBiomes.length < 1) ? true : this.showDotsGraph(true);
   }
 
@@ -416,7 +417,7 @@ class Drawer extends React.Component {
               <div key="1">
                 <div className="total">
                   <h3>
-                    Total a compensar
+                    TOTAL A COMPENSAR
                   </h3>
                   <h4>
                     {totals.total_compensate}

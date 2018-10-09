@@ -67,8 +67,9 @@ class PopMenu extends Component {
    */
   handleChangeCAR = (carSelected) => {
     const { szhSelected } = this.state;
+    const { controlValues } = this.props;
     this.setState({
-      carSelected: carSelected ? carSelected.value : '',
+      carSelected: carSelected && controlValues[2] ? carSelected.value : '',
     });
     const { loadStrategies } = this.props;
     if (carSelected) loadStrategies(szhSelected, carSelected.value);
@@ -81,14 +82,14 @@ class PopMenu extends Component {
    * @param {String} nameSZH Name of the szh to list options
    */
   listCAROptions = (nameSZH) => {
-    const { data } = this.props;
+    const { data, controlValues } = this.props;
     if (!data || !data[nameSZH]) return null;
 
     const { carSelected } = this.state;
     const options = Object.keys(data[nameSZH]).map(car => ({ value: car, label: car }));
     return (
       <Select
-        value={carSelected}
+        value={!controlValues[2] ? carSelected : ''}
         onChange={this.handleChangeCAR}
         placeholder="Seleccione CAR"
         options={options}
@@ -112,15 +113,6 @@ class PopMenu extends Component {
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
         <div className="popbtns">
-          {controlValues[1] && (
-          <button
-            className="downgraph"
-            type="button"
-            onClick={() => downloadPlan(true)}
-          >
-            <DownloadIcon className="icondown" />
-            {'Descargar plan'}
-          </button>)}
           { !controlValues[2] && (
           <button
             className="backgraph"
@@ -134,6 +126,15 @@ class PopMenu extends Component {
           >
             <BackGraphIcon />
             {'Gráfico Biomas'}
+          </button>)}
+          {controlValues[1] && (
+          <button
+            className="downgraph"
+            type="button"
+            onClick={() => downloadPlan(true)}
+          >
+            <DownloadIcon className="icondown" />
+            {'Descargar plan'}
           </button>)}
         </div>
       </div>

@@ -1455,7 +1455,7 @@ p.legcomp {
 }
 
 .popbtns {
-	padding: 10px 0;
+	padding-top: 10px;
 	display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
@@ -1694,10 +1694,11 @@ tr.row2table:nth-child(odd){
 .special {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+	margin-top: -9px;
 }
 
 .titecositema {
-  margin-bottom: -9px;
+  margin-top: 8px;
   background-color: #2a363b;
   padding: 10px 10px 15px;
   color: #fff;
@@ -1804,19 +1805,19 @@ tspan, .vx-axis-label {
 }
 
 
-@media screen and (max-width: 940px){
+@media screen and (max-width: 980px){
 	.popbtns {
 		display: block;
 	}
 
 	.backgraph, .downgraph {
-		width: 162px;
+		width: 166px;
 	}
 	.downgraph {
-		margin-right: 5px;
+		margin-top: 5px;
 	}
 	.backgraph {
-		margin-top: 5px;
+		margin-right: 5px;
 	}
 }
 
