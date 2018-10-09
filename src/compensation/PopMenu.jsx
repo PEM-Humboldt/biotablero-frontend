@@ -13,7 +13,6 @@ class PopMenu extends Component {
     this.state = {
       szhSelected: null,
       carSelected: null,
-      showGraphButton: false,
       layerName: controlValues[0],
     };
   }
@@ -25,7 +24,6 @@ class PopMenu extends Component {
       return {
         szhSelected: null,
         carSelected: null,
-        showGraphButton: false,
         layerName: controlValues[0],
       };
     }
@@ -39,7 +37,6 @@ class PopMenu extends Component {
     this.setState({
       szhSelected: szhSelected ? szhSelected.value : '',
       carSelected: null,
-      showGraphButton: false,
     });
     const { loadStrategies } = this.props;
     if (szhSelected) loadStrategies(szhSelected.value);
@@ -72,7 +69,6 @@ class PopMenu extends Component {
     const { szhSelected } = this.state;
     this.setState({
       carSelected: carSelected ? carSelected.value : '',
-      showGraphButton: Boolean(carSelected),
     });
     const { loadStrategies } = this.props;
     if (carSelected) loadStrategies(szhSelected, carSelected.value);
@@ -105,45 +101,41 @@ class PopMenu extends Component {
       showDotsGraph, downloadPlan, controlValues,
     } = this.props;
     const {
-      layerName, szhSelected, showGraphButton,
+      layerName, szhSelected,
     } = this.state;
     return (
       <div className="complist">
         <AddIcon />
         <div className="Biomatit">
-          {layerName || 'Seleccione un bioma del gráfico o del mapa'}
+          {controlValues[0] || 'Seleccione un bioma del gráfico o del mapa'}
         </div>
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        { controlValues[1] && (
+        <div className="popbtns">
+          {controlValues[1] && (
           <button
             className="downgraph"
             type="button"
             onClick={() => downloadPlan(true)}
           >
             <DownloadIcon className="icondown" />
-            {' Descargar plan'}
-          </button>)
-        }
-        {showGraphButton ? (
-          <div>
-            { !controlValues[2] && (
-            <button
-              className="backgraph"
-              type="button"
-              onClick={() => {
-                this.setState({
-                  carSelected: '',
-                  showGraphButton: false,
-                });
-                showDotsGraph(true);
-              }}
-            >
-              <BackGraphIcon />
-              {' Ir al gráfico'}
-            </button>)}
-          </div>
-        ) : ''}
+            {'Descargar plan'}
+          </button>)}
+          { !controlValues[2] && (
+          <button
+            className="backgraph"
+            type="button"
+            onClick={() => {
+              this.setState({
+                carSelected: '',
+              });
+              showDotsGraph(true);
+            }}
+          >
+            <BackGraphIcon />
+            {'Gráfico Biomas'}
+          </button>)}
+        </div>
       </div>
     );
   }

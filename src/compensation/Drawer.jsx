@@ -125,7 +125,6 @@ class Drawer extends React.Component {
         ],
       }
     ));
-    console.log('selectedBiomes', selectedBiomes.length, selectedBiomes.length < 1);
     return (selectedBiomes.length < 1) ? true : this.showDotsGraph(true);
   }
 
@@ -215,7 +214,6 @@ class Drawer extends React.Component {
         },
       }
     ));
-    console.log('Grafo: ', this.state);
   }
 
   /**
@@ -437,7 +435,7 @@ class Drawer extends React.Component {
               <div key="2">
                 <div className="total">
                   <h3>
-                    Total a compensar
+                    TOTAL A COMPENSAR
                   </h3>
                   <h4>
                     {totals.total_compensate}
@@ -445,7 +443,7 @@ class Drawer extends React.Component {
                 </div>
                 <div className="total carrito">
                   <h3>
-                    Áreas seleccionadas
+                    HAs SELECCIONADAS
                   </h3>
                   <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
                     {selectedArea}

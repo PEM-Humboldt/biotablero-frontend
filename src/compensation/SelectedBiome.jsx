@@ -28,7 +28,6 @@ class SelectedBiome extends Component {
   showStrategies = (data) => {
     const strategies = data.map(({ _source: obj }) => {
     // TODO: Set strategySuggested inside TableStylized from biome data
-      console.log('obj', obj);
       if (obj.SUGERIDA) {
         const name = obj.ESTRATEGIA;
         this.setState(prevState => ({
@@ -151,49 +150,44 @@ class SelectedBiome extends Component {
           onKeyDown={this.switchTable}
           role="presentation"
         >
-          <div>
-            <b>Bioma: </b>
-            {` ${biome}`}
-            <br />
-            <b>SZH:</b>
-            {` ${szh}`}
-            <br />
-            <b>Jurisdicción:</b>
-            {` ${ea}`}
-            {// TODO: Create texts, icons and actions for list of biomas in Shopping Cart
-            }
-          </div>
-          <div align="center">
-            <b>
-              {`${selectedArea} HAs`}
-            </b>
-          </div>
-          {!showTable
-            && (
+          <div className="titeco2">
             <div>
-              <button
-                className="icongraph"
-                type="button"
-                onClick={() => this.switchTable()}
-                data-tooltip
-                title="Mostrar / Ocultar estrategia"
-              >
-                {'Mostrar bioma'}
-                <ExpandMoreIcon />
-              </button>
-              <button
-                className="icondelete"
-                type="button"
-                data-tooltip
-                title="Eliminar bioma"
-                onClick={() => this.deleteBiome(selectedArea, biome, ea, szh)}
-              >
-                {'Eliminar bioma'}
-                <EraseIcon />
-              </button>
+              <b className="addedBioma">{`${biome}`}</b>
+              <br />
+              <b>SZH:</b>
+              {` ${szh}`}
+              <br />
+              <b>Jurisdicción:</b>
+              {` ${ea}`}
+              {// TODO: Create texts, icons and actions for list of biomas in Shopping Cart
+              }
             </div>
-            )
-          }
+            <div>
+              <div className="HasSelected">
+                {`${selectedArea} HAs`}
+              </div>
+              <div>
+                <button
+                  className={`icongraph ${showTable ? 'rotate-false' : 'rotate-true'}`}
+                  type="button"
+                  onClick={() => this.switchTable()}
+                  data-tooltip
+                  title="Mostrar / Ocultar estrategia"
+                >
+                  <ExpandMoreIcon />
+                </button>
+                <button
+                  className="icondelete"
+                  type="button"
+                  data-tooltip
+                  title="Eliminar bioma"
+                  onClick={() => this.deleteBiome(selectedArea, biome, ea, szh)}
+                >
+                  <EraseIcon />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         {tableError && (
           <div className="tableError">
