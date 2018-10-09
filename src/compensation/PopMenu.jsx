@@ -9,24 +9,24 @@ import Select from 'react-select';
 class PopMenu extends Component {
   constructor(props) {
     super(props);
-    const { layerName } = props;
+    const { controlValues } = props;
     this.state = {
       szhSelected: null,
       carSelected: null,
-      showAddButton: false,
-      layerName,
+      showGraphButton: false,
+      layerName: controlValues[0],
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { layerName } = nextProps;
+    const { controlValues } = nextProps;
     const { layerName: oldSubArea } = prevState;
-    if (oldSubArea !== layerName) {
+    if (oldSubArea !== controlValues[0]) {
       return {
         szhSelected: null,
         carSelected: null,
-        showAddButton: false,
-        layerName,
+        showGraphButton: false,
+        layerName: controlValues[0],
       };
     }
     return null;
@@ -39,6 +39,7 @@ class PopMenu extends Component {
     this.setState({
       szhSelected: szhSelected ? szhSelected.value : '',
       carSelected: null,
+      showGraphButton: false,
     });
     const { loadStrategies } = this.props;
     if (szhSelected) loadStrategies(szhSelected.value);
@@ -71,7 +72,7 @@ class PopMenu extends Component {
     const { szhSelected } = this.state;
     this.setState({
       carSelected: carSelected ? carSelected.value : '',
-      showAddButton: Boolean(carSelected),
+      showGraphButton: Boolean(carSelected),
     });
     const { loadStrategies } = this.props;
     if (carSelected) loadStrategies(szhSelected, carSelected.value);
@@ -100,9 +101,11 @@ class PopMenu extends Component {
   }
 
   render() {
-    const { loadStrategies, switchDotsGraph, downloadPlan } = this.props;
     const {
-      layerName, szhSelected, carSelected, showAddButton,
+      showDotsGraph, downloadPlan, controlValues,
+    } = this.props;
+    const {
+      layerName, szhSelected, showGraphButton,
     } = this.state;
     return (
       <div className="complist">
@@ -112,32 +115,33 @@ class PopMenu extends Component {
         </div>
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {showAddButton ? (
+        { controlValues[1] && (
+          <button
+            className="downgraph"
+            type="button"
+            onClick={() => downloadPlan(true)}
+          >
+            <DownloadIcon className="icondown" />
+            {' Descargar plan'}
+          </button>)
+        }
+        {showGraphButton ? (
           <div>
-            <button
-              className="addbiome"
-              type="button"
-              onClick={() => {
-                this.setState({ showAddButton: false });
-                loadStrategies(szhSelected, carSelected);
-              }}
-            />
-            <button
-              className="downgraph"
-              type="button"
-              onClick={() => downloadPlan(true)}
-            >
-              <DownloadIcon className="icondown" />
-              {' Descargar plan'}
-            </button>
+            { !controlValues[2] && (
             <button
               className="backgraph"
               type="button"
-              onClick={() => switchDotsGraph(true)}
+              onClick={() => {
+                this.setState({
+                  carSelected: '',
+                  showGraphButton: false,
+                });
+                showDotsGraph(true);
+              }}
             >
               <BackGraphIcon />
               {' Ir al gráfico'}
-            </button>
+            </button>)}
           </div>
         ) : ''}
       </div>
@@ -146,16 +150,17 @@ class PopMenu extends Component {
 }
 
 PopMenu.propTypes = {
-  layerName: PropTypes.string,
+  controlValues: PropTypes.array,
   // Data from elastic result for "donde compensar sogamoso"
+  // TODO: Implement source data changes
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
   downloadPlan: PropTypes.func.isRequired,
-  switchDotsGraph: PropTypes.func.isRequired,
+  showDotsGraph: PropTypes.func.isRequired,
 };
 
 PopMenu.defaultProps = {
-  layerName: '',
+  controlValues: [],
 };
 
 export default PopMenu;

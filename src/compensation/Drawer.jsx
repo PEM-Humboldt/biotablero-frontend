@@ -110,6 +110,7 @@ class Drawer extends React.Component {
    * @param {String} ea enviromental autority selected
    */
   deleteSelectedBiome = (biome, ea, szh) => {
+    const { selectedBiomes } = this.state;
     this.cleanBiomeFilterList();
     this.setState(prevState => (
       {
@@ -124,7 +125,8 @@ class Drawer extends React.Component {
         ],
       }
     ));
-    this.switchDotsGraph(true);
+    console.log('selectedBiomes', selectedBiomes.length, selectedBiomes.length < 1);
+    return (selectedBiomes.length < 1) ? true : this.showDotsGraph(true);
   }
 
   /**
@@ -150,7 +152,7 @@ class Drawer extends React.Component {
         ],
       }
     ));
-    this.switchDotsGraph(false);
+    this.showDotsGraph(false);
   }
 
   /**
@@ -202,7 +204,7 @@ class Drawer extends React.Component {
    * @param {Boolean} value graph state: true = on / false = off
    *
    */
-  switchDotsGraph = (value) => {
+  showDotsGraph = (value) => {
     this.setState(prevState => (
       {
         ...prevState,
@@ -311,17 +313,19 @@ class Drawer extends React.Component {
    */
   renderSelector = (data, total) => {
     const { layerName } = this.props;
-    const { color } = this.state;
+    const {
+      color, selectedArea, graphStatus: { DotsWhere },
+    } = this.state;
     if (total !== 0) {
       return (
         <ParentSize className="nocolor">
           {parent => (
             parent.width && parent.height && (
               <PopMenu
-                layerName={layerName}
+                controlValues={[layerName, selectedArea, DotsWhere]}
                 color={color}
                 loadStrategies={this.loadStrategies}
-                switchDotsGraph={this.switchDotsGraph}
+                showDotsGraph={this.showDotsGraph}
                 downloadPlan={this.downloadPlan}
                 data={data}
               />
