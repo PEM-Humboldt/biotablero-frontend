@@ -22,8 +22,9 @@ class Compensation extends Component {
       currentProject: null,
       currentProjectId: null,
       currentBiome: null,
-      projectType: null,
-      projectName: null,
+      currentStrategies: null, // TODO: Should this remain here  or in another component?
+      projectType: null, // TODO: Remove and use currentProject.
+      projectName: null, // TODO: Remove and use currentProject.label
       layerName: null,
       layers: {},
       projects: [],

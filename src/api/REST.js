@@ -152,7 +152,7 @@ class RestAPI {
                 id_project: element.gid,
                 name: element.label,
                 state: element.prj_status,
-                region: element.region,
+                region: element.id_region,
                 area: element.area_ha,
                 id_company: element.id_company,
                 project: element.name,

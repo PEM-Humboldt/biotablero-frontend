@@ -176,6 +176,7 @@ class SelectedBiome extends Component {
                 >
                   <ExpandMoreIcon />
                 </button>
+                { (selectedArea > 0) && (
                 <button
                   className="icondelete"
                   type="button"
@@ -184,7 +185,7 @@ class SelectedBiome extends Component {
                   onClick={() => this.deleteBiome(selectedArea, biome, ea, szh)}
                 >
                   <EraseIcon />
-                </button>
+                </button>)}
               </div>
             </div>
           </div>

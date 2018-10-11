@@ -1093,7 +1093,7 @@ a#reset-filters {
 }
 /*All information container*/
 .contentView {
-	overflow: auto; /* TODO: Revisar con César: ¿Se requiere ajustar ancho de Selector.js de acuerdo a este estilo?*/
+	overflow: auto;
   -webkit-flex: 1 1 40%;
           flex: 1 1 40%;
   flex-direction: column;
@@ -1822,7 +1822,7 @@ tspan, .vx-axis-label {
 	          flex: 1 0 100%;
 	}
 
-	.viewfinderShow {
+	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
 	}
