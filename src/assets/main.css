@@ -1760,6 +1760,11 @@ tspan, .vx-axis-label {
   -moz-osx-font-smoothing: grayscale !important;
 }
 
+.loginBtn {
+	border: none;
+	background-color: transparent;
+}
+
 /* Media Queries */
 @media screen and (max-width: 1200px){
 
