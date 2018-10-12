@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import Modal from '@material-ui/core/Modal';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
+import NewProjectForm from './compensation/NewProjectForm';
 import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
@@ -25,10 +28,13 @@ class Compensation extends Component {
       currentStrategies: null, // TODO: Should this remain here  or in another component?
       projectType: null, // TODO: Remove and use currentProject.
       projectName: null, // TODO: Remove and use currentProject.label
+      openModal: false,
       layerName: null,
       layers: {},
       projects: [],
       regions: [],
+      regionsList: null,
+      statusList: null,
       colors: [
         { medium: '#eabc47' },
         { low: '#51b4c1' },
@@ -118,12 +124,15 @@ class Compensation extends Component {
     this.setState((prevState) => {
       const newState = { ...prevState };
       const { regions } = prevState;
+      const tempRegionList = [];
+      const tempStatusList = [];
       Object.keys(regions).forEach((regionKey) => {
         const regionFound = newState.regions[regionKey];
         regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
         regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
         regionFound.expandIcon = (<ExpandMoreIcon />);
         regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
+        tempRegionList.push(regionFound);
         Object.keys(regionFound
           .projectsStates).forEach((stateKey) => {
           const stateFound = regionFound.projectsStates[stateKey];
@@ -138,18 +147,24 @@ class Compensation extends Component {
             stateFound.projects[projectKey].label = `${this.firstLetterUpperCase(stateFound.projects[projectKey].name)}`;
           });
         });
-        regionFound.projectsStates.push({
-          id: 'addProject',
-          label: '+ Agregar nuevo proyecto',
-          expandIcon: (<ExpandMoreIcon />),
-          options: [ // TODO: Implementing handler for options inside projectState elements
-            { // TODO: Setting up CRUD for projects in the current state and region
-              type: 'button',
-              label: 'Agregar',
-            },
-          ],
-        });
+        if (tempStatusList.length === 0) {
+          Object.values(regionFound.projectsStates).map((element) => {
+            tempStatusList.push(element.id);
+            return null;
+          });
+        }
       });
+      const createProject = {
+        id: 'addProject',
+        idLabel: 'panel1-newProject',
+        detailId: 'region',
+        expandIcon: (<NoteAddIcon />),
+        label: '+ Agregar nuevo proyecto',
+        type: 'addProject',
+      };
+      newState.regionsList = tempRegionList;
+      newState.statusList = tempStatusList;
+      newState.regions.push(createProject);
       return newState;
     });
   }
@@ -223,6 +238,26 @@ class Compensation extends Component {
     this.highlightFeature(event, parentLayer);
   }
 
+  /** ****************** */
+  /** LISTENER FOR MODAL */
+  /** ****************** */
+
+  getModalStyle = () => {
+    const top = 50 + Math.round(Math.random() * 20) - 10;
+    const left = 50 + Math.round(Math.random() * 20) - 10;
+
+    return {
+      top: `${top}%`,
+      left: `${left}%`,
+      transform: `translate(-${top}%, -${left}%)`,
+    };
+  }
+
+  handleCloseModal = () => {
+    const { openModal } = this.state;
+    this.setState({ openModal: !openModal });
+  };
+
   /** ***************************************** */
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
   /** ***************************************** */
@@ -245,10 +280,14 @@ class Compensation extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
 
-  firstLevelChange = (name) => {
+  firstLevelChange = (name, type) => {
     this.setState({
       currentRegion: name,
     });
+    if (type) {
+      this.handleCloseModal();
+    }
+    return null;
   }
 
   secondLevelChange = (name) => {
@@ -287,7 +326,7 @@ class Compensation extends Component {
   updateActiveBiome = (biomeName) => {
     const { layers: { biomasSogamoso }, currentProject } = this.state;
     // TODO: Save biomes and its strategies on the selectedProject
-    console.log('currentProject[0]', this.state, currentProject);
+    // console.log('currentProject, state', this.state, currentProject);
     ElasticAPI.requestProjectStrategiesByBiome(currentProject.name, biomeName)
       .then((res) => {
         this.setState({
@@ -313,13 +352,25 @@ class Compensation extends Component {
   render() {
     const {
       currentBiome, currentCompany, currentRegion, projectType, projectName, layerName,
-      colors, layers, regions,
+      colors, layers, regions, regionsList, statusList, openModal,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
       >
+        {openModal && (
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openModal}
+            onClose={this.handleCloseModal}
+          >
+            <div className="paperModal">
+              <NewProjectForm regions={regionsList} status={statusList} />
+            </div>
+          </Modal>
+        )}
         <div className="appSearcher">
           <MapViewer
             layers={layers}

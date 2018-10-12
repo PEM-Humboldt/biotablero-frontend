@@ -1765,6 +1765,13 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 }
 
+.paperModal: {
+  	position: absolute;
+    width: 500px;
+    height: 500px;
+    backgroundColor: white;
+}
+
 /* Media Queries */
 @media screen and (max-width: 1200px){
 

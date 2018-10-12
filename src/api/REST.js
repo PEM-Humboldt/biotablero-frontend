@@ -145,7 +145,7 @@ class RestAPI {
       .then((res) => {
         const projectsFound = [];
         // TODO: Finalize new projects load structure
-        if (res.length !== undefined) {
+        if (res !== undefined && res.length !== undefined) {
           res.forEach(
             (element) => {
               const project = {
@@ -172,27 +172,29 @@ class RestAPI {
   static requestProjectsAndRegionsByCompany(companyId) {
     const response = Promise.resolve(RestAPI.requestProjectsByCompany(companyId))
       .then((res) => {
-        const regions = [...new Set(res.map((item) => {
-          if (item.region) {
-            return (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
-          }
-          return '(REGION SIN ASIGNAR)';
-        }))];
-        const states = [...new Set(res.map((item) => {
-          if (item.state) return item.state;
-          return '(ESTADO SIN ASIGNAR)';
-        }))];
-        const projectsSelectorData = regions.map(region => (
-          {
-            id: region,
-            projectsStates: states.map(state => (
-              {
-                id: state,
-                projects: res.filter(project => project.region
-                  === region && project.state === state),
-              })),
-          }));
-        return [res, projectsSelectorData];
+        if (res !== undefined) {
+          const regions = [...new Set(res.map((item) => {
+            if (item.region) {
+              return (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
+            }
+            return '(REGION SIN ASIGNAR)';
+          }))];
+          const states = [...new Set(res.map((item) => {
+            if (item.state) return item.state;
+            return '(ESTADO SIN ASIGNAR)';
+          }))];
+          const projectsSelectorData = regions.map(region => (
+            {
+              id: region,
+              projectsStates: states.map(state => (
+                {
+                  id: state,
+                  projects: res.filter(project => project.region
+                    === region && project.state === state),
+                })),
+            }));
+          return [res, projectsSelectorData];
+        } return res;
       });
     return response;
   }
