@@ -185,7 +185,7 @@ class Autocomplete extends React.Component {
   };
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, label } = this.props;
     const { multiLabel } = this.state;
     const elements = data.map(element => ({
       value: element.value,
@@ -199,7 +199,7 @@ class Autocomplete extends React.Component {
           onChange={this.handleChange('multiLabel')}
           placeholder="Seleccionar múltiples"
           name="react-select-chip-label"
-          label="Escriba el nombre a buscar"
+          label={label}
           InputLabelProps={{
             shrink: true,
           }}
@@ -224,10 +224,12 @@ Autocomplete.propTypes = {
   valueSelected: PropTypes.func.isRequired,
   classes: PropTypes.object,
   data: PropTypes.array.isRequired,
+  label: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
   classes: '',
+  label: 'Escriba el nombre a buscar',
 };
 
 export default withStyles(styles)(Autocomplete);

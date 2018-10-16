@@ -148,6 +148,7 @@ class Drawer extends React.Component {
     this.setState(prevState => (
       {
         selectedBiomes: [
+        // TODO: Just open loadBiome and hide other biome tables
           loadBiome,
           ...prevState.selectedBiomes,
         ],

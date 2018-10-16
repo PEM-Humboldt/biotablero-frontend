@@ -35,6 +35,7 @@ class Compensation extends Component {
       regions: [],
       regionsList: null,
       statusList: null,
+      newProjectData: null,
       colors: [
         { medium: '#eabc47' },
         { low: '#51b4c1' },
@@ -250,6 +251,11 @@ class Compensation extends Component {
       top: `${top}%`,
       left: `${left}%`,
       transform: `translate(-${top}%, -${left}%)`,
+      position: 'absolute',
+      width: 500,
+      backgroundColor: 'white',
+      boxShadow: 5,
+      padding: 40,
     };
   }
 
@@ -274,6 +280,35 @@ class Compensation extends Component {
       newState.currentProject = null;
       return newState;
     });
+  }
+
+  /** ****************************** */
+  /** LISTENERS FOR NEW PROJECT */
+  /** ****************************** */
+
+  setNewProject = (field, value) => {
+    const { newProjectData } = this.state;
+    const tempProject = newProjectData;
+    switch (field) {
+      case 'region':
+        tempProject.region = value;
+        break;
+      case 'status':
+        tempProject.region = value;
+        break;
+      case 'biome':
+        tempProject.biome = value;
+        // tempProject.szh = ;
+        // tempProject.ea = ;
+        this.handleCloseModal();
+        break;
+      default:
+        return null;
+    }
+    this.setState({
+      newProjectData: tempProject,
+    });
+    return null;
   }
 
   /** ****************************** */
@@ -366,8 +401,14 @@ class Compensation extends Component {
             open={openModal}
             onClose={this.handleCloseModal}
           >
-            <div className="paperModal">
-              <NewProjectForm regions={regionsList} status={statusList} />
+            <div style={this.getModalStyle()}>
+              <h2>Nuevo proyecto</h2>
+              <NewProjectForm
+                className="newProjectModal"
+                regions={regionsList}
+                status={statusList}
+                handlers={this.setNewProject}
+              />
             </div>
           </Modal>
         )}
@@ -377,6 +418,7 @@ class Compensation extends Component {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
+            {console.log(this.state)}
             {
               !projectName && (
               <Selector

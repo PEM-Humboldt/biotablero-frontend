@@ -1765,11 +1765,10 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 }
 
-.paperModal: {
+.newProjectModal: {
   	position: absolute;
     width: 500px;
     height: 500px;
-    backgroundColor: white;
 }
 
 /* Media Queries */
