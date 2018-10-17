@@ -107,7 +107,7 @@ class Search extends Component {
   }
 
   /**
-   * Choose the right color for the bioma inside the map, according
+   * Choose the right color for the biome inside the map, according
    *  with colorsFC state
    *
    * @param {Object} feature target object
@@ -167,7 +167,7 @@ class Search extends Component {
   }
 
   clickFeature = (event, parentLayer) => {
-    // TODO: Activate bioma inside dotsWhere and dotsWhat
+    // TODO: Activate biome inside dotsWhere and dotsWhat
     // TODO: Create function for jurisdicciones layer
     this.highlightFeature(event);
     if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
@@ -180,11 +180,11 @@ class Search extends Component {
      * @param {Object} event event object
      */
     handleClickOnArea = (event) => {
-      const bioma = event.target.feature.properties.BIOMA_IAvH;
-      ElasticAPI.requestBiomaBySZH(bioma)
+      const biome = event.target.feature.properties.BIOMA_IAvH;
+      ElasticAPI.requestBiomeBySZH(biome)
         .then((res) => {
           this.setState({
-            layerName: bioma,
+            layerName: biome,
             basinData: res,
           });
         });
@@ -226,7 +226,7 @@ class Search extends Component {
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
   /** ***************************************** */
 
-  // TODO: Return from bioma to jurisdicción
+  // TODO: Return from biome to jurisdicción
   handlerBackButton = () => {
     this.setState((prevState) => {
       let newState = { ...prevState };

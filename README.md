@@ -43,7 +43,7 @@ Para desplegar como contenedor de Docker es necesario contar la versión 17.05.0
 
 Descargar el repositorio en el servidor donde se desplegará el servicio.
 
-Tenga en cuenta la configuración de [las variables de entorno] (https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables): se deberá crear una copia del archivo *.env* con el nombre *.env.production.local*, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
+Tenga en cuenta la configuración de [las variables de entorno](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables): se deberá crear una copia del archivo *.env* con el nombre *.env.production.local*, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
 
 Ejecutar la siguiente instrucción para construir la imagen:
 

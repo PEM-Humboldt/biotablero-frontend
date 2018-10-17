@@ -7,14 +7,16 @@ class ElasticAPI {
    *
    * @param {String} biome biome's name to request
    */
-  static requestDondeCompensarSogamoso(biome) {
-    return ElasticAPI.makeRequest(
-      'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source',
-      {
-        id: 'donde_compensar_sogamoso',
-        params: { bioma_name: biome },
-      },
-    );
+  static requestProjectStrategiesByBiome(projectName, biomeName) {
+    if (projectName === 'SOGAMOSO') {
+      return ElasticAPI.makeRequest(
+        'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets.key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car.buckets.results.hits.hits._source',
+        {
+          id: 'donde_compensar_sogamoso',
+          params: { bioma_name: biomeName },
+        },
+      );
+    } return null; // TODO: Set this request for a generical search and keeping response structure
   }
 
   /**
@@ -45,7 +47,7 @@ class ElasticAPI {
       'corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets,aggregations.total_area',
       {
         id: 'biomaBySZH',
-        params: { biome },
+        params: { bioma: biome },
       },
     );
   }
@@ -88,7 +90,7 @@ class ElasticAPI {
    *
    * @param {String} idCAR id CAR to request
    */
-  static requestCarByBiomaArea(idCAR) {
+  static requestCarByBiomeArea(idCAR) {
     return ElasticAPI.makeRequest(
       'corporacion_biomas/_search/template?filter_path=aggregations.areas.buckets.key,aggregations.areas.buckets.area,aggregations.areas.buckets.fc.hits.hits._source,aggregations.total_area',
       {

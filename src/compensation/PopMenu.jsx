@@ -1,30 +1,30 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
+import BackGraphIcon from '@material-ui/icons/Timeline';
+import DownloadIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 class PopMenu extends Component {
   constructor(props) {
     super(props);
-    const { layerName } = props;
+    const { controlValues } = props;
     this.state = {
       szhSelected: null,
       carSelected: null,
-      showButton: false,
-      layerName,
+      layerName: controlValues[0],
     };
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const { layerName } = nextProps;
+    const { controlValues } = nextProps;
     const { layerName: oldSubArea } = prevState;
-    if (oldSubArea !== layerName) {
+    if (oldSubArea !== controlValues[0]) {
       return {
         szhSelected: null,
         carSelected: null,
-        showButton: false,
-        layerName,
+        layerName: controlValues[0],
       };
     }
     return null;
@@ -39,7 +39,8 @@ class PopMenu extends Component {
       carSelected: null,
     });
     const { loadStrategies } = this.props;
-    loadStrategies(szhSelected.value);
+    if (szhSelected) loadStrategies(szhSelected.value);
+    else loadStrategies(null, null);
   }
 
   /**
@@ -65,12 +66,14 @@ class PopMenu extends Component {
    * Event handler when a CAR option is selected
    */
   handleChangeCAR = (carSelected) => {
+    const { szhSelected } = this.state;
+    const { controlValues } = this.props;
     this.setState({
-      carSelected: carSelected ? carSelected.value : '',
-      showButton: Boolean(carSelected),
+      carSelected: carSelected && controlValues[2] ? carSelected.value : '',
     });
     const { loadStrategies } = this.props;
-    loadStrategies();
+    if (carSelected) loadStrategies(szhSelected, carSelected.value);
+    else loadStrategies(szhSelected, null);
   }
 
   /**
@@ -79,14 +82,14 @@ class PopMenu extends Component {
    * @param {String} nameSZH Name of the szh to list options
    */
   listCAROptions = (nameSZH) => {
-    const { data } = this.props;
+    const { data, controlValues } = this.props;
     if (!data || !data[nameSZH]) return null;
 
     const { carSelected } = this.state;
     const options = Object.keys(data[nameSZH]).map(car => ({ value: car, label: car }));
     return (
       <Select
-        value={carSelected}
+        value={!controlValues[2] ? carSelected : ''}
         onChange={this.handleChangeCAR}
         placeholder="Seleccione CAR"
         options={options}
@@ -95,42 +98,62 @@ class PopMenu extends Component {
   }
 
   render() {
-    const { loadStrategies } = this.props;
     const {
-      layerName, szhSelected, carSelected, showButton,
+      showDotsGraph, downloadPlan, controlValues,
+    } = this.props;
+    const {
+      layerName, szhSelected,
     } = this.state;
     return (
       <div className="complist">
         <AddIcon />
         <div className="Biomatit">
-          {layerName || 'Seleccione un bioma del gráfico o del mapa'}
+          {controlValues[0] || 'Seleccione un bioma del gráfico o del mapa'}
         </div>
         {layerName ? this.listSZHOptions() : ''}
         {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {showButton ? (
+        <div className="popbtns">
+          { !controlValues[2] && (
           <button
-            className="addbioma"
+            className="backgraph"
             type="button"
             onClick={() => {
-              this.setState({ showButton: false });
-              loadStrategies(szhSelected, carSelected);
+              this.setState({
+                carSelected: '',
+              });
+              showDotsGraph(true);
             }}
-          />
-        ) : ''}
+          >
+            <BackGraphIcon />
+            {'Gráfico Biomas'}
+          </button>)}
+          {controlValues[1] && (
+          <button
+            className="downgraph"
+            type="button"
+            onClick={() => downloadPlan(true)}
+          >
+            <DownloadIcon className="icondown" />
+            {'Descargar plan'}
+          </button>)}
+        </div>
       </div>
     );
   }
 }
 
 PopMenu.propTypes = {
-  layerName: PropTypes.string,
+  controlValues: PropTypes.array,
   // Data from elastic result for "donde compensar sogamoso"
+  // TODO: Implement source data changes
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
+  downloadPlan: PropTypes.func.isRequired,
+  showDotsGraph: PropTypes.func.isRequired,
 };
 
 PopMenu.defaultProps = {
-  layerName: '',
+  controlValues: [],
 };
 
 export default PopMenu;

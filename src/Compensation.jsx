@@ -3,11 +3,15 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AddIcon from '@material-ui/icons/Add';
+import Modal from '@material-ui/core/Modal';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
+import NewProjectForm from './compensation/NewProjectForm';
 import Selector from './Selector';
 import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
+import RestAPI from './api/REST';
 import Layout from './Layout';
 import { description } from './compensation/assets/selectorData';
 
@@ -16,13 +20,22 @@ class Compensation extends Component {
     super(props);
     this.state = {
       currentCompany: null,
+      currentCompanyId: null,
       currentRegion: null,
       currentProject: null,
-      projectType: null,
-      projectName: null,
+      currentProjectId: null,
+      currentBiome: null,
+      currentStrategies: null, // TODO: Should this remain here  or in another component?
+      projectType: null, // TODO: Remove and use currentProject.
+      projectName: null, // TODO: Remove and use currentProject.label
+      openModal: false,
       layerName: null,
       layers: {},
+      projects: [],
       regions: [],
+      regionsList: null,
+      statusList: null,
+      newProjectData: null,
       colors: [
         { medium: '#eabc47' },
         { low: '#51b4c1' },
@@ -37,11 +50,15 @@ class Compensation extends Component {
       GeoServerAPI.requestProjectLayersByCompany('GEB'),
       GeoServerAPI.requestBiomasSogamoso(),
       GeoServerAPI.requestSogamoso(),
-      GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
+      // GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
+      RestAPI.requestProjectsAndRegionsByCompany(1),
     ]).then((res) => {
       this.setState(prevState => ({
-        regions: res[3],
+        // regions: res[3],
+        projects: res[3][0],
+        regions: res[3][1],
         currentCompany: 'GEB',
+        currentCompanyId: 1,
         layers: {
           ...prevState.layers,
           // the key is the id that communicates with other components and should match selectorData
@@ -108,12 +125,18 @@ class Compensation extends Component {
     this.setState((prevState) => {
       const newState = { ...prevState };
       const { regions } = prevState;
+      const tempRegionList = [];
+      const tempStatusList = [];
       Object.keys(regions).forEach((regionKey) => {
         const regionFound = newState.regions[regionKey];
         regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
         regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
         regionFound.expandIcon = (<ExpandMoreIcon />);
         regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
+        const newRegion = {};
+        newRegion.value = regionFound.id;
+        newRegion.label = regionFound.label;
+        tempRegionList.push(newRegion);
         Object.keys(regionFound
           .projectsStates).forEach((stateKey) => {
           const stateFound = regionFound.projectsStates[stateKey];
@@ -128,18 +151,27 @@ class Compensation extends Component {
             stateFound.projects[projectKey].label = `${this.firstLetterUpperCase(stateFound.projects[projectKey].name)}`;
           });
         });
-        regionFound.projectsStates.push({
-          id: 'addProject',
-          label: '+ Agregar nuevo proyecto',
-          expandIcon: (<ExpandMoreIcon />),
-          options: [ // TODO: Implementing handler for options inside projectState elements
-            { // TODO: Setting up CRUD for projects in the current state and region
-              type: 'button',
-              label: 'Agregar',
-            },
-          ],
-        });
+        if (tempStatusList.length === 0) {
+          Object.values(regionFound.projectsStates).map((element) => {
+            const newStatus = {};
+            newStatus.value = element.id;
+            newStatus.label = element.label;
+            tempStatusList.push(newStatus);
+            return null;
+          });
+        }
       });
+      const createProject = {
+        id: 'addProject',
+        idLabel: 'panel1-newProject',
+        detailId: 'region',
+        expandIcon: (<AddIcon />),
+        label: '+ Agregar nuevo proyecto',
+        type: 'addProject',
+      };
+      newState.regionsList = tempRegionList;
+      newState.statusList = tempStatusList;
+      newState.regions.push(createProject);
       return newState;
     });
   }
@@ -213,6 +245,27 @@ class Compensation extends Component {
     this.highlightFeature(event, parentLayer);
   }
 
+  /** ****************************** */
+  /** LISTENER FOR NEW PROJECT MODAL */
+  /** ****************************** */
+
+
+  handleCloseModal = () => {
+    const { openModal } = this.state;
+    this.setState({ openModal: !openModal });
+  };
+
+  setNewProject = (region, status, name) => {
+    const { currentCompanyId } = this.state;
+    RestAPI.createProject(currentCompanyId, region, status, name)
+      .then((res) => {
+        this.setState({
+          newProjectData: res,
+        });
+      });
+    this.handleCloseModal();
+  }
+
   /** ***************************************** */
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
   /** ***************************************** */
@@ -235,10 +288,14 @@ class Compensation extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
 
-  firstLevelChange = (name) => {
+  firstLevelChange = (name, type) => {
     this.setState({
       currentRegion: name,
     });
+    if (type) {
+      this.handleCloseModal();
+    }
+    return null;
   }
 
   secondLevelChange = (name) => {
@@ -247,22 +304,27 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (nameToOff, nameToOnU) => {
-    const nameToOn = nameToOnU.toLowerCase();
-    const { currentCompany, layers } = this.state;
+  innerElementChange = (nameToOff, nameToOn) => {
+    // TODO: Remove nameToOnL, to use projectId for layer search
+    const nameToOnL = nameToOn.toLowerCase();
+    // TODO: Change GeoServerAPI to RestAPI
+    const { currentCompanyId, layers, projects } = this.state;
+    const tempProject = projects
+      .find(element => element.name === nameToOn);
     Promise.resolve(
-      GeoServerAPI.requestProjectsByCompany(
-        currentCompany, nameToOn.toUpperCase(),
+      RestAPI.requestProjectsByCompany(
+        currentCompanyId, tempProject.id_project,
       ),
     ).then((res) => {
       this.setState((prevState) => {
         const newState = { ...prevState };
         if (layers[nameToOff]) newState.layers[nameToOff].active = false;
-        if (layers[nameToOn]) {
-          newState.layers[nameToOn].active = true;
-          if (nameToOn === 'sogamoso') newState.layers.biomasSogamoso.active = true;
-          newState.projectName = newState.layers[nameToOn].displayName;
+        if (layers[nameToOnL]) {
+          newState.layers[nameToOnL].active = true;
+          if (nameToOnL === 'sogamoso') newState.layers.biomasSogamoso.active = true;
+          newState.projectName = tempProject.name;
           newState.currentProject = res;
+          newState.currentProjectId = tempProject.id_project;
         }
         return newState;
       });
@@ -270,13 +332,14 @@ class Compensation extends Component {
   }
 
   updateActiveBiome = (biomeName) => {
-    const { layers: { biomasSogamoso } } = this.state;
-    ElasticAPI.requestDondeCompensarSogamoso(biomeName)
+    const { layers: { biomasSogamoso }, currentProject } = this.state;
+    // TODO: Save biomes and its strategies on the selectedProject
+    // console.log('currentProject, state', this.state, currentProject);
+    ElasticAPI.requestProjectStrategiesByBiome(currentProject.name, biomeName)
       .then((res) => {
         this.setState({
           layerName: biomeName,
-          // currentProject: GeoServerAPI.requestBiomeByProject(currentProject, biomeName),
-          datosSogamoso: res,
+          currentBiome: res, // TODO: Change strategies data structure
         });
       }).then(() => {
         const currentLayers = biomasSogamoso.layer.getLayers();
@@ -296,14 +359,34 @@ class Compensation extends Component {
 
   render() {
     const {
-      datosSogamoso, currentCompany, currentRegion, projectType, projectName, layerName,
-      colors, layers, regions,
+      currentBiome, currentCompany, currentRegion, projectType, projectName, layerName,
+      colors, layers, regions, regionsList, statusList, openModal, newProjectData,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
       >
+        {openModal && (
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openModal}
+            onClose={this.handleCloseModal}
+            disableAutoFocus
+          >
+            <NewProjectForm
+              regions={regionsList}
+              status={statusList}
+              handlers={[
+                this.setNewProject,
+                this.handleCloseModal,
+              ]}
+            />
+          </Modal>
+        )}
+        {newProjectData
+          && this.innerElementChange(newProjectData.state, newProjectData.name)}
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -335,7 +418,7 @@ class Compensation extends Component {
                 basinName={projectName}
                 colors={colors.map(obj => Object.values(obj)[0])}
                 layerName={layerName}
-                projectData={datosSogamoso}
+                biomeData={currentBiome}
                 subAreaName={projectType}
                 updateActiveBiome={this.updateActiveBiome}
               />

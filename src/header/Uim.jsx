@@ -2,6 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import Login from '../Login';
 
 /* Uim: User Interface Manager */
 const Uim = ({ userLogged }) => (
@@ -17,10 +18,16 @@ const Uim = ({ userLogged }) => (
       </a>
     )
       : '' }
-    <AccountCircle
-      className="userBox"
-      style={{ fontSize: '40px' }}
-    />
+    <button
+      type="button"
+      className="loginBtn"
+      onClick={() => <Login />}
+    >
+      <AccountCircle
+        className="userBox"
+        style={{ fontSize: '40px' }}
+      />
+    </button>
   </div>
 );
 

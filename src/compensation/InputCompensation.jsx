@@ -29,7 +29,7 @@ class InputCompensation extends React.Component {
 
   render() {
     const {
-      name, maxValue, operateArea, reportError,
+      name, maxValue, operateArea, reportError, value,
     } = this.props;
     const { add, inputError } = this.state;
     return (
@@ -41,19 +41,24 @@ class InputCompensation extends React.Component {
           placeholder="0"
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
+          defaultValue={value}
         />
         <button
-          className={`${add ? 'addbioma' : 'subbioma'} smbtn`}
+          className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
           onClick={() => {
-            const value = Number(this.inputRef.current.value);
+            const inputValue = Number(this.inputRef.current.value);
             const action = add ? '+' : '-';
-            if (value <= maxValue) {
-              operateArea(value, action);
+            if (inputValue <= 0) {
+              reportError('No puede ingresar valores menores a cero');
+            } else if (inputValue <= maxValue) {
+              operateArea(inputValue, action, name);
               this.switchAction(action);
+            } else if (add) {
+              reportError(`No puede agregar más de ${maxValue}`);
+              this.inputRef.current.value = 0;
             } else {
-              if (add) reportError(`No puede agregar más de ${maxValue}`);
-              else operateArea(0, '-');
+              operateArea(0, '-');
               this.switchAction(action, add);
             }
           }}
@@ -65,9 +70,14 @@ class InputCompensation extends React.Component {
 
 InputCompensation.propTypes = {
   name: PropTypes.string.isRequired,
+  value: PropTypes.number,
   maxValue: PropTypes.number.isRequired,
   operateArea: PropTypes.func.isRequired,
   reportError: PropTypes.func.isRequired,
+};
+
+InputCompensation.defaultProps = {
+  value: null,
 };
 
 export default InputCompensation;

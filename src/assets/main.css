@@ -1086,27 +1086,19 @@ a#reset-filters {
   padding: 5px;
   border: 0px solid #cccc33;
   background-color: #eeeeec;
-  -webkit-flex: 3 1 60%;
-          flex: 3 1 60%;
+  -webkit-flex: 1 1 60%;
+          flex: 1 1 60%;
  -webkit-order: 1;
          order: 1;
 }
 /*All information container*/
 .contentView {
-	overflow: auto; /* TODO: Revisar con César: ¿Se requiere ajustar ancho de Selector.js de acuerdo a este estilo?*/
-  -webkit-flex: 3 1 40%;
-          flex: 3 1 40%;
+	overflow: auto;
+  -webkit-flex: 1 1 40%;
+          flex: 1 1 40%;
   flex-direction: column;
   -webkit-order: 2;
           order: 2;
-}
-/*Belongs to contentView*/
-.filter {
-  background-color: #eeeeec;
-  -webkit-flex: 3 1 40%;
-          flex: 3 1 40%;
- -webkit-order: 1;
-         order: 1;
 }
 
 .selector {
@@ -1426,13 +1418,12 @@ p.legcomp {
   background-color: #fff;
   border-radius: 5px;
   margin-right: 5px;
-  min-width: 120px;
+  min-width: 190px;
   display: inline-block;
   margin-bottom: 5px;
 }
 
 .total h3 {
-  text-transform: uppercase;
   font-size: 18px;
   color: #ea495f;
   font-weight: 400;
@@ -1445,31 +1436,59 @@ p.legcomp {
   text-align: left;
 }
 
-.carrito h3, .carrito h4{
-  text-align: right;
-}
-
 .Biomatit {
   color: #424242;
   padding: 5px;
   border-bottom: 1px solid #ea495f;
 }
 
+.complist {
+	margin-top: 5px;
+}
+
+.popbtns {
+	padding-top: 10px;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+}
+
 .complist svg {
   color: #ea495f;
   float: left;
+  width: 30px;
+  height: 30px;
 }
 
 .Select-menu-outer { top: auto; bottom: 100%; }
 
 .Select-option.is-focused  {
-    background-color: rgba(234, 73, 95, 0.15) !important;
+    background-color: rgba(252, 228, 232) !important;
 }
 
 .icondown {
   float: left;
   cursor: pointer;
   margin-top: -3px;
+}
+
+.icongraph, .icondelete {
+	color: #fff;
+	cursor: pointer;
+	border: 0;
+	background-color: transparent;
+	text-align: right;
+	display: inline-block;
+	float: right;
+	outline: none;
+}
+
+.icondelete:disabled {
+	color: #757474;
+	outline: 0;
 }
 
 table.graphcard {
@@ -1505,7 +1524,7 @@ tr.row2table:nth-child(odd){
   color: #fff !important;
 }
 
-.addbioma {
+.addbiome {
   outline: none;
   background: transparent;
   cursor: pointer;
@@ -1517,7 +1536,7 @@ tr.row2table:nth-child(odd){
   margin-top: 10px;
 }
 
-.addbioma::after {
+.addbiome::after {
   content: " ";
   position: absolute;
   display: block;
@@ -1530,7 +1549,7 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.addbioma::before {
+.addbiome::before {
   content: " ";
   position: absolute;
   display: block;
@@ -1543,16 +1562,16 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.addbioma:hover {
+.addbiome:hover {
   background-color: #ea495f;
 }
 
-.addbioma:hover::after,
-.addbioma:hover::before {
+.addbiome:hover::after,
+.addbiome:hover::before {
   background-color: #fff;
 }
 
-.subbioma {
+.subbiome {
   outline: none;
   background: transparent;
   cursor: pointer;
@@ -1564,7 +1583,7 @@ tr.row2table:nth-child(odd){
   margin-top: 10px;
 }
 
-.subbioma::after {
+.subbiome::after {
   content: " ";
   position: absolute;
   display: block;
@@ -1577,11 +1596,11 @@ tr.row2table:nth-child(odd){
   z-index: 9;
 }
 
-.subbioma:hover {
+.subbiome:hover {
   background-color: #345b6b;
 }
 
-.subbioma:hover::after {
+.subbiome:hover::after {
   background-color: #fff;
 }
 
@@ -1649,7 +1668,7 @@ tr.row2table:nth-child(odd){
 }
 
 .graphcard td input {
-  width: 100px;
+  width: 75px;
   background-color: transparent;
   border: none;
   border-bottom: 1px solid #ea495f;
@@ -1667,42 +1686,165 @@ tr.row2table:nth-child(odd){
 .special {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+	margin-top: -9px;
 }
 
 .titecositema {
-  margin-bottom: -13px;
+  margin-top: 8px;
   background-color: #2a363b;
   padding: 10px 10px 15px;
-  margin-top: 10px;
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
 }
 
-.backgraph {
+.titeco2 {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+}
+
+.HasSelected {
+	background: #fff;
+	color: #e84a5f;
+	white-space: nowrap;
+	padding: 5px 8px;
+	height: 22px !important;
+	margin-left: 10px;
+	text-align: right;
+	font-size: 18px;
+	border-radius: 3px;
+	font-weight: 500;
+	margin-bottom: 5px;
+}
+
+.addedBioma {
+	color: #51b4c1;
+}
+
+.backgraph, .downgraph {
   color: #2a363b;
   vertical-align: middle;
-  font-size: 16px;
-  border: none;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid #fff;
+  border-radius: 3px;
   background-color: transparent;
   outline: none;
   cursor: pointer;
   line-height: 20px;
-  margin-top: 10px;
+	text-transform: uppercase;
+	padding: 5px 8px;
 }
 
-.backgraph svg {
-  height: 20px;
-  width: 20px;
-  vertical-align: top;
+.downgraph svg, .backgraph svg {
+	height: 20px;
+	width: 20px;
+	margin-top: 0;
+	margin-right: 3px;
+}
+
+.backgraph:hover, .downgraph:hover {
+	background-color: #fff;
 }
 
 tspan, .vx-axis-label {
-  font-smooth: always !important;
+  font-stretch: always !important;
   border: none !important;
   font-weight: 300 !important;
   -webkit-font-smoothing: antialiased !important;
   -moz-osx-font-smoothing: grayscale !important;
+}
+
+.loginBtn {
+	border: none;
+	background-color: transparent;
+}
+
+.newProjectTitle {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+	padding: 15px 20px 10px;
+	background-color: #e84a5f;
+	border-radius: 5px 0 0 0;
+}
+
+.newProjectTitle h2 {
+	color: #fff;
+	text-transform: uppercase;
+	vertical-align: baseline;
+	line-height: 25px;
+}
+
+.newProjectModal .npcontent  {
+	padding: 15px;
+}
+
+.newProjectModal {
+	position: fixed;
+	width: 350px;
+	height: 250px;
+	background-color: #ffffff;
+	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
+	bottom: 200px;
+	right: 0;
+	outline: none;
+	border-radius: 5px 0 0 5px;
+	padding-bottom: 15px;
+}
+
+.addprjbtn {
+	margin-top: 10px;
+	outline: none;
+	cursor: pointer;
+	color: #e84a5f;
+	text-align: right;
+	background-color: transparent;
+	border: none;
+	float: right;
+}
+
+.newProjectModal input {
+	padding: 0 10px;
+	box-sizing: border-box;
+	outline: none;
+	font-size: 12px;
+	width: 100%;
+}
+
+.newProjectModal input::placeholder {
+	color: #aaa;
+}
+
+.closebtn {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	line-height: 25px;
+	cursor: pointer;
+}
+
+.closebtn:hover {
+	color: #fff;
+}
+
+.projectInput {
+	line-height: 34px;
+	border-radius: 4px;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	margin-top: 1px;
+	color: #333333;
+	position: relative;
+	width: 99%;
 }
 
 /* Media Queries */
@@ -1741,6 +1883,42 @@ tspan, .vx-axis-label {
     }
 }
 
+
+@media screen and (max-width: 980px){
+	.popbtns {
+		display: block;
+	}
+
+	.backgraph, .downgraph {
+		width: 166px;
+	}
+	.downgraph {
+		margin-top: 5px;
+	}
+	.backgraph {
+		margin-right: 5px;
+	}
+
+	.viewfinder {
+	  -webkit-flex: 0 1 0%;
+	          flex: 0 1 0%;
+	}
+
+	.contentView {
+	  -webkit-flex: 1 0 100%;
+	          flex: 1 0 100%;
+	}
+
+	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */
+	  -webkit-flex: 1 0 100%;
+	          flex: 1 0 100%;
+	}
+
+	.contentViewHide {
+	  -webkit-flex: 0 1 0%;
+	          flex: 0 1 0%;
+	}
+}
 
 @media screen and (max-width: 910px){
     .menuline {

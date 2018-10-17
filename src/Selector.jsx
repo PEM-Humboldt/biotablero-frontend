@@ -21,12 +21,21 @@ class Selector extends React.Component {
     props.handlers[0](expandedByDefault.label);
   }
 
-  firstLevelChange = panel => (event, expanded) => {
+  firstLevelChange = (panel, type) => (event, expanded) => {
     const { handlers } = this.props;
-    this.setState({
-      expanded: expanded ? panel : false,
-    });
-    handlers[0](panel);
+    handlers[0](panel, type);
+    switch (type) {
+      case 'addProject':
+        this.setState({
+          expanded: false,
+        });
+        return true;
+      default:
+        this.setState({
+          expanded: expanded ? panel : false,
+        });
+        return null;
+    }
   };
 
   secondLevelChange = subPanel => (event, expanded) => {
@@ -78,7 +87,7 @@ class Selector extends React.Component {
         {description}
         {data.map((firstLevel) => {
           const {
-            id, label, disabled, expandIcon, detailId, idLabel,
+            id, label, disabled, expandIcon, detailId, idLabel, type,
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
@@ -87,7 +96,7 @@ class Selector extends React.Component {
               id={idLabel}
               expanded={expanded === id}
               disabled={disabled}
-              onChange={this.firstLevelChange(id)}
+              onChange={this.firstLevelChange(id, type)}
               key={id}
             >
               <ExpansionPanelSummary expandIcon={expandIcon}>

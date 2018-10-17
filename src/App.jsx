@@ -28,7 +28,7 @@ const App = () => (
       <Route exact path="/" component={Home} />
       <Route path="/ShortInfo" component={ShortInfo} />
       <Route path="/Consultas" render={loadSearch} />
-      <Route path="/Compensaciones" render={loadCompensator} />
+      <Route path="/GEB/Compensaciones" render={loadCompensator} />
       <Route path="/Alertas" component={Home} />
     </Switch>
   </main>

@@ -8,11 +8,9 @@ import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
-import BackGraph from '@material-ui/icons/Timeline';
 
 import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
-import InputCompensation from './InputCompensation';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
@@ -79,13 +77,15 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedBiomes: [],
       whereData: [],
       totals: {},
       szh: null,
-      car: null,
+      ea: null,
+      strategiesData: [],
       selectedArea: 0,
       tableError: '',
-      showGraphs: { DotsWhere: true },
+      graphStatus: { DotsWhere: true },
     };
   }
 
@@ -102,15 +102,131 @@ class Drawer extends React.Component {
     // (in the table). But the application won't break as it currently is
   }
 
-  newBiome = (layerName, szh, car, strategies) => (
-    <SelectedBiome
-      biome={layerName}
-      szh={szh}
-      car={car}
-      rows={strategies}
-      operateArea={this.operateArea}
-    />
-  )
+  /**
+   * Delete an indicated biome from selectedBiomes
+   *
+   * @param {String} biome current bioma selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   */
+  deleteSelectedBiome = (biome, ea, szh) => {
+    const { selectedBiomes } = this.state;
+    this.cleanBiomeFilterList();
+    this.setState(prevState => (
+      {
+        layerName: null,
+        szh: null,
+        ea: null,
+        selectedBiomes: [
+          ...prevState.selectedBiomes.filter(
+            element => (element.biome !== biome
+            && element.ea !== ea && element.szh !== szh),
+          ),
+        ],
+      }
+    ));
+    // TODO: Fix deleting algorithm to validate biome to delete
+    console.log('selectedBiomes', selectedBiomes.length, selectedBiomes.length < 1);
+    return (selectedBiomes.length < 1) ? true : this.showDotsGraph(true);
+  }
+
+  /**
+   * Add an indicated biome to selectedBiomes and update state
+   *
+   * @param {String} biome current bioma selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   */
+  addSelectedBiome = (layerName, ea, szh, strategiesData) => {
+    const loadBiome = {};
+    loadBiome.biome = layerName;
+    loadBiome.ea = ea;
+    loadBiome.szh = szh;
+    loadBiome.strategies = strategiesData;
+    // TODO: Load valuesSelected from current sesion (memory) or from database
+    // loadBiome.valuesSelected = valuesSelected;
+    this.setState(prevState => (
+      {
+        selectedBiomes: [
+        // TODO: Just open loadBiome and hide other biome tables
+          loadBiome,
+          ...prevState.selectedBiomes,
+        ],
+      }
+    ));
+    this.showDotsGraph(false);
+  }
+
+  /**
+   * Create a new Biome to operate in the interface and show selected biomes
+   *
+   * @param {String} layerName current bioma name showed and selected
+   * @param {String} szh hydrographical sub zone selected
+   * @param {String} ea enviromental autority selected
+   * @param {Array} strategiesData strategies data to list
+   */
+  renderBiomes = (layerName, szh, ea, strategiesData) => {
+    const { selectedBiomes } = this.state;
+    if (layerName && szh && ea && strategiesData) {
+      const tempBiome = selectedBiomes.filter(
+        element => (element.biome === layerName
+          && element.ea === ea && element.szh === szh),
+      );
+      if (tempBiome.length === 0) {
+        this.addSelectedBiome(layerName, ea, szh, strategiesData);
+      }
+    } return true;
+  }
+
+  // TODO: Create function saveStrategies(idBiome, idEA, idSZH, idStrategy, areaSelected)
+
+  /**
+   * Hold and show Biomes previously added to the plan
+   *
+   * @param {Array} selectedBiomes biomes selected for this compensation plan
+   */
+  showBiomes = selectedBiomes => Object.values(selectedBiomes).map((element, i) => (
+    <ParentSize key={i} className="nocolor">
+      {parent => (
+        parent.width && parent.height && (
+          <SelectedBiome
+            biome={element.biome}
+            szh={element.szh}
+            ea={element.ea}
+            data={element.strategies}
+            operateSelectedAreas={this.operateSelectedAreas}
+            deleteSelectedBiome={this.deleteSelectedBiome}
+            saveStrategies={this.saveStrategies}
+          />))}
+    </ParentSize>
+  ))
+
+  /**
+   * Switch between on / off the DotsGraph
+   * @param {Boolean} value graph state: true = on / false = off
+   *
+   */
+  showDotsGraph = (value) => {
+    this.setState(prevState => (
+      {
+        ...prevState,
+        ea: null,
+        szh: null,
+        graphStatus: {
+          DotsWhere: value,
+        },
+      }
+    ));
+  }
+
+  /**
+   * Switch between on / off the DotsGraph
+   * @param {Boolean} value graph state: true = on / false = off
+   *
+   */
+  downloadPlan = () => {
+    // TODO: Implement plan download, with tolerance =0
+  }
 
   /**
    * Add or subtract a value to selectedArea
@@ -118,7 +234,7 @@ class Drawer extends React.Component {
    * @param {number} value amount to operate in the selectedArea
    * @param {number} operator indicates the operation to realize with the value
    */
-  operateArea = (value, operator) => {
+  operateSelectedAreas = (value, operator) => {
     this.setState((prevState) => {
       let { selectedArea } = prevState;
       switch (operator) {
@@ -145,59 +261,48 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'projectData' construct an array with strategies info for the given szh
-   * and car
+   * From data loaded in 'biomeData' construct an array with
+   * strategies info for the given szh and ea
    *
    * @param {String} szh SZH name
-   * @param {String} car CAR name
+   * @param {String} ea CAR name
    */
-  loadStrategies = (szh, car) => {
-    if (!szh || !car) {
+  loadStrategies = (szh, ea) => {
+    if (!szh || !ea) {
       this.setState(prevState => ({
         szh,
-        car,
-        strategies: [],
-        showGraphs: {
-          ...prevState.showGraphs,
+        ea,
+        graphStatus: {
+          ...prevState.graphStatus,
           DotsWhere: true,
         },
       }));
       return;
     }
 
-    const { projectData } = this.props;
-    const data = this.cleanSogamosoData(projectData);
-    const strategies = data[szh][car].results.hits.hits.map(({ _source: obj }) => ({
-      key: obj.GROUPS,
-      values: [
-        obj.ESTRATEGIA,
-        Number(obj.HA_ES_EJ).toFixed(2),
-        <InputCompensation
-          name={obj.GROUPS}
-          maxValue={Number(obj.HA_ES_EJ)}
-          operateArea={this.operateArea}
-          reportError={this.reportTableError}
-        />,
-      ],
-    }));
-    this.setState(prevState => ({
-      szh,
-      car,
-      strategies,
-      showGraphs: {
-        ...prevState.showGraphs,
-        DotsWhere: false,
-      },
-    }));
+    const { biomeData } = this.props;
+    const data = this.cleanBiomeFilterList(biomeData);
+    if (data) {
+      this.setState(prevState => ({
+        szh,
+        ea,
+        strategiesData: data[szh][ea].results.hits.hits,
+        graphStatus: {
+          ...prevState.graphStatus,
+          DotsWhere: false,
+        },
+      }));
+    }
   }
 
-  cleanSogamosoData = (data) => {
+  cleanBiomeFilterList = (data) => {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
       const cleanCar = {};
-      szh.car.buckets.forEach((car) => {
-        cleanCar[car.key] = car;
+      // TODO: Replace name "car" for "ea"
+      szh.car.buckets.forEach((ea) => {
+        cleanCar[ea.key] = ea;
       });
       cleanData[szh.key] = cleanCar;
     });
@@ -209,16 +314,20 @@ class Drawer extends React.Component {
    */
   renderSelector = (data, total) => {
     const { layerName } = this.props;
-    const { color } = this.state;
+    const {
+      color, selectedArea, graphStatus: { DotsWhere },
+    } = this.state;
     if (total !== 0) {
       return (
         <ParentSize className="nocolor">
           {parent => (
             parent.width && parent.height && (
               <PopMenu
-                layerName={layerName}
+                controlValues={[layerName, selectedArea, DotsWhere]}
                 color={color}
                 loadStrategies={this.loadStrategies}
+                showDotsGraph={this.showDotsGraph}
+                downloadPlan={this.downloadPlan}
                 data={data}
               />
             )
@@ -233,7 +342,7 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
-    const { showGraphs: { DotsWhere } } = this.state;
+    const { graphStatus: { DotsWhere } } = this.state;
     const { updateActiveBiome } = this.props;
     if (graph === 'Dots' && DotsWhere) {
       return (
@@ -250,7 +359,7 @@ class Drawer extends React.Component {
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
-                  this.setState({ szh: null, car: null, strategies: [] });
+                  this.setState({ szh: null, ea: null, strategiesData: [] });
                   return updateActiveBiome(name);
                 }}
               />
@@ -264,12 +373,12 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, layerName, projectData,
+      areaName, back, basinName, colors, classes, layerName, biomeData,
       subAreaName,
     } = this.props;
     const {
-      whereData, totals, selectedArea, totalACompensar, szh, car, strategies, tableError,
-      showGraphs: { DotsWhere },
+      whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
+      strategiesData, selectedBiomes,
     } = this.state;
 
     const tableRows = whereData.map((biome, i) => ({
@@ -310,7 +419,7 @@ class Drawer extends React.Component {
               <div key="1">
                 <div className="total">
                   <h3>
-                    Total a compensar
+                    TOTAL A COMPENSAR
                   </h3>
                   <h4>
                     {totals.total_compensate}
@@ -329,7 +438,7 @@ class Drawer extends React.Component {
               <div key="2">
                 <div className="total">
                   <h3>
-                    Total a compensar
+                    TOTAL A COMPENSAR
                   </h3>
                   <h4>
                     {totals.total_compensate}
@@ -337,39 +446,21 @@ class Drawer extends React.Component {
                 </div>
                 <div className="total carrito">
                   <h3>
-                    Áreas seleccionadas
+                    HAs SELECCIONADAS
                   </h3>
                   <h4 className={(selectedArea >= totals.total_compensate) ? 'areaCompleted' : ''}>
                     {selectedArea}
                   </h4>
                 </div>
                 {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector(this.cleanSogamosoData(projectData), totalACompensar)}
-                { !DotsWhere && (
-                  <button
-                    className="backgraph"
-                    type="button"
-                    onClick={() => this.setState(prevState => (
-                      {
-                        showGraphs: {
-                          ...prevState.showGraphs,
-                          DotsWhere: true,
-                        },
-                      }
-                    ))}
-                  >
-                    <BackGraph />
-                    {' Ir al gráfico'}
-                  </button>
-                )}
+                {this.renderSelector(this.cleanBiomeFilterList(biomeData), totalACompensar)}
                 {tableError && (
                   <div className="tableError">
                     {tableError}
                   </div>
                 )}
-                { layerName && szh && car && strategies && (
-                  this.newBiome(layerName, szh, car, strategies)
-                )}
+                {this.renderBiomes(layerName, szh, ea, strategiesData)}
+                {this.showBiomes(selectedBiomes)}
               </div>
             ),
           ]}
@@ -385,11 +476,11 @@ Drawer.propTypes = {
   basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
-  // Function to handle onClick event on the graph
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
-  projectData: PropTypes.object,
+  biomeData: PropTypes.object,
   subAreaName: PropTypes.string,
+  // Function to handle onClick event on the graph
   updateActiveBiome: PropTypes.func,
 };
 
@@ -398,7 +489,7 @@ Drawer.defaultProps = {
   back: () => {},
   basinName: '',
   colors: ['#eabc47'],
-  projectData: {},
+  biomeData: {},
   updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',

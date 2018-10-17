@@ -13,61 +13,6 @@ class GeoServerAPI {
     } return null;
   }
 
-  // TODO: Migrate this function to PostgreSQLAPI or PostGISAPI
-  /**
-   * Request the project names by company, organized by region and state
-   */
-  static requestProjectNamesOrganizedByCompany(companyName) {
-    const response = Promise.resolve(GeoServerAPI.requestProjectsByCompany(companyName))
-      .then((res) => {
-        const regions = [...new Set(res.map(item => (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ')))];
-        const states = [...new Set(res.map(item => item.state))];
-        const projectsSelectorData = regions.map(region => (
-          {
-            id: region,
-            projectsStates: states.map(state => (
-              {
-                id: state,
-                projects: res.filter(project => project.region
-                  === region && project.state === state),
-              })),
-          }));
-        return projectsSelectorData;
-      });
-    return response;
-  }
-
-  // TODO: Migrate this function to PostgreSQLAPI or PostGISAPI
-  /**
-   * Request the project layers names, all projects or by project ID
-   */
-  static requestProjectsByCompany(companyName, projectName) {
-    if (companyName === 'GEB') {
-      const request = projectName
-        ? GeoServerAPI.requestWFSBiotablero('User_GEB_projects', `CQL_FILTER=NOM_GEN='${projectName}'`)
-        : GeoServerAPI.requestWFSBiotablero('User_GEB_projects');
-      const response = Promise.resolve(request)
-        .then((res) => {
-          const projectsFound = [];
-          // TODO: Finalize new projects load structure
-          res.features.forEach(
-            (element) => {
-              const project = {
-                region: element.properties.REGION,
-                state: element.properties.ESTADO,
-                area: element.properties.AREA_ha,
-                name: element.properties.NOM_GEN,
-                project: element.properties.PROYECTO,
-              };
-              projectsFound.push(project);
-            },
-          );
-          return projectsFound;
-        });
-      return response;
-    } return null;
-  }
-
   /**
    * Request the GEB layers, all projects or by project ID
    */
