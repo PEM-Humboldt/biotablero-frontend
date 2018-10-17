@@ -1765,26 +1765,75 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 }
 
+.newProjectTitle {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	justify-content: space-between;
+	padding: 15px 20px 10px;
+	background-color: #e84a5f;
+	border-radius: 5px 0 0 0;
+}
+
+.newProjectTitle h2 {
+	color: #fff;
+	text-transform: uppercase;
+	vertical-align: baseline;
+	line-height: 25px;
+}
+
+.newProjectModal .npcontent  {
+	padding: 15px;
+}
+
 .newProjectModal {
 	position: fixed;
 	width: 350px;
 	height: 250px;
-	width: 200;
 	background-color: #ffffff;
-	box-shadow: 5px;
-	padding: 20px;
-	top: 200px;
-	left: 300px;
+	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
+	bottom: 200px;
+	right: 0;
+	outline: none;
+	border-radius: 5px 0 0 5px;
+	padding-bottom: 15px;
 }
 
 .addprjbtn {
+	margin-top: 10px;
+	outline: none;
+	cursor: pointer;
+	color: #e84a5f;
+	text-align: right;
 	background-color: transparent;
 	border: none;
+	float: right;
+}
+
+.newProjectModal input {
+	padding: 0 10px;
+	box-sizing: border-box;
+	outline: none;
+	font-size: 12px;
+	width: 100%;
+}
+
+.newProjectModal input::placeholder {
+	color: #aaa;
 }
 
 .closebtn {
 	background-color: transparent;
 	border: none;
+	outline: none;
+	line-height: 25px;
+	cursor: pointer;
+}
+
+.closebtn:hover {
+	color: #fff;
 }
 
 .projectInput {

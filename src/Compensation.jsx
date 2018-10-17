@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import NoteAddIcon from '@material-ui/icons/Add';
 import Modal from '@material-ui/core/Modal';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
