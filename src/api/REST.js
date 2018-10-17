@@ -199,17 +199,17 @@ class RestAPI {
     return response;
   }
 
-    /**
-   * Create a new project by company, organized by region and state
-   */
+  /**
+ * Create a new project by company, organized by region and state
+ */
   static createProject(companyId, regionId, statusId, name) {
     const requestBody = {
-      "name": `${name}`,
-      "id_company": companyId,
-      "id_region": `${regionId}`,
-      "prj_status": `${statusId}`,
-      "details": 'Project created by user'
-    }
+      name: `${name}`,
+      id_company: companyId,
+      id_region: `${regionId}`,
+      prj_status: `${statusId}`,
+      details: 'Project created by user',
+    };
     const request = RestAPI.makePostRequest(`companies/${companyId}/projects`, requestBody);
     const response = Promise.resolve(request)
       .then((res) => {
@@ -220,13 +220,13 @@ class RestAPI {
           temp.region = res.id_region;
           temp.state = res.prj_status;
           temp.name = res.name;
-          temp.type = "button";
+          temp.type = 'button';
           temp.project = res.name.toUpperCase();
           temp.label = res.name;
           temp.area = 0;
-        return (temp);
-      }
-    });
+          return (temp);
+        } return res;
+      });
     return response;
   }
 
@@ -240,7 +240,7 @@ class RestAPI {
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.get(url)
       .then(res => res.data)
-      .catch((e) => { console.error(e.message); });
+      .catch(error => console.error(error.message));
   }
 
   /**
@@ -254,7 +254,7 @@ class RestAPI {
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.post(url, requestBody)
       .then(res => res.data)
-      .catch((e) => { console.error(e.message); });
+      .catch(error => console.error(error.message));
   }
 }
 
