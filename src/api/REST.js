@@ -203,19 +203,31 @@ class RestAPI {
    * Create a new project by company, organized by region and state
    */
   static createProject(companyId, regionId, statusId, name) {
-    const request = RestAPI.makePostRequest(`companies/${companyId}/projects`);
-    const bodyRequest = {
-      "id_company": `${companyId}`,
+    const requestBody = {
+      "name": `${name}`,
+      "id_company": companyId,
       "id_region": `${regionId}`,
       "prj_status": `${statusId}`,
-      "name": `${name}`,
+      "details": 'Project created by user'
     }
-    const response = Promise.resolve(request, bodyRequest)
+    const request = RestAPI.makePostRequest(`companies/${companyId}/projects`, requestBody);
+    const response = Promise.resolve(request)
       .then((res) => {
         if (res !== undefined) {
-        console.log('res', res);
-      } return res;
+          const temp = {};
+          temp.id_project = res.gid;
+          temp.id_company = res.id_company;
+          temp.region = res.id_region;
+          temp.state = res.prj_status;
+          temp.name = res.name;
+          temp.type = "button";
+          temp.project = res.name.toUpperCase();
+          temp.label = res.name;
+          temp.area = 0;
+        return (temp);
+      }
     });
+    return response;
   }
 
   /**

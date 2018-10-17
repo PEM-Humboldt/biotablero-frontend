@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import NoteAddIcon from '@material-ui/icons/NoteAdd';
+import AddIcon from '@material-ui/icons/Add';
 import Modal from '@material-ui/core/Modal';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
@@ -133,7 +133,7 @@ class Compensation extends Component {
         regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
         regionFound.expandIcon = (<ExpandMoreIcon />);
         regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
-        const newRegion = {}
+        const newRegion = {};
         newRegion.value = regionFound.id;
         newRegion.label = regionFound.label;
         tempRegionList.push(newRegion);
@@ -153,7 +153,7 @@ class Compensation extends Component {
         });
         if (tempStatusList.length === 0) {
           Object.values(regionFound.projectsStates).map((element) => {
-            const newStatus = {}
+            const newStatus = {};
             newStatus.value = element.id;
             newStatus.label = element.label;
             tempStatusList.push(newStatus);
@@ -165,7 +165,7 @@ class Compensation extends Component {
         id: 'addProject',
         idLabel: 'panel1-newProject',
         detailId: 'region',
-        expandIcon: (<NoteAddIcon />),
+        expandIcon: (<AddIcon />),
         label: '+ Agregar nuevo proyecto',
         type: 'addProject',
       };
@@ -256,15 +256,14 @@ class Compensation extends Component {
   };
 
   setNewProject = (region, status, name) => {
+    const { currentCompanyId } = this.state;
+    RestAPI.createProject(currentCompanyId, region, status, name)
+      .then((res) => {
+        this.setState({
+          newProjectData: res,
+        });
+      });
     this.handleCloseModal();
-    this.setState({
-      newProjectData: {
-        region,
-        status,
-        name, 
-      },
-    });
-    console.log(this.state);
   }
 
   /** ***************************************** */
@@ -306,6 +305,7 @@ class Compensation extends Component {
   }
 
   innerElementChange = (nameToOff, nameToOn) => {
+    console.log('nameToOff, nameToOn', nameToOff, nameToOn);
     // TODO: Remove nameToOnL, to use projectId for layer search
     const nameToOnL = nameToOn.toLowerCase();
     // TODO: Change GeoServerAPI to RestAPI
@@ -361,7 +361,7 @@ class Compensation extends Component {
   render() {
     const {
       currentBiome, currentCompany, currentRegion, projectType, projectName, layerName,
-      colors, layers, regions, regionsList, statusList, openModal,
+      colors, layers, regions, regionsList, statusList, openModal, newProjectData,
     } = this.state;
     return (
       <Layout
@@ -374,17 +374,21 @@ class Compensation extends Component {
             aria-describedby="simple-modal-description"
             open={openModal}
             onClose={this.handleCloseModal}
-          >              
-          <NewProjectForm
-            regions={regionsList}
-            status={statusList}
-            handlers={[
-              this.setNewProject,
-              this.handleCloseModal
-            ]}
-          />
+            disableAutoFocus
+          >
+            <NewProjectForm
+              regions={regionsList}
+              status={statusList}
+              handlers={[
+                this.setNewProject,
+                this.handleCloseModal,
+              ]}
+            />
           </Modal>
         )}
+        {newProjectData
+          && console.log('Prueba NewProject', newProjectData)
+          && this.innerElementChange(newProjectData.state, newProjectData.name)}
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -422,6 +426,7 @@ class Compensation extends Component {
               />
               )
             }
+            {console.log(this.state)}
           </div>
         </div>
       </Layout>

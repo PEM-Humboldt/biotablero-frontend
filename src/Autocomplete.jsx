@@ -34,6 +34,7 @@ const styles = theme => ({
       '&:hover': {
         boxShadow: 'none',
       },
+      '-webkit-flex': '1 0 66%',
     },
     '.Select-multi-value-wrapper': {
       flexGrow: 1,
@@ -76,6 +77,7 @@ const styles = theme => ({
       fontSize: 12,
       fontFamily: 'Roboto, sans-serif',
       padding: 0,
+      width: '100px',
     },
     '.Select-placeholder': {
       opacity: 0.42,
@@ -120,48 +122,45 @@ const styles = theme => ({
   },
 });
 
-class SelectWrapped extends React.Component {
-  
-  render() {
-    const { classes, ...other } = this.props;
-    return (
-      <Select
-        noResultsText="Sin resultados"
-        arrowRenderer={arrowProps => (
-          arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
-        )}
-        clearRenderer={() => <ClearIcon />}
-        valueComponent={(valueProps) => {
-          const { value, children, onRemove } = valueProps;
+function SelectWrapped(props) {
+  const { classes, ...other } = props;
+  return (
+    <Select
+      noResultsText="Sin resultados"
+      arrowRenderer={arrowProps => (
+        arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
+      )}
+      clearRenderer={() => <ClearIcon />}
+      valueComponent={(valueProps) => {
+        const { value, children, onRemove } = valueProps;
 
-          const onDelete = (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            onRemove(value);
-          };
+        const onDelete = (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onRemove(value);
+        };
 
-          if (onRemove) {
-            return (
-              <Chip
-                tabIndex={-1}
-                label={children}
-                className={classes.chip}
-                deleteIcon={<CancelIcon onTouchEnd={onDelete} />}
-                onDelete={onDelete}
-              />
-            );
-          }
-
+        if (onRemove) {
           return (
-            <div className="Select-value">
-              {children}
-            </div>
+            <Chip
+              tabIndex={-1}
+              label={children}
+              className={classes.chip}
+              deleteIcon={<CancelIcon onTouchEnd={onDelete} />}
+              onDelete={onDelete}
+            />
           );
-        }}
-        {...other}
-      />
-    );
-  }
+        }
+
+        return (
+          <div className="Select-value">
+            {children}
+          </div>
+        );
+      }}
+      {...other}
+    />
+  );
 }
 
 SelectWrapped.propTypes = {
