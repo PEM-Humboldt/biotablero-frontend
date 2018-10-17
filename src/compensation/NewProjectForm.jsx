@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import CloseIcon from '@material-ui/icons/Close';
-import AddProjectIcon from '@material-ui/icons/PlaylistAddCheck';
+import AddProjectIcon from '@material-ui/icons/Check';
 
 class NewProjectForm extends Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class NewProjectForm extends Component {
       <Select
         value={regionSelected}
         onChange={this.handleChangeRegion}
-        placeholder="Seleccione la región..."
+        placeholder="Región"
         options={regions}
       />
     );
@@ -67,7 +67,7 @@ class NewProjectForm extends Component {
       <Select
         value={statusSelected}
         onChange={this.handleChangeStatus}
-        placeholder="Seleccione el estado del proyecto..."
+        placeholder="Estado del proyecto"
         options={status}
       />
     );
@@ -88,43 +88,45 @@ class NewProjectForm extends Component {
     const { handlers } = this.props;
     return (
       <div className="newProjectModal">
-        <button
-          className="closebtn"
-          onClick={handlers[1]}
-          data-tooltip
-          title="Cerrar"
-          type="button"
-        >
-          <CloseIcon />
-        </button>
-        <h2>Nuevo proyecto</h2>
-        Región:
-        {this.listRegions()}
-        Estado:
-        {this.listStatus()}
-        Nombre del proyecto:
-        <br />
-        <input
-          className="projectInput"
-          type="text"
-          value={newName || ''}
-          placeholder="Escriba el nombre del proyecto..."
-          onChange={this.handleChangeName}
-          maxLength="80"
-        />
-        {regionSelected && statusSelected && newName && (
+        <div className="newProjectTitle">
+          <h2>Nuevo proyecto</h2>
           <button
             type="button"
-            className="addprjbtn"
-            onClick={() => {
-              handlers[0](regionSelected, statusSelected, newName);
-            }}
+            className="closebtn"
+            onClick={handlers[1]}
             data-tooltip
-            title="Crear proyecto"
+            title="Cerrar"
           >
-            <AddProjectIcon />
-          </button>)
-        }
+            <CloseIcon />
+          </button>
+        </div>
+        <div className="npcontent">
+          {this.listRegions()}
+          <br />
+          {this.listStatus()}
+          <br />
+          <input
+            className="projectInput"
+            type="text"
+            value={newName || ''}
+            placeholder="Nombre del proyecto"
+            onChange={this.handleChangeName}
+            maxLength="50"
+          />
+          {regionSelected && statusSelected && newName && (
+            <button
+              type="button"
+              className="addprjbtn"
+              onClick={() => {
+                handlers[0](regionSelected, statusSelected, newName);
+              }}
+              data-tooltip
+              title="Crear proyecto"
+            >
+              <AddProjectIcon />
+            </button>)
+          }
+        </div>
       </div>
     );
   }

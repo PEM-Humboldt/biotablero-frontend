@@ -305,7 +305,6 @@ class Compensation extends Component {
   }
 
   innerElementChange = (nameToOff, nameToOn) => {
-    console.log('nameToOff, nameToOn', nameToOff, nameToOn);
     // TODO: Remove nameToOnL, to use projectId for layer search
     const nameToOnL = nameToOn.toLowerCase();
     // TODO: Change GeoServerAPI to RestAPI
@@ -387,7 +386,6 @@ class Compensation extends Component {
           </Modal>
         )}
         {newProjectData
-          && console.log('Prueba NewProject', newProjectData)
           && this.innerElementChange(newProjectData.state, newProjectData.name)}
         <div className="appSearcher">
           <MapViewer
@@ -426,7 +424,6 @@ class Compensation extends Component {
               />
               )
             }
-            {console.log(this.state)}
           </div>
         </div>
       </Layout>
