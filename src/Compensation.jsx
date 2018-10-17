@@ -133,7 +133,10 @@ class Compensation extends Component {
         regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
         regionFound.expandIcon = (<ExpandMoreIcon />);
         regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
-        tempRegionList.push(regionFound);
+        const newRegion = {}
+        newRegion.value = regionFound.id;
+        newRegion.label = regionFound.label;
+        tempRegionList.push(newRegion);
         Object.keys(regionFound
           .projectsStates).forEach((stateKey) => {
           const stateFound = regionFound.projectsStates[stateKey];
@@ -150,7 +153,10 @@ class Compensation extends Component {
         });
         if (tempStatusList.length === 0) {
           Object.values(regionFound.projectsStates).map((element) => {
-            tempStatusList.push(element.id);
+            const newStatus = {}
+            newStatus.value = element.id;
+            newStatus.label = element.label;
+            tempStatusList.push(newStatus);
             return null;
           });
         }
@@ -239,30 +245,27 @@ class Compensation extends Component {
     this.highlightFeature(event, parentLayer);
   }
 
-  /** ****************** */
-  /** LISTENER FOR MODAL */
-  /** ****************** */
+  /** ****************************** */
+  /** LISTENER FOR NEW PROJECT MODAL */
+  /** ****************************** */
 
-  getModalStyle = () => {
-    const top = 50 + Math.round(Math.random() * 20) - 10;
-    const left = 50 + Math.round(Math.random() * 20) - 10;
-
-    return {
-      top: `${top}%`,
-      left: `${left}%`,
-      transform: `translate(-${top}%, -${left}%)`,
-      position: 'absolute',
-      width: 500,
-      backgroundColor: 'white',
-      boxShadow: 5,
-      padding: 40,
-    };
-  }
 
   handleCloseModal = () => {
     const { openModal } = this.state;
     this.setState({ openModal: !openModal });
   };
+
+  setNewProject = (region, status, name) => {
+    this.handleCloseModal();
+    this.setState({
+      newProjectData: {
+        region,
+        status,
+        name, 
+      },
+    });
+    console.log(this.state);
+  }
 
   /** ***************************************** */
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
@@ -280,35 +283,6 @@ class Compensation extends Component {
       newState.currentProject = null;
       return newState;
     });
-  }
-
-  /** ****************************** */
-  /** LISTENERS FOR NEW PROJECT */
-  /** ****************************** */
-
-  setNewProject = (field, value) => {
-    const { newProjectData } = this.state;
-    const tempProject = newProjectData;
-    switch (field) {
-      case 'region':
-        tempProject.region = value;
-        break;
-      case 'status':
-        tempProject.region = value;
-        break;
-      case 'biome':
-        tempProject.biome = value;
-        // tempProject.szh = ;
-        // tempProject.ea = ;
-        this.handleCloseModal();
-        break;
-      default:
-        return null;
-    }
-    this.setState({
-      newProjectData: tempProject,
-    });
-    return null;
   }
 
   /** ****************************** */
@@ -400,16 +374,15 @@ class Compensation extends Component {
             aria-describedby="simple-modal-description"
             open={openModal}
             onClose={this.handleCloseModal}
-          >
-            <div style={this.getModalStyle()}>
-              <h2>Nuevo proyecto</h2>
-              <NewProjectForm
-                className="newProjectModal"
-                regions={regionsList}
-                status={statusList}
-                handlers={this.setNewProject}
-              />
-            </div>
+          >              
+          <NewProjectForm
+            regions={regionsList}
+            status={statusList}
+            handlers={[
+              this.setNewProject,
+              this.handleCloseModal
+            ]}
+          />
           </Modal>
         )}
         <div className="appSearcher">
@@ -418,7 +391,6 @@ class Compensation extends Component {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
-            {console.log(this.state)}
             {
               !projectName && (
               <Selector

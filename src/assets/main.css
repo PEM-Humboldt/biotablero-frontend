@@ -1753,7 +1753,7 @@ tr.row2table:nth-child(odd){
 }
 
 tspan, .vx-axis-label {
-  font-smooth: always !important;
+  font-stretch: always !important;
   border: none !important;
   font-weight: 300 !important;
   -webkit-font-smoothing: antialiased !important;
@@ -1765,10 +1765,37 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 }
 
-.newProjectModal: {
-  	position: absolute;
-    width: 500px;
-    height: 500px;
+.newProjectModal {
+	position: fixed;
+	width: 350px;
+	height: 250px;
+	width: 200;
+	background-color: #ffffff;
+	box-shadow: 5px;
+	padding: 20px;
+	top: 200px;
+	left: 300px;
+}
+
+.addprjbtn {
+	background-color: transparent;
+	border: none;
+}
+
+.closebtn {
+	background-color: transparent;
+	border: none;
+}
+
+.projectInput {
+	line-height: 34px;
+	border-radius: 4px;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	margin-top: 1px;
+	color: #333333;
+	position: relative;
+	width: 99%;
 }
 
 /* Media Queries */

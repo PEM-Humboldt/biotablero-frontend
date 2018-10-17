@@ -199,8 +199,27 @@ class RestAPI {
     return response;
   }
 
+    /**
+   * Create a new project by company, organized by region and state
+   */
+  static createProject(companyId, regionId, statusId, name) {
+    const request = RestAPI.makePostRequest(`companies/${companyId}/projects`);
+    const bodyRequest = {
+      "id_company": `${companyId}`,
+      "id_region": `${regionId}`,
+      "prj_status": `${statusId}`,
+      "name": `${name}`,
+    }
+    const response = Promise.resolve(request, bodyRequest)
+      .then((res) => {
+        if (res !== undefined) {
+        console.log('res', res);
+      } return res;
+    });
+  }
+
   /**
-   * Request an endpoint to the elasticsearch server
+   * Request an endpoint through a GET request
    *
    * @param {String} endpoint endpoint to attach to url
    */
@@ -208,6 +227,20 @@ class RestAPI {
     const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.get(url)
+      .then(res => res.data)
+      .catch((e) => { console.error(e.message); });
+  }
+
+  /**
+   * Request an endpoint through a POST request
+   *
+   * @param {String} endpoint endpoint to attach to url
+   * @param {Object} requestBody JSON object with the request body
+   */
+  static makePostRequest(endpoint, requestBody) {
+    const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
+    const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
+    return axios.post(url, requestBody)
       .then(res => res.data)
       .catch((e) => { console.error(e.message); });
   }

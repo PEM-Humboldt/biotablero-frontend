@@ -9,7 +9,6 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ClearIcon from '@material-ui/icons/Clear';
 import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
-import AutocompleteOption from './AutocompleteOption';
 import 'react-select/dist/react-select.css';
 
 const ITEM_HEIGHT = 22;
@@ -121,47 +120,48 @@ const styles = theme => ({
   },
 });
 
-function SelectWrapped(props) {
-  const { classes, ...other } = props;
+class SelectWrapped extends React.Component {
+  
+  render() {
+    const { classes, ...other } = this.props;
+    return (
+      <Select
+        noResultsText="Sin resultados"
+        arrowRenderer={arrowProps => (
+          arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
+        )}
+        clearRenderer={() => <ClearIcon />}
+        valueComponent={(valueProps) => {
+          const { value, children, onRemove } = valueProps;
 
-  return (
-    <Select
-      optionComponent={AutocompleteOption}
-      noResultsText="Sin resultados"
-      arrowRenderer={arrowProps => (
-        arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
-      )}
-      clearRenderer={() => <ClearIcon />}
-      valueComponent={(valueProps) => {
-        const { value, children, onRemove } = valueProps;
+          const onDelete = (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onRemove(value);
+          };
 
-        const onDelete = (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          onRemove(value);
-        };
+          if (onRemove) {
+            return (
+              <Chip
+                tabIndex={-1}
+                label={children}
+                className={classes.chip}
+                deleteIcon={<CancelIcon onTouchEnd={onDelete} />}
+                onDelete={onDelete}
+              />
+            );
+          }
 
-        if (onRemove) {
           return (
-            <Chip
-              tabIndex={-1}
-              label={children}
-              className={classes.chip}
-              deleteIcon={<CancelIcon onTouchEnd={onDelete} />}
-              onDelete={onDelete}
-            />
+            <div className="Select-value">
+              {children}
+            </div>
           );
-        }
-
-        return (
-          <div className="Select-value">
-            {children}
-          </div>
-        );
-      }}
-      {...other}
-    />
-  );
+        }}
+        {...other}
+      />
+    );
+  }
 }
 
 SelectWrapped.propTypes = {
@@ -197,7 +197,7 @@ class Autocomplete extends React.Component {
           fullWidth
           value={multiLabel}
           onChange={this.handleChange('multiLabel')}
-          placeholder="Seleccionar múltiples"
+          placeholder="Seleccionar..."
           name="react-select-chip-label"
           label={label}
           InputLabelProps={{
