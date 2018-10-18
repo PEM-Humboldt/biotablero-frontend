@@ -137,6 +137,21 @@ class RestAPI {
    * @param {String} companyId id company to request
    * @param {String} projectId id proyect to request
    */
+  static requestImpactedBiomes(companyId, projectId) {
+    const request = RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/biomes`);
+    const response = Promise.resolve(request)
+      .then(res => res);
+    console.log('response', response);
+    return response;
+  }
+
+  /**
+   * Request the project layers names, all projects or by project ID
+   * TODO: Set this request for a generical search and keeping response structure
+   *
+   * @param {String} companyId id company to request
+   * @param {String} projectId id proyect to request
+   */
   static requestProjectsByCompany(companyId, projectId) {
     const request = projectId
       ? RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`)
@@ -240,7 +255,7 @@ class RestAPI {
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.get(url)
       .then(res => res.data)
-      .catch(error => console.error(error.message));
+      .catch(error => error.statusText);
   }
 
   /**
@@ -254,7 +269,7 @@ class RestAPI {
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.post(url, requestBody)
       .then(res => res.data)
-      .catch(error => console.error(error.message));
+      .catch(error => error.statusText);
   }
 }
 
