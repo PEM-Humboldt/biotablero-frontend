@@ -46,79 +46,16 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    Promise.all([
-      GeoServerAPI.requestProjectLayersByCompany('GEB'),
-      GeoServerAPI.requestBiomasSogamoso(),
-      GeoServerAPI.requestSogamoso(),
-      // GeoServerAPI.requestProjectNamesOrganizedByCompany('GEB'),
-      RestAPI.requestProjectsAndRegionsByCompany(1),
-    ]).then((res) => {
-      this.setState(prevState => ({
-        // regions: res[3],
-        projects: res[3][0],
-        regions: res[3][1],
-        currentCompany: 'GEB',
-        currentCompanyId: 1,
-        layers: {
-          ...prevState.layers,
-          // the key is the id that communicates with other components and should match selectorData
-          projectsGEB: {
-            displayName: 'projectsGEB',
-            active: false,
-            layer: L.geoJSON(
-              res[0],
-              {
-                style: {
-                  stroke: true,
-                  color: '#7b56a5',
-                  fillColor: '#7b56a5',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
-                },
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'projectsGEB')
-                ),
-              },
-            ),
-          },
-          // the key is the id that communicates with other components and should match selectorData
-          biomasSogamoso: {
-            displayName: 'BiomasSogamoso',
-            active: false,
-            layer: L.geoJSON(
-              res[1],
-              {
-                style: this.featureStyle,
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'biomasSogamoso')
-                ),
-              },
-            ),
-          },
-          // the key is the id that communicates with other components and should match selectorData
-          sogamoso: {
-            displayName: 'Sogamoso',
-            active: false,
-            layer: L.geoJSON(
-              res[2],
-              {
-                style: {
-                  stroke: true,
-                  color: '#7b56a5',
-                  fillColor: '#7b56a5',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
-                },
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'sogamoso')
-                ),
-              },
-            ),
-          },
-        },
-      }));
-      this.setDataForSelector();
-    });
+    Promise.resolve(RestAPI.requestProjectsAndRegionsByCompany(1))
+      .then((res) => {
+        this.setState({
+          projects: res[0],
+          regions: res[1],
+          currentCompany: 'GEB',
+          currentCompanyId: 1,
+        });
+        this.setDataForSelector();
+      });
   }
 
   setDataForSelector = () => {
@@ -181,12 +118,16 @@ class Compensation extends Component {
     const styleResponse = {
       stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
+    // TODO: Verify if feature.properties.area_impacted_pct is being showed
+    //  console.log('feature', feature);
     if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
       styleResponse.fillOpacity = 1;
     }
-    if (feature.properties.FC_Valor > 6.5 && feature.properties.AFFECTED_P > 12) {
+    if (feature.properties.compensation_factor > 6.5
+    && feature.properties.area_impacted_pct > 12) {
       styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'high'));
-    } else if (feature.properties.FC_Valor < 6.5 && feature.properties.AFFECTED_P < 12) {
+    } else if (feature.properties.compensation_factor < 6.5
+    && feature.properties.area_impacted_pct < 12) {
       styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'low'));
     } else {
       styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'medium'));
@@ -209,19 +150,24 @@ class Compensation extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
+    console.log(this.state);
     const area = event.target;
     area.setStyle({
       fillOpacity: 1,
     });
     switch (parentLayer) {
-      case 'sogamoso':
+      case 'project':
         area.bindPopup(
-          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO} <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
+          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO}
+          <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
         );
         break;
-      case 'biomasSogamoso':
+      case 'projectBiomes':
         area.bindPopup(
-          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}<br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${area.feature.properties.FC_Valor}<br><b>% de afectación:</b> ${area.feature.properties.AFFECTED_P}`,
+          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}
+          <br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}
+          <br><b>Factor de compensación:</b> ${area.feature.properties.compensation_factor}
+          <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct}`,
         );
         break;
       default:
@@ -230,13 +176,14 @@ class Compensation extends Component {
   }
 
   resetHighlight = (area, parentLayer) => {
-    const { layerName, layers } = this.state;
+    const { layerName, layers, currentProject } = this.state;
+    console.log('currentProject', currentProject);
     if (
       layers[parentLayer] && layerName && (layerName !== area.feature.properties.BIOMA_IAvH)
     ) {
       layers[parentLayer].layer.resetStyle(area);
     } else if (!layerName) layers[parentLayer].layer.resetStyle(area);
-    layers.sogamoso.layer.bringToFront();
+    layers.project.layer.bringToFront();
   }
 
   clickFeature = (event, parentLayer) => {
@@ -304,51 +251,84 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (nameToOff, nameToOn) => {
-    // TODO: Remove nameToOnL, to use projectId for layer search
-    const nameToOnL = nameToOn.toLowerCase();
+  innerElementChange = (parent, nameToOn) => {
     // TODO: Change GeoServerAPI to RestAPI
-    const { currentCompanyId, layers, projects } = this.state;
+    // TODO: Remove nameToOnL, to use projectId for layer search
+    console.log('parent, nameToOn', parent, nameToOn);
+    const { currentCompanyId, projects } = this.state;
     const tempProject = projects
       .find(element => element.name === nameToOn);
-    Promise.resolve(
-      RestAPI.requestProjectsByCompany(
-        currentCompanyId, tempProject.id_project,
-      ),
-    ).then((res) => {
+    Promise.all([
+      // GeoServerAPI.requestBiomasSogamoso(),
+      RestAPI.requestImpactedBiomes(currentCompanyId, tempProject.id_project),
+      RestAPI.requestProjectsByCompany(currentCompanyId, tempProject.id_project),
+    ]).then((res) => {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        if (layers[nameToOff]) newState.layers[nameToOff].active = false;
-        if (layers[nameToOnL]) {
-          newState.layers[nameToOnL].active = true;
-          if (nameToOnL === 'sogamoso') newState.layers.biomasSogamoso.active = true;
-          newState.projectName = tempProject.name;
-          newState.currentProject = res;
-          newState.currentProjectId = tempProject.id_project;
-        }
+        newState.layers = {
+          ...prevState.layers,
+          projectBiomes: {
+            displayName: 'projectBiomes',
+            active: true,
+            layer: L.geoJSON(
+              res[0].geometry || [],
+              {
+                style: this.featureStyle,
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'projectBiomes')
+                ),
+              },
+            ),
+          },
+          project: {
+            displayName: 'project',
+            active: true,
+            layer: L.geoJSON(
+              res[1].geomGeoJSON,
+              {
+                style: {
+                  stroke: true,
+                  color: '#7b56a5',
+                  fillColor: '#7b56a5',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, 'project')
+                ),
+              },
+            ),
+          },
+        };
+        newState.projectName = tempProject.name;
+        newState.currentProject = tempProject;
+        newState.currentProjectId = tempProject.id_project;
         return newState;
       });
     });
   }
 
   updateActiveBiome = (biomeName) => {
-    const { layers: { biomasSogamoso }, currentProject } = this.state;
+    const { layers: { projectBiomes }, currentProject } = this.state;
     // TODO: Save biomes and its strategies on the selectedProject
-    // console.log('currentProject, state', this.state, currentProject);
-    ElasticAPI.requestProjectStrategiesByBiome(currentProject.name, biomeName)
+    // TODO: Change ElasticAPI implementation for RestAPI
+    // console.log('currentProject, state', this.state, currentProject,
+    // currentProject.name, 'bioma', biomeName);
+    ElasticAPI.requestProjectStrategiesByBiome(currentProject.name.toUpperCase(), biomeName)
       .then((res) => {
+        // console.log('res', res);
         this.setState({
           layerName: biomeName,
           currentBiome: res, // TODO: Change strategies data structure
         });
       }).then(() => {
-        const currentLayers = biomasSogamoso.layer.getLayers();
+        const currentLayers = projectBiomes.layer.getLayers();
         const currentClasses = Object.values(currentLayers)
           .filter(obj => obj.feature.properties.BIOMA_IAvH === biomeName);
         currentClasses.forEach(currentClass => currentClass.setStyle({
           fillOpacity: 1,
         }));
-        currentLayers.forEach(area => this.resetHighlight(area, 'biomasSogamoso'));
+        currentLayers.forEach(area => this.resetHighlight(area, 'projectBiomes'));
       });
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the SZH selector). But the application won't break as it currently is
@@ -424,6 +404,7 @@ class Compensation extends Component {
               />
               )
             }
+            {console.log(this.state)}
           </div>
         </div>
       </Layout>
