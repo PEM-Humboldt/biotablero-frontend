@@ -80,12 +80,16 @@ class Drawer extends React.Component {
       selectedArea: 0,
       tableError: '',
       graphStatus: { DotsWhere: true },
+      allAvailableBiomes: null,
+      controlAddingBiomes: false,
     };
   }
 
   componentDidMount() {
     const { biomesData } = this.props;
-    if (biomesData.length === 0) console.log('Sin datos');
+    if (biomesData.length === 0) {
+      console.log('Sin datos');
+    }
     const { biomes, totals } = Drawer.cleanWhatWhereData(biomesData);
     this.setState({
       whereData: biomes,
@@ -371,7 +375,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
-      strategiesData, selectedBiomes,
+      strategiesData, selectedBiomes, allAvailableBiomes, controlAddingBiomes,
     } = this.state;
 
     const tableRows = whereData.map((biome, i) => ({
@@ -424,6 +428,8 @@ class Drawer extends React.Component {
                   footers={[totals.name, totals.fc, totals.affected_natural,
                     totals.affected_secondary, totals.affected_transformed,
                     `${totals.affected_percentage}%`, totals.total_compensate]}
+                  addRows={controlAddingBiomes}
+                  newRow={allAvailableBiomes}
                 />
               </div>
             ),
