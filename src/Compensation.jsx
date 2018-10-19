@@ -4,6 +4,7 @@ import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
 import MapViewer from './MapViewer';
 import Drawer from './compensation/Drawer';
@@ -49,13 +50,20 @@ class Compensation extends Component {
   componentDidMount() {
     Promise.resolve(RestAPI.requestProjectsAndRegionsByCompany(1))
       .then((res) => {
-        this.setState({
-          projects: res[0],
-          regions: res[1],
-          currentCompany: 'GEB',
-          currentCompanyId: 1,
-        });
-        this.setDataForSelector();
+        if (res !== 'no-data-available') {
+          this.setState({
+            projects: res ? res[0] : [],
+            regions: res ? res[1] : [],
+            currentCompany: 'GEB',
+            currentCompanyId: 1,
+          });
+          this.setDataForSelector();
+        } else {
+          this.setState({
+            openModal: true,
+          });
+        }
+        return null;
       });
   }
 
@@ -109,7 +117,7 @@ class Compensation extends Component {
       };
       newState.regionsList = tempRegionList;
       newState.statusList = tempStatusList;
-      newState.regions.push(createProject);
+      if (newState.regions.length > 0) { newState.regions.push(createProject); }
       return newState;
     });
   }
@@ -354,7 +362,7 @@ class Compensation extends Component {
   render() {
     const {
       biomesData, currentBiome, currentCompany, currentProject, currentRegion,
-      layerName,
+      layerName, projects,
       colors, layers, regions, regionsList, statusList, openModal, newProjectData,
     } = this.state;
     return (
@@ -362,7 +370,7 @@ class Compensation extends Component {
         moduleName="Compensaciones"
         showFooterLogos={false}
       >
-        {openModal && (newProjectData === null) && (
+        {openModal && !newProjectData && regionsList && (
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -378,6 +386,31 @@ class Compensation extends Component {
                 this.handleCloseModal,
               ]}
             />
+          </Modal>
+        )}
+        {openModal && (projects.length === 0) && ( // Showed when there is no data in the response
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openModal}
+            onClose={this.handleCloseModal}
+            disableAutoFocus
+          >
+            <div className="newProjectTitle">
+              <h2>
+                Sin conexión al servidor.
+                La aplicación estará disponible nuevamente en minutos.
+              </h2>
+              <button
+                type="button"
+                className="closebtn"
+                onClick={this.handleCloseModal}
+                data-tooltip
+                title="Cerrar"
+              >
+                <CloseIcon />
+              </button>
+            </div>
           </Modal>
         )}
         {newProjectData
@@ -399,7 +432,7 @@ class Compensation extends Component {
                 description={description(currentCompany)}
                 data={regions}
                 expandedId={
-                  regions.findIndex(region => region.id === currentRegion)
+                  regions.length < 0 ? regions.findIndex(region => region.id === currentRegion) : 0
                 }
                 iconClass="iconsec2"
               />
@@ -427,7 +460,6 @@ class Compensation extends Component {
                   back={this.handlerBackButton}
                   basinName={newProjectData.name}
                   colors={colors.map(obj => Object.values(obj)[0])}
-                  // layerName={layerName}
                   // biomeData={currentBiome}
                   subAreaName={newProjectData.state}
                   updateActiveBiome={this.updateActiveBiome}

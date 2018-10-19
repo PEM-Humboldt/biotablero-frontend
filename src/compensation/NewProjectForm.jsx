@@ -118,7 +118,7 @@ class NewProjectForm extends Component {
               type="button"
               className="addprjbtn"
               onClick={() => {
-                handlers[0](regionSelected, statusSelected, newName);
+                handlers[0](regionSelected, statusSelected, newName.trim());
               }}
               data-tooltip
               title="Crear proyecto"
