@@ -145,7 +145,7 @@ class PopMenu extends Component {
 PopMenu.propTypes = {
   controlValues: PropTypes.array,
   // Data from elastic result for "donde compensar sogamoso"
-  // TODO: Implement source data changes
+  // TODO: Implement source data changes for RestAPI
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
   downloadPlan: PropTypes.func.isRequired,

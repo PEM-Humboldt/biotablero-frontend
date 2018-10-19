@@ -13,6 +13,7 @@ import GraphLoader from '../GraphLoader';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
+import NewBiomeForm from './NewBiomeForm';
 import SelectedBiome from './SelectedBiome';
 
 const styles = () => ({
@@ -86,17 +87,18 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const { biomesData } = this.props;
-    if (biomesData.length === 0) {
-      console.log('Sin datos');
+    const { biomesImpacted, allBiomes } = this.props;
+    if (biomesImpacted.length === 0) {
+      console.log('allAvailableBiomes', allBiomes, biomesImpacted.length, biomesImpacted);
+      this.setState({
+        controlAddingBiomes: true,
+      });
     }
-    const { biomes, totals } = Drawer.cleanWhatWhereData(biomesData);
+    const { biomes, totals } = Drawer.cleanWhatWhereData(biomesImpacted);
     this.setState({
       whereData: biomes,
       totals,
     });
-    // TODO: When the promise is rejected, we need to show a "Data not available" error
-    // (in the table). But the application won't break as it currently is
   }
 
   /**
@@ -296,12 +298,12 @@ class Drawer extends React.Component {
     if (!data || !data.aggregations) return {};
     const cleanData = {};
     data.aggregations.szh.buckets.forEach((szh) => {
-      const cleanCar = {};
-      // TODO: Replace name "car" for "ea"
+      const cleanEA = {};
+      // TODO: Replace name "car" for "ea", when it changes to RestAPI instead of ElasticAPI
       szh.car.buckets.forEach((ea) => {
-        cleanCar[ea.key] = ea;
+        cleanEA[ea.key] = ea;
       });
-      cleanData[szh.key] = cleanCar;
+      cleanData[szh.key] = cleanEA;
     });
     return cleanData;
   }
@@ -371,7 +373,7 @@ class Drawer extends React.Component {
   render() {
     const {
       areaName, back, basinName, colors, classes, layerName, biomeData,
-      subAreaName,
+      subAreaName, biomesImpacted, // allBiomes,
     } = this.props;
     const {
       whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
@@ -408,7 +410,7 @@ class Drawer extends React.Component {
           tabClasses="tabs2"
           titles={[
             { label: 'Qué · Cuánto', icon: (<QueIcon />) },
-            { label: 'Dónde · Cómo', icon: (<DondeIcon />) },
+            { label: 'Dónde · Cómo', icon: (<DondeIcon />), disabled: `${controlAddingBiomes}` },
           ]}
         >
           {[
@@ -422,13 +424,18 @@ class Drawer extends React.Component {
                     {totals.total_compensate}
                   </h4>
                 </div>
+                {controlAddingBiomes && (
+                  <NewBiomeForm />)
+                    // biomes={allBiomes.then(res => res.map(element => element.name))}
+                  // />)
+                }
                 <TableStylized
                   headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
                   rows={tableRows}
                   footers={[totals.name, totals.fc, totals.affected_natural,
                     totals.affected_secondary, totals.affected_transformed,
                     `${totals.affected_percentage}%`, totals.total_compensate]}
-                  addRows={controlAddingBiomes}
+                  addRows={biomesImpacted}
                   newRow={allAvailableBiomes}
                 />
               </div>
@@ -478,7 +485,8 @@ Drawer.propTypes = {
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   biomeData: PropTypes.object,
-  biomesData: PropTypes.array,
+  biomesImpacted: PropTypes.array,
+  allBiomes: PropTypes.object,
   subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
   updateActiveBiome: PropTypes.func,
@@ -490,7 +498,8 @@ Drawer.defaultProps = {
   basinName: '',
   colors: ['#eabc47'],
   biomeData: {},
-  biomesData: [],
+  biomesImpacted: [],
+  allBiomes: {},
   updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',

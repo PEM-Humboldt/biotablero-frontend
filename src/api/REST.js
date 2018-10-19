@@ -5,7 +5,6 @@ class RestAPI {
   /**
    * TODO: Request the template with information about 'donde compensar'
    * for an specific project ID per biome
-   * TODO: Set this request for a generical search and keeping response structure
    *
    * @param {String} biome biome's name to request
    * @param {Integer} projectName project's name to request
@@ -214,6 +213,16 @@ class RestAPI {
   }
 
   /**
+ * Recover all biomes available in the database
+ */
+  static getAllBiomes() {
+    const request = RestAPI.makeGetRequest('biomes');
+    const response = Promise.resolve(request)
+      .then(res => res);
+    return response;
+  }
+
+  /**
  * Create a new project by company, organized by region and state
  */
   static createProject(companyId, regionId, statusId, name) {
@@ -285,12 +294,13 @@ class RestAPI {
           console.log(error.response.data);
           console.log(error.response.status);
           console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-          if (error.request.statusText === '') {
-            return 'no-data-available';
-          }
+          return error.response.status;
+        }// else if (error.request) {
+        console.log(error.request);
+        if (error.request.statusText === '') {
+          return 'no-data-available';
         }
+        // }
         return 'Bad POST response. Try later';
       });
   }

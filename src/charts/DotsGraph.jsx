@@ -42,7 +42,7 @@ export default withTooltip(({
 
   const checkColor = (point) => {
     if (labelX === '% Area afectada') {
-      // TODO: Include another color border for item selected and item in cart
+      // TODO: Include another color border for item selected and item in the biomes selected cart
       if ((y(point) > 6.5) && (x(point) > 12)) return zScale(2); // high
       if ((y(point) < 6.5) && (x(point) < 12)) return zScale(1); // low
       return zScale(0); // medium
