@@ -265,6 +265,7 @@ class RestAPI {
             return 'no-data-available';
           }
         }
+        return 'Bad GET response. Try later';
       });
   }
 
@@ -286,7 +287,11 @@ class RestAPI {
           console.log(error.response.headers);
         } else if (error.request) {
           console.log(error.request);
+          if (error.request.statusText === '') {
+            return 'no-data-available';
+          }
         }
+        return 'Bad POST response. Try later';
       });
   }
 }
