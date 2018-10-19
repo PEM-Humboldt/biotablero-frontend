@@ -9,7 +9,6 @@ import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 
-import ElasticAPI from '../api/elastic';
 import GraphLoader from '../GraphLoader';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
@@ -30,30 +29,25 @@ class Drawer extends React.Component {
    * @param {Array} data array of objects with information about compensations
    */
   static cleanWhatWhereData = (data) => {
-    const biomes = data.hits.hits.map(({ _source: fields }) => {
-      const {
-        BIOMA_IAVH, PORCENT_AFECTACION, FC, NATURAL, TOTAL_COMPENSAR,
-        SECUNDARIA, TRANSFORMADO,
-      } = fields;
-      return {
-        name: BIOMA_IAVH,
-        affected_percentage: (100 * PORCENT_AFECTACION).toFixed(2),
-        fc: FC,
-        affected_natural: Math.ceil(NATURAL) ? Number(NATURAL).toFixed(2) : '',
-        total_compensate: Math.ceil(TOTAL_COMPENSAR) ? Number(TOTAL_COMPENSAR).toFixed(2) : '',
-        affected_secondary: Math.ceil(SECUNDARIA) ? Number(SECUNDARIA).toFixed(2) : '',
-        affected_transformed: Math.ceil(TRANSFORMADO) ? Number(TRANSFORMADO).toFixed(2) : '',
-      };
-    });
-    const totals = data.hits.hits.reduce(
-      (acc, { _source: fields }) => ({
-        affected_natural: acc.affected_natural + Number(fields.NATURAL),
-        affected_secondary: acc.affected_secondary + Number(fields.SECUNDARIA),
-        affected_transformed: acc.affected_transformed + Number(fields.TRANSFORMADO),
-        affected_percentage: acc.affected_percentage + Number(fields.PORCENT_AFECTACION),
-        total_compensate: acc.total_compensate + Number(fields.TOTAL_COMPENSAR),
+    const biomes = data.map(element => ({
+      id: element.id,
+      name: element.biome.name,
+      affected_percentage: (100 * element.area_impacted_pct).toFixed(2),
+      fc: element.biome.compensation_factor,
+      affected_natural: Math.ceil(element.natural_area_ha) ? Number(element.natural_area_ha).toFixed(2) : '',
+      total_compensate: Math.ceil(element.area_to_compensate_ha) ? Number(element.area_to_compensate_ha).toFixed(2) : '',
+      affected_secondary: Math.ceil(element.secondary_area_ha) ? Number(element.secondary_area_ha).toFixed(2) : '',
+      affected_transformed: Math.ceil(element.transformed_area_ha) ? Number(element.transformed_area_ha).toFixed(2) : '',
+    }));
+    const totals = biomes.reduce(
+      (acc, element) => ({
+        affected_natural: acc.affected_natural + Number(element.affected_natural),
+        affected_secondary: acc.affected_secondary + Number(element.affected_secondary),
+        affected_transformed: acc.affected_transformed + Number(element.affected_transformed),
+        affected_percentage: acc.affected_percentage + Number(element.affected_percentage),
+        total_compensate: acc.total_compensate + Number(element.total_compensate),
       }),
-      {
+      { // Initial values
         affected_natural: 0,
         affected_secondary: 0,
         affected_transformed: 0,
@@ -90,14 +84,12 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    ElasticAPI.requestQueYCuantoCompensar('SOGAMOSO')
-      .then((res) => {
-        const { biomes, totals } = Drawer.cleanWhatWhereData(res);
-        this.setState({
-          whereData: biomes,
-          totals,
-        });
-      });
+    const { biomesData } = this.props;
+    const { biomes, totals } = Drawer.cleanWhatWhereData(biomesData);
+    this.setState({
+      whereData: biomes,
+      totals,
+    });
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the table). But the application won't break as it currently is
   }
@@ -479,6 +471,7 @@ Drawer.propTypes = {
   layerName: PropTypes.string,
   // Data from elastic result for "donde compensar sogamoso"
   biomeData: PropTypes.object,
+  biomesData: PropTypes.array,
   subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
   updateActiveBiome: PropTypes.func,
@@ -490,6 +483,7 @@ Drawer.defaultProps = {
   basinName: '',
   colors: ['#eabc47'],
   biomeData: {},
+  biomesData: [],
   updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',

@@ -83,7 +83,7 @@ export default withTooltip(({
           {points.map(point => (
             <GlyphCircle
               className="dot"
-              key={point.name}
+              key={point.id}
               stroke={checkStrokeColor(point)}
               strokeWidth="2"
               fill={checkColor(point)}
