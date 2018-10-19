@@ -74,7 +74,7 @@ class NewProjectForm extends Component {
   }
 
   /**
-   * Event handler when a status option is selected
+   * Event handler when the name is selected
    */
   handleChangeName = (event) => {
     this.setState({

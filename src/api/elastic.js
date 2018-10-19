@@ -16,7 +16,7 @@ class ElasticAPI {
           params: { bioma_name: biomeName },
         },
       );
-    } return null; // TODO: Set this request for a generical search and keeping response structure
+    } return null;
   }
 
   /**

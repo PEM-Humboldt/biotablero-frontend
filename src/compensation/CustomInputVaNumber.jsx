@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-class InputCompensation extends React.Component {
+class CustomInputNumber extends React.Component {
   constructor(props) {
     super(props);
     this.inputRef = React.createRef();
@@ -68,7 +68,7 @@ class InputCompensation extends React.Component {
   }
 }
 
-InputCompensation.propTypes = {
+CustomInputNumber.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.number,
   maxValue: PropTypes.number.isRequired,
@@ -76,8 +76,8 @@ InputCompensation.propTypes = {
   reportError: PropTypes.func.isRequired,
 };
 
-InputCompensation.defaultProps = {
+CustomInputNumber.defaultProps = {
   value: null,
 };
 
-export default InputCompensation;
+export default CustomInputNumber;

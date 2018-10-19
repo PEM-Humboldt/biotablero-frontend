@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import EraseIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TableStylized from '../TableStylized';
-import InputCompensation from './InputCompensation';
+import CustomInputNumber from './CustomInputVaNumber';
 
 class SelectedBiome extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class SelectedBiome extends Component {
         values: [
           obj.ESTRATEGIA,
           Number(obj.HA_ES_EJ).toFixed(2),
-          <InputCompensation
+          <CustomInputNumber
             name={obj.GROUPS}
             maxValue={Number(obj.HA_ES_EJ)}
             operateArea={this.operateArea}
@@ -159,8 +159,6 @@ class SelectedBiome extends Component {
               <br />
               <b>Jurisdicción:</b>
               {` ${ea}`}
-              {// TODO: Create texts, icons and actions for list of biomas in Shopping Cart
-              }
             </div>
             <div>
               <div className="HasSelected">

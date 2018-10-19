@@ -1784,6 +1784,66 @@ tspan, .vx-axis-label {
 	line-height: 25px;
 }
 
+.login .npcontent  {
+	padding: 15px;
+}
+
+.login {
+	position: fixed;
+	width: 300px;
+	background-color: #ffffff;
+	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
+	top: 60px;
+	right: 20px;
+	border-radius: 5px 0 0 5px;
+	padding: 15px;
+}
+
+.login input {
+	padding: 0 10px;
+	box-sizing: border-box;
+	outline: none;
+	font-size: 12px;
+	width: 100%;
+}
+
+.login input::placeholder {
+	color: #aaa;
+}
+
+.loginbtn {
+	margin-top: 10px;
+	outline: none;
+	cursor: pointer;
+	color: #e84a5f;
+	text-align: right;
+	background-color: transparent;
+	border: none;
+	float: right;
+}
+
+.recoverbtn {
+	margin-top: 10px;
+	outline: none;
+	cursor: pointer;
+	color: #aaaa50;
+	text-align: left;
+	background-color: transparent;
+	border: none;
+	float: left;
+}
+
+.loginInput {
+	line-height: 34px;
+	border-radius: 4px;
+	background-color: #ffffff;
+	border: 1px solid #ccc;
+	margin-top: 1px;
+	color: #333333;
+	position: relative;
+	width: 99%;
+}
+
 .newProjectModal .npcontent  {
 	padding: 15px;
 }
@@ -1845,6 +1905,20 @@ tspan, .vx-axis-label {
 	color: #333333;
 	position: relative;
 	width: 99%;
+}
+
+.newBiome .npcontent  {
+	padding: 15px;
+}
+
+.newBiome {
+	width: 350px;
+	height: 150px;
+	background-color: #ffffff;
+	top: 500px;
+	right: 25px;
+	border-radius: 5px 0 0 5px;
+	padding-bottom: 15px;
 }
 
 /* Media Queries */

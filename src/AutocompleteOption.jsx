@@ -1,6 +1,4 @@
 /** eslint verified */
-// TODO: Solve: "Warning: Stateless function components cannot be given refs. Attempts
-// to access this ref will fail." related with this component
 import React from 'react';
 import PropTypes from 'prop-types';
 import MenuItem from '@material-ui/core/MenuItem';

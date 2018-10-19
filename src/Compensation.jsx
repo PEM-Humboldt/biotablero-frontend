@@ -26,16 +26,15 @@ class Compensation extends Component {
         { high: '#ea495f' },
         { selected: '#2a363b' },
       ],
-      biomesData: {},
+      biomesImpacted: {},
       currentCompany: null,
       currentCompanyId: null,
       currentRegion: null,
       currentProject: null,
       currentProjectId: null,
       currentBiome: null,
-      currentStrategies: null, // TODO: Should this remain here  or in another component?
-      projectType: null, // TODO: Remove and use currentProject.
-      projectName: null, // TODO: Remove and use currentProject.label
+      currentStrategies: null,
+      currentStatus: null,
       openModal: false,
       layerName: null,
       layers: {},
@@ -50,7 +49,7 @@ class Compensation extends Component {
   componentDidMount() {
     Promise.resolve(RestAPI.requestProjectsAndRegionsByCompany(1))
       .then((res) => {
-        if (res !== 'no-data-available') {
+        if (res !== 'no-data-available' && Array.isArray(res)) {
           this.setState({
             projects: res ? res[0] : [],
             regions: res ? res[1] : [],
@@ -76,7 +75,7 @@ class Compensation extends Component {
       Object.keys(regions).forEach((regionKey) => {
         const regionFound = newState.regions[regionKey];
         regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
-        regionFound.detailId = 'region'; // TODO: Fix styles with Cesar
+        regionFound.detailId = 'region';
         regionFound.expandIcon = (<ExpandMoreIcon />);
         regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
         const newRegion = {};
@@ -128,7 +127,7 @@ class Compensation extends Component {
       stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
     // TODO: Verify if feature.properties.area_impacted_pct is being showed
-    //  console.log('feature', feature);
+    console.log('feature', feature);
     if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
       styleResponse.fillOpacity = 1;
     }
@@ -172,11 +171,11 @@ class Compensation extends Component {
         );
         break;
       case 'projectBiomes':
-        area.bindPopup(
-          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR}
-          <br><b>Bioma:</b> ${area.feature.properties.BIOMA_IAvH}
+        area.bindPopup( // TODO: Replace area.feature.properties.ID_CAR for the right EA name
+          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR || 'Varias EA'}
+          <br><b>Bioma:</b> ${area.feature.properties.name}
           <br><b>Factor de compensación:</b> ${area.feature.properties.compensation_factor}
-          <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct}`,
+          <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct || 'Sin información'}`,
         );
         break;
       default:
@@ -204,7 +203,6 @@ class Compensation extends Component {
   /** ****************************** */
   /** LISTENER FOR NEW PROJECT MODAL */
   /** ****************************** */
-
 
   handleCloseModal = () => {
     const { openModal } = this.state;
@@ -235,8 +233,6 @@ class Compensation extends Component {
         newState.layers[layerKey].active = false;
       });
       newState.currentBiome = null;
-      newState.projectName = null;
-      newState.projectName = null;
       newState.currentProject = null;
       return newState;
     });
@@ -258,13 +254,12 @@ class Compensation extends Component {
 
   secondLevelChange = (name) => {
     this.setState({
-      projectType: name,
+      currentStatus: name,
     });
   }
 
   innerElementChange = (parent, nameToOn) => {
     // TODO: Change GeoServerAPI to RestAPI
-    // TODO: Remove nameToOnL, to use projectId for layer search
     const {
       currentCompanyId, newProjectData, projects,
     } = this.state;
@@ -278,7 +273,7 @@ class Compensation extends Component {
       ]).then((res) => {
         this.setState((prevState) => {
           const newState = { ...prevState };
-          newState.biomesData = res[0].biomes;
+          newState.biomesImpacted = res[0].biomes;
           newState.layers = {
             ...prevState.layers,
             projectBiomes: {
@@ -314,13 +309,13 @@ class Compensation extends Component {
               ),
             },
           };
-          newState.projectName = tempProject.name;
           newState.currentProject = tempProject;
           newState.currentProjectId = tempProject.id_project;
           return newState;
         });
       });
     } else { // Path for new projects
+      // TODO: Create instructions in a modal about how to add new biomes
       // this.setState((prevState) => {
       //   const newState = { ...prevState };
       //   newState.openModal = true;
@@ -352,8 +347,6 @@ class Compensation extends Component {
         }));
         currentLayers.forEach(area => this.resetHighlight(area, 'projectBiomes'));
       });
-    // TODO: When the promise is rejected, we need to show a "Data not available" error
-    // (in the SZH selector). But the application won't break as it currently is
   }
 
   firstLetterUpperCase = sentence => sentence.toLowerCase()
@@ -361,7 +354,7 @@ class Compensation extends Component {
 
   render() {
     const {
-      biomesData, currentBiome, currentCompany, currentProject, currentRegion,
+      biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
       layerName, projects,
       colors, layers, regions, regionsList, statusList, openModal, newProjectData,
     } = this.state;
@@ -447,7 +440,7 @@ class Compensation extends Component {
                 colors={colors.map(obj => Object.values(obj)[0])}
                 layerName={layerName}
                 biomeData={currentBiome}
-                biomesData={biomesData}
+                biomesImpacted={biomesImpacted}
                 subAreaName={currentProject.state}
                 updateActiveBiome={this.updateActiveBiome}
               />
@@ -460,7 +453,14 @@ class Compensation extends Component {
                   back={this.handlerBackButton}
                   basinName={newProjectData.name}
                   colors={colors.map(obj => Object.values(obj)[0])}
-                  // biomeData={currentBiome}
+                  allBiomes={RestAPI.getAllBiomes()}
+                  // allBiomes={[
+                  //   {
+                  //     id_biome: 1,
+                  //     name: 'Halobioma Alta Guajira',
+                  //     compensation_factor: '6.00',
+                  //   }]
+                  // }
                   subAreaName={newProjectData.state}
                   updateActiveBiome={this.updateActiveBiome}
                 />

@@ -1,25 +1,30 @@
 /** eslint verified */
 import React, { Component } from 'react';
-
-// const Login = children => (
-//   <div>
-//
-//   </div>
-// );
+import PropTypes from 'prop-types';
+import CloseIcon from '@material-ui/icons/Close';
 
 class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
       password: '',
     };
   }
 
+  handleCloseModal = () => {
+    const { openModalControl } = this.props;
+    openModalControl();
+  };
+
   validateForm = () => {
     const { email, password } = this.state;
     return email.length > 0 && password.length > 0;
+  }
+
+  recoverPassword = () => {
+    // TODO: Implement this functionality
+    alert('Acción no disponible');
   }
 
   handleChange = (event) => {
@@ -35,23 +40,45 @@ class Login extends Component {
   render() {
     const { email, password } = this.state;
     return (
-      <div className="Login">
+      <div className="login">
+        <button
+          type="button"
+          className="closebtn"
+          onClick={this.handleCloseModal}
+          data-tooltip
+          title="Cerrar"
+        >
+          <CloseIcon />
+        </button>
         <form onSubmit={this.handleSubmit}>
-          Usuario
           <input
+            className="loginInput"
             type="email"
+            placeholder="Usuario"
             value={email}
             onChange={this.handleChange}
           />
-          Contraseña
           <input
+            className="loginInput"
+            placeholder="Contraseña"
             value={password}
             onChange={this.handleChange}
             type="password"
           />
           <button
-            block
-            bsSize="large"
+            className="recoverbtn"
+            onClick={() => this.recoverPassword()}
+            type="submit"
+            data-tooltip
+            title="Acción no disponible"
+          >
+            Recuperar contraseña
+          </button>
+          <br />
+          <button
+            className="loginbtn"
+            data-tooltip
+            title="Ingresar"
             disabled={!this.validateForm()}
             type="submit"
           >
@@ -62,5 +89,13 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  openModalControl: PropTypes.func,
+};
+
+Login.defaultProps = {
+  openModalControl: () => {},
+};
 
 export default Login;
