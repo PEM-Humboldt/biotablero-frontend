@@ -159,7 +159,8 @@ class RestAPI {
     const response = Promise.resolve(request)
       .then((res) => {
         const projectsFound = [];
-        if (res !== undefined && res.length !== undefined && res !== 'no-data-available') {
+        // TODO: Finalize new projects load structure
+        if (res !== undefined && res.length !== undefined) {
           res.forEach(
             (element) => {
               const project = {
@@ -186,7 +187,7 @@ class RestAPI {
   static requestProjectsAndRegionsByCompany(companyId) {
     const response = Promise.resolve(RestAPI.requestProjectsByCompany(companyId))
       .then((res) => {
-        if (res !== undefined && res !== 'no-data-available') {
+        if (res !== undefined) {
           const regions = [...new Set(res.map((item) => {
             if (item.region) {
               return (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
@@ -254,18 +255,7 @@ class RestAPI {
     const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
     return axios.get(url)
       .then(res => res.data)
-      .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-          if (error.request.statusText === '') {
-            return 'no-data-available';
-          }
-        }
-      });
+      .catch(error => error.statusText);
   }
 
   /**
