@@ -85,7 +85,7 @@ class Selector extends React.Component {
       <div className="selector">
         <div className={iconClass} />
         {description}
-        {data.map((firstLevel) => {
+        { (data.length > 0) && (data.map((firstLevel) => {
           const {
             id, label, disabled, expandIcon, detailId, idLabel, type,
           } = firstLevel;
@@ -130,7 +130,7 @@ class Selector extends React.Component {
               </ExpansionPanelDetails>
             </ExpansionPanel>
           );
-        })}
+        }))}
       </div>
     );
   }

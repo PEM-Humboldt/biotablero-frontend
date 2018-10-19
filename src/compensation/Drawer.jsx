@@ -85,6 +85,7 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const { biomesData } = this.props;
+    if (biomesData.length === 0) console.log('Sin datos');
     const { biomes, totals } = Drawer.cleanWhatWhereData(biomesData);
     this.setState({
       whereData: biomes,
