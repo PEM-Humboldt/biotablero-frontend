@@ -17,6 +17,17 @@ import Layout from './Layout';
 import { description } from './compensation/assets/selectorData';
 
 class Compensation extends Component {
+  /**
+   * Set the first letter of each word to uppercase
+   */
+  static firstLetterUpperCase = sentence => (
+    sentence
+      .toLowerCase()
+      .split(/ |-/)
+      .map(str => str[0].toUpperCase() + str.slice(1))
+      .join(' ')
+  );
+
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +37,7 @@ class Compensation extends Component {
         { high: '#ea495f' },
         { selected: '#2a363b' },
       ],
-      biomesImpacted: {},
+      biomesImpacted: [],
       currentCompany: null,
       currentCompanyId: null,
       currentRegion: null,
@@ -47,78 +58,86 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    Promise.resolve(RestAPI.requestProjectsAndRegionsByCompany(1))
+    RestAPI.requestProjectsAndRegionsByCompany(1)
       .then((res) => {
-        if (res !== 'no-data-available' && Array.isArray(res)) {
+        if (Array.isArray(res)) {
+          const { regionsList, statusList, regions } = this.constructDataForSelector(res[1]);
           this.setState({
-            projects: res ? res[0] : [],
-            regions: res ? res[1] : [],
+            projects: res[0] || [],
             currentCompany: 'GEB',
             currentCompanyId: 1,
-          });
-          this.setDataForSelector();
-        } else {
-          this.setState({
-            openModal: true,
+            regionsList,
+            statusList,
+            regions,
           });
         }
-        return null;
+      })
+      .catch(() => {
+        this.setState({
+          openModal: true,
+        });
       });
   }
 
-  setDataForSelector = () => {
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      const { regions } = prevState;
-      const tempRegionList = [];
-      const tempStatusList = [];
-      Object.keys(regions).forEach((regionKey) => {
-        const regionFound = newState.regions[regionKey];
-        regionFound.label = `${this.firstLetterUpperCase(regionFound.id)}`;
-        regionFound.detailId = 'region';
-        regionFound.expandIcon = (<ExpandMoreIcon />);
-        regionFound.idLabel = `panel1-${regionFound.label.replace(/ /g, '')}`;
-        const newRegion = {};
-        newRegion.value = regionFound.id;
-        newRegion.label = regionFound.label;
-        tempRegionList.push(newRegion);
-        Object.keys(regionFound
-          .projectsStates).forEach((stateKey) => {
-          const stateFound = regionFound.projectsStates[stateKey];
-          stateFound.label = `${stateFound
-            .id.toLowerCase().split(' ').map(str => (
-              (!str[2] || str[4]) ? str[0].toUpperCase() + str.slice(1) : str.toUpperCase())).join(' ')}`;
-          stateFound.expandIcon = (<ExpandMoreIcon />);
-          stateFound.idLabel = this.firstLetterUpperCase(stateFound.label).replace(/ /g, '');
-          stateFound.detailId = 'state';
-          Object.keys(stateFound.projects).forEach((projectKey) => {
-            stateFound.projects[projectKey].type = 'button';
-            stateFound.projects[projectKey].label = `${this.firstLetterUpperCase(stateFound.projects[projectKey].name)}`;
-          });
-        });
-        if (tempStatusList.length === 0) {
-          Object.values(regionFound.projectsStates).map((element) => {
-            const newStatus = {};
-            newStatus.value = element.id;
-            newStatus.label = element.label;
-            tempStatusList.push(newStatus);
-            return null;
-          });
-        }
+  constructDataForSelector = (regions) => {
+    const regionsArray = [];
+    const regionsList = [];
+    const statusList = [];
+    Object.keys(regions).forEach((regionKey) => {
+      const regionId = (regionKey === 'null') ? '(REGION SIN ASIGNAR)' : regionKey;
+      const regionLabel = Compensation.firstLetterUpperCase(regionId);
+      regionsList.push({
+        value: regionId,
+        label: regionLabel,
       });
-      const createProject = {
-        id: 'addProject',
-        idLabel: 'panel1-newProject',
+      const region = {
+        id: regionId,
+        label: regionLabel,
         detailId: 'region',
-        expandIcon: (<AddIcon />),
-        label: '+ Agregar nuevo proyecto',
-        type: 'addProject',
+        expandIcon: (<ExpandMoreIcon />),
+        idLabel: `panel1-${regionLabel.replace(/ /g, '')}`,
+        projectsStates: [],
       };
-      newState.regionsList = tempRegionList;
-      newState.statusList = tempStatusList;
-      if (newState.regions.length > 0) { newState.regions.push(createProject); }
-      return newState;
+      Object.keys(regions[regionKey]).forEach((statusKey) => {
+        const statusId = (statusKey === 'null') ? '(ESTADO SIN ASIGNAR)' : statusKey;
+        const statusLabel = (statusId.length > 3)
+          ? Compensation.firstLetterUpperCase(statusId) : statusId;
+        statusList.push({
+          value: statusId,
+          label: statusLabel,
+        });
+        region.projectsStates.push({
+          id: statusId,
+          label: statusLabel,
+          detailId: 'state',
+          expandIcon: (<ExpandMoreIcon />),
+          idLabel: Compensation.firstLetterUpperCase(statusLabel).replace(/ /g, ''),
+          projects: regions[regionKey][statusKey].map(project => ({
+            id_project: project.gid,
+            name: Compensation.firstLetterUpperCase(project.name),
+            state: project.prj_status,
+            region: project.id_region,
+            area: project.area_ha,
+            id_company: project.id_company,
+            project: project.name,
+            type: 'button',
+            label: Compensation.firstLetterUpperCase(project.name),
+          })),
+        });
+      });
+      regionsArray.push(region);
     });
+    const newProject = {
+      id: 'addProject',
+      idLabel: 'panel1-newProject',
+      detailId: 'region',
+      expandIcon: (<AddIcon />),
+      label: '+ Agregar nuevo proyecto',
+      type: 'addProject',
+    };
+    if (regionsList.length > 0 && statusList.length > 0) regionsArray.push(newProject);
+
+    return { regionsList, statusList, regions: regionsArray };
   }
 
   featureStyle = (feature) => {
@@ -258,59 +277,64 @@ class Compensation extends Component {
     });
   }
 
-  innerElementChange = (parent, nameToOn) => {
-    // TODO: Change GeoServerAPI to RestAPI
-    const {
-      currentCompanyId, newProjectData, projects,
-    } = this.state;
-    const tempProject = projects
-      .find(element => element.name === nameToOn);
-    if (newProjectData === null) { // Path for projects saved with biomes
+  innerElementChange = (parent, projectId) => {
+    const { currentCompanyId, newProjectData } = this.state;
+    if (newProjectData === null) { // Path for saved projects
       Promise.all([
-        // GeoServerAPI.requestBiomasSogamoso(),
-        RestAPI.requestImpactedBiomes(currentCompanyId, tempProject.id_project),
-        RestAPI.requestProjectsByCompany(currentCompanyId, tempProject.id_project),
-      ]).then((res) => {
+        RestAPI.requestImpactedBiomes(currentCompanyId, projectId),
+        RestAPI.requestProjectByIdAndCompany(currentCompanyId, projectId),
+      ]).then(([biomes, project]) => {
         this.setState((prevState) => {
-          const newState = { ...prevState };
-          newState.biomesImpacted = res[0].biomes;
-          newState.layers = {
-            ...prevState.layers,
-            projectBiomes: {
-              displayName: 'projectBiomes',
-              active: true,
-              layer: L.geoJSON(
-                res[0].geometry || [],
-                {
-                  style: this.featureStyle,
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(feature, layer, 'projectBiomes')
+          const newState = { ...prevState, biomesImpacted: [] };
+          if (biomes) {
+            if (biomes.biomes) newState.biomesImpacted = biomes.biomes;
+            if (biomes.geometry) {
+              newState.layers = {
+                ...newState.layers,
+                projectBiomes: {
+                  displayName: 'projectBiomes',
+                  active: true,
+                  layer: L.geoJSON(
+                    biomes.geometry,
+                    {
+                      style: this.featureStyle,
+                      onEachFeature: (feature, layer) => (
+                        this.featureActions(feature, layer, 'projectBiomes')
+                      ),
+                    },
                   ),
                 },
-              ),
-            },
-            project: {
-              displayName: 'project',
-              active: true,
-              layer: L.geoJSON(
-                res[1].geomGeoJSON,
-                {
-                  style: {
-                    stroke: true,
-                    color: '#7b56a5',
-                    fillColor: '#7b56a5',
-                    opacity: 0.6,
-                    fillOpacity: 0.4,
+              };
+            }
+          }
+
+          const { geomGeoJSON, ...currentProject } = project;
+          newState.currentProject = currentProject;
+          newState.currentProjectId = projectId;
+          if (geomGeoJSON) {
+            newState.layers = {
+              ...newState.layers,
+              project: {
+                displayName: 'project',
+                active: true,
+                layer: L.geoJSON(
+                  project.geomGeoJSON,
+                  {
+                    style: {
+                      stroke: true,
+                      color: '#7b56a5',
+                      fillColor: '#7b56a5',
+                      opacity: 0.6,
+                      fillOpacity: 0.4,
+                    },
+                    onEachFeature: (feature, layer) => (
+                      this.featureActions(feature, layer, 'project')
+                    ),
                   },
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(feature, layer, 'project')
-                  ),
-                },
-              ),
-            },
-          };
-          newState.currentProject = tempProject;
-          newState.currentProjectId = tempProject.id_project;
+                ),
+              },
+            };
+          }
           return newState;
         });
       });
@@ -349,9 +373,6 @@ class Compensation extends Component {
       });
   }
 
-  firstLetterUpperCase = sentence => sentence.toLowerCase()
-    .split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
-
   render() {
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
@@ -381,7 +402,7 @@ class Compensation extends Component {
             />
           </Modal>
         )}
-        {openModal && (projects.length === 0) && ( // Showed when there is no data in the response
+        {openModal && (projects.length === 0) && ( // Used to show a connection error message
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -466,7 +487,6 @@ class Compensation extends Component {
                 />
               )
             }
-            {console.log(this.state)}
           </div>
         </div>
       </Layout>
