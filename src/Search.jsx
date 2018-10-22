@@ -114,7 +114,7 @@ class Search extends Component {
    */
   featureStyle = (feature) => {
     const { colorsFC } = this.state;
-    const valueFC = Math.min((Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10);
+    const valueFC = Math.min((Math.ceil((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
     const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
     const styleReturn = {
       stroke: false,
