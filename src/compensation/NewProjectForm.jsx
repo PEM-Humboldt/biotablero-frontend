@@ -8,7 +8,6 @@ import AddProjectIcon from '@material-ui/icons/Check';
 class NewProjectForm extends Component {
   constructor(props) {
     super(props);
-    // const { controlValues } = props;
     this.state = {
       regionSelected: null,
       statusSelected: null,
@@ -20,14 +19,11 @@ class NewProjectForm extends Component {
    * Event handler when a region option is selected
    */
   handleChangeRegion = (regionSelected) => {
-    // const { controlValues,  handlers } = this.props;
     this.setState({
-      // regionSelected: regionSelected && controlValues[1]? regionSelected.value : '',
       regionSelected: regionSelected ? regionSelected.value : '',
       statusSelected: null,
       newName: null,
     });
-    // handlers('region', `${regionSelected}`);
   }
 
   /**
@@ -78,7 +74,6 @@ class NewProjectForm extends Component {
    */
   handleChangeName = (event) => {
     this.setState({
-      // statusSelected: statusSelected && controlValues[2]? statusSelected.value : '',
       newName: event.target.value ? event.target.value : '',
     });
   }

@@ -112,6 +112,7 @@ class Compensation extends Component {
           detailId: 'state',
           expandIcon: (<ExpandMoreIcon />),
           idLabel: Compensation.firstLetterUpperCase(statusLabel).replace(/ /g, ''),
+          detailClass: 'inlineb',
           projects: regions[regionKey][statusKey].map(project => ({
             id_project: project.gid,
             name: Compensation.firstLetterUpperCase(project.name),
@@ -253,6 +254,7 @@ class Compensation extends Component {
       });
       newState.currentBiome = null;
       newState.currentProject = null;
+      newState.newProjectData = null;
       return newState;
     });
   }
