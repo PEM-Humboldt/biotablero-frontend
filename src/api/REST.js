@@ -264,17 +264,10 @@ class RestAPI {
     return axios.get(url)
       .then(res => res.data)
       .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-        } else if (error.request) {
-          console.log(error.request);
-          if (error.request.statusText === '') {
-            return 'no-data-available';
-          }
-        }
-        return 'Bad GET response. Try later';
+        let message = 'Bad GET response. Try later';
+        if (error.response) message = error.response.status;
+        if (error.request.statusText === '') message = 'no-data-available';
+        return Promise.reject(message);
       });
   }
 
@@ -290,18 +283,10 @@ class RestAPI {
     return axios.post(url, requestBody)
       .then(res => res.data)
       .catch((error) => {
-        if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers);
-          return error.response.status;
-        }// else if (error.request) {
-        console.log(error.request);
-        if (error.request.statusText === '') {
-          return 'no-data-available';
-        }
-        // }
-        return 'Bad POST response. Try later';
+        let message = 'Bad POST response. Try later';
+        if (error.response) message = error.response.status;
+        if (error.request.statusText === '') message = 'no-data-available';
+        return Promise.reject(message);
       });
   }
 }

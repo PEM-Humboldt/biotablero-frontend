@@ -49,20 +49,20 @@ class Compensation extends Component {
   componentDidMount() {
     Promise.resolve(RestAPI.requestProjectsAndRegionsByCompany(1))
       .then((res) => {
-        if (res !== 'no-data-available' && Array.isArray(res)) {
+        if (Array.isArray(res)) {
           this.setState({
-            projects: res ? res[0] : [],
-            regions: res ? res[1] : [],
+            projects: res[0] || [],
+            regions: res[1] || [],
             currentCompany: 'GEB',
             currentCompanyId: 1,
           });
           this.setDataForSelector();
-        } else {
-          this.setState({
-            openModal: true,
-          });
         }
-        return null;
+      })
+      .catch(() => {
+        this.setState({
+          openModal: true,
+        });
       });
   }
 
@@ -381,7 +381,7 @@ class Compensation extends Component {
             />
           </Modal>
         )}
-        {openModal && (projects.length === 0) && ( // Showed when there is no data in the response
+        {openModal && (projects.length === 0) && ( // Used to show a connection error message
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
