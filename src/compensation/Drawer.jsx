@@ -33,7 +33,7 @@ class Drawer extends React.Component {
     const biomes = data.map(element => ({
       id: element.id,
       name: element.biome.name,
-      affected_percentage: (100 * element.area_impacted_pct).toFixed(2),
+      affected_percentage: Number(element.area_impacted_pct).toFixed(2),
       fc: element.biome.compensation_factor,
       affected_natural: Math.ceil(element.natural_area_ha) ? Number(element.natural_area_ha).toFixed(2) : '',
       total_compensate: Math.ceil(element.area_to_compensate_ha) ? Number(element.area_to_compensate_ha).toFixed(2) : '',

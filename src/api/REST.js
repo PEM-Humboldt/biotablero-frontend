@@ -137,11 +137,7 @@ class RestAPI {
    * @param {String} projectId id proyect to request
    */
   static requestImpactedBiomes(companyId, projectId) {
-    const request = RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/biomes`);
-    const response = Promise.resolve(request)
-      .then(res => res);
-    console.log('response', response);
-    return response;
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/biomes`);
   }
 
   /**
@@ -151,70 +147,44 @@ class RestAPI {
    * @param {String} companyId id company to request
    * @param {String} projectId id proyect to request
    */
-  static requestProjectsByCompany(companyId, projectId) {
-    const request = projectId
-      ? RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`)
-      : RestAPI.makeGetRequest(`companies/${companyId}/projects`);
-    const response = Promise.resolve(request)
-      .then((res) => {
-        const projectsFound = [];
-        if (res !== undefined && res.length !== undefined && res !== 'no-data-available') {
-          res.forEach(
-            (element) => {
-              const project = {
-                id_project: element.gid,
-                name: element.label,
-                state: element.prj_status,
-                region: element.id_region,
-                area: element.area_ha,
-                id_company: element.id_company,
-                project: element.name,
-              };
-              projectsFound.push(project);
-            },
-          );
-          return projectsFound;
-        } return res;
-      });
-    return response;
+  static requestProjectByIdAndCompany(companyId, projectId) {
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`);
+  }
+
+  /**
+   * Request all projects info for a company
+   *
+   * @param {String} companyId id company to request
+   */
+  static requestProjectsByCompany(companyId) {
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects`)
+      .then(res => (
+        res.map(project => ({
+          id_project: project.gid,
+          name: project.label,
+          state: project.prj_status,
+          region: project.id_region,
+          area: project.area_ha,
+          id_company: project.id_company,
+          project: project.name,
+        }))
+      ));
   }
 
   /**
    * Request the project names by company, organized by region and state
+   * @param {String} companyId id company to request
    */
   static requestProjectsAndRegionsByCompany(companyId) {
-    const response = Promise.resolve(RestAPI.requestProjectsByCompany(companyId))
-      .then((res) => {
-        if (res !== undefined && res !== 'no-data-available') {
-          const regions = [...new Set(res.map((item) => {
-            if (item.region) {
-              return (item.region).split(' ').map(str => str[0].toUpperCase() + str.slice(1)).join(' ');
-            }
-            return '(REGION SIN ASIGNAR)';
-          }))];
-          const states = [...new Set(res.map((item) => {
-            if (item.state) return item.state;
-            return '(ESTADO SIN ASIGNAR)';
-          }))];
-          const projectsSelectorData = regions.map(region => (
-            {
-              id: region,
-              projectsStates: states.map(state => (
-                {
-                  id: state,
-                  projects: res.filter(project => project.region
-                    === region && project.state === state),
-                })),
-            }));
-          return [res, projectsSelectorData];
-        } return res;
-      });
-    return response;
+    return Promise.all([
+      RestAPI.requestProjectsByCompany(companyId),
+      RestAPI.makeGetRequest(`companies/${companyId}/projects?group_props=id_region,prj_status`),
+    ]);
   }
 
   /**
- * Recover all biomes available in the database
- */
+   * Recover all biomes available in the database
+   */
   static getAllBiomes() {
     const request = RestAPI.makeGetRequest('biomes');
     const response = Promise.resolve(request)

@@ -47,7 +47,7 @@ class Selector extends React.Component {
   };
 
   renderInnerElement = parent => ({
-    type, label, name, data,
+    type, label, name, data, id_project: projectId,
   }) => {
     const { handlers } = this.props;
     switch (type) {
@@ -57,7 +57,7 @@ class Selector extends React.Component {
             type="button"
             key={`${type}-${label}`}
             name={name}
-            onClick={event => handlers[2](parent, event.target.name)}
+            onClick={() => handlers[2](parent, projectId)}
           >
             {label}
           </button>
