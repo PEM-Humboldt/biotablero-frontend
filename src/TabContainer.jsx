@@ -36,8 +36,14 @@ class TabContainer extends React.Component {
             textColor="secondary"
             centered
           >
-            {titles.map(({ label, icon }, i) => (
-              <Tab className={`tabs ${tabClasses}`} label={label} icon={icon} key={i} />
+            {titles.map(({ label, icon, disabled }, i) => (
+              <Tab
+                className={`tabs ${tabClasses}`}
+                label={label}
+                icon={icon}
+                key={i}
+                disabled={disabled}
+              />
             ))}
           </Tabs>
         </AppBar>
