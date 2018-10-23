@@ -49,7 +49,6 @@ class Compensation extends Component {
       openModal: false,
       layerName: null,
       layers: {},
-      newProjectData: null,
       projects: [],
       regions: [],
       regionsList: null,
@@ -234,11 +233,14 @@ class Compensation extends Component {
     RestAPI.createProject(currentCompanyId, region, status, name)
       .then((res) => {
         this.setState({
-          newProjectData: res,
+          currentProject: res,
+          currentProjectId: res.id_project,
           currentRegion: res.region,
         });
+        // TODO: Show here instructions to add biomes to the project
+        this.innerElementChange(res.state, res.id_project);
+        this.handleCloseModal();
       });
-    this.handleCloseModal();
   }
 
   /** ***************************************** */
@@ -254,7 +256,6 @@ class Compensation extends Component {
       });
       newState.currentBiome = null;
       newState.currentProject = null;
-      newState.newProjectData = null;
       return newState;
     });
   }
@@ -280,75 +281,65 @@ class Compensation extends Component {
   }
 
   innerElementChange = (parent, projectId) => {
-    const { currentCompanyId, newProjectData } = this.state;
-    if (newProjectData === null) { // Path for saved projects
-      Promise.all([
-        RestAPI.requestImpactedBiomes(currentCompanyId, projectId),
-        RestAPI.requestProjectByIdAndCompany(currentCompanyId, projectId),
-      ]).then(([biomes, project]) => {
-        this.setState((prevState) => {
-          const newState = { ...prevState, biomesImpacted: [] };
-          if (biomes) {
-            if (biomes.biomes) newState.biomesImpacted = biomes.biomes;
-            if (biomes.geometry) {
-              newState.layers = {
-                ...newState.layers,
-                projectBiomes: {
-                  displayName: 'projectBiomes',
-                  active: true,
-                  layer: L.geoJSON(
-                    biomes.geometry,
-                    {
-                      style: this.featureStyle,
-                      onEachFeature: (feature, layer) => (
-                        this.featureActions(feature, layer, 'projectBiomes')
-                      ),
-                    },
-                  ),
-                },
-              };
-            }
-          }
-
-          const { geomGeoJSON, ...currentProject } = project;
-          newState.currentProject = currentProject;
-          newState.currentProjectId = projectId;
-          if (geomGeoJSON) {
+    const { currentCompanyId } = this.state;
+    Promise.all([
+      RestAPI.requestImpactedBiomes(currentCompanyId, projectId),
+      RestAPI.requestProjectByIdAndCompany(currentCompanyId, projectId),
+    ]).then(([biomes, project]) => {
+      this.setState((prevState) => {
+        const newState = { ...prevState, biomesImpacted: [] };
+        if (biomes) {
+          if (biomes.biomes) newState.biomesImpacted = biomes.biomes;
+          if (biomes.geometry) {
             newState.layers = {
               ...newState.layers,
-              project: {
-                displayName: 'project',
+              projectBiomes: {
+                displayName: 'projectBiomes',
                 active: true,
                 layer: L.geoJSON(
-                  project.geomGeoJSON,
+                  biomes.geometry,
                   {
-                    style: {
-                      stroke: true,
-                      color: '#7b56a5',
-                      fillColor: '#7b56a5',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
-                    },
+                    style: this.featureStyle,
                     onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, 'project')
+                      this.featureActions(feature, layer, 'projectBiomes')
                     ),
                   },
                 ),
               },
             };
           }
-          return newState;
-        });
+        }
+
+        const { geomGeoJSON, ...currentProject } = project;
+        newState.currentProject = currentProject;
+        newState.currentProjectId = projectId;
+        if (geomGeoJSON) {
+          newState.layers = {
+            ...newState.layers,
+            project: {
+              displayName: 'project',
+              active: true,
+              layer: L.geoJSON(
+                project.geomGeoJSON,
+                {
+                  style: {
+                    stroke: true,
+                    color: '#7b56a5',
+                    fillColor: '#7b56a5',
+                    opacity: 0.6,
+                    fillOpacity: 0.4,
+                  },
+                  onEachFeature: (feature, layer) => (
+                    this.featureActions(feature, layer, 'project')
+                  ),
+                },
+              ),
+            },
+          };
+        }
+        return newState;
       });
-    } else { // Path for new projects
-      // TODO: Create instructions in a modal about how to add new biomes
-      // this.setState((prevState) => {
-      //   const newState = { ...prevState };
-      //   newState.openModal = true;
-      //   return newState;
-      // });
-    }
-    return null;
+    });
   }
 
   updateActiveBiome = (biomeName) => {
@@ -378,15 +369,14 @@ class Compensation extends Component {
   render() {
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
-      layerName, projects,
-      colors, layers, regions, regionsList, statusList, openModal, newProjectData,
+      layerName, projects, colors, layers, regions, regionsList, statusList, openModal,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
       >
-        {openModal && !newProjectData && regionsList && (
+        {openModal && !currentProject && regionsList && (
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -429,8 +419,6 @@ class Compensation extends Component {
             </div>
           </Modal>
         )}
-        {newProjectData
-          && this.innerElementChange(newProjectData.state, newProjectData.name)}
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -438,7 +426,7 @@ class Compensation extends Component {
           />
           <div className="contentView">
             {
-              !currentProject && !newProjectData && (
+              !currentProject && (
               <Selector
                 handlers={[
                   this.firstLevelChange,
@@ -467,26 +455,6 @@ class Compensation extends Component {
                 subAreaName={currentProject.state}
                 updateActiveBiome={this.updateActiveBiome}
               />
-              )
-            }
-            {
-              newProjectData && `${newProjectData}` && (
-                <Drawer
-                  areaName={`${currentCompany} ${currentRegion}`}
-                  back={this.handlerBackButton}
-                  basinName={newProjectData.name}
-                  colors={colors.map(obj => Object.values(obj)[0])}
-                  allBiomes={RestAPI.getAllBiomes()}
-                  // allBiomes={[
-                  //   {
-                  //     id_biome: 1,
-                  //     name: 'Halobioma Alta Guajira',
-                  //     compensation_factor: '6.00',
-                  //   }]
-                  // }
-                  subAreaName={newProjectData.state}
-                  updateActiveBiome={this.updateActiveBiome}
-                />
               )
             }
           </div>
