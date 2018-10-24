@@ -28,55 +28,7 @@ class Compensation extends Component {
       .join(' ')
   );
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      colors: [ // Colors for ecosystems types
-        { medium: '#eabc47' },
-        { low: '#51b4c1' },
-        { high: '#ea495f' },
-        { selected: '#2a363b' },
-      ],
-      biomesImpacted: [],
-      currentCompany: null,
-      currentCompanyId: null,
-      currentRegion: null,
-      currentProject: null,
-      currentProjectId: null,
-      currentBiome: null,
-      currentStrategies: null,
-      currentStatus: null,
-      newProjectModal: false,
-      connError: false,
-      layerName: null,
-      layers: {},
-      regions: [],
-      regionsList: [],
-      statusList: [],
-      loadingModal: false,
-    };
-  }
-
-  componentDidMount() {
-    RestAPI.requestProjectsAndRegionsByCompany(1)
-      .then((res) => {
-        const { regionsList, statusList, regions } = this.constructDataForSelector(res);
-        this.setState({
-          currentCompany: 'GEB',
-          currentCompanyId: 1,
-          regionsList,
-          statusList,
-          regions,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          connError: true,
-        });
-      });
-  }
-
-  constructDataForSelector = (regions) => {
+  static constructDataForSelector = (regions) => {
     const regionsArray = [];
     const regionsList = [];
     const statusList = [];
@@ -136,6 +88,54 @@ class Compensation extends Component {
     if (regionsList.length > 0 && statusList.length > 0) regionsArray.push(newProject);
 
     return { regionsList, statusList, regions: regionsArray };
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      colors: [ // Colors for ecosystems types
+        { medium: '#eabc47' },
+        { low: '#51b4c1' },
+        { high: '#ea495f' },
+        { selected: '#2a363b' },
+      ],
+      biomesImpacted: [],
+      currentCompany: null,
+      currentCompanyId: null,
+      currentRegion: null,
+      currentProject: null,
+      currentProjectId: null,
+      currentBiome: null,
+      currentStrategies: null,
+      currentStatus: null,
+      newProjectModal: false,
+      connError: false,
+      layerName: null,
+      layers: {},
+      regions: [],
+      regionsList: [],
+      statusList: [],
+      loadingModal: false,
+    };
+  }
+
+  componentDidMount() {
+    RestAPI.requestProjectsAndRegionsByCompany(1)
+      .then((res) => {
+        const { regionsList, statusList, regions } = Compensation.constructDataForSelector(res);
+        this.setState({
+          currentCompany: 'GEB',
+          currentCompanyId: 1,
+          regionsList,
+          statusList,
+          regions,
+        });
+      })
+      .catch(() => {
+        this.setState({
+          connError: true,
+        });
+      });
   }
 
   featureStyle = (feature) => {
