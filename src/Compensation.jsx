@@ -143,8 +143,6 @@ class Compensation extends Component {
     const styleResponse = {
       stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
-    // TODO: Verify if feature.properties.area_impacted_pct is being showed
-    console.log('feature', feature);
     if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
       styleResponse.fillOpacity = 1;
     }
@@ -167,33 +165,34 @@ class Compensation extends Component {
   featureActions = (feature, layer, parentLayer) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event, parentLayer),
+        mouseover: event => this.highlightFeature(event.target, parentLayer),
         mouseout: event => this.resetHighlight(event.target, parentLayer),
         click: this.clickFeature,
       },
     );
   }
 
-  highlightFeature = (event, parentLayer) => {
-    console.log(this.state);
-    const area = event.target;
+  highlightFeature = (area, parentLayer) => {
     area.setStyle({
       fillOpacity: 1,
     });
     switch (parentLayer) {
-      case 'project':
+      case 'project': {
+        const { currentProject } = this.state;
         area.bindPopup(
-          `<b>Proyecto:</b> ${area.feature.properties.PROYECTO}
-          <br><b>Área:</b> ${area.feature.properties.AREA_ha}`,
-        );
+          `<b>Proyecto:</b> ${currentProject.name}
+          <br><b>Área:</b> ${currentProject.area_ha}`,
+        ).openPopup();
         break;
+      }
       case 'projectBiomes':
-        area.bindPopup( // TODO: Replace area.feature.properties.ID_CAR for the right EA name
-          `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR || 'Varias EA'}
-          <br><b>Bioma:</b> ${area.feature.properties.name}
+        area.bindPopup(
+          // TODO: When the backend is ready, connect with ea if exists
+          // `<b>Jurisdicción:</b> ${area.feature.properties.ID_CAR || 'Varias EA'}
+          `<b>Bioma:</b> ${area.feature.properties.name}
           <br><b>Factor de compensación:</b> ${area.feature.properties.compensation_factor}
           <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct || 'Sin información'}`,
-        );
+        ).openPopup();
         break;
       default:
         break;
@@ -201,8 +200,8 @@ class Compensation extends Component {
   }
 
   resetHighlight = (area, parentLayer) => {
-    const { layerName, layers, currentProject } = this.state;
-    console.log('currentProject', currentProject);
+    area.closePopup();
+    const { layerName, layers } = this.state;
     if (
       layers[parentLayer] && layerName && (layerName !== area.feature.properties.BIOMA_IAvH)
     ) {
