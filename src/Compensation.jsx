@@ -46,34 +46,32 @@ class Compensation extends Component {
       currentBiome: null,
       currentStrategies: null,
       currentStatus: null,
-      openModal: false,
+      newProjectModal: false,
+      connError: false,
       layerName: null,
       layers: {},
-      projects: [],
       regions: [],
-      regionsList: null,
-      statusList: null,
+      regionsList: [],
+      statusList: [],
+      loadingModal: false,
     };
   }
 
   componentDidMount() {
     RestAPI.requestProjectsAndRegionsByCompany(1)
       .then((res) => {
-        if (Array.isArray(res)) {
-          const { regionsList, statusList, regions } = this.constructDataForSelector(res[1]);
-          this.setState({
-            projects: res[0] || [],
-            currentCompany: 'GEB',
-            currentCompanyId: 1,
-            regionsList,
-            statusList,
-            regions,
-          });
-        }
+        const { regionsList, statusList, regions } = this.constructDataForSelector(res);
+        this.setState({
+          currentCompany: 'GEB',
+          currentCompanyId: 1,
+          regionsList,
+          statusList,
+          regions,
+        });
       })
       .catch(() => {
         this.setState({
-          openModal: true,
+          connError: true,
         });
       });
   }
@@ -219,15 +217,26 @@ class Compensation extends Component {
     this.highlightFeature(event, parentLayer);
   }
 
-  /** ****************************** */
-  /** LISTENER FOR NEW PROJECT MODAL */
-  /** ****************************** */
+  /** ************************ */
+  /** LISTENER FOR NEW PROJECT */
+  /** ************************ */
 
-  handleCloseModal = () => {
-    const { openModal } = this.state;
-    this.setState({ openModal: !openModal });
+  /**
+   * Close a given modal
+   *
+   * @param {String} state state value that controls the modal you want to close
+   */
+  handleCloseModal = state => () => {
+    this.setState({ [state]: false });
   };
 
+  /**
+   * Send request to create a new project
+   *
+   * @param {String} region project region
+   * @param {String} status project status
+   * @param {String} name project name
+   */
   setNewProject = (region, status, name) => {
     const { currentCompanyId } = this.state;
     RestAPI.createProject(currentCompanyId, region, status, name)
@@ -236,51 +245,19 @@ class Compensation extends Component {
           currentProject: res,
           currentProjectId: res.id_project,
           currentRegion: res.region,
+          newProjectModal: false,
         });
         // TODO: Show here instructions to add biomes to the project
-        this.innerElementChange(res.state, res.id_project);
-        this.handleCloseModal();
       });
   }
 
-  /** ***************************************** */
-  /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
-  /** ***************************************** */
-
-  handlerBackButton = () => {
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      const { layers } = prevState;
-      Object.keys(layers).forEach((layerKey) => {
-        newState.layers[layerKey].active = false;
-      });
-      newState.currentBiome = null;
-      newState.currentProject = null;
-      return newState;
-    });
-  }
-
-  /** ****************************** */
-  /** LISTENERS FOR SELECTOR CHANGES */
-  /** ****************************** */
-
-  firstLevelChange = (name, type) => {
-    this.setState({
-      currentRegion: name,
-    });
-    if (type) {
-      this.handleCloseModal();
-    }
-    return null;
-  }
-
-  secondLevelChange = (name) => {
-    this.setState({
-      currentStatus: name,
-    });
-  }
-
-  innerElementChange = (parent, projectId) => {
+  /**
+   * Load project related states
+   *
+   * @param {Number} projectId project id
+   */
+  loadProject = (projectId) => {
+    this.setState({ loadingModal: true });
     const { currentCompanyId } = this.state;
     Promise.all([
       RestAPI.requestImpactedBiomes(currentCompanyId, projectId),
@@ -337,9 +314,53 @@ class Compensation extends Component {
             },
           };
         }
+        newState.loadingModal = false;
         return newState;
       });
     });
+  }
+
+  /** ***************************************** */
+  /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
+  /** ***************************************** */
+
+  handlerBackButton = () => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      const { layers } = prevState;
+      Object.keys(layers).forEach((layerKey) => {
+        newState.layers[layerKey].active = false;
+      });
+      newState.currentBiome = null;
+      newState.currentProject = null;
+      newState.currentRegion = null;
+      newState.biomesImpacted = [];
+      return newState;
+    });
+  }
+
+  /** ****************************** */
+  /** LISTENERS FOR SELECTOR CHANGES */
+  /** ****************************** */
+
+  firstLevelChange = (name) => {
+    this.setState({
+      currentRegion: name,
+    });
+    if (name === 'addProject') {
+      this.setState({ newProjectModal: true });
+    }
+    return null;
+  }
+
+  secondLevelChange = (name) => {
+    this.setState({
+      currentStatus: name,
+    });
+  }
+
+  innerElementChange = (parent, projectId) => {
+    this.loadProject(projectId);
   }
 
   updateActiveBiome = (biomeName) => {
@@ -369,56 +390,66 @@ class Compensation extends Component {
   render() {
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
-      layerName, projects, colors, layers, regions, regionsList, statusList, openModal,
+      layerName, colors, layers, regions, regionsList, statusList, newProjectModal, connError,
+      currentCompanyId, currentProjectId, loadingModal,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
       >
-        {openModal && !currentProject && regionsList && (
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={openModal}
-            onClose={this.handleCloseModal}
-            disableAutoFocus
-          >
-            <NewProjectForm
-              regions={regionsList}
-              status={statusList}
-              handlers={[
-                this.setNewProject,
-                this.handleCloseModal,
-              ]}
-            />
-          </Modal>
-        )}
-        {openModal && (projects.length === 0) && ( // Used to show a connection error message
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={openModal}
-            onClose={this.handleCloseModal}
-            disableAutoFocus
-          >
-            <div className="newProjectTitle">
-              <h2>
-                Sin conexión al servidor.
-                La aplicación estará disponible nuevamente en minutos.
-              </h2>
-              <button
-                type="button"
-                className="closebtn"
-                onClick={this.handleCloseModal}
-                data-tooltip
-                title="Cerrar"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-          </Modal>
-        )}
+        {/** Modals section: new project, connection error or loading message */}
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={newProjectModal}
+          onClose={this.handleCloseModal('newProjectModal')}
+          disableAutoFocus
+        >
+          <NewProjectForm
+            regions={regionsList}
+            status={statusList}
+            handlers={[
+              this.setNewProject,
+              this.handleCloseModal('newProjectModal'),
+            ]}
+          />
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={connError}
+          onClose={this.handleCloseModal('connError')}
+          disableAutoFocus
+        >
+          <div className="newProjectTitle">
+            <h2>
+              Sin conexión al servidor.
+              La aplicación estará disponible nuevamente en minutos.
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={this.handleCloseModal('connError')}
+              data-tooltip
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loadingModal}
+          disableAutoFocus
+        >
+          <div className="newProjectTitle">
+            <h2>
+              Cargando información
+            </h2>
+          </div>
+        </Modal>
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -454,6 +485,9 @@ class Compensation extends Component {
                 biomesImpacted={biomesImpacted}
                 subAreaName={currentProject.state}
                 updateActiveBiome={this.updateActiveBiome}
+                companyId={currentCompanyId}
+                projectId={currentProjectId}
+                reloadProject={this.loadProject}
               />
               )
             }

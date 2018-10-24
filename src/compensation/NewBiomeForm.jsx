@@ -1,14 +1,12 @@
 /** eslint verified */
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import Select from 'react-select';
-import CloseIcon from '@material-ui/icons/Close';
 import AddProjectIcon from '@material-ui/icons/Check';
 
 class NewBiomeForm extends Component {
   constructor(props) {
     super(props);
-    // const { controlValues } = props;
     this.state = {
       biomeSelected: null,
     };
@@ -18,11 +16,7 @@ class NewBiomeForm extends Component {
    * Event handler when a biomes option is selected
    */
   handleChangeBiomes = (biomeSelected) => {
-    // const { controlValues,  handlers } = this.props;
-    this.setState({
-      // biomeSelected: biomeSelected && controlValues[1]? biomeSelected.value : '',
-      biomeSelected: biomeSelected ? biomeSelected.value : '',
-    });
+    this.setState({ biomeSelected });
   }
 
   /**
@@ -30,33 +24,25 @@ class NewBiomeForm extends Component {
    */
   listBiomes = () => {
     const { biomeSelected } = this.state;
-    // const { biomes } = this.props;
+    const { biomes } = this.props;
     return (
       <Select
+        ref={this.selectRef}
         value={biomeSelected}
         onChange={this.handleChangeBiomes}
         placeholder="Biomas disponibles"
-        // options={biomes.map(element => element.value)}
-        // options={biomes}
+        options={biomes.map(biome => ({ ...biome, label: biome.name }))}
       />
     );
   }
 
   render() {
     const { biomeSelected } = this.state;
+    const { addBiomeHandler } = this.props;
     return (
       <div className="newBiome">
         <div className="newProjectTitle">
           <h2>Agregar bioma</h2>
-          <button
-            type="button"
-            className="closebtn"
-            onClick={() => {}}
-            data-tooltip
-            title="Cerrar"
-          >
-            <CloseIcon />
-          </button>
         </div>
         <div className="npcontent">
           {this.listBiomes()}
@@ -65,9 +51,12 @@ class NewBiomeForm extends Component {
             <button
               type="button"
               className="addprjbtn"
-              onClick={() => {}}
+              onClick={() => {
+                addBiomeHandler(biomeSelected);
+                this.setState({ biomeSelected: null });
+              }}
               data-tooltip
-              title="Crear proyecto"
+              title="Agregar bioma"
             >
               <AddProjectIcon />
             </button>)
@@ -78,12 +67,14 @@ class NewBiomeForm extends Component {
   }
 }
 
-// NewBiomeForm.propTypes = {
-//   biomes: PropTypes.array,
-// };
-//
-// NewBiomeForm.defaultProps = {
-//   biomes: [],
-// };
+NewBiomeForm.propTypes = {
+  biomes: PropTypes.array,
+  addBiomeHandler: PropTypes.func,
+};
+
+NewBiomeForm.defaultProps = {
+  biomes: [],
+  addBiomeHandler: () => {},
+};
 
 export default NewBiomeForm;

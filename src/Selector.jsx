@@ -21,21 +21,19 @@ class Selector extends React.Component {
     props.handlers[0](expandedByDefault.label);
   }
 
-  firstLevelChange = (panel, type) => (event, expanded) => {
+  firstLevelChange = panel => (event, expanded) => {
     const { handlers } = this.props;
-    handlers[0](panel, type);
-    switch (type) {
-      case 'addProject':
-        this.setState({
-          expanded: false,
-        });
-        return true;
-      default:
-        this.setState({
-          expanded: expanded ? panel : false,
-        });
-        return null;
+    handlers[0](panel);
+    if (panel === 'addProject') {
+      this.setState({
+        expanded: false,
+      });
+    } else {
+      this.setState({
+        expanded: expanded ? panel : false,
+      });
     }
+    return null;
   };
 
   secondLevelChange = subPanel => (event, expanded) => {
