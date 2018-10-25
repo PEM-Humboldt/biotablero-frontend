@@ -8,6 +8,7 @@ import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
+import Modal from '@material-ui/core/Modal';
 
 import GraphLoader from '../GraphLoader';
 import PopMenu from './PopMenu';
@@ -15,6 +16,7 @@ import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import SelectedBiome from './SelectedBiome';
+import RestAPI from '../api/REST';
 
 const styles = () => ({
   root: {
@@ -24,6 +26,17 @@ const styles = () => ({
 });
 
 class Drawer extends React.Component {
+  static getDerivedStateFromProps(nextProps) {
+    if (nextProps.biomesImpacted.length > 0) {
+      const { biomes, totals } = Drawer.cleanWhatWhereData(nextProps.biomesImpacted);
+      return {
+        whereData: biomes,
+        totals,
+      };
+    }
+    return null;
+  }
+
   /**
    * Clean up loaded data used for 'Que y Cuanto' and 'Donde'
    *
@@ -74,7 +87,14 @@ class Drawer extends React.Component {
     this.state = {
       selectedBiomes: [],
       whereData: [],
-      totals: {},
+      totals: {
+        name: 'TOTALES (CUANTO)',
+        affected_natural: 0,
+        affected_secondary: 0,
+        affected_transformed: 0,
+        affected_percentage: 0,
+        total_compensate: 0,
+      },
       szh: null,
       ea: null,
       strategiesData: [],
@@ -83,22 +103,22 @@ class Drawer extends React.Component {
       graphStatus: { DotsWhere: true },
       allAvailableBiomes: null,
       controlAddingBiomes: false,
+      biomesDraft: [],
+      confirmModal: false,
     };
   }
 
   componentDidMount() {
-    const { biomesImpacted, allBiomes } = this.props;
-    if (biomesImpacted.length === 0) {
-      console.log('allAvailableBiomes', allBiomes, biomesImpacted.length, biomesImpacted);
-      this.setState({
-        controlAddingBiomes: true,
-      });
+    const { biomesImpacted } = this.props;
+    if (biomesImpacted.length <= 0) {
+      RestAPI.getAllBiomes()
+        .then(biomes => (
+          this.setState({
+            controlAddingBiomes: true,
+            allBiomes: biomes,
+          })
+        ));
     }
-    const { biomes, totals } = Drawer.cleanWhatWhereData(biomesImpacted);
-    this.setState({
-      whereData: biomes,
-      totals,
-    });
   }
 
   /**
@@ -309,6 +329,157 @@ class Drawer extends React.Component {
   }
 
   /**
+   * Add a biome to the project
+   */
+  addBiomeToProject = (biome) => {
+    this.setState((prevState) => {
+      const newBiomes = prevState.biomesDraft;
+      newBiomes.push({
+        ...biome,
+        natural_area_ha: 0,
+        secondary_area_ha: 0,
+        transformed_area_ha: 0,
+        area_impacted_pct: 0,
+        area_impacted_ha: 0,
+        area_to_compensate_ha: 0,
+      });
+      return {
+        biomesDraft: newBiomes,
+        allBiomes: prevState.allBiomes.filter(element => element.id_biome !== biome.id_biome),
+      };
+    });
+  }
+
+  /**
+   * Update a biome property value for a biome in biomesDraft
+   */
+  updateDraftBiome = (target, object) => {
+    const input = target;
+    const { name: field } = input;
+    const value = Number(input.value) || 0;
+    input.value = value;
+
+    this.setState((prevState) => {
+      let totalImpacted = 0;
+      let totalNatural = 0;
+      let totalSecondary = 0;
+      let totalTransformed = 0;
+      let totalPercentage = 0;
+      let totalCompensate = 0;
+
+      const { biomesDraft: drafts } = prevState;
+      drafts.forEach((element) => {
+        const biome = element;
+        if (biome.id_biome === object.id_biome) {
+          biome[field] = value;
+          const {
+            natural_area_ha: natural,
+            secondary_area_ha: secondary,
+            transformed_area_ha: transformed,
+            compensation_factor: fc,
+          } = biome;
+          biome.area_impacted_ha = natural + secondary + transformed;
+          biome.area_to_compensate_ha = (fc * natural) + ((fc / 2) * secondary) + transformed;
+        }
+        totalImpacted += biome.area_impacted_ha;
+      });
+      drafts.forEach((element) => {
+        const biome = element;
+        biome.area_impacted_pct = ((biome.area_impacted_ha / totalImpacted) * 100 || 0).toFixed(2);
+        totalNatural += biome.natural_area_ha;
+        totalSecondary += biome.secondary_area_ha;
+        totalTransformed += biome.transformed_area_ha;
+        totalPercentage += Number(biome.area_impacted_pct);
+        totalCompensate += biome.area_to_compensate_ha;
+      });
+
+      return {
+        biomesDraft: drafts,
+        totals: {
+          name: 'TOTALES (CUANTO)',
+          affected_natural: totalNatural,
+          affected_secondary: totalSecondary,
+          affected_transformed: totalTransformed,
+          affected_percentage: totalPercentage.toFixed(2),
+          total_compensate: totalCompensate,
+        },
+      };
+    });
+  }
+
+  /**
+   * Send biomesDraft to persist in the backend
+   */
+  sendAddBiomesToProject = () => {
+    const { companyId, projectId, reloadProject } = this.props;
+    const { biomesDraft } = this.state;
+    RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft)
+      .then(() => {
+        this.setState({
+          biomesDraft: [],
+          confirmModal: false,
+          controlAddingBiomes: false,
+        });
+        reloadProject(projectId);
+      });
+  }
+
+  /**
+   * Depending on the type of project (new or saved) prepare the table rows as inputs or just text
+   */
+  prepareBiomesTableRows = () => {
+    const { whereData, biomesDraft } = this.state;
+    let tableRows = [];
+    if (whereData.length > 0) {
+      tableRows = whereData.map((biome, i) => ({
+        key: `que-${i}`,
+        values: [
+          biome.name,
+          biome.fc,
+          biome.affected_natural,
+          biome.affected_secondary,
+          biome.affected_transformed,
+          `${biome.affected_percentage}%`,
+          biome.total_compensate,
+        ],
+      }));
+    } else {
+      tableRows = biomesDraft.map((biome, i) => ({
+        key: `que-${i}`,
+        values: [
+          biome.name,
+          biome.compensation_factor,
+          (<input
+            name="natural_area_ha"
+            type="text"
+            placeholder="0"
+            defaultValue={biome.natural_area_ha}
+            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
+          />),
+          (<input
+            name="secondary_area_ha"
+            type="text"
+            placeholder="0"
+            defaultValue={biome.secondary_area_ha}
+            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
+          />),
+          (<input
+            name="transformed_area_ha"
+            type="text"
+            placeholder="0"
+            defaultValue={biome.transformed_area_ha}
+            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
+          />),
+          `${biome.area_impacted_pct}%`,
+          biome.area_to_compensate_ha,
+        ],
+      }));
+    }
+
+    return tableRows;
+  }
+
+  /**
    * Function to render graphs when necessary
    */
   renderSelector = (data, total) => {
@@ -373,25 +544,14 @@ class Drawer extends React.Component {
   render() {
     const {
       areaName, back, basinName, colors, classes, layerName, biomeData,
-      subAreaName, biomesImpacted, // allBiomes,
+      subAreaName, biomesImpacted,
     } = this.props;
     const {
-      whereData, totals, selectedArea, totalACompensar, szh, ea, tableError,
-      strategiesData, selectedBiomes, allAvailableBiomes, controlAddingBiomes,
+      whereData, totals, selectedArea, totalACompensar, szh, ea, tableError, confirmModal,
+      strategiesData, selectedBiomes, allAvailableBiomes, controlAddingBiomes, allBiomes,
     } = this.state;
 
-    const tableRows = whereData.map((biome, i) => ({
-      key: `que-${i}`,
-      values: [
-        biome.name,
-        biome.fc,
-        biome.affected_natural,
-        biome.affected_secondary,
-        biome.affected_transformed,
-        `${biome.affected_percentage}%`,
-        biome.total_compensate,
-      ],
-    }));
+    const tableRows = this.prepareBiomesTableRows();
 
     return (
       <div className="informer">
@@ -410,7 +570,7 @@ class Drawer extends React.Component {
           tabClasses="tabs2"
           titles={[
             { label: 'Qué · Cuánto', icon: (<QueIcon />) },
-            { label: 'Dónde · Cómo', icon: (<DondeIcon />), disabled: `${controlAddingBiomes}` },
+            { label: 'Dónde · Cómo', icon: (<DondeIcon />), disabled: controlAddingBiomes },
           ]}
         >
           {[
@@ -425,12 +585,13 @@ class Drawer extends React.Component {
                   </h4>
                 </div>
                 {controlAddingBiomes && (
-                  <NewBiomeForm />)
-                    // biomes={allBiomes.then(res => res.map(element => element.name))}
-                  // />)
-                }
+                  <NewBiomeForm
+                    biomes={allBiomes}
+                    addBiomeHandler={this.addBiomeToProject}
+                  />
+                )}
                 <TableStylized
-                  headers={['BIOMA IAVH', 'F.C', 'NAT', 'SEC', 'TRANS', 'AFECT', 'TOTAL']}
+                  headers={['BIOMA IAVH', 'F.C', 'NAT (Ha)', 'SEC (Ha)', 'TRANS (Ha)', 'AFECT (%)', 'TOTAL (Ha)']}
                   rows={tableRows}
                   footers={[totals.name, totals.fc, totals.affected_natural,
                     totals.affected_secondary, totals.affected_transformed,
@@ -438,6 +599,39 @@ class Drawer extends React.Component {
                   addRows={biomesImpacted}
                   newRow={allAvailableBiomes}
                 />
+                {controlAddingBiomes && tableRows.length > 0 && (
+                  <button
+                    type="button"
+                    className="sendCreateBioemes"
+                    onClick={() => { this.setState({ confirmModal: true }); }}
+                    data-tooltip
+                    title="Guardar biomas en proyecto"
+                  >
+                    Guardar biomas
+                  </button>
+                )}
+                <Modal
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                  open={confirmModal}
+                  onClose={() => { this.setState({ confirmModal: false }); }}
+                >
+                  <div className="newProjectModal">
+                    Una vez guardados los cambios no podrá editarlos, está seguro de continuar?
+                    <button
+                      type="button"
+                      onClick={this.sendAddBiomesToProject}
+                    >
+                      Si
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { this.setState({ confirmModal: false }); }}
+                    >
+                      No
+                    </button>
+                  </div>
+                </Modal>
               </div>
             ),
             (
@@ -486,10 +680,12 @@ Drawer.propTypes = {
   // Data from elastic result for "donde compensar sogamoso"
   biomeData: PropTypes.object,
   biomesImpacted: PropTypes.array,
-  allBiomes: PropTypes.object,
   subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
   updateActiveBiome: PropTypes.func,
+  companyId: PropTypes.number.isRequired,
+  projectId: PropTypes.number.isRequired,
+  reloadProject: PropTypes.func.isRequired,
 };
 
 Drawer.defaultProps = {
@@ -499,7 +695,6 @@ Drawer.defaultProps = {
   colors: ['#eabc47'],
   biomeData: {},
   biomesImpacted: [],
-  allBiomes: {},
   updateActiveBiome: () => {},
   layerName: '',
   subAreaName: '',

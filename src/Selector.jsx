@@ -9,33 +9,41 @@ import PropTypes from 'prop-types';
 import Autocomplete from './Autocomplete';
 
 class Selector extends React.Component {
-  constructor(props) {
-    super(props);
-    const data = props.data || [];
-    const expandedId = props.expandedId || 0;
-    const expandedByDefault = data[expandedId] || { id: null, label: null };
-    this.state = {
-      expanded: expandedByDefault.id === -1 ? 0 : expandedByDefault.id,
-      subExpanded: null,
-    };
-    props.handlers[0](expandedByDefault.label);
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.new && nextProps.data.length > 0) {
+      const { data } = nextProps;
+      const expandedId = nextProps.expandedId || 0;
+      const expandedByDefault = data[expandedId] || { id: null, label: null };
+      return { expanded: expandedByDefault.id, selected: expandedByDefault.id, new: false };
+    }
+    return null;
   }
 
-  firstLevelChange = (panel, type) => (event, expanded) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      expanded: null,
+      subExpanded: null,
+      new: true,
+    };
+  }
+
+  firstLevelChange = panel => (event, expanded) => {
     const { handlers } = this.props;
-    handlers[0](panel, type);
-    switch (type) {
-      case 'addProject':
-        this.setState({
-          expanded: false,
-        });
-        return true;
-      default:
-        this.setState({
-          expanded: expanded ? panel : false,
-        });
-        return null;
+    const expandedPanel = expanded ? panel : false;
+    handlers[0](expandedPanel);
+    if (panel === 'addProject') {
+      this.setState({
+        expanded: null,
+      });
+    } else {
+      this.setState(prevState => ({
+        expanded: expandedPanel,
+        selected: expanded ? panel : prevState.expanded,
+        subExpanded: null,
+      }));
     }
+    return null;
   };
 
   secondLevelChange = subPanel => (event, expanded) => {
@@ -80,23 +88,23 @@ class Selector extends React.Component {
     const { description, iconClass } = this.props;
     let { data } = this.props;
     data = data || [];
-    const { expanded, subExpanded } = this.state;
+    const { expanded, selected, subExpanded } = this.state;
     return (
       <div className="selector">
         <div className={iconClass} />
         {description}
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
-            id, label, disabled, expandIcon, detailId, idLabel, type,
+            id, label, disabled, expandIcon, detailId, idLabel,
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
             <ExpansionPanel
-              className="m0"
+              className={`m0 ${selected === id ? 'selector-expanded' : ''}`}
               id={idLabel}
               expanded={expanded === id}
               disabled={disabled}
-              onChange={this.firstLevelChange(id, type)}
+              onChange={this.firstLevelChange(id)}
               key={id}
             >
               <ExpansionPanelSummary expandIcon={expandIcon}>

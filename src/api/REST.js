@@ -130,66 +130,39 @@ class RestAPI {
   }
 
   /**
-   * Request the project layers names, all projects or by project ID
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request the project impacted biomes
    *
    * @param {String} companyId id company to request
-   * @param {String} projectId id proyect to request
+   * @param {String} projectId id project to request
    */
   static requestImpactedBiomes(companyId, projectId) {
     return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/biomes`);
   }
 
   /**
-   * Request the project layers names, all projects or by project ID
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request the project information (props and geometry)
    *
    * @param {String} companyId id company to request
-   * @param {String} projectId id proyect to request
+   * @param {String} projectId id project to request
    */
   static requestProjectByIdAndCompany(companyId, projectId) {
     return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`);
   }
 
-  /**
-   * Request all projects info for a company
-   *
-   * @param {String} companyId id company to request
-   */
-  static requestProjectsByCompany(companyId) {
-    return RestAPI.makeGetRequest(`companies/${companyId}/projects`)
-      .then(res => (
-        res.map(project => ({
-          id_project: project.gid,
-          name: project.label,
-          state: project.prj_status,
-          region: project.id_region,
-          area: project.area_ha,
-          id_company: project.id_company,
-          project: project.name,
-        }))
-      ));
-  }
 
   /**
-   * Request the project names by company, organized by region and state
+   * Request the project info by company, organized by region and state
    * @param {String} companyId id company to request
    */
   static requestProjectsAndRegionsByCompany(companyId) {
-    return Promise.all([
-      RestAPI.requestProjectsByCompany(companyId),
-      RestAPI.makeGetRequest(`companies/${companyId}/projects?group_props=id_region,prj_status`),
-    ]);
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects?group_props=id_region,prj_status`);
   }
 
   /**
    * Recover all biomes available in the database
    */
   static getAllBiomes() {
-    const request = RestAPI.makeGetRequest('biomes');
-    const response = Promise.resolve(request)
-      .then(res => res);
-    return response;
+    return RestAPI.makeGetRequest('biomes');
   }
 
   /**
@@ -215,6 +188,26 @@ class RestAPI {
         label: res.name,
         area: 0,
       }));
+  }
+
+  /**
+   * Associate a set of biomes as impacted by the given project
+   *
+   * @param {Number} companyId company id
+   * @param {Bumber} projectId project id
+   * @param {Object[]} biomes Array of biomes info to associate
+   */
+  static addImpactedBiomesToProject(companyId, projectId, biomes) {
+    const cleanBiomes = biomes.map(biome => ({
+      id_biome: biome.id_biome,
+      natural_area_ha: biome.natural_area_ha,
+      secondary_area_ha: biome.secondary_area_ha,
+      transformed_area_ha: biome.transformed_area_ha,
+      area_impacted_ha: biome.area_impacted_ha,
+      area_to_compensate_ha: biome.area_to_compensate_ha,
+      area_impacted_pct: biome.area_impacted_pct,
+    }));
+    return RestAPI.makePostRequest(`companies/${companyId}/projects/${projectId}/biomes`, cleanBiomes);
   }
 
   /**
