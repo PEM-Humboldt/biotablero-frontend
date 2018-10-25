@@ -76,16 +76,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByDistritosArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_distritos/_search/template?filter_path=aggregations
-    // .areas.buckets,aggregations.total_area',
-    //   {
-    //     id: 'carByDistritoArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByDistritosArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/bioticUnit`);
   }
 
   /**
@@ -96,16 +87,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByFCArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_biomas/_search/template?filter_path=aggregations
-    // .areas.buckets,aggregations.total_area',
-    //   {
-    //     id: 'carByFCArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByFCArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/compensationFactor`);
   }
 
   /**
@@ -116,17 +98,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByBiomeArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_biomas/_search/template?filter_path=aggregations
-    // .areas.buckets.key,aggregations.areas.buckets.area,aggregations
-    // .areas.buckets.fc.hits.hits._source,aggregations.total_area',
-    //   {
-    //     id: 'carByBiomaArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByBiomeArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/generalBiome`);
   }
 
   /**
