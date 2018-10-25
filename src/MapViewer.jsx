@@ -31,7 +31,8 @@ class MapViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      layers: null,
+      layers: {},
+      update: false,
     };
 
     this.mapRef = React.createRef();
@@ -40,24 +41,24 @@ class MapViewer extends React.Component {
   componentDidUpdate() {
     let { layers: activeLayers } = this.props;
     activeLayers = MapViewer.infoFromLayers(activeLayers, 'active');
-    const { layers } = this.state;
-    if (activeLayers) {
+    const { layers, update } = this.state;
+    if (activeLayers && update) {
       Object.keys(activeLayers).forEach((layerName) => {
         if (activeLayers[layerName]) this.showLayer(layers[layerName], true);
         else this.showLayer(layers[layerName], false);
       });
-      const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-      if (countActiveLayers === 0) {
-        this.mapRef.current.leafletElement.setView(config.params.center, 5);
-      }
-    } else this.mapRef.current.leafletElement.setView(config.params.center, 5);
+    }
+    const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
+    if (countActiveLayers === 0) {
+      this.mapRef.current.leafletElement.setView(config.params.center, 5);
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
     const { layers: oldLayers } = prevState;
-    if (oldLayers === null) {
-      return { layers };
+    if (JSON.stringify(Object.keys(layers)) === JSON.stringify(Object.keys(oldLayers))) {
+      return { update: false };
     }
     Object.keys(oldLayers).forEach((name) => {
       if (layers[name] !== oldLayers[name]) {
@@ -66,7 +67,7 @@ class MapViewer extends React.Component {
         }
       }
     });
-    return { layers };
+    return { layers, update: true };
   }
 
   /**

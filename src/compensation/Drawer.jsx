@@ -45,6 +45,7 @@ class Drawer extends React.Component {
   static cleanWhatWhereData = (data) => {
     const biomes = data.map(element => ({
       id: element.id,
+      biome_id: element.biome.id_biome,
       name: element.biome.name,
       affected_percentage: Number(element.area_impacted_pct).toFixed(2),
       fc: element.biome.compensation_factor,
@@ -95,8 +96,6 @@ class Drawer extends React.Component {
         affected_percentage: 0,
         total_compensate: 0,
       },
-      szh: null,
-      ea: null,
       strategiesData: [],
       selectedArea: 0,
       tableError: '',
@@ -133,7 +132,6 @@ class Drawer extends React.Component {
     this.cleanBiomeFilterList();
     this.setState(prevState => (
       {
-        layerName: null,
         szh: null,
         ea: null,
         selectedBiomes: [
@@ -176,27 +174,6 @@ class Drawer extends React.Component {
     this.showDotsGraph(false);
   }
 
-  /**
-   * Create a new Biome to operate in the interface and show selected biomes
-   *
-   * @param {String} layerName current bioma name showed and selected
-   * @param {String} szh hydrographical sub zone selected
-   * @param {String} ea enviromental autority selected
-   * @param {Array} strategiesData strategies data to list
-   */
-  renderBiomes = (layerName, szh, ea, strategiesData) => {
-    const { selectedBiomes } = this.state;
-    if (layerName && szh && ea && strategiesData) {
-      const tempBiome = selectedBiomes.filter(
-        element => (element.biome === layerName
-          && element.ea === ea && element.szh === szh),
-      );
-      if (tempBiome.length === 0) {
-        this.addSelectedBiome(layerName, ea, szh, strategiesData);
-      }
-    } return true;
-  }
-
   // TODO: Create function saveStrategies(idBiome, idEA, idSZH, idStrategy, areaSelected)
 
   /**
@@ -226,16 +203,11 @@ class Drawer extends React.Component {
    *
    */
   showDotsGraph = (value) => {
-    this.setState(prevState => (
-      {
-        ...prevState,
-        ea: null,
-        szh: null,
-        graphStatus: {
-          DotsWhere: value,
-        },
-      }
-    ));
+    this.setState({
+      graphStatus: {
+        DotsWhere: value,
+      },
+    });
   }
 
   /**
@@ -280,52 +252,15 @@ class Drawer extends React.Component {
   }
 
   /**
-   * From data loaded in 'biomeData' construct an array with
-   * strategies info for the given szh and ea
+   * Request the available strategies for the given parameters
    *
-   * @param {String} szh SZH name
-   * @param {String} ea CAR name
+   * @param {Number} idBiome biome id
+   * @param {Number} idSubzone sub-basin id
+   * @param {String} idEA environmental authority id
    */
-  loadStrategies = (szh, ea) => {
-    if (!szh || !ea) {
-      this.setState(prevState => ({
-        szh,
-        ea,
-        graphStatus: {
-          ...prevState.graphStatus,
-          DotsWhere: true,
-        },
-      }));
-      return;
-    }
-
-    const { biomeData } = this.props;
-    const data = this.cleanBiomeFilterList(biomeData);
-    if (data) {
-      this.setState(prevState => ({
-        szh,
-        ea,
-        strategiesData: data[szh][ea].results.hits.hits,
-        graphStatus: {
-          ...prevState.graphStatus,
-          DotsWhere: false,
-        },
-      }));
-    }
-  }
-
-  cleanBiomeFilterList = (data) => {
-    if (!data || !data.aggregations) return {};
-    const cleanData = {};
-    data.aggregations.szh.buckets.forEach((szh) => {
-      const cleanEA = {};
-      // TODO: Replace name "car" for "ea", when it changes to RestAPI instead of ElasticAPI
-      szh.car.buckets.forEach((ea) => {
-        cleanEA[ea.key] = ea;
-      });
-      cleanData[szh.key] = cleanEA;
-    });
-    return cleanData;
+  loadStrategies = (idBiome, idSubzone, idEA) => {
+    RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA);
+    // TODO: Load strategies layers and table :)
   }
 
   /**
@@ -480,40 +415,59 @@ class Drawer extends React.Component {
   }
 
   /**
+   * Create a new Biome to operate in the interface and show selected biomes
+   *
+   * @param {String} layerName current biome name showed and selected
+   * @param {String} szh selected sub-basin selected
+   * @param {String} ea environmental authority selected
+   * @param {Array} strategiesData strategies data to list
+   */
+  renderBiomes = (layerName, szh, ea, strategiesData) => {
+    const { selectedBiomes } = this.state;
+    if (layerName && szh && ea && strategiesData) {
+      const tempBiome = selectedBiomes.filter(
+        element => (element.biome === layerName
+          && element.ea === ea && element.szh === szh),
+      );
+      if (tempBiome.length === 0) {
+        this.addSelectedBiome(layerName, ea, szh, strategiesData);
+      }
+    } return true;
+  }
+
+  /**
    * Function to render graphs when necessary
    */
-  renderSelector = (data, total) => {
-    const { layerName } = this.props;
-    const {
-      color, selectedArea, graphStatus: { DotsWhere },
-    } = this.state;
-    if (total !== 0) {
-      return (
-        <ParentSize className="nocolor">
-          {parent => (
-            parent.width && parent.height && (
-              <PopMenu
-                controlValues={[layerName, selectedArea, DotsWhere]}
-                color={color}
-                loadStrategies={this.loadStrategies}
-                showDotsGraph={this.showDotsGraph}
-                downloadPlan={this.downloadPlan}
-                data={data}
-              />
-            )
-          )}
-        </ParentSize>
-      );
-    }
-    return null;
+  renderSelector = () => {
+    const { selectedArea, graphStatus: { DotsWhere } } = this.state;
+    const { currentBiome, impactedBiomesDecisionTree } = this.props;
+
+    const data = currentBiome !== null
+      ? { [currentBiome]: impactedBiomesDecisionTree[currentBiome] } : {};
+    return (
+      <ParentSize className="nocolor">
+        {parent => (
+          parent.width && parent.height && (
+            <PopMenu
+              total={selectedArea}
+              visibleGraph={DotsWhere}
+              loadStrategies={this.loadStrategies}
+              showDotsGraph={this.showDotsGraph}
+              downloadPlan={this.downloadPlan}
+              data={data}
+            />
+          )
+        )}
+      </ParentSize>
+    );
   }
 
   /**
    * Function to render graphs when necessary
    */
   renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
+    const { updateCurrentBiome } = this.props;
     const { graphStatus: { DotsWhere } } = this.state;
-    const { updateActiveBiome } = this.props;
     if (graph === 'Dots' && DotsWhere) {
       return (
         <ParentSize className="nocolor">
@@ -529,8 +483,7 @@ class Drawer extends React.Component {
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
-                  this.setState({ szh: null, ea: null, strategiesData: [] });
-                  return updateActiveBiome(name);
+                  updateCurrentBiome(name);
                 }}
               />
             )
@@ -543,11 +496,11 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, layerName, biomeData,
+      areaName, back, basinName, colors, classes,
       subAreaName, biomesImpacted,
     } = this.props;
     const {
-      whereData, totals, selectedArea, totalACompensar, szh, ea, tableError, confirmModal,
+      whereData, totals, selectedArea, szh, ea, tableError, confirmModal, currentBiome,
       strategiesData, selectedBiomes, allAvailableBiomes, controlAddingBiomes, allBiomes,
     } = this.state;
 
@@ -652,14 +605,14 @@ class Drawer extends React.Component {
                     {selectedArea}
                   </h4>
                 </div>
-                {this.renderGraphs(whereData, layerName, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector(this.cleanBiomeFilterList(biomeData), totalACompensar)}
+                {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
+                {this.renderSelector()}
                 {tableError && (
                   <div className="tableError">
                     {tableError}
                   </div>
                 )}
-                {this.renderBiomes(layerName, szh, ea, strategiesData)}
+                {this.renderBiomes('', szh, ea, strategiesData)}
                 {this.showBiomes(selectedBiomes)}
               </div>
             ),
@@ -676,16 +629,15 @@ Drawer.propTypes = {
   basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
-  layerName: PropTypes.string,
-  // Data from elastic result for "donde compensar sogamoso"
-  biomeData: PropTypes.object,
+  currentBiome: PropTypes.string,
   biomesImpacted: PropTypes.array,
   subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
-  updateActiveBiome: PropTypes.func,
+  updateCurrentBiome: PropTypes.func,
   companyId: PropTypes.number.isRequired,
   projectId: PropTypes.number.isRequired,
   reloadProject: PropTypes.func.isRequired,
+  impactedBiomesDecisionTree: PropTypes.object,
 };
 
 Drawer.defaultProps = {
@@ -693,11 +645,11 @@ Drawer.defaultProps = {
   back: () => {},
   basinName: '',
   colors: ['#eabc47'],
-  biomeData: {},
+  currentBiome: '',
   biomesImpacted: [],
-  updateActiveBiome: () => {},
-  layerName: '',
+  updateCurrentBiome: () => {},
   subAreaName: '',
+  impactedBiomesDecisionTree: {},
 };
 
 export default withStyles(styles)(Drawer);
