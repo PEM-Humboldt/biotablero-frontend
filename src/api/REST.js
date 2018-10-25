@@ -107,17 +107,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByBiomeArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_biomas/_search/template?filter_path=aggregations
-    // .areas.buckets.key,aggregations.areas.buckets.area,aggregations
-    // .areas.buckets.fc.hits.hits._source,aggregations.total_area',
-    //   {
-    //     id: 'carByBiomaArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByBiomeArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/generalBiome`);
   }
 
   /**
