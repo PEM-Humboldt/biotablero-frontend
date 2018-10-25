@@ -41,7 +41,11 @@ class PopMenu extends Component {
     const { id_biome: idBiome, id_subzone: idSubzone, id_ea: idEA } = valsArray[0];
     const { loadStrategies, showDotsGraph } = this.props;
 
-    loadStrategies(idBiome, idSubzone, idEA);
+    loadStrategies({
+      biome: { name: biome, id: idBiome },
+      subBasin: { name: subBasin, id: idSubzone },
+      ea: { name: ea, id: idEA },
+    });
     showDotsGraph(false);
   }
 

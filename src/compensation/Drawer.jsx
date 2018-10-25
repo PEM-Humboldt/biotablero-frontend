@@ -104,6 +104,7 @@ class Drawer extends React.Component {
       controlAddingBiomes: false,
       biomesDraft: [],
       confirmModal: false,
+      selectedStrategyFields: null,
     };
   }
 
@@ -258,10 +259,26 @@ class Drawer extends React.Component {
    * @param {Number} idSubzone sub-basin id
    * @param {String} idEA environmental authority id
    */
-  loadStrategies = (idBiome, idSubzone, idEA) => {
-    RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA);
-    // TODO: Load strategies layers and table :)
+  loadStrategies = ({
+    biome: { name: biomeName, id: idBiome },
+    subBasin: { name: subBasinName, id: idSubzone },
+    ea: { name: eaName, id: idEA },
+  }) => {
+    RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
+      .then(({ strategies, geometry }) => (
+        this.setState({
+          selectedStrategyFields: {
+            biome: { name: biomeName, id: idBiome },
+            subBasin: { name: subBasinName, id: idSubzone },
+            ea: { name: eaName, id: idEA },
+          },
+        })
+      ));
   }
+
+  /** ***************************** */
+  /** RELATED WITH PROJECT CREATION */
+  /** ***************************** */
 
   /**
    * Add a biome to the project
