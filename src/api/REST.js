@@ -76,16 +76,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByDistritosArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_distritos/_search/template?filter_path=aggregations
-    // .areas.buckets,aggregations.total_area',
-    //   {
-    //     id: 'carByDistritoArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByDistritosArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/bioticUnit`);
   }
 
   /**

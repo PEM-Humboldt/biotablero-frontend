@@ -8,7 +8,6 @@ import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import { ParentSize } from '@vx/responsive';
 
-import ElasticAPI from '../api/elastic';
 import RestAPI from '../api/REST';
 import GraphLoader from '../GraphLoader';
 import TabContainer from '../TabContainer';
@@ -72,7 +71,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    ElasticAPI.requestCarByDistritosArea('CORPOBOYACA')
+    RestAPI.requestCarByDistritosArea('CORPOBOYACA')
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
