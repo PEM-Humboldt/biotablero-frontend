@@ -96,16 +96,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByFCArea(idCAR) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_biomas/_search/template?filter_path=aggregations
-    // .areas.buckets,aggregations.total_area',
-    //   {
-    //     id: 'carByFCArea',
-    //     params: { id_car: idCAR },
-    //   },
-    // );
-    console.log('requestCarByFCArea', idCAR);
-    return null;
+    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/compensationFactor`);
   }
 
   /**
