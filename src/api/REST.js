@@ -112,6 +112,24 @@ class RestAPI {
   }
 
   /**
+   * Request the project impacted biomes
+   *
+   * @param {String} companyId id company to request
+   * @param {String} projectId id project to request
+   */
+  static requestImpactedBiomesDecisionTree(companyId, projectId) {
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/decisionTree`);
+  }
+
+  static requestAvailableStrategies(biomeId, subzoneId, eaId) {
+    return RestAPI.makePostRequest('strategies/biomeSubzoneEA', {
+      id_biome: biomeId,
+      id_subzone: subzoneId,
+      id_ea: eaId,
+    });
+  }
+
+  /**
    * Request the project information (props and geometry)
    *
    * @param {String} companyId id company to request
