@@ -8,9 +8,9 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import Modal from '@material-ui/core/Modal';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import CustomInputNumber from './CustomInputVaNumber';
 import SaveIcon from '@material-ui/icons/FileDownload';
 
+import CustomInputNumber from './CustomInputNumber';
 import GraphLoader from '../GraphLoader';
 import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
