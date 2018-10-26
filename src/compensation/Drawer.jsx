@@ -1,6 +1,4 @@
 /** eslint verified */
-// FEATURE: Create the shopping cart list, saving header as guide element,
-// saving values typed for each row by biome
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -203,19 +201,6 @@ class Drawer extends React.Component {
    * @param {Boolean} value graph state: true = on / false = off
    *
    */
-  showDotsGraph = (value) => {
-    this.setState({
-      graphStatus: {
-        DotsWhere: value,
-      },
-    });
-  }
-
-  /**
-   * Switch between on / off the DotsGraph
-   * @param {Boolean} value graph state: true = on / false = off
-   *
-   */
   downloadPlan = () => {
     // TODO: Implement plan download, with tolerance =0
   }
@@ -243,42 +228,9 @@ class Drawer extends React.Component {
     });
   }
 
-  /**
-   * Set an error message above the compensations table
-   *
-   * @param {String} message message to set
-   */
-  reportTableError = (message) => {
-    this.setState({ tableError: message });
-  }
-
-  /**
-   * Request the available strategies for the given parameters
-   *
-   * @param {Number} idBiome biome id
-   * @param {Number} idSubzone sub-basin id
-   * @param {String} idEA environmental authority id
-   */
-  loadStrategies = ({
-    biome: { name: biomeName, id: idBiome },
-    subBasin: { name: subBasinName, id: idSubzone },
-    ea: { name: eaName, id: idEA },
-  }) => {
-    RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
-      .then(({ strategies, geometry }) => (
-        this.setState({
-          selectedStrategyFields: {
-            biome: { name: biomeName, id: idBiome },
-            subBasin: { name: subBasinName, id: idSubzone },
-            ea: { name: eaName, id: idEA },
-          },
-        })
-      ));
-  }
-
-  /** ***************************** */
-  /** RELATED WITH PROJECT CREATION */
-  /** ***************************** */
+  /** ******************************************* */
+  /** RELATED WITH PROJECT CREATION AND FIRST TAB */
+  /** ******************************************* */
 
   /**
    * Add a biome to the project
@@ -429,6 +381,56 @@ class Drawer extends React.Component {
     }
 
     return tableRows;
+  }
+
+  /** ****************************************** */
+  /** HANDLERS TO DISPLAY ELEMENTS ON SECOND TAB */
+  /** ****************************************** */
+
+  /**
+   * Show or hide the DotsGraph
+   * @param {Boolean} value graph state: true = show / false = hide
+   *
+   */
+  showDotsGraph = (value) => {
+    this.setState({
+      graphStatus: {
+        DotsWhere: value,
+      },
+    });
+  }
+
+  /**
+   * Set an error message above the compensations table
+   *
+   * @param {String} message message to set
+   */
+  reportTableError = (message) => {
+    this.setState({ tableError: message });
+  }
+
+  /**
+   * Request the available strategies for the given parameters
+   *
+   * @param {Number} idBiome biome id
+   * @param {Number} idSubzone sub-basin id
+   * @param {String} idEA environmental authority id
+   */
+  loadStrategies = ({
+    biome: { name: biomeName, id: idBiome },
+    subBasin: { name: subBasinName, id: idSubzone },
+    ea: { name: eaName, id: idEA },
+  }) => {
+    RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
+      .then(({ strategies, geometry }) => (
+        this.setState({
+          selectedStrategyFields: {
+            biome: { name: biomeName, id: idBiome },
+            subBasin: { name: subBasinName, id: idSubzone },
+            ea: { name: eaName, id: idEA },
+          },
+        })
+      ));
   }
 
   /**
