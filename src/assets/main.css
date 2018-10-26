@@ -1817,6 +1817,19 @@ tspan, .vx-axis-label {
 	cursor: pointer;
 	color: #e84a5f;
 	text-align: right;
+	text-decoration: underline;
+	background-color: transparent;
+	border: none;
+	float: right;
+}
+
+.loginbtn.disabled {
+	margin-top: 10px;
+	outline: none;
+	cursor: pointer;
+	color: #aaaa50;
+	text-align: right;
+	text-decoration: none;
 	background-color: transparent;
 	border: none;
 	float: right;

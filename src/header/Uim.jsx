@@ -1,9 +1,9 @@
 /** eslint verified */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
 import Login from '../Login';
+import Logout from '../Logout';
 
 /* Uim: User Interface Manager */
 class Uim extends Component {
@@ -11,21 +11,38 @@ class Uim extends Component {
     super(props);
     this.state = {
       openModal: false,
+      user: null,
     };
   }
 
   handleCloseModal = () => {
     const { openModal } = this.state;
     this.setState({ openModal: !openModal });
-    console.log(this.state);
+  };
+
+  setUser = (user) => {
+    user.then((res) => {
+      this.setState({ user: res });
+      this.handleCloseModal();
+      return true;
+    });
+    return false;
+  };
+
+  removeUser = (user) => {
+    if (user) {
+      this.setState({ user: null });
+      this.handleCloseModal();
+      return true;
+    }
+    return false;
   };
 
   render() {
-    const { userLogged } = this.props;
-    const { openModal } = this.state;
+    const { openModal, user } = this.state;
     return (
       <div>
-        { userLogged ? ( // TODO: Implementing user identification
+        { user ? (
           <a
             href="https://www.grupoenergiabogota.com/"
             rel="noopener noreferrer"
@@ -46,7 +63,8 @@ class Uim extends Component {
             style={{ fontSize: '40px' }}
           />
         </button>
-        {openModal && (
+        {user
+          ? (openModal && (
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -54,20 +72,29 @@ class Uim extends Component {
             onClose={this.handleCloseModal}
             disableAutoFocus
           >
-            <Login openModalControl={this.handleCloseModal} />
-          </Modal>)
+            <Logout
+              user={user}
+              openModalControl={this.handleCloseModal}
+              removeUser={this.removeUser}
+            />
+          </Modal>))
+          : (openModal && (
+          <Modal
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+            open={openModal}
+            onClose={this.handleCloseModal}
+            disableAutoFocus
+          >
+            <Login
+              openModalControl={this.handleCloseModal}
+              setUser={this.setUser}
+            />
+          </Modal>))
         }
       </div>
     );
   }
 }
-
-Uim.propTypes = {
-  userLogged: PropTypes.object,
-};
-
-Uim.defaultProps = {
-  userLogged: null,
-};
 
 export default Uim;

@@ -3,6 +3,52 @@ import axios from 'axios';
 
 class RestAPI {
   /**
+   * Request the user information
+   *
+   * @param {String} username name in database
+   * @param {String} password password in database
+   */
+  static requestUser(username, password) {
+    // if (username === 'geb') {
+    //   return {
+    //     username: `${username}`,
+    //     name: 'Grupo Energía Bogotá',
+    //   };
+    // }
+    // if (username === 'iavh') {
+    //   return {
+    //     username: `${username}`,
+    //     name: 'IAvH',
+    //   };
+    // }
+    // return null;
+    return RestAPI.makePostRequest(
+      'users/login',
+      {
+        username: `${username}`,
+        password: `${password}`,
+      },
+    );
+  }
+  /**
+   * Send request to Logout an user
+   *
+   * @param {String} username name in database
+   * @param {String} password password in database
+   */
+  // TODO: Implementing this functionality for log out an user
+
+  static requestUserLogout(username, password) {
+    return RestAPI.makePostRequest(
+      'users/login',
+      {
+        username: `${username}`,
+        password: `${password}`,
+      },
+    );
+  }
+
+  /**
    * TODO: Request the template with information about 'donde compensar'
    * for an specific project ID per biome
    *
