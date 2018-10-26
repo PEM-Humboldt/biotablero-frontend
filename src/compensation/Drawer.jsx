@@ -7,6 +7,9 @@ import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import Modal from '@material-ui/core/Modal';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import CustomInputNumber from './CustomInputVaNumber';
+import SaveIcon from '@material-ui/icons/FileDownload';
 
 import GraphLoader from '../GraphLoader';
 import PopMenu from './PopMenu';
@@ -94,15 +97,16 @@ class Drawer extends React.Component {
         affected_percentage: 0,
         total_compensate: 0,
       },
-      strategiesData: [],
       selectedArea: 0,
       tableError: '',
       graphStatus: { DotsWhere: true },
-      allAvailableBiomes: null,
+      allBiomes: [],
       controlAddingBiomes: false,
       biomesDraft: [],
       confirmModal: false,
-      selectedStrategyFields: null,
+      selectedStrategyFields: {},
+      allStrategies: [],
+      selectedStrategies: [],
     };
   }
 
@@ -176,56 +180,12 @@ class Drawer extends React.Component {
   // TODO: Create function saveStrategies(idBiome, idEA, idSZH, idStrategy, areaSelected)
 
   /**
-   * Hold and show Biomes previously added to the plan
-   *
-   * @param {Array} selectedBiomes biomes selected for this compensation plan
-   */
-  showBiomes = selectedBiomes => Object.values(selectedBiomes).map((element, i) => (
-    <ParentSize key={i} className="nocolor">
-      {parent => (
-        parent.width && parent.height && (
-          <SelectedBiome
-            biome={element.biome}
-            szh={element.szh}
-            ea={element.ea}
-            data={element.strategies}
-            operateSelectedAreas={this.operateSelectedAreas}
-            deleteSelectedBiome={this.deleteSelectedBiome}
-            saveStrategies={this.saveStrategies}
-          />))}
-    </ParentSize>
-  ))
-
-  /**
    * Switch between on / off the DotsGraph
    * @param {Boolean} value graph state: true = on / false = off
    *
    */
   downloadPlan = () => {
     // TODO: Implement plan download, with tolerance =0
-  }
-
-  /**
-   * Add or subtract a value to selectedArea
-   *
-   * @param {number} value amount to operate in the selectedArea
-   * @param {number} operator indicates the operation to realize with the value
-   */
-  operateSelectedAreas = (value, operator) => {
-    this.setState((prevState) => {
-      let { selectedArea } = prevState;
-      switch (operator) {
-        case '+':
-          selectedArea += value;
-          break;
-        case '-':
-          selectedArea -= value;
-          break;
-        default:
-          break;
-      }
-      return { selectedArea, tableError: '' };
-    });
   }
 
   /** ******************************************* */
@@ -429,33 +389,137 @@ class Drawer extends React.Component {
             subBasin: { name: subBasinName, id: idSubzone },
             ea: { name: eaName, id: idEA },
           },
+          allStrategies: strategies,
         })
       ));
   }
 
+  /** ********** */
+  /** STRATEGIES */
+  /** ********** */
+
   /**
-   * Create a new Biome to operate in the interface and show selected biomes
-   *
-   * @param {String} layerName current biome name showed and selected
-   * @param {String} szh selected sub-basin selected
-   * @param {String} ea environmental authority selected
-   * @param {Array} strategiesData strategies data to list
+   * Display strategies options for the selected parameters in selectedStrategyFields state
    */
-  renderBiomes = (layerName, szh, ea, strategiesData) => {
-    const { selectedBiomes } = this.state;
-    if (layerName && szh && ea && strategiesData) {
-      const tempBiome = selectedBiomes.filter(
-        element => (element.biome === layerName
-          && element.ea === ea && element.szh === szh),
-      );
-      if (tempBiome.length === 0) {
-        this.addSelectedBiome(layerName, ea, szh, strategiesData);
-      }
-    } return true;
+  renderAvailableStrategies = () => {
+    const {
+      selectedStrategyFields: { biome, subBasin, ea },
+      allStrategies,
+      tableError,
+      selectedArea,
+    } = this.state;
+    const tableRows = allStrategies.map(strategy => ({
+      key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
+      values: [
+        strategy.strategy_name,
+        strategy.area_ha.toFixed(2),
+        (<CustomInputNumber
+          name={strategy.id}
+          maxValue={Number(strategy.area_ha.toFixed(2))}
+          operateArea={this.operateArea}
+          reportError={this.reportTableError}
+        />),
+      ],
+    }));
+    return biome && subBasin && ea && (
+      <div className="complist">
+        <div
+          className="titecositema"
+          role="presentation"
+        >
+          <div className="titeco2">
+            <div>
+              <b className="addedBioma">{biome.name}</b>
+              <br />
+              <b>SZH:</b>
+              {subBasin.name}
+              <br />
+              <b>Jurisdicción:</b>
+              {ea.name}
+            </div>
+            <div>
+              <button
+                className="icongraph rotate-false"
+                type="button"
+                data-tooltip
+              >
+                <ExpandMoreIcon />
+              </button>
+            </div>
+          </div>
+        </div>
+        {tableError && (
+          <div className="tableError">
+            {tableError}
+          </div>
+        )}
+        <TableStylized
+          headers={['Estrategia', 'Héctareas', 'Agregar']}
+          rows={tableRows}
+          classTable="special"
+        />
+        {selectedArea > 0 && (
+          <button
+            className="saveStrategyButton"
+            type="button"
+          >
+            <SaveIcon className="iconsave" />
+            Guardar Estrategias de compensación
+          </button>
+        )}
+      </div>
+    );
   }
 
   /**
-   * Function to render graphs when necessary
+   * Add or subtract a value to selectedArea
+   *
+   * @param {number} value amount to operate in the selectedArea
+   * @param {number} operator indicates the operation to realize with the value
+   */
+  operateArea = (value, operator, name) => {
+    this.setState((prevState) => {
+      const state = { ...prevState };
+      switch (operator) {
+        case '+':
+          state.selectedArea += value;
+          state.selectedStrategies.push({ id: name, value });
+          break;
+        case '-':
+          state.selectedArea -= value;
+          state.selectedStrategies = state.selectedStrategies.filter(s => s.id !== name);
+          break;
+        default:
+          break;
+      }
+      state.tableError = '';
+      return state;
+    });
+  }
+
+  /**
+   * Hold and show Biomes previously added to the plan
+   *
+   * @param {Array} selectedBiomes biomes selected for this compensation plan
+   */
+  showBiomes = selectedBiomes => Object.values(selectedBiomes).map((element, i) => (
+    <ParentSize key={i} className="nocolor">
+      {parent => (
+        parent.width && parent.height && (
+          <SelectedBiome
+            biome={element.biome}
+            szh={element.szh}
+            ea={element.ea}
+            data={element.strategies}
+            operateSelectedAreas={this.operateSelectedAreas}
+            deleteSelectedBiome={this.deleteSelectedBiome}
+            saveStrategies={this.saveStrategies}
+          />))}
+    </ParentSize>
+  ))
+
+  /**
+   * Function to render szh-ea selector when there is a selected biome
    */
   renderSelector = () => {
     const { selectedArea, graphStatus: { DotsWhere } } = this.state;
@@ -515,12 +579,11 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes,
-      subAreaName, biomesImpacted,
+      areaName, back, basinName, colors, classes, subAreaName, biomesImpacted,
     } = this.props;
     const {
-      whereData, totals, selectedArea, szh, ea, tableError, confirmModal, currentBiome,
-      strategiesData, selectedBiomes, allAvailableBiomes, controlAddingBiomes, allBiomes,
+      whereData, totals, selectedArea, tableError, confirmModal, currentBiome,
+      selectedBiomes, controlAddingBiomes, allBiomes,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -569,7 +632,6 @@ class Drawer extends React.Component {
                     totals.affected_secondary, totals.affected_transformed,
                     `${totals.affected_percentage}%`, totals.total_compensate]}
                   addRows={biomesImpacted}
-                  newRow={allAvailableBiomes}
                 />
                 {controlAddingBiomes && tableRows.length > 0 && (
                   <button
@@ -631,7 +693,7 @@ class Drawer extends React.Component {
                     {tableError}
                   </div>
                 )}
-                {this.renderBiomes('', szh, ea, strategiesData)}
+                {this.renderAvailableStrategies()}
                 {this.showBiomes(selectedBiomes)}
               </div>
             ),

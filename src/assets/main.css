@@ -1725,7 +1725,7 @@ tr.row2table:nth-child(odd){
 	color: #51b4c1;
 }
 
-.backgraph, .downgraph {
+.backgraph, .downgraph, .saveStrategyButton {
   color: #2a363b;
   vertical-align: middle;
   text-align: left;
@@ -1748,7 +1748,7 @@ tr.row2table:nth-child(odd){
 	margin-right: 3px;
 }
 
-.backgraph:hover, .downgraph:hover {
+.backgraph:hover, .downgraph:hover, .saveStrategyButton:hover{
 	background-color: #fff;
 }
 
@@ -1963,7 +1963,7 @@ tspan, .vx-axis-label {
 		display: block;
 	}
 
-	.backgraph, .downgraph {
+	.backgraph, .downgraph, .saveStrategyButton {
 		width: 166px;
 	}
 	.downgraph {

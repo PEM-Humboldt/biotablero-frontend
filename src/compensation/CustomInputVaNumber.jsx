@@ -5,10 +5,10 @@ import React from 'react';
 class CustomInputNumber extends React.Component {
   constructor(props) {
     super(props);
-    this.inputRef = React.createRef();
     this.state = {
       add: true,
       inputError: false,
+      value: 0,
     };
   }
 
@@ -21,42 +21,38 @@ class CustomInputNumber extends React.Component {
     this.setState(prevState => ({
       add: !prevState.add,
       inputError: error,
+      value: action === '-' ? 0 : prevState.value,
     }));
-    if (action === '-') {
-      this.inputRef.current.value = null;
-    }
   }
 
   render() {
     const {
-      name, maxValue, operateArea, reportError, value,
+      name, maxValue, operateArea, reportError,
     } = this.props;
-    const { add, inputError } = this.state;
+    const { add, inputError, value } = this.state;
     return (
       <div>
         <input
           name={name}
-          ref={this.inputRef}
           type="text"
           placeholder="0"
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
-          defaultValue={value}
+          value={value}
+          onChange={({ target }) => this.setState({ value: Number(target.value) || 0 })}
         />
         <button
           className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
+          disabled={value <= 0}
           onClick={() => {
-            const inputValue = Number(this.inputRef.current.value);
             const action = add ? '+' : '-';
-            if (inputValue <= 0) {
-              reportError('No puede ingresar valores menores a cero');
-            } else if (inputValue <= maxValue) {
-              operateArea(inputValue, action, name);
+            if (value <= maxValue) {
+              operateArea(value, action, name);
               this.switchAction(action);
             } else if (add) {
               reportError(`No puede agregar más de ${maxValue}`);
-              this.inputRef.current.value = 0;
+              this.setState({ value: 0 });
             } else {
               operateArea(0, '-');
               this.switchAction(action, add);

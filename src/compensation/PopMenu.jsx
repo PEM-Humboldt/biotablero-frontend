@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
 import BackGraphIcon from '@material-ui/icons/Timeline';
-import DownloadIcon from '@material-ui/icons/Save';
+import DownloadIcon from '@material-ui/icons/FileDownload';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
