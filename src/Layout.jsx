@@ -9,7 +9,10 @@ const Layout = ({
   children, moduleName, showFooterLogos, userLogged,
 }) => (
   <div>
-    <Header activeModule={moduleName} userLogged={userLogged} />
+    <Header
+      activeModule={moduleName}
+      userLogged={userLogged}
+    />
     {children}
     <Footer showLogos={showFooterLogos} />
   </div>
