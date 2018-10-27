@@ -7,7 +7,6 @@ import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/FileDownload';
 
@@ -17,7 +16,7 @@ import PopMenu from './PopMenu';
 import TabContainer from '../TabContainer';
 import TableStylized from '../TableStylized';
 import NewBiomeForm from './NewBiomeForm';
-import SelectedBiome from './SelectedBiome';
+import StrategiesBox from './StrategiesBox';
 import RestAPI from '../api/REST';
 import ConfirmationModal from '../ConfirmationModal';
 
@@ -459,7 +458,7 @@ class Drawer extends React.Component {
   //   <ParentSize key={i} className="nocolor">
   //     {parent => (
   //       parent.width && parent.height && (
-  //         <SelectedBiome
+  //         <StrategiesBox
   //           biome={element.biome}
   //           szh={element.szh}
   //           ea={element.ea}
@@ -497,7 +496,7 @@ class Drawer extends React.Component {
     }));
     return biome && subBasin && ea && (
       <div className="complist">
-        <SelectedBiome
+        <StrategiesBox
           biome={biome.name}
           ea={ea.name}
           subBasin={subBasin.name}

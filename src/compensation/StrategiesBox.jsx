@@ -1,10 +1,8 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import EraseIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TableStylized from '../TableStylized';
-import CustomInputNumber from './CustomInputNumber';
 
 class SelectedBiome extends Component {
   constructor(props) {
@@ -95,14 +93,13 @@ class SelectedBiome extends Component {
             </div>
           </div>
         </div>
-        {showTable && (
-          <TableStylized
-            headers={tableHeaders}
-            rows={strategies}
-            remarkedElement={elementSuggested}
-            classTable="special"
-          />
-        )}
+        <TableStylized
+          headers={tableHeaders}
+          rows={strategies}
+          remarkedElement={elementSuggested}
+          classTable="special"
+          hide={!showTable}
+        />
       </div>
     );
   }
