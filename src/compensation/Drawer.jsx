@@ -6,7 +6,6 @@ import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
-import Modal from '@material-ui/core/Modal';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SaveIcon from '@material-ui/icons/FileDownload';
 
@@ -18,6 +17,7 @@ import TableStylized from '../TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import SelectedBiome from './SelectedBiome';
 import RestAPI from '../api/REST';
+import ConfirmationModal from '../ConfirmationModal';
 
 const styles = () => ({
   root: {
@@ -88,6 +88,7 @@ class Drawer extends React.Component {
     super(props);
     this.state = {
       selectedBiomes: [],
+      // 'Que-Cuanto' control states
       whereData: [],
       totals: {
         name: 'TOTALES (CUANTO)',
@@ -97,13 +98,14 @@ class Drawer extends React.Component {
         affected_percentage: 0,
         total_compensate: 0,
       },
-      selectedArea: 0,
-      tableError: '',
-      graphStatus: { DotsWhere: true },
       allBiomes: [],
       controlAddingBiomes: false,
       biomesDraft: [],
-      confirmModal: false,
+      addBiomesToProjectModal: false,
+      // 'Donde-Como' control states
+      selectedArea: 0,
+      tableError: '',
+      graphStatus: { DotsWhere: true },
       selectedStrategyFields: {},
       allStrategies: [],
       selectedStrategies: [],
@@ -281,7 +283,7 @@ class Drawer extends React.Component {
       .then(() => {
         this.setState({
           biomesDraft: [],
-          confirmModal: false,
+          addBiomesToProjectModal: false,
           controlAddingBiomes: false,
         });
         reloadProject(projectId);
@@ -582,7 +584,7 @@ class Drawer extends React.Component {
       areaName, back, basinName, colors, classes, subAreaName, biomesImpacted,
     } = this.props;
     const {
-      whereData, totals, selectedArea, tableError, confirmModal, currentBiome,
+      whereData, totals, selectedArea, tableError, addBiomesToProjectModal, currentBiome,
       selectedBiomes, controlAddingBiomes, allBiomes,
     } = this.state;
 
@@ -637,35 +639,20 @@ class Drawer extends React.Component {
                   <button
                     type="button"
                     className="sendCreateBioemes"
-                    onClick={() => { this.setState({ confirmModal: true }); }}
+                    onClick={() => { this.setState({ addBiomesToProjectModal: true }); }}
                     data-tooltip
                     title="Guardar biomas en proyecto"
                   >
                     Guardar biomas
                   </button>
                 )}
-                <Modal
-                  aria-labelledby="simple-modal-title"
-                  aria-describedby="simple-modal-description"
-                  open={confirmModal}
-                  onClose={() => { this.setState({ confirmModal: false }); }}
-                >
-                  <div className="newProjectModal">
-                    Una vez guardados los cambios no podrá editarlos, está seguro de continuar?
-                    <button
-                      type="button"
-                      onClick={this.sendAddBiomesToProject}
-                    >
-                      Si
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => { this.setState({ confirmModal: false }); }}
-                    >
-                      No
-                    </button>
-                  </div>
-                </Modal>
+                <ConfirmationModal
+                  open={addBiomesToProjectModal}
+                  onClose={() => { this.setState({ addBiomesToProjectModal: false }); }}
+                  message="Una vez guardados los cambios no podrá editarlos, está seguro de continuar?"
+                  onContinue={this.sendAddBiomesToProject}
+                  onCancel={() => { this.setState({ addBiomesToProjectModal: false }); }}
+                />
               </div>
             ),
             (
