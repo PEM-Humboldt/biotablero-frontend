@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import EraseIcon from '@material-ui/icons/DeleteForever';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TableStylized from '../TableStylized';
-import CustomInputNumber from './CustomInputVaNumber';
+import CustomInputNumber from './CustomInputNumber';
 
 class SelectedBiome extends Component {
   constructor(props) {
