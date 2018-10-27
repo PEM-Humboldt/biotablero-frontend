@@ -575,6 +575,20 @@ class Drawer extends React.Component {
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
+                  this.setState((prevState) => {
+                    const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
+                      acc + item.value
+                    ), 0);
+                    return {
+                      biome: {},
+                      subBasin: {},
+                      ea: {},
+                      selectedStrategyFields: {},
+                      allStrategies: [],
+                      selectedArea: prevState.selectedArea - removeArea,
+                      selectedStrategies: [],
+                    };
+                  });
                   updateCurrentBiome(name);
                 }}
               />

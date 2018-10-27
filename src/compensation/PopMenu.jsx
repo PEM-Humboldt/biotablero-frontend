@@ -6,8 +6,13 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 class PopMenu extends Component {
-  static getDerivedStateFromProps(nextProps) {
-    return { biome: Object.keys(nextProps.data)[0] };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const newState = { biome: Object.keys(nextProps.data)[0] };
+    if (prevState.biome !== newState.biome) {
+      newState.subBasin = null;
+      newState.ea = null;
+    }
+    return newState;
   }
 
   constructor(props) {
