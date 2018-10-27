@@ -2,12 +2,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
+import RestAPI from './api/REST';
 
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.inputName = React.createRef();
+    this.inputPassword = React.createRef();
     this.state = {
-      email: '',
+      username: '',
       password: '',
     };
   }
@@ -18,18 +21,19 @@ class Login extends Component {
   };
 
   validateForm = () => {
-    const { email, password } = this.state;
-    return email.length > 0 && password.length > 0;
+    const { username, password } = this.state;
+    return username.length > 0 && password.length > 0;
   }
 
   recoverPassword = () => {
     // TODO: Implement this functionality
     alert('Acción no disponible');
+    return true;
   }
 
   handleChange = (event) => {
     this.setState({
-      [event.target.id]: event.target.value,
+      [event.target.id]: `${event.target.value}`,
     });
   }
 
@@ -38,7 +42,8 @@ class Login extends Component {
   }
 
   render() {
-    const { email, password } = this.state;
+    const { setUser } = this.props;
+    const { username, password } = this.state;
     return (
       <div className="login">
         <button
@@ -53,18 +58,32 @@ class Login extends Component {
         <form onSubmit={this.handleSubmit}>
           <input
             className="loginInput"
-            type="email"
+            type="text"
             placeholder="Usuario"
-            value={email}
+            id="username"
+            ref={this.inputName}
             onChange={this.handleChange}
           />
           <input
             className="loginInput"
             placeholder="Contraseña"
-            value={password}
+            id="password"
+            ref={this.inputPassword}
             onChange={this.handleChange}
             type="password"
           />
+          <button
+            className={this.validateForm() ? 'loginbtn' : 'loginbtn disabled'}
+            data-tooltip
+            title="Ingresar"
+            disabled={!this.validateForm()}
+            type="submit"
+            onClick={() => {
+              setUser(RestAPI.requestUser(username, password).then(res => res));
+            }}
+          >
+            Ingresar
+          </button>
           <button
             className="recoverbtn"
             onClick={() => this.recoverPassword()}
@@ -74,16 +93,6 @@ class Login extends Component {
           >
             Recuperar contraseña
           </button>
-          <br />
-          <button
-            className="loginbtn"
-            data-tooltip
-            title="Ingresar"
-            disabled={!this.validateForm()}
-            type="submit"
-          >
-            Ingresar
-          </button>
         </form>
       </div>
     );
@@ -92,10 +101,12 @@ class Login extends Component {
 
 Login.propTypes = {
   openModalControl: PropTypes.func,
+  setUser: PropTypes.func,
 };
 
 Login.defaultProps = {
   openModalControl: () => {},
+  setUser: () => {},
 };
 
 export default Login;

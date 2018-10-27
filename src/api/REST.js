@@ -2,6 +2,38 @@
 import axios from 'axios';
 
 class RestAPI {
+  /**
+   * Request the user information
+   *
+   * @param {String} username name in database
+   * @param {String} password password in database
+   */
+  static requestUser(username, password) {
+    return RestAPI.makePostRequest(
+      'users/login',
+      {
+        username: `${username}`,
+        password: `${password}`,
+      },
+    );
+  }
+  /**
+   * Send request to Logout an user
+   *
+   * @param {String} username name in database
+   * @param {String} password password in database
+   */
+  // TODO: Implementing this functionality for log out a user
+
+  static requestUserLogout(username, password) {
+    return RestAPI.makePostRequest(
+      'users/login',
+      {
+        username: `${username}`,
+        password: `${password}`,
+      },
+    );
+  }
 
   /**
    * TODO: Request the template to load a given biome by hydrographical subzone.
