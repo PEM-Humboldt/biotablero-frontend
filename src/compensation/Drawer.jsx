@@ -497,41 +497,18 @@ class Drawer extends React.Component {
     }));
     return biome && subBasin && ea && (
       <div className="complist">
-        <div
-          className="titecositema"
-          role="presentation"
-        >
-          <div className="titeco2">
-            <div>
-              <b className="addedBioma">{biome.name}</b>
-              <br />
-              <b>SZH:</b>
-              {subBasin.name}
-              <br />
-              <b>Jurisdicción:</b>
-              {ea.name}
-            </div>
-            <div>
-              <button
-                className="icongraph rotate-false"
-                type="button"
-                data-tooltip
-              >
-                <ExpandMoreIcon />
-              </button>
-            </div>
-          </div>
-        </div>
+        <SelectedBiome
+          biome={biome.name}
+          ea={ea.name}
+          subBasin={subBasin.name}
+          area={selectedArea}
+          strategies={tableRows}
+        />
         {tableError && (
           <div className="tableError">
             {tableError}
           </div>
         )}
-        <TableStylized
-          headers={['Estrategia', 'Héctareas', 'Agregar']}
-          rows={tableRows}
-          classTable="special"
-        />
         {selectedArea > 0 && (
           <button
             className="saveStrategyButton"

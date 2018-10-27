@@ -25,8 +25,7 @@ const TableStylized = ({
               {row.values.map((element, i) => (
                 <td key={`row-${row.key}-${i}`}>
                   {
-                    (remarkedElement && (remarkedElement === element))
-                      ? <b>{element}</b> : element
+                    (remarkedElement === element) ? <b>{element}</b> : element
                   }
                 </td>
               ))}
