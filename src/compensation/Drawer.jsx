@@ -480,6 +480,7 @@ class Drawer extends React.Component {
       allStrategies,
       tableError,
       selectedArea,
+      saveStrategiesModal,
     } = this.state;
     const tableRows = allStrategies.map(strategy => ({
       key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
@@ -541,6 +542,13 @@ class Drawer extends React.Component {
             Guardar Estrategias de compensación
           </button>
         )}
+        <ConfirmationModal
+          open={saveStrategiesModal}
+          onClose={() => { this.setState({ saveStrategiesModal: false }); }}
+          message={'Una vez guardadas estas estrategias de compensación no podrán editarse ni eliminarse. \n Seguro que desea continuar?'}
+          onContinue={this.saveStrategies}
+          onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
+        />
       </div>
     );
   }
@@ -608,7 +616,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, currentBiome,
-      controlAddingBiomes, allBiomes, savedStrategies, saveStrategiesModal,
+      controlAddingBiomes, allBiomes, savedStrategies,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -715,13 +723,6 @@ class Drawer extends React.Component {
                   </div>
                 )}
                 {this.renderAvailableStrategies()}
-                <ConfirmationModal
-                  open={saveStrategiesModal}
-                  onClose={() => { this.setState({ saveStrategiesModal: false }); }}
-                  message="Una vez guardadas estas estrategias de compensación no podrán editarse ni eliminarse. \n Seguro que desea continuar?"
-                  onContinue={this.saveStrategies}
-                  onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
-                />
                 {/* {this.showBiomes(selectedBiomes)} */}
               </div>
             ),

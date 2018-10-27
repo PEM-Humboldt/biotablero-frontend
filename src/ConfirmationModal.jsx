@@ -12,7 +12,9 @@ const ConfirmationModal = ({
     onClose={onClose}
   >
     <div className="newProjectModal">
-      {message}
+      <div>
+        {message}
+      </div>
       <button
         type="button"
         onClick={onContinue}
