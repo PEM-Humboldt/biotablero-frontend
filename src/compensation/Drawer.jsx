@@ -2,12 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import QueIcon from '@material-ui/icons/LiveHelp';
 import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import SaveIcon from '@material-ui/icons/FileDownload';
+import SaveIcon from '@material-ui/icons/Save';
+import DownloadIcon from '@material-ui/icons/FileDownload';
 
 import CustomInputNumber from './CustomInputNumber';
 import GraphLoader from '../GraphLoader';
@@ -87,7 +89,6 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedBiomes: [],
       // 'Que-Cuanto' control states
       whereData: [],
       totals: {
@@ -109,6 +110,8 @@ class Drawer extends React.Component {
       selectedStrategyFields: {},
       allStrategies: [],
       selectedStrategies: [],
+      saveStrategies: false,
+      savedStrategies: [],
     };
   }
 
@@ -177,17 +180,6 @@ class Drawer extends React.Component {
       }
     ));
     this.showDotsGraph(false);
-  }
-
-  // TODO: Create function saveStrategies(idBiome, idEA, idSZH, idStrategy, areaSelected)
-
-  /**
-   * Switch between on / off the DotsGraph
-   * @param {Boolean} value graph state: true = on / false = off
-   *
-   */
-  downloadPlan = () => {
-    // TODO: Implement plan download, with tolerance =0
   }
 
   /** ******************************************* */
@@ -464,6 +456,7 @@ class Drawer extends React.Component {
           <button
             className="saveStrategyButton"
             type="button"
+            onClick={() => { this.setState({ saveStrategiesModal: true }); }}
           >
             <SaveIcon className="iconsave" />
             Guardar Estrategias de compensación
@@ -478,18 +471,19 @@ class Drawer extends React.Component {
    *
    * @param {number} value amount to operate in the selectedArea
    * @param {number} operator indicates the operation to realize with the value
+   * @param {Number} id strategy id that is being added / removed
    */
-  operateArea = (value, operator, name) => {
+  operateArea = (value, operator, id) => {
     this.setState((prevState) => {
       const state = { ...prevState };
       switch (operator) {
         case '+':
           state.selectedArea += value;
-          state.selectedStrategies.push({ id: name, value });
+          state.selectedStrategies.push({ id, value });
           break;
         case '-':
           state.selectedArea -= value;
-          state.selectedStrategies = state.selectedStrategies.filter(s => s.id !== name);
+          state.selectedStrategies = state.selectedStrategies.filter(s => s.id !== id);
           break;
         default:
           break;
@@ -500,31 +494,62 @@ class Drawer extends React.Component {
   }
 
   /**
-   * Hold and show Biomes previously added to the plan
-   *
-   * @param {Array} selectedBiomes biomes selected for this compensation plan
+   * Save to backend the selected strategies
    */
-  showBiomes = selectedBiomes => Object.values(selectedBiomes).map((element, i) => (
-    <ParentSize key={i} className="nocolor">
-      {parent => (
-        parent.width && parent.height && (
-          <SelectedBiome
-            biome={element.biome}
-            szh={element.szh}
-            ea={element.ea}
-            data={element.strategies}
-            operateSelectedAreas={this.operateSelectedAreas}
-            deleteSelectedBiome={this.deleteSelectedBiome}
-            saveStrategies={this.saveStrategies}
-          />))}
-    </ParentSize>
-  ))
+  saveStrategies = () => {
+    const { companyId, projectId } = this.props;
+    const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
+    const strategiesToSave = selectedStrategies.map(strategy => ({
+      id_biome: biome.id,
+      id_ea: ea.id,
+      id_subzone: subBasin.id,
+      id_strategy: strategy.id,
+      area: strategy.value,
+      id_user: 1, // TODO: replace with logged user id
+    }));
+    RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
+      .then(() => {
+        this.setState({
+          saveStrategiesModal: false,
+          savedStrategies: strategiesToSave,
+        });
+      });
+  }
+
+  /**
+   * get the url to download the strategies saved in the current project
+   */
+  downloadPlanUrl = () => {
+    const { companyId, projectId } = this.props;
+    return RestAPI.downloadProjectStrategiesUrl(companyId, projectId);
+  }
+
+  // /**
+  //  * Hold and show Biomes previously added to the plan
+  //  *
+  //  * @param {Array} selectedBiomes biomes selected for this compensation plan
+  //  */
+  // showBiomes = selectedBiomes => Object.values(selectedBiomes).map((element, i) => (
+  //   <ParentSize key={i} className="nocolor">
+  //     {parent => (
+  //       parent.width && parent.height && (
+  //         <SelectedBiome
+  //           biome={element.biome}
+  //           szh={element.szh}
+  //           ea={element.ea}
+  //           data={element.strategies}
+  //           operateSelectedAreas={this.operateSelectedAreas}
+  //           deleteSelectedBiome={this.deleteSelectedBiome}
+  //           saveStrategies={this.saveStrategies}
+  //         />))}
+  //   </ParentSize>
+  // ))
 
   /**
    * Function to render szh-ea selector when there is a selected biome
    */
   renderSelector = () => {
-    const { selectedArea, graphStatus: { DotsWhere } } = this.state;
+    const { graphStatus: { DotsWhere } } = this.state;
     const { currentBiome, impactedBiomesDecisionTree } = this.props;
 
     const data = currentBiome !== null
@@ -534,11 +559,9 @@ class Drawer extends React.Component {
         {parent => (
           parent.width && parent.height && (
             <PopMenu
-              total={selectedArea}
               visibleGraph={DotsWhere}
               loadStrategies={this.loadStrategies}
               showDotsGraph={this.showDotsGraph}
-              downloadPlan={this.downloadPlan}
               data={data}
             />
           )
@@ -585,7 +608,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, currentBiome,
-      selectedBiomes, controlAddingBiomes, allBiomes,
+      controlAddingBiomes, allBiomes, savedStrategies, saveStrategiesModal,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -638,7 +661,7 @@ class Drawer extends React.Component {
                 {controlAddingBiomes && tableRows.length > 0 && (
                   <button
                     type="button"
-                    className="sendCreateBioemes"
+                    className="sendCreateBiomes"
                     onClick={() => { this.setState({ addBiomesToProjectModal: true }); }}
                     data-tooltip
                     title="Guardar biomas en proyecto"
@@ -673,6 +696,17 @@ class Drawer extends React.Component {
                     {selectedArea}
                   </h4>
                 </div>
+                { savedStrategies.length > 0 && (
+                  <Button
+                    className="downgraph"
+                    id="downloadStrategies"
+                    type="button"
+                    href={this.downloadPlanUrl()}
+                  >
+                    <DownloadIcon className="icondown" />
+                    {'Descargar plan'}
+                  </Button>
+                )}
                 {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
                 {this.renderSelector()}
                 {tableError && (
@@ -681,7 +715,14 @@ class Drawer extends React.Component {
                   </div>
                 )}
                 {this.renderAvailableStrategies()}
-                {this.showBiomes(selectedBiomes)}
+                <ConfirmationModal
+                  open={saveStrategiesModal}
+                  onClose={() => { this.setState({ saveStrategiesModal: false }); }}
+                  message="Una vez guardadas estas estrategias de compensación no podrán editarse ni eliminarse. \n Seguro que desea continuar?"
+                  onContinue={this.saveStrategies}
+                  onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
+                />
+                {/* {this.showBiomes(selectedBiomes)} */}
               </div>
             ),
           ]}

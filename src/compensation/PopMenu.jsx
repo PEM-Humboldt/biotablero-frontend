@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
 import BackGraphIcon from '@material-ui/icons/Timeline';
-import DownloadIcon from '@material-ui/icons/FileDownload';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
@@ -97,7 +96,7 @@ class PopMenu extends Component {
 
   render() {
     const {
-      showDotsGraph, downloadPlan, total, visibleGraph,
+      showDotsGraph, visibleGraph,
     } = this.props;
     const { biome, subBasin } = this.state;
     return (
@@ -121,16 +120,6 @@ class PopMenu extends Component {
               {'Gráfico Biomas'}
             </button>)
           }
-          {total && (
-            <button
-              className="downgraph"
-              type="button"
-              onClick={() => downloadPlan()}
-            >
-              <DownloadIcon className="icondown" />
-              {'Descargar plan'}
-            </button>)
-          }
         </div>
       </div>
     );
@@ -138,18 +127,13 @@ class PopMenu extends Component {
 }
 
 PopMenu.propTypes = {
-  total: PropTypes.number,
-  // Data from elastic result for "donde compensar sogamoso"
-  // TODO: Implement source data changes for RestAPI
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
-  downloadPlan: PropTypes.func.isRequired,
   showDotsGraph: PropTypes.func.isRequired,
   visibleGraph: PropTypes.bool,
 };
 
 PopMenu.defaultProps = {
-  total: 0,
   visibleGraph: true,
 };
 
