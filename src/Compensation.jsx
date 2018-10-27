@@ -373,7 +373,7 @@ class Compensation extends Component {
     layers.eachLayer((layer) => {
       if (layer.feature.properties.name === name) area = layer;
     });
-    this.highlightFeature(area, 'projectBiomes');
+    if (area !== null) this.highlightFeature(area, 'projectBiomes');
   }
 
   render() {

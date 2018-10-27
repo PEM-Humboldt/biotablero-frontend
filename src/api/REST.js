@@ -217,6 +217,16 @@ class RestAPI {
   )
 
   /**
+   * Request the selected strategies for the given project
+   *
+   * @param {Numer} companyId company id
+   * @param {Number} projectId project id
+   */
+  static getSavedStrategies = (companyId, projectId) => RestAPI.makeGetRequest(
+    `companies/${companyId}/projects/${projectId}/strategies`,
+  )
+
+  /**
    * Download the strategies saved in the given project
    */
   static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.getEndpointUrl(

@@ -27,13 +27,13 @@ class CustomInputNumber extends React.Component {
 
   render() {
     const {
-      name, maxValue, operateArea, reportError,
+      name, id, maxValue, operateArea, reportError,
     } = this.props;
     const { add, inputError, value } = this.state;
     return (
       <div>
         <input
-          name={name}
+          name={id}
           type="text"
           placeholder="0"
           readOnly={!add}
@@ -48,7 +48,7 @@ class CustomInputNumber extends React.Component {
           onClick={() => {
             const action = add ? '+' : '-';
             if (value <= maxValue) {
-              operateArea(value, action, name);
+              operateArea(value, action, id, name);
               this.switchAction(action);
             } else if (add) {
               reportError(`No puede agregar más de ${maxValue}`);
@@ -66,14 +66,10 @@ class CustomInputNumber extends React.Component {
 
 CustomInputNumber.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.number,
+  id: PropTypes.string.isRequired,
   maxValue: PropTypes.number.isRequired,
   operateArea: PropTypes.func.isRequired,
   reportError: PropTypes.func.isRequired,
-};
-
-CustomInputNumber.defaultProps = {
-  value: null,
 };
 
 export default CustomInputNumber;
