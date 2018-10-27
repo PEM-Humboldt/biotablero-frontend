@@ -393,80 +393,6 @@ class Drawer extends React.Component {
   /** ********** */
 
   /**
-   * Display strategies options for the selected parameters in selectedStrategyFields state
-   */
-  renderAvailableStrategies = () => {
-    const {
-      selectedStrategyFields: { biome, subBasin, ea },
-      allStrategies,
-      tableError,
-      selectedArea,
-    } = this.state;
-    const tableRows = allStrategies.map(strategy => ({
-      key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
-      values: [
-        strategy.strategy_name,
-        strategy.area_ha.toFixed(2),
-        (<CustomInputNumber
-          name={strategy.id}
-          maxValue={Number(strategy.area_ha.toFixed(2))}
-          operateArea={this.operateArea}
-          reportError={this.reportTableError}
-        />),
-      ],
-    }));
-    return biome && subBasin && ea && (
-      <div className="complist">
-        <div
-          className="titecositema"
-          role="presentation"
-        >
-          <div className="titeco2">
-            <div>
-              <b className="addedBioma">{biome.name}</b>
-              <br />
-              <b>SZH:</b>
-              {subBasin.name}
-              <br />
-              <b>Jurisdicción:</b>
-              {ea.name}
-            </div>
-            <div>
-              <button
-                className="icongraph rotate-false"
-                type="button"
-                data-tooltip
-              >
-                <ExpandMoreIcon />
-              </button>
-            </div>
-          </div>
-        </div>
-        {tableError && (
-          <div className="tableError">
-            {tableError}
-          </div>
-        )}
-        <TableStylized
-          headers={['Estrategia', 'Héctareas', 'Agregar']}
-          rows={tableRows}
-          classTable="special"
-        />
-        {selectedArea > 0 && (
-          <button
-            className="saveStrategyButton"
-            type="button"
-            onClick={() => { this.setState({ saveStrategiesModal: true }); }}
-          >
-            <SaveIcon className="iconsave" />
-            Guardar Estrategias de compensación
-          </button>
-        )}
-      </div>
-    );
-  }
-
-  /**
    * Add or subtract a value to selectedArea
    *
    * @param {number} value amount to operate in the selectedArea
@@ -544,6 +470,80 @@ class Drawer extends React.Component {
   //         />))}
   //   </ParentSize>
   // ))
+
+  /**
+   * Display strategies options for the selected parameters in selectedStrategyFields state
+   */
+  renderAvailableStrategies = () => {
+    const {
+      selectedStrategyFields: { biome, subBasin, ea },
+      allStrategies,
+      tableError,
+      selectedArea,
+    } = this.state;
+    const tableRows = allStrategies.map(strategy => ({
+      key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
+      values: [
+        strategy.strategy_name,
+        strategy.area_ha.toFixed(2),
+        (<CustomInputNumber
+          name={strategy.id}
+          maxValue={Number(strategy.area_ha.toFixed(2))}
+          operateArea={this.operateArea}
+          reportError={this.reportTableError}
+        />),
+      ],
+    }));
+    return biome && subBasin && ea && (
+      <div className="complist">
+        <div
+          className="titecositema"
+          role="presentation"
+        >
+          <div className="titeco2">
+            <div>
+              <b className="addedBioma">{biome.name}</b>
+              <br />
+              <b>SZH:</b>
+              {subBasin.name}
+              <br />
+              <b>Jurisdicción:</b>
+              {ea.name}
+            </div>
+            <div>
+              <button
+                className="icongraph rotate-false"
+                type="button"
+                data-tooltip
+              >
+                <ExpandMoreIcon />
+              </button>
+            </div>
+          </div>
+        </div>
+        {tableError && (
+          <div className="tableError">
+            {tableError}
+          </div>
+        )}
+        <TableStylized
+          headers={['Estrategia', 'Héctareas', 'Agregar']}
+          rows={tableRows}
+          classTable="special"
+        />
+        {selectedArea > 0 && (
+          <button
+            className="saveStrategyButton"
+            type="button"
+            onClick={() => { this.setState({ saveStrategiesModal: true }); }}
+          >
+            <SaveIcon className="iconsave" />
+            Guardar Estrategias de compensación
+          </button>
+        )}
+      </div>
+    );
+  }
 
   /**
    * Function to render szh-ea selector when there is a selected biome
