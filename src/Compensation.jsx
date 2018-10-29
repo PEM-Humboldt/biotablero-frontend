@@ -273,6 +273,13 @@ class Compensation extends Component {
           <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct || 'Sin información'}`,
         ).openPopup();
         break;
+      case 'strategies':
+        area.bindPopup(
+          `<b>Estrategia:</b> ${area.feature.properties.strategy}
+          <br><b>Area:</b> ${area.feature.properties.area_ha}
+          <br><b>Estado:</b> ${area.feature.properties.area_status}`,
+        ).openPopup();
+        break;
       default:
         break;
     }
@@ -372,20 +379,57 @@ class Compensation extends Component {
   /** ******************************************* */
 
   updateCurrentBiome = (name) => {
-    const { currentBiome: prevBiome } = this.state;
-    this.setState({ currentBiome: name });
-    const { layers: { projectBiomes: { layer: layers } } } = this.state;
-    let newArea = null;
-    let oldArea = null;
-    layers.eachLayer((layer) => {
-      if (layer.feature.properties.name === name) newArea = layer;
-      if (layer.feature.properties.name === prevBiome) oldArea = layer;
+    let prevBiome = null;
+    this.setState((prevState) => {
+      prevBiome = prevState.currentBiome;
+      const newState = {
+        ...prevState,
+        currentBiome: name,
+      };
+      if (newState.layers.strategies) newState.layers.strategies.active = false;
+      newState.layers.projectBiomes.active = true;
+      return newState;
+    }, () => {
+      const { layers: { projectBiomes: { layer: layers } } } = this.state;
+      let newArea = null;
+      let oldArea = null;
+      layers.eachLayer((layer) => {
+        if (layer.feature.properties.name === name) newArea = layer;
+        if (layer.feature.properties.name === prevBiome) oldArea = layer;
+      });
+      if (newArea !== null) this.highlightFeature(newArea, 'projectBiomes');
+      else {
+        this.resetHighlight(oldArea, 'projectBiomes');
+        oldArea.closePopup();
+      }
     });
-    if (newArea !== null) this.highlightFeature(newArea, 'projectBiomes');
-    else {
-      this.resetHighlight(oldArea, 'projectBiomes');
-      oldArea.closePopup();
-    }
+  }
+
+  showStrategiesLayer = (geoJson) => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      newState.layers = {
+        ...newState.layers,
+        projectBiomes: {
+          ...newState.layers.projectBiomes,
+          active: false,
+        },
+        strategies: {
+          displayName: 'strategies',
+          active: true,
+          layer: L.geoJSON(
+            geoJson,
+            {
+              style: this.featureStyle,
+              onEachFeature: (feature, layer) => (
+                this.featureActions(feature, layer, 'strategies')
+              ),
+            },
+          ),
+        },
+      };
+      return newState;
+    });
   }
 
   render() {
@@ -491,6 +535,7 @@ class Compensation extends Component {
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}
                 reportConnError={this.reportConnError}
+                showStrategies={this.showStrategiesLayer}
               />
               )
             }
