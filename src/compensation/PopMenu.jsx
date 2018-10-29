@@ -28,8 +28,14 @@ class PopMenu extends Component {
    * Event handler when a sub-basin option is selected
    */
   handleSubBasinChange = (obj) => {
+    const { loadStrategies, showDotsGraph } = this.props;
+    const subBasin = obj ? obj.value : null;
+    if (!subBasin) {
+      showDotsGraph(true);
+      loadStrategies(null);
+    }
     this.setState({
-      subBasin: obj.value,
+      subBasin,
       ea: null,
     });
   }
@@ -38,12 +44,18 @@ class PopMenu extends Component {
    * Event handler when a CAR option is selected
    */
   handleEAChange = (obj) => {
-    const ea = obj.value;
+    const { loadStrategies, showDotsGraph } = this.props;
+    const ea = obj ? obj.value : null;
     this.setState({ ea });
+    if (!ea) {
+      showDotsGraph(true);
+      loadStrategies(null);
+      return;
+    }
+
     const { biome, subBasin } = this.state;
     const { data: { [biome]: { [subBasin]: { [ea]: valsArray } } } } = this.props;
     const { id_biome: idBiome, id_subzone: idSubzone, id_ea: idEA } = valsArray[0];
-    const { loadStrategies, showDotsGraph } = this.props;
 
     loadStrategies({
       biome: { name: biome, id: idBiome },

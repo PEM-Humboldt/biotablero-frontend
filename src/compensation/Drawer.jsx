@@ -124,7 +124,11 @@ class Drawer extends React.Component {
             controlAddingBiomes: true,
             allBiomes: biomes,
           })
-        ));
+        ))
+        .catch(() => {
+          const { reportConnError } = this.props;
+          reportConnError();
+        });
     }
     RestAPI.getSavedStrategies(companyId, projectId)
       .then((strategies) => {
@@ -153,6 +157,10 @@ class Drawer extends React.Component {
 
           return { savedStrategies, savedArea };
         });
+      })
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
       });
   }
 
@@ -344,11 +352,19 @@ class Drawer extends React.Component {
    * @param {Number} idSubzone sub-basin id
    * @param {String} idEA environmental authority id
    */
-  loadStrategies = ({
-    biome: { name: biomeName, id: idBiome },
-    subBasin: { name: subBasinName, id: idSubzone },
-    ea: { name: eaName, id: idEA },
-  }) => {
+  loadStrategies = (options) => {
+    if (!options) {
+      this.setState(prevState => ({
+        allStrategies: [],
+        selectedStrategyFields: { biome: prevState.selectedStrategyFields.biome },
+      }));
+      return;
+    }
+    const {
+      biome: { name: biomeName, id: idBiome },
+      subBasin: { name: subBasinName, id: idSubzone },
+      ea: { name: eaName, id: idEA },
+    } = options;
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
       .then(({ strategies, geometry }) => (
         this.setState({
@@ -359,7 +375,11 @@ class Drawer extends React.Component {
           },
           allStrategies: strategies,
         })
-      ));
+      ))
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
+      });
   }
 
   /** ********** */
@@ -440,6 +460,10 @@ class Drawer extends React.Component {
             },
           };
         });
+      })
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
       });
   }
 
@@ -761,6 +785,7 @@ Drawer.propTypes = {
   projectId: PropTypes.number.isRequired,
   reloadProject: PropTypes.func.isRequired,
   impactedBiomesDecisionTree: PropTypes.object,
+  reportConnError: PropTypes.func,
 };
 
 Drawer.defaultProps = {
@@ -773,6 +798,7 @@ Drawer.defaultProps = {
   updateCurrentBiome: () => {},
   subAreaName: '',
   impactedBiomesDecisionTree: {},
+  reportConnError: () => {},
 };
 
 export default withStyles(styles)(Drawer);

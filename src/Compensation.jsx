@@ -131,11 +131,16 @@ class Compensation extends Component {
           regions,
         });
       })
-      .catch(() => {
-        this.setState({
-          connError: true,
-        });
-      });
+      .catch(() => this.reportConnError());
+  }
+
+  /**
+   * Report a connection error from one of the child components
+   */
+  reportConnError = () => {
+    this.setState({
+      connError: true,
+    });
   }
 
   /**
@@ -478,6 +483,7 @@ class Compensation extends Component {
                 companyId={currentCompanyId}
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}
+                reportConnError={this.reportConnError}
               />
               )
             }
