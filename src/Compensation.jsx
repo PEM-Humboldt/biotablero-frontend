@@ -372,13 +372,20 @@ class Compensation extends Component {
   /** ******************************************* */
 
   updateCurrentBiome = (name) => {
+    const { currentBiome: prevBiome } = this.state;
     this.setState({ currentBiome: name });
     const { layers: { projectBiomes: { layer: layers } } } = this.state;
-    let area = null;
+    let newArea = null;
+    let oldArea = null;
     layers.eachLayer((layer) => {
-      if (layer.feature.properties.name === name) area = layer;
+      if (layer.feature.properties.name === name) newArea = layer;
+      if (layer.feature.properties.name === prevBiome) oldArea = layer;
     });
-    if (area !== null) this.highlightFeature(area, 'projectBiomes');
+    if (newArea !== null) this.highlightFeature(newArea, 'projectBiomes');
+    else {
+      this.resetHighlight(oldArea, 'projectBiomes');
+      oldArea.closePopup();
+    }
   }
 
   render() {
