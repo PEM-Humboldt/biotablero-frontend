@@ -352,11 +352,19 @@ class Drawer extends React.Component {
    * @param {Number} idSubzone sub-basin id
    * @param {String} idEA environmental authority id
    */
-  loadStrategies = ({
-    biome: { name: biomeName, id: idBiome },
-    subBasin: { name: subBasinName, id: idSubzone },
-    ea: { name: eaName, id: idEA },
-  }) => {
+  loadStrategies = (options) => {
+    if (!options) {
+      this.setState(prevState => ({
+        allStrategies: [],
+        selectedStrategyFields: { biome: prevState.selectedStrategyFields.biome },
+      }));
+      return;
+    }
+    const {
+      biome: { name: biomeName, id: idBiome },
+      subBasin: { name: subBasinName, id: idSubzone },
+      ea: { name: eaName, id: idEA },
+    } = options;
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
       .then(({ strategies, geometry }) => (
         this.setState({
