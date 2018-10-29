@@ -208,6 +208,12 @@ class Search extends Component {
     });
   }
 
+  /**
+    * Update the active layer, sending state updated to MapViewer and Drawer
+    *
+    * @param {nameToOff} layer name to remove and turn off in the map
+    * @param {nameToOn} layer name to active and turn on in the map
+    */
   innerElementChange = (nameToOff, nameToOn) => {
     const { layers } = this.state;
     this.setState((prevState) => {
