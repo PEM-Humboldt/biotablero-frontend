@@ -3,10 +3,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const TableStylized = ({
-  headers, rows, footers, classTable, remarkedElement,
+  headers, rows, footers, classTable, remarkedElement, hide,
 }) => (
   <div>
-    <table className={`graphcard ${classTable}`}>
+    <table
+      className={`graphcard ${classTable}`}
+      style={{ display: hide ? 'none' : 'inline-table' }}
+    >
       <thead>
         <tr className="row1table">
           {
@@ -25,8 +28,7 @@ const TableStylized = ({
               {row.values.map((element, i) => (
                 <td key={`row-${row.key}-${i}`}>
                   {
-                    (remarkedElement && (remarkedElement === element))
-                      ? <b>{element}</b> : element
+                    (remarkedElement === element) ? <b>{element}</b> : element
                   }
                 </td>
               ))}
@@ -57,12 +59,14 @@ TableStylized.propTypes = {
   footers: PropTypes.array,
   classTable: PropTypes.string,
   remarkedElement: PropTypes.string,
+  hide: PropTypes.bool,
 };
 
 TableStylized.defaultProps = {
   footers: [],
   classTable: '',
   remarkedElement: '',
+  hide: false,
 };
 
 export default TableStylized;
