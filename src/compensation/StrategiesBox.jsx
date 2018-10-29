@@ -39,10 +39,10 @@ class StrategiesBox extends Component {
             <div>
               <b className="addedBioma">{biome}</b>
               <br />
-              <b>SZH:</b>
+              <b>SZH: </b>
               {subBasin}
               <br />
-              <b>Jurisdicción:</b>
+              <b>Jurisdicción: </b>
               {ea}
             </div>
             <div>

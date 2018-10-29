@@ -491,21 +491,32 @@ class Drawer extends React.Component {
       tableError,
       selectedArea,
       saveStrategiesModal,
+      savedStrategies,
     } = this.state;
-    const tableRows = allStrategies.map(strategy => ({
-      key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
-      values: [
-        strategy.strategy_name,
-        strategy.area_ha.toFixed(2),
-        (<CustomInputNumber
+    const tableRows = allStrategies.map((strategy) => {
+      const key = `${biome.id}-${subBasin.id}-${ea.id}`;
+      let addRow = (
+        <CustomInputNumber
           id={strategy.id}
           name={strategy.strategy_name}
           maxValue={Number(strategy.area_ha.toFixed(2))}
           operateArea={this.operateArea}
           reportError={this.reportTableError}
-        />),
-      ],
-    }));
+        />
+      );
+      if (savedStrategies[key]) {
+        const found = savedStrategies[key].strategies.find(item => item.id === Number(strategy.id));
+        if (found) addRow = found.value;
+      }
+      return {
+        key: `${strategy.id}-${key}`,
+        values: [
+          strategy.strategy_name,
+          strategy.area_ha.toFixed(2),
+          addRow,
+        ],
+      };
+    });
     return biome && subBasin && ea && (
       <div className="complist">
         <StrategiesBox
