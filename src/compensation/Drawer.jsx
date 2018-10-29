@@ -124,7 +124,11 @@ class Drawer extends React.Component {
             controlAddingBiomes: true,
             allBiomes: biomes,
           })
-        ));
+        ))
+        .catch(() => {
+          const { reportConnError } = this.props;
+          reportConnError();
+        });
     }
     RestAPI.getSavedStrategies(companyId, projectId)
       .then((strategies) => {
@@ -153,6 +157,10 @@ class Drawer extends React.Component {
 
           return { savedStrategies, savedArea };
         });
+      })
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
       });
   }
 
@@ -359,7 +367,11 @@ class Drawer extends React.Component {
           },
           allStrategies: strategies,
         })
-      ));
+      ))
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
+      });
   }
 
   /** ********** */
@@ -440,6 +452,10 @@ class Drawer extends React.Component {
             },
           };
         });
+      })
+      .catch(() => {
+        const { reportConnError } = this.props;
+        reportConnError();
       });
   }
 
@@ -761,6 +777,7 @@ Drawer.propTypes = {
   projectId: PropTypes.number.isRequired,
   reloadProject: PropTypes.func.isRequired,
   impactedBiomesDecisionTree: PropTypes.object,
+  reportConnError: PropTypes.func,
 };
 
 Drawer.defaultProps = {
@@ -773,6 +790,7 @@ Drawer.defaultProps = {
   updateCurrentBiome: () => {},
   subAreaName: '',
   impactedBiomesDecisionTree: {},
+  reportConnError: () => {},
 };
 
 export default withStyles(styles)(Drawer);
