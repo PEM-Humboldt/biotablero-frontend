@@ -28,8 +28,14 @@ class PopMenu extends Component {
    * Event handler when a sub-basin option is selected
    */
   handleSubBasinChange = (obj) => {
+    const { loadStrategies, showDotsGraph } = this.props;
+    const subBasin = obj ? obj.value : null;
+    if (!subBasin) {
+      showDotsGraph(true);
+      loadStrategies(null);
+    }
     this.setState({
-      subBasin: obj ? obj.value : null,
+      subBasin,
       ea: null,
     });
   }
