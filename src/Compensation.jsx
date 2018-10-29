@@ -31,7 +31,7 @@ class Compensation extends Component {
   static constructDataForSelector = (regions) => {
     const regionsArray = [];
     const regionsList = [];
-    const statusList = [];
+    const statusList = []; // TODO: Fix repeated names
     Object.keys(regions).forEach((regionKey) => {
       const regionId = (regionKey === 'null') ? '(REGION SIN ASIGNAR)' : regionKey;
       const regionLabel = Compensation.firstLetterUpperCase(regionId);
