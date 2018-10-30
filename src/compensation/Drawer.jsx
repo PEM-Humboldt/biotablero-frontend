@@ -521,11 +521,13 @@ class Drawer extends React.Component {
       saveStrategiesModal,
       savedStrategies,
     } = this.state;
+    const { clickedStrategy } = this.props;
     const tableRows = allStrategies.map((strategy) => {
       const key = `${biome.id}-${subBasin.id}-${ea.id}`;
       let addRow = (
         <CustomInputNumber
           id={strategy.id}
+          focus={Number(strategy.id) === clickedStrategy}
           name={strategy.strategy_name}
           maxValue={Number(strategy.area_ha.toFixed(2))}
           operateArea={this.operateArea}
@@ -790,6 +792,7 @@ Drawer.propTypes = {
   reloadProject: PropTypes.func.isRequired,
   impactedBiomesDecisionTree: PropTypes.object,
   reportConnError: PropTypes.func,
+  clickedStrategy: PropTypes.number,
 };
 
 Drawer.defaultProps = {
@@ -803,6 +806,7 @@ Drawer.defaultProps = {
   subAreaName: '',
   impactedBiomesDecisionTree: {},
   reportConnError: () => {},
+  clickedStrategy: null,
 };
 
 export default withStyles(styles)(Drawer);

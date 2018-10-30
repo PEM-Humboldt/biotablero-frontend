@@ -116,6 +116,7 @@ class Compensation extends Component {
       regionsList: [],
       statusList: [],
       loadingModal: false,
+      clickedStrategy: null,
     };
   }
 
@@ -297,7 +298,11 @@ class Compensation extends Component {
 
   clickFeature = (event, parentLayer) => {
     const { properties } = event.target.feature;
-    this.setState({ currentBiome: properties.name });
+    if ('id_biome' in properties) {
+      this.setState({ currentBiome: properties.name });
+    } else if ('id_strategy' in properties) {
+      this.setState({ clickedStrategy: properties.id_strategy });
+    }
     this.highlightFeature(event.target, parentLayer);
   }
 
@@ -436,7 +441,7 @@ class Compensation extends Component {
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
       layerName, colors, layers, regions, regionsList, statusList, newProjectModal, connError,
-      currentCompanyId, currentProjectId, loadingModal, impactedBiomesDecisionTree,
+      currentCompanyId, currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
       <Layout
@@ -536,6 +541,7 @@ class Compensation extends Component {
                 reloadProject={this.loadProject}
                 reportConnError={this.reportConnError}
                 showStrategies={this.showStrategiesLayer}
+                clickedStrategy={clickedStrategy}
               />
               )
             }
