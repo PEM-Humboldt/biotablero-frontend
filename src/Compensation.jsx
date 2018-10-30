@@ -490,10 +490,10 @@ class Compensation extends Component {
           onClose={this.handleCloseModal('connError')}
           disableAutoFocus
         >
-          <div className="newProjectTitle">
+          <div className="generalAlarm">
             <h2>
-              Sin conexión al servidor.
-              La aplicación estará disponible nuevamente en minutos.
+              <b>Sin conexión al servidor</b>
+              <br></br>Intenta de nuevo en unos minutos.
             </h2>
             <button
               type="button"

@@ -1227,9 +1227,9 @@ a#reset-filters {
 }
 
 .leaflet-control-zoom a {
-  background-color: #e84a5f;
-  color: #fff;
-  font-weight: 300;
+  background-color: #e84a5f !important;
+  color: #fff !important;
+  font-weight: 300 !important;
   border-radius: 0 !important;
 }
 
@@ -1763,6 +1763,7 @@ tspan, .vx-axis-label {
 .loginBtn {
 	border: none;
 	background-color: transparent;
+	outline: none;
 }
 
 .newProjectTitle {
@@ -1784,6 +1785,42 @@ tspan, .vx-axis-label {
 	line-height: 25px;
 }
 
+.generalAlarm {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(66, 66, 66, .6);
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	-ms-align-items: center;
+	align-items: center;
+	justify-content: center;
+}
+
+.generalAlarm h2 {
+	padding: 75px 30px 0;
+	width: 260px;
+	height: 260px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;	
+}
+
+.generalAlarm h2 b {
+	text-transform: uppercase;
+	color: #ea485f;
+}
+
+.generalAlarm button {
+	color: #ea485f;
+	position: fixed;
+	top:20px;
+	right: 20px;
+}
+
 .login .npcontent  {
 	padding: 15px;
 }
@@ -1793,10 +1830,12 @@ tspan, .vx-axis-label {
 	width: 300px;
 	background-color: #ffffff;
 	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
-	top: 60px;
-	right: 20px;
+	top: 65px;
+	right: 0;
 	border-radius: 5px 0 0 5px;
-	padding: 15px;
+	padding: 140px 20px 30px;
+	background-image: url(./img/bgmountain.png);
+	background-repeat: no-repeat;
 }
 
 .login input {
@@ -1805,6 +1844,7 @@ tspan, .vx-axis-label {
 	outline: none;
 	font-size: 12px;
 	width: 100%;
+	margin-top: 10px;
 }
 
 .login input::placeholder {
@@ -1812,7 +1852,7 @@ tspan, .vx-axis-label {
 }
 
 .loginbtn {
-	margin-top: 10px;
+	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
 	color: #e84a5f;
@@ -1821,29 +1861,29 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 	border: none;
 	float: right;
+	font-size: 12px;
+}
+
+.login .closebtn {
+	color: #ea485f;
+	position: relative;
 }
 
 .loginbtn.disabled {
-	margin-top: 10px;
-	outline: none;
-	cursor: pointer;
-	color: #aaaa50;
-	text-align: right;
+	color: #345b6b;
 	text-decoration: none;
-	background-color: transparent;
-	border: none;
-	float: right;
 }
 
 .recoverbtn {
-	margin-top: 10px;
+	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
-	color: #aaaa50;
+	color: #345b6b;
 	text-align: left;
 	background-color: transparent;
 	border: none;
 	float: left;
+	font-size: 12px;
 }
 
 .loginInput {
