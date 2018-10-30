@@ -243,8 +243,8 @@ header h3 a {
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
-  width: 60px;
-  height: 60px;
+  width: 20px;
+  height: 20px;
 }
 
 .logoGEB {
@@ -2033,7 +2033,7 @@ tspan, .vx-axis-label {
 	height: 260px;
 	border-radius: 50%;
 	background-color: rgba(255, 255, 255, 1);
-	box-sizing: border-box;	
+	box-sizing: border-box;
 	text-align: center;
 	font-size: 14px;
 	margin-top:calc(50vh - 130px);

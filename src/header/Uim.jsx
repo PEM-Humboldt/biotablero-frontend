@@ -102,6 +102,7 @@ class Uim extends Component {
             disableAutoFocus
           >
             <Login
+              openModal={openModal}
               openModalControl={this.handleCloseModal}
               setUser={this.setUser}
             />
