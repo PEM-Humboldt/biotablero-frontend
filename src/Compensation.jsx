@@ -1,5 +1,6 @@
 /** eslint verified */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -461,6 +462,7 @@ class Compensation extends Component {
   }
 
   render() {
+    const { callbackUser, userLogged } = this.props;
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
       regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
@@ -470,6 +472,8 @@ class Compensation extends Component {
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
+        callbackUser={callbackUser}
+        userLogged={userLogged}
       >
         {/** Modals section: new project, connection error or loading message */}
         <Modal
@@ -498,7 +502,8 @@ class Compensation extends Component {
           <div className="generalAlarm">
             <h2>
               <b>Sin conexión al servidor</b>
-              <br></br>Intenta de nuevo en unos minutos.
+              <br />
+              Intenta de nuevo en unos minutos.
             </h2>
             <button
               type="button"
@@ -517,9 +522,16 @@ class Compensation extends Component {
           open={loadingModal}
           disableAutoFocus
         >
-          <div className="newProjectTitle">
+          <div className="generalAlarm">
             <h2>
               Cargando información
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
             </h2>
           </div>
         </Modal>
@@ -574,5 +586,14 @@ class Compensation extends Component {
     );
   }
 }
+
+Compensation.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
+  userLogged: PropTypes.object,
+};
+
+Compensation.defaultProps = {
+  userLogged: null,
+};
 
 export default Compensation;
