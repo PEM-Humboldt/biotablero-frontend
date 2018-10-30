@@ -56,9 +56,9 @@ class Uim extends Component {
               >
                 <span />
               </a>
-              <h3>
-                {user.name}
-              </h3>
+              <h6>
+               {user.name}
+              </h6>
             </div>
             <button
               type="button"
@@ -87,7 +87,7 @@ class Uim extends Component {
           ? (openModal && user && (
             <ConfirmationModal
               open={openModal}
-              className="userBox"
+              styleCustom="newBiomeAlarm nBA2"
               onClose={() => this.handleCloseModal()}
               message="¿Desea cerrar sesión?"
               onContinue={() => this.setUser(null)}

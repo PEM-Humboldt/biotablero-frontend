@@ -222,7 +222,6 @@ header h3 a {
 	padding: 4px 10px 0;
 	resize: both;
 	color: #c3c3c3;
-	cursor: pointer;
 }
 
 .userBox:hover {
@@ -232,19 +231,37 @@ header h3 a {
 .userInfo {
 	display: inline-block;
 	position: relative;
-	padding: 4px 20px;
+	padding: 4px 10px 4px 15px;
 	resize: both;
 	color: #c3c3c3;
-	cursor: pointer;
+}
+
+.userInfo h6 {
+	font-size: 16px;
+	vertical-align: top;
+	font-weight: 600;
+	line-height: 0;
+	display: inline-block;
+	max-width: 120px;
+	height: 22px;
+	line-height: 22px;
+	padding: 15px 0 15px 15px;
+	color: #2a363b;
+/*	-ms-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;*/
 }
 
 .iconUserLogged {
-  background-image: url(../assets/img/menu.png);
-  -webkit-background-size: contain;
-  background-size: contain;
+  background: url(../assets/img/logout.png) no-repeat center;
   float: right;
   width: 20px;
-  height: 20px;
+  height: 22px;
+  margin-top: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .logoGEB {
@@ -252,6 +269,7 @@ header h3 a {
 	width: 113px;
 	background: url(./img/LogoGEB.png) no-repeat center;
 	display: inline-block;
+	cursor: pointer;
 }
 
 header h4 {
@@ -1794,6 +1812,7 @@ tspan, .vx-axis-label {
 	border: none;
 	background-color: transparent;
 	outline: none;
+	cursor: pointer;
 }
 
 .newProjectTitle {
@@ -2086,6 +2105,10 @@ tspan, .vx-axis-label {
 	font-weight: 600;
 	width: 50px;
 	margin: 5px;
+}
+
+.nBA2 {
+	padding-top: 100px;
 }
 
 /* Media Queries */

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 
 const ConfirmationModal = ({
-  open, onClose, message, onContinue, onCancel,
+  open, onClose, message, onContinue, onCancel, styleCustom
 }) => (
   <Modal
     aria-labelledby="simple-modal-title"
@@ -11,7 +11,7 @@ const ConfirmationModal = ({
     open={open}
     onClose={onClose}
   >
-    <div className="newBiomeAlarm">
+    <div className={styleCustom ? styleCustom : "newBiomeAlarm"}>
       <div>
         {message}
       </div>
