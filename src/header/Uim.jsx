@@ -56,12 +56,16 @@ class Uim extends Component {
               >
                 <span />
               </a>
-              {user.name}
+              <h3>
+                {user.name}
+              </h3>
             </div>
             <button
               type="button"
               className="iconUserLogged"
               onClick={this.handleCloseModal}
+              data-tooltip
+              title="Cerrar sesión"
             />
           </div>
         )
@@ -70,6 +74,8 @@ class Uim extends Component {
               type="button"
               className="loginBtn"
               onClick={this.handleCloseModal}
+              data-tooltip
+              title="Iniciar sesión"
             >
               <AccountCircle
                 className="userBox"
