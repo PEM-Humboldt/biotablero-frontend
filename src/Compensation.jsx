@@ -31,7 +31,7 @@ class Compensation extends Component {
   static constructDataForSelector = (regions) => {
     const regionsArray = [];
     const regionsList = [];
-    const statusList = []; // TODO: Fix repeated names
+    const statusList = [];
     Object.keys(regions).forEach((regionKey) => {
       const regionId = (regionKey === 'null') ? '(REGION SIN ASIGNAR)' : regionKey;
       const regionLabel = Compensation.firstLetterUpperCase(regionId);
@@ -51,10 +51,12 @@ class Compensation extends Component {
         const statusId = (statusKey === 'null') ? '(ESTADO SIN ASIGNAR)' : statusKey;
         const statusLabel = (statusId.length > 3)
           ? Compensation.firstLetterUpperCase(statusId) : statusId;
-        statusList.push({
-          value: statusId,
-          label: statusLabel,
-        });
+        if (!statusList.find(st => st.value === statusId)) {
+          statusList.push({
+            value: statusId,
+            label: statusLabel,
+          });
+        }
         region.projectsStates.push({
           id: statusId,
           label: statusLabel,
