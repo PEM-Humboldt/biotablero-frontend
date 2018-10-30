@@ -229,6 +229,24 @@ header h3 a {
 	color: #e84a5f;
 }
 
+.userInfo {
+	display: inline-block;
+	position: relative;
+	padding: 4px 20px;
+	resize: both;
+	color: #c3c3c3;
+	cursor: pointer;
+}
+
+.iconUserLogged {
+  background-image: url(../assets/img/menu.png);
+  -webkit-background-size: contain;
+  background-size: contain;
+  float: right;
+  width: 20px;
+  height: 20px;
+}
+
 .logoGEB {
 	height: 52px;
 	width: 113px;
@@ -1806,7 +1824,7 @@ tspan, .vx-axis-label {
 	height: 260px;
 	border-radius: 50%;
 	background-color: rgba(255, 255, 255, 1);
-	box-sizing: border-box;	
+	box-sizing: border-box;
 }
 
 .generalAlarm h2 b {
@@ -2015,7 +2033,7 @@ tspan, .vx-axis-label {
 	height: 260px;
 	border-radius: 50%;
 	background-color: rgba(255, 255, 255, 1);
-	box-sizing: border-box;	
+	box-sizing: border-box;
 	text-align: center;
 	font-size: 14px;
 	margin-top:calc(50vh - 130px);
