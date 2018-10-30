@@ -35,7 +35,7 @@ class CustomInputNumber extends React.Component {
 
   render() {
     const {
-      name, id, maxValue, operateArea, reportError,
+      name, id, maxValue, operateArea, reportError, updateClickedStrategy,
     } = this.props;
     const { add, inputError, value } = this.state;
     return (
@@ -48,6 +48,7 @@ class CustomInputNumber extends React.Component {
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
           value={value}
+          onClick={() => updateClickedStrategy(id)}
           onChange={({ target }) => this.setState({ value: Number(target.value) || 0 })}
         />
         <button

@@ -110,7 +110,6 @@ class Compensation extends Component {
       currentStatus: null,
       newProjectModal: false,
       connError: false,
-      layerName: null,
       layers: {},
       regions: [],
       regionsList: [],
@@ -219,21 +218,18 @@ class Compensation extends Component {
   }
 
   featureStyle = (feature) => {
-    const { colors, layerName } = this.state;
+    const { colors } = this.state;
     const styleResponse = {
       stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
-    if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
-      styleResponse.fillOpacity = 1;
-    }
     if (feature.properties.compensation_factor > 6.5
     && feature.properties.area_impacted_pct > 12) {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'high'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'high' in obj));
     } else if (feature.properties.compensation_factor < 6.5
     && feature.properties.area_impacted_pct < 12) {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'low'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'low' in obj));
     } else {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'medium'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'medium' in obj));
     }
     return styleResponse;
   }
@@ -379,9 +375,9 @@ class Compensation extends Component {
     this.loadProject(projectId);
   }
 
-  /** ******************************************* */
-  /** LISTENERS FOR GRAPH CHANGES THAT AFFECT MAP */
-  /** ******************************************* */
+  /** ********************************* */
+  /** LISTENERS CHANGES THAT AFFECT MAP */
+  /** ********************************* */
 
   updateCurrentBiome = (name) => {
     let prevBiome = null;
@@ -402,7 +398,7 @@ class Compensation extends Component {
         if (layer.feature.properties.name === name) newArea = layer;
         if (layer.feature.properties.name === prevBiome) oldArea = layer;
       });
-      if (newArea !== null) this.highlightFeature(newArea, 'projectBiomes');
+      if (newArea) this.highlightFeature(newArea, 'projectBiomes');
       else {
         this.resetHighlight(oldArea, 'projectBiomes');
         oldArea.closePopup();
@@ -437,11 +433,31 @@ class Compensation extends Component {
     });
   }
 
+  updateClickedStrategy = (strategyId) => {
+    let prevStrategy = null;
+    this.setState((prevState) => {
+      prevStrategy = prevState.clickedStrategy;
+      return { clickedStrategy: Number(strategyId) };
+    }, () => {
+      const { layers: { strategies: { layer: layers } } } = this.state;
+      const newAreas = [];
+      const oldAreas = [];
+      layers.eachLayer((layer) => {
+        if (layer.feature.properties.id_strategy === Number(strategyId)) newAreas.push(layer);
+        if (layer.feature.properties.id_strategy === prevStrategy) oldAreas.push(layer);
+      });
+      newAreas
+        .sort((a, b) => a.feature.properties.area_ha - b.feature.properties.area_ha)
+        .forEach(area => this.highlightFeature(area, 'strategies'));
+      oldAreas.forEach(area => this.resetHighlight(area, 'strategies'));
+    });
+  }
+
   render() {
     const {
-      biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
-      layerName, colors, layers, regions, regionsList, statusList, newProjectModal, connError,
-      currentCompanyId, currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
+      biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
+      regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
+      currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
       <Layout
@@ -530,7 +546,6 @@ class Compensation extends Component {
                 back={this.handlerBackButton}
                 basinName={currentProject.name}
                 colors={colors.map(obj => Object.values(obj)[0])}
-                layerName={layerName}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}
@@ -542,6 +557,7 @@ class Compensation extends Component {
                 reportConnError={this.reportConnError}
                 showStrategies={this.showStrategiesLayer}
                 clickedStrategy={clickedStrategy}
+                updateClickedStrategy={this.updateClickedStrategy}
               />
               )
             }

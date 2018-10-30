@@ -15,7 +15,7 @@ const z = d => d.affected_natural;
 let tooltipTimeout;
 
 export default withTooltip(({
-  width, height, colors, dataJSON: points, layerName, labelX, labelY, dotOnClick,
+  width, height, colors, dataJSON: points, activeBiome, labelX, labelY, dotOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
 }) => {
   const margin = {
@@ -51,7 +51,7 @@ export default withTooltip(({
   };
 
   const checkStrokeColor = (point) => {
-    if (layerName === name(point)) return '#2a363b'; // selectedLayer
+    if (activeBiome === name(point)) return '#2a363b'; // selectedLayer
     return null; // no color
   };
 
