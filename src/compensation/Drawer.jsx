@@ -521,15 +521,18 @@ class Drawer extends React.Component {
       saveStrategiesModal,
       savedStrategies,
     } = this.state;
+    const { clickedStrategy, updateClickedStrategy } = this.props;
     const tableRows = allStrategies.map((strategy) => {
       const key = `${biome.id}-${subBasin.id}-${ea.id}`;
       let addRow = (
         <CustomInputNumber
           id={strategy.id}
+          focus={Number(strategy.id) === clickedStrategy}
           name={strategy.strategy_name}
           maxValue={Number(strategy.area_ha.toFixed(2))}
           operateArea={this.operateArea}
           reportError={this.reportTableError}
+          updateClickedStrategy={updateClickedStrategy}
         />
       );
       if (savedStrategies[key]) {
@@ -608,7 +611,7 @@ class Drawer extends React.Component {
   /**
    * Function to render graphs when necessary
    */
-  renderGraphs = (data, layerName, labelX, labelY, graph, colors) => {
+  renderGraphs = (data, activeBiome, labelX, labelY, graph, colors) => {
     const { updateCurrentBiome } = this.props;
     const { graphStatus: { DotsWhere } } = this.state;
     if (graph === 'Dots' && DotsWhere) {
@@ -622,7 +625,7 @@ class Drawer extends React.Component {
                 colors={colors}
                 graphType={graph}
                 data={data}
-                layerName={layerName}
+                activeBiome={activeBiome}
                 labelX={labelX}
                 labelY={labelY}
                 elementOnClick={(name) => {
@@ -790,6 +793,7 @@ Drawer.propTypes = {
   reloadProject: PropTypes.func.isRequired,
   impactedBiomesDecisionTree: PropTypes.object,
   reportConnError: PropTypes.func,
+  clickedStrategy: PropTypes.number,
 };
 
 Drawer.defaultProps = {
@@ -803,6 +807,7 @@ Drawer.defaultProps = {
   subAreaName: '',
   impactedBiomesDecisionTree: {},
   reportConnError: () => {},
+  clickedStrategy: null,
 };
 
 export default withStyles(styles)(Drawer);

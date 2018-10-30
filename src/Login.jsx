@@ -25,12 +25,6 @@ class Login extends Component {
     return username.length > 0 && password.length > 0;
   }
 
-  recoverPassword = () => {
-    // TODO: Implement this functionality
-    alert('Acción no disponible');
-    return true;
-  }
-
   handleChange = (event) => {
     this.setState({
       [event.target.id]: `${event.target.value}`,
@@ -86,8 +80,7 @@ class Login extends Component {
           </button>
           <button
             className="recoverbtn"
-            onClick={() => this.recoverPassword()}
-            type="submit"
+            type="button"
             data-tooltip
             title="Acción no disponible"
           >

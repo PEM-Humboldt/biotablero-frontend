@@ -5,11 +5,19 @@ import React from 'react';
 class CustomInputNumber extends React.Component {
   constructor(props) {
     super(props);
+    this.input = null;
     this.state = {
       add: true,
       inputError: false,
       value: 0,
     };
+  }
+
+  componentDidUpdate() {
+    const { focus } = this.props;
+    if (focus) {
+      this.input.focus();
+    }
   }
 
   /**
@@ -27,7 +35,7 @@ class CustomInputNumber extends React.Component {
 
   render() {
     const {
-      name, id, maxValue, operateArea, reportError,
+      name, id, maxValue, operateArea, reportError, updateClickedStrategy,
     } = this.props;
     const { add, inputError, value } = this.state;
     return (
@@ -35,10 +43,12 @@ class CustomInputNumber extends React.Component {
         <input
           name={id}
           type="text"
+          ref={(input) => { this.input = input; }}
           placeholder="0"
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
           value={value}
+          onClick={() => updateClickedStrategy(id)}
           onChange={({ target }) => this.setState({ value: Number(target.value) || 0 })}
         />
         <button
@@ -70,6 +80,11 @@ CustomInputNumber.propTypes = {
   maxValue: PropTypes.number.isRequired,
   operateArea: PropTypes.func.isRequired,
   reportError: PropTypes.func.isRequired,
+  focus: PropTypes.bool,
+};
+
+CustomInputNumber.defaultProps = {
+  focus: false,
 };
 
 export default CustomInputNumber;
