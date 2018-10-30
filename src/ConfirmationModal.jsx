@@ -11,7 +11,7 @@ const ConfirmationModal = ({
     open={open}
     onClose={onClose}
   >
-    <div className="newProjectModal">
+    <div className="newBiomeAlarm">
       <div>
         {message}
       </div>

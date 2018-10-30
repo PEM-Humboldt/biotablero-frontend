@@ -122,6 +122,10 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
+    this.loadProjectsList();
+  }
+
+  loadProjectsList = () => {
     RestAPI.requestProjectsAndRegionsByCompany(1)
       .then((res) => {
         const { regionsList, statusList, regions } = Compensation.constructDataForSelector(res);
@@ -351,6 +355,7 @@ class Compensation extends Component {
       currentRegion: null,
       biomesImpacted: [],
     });
+    this.loadProjectsList();
   }
 
   /** ****************************** */
