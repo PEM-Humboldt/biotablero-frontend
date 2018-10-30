@@ -49,7 +49,9 @@ class App extends React.Component {
     );
   }
 
-  callbackUser = (user) => {
+  callbackUser = (user, activeModule) => {
+    // TODO: Implement new route if there is an activeModule no allowed without login
+    console.log('activeModule', activeModule);
     if (user) {
       this.setState({ user });
     } else {
@@ -59,6 +61,7 @@ class App extends React.Component {
   };
 
   render() {
+    // TODO: Load Home when user is logged out from Compensator
     return (
       <main>
         <Switch>

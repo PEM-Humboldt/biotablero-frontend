@@ -21,10 +21,10 @@ class Uim extends Component {
   };
 
   setUser = (user) => {
-    const { callbackUser } = this.props;
+    const { callbackUser, activeModule } = this.props;
     if (user) {
       user.then((res) => {
-        callbackUser(res);
+        callbackUser(res, activeModule);
         return true;
       });
     }
@@ -83,7 +83,10 @@ class Uim extends Component {
               className="userBox"
               onClose={() => this.handleCloseModal()}
               message="¿Desea cerrar sesión?"
-              onContinue={() => this.setUser(null)}
+              onContinue={() => {
+                this.setUser(null);
+              }
+              }
               onCancel={() => this.handleCloseModal()}
             />))
           : (openModal && (
@@ -107,6 +110,7 @@ class Uim extends Component {
 }
 
 Uim.propTypes = {
+  activeModule: PropTypes.string.isRequired,
   callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
 };

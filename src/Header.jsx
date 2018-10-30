@@ -21,6 +21,7 @@ const Header = ({ activeModule, userLogged, callbackUser }) => (
       value="Uim"
       userLogged={userLogged}
       callbackUser={callbackUser}
+      activeModule={activeModule}
     />
   </header>
 );
