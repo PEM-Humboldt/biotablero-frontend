@@ -1351,6 +1351,10 @@ div[id*="panel"] button:hover {
   position: relative;
 }
 
+.graphcard:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .graphcard h2 {
   border-bottom: 1px solid #e84a5f;
   padding: 10px;
@@ -1429,6 +1433,10 @@ p.legcomp {
   font-weight: 400;
   padding-bottom: 5px;
   text-align: left;
+}
+
+.total:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .total h4 {
@@ -1667,6 +1675,10 @@ tr.row2table:nth-child(odd){
   font-weight: 700;
 }
 
+.errorData:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .graphcard td input {
   width: 75px;
   background-color: transparent;
@@ -1838,6 +1850,10 @@ tspan, .vx-axis-label {
 	background-repeat: no-repeat;
 }
 
+.login:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .login input {
 	padding: 0 10px;
 	box-sizing: border-box;
@@ -1914,6 +1930,11 @@ tspan, .vx-axis-label {
 	padding-bottom: 15px;
 }
 
+.newProjectModal:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+
 .addprjbtn {
 	margin-top: 10px;
 	outline: none;
@@ -1979,6 +2000,10 @@ tspan, .vx-axis-label {
 	background-color: #ffffff;
 	border-radius: 5px;
 	box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.newBiome:hover {
+  	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .newBiome .addprjbtn {
