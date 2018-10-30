@@ -525,6 +525,13 @@ class Compensation extends Component {
           <div className="generalAlarm">
             <h2>
               Cargando información
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
             </h2>
           </div>
         </Modal>
