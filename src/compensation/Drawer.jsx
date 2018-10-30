@@ -354,10 +354,12 @@ class Drawer extends React.Component {
    */
   loadStrategies = (options) => {
     if (!options) {
+      const { updateCurrentBiome, currentBiome } = this.props;
       this.setState(prevState => ({
         allStrategies: [],
         selectedStrategyFields: { biome: prevState.selectedStrategyFields.biome },
       }));
+      updateCurrentBiome(currentBiome);
       return;
     }
     const {
@@ -366,7 +368,7 @@ class Drawer extends React.Component {
       ea: { name: eaName, id: idEA },
     } = options;
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
-      .then(({ strategies, geometry }) => (
+      .then(({ strategies, geometry }) => {
         this.setState({
           selectedStrategyFields: {
             biome: { name: biomeName, id: idBiome },
@@ -374,8 +376,10 @@ class Drawer extends React.Component {
             ea: { name: eaName, id: idEA },
           },
           allStrategies: strategies,
-        })
-      ))
+        });
+        const { showStrategies } = this.props;
+        showStrategies(geometry);
+      })
       .catch(() => {
         const { reportConnError } = this.props;
         reportConnError();
