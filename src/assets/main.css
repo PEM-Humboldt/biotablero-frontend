@@ -1961,25 +1961,92 @@ tspan, .vx-axis-label {
 }
 
 .newBiome .npcontent  {
-	padding: 15px;
+	padding: 0 15px 10px;
+}
+
+.newBiome h2 {
+  font-size: 18px;
+  color: #ea495f;
+  font-weight: 400;
+  padding: 10px 15px 0;
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 5px;
 }
 
 .newBiome {
-	width: 350px;
-	height: 150px;
+	width: auto;
 	background-color: #ffffff;
-	top: 500px;
-	right: 25px;
-	border-radius: 5px 0 0 5px;
-	padding-bottom: 15px;
+	border-radius: 5px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.newBiome .addprjbtn {
+	float: none;
+	margin: 0;
+	margin-left: 90%;
+	padding-top: 10px;
+}
+
+.sendCreateBiomes {
+	border: none;
+	background-color: transparent;
+	color: #e84a5f;
+	outline: none;
+	cursor: pointer;
+	border: 1px solid #e84a5f;
+	padding: 5px 10px;
+	text-transform: uppercase;
+	margin-top: 5px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+
+.sendCreateBiomes:hover, .newBiomeAlarm button:hover {
+	color: #fff;
+	background: none;
+	background-color: #e84a5f;
+}
+
+.newBiomeAlarm {
+	padding: 75px 30px 0;
+	width: 260px;
+	height: 260px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;	
+	text-align: center;
+	font-size: 14px;
+	margin-top:calc(50vh - 130px);
+	margin-left:calc(50vw - 130px);
+	outline: none;
+	color: #424242;
+}
+
+.newBiomeAlarm div {
+	border-bottom: 1px solid #424242;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+.newBiomeAlarm button {
+	border: none;
+	background-color: transparent;
+	color: #e84a5f;
+	outline: none;
+	cursor: pointer;
+	border: 1px solid #e84a5f;
+	padding: 5px 0;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 600;
+	width: 50px;
+	margin: 5px;
 }
 
 /* Media Queries */
 @media screen and (max-width: 1200px){
-
-    .btnhome {
-
-    }
 
     .btnhome b {
         display: none;
@@ -2012,6 +2079,11 @@ tspan, .vx-axis-label {
 
 
 @media screen and (max-width: 980px){
+
+	.leaflet-container {
+		padding: 0;
+	}
+
 	.popbtns {
 		display: block;
 	}
@@ -2034,6 +2106,7 @@ tspan, .vx-axis-label {
 	.contentView {
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
+
 	}
 
 	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */
