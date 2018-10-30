@@ -19,10 +19,13 @@ class Home extends React.Component {
   }
 
   render() {
-    const { userLogged } = this.props;
+    const { callbackUser, userLogged } = this.props;
     const { activeModule } = this.state;
     return (
-      <Layout showFooterLogos>
+      <Layout
+        showFooterLogos
+        callbackUser={callbackUser}
+      >
         <div className="wrapper">
           <ShortInfo />
           <h1 className="maint">
@@ -41,6 +44,7 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
 };
 

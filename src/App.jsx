@@ -16,6 +16,17 @@ class App extends React.Component {
     };
   }
 
+  loadHome = (props) => {
+    const { user } = this.state;
+    return (
+      <Home
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
   loadSearch = (props) => {
     const { user } = this.state;
     return (
@@ -51,11 +62,11 @@ class App extends React.Component {
     return (
       <main>
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/ShortInfo" component={ShortInfo} />
+          <Route exact path="/" render={this.loadHome} />
           <Route path="/Consultas" render={this.loadSearch} />
-          <Route path="/Alertas" component={Home} />
           <Route path="/GEB/Compensaciones" render={this.loadCompensator} />
+          <Route path="/Alertas" render={this.loadHome} />
+          <Route path="/ShortInfo" component={ShortInfo} />
         </Switch>
       </main>
     );

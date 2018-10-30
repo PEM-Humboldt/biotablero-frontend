@@ -46,7 +46,7 @@ class Menu extends React.Component {
             </li>
           </a>
           { userLogged ? (
-            <Link to="/Compensaciones" onClick={this.changeMenuState}>
+            <Link to="/GEB/Compensaciones" onClick={this.changeMenuState}>
               <li>
                 Compensaciones
               </li>

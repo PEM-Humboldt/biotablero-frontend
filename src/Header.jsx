@@ -11,7 +11,7 @@ const Header = ({ activeModule, userLogged, callbackUser }) => (
   <header className="cabezote">
     <div>
       <nav>
-        <Menu />
+        <Menu userLogged={userLogged} />
       </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
