@@ -718,13 +718,13 @@ class Drawer extends React.Component {
                     data-tooltip
                     title="Guardar biomas en proyecto"
                   >
-                    Guardar biomas
+                    Guardar
                   </button>
                 )}
                 <ConfirmationModal
                   open={addBiomesToProjectModal}
                   onClose={() => { this.setState({ addBiomesToProjectModal: false }); }}
-                  message="Una vez guardados los cambios no podrá editarlos, está seguro de continuar?"
+                  message="Una vez guardados los cambios no podrá editarlos, ¿está seguro de continuar?"
                   onContinue={this.sendAddBiomesToProject}
                   onCancel={() => { this.setState({ addBiomesToProjectModal: false }); }}
                 />
