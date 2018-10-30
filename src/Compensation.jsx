@@ -123,7 +123,6 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    const { userLogged } = this.props;
     this.loadProjectsList();
   }
 

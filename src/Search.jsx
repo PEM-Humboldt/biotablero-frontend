@@ -56,7 +56,6 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    const { userLogged } = this.props;
     Promise.all([
       GeoServerAPI.requestJurisdicciones(),
       GeoServerAPI.requestCorpoboyaca(),
@@ -100,10 +99,7 @@ class Search extends Component {
           },
         },
       }));
-    }); // We don't need a catch, because on error we must literally do nothing
-    if (userLogged) {
-      selectorData[0].options.unshift(dataGEB);
-    }
+    });
   }
 
   /**
@@ -252,6 +248,20 @@ class Search extends Component {
     });
   }
 
+  /**
+    * Funtion to control data to show
+    *
+    */
+  getData = () => {
+    const { userLogged } = this.props;
+    if (userLogged) {
+      selectorData[0].options.unshift(dataGEB);
+    } else if (selectorData[0].options[0] === dataGEB) {
+      selectorData[0].options.shift(dataGEB);
+    }
+    return selectorData;
+  }
+
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
@@ -279,7 +289,7 @@ class Search extends Component {
                   this.innerElementChange,
                 ]}
                 description={description(currentCompany)}
-                data={selectorData}
+                data={this.getData()}
                 expandedId={0}
                 iconClass="iconsection"
               />

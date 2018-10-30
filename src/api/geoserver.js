@@ -78,9 +78,7 @@ class GeoServerAPI {
    */
   static makeRequest(endpoint) {
     return axios.get(`${this.getRequestURL()}/${endpoint}`)
-      .then((res) => {
-        return res.data;
-      });
+      .then(res => res.data);
   }
 
   /**
