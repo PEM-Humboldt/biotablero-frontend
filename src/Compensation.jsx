@@ -522,7 +522,7 @@ class Compensation extends Component {
           open={loadingModal}
           disableAutoFocus
         >
-          <div className="newProjectTitle">
+          <div className="generalAlarm">
             <h2>
               Cargando información
             </h2>
