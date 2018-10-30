@@ -3,6 +3,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
+import Uim from './header/Uim';
 import ShortInfo from './home/ShortInfo';
 import Search from './Search';
 import Compensation from './Compensation';
@@ -28,8 +29,10 @@ const App = () => (
       <Route exact path="/" component={Home} />
       <Route path="/ShortInfo" component={ShortInfo} />
       <Route path="/Consultas" render={loadSearch} />
-      <Route path="/GEB/Compensaciones" render={loadCompensator} />
       <Route path="/Alertas" component={Home} />
+      <Route path="/GEB/Compensaciones" render={loadCompensator} />
+      // <Route component={Uim}>
+      // </Route>
     </Switch>
   </main>
 );

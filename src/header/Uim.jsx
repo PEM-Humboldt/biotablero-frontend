@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
 import Login from '../Login';
-import Logout from '../Logout';
+import ConfirmationModal from '../ConfirmationModal';
 
 /* Uim: User Interface Manager */
 class Uim extends Component {
@@ -21,11 +21,14 @@ class Uim extends Component {
   };
 
   setUser = (user) => {
-    user.then((res) => {
-      this.setState({ user: res });
-      this.handleCloseModal();
-      return true;
-    });
+    if (user) {
+      user.then((res) => {
+        this.setState({ user: res });
+        return true;
+      });
+    }
+    this.setState({ user: null });
+    this.handleCloseModal();
     return false;
   };
 
@@ -43,41 +46,47 @@ class Uim extends Component {
     return (
       <div>
         { user ? (
-          <a
-            href="https://www.grupoenergiabogota.com/"
-            rel="noopener noreferrer"
-            target="_blank"
-            className="logoGEB"
-          >
-            <span />
-          </a>
-        )
-          : '' }
-        <button
-          type="button"
-          className="loginBtn"
-          onClick={this.handleCloseModal}
-        >
-          <AccountCircle
-            className="userBox"
-            style={{ fontSize: '40px' }}
-          />
-        </button>
-        {user
-          ? (openModal && (
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={openModal}
-            onClose={this.handleCloseModal}
-            disableAutoFocus
-          >
-            <Logout
-              user={user}
-              openModalControl={this.handleCloseModal}
-              removeUser={this.removeUser}
+          <div className="userBox">
+            <div className="userInfo">
+              <a
+                href="https://www.grupoenergiabogota.com/"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="logoGEB"
+              >
+                <span />
+              </a>
+              {user.name}
+            </div>
+            <button
+              type="button"
+              className="iconUserLogged"
+              onClick={this.handleCloseModal}
             />
-          </Modal>))
+          </div>
+        )
+          : (
+            <button
+              type="button"
+              className="loginBtn"
+              onClick={this.handleCloseModal}
+            >
+              <AccountCircle
+                className="userBox"
+                style={{ fontSize: '40px' }}
+              />
+            </button>)
+        }
+        {user
+          ? (openModal && user && (
+            <ConfirmationModal
+              open={openModal}
+              className="userBox"
+              onClose={() => this.handleCloseModal()}
+              message="¿Desea cerrar sesión?"
+              onContinue={() => this.setUser(null)}
+              onCancel={() => this.handleCloseModal()}
+            />))
           : (openModal && (
           <Modal
             aria-labelledby="simple-modal-title"
