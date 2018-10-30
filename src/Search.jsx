@@ -253,7 +253,7 @@ class Search extends Component {
   }
 
   render() {
-    const { userLogged } = this.props;
+    const { callbackUser, userLogged } = this.props;
     const {
       subAreaName, layerName, activeLayerName, basinData, currentCompany,
       colors, colorsFC, colorSZH, layers,
@@ -263,6 +263,7 @@ class Search extends Component {
         moduleName="Consultas"
         showFooterLogos={false}
         userLogged={userLogged}
+        callbackUser={callbackUser}
       >
         <div className="appSearcher">
           <MapViewer
@@ -303,6 +304,7 @@ class Search extends Component {
 }
 
 Search.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
 };
 

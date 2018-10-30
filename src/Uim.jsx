@@ -1,9 +1,10 @@
 /** eslint verified */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
-import Login from '../Login';
-import ConfirmationModal from '../ConfirmationModal';
+import Login from './Login';
+import ConfirmationModal from './ConfirmationModal';
 
 /* Uim: User Interface Manager */
 class Uim extends Component {
@@ -11,7 +12,6 @@ class Uim extends Component {
     super(props);
     this.state = {
       openModal: false,
-      user: null,
     };
   }
 
@@ -21,31 +21,24 @@ class Uim extends Component {
   };
 
   setUser = (user) => {
+    const { callbackUser } = this.props;
     if (user) {
       user.then((res) => {
-        this.setState({ user: res });
+        callbackUser(res);
         return true;
       });
     }
-    this.setState({ user: null });
+    callbackUser(null);
     this.handleCloseModal();
     return false;
   };
 
-  removeUser = (user) => {
-    if (user) {
-      this.setState({ user: null });
-      this.handleCloseModal();
-      return true;
-    }
-    return false;
-  };
-
   render() {
-    const { openModal, user } = this.state;
+    const { userLogged } = this.props;
+    const { openModal } = this.state;
     return (
       <div>
-        { user ? (
+        { userLogged ? (
           <div className="userBox">
             <div className="userInfo">
               <a
@@ -57,7 +50,7 @@ class Uim extends Component {
                 <span />
               </a>
               <h3>
-                {user.name}
+                {userLogged.name}
               </h3>
             </div>
             <button
@@ -83,8 +76,8 @@ class Uim extends Component {
               />
             </button>)
         }
-        {user
-          ? (openModal && user && (
+        {userLogged
+          ? (openModal && userLogged && (
             <ConfirmationModal
               open={openModal}
               className="userBox"
@@ -112,5 +105,14 @@ class Uim extends Component {
     );
   }
 }
+
+Uim.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
+  userLogged: PropTypes.object,
+};
+
+Uim.defaultProps = {
+  userLogged: null,
+};
 
 export default Uim;
