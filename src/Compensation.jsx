@@ -524,7 +524,7 @@ class Compensation extends Component {
         >
           <div className="generalAlarm">
             <h2>
-              Cargando información
+              <b>Cargando</b>
               <div className="load-wrapp">
                 <div className="load-1">
                   <div className="line" />
