@@ -4,26 +4,32 @@ import PropTypes from 'prop-types';
 
 import Menu from './header/Menu';
 import Title from './header/Title';
-import Uim from './header/Uim';
+import Uim from './Uim';
 import './assets/main.css';
 
-const Header = ({ activeModule, userLogged }) => (
+const Header = ({ activeModule, userLogged, callbackUser }) => (
   <header className="cabezote">
     <div>
       <nav>
-        <Menu />
+        <Menu userLogged={userLogged} />
       </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
-    <Uim value="Uim" userLogged={userLogged} />
+    <Uim
+      value="Uim"
+      userLogged={userLogged}
+      callbackUser={callbackUser}
+      activeModule={activeModule}
+    />
   </header>
 );
 
 Header.propTypes = {
   activeModule: PropTypes.string,
   userLogged: PropTypes.object,
+  callbackUser: PropTypes.func.isRequired,
 };
 
 Header.defaultProps = {

@@ -656,11 +656,11 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, subAreaName, biomesImpacted,
+      areaName, back, basinName, colors, classes, subAreaName, biomesImpacted, currentBiome,
     } = this.props;
     const {
-      whereData, totals, selectedArea, tableError, addBiomesToProjectModal, currentBiome,
-      controlAddingBiomes, allBiomes, savedStrategies, savedArea,
+      whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
+      allBiomes, savedStrategies, savedArea,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
