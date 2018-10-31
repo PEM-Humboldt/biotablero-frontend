@@ -13,8 +13,11 @@ Dentro del directorio del repositorio, inicie línea de comandos y ejecute la si
 
     npm install
 
+
 ### 1.2. Ejecución:
-Posterior a la instalación de paquetes, ejecute la siguiente instrucción:
+Posterior a la instalación de paquetes, deberá crear una copia del archivo *.env* con el nombre *.env.local*, y actualice los valores de las variables, de acuerdo a su entorno de desarrollo.
+
+Por último, ejecute la siguiente instrucción:
 
     npm start
 
@@ -40,9 +43,13 @@ Para desplegar como contenedor de Docker es necesario contar la versión 17.05.0
 
 Descargar el repositorio en el servidor donde se desplegará el servicio.
 
+Tenga en cuenta la configuración de [las variables de entorno](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables): se deberá crear una copia del archivo *.env* con el nombre *.env.production.local*, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
+
 Ejecutar la siguiente instrucción para construir la imagen:
 
     docker build -t <nombre imagen>:<version> .
+
+Es recomendable usar la versión del release en la versión de la imagen que se está construyendo.
 
 ### 2.2. Despliegue del servicio
 

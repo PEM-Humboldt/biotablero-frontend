@@ -3,24 +3,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const TableStylized = ({
-  headers, rows, footers, description, classTable,
+  headers, rows, footers, classTable, remarkedElement, hide,
 }) => (
   <div>
-    <div className="titecositema">
-      {
-        // TODO: Create texts, icons and actions for list of biomas in Shopping Cart
-        Object.keys(description).map(title => (
-          <span key={`description-${title}`}>
-            <b>
-              {`${title}: `}
-            </b>
-            {description[title]}
-            <br />
-          </span>
-        ))
-      }
-    </div>
-    <table className={`graphcard ${classTable}`}>
+    <table
+      className={`graphcard ${classTable}`}
+      style={{ display: hide ? 'none' : 'inline-table' }}
+    >
       <thead>
         <tr className="row1table">
           {
@@ -38,7 +27,9 @@ const TableStylized = ({
             <tr className="row2table" key={row.key}>
               {row.values.map((element, i) => (
                 <td key={`row-${row.key}-${i}`}>
-                  {element}
+                  {
+                    (remarkedElement === element) ? <b>{element}</b> : element
+                  }
                 </td>
               ))}
             </tr>
@@ -66,14 +57,16 @@ TableStylized.propTypes = {
   // rows is an array of objects, where each object has a key and an array of values
   rows: PropTypes.array.isRequired,
   footers: PropTypes.array,
-  description: PropTypes.object,
   classTable: PropTypes.string,
+  remarkedElement: PropTypes.string,
+  hide: PropTypes.bool,
 };
 
 TableStylized.defaultProps = {
   footers: [],
-  description: {},
   classTable: '',
+  remarkedElement: '',
+  hide: false,
 };
 
 export default TableStylized;

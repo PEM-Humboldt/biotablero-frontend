@@ -9,7 +9,6 @@ import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp';
 import ClearIcon from '@material-ui/icons/Clear';
 import Chip from '@material-ui/core/Chip';
 import Select from 'react-select';
-import AutocompleteOption from './AutocompleteOption';
 import 'react-select/dist/react-select.css';
 
 const ITEM_HEIGHT = 22;
@@ -35,6 +34,7 @@ const styles = theme => ({
       '&:hover': {
         boxShadow: 'none',
       },
+      '-webkit-flex': '1 0 66%',
     },
     '.Select-multi-value-wrapper': {
       flexGrow: 1,
@@ -77,6 +77,7 @@ const styles = theme => ({
       fontSize: 12,
       fontFamily: 'Roboto, sans-serif',
       padding: 0,
+      width: '100px',
     },
     '.Select-placeholder': {
       opacity: 0.42,
@@ -123,10 +124,8 @@ const styles = theme => ({
 
 function SelectWrapped(props) {
   const { classes, ...other } = props;
-
   return (
     <Select
-      optionComponent={AutocompleteOption}
       noResultsText="Sin resultados"
       arrowRenderer={arrowProps => (
         arrowProps.isOpen ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
@@ -185,7 +184,7 @@ class Autocomplete extends React.Component {
   };
 
   render() {
-    const { classes, data } = this.props;
+    const { classes, data, label } = this.props;
     const { multiLabel } = this.state;
     const elements = data.map(element => ({
       value: element.value,
@@ -197,9 +196,9 @@ class Autocomplete extends React.Component {
           fullWidth
           value={multiLabel}
           onChange={this.handleChange('multiLabel')}
-          placeholder="Seleccionar múltiples"
+          placeholder="Seleccionar..."
           name="react-select-chip-label"
-          label="Escriba el nombre a buscar"
+          label={label}
           InputLabelProps={{
             shrink: true,
           }}
@@ -224,10 +223,12 @@ Autocomplete.propTypes = {
   valueSelected: PropTypes.func.isRequired,
   classes: PropTypes.object,
   data: PropTypes.array.isRequired,
+  label: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
   classes: '',
+  label: 'Escriba el nombre a buscar',
 };
 
 export default withStyles(styles)(Autocomplete);

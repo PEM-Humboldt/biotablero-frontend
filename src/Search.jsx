@@ -1,26 +1,23 @@
 /** eslint verified */
-// TODO: Merge functionalities to replace states geojsonCapa# by activeLayers
-// TODO: Manejar capas activas. Hacer síncrono la carga del Selector (elementos
-//  activos), con los elementos cargados
 import React, { Component } from 'react';
-// import Viewfinder from './Viewfinder';
 
 import L from 'leaflet';
+import PropTypes from 'prop-types';
+
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
-import './search/search.css';
-import ElasticAPI from './api/elastic';
 import GeoServerAPI from './api/geoserver';
-import { description, selectorData } from './search/assets/selectorData';
+import { description, selectorData, dataGEB } from './search/assets/selectorData';
 import Layout from './Layout';
-
+import RestAPI from './api/REST';
 
 class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
       layers: {},
+      currentCompany: null,
       subAreaName: null,
       layerName: null,
       basinData: null,
@@ -56,61 +53,35 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    Promise.all([
-      GeoServerAPI.requestJurisdicciones(),
-      GeoServerAPI.requestCorpoboyaca(),
-    ]).then((res) => {
-      this.setState(prevState => ({
-        layers: {
-          ...prevState.layers,
-          // the key is the id that communicates with other components and should match selectorData
-          jurisdicciones: {
-            displayName: 'Jurisdicciones',
-            active: false,
-            layer: L.geoJSON(
-              res[0],
-              {
-                style: {
-                  color: '#e84a5f',
-                  weight: 0.5,
-                  fillColor: '#ffd8e2',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
-                },
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'jurisdicciones')
-                ),
-              },
-            ),
-          },
-          // the key is the id that communicates with other components and should match selectorData
-          corpoBoyaca: {
-            displayName: 'CorpoBoyaca',
-            active: false,
-            layer: L.geoJSON(
-              res[1],
-              {
-                style: this.featureStyle,
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, 'corpoBoyaca')
-                ),
-              },
-            ),
-          },
-        },
-      }));
-    }); // We don't need a catch, because on error we must literally do nothing
+    const { userLogged } = this.props;
+    const easList = [];
+    RestAPI.getAllEAs()
+      .then((res) => {
+        res.forEach((ea) => {
+          easList.push({
+            value: ea.id_ea,
+            label: ea.name,
+          });
+        });
+        selectorData[0].options[2].options[0].data = easList;
+      });
+
+    if (userLogged) {
+      selectorData[0].options.unshift(dataGEB);
+    }
   }
 
   /**
-   * Choose the right color for the bioma inside the map, according
+   * Choose the right color for the biome inside the map, according
    *  with colorsFC state
    *
    * @param {Object} feature target object
    */
   featureStyle = (feature) => {
     const { colorsFC } = this.state;
-    const valueFC = Math.min((Math.ceil((feature.properties.FC_Valor * 10) / 5) * 5) / 10, 10);
+    const valueFC = Math.min(
+      (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
+    );
     const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
     const styleReturn = {
       stroke: false,
@@ -146,10 +117,8 @@ class Search extends Component {
           `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
         );
         break;
-      case 'corpoBoyaca':
-        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.BIOMA_IAvH}<br><b>Factor de compensación:</b> ${point.feature.properties.FC_Valor}`);
-        break;
       default:
+        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.name_biome}<br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`);
         break;
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
@@ -163,10 +132,10 @@ class Search extends Component {
   }
 
   clickFeature = (event, parentLayer) => {
-    // TODO: Activate bioma inside dotsWhere and dotsWhat
+    // TODO: Activate biome inside dotsWhere and dotsWhat
     // TODO: Create function for jurisdicciones layer
-    this.highlightFeature(event);
-    if (parentLayer === 'corpoBoyaca') this.handleClickOnArea(event);
+    this.highlightFeature(event, parentLayer);
+    this.handleClickOnArea(event, parentLayer);
   }
 
   /**
@@ -175,12 +144,12 @@ class Search extends Component {
      *
      * @param {Object} event event object
      */
-    handleClickOnArea = (event) => {
-      const bioma = event.target.feature.properties.BIOMA_IAvH;
-      ElasticAPI.requestBiomaBySZH(bioma)
+    handleClickOnArea = (event, parentLayer) => {
+      const biome = event.target.feature.properties.name_biome;
+      RestAPI.requestBiomeBySZH(parentLayer, biome)
         .then((res) => {
           this.setState({
-            layerName: bioma,
+            layerName: biome,
             basinData: res,
           });
         });
@@ -188,41 +157,117 @@ class Search extends Component {
       // (in the table). But the application won't break as it currently is
     }
 
+   /**
+   * Load layer based on selection
+   *
+   * @param {String} idLayer Layer ID
+   * @param {String} parentLayer Parent layer ID
+   */
+   loadLayer = (idLayer, parentLayer) => {
+     RestAPI.requestBiomesbyEA(idLayer)
+       .then((res) => {
+         this.setState(prevState => ({
+           layers: {
+             ...prevState.layers,
+             [idLayer]: {
+               displayName: idLayer,
+               active: true,
+               layer: L.geoJSON(res, {
+                 style: this.featureStyle,
+                 onEachFeature: (feature, layer) => (
+                   this.featureActions(feature, layer, idLayer)
+                 ),
+               }),
+             },
+           },
+         }));
+
+         this.setState((prevState) => {
+           const newState = { ...prevState };
+           if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
+           if (prevState.layers[idLayer]) {
+             newState.layers[idLayer].active = true;
+             newState.activeLayerName = newState.layers[idLayer].displayName;
+           }
+
+           return newState;
+         });
+       });
+   }
+
+   /**
+   * Load layer based on selection
+   *
+   * @param {String} idLayer Layer ID
+   * @param {String} parentLayer Parent layer ID
+   */
+   loadSecondLevelLayer = (idLayer) => {
+     switch (idLayer) {
+       case 'jurisdicciones':
+         GeoServerAPI.requestJurisdicciones()
+           .then((res) => {
+             this.setState(prevState => ({
+               layers: {
+                 ...prevState.layers,
+                 jurisdicciones: {
+                   displayName: 'Jurisdicciones',
+                   active: false,
+                   layer: L.geoJSON(
+                     res,
+                     {
+                       style: {
+                         color: '#e84a5f',
+                         weight: 0.5,
+                         fillColor: '#ffd8e2',
+                         opacity: 0.6,
+                         fillOpacity: 0.4,
+                       },
+                       onEachFeature: (feature, layer) => (
+                         this.featureActions(feature, layer, idLayer)
+                       ),
+                     },
+                   ),
+                 },
+               },
+             }));
+
+             this.setState((prevState) => {
+               const newState = { ...prevState };
+               if (prevState.layers[idLayer]) {
+                 newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+                 newState.subAreaName = newState.layers[idLayer].displayName;
+               }
+               return newState;
+             });
+           });
+         break;
+       default:
+         break;
+     }
+   }
+
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
-    const { layers } = this.state;
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      if (layers[name]) {
-        newState.layers[name].active = !prevState.layers[name].active;
-        newState.subAreaName = newState.layers[name].displayName;
-      }
-
-      return newState;
-    });
+    this.loadSecondLevelLayer(name);
   }
 
+  /**
+    * Update the active layer, sending state updated to MapViewer and Drawer
+    *
+    * @param {nameToOff} layer name to remove and turn off in the map
+    * @param {nameToOn} layer name to active and turn on in the map
+    */
   innerElementChange = (nameToOff, nameToOn) => {
-    const { layers } = this.state;
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      if (layers[nameToOff]) newState.layers[nameToOff].active = false;
-      if (layers[nameToOn]) {
-        newState.layers[nameToOn].active = true;
-        newState.activeLayerName = newState.layers[nameToOn].displayName;
-      }
-
-      return newState;
-    });
+    this.loadLayer(nameToOn, nameToOff);
   }
 
   /** ***************************************** */
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
   /** ***************************************** */
 
-  // TODO: Return from bioma to jurisdicción
+  // TODO: Return from biome to jurisdicción
   handlerBackButton = () => {
     this.setState((prevState) => {
       let newState = { ...prevState };
@@ -237,19 +282,38 @@ class Search extends Component {
         subAreaName: null,
         layerName: null,
         activeLayerName: null,
+        layers: {},
       };
       return newState;
     });
   }
 
+  /**
+    * Funtion to control data to show
+    *
+    */
+  getData = () => {
+    const { userLogged } = this.props;
+    if (userLogged) {
+      selectorData[0].options.unshift(dataGEB);
+    } else if (selectorData[0].options[0] === dataGEB) {
+      selectorData[0].options.shift(dataGEB);
+    }
+    return selectorData;
+  }
+
   render() {
+    const { callbackUser, userLogged } = this.props;
     const {
-      subAreaName, layerName, activeLayerName, basinData, colors, colorsFC, colorSZH, layers,
+      subAreaName, layerName, activeLayerName, basinData, currentCompany,
+      colors, colorsFC, colorSZH, layers,
     } = this.state;
     return (
       <Layout
         moduleName="Consultas"
         showFooterLogos={false}
+        userLogged={userLogged}
+        callbackUser={callbackUser}
       >
         <div className="appSearcher">
           <MapViewer
@@ -264,8 +328,8 @@ class Search extends Component {
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
-                description={description}
-                data={selectorData}
+                description={description(currentCompany)}
+                data={this.getData()}
                 expandedId={0}
                 iconClass="iconsection"
               />
@@ -288,5 +352,14 @@ class Search extends Component {
     );
   }
 }
+
+Search.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
+  userLogged: PropTypes.object,
+};
+
+Search.defaultProps = {
+  userLogged: null,
+};
 
 export default Search;

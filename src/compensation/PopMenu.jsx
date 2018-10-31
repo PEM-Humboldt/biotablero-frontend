@@ -1,136 +1,157 @@
 /** eslint verified */
 import React, { Component } from 'react';
-import CarritoIcon from '@material-ui/icons/AddLocation';
+import AddIcon from '@material-ui/icons/AddLocation';
+import BackGraphIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 class PopMenu extends Component {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const newState = { biome: Object.keys(nextProps.data)[0] };
+    if (prevState.biome !== newState.biome) {
+      newState.subBasin = null;
+      newState.ea = null;
+    }
+    return newState;
+  }
+
   constructor(props) {
     super(props);
-    const { layerName } = props;
     this.state = {
-      szhSelected: null,
-      carSelected: null,
-      showButton: false,
-      layerName,
+      biome: null,
+      subBasin: null,
+      ea: null,
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    const { layerName } = nextProps;
-    const { layerName: oldSubArea } = prevState;
-    if (oldSubArea !== layerName) {
-      return {
-        szhSelected: null,
-        carSelected: null,
-        showButton: false,
-        layerName,
-      };
+  /**
+   * Event handler when a sub-basin option is selected
+   */
+  handleSubBasinChange = (obj) => {
+    const { loadStrategies, showDotsGraph } = this.props;
+    const subBasin = obj ? obj.value : null;
+    if (!subBasin) {
+      showDotsGraph(true);
+      loadStrategies(null);
     }
-    return null;
-  }
-
-  /**
-   * Event handler when a SZH option is selected
-   */
-  handleChangeSZH = (szhSelected) => {
     this.setState({
-      szhSelected: szhSelected ? szhSelected.value : '',
-      carSelected: null,
+      subBasin,
+      ea: null,
     });
-    const { loadStrategies } = this.props;
-    loadStrategies(szhSelected.value);
-  }
-
-  /**
-   * Print Select element with szh options
-   */
-  listSZHOptions = () => {
-    const { data } = this.props;
-    if (!data) return null;
-
-    const { szhSelected } = this.state;
-    const options = Object.keys(data).map(szh => ({ value: szh, label: szh }));
-    return (
-      <Select
-        value={szhSelected}
-        onChange={this.handleChangeSZH}
-        placeholder="SubZona Hidrográfica"
-        options={options}
-      />
-    );
   }
 
   /**
    * Event handler when a CAR option is selected
    */
-  handleChangeCAR = (carSelected) => {
-    this.setState({
-      carSelected: carSelected ? carSelected.value : '',
-      showButton: Boolean(carSelected),
+  handleEAChange = (obj) => {
+    const { loadStrategies, showDotsGraph } = this.props;
+    const ea = obj ? obj.value : null;
+    this.setState({ ea });
+    if (!ea) {
+      showDotsGraph(true);
+      loadStrategies(null);
+      return;
+    }
+
+    const { biome, subBasin } = this.state;
+    const { data: { [biome]: { [subBasin]: { [ea]: valsArray } } } } = this.props;
+    const { id_biome: idBiome, id_subzone: idSubzone, id_ea: idEA } = valsArray[0];
+
+    loadStrategies({
+      biome: { name: biome, id: idBiome },
+      subBasin: { name: subBasin, id: idSubzone },
+      ea: { name: ea, id: idEA },
     });
-    const { loadStrategies } = this.props;
-    loadStrategies();
+    showDotsGraph(false);
   }
 
   /**
-   * Print Select element for different car
+   * Print Select element for different environmental authorities
    *
-   * @param {String} nameSZH Name of the szh to list options
+   * @param {String} subBasin Name of the szh to list options
    */
-  listCAROptions = (nameSZH) => {
-    const { data } = this.props;
-    if (!data || !data[nameSZH]) return null;
+  renderEAs = () => {
+    const { biome, subBasin, ea } = this.state;
+    const { data: { [biome]: { [subBasin]: easObject } } } = this.props;
 
-    const { carSelected } = this.state;
-    const options = Object.keys(data[nameSZH]).map(car => ({ value: car, label: car }));
+    let options = [];
+    if (easObject) {
+      options = Object.keys(easObject).map(element => ({ value: element, label: element }));
+    }
     return (
       <Select
-        value={carSelected}
-        onChange={this.handleChangeCAR}
+        value={ea}
+        onChange={this.handleEAChange}
         placeholder="Seleccione CAR"
         options={options}
       />
     );
   }
 
+  /**
+   * Print Select element with sub-basin options
+   *
+   */
+  renderSubBasins = () => {
+    const { biome } = this.state;
+    const { data: { [biome]: subBasinsObj } } = this.props;
+
+    const { subBasin } = this.state;
+    let options = [];
+    if (subBasinsObj) {
+      options = Object.keys(subBasinsObj).map(element => ({ value: element, label: element }));
+    }
+    return (
+      <Select
+        value={subBasin}
+        onChange={this.handleSubBasinChange}
+        placeholder="SubZona Hidrográfica"
+        options={options}
+      />
+    );
+  }
+
   render() {
-    const { loadStrategies } = this.props;
     const {
-      layerName, szhSelected, carSelected, showButton,
-    } = this.state;
+      showDotsGraph, visibleGraph,
+    } = this.props;
+    const { biome, subBasin } = this.state;
     return (
       <div className="complist">
-        <CarritoIcon />
-        <div className="Biomatit">
-          {layerName || 'Seleccione un bioma del gráfico'}
-        </div>
-        {layerName ? this.listSZHOptions() : ''}
-        {szhSelected ? this.listCAROptions(szhSelected) : ''}
-        {showButton ? (
+        <div className="popbtns">
+          { !visibleGraph && (
           <button
-            className="addbioma"
+            className="backgraph"
             type="button"
             onClick={() => {
-              this.setState({ showButton: false });
-              loadStrategies(szhSelected, carSelected);
+              showDotsGraph(true);
             }}
-          />
-        ) : ''}
+          >
+            <BackGraphIcon />
+            {'Gráfico Biomas'}
+          </button>)
+        }
+        </div>
+        <AddIcon />
+        <div className="Biomatit">
+          {biome || 'Seleccione un bioma del gráfico o del mapa'}
+        </div>
+        {biome ? this.renderSubBasins() : ''}
+        {subBasin ? this.renderEAs() : ''}
       </div>
     );
   }
 }
 
 PopMenu.propTypes = {
-  layerName: PropTypes.string,
-  // Data from elastic result for "donde compensar sogamoso"
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
+  showDotsGraph: PropTypes.func.isRequired,
+  visibleGraph: PropTypes.bool,
 };
 
 PopMenu.defaultProps = {
-  layerName: '',
+  visibleGraph: true,
 };
 
 export default PopMenu;

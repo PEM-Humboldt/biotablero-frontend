@@ -4,7 +4,7 @@ import { AxisBottom, AxisLeft } from '@vx/axis';
 import { Grid } from '@vx/grid';
 import { Group } from '@vx/group';
 import { GlyphCircle } from '@vx/glyph';
-import { scaleLinear, scaleOrdinal } from '@vx/scale';
+import { scaleLinear } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
 const name = d => d.name;
@@ -15,7 +15,7 @@ const z = d => d.affected_natural;
 let tooltipTimeout;
 
 export default withTooltip(({
-  width, height, colors, dataJSON: points, labelX, labelY, dotOnClick,
+  width, height, colors, dataJSON: points, activeBiome, labelX, labelY, dotOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
 }) => {
   const margin = {
@@ -36,17 +36,19 @@ export default withTooltip(({
     range: [yMax, 0],
     clamp: true,
   });
-  const zScale = scaleOrdinal({
-    range: colors,
-  });
 
-  const checkColor = (value1, value2) => {
+  const checkColor = (point) => {
     if (labelX === '% Area afectada') {
-      // TODO: Include another color border for item selected and item in cart
-      if ((value1 > 6.5) && (value2 > 12)) return zScale(2); // high
-      if ((value1 > 6.5) && (value2 < 12)) return zScale(1); // low
-      if ((value1 < 6.4) && (value2 < 12)) return zScale(0); // medium
+      // TODO: Include another color border for item selected and item in the biomes selected cart
+      if ((y(point) > 6.5) && (x(point) > 12)) return colors[2]; // high
+      if ((y(point) < 6.5) && (x(point) < 12)) return colors[1]; // low
+      return colors[0]; // medium
     }
+    return null; // no color
+  };
+
+  const checkStrokeColor = (point) => {
+    if (activeBiome === name(point)) return '#2a363b';
     return null;
   };
 
@@ -78,11 +80,13 @@ export default withTooltip(({
           {points.map(point => (
             <GlyphCircle
               className="dot"
-              key={point.name}
-              fill={checkColor(y(point), x(point))}
+              key={point.id}
+              stroke={checkStrokeColor(point)}
+              strokeWidth="2"
+              fill={checkColor(point)}
               left={margin.left + xScale(x(point))}
               top={yScale(y(point))}
-              size={xScale(x(point))}
+              size={xScale(x(point)) * 1.2}
               onMouseEnter={() => () => {
                 clearTimeout(tooltipTimeout);
                 showTooltip({
@@ -95,7 +99,9 @@ export default withTooltip(({
                   hideTooltip();
                 }, 500);
               }}
-              onClick={() => () => dotOnClick(name(point))}
+              onClick={() => () => {
+                dotOnClick(name(point));
+              }}
             />
           ))}
           <AxisLeft
@@ -147,7 +153,7 @@ export default withTooltip(({
             lineHeight: '1.5',
           }}
         >
-          <div style={{ color: checkColor(y(tooltipData), x(tooltipData)) }}>
+          <div style={{ color: checkColor(tooltipData) }}>
             <div>
               <b>
                 {'Afectación: '}

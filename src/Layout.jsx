@@ -6,10 +6,14 @@ import Footer from './Footer';
 import Header from './Header';
 
 const Layout = ({
-  children, moduleName, showFooterLogos, userLogged,
+  children, moduleName, showFooterLogos, userLogged, callbackUser,
 }) => (
   <div>
-    <Header activeModule={moduleName} userLogged={userLogged} />
+    <Header
+      activeModule={moduleName}
+      userLogged={userLogged}
+      callbackUser={callbackUser}
+    />
     {children}
     <Footer showLogos={showFooterLogos} />
   </div>
@@ -20,6 +24,7 @@ Layout.propTypes = {
   moduleName: PropTypes.string,
   showFooterLogos: PropTypes.bool,
   userLogged: PropTypes.object,
+  callbackUser: PropTypes.func.isRequired,
 };
 
 Layout.defaultProps = {

@@ -25,8 +25,8 @@ export default withTooltip(({
 
   const prepareData = (data) => {
     const transformedData = [];
-    data.aggregations.areas.buckets.forEach((item) => {
-      transformedData.push({ name: `${item.key}`, area_V: `${item.area.value}` });
+    data.forEach((item) => {
+      transformedData.push({ name: `${item.key}`, area_V: `${item.area}` });
     });
     return transformedData;
   };

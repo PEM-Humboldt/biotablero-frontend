@@ -31,42 +31,43 @@ class MapViewer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      layers: null,
+      layers: {},
+      activeLayers: [],
+      update: false,
     };
 
     this.mapRef = React.createRef();
   }
 
   componentDidUpdate() {
-    let { layers: activeLayers } = this.props;
-    activeLayers = MapViewer.infoFromLayers(activeLayers, 'active');
-    const { layers } = this.state;
-    if (activeLayers) {
-      Object.keys(activeLayers).forEach((layerName) => {
-        if (activeLayers[layerName]) this.showLayer(layers[layerName], true);
+    const { layers, activeLayers, update } = this.state;
+    if (update) {
+      Object.keys(layers).forEach((layerName) => {
+        if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
         else this.showLayer(layers[layerName], false);
       });
-      const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-      if (countActiveLayers === 0) {
-        this.mapRef.current.leafletElement.setView(config.params.center, 5);
-      }
-    } else this.mapRef.current.leafletElement.setView(config.params.center, 5);
+    }
+    const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
+    if (countActiveLayers === 0) {
+      this.mapRef.current.leafletElement.setView(config.params.center, 5);
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
-    const { layers: oldLayers } = prevState;
-    if (oldLayers === null) {
-      return { layers };
+    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
+    newActiveLayers = Object.keys(newActiveLayers).filter(name => newActiveLayers[name]);
+    const { layers: oldLayers, activeLayers } = prevState;
+    if (newActiveLayers.join() === activeLayers.join()) {
+      return { update: false };
     }
+
+    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
     Object.keys(oldLayers).forEach((name) => {
       if (layers[name] !== oldLayers[name]) {
-        if (oldLayers[name]) {
-          oldLayers[name].remove();
-        }
+        oldLayers[name].remove();
       }
     });
-    return { layers };
+    return { layers, activeLayers: newActiveLayers, update: true };
   }
 
   /**

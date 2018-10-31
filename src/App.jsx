@@ -8,16 +8,75 @@ import Search from './Search';
 import Compensation from './Compensation';
 import './assets/main.css';
 
-const App = () => (
-  <main>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/ShortInfo" component={ShortInfo} />
-      <Route path="/Consultas" component={Search} />
-      <Route path="/Compensaciones" component={Compensation} />
-      <Route path="/Alertas" component={Home} />
-    </Switch>
-  </main>
-);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+    };
+  }
+
+  loadHome = (props) => {
+    const { user } = this.state;
+    return (
+      <Home
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
+  loadSearch = (props) => {
+    const { user } = this.state;
+    return (
+      <Search
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
+  loadCompensator = (props) => {
+    const { user } = this.state;
+    if (user) {
+      return (
+        <Compensation
+          userLogged={user}
+          callbackUser={this.callbackUser}
+          {...props}
+        />
+      );
+    }
+    const newProps = { ...props };
+    newProps.location.pathname = '/';
+    return this.loadHome(newProps);
+  }
+
+  callbackUser = (user) => {
+    if (user) {
+      this.setState({ user });
+    } else {
+      this.setState({ user: null });
+    }
+    return user;
+  };
+
+  render() {
+    // TODO: Change path to Home when user get
+    return (
+      <main>
+        <Switch>
+          <Route exact path="/" render={this.loadHome} />
+          <Route path="/Consultas" render={this.loadSearch} />
+          <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
+          <Route path="/Alertas" render={this.loadHome} />
+          <Route path="/ShortInfo" component={ShortInfo} />
+        </Switch>
+      </main>
+    );
+  }
+}
 
 export default App;

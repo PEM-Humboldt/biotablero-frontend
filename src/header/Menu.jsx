@@ -20,7 +20,7 @@ class Menu extends React.Component {
     const { openMenu } = this.state;
     return (
       <div id="menuToggle">
-        <input type="checkbox" checked={openMenu} onClick={this.changeMenuState} />
+        <input type="checkbox" checked={openMenu} onChange={this.changeMenuState} />
         <span />
         <span />
         <span />
@@ -46,7 +46,7 @@ class Menu extends React.Component {
             </li>
           </a>
           { userLogged ? (
-            <Link to="/Compensaciones" onClick={this.changeMenuState}>
+            <Link to="/GEB/Compensaciones" onClick={this.changeMenuState}>
               <li>
                 Compensaciones
               </li>

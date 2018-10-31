@@ -1,10 +1,27 @@
 /** eslint verified */
 import axios from 'axios';
 
-const GEOSERVER_HOST = 'http://biotablero.humboldt.org.co/geoserver';
-const GEOSERVER_PORT = null;
-
 class GeoServerAPI {
+  /**
+   * Request the project layers, all projects or by project ID
+   */
+  static requestProjectLayersByCompany(companyName, projectName) {
+    if (companyName === 'GEB') {
+      if (projectName) return GeoServerAPI.requestWFSBiotablero('User_GEB_projects', `CQL_FILTER=NOM_GEN='${projectName}'`);
+      const response = GeoServerAPI.requestWFSBiotablero('User_GEB_projects');
+      return response;
+    } return null;
+  }
+
+  /**
+   * Request the GEB layers, all projects or by project ID
+   */
+  static requestEnvironmentalEntities(envEntity) {
+    if (envEntity) return GeoServerAPI.requestWFSBiotablero('BIOMAS_BY_CAR_MP', `CQL_FILTER=GroupByCar%20like%20"%'${envEntity}'"`);
+    const response = GeoServerAPI.requestWFSBiotablero('BIOMAS_BY_CAR_MP');
+    return response;
+  }
+
   /**
    * Request the layer for 'Sogamoso'
    */
@@ -38,18 +55,19 @@ class GeoServerAPI {
    *
    * @param {string} subType subtype name
    */
-  static requestWFSBiotablero(subType) {
-    return GeoServerAPI.makeRequest(
-      `/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
-    );
+  static requestWFSBiotablero(subType, params) {
+    if (params) {
+      return GeoServerAPI.makeRequest(`geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&${params}&outputFormat=application%2Fjson`);
+    }
+    return GeoServerAPI.makeRequest(`geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`);
   }
 
   /**
    * Request the base layer 'Regiones_geb'
    */
   static getRequestURL() {
-    const port = GEOSERVER_PORT ? `:${GEOSERVER_PORT}` : '';
-    return `${GEOSERVER_HOST}${port}`;
+    const port = process.env.REACT_APP_GEOSERVER_PORT ? `:${process.env.REACT_APP_GEOSERVER_PORT}` : '';
+    return `${process.env.REACT_APP_GEOSERVER_HOST}${port}`;
   }
 
   /**
@@ -60,6 +78,17 @@ class GeoServerAPI {
    */
   static makeRequest(endpoint) {
     return axios.get(`${this.getRequestURL()}/${endpoint}`)
+      .then(res => res.data);
+  }
+
+  /**
+   * Request an endpoint to the geoserver server
+   *
+   * @param {String} url endpoint url
+   * @param {Object} requestBody JSON object with the request body
+   */
+  static makeRequestTest(endpoint) {
+    return axios.get(`${endpoint}`)
       .then(res => res.data);
   }
 }
