@@ -49,15 +49,9 @@ class Uim extends Component {
               >
                 <span />
               </a>
-<<<<<<< HEAD:src/header/Uim.jsx
               <h6>
-               {user.name}
+               {userLogged.name}
               </h6>
-=======
-              <h3>
-                {userLogged.name}
-              </h3>
->>>>>>> 997f23e87e6450bdaf52aebac59d76fb9070f7fc:src/Uim.jsx
             </div>
             <button
               type="button"
