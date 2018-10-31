@@ -575,7 +575,7 @@ class Drawer extends React.Component {
         <ConfirmationModal
           open={saveStrategiesModal}
           onClose={() => { this.setState({ saveStrategiesModal: false }); }}
-          message={'Al guardar estas estrategias, no podrán editarse.\n¿Desea continuar?'}
+          message="Al guardar estas estrategias, no podrán editarse. ¿Desea continuar?"
           onContinue={this.saveStrategies}
           onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
         />

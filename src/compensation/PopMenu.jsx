@@ -126,17 +126,17 @@ class PopMenu extends Component {
         {subBasin ? this.renderEAs() : ''}
         <div className="popbtns">
           { !visibleGraph && (
-            <button
-              className="backgraph"
-              type="button"
-              onClick={() => {
-                showDotsGraph(true);
-              }}
-            >
-              <BackGraphIcon />
-              {'Gráfico Biomas'}
-            </button>)
-          }
+          <button
+            className="backgraph"
+            type="button"
+            onClick={() => {
+              showDotsGraph(true);
+            }}
+          >
+            <BackGraphIcon />
+            {'Gráfico Biomas'}
+          </button>)
+        }
         </div>
       </div>
     );

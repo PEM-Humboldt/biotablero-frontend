@@ -50,7 +50,7 @@ class Uim extends Component {
                 <span />
               </a>
               <h6>
-               {userLogged.name}
+                {userLogged.name}
               </h6>
             </div>
             <button
