@@ -257,6 +257,12 @@ class Search extends Component {
     this.loadSecondLevelLayer(name);
   }
 
+  /**
+    * Update the active layer, sending state updated to MapViewer and Drawer
+    *
+    * @param {nameToOff} layer name to remove and turn off in the map
+    * @param {nameToOn} layer name to active and turn on in the map
+    */
   innerElementChange = (nameToOff, nameToOn) => {
     this.loadLayer(nameToOn, nameToOff);
   }
@@ -286,8 +292,22 @@ class Search extends Component {
     });
   }
 
-  render() {
+  /**
+    * Funtion to control data to show
+    *
+    */
+  getData = () => {
     const { userLogged } = this.props;
+    if (userLogged) {
+      selectorData[0].options.unshift(dataGEB);
+    } else if (selectorData[0].options[0] === dataGEB) {
+      selectorData[0].options.shift(dataGEB);
+    }
+    return selectorData;
+  }
+
+  render() {
+    const { callbackUser, userLogged } = this.props;
     const {
       subAreaName, layerName, activeLayerName, basinData, currentCompany,
       colors, colorsFC, colorSZH, layers,
@@ -297,6 +317,7 @@ class Search extends Component {
         moduleName="Consultas"
         showFooterLogos={false}
         userLogged={userLogged}
+        callbackUser={callbackUser}
       >
         <div className="appSearcher">
           <MapViewer
@@ -312,7 +333,7 @@ class Search extends Component {
                   this.innerElementChange,
                 ]}
                 description={description(currentCompany)}
-                data={selectorData}
+                data={this.getData()}
                 expandedId={0}
                 iconClass="iconsection"
               />
@@ -337,6 +358,7 @@ class Search extends Component {
 }
 
 Search.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
 };
 

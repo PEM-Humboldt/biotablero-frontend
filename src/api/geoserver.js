@@ -59,7 +59,7 @@ class GeoServerAPI {
     if (params) {
       return GeoServerAPI.makeRequest(`geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&${params}&outputFormat=application%2Fjson`);
     }
-    return GeoServerAPI.makeRequest(`/geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`);
+    return GeoServerAPI.makeRequest(`geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`);
   }
 
   /**
@@ -78,10 +78,7 @@ class GeoServerAPI {
    */
   static makeRequest(endpoint) {
     return axios.get(`${this.getRequestURL()}/${endpoint}`)
-      .then((res) => {
-        console.log('GeoServerAPI res', res, res.data);
-        return res.data;
-      });
+      .then(res => res.data);
   }
 
   /**

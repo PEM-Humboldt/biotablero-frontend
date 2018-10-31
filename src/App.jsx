@@ -8,30 +8,72 @@ import Search from './Search';
 import Compensation from './Compensation';
 import './assets/main.css';
 
-const loadSearch = props => (
-  <Search
-    userLogged={null}
-    {...props}
-  />
-);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+    };
+  }
 
-const loadCompensator = props => (
-  <Compensation
-    userLogged={{ value: true }}
-    {...props}
-  />
-);
+  loadHome = (props) => {
+    const { user } = this.state;
+    return (
+      <Home
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
 
-const App = () => (
-  <main>
-    <Switch>
-      <Route exact path="/" component={Home} />
-      <Route path="/ShortInfo" component={ShortInfo} />
-      <Route path="/Consultas" render={loadSearch} />
-      <Route path="/GEB/Compensaciones" render={loadCompensator} />
-      <Route path="/Alertas" component={Home} />
-    </Switch>
-  </main>
-);
+  loadSearch = (props) => {
+    const { user } = this.state;
+    return (
+      <Search
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
+  loadCompensator = (props) => {
+    const { user } = this.state;
+    return (
+      <Compensation
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
+  callbackUser = (user, activeModule) => {
+    // TODO: Implement new route if there is an activeModule no allowed without login
+    console.log('activeModule', activeModule);
+    if (user) {
+      this.setState({ user });
+    } else {
+      this.setState({ user: null });
+    }
+    return user;
+  };
+
+  render() {
+    // TODO: Load Home when user is logged out from Compensator
+    return (
+      <main>
+        <Switch>
+          <Route exact path="/" render={this.loadHome} />
+          <Route path="/Consultas" render={this.loadSearch} />
+          <Route path="/GEB/Compensaciones" render={this.loadCompensator} />
+          <Route path="/Alertas" render={this.loadHome} />
+          <Route path="/ShortInfo" component={ShortInfo} />
+        </Switch>
+      </main>
+    );
+  }
+}
 
 export default App;

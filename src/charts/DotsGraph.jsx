@@ -4,7 +4,7 @@ import { AxisBottom, AxisLeft } from '@vx/axis';
 import { Grid } from '@vx/grid';
 import { Group } from '@vx/group';
 import { GlyphCircle } from '@vx/glyph';
-import { scaleLinear, scaleOrdinal } from '@vx/scale';
+import { scaleLinear } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
 const name = d => d.name;
@@ -15,7 +15,7 @@ const z = d => d.affected_natural;
 let tooltipTimeout;
 
 export default withTooltip(({
-  width, height, colors, dataJSON: points, layerName, labelX, labelY, dotOnClick,
+  width, height, colors, dataJSON: points, activeBiome, labelX, labelY, dotOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
 }) => {
   const margin = {
@@ -36,23 +36,20 @@ export default withTooltip(({
     range: [yMax, 0],
     clamp: true,
   });
-  const zScale = scaleOrdinal({
-    range: colors,
-  });
 
   const checkColor = (point) => {
     if (labelX === '% Area afectada') {
       // TODO: Include another color border for item selected and item in the biomes selected cart
-      if ((y(point) > 6.5) && (x(point) > 12)) return zScale(2); // high
-      if ((y(point) < 6.5) && (x(point) < 12)) return zScale(1); // low
-      return zScale(0); // medium
+      if ((y(point) > 6.5) && (x(point) > 12)) return colors[2]; // high
+      if ((y(point) < 6.5) && (x(point) < 12)) return colors[1]; // low
+      return colors[0]; // medium
     }
     return null; // no color
   };
 
   const checkStrokeColor = (point) => {
-    if (layerName === name(point)) return '#2a363b'; // selectedLayer
-    return null; // no color
+    if (activeBiome === name(point)) return '#2a363b';
+    return null;
   };
 
   return (

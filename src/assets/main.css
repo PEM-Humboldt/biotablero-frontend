@@ -222,11 +222,46 @@ header h3 a {
 	padding: 4px 10px 0;
 	resize: both;
 	color: #c3c3c3;
-	cursor: pointer;
 }
 
 .userBox:hover {
 	color: #e84a5f;
+}
+
+.userInfo {
+	display: inline-block;
+	position: relative;
+	padding: 4px 10px 4px 15px;
+	resize: both;
+	color: #c3c3c3;
+}
+
+.userInfo h6 {
+	font-size: 16px;
+	vertical-align: top;
+	font-weight: 600;
+	line-height: 0;
+	display: inline-block;
+	max-width: 120px;
+	height: 22px;
+	line-height: 22px;
+	padding: 15px 0 15px 15px;
+	color: #2a363b;
+/*	-ms-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;*/
+}
+
+.iconUserLogged {
+  background: url(../assets/img/logout.png) no-repeat center;
+  float: right;
+  width: 20px;
+  height: 22px;
+  margin-top: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .logoGEB {
@@ -234,6 +269,7 @@ header h3 a {
 	width: 113px;
 	background: url(./img/LogoGEB.png) no-repeat center;
 	display: inline-block;
+	cursor: pointer;
 }
 
 header h4 {
@@ -1227,9 +1263,9 @@ a#reset-filters {
 }
 
 .leaflet-control-zoom a {
-  background-color: #e84a5f;
-  color: #fff;
-  font-weight: 300;
+  background-color: #e84a5f !important;
+  color: #fff !important;
+  font-weight: 300 !important;
   border-radius: 0 !important;
 }
 
@@ -1351,6 +1387,10 @@ div[id*="panel"] button:hover {
   position: relative;
 }
 
+.graphcard:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .graphcard h2 {
   border-bottom: 1px solid #e84a5f;
   padding: 10px;
@@ -1431,6 +1471,10 @@ p.legcomp {
   text-align: left;
 }
 
+.total:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .total h4 {
   font-size: 30px;
   text-align: left;
@@ -1459,8 +1503,8 @@ p.legcomp {
 .complist svg {
   color: #ea495f;
   float: left;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .Select-menu-outer { top: auto; bottom: 100%; }
@@ -1667,6 +1711,10 @@ tr.row2table:nth-child(odd){
   font-weight: 700;
 }
 
+.errorData:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
 .graphcard td input {
   width: 75px;
   background-color: transparent;
@@ -1725,31 +1773,33 @@ tr.row2table:nth-child(odd){
 	color: #51b4c1;
 }
 
-.backgraph, .downgraph {
+.backgraph, .downgraph, .saveStrategyButton {
   color: #2a363b;
   vertical-align: middle;
   text-align: left;
   font-weight: 600;
-  font-size: 13px;
-  border: 1px solid #fff;
+  font-size: 13px !important;
+  border: 1px solid #fff !important;
   border-radius: 3px;
-  background-color: transparent;
+  background-color: transparent !important;
   outline: none;
   cursor: pointer;
-  line-height: 20px;
+  line-height: 20px !important;
 	text-transform: uppercase;
-	padding: 5px 8px;
+	padding: 5px 8px !important;
 }
 
-.downgraph svg, .backgraph svg {
+.downgraph svg, .backgraph svg, .iconsave svg, .saveStrategyButton svg {
 	height: 20px;
 	width: 20px;
 	margin-top: 0;
 	margin-right: 3px;
+	color: #ea495f;
+	float: left;
 }
 
-.backgraph:hover, .downgraph:hover {
-	background-color: #fff;
+.backgraph:hover, .downgraph:hover, .saveStrategyButton:hover{
+	background-color: #fff !important;
 }
 
 tspan, .vx-axis-label {
@@ -1763,6 +1813,8 @@ tspan, .vx-axis-label {
 .loginBtn {
 	border: none;
 	background-color: transparent;
+	outline: none;
+	cursor: pointer;
 }
 
 .newProjectTitle {
@@ -1784,6 +1836,42 @@ tspan, .vx-axis-label {
 	line-height: 25px;
 }
 
+.generalAlarm {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(66, 66, 66, .6);
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	-ms-align-items: center;
+	align-items: center;
+	justify-content: center;
+}
+
+.generalAlarm h2 {
+	padding: 75px 30px 0;
+	width: 260px;
+	height: 260px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;
+}
+
+.generalAlarm h2 b {
+	text-transform: uppercase;
+	color: #ea485f;
+}
+
+.generalAlarm button {
+	color: #ea485f;
+	position: fixed;
+	top:20px;
+	right: 20px;
+}
+
 .login .npcontent  {
 	padding: 15px;
 }
@@ -1793,10 +1881,16 @@ tspan, .vx-axis-label {
 	width: 300px;
 	background-color: #ffffff;
 	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
-	top: 60px;
-	right: 20px;
+	top: 65px;
+	right: 0;
 	border-radius: 5px 0 0 5px;
-	padding: 15px;
+	padding: 140px 20px 30px;
+	background-image: url(./img/bgmountain.png);
+	background-repeat: no-repeat;
+}
+
+.login:hover {
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .login input {
@@ -1805,6 +1899,7 @@ tspan, .vx-axis-label {
 	outline: none;
 	font-size: 12px;
 	width: 100%;
+	margin-top: 10px;
 }
 
 .login input::placeholder {
@@ -1812,7 +1907,7 @@ tspan, .vx-axis-label {
 }
 
 .loginbtn {
-	margin-top: 10px;
+	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
 	color: #e84a5f;
@@ -1821,29 +1916,29 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 	border: none;
 	float: right;
+	font-size: 12px;
+}
+
+.login .closebtn {
+	color: #ea485f;
+	position: relative;
 }
 
 .loginbtn.disabled {
-	margin-top: 10px;
-	outline: none;
-	cursor: pointer;
-	color: #aaaa50;
-	text-align: right;
+	color: #345b6b;
 	text-decoration: none;
-	background-color: transparent;
-	border: none;
-	float: right;
 }
 
 .recoverbtn {
-	margin-top: 10px;
+	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
-	color: #aaaa50;
+	color: #345b6b;
 	text-align: left;
 	background-color: transparent;
 	border: none;
 	float: left;
+	font-size: 12px;
 }
 
 .loginInput {
@@ -1873,6 +1968,11 @@ tspan, .vx-axis-label {
 	border-radius: 5px 0 0 5px;
 	padding-bottom: 15px;
 }
+
+.newProjectModal:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
 
 .addprjbtn {
 	margin-top: 10px;
@@ -1921,25 +2021,130 @@ tspan, .vx-axis-label {
 }
 
 .newBiome .npcontent  {
-	padding: 15px;
+	padding: 0 15px 10px;
+}
+
+.newBiome h2 {
+  font-size: 18px;
+  color: #ea495f;
+  font-weight: 400;
+  padding: 10px 15px 0;
+  text-align: left;
+  text-transform: uppercase;
+  margin-top: 5px;
 }
 
 .newBiome {
-	width: 350px;
-	height: 150px;
+	width: auto;
 	background-color: #ffffff;
-	top: 500px;
-	right: 25px;
-	border-radius: 5px 0 0 5px;
-	padding-bottom: 15px;
+	border-radius: 5px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+
+.newBiome:hover {
+  	box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.newBiome .addprjbtn {
+	float: none;
+	margin: 0;
+	margin-left: 90%;
+	padding-top: 10px;
+}
+
+.sendCreateBiomes {
+	border: none;
+	background-color: transparent;
+	color: #e84a5f;
+	outline: none;
+	cursor: pointer;
+	border: 1px solid #e84a5f;
+	padding: 5px 10px;
+	text-transform: uppercase;
+	margin-top: 5px;
+	font-size: 12px;
+	letter-spacing: 1px;
+	font-weight: 600;
+}
+
+.sendCreateBiomes:hover, .newBiomeAlarm button:hover {
+	color: #fff;
+	background: none;
+	background-color: #e84a5f;
+}
+
+.newBiomeAlarm {
+	padding: 75px 30px 0;
+	width: 260px;
+	height: 260px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 1);
+	box-sizing: border-box;
+	text-align: center;
+	font-size: 14px;
+	margin-top:calc(50vh - 130px);
+	margin-left:calc(50vw - 130px);
+	outline: none;
+	color: #424242;
+}
+
+.newBiomeAlarm div {
+	border-bottom: 1px solid #424242;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+.newBiomeAlarm button {
+	border: none;
+	background-color: transparent;
+	color: #e84a5f;
+	outline: none;
+	cursor: pointer;
+	border: 1px solid #e84a5f;
+	padding: 5px 0;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 600;
+	width: 50px;
+	margin: 5px;
+}
+
+.nBA2 {
+	padding-top: 100px;
+}
+
+/* Begin - Animate the loading */
+.load-wrapp {
+    width: 100px;
+    height: 60px;
+    padding: 0 50px; margin: 0;
+    background-color: transparent;
+    display: inline-block;
+    transform: rotate(180deg)
+}
+
+.line {
+    display: inline-block;
+    width: 13px;
+    height: 15px;
+    background-color: #e84a5f;
+    margin: 0 2px;
+    vertical-align: bottom;
+}
+
+.load-1 .line:nth-last-child(1) {animation: loadingA 1.5s 1s infinite; background-color: #d65e6e; vertical-align: top;}
+.load-1 .line:nth-last-child(2) {animation: loadingA 1.5s .5s infinite; vertical-align: top;}
+.load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e32759; vertical-align: top;}
+
+@keyframes loadingA {
+    0 {height: 15px;}
+    50% {height: 35px;}
+    100% {height: 15px;}
+}
+/* End - Animate the loading */
 
 /* Media Queries */
 @media screen and (max-width: 1200px){
-
-    .btnhome {
-
-    }
 
     .btnhome b {
         display: none;
@@ -1972,17 +2177,25 @@ tspan, .vx-axis-label {
 
 
 @media screen and (max-width: 980px){
+
+	.leaflet-container {
+		padding: 0;
+	}
+
 	.popbtns {
 		display: block;
 	}
 
-	.backgraph, .downgraph {
-		width: 166px;
+	.backgraph, .downgraph, .saveStrategyButton, .iconsave {
+		width: 166px !important;
 	}
 	.downgraph {
-		margin-top: 5px;
+		margin-top: 5px !important;
 	}
 	.backgraph {
+		margin-right: 5px;
+	}
+	.iconsave {
 		margin-right: 5px;
 	}
 
@@ -1994,6 +2207,7 @@ tspan, .vx-axis-label {
 	.contentView {
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
+
 	}
 
 	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */

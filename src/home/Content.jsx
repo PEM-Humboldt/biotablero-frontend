@@ -29,7 +29,7 @@ const Content = ({ activeModule, setActiveModule, userLogged }) => (
         idBtn="combtn"
         firstLineContent="compensación"
         secondLineContent="ambiental"
-        localLink="/Compensaciones"
+        localLink="/GEB/Compensaciones"
       />
     )
       : '' }

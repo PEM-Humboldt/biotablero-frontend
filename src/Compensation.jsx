@@ -1,5 +1,6 @@
 /** eslint verified */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import L from 'leaflet';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -51,10 +52,12 @@ class Compensation extends Component {
         const statusId = (statusKey === 'null') ? '(ESTADO SIN ASIGNAR)' : statusKey;
         const statusLabel = (statusId.length > 3)
           ? Compensation.firstLetterUpperCase(statusId) : statusId;
-        statusList.push({
-          value: statusId,
-          label: statusLabel,
-        });
+        if (!statusList.find(st => st.value === statusId)) {
+          statusList.push({
+            value: statusId,
+            label: statusLabel,
+          });
+        }
         region.projectsStates.push({
           id: statusId,
           label: statusLabel,
@@ -110,16 +113,20 @@ class Compensation extends Component {
       currentStatus: null,
       newProjectModal: false,
       connError: false,
-      layerName: null,
       layers: {},
       regions: [],
       regionsList: [],
       statusList: [],
       loadingModal: false,
+      clickedStrategy: null,
     };
   }
 
   componentDidMount() {
+    this.loadProjectsList();
+  }
+
+  loadProjectsList = () => {
     RestAPI.requestProjectsAndRegionsByCompany(1)
       .then((res) => {
         const { regionsList, statusList, regions } = Compensation.constructDataForSelector(res);
@@ -131,11 +138,16 @@ class Compensation extends Component {
           regions,
         });
       })
-      .catch(() => {
-        this.setState({
-          connError: true,
-        });
-      });
+      .catch(() => this.reportConnError());
+  }
+
+  /**
+   * Report a connection error from one of the child components
+   */
+  reportConnError = () => {
+    this.setState({
+      connError: true,
+    });
   }
 
   /**
@@ -213,21 +225,18 @@ class Compensation extends Component {
   }
 
   featureStyle = (feature) => {
-    const { colors, layerName } = this.state;
+    const { colors } = this.state;
     const styleResponse = {
       stroke: false, opacity: 0.6, fillOpacity: 0.6,
     };
-    if (layerName && (layerName === feature.properties.BIOMA_IAvH)) {
-      styleResponse.fillOpacity = 1;
-    }
     if (feature.properties.compensation_factor > 6.5
     && feature.properties.area_impacted_pct > 12) {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'high'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'high' in obj));
     } else if (feature.properties.compensation_factor < 6.5
     && feature.properties.area_impacted_pct < 12) {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'low'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'low' in obj));
     } else {
-      styleResponse.fillColor = Object.values(Object.values(colors).find(obj => String(Object.keys(obj)) === 'medium'));
+      styleResponse.fillColor = Object.values(colors.find(obj => 'medium' in obj));
     }
     return styleResponse;
   }
@@ -268,6 +277,13 @@ class Compensation extends Component {
           <br><b>% de afectación:</b> ${area.feature.properties.area_impacted_pct || 'Sin información'}`,
         ).openPopup();
         break;
+      case 'strategies':
+        area.bindPopup(
+          `<b>Estrategia:</b> ${area.feature.properties.strategy}
+          <br><b>Area:</b> ${area.feature.properties.area_ha}
+          <br><b>Estado:</b> ${area.feature.properties.area_status}`,
+        ).openPopup();
+        break;
       default:
         break;
     }
@@ -285,7 +301,11 @@ class Compensation extends Component {
 
   clickFeature = (event, parentLayer) => {
     const { properties } = event.target.feature;
-    this.setState({ currentBiome: properties.name });
+    if ('id_biome' in properties) {
+      this.setState({ currentBiome: properties.name });
+    } else if ('id_strategy' in properties) {
+      this.setState({ clickedStrategy: properties.id_strategy });
+    }
     this.highlightFeature(event.target, parentLayer);
   }
 
@@ -336,6 +356,7 @@ class Compensation extends Component {
       currentRegion: null,
       biomesImpacted: [],
     });
+    this.loadProjectsList();
   }
 
   /** ****************************** */
@@ -362,30 +383,97 @@ class Compensation extends Component {
     this.loadProject(projectId);
   }
 
-  /** ******************************************* */
-  /** LISTENERS FOR GRAPH CHANGES THAT AFFECT MAP */
-  /** ******************************************* */
+  /** ********************************* */
+  /** LISTENERS CHANGES THAT AFFECT MAP */
+  /** ********************************* */
 
   updateCurrentBiome = (name) => {
-    this.setState({ currentBiome: name });
-    const { layers: { projectBiomes: { layer: layers } } } = this.state;
-    let area = null;
-    layers.eachLayer((layer) => {
-      if (layer.feature.properties.name === name) area = layer;
+    let prevBiome = null;
+    this.setState((prevState) => {
+      prevBiome = prevState.currentBiome;
+      const newState = {
+        ...prevState,
+        currentBiome: name,
+      };
+      if (newState.layers.strategies) newState.layers.strategies.active = false;
+      newState.layers.projectBiomes.active = true;
+      return newState;
+    }, () => {
+      const { layers: { projectBiomes: { layer: layers } } } = this.state;
+      let newArea = null;
+      let oldArea = null;
+      layers.eachLayer((layer) => {
+        if (layer.feature.properties.name === name) newArea = layer;
+        if (layer.feature.properties.name === prevBiome) oldArea = layer;
+      });
+      if (newArea) this.highlightFeature(newArea, 'projectBiomes');
+      else {
+        this.resetHighlight(oldArea, 'projectBiomes');
+        oldArea.closePopup();
+      }
     });
-    this.highlightFeature(area, 'projectBiomes');
+  }
+
+  showStrategiesLayer = (geoJson) => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      newState.layers = {
+        ...newState.layers,
+        projectBiomes: {
+          ...newState.layers.projectBiomes,
+          active: false,
+        },
+        strategies: {
+          displayName: 'strategies',
+          active: true,
+          layer: L.geoJSON(
+            geoJson,
+            {
+              style: this.featureStyle,
+              onEachFeature: (feature, layer) => (
+                this.featureActions(feature, layer, 'strategies')
+              ),
+            },
+          ),
+        },
+      };
+      return newState;
+    });
+  }
+
+  updateClickedStrategy = (strategyId) => {
+    let prevStrategy = null;
+    this.setState((prevState) => {
+      prevStrategy = prevState.clickedStrategy;
+      return { clickedStrategy: Number(strategyId) };
+    }, () => {
+      const { layers: { strategies: { layer: layers } } } = this.state;
+      const newAreas = [];
+      const oldAreas = [];
+      layers.eachLayer((layer) => {
+        if (layer.feature.properties.id_strategy === Number(strategyId)) newAreas.push(layer);
+        if (layer.feature.properties.id_strategy === prevStrategy) oldAreas.push(layer);
+      });
+      newAreas
+        .sort((a, b) => a.feature.properties.area_ha - b.feature.properties.area_ha)
+        .forEach(area => this.highlightFeature(area, 'strategies'));
+      oldAreas.forEach(area => this.resetHighlight(area, 'strategies'));
+    });
   }
 
   render() {
+    const { callbackUser, userLogged } = this.props;
     const {
-      biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion,
-      layerName, colors, layers, regions, regionsList, statusList, newProjectModal, connError,
-      currentCompanyId, currentProjectId, loadingModal, impactedBiomesDecisionTree,
+      biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
+      regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
+      currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
       <Layout
         moduleName="Compensaciones"
         showFooterLogos={false}
+        callbackUser={callbackUser}
+        userLogged={userLogged}
       >
         {/** Modals section: new project, connection error or loading message */}
         <Modal
@@ -411,10 +499,11 @@ class Compensation extends Component {
           onClose={this.handleCloseModal('connError')}
           disableAutoFocus
         >
-          <div className="newProjectTitle">
+          <div className="generalAlarm">
             <h2>
-              Sin conexión al servidor.
-              La aplicación estará disponible nuevamente en minutos.
+              <b>Sin conexión al servidor</b>
+              <br />
+              Intenta de nuevo en unos minutos.
             </h2>
             <button
               type="button"
@@ -433,9 +522,16 @@ class Compensation extends Component {
           open={loadingModal}
           disableAutoFocus
         >
-          <div className="newProjectTitle">
+          <div className="generalAlarm">
             <h2>
-              Cargando información
+              <b>Cargando</b>
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
             </h2>
           </div>
         </Modal>
@@ -469,7 +565,6 @@ class Compensation extends Component {
                 back={this.handlerBackButton}
                 basinName={currentProject.name}
                 colors={colors.map(obj => Object.values(obj)[0])}
-                layerName={layerName}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}
@@ -478,6 +573,10 @@ class Compensation extends Component {
                 companyId={currentCompanyId}
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}
+                reportConnError={this.reportConnError}
+                showStrategies={this.showStrategiesLayer}
+                clickedStrategy={clickedStrategy}
+                updateClickedStrategy={this.updateClickedStrategy}
               />
               )
             }
@@ -487,5 +586,14 @@ class Compensation extends Component {
     );
   }
 }
+
+Compensation.propTypes = {
+  callbackUser: PropTypes.func.isRequired,
+  userLogged: PropTypes.object,
+};
+
+Compensation.defaultProps = {
+  userLogged: null,
+};
 
 export default Compensation;

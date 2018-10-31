@@ -2,13 +2,17 @@
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
 import BackGraphIcon from '@material-ui/icons/Timeline';
-import DownloadIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 class PopMenu extends Component {
-  static getDerivedStateFromProps(nextProps) {
-    return { biome: Object.keys(nextProps.data)[0] };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const newState = { biome: Object.keys(nextProps.data)[0] };
+    if (prevState.biome !== newState.biome) {
+      newState.subBasin = null;
+      newState.ea = null;
+    }
+    return newState;
   }
 
   constructor(props) {
@@ -24,8 +28,14 @@ class PopMenu extends Component {
    * Event handler when a sub-basin option is selected
    */
   handleSubBasinChange = (obj) => {
+    const { loadStrategies, showDotsGraph } = this.props;
+    const subBasin = obj ? obj.value : null;
+    if (!subBasin) {
+      showDotsGraph(true);
+      loadStrategies(null);
+    }
     this.setState({
-      subBasin: obj.value,
+      subBasin,
       ea: null,
     });
   }
@@ -34,14 +44,24 @@ class PopMenu extends Component {
    * Event handler when a CAR option is selected
    */
   handleEAChange = (obj) => {
-    const ea = obj.value;
+    const { loadStrategies, showDotsGraph } = this.props;
+    const ea = obj ? obj.value : null;
     this.setState({ ea });
+    if (!ea) {
+      showDotsGraph(true);
+      loadStrategies(null);
+      return;
+    }
+
     const { biome, subBasin } = this.state;
     const { data: { [biome]: { [subBasin]: { [ea]: valsArray } } } } = this.props;
     const { id_biome: idBiome, id_subzone: idSubzone, id_ea: idEA } = valsArray[0];
-    const { loadStrategies, showDotsGraph } = this.props;
 
-    loadStrategies(idBiome, idSubzone, idEA);
+    loadStrategies({
+      biome: { name: biome, id: idBiome },
+      subBasin: { name: subBasin, id: idSubzone },
+      ea: { name: ea, id: idEA },
+    });
     showDotsGraph(false);
   }
 
@@ -93,7 +113,7 @@ class PopMenu extends Component {
 
   render() {
     const {
-      showDotsGraph, downloadPlan, total, visibleGraph,
+      showDotsGraph, visibleGraph,
     } = this.props;
     const { biome, subBasin } = this.state;
     return (
@@ -117,16 +137,6 @@ class PopMenu extends Component {
               {'Gráfico Biomas'}
             </button>)
           }
-          {total && (
-            <button
-              className="downgraph"
-              type="button"
-              onClick={() => downloadPlan()}
-            >
-              <DownloadIcon className="icondown" />
-              {'Descargar plan'}
-            </button>)
-          }
         </div>
       </div>
     );
@@ -134,18 +144,13 @@ class PopMenu extends Component {
 }
 
 PopMenu.propTypes = {
-  total: PropTypes.number,
-  // Data from elastic result for "donde compensar sogamoso"
-  // TODO: Implement source data changes for RestAPI
   data: PropTypes.object.isRequired,
   loadStrategies: PropTypes.func.isRequired,
-  downloadPlan: PropTypes.func.isRequired,
   showDotsGraph: PropTypes.func.isRequired,
   visibleGraph: PropTypes.bool,
 };
 
 PopMenu.defaultProps = {
-  total: 0,
   visibleGraph: true,
 };
 

@@ -9,19 +9,6 @@ class RestAPI {
    * @param {String} password password in database
    */
   static requestUser(username, password) {
-    // if (username === 'geb') {
-    //   return {
-    //     username: `${username}`,
-    //     name: 'Grupo Energía Bogotá',
-    //   };
-    // }
-    // if (username === 'iavh') {
-    //   return {
-    //     username: `${username}`,
-    //     name: 'IAvH',
-    //   };
-    // }
-    // return null;
     return RestAPI.makePostRequest(
       'users/login',
       {
@@ -36,7 +23,7 @@ class RestAPI {
    * @param {String} username name in database
    * @param {String} password password in database
    */
-  // TODO: Implementing this functionality for log out an user
+  // TODO: Implementing this functionality for log out a user
 
   static requestUserLogout(username, password) {
     return RestAPI.makePostRequest(
@@ -157,6 +144,13 @@ class RestAPI {
     return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/decisionTree`);
   }
 
+  /**
+   * Request available strategies information for the given parameters
+   *
+   * @param {Number} biomeId biome id
+   * @param {Number} subzoneId sub-basin id
+   * @param {String} eaId environmental authority id
+   */
   static requestAvailableStrategies(biomeId, subzoneId, eaId) {
     return RestAPI.makePostRequest('strategies/biomeSubzoneEA', {
       id_biome: biomeId,
@@ -174,7 +168,6 @@ class RestAPI {
   static requestProjectByIdAndCompany(companyId, projectId) {
     return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`);
   }
-
 
   /**
    * Request the project info by company, organized by region and state
@@ -253,14 +246,52 @@ class RestAPI {
   }
 
   /**
+   * Create a new strategy as selected for the given project
+   *
+   * @param {Numer} companyId company id
+   * @param {Number} projectId project id
+   * @param {Object} strategy strategy to save information
+   */
+  static createProjectStrategy = (companyId, projectId, strategy) => RestAPI.makePostRequest(
+    `companies/${companyId}/projects/${projectId}/strategies`,
+    strategy,
+  )
+
+  /**
+   * Save many strategies as selected for the given project
+   *
+   * @param {Numer} companyId company id
+   * @param {Number} projectId project id
+   * @param {Object[]} strategies list of strategies to save
+   */
+  static bulkSaveStrategies = (companyId, projectId, strategies) => Promise.all(
+    strategies.map(strategy => RestAPI.createProjectStrategy(companyId, projectId, strategy)),
+  )
+
+  /**
+   * Request the selected strategies for the given project
+   *
+   * @param {Numer} companyId company id
+   * @param {Number} projectId project id
+   */
+  static getSavedStrategies = (companyId, projectId) => RestAPI.makeGetRequest(
+    `companies/${companyId}/projects/${projectId}/strategies`,
+  )
+
+  /**
+   * Download the strategies saved in the given project
+   */
+  static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.getEndpointUrl(
+    `companies/${companyId}/projects/${projectId}/strategies/download`,
+  )
+
+  /**
    * Request an endpoint through a GET request
    *
    * @param {String} endpoint endpoint to attach to url
    */
   static makeGetRequest(endpoint) {
-    const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
-    const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
-    return axios.get(url)
+    return axios.get(RestAPI.getEndpointUrl(endpoint))
       .then(res => res.data)
       .catch((error) => {
         let message = 'Bad GET response. Try later';
@@ -277,9 +308,7 @@ class RestAPI {
    * @param {Object} requestBody JSON object with the request body
    */
   static makePostRequest(endpoint, requestBody) {
-    const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
-    const url = `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
-    return axios.post(url, requestBody)
+    return axios.post(RestAPI.getEndpointUrl(endpoint), requestBody)
       .then(res => res.data)
       .catch((error) => {
         let message = 'Bad POST response. Try later';
@@ -287,6 +316,11 @@ class RestAPI {
         if (error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
+  }
+
+  static getEndpointUrl(endpoint) {
+    const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
+    return `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
   }
 }
 

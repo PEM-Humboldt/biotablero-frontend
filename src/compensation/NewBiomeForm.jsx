@@ -41,12 +41,9 @@ class NewBiomeForm extends Component {
     const { addBiomeHandler } = this.props;
     return (
       <div className="newBiome">
-        <div className="newProjectTitle">
           <h2>Agregar bioma</h2>
-        </div>
         <div className="npcontent">
           {this.listBiomes()}
-          <br />
           {biomeSelected && (
             <button
               type="button"
