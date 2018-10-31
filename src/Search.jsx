@@ -202,51 +202,50 @@ class Search extends Component {
    * @param {String} idLayer Layer ID
    * @param {String} parentLayer Parent layer ID
    */
-   loadSecondLevelLayer = (idLayer) => {
+  loadSecondLevelLayer = (idLayer) => {
     switch (idLayer) {
       case 'jurisdicciones':
         GeoServerAPI.requestJurisdicciones()
-        .then((res) => {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              jurisdicciones: {
-                displayName: 'Jurisdicciones',
-                active: true,
-                layer: L.geoJSON(
-                  res,
-                  {
-                    style: {
-                      color: '#e84a5f',
-                      weight: 0.5,
-                      fillColor: '#ffd8e2',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
+          .then((res) => {
+            this.setState(prevState => ({
+              layers: {
+                ...prevState.layers,
+                jurisdicciones: {
+                  displayName: 'Jurisdicciones',
+                  active: false,
+                  layer: L.geoJSON(
+                    res,
+                    {
+                      style: {
+                        color: '#e84a5f',
+                        weight: 0.5,
+                        fillColor: '#ffd8e2',
+                        opacity: 0.6,
+                        fillOpacity: 0.4,
+                      },
+                      onEachFeature: (feature, layer) => (
+                        this.featureActions(feature, layer, idLayer)
+                      ),
                     },
-                    onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, idLayer)
-                    ),
-                  },
-                ),
+                  ),
+                },
               },
-            },
-          }));
+            }));
 
-          this.setState((prevState) => {
-            const newState = { ...prevState };
-            if (prevState.layers[idLayer]) {
-              newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-              newState.subAreaName = newState.layers[idLayer].displayName;
-            }
-            return newState;
+            this.setState((prevState) => {
+              const newState = { ...prevState };
+              if (prevState.layers[idLayer]) {
+                newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+                newState.subAreaName = newState.layers[idLayer].displayName;
+              }
+              return newState;
+            });
           });
-
-        });
         break;
       default:
         break;
     }
-   }
+  }
 
 
 
