@@ -150,7 +150,7 @@ const selectorData = [
             type: 'autocomplete',
             name: 'jurisdiccion',
             data: [
-              { label: 'CORPOBOYACA', value: 'corpoBoyaca' },
+              { label: 'CORPOBOYACA', value: 'CORPOBOYACA' },
               { label: 'AMBA', value: 'AMBA' },
               { label: 'CAM', value: 'CAM' },
               { label: 'CAR', value: 'CAR' },
