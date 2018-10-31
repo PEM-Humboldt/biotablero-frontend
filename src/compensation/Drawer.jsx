@@ -569,13 +569,13 @@ class Drawer extends React.Component {
             onClick={() => { this.setState({ saveStrategiesModal: true }); }}
           >
             <SaveIcon className="iconsave" />
-            Guardar Estrategias de compensación
+            Finalizar
           </button>
         )}
         <ConfirmationModal
           open={saveStrategiesModal}
           onClose={() => { this.setState({ saveStrategiesModal: false }); }}
-          message={'Una vez guardadas estas estrategias de compensación no podrán editarse ni eliminarse. \n Seguro que desea continuar?'}
+          message={'Al guardar estas estrategias, no podrán editarse.\n¿Desea continuar?'}
           onContinue={this.saveStrategies}
           onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
         />
@@ -748,7 +748,9 @@ class Drawer extends React.Component {
                     {savedArea + selectedArea}
                   </h4>
                 </div>
-                { Object.keys(savedStrategies).length > 0 && (
+                {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
+                {this.renderSelector()}
+                {Object.keys(savedStrategies).length > 0 && (
                   <Button
                     className="downgraph"
                     id="downloadStrategies"
@@ -759,8 +761,6 @@ class Drawer extends React.Component {
                     {'Descargar plan'}
                   </Button>
                 )}
-                {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector()}
                 {tableError && (
                   <div className="tableError">
                     {tableError}
@@ -787,7 +787,9 @@ Drawer.propTypes = {
   biomesImpacted: PropTypes.array,
   subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
+  showStrategies: PropTypes.func.isRequired,
   updateCurrentBiome: PropTypes.func,
+  updateClickedStrategy: PropTypes.func.isRequired,
   companyId: PropTypes.number.isRequired,
   projectId: PropTypes.number.isRequired,
   reloadProject: PropTypes.func.isRequired,
