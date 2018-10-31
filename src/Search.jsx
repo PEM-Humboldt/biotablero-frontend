@@ -211,7 +211,7 @@ class Search extends Component {
                  ...prevState.layers,
                  jurisdicciones: {
                    displayName: 'Jurisdicciones',
-                   active: true,
+                   active: false,
                    layer: L.geoJSON(
                      res,
                      {
