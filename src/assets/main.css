@@ -1775,17 +1775,17 @@ tr.row2table:nth-child(odd){
 
 .backgraph, .downgraph, .saveStrategyButton {
   color: #2a363b;
-  vertical-align: middle !important;
-  text-align: left !important;
-  font-weight: 600 !important;
+  vertical-align: middle;
+  text-align: left;
+  font-weight: 600;
   font-size: 13px !important;
   border: 1px solid #fff !important;
-  border-radius: 3px !important;
+  border-radius: 3px;
   background-color: transparent !important;
-  outline: none !important;
-  cursor: pointer !important;
+  outline: none;
+  cursor: pointer;
   line-height: 20px !important;
-	text-transform: uppercase !important;
+	text-transform: uppercase;
 	padding: 5px 8px !important;
 }
 
@@ -1794,12 +1794,12 @@ tr.row2table:nth-child(odd){
 	width: 20px;
 	margin-top: 0;
 	margin-right: 3px;
-  color: #ea495f;
-  float: left;
+	color: #ea495f;
+	float: left;
 }
 
 .backgraph:hover, .downgraph:hover, .saveStrategyButton:hover{
-	background-color: #fff;
+	background-color: #fff !important;
 }
 
 tspan, .vx-axis-label {
@@ -2134,7 +2134,7 @@ tspan, .vx-axis-label {
 
 .load-1 .line:nth-last-child(1) {animation: loadingA 1.5s 1s infinite; background-color: #d65e6e; vertical-align: top;}
 .load-1 .line:nth-last-child(2) {animation: loadingA 1.5s .5s infinite; vertical-align: top;}
-.load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e34659; vertical-align: top;}
+.load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e32759; vertical-align: top;}
 
 @keyframes loadingA {
     0 {height: 15px;}
@@ -2187,10 +2187,10 @@ tspan, .vx-axis-label {
 	}
 
 	.backgraph, .downgraph, .saveStrategyButton, .iconsave {
-		width: 166px;
+		width: 166px !important;
 	}
 	.downgraph {
-		margin-top: 5px;
+		margin-top: 5px !important;
 	}
 	.backgraph {
 		margin-right: 5px;
