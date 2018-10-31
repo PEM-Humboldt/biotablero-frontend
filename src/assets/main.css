@@ -1787,6 +1787,11 @@ tr.row2table:nth-child(odd){
   line-height: 20px !important;
 	text-transform: uppercase;
 	padding: 5px 8px !important;
+	min-height: 32px !important;
+}
+
+.downgraph {
+	min-width: 156px !important;
 }
 
 .downgraph svg, .backgraph svg, .iconsave svg, .saveStrategyButton svg {
