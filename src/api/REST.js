@@ -95,23 +95,13 @@ class RestAPI {
   }
 
   /**
-   * TODO: Request the template to load a given biome by hydrographical subzone.
-   * Here is defined the filter_path options for this template.
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request the template to load a given biome by hydrographical subzone.
    *
+   * @param {String} eaId EA id to request
    * @param {String} biome biome's name to request
    */
-  static requestBiomeBySZH(biome) {
-    // return RestAPI.makeGetRequest(
-    //   'corporacion_biomas/_search/template?filter_path=aggregations.areas
-    // .buckets,aggregations.total_area',
-    //   {
-    //     id: 'biomaBySZH',
-    //     params: { bioma: biome },
-    //   },
-    // );
-    console.log('requestBiomeBySZH', biome);
-    return null;
+  static requestBiomeBySZH(eaId, biomeName) {
+    return RestAPI.makeGetRequest(`geofences/ea/${eaId}/biome/${biomeName}/subzone`);
   }
 
   /**
@@ -195,11 +185,27 @@ class RestAPI {
   }
 
   /**
+   * Request the geometry of the biomes by EA
+   * @param {String} eaId id ea to request
+   */
+  static requestBiomesbyEA(eaId) {
+    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
+  }
+
+  /**
    * Recover all biomes available in the database
    */
   static getAllBiomes() {
     return RestAPI.makeGetRequest('biomes');
   }
+
+  /**
+   * Recover all eas available in the database
+   */
+  static getAllEAs() {
+    return RestAPI.makeGetRequest('ea');
+  }
+
 
   /**
    * Create a new project
