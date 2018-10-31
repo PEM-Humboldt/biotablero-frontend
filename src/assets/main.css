@@ -1503,8 +1503,8 @@ p.legcomp {
 .complist svg {
   color: #ea495f;
   float: left;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 }
 
 .Select-menu-outer { top: auto; bottom: 100%; }
@@ -1775,25 +1775,27 @@ tr.row2table:nth-child(odd){
 
 .backgraph, .downgraph, .saveStrategyButton {
   color: #2a363b;
-  vertical-align: middle;
-  text-align: left;
-  font-weight: 600;
-  font-size: 13px;
-  border: 1px solid #fff;
-  border-radius: 3px;
-  background-color: transparent;
-  outline: none;
-  cursor: pointer;
-  line-height: 20px;
-	text-transform: uppercase;
-	padding: 5px 8px;
+  vertical-align: middle !important;
+  text-align: left !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  border: 1px solid #fff !important;
+  border-radius: 3px !important;
+  background-color: transparent !important;
+  outline: none !important;
+  cursor: pointer !important;
+  line-height: 20px !important;
+	text-transform: uppercase !important;
+	padding: 5px 8px !important;
 }
 
-.downgraph svg, .backgraph svg {
+.downgraph svg, .backgraph svg, .iconsave svg, .saveStrategyButton svg {
 	height: 20px;
 	width: 20px;
 	margin-top: 0;
 	margin-right: 3px;
+  color: #ea495f;
+  float: left;
 }
 
 .backgraph:hover, .downgraph:hover, .saveStrategyButton:hover{
@@ -2184,13 +2186,16 @@ tspan, .vx-axis-label {
 		display: block;
 	}
 
-	.backgraph, .downgraph, .saveStrategyButton {
+	.backgraph, .downgraph, .saveStrategyButton, .iconsave {
 		width: 166px;
 	}
 	.downgraph {
 		margin-top: 5px;
 	}
 	.backgraph {
+		margin-right: 5px;
+	}
+	.iconsave {
 		margin-right: 5px;
 	}
 
