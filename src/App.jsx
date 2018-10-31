@@ -40,18 +40,21 @@ class App extends React.Component {
 
   loadCompensator = (props) => {
     const { user } = this.state;
-    return (
-      <Compensation
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        {...props}
-      />
-    );
+    if (user) {
+      return (
+        <Compensation
+          userLogged={user}
+          callbackUser={this.callbackUser}
+          {...props}
+        />
+      );
+    }
+    const newProps = { ...props };
+    newProps.location.pathname = '/';
+    return this.loadHome(newProps);
   }
 
-  callbackUser = (user, activeModule) => {
-    // TODO: Implement new route if there is an activeModule no allowed without login
-    console.log('activeModule', activeModule);
+  callbackUser = (user) => {
     if (user) {
       this.setState({ user });
     } else {
@@ -61,13 +64,13 @@ class App extends React.Component {
   };
 
   render() {
-    // TODO: Load Home when user is logged out from Compensator
+    // TODO: Change path to Home when user get
     return (
       <main>
         <Switch>
           <Route exact path="/" render={this.loadHome} />
           <Route path="/Consultas" render={this.loadSearch} />
-          <Route path="/GEB/Compensaciones" render={this.loadCompensator} />
+          <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
           <Route path="/Alertas" render={this.loadHome} />
           <Route path="/ShortInfo" component={ShortInfo} />
         </Switch>

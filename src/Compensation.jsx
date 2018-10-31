@@ -561,15 +561,15 @@ class Compensation extends Component {
             {
               currentProject && (
               <Drawer
-                areaName={`${currentCompany} ${currentRegion}`}
+                areaName={`${currentCompany} ${currentProject.id_region}`}
                 back={this.handlerBackButton}
-                basinName={currentProject.name}
+                basinName={currentProject.label}
                 colors={colors.map(obj => Object.values(obj)[0])}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}
                 impactedBiomesDecisionTree={impactedBiomesDecisionTree}
-                subAreaName={currentProject.state}
+                subAreaName={currentProject.prj_status}
                 companyId={currentCompanyId}
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}

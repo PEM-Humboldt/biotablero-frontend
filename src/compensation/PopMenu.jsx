@@ -118,26 +118,26 @@ class PopMenu extends Component {
     const { biome, subBasin } = this.state;
     return (
       <div className="complist">
+        <div className="popbtns">
+          { !visibleGraph && (
+          <button
+            className="backgraph"
+            type="button"
+            onClick={() => {
+              showDotsGraph(true);
+            }}
+          >
+            <BackGraphIcon />
+            {'Gráfico Biomas'}
+          </button>)
+        }
+        </div>
         <AddIcon />
         <div className="Biomatit">
           {biome || 'Seleccione un bioma del gráfico o del mapa'}
         </div>
         {biome ? this.renderSubBasins() : ''}
         {subBasin ? this.renderEAs() : ''}
-        <div className="popbtns">
-          { !visibleGraph && (
-            <button
-              className="backgraph"
-              type="button"
-              onClick={() => {
-                showDotsGraph(true);
-              }}
-            >
-              <BackGraphIcon />
-              {'Gráfico Biomas'}
-            </button>)
-          }
-        </div>
       </div>
     );
   }

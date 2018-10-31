@@ -1491,13 +1491,13 @@ p.legcomp {
 }
 
 .popbtns {
-	padding-top: 10px;
-	display: -webkit-flex;
+	padding-bottom: 10px;
+	/* display: -webkit-flex;
 	display: -moz-flex;
 	display: -ms-flex;
 	display: -o-flex;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-between; */
 }
 
 .complist svg {
@@ -1777,7 +1777,7 @@ tr.row2table:nth-child(odd){
   color: #2a363b;
   vertical-align: middle;
   text-align: left;
-  font-weight: 600;
+  font-weight: 600 !important;
   font-size: 13px !important;
   border: 1px solid #fff !important;
   border-radius: 3px;
@@ -1788,10 +1788,14 @@ tr.row2table:nth-child(odd){
 	text-transform: uppercase;
 	padding: 5px 8px !important;
 	min-height: 32px !important;
+	min-width: 164px !important;
 }
 
 .downgraph {
-	min-width: 156px !important;
+	margin-top: 10px !important;
+}
+.saveStrategyButton {
+min-width: initial !important;
 }
 
 .downgraph svg, .backgraph svg, .iconsave svg, .saveStrategyButton svg {
@@ -2187,7 +2191,7 @@ tspan, .vx-axis-label {
 		padding: 0;
 	}
 
-	.popbtns {
+	/* .popbtns {
 		display: block;
 	}
 
@@ -2199,7 +2203,7 @@ tspan, .vx-axis-label {
 	}
 	.backgraph {
 		margin-right: 5px;
-	}
+	} */
 	.iconsave {
 		margin-right: 5px;
 	}
