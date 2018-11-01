@@ -422,7 +422,12 @@ class Drawer extends React.Component {
    * Save to backend the selected strategies
    */
   saveStrategies = () => {
-    const { companyId, projectId, updateCurrentBiome } = this.props;
+    const {
+      companyId,
+      projectId,
+      updateCurrentBiome,
+      userId,
+    } = this.props;
     const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
     const strategiesToSave = selectedStrategies.map(strategy => ({
       id_biome: biome.id,
@@ -430,7 +435,7 @@ class Drawer extends React.Component {
       id_subzone: subBasin.id,
       id_strategy: strategy.id,
       area: strategy.value,
-      id_user: 1, // TODO: replace with logged user id
+      id_user: userId,
     }));
     RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
       .then(() => {
@@ -796,6 +801,7 @@ Drawer.propTypes = {
   impactedBiomesDecisionTree: PropTypes.object,
   reportConnError: PropTypes.func,
   clickedStrategy: PropTypes.number,
+  userId: PropTypes.number,
 };
 
 Drawer.defaultProps = {
@@ -810,6 +816,7 @@ Drawer.defaultProps = {
   impactedBiomesDecisionTree: {},
   reportConnError: () => {},
   clickedStrategy: null,
+  userId: null,
 };
 
 export default withStyles(styles)(Drawer);

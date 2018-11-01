@@ -93,6 +93,11 @@ class Compensation extends Component {
     return { regionsList, statusList, regions: regionsArray };
   }
 
+  static getDerivedStateFromProps = nextProps => ({
+    currentCompanyId: nextProps.userLogged.company.id,
+    currentCompany: nextProps.userLogged.username.toUpperCase(),
+  })
+
   constructor(props) {
     super(props);
     this.state = {
@@ -127,12 +132,11 @@ class Compensation extends Component {
   }
 
   loadProjectsList = () => {
-    RestAPI.requestProjectsAndRegionsByCompany(1)
+    const { currentCompanyId } = this.state;
+    RestAPI.requestProjectsAndRegionsByCompany(currentCompanyId)
       .then((res) => {
         const { regionsList, statusList, regions } = Compensation.constructDataForSelector(res);
         this.setState({
-          currentCompany: 'GEB',
-          currentCompanyId: 1,
           regionsList,
           statusList,
           regions,
@@ -577,6 +581,7 @@ class Compensation extends Component {
                 showStrategies={this.showStrategiesLayer}
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
+                userId={userLogged.id}
               />
               )
             }
