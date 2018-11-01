@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import L from 'leaflet';
 import PropTypes from 'prop-types';
+import Modal from '@material-ui/core/Modal';
 
 import MapViewer from './MapViewer';
 import Selector from './Selector';
@@ -49,6 +50,7 @@ class Search extends Component {
         { 9.5: '#ea495f' },
         { 10: '#c3374d' },
       ],
+      loadingModal: false,
     };
   }
 
@@ -139,112 +141,115 @@ class Search extends Component {
   }
 
   /**
-     * When a click event occurs on a bioma layer in the searches module,
-     *  request info by szh on that bioma
-     *
-     * @param {Object} event event object
-     */
-    handleClickOnArea = (event, parentLayer) => {
-      const biome = event.target.feature.properties.name_biome;
-      RestAPI.requestBiomeBySZH(parentLayer, biome)
-        .then((res) => {
-          this.setState({
-            layerName: biome,
-            basinData: res,
-          });
+   * When a click event occurs on a bioma layer in the searches module,
+   *  request info by szh on that bioma
+   *
+   * @param {Object} event event object
+   */
+  handleClickOnArea = (event, parentLayer) => {
+    const biome = event.target.feature.properties.name_biome;
+    RestAPI.requestBiomeBySZH(parentLayer, biome)
+      .then((res) => {
+        this.setState({
+          layerName: biome,
+          basinData: res,
         });
-      // TODO: When the promise is rejected, we need to show a "Data not available" error
-      // (in the table). But the application won't break as it currently is
+      });
+    // TODO: When the promise is rejected, we need to show a "Data not available" error
+    // (in the table). But the application won't break as it currently is
+  }
+
+  /**
+   * Load layer based on selection
+   *
+   * @param {String} idLayer Layer ID
+   * @param {String} parentLayer Parent layer ID
+   */
+  loadLayer = (idLayer, parentLayer) => {
+    this.setState({ loadingModal: true });
+    RestAPI.requestBiomesbyEA(idLayer)
+      .then((res) => {
+        this.setState(prevState => ({
+          layers: {
+            ...prevState.layers,
+            [idLayer]: {
+              displayName: idLayer,
+              active: true,
+              layer: L.geoJSON(res, {
+                style: this.featureStyle,
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(feature, layer, idLayer)
+                ),
+              }),
+            },
+          },
+        }));
+
+        this.setState((prevState) => {
+          const newState = {
+            ...prevState,
+            loadingModal: false,
+          };
+          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
+          if (prevState.layers[idLayer]) {
+            newState.layers[idLayer].active = true;
+            newState.activeLayerName = newState.layers[idLayer].displayName;
+          }
+          return newState;
+        });
+      });
+  }
+
+  /**
+   * Load layer based on selection
+   *
+   * @param {String} idLayer Layer ID
+   * @param {String} parentLayer Parent layer ID
+   */
+  loadSecondLevelLayer = (idLayer) => {
+    switch (idLayer) {
+      case 'jurisdicciones':
+        GeoServerAPI.requestJurisdicciones()
+          .then((res) => {
+            this.setState(prevState => ({
+              layers: {
+                ...prevState.layers,
+                jurisdicciones: {
+                  displayName: 'Jurisdicciones',
+                  active: false,
+                  layer: L.geoJSON(
+                    res,
+                    {
+                      style: {
+                        color: '#e84a5f',
+                        weight: 0.5,
+                        fillColor: '#ffd8e2',
+                        opacity: 0.6,
+                        fillOpacity: 0.4,
+                      },
+                      onEachFeature: (feature, layer) => (
+                        this.featureActions(feature, layer, idLayer)
+                      ),
+                    },
+                  ),
+                },
+              },
+            }));
+
+            this.setState((prevState) => {
+              const newState = { ...prevState };
+              if (prevState.layers[idLayer]) {
+                newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+                newState.subAreaName = newState.layers[idLayer].displayName;
+              }
+              return newState;
+            });
+          });
+        break;
+      default:
+        break;
     }
-
-   /**
-   * Load layer based on selection
-   *
-   * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
-   */
-   loadLayer = (idLayer, parentLayer) => {
-     RestAPI.requestBiomesbyEA(idLayer)
-       .then((res) => {
-         this.setState(prevState => ({
-           layers: {
-             ...prevState.layers,
-             [idLayer]: {
-               displayName: idLayer,
-               active: true,
-               layer: L.geoJSON(res, {
-                 style: this.featureStyle,
-                 onEachFeature: (feature, layer) => (
-                   this.featureActions(feature, layer, idLayer)
-                 ),
-               }),
-             },
-           },
-         }));
-
-         this.setState((prevState) => {
-           const newState = { ...prevState };
-           if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-           if (prevState.layers[idLayer]) {
-             newState.layers[idLayer].active = true;
-             newState.activeLayerName = newState.layers[idLayer].displayName;
-           }
-
-           return newState;
-         });
-       });
-   }
-
-   /**
-   * Load layer based on selection
-   *
-   * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
-   */
-   loadSecondLevelLayer = (idLayer) => {
-     switch (idLayer) {
-       case 'jurisdicciones':
-         GeoServerAPI.requestJurisdicciones()
-           .then((res) => {
-             this.setState(prevState => ({
-               layers: {
-                 ...prevState.layers,
-                 jurisdicciones: {
-                   displayName: 'Jurisdicciones',
-                   active: false,
-                   layer: L.geoJSON(
-                     res,
-                     {
-                       style: {
-                         color: '#e84a5f',
-                         weight: 0.5,
-                         fillColor: '#ffd8e2',
-                         opacity: 0.6,
-                         fillOpacity: 0.4,
-                       },
-                       onEachFeature: (feature, layer) => (
-                         this.featureActions(feature, layer, idLayer)
-                       ),
-                     },
-                   ),
-                 },
-               },
-             }));
-
-             this.setState((prevState) => {
-               const newState = { ...prevState };
-               if (prevState.layers[idLayer]) {
-                 newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                 newState.subAreaName = newState.layers[idLayer].displayName;
-               }
-               return newState;
-             });
-           });
-         break;
-       default:
-         break;
-     }
-   }
+  }
 
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
@@ -289,8 +294,7 @@ class Search extends Component {
   }
 
   /**
-    * Funtion to control data to show
-    *
+    * Function to control data to show
     */
   getData = () => {
     const { userLogged } = this.props;
@@ -305,7 +309,7 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      subAreaName, layerName, activeLayerName, basinData, currentCompany,
+      subAreaName, layerName, activeLayerName, basinData, currentCompany, loadingModal,
       colors, colorsFC, colorSZH, layers,
     } = this.state;
     return (
@@ -315,6 +319,25 @@ class Search extends Component {
         userLogged={userLogged}
         callbackUser={callbackUser}
       >
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loadingModal}
+          disableAutoFocus
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Cargando</b>
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
+            </h2>
+          </div>
+        </Modal>
         <div className="appSearcher">
           <MapViewer
             layers={layers}
