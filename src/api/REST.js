@@ -17,72 +17,28 @@ class RestAPI {
       },
     );
   }
+
+  /** ************* */
+  /** SEARCH MODULE */
+  /** ************* */
+
   /**
-   * Send request to Logout an user
-   *
-   * @param {String} username name in database
-   * @param {String} password password in database
+   * Recover all eas available in the database
    */
-  // TODO: Implementing this functionality for log out a user
-
-  static requestUserLogout(username, password) {
-    return RestAPI.makePostRequest(
-      'users/login',
-      {
-        username: `${username}`,
-        password: `${password}`,
-      },
-    );
+  static getAllEAs() {
+    return RestAPI.makeGetRequest('ea');
   }
 
   /**
-   * TODO: Request the template with information about 'donde compensar'
-   * for an specific project ID per biome
-   *
-   * @param {String} biome biome's name to request
-   * @param {Integer} projectName project's name to request
+   * Request the geometry of the biomes by EA
+   * @param {String} eaId id ea to request
    */
-  static requestProjectStrategiesByBiome(projectName, biomeName) {
-    // if (projectName === 'SOGAMOSO') {
-    //   return RestAPI.makeGetRequest(
-    //     'proyecto_sogamoso/_search/template?filter_path=aggregations.szh.buckets
-    // .key,aggregations.szh.buckets.car.buckets.key,aggregations.szh.buckets.car
-    // .buckets.results.hits.hits._source',
-    //     {
-    //       id: 'donde_compensar_sogamoso',
-    //       params: { bioma_name: biomeName },
-    //     },
-    //   );
-    // }
-    console.log('requestProjectStrategiesByBiome', projectName, biomeName);
-    return null;
+  static requestBiomesbyEA(eaId) {
+    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
   }
 
   /**
-  * TODO: Request the template with information about 'Que y Cuanto compensar'
-  * for an specific project ID
-  * TODO: Set this request for a generical search and keeping response structure
-  *
-  * @param {Integer} projectName project's name to request
-  */
-  static requestQueYCuantoCompensar(projectName) {
-    // return RestAPI.makeGetRequest(
-    //   'biomas_compensaciones/_search/template?filter_path=hits.hits._source',
-    //   {
-    //     id: 'queYCuantoCompensar',
-    //     params: {
-    //       field: 'BIOMA_IAVH',
-    //       order: 'asc',
-    //       project_name: projectName,
-    //     },
-    //   },
-    // );
-    console.log('requestQueYCuantoCompensar', projectName);
-    return null;
-  }
-
-  /**
-   * Request the template to load a given biome by hydrographical subzone.
+   * Request area information for biomes by subzones
    *
    * @param {String} eaId EA id to request
    * @param {String} biome biome's name to request
@@ -92,9 +48,7 @@ class RestAPI {
   }
 
   /**
-   * TODO: Request the template to load CAR by distritos Area.
-   * Here is defined the filter_path options for this template
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request area information for ea by biotic units
    *
    * @param {String} idCAR id CAR to request
    */
@@ -103,9 +57,7 @@ class RestAPI {
   }
 
   /**
-   * Request the template to load CAR by FC Area.
-   * Here is defined the filter_path options for this template
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request area information for ea by compensation factor
    *
    * @param {String} idCAR id CAR to request
    */
@@ -114,15 +66,17 @@ class RestAPI {
   }
 
   /**
-   * Request the template to load CAR by biome Area.
-   * Here is defined the filter_path options for this template
-   * TODO: Set this request for a generical search and keeping response structure
+   * Request area information for ea by biomes
    *
    * @param {String} idCAR id CAR to request
    */
   static requestCarByBiomeArea(idCAR) {
     return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/generalBiome`);
   }
+
+  /** ******************* */
+  /** COMPENSATION MODULE */
+  /** ******************* */
 
   /**
    * Request the project impacted biomes
@@ -178,27 +132,11 @@ class RestAPI {
   }
 
   /**
-   * Request the geometry of the biomes by EA
-   * @param {String} eaId id ea to request
-   */
-  static requestBiomesbyEA(eaId) {
-    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
-  }
-
-  /**
    * Recover all biomes available in the database
    */
   static getAllBiomes() {
     return RestAPI.makeGetRequest('biomes');
   }
-
-  /**
-   * Recover all eas available in the database
-   */
-  static getAllEAs() {
-    return RestAPI.makeGetRequest('ea');
-  }
-
 
   /**
    * Create a new project

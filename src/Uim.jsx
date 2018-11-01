@@ -76,20 +76,20 @@ class Uim extends Component {
               />
             </button>)
         }
-        {userLogged
-          ? (openModal && userLogged && (
-            <ConfirmationModal
-              open={openModal}
-              styleCustom="newBiomeAlarm nBA2"
-              onClose={() => this.handleCloseModal()}
-              message="¿Desea cerrar sesión?"
-              onContinue={() => {
-                this.setUser(null);
-              }
-              }
-              onCancel={() => this.handleCloseModal()}
-            />))
-          : (openModal && (
+        {openModal && userLogged && (
+          <ConfirmationModal
+            open={openModal}
+            styleCustom="newBiomeAlarm nBA2"
+            onClose={() => this.handleCloseModal()}
+            message="¿Desea cerrar sesión?"
+            onContinue={() => {
+              this.setUser(null);
+            }
+            }
+            onCancel={() => this.handleCloseModal()}
+          />
+        )}
+        {openModal && !userLogged && (
           <Modal
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"
@@ -102,8 +102,8 @@ class Uim extends Component {
               openModalControl={this.handleCloseModal}
               setUser={this.setUser}
             />
-          </Modal>))
-        }
+          </Modal>
+        )}
       </div>
     );
   }
