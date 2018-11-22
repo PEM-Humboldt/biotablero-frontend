@@ -1213,6 +1213,10 @@ a#reset-filters {
   color: #4a585f;
 }
 
+.description {
+  margin-bottom: 15px;
+}
+
 /*Belongs to contentView*/
 
 .drawer {
@@ -1271,10 +1275,6 @@ a#reset-filters {
 
 .leaflet-bar {
   border: 0 !important;
-}
-
-#panel1-Geocerca, #panel1-ZonaOccidente {
-  margin-top: 15px !important;
 }
 
 .selector-expanded > div:nth-child(1),
@@ -1968,7 +1968,6 @@ tspan, .vx-axis-label {
 .newProjectModal {
 	position: fixed;
 	width: 350px;
-	height: 250px;
 	background-color: #ffffff;
 	box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.14);
 	bottom: 200px;
@@ -1981,7 +1980,6 @@ tspan, .vx-axis-label {
 .newProjectModal:hover {
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
-
 
 .addprjbtn {
 	margin-top: 10px;
