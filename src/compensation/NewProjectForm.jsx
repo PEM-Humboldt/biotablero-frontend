@@ -69,7 +69,7 @@ class NewProjectForm extends Component {
           options={status}
         />
         { // TODO: Handle error for new project if the company doesn' have regions and status
-          (statusSelected === status[status.length - 1].value) && (<br />) && (
+          (statusSelected === 'newState') && (<br />) && (
             <input
               className="projectInput"
               type="text"
