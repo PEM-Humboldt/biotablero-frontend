@@ -92,7 +92,9 @@ class Selector extends React.Component {
     return (
       <div className="selector">
         <div className={iconClass} />
-        {description}
+        <div className="description">
+          {description}
+        </div>
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
             id, label, disabled, expandIcon, detailId, idLabel,
@@ -155,7 +157,6 @@ Selector.propTypes = {
   })),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
-  expandedId: PropTypes.number,
   iconClass: PropTypes.string,
 };
 
@@ -163,7 +164,6 @@ Selector.defaultProps = {
   data: [],
   handlers: [],
   description: {},
-  expandedId: 0,
   iconClass: '',
 };
 

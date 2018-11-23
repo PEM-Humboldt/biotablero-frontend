@@ -88,7 +88,11 @@ class Compensation extends Component {
       label: '+ Agregar nuevo proyecto',
       type: 'addProject',
     };
-    if (regionsList.length > 0 && statusList.length > 0) regionsArray.push(newProject);
+    regionsArray.push(newProject);
+    statusList.push({
+      value: 'newState',
+      label: 'Agregar estado...',
+    });
 
     return { regionsList, statusList, regions: regionsArray };
   }
