@@ -378,7 +378,7 @@ class Drawer extends React.Component {
           allStrategies: strategies,
         });
         const { showStrategies } = this.props;
-        showStrategies(geometry);
+        if (geometry !== null && geometry.features !== null) showStrategies(geometry);
       })
       .catch(() => {
         const { reportConnError } = this.props;
