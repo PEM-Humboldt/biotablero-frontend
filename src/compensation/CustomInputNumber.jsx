@@ -29,7 +29,7 @@ class CustomInputNumber extends React.Component {
     this.setState(prevState => ({
       add: !prevState.add,
       inputError: error,
-      value: action === '-' ? 0 : prevState.value,
+      value: action === '-' ? 0 : Number(prevState.value).toFixed(4),
     }));
   }
 
@@ -48,8 +48,9 @@ class CustomInputNumber extends React.Component {
           readOnly={!add}
           className={inputError ? 'inputError' : ''}
           value={value}
+          onFocus={() => this.setState({ value: value || '' })}
           onClick={() => updateClickedStrategy(id)}
-          onChange={({ target }) => this.setState({ value: Number(target.value) || 0 })}
+          onChange={({ target }) => this.setState({ value: target.value || '' })}
         />
         <button
           className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
@@ -58,10 +59,13 @@ class CustomInputNumber extends React.Component {
           onClick={() => {
             const action = add ? '+' : '-';
             if (value <= maxValue) {
-              operateArea(value, action, id, name);
+              operateArea(Number(value), action, id, name);
               this.switchAction(action);
-            } else if (add) {
+            } else if (value > maxValue) {
               reportError(`No puede agregar más de ${maxValue}`);
+              this.setState({ value: 0 });
+            } else if (!Number.isNaN(value)) {
+              reportError('Sólo números permitidos');
               this.setState({ value: 0 });
             } else {
               operateArea(0, '-');
@@ -80,6 +84,7 @@ CustomInputNumber.propTypes = {
   maxValue: PropTypes.number.isRequired,
   operateArea: PropTypes.func.isRequired,
   reportError: PropTypes.func.isRequired,
+  updateClickedStrategy: PropTypes.func.isRequired,
   focus: PropTypes.bool,
 };
 
