@@ -12,6 +12,7 @@ class NewProjectForm extends Component {
       regionSelected: null,
       statusSelected: null,
       newName: null,
+      newNameState: null,
     };
   }
 
@@ -45,10 +46,10 @@ class NewProjectForm extends Component {
   /**
    * Event handler when a status option is selected
    */
-  handleChangeStatus = (statusSelected) => {
+  handleChangeStatus = (statusValue) => {
     this.setState({
-      // statusSelected: statusSelected && controlValues[2]? statusSelected.value : '',
-      statusSelected: statusSelected ? statusSelected.value : '',
+      statusSelected: statusValue ? statusValue.value : '',
+      newNameState: null,
       newName: null,
     });
   }
@@ -57,15 +58,29 @@ class NewProjectForm extends Component {
    * Return the status selector and its current value
    */
   listStatus = () => {
-    const { statusSelected } = this.state;
+    const { statusSelected, newNameState } = this.state;
     const { status } = this.props;
     return (
-      <Select
-        value={statusSelected}
-        onChange={this.handleChangeStatus}
-        placeholder="Estado del proyecto"
-        options={status}
-      />
+      <div>
+        <Select
+          value={statusSelected}
+          onChange={this.handleChangeStatus}
+          placeholder="Estado del proyecto"
+          options={status}
+        />
+        { // TODO: Handle error for new project if the company doesn' have regions and status
+          (statusSelected === 'newState') && (<br />) && (
+            <input
+              className="projectInput"
+              type="text"
+              value={newNameState || ''}
+              placeholder="Nuevo estado"
+              onChange={this.handleChangeNameStatus}
+              maxLength="50"
+            />
+          )
+        }
+      </div>
     );
   }
 
@@ -78,8 +93,19 @@ class NewProjectForm extends Component {
     });
   }
 
+  /**
+   * Event handler when the name is selected
+   */
+  handleChangeNameStatus = (event) => {
+    this.setState({
+      newNameState: event.target.value ? event.target.value : '',
+    });
+  }
+
   render() {
-    const { regionSelected, statusSelected, newName } = this.state;
+    const {
+      regionSelected, statusSelected, newName, newNameState,
+    } = this.state;
     const { handlers } = this.props;
     return (
       <div className="newProjectModal">
@@ -108,12 +134,13 @@ class NewProjectForm extends Component {
             onChange={this.handleChangeName}
             maxLength="50"
           />
-          {regionSelected && statusSelected && newName && (
+          { // TODO: Handle error for new project if the company doesn' have regions and status
+            regionSelected && (newNameState || statusSelected) && newName && (
             <button
               type="button"
               className="addprjbtn"
               onClick={() => {
-                handlers[0](regionSelected, statusSelected, newName.trim());
+                handlers[0](regionSelected, (newNameState || statusSelected), newName.trim());
               }}
               data-tooltip
               title="Crear proyecto"
