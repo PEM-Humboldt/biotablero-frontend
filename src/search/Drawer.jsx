@@ -210,7 +210,7 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  basinData: PropTypes.object,
+  basinData: PropTypes.array,
   basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
@@ -222,7 +222,7 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  basinData: null,
+  basinData: [],
   basinName: '',
   colors: ['#345b6b'],
   layerName: '',

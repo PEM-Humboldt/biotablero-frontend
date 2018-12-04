@@ -288,8 +288,7 @@ class Compensation extends Component {
       case 'strategies':
         area.bindPopup(
           `<b>Estrategia:</b> ${area.feature.properties.strategy}
-          <br><b>Area:</b> ${area.feature.properties.area_ha}
-          <br><b>Estado:</b> ${area.feature.properties.area_status}`,
+          <br><b>Area:</b> ${area.feature.properties.area_ha}`,
         ).openPopup();
         break;
       default:

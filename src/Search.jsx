@@ -55,7 +55,6 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    const { userLogged } = this.props;
     const easList = [];
     RestAPI.getAllEAs()
       .then((res) => {
@@ -67,10 +66,6 @@ class Search extends Component {
         });
         selectorData[0].options[2].options[0].data = easList;
       });
-
-    if (userLogged) {
-      selectorData[0].options.unshift(dataGEB);
-    }
   }
 
   /**
@@ -294,13 +289,14 @@ class Search extends Component {
   }
 
   /**
-    * Function to control data to show
+    * Function to control data options belonging to the companyId
+    * TODO: Replace "dataGEB" for data from the current company
     */
   getData = () => {
     const { userLogged } = this.props;
-    if (userLogged) {
+    if (userLogged && (selectorData[0].options[0] !== dataGEB)) {
       selectorData[0].options.unshift(dataGEB);
-    } else if (selectorData[0].options[0] === dataGEB) {
+    } else if ((!userLogged || userLogged === null) && selectorData[0].options[0] === dataGEB) {
       selectorData[0].options.shift(dataGEB);
     }
     return selectorData;
