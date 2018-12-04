@@ -5,6 +5,7 @@ import L from 'leaflet';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 
+import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './MapViewer';
 import Selector from './Selector';
 import Drawer from './search/Drawer';
@@ -18,6 +19,8 @@ class Search extends Component {
     super(props);
     this.state = {
       layers: {},
+      connError: false,
+      dataError: false,
       currentCompany: null,
       subAreaName: null,
       layerName: null,
@@ -55,7 +58,10 @@ class Search extends Component {
   }
 
   componentDidMount() {
-    const { userLogged } = this.props;
+    this.loadAreaList();
+  }
+
+  loadAreaList = () => {
     const easList = [];
     RestAPI.getAllEAs()
       .then((res) => {
@@ -66,12 +72,27 @@ class Search extends Component {
           });
         });
         selectorData[0].options[2].options[0].data = easList;
-      });
-
-    if (userLogged) {
-      selectorData[0].options.unshift(dataGEB);
-    }
+      }).catch(() => this.reportConnError());
   }
+
+    /**
+     * Report a connection error from one of the child components
+     */
+    reportConnError = () => {
+      this.setState({
+        connError: true,
+      });
+    }
+
+    /**
+     * Report dataset error from one of the child components
+     */
+    reportDataError = () => {
+      this.setState({
+        dataError: true,
+        loadingModal: false,
+      });
+    }
 
   /**
    * Choose the right color for the biome inside the map, according
@@ -169,35 +190,37 @@ class Search extends Component {
     this.setState({ loadingModal: true });
     RestAPI.requestBiomesbyEA(idLayer)
       .then((res) => {
-        this.setState(prevState => ({
-          layers: {
-            ...prevState.layers,
-            [idLayer]: {
-              displayName: idLayer,
-              active: true,
-              layer: L.geoJSON(res, {
-                style: this.featureStyle,
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(feature, layer, idLayer)
-                ),
-              }),
+        if (res.features) {
+          this.setState(prevState => ({
+            layers: {
+              ...prevState.layers,
+              [idLayer]: {
+                displayName: idLayer,
+                active: true,
+                layer: L.geoJSON(res, {
+                  style: this.featureStyle,
+                  onEachFeature: (feature, layer) => (
+                    this.featureActions(feature, layer, idLayer)
+                  ),
+                }),
+              },
             },
-          },
-        }));
+          }));
 
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            loadingModal: false,
-          };
-          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-          if (prevState.layers[idLayer]) {
-            newState.layers[idLayer].active = true;
-            newState.activeLayerName = newState.layers[idLayer].displayName;
-          }
-          return newState;
-        });
-      });
+          this.setState((prevState) => {
+            const newState = {
+              ...prevState,
+              loadingModal: false,
+            };
+            if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
+            if (prevState.layers[idLayer]) {
+              newState.layers[idLayer].active = true;
+              newState.activeLayerName = newState.layers[idLayer].displayName;
+            }
+            return newState;
+          });
+        } else this.reportDataError();
+      }).catch(() => this.reportDataError());
   }
 
   /**
@@ -293,14 +316,24 @@ class Search extends Component {
     });
   }
 
+    /**
+     * Close a given modal
+     *
+     * @param {String} state state value that controls the modal you want to close
+     */
+    handleCloseModal = state => () => {
+      this.setState({ [state]: false });
+    };
+
   /**
-    * Function to control data to show
+    * Function to control data options belonging to the companyId
+    * TODO: Replace "dataGEB" for data from the current company
     */
   getData = () => {
     const { userLogged } = this.props;
-    if (userLogged) {
+    if (userLogged && (selectorData[0].options[0] !== dataGEB)) {
       selectorData[0].options.unshift(dataGEB);
-    } else if (selectorData[0].options[0] === dataGEB) {
+    } else if ((!userLogged || userLogged === null) && selectorData[0].options[0] === dataGEB) {
       selectorData[0].options.shift(dataGEB);
     }
     return selectorData;
@@ -310,7 +343,7 @@ class Search extends Component {
     const { callbackUser, userLogged } = this.props;
     const {
       subAreaName, layerName, activeLayerName, basinData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers,
+      colors, colorsFC, colorSZH, layers, connError, dataError,
     } = this.state;
     return (
       <Layout
@@ -322,7 +355,55 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={loadingModal}
+          open={connError}
+          onClose={this.handleCloseModal('connError')}
+          disableAutoFocus
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Sin conexión al servidor</b>
+              <br />
+              Intenta de nuevo en unos minutos.
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={this.handleCloseModal('connError')}
+              data-tooltip
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={dataError}
+          onClose={this.handleCloseModal('dataError')}
+          disableAutoFocus
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Opción no disponible temporalmente</b>
+              <br />
+              Consulta otra opción
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={this.handleCloseModal('dataError')}
+              data-tooltip
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loadingModal && !connError}
           disableAutoFocus
         >
           <div className="generalAlarm">
@@ -357,7 +438,7 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && (
+            { activeLayerName && (subAreaName === 'Jurisdicciones') && (
             <Drawer
               basinData={basinData}
               basinName={activeLayerName.NOMCAR || activeLayerName}
@@ -366,7 +447,7 @@ class Search extends Component {
               colorSZH={colorSZH}
               handlerBackButton={this.handlerBackButton}
               layerName={layerName}
-              subAreaName={subAreaName}
+              subAreaName="Jurisdicciones"
             />
             )}
           </div>

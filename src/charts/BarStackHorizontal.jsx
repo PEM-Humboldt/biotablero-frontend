@@ -44,8 +44,8 @@ export default withTooltip(
     };
 
     const data = [prepareData(dataJSON, labelY)];
-    const keys = Object.keys(data[0]);
-    const totals = dataJSON.reduce((total, current) =>  total + parseFloat(current.area), 0);
+    const keys = dataJSON.map(fc => fc.key);
+    const totals = dataJSON.reduce((total, current) => total + parseFloat(current.area), 0);
 
     // bounds
     const xMax = width - margin.left - margin.right;
