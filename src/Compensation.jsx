@@ -286,10 +286,18 @@ class Compensation extends Component {
         ).openPopup();
         break;
       case 'strategies':
-        area.bindPopup(
-          `<b>Estrategia:</b> ${area.feature.properties.strategy}
-          <br><b>Area:</b> ${area.feature.properties.area_ha}`,
-        ).openPopup();
+        if (area.feature.properties.area_status) {
+          area.bindPopup(
+            `<b>Estrategia:</b> ${area.feature.properties.strategy}
+            <br><b>Area:</b> ${area.feature.properties.area_ha} Ha
+            <br><b>Estado:</b> ${area.feature.properties.area_status}`,
+          ).openPopup();
+        } else {
+          area.bindPopup(
+            `<b>Estrategia:</b> ${area.feature.properties.strategy}
+            <br><b>Area:</b> ${area.feature.properties.area_ha} Ha`,
+          ).openPopup();
+        }
         break;
       default:
         break;

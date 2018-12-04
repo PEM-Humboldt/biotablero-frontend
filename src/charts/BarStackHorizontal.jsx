@@ -38,20 +38,13 @@ export default withTooltip(
         key: setName,
       };
       data.forEach((item) => {
-        // transformedData[Number(item.key)] = `${item.area}`;
         transformedData[item.key] = `${item.area}`;
       });
-      // const sortedData = {};
-      // Object.keys(transformedData).sort().forEach((key) => {
-      //   sortedData[key] = transformedData[key];
-      // });
-      // console.log(sortedData);
-      // return sortedData;
       return transformedData;
     };
 
     const data = [prepareData(dataJSON, labelY)];
-    const keys = Object.keys(data[0]);
+    const keys = dataJSON.map(fc => fc.key);
     const totals = dataJSON.reduce((total, current) => total + parseFloat(current.area), 0);
 
     // bounds
@@ -82,7 +75,6 @@ export default withTooltip(
           <Descargar className="icondown" />
           {graphTitle}
         </h2>
-        {console.log('data: ', graphTitle, dataJSON, data)}
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
