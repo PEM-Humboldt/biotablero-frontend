@@ -258,7 +258,7 @@ class Compensation extends Component {
       {
         mouseover: event => this.highlightFeature(event.target, parentLayer),
         mouseout: event => this.resetHighlight(event.target, parentLayer),
-        click: this.clickFeature,
+        click: event => this.clickFeature(event.target, parentLayer),
       },
     );
   }
@@ -432,6 +432,8 @@ class Compensation extends Component {
   showStrategiesLayer = (geoJson) => {
     this.setState((prevState) => {
       const newState = { ...prevState };
+      // Transform in a boolean the geoJson to validate against this function used in Drawer
+      const strategiesState = !!geoJson;
       newState.layers = {
         ...newState.layers,
         projectBiomes: {
@@ -440,7 +442,7 @@ class Compensation extends Component {
         },
         strategies: {
           displayName: 'strategies',
-          active: true,
+          active: strategiesState,
           layer: L.geoJSON(
             geoJson,
             {
@@ -466,8 +468,12 @@ class Compensation extends Component {
       const newAreas = [];
       const oldAreas = [];
       layers.eachLayer((layer) => {
-        if (layer.feature.properties.id_strategy === Number(strategyId)) newAreas.push(layer);
-        if (layer.feature.properties.id_strategy === prevStrategy) oldAreas.push(layer);
+        if (layer.feature.properties.id_strategy === Number(strategyId)) {
+          newAreas.push(layer);
+        }
+        if (layer.feature.properties.id_strategy === prevStrategy) {
+          oldAreas.push(layer);
+        }
       });
       newAreas
         .sort((a, b) => a.feature.properties.area_ha - b.feature.properties.area_ha)

@@ -1490,6 +1490,11 @@ p.legcomp {
 	margin-top: 5px;
 }
 
+.complist-longer{
+	margin-top: 5px;
+	padding-bottom: 150px;
+}
+
 .popbtns {
 	padding-bottom: 10px;
 	/* display: -webkit-flex;
@@ -1501,6 +1506,13 @@ p.legcomp {
 }
 
 .complist svg {
+  color: #ea495f;
+  float: left;
+  width: 25px;
+  height: 25px;
+}
+
+.complist-longer svg {
   color: #ea495f;
   float: left;
   width: 25px;
