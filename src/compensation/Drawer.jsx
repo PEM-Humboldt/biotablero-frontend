@@ -370,6 +370,8 @@ class Drawer extends React.Component {
       subBasin: { name: subBasinName, id: idSubzone },
       ea: { name: eaName, id: idEA },
     } = options;
+    const { showStrategies } = this.props;
+    showStrategies(false);
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
       .then(({ strategies, geometry }) => {
         this.setState({
@@ -380,7 +382,6 @@ class Drawer extends React.Component {
           },
           allStrategies: strategies,
         });
-        const { showStrategies } = this.props;
         if (geometry !== null && geometry.features !== null) showStrategies(geometry);
       })
       .catch(() => {
@@ -531,32 +532,36 @@ class Drawer extends React.Component {
       savedStrategies,
     } = this.state;
     const { clickedStrategy, updateClickedStrategy } = this.props;
-    const tableRows = allStrategies.map((strategy) => {
-      const key = `${biome.id}-${subBasin.id}-${ea.id}`;
-      let addRow = (
-        <CustomInputNumber
-          id={strategy.id}
-          focus={Number(strategy.id) === clickedStrategy}
-          name={strategy.strategy_name}
-          maxValue={Number(strategy.area_ha.toFixed(4))}
-          operateArea={this.operateArea}
-          reportError={this.reportTableError}
-          updateClickedStrategy={updateClickedStrategy}
-        />
-      );
-      if (savedStrategies[key]) {
-        const found = savedStrategies[key].strategies.find(item => item.id === Number(strategy.id));
-        if (found) addRow = found.value;
-      }
-      return {
-        key: `${strategy.id}-${key}`,
-        values: [
-          strategy.strategy_name,
-          strategy.area_ha.toFixed(4),
-          addRow,
-        ],
-      };
-    });
+    let tableRows;
+    if (allStrategies) {
+      tableRows = allStrategies.map((strategy) => {
+        const key = `${biome.id}-${subBasin.id}-${ea.id}`;
+        let addRow = (
+          <CustomInputNumber
+            id={strategy.id}
+            focus={Number(strategy.id) === clickedStrategy}
+            name={strategy.strategy_name}
+            maxValue={Number(strategy.area_ha.toFixed(4))}
+            operateArea={this.operateArea}
+            reportError={this.reportTableError}
+            updateClickedStrategy={updateClickedStrategy}
+          />
+        );
+        if (savedStrategies[key]) {
+          const found = savedStrategies[key]
+            .strategies.find(item => item.id === Number(strategy.id));
+          if (found) addRow = found.value;
+        }
+        return {
+          key: `${strategy.id}-${key}`,
+          values: [
+            strategy.strategy_name,
+            strategy.area_ha.toFixed(4),
+            addRow,
+          ],
+        };
+      });
+    }
     return biome && subBasin && ea && (
       <div className="complist">
         <StrategiesBox
