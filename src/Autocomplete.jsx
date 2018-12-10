@@ -26,6 +26,7 @@ const styles = theme => ({
   // Also, we had to reset the default style injected by the library.
   '@global': {
     '.Select-control': {
+      autoFocus: true,
       display: 'flex',
       alignItems: 'center',
       border: 0,
@@ -40,6 +41,7 @@ const styles = theme => ({
       flexGrow: 1,
       display: 'flex',
       flexWrap: 'wrap',
+      autoFocus: true,
     },
     '.Select--multi .Select-input': {
       margin: 0,
@@ -99,6 +101,7 @@ const styles = theme => ({
     '.Select-menu': {
       maxHeight: ITEM_HEIGHT * 4.5,
       overflowY: 'auto',
+      autoFocus: true,
     },
     '.Select-menu div': {
       boxSizing: 'content-box',
