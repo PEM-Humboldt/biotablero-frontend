@@ -444,7 +444,6 @@ class Drawer extends React.Component {
     }));
     RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
       .then(() => {
-        updateCurrentBiome('');
         this.setState((prevState) => {
           const { savedStrategies } = prevState;
           savedStrategies[`${biome.id}-${subBasin.id}-${ea.id}`] = {
@@ -473,6 +472,8 @@ class Drawer extends React.Component {
               DotsWhere: true,
             },
           };
+        }, () => {
+          updateCurrentBiome('');
         });
       })
       .catch(() => {
