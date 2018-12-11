@@ -27,11 +27,10 @@ class ShortInfo extends React.Component {
           className={`hidden-${hideText}`}
         >
           <p>
-            {'Que es '}
             <b>
               BioTablero
             </b>
-            {' vinculada tanto a Institutos de Investigación como a Instituciones Académicas. Una batería mínima de Indicadores de Biodiversidad'}
+            {' reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional.'}
           </p>
         </div>
         <button
