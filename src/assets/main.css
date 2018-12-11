@@ -1505,6 +1505,9 @@ p.legcomp {
 .Select-menu-outer {
 	top: auto;
 	bottom: 100%;
+}
+
+.complist-longer .Select-menu-outer {
 	position: relative !important;
 	height: auto !important;
 	display: block !important;
