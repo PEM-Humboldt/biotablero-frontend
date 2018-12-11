@@ -348,6 +348,28 @@ class Drawer extends React.Component {
     this.setState({ tableError: message });
   }
 
+    /**
+     * Function to reset values when area changes
+     */
+    resetAreaSelected = (name) => {
+      const { updateCurrentBiome } = this.props;
+      this.setState((prevState) => {
+        const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
+          acc + item.value
+        ), 0);
+        return {
+          biome: {},
+          subBasin: {},
+          ea: {},
+          selectedStrategyFields: {},
+          allStrategies: [],
+          selectedArea: prevState.selectedArea - removeArea,
+          selectedStrategies: [],
+        };
+      });
+      updateCurrentBiome(name);
+    }
+
   /**
    * Request the available strategies for the given parameters
    *
@@ -357,12 +379,8 @@ class Drawer extends React.Component {
    */
   loadStrategies = (options) => {
     if (!options) {
-      const { updateCurrentBiome, currentBiome } = this.props;
-      this.setState(prevState => ({
-        allStrategies: [],
-        selectedStrategyFields: { biome: prevState.selectedStrategyFields.biome },
-      }));
-      updateCurrentBiome(currentBiome);
+      const { currentBiome } = this.props;
+      this.resetAreaSelected(currentBiome);
       return;
     }
     const {
@@ -628,7 +646,6 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderGraphs = (data, activeBiome, labelX, labelY, graph, colors) => {
-    const { updateCurrentBiome } = this.props;
     const { graphStatus: { DotsWhere } } = this.state;
     if (graph === 'Dots' && DotsWhere) {
       return (
@@ -644,23 +661,7 @@ class Drawer extends React.Component {
                 activeBiome={activeBiome}
                 labelX={labelX}
                 labelY={labelY}
-                elementOnClick={(name) => {
-                  this.setState((prevState) => {
-                    const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
-                      acc + item.value
-                    ), 0);
-                    return {
-                      biome: {},
-                      subBasin: {},
-                      ea: {},
-                      selectedStrategyFields: {},
-                      allStrategies: [],
-                      selectedArea: prevState.selectedArea - removeArea,
-                      selectedStrategies: [],
-                    };
-                  });
-                  updateCurrentBiome(name);
-                }}
+                elementOnClick={name => this.resetAreaSelected(name)}
               />
             )
           )}

@@ -71,7 +71,8 @@ class Search extends Component {
             label: ea.name,
           });
         });
-        selectorData[0].options[2].options[0].data = easList;
+        // TODO: Change selectorData to load all data from RestAPI
+        if (selectorData[0].options[2].id === 'jurisdicciones') selectorData[0].options[2].options[0].data = easList;
       }).catch(() => this.reportConnError());
   }
 
