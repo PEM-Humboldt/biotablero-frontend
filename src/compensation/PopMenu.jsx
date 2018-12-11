@@ -117,7 +117,7 @@ class PopMenu extends Component {
     } = this.props;
     const { biome, subBasin } = this.state;
     return (
-      <div className="complist">
+      <div className="complist-longer">
         <div className="popbtns">
           { !visibleGraph && (
           <button

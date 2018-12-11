@@ -1481,7 +1481,7 @@ p.legcomp {
   border-bottom: 1px solid #ea495f;
 }
 
-.complist {
+.complist-longer {
 	margin-top: 5px;
 }
 
@@ -1495,7 +1495,7 @@ p.legcomp {
 	justify-content: space-between; */
 }
 
-.complist svg {
+.complist-longer svg {
   color: #ea495f;
   float: left;
   width: 25px;
