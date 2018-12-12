@@ -491,6 +491,8 @@ class Drawer extends React.Component {
             },
           };
         }, () => {
+          // Call updateCurrentBiome() explicitly after the state has been updated. If called before
+          // setState() a maximum deep exceeded occurs.
           updateCurrentBiome('');
         });
       })
