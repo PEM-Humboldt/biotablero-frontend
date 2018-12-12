@@ -49,12 +49,12 @@ class Drawer extends React.Component {
       id: element.id,
       biome_id: element.biome.id_biome,
       name: element.biome.name,
-      affected_percentage: Number(element.area_impacted_pct).toFixed(4),
+      affected_percentage: Number(element.area_impacted_pct).toFixed(2),
       fc: element.biome.compensation_factor,
-      affected_natural: Math.ceil(element.natural_area_ha) ? Number(element.natural_area_ha).toFixed(4) : '',
-      total_compensate: Math.ceil(element.area_to_compensate_ha) ? Number(element.area_to_compensate_ha).toFixed(4) : '',
-      affected_secondary: Math.ceil(element.secondary_area_ha) ? Number(element.secondary_area_ha).toFixed(4) : '',
-      affected_transformed: Math.ceil(element.transformed_area_ha) ? Number(element.transformed_area_ha).toFixed(4) : '',
+      affected_natural: Math.ceil(element.natural_area_ha) ? Number(element.natural_area_ha).toFixed(2) : '',
+      total_compensate: Math.ceil(element.area_to_compensate_ha) ? Number(element.area_to_compensate_ha).toFixed(2) : '',
+      affected_secondary: Math.ceil(element.secondary_area_ha) ? Number(element.secondary_area_ha).toFixed(2) : '',
+      affected_transformed: Math.ceil(element.transformed_area_ha) ? Number(element.transformed_area_ha).toFixed(2) : '',
     }));
     const totals = biomes.reduce(
       (acc, element) => ({
@@ -76,11 +76,11 @@ class Drawer extends React.Component {
       biomes,
       totals: {
         name: 'TOTALES (CUANTO)',
-        affected_natural: totals.affected_natural.toFixed(4),
-        affected_secondary: totals.affected_secondary.toFixed(4),
-        affected_transformed: totals.affected_transformed.toFixed(4),
-        affected_percentage: totals.affected_percentage.toFixed(4),
-        total_compensate: totals.total_compensate.toFixed(4),
+        affected_natural: totals.affected_natural.toFixed(2),
+        affected_secondary: totals.affected_secondary.toFixed(2),
+        affected_transformed: totals.affected_transformed.toFixed(2),
+        affected_percentage: totals.affected_percentage.toFixed(2),
+        total_compensate: totals.total_compensate.toFixed(2),
       },
     };
   }
@@ -225,7 +225,7 @@ class Drawer extends React.Component {
       });
       drafts.forEach((element) => {
         const biome = element;
-        biome.area_impacted_pct = ((biome.area_impacted_ha / totalImpacted) * 100 || 0).toFixed(4);
+        biome.area_impacted_pct = ((biome.area_impacted_ha / totalImpacted) * 100 || 0).toFixed(2);
         totalNatural += biome.natural_area_ha;
         totalSecondary += biome.secondary_area_ha;
         totalTransformed += biome.transformed_area_ha;
@@ -237,11 +237,11 @@ class Drawer extends React.Component {
         biomesDraft: drafts,
         totals: {
           name: 'TOTALES (CUANTO)',
-          affected_natural: totalNatural.toFixed(4),
-          affected_secondary: totalSecondary.toFixed(4),
-          affected_transformed: totalTransformed.toFixed(4),
-          affected_percentage: totalPercentage.toFixed(4),
-          total_compensate: totalCompensate.toFixed(4),
+          affected_natural: totalNatural.toFixed(2),
+          affected_secondary: totalSecondary.toFixed(2),
+          affected_transformed: totalTransformed.toFixed(2),
+          affected_percentage: totalPercentage.toFixed(2),
+          total_compensate: totalCompensate.toFixed(2),
         },
       };
     });
@@ -293,7 +293,7 @@ class Drawer extends React.Component {
             name="natural_area_ha"
             type="text"
             placeholder="0"
-            defaultValue={biome.natural_area_ha.toFixed(4)}
+            defaultValue={biome.natural_area_ha.toFixed(2)}
             onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
             onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
           />),
@@ -301,7 +301,7 @@ class Drawer extends React.Component {
             name="secondary_area_ha"
             type="text"
             placeholder="0"
-            defaultValue={biome.secondary_area_ha.toFixed(4)}
+            defaultValue={biome.secondary_area_ha.toFixed(2)}
             onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
             onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
           />),
@@ -309,12 +309,12 @@ class Drawer extends React.Component {
             name="transformed_area_ha"
             type="text"
             placeholder="0"
-            defaultValue={biome.transformed_area_ha.toFixed(4)}
+            defaultValue={biome.transformed_area_ha.toFixed(2)}
             onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
             onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
           />),
           `${biome.area_impacted_pct}%`,
-          biome.area_to_compensate_ha.toFixed(4),
+          biome.area_to_compensate_ha.toFixed(2),
         ],
       }));
     }
@@ -349,6 +349,28 @@ class Drawer extends React.Component {
   }
 
   /**
+   * Function to reset values when area changes
+   */
+  resetAreaSelected = (name) => { // TODO: Change search by biome: name for ID
+    const { updateCurrentBiome } = this.props;
+    this.setState((prevState) => {
+      const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
+        acc + item.value
+      ), 0);
+      return {
+        biome: {},
+        subBasin: {},
+        ea: {},
+        selectedStrategyFields: {},
+        allStrategies: [],
+        selectedArea: prevState.selectedArea - removeArea,
+        selectedStrategies: [],
+      };
+    });
+    updateCurrentBiome(name);
+  }
+
+  /**
    * Request the available strategies for the given parameters
    *
    * @param {Number} idBiome biome id
@@ -357,12 +379,8 @@ class Drawer extends React.Component {
    */
   loadStrategies = (options) => {
     if (!options) {
-      const { updateCurrentBiome, currentBiome } = this.props;
-      this.setState(prevState => ({
-        allStrategies: [],
-        selectedStrategyFields: { biome: prevState.selectedStrategyFields.biome },
-      }));
-      updateCurrentBiome(currentBiome);
+      const { currentBiome } = this.props;
+      this.resetAreaSelected(currentBiome);
       return;
     }
     const {
@@ -444,7 +462,6 @@ class Drawer extends React.Component {
     }));
     RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
       .then(() => {
-        updateCurrentBiome('');
         this.setState((prevState) => {
           const { savedStrategies } = prevState;
           savedStrategies[`${biome.id}-${subBasin.id}-${ea.id}`] = {
@@ -473,6 +490,10 @@ class Drawer extends React.Component {
               DotsWhere: true,
             },
           };
+        }, () => {
+          // Call updateCurrentBiome() explicitly after the state has been updated. If called before
+          // setState() a maximum deep exceeded occurs.
+          updateCurrentBiome('');
         });
       })
       .catch(() => {
@@ -512,6 +533,7 @@ class Drawer extends React.Component {
               subBasin={subBasin.name}
               area={area}
               strategies={tableRows}
+              showTable={false}
             />
           );
         })}
@@ -541,7 +563,7 @@ class Drawer extends React.Component {
             id={strategy.id}
             focus={Number(strategy.id) === clickedStrategy}
             name={strategy.strategy_name}
-            maxValue={Number(strategy.area_ha.toFixed(4))}
+            maxValue={Number(strategy.area_ha.toFixed(2))}
             operateArea={this.operateArea}
             reportError={this.reportTableError}
             updateClickedStrategy={updateClickedStrategy}
@@ -556,7 +578,7 @@ class Drawer extends React.Component {
           key: `${strategy.id}-${key}`,
           values: [
             strategy.strategy_name,
-            strategy.area_ha.toFixed(4),
+            strategy.area_ha.toFixed(2),
             addRow,
           ],
         };
@@ -626,7 +648,6 @@ class Drawer extends React.Component {
    * Function to render graphs when necessary
    */
   renderGraphs = (data, activeBiome, labelX, labelY, graph, colors) => {
-    const { updateCurrentBiome } = this.props;
     const { graphStatus: { DotsWhere } } = this.state;
     if (graph === 'Dots' && DotsWhere) {
       return (
@@ -642,23 +663,7 @@ class Drawer extends React.Component {
                 activeBiome={activeBiome}
                 labelX={labelX}
                 labelY={labelY}
-                elementOnClick={(name) => {
-                  this.setState((prevState) => {
-                    const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
-                      acc + item.value
-                    ), 0);
-                    return {
-                      biome: {},
-                      subBasin: {},
-                      ea: {},
-                      selectedStrategyFields: {},
-                      allStrategies: [],
-                      selectedArea: prevState.selectedArea - removeArea,
-                      selectedStrategies: [],
-                    };
-                  });
-                  updateCurrentBiome(name);
-                }}
+                elementOnClick={name => this.resetAreaSelected(name)}
               />
             )
           )}
@@ -759,7 +764,7 @@ class Drawer extends React.Component {
                     AREA SELECCIONADA
                   </h3>
                   <h4 className={((selectedArea + savedArea) >= totals.total_compensate) ? 'areaCompleted' : ''}>
-                    {(savedArea + selectedArea).toFixed(4)}
+                    {(savedArea + selectedArea).toFixed(2)}
                   </h4>
                 </div>
                 {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
