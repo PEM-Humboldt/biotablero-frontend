@@ -30,12 +30,10 @@ class PopMenu extends Component {
   handleSubBasinChange = (obj) => {
     const { subBasin } = this.state;
     const subBasinSelected = obj ? obj.value : null;
-    console.log('Me llamaste', subBasin);
     const { loadStrategies, showDotsGraph } = this.props;
     if (!subBasinSelected || subBasinSelected !== subBasin) {
       showDotsGraph(true);
       loadStrategies(null);
-      console.log('Me llamaste aquí');
     }
     this.setState({
       subBasin: subBasinSelected,

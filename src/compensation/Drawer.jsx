@@ -348,27 +348,27 @@ class Drawer extends React.Component {
     this.setState({ tableError: message });
   }
 
-    /**
-     * Function to reset values when area changes
-     */
-    resetAreaSelected = (name) => {
-      const { updateCurrentBiome } = this.props;
-      this.setState((prevState) => {
-        const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
-          acc + item.value
-        ), 0);
-        return {
-          biome: {},
-          subBasin: {},
-          ea: {},
-          selectedStrategyFields: {},
-          allStrategies: [],
-          selectedArea: prevState.selectedArea - removeArea,
-          selectedStrategies: [],
-        };
-      });
-      updateCurrentBiome(name);
-    }
+  /**
+   * Function to reset values when area changes
+   */
+  resetAreaSelected = (name) => { // TODO: Change search by biome: name for ID
+    const { updateCurrentBiome } = this.props;
+    this.setState((prevState) => {
+      const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
+        acc + item.value
+      ), 0);
+      return {
+        biome: {},
+        subBasin: {},
+        ea: {},
+        selectedStrategyFields: {},
+        allStrategies: [],
+        selectedArea: prevState.selectedArea - removeArea,
+        selectedStrategies: [],
+      };
+    });
+    updateCurrentBiome(name);
+  }
 
   /**
    * Request the available strategies for the given parameters
