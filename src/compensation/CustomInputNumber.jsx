@@ -29,7 +29,7 @@ class CustomInputNumber extends React.Component {
     this.setState(prevState => ({
       add: !prevState.add,
       inputError: error,
-      value: action === '-' ? 0 : Number(prevState.value).toFixed(4),
+      value: action === '-' ? 0 : Number(prevState.value).toFixed(2),
     }));
   }
 

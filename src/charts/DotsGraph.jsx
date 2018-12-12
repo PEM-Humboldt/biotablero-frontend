@@ -15,14 +15,14 @@ const z = d => d.affected_natural;
 let tooltipTimeout;
 
 export default withTooltip(({
-  width, height, colors, dataJSON: points, activeBiome, labelX, labelY, dotOnClick,
+  width, height, colors, dataJSON: points, activeBiome, labelX, labelY, elementOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
 }) => {
   const margin = {
-    top: 0, bottom: 40, left: 80, right: 40,
+    top: 20, bottom: 60, left: 80, right: 40,
   };
   const xMax = width - margin.left - margin.right;
-  const yMax = height - 65;
+  const yMax = height - 85;
   if (width < 10) return null;
   if (height < 10) return null;
 
@@ -100,7 +100,7 @@ export default withTooltip(({
                 }, 500);
               }}
               onClick={() => () => {
-                dotOnClick(name(point));
+                elementOnClick(name(point));
               }}
             />
           ))}

@@ -47,7 +47,7 @@ class StrategiesBox extends Component {
             </div>
             <div>
               <div className="HasSelected">
-                {`${Number(area).toFixed(4)} Ha`}
+                {`${Number(area).toFixed(2)} Ha`}
               </div>
               <div>
                 <button

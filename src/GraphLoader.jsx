@@ -75,7 +75,7 @@ const GraphLoader = (
                 labelY={labelY}
                 width={width}
                 height="280"
-                dotOnClick={elementOnClick}
+                elementOnClick={elementOnClick}
                 colors={colors}
                 activeBiome={activeBiome}
               />
