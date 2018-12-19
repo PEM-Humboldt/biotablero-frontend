@@ -62,6 +62,12 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
+    
+## 3. Arquitectura
+
+La interacción entre componentes se describe a continuación:
+
+![diagrama_componentes](https://user-images.githubusercontent.com/15584917/50234036-c65b1300-0382-11e9-9cbd-c36453696bf7.png)
 
 ***
 
