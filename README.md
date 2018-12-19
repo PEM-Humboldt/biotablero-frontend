@@ -65,7 +65,22 @@ Una vez esté creada la imagen, se despliega de la siguiente manera:
     
 ## 3. Arquitectura
 
-La interacción entre componentes se describe a continuación:
+A continuación se presenta el diagrama de la arquitectura de la plataforma BioTablero, que involucra el presente repositorio (biotablero-frontend).
+
+![arquitectura](https://user-images.githubusercontent.com/15584917/50234775-6c5b4d00-0384-11e9-87af-31035994cc91.png)
+
+### 3.1. Explicación de funcionamiento y dependencias
+
+Este proyecto cuenta con dos dependencias que deben ser configuradas según las instrucciónes dadas para la [construcción de la imagen](https://github.com/PEM-Humboldt/biotablero#21-construcci%C3%B3n-de-la-imagen). En caso de ejecutar este proyecto sin la configuración previa, no se presentarán datos ni áreas a seleccionar sobre el mapa.
+
+Por lo tanto, deberá configurar la carga de información desde la ejecución del backend del proyecto:
+- biotablero-backend: https://github.com/PEM-Humboldt/biotablero-backend
+
+Y deberá configurar la conexión a servicios de GeoServer para la obtención de capas de mapas.
+
+### 3.2. Diagrama de componentes
+
+La interacción entre componentes de este proyecto (biotablero-frontend) se describe a continuación:
 
 ![diagrama_componentes](https://user-images.githubusercontent.com/15584917/50234036-c65b1300-0382-11e9-9cbd-c36453696bf7.png)
 
