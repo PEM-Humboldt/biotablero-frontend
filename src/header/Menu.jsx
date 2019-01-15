@@ -35,16 +35,11 @@ class Menu extends React.Component {
               Consultas
             </li>
           </Link>
-          <a
-            href="http://humboldt-156715.appspot.com/filters.html"
-            onClick={this.changeMenuState}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <Link to="/Indicadores" onClick={this.changeMenuState}>
             <li>
               Indicadores
             </li>
-          </a>
+          </Link>
           { userLogged ? (
             <Link to="/GEB/Compensaciones" onClick={this.changeMenuState}>
               <li>
