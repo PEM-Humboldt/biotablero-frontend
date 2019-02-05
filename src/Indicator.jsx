@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Layout from './Layout';
 import CardManager from './indicator/CardManager';
 
-// import { filtersData } from './indicator/assets/selectorData';
+import { thumbnailsData } from './indicator/assets/selectorData';
 
 class Indicator extends React.Component {
   constructor(props) {
@@ -29,6 +29,9 @@ class Indicator extends React.Component {
       >
         <div className="filters">
           <div id="filters">
+            <div className="options">
+              <h1>Filtros temáticos de indicadores</h1>
+            </div>
 
             <div className="container filter-display-container">
               <p id="filter-display">
@@ -39,7 +42,7 @@ class Indicator extends React.Component {
 
             <div id="filter-container" className="isotope">
               <div id="art">
-                <CardManager> Hola </CardManager>
+                <CardManager thumbnailsData={thumbnailsData} />
                 <div className="item aichi5 estado ecospp-cobertura">
                   <h1>Porcentaje de cobertura boscosa</h1>
                   <h2>

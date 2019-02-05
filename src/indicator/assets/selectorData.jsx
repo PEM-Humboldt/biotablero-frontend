@@ -135,41 +135,33 @@ const filtersData = [
   },
 ];
 
+// const thumbnailsData = ['Hola'];
 const thumbnailsData = [
   {
-    groupLabel: 'Metas',
-    groupDetailClass: 'metas',
-    options: [
+    id: 'aichi5',
+    label: 'Aichi 5',
+    dataToolTip: 'Meta Aichi 5 · Pérdida, degradación y fragmentación - Para 2020 se habrá reducido por lo menos a la mitad y, donde resulte factible, se habrá reducido hasta un valor cercano a cero el ritmo de pérdida de todos los hábitats naturales, incluidos los bosques, y se habrá reducido de manera significativa la degradación y fragmentación.',
+    disabled: false,
+    thumbnails: [
       {
-        id: 'aichi5',
-        label: 'Aichi 5',
-        detailClass: 'aichi5',
-        dataToolTip: 'Meta Aichi 5 · Pérdida, degradación y fragmentación - Para 2020 se habrá reducido por lo menos a la mitad y, donde resulte factible, se habrá reducido hasta un valor cercano a cero el ritmo de pérdida de todos los hábitats naturales, incluidos los bosques, y se habrá reducido de manera significativa la degradación y fragmentación.',
-        disabled: false,
-        options: [
-          {
-            type: 'button',
-            label: 'test1',
-          },
-          {
-            type: 'button',
-            label: 'test2',
-          },
-        ],
+        title: 'Porcentaje de cobertura boscosa',
+        description: 'Forest area as a percentage of total land area (proposed indictor for SDG target 15.1)',
+        period: '1990 - 2014',
+        filters: ['aichi5', 'estado', 'ecospp-cobertura'],
+      },
+      {
+        title: 'Porcentaje de cobertura natural',
+        description: 'Natural habitat extent (land area minus urban and agriculture)',
+        period: '2005 - 2012',
+        filters: ['aichi5', 'estado', 'ecospp-cobertura'],
+      },
+      {
+        title: '',
+        description: '',
+        period: '',
+        filters: [''],
       },
     ],
-  },
-  {
-    id: 'PERB',
-    detailId: 'PERB',
-    label: 'Subir polígono',
-    disabled: false,
-  },
-  {
-    id: 'ecospp',
-    detailId: 'ecospp',
-    label: 'Ecosistemas y especies',
-    disabled: true,
   },
 ];
 

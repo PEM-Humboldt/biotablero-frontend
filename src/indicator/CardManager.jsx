@@ -2,19 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 
-const styles = {
-  card: {
-    minWidth: 275,
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden',
+    backgroundColor: theme.palette.background.paper,
   },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
+  gridList: {
+    width: 300,
+    height: 330,
+  },
+  icon: {
+    color: 'rgba(255, 130, 157, 0.84)',
+  },
+  card: {
+    width: 290,
+    hover: { color: 'tomato' },
   },
   title: {
     fontSize: 14,
@@ -22,37 +32,40 @@ const styles = {
   pos: {
     marginBottom: 12,
   },
-};
+});
 
 const CardManager = ({
   thumbnailsData, classes,
 }) => (
-  <Card className={classes.card}>
-    <CardContent>
-      <Typography className={classes.title} color="textSecondary" gutterBottom>
-        Porcentaje de cobertura boscosa
-      </Typography>
-      <Typography variant="h5" component="h2">
-        Forest area as a percentage of total land area (proposed indictor for SDG target 15.1)
-      </Typography>
-      <Typography className={classes.pos} color="textSecondary">
-        1990 - 2014
-      </Typography>
-      <Typography component="p">
-        (Tag 1)
-        <br />
-        {'"(Tag 2)"'}
-      </Typography>
-    </CardContent>
-    <CardActions>
-      <Button size="small">{thumbnailsData}</Button>
-    </CardActions>
-  </Card>
-
+  <div>
+    <GridList cellHeight={0} className={classes.gridList}>
+      <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
+        <Card className={classes.card}>
+          <CardActionArea>
+            <CardContent>
+              <h1>
+                Porcentaje de cobertura boscosa
+              </h1>
+              <h2>
+                Forest area as a percentage of total land area (proposed
+                 indictor for SDG target 15.1)
+              </h2>
+              <h3>
+                1990 - 2014
+              </h3>
+                (Tag 1)
+              <br />
+              {'"(Tag 2)"'}
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </GridListTile>
+    </GridList>
+  </div>
 );
 
 CardManager.propTypes = {
-  thumbnailsData: PropTypes.object.isRequired,
+  thumbnailsData: PropTypes.array.isRequired,
   classes: PropTypes.object.isRequired,
 };
 
