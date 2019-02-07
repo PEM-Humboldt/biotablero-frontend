@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TableStylized from '../TableStylized';
+import TableStylized from '../commons/TableStylized';
 
 class StrategiesBox extends Component {
   constructor(props) {

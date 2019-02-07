@@ -11,10 +11,10 @@ import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/FileDownload';
 
 import CustomInputNumber from './CustomInputNumber';
-import GraphLoader from '../GraphLoader';
+import GraphLoader from '../charts/GraphLoader';
 import PopMenu from './PopMenu';
-import TabContainer from '../TabContainer';
-import TableStylized from '../TableStylized';
+import TabContainer from '../commons/TabContainer';
+import TableStylized from '../commons/TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import StrategiesBox from './StrategiesBox';
 import RestAPI from '../api/REST';

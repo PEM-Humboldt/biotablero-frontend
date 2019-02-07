@@ -1037,16 +1037,10 @@ footer h3 a, .footersm h3 a {
 	padding-bottom: 50px;
 }
 
-.filter-display-container span {
-	font-weight: 400;
+.filter-display-container {
 	font-size: 15px;
 	color: #2a363b;
 	display: block;
-	padding-top: 10px;
-}
-
-.filter-display-container {
-	margin-bottom: 1px solid #6c6c6c;
 	background-color: #547a82;
 	padding: 20px;
 }
@@ -1080,7 +1074,7 @@ a#reset-filters {
 }
 
 #options > div {
-	padding: 0 30px;
+	padding: 5px;
 }
 
 #options h5 {

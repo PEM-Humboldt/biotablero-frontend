@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 
 import CloseIcon from '@material-ui/icons/Close';
-import MapViewer from './MapViewer';
-import Selector from './Selector';
+import MapViewer from './commons/MapViewer';
+import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
 import GeoServerAPI from './api/geoserver';
 import { description, selectorData, dataGEB } from './search/assets/selectorData';

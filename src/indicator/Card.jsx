@@ -16,7 +16,7 @@ const Card = ({
       {period}
     </h3>
     <br />
-    {action}
+    <a href={action} data-tooltip title="Ir al indicador">+</a>
   </div>
 );
 

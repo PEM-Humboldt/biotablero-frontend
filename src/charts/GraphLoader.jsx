@@ -2,9 +2,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import BarStackHorizontal from './charts/BarStackHorizontal';
-import BarGraph from './charts/BarGraph';
-import DotsGraph from './charts/DotsGraph';
+import BarStackHorizontal from './BarStackHorizontal';
+import BarGraph from './BarGraph';
+import DotsGraph from './DotsGraph';
 
 const GraphLoader = (
   {
