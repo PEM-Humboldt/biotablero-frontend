@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
-import RestAPI from './api/REST';
+import RestAPI from './api/RestAPI';
 
 class Login extends Component {
   constructor(props) {

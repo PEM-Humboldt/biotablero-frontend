@@ -32,7 +32,7 @@ class Indicator extends React.Component {
   }
 
   handleChipClick = () => {
-    console.log('Acción borrar');
+    console.log('Acción click');
   }
 
   render() {

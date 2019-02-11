@@ -11,8 +11,8 @@ import MapViewer from './commons/MapViewer';
 import Drawer from './compensation/Drawer';
 import NewProjectForm from './compensation/NewProjectForm';
 import Selector from './commons/Selector';
-import GeoServerAPI from './api/geoserver';
-import RestAPI from './api/REST';
+import GeoServerAPI from './api/GeoServerAPI';
+import RestAPI from './api/RestAPI';
 import Layout from './Layout';
 import { description } from './compensation/assets/selectorData';
 
@@ -599,6 +599,7 @@ class Compensation extends Component {
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
                 userId={userLogged.id}
+                RestAPI
               />
               )
             }
