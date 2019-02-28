@@ -25,6 +25,13 @@ class RestAPI {
   /**
    * Recover all eas available in the database
    */
+  static getSearchOptions() {
+    return RestAPI.makeGetRequest('searchUnits');
+  }
+
+  /**
+   * Recover all eas available in the database
+   */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
   }

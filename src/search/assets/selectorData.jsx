@@ -96,6 +96,57 @@ const selectorData = [
         ],
       },
       {
+        id: 'panel1-Centro',
+        detailId: 'proyectos',
+        label: 'Centro',
+        expandIcon: (<ExpandMoreIcon />),
+        options: [
+          {
+            id: 'licenciados',
+            label: 'Licenciados',
+            expandIcon: (<ExpandMoreIcon />),
+          },
+          {
+            id: 'En Licenciamiento',
+            label: 'En licenciamiento',
+            expandIcon: (<ExpandMoreIcon />),
+            options: [
+              {
+                type: 'button',
+                name: 'sogamoso',
+                label: 'Sogamoso',
+              },
+              {
+                type: 'button',
+                label: 'Nortechivor',
+              },
+            ],
+          },
+          {
+            id: 'daa',
+            label: 'Diagnóstico Ambiental de Alternativas',
+            expandIcon: (<ExpandMoreIcon />),
+            options: [
+              {
+                type: 'button',
+                label: 'San Fernando',
+              },
+            ],
+          },
+          {
+            id: 'addProject',
+            label: '+ Agregar nuevo proyecto',
+            expandIcon: (<ExpandMoreIcon />),
+            options: [
+              {
+                type: 'button',
+                label: 'Agregar',
+              },
+            ],
+          },
+        ],
+      },
+      {
         id: 'departamentos',
         label: 'Departamentos',
         expandIcon: (<ExpandMoreIcon />),

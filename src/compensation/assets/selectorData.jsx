@@ -1,6 +1,5 @@
 /** eslint verified */
 import React from 'react';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const description = companyName => (
   <div>
@@ -61,24 +60,20 @@ const selectorData = [
     id: 'panel1-Norte',
     detailId: 'panel1-Norte',
     label: 'Norte',
-    expandIcon: (<ExpandMoreIcon />),
     disabled: true,
   },
   {
     id: 'panel1-Centro',
     detailId: 'proyectos',
     label: 'Centro',
-    expandIcon: (<ExpandMoreIcon />),
     options: [
       {
         id: 'licenciados',
         label: 'Licenciados',
-        expandIcon: (<ExpandMoreIcon />),
       },
       {
         id: 'En Licenciamiento',
         label: 'En licenciamiento',
-        expandIcon: (<ExpandMoreIcon />),
         options: [
           {
             type: 'button',
@@ -94,7 +89,6 @@ const selectorData = [
       {
         id: 'daa',
         label: 'Diagnóstico Ambiental de Alternativas',
-        expandIcon: (<ExpandMoreIcon />),
         options: [
           {
             type: 'button',
@@ -105,7 +99,6 @@ const selectorData = [
       {
         id: 'addProject',
         label: '+ Agregar nuevo proyecto',
-        expandIcon: (<ExpandMoreIcon />),
         options: [
           {
             type: 'button',
@@ -119,14 +112,12 @@ const selectorData = [
     id: 'panel1-Occidente',
     detailId: 'panel1-Occidente',
     label: 'Occidente',
-    expandIcon: (<ExpandMoreIcon />),
     disabled: true,
   },
   {
     id: 'panel1-Suroccidente',
     detailId: 'panel1-Suroccidente',
     label: 'Suroccidente',
-    expandIcon: (<ExpandMoreIcon />),
     disabled: true,
   },
 ];

@@ -4,6 +4,10 @@ import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import FileUploadIcon from '@material-ui/icons/FileUpload';
+import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 
 import Autocomplete from './Autocomplete';
@@ -97,7 +101,7 @@ class Selector extends React.Component {
         </div>
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
-            id, label, disabled, expandIcon, detailId, idLabel,
+            id, label, disabled, iconOption, detailId, idLabel,
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
@@ -109,7 +113,14 @@ class Selector extends React.Component {
               onChange={this.firstLevelChange(id)}
               key={id}
             >
-              <ExpansionPanelSummary expandIcon={expandIcon}>
+              <ExpansionPanelSummary
+                expandIcon={
+                  (((iconOption === 'add') && <AddIcon />)
+                  || ((iconOption === 'upload') && <FileUploadIcon />)
+                  || ((iconOption === 'edit') && <EditIcon />)
+                  || (<ExpandMoreIcon />))
+                }
+              >
                 {label}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails
@@ -128,7 +139,14 @@ class Selector extends React.Component {
                       onChange={this.secondLevelChange(subId)}
                       key={subId}
                     >
-                      <ExpansionPanelSummary expandIcon={expandIcon}>
+                      <ExpansionPanelSummary
+                        expandIcon={
+                          (((iconOption === 'add') && <AddIcon />)
+                          || ((iconOption === 'upload') && <FileUploadIcon />)
+                          || ((iconOption === 'edit') && <EditIcon />)
+                          || ((iconOption === 'expand') && <ExpandMoreIcon />))
+                        }
+                      >
                         {subLabel}
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails className={subClasses}>
