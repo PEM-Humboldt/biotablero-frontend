@@ -225,13 +225,14 @@ class Autocomplete extends React.Component {
 Autocomplete.propTypes = {
   valueSelected: PropTypes.func.isRequired,
   classes: PropTypes.object,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   label: PropTypes.string,
 };
 
 Autocomplete.defaultProps = {
   classes: '',
   label: 'Escriba el nombre a buscar',
+  data: [],
 };
 
 export default withStyles(styles)(Autocomplete);

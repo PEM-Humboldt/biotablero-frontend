@@ -23,10 +23,11 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover all eas available in the database
+   * Recover all geofences by default availables in the
+   * database for the Search Module
    */
   static getSearchOptions() {
-    return RestAPI.makeGetRequest('searchUnits');
+    return RestAPI.makeGetRequest('geofences');
   }
 
   /**

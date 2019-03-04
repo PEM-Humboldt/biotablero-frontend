@@ -58,12 +58,21 @@ class Selector extends React.Component {
     handlers[1](subPanel);
   };
 
-  renderInnerElement = parent => ({
+  renderInnerElement = (parent, size) => ({
     type, label, name, data, id_project: projectId,
   }) => {
     const { handlers } = this.props;
-    switch (type) {
-      case 'button':
+    switch (size) {
+      case 1:
+        return (
+          <Autocomplete
+            valueSelected={value => handlers[2](parent, value)}
+            name={name}
+            data={data}
+            key={`${type}-${label}`}
+          />
+        );
+      default:
         return (
           <button
             type="button"
@@ -74,17 +83,6 @@ class Selector extends React.Component {
             {label}
           </button>
         );
-      case 'autocomplete':
-        return (
-          <Autocomplete
-            valueSelected={value => handlers[2](parent, value)}
-            name={name}
-            data={data}
-            key={`${type}-${label}`}
-          />
-        );
-      default:
-        return null;
     }
   }
 
@@ -128,7 +126,7 @@ class Selector extends React.Component {
               >
                 {options.map((secondLevel) => {
                   const {
-                    id: subId, label: subLabel, detailClass: subClasses,
+                    id: subId, label: subLabel,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
@@ -149,8 +147,8 @@ class Selector extends React.Component {
                       >
                         {subLabel}
                       </ExpansionPanelSummary>
-                      <ExpansionPanelDetails className={subClasses}>
-                        {subOptions.map(this.renderInnerElement(subId))}
+                      <ExpansionPanelDetails className={subOptions.length !== 1 ? 'inlineb' : ''}>
+                        {subOptions.map(this.renderInnerElement(subId, subOptions.length))}
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                   );

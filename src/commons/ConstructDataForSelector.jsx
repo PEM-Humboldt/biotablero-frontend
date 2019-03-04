@@ -15,7 +15,10 @@ const FirstLetterUpperCase = sentence => (
  * Set the data structure for Selector in the Search Module
  */
 const ConstructDataForSearch = (areas) => {
+// TODO: Fix with endpoints
+  const geofencesArray = [];
 
+  return { geofences: geofencesArray };
 };
 
 /**
@@ -56,7 +59,6 @@ const ConstructDataForCompensation = (regions) => {
         detailId: 'state',
         iconOption: 'expand',
         idLabel: FirstLetterUpperCase(statusLabel).replace(/ /g, ''),
-        detailClass: 'inlineb',
         projects: regions[regionKey][statusKey].map(project => ({
           id_project: project.gid,
           name: FirstLetterUpperCase(project.name),

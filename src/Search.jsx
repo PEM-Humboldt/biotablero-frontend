@@ -10,6 +10,7 @@ import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
 import GeoServerAPI from './api/GeoServerAPI';
+import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description, selectorData, dataGEB } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
@@ -19,9 +20,11 @@ class Search extends Component {
     super(props);
     this.state = {
       layers: {},
+      data: null,
       connError: false,
       dataError: false,
       currentCompany: null,
+      currentGeofenceId: null,
       subAreaName: null,
       layerName: null,
       basinData: null,
@@ -63,7 +66,18 @@ class Search extends Component {
 
   loadAreaList = () => {
     const easList = [];
+    let { geofencesArray } = this.state;
+    RestAPI.getSearchOptions()
+      .then((res) => {
+        geofencesArray = ConstructDataForSearch(res);
+        this.setState({
+          geofencesArray,
+        });
+      })
+      .catch(() => this.reportConnError());
+
     RestAPI.getAllEAs()
+    // TODO: move inside data build, on ConstructDataForSelector or here, in loadAreaList
       .then((res) => {
         res.forEach((ea) => {
           easList.push({
@@ -74,6 +88,7 @@ class Search extends Component {
         // TODO: Change selectorData to load all data from RestAPI
         if (selectorData[0].options[2].id === 'jurisdicciones') selectorData[0].options[2].options[0].data = easList;
       }).catch(() => this.reportConnError());
+    return geofencesArray;
   }
 
     /**
@@ -331,6 +346,8 @@ class Search extends Component {
     * TODO: Replace "dataGEB" for data from the current company
     */
   getData = () => {
+    // TODO: Change return for geofencesArray
+    // const { geofencesArray } = this.state;
     const { userLogged } = this.props;
     if (userLogged && (selectorData[0].options[0] !== dataGEB)) {
       selectorData[0].options.unshift(dataGEB);
