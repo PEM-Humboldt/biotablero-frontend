@@ -9,6 +9,7 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/FileDownload';
+import RestAPI from '../api/RestAPI';
 
 import CustomInputNumber from './CustomInputNumber';
 import GraphLoader from '../charts/GraphLoader';
@@ -116,7 +117,7 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      biomesImpacted, companyId, projectId, RestAPI,
+      biomesImpacted, companyId, projectId,
     } = this.props;
     if (biomesImpacted.length <= 0) {
       RestAPI.getAllBiomes()
@@ -253,7 +254,7 @@ class Drawer extends React.Component {
    */
   sendAddBiomesToProject = () => {
     const {
-      companyId, projectId, reloadProject, RestAPI,
+      companyId, projectId, reloadProject,
     } = this.props;
     const { biomesDraft } = this.state;
     RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft)
@@ -391,7 +392,7 @@ class Drawer extends React.Component {
       subBasin: { name: subBasinName, id: idSubzone },
       ea: { name: eaName, id: idEA },
     } = options;
-    const { showStrategies, RestAPI } = this.props;
+    const { showStrategies } = this.props;
     showStrategies(false);
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
       .then(({ strategies, geometry }) => {
@@ -453,7 +454,6 @@ class Drawer extends React.Component {
       projectId,
       updateCurrentBiome,
       userId,
-      RestAPI,
     } = this.props;
     const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
     const strategiesToSave = selectedStrategies.map(strategy => ({
@@ -510,7 +510,7 @@ class Drawer extends React.Component {
    * get the url to download the strategies saved in the current project
    */
   downloadPlanUrl = () => {
-    const { companyId, projectId, RestAPI } = this.props;
+    const { companyId, projectId } = this.props;
     return RestAPI.downloadProjectStrategiesUrl(companyId, projectId);
   }
 
@@ -820,7 +820,6 @@ Drawer.propTypes = {
   reportConnError: PropTypes.func,
   clickedStrategy: PropTypes.number,
   userId: PropTypes.number,
-  RestAPI: PropTypes.object.isRequired,
 };
 
 Drawer.defaultProps = {

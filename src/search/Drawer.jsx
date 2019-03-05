@@ -7,6 +7,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import { ParentSize } from '@vx/responsive';
+import RestAPI from '../api/RestAPI';
 
 import GraphLoader from '../charts/GraphLoader';
 import TabContainer from '../commons/TabContainer';
@@ -32,7 +33,6 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const { RestAPI } = this.props;
     RestAPI.requestCarByBiomeArea('CORPOBOYACA')
       .then((res) => {
         this.setState(prevState => ({
@@ -219,7 +219,6 @@ Drawer.propTypes = {
   subAreaName: PropTypes.string,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
-  RestAPI: PropTypes.object.isRequired,
 };
 
 Drawer.defaultProps = {

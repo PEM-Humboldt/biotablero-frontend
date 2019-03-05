@@ -519,7 +519,6 @@ class Compensation extends Component {
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
                 userId={userLogged.id}
-                RestAPI
               />
               )
             }

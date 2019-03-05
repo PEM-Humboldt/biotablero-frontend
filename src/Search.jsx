@@ -466,7 +466,6 @@ class Search extends Component {
               handlerBackButton={this.handlerBackButton}
               layerName={layerName}
               subAreaName="Jurisdicciones"
-              RestAPI
             />
             )}
           </div>
