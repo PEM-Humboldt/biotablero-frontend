@@ -13,7 +13,7 @@ import Selector from './commons/Selector';
 import GeoServerAPI from './api/GeoServerAPI';
 import RestAPI from './api/RestAPI';
 import Layout from './Layout';
-import { description } from './compensation/assets/selectorData';
+import description from './compensation/assets/selectorData';
 
 class Compensation extends Component {
   static getDerivedStateFromProps = nextProps => ({

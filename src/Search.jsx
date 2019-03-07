@@ -357,7 +357,7 @@ class Search extends Component {
 
   /**
     * Function to control data options belonging to the companyId
-    * TODO: Replace "dataGEB" for data from the current company
+    * TODO: Add data from the current company in geofencesArray
     */
   getData = () => {
     const { geofencesArray } = this.state;
