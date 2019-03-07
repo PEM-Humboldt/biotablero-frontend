@@ -11,7 +11,7 @@ import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
 import GeoServerAPI from './api/GeoServerAPI';
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
-import { description, dataGEB } from './search/assets/selectorData';
+import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 
@@ -260,7 +260,7 @@ class Search extends Component {
               layers: {
                 ...prevState.layers,
                 jurisdicciones: {
-                  displayName: 'Jurisdicciones',
+                  displayName: idLayer,
                   active: false,
                   layer: L.geoJSON(
                     res,
@@ -300,6 +300,14 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
+    this.setState((prevState) => {
+      let newState = { ...prevState };
+      newState = {
+        ...newState,
+        subAreaName: name,
+      };
+      return newState;
+    });
     this.loadSecondLevelLayer(name);
   }
 
@@ -352,17 +360,7 @@ class Search extends Component {
     * TODO: Replace "dataGEB" for data from the current company
     */
   getData = () => {
-    const { userLogged } = this.props;
-    const { geofencesArray, userDataLoaded } = this.state;
-    // TODO: Implement add & remove data according to userLogged
-    // if (userLogged && !userDataLoaded) {
-    //   this.setState({
-    //     geofencesArray = geofencesArray + dataGEB,
-    //   });
-    //   selectorData[0].options.unshift(dataGEB);
-    // } else if ((!userLogged || userLogged === null) && geofencesArray[0].options[0] === dataGEB) {
-    //   selectorData[0].options.shift(dataGEB);
-    // }
+    const { geofencesArray } = this.state;
     return geofencesArray;
   }
 
@@ -370,7 +368,7 @@ class Search extends Component {
     const { callbackUser, userLogged } = this.props;
     const {
       subAreaName, layerName, activeLayerName, basinData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError, geofencesArray,
+      colors, colorsFC, colorSZH, layers, connError, dataError,
     } = this.state;
     return (
       <Layout
@@ -465,17 +463,18 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && (
-            <Drawer
-              basinData={basinData}
-              basinName={activeLayerName.NOMCAR || activeLayerName}
-              colors={colors}
-              colorsFC={colorsFC.map(obj => Object.values(obj)[0])} // Sort appropriately the colors
-              colorSZH={colorSZH}
-              handlerBackButton={this.handlerBackButton}
-              layerName={layerName}
-              subAreaName="Jurisdicciones"
-            />
+            { activeLayerName && subAreaName && (
+              <Drawer
+                basinData={basinData}
+                basinName={activeLayerName.NOMCAR || activeLayerName}
+                colors={colors}
+                // Sort appropriately the colors
+                colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
+                colorSZH={colorSZH}
+                handlerBackButton={this.handlerBackButton}
+                layerName={layerName}
+                subAreaName={subAreaName}
+              />
             )}
           </div>
         </div>
