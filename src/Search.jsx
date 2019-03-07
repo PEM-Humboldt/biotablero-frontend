@@ -6,13 +6,13 @@ import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 
 import CloseIcon from '@material-ui/icons/Close';
-import MapViewer from './MapViewer';
-import Selector from './Selector';
+import MapViewer from './commons/MapViewer';
+import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
-import GeoServerAPI from './api/geoserver';
+import GeoServerAPI from './api/GeoServerAPI';
 import { description, selectorData, dataGEB } from './search/assets/selectorData';
 import Layout from './Layout';
-import RestAPI from './api/REST';
+import RestAPI from './api/RestAPI';
 
 class Search extends Component {
   constructor(props) {
@@ -449,6 +449,7 @@ class Search extends Component {
               handlerBackButton={this.handlerBackButton}
               layerName={layerName}
               subAreaName="Jurisdicciones"
+              RestAPI
             />
             )}
           </div>

@@ -11,13 +11,12 @@ import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/FileDownload';
 
 import CustomInputNumber from './CustomInputNumber';
-import GraphLoader from '../GraphLoader';
+import GraphLoader from '../charts/GraphLoader';
 import PopMenu from './PopMenu';
-import TabContainer from '../TabContainer';
-import TableStylized from '../TableStylized';
+import TabContainer from '../commons/TabContainer';
+import TableStylized from '../commons/TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import StrategiesBox from './StrategiesBox';
-import RestAPI from '../api/REST';
 import ConfirmationModal from '../ConfirmationModal';
 
 const styles = () => ({
@@ -116,7 +115,9 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const { biomesImpacted, companyId, projectId } = this.props;
+    const {
+      biomesImpacted, companyId, projectId, RestAPI,
+    } = this.props;
     if (biomesImpacted.length <= 0) {
       RestAPI.getAllBiomes()
         .then(biomes => (
@@ -251,7 +252,9 @@ class Drawer extends React.Component {
    * Send biomesDraft to persist in the backend
    */
   sendAddBiomesToProject = () => {
-    const { companyId, projectId, reloadProject } = this.props;
+    const {
+      companyId, projectId, reloadProject, RestAPI,
+    } = this.props;
     const { biomesDraft } = this.state;
     RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft)
       .then(() => {
@@ -388,7 +391,7 @@ class Drawer extends React.Component {
       subBasin: { name: subBasinName, id: idSubzone },
       ea: { name: eaName, id: idEA },
     } = options;
-    const { showStrategies } = this.props;
+    const { showStrategies, RestAPI } = this.props;
     showStrategies(false);
     RestAPI.requestAvailableStrategies(idBiome, idSubzone, idEA)
       .then(({ strategies, geometry }) => {
@@ -450,6 +453,7 @@ class Drawer extends React.Component {
       projectId,
       updateCurrentBiome,
       userId,
+      RestAPI,
     } = this.props;
     const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
     const strategiesToSave = selectedStrategies.map(strategy => ({
@@ -506,7 +510,7 @@ class Drawer extends React.Component {
    * get the url to download the strategies saved in the current project
    */
   downloadPlanUrl = () => {
-    const { companyId, projectId } = this.props;
+    const { companyId, projectId, RestAPI } = this.props;
     return RestAPI.downloadProjectStrategiesUrl(companyId, projectId);
   }
 
@@ -816,6 +820,7 @@ Drawer.propTypes = {
   reportConnError: PropTypes.func,
   clickedStrategy: PropTypes.number,
   userId: PropTypes.number,
+  RestAPI: PropTypes.object.isRequired,
 };
 
 Drawer.defaultProps = {
