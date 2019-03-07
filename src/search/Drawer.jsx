@@ -33,7 +33,10 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    RestAPI.requestCarByBiomeArea('CORPOBOYACA')
+    const {
+      basinName,
+    } = this.props;
+    RestAPI.requestCarByBiomeArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -52,7 +55,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByFCArea('CORPOBOYACA')
+    RestAPI.requestCarByFCArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -71,7 +74,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByDistritosArea('CORPOBOYACA')
+    RestAPI.requestCarByDistritosArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,

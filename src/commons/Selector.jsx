@@ -58,29 +58,29 @@ class Selector extends React.Component {
     handlers[1](subPanel);
   };
 
-  renderInnerElement = (parent, size) => ({
-    type, label, name, data, id_project: projectId,
+  renderInnerElement = (parent, size, data) => ({
+    type, label, name, id_project: projectId,
   }) => {
     const { handlers } = this.props;
     switch (size) {
       case 1:
         return (
           <Autocomplete
-            valueSelected={value => handlers[2](parent, value)}
-            name={name}
+            valueSelected={value => handlers[2](parent, (value || name))}
+            name={label || name}
             data={data}
-            key={`${type}-${label}`}
+            key={`${type}-${label || name}`}
           />
         );
       default:
         return (
           <button
             type="button"
-            key={`${type}-${label}`}
+            key={`${type}-${label || name}`}
             name={name}
-            onClick={() => handlers[2](parent, projectId)}
+            onClick={() => handlers[2](parent, projectId || name)}
           >
-            {label}
+            {label || name}
           </button>
         );
     }
@@ -142,13 +142,15 @@ class Selector extends React.Component {
                           (((iconOption === 'add') && <AddIcon />)
                           || ((iconOption === 'upload') && <FileUploadIcon />)
                           || ((iconOption === 'edit') && <EditIcon />)
-                          || ((iconOption === 'expand') && <ExpandMoreIcon />))
+                          || (<ExpandMoreIcon />))
                         }
                       >
                         {subLabel}
                       </ExpansionPanelSummary>
-                      <ExpansionPanelDetails className={subOptions.length !== 1 ? 'inlineb' : ''}>
-                        {subOptions.map(this.renderInnerElement(subId, subOptions.length))}
+                      <ExpansionPanelDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
+                        {subOptions.length < 7
+                          ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
+                          : [{ subOptions }].map(this.renderInnerElement(subId, 1, subOptions))}
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                   );

@@ -14,11 +14,45 @@ const FirstLetterUpperCase = sentence => (
 /**
  * Set the data structure for Selector in the Search Module
  */
-const ConstructDataForSearch = (areas) => {
-// TODO: Fix with endpoints
-  const geofencesArray = [];
+const ConstructDataForSearch = (geofences) => {
+  const areasArray = [];
+  geofences.forEach((geofence) => {
+    const area = {
+      id: geofence.name,
+      label: geofence.name,
+      detailId: 'area',
+      iconOption: 'expand',
+      idLabel: `panel1-${geofence.name.replace(/ /g, '')}`,
+      options: geofence.data,
+    };
+    areasArray.push(area);
+  });
 
-  return { geofences: geofencesArray };
+  const geofencesArray = [
+    {
+      id: 'Geocerca',
+      idLabel: 'panel1-Geocerca',
+      // id='geofences' is used to mark it as selected in the first load
+      detailId: 'geofences',
+      label: 'Área de consulta',
+      options: areasArray,
+    },
+    {
+      id: 'panel2',
+      detailId: 'panel2',
+      label: 'Subir polígono',
+      iconOption: 'upload',
+      disabled: true,
+    },
+    {
+      id: 'panel3',
+      detailId: 'panel3',
+      label: 'Dibujar polígono / Línea',
+      iconOption: 'edit',
+      disabled: true,
+    },
+  ];
+  return geofencesArray;
 };
 
 /**

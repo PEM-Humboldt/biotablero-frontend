@@ -23,15 +23,49 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover all geofences by default availables in the
-   * database for the Search Module
+   * Recover a list with all protected areas available in the database
    */
-  static getSearchOptions() {
-    return RestAPI.makeGetRequest('geofences');
+  static getAllProtectedAreas() {
+    return RestAPI.makeGetRequest('pa/categories');
   }
 
   /**
-   * Recover all eas available in the database
+   * Recover a list with all basin areas available in the database
+   */
+  static getAllBasinAreas() {
+    return RestAPI.makeGetRequest('basinAreas');
+  }
+
+  /**
+   * Recover a list with all basin zones available in the database
+   */
+  static getAllZones() {
+    return RestAPI.makeGetRequest('basinZones');
+  }
+
+  /**
+   * Recover a list with all basin subzones available in the database
+   */
+  static getAllSubzones() {
+    return RestAPI.makeGetRequest('basinSubzones');
+  }
+
+  /**
+   * Recover a list with all States available in the database
+   */
+  static getAllStates() {
+    return RestAPI.makeGetRequest('states');
+  }
+
+  /**
+   * Recover a list with all Strategic Ecosystems availables in the database
+   */
+  static getAllSEs() {
+    return RestAPI.makeGetRequest('se/primary');
+  }
+
+  /**
+   * Recover a list with all Environmental Authorities availables in the database
    */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
