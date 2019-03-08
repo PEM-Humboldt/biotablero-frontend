@@ -166,7 +166,11 @@ class Drawer extends React.Component {
       basinName, basinData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, layerName, subAreaName,
     } = this.props;
-    const { data: { fc, biomas, distritos } } = this.state;
+    const {
+      data: {
+        fc, biomas, distritos, areaSE,
+      },
+    } = this.state;
     return (
       <div className="informer">
         <button
@@ -203,12 +207,7 @@ class Drawer extends React.Component {
               ),
               (
                 <div className="graphcard" key="2">
-                  <h2>
-                    Gráficas en construcción
-                  </h2>
-                  <p>
-                    Pronto más información
-                  </p>
+                  {this.renderGraph(areaSE, 'Tipo de área', '% Ha', 'LinearFiltered', 'Área por ecosistema estratégico', '#e84a5f')}
                 </div>
               ),
               (
