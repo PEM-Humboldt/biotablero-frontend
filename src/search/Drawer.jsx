@@ -28,6 +28,7 @@ class Drawer extends React.Component {
         biomas: null,
         distritos: null,
         fc: null,
+        areaSE: null, // area fields for strategic ecosystems
       },
     };
   }
@@ -36,6 +37,28 @@ class Drawer extends React.Component {
     const {
       basinName,
     } = this.props;
+
+
+    // RestAPI.requestStrategicEcosystemArea(basinName)
+    RestAPI.requestCarByFCArea(basinName)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areasSE: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areasSE: false,
+          },
+        }));
+      });
     RestAPI.requestCarByBiomeArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
