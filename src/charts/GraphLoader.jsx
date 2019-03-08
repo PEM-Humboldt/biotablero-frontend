@@ -5,16 +5,7 @@ import DownloadIcon from '@material-ui/icons/Save';
 import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
-
-const axisTotal = (data) => {
-  let totalArea = 0;
-  let totalPercentage = 0;
-  data.forEach((item) => {
-    totalArea += item.area ? item.area : 0;
-    totalPercentage += item.percentage ? item.percentage : 0;
-  });
-  return { totalArea, totalPercentage };
-};
+import LinearFiltered from './LinearFiltered';
 
 const GraphLoader = (
   {
@@ -93,6 +84,22 @@ const GraphLoader = (
           )}
         </div>
       ) : ('')
+    }
+    {
+    (graphType === 'LinearFiltered') ? (
+      // TODO: Usar name en el gráfico
+      <div>
+        <LinearFiltered
+          dataJSON={data}
+          colors={colors}
+          graphTitle={graphTitle}
+          labelX={labelX}
+          labelY={labelY}
+          width={width}
+          height="250"
+        />
+      </div>
+    ) : ('')
     }
   </div>
 );
