@@ -15,6 +15,7 @@
     "@vx/axis": "0.0.170",
     "@vx/curve": "0.0.182",
     "@vx/glyph": "0.0.170",
+    "@vx/gradient": "0.0.183",
     "@vx/grid": "0.0.170",
     "@vx/group": "0.0.165",
     "@vx/mock-data": "0.0.185",

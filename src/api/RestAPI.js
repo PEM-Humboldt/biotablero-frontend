@@ -23,6 +23,33 @@ class RestAPI {
   /** ************* */
 
   /**
+   * Recover coverage area by selected area
+   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idGeofence id geofence to request the coverage
+   */
+  static requestCoverage(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/coverage`);
+  }
+
+  /**
+   * Recover protected areas values by selected area
+   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idGeofence id geofence to request the protected areas
+   */
+  static requestProtectedAreas(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/pa`);
+  }
+
+  /**
+   * Recover the strategic ecosystems values by selected area
+   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestStrategicEcosystems(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  }
+
+  /**
    * Recover a list with all protected areas available in the database
    */
   static getAllProtectedAreas() {

@@ -35,18 +35,17 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      basinName,
+      geofenceName, area,
     } = this.props;
 
-
-    // RestAPI.requestStrategicEcosystemArea(basinName)
-    RestAPI.requestCarByFCArea(basinName)
+    RestAPI.requestCoverage(area.id, 'CRC')
       .then((res) => {
+        console.log(res);
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            areasSE: res,
+            areaSE: res,
           },
         }));
       })
@@ -55,11 +54,11 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            areasSE: false,
+            areaSE: false,
           },
         }));
       });
-    RestAPI.requestCarByBiomeArea(basinName)
+    RestAPI.requestCarByBiomeArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -78,7 +77,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByFCArea(basinName)
+    RestAPI.requestCarByFCArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -97,7 +96,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByDistritosArea(basinName)
+    RestAPI.requestCarByDistritosArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -163,8 +162,8 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      basinName, basinData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, layerName, subAreaName,
+      geofenceName, geofenceData, colors, colorSZH, colorsFC,
+      classes, handlerBackButton, layerName, area,
     } = this.props;
     const {
       data: {
@@ -182,7 +181,7 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${subAreaName} / ${basinName}`}
+          {`${area.name} / ${geofenceName}`}
           <br />
           <b>
             {layerName}
@@ -206,8 +205,13 @@ class Drawer extends React.Component {
                 </div>
               ),
               (
-                <div className="graphcard" key="2">
-                  {this.renderGraph(areaSE, 'Tipo de área', '% Ha', 'LinearFiltered', 'Área por ecosistema estratégico', '#e84a5f')}
+                <div key="2">
+                  {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
+                  // 'BarVertical', 'Área (HAs) por ecosistema estratégico', colors)
+                  }
+                  {this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
+                    'Pie', 'Área (HAs) por ecosistema estratégico', colorsFC)
+                  }
                 </div>
               ),
               (
@@ -223,9 +227,9 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { layerName && basinData && (
+        { layerName && geofenceData && (
           <div className={classes.root}>
-            {this.renderGraph(basinData, 'Subzonas Hidrográficas', 'Hectáreas',
+            {this.renderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
               'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH)}
           </div>
         )}
@@ -235,24 +239,23 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  basinData: PropTypes.array,
-  basinName: PropTypes.string,
+  geofenceData: PropTypes.array,
+  geofenceName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   handlerBackButton: PropTypes.func,
   layerName: PropTypes.string,
-  subAreaName: PropTypes.string,
+  area: PropTypes.object.isRequired,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
 };
 
 Drawer.defaultProps = {
-  basinData: [],
-  basinName: '',
+  geofenceData: {},
+  geofenceName: '',
   colors: ['#345b6b'],
   layerName: '',
   handlerBackButton: () => {},
-  subAreaName: '',
   colorSZH: [],
   colorsFC: [],
 };

@@ -21,7 +21,7 @@ class Search extends Component {
     this.state = {
       activeLayers: null,
       activeLayerName: null,
-      basinData: null,
+      geofenceData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -50,15 +50,13 @@ class Search extends Component {
       ],
       connError: false,
       currentCompany: null,
-      currentGeofenceId: null,
-      data: null,
       dataError: false,
       geofencesArray: [],
-      geofencesList: [],
+      areaList: [],
       layerName: null,
       layers: {},
       loadingModal: false,
-      subAreaName: null,
+      area: null,
       userDataLoaded: false,
     };
   }
@@ -68,7 +66,7 @@ class Search extends Component {
   }
 
   loadAreaList = () => {
-    let { geofencesArray, geofencesList } = this.state;
+    let { geofencesArray, areaList } = this.state;
     /**
      * Recover all geofences by default availables in the
      * database for the Search Module
@@ -81,17 +79,17 @@ class Search extends Component {
       RestAPI.getAllSEs(),
     ])
       .then(([pa, states, ea, zh, se]) => {
-        geofencesList = [
-          { name: 'Areas de manejo especial', data: pa },
-          { name: 'Departamentos', data: states },
-          { name: 'Jurisdicciones ambientales', data: ea },
-          { name: 'Subzonas hidrográficas', data: zh },
-          { name: 'Ecosistemas estratégicos', data: se },
+        areaList = [
+          { name: 'Areas de manejo especial', data: pa, id: 'pa' },
+          { name: 'Departamentos', data: states, id: 'states' },
+          { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
+          { name: 'Subzonas hidrográficas', data: zh, id: 'zh' },
+          { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
-        geofencesArray = ConstructDataForSearch(geofencesList);
+        geofencesArray = ConstructDataForSearch(areaList);
         this.setState({
           geofencesArray,
-          geofencesList,
+          areaList,
         });
       })
       .catch(() => this.reportConnError());
@@ -195,7 +193,7 @@ class Search extends Component {
       .then((res) => {
         this.setState({
           layerName: biome,
-          basinData: res,
+          geofenceData: res,
         });
       });
     // TODO: When the promise is rejected, we need to show a "Data not available" error
@@ -252,6 +250,7 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadSecondLevelLayer = (idLayer) => {
+    const { areaList } = this.state;
     switch (idLayer) {
       case 'jurisdicciones':
         GeoServerAPI.requestJurisdicciones()
@@ -285,7 +284,9 @@ class Search extends Component {
               const newState = { ...prevState };
               if (prevState.layers[idLayer]) {
                 newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                newState.subAreaName = newState.layers[idLayer].displayName;
+                newState.area = areaList.find(
+                  item => item.name === newState.layers[idLayer].displayName,
+                );
               }
               return newState;
             });
@@ -300,11 +301,14 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
+    const { areaList } = this.state;
     this.setState((prevState) => {
       let newState = { ...prevState };
       newState = {
         ...newState,
-        subAreaName: name,
+        area: areaList.find(
+          item => item.name === name,
+        ),
       };
       return newState;
     });
@@ -336,8 +340,8 @@ class Search extends Component {
 
       newState = {
         ...newState,
-        basinData: null,
-        subAreaName: null,
+        geofenceData: null,
+        area: null,
         layerName: null,
         activeLayerName: null,
         layers: {},
@@ -367,8 +371,8 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      subAreaName, layerName, activeLayerName, basinData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
+      area, layerName, activeLayerName, geofenceData, currentCompany, loadingModal,
+      colors, colorsFC, colorSZH, layers, connError, dataError, areaList,
     } = this.state;
     return (
       <Layout
@@ -463,17 +467,19 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && subAreaName && (
+            { activeLayerName && area && (
               <Drawer
-                basinData={basinData}
-                basinName={activeLayerName.NOMCAR || activeLayerName}
+                geofenceData={geofenceData}
+                geofenceName={activeLayerName.NOMCAR || activeLayerName}
+                areaList={areaList} // TODO: Include for the geofences search path
+                id
                 colors={colors}
                 // Sort appropriately the colors
                 colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
                 colorSZH={colorSZH}
                 handlerBackButton={this.handlerBackButton}
                 layerName={layerName}
-                subAreaName={subAreaName}
+                area={area}
               />
             )}
           </div>
