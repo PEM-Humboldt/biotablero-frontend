@@ -28,7 +28,9 @@ class Drawer extends React.Component {
         biomas: null,
         distritos: null,
         fc: null,
+        coverage: null, // coverage area
         areaSE: null, // area fields for strategic ecosystems
+        areaPA: null, // area fields for protected areas
       },
     };
   }
@@ -38,9 +40,48 @@ class Drawer extends React.Component {
       geofenceName, area,
     } = this.props;
 
-    RestAPI.requestCoverage(area.id, 'CRC')
+    RestAPI.requestCoverage(area.id, geofenceName)
       .then((res) => {
-        console.log(res);
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            coverage: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            coverage: false,
+          },
+        }));
+      });
+
+    RestAPI.requestProtectedAreas(area.id, geofenceName)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaPA: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaPA: false,
+          },
+        }));
+      });
+
+    RestAPI.requestStrategicEcosystems(area.id, geofenceName)
+      .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
@@ -58,6 +99,7 @@ class Drawer extends React.Component {
           },
         }));
       });
+
     RestAPI.requestCarByBiomeArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
@@ -77,6 +119,7 @@ class Drawer extends React.Component {
           },
         }));
       });
+
     RestAPI.requestCarByFCArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
@@ -96,6 +139,7 @@ class Drawer extends React.Component {
           },
         }));
       });
+
     RestAPI.requestCarByDistritosArea(geofenceName)
       .then((res) => {
         this.setState(prevState => ({
@@ -167,7 +211,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        fc, biomas, distritos, areaSE,
+        fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
     return (
@@ -209,8 +253,14 @@ class Drawer extends React.Component {
                   {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
                   // 'BarVertical', 'Área (HAs) por ecosistema estratégico', colors)
                   }
-                  {this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
-                    'Pie', 'Área (HAs) por ecosistema estratégico', colorsFC)
+                  {this.renderGraph(coverage, 'Tipo de ecosistema', '% de Ha totales',
+                    'BarVertical', '% Ha - Tipo de cobertura', colorsFC, '%', true)
+                  }
+                  {this.renderGraph(areaPA, 'Tipo de ecosistema', '% de Ha totales',
+                    'BarVertical', '% Ha - Áreas protegidas', colorsFC, '%', true)
+                  }
+                  {this.renderGraph(areaSE, 'Tipo de ecosistema', '% de Ha totales',
+                    'BarVertical', '% Ha - Ecosistemas Estratégicos', colorsFC, '%', true)
                   }
                 </div>
               ),
@@ -230,7 +280,7 @@ class Drawer extends React.Component {
         { layerName && geofenceData && (
           <div className={classes.root}>
             {this.renderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
-              'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH)}
+              'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH, 'Ha', false)}
           </div>
         )}
       </div>

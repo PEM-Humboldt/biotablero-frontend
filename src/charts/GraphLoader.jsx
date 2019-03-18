@@ -5,13 +5,15 @@ import DownloadIcon from '@material-ui/icons/Save';
 import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
-import LinearFiltered from './LinearFiltered';
+// import LinearFiltered from './LinearFiltered';
 import Pie from './Pie';
 
 const GraphLoader = (
   {
     graphType, data, graphTitle, labelX, labelY, width, height,
     elementOnClick, colors, activeBiome, showOnlyTitle,
+    units,
+    withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
   },
 ) => (
   <div>
@@ -26,6 +28,8 @@ const GraphLoader = (
             labelY={labelY}
             width={width}
             height={height}
+            units={units}
+            withLeyends={withLeyends}
           />
         </div>
       ) : ('')
@@ -87,20 +91,20 @@ const GraphLoader = (
       ) : ('')
     }
     {
-    (graphType === 'LinearFiltered') ? (
-      // TODO: Usar name en el gráfico
-      <div>
-        <LinearFiltered
-          dataJSON={data}
-          colors={colors}
-          graphTitle={graphTitle}
-          labelX={labelX}
-          labelY={labelY}
-          width={width}
-          height="280"
-        />
-      </div>
-    ) : ('')
+    // (graphType === 'LinearFiltered') ? (
+    //   // TODO: Usar name en el gráfico
+    //   <div>
+    //     <LinearFiltered
+    //       dataJSON={data}
+    //       colors={colors}
+    //       graphTitle={graphTitle}
+    //       labelX={labelX}
+    //       labelY={labelY}
+    //       width={width}
+    //       height="280"
+    //     />
+    //   </div>
+    // ) : ('')
     }
     {
     (graphType === 'Pie') ? (
@@ -130,6 +134,8 @@ GraphLoader.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
+  units: PropTypes.string,
+  withLeyends: PropTypes.bool,
 };
 
 GraphLoader.defaultProps = {
@@ -142,6 +148,8 @@ GraphLoader.defaultProps = {
   width: 400,
   height: 250,
   showOnlyTitle: false,
+  units: 'Ha',
+  withLeyends: false,
 };
 
 export default GraphLoader;

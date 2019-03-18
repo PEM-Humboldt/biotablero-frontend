@@ -18,6 +18,8 @@ export default withTooltip(({
   labelY,
   graphTitle,
   colors,
+  withLeyends, // TODO: Control if names in axis X are showed
+  units,
   ...props
 }) => {
   const { width, dataJSON, area } = props;
@@ -26,8 +28,9 @@ export default withTooltip(({
   const prepareData = (data) => {
     const transformedData = [];
     data.forEach((item) => {
-      transformedData.push({ name: `${item.key}`, area_V: `${item.area}` });
+      transformedData.push({ name: `${item.key || item.type}`, area_V: `${item.area || item.percentage}` });
     });
+    console.log(data);
     return transformedData;
   };
 
@@ -43,7 +46,7 @@ export default withTooltip(({
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
-  const keys = dataJSON.map(item => item.key);
+  const keys = dataJSON.map(item => item.key || item.type);
 
   // Ayuda a obtener el dato que se quiere
   const x = d => d.name;
@@ -162,7 +165,7 @@ export default withTooltip(({
               </strong>
               <br />
               <div>
-                {`${Number(tooltipData.area_V).toFixed(2)} Ha`}
+                {`${Number(tooltipData.area_V).toFixed(2)} ${units}`}
               </div>
             </div>
           </Tooltip>

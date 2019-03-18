@@ -75,7 +75,7 @@ class Search extends Component {
       RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
       RestAPI.getAllEAs(),
-      RestAPI.getAllZones(),
+      RestAPI.getAllSubzones(),
       RestAPI.getAllSEs(),
     ])
       .then(([pa, states, ea, zh, se]) => {
@@ -83,7 +83,7 @@ class Search extends Component {
           { name: 'Areas de manejo especial', data: pa, id: 'pa' },
           { name: 'Departamentos', data: states, id: 'states' },
           { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
-          { name: 'Subzonas hidrográficas', data: zh, id: 'zh' },
+          { name: 'Subzonas hidrográficas', data: zh, id: 'szh' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
         geofencesArray = ConstructDataForSearch(areaList);
@@ -208,7 +208,7 @@ class Search extends Component {
    */
   loadLayer = (idLayer, parentLayer) => {
     this.setState({ loadingModal: true });
-    RestAPI.requestBiomesbyEA(idLayer)
+    RestAPI.requestBiomesbyEA(idLayer) // TODO: Implement new load strategy
       .then((res) => {
         if (res.features) {
           this.setState(prevState => ({
@@ -301,6 +301,7 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
+    console.log(name);
     const { areaList } = this.state;
     this.setState((prevState) => {
       let newState = { ...prevState };
