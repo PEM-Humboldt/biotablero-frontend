@@ -5,8 +5,6 @@ import DownloadIcon from '@material-ui/icons/Save';
 import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
-// import LinearFiltered from './LinearFiltered';
-import Pie from './Pie';
 
 const GraphLoader = (
   {
@@ -91,35 +89,6 @@ const GraphLoader = (
           )}
         </div>
       ) : ('')
-    }
-    {
-    // (graphType === 'LinearFiltered') ? (
-    //   // TODO: Usar name en el gráfico
-    //   <div>
-    //     <LinearFiltered
-    //       dataJSON={data}
-    //       colors={colors}
-    //       graphTitle={graphTitle}
-    //       labelX={labelX}
-    //       labelY={labelY}
-    //       width={width}
-    //       height="280"
-    //     />
-    //   </div>
-    // ) : ('')
-    }
-    {
-    (graphType === 'Pie') ? (
-      // TODO: Usar name en el gráfico
-      <div>
-        <Pie
-          width={width}
-          height="250"
-          levels={data}
-          units={units}
-        />
-      </div>
-    ) : ('')
     }
   </div>
 );

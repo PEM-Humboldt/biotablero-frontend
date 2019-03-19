@@ -305,7 +305,6 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
-    console.log(name);
     const { areaList } = this.state;
     this.setState((prevState) => {
       let newState = { ...prevState };
