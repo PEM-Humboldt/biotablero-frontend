@@ -23,7 +23,49 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover all eas available in the database
+   * Recover a list with all protected areas available in the database
+   */
+  static getAllProtectedAreas() {
+    return RestAPI.makeGetRequest('pa/categories');
+  }
+
+  /**
+   * Recover a list with all basin areas available in the database
+   */
+  static getAllBasinAreas() {
+    return RestAPI.makeGetRequest('basinAreas');
+  }
+
+  /**
+   * Recover a list with all basin zones available in the database
+   */
+  static getAllZones() {
+    return RestAPI.makeGetRequest('basinZones');
+  }
+
+  /**
+   * Recover a list with all basin subzones available in the database
+   */
+  static getAllSubzones() {
+    return RestAPI.makeGetRequest('basinSubzones');
+  }
+
+  /**
+   * Recover a list with all States available in the database
+   */
+  static getAllStates() {
+    return RestAPI.makeGetRequest('states');
+  }
+
+  /**
+   * Recover a list with all Strategic Ecosystems availables in the database
+   */
+  static getAllSEs() {
+    return RestAPI.makeGetRequest('se/primary');
+  }
+
+  /**
+   * Recover a list with all Environmental Authorities availables in the database
    */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
@@ -44,7 +86,7 @@ class RestAPI {
    * @param {String} biome biome's name to request
    */
   static requestBiomeBySZH(eaId, biomeName) {
-    return RestAPI.makeGetRequest(`geofences/ea/${eaId}/biome/${biomeName}/subzone`);
+    return RestAPI.makeGetRequest(`ea/${eaId}/biome/${biomeName}/subzone`);
   }
 
   /**
@@ -53,7 +95,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByDistritosArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/bioticUnit`);
+    return RestAPI.makeGetRequest(`ea/${idCAR}/bioticUnit`);
   }
 
   /**
@@ -62,7 +104,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByFCArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/compensationFactor`);
+    return RestAPI.makeGetRequest(`ea/${idCAR}/compensationFactor`);
   }
 
   /**
@@ -71,7 +113,7 @@ class RestAPI {
    * @param {String} idCAR id CAR to request
    */
   static requestCarByBiomeArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/generalBiome`);
+    return RestAPI.makeGetRequest(`ea/${idCAR}/generalBiome`);
   }
 
   /** ******************* */

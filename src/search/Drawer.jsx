@@ -7,6 +7,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import { ParentSize } from '@vx/responsive';
+import RestAPI from '../api/RestAPI';
 
 import GraphLoader from '../charts/GraphLoader';
 import TabContainer from '../commons/TabContainer';
@@ -32,8 +33,10 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const { RestAPI } = this.props;
-    RestAPI.requestCarByBiomeArea('CORPOBOYACA')
+    const {
+      basinName,
+    } = this.props;
+    RestAPI.requestCarByBiomeArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -52,7 +55,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByFCArea('CORPOBOYACA')
+    RestAPI.requestCarByFCArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -71,7 +74,7 @@ class Drawer extends React.Component {
           },
         }));
       });
-    RestAPI.requestCarByDistritosArea('CORPOBOYACA')
+    RestAPI.requestCarByDistritosArea(basinName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -219,7 +222,6 @@ Drawer.propTypes = {
   subAreaName: PropTypes.string,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
-  RestAPI: PropTypes.object.isRequired,
 };
 
 Drawer.defaultProps = {

@@ -6,6 +6,16 @@ import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
 
+const axisTotal = (data) => {
+  let totalArea = 0;
+  let totalPercentage = 0;
+  data.forEach((item) => {
+    totalArea += item.area ? item.area : 0;
+    totalPercentage += item.percentage ? item.percentage : 0;
+  });
+  return { totalArea, totalPercentage };
+};
+
 const GraphLoader = (
   {
     graphType, data, graphTitle, labelX, labelY, width, height,

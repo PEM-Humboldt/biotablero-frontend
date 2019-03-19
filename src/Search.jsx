@@ -10,7 +10,8 @@ import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
 import GeoServerAPI from './api/GeoServerAPI';
-import { description, selectorData, dataGEB } from './search/assets/selectorData';
+import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
+import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 
@@ -18,15 +19,9 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      layers: {},
-      connError: false,
-      dataError: false,
-      currentCompany: null,
-      subAreaName: null,
-      layerName: null,
-      basinData: null,
-      activeLayerName: null,
       activeLayers: null,
+      activeLayerName: null,
+      basinData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -53,7 +48,18 @@ class Search extends Component {
         { 9.5: '#ea495f' },
         { 10: '#c3374d' },
       ],
+      connError: false,
+      currentCompany: null,
+      currentGeofenceId: null,
+      data: null,
+      dataError: false,
+      geofencesArray: [],
+      geofencesList: [],
+      layerName: null,
+      layers: {},
       loadingModal: false,
+      subAreaName: null,
+      userDataLoaded: false,
     };
   }
 
@@ -62,18 +68,33 @@ class Search extends Component {
   }
 
   loadAreaList = () => {
-    const easList = [];
-    RestAPI.getAllEAs()
-      .then((res) => {
-        res.forEach((ea) => {
-          easList.push({
-            value: ea.id_ea,
-            label: ea.name,
-          });
+    let { geofencesArray, geofencesList } = this.state;
+    /**
+     * Recover all geofences by default availables in the
+     * database for the Search Module
+     */
+    Promise.all([
+      RestAPI.getAllProtectedAreas(),
+      RestAPI.getAllStates(),
+      RestAPI.getAllEAs(),
+      RestAPI.getAllZones(),
+      RestAPI.getAllSEs(),
+    ])
+      .then(([pa, states, ea, zh, se]) => {
+        geofencesList = [
+          { name: 'Areas de manejo especial', data: pa },
+          { name: 'Departamentos', data: states },
+          { name: 'Jurisdicciones ambientales', data: ea },
+          { name: 'Subzonas hidrográficas', data: zh },
+          { name: 'Ecosistemas estratégicos', data: se },
+        ];
+        geofencesArray = ConstructDataForSearch(geofencesList);
+        this.setState({
+          geofencesArray,
+          geofencesList,
         });
-        // TODO: Change selectorData to load all data from RestAPI
-        if (selectorData[0].options[2].id === 'jurisdicciones') selectorData[0].options[2].options[0].data = easList;
-      }).catch(() => this.reportConnError());
+      })
+      .catch(() => this.reportConnError());
   }
 
     /**
@@ -239,7 +260,7 @@ class Search extends Component {
               layers: {
                 ...prevState.layers,
                 jurisdicciones: {
-                  displayName: 'Jurisdicciones',
+                  displayName: idLayer,
                   active: false,
                   layer: L.geoJSON(
                     res,
@@ -279,6 +300,14 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (name) => {
+    this.setState((prevState) => {
+      let newState = { ...prevState };
+      newState = {
+        ...newState,
+        subAreaName: name,
+      };
+      return newState;
+    });
     this.loadSecondLevelLayer(name);
   }
 
@@ -328,16 +357,11 @@ class Search extends Component {
 
   /**
     * Function to control data options belonging to the companyId
-    * TODO: Replace "dataGEB" for data from the current company
+    * TODO: Add data from the current company in geofencesArray
     */
   getData = () => {
-    const { userLogged } = this.props;
-    if (userLogged && (selectorData[0].options[0] !== dataGEB)) {
-      selectorData[0].options.unshift(dataGEB);
-    } else if ((!userLogged || userLogged === null) && selectorData[0].options[0] === dataGEB) {
-      selectorData[0].options.shift(dataGEB);
-    }
-    return selectorData;
+    const { geofencesArray } = this.state;
+    return geofencesArray;
   }
 
   render() {
@@ -439,18 +463,18 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && (subAreaName === 'Jurisdicciones') && (
-            <Drawer
-              basinData={basinData}
-              basinName={activeLayerName.NOMCAR || activeLayerName}
-              colors={colors}
-              colorsFC={colorsFC.map(obj => Object.values(obj)[0])} // Sort appropriately the colors
-              colorSZH={colorSZH}
-              handlerBackButton={this.handlerBackButton}
-              layerName={layerName}
-              subAreaName="Jurisdicciones"
-              RestAPI
-            />
+            { activeLayerName && subAreaName && (
+              <Drawer
+                basinData={basinData}
+                basinName={activeLayerName.NOMCAR || activeLayerName}
+                colors={colors}
+                // Sort appropriately the colors
+                colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
+                colorSZH={colorSZH}
+                handlerBackButton={this.handlerBackButton}
+                layerName={layerName}
+                subAreaName={subAreaName}
+              />
             )}
           </div>
         </div>

@@ -3,10 +3,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import L from 'leaflet';
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
+import { ConstructDataForCompensation } from './commons/ConstructDataForSelector';
 import MapViewer from './commons/MapViewer';
 import Drawer from './compensation/Drawer';
 import NewProjectForm from './compensation/NewProjectForm';
@@ -14,89 +13,9 @@ import Selector from './commons/Selector';
 import GeoServerAPI from './api/GeoServerAPI';
 import RestAPI from './api/RestAPI';
 import Layout from './Layout';
-import { description } from './compensation/assets/selectorData';
+import description from './compensation/assets/selectorData';
 
 class Compensation extends Component {
-  /**
-   * Set the first letter of each word to uppercase
-   */
-  static firstLetterUpperCase = sentence => (
-    sentence
-      .toLowerCase()
-      .split(/ |-/)
-      .filter(str => str.length > 0)
-      .map(str => str[0].toUpperCase() + str.slice(1))
-      .join(' ')
-  );
-
-  static constructDataForSelector = (regions) => {
-    const regionsArray = [];
-    const regionsList = [];
-    const statusList = [];
-    Object.keys(regions).forEach((regionKey) => {
-      const regionId = (regionKey === 'null') ? '(REGION SIN ASIGNAR)' : regionKey;
-      const regionLabel = Compensation.firstLetterUpperCase(regionId);
-      regionsList.push({
-        value: regionId,
-        label: regionLabel,
-      });
-      const region = {
-        id: regionId,
-        label: regionLabel,
-        detailId: 'region',
-        expandIcon: (<ExpandMoreIcon />),
-        idLabel: `panel1-${regionLabel.replace(/ /g, '')}`,
-        projectsStates: [],
-      };
-      Object.keys(regions[regionKey]).forEach((statusKey) => {
-        const statusId = (statusKey === 'null') ? '(ESTADO SIN ASIGNAR)' : statusKey;
-        const statusLabel = (statusId.length > 3)
-          ? Compensation.firstLetterUpperCase(statusId) : statusId;
-        if (!statusList.find(st => st.value === statusId)) {
-          statusList.push({
-            value: statusId,
-            label: statusLabel,
-          });
-        }
-        region.projectsStates.push({
-          id: statusId,
-          label: statusLabel,
-          detailId: 'state',
-          expandIcon: (<ExpandMoreIcon />),
-          idLabel: Compensation.firstLetterUpperCase(statusLabel).replace(/ /g, ''),
-          detailClass: 'inlineb',
-          projects: regions[regionKey][statusKey].map(project => ({
-            id_project: project.gid,
-            name: Compensation.firstLetterUpperCase(project.name),
-            state: project.prj_status,
-            region: project.id_region,
-            area: project.area_ha,
-            id_company: project.id_company,
-            project: project.name,
-            type: 'button',
-            label: Compensation.firstLetterUpperCase(project.name),
-          })),
-        });
-      });
-      regionsArray.push(region);
-    });
-    const newProject = {
-      id: 'addProject',
-      idLabel: 'panel1-newProject',
-      detailId: 'region',
-      expandIcon: (<AddIcon />),
-      label: '+ Agregar nuevo proyecto',
-      type: 'addProject',
-    };
-    regionsArray.push(newProject);
-    statusList.push({
-      value: 'newState',
-      label: 'Agregar estado...',
-    });
-
-    return { regionsList, statusList, regions: regionsArray };
-  }
-
   static getDerivedStateFromProps = nextProps => ({
     currentCompanyId: nextProps.userLogged.company.id,
     currentCompany: nextProps.userLogged.username.toUpperCase(),
@@ -139,7 +58,7 @@ class Compensation extends Component {
     const { currentCompanyId } = this.state;
     RestAPI.requestProjectsAndRegionsByCompany(currentCompanyId)
       .then((res) => {
-        const { regionsList, statusList, regions } = Compensation.constructDataForSelector(res);
+        const { regionsList, statusList, regions } = ConstructDataForCompensation(res);
         this.setState({
           regionsList,
           statusList,
@@ -390,6 +309,7 @@ class Compensation extends Component {
 
   secondLevelChange = (name) => {
     this.setState({
+      // TODO: Implementing back button functionality
       currentStatus: name,
     });
   }
@@ -599,7 +519,6 @@ class Compensation extends Component {
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
                 userId={userLogged.id}
-                RestAPI
               />
               )
             }
