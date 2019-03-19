@@ -78,12 +78,12 @@ class Search extends Component {
       RestAPI.getAllSubzones(),
       RestAPI.getAllSEs(),
     ])
-      .then(([pa, states, ea, zh, se]) => {
+      .then(([pa, states, ea, basinSubzones, se]) => {
         areaList = [
           { name: 'Areas de manejo especial', data: pa, id: 'pa' },
           { name: 'Departamentos', data: states, id: 'states' },
           { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
-          { name: 'Subzonas hidrográficas', data: zh, id: 'szh' },
+          { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
         geofencesArray = ConstructDataForSearch(areaList);
@@ -183,7 +183,7 @@ class Search extends Component {
 
   /**
    * When a click event occurs on a bioma layer in the searches module,
-   *  request info by szh on that bioma
+   *  request info by basinSubzones
    *
    * @param {Object} event event object
    */
