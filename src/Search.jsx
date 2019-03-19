@@ -207,8 +207,12 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadLayer = (idLayer, parentLayer) => {
-    this.setState({ loadingModal: true });
-    RestAPI.requestBiomesbyEA(idLayer) // TODO: Implement new load strategy
+    this.setState({
+      loadingModal: true,
+    });
+    // TODO: Implement new load strategy by geofence id
+    // TODO: Disconnect calling for layer to show selector and drawer values
+    RestAPI.requestBiomesbyEA(idLayer)
       .then((res) => {
         if (res.features) {
           this.setState(prevState => ({

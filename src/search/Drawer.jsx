@@ -251,16 +251,16 @@ class Drawer extends React.Component {
               (
                 <div key="2">
                   {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
-                  // 'BarVertical', 'Área (HAs) por ecosistema estratégico', colors)
+                  // 'BarVertical', 'Área (ha) por ecosistema estratégico', colors)
                   }
-                  {this.renderGraph(coverage, 'Tipo de ecosistema', '% de Ha totales',
-                    'BarVertical', '% Ha - Tipo de cobertura', colorsFC, '%', true)
+                  {this.renderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
+                    'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC, '%', true)
                   }
-                  {this.renderGraph(areaPA, 'Tipo de ecosistema', '% de Ha totales',
-                    'BarVertical', '% Ha - Áreas protegidas', colorsFC, '%', true)
+                  {this.renderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
+                    'BarVertical', '% ha - Áreas protegidas', colorsFC, '%', true)
                   }
-                  {this.renderGraph(areaSE, 'Tipo de ecosistema', '% de Ha totales',
-                    'BarVertical', '% Ha - Ecosistemas Estratégicos', colorsFC, '%', true)
+                  {this.renderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
+                    'BarVertical', '% ha - Cambio de cobertura', colorsFC, '%', true)
                   }
                 </div>
               ),
@@ -280,7 +280,7 @@ class Drawer extends React.Component {
         { layerName && geofenceData && (
           <div className={classes.root}>
             {this.renderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
-              'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH, 'Ha', false)}
+              'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
       </div>

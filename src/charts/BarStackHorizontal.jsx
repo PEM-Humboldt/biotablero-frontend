@@ -28,6 +28,7 @@ export default withTooltip(
     tooltipData,
     hideTooltip,
     showTooltip,
+    units,
   }) => {
     if (width < 10) return null;
     // accessors
@@ -155,7 +156,7 @@ export default withTooltip(
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
+              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
             </div>
             <div>
               <small>

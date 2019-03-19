@@ -62,6 +62,7 @@ class Selector extends React.Component {
     type, label, name, id_project: projectId,
   }) => {
     const { handlers } = this.props;
+    console.log(name);
     switch (size) {
       case 1:
         return (

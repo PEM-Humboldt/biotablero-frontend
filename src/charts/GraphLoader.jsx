@@ -46,6 +46,7 @@ const GraphLoader = (
           labelY={labelY}
           width={width}
           height="250"
+          units={units}
         />
       </div>
     ) : ('')
@@ -75,15 +76,16 @@ const GraphLoader = (
                 y cantidad de area afectada
               </p>
               <DotsGraph
+                activeBiome={activeBiome}
+                colors={colors}
                 dataJSON={data}
+                elementOnClick={elementOnClick}
                 graphTitle={graphTitle}
                 labelX={labelX}
                 labelY={labelY}
-                width={width}
                 height="280"
-                elementOnClick={elementOnClick}
-                colors={colors}
-                activeBiome={activeBiome}
+                units={units}
+                width={width}
               />
             </div>
           )}
@@ -114,6 +116,7 @@ const GraphLoader = (
           width={width}
           height="250"
           levels={data}
+          units={units}
         />
       </div>
     ) : ('')
@@ -148,7 +151,7 @@ GraphLoader.defaultProps = {
   width: 400,
   height: 250,
   showOnlyTitle: false,
-  units: 'Ha',
+  units: 'ha',
   withLeyends: false,
 };
 

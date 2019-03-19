@@ -14,6 +14,7 @@ export default withTooltip(({
   }, width, height, colors, levels, values, sublevels, subvalues,
   activeBiome, labelX, labelY, elementOnClick, graphTitle,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
+  units,
 }) => {
   const radius = Math.min(width, height) / 2;
   const centerY = height / 2;
@@ -116,7 +117,7 @@ export default withTooltip(({
             </strong>
           </div>
           <div>
-            {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
+            {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
           </div>
           <div>
             <small>

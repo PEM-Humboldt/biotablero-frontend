@@ -10,6 +10,7 @@ import Descargar from '@material-ui/icons/Save';
 export default withTooltip(({
   width, height, colors, dataJSON, activeBiome, labelX, labelY, elementOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop, graphTitle,
+  units,
 }) => {
   // accessors
   const x = d => d.key;
@@ -83,7 +84,7 @@ export default withTooltip(({
             </strong>
           </div>
           <div>
-            {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
+            {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
           </div>
           <div>
             <small>
