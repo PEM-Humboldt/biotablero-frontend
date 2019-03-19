@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Menu from './header/Menu';
 import Title from './header/Title';
 import Uim from './Uim';
-import './assets/main.css';
 
 const Header = ({ activeModule, userLogged, callbackUser }) => (
   <header className="cabezote">

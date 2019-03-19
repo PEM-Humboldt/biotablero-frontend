@@ -1,6 +1,5 @@
 /** eslint verified */
 import React from 'react';
-import '../assets/main.css';
 
 class ShortInfo extends React.Component {
   constructor(props) {
