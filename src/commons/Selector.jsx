@@ -66,7 +66,11 @@ class Selector extends React.Component {
       case 1:
         return (
           <Autocomplete
-            valueSelected={value => handlers[2](parent, (value || name))}
+            valueSelected={(value) => {
+              handlers[2](parent, data.find(
+                item => (item.id === value ? item.name : value),
+              ).name);
+            }}
             name={label || name}
             data={data}
             key={`${type}-${label || name}`}

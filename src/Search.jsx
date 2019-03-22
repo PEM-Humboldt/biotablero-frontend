@@ -209,9 +209,9 @@ class Search extends Component {
   loadLayer = (idLayer, parentLayer) => {
     this.setState({
       loadingModal: true,
+      // Replace in layer load: instead of using name, use id to search and load
+      activeLayerName: idLayer,
     });
-    // TODO: Implement new load strategy by geofence id
-    // TODO: Disconnect calling for layer to show selector and drawer values
     RestAPI.requestBiomesbyEA(idLayer)
       .then((res) => {
         if (res.features) {
@@ -239,7 +239,6 @@ class Search extends Component {
             if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
             if (prevState.layers[idLayer]) {
               newState.layers[idLayer].active = true;
-              newState.activeLayerName = newState.layers[idLayer].displayName;
             }
             return newState;
           });
@@ -475,7 +474,7 @@ class Search extends Component {
             { activeLayerName && area && (
               <Drawer
                 geofenceData={geofenceData}
-                geofenceName={activeLayerName.NOMCAR || activeLayerName}
+                geofenceName={activeLayerName}
                 areaList={areaList} // TODO: Include for the geofences search path
                 id
                 colors={colors}
