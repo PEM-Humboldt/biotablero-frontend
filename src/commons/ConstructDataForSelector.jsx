@@ -18,11 +18,11 @@ const ConstructDataForSearch = (geofences) => {
   const areasArray = [];
   geofences.forEach((geofence) => {
     const area = {
-      id: geofence.name,
+      id: geofence.id,
       label: geofence.name,
       detailId: 'area',
       iconOption: 'expand',
-      idLabel: `panel1-${geofence.name.replace(/ /g, '')}`,
+      idLabel: `panel1-${geofence.id}`,
       options: geofence.data,
     };
     areasArray.push(area);

@@ -304,19 +304,19 @@ class Search extends Component {
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
-  secondLevelChange = (name) => {
+  secondLevelChange = (id) => {
     const { areaList } = this.state;
     this.setState((prevState) => {
       let newState = { ...prevState };
       newState = {
         ...newState,
         area: areaList.find(
-          item => item.name === name,
+          item => item.id === id,
         ),
       };
       return newState;
     });
-    this.loadSecondLevelLayer(name);
+    this.loadSecondLevelLayer(id);
   }
 
   /**
