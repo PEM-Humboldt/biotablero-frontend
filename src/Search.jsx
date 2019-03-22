@@ -209,7 +209,7 @@ class Search extends Component {
   loadLayer = (idLayer, parentLayer) => {
     this.setState({
       loadingModal: true,
-      // Replace in layer load: instead of using name, use id to search and load
+      // TODO: Replace in layer load: instead of using name, use id to search and load
       activeLayerName: idLayer,
     });
     RestAPI.requestBiomesbyEA(idLayer)
