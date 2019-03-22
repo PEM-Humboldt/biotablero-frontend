@@ -255,14 +255,15 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { areaList } = this.state;
+    // TODO: Change ot for a loading layer strategy
     switch (idLayer) {
-      case 'jurisdicciones':
+      case 'ea':
         GeoServerAPI.requestJurisdicciones()
           .then((res) => {
             this.setState(prevState => ({
               layers: {
                 ...prevState.layers,
-                jurisdicciones: {
+                ea: {
                   displayName: idLayer,
                   active: false,
                   layer: L.geoJSON(
@@ -289,7 +290,7 @@ class Search extends Component {
               if (prevState.layers[idLayer]) {
                 newState.layers[idLayer].active = !prevState.layers[idLayer].active;
                 newState.area = areaList.find(
-                  item => item.name === newState.layers[idLayer].displayName,
+                  item => item.id === newState.layers[idLayer].displayName,
                 );
               }
               return newState;
@@ -326,7 +327,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    this.loadLayer(nameToOn, nameToOff);
+    if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 
   /** ***************************************** */
