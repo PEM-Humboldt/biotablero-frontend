@@ -28,6 +28,7 @@ export default withTooltip(
     tooltipData,
     hideTooltip,
     showTooltip,
+    units,
   }) => {
     if (width < 10) return null;
     // accessors
@@ -119,7 +120,7 @@ export default withTooltip(
             />
             <AxisBottom
               scale={xScale}
-              top={yMax - 10}
+              top={yMax}
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
@@ -127,6 +128,7 @@ export default withTooltip(
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"
+              numTicks={8}
               tickStroke="#e84a5f"
               tickLabelProps={() => ({
                 fill: '#e84a5f',
@@ -154,7 +156,7 @@ export default withTooltip(
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
+              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
             </div>
             <div>
               <small>

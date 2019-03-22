@@ -208,13 +208,13 @@ class Compensation extends Component {
         if (area.feature.properties.area_status) {
           area.bindPopup(
             `<b>Estrategia:</b> ${area.feature.properties.strategy}
-            <br><b>Area:</b> ${area.feature.properties.area_ha} Ha
+            <br><b>Area:</b> ${area.feature.properties.area_ha} ha
             <br><b>Estado:</b> ${area.feature.properties.area_status}`,
           ).openPopup();
         } else {
           area.bindPopup(
             `<b>Estrategia:</b> ${area.feature.properties.strategy}
-            <br><b>Area:</b> ${area.feature.properties.area_ha} Ha`,
+            <br><b>Area:</b> ${area.feature.properties.area_ha} ha`,
           ).openPopup();
         }
         break;

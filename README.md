@@ -2,7 +2,7 @@
 # BioTablero
 Repositorio que almacena servicio de Front-End del BioTablero.
 
-Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humboldt.org.co). El proyecto fue desarrollado usando [Node.js](https://nodejs.org/) versión 8.10 y [React.js](https://reactjs.org) versión 3.5.2, junto a paquetes como [Create React App](https://github.com/facebookincubator/create-react-app), [React-scripts](https://www.npmjs.com/package/react-scripts) [D3](https://d3js.org), [Material-UI](https://material-ui.com), [VX](https://vx-demo.now.sh/), [Leaflet](https://leafletjs.com/), [React-leaflet](https://react-leaflet.js.org) y [Axios](https://alligator.io/react/axios-react/)
+Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humboldt.org.co). El proyecto usa [Node.js](https://nodejs.org/) versión 8.10 y [React.js](https://reactjs.org) versión 3.5.2, junto a paquetes como [Create React App](https://github.com/facebookincubator/create-react-app), [React-scripts](https://www.npmjs.com/package/react-scripts) [D3](https://d3js.org), [Material-UI](https://material-ui.com), [VX](https://vx-demo.now.sh/), [Leaflet](https://leafletjs.com/), [React-leaflet](https://react-leaflet.js.org) y [Axios](https://alligator.io/react/axios-react/)
 
 ## 1. Instrucciones
 
@@ -62,7 +62,7 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
-
+    
 ***
 
 *Ingeniería de Datos y Desarrollo

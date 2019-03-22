@@ -6,20 +6,12 @@ import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
 
-const axisTotal = (data) => {
-  let totalArea = 0;
-  let totalPercentage = 0;
-  data.forEach((item) => {
-    totalArea += item.area ? item.area : 0;
-    totalPercentage += item.percentage ? item.percentage : 0;
-  });
-  return { totalArea, totalPercentage };
-};
-
 const GraphLoader = (
   {
     graphType, data, graphTitle, labelX, labelY, width, height,
     elementOnClick, colors, activeBiome, showOnlyTitle,
+    units,
+    withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
   },
 ) => (
   <div>
@@ -34,6 +26,8 @@ const GraphLoader = (
             labelY={labelY}
             width={width}
             height={height}
+            units={units}
+            withLeyends={withLeyends}
           />
         </div>
       ) : ('')
@@ -50,6 +44,7 @@ const GraphLoader = (
           labelY={labelY}
           width={width}
           height="250"
+          units={units}
         />
       </div>
     ) : ('')
@@ -79,15 +74,16 @@ const GraphLoader = (
                 y cantidad de area afectada
               </p>
               <DotsGraph
+                activeBiome={activeBiome}
+                colors={colors}
                 dataJSON={data}
+                elementOnClick={elementOnClick}
                 graphTitle={graphTitle}
                 labelX={labelX}
                 labelY={labelY}
-                width={width}
                 height="280"
-                elementOnClick={elementOnClick}
-                colors={colors}
-                activeBiome={activeBiome}
+                units={units}
+                width={width}
               />
             </div>
           )}
@@ -110,6 +106,8 @@ GraphLoader.propTypes = {
   width: PropTypes.number,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
+  units: PropTypes.string,
+  withLeyends: PropTypes.bool,
 };
 
 GraphLoader.defaultProps = {
@@ -122,6 +120,8 @@ GraphLoader.defaultProps = {
   width: 400,
   height: 250,
   showOnlyTitle: false,
+  units: 'ha',
+  withLeyends: false,
 };
 
 export default GraphLoader;

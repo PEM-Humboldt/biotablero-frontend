@@ -726,7 +726,7 @@ class Drawer extends React.Component {
                   />
                 )}
                 <TableStylized
-                  headers={['BIOMA IAVH', 'F.C', 'NAT (Ha)', 'SEC (Ha)', 'TRANS (Ha)', 'AFECT (%)', 'TOTAL (Ha)']}
+                  headers={['BIOMA IAVH', 'F.C', 'NAT (ha)', 'SEC (ha)', 'TRANS (ha)', 'AFECT (%)', 'TOTAL (ha)']}
                   rows={tableRows}
                   footers={[totals.name, totals.fc, totals.affected_natural,
                     totals.affected_secondary, totals.affected_transformed,
