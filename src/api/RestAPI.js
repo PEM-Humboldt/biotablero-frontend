@@ -77,6 +77,27 @@ class RestAPI {
   }
 
   /**
+   * Recover the national moor values
+   */
+  static requestNationalMoor() {
+    return RestAPI.makeGetRequest('nmoor');
+  }
+
+  /**
+   * Recover the national tropical dry forest values
+   */
+  static requestNationalTDForest() {
+    return RestAPI.makeGetRequest('ntdforest');
+  }
+
+  /**
+   * Recover the national wetland values
+   */
+  static requestNationalWetland() {
+    return RestAPI.makeGetRequest('nwetland');
+  }
+
+  /**
    * Recover a list with all protected areas available in the database
    */
   static getAllProtectedAreas() {

@@ -20,7 +20,7 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayers: null,
-      activeLayerName: null,
+      activeLayer: null,
       geofenceData: null,
       colors: ['#d49242',
         '#e9c948',
@@ -206,25 +206,25 @@ class Search extends Component {
    * @param {String} idLayer Layer ID
    * @param {String} parentLayer Parent layer ID
    */
-  loadLayer = (idLayer, parentLayer) => {
+  loadLayer = (layer, parentLayer) => {
+    console.log(layer);
     this.setState({
       loadingModal: true,
-      // TODO: Replace in layer load: instead of using name, use id to search and load
-      activeLayerName: idLayer,
+      activeLayer: layer,
     });
-    RestAPI.requestBiomesbyEA(idLayer)
+    RestAPI.requestBiomesbyEA(layer.id)
       .then((res) => {
         if (res.features) {
           this.setState(prevState => ({
             layers: {
               ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
+              [layer.id]: {
+                displayName: layer.name,
                 active: true,
                 layer: L.geoJSON(res, {
                   style: this.featureStyle,
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(feature, layer, idLayer)
+                  onEachFeature: (feature, selectedlayer) => (
+                    this.featureActions(feature, selectedlayer, layer.id)
                   ),
                 }),
               },
@@ -237,8 +237,8 @@ class Search extends Component {
               loadingModal: false,
             };
             if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-            if (prevState.layers[idLayer]) {
-              newState.layers[idLayer].active = true;
+            if (prevState.layers[layer.id]) {
+              newState.layers[layer.id].active = true;
             }
             return newState;
           });
@@ -347,7 +347,7 @@ class Search extends Component {
         geofenceData: null,
         area: null,
         layerName: null,
-        activeLayerName: null,
+        activeLayer: null,
         layers: {},
       };
       return newState;
@@ -375,7 +375,7 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, layerName, activeLayerName, geofenceData, currentCompany, loadingModal,
+      area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError, areaList,
     } = this.state;
     return (
@@ -458,7 +458,7 @@ class Search extends Component {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
-            { !activeLayerName && (
+            { !activeLayer && (
               <Selector
                 handlers={[
                   () => {},
@@ -471,10 +471,10 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && area && (
+            { activeLayer && area && (
               <Drawer
                 geofenceData={geofenceData}
-                geofenceName={activeLayerName}
+                geofenceName={activeLayer.name}
                 areaList={areaList} // TODO: Include for the geofences search path
                 id
                 colors={colors}
