@@ -37,10 +37,10 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      geofenceName, area,
+      geofence, area,
     } = this.props;
 
-    RestAPI.requestCoverage(area.id, geofenceName)
+    RestAPI.requestCoverage(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -60,7 +60,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestProtectedAreas(area.id, geofenceName)
+    RestAPI.requestProtectedAreas(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -80,13 +80,13 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(area.id, geofenceName)
+    RestAPI.requestStrategicEcosystems(geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            areaSE: res,
+            areaSE: res.pa,
           },
         }));
       })
@@ -100,7 +100,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBiomes(area.id, geofenceName)
+    RestAPI.requestBiomes(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -120,7 +120,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCompensationFactor(area.id, geofenceName)
+    RestAPI.requestCompensationFactor(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -140,7 +140,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBioticUnits(area.id, geofenceName)
+    RestAPI.requestBioticUnits(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -206,7 +206,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofenceName, geofenceData, colors, colorSZH, colorsFC,
+      geofence, geofenceData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, layerName, area,
     } = this.props;
     const {
@@ -225,7 +225,7 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${area.name} / ${geofenceName}`}
+          {`${area.name} / ${geofence.name}`}
           <br />
           <b>
             {layerName}
@@ -290,7 +290,7 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   geofenceData: PropTypes.array,
-  geofenceName: PropTypes.string,
+  geofence: PropTypes.object,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   handlerBackButton: PropTypes.func,
@@ -302,7 +302,7 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   geofenceData: {},
-  geofenceName: '',
+  geofence: { id: NaN, name: '' },
   colors: ['#345b6b'],
   layerName: '',
   handlerBackButton: () => {},

@@ -28,7 +28,10 @@ export default withTooltip(({
   const prepareData = (data) => {
     const transformedData = [];
     data.forEach((item) => {
-      transformedData.push({ name: `${item.key || item.type}`, area_V: `${item.area || item.percentage}` });
+      transformedData.push({
+        name: `${item.key || item.type || item.category}`,
+        area_V: `${item.area || item.percentage}`,
+      });
     });
     return transformedData;
   };

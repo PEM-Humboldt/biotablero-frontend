@@ -69,32 +69,26 @@ class RestAPI {
 
   /**
    * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
-  static requestStrategicEcosystems(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  static requestStrategicEcosystems(idGeofence) {
+    return RestAPI.makeGetRequest(`se/areas/${idGeofence}`);
   }
 
   /**
-   * Recover the national moor values
+   * Recover the strategic ecosystems values by selected area
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
-  static requestNationalMoor() {
-    return RestAPI.makeGetRequest('nmoor');
+  static requestNationalTDForest(idGeofence) {
+    return RestAPI.makeGetRequest(`tdforest/${idGeofence}`);
   }
 
   /**
-   * Recover the national tropical dry forest values
+   * Recover the strategic ecosystems values by selected area
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
-  static requestNationalTDForest() {
-    return RestAPI.makeGetRequest('ntdforest');
-  }
-
-  /**
-   * Recover the national wetland values
-   */
-  static requestNationalWetland() {
-    return RestAPI.makeGetRequest('nwetland');
+  static requestNationalWetland(idGeofence) {
+    return RestAPI.makeGetRequest(`wetland/${idGeofence}`);
   }
 
   /**

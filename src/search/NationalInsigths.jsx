@@ -26,7 +26,7 @@ class NationalInsigths extends React.Component {
   }
 
   componentDidMount() {
-    RestAPI.requestNationalMoor()
+    RestAPI.requestStrategicEcosystems()
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -46,7 +46,7 @@ class NationalInsigths extends React.Component {
         }));
       });
 
-    RestAPI.requestNationalTDForest()
+    RestAPI.requestNationalTDForest('national')
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -66,7 +66,7 @@ class NationalInsigths extends React.Component {
         }));
       });
 
-    RestAPI.requestNationalWetland()
+    RestAPI.requestNationalWetland('national')
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,

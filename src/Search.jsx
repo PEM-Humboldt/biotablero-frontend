@@ -21,7 +21,7 @@ class Search extends Component {
     this.state = {
       activeLayers: null,
       activeLayer: null,
-      geofenceData: null,
+      geofenceData: null, // TODO:
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -149,13 +149,14 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
+    const { area } = this.state;
     const point = event.target;
     point.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
     switch (parentLayer) {
-      case 'jurisdicciones':
+      case area.id:
         point.bindPopup(
           `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
         );
@@ -207,7 +208,6 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadLayer = (layer, parentLayer) => {
-    console.log(layer);
     this.setState({
       loadingModal: true,
       activeLayer: layer,
@@ -376,7 +376,7 @@ class Search extends Component {
     const { callbackUser, userLogged } = this.props;
     const {
       area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError, areaList,
+      colors, colorsFC, colorSZH, layers, connError, dataError,
     } = this.state;
     return (
       <Layout
@@ -473,17 +473,15 @@ class Search extends Component {
             )}
             { activeLayer && area && (
               <Drawer
-                geofenceData={geofenceData}
-                geofenceName={activeLayer.name}
-                areaList={areaList} // TODO: Include for the geofences search path
-                id
+                area={area}
                 colors={colors}
-                // Sort appropriately the colors
                 colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
                 colorSZH={colorSZH}
+                geofenceData={geofenceData}
+                geofence={activeLayer}
                 handlerBackButton={this.handlerBackButton}
+                id
                 layerName={layerName}
-                area={area}
               />
             )}
           </div>
