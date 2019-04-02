@@ -3,6 +3,17 @@ import React from 'react';
 import { ParentSize } from '@vx/responsive';
 import GraphLoader from './GraphLoader';
 
+/**
+ * Function to render a graph
+ *
+ * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
+ *  or an Object with the data.
+ * @param {string} labelX axis X label
+ * @param {string} labelY axis Y label
+ * @param {string} graph graph type
+ * @param {string} graphTitle graph title
+ * @param {array} colors colors to sort elements inside the graph
+ */
 const RenderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
   // While data is being retrieved from server
   let errorMessage = null;

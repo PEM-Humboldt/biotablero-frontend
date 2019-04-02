@@ -376,7 +376,7 @@ class Search extends Component {
     const { callbackUser, userLogged } = this.props;
     const {
       area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
+      colors, colorsFC, colorSZH, layers, connError, dataError, geofencesArray,
     } = this.state;
     return (
       <Layout
@@ -466,7 +466,7 @@ class Search extends Component {
                   this.innerElementChange,
                 ]}
                 description={description(currentCompany)}
-                data={this.getData()}
+                data={geofencesArray}
                 expandedId={0}
                 iconClass="iconsection"
               />

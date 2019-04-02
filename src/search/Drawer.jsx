@@ -6,10 +6,9 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
-import { ParentSize } from '@vx/responsive';
 import RestAPI from '../api/RestAPI';
 
-import GraphLoader from '../charts/GraphLoader';
+import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 
 const styles = () => ({
@@ -161,49 +160,6 @@ class Drawer extends React.Component {
       });
   }
 
-  /**
-   * Function to render a graph
-   *
-   * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
-   *  or an Object with the data.
-   * @param {string} labelX axis X label
-   * @param {string} labelY axis Y label
-   * @param {string} graph graph type
-   * @param {string} graphTitle graph title
-   */
-  renderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
-    // While data is being retrieved from server
-    let errorMessage = null;
-    if (data === null) errorMessage = 'Loading data...';
-    else if (!data) errorMessage = `Data for ${graphTitle} not available`;
-    if (errorMessage) {
-      // TODO: ask Cesar to make this message nicer
-      return (
-        <div className="errorData">
-          {errorMessage}
-        </div>
-      );
-    }
-    return (
-      <ParentSize className="nocolor">
-        {parent => (
-          parent.width && (
-            <GraphLoader
-              width={parent.width}
-              height={parent.height}
-              graphType={graph}
-              data={data}
-              labelX={labelX}
-              labelY={labelY}
-              graphTitle={graphTitle}
-              colors={colors}
-            />
-          )
-        )}
-      </ParentSize>
-    );
-  }
-
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
@@ -243,9 +199,9 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
-                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
-                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
+                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
+                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
+                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
                 </div>
               ),
               (
@@ -253,13 +209,13 @@ class Drawer extends React.Component {
                   {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
                   // 'BarVertical', 'Área (ha) por ecosistema estratégico', colors)
                   }
-                  {this.renderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC, '%', true)
                   }
-                  {this.renderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Áreas protegidas', colorsFC, '%', true)
                   }
-                  {this.renderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Cambio de cobertura', colorsFC, '%', true)
                   }
                 </div>
@@ -279,7 +235,7 @@ class Drawer extends React.Component {
         )}
         { layerName && geofenceData && (
           <div className={classes.root}>
-            {this.renderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
+            {RenderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
               'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
