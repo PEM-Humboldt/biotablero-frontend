@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import BackIcon from '@material-ui/icons/FirstPage';
 import RestAPI from '../api/RestAPI';
+import RenderGraph from '../charts/RenderGraph';
 
 const styles = () => ({
   root: {
@@ -18,21 +19,24 @@ class NationalInsigths extends React.Component {
     this.state = {
       value: 0,
       data: {
-        moor: null, // moor data
-        wetland: null, // wetland data
-        tdforest: null, // tropical dry forest area
+        national: null, // national data
+        pa: null, // protected areas data
+        coverage: null, // coverage area
       },
     };
   }
 
   componentDidMount() {
-    RestAPI.requestStrategicEcosystems()
+    const {
+      geofence,
+    } = this.props;
+    RestAPI.requestNationalSE(geofence)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            moor: res,
+            national: res,
           },
         }));
       })
@@ -41,18 +45,18 @@ class NationalInsigths extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            moor: false,
+            national: false,
           },
         }));
       });
 
-    RestAPI.requestNationalTDForest('national')
+    RestAPI.requestNationalCoverage(geofence)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            tdforest: res,
+            coverage: res,
           },
         }));
       })
@@ -61,18 +65,18 @@ class NationalInsigths extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            tdforest: false,
+            coverage: false,
           },
         }));
       });
 
-    RestAPI.requestNationalWetland('national')
+    RestAPI.requestNationalPA(geofence)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            wetland: res,
+            pa: res,
           },
         }));
       })
@@ -81,15 +85,16 @@ class NationalInsigths extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            wetland: false,
+            pa: false,
           },
         }));
       });
   }
 
   render() {
+    const { data } = this.state;
     const {
-      colors, handlerBackButton,
+      area, colors, geofence, handlerBackButton,
     } = this.props;
     return (
       <div className="informer">
@@ -102,10 +107,24 @@ class NationalInsigths extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {'Estadísticas Nacionales'}
+          {`${area.name} / ${geofence}`}
           <br />
         </h1>
-        {// TODO: RenderGraph call
+        {
+          <div>
+            {(data.national)
+              && (RenderGraph([data.national], 'Tipo', 'Hectáreas',
+                'BarVertical', 'Área de ecosistema estratégico', colors, 'ha', false)
+              )}
+            {(data.coverage)
+              && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
+                'BarVertical', 'Tipo de cobertura', colors, 'ha', false)
+              )}
+            {(data.pa)
+              && (RenderGraph(data.pa, 'Área protegida', 'Hectáreas',
+                'BarVertical', 'Tipo de áreas protegidas', colors, 'ha', false)
+              )}
+          </div>
         }
       </div>
     );
@@ -113,12 +132,15 @@ class NationalInsigths extends React.Component {
 }
 
 NationalInsigths.propTypes = {
+  area: PropTypes.object.isRequired,
   colors: PropTypes.array,
+  geofence: PropTypes.string,
   handlerBackButton: PropTypes.func,
 };
 
 NationalInsigths.defaultProps = {
   colors: ['#345b6b'],
+  geofence: '',
   handlerBackButton: () => {},
 };
 

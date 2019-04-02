@@ -9,6 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
+import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI';
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
@@ -376,7 +377,7 @@ class Search extends Component {
     const { callbackUser, userLogged } = this.props;
     const {
       area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError, geofencesArray,
+      colors, colorsFC, colorSZH, layers, connError, dataError,
     } = this.state;
     return (
       <Layout
@@ -466,12 +467,12 @@ class Search extends Component {
                   this.innerElementChange,
                 ]}
                 description={description(currentCompany)}
-                data={geofencesArray}
+                data={this.getData()}
                 expandedId={0}
                 iconClass="iconsection"
               />
             )}
-            { activeLayer && area && (
+            { activeLayer && area && (area.id !== 'se') && (
               <Drawer
                 area={area}
                 colors={colors}
@@ -482,6 +483,15 @@ class Search extends Component {
                 handlerBackButton={this.handlerBackButton}
                 id
                 layerName={layerName}
+              />
+            )}
+            { activeLayer && area && (area.id === 'se') && (
+              <NationalInsigths
+                area={area}
+                colors={colors}
+                geofence={activeLayer}
+                handlerBackButton={this.handlerBackButton}
+                id
               />
             )}
           </div>

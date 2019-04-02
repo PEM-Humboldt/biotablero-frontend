@@ -79,13 +79,13 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(geofence.id)
+    RestAPI.requestStrategicEcosystems(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
-            areaSE: res.pa,
+            areaSE: res,
           },
         }));
       })
@@ -245,25 +245,25 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  geofenceData: PropTypes.array,
-  geofence: PropTypes.object,
-  colors: PropTypes.array,
-  classes: PropTypes.object.isRequired,
-  handlerBackButton: PropTypes.func,
-  layerName: PropTypes.string,
   area: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
+  colors: PropTypes.array,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
+  geofenceData: PropTypes.array,
+  geofence: PropTypes.object,
+  handlerBackButton: PropTypes.func,
+  layerName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
-  geofenceData: {},
-  geofence: { id: NaN, name: '' },
   colors: ['#345b6b'],
-  layerName: '',
-  handlerBackButton: () => {},
   colorSZH: [],
   colorsFC: [],
+  geofenceData: {},
+  geofence: { id: NaN, name: '' },
+  layerName: '',
+  handlerBackButton: () => {},
 };
 
 export default withStyles(styles)(Drawer);
