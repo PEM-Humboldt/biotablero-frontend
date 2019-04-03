@@ -209,9 +209,9 @@ class Search extends Component {
   loadLayer = (idLayer, parentLayer) => {
     this.setState({
       loadingModal: true,
+      // TODO: Replace in layer load: instead of using name, use id to search and load
+      activeLayerName: idLayer,
     });
-    // TODO: Implement new load strategy by geofence id
-    // TODO: Disconnect calling for layer to show selector and drawer values
     RestAPI.requestBiomesbyEA(idLayer)
       .then((res) => {
         if (res.features) {
@@ -239,7 +239,6 @@ class Search extends Component {
             if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
             if (prevState.layers[idLayer]) {
               newState.layers[idLayer].active = true;
-              newState.activeLayerName = newState.layers[idLayer].displayName;
             }
             return newState;
           });
@@ -255,14 +254,15 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { areaList } = this.state;
+    // TODO: Change ot for a loading layer strategy
     switch (idLayer) {
-      case 'jurisdicciones':
+      case 'ea':
         GeoServerAPI.requestJurisdicciones()
           .then((res) => {
             this.setState(prevState => ({
               layers: {
                 ...prevState.layers,
-                jurisdicciones: {
+                ea: {
                   displayName: idLayer,
                   active: false,
                   layer: L.geoJSON(
@@ -289,7 +289,7 @@ class Search extends Component {
               if (prevState.layers[idLayer]) {
                 newState.layers[idLayer].active = !prevState.layers[idLayer].active;
                 newState.area = areaList.find(
-                  item => item.name === newState.layers[idLayer].displayName,
+                  item => item.id === newState.layers[idLayer].displayName,
                 );
               }
               return newState;
@@ -304,19 +304,19 @@ class Search extends Component {
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
-  secondLevelChange = (name) => {
+  secondLevelChange = (id) => {
     const { areaList } = this.state;
     this.setState((prevState) => {
       let newState = { ...prevState };
       newState = {
         ...newState,
         area: areaList.find(
-          item => item.name === name,
+          item => item.id === id,
         ),
       };
       return newState;
     });
-    this.loadSecondLevelLayer(name);
+    this.loadSecondLevelLayer(id);
   }
 
   /**
@@ -326,7 +326,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    this.loadLayer(nameToOn, nameToOff);
+    if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 
   /** ***************************************** */
@@ -474,7 +474,7 @@ class Search extends Component {
             { activeLayerName && area && (
               <Drawer
                 geofenceData={geofenceData}
-                geofenceName={activeLayerName.NOMCAR || activeLayerName}
+                geofenceName={activeLayerName}
                 areaList={areaList} // TODO: Include for the geofences search path
                 id
                 colors={colors}

@@ -100,7 +100,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCarByBiomeArea(geofenceName)
+    RestAPI.requestBiomes(area.id, geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -120,7 +120,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCarByFCArea(geofenceName)
+    RestAPI.requestCompensationFactor(area.id, geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -140,7 +140,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCarByDistritosArea(geofenceName)
+    RestAPI.requestBioticUnits(area.id, geofenceName)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,

@@ -23,8 +23,35 @@ class RestAPI {
   /** ************* */
 
   /**
+   * Recover biomes located in the selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestBiomes(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/generalBiome`);
+  }
+
+  /**
+   * Recover biotic units by selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestBioticUnits(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/bioticUnit`);
+  }
+
+  /**
+   * Recover compensation Factor values by selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestCompensationFactor(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/compensationFactor`);
+  }
+
+  /**
    * Recover coverage area by selected area
-   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the coverage
    */
   static requestCoverage(idArea, idGeofence) {
@@ -33,7 +60,7 @@ class RestAPI {
 
   /**
    * Recover protected areas values by selected area
-   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the protected areas
    */
   static requestProtectedAreas(idArea, idGeofence) {
@@ -42,7 +69,7 @@ class RestAPI {
 
   /**
    * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request an focused area
+   * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
   static requestStrategicEcosystems(idArea, idGeofence) {
@@ -114,33 +141,6 @@ class RestAPI {
    */
   static requestBiomeBySZH(eaId, biomeName) {
     return RestAPI.makeGetRequest(`ea/${eaId}/biome/${biomeName}/subzone`);
-  }
-
-  /**
-   * Request area information for ea by biotic units
-   *
-   * @param {String} idCAR id CAR to request
-   */
-  static requestCarByDistritosArea(idCAR) {
-    return RestAPI.makeGetRequest(`ea/${idCAR}/bioticUnit`);
-  }
-
-  /**
-   * Request area information for ea by compensation factor
-   *
-   * @param {String} idCAR id CAR to request
-   */
-  static requestCarByFCArea(idCAR) {
-    return RestAPI.makeGetRequest(`ea/${idCAR}/compensationFactor`);
-  }
-
-  /**
-   * Request area information for ea by biomes
-   *
-   * @param {String} idCAR id CAR to request
-   */
-  static requestCarByBiomeArea(idCAR) {
-    return RestAPI.makeGetRequest(`ea/${idCAR}/generalBiome`);
   }
 
   /** ******************* */
