@@ -22,7 +22,7 @@ class Search extends Component {
     this.state = {
       activeLayers: null,
       activeLayer: null,
-      geofenceData: null, // TODO:
+      geofenceData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -150,21 +150,25 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { area } = this.state;
+    const { activeLayer, area } = this.state;
     const point = event.target;
     point.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
-    switch (parentLayer) {
-      case area.id:
-        point.bindPopup(
-          `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
-        );
-        break;
-      default:
-        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.name_biome}<br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`);
-        break;
+    if (area && (parentLayer === area.id)) {
+      // TODO: Unify data structure for id and name in the layer geometry values
+      //  and coding (UTF-8)
+      point.bindPopup(
+        `<b>${point.feature.properties.IDCAR}</b>
+         <br>${point.feature.properties.NOMCAR}`,
+      ).openPopup();
+    }
+    if (activeLayer && (parentLayer === activeLayer.id)) {
+      point.bindPopup(
+        `<b>Bioma:</b> ${point.feature.properties.name_biome}
+         <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+      ).openPopup();
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
@@ -173,12 +177,10 @@ class Search extends Component {
     const feature = event.target;
     const { layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (parentLayer === 'jurisdicciones') feature.closePopup();
+    feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
-    // TODO: Activate biome inside dotsWhere and dotsWhat
-    // TODO: Create function for jurisdicciones layer
     this.highlightFeature(event, parentLayer);
     this.handleClickOnArea(event, parentLayer);
   }
