@@ -257,7 +257,7 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { areaList } = this.state;
-    // TODO: Change ot for a loading layer strategy
+    // TODO: Change the loading layer strategy for a generic load
     switch (idLayer) {
       case 'ea':
         GeoServerAPI.requestJurisdicciones()
