@@ -6,10 +6,9 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
-import { ParentSize } from '@vx/responsive';
 import RestAPI from '../api/RestAPI';
 
-import GraphLoader from '../charts/GraphLoader';
+import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 
 const styles = () => ({
@@ -37,10 +36,10 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      geofenceName, area,
+      geofence, area,
     } = this.props;
 
-    RestAPI.requestCoverage(area.id, geofenceName)
+    RestAPI.requestCoverage(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -60,7 +59,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestProtectedAreas(area.id, geofenceName)
+    RestAPI.requestProtectedAreas(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -80,7 +79,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(area.id, geofenceName)
+    RestAPI.requestStrategicEcosystems(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -100,7 +99,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBiomes(area.id, geofenceName)
+    RestAPI.requestBiomes(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -120,7 +119,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCompensationFactor(area.id, geofenceName)
+    RestAPI.requestCompensationFactor(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -140,7 +139,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBioticUnits(area.id, geofenceName)
+    RestAPI.requestBioticUnits(area.id, geofence.id)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -161,52 +160,9 @@ class Drawer extends React.Component {
       });
   }
 
-  /**
-   * Function to render a graph
-   *
-   * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
-   *  or an Object with the data.
-   * @param {string} labelX axis X label
-   * @param {string} labelY axis Y label
-   * @param {string} graph graph type
-   * @param {string} graphTitle graph title
-   */
-  renderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
-    // While data is being retrieved from server
-    let errorMessage = null;
-    if (data === null) errorMessage = 'Loading data...';
-    else if (!data) errorMessage = `Data for ${graphTitle} not available`;
-    if (errorMessage) {
-      // TODO: ask Cesar to make this message nicer
-      return (
-        <div className="errorData">
-          {errorMessage}
-        </div>
-      );
-    }
-    return (
-      <ParentSize className="nocolor">
-        {parent => (
-          parent.width && (
-            <GraphLoader
-              width={parent.width}
-              height={parent.height}
-              graphType={graph}
-              data={data}
-              labelX={labelX}
-              labelY={labelY}
-              graphTitle={graphTitle}
-              colors={colors}
-            />
-          )
-        )}
-      </ParentSize>
-    );
-  }
-
   render() {
     const {
-      geofenceName, geofenceData, colors, colorSZH, colorsFC,
+      geofence, geofenceData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, layerName, area,
     } = this.props;
     const {
@@ -225,7 +181,7 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${area.name} / ${geofenceName}`}
+          {`${area.name} / ${geofence.name}`}
           <br />
           <b>
             {layerName}
@@ -243,9 +199,9 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
-                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
-                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
+                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
+                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
+                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
                 </div>
               ),
               (
@@ -253,13 +209,13 @@ class Drawer extends React.Component {
                   {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
                   // 'BarVertical', 'Área (ha) por ecosistema estratégico', colors)
                   }
-                  {this.renderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC, '%', true)
                   }
-                  {this.renderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Áreas protegidas', colorsFC, '%', true)
                   }
-                  {this.renderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
+                  {RenderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Cambio de cobertura', colorsFC, '%', true)
                   }
                 </div>
@@ -279,7 +235,7 @@ class Drawer extends React.Component {
         )}
         { layerName && geofenceData && (
           <div className={classes.root}>
-            {this.renderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
+            {RenderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
               'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
@@ -289,25 +245,25 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  geofenceData: PropTypes.array,
-  geofenceName: PropTypes.string,
-  colors: PropTypes.array,
-  classes: PropTypes.object.isRequired,
-  handlerBackButton: PropTypes.func,
-  layerName: PropTypes.string,
   area: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
+  colors: PropTypes.array,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
+  geofenceData: PropTypes.array,
+  geofence: PropTypes.object,
+  handlerBackButton: PropTypes.func,
+  layerName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
-  geofenceData: {},
-  geofenceName: '',
   colors: ['#345b6b'],
-  layerName: '',
-  handlerBackButton: () => {},
   colorSZH: [],
   colorsFC: [],
+  geofenceData: {},
+  geofence: { id: NaN, name: '' },
+  layerName: '',
+  handlerBackButton: () => {},
 };
 
 export default withStyles(styles)(Drawer);

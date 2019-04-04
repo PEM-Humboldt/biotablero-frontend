@@ -190,7 +190,7 @@ class Autocomplete extends React.Component {
     const { classes, data, label } = this.props;
     const { multiLabel } = this.state;
     const elements = data.map(element => ({
-      value: element.value || element.id || element.name,
+      value: element.value || element.name || element.id,
       label: element.label || element.name,
     }));
     return (

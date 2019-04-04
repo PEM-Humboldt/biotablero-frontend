@@ -9,6 +9,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
+import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI';
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
@@ -20,7 +21,7 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayers: null,
-      activeLayerName: null,
+      activeLayer: null,
       geofenceData: null,
       colors: ['#d49242',
         '#e9c948',
@@ -149,20 +150,25 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
+    const { activeLayer, area } = this.state;
     const point = event.target;
     point.setStyle({
       weight: 1,
       fillOpacity: 1,
     });
-    switch (parentLayer) {
-      case 'jurisdicciones':
-        point.bindPopup(
-          `<b>${point.feature.properties.IDCAR}</b><br>${point.feature.properties.NOMCAR}`,
-        );
-        break;
-      default:
-        point.bindPopup(`<b>Bioma:</b> ${point.feature.properties.name_biome}<br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`);
-        break;
+    if (area && (parentLayer === area.id)) {
+      // TODO: Unify data structure for id and name in the layer geometry values
+      //  and coding (UTF-8)
+      point.bindPopup(
+        `<b>${point.feature.properties.IDCAR}</b>
+         <br>${point.feature.properties.NOMCAR}`,
+      ).openPopup();
+    }
+    if (activeLayer && (parentLayer === activeLayer.id)) {
+      point.bindPopup(
+        `<b>Bioma:</b> ${point.feature.properties.name_biome}
+         <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+      ).openPopup();
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
@@ -171,12 +177,10 @@ class Search extends Component {
     const feature = event.target;
     const { layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (parentLayer === 'jurisdicciones') feature.closePopup();
+    feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
-    // TODO: Activate biome inside dotsWhere and dotsWhat
-    // TODO: Create function for jurisdicciones layer
     this.highlightFeature(event, parentLayer);
     this.handleClickOnArea(event, parentLayer);
   }
@@ -206,25 +210,24 @@ class Search extends Component {
    * @param {String} idLayer Layer ID
    * @param {String} parentLayer Parent layer ID
    */
-  loadLayer = (idLayer, parentLayer) => {
+  loadLayer = (layer, parentLayer) => {
     this.setState({
       loadingModal: true,
-      // TODO: Replace in layer load: instead of using name, use id to search and load
-      activeLayerName: idLayer,
+      activeLayer: layer,
     });
-    RestAPI.requestBiomesbyEA(idLayer)
+    RestAPI.requestBiomesbyEA(layer.id)
       .then((res) => {
         if (res.features) {
           this.setState(prevState => ({
             layers: {
               ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
+              [layer.id]: {
+                displayName: layer.name,
                 active: true,
                 layer: L.geoJSON(res, {
                   style: this.featureStyle,
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(feature, layer, idLayer)
+                  onEachFeature: (feature, selectedlayer) => (
+                    this.featureActions(feature, selectedlayer, layer.id)
                   ),
                 }),
               },
@@ -237,8 +240,8 @@ class Search extends Component {
               loadingModal: false,
             };
             if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-            if (prevState.layers[idLayer]) {
-              newState.layers[idLayer].active = true;
+            if (prevState.layers[layer.id]) {
+              newState.layers[layer.id].active = true;
             }
             return newState;
           });
@@ -254,7 +257,7 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { areaList } = this.state;
-    // TODO: Change ot for a loading layer strategy
+    // TODO: Change the loading layer strategy for a generic load
     switch (idLayer) {
       case 'ea':
         GeoServerAPI.requestJurisdicciones()
@@ -347,7 +350,7 @@ class Search extends Component {
         geofenceData: null,
         area: null,
         layerName: null,
-        activeLayerName: null,
+        activeLayer: null,
         layers: {},
       };
       return newState;
@@ -375,8 +378,8 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, layerName, activeLayerName, geofenceData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError, areaList,
+      area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
+      colors, colorsFC, colorSZH, layers, connError, dataError,
     } = this.state;
     return (
       <Layout
@@ -458,7 +461,7 @@ class Search extends Component {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
           <div className="contentView">
-            { !activeLayerName && (
+            { !activeLayer && (
               <Selector
                 handlers={[
                   () => {},
@@ -471,19 +474,26 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayerName && area && (
+            { activeLayer && area && (area.id !== 'se') && (
               <Drawer
-                geofenceData={geofenceData}
-                geofenceName={activeLayerName}
-                areaList={areaList} // TODO: Include for the geofences search path
-                id
+                area={area}
                 colors={colors}
-                // Sort appropriately the colors
                 colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
                 colorSZH={colorSZH}
+                geofenceData={geofenceData}
+                geofence={activeLayer}
                 handlerBackButton={this.handlerBackButton}
+                id
                 layerName={layerName}
+              />
+            )}
+            { activeLayer && area && (area.id === 'se') && (
+              <NationalInsigths
                 area={area}
+                colors={colors}
+                geofence={activeLayer}
+                handlerBackButton={this.handlerBackButton}
+                id
               />
             )}
           </div>

@@ -57,23 +57,20 @@ const description = companyName => (
 
 const dataGEB = {
   id: 'Zonas_GEB',
+  detailId: 'Zonas_GEB',
   label: 'Zonas GEB',
   options: [
     {
-      type: 'button',
-      label: 'Norte',
+      name: 'Norte',
     },
     {
-      type: 'button',
-      label: 'Centro',
+      name: 'Centro',
     },
     {
-      type: 'button',
-      label: 'Suroccidente',
+      name: 'Suroccidente',
     },
     {
-      type: 'button',
-      label: 'Occidente',
+      name: 'Occidente',
     },
   ],
 };
