@@ -38,8 +38,9 @@ class Drawer extends React.Component {
     const {
       geofence, area,
     } = this.props;
+    const searchId = geofence.id || geofence.name;
 
-    RestAPI.requestCoverage(area.id, geofence.id)
+    RestAPI.requestCoverage(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -59,7 +60,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestProtectedAreas(area.id, geofence.id)
+    RestAPI.requestProtectedAreas(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -79,7 +80,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(area.id, geofence.id)
+    RestAPI.requestStrategicEcosystems(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -99,7 +100,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBiomes(area.id, geofence.id)
+    RestAPI.requestBiomes(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -119,7 +120,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestCompensationFactor(area.id, geofence.id)
+    RestAPI.requestCompensationFactor(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -139,7 +140,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBioticUnits(area.id, geofence.id)
+    RestAPI.requestBioticUnits(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,

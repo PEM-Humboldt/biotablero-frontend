@@ -110,7 +110,6 @@ class Search extends Component {
      */
     reportDataError = () => {
       this.setState({
-        dataError: true,
         loadingModal: false,
       });
     }
