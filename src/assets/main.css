@@ -1361,7 +1361,6 @@ div[id*="panel"] button:hover {
 .graphcontainer {
   margin: 0;
   padding: 15px !important;
-  overflow: hidden;
 }
 
 .informer header button{

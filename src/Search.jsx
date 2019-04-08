@@ -110,7 +110,6 @@ class Search extends Component {
      */
     reportDataError = () => {
       this.setState({
-        dataError: true,
         loadingModal: false,
       });
     }
@@ -152,6 +151,9 @@ class Search extends Component {
   highlightFeature = (event, parentLayer) => {
     const { activeLayer, area } = this.state;
     const point = event.target;
+    const areaPopup = {
+      closeButton: false,
+    };
     point.setStyle({
       weight: 1,
       fillOpacity: 1,
@@ -162,6 +164,7 @@ class Search extends Component {
       point.bindPopup(
         `<b>${point.feature.properties.IDCAR}</b>
          <br>${point.feature.properties.NOMCAR}`,
+        areaPopup,
       ).openPopup();
     }
     if (activeLayer && (parentLayer === activeLayer.id)) {
@@ -175,9 +178,11 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { layers } = this.state;
+    const { area, layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    feature.closePopup();
+    if (area && (parentLayer === area.id)) {
+      feature.closePopup();
+    }
   }
 
   clickFeature = (event, parentLayer) => {
