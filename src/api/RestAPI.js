@@ -167,6 +167,19 @@ class RestAPI {
     return RestAPI.makeGetRequest(`ea/${eaId}/biome/${biomeName}/subzone`);
   }
 
+  /** ******************** */
+  /** MAPS - SEARCH MODULE */
+  /** ******************** */
+
+  /**
+   * Request area geometry by id
+   *
+   * @param {String} areaId area id to request
+   */
+  static requestGeometryByArea(areaId) {
+    return RestAPI.makeGetRequest(`${areaId}/layers/national`);
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
