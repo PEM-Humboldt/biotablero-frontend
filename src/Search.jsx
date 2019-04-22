@@ -197,14 +197,14 @@ class Search extends Component {
    * @param {Object} event event object
    */
   handleClickOnArea = (event, parentLayer) => {
-    const biome = event.target.feature.properties.name_biome;
-    RestAPI.requestBiomeBySZH(parentLayer, biome)
-      .then((res) => {
-        this.setState({
-          layerName: biome,
-          geofenceData: res,
-        });
-      });
+    const { areaList } = this.state;
+    areaList.forEach(
+      (item) => {
+        if (item.id === parentLayer) {
+          this.secondLevelChange(parentLayer);
+        }
+      },
+    );
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the table). But the application won't break as it currently is
   }
@@ -279,7 +279,7 @@ class Search extends Component {
         );
         return newState;
       });
-    } else if (idLayer) {
+    } else if (idLayer && idLayer !== 'se') {
       RestAPI.requestGeometryByArea(idLayer)
         .then((res) => {
           this.setState(prevState => ({
