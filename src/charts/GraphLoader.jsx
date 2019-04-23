@@ -2,9 +2,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import BarStackHorizontal from './BarStackHorizontal';
 import BarGraph from './BarGraph';
+import BarStackHorizontal from './BarStackHorizontal';
 import DotsGraph from './DotsGraph';
+import DotInfo from './DotInfo';
+import Pie from './Pie';
 
 const GraphLoader = (
   {
@@ -15,6 +17,23 @@ const GraphLoader = (
   },
 ) => (
   <div>
+    {
+      (graphType === 'BarStackHorizontal') ? (
+        // TODO: Usar name en el gráfico
+        <div className="graphcard pb">
+          <BarStackHorizontal
+            dataJSON={data}
+            colors={colors}
+            graphTitle={graphTitle}
+            labelX={labelX}
+            labelY={labelY}
+            width={width}
+            height="250"
+            units={units}
+          />
+        </div>
+      ) : ('')
+    }
     {
       (graphType === 'BarVertical') ? (
         <div>
@@ -33,28 +52,12 @@ const GraphLoader = (
       ) : ('')
     }
     {
-    (graphType === 'BarStackHorizontal') ? (
-      // TODO: Usar name en el gráfico
-      <div className="graphcard pb">
-        <BarStackHorizontal
-          dataJSON={data}
-          colors={colors}
-          graphTitle={graphTitle}
-          labelX={labelX}
-          labelY={labelY}
-          width={width}
-          height="250"
-          units={units}
-        />
-      </div>
-    ) : ('')
-    }
-    {
       (graphType === 'Dots') ? (
+        // TODO: Move this custom content to src/compesation/Drawer
         <div className="graphcard pb">
           <h2>
             <DownloadIcon className="icondown" />
-              Ecosistémas Equivalentes
+              Ecosistemas Equivalentes
           </h2>
           { !showOnlyTitle && (
             <div>
@@ -87,6 +90,31 @@ const GraphLoader = (
               />
             </div>
           )}
+        </div>
+      ) : ('')
+    }
+    {
+      (graphType === 'DotInfo') ? (
+        <div>
+          <DotInfo
+            data={data}
+            width={width}
+            height="100"
+          />
+        </div>
+      ) : ('')
+    }
+    {
+      (graphType === 'Pie') ? (
+        <div>
+          <span className="label">SVG Elements</span>
+          <Pie
+            data={data}
+            width={200}
+            height={200}
+            innerRadius={60}
+            outerRadius={100}
+          />
         </div>
       ) : ('')
     }
