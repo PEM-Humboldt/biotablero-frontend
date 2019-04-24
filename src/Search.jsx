@@ -10,7 +10,7 @@ import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
 import NationalInsigths from './search/NationalInsigths';
-import GeoServerAPI from './api/GeoServerAPI';
+import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
 import Layout from './Layout';
@@ -197,14 +197,14 @@ class Search extends Component {
    * @param {Object} event event object
    */
   handleClickOnArea = (event, parentLayer) => {
-    const biome = event.target.feature.properties.name_biome;
-    RestAPI.requestBiomeBySZH(parentLayer, biome)
-      .then((res) => {
-        this.setState({
-          layerName: biome,
-          geofenceData: res,
-        });
-      });
+    const { areaList } = this.state;
+    areaList.forEach(
+      (item) => {
+        if (item.id === parentLayer) {
+          this.secondLevelChange(parentLayer);
+        }
+      },
+    );
     // TODO: When the promise is rejected, we need to show a "Data not available" error
     // (in the table). But the application won't break as it currently is
   }
@@ -261,51 +261,67 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadSecondLevelLayer = (idLayer) => {
-    const { areaList } = this.state;
-    // TODO: Change the loading layer strategy for a generic load
-    switch (idLayer) {
-      case 'ea':
-        GeoServerAPI.requestJurisdicciones()
-          .then((res) => {
-            this.setState(prevState => ({
-              layers: {
-                ...prevState.layers,
-                ea: {
-                  displayName: idLayer,
-                  active: false,
-                  layer: L.geoJSON(
-                    res,
-                    {
-                      style: {
-                        color: '#e84a5f',
-                        weight: 0.5,
-                        fillColor: '#ffd8e2',
-                        opacity: 0.6,
-                        fillOpacity: 0.4,
-                      },
-                      onEachFeature: (feature, layer) => (
-                        this.featureActions(feature, layer, idLayer)
-                      ),
-                    },
-                  ),
-                },
-              },
-            }));
+    const { areaList, layers } = this.state;
 
-            this.setState((prevState) => {
-              const newState = { ...prevState };
-              if (prevState.layers[idLayer]) {
-                newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                newState.area = areaList.find(
-                  item => item.id === newState.layers[idLayer].displayName,
-                );
-              }
-              return newState;
-            });
+    if (layers[idLayer]) {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+        newState.area = areaList.find(
+          item => item.id === newState.layers[idLayer].displayName,
+        );
+        Object.values(newState.layers).forEach(
+          (item) => {
+            if (item.displayName !== idLayer) {
+              newState.layers[item.displayName].active = false;
+            }
+          },
+        );
+        return newState;
+      });
+    } else if (idLayer && idLayer !== 'se') {
+      RestAPI.requestGeometryByArea(idLayer)
+        .then((res) => {
+          this.setState(prevState => ({
+            layers: {
+              ...prevState.layers,
+              [idLayer]: {
+                displayName: idLayer,
+                active: false,
+                layer: L.geoJSON(
+                  res,
+                  {
+                    style: {
+                      color: '#e84a5f',
+                      weight: 0.5,
+                      fillColor: '#ffd8e2',
+                      opacity: 0.6,
+                      fillOpacity: 0.4,
+                    },
+                    onEachFeature: (feature, layer) => (
+                      this.featureActions(feature, layer, idLayer)
+                    ),
+                  },
+                ),
+              },
+            },
+          }));
+
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            Object.values(newState.layers).forEach(
+              (item) => {
+                if ((item.displayName === idLayer)) {
+                  newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+                } else newState.layers[item.displayName].active = false;
+              },
+            );
+            newState.area = areaList.find(
+              item => item.id === newState.layers[idLayer].displayName,
+            );
+            return newState;
           });
-        break;
-      default:
-        break;
+        });
     }
   }
 

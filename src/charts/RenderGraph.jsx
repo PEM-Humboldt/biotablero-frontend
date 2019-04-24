@@ -17,8 +17,8 @@ import GraphLoader from './GraphLoader';
 const RenderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
   // While data is being retrieved from server
   let errorMessage = null;
-  if (data === null) errorMessage = 'Loading data...';
-  else if (!data) errorMessage = `Data for ${graphTitle} not available`;
+  if (data === null) errorMessage = 'Cargando información...';
+  else if (!data) errorMessage = `Información de ${graphTitle} no disponible`;
   if (errorMessage) {
     // TODO: ask Cesar to make this message nicer
     return (
