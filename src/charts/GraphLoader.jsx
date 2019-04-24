@@ -28,7 +28,7 @@ const GraphLoader = (
             labelX={labelX}
             labelY={labelY}
             width={width}
-            height="250"
+            height="200"
             units={units}
           />
         </div>

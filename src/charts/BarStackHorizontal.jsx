@@ -77,7 +77,7 @@ export default withTooltip(
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
       domain: data.map(y),
-      padding: 0.3,
+      padding: 0.1,
     });
     const zScale = scaleOrdinal({
       domain: keys,
