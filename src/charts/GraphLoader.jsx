@@ -6,7 +6,6 @@ import BarGraph from './BarGraph';
 import BarStackHorizontal from './BarStackHorizontal';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
-import Pie from './Pie';
 
 const GraphLoader = (
   {
@@ -100,20 +99,6 @@ const GraphLoader = (
             data={data}
             width={width}
             height="100"
-          />
-        </div>
-      ) : ('')
-    }
-    {
-      (graphType === 'Pie') ? (
-        <div>
-          <span className="label">SVG Elements</span>
-          <Pie
-            data={data}
-            width={200}
-            height={200}
-            innerRadius={60}
-            outerRadius={100}
           />
         </div>
       ) : ('')
