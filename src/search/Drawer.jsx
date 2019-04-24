@@ -207,9 +207,6 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="2">
-                  {// this.renderGraph(areaSE, 'Tipo de ecosistema', 'Hectáreas',
-                  // 'BarVertical', 'Área (ha) por ecosistema estratégico', colors)
-                  }
                   {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC, '%', true)
                   }

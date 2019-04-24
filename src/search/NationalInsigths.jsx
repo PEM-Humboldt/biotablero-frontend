@@ -113,8 +113,8 @@ class NationalInsigths extends React.Component {
         {
           <div>
             {(data.national)
-              && (RenderGraph([data.national], 'Tipo', 'Hectáreas',
-                'BarVertical', 'Área de ecosistema estratégico', colors, 'ha', false)
+              && (RenderGraph(data.national, null, null,
+                'DotInfo', null, null, null, false)
               )}
             {(data.coverage)
               && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
