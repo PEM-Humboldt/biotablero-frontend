@@ -211,7 +211,7 @@ class Autocomplete extends React.Component {
               classes,
               multi: true,
               instanceId: 'react-select-chip-label',
-              id: 'react-select-chip-label',
+              id: `react-select-chip-label-${Math.random()}`,
               simpleValue: true,
               options: elements,
             },

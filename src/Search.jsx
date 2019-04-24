@@ -186,8 +186,13 @@ class Search extends Component {
   }
 
   clickFeature = (event, parentLayer) => {
+    const { area } = this.state;
     this.highlightFeature(event, parentLayer);
     this.handleClickOnArea(event, parentLayer);
+    const toLoad = Object.values(area.data).filter(
+      element => element.id === event.target.feature.properties.IDCAR,
+    )[0];
+    if (toLoad) this.innerElementChange(parentLayer, toLoad);
   }
 
   /**
