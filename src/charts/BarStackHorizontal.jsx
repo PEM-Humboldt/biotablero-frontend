@@ -4,8 +4,24 @@ import { BarStackHorizontal } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft } from '@vx/axis';
 import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
-import { withTooltip, Tooltip } from '@vx/tooltip';
+import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
+import localPoint from '@vx/event/build/localPoint';
 import Descargar from '@material-ui/icons/Save';
+
+/**
+ * Function to render tooltip inside the graph
+ *
+ * @param {string} event event on graph
+ * @param {string} datum value to show inside tooltip
+ */
+const handleMouseOver = (event, datum, showTooltip) => {
+  const coords = localPoint(event.target.ownerSVGElement, event);
+  showTooltip({
+    tooltipLeft: coords.x,
+    tooltipTop: coords.y,
+    tooltipData: datum,
+  });
+};
 
 export default withTooltip(
   ({
@@ -93,13 +109,9 @@ export default withTooltip(
                   hideTooltip();
                 }, 300);
               }}
-              onMouseMove={dataSelected => () => {
+              onMouseMove={dataSelected => (e) => {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                showTooltip({
-                  tooltipData: dataSelected,
-                  tooltipTop: margin.top + yScale(y(dataSelected.data)),
-                  tooltipLeft: margin.left + dataSelected.width + 75,
-                });
+                handleMouseOver(e, dataSelected, showTooltip);
               }}
             />
             <AxisLeft
@@ -139,7 +151,7 @@ export default withTooltip(
           </Group>
         </svg>
         {tooltipOpen && (
-          <Tooltip
+          <TooltipWithBounds
             top={tooltipTop}
             left={tooltipLeft}
             style={{
@@ -163,7 +175,7 @@ export default withTooltip(
                 {tooltipData.xFormatted}
               </small>
             </div>
-          </Tooltip>
+          </TooltipWithBounds>
         )}
       </div>
     );
