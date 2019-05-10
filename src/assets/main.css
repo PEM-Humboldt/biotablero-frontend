@@ -448,7 +448,7 @@ menu button.active {
 }
 
 .showHome:focus {
-	outline: 0;
+	outline: none !important;
 }
 
 .rotate {
@@ -1394,7 +1394,37 @@ div[id*="panel"] button:hover {
   padding: 10px;
   text-align: right;
   font-size: 14px;
-  color: #424242;
+  color: #ffffff;
+}
+
+/* TODO: César will adjust this new class for graph info*/
+.graphinfo {
+  float: none;
+  cursor: pointer;
+	font-size: 8px;
+  margin-top: -3px;
+}
+
+.graphinfo-hidden-false p,
+.graphinfo-hidden-true p {
+	max-width: 300px;
+	font-family: 'Lato', sans-serif;
+}
+
+.graphinfo-hidden-true {
+	padding: 0;
+	height: 0;
+	overflow: hidden;
+}
+
+.graphinfo-hidden-false {
+	background-color: #fff;
+	z-index: 1;
+	height: auto;
+}
+
+.graphinfo-hidden {
+	display: none;
 }
 
 p.legcomp {

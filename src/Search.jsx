@@ -134,6 +134,23 @@ class Search extends Component {
     return styleReturn;
   }
 
+  /** ******************************** */
+  /** HELPERS FOR MAP LAYER PROPERTIES */
+  /** ******************************** */
+
+  findFirstId = properties => properties.IDCAR
+      || properties.id_ea
+      || properties.id_state
+      || properties.id_subzone
+      || properties.id_biome;
+
+  findFirstName = properties => properties.IDCAR
+      || properties.name
+      || properties.name_subzone
+      || properties.name_biome;
+
+  findSecondId = properties => properties.id_biome;
+
   /** ************************ */
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
@@ -159,11 +176,9 @@ class Search extends Component {
       fillOpacity: 1,
     });
     if (area && (parentLayer === area.id)) {
-      // TODO: Unify data structure for id and name in the layer geometry values
-      //  and coding (UTF-8)
       point.bindPopup(
-        `<b>${point.feature.properties.IDCAR}</b>
-         <br>${point.feature.properties.NOMCAR}`,
+        `<b>${this.findFirstName(point.feature.properties)}</b>
+         ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
         areaPopup,
       ).openPopup();
     }
@@ -189,10 +204,12 @@ class Search extends Component {
     const { area } = this.state;
     this.highlightFeature(event, parentLayer);
     this.handleClickOnArea(event, parentLayer);
+    let value = this.findFirstId(event.target.feature.properties);
+    if (!value) value = this.findSecondId(event.target.feature.properties);
     const toLoad = Object.values(area.data).filter(
-      element => element.id === event.target.feature.properties.IDCAR,
+      element => element.id === value.toString(),
     )[0];
-    if (toLoad) this.innerElementChange(parentLayer, toLoad);
+    if (value) this.innerElementChange(parentLayer, toLoad);
   }
 
   /**
@@ -358,9 +375,9 @@ class Search extends Component {
     if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 
-  /** ***************************************** */
-  /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
-  /** ***************************************** */
+  /** ************************************* */
+  /** LISTENER FOR BUTTONS ON LATERAL PANEL */
+  /** ************************************* */
 
   // TODO: Return from biome to jurisdicción
   handlerBackButton = () => {
@@ -378,7 +395,24 @@ class Search extends Component {
         layerName: null,
         activeLayer: null,
         layers: {},
+        openInfoGraph: null,
       };
+      return newState;
+    });
+  }
+
+  // Keeping only one info graph active
+  handlerInfoGraph = (title) => {
+    this.setState((prevState) => {
+      let newState = { ...prevState };
+      let value = null;
+      if (prevState.openInfoGraph === title) value = null;
+      else value = title;
+      newState = {
+        ...newState,
+        openInfoGraph: value,
+      };
+
       return newState;
     });
   }
@@ -406,6 +440,7 @@ class Search extends Component {
     const {
       area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError,
+      openInfoGraph,
     } = this.state;
     return (
       <Layout
@@ -509,6 +544,8 @@ class Search extends Component {
                 geofenceData={geofenceData}
                 geofence={activeLayer}
                 handlerBackButton={this.handlerBackButton}
+                handlerInfoGraph={name => this.handlerInfoGraph(name)}
+                openInfoGraph={openInfoGraph}
                 id
                 layerName={layerName}
               />

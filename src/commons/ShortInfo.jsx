@@ -1,5 +1,6 @@
 /** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class ShortInfo extends React.Component {
   constructor(props) {
@@ -20,29 +21,46 @@ class ShortInfo extends React.Component {
 
   render() {
     const { hide_text: hideText } = this.state;
+    const {
+      name, description, tooltip, customButton, className,
+    } = this.props;
     return (
       <div>
         <div
-          className={`hidden-${hideText}`}
+          className={`${className}-${hideText}`}
         >
           <p>
             <b>
-              BioTablero
+              {name}
             </b>
-            {' reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional.'}
+            {description && (` ${description}`)}
           </p>
         </div>
         <button
           type="button"
           id="showHome"
-          className={`showHome rotate-${hideText}`}
+          className={!customButton ? `showHome rotate-${hideText}` : `${customButton}-${hideText}`}
           data-tooltip
-          title="¿Qué es BioTablero?"
+          title={tooltip}
           onClick={this.handleClick}
         />
       </div>
     );
   }
 }
+
+ShortInfo.propTypes = {
+  name: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  description: PropTypes.string,
+  tooltip: PropTypes.string.isRequired,
+  customButton: PropTypes.func,
+};
+
+ShortInfo.defaultProps = {
+  className: 'hidden',
+  description: NaN,
+  customButton: null,
+};
 
 export default ShortInfo;

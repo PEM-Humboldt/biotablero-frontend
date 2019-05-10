@@ -6,7 +6,9 @@ import { AxisBottom, AxisLeft } from '@vx/axis';
 import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
 import localPoint from '@vx/event/build/localPoint';
-import Descargar from '@material-ui/icons/Save';
+import DownloadIcon from '@material-ui/icons/Save';
+import InfoIcon from '@material-ui/icons/Info';
+import ShortInfo from '../commons/ShortInfo';
 
 /**
  * Function to render tooltip inside the graph
@@ -45,6 +47,9 @@ export default withTooltip(
     hideTooltip,
     showTooltip,
     units,
+    handlerInfoGraph,
+    openInfoGraph,
+    graphDescription,
   }) => {
     if (width < 10) return null;
     // accessors
@@ -89,8 +94,25 @@ export default withTooltip(
     return (
       <div className="graphcard">
         <h2>
-          <Descargar className="icondown" />
+          <DownloadIcon className="icondown" />
+          <InfoIcon
+            className="graphinfo"
+            data-tooltip
+            title="¿Qué significa este gráfico?"
+            onClick={() => {
+              handlerInfoGraph(graphTitle);
+            }}
+          />
           {graphTitle}
+          {openInfoGraph && (openInfoGraph === graphTitle) && (
+            <ShortInfo
+              name={graphTitle}
+              description={graphDescription}
+              className="graphinfo-hidden-true"
+              tooltip="¿Qué significa?"
+            />
+          )
+        }
         </h2>
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>

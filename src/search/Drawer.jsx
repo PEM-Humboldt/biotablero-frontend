@@ -164,7 +164,7 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, layerName, area,
+      classes, handlerBackButton, handlerInfoGraph, openInfoGraph, layerName, area,
     } = this.props;
     const {
       data: {
@@ -200,21 +200,27 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
-                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
-                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
+                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal',
+                    'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
+                    'representa las hectáreas sobre los Biomas IAvH analizados')}
+                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal',
+                    'Biomas', colors, handlerInfoGraph, openInfoGraph,
+                    'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
+                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal',
+                    'Regiones Bióticas', colors, handlerInfoGraph, openInfoGraph,
+                    'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
                 </div>
               ),
               (
                 <div key="2">
                   {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC, '%', true)
+                    'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC)
                   }
                   {RenderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Áreas protegidas', colorsFC, '%', true)
+                    'BarVertical', '% ha - Áreas protegidas', colorsFC)
                   }
                   {RenderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Cambio de cobertura', colorsFC, '%', true)
+                    'BarVertical', '% ha - Cambio de cobertura', colorsFC)
                   }
                 </div>
               ),
@@ -251,6 +257,8 @@ Drawer.propTypes = {
   geofenceData: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
   layerName: PropTypes.string,
 };
 
@@ -262,6 +270,8 @@ Drawer.defaultProps = {
   geofence: { id: NaN, name: '' },
   layerName: '',
   handlerBackButton: () => {},
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
 };
 
 export default withStyles(styles)(Drawer);

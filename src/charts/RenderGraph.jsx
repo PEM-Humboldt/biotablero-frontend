@@ -14,7 +14,10 @@ import GraphLoader from './GraphLoader';
  * @param {string} graphTitle graph title
  * @param {array} colors colors to sort elements inside the graph
  */
-const RenderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
+const RenderGraph = (
+  data, labelX, labelY, graph, graphTitle, colors,
+  handlerInfoGraph, openInfoGraph, graphDescription,
+) => {
   // While data is being retrieved from server
   let errorMessage = null;
   if (data === null) errorMessage = 'Cargando información...';
@@ -40,6 +43,9 @@ const RenderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
             labelY={labelY}
             graphTitle={graphTitle}
             colors={colors}
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
+            graphDescription={graphDescription}
           />
         )
       )}
