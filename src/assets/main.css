@@ -1394,37 +1394,29 @@ div[id*="panel"] button:hover {
   padding: 10px;
   text-align: right;
   font-size: 14px;
-  color: #ffffff;
+  color: #424242;
 }
 
 /* TODO: César will adjust this new class for graph info*/
 .graphinfo {
   float: none;
   cursor: pointer;
-	font-size: 8px;
   margin-top: -3px;
+	border-style: none;
 }
 
-.graphinfo-hidden-false p,
-.graphinfo-hidden-true p {
-	max-width: 300px;
+.graphinfo-true p {
 	font-family: 'Lato', sans-serif;
+	color: #ffffff;
 }
 
-.graphinfo-hidden-true {
+.graphinfo-true {
 	padding: 0;
-	height: 0;
-	overflow: hidden;
-}
-
-.graphinfo-hidden-false {
-	background-color: #fff;
-	z-index: 1;
-	height: auto;
-}
-
-.graphinfo-hidden {
-	display: none;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-ms-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
 }
 
 p.legcomp {

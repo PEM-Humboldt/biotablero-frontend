@@ -36,14 +36,22 @@ class ShortInfo extends React.Component {
             {description && (` ${description}`)}
           </p>
         </div>
-        <button
-          type="button"
-          id="showHome"
-          className={!customButton ? `showHome rotate-${hideText}` : `${customButton}-${hideText}`}
-          data-tooltip
-          title={tooltip}
-          onClick={this.handleClick}
-        />
+        {!customButton && (
+          <button
+            type="button"
+            id="showHome"
+            className={`showHome rotate-${hideText}`}
+            data-tooltip
+            title={tooltip}
+            onClick={this.handleClick}
+          />
+        )}
+        {customButton && (
+          <div
+            className={`${customButton}-${hideText}`}
+            title={tooltip}
+          />
+        )}
       </div>
     );
   }
@@ -54,13 +62,13 @@ ShortInfo.propTypes = {
   className: PropTypes.string,
   description: PropTypes.string,
   tooltip: PropTypes.string.isRequired,
-  customButton: PropTypes.func,
+  customButton: PropTypes.bool,
 };
 
 ShortInfo.defaultProps = {
   className: 'hidden',
   description: NaN,
-  customButton: null,
+  customButton: false,
 };
 
 export default ShortInfo;

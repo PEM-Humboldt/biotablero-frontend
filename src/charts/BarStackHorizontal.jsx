@@ -103,13 +103,22 @@ export default withTooltip(
               handlerInfoGraph(graphTitle);
             }}
           />
-          {graphTitle}
+          <div
+            className="graphinfo"
+            onClick={() => handlerInfoGraph(graphTitle)}
+            onKeyPress={() => handlerInfoGraph(graphTitle)}
+            role="button"
+            tabIndex="0"
+          >
+            {graphTitle}
+          </div>
           {openInfoGraph && (openInfoGraph === graphTitle) && (
             <ShortInfo
               name={graphTitle}
               description={graphDescription}
-              className="graphinfo-hidden-true"
+              className="graphinfo"
               tooltip="¿Qué significa?"
+              customButton
             />
           )
         }
