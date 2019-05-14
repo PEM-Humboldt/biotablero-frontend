@@ -7,6 +7,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import RestAPI from '../api/RestAPI';
+import Overview from '../strategicEcosystems/Overview';
 
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
@@ -213,6 +214,7 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="2">
+                  {<Overview />}
                   {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
                     'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC)
                   }
