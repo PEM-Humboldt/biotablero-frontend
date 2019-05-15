@@ -33,7 +33,7 @@ class ShortInfo extends React.Component {
             <b>
               {name}
             </b>
-            {description && (` ${description}`)}
+            {` ${description}`}
           </p>
         </div>
         {!customButton && (
@@ -67,7 +67,7 @@ ShortInfo.propTypes = {
 
 ShortInfo.defaultProps = {
   className: 'hidden',
-  description: NaN,
+  description: null,
   customButton: false,
 };
 
