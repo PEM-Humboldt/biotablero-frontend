@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 import Content from './home/Content';
 import Information from './home/Information';
-import ShortInfo from './home/ShortInfo';
+import ShortInfo from './commons/ShortInfo';
 import Layout from './Layout';
 
 class Home extends React.Component {
@@ -51,9 +51,15 @@ class Home extends React.Component {
                 Inicie sesión para ver contenido de compensaciones
               </h2>
             </div>
-          </Modal>)}
+          </Modal>
+          )}
         <div className="wrapper">
-          <ShortInfo />
+          <ShortInfo
+            name="BioTablero"
+            description="reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional."
+            tooltip="¿Qué es BioTablero?"
+            className="hidden"
+          />
           <h1 className="maint">
             Explora Nuestros Módulos
           </h1>

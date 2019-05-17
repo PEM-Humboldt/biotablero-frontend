@@ -13,6 +13,9 @@ const GraphLoader = (
     elementOnClick, colors, activeBiome, showOnlyTitle,
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
+    handlerInfoGraph,
+    graphDescription,
+    openInfoGraph,
   },
 ) => (
   <div>
@@ -29,6 +32,9 @@ const GraphLoader = (
             width={width}
             height="200"
             units={units}
+            openInfoGraph={openInfoGraph}
+            handlerInfoGraph={handlerInfoGraph}
+            graphDescription={graphDescription}
           />
         </div>
       ) : ('')
@@ -121,6 +127,9 @@ GraphLoader.propTypes = {
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
+  graphDescription: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
@@ -135,6 +144,9 @@ GraphLoader.defaultProps = {
   showOnlyTitle: false,
   units: 'ha',
   withLeyends: false,
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
+  graphDescription: null,
 };
 
 export default GraphLoader;

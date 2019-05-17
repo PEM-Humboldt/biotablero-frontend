@@ -448,7 +448,7 @@ menu button.active {
 }
 
 .showHome:focus {
-	outline: 0;
+	outline: none !important;
 }
 
 .rotate {
@@ -1395,6 +1395,28 @@ div[id*="panel"] button:hover {
   text-align: right;
   font-size: 14px;
   color: #424242;
+}
+
+/* TODO: César will adjust this new class for graph info*/
+.graphinfo {
+  float: none;
+  cursor: pointer;
+  margin-top: -3px;
+	border-style: none;
+}
+
+.graphinfo-true p {
+	font-family: 'Lato', sans-serif;
+	color: #ffffff;
+}
+
+.graphinfo-true {
+	padding: 0;
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-ms-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
 }
 
 p.legcomp {

@@ -3,7 +3,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
-import ShortInfo from './home/ShortInfo';
 import Search from './Search';
 import Compensation from './Compensation';
 import Indicator from './Indicator';
@@ -85,7 +84,6 @@ class App extends React.Component {
           <Route path="/Indicadores" render={this.loadIndicator} />
           <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
           <Route path="/Alertas" render={this.loadHome} />
-          <Route path="/ShortInfo" component={ShortInfo} />
         </Switch>
       </main>
     );
