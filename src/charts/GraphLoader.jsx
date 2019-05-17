@@ -2,10 +2,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
+import ReactChartkick, { LineChart } from 'react-chartkick';
+import Chart from 'chart.js';
 import BarGraph from './BarGraph';
 import BarStackHorizontal from './BarStackHorizontal';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
+
+ReactChartkick.addAdapter(Chart);
 
 const GraphLoader = (
   {
@@ -30,7 +34,7 @@ const GraphLoader = (
             labelX={labelX}
             labelY={labelY}
             width={width}
-            height="200"
+            height="150"
             units={units}
             openInfoGraph={openInfoGraph}
             handlerInfoGraph={handlerInfoGraph}
@@ -102,6 +106,18 @@ const GraphLoader = (
       (graphType === 'DotInfo') ? (
         <div>
           <DotInfo
+            data={data}
+            width={width}
+            height="100"
+          />
+        </div>
+      ) : ('')
+    }
+    {
+      (graphType === 'LineChart') ? (
+        <div>
+          <LineChart
+            // data={{ '2017-05-13': 2, '2017-05-14': 5 }}
             data={data}
             width={width}
             height="100"

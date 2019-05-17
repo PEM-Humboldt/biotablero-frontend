@@ -5,84 +5,92 @@ import { Meter } from '@bit/grommet.grommet.meter';
 
 const columns = [
   {
-    property: 'name',
+    property: 'type',
     header: 'Ecosistema estratégico',
     primary: true,
-    footer: 'Area total',
   },
   {
     property: 'percent-graph',
     header: 'Porcentaje',
     render: datum => (
       <Meter
-        values={[{ value: datum.percent }]}
+        values={[{ value: Number((datum.percentage * 100).toFixed(2)) }]}
         thickness="small"
         size="small"
       />
     ),
-    aggregate: 'sum',
-    footer: { aggregate: true },
   },
   {
     property: 'percent',
     header: '%',
-    render: datum => (datum.percent),
-    aggregate: 'sum',
-    footer: { aggregate: true },
+    render: datum => Number((datum.percentage * 100).toFixed(2)),
   },
   {
     property: 'area',
     header: 'Hectáreas - ha',
-    render: datum => datum.area,
+    render: datum => Number(Number(datum.area).toFixed(2)),
     align: 'end',
-    aggregate: 'sum',
-    footer: { aggregate: true },
   },
   {
     property: 'more',
     header: 'Ver más',
-    render: datum => datum.button,
+    render: datum => '+',
     align: 'center',
-    aggregate: 'sum',
-    footer: { aggregate: true },
   },
 ];
 
-const DATA = [ // Diferencia: 1841926.16
-  {
-    name: 'Páramos',
-    percent: 56.58704248,
-    area: 123429.83,
-    button: '+',
-  },
-  {
-    name: 'Bosque seco tropical',
-    percent: 43.41295752,
-    area: 94694.01,
-    button: '+',
-  },
-  {
-    name: 'Humedales',
-    percent: 0,
-    area: 0,
-    button: '+',
-  },
-];
+const getEcosystemsArea = (listSE) => {
+  const local = listSE ? (listSE.map(item => Number(item.area))) : '';
+  const sum = Object.values(local).reduce((total, value) => total + value, 0);
+  return sum.toFixed(2);
+};
 
-const Overview = (/* TODO: values */) => (
-  <div className="overview">
-    <div className="complist">
-      <b className="addedBioma">Resumen</b>
-      <br />
-      <b>Área total seleccionada: </b>
-      2060050 ha - 100%
-      <br />
-      <b>Área en ecosistemas estratégicos: </b>
-      218123.84 ha -
-      <b> 10.58%</b>
+const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
+
+const getProtectedArea = (generalArea, areaPA) => {
+  const local = areaPA ? (areaPA.map(item => Number(item.percentage))) : '';
+  const sum = Object.values(local).reduce((total, value) => total + value, 0);
+  return ((generalArea / 100) * sum).toFixed(2);
+};
+
+
+const Overview = (/* TODO: Add all values required */
+  areaData, listSE, areaPA,
+) => {
+  const generalArea = (areaData ? areaData.area : 0);
+  const ecosystemsArea = getEcosystemsArea(listSE);
+  const protectedArea = getProtectedArea(generalArea, areaPA);
+  return (
+    <div className="overview">
+      <div className="complist">
+        <b className="addedBioma">Resumen</b>
+        <br />
+        <b>Área total seleccionada: </b>
+        {`${areaData ? areaData.area : 0} `}
+        ha - 100%
+        <br />
+        <b>Área en ecosistemas estratégicos: </b>
+        { /* 218123.84 */ }
+        {`${ecosystemsArea} ha - `}
+        { // <b> 10.58%</b>
+        }
+        <b>
+          {`${getPercentage(ecosystemsArea, generalArea)} %`}
+        </b>
+        <br />
+        <b>Área protegida en ecosistemas estratégicos: </b>
+        {`${protectedArea} ha - `}
+        <b>
+          {`${getPercentage(protectedArea, generalArea)} %`}
+        </b>
+      </div>
+      <DataTable
+        className="listSS"
+        columns={columns}
+        data={listSE}
+      />
     </div>
-    <DataTable className="listSS" columns={columns} data={DATA} />
-  </div>
-);
+  );
+};
 
 export default Overview;

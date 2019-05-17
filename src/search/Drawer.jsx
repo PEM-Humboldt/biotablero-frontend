@@ -8,6 +8,7 @@ import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
+import DetailsView from '../strategicEcosystems/DetailsView';
 
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
@@ -162,6 +163,11 @@ class Drawer extends React.Component {
       });
   }
 
+  setListSE = data => (
+    // TODO: Implement handlerSE, selectedSE
+    data ? data.slice(1, data.length) : data
+  );
+
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
@@ -172,6 +178,8 @@ class Drawer extends React.Component {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
+    const generalSE = (areaSE ? areaSE[0] : areaSE);
+    const listSE = this.setListSE(areaSE);
     return (
       <div className="informer">
         <button
@@ -214,16 +222,10 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="2">
-                  {<Overview />}
-                  {RenderGraph(areaSE, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Ecosistemas Estratégicos', colorsFC)
-                  }
-                  {RenderGraph(areaPA, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Áreas protegidas', colorsFC)
-                  }
-                  {RenderGraph(coverage, 'Tipo de ecosistema', '% de ha totales',
-                    'BarVertical', '% ha - Cambio de cobertura', colorsFC)
-                  }
+                  {Overview(generalSE, listSE, areaPA)}
+                  {DetailsView(coverage, areaPA,
+                    handlerInfoGraph, openInfoGraph, ['#5564a4', '#92ba3a', '#e9c948'],
+                    ['#75680f', '#b1b559', '#ea495f'])}
                 </div>
               ),
               (

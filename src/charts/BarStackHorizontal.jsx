@@ -60,14 +60,15 @@ export default withTooltip(
         key: setName,
       };
       data.forEach((item) => {
-        transformedData[item.key] = `${item.area}`;
+        transformedData[item.key || item.type] = `${item.area || item.percentage}`;
       });
       return transformedData;
     };
 
     const data = [prepareData(dataJSON, labelY)];
-    const keys = dataJSON.map(fc => fc.key);
-    const totals = dataJSON.reduce((total, current) => total + parseFloat(current.area), 0);
+    const keys = dataJSON.map(item => item.key || item.type);
+    const totals = dataJSON.reduce((total, current) => total
+      + parseFloat(current.area || current.percentage), 0);
 
     // bounds
     const xMax = width - margin.left - margin.right;
