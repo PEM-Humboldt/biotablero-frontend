@@ -1291,6 +1291,17 @@ a#reset-filters {
   text-transform: uppercase;
 }*/
 
+div[class*="hjhLld"] {
+	font-size: 14px !important;
+  font-weight: bold;
+	line-height: normal !important;
+}
+
+div[class*="eaRHYv"] {
+	font-size: 14px !important;
+	line-height: normal;
+}
+
 .inlineb {
   display: inline-block !important;
 	margin: 10px 20px;
@@ -1756,6 +1767,14 @@ tr.row2table:nth-child(odd){
 	margin-top: -9px;
 }
 
+.overview {
+  background-color: #2a363b;
+  color: #fff;
+	padding: 10px 10px 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
 .titecositema {
   margin-top: 8px;
   background-color: #2a363b;
@@ -1772,6 +1791,13 @@ tr.row2table:nth-child(odd){
 	display: -o-flex;
 	display: flex;
 	justify-content: space-between;
+}
+
+.listSS {
+	margin-top: 10px;
+	background: #fff;
+	color: #e84a5f;
+	border-radius: 3px;
 }
 
 .HasSelected {
