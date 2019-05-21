@@ -51,7 +51,6 @@ const GraphLoader = (
           dataJSON={data}
           colors={colors}
           graphTitle={graphTitle}
-          labelX={labelX}
           labelY={labelY}
           width={width}
           height="150"
