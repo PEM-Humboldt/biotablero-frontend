@@ -8,7 +8,6 @@ import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
-import DetailsView from '../strategicEcosystems/DetailsView';
 
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
@@ -209,23 +208,21 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal',
+                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
                     'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
                     'representa las hectáreas sobre los Biomas IAvH analizados')}
-                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal',
+                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
                     'Biomas', colors, handlerInfoGraph, openInfoGraph,
                     'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
-                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal',
+                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
                     'Regiones Bióticas', colors, handlerInfoGraph, openInfoGraph,
                     'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
                 </div>
               ),
               (
                 <div key="2">
-                  {Overview(generalSE, listSE, areaPA)}
-                  {DetailsView(coverage, areaPA,
-                    handlerInfoGraph, openInfoGraph, ['#5564a4', '#92ba3a', '#e9c948'],
-                    ['#75680f', '#b1b559', '#ea495f'])}
+                  {Overview(generalSE, listSE, areaPA, coverage,
+                    handlerInfoGraph, openInfoGraph)}
                 </div>
               ),
               (

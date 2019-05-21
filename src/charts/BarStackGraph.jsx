@@ -93,7 +93,7 @@ export default withTooltip(
     let tooltipTimeout;
 
     return (
-      <div className="graphcard">
+      <div>
         <h2>
           <DownloadIcon className="icondown" />
           <InfoIcon

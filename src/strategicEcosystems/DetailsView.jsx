@@ -10,10 +10,10 @@ const DetailsView = (/* TODO: Add all values required */
   colorsAP, // color values for dataProtectedArea
 ) => (
   <div>
-    {RenderGraph(dataAreaType, 'Tipo de área', 'Comparación', 'BarStackHorizontal',
-      'Tipos de áreas', colorsNT, handlerInfoGraph, openInfoGraph,
+    {RenderGraph(dataAreaType, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+      'Cobertura', colorsNT, handlerInfoGraph, openInfoGraph,
       'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
-    {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'BarStackHorizontal',
+    {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
       'Distribución de áreas protegidas y no protegidas', colorsAP, handlerInfoGraph, openInfoGraph,
       'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
   </div>
