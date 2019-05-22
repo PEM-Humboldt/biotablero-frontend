@@ -5,9 +5,6 @@ import { Group } from '@vx/group';
 import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
 import localPoint from '@vx/event/build/localPoint';
-import DownloadIcon from '@material-ui/icons/Save';
-import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
 
 /**
  * Function to render tooltip inside the graph
@@ -29,8 +26,6 @@ export default withTooltip(
     dataJSON,
     width,
     colors,
-    height,
-    graphTitle,
     labelY,
     tooltipOpen,
     tooltipLeft,
@@ -39,10 +34,6 @@ export default withTooltip(
     hideTooltip,
     showTooltip,
     units,
-    handlerInfoGraph,
-    openInfoGraph,
-    graphDescription,
-    isSmall,
     margin = {
       top: 5,
       left: 5,
@@ -71,7 +62,7 @@ export default withTooltip(
 
     // bounds
     const xMax = width - margin.left - margin.right;
-    const yMax = isSmall ? 15 : (height - margin.top - margin.bottom);
+    const yMax = 15;
 
     // scales
     const xScale = scaleLinear({
@@ -93,39 +84,7 @@ export default withTooltip(
 
     return (
       <div>
-        {!isSmall && (
-        <h2>
-          <DownloadIcon className="icondown" />
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => {
-              handlerInfoGraph(graphTitle);
-            }}
-          />
-          <div
-            className="graphinfo"
-            onClick={() => handlerInfoGraph(graphTitle)}
-            onKeyPress={() => handlerInfoGraph(graphTitle)}
-            role="button"
-            tabIndex="0"
-          >
-            {graphTitle}
-          </div>
-          {openInfoGraph && (openInfoGraph === graphTitle) && (
-            <ShortInfo
-              name={graphTitle}
-              description={graphDescription}
-              className="graphinfo"
-              tooltip="¿Qué significa?"
-              customButton
-            />
-          )
-        }
-        </h2>
-        )}
-        <svg width={isSmall ? width - 5 : width - 40} height={isSmall ? 20 : height}>
+        <svg width={width - 5} height={20}>
           <Group top={margin.top} left={margin.left}>
             {`${Number((0.20 * 100).toFixed(2))} % `}
             <BarStackHorizontal
@@ -158,7 +117,7 @@ export default withTooltip(
               minWidth: 60,
               backgroundColor: 'rgba(0,0,0,0.9)',
               color: 'white',
-              padding: 12,
+              padding: 5,
               lineHeight: '1.5',
             }}
           >

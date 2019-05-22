@@ -52,7 +52,7 @@ class EcosystemBox extends Component {
                   type="button"
                   onClick={this.switchGraphs}
                   data-tooltip
-                  title="Mostrar / Ocultar ecosistemas"
+                  title="Mostrar / Ocultar"
                 >
                   <ExpandMoreIcon />
                 </button>

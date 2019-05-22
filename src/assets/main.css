@@ -1525,7 +1525,7 @@ p.legcomp {
 }
 
 .ecosystems h4 {
-  font-size: 30px;
+  font-size: 17px;
   text-align: left;
   margin-bottom: 15px;
 }
@@ -1822,13 +1822,7 @@ tr.row2table:nth-child(odd){
   border-top-right-radius: 5px;
 }
 
-.titeco2 {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: space-between;
+.titeco2 { /* César */ 
 }
 
 .listSS {
@@ -2298,7 +2292,6 @@ tspan, .vx-axis-label {
 	.contentView {
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
-
 	}
 
 	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */

@@ -215,7 +215,7 @@ class Drawer extends React.Component {
                     'Biomas', colors, handlerInfoGraph, openInfoGraph,
                     'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
                   {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                    'Regiones Bióticas', colors, handlerInfoGraph, openInfoGraph,
+                    'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
                     'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
                 </div>
               ),

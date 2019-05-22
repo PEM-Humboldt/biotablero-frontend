@@ -16,6 +16,10 @@ const DetailsView = (/* TODO: Add all values required */
     {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
       'Distribución de áreas protegidas y no protegidas', colorsAP, handlerInfoGraph, openInfoGraph,
       'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
+    {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
+      'Distribución de áreas protegidas y no protegidas', ['#5f8f2c', '#667521', '#75680f'], handlerInfoGraph, openInfoGraph,
+      'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
+    {`${Number(0.03).toFixed(2)} % SPN`}
   </div>
 );
 
