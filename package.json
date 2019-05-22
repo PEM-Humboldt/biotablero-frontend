@@ -10,8 +10,6 @@
     "lint": "./node_modules/eslint/bin/eslint.js src/"
   },
   "dependencies": {
-    "@bit/grommet.grommet.data-table": "^2.6.5",
-    "@bit/grommet.grommet.meter": "^2.6.5",
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^1.1.0",
     "@vx/axis": "0.0.170",

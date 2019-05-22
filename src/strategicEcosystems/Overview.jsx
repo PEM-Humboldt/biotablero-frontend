@@ -1,43 +1,6 @@
 /** eslint verified */
 import React from 'react';
-import { DataTable } from '@bit/grommet.grommet.data-table';
-import { Meter } from '@bit/grommet.grommet.meter';
-
-const columns = [
-  {
-    property: 'type',
-    header: 'Ecosistema estratégico',
-    primary: true,
-  },
-  {
-    property: 'percent-graph',
-    header: 'Porcentaje',
-    render: datum => (
-      <Meter
-        values={[{ value: Number((datum.percentage * 100).toFixed(2)) }]}
-        thickness="small"
-        size="small"
-      />
-    ),
-  },
-  {
-    property: 'percent',
-    header: '%',
-    render: datum => Number((datum.percentage * 100).toFixed(2)),
-  },
-  {
-    property: 'area',
-    header: 'Hectáreas - ha',
-    render: datum => Number(Number(datum.area).toFixed(2)),
-    align: 'end',
-  },
-  {
-    property: 'more',
-    header: 'Ver más',
-    render: datum => '+',
-    align: 'center',
-  },
-];
+import EcosystemBox from './EcosystemBox';
 
 const getEcosystemsArea = (listSE) => {
   const local = listSE ? (listSE.map(item => Number(item.area))) : '';
@@ -53,17 +16,17 @@ const getProtectedArea = (generalArea, areaPA) => {
   return ((generalArea / 100) * sum).toFixed(2);
 };
 
-
 const Overview = (/* TODO: Add all values required */
-  areaData, listSE, areaPA,
+  areaData, listSE, areaPA, coverage,
+  handlerInfoGraph, openInfoGraph,
 ) => {
   const generalArea = (areaData ? areaData.area : 0);
   const ecosystemsArea = getEcosystemsArea(listSE);
   const protectedArea = getProtectedArea(generalArea, areaPA);
   return (
-    <div className="overview">
+    <div>
       <div className="complist">
-        <b className="addedBioma">Resumen</b>
+        <b className="eco_title"><h3>Resumen</h3></b>
         <br />
         <b>Área total seleccionada: </b>
         {`${areaData ? areaData.area : 0} `}
@@ -83,11 +46,34 @@ const Overview = (/* TODO: Add all values required */
         <b>
           {`${getPercentage(protectedArea, generalArea)} %`}
         </b>
+        <br />
       </div>
-      <DataTable
-        className="listSS"
-        columns={columns}
-        data={listSE}
+      <EcosystemBox
+        name="Páramo"
+        percentage="0.15"
+        area={10}
+        coverage={coverage}
+        areaPA={areaPA}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
+      />
+      <EcosystemBox
+        name="Bosque seco tropical"
+        percentage="0.40"
+        area={60}
+        coverage={coverage}
+        areaPA={areaPA}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
+      />
+      <EcosystemBox
+        name="Humedales"
+        percentage="0"
+        area={0}
+        coverage={coverage}
+        areaPA={areaPA}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
       />
     </div>
   );
