@@ -57,7 +57,6 @@ const GraphLoader = (
           openInfoGraph={openInfoGraph}
           handlerInfoGraph={handlerInfoGraph}
           graphDescription={graphDescription}
-          isSmall
         />
       ) : ('')
     }

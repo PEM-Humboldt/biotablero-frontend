@@ -103,8 +103,10 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={dataSelected => (e) => {
+                const value = Object.values(dataJSON)
+                  .filter(item => (item.key || item.type) === dataSelected.key);
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                handleMouseOver(e, dataSelected, showTooltip);
+                handleMouseOver(e, value, showTooltip);
               }}
             />
           </Group>
@@ -121,18 +123,15 @@ export default withTooltip(
               lineHeight: '1.5',
             }}
           >
-            <div style={{ color: zScale(tooltipData.key) }}>
+            <div style={{ color: zScale(tooltipData.key || tooltipData.type) }}>
               <strong>
-                {tooltipData.key}
+                {tooltipData[0].key || tooltipData[0].type}
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
-            </div>
-            <div>
-              <small>
-                {tooltipData.xFormatted}
-              </small>
+              {`${Number(tooltipData[0].area).toFixed(2)} ha`}
+              <br />
+              {`${Number(tooltipData[0].percentage * 100).toFixed(2)} ${units}`}
             </div>
           </TooltipWithBounds>
         )}

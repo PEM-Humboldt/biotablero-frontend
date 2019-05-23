@@ -35,25 +35,26 @@ const Overview = (/* TODO: Add all values required */
       <div className="titeco2">
         <b>Cobertura: </b>
         {`${coverageArea} ha - ${Number((0.2 * 100).toFixed(2))} %`}
-        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+        {RenderGraph(coverage, '', '', 'SmallBarStackGraph',
           'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
-          'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+          '', '%')}
       </div>
       <b>Área protegida: </b>
       <div className="titeco2">
-        {RenderGraph(areaPA, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-          'Cobertura', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
-          'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+        {RenderGraph(areaPA, '', '', 'SmallBarStackGraph',
+          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          '', '%')}
         {`${protectedArea} ha - ${getPercentage(protectedArea, generalArea)} %`}
       </div>
       <EcosystemBox
         name="Bosque seco tropical"
         percentage="0.40"
         area={60}
-        coverage={coverage}
-        areaPA={areaPA}
+        coverage={coverage} // TODO: Call coverage for this ee
+        areaPA={areaPA} // TODO: Call areaPA for this ee
         handlerInfoGraph={handlerInfoGraph}
         openInfoGraph={openInfoGraph}
+        showGraphs
       />
       <EcosystemBox
         name="Humedales"

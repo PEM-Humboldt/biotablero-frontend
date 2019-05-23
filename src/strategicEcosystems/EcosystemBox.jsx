@@ -38,9 +38,9 @@ class EcosystemBox extends Component {
         >
           <div className="titeco2">
             <h4>{name}</h4>
-            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+            {RenderGraph(coverage, '', '', 'SmallBarStackGraph',
               'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
-              'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+              '', '%')}
             {` ${Number((percentage * 100).toFixed(2))} %`}
             <div>
               <div className="HasSelected">
@@ -59,10 +59,9 @@ class EcosystemBox extends Component {
               </div>
             </div>
           </div>
-          {showGraphs
-            && DetailsView(coverage, areaPA, handlerInfoGraph, openInfoGraph,
-              ['#5564a4', '#92ba3a', '#e9c948'],
-              ['#75680f', '#b1b559', '#ea495f'])
+          {showGraphs && DetailsView(coverage, areaPA, handlerInfoGraph, openInfoGraph,
+            ['#5564a4', '#92ba3a', '#e9c948'],
+            ['#75680f', '#b1b559', '#ea495f'])
           }
         </div>
       </div>
@@ -74,19 +73,19 @@ EcosystemBox.propTypes = {
   name: PropTypes.string.isRequired,
   percentage: PropTypes.string.isRequired,
   area: PropTypes.number.isRequired,
-  showGraphs: PropTypes.bool,
   coverage: PropTypes.array,
   areaPA: PropTypes.array,
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.bool,
+  showGraphs: PropTypes.bool,
 };
 
 EcosystemBox.defaultProps = {
   coverage: null,
   areaPA: null,
   handlerInfoGraph: () => {},
-  showGraphs: false,
   openInfoGraph: false,
+  showGraphs: false,
 };
 
 export default EcosystemBox;

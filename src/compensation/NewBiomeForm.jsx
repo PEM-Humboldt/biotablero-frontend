@@ -56,7 +56,8 @@ class NewBiomeForm extends Component {
               title="Agregar bioma"
             >
               <AddProjectIcon />
-            </button>)
+            </button>
+          )
           }
         </div>
       </div>

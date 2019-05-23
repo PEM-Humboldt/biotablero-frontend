@@ -1594,8 +1594,11 @@ p.legcomp {
 	background-color: transparent;
 	text-align: right;
 	display: inline-block;
-	float: right;
 	outline: none;
+}
+
+.icondelete {
+	float: right;
 }
 
 .icondelete:disabled {
@@ -1822,7 +1825,7 @@ tr.row2table:nth-child(odd){
   border-top-right-radius: 5px;
 }
 
-.titeco2 { /* César */ 
+.titeco2 { /* César */
 }
 
 .listSS {
