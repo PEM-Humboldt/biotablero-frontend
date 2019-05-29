@@ -191,7 +191,7 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {area.name} /
+          {`${area.name} /`}
           <br />
           {geofence.name}
           <b>
@@ -224,7 +224,8 @@ class Drawer extends React.Component {
               (
                 <div key="2">
                   {Overview(generalSE, listSE, areaPA, coverage,
-                    handlerInfoGraph, openInfoGraph, area.id, geofence.id)}
+                    handlerInfoGraph, openInfoGraph, area.id, geofence.id,
+                    'Área', 'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos')}
                 </div>
               ),
               (

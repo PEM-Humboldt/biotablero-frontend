@@ -1,5 +1,8 @@
 /** eslint verified */
 import React from 'react';
+import DownloadIcon from '@material-ui/icons/Save';
+import InfoIcon from '@material-ui/icons/Info';
+import ShortInfo from '../commons/ShortInfo';
 import EcosystemBox from './EcosystemBox';
 import RestAPI from '../api/RestAPI';
 import RenderGraph from '../charts/RenderGraph';
@@ -41,11 +44,14 @@ const getDetailsBySE = (areaId, geofenceId, name) => {
 const listEcosystems = (area, name, percentage,
   handlerInfoGraph, openInfoGraph, areaId, geofenceId) => {
   console.log(areaId, geofenceId);
-  // const {
-  //   coverageSE, // object
-  //   protectedAreaSE, // object
-  //   nationalPercentage, // value used for label
-  // } = getDetailsBySE(areaId, geofenceId, name);
+  const {
+    coverageSE, // object
+    protectedAreaSE, // object
+    nationalPercentage, // value used for label
+  } = getDetailsBySE(areaId, geofenceId, name);
+  console.log(coverageSE, // object
+    protectedAreaSE, // object
+    nationalPercentage);
   return (areaId && geofenceId && (
     <EcosystemBox
       key={name}
@@ -72,15 +78,44 @@ const listEcosystems = (area, name, percentage,
 const Overview = (/* TODO: Add all values required */
   areaData, listSE, areaPA, coverage,
   handlerInfoGraph, openInfoGraph,
-  // areaId, geofenceId,
+  areaId, geofenceId, graphTitle, graphDescription,
 ) => {
   const generalArea = (areaData ? areaData.area : 0);
   const ecosystemsArea = getArea(listSE);
   const coverageArea = getArea(coverage);
   const protectedArea = getArea(areaPA);
+  const areaH = 0;
   return (
     <div className="graphcard">
-      <h2>Áreas</h2>
+      <h2>
+        <DownloadIcon className="icondown" />
+        <InfoIcon
+          className="graphinfo"
+          data-tooltip
+          title="¿Qué significa este gráfico?"
+          onClick={() => {
+            handlerInfoGraph(graphTitle);
+          }}
+        />
+        <div
+          className="graphinfo"
+          onClick={() => handlerInfoGraph(graphTitle)}
+          onKeyPress={() => handlerInfoGraph(graphTitle)}
+          role="button"
+          tabIndex="0"
+        >
+          Área
+        </div>
+      </h2>
+      {openInfoGraph && (openInfoGraph === graphTitle) && (
+        <ShortInfo
+          name={graphTitle}
+          description={graphDescription}
+          className="graphinfo2"
+          tooltip="¿Qué significa?"
+          customButton
+        />
+      )}
       <div className="graphcontainer pt5">
         <h4>
         hectáreas totales
@@ -100,15 +135,21 @@ const Overview = (/* TODO: Add all values required */
           'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
           'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
         <h4>
-        Áreas protegida
+        Áreas protegidas
           <b>{`${protectedArea} ha `}</b>
         </h4>
         <h5>
           {`${getPercentage(protectedArea, generalArea)} %`}
         </h5>
-        {RenderGraph(areaPA, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-          'Cobertura', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
-          'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+        {RenderGraph(arrayWithNoProtectedArea(generalArea, protectedArea), '', '', 'SmallBarStackGraph',
+          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          '', '%')}
+        <h6>
+        Distribución en área protegida:
+        </h6>
+        {RenderGraph(areaPA, '', '', 'SmallBarStackGraph',
+          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          '', '%')}
         <div className="ecoest">
           <h4>
           Ecosistemas estratégicos
@@ -124,15 +165,17 @@ const Overview = (/* TODO: Add all values required */
             handlerInfoGraph={handlerInfoGraph}
             openInfoGraph={openInfoGraph}
           />
-          <EcosystemBox
-            name="Humedales"
-            percentage="0"
-            area={0}
-            coverage={coverage}
-            areaPA={areaPA}
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
-          />
+          {(areaH !== 0) && (
+            <EcosystemBox
+              name="Humedales"
+              percentage="0"
+              area={0}
+              coverage={coverage}
+              areaPA={areaPA}
+              handlerInfoGraph={handlerInfoGraph}
+              openInfoGraph={openInfoGraph}
+            />
+          )}
           <EcosystemBox
             name="Páramo"
             percentage="0.15"
