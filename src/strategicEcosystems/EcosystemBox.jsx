@@ -37,11 +37,11 @@ class EcosystemBox extends Component {
           role="presentation"
         >
           <div className="titeco2">
-            <h4>{name}</h4>
-            {RenderGraph(coverage, '', '', 'SmallBarStackGraph',
+            <h6>{name}</h6>
+            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
               'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
               '', '%')}
-            {` ${Number((percentage * 100).toFixed(2))} %`}
+            {` ${(Number(percentage) * 100).toFixed(2)} %`}
             <div>
               <div className="HasSelected">
                 {`Área: ${Number(area).toFixed(2)} ha`}
@@ -72,19 +72,19 @@ class EcosystemBox extends Component {
 
 EcosystemBox.propTypes = {
   name: PropTypes.string,
-  percentage: PropTypes.number,
+  percentage: PropTypes.string,
   area: PropTypes.number,
   nationalPercentage: PropTypes.number,
   coverage: PropTypes.array,
   areaPA: PropTypes.array,
   handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.bool,
+  openInfoGraph: PropTypes.string,
   showGraphs: PropTypes.bool,
 };
 
 EcosystemBox.defaultProps = {
   name: null,
-  percentage: 0,
+  percentage: '0',
   area: 0,
   nationalPercentage: 0,
   coverage: null,

@@ -72,52 +72,78 @@ const listEcosystems = (area, name, percentage,
 const Overview = (/* TODO: Add all values required */
   areaData, listSE, areaPA, coverage,
   handlerInfoGraph, openInfoGraph,
-  areaId, geofenceId,
+  // areaId, geofenceId,
 ) => {
   const generalArea = (areaData ? areaData.area : 0);
   const ecosystemsArea = getArea(listSE);
   const coverageArea = getArea(coverage);
   const protectedArea = getArea(areaPA);
   return (
-    <div>
-      <b className="eco_title"><h3>Resumen</h3></b>
-      <br />
-      <b>Total: </b>
-      {`${areaData ? areaData.area : 0} `}
-      ha - 100%
-      <br />
-      <b>Ecosistemas estratégicos: </b>
-      {`${ecosystemsArea} ha - `}
-      <b>
-        {`${getPercentage(ecosystemsArea, generalArea)} %`}
-      </b>
-      <br />
-      <div className="titeco2">
-        <b>Cobertura: </b>
-        {`${coverageArea} ha - ${Number((0.2 * 100).toFixed(2))} %`}
-        {RenderGraph(coverage, '', '', 'SmallBarStackGraph',
+    <div className="graphcard">
+      <h2>Áreas</h2>
+      <div className="graphcontainer pt5">
+        <h4>
+        hectáreas totales
+          <b>{`${areaData ? areaData.area : 0} ha`}</b>
+        </h4>
+        <h4>
+        Cobertura
+          <b>{`${coverageArea} ha`}</b>
+        </h4>
+        <h5>
+          {`${Number((0.2 * 100).toFixed(2))} %`}
+        </h5>
+        <h6>
+        Natural y Transformado
+        </h6>
+        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
           'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
+          'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+        <h4>
+        Áreas protegida
+          <b>{`${protectedArea} ha `}</b>
+        </h4>
+        <h5>
+          {`${getPercentage(protectedArea, generalArea)} %`}
+        </h5>
+        {RenderGraph(areaPA, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+          'Cobertura', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+        <div className="ecoest">
+          <h4>
+          Ecosistemas estratégicos
+            <b>{`${ecosystemsArea} ha`}</b>
+          </h4>
+          <h5>{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
+          <EcosystemBox
+            name="Bosque seco tropical"
+            percentage="0.40"
+            area={60}
+            coverage={coverage}
+            areaPA={areaPA}
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
+          />
+          <EcosystemBox
+            name="Humedales"
+            percentage="0"
+            area={0}
+            coverage={coverage}
+            areaPA={areaPA}
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
+          />
+          <EcosystemBox
+            name="Páramo"
+            percentage="0.15"
+            area={10}
+            coverage={coverage}
+            areaPA={areaPA}
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
+          />
+        </div>
       </div>
-      <div className="titeco2">
-        <b>Área protegida / No protegida </b>
-        {RenderGraph(arrayWithNoProtectedArea(generalArea, protectedArea), '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
-      </div>
-      <div className="titeco2">
-        <b>Distribución en área protegida: </b>
-        {`${protectedArea} ha - ${getPercentage(protectedArea, generalArea)} %`}
-        {RenderGraph(areaPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
-      </div>
-      {(listSE && areaId && geofenceId) ? Object.values(listSE).map(item => (
-        listEcosystems(
-          Number(item.area), item.type, item.percentage,
-          handlerInfoGraph, openInfoGraph, areaId, geofenceId,
-        ))) : ''
-      }
     </div>
   );
 };

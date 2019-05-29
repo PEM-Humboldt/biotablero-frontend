@@ -161,7 +161,7 @@ GraphLoader.propTypes = {
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
   handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.bool,
+  openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
 };
 
