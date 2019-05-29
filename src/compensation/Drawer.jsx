@@ -694,8 +694,9 @@ class Drawer extends React.Component {
           <BackIcon />
         </button>
         <h1>
-          {`${areaName} / ${subAreaName}`}
+          ${areaName} / 
           <br />
+          ${subAreaName}
           <b>
             {basinName}
           </b>

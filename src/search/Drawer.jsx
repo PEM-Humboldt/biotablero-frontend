@@ -190,8 +190,9 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${area.name} / ${geofence.name}`}
+          {area.name} /
           <br />
+          {geofence.name}
           <b>
             {layerName}
           </b>

@@ -113,17 +113,16 @@ export default withTooltip(
           >
             {graphTitle}
           </div>
-          {openInfoGraph && (openInfoGraph === graphTitle) && (
-            <ShortInfo
-              name={graphTitle}
-              description={graphDescription}
-              className="graphinfo"
-              tooltip="¿Qué significa?"
-              customButton
-            />
-          )
-        }
         </h2>
+        {openInfoGraph && (openInfoGraph === graphTitle) && (
+          <ShortInfo
+            name={graphTitle}
+            description={graphDescription}
+            className="graphinfo2"
+            tooltip="¿Qué significa?"
+            customButton
+          />
+        )}
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal

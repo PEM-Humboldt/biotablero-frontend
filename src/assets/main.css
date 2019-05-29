@@ -1374,6 +1374,40 @@ div[id*="panel"] button:hover {
   padding: 15px !important;
 }
 
+.pt5 {
+	padding-top: 0 !important;
+}
+
+.graphcontainer h4 {
+	display: table;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: 400;
+	color: #e84a5f;
+	padding: 8px;
+	border: 1px solid #e84a5f;
+	margin-top: 10px;
+}
+
+.graphcontainer h4 b {
+	font-weight: 600;
+	color: #2a363b;
+	margin-left: 10px;
+	text-transform: none;
+}
+
+.graphcontainer h5 {
+	padding: 2px 4px;
+	font-weight: 600;
+	color: #fff;
+	background-color: #e84a5f;
+	margin: -7px 0 10px 10px;
+	text-transform: none;
+	font-size: 15px;
+	display: table;
+}
+
+
 .informer header button{
   max-width: 500px !important;
 }
@@ -1408,26 +1442,41 @@ div[id*="panel"] button:hover {
   color: #424242;
 }
 
-/* TODO: César will adjust this new class for graph info*/
 .graphinfo {
-  float: none;
+  display: inline-block;
   cursor: pointer;
   margin-top: -3px;
 	border-style: none;
+	vertical-align: middle;
+	padding-right: 3px;
+	outline: none;
 }
 
-.graphinfo-true p {
+.MuiSvgIcon-root-1.graphinfo {
+	font-size: initial;
+}
+
+.graphinfo:hover {
+	color: #e84a5f;
+}
+
+.graphinfo2-true p {
 	font-family: 'Lato', sans-serif;
-	color: #ffffff;
+	color: #424242;
+	padding: 3px 15px 10px;
+
 }
 
-.graphinfo-true {
-	padding: 0;
+.graphinfo2-true {
 	-webkit-transition: all 1s;
 	-moz-transition: all 1s;
 	-ms-transition: all 1s;
 	-o-transition: all 1s;
 	transition: all 1s;
+	border-bottom: 1px solid #e84a5f;
+	width: 94%;
+	margin: 0 3%;
+	margin-bottom: 10px;
 }
 
 p.legcomp {
@@ -1501,16 +1550,17 @@ p.legcomp {
   text-align: left;
 }
 
-.ecosystems {
-  padding: 10px 15px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  background-color: #345b6b;
-  border-radius: 5px;
-  margin-right: 5px;
-  min-width: 190px;
-  margin-top: 5px;
-	color: #fff;
+.ecoest {
+	margin-top: 10px;
+	padding-top: 5px;
+/*	border-top: 1px solid #ea495f;*/
+	background-color: #e9e9e9;
 }
+
+.ecosystems {
+  margin-top: 5px;
+	color: #424242;
+}	
 
 .ecosystems h3 {
   font-size: 18px;
@@ -1518,25 +1568,6 @@ p.legcomp {
   font-weight: 400;
   padding-bottom: 5px;
   text-align: left;
-}
-
-.ecosystems:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
-
-.ecosystems h4 {
-  font-size: 17px;
-  text-align: left;
-  margin-bottom: 15px;
-}
-
-.eco_title h3 {
-  font-size: 30px;
-	color: #e84a5f;
-}
-
-.eco_title h4 {
-	color: #ffedef;
 }
 
 .Biomatit {
