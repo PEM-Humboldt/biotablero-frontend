@@ -34,13 +34,13 @@ const Overview = (/* TODO: Add all values required */
         {`${Number((0.2 * 100).toFixed(2))} %`}
         </h5>
         <h6>
-        Natural y Transformado
+        Natural y Transformada
         </h6>
         {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
           'Cobertura', ['#5564a4', '#92ba3a', '#e9c948'], handlerInfoGraph, openInfoGraph,
           'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
         <h4>
-        Áreas protegida
+        Áreas protegidas
         <b>{`${protectedArea} ha `}</b>
         </h4>
         <h5>
@@ -50,11 +50,11 @@ const Overview = (/* TODO: Add all values required */
           'Cobertura', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
           'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
         <div className="ecoest">
-          <h4>
+          <h4 className="minus20">
           Ecosistemas estratégicos
           <b>{`${ecosystemsArea} ha`}</b>
           </h4>
-          <h5>{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
+          <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
           <EcosystemBox
             name="Bosque seco tropical"
             percentage="0.40"

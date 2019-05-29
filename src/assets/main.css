@@ -1387,6 +1387,7 @@ div[id*="panel"] button:hover {
 	padding: 8px;
 	border: 1px solid #e84a5f;
 	margin-top: 10px;
+	background-color: #fff;
 }
 
 .graphcontainer h4 b {
@@ -1407,6 +1408,25 @@ div[id*="panel"] button:hover {
 	display: table;
 }
 
+.graphcontainer h6 {
+	font-size: 14px;
+	margin-left: 15px;
+}
+
+.ecoest {
+	margin: 30px 12px 15px;
+	border: 1px solid #ea495f;
+	padding: 0 15px;
+}
+
+.minus20 {
+	margin-top: -20px !important;
+	margin-left: -27px !important;
+}
+
+.minusperc {
+	margin-left: -17px !important;
+}
 
 .informer header button{
   max-width: 500px !important;
@@ -1548,13 +1568,6 @@ p.legcomp {
 .total h4 {
   font-size: 30px;
   text-align: left;
-}
-
-.ecoest {
-	margin-top: 10px;
-	padding-top: 5px;
-/*	border-top: 1px solid #ea495f;*/
-	background-color: #e9e9e9;
 }
 
 .ecosystems {
