@@ -94,7 +94,7 @@ class NationalInsigths extends React.Component {
   render() {
     const { data } = this.state;
     const {
-      area, colors, geofence, handlerBackButton,
+      area, colors, geofence, handlerBackButton, handlerInfoGraph,
     } = this.props;
     return (
       <div className="informer">
@@ -114,7 +114,7 @@ class NationalInsigths extends React.Component {
           <div>
             {(data.national)
               && (RenderGraph(data.national, null, null,
-                'DotInfo', null, null, null, false)
+                'DotInfo', 'Nacional', null, handlerInfoGraph, false, 'null', 'ha')
               )}
             {(data.coverage)
               && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
@@ -136,12 +136,14 @@ NationalInsigths.propTypes = {
   colors: PropTypes.array,
   geofence: PropTypes.string,
   handlerBackButton: PropTypes.func,
+  handlerInfoGraph: PropTypes.func,
 };
 
 NationalInsigths.defaultProps = {
   colors: ['#345b6b'],
   geofence: '',
   handlerBackButton: () => {},
+  handlerInfoGraph: () => {},
 };
 
 export default withStyles(styles)(NationalInsigths);

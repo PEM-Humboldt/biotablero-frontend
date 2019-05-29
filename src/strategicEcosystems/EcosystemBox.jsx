@@ -15,7 +15,7 @@ class EcosystemBox extends Component {
   }
 
   /**
-   * Update state for hiding strategies table
+   * Update state to handle hide graphs
    *
    */
   switchGraphs = () => {
@@ -26,7 +26,7 @@ class EcosystemBox extends Component {
 
   render() {
     const {
-      name, percentage, area,
+      name, percentage, area, nationalPercentage,
       coverage, areaPA, handlerInfoGraph, openInfoGraph,
     } = this.props;
     const { showGraphs } = this.state;
@@ -59,7 +59,8 @@ class EcosystemBox extends Component {
               </div>
             </div>
           </div>
-          {showGraphs && DetailsView(coverage, areaPA, handlerInfoGraph, openInfoGraph,
+          {showGraphs
+          && DetailsView(nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
             ['#5564a4', '#92ba3a', '#e9c948'],
             ['#75680f', '#b1b559', '#ea495f'])
           }
@@ -70,9 +71,10 @@ class EcosystemBox extends Component {
 }
 
 EcosystemBox.propTypes = {
-  name: PropTypes.string.isRequired,
-  percentage: PropTypes.string.isRequired,
-  area: PropTypes.number.isRequired,
+  name: PropTypes.string,
+  percentage: PropTypes.number,
+  area: PropTypes.number,
+  nationalPercentage: PropTypes.number,
   coverage: PropTypes.array,
   areaPA: PropTypes.array,
   handlerInfoGraph: PropTypes.func,
@@ -81,6 +83,10 @@ EcosystemBox.propTypes = {
 };
 
 EcosystemBox.defaultProps = {
+  name: null,
+  percentage: 0,
+  area: 0,
+  nationalPercentage: 0,
   coverage: null,
   areaPA: null,
   handlerInfoGraph: () => {},
