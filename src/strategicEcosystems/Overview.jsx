@@ -37,7 +37,6 @@ const getDetailsBySE = (areaId, geofenceId, name) => {
   ).then(response => response);
 };
 
-
   /**
    * Return the ecosystems and its content
    */
@@ -82,7 +81,6 @@ const Overview = (/* TODO: Add all values required */
 ) => {
   const generalArea = (areaData ? areaData.area : 0);
   const ecosystemsArea = getArea(listSE);
-  const coverageArea = getArea(coverage);
   const protectedArea = getArea(areaPA);
   const areaH = 0;
   return (
@@ -119,40 +117,38 @@ const Overview = (/* TODO: Add all values required */
       <div className="graphcontainer pt5">
         <h4>
         hectáreas totales
-          <b>{`${areaData ? areaData.area : 0} ha`}</b>
+          <b>{`${generalArea} ha`}</b>
         </h4>
-        <h4>
-        Cobertura
-          <b>{`${coverageArea} ha`}</b>
-        </h4>
-        <h5>
-          {`${Number((0.2 * 100).toFixed(2))} %`}
-        </h5>
-        <h6>
-        Natural y Transformada
-        </h6>
-        <div className="graficaeco">
-          {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-            'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-            'Estado de la cobertura en el área seleccionada', '%')}
+        <div className="ecoest">
+          <h4 className="minus20">
+          Cobertura
+          </h4>
+          <h6>
+          Natural y Transformada
+          </h6>
+          <div className="graficaeco">
+            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+              'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
+              'Estado de la cobertura en el área seleccionada', '%')}
+          </div>
         </div>
         <h4>
         Áreas protegidas
-        <b>{`${protectedArea} ha `}</b> 
+          <b>{`${protectedArea} ha `}</b>
         </h4>
         <h5>
           {`${getPercentage(protectedArea, generalArea)} %`}
         </h5>
         <div className="graficaeco">
           {RenderGraph(arrayWithNoProtectedArea(generalArea, protectedArea), '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#37635a', '#5aa394', '#60bbd4'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
-        <h6>
-        Distribución en área protegida:
-        </h6>
-        {RenderGraph(areaPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
+            'Área protegida', ['#37635a', '#5aa394', '#60bbd4'], handlerInfoGraph, openInfoGraph,
+            '', '%')}
+          <h6>
+          Distribución en área protegida:
+          </h6>
+          {RenderGraph(areaPA, '', '', 'SmallBarStackGraph',
+            'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+            '', '%')}
         </div>
         <div className="ecoest">
           <h4 className="minus20">

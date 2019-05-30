@@ -31,40 +31,40 @@ class EcosystemBox extends Component {
     } = this.props;
     const { showGraphs } = this.state;
     return (
-        <div
-          className="ecosystems"
-          role="presentation"
-        >
-          <div>
-            <div className="singleeco">{name}</div>
-            <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
-            <button
-              className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
-              type="button"
-              onClick={this.switchGraphs}
-              data-tooltip
-              title="Ampliar información"
-            >
-              <ExpandMoreIcon />
-            </button>
-            <h3>
-              En Ecosistémas Estratégicos:
-              <b>{`${(Number(percentage) * 100).toFixed(2)} %`}</b>
-            </h3>
-            <div className="graficaeco">
-              {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-                'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-                '', '%')}
-            </div>
-          </div>
-          <div className="graficaeco2">
-            {showGraphs
-            && DetailsView(nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
-              ['#5564a4', '#92ba3a', '#5aa394'],
-              ['#75680f', '#b1b559', '#5aa394'])
-            }
+      <div
+        className="ecosystems"
+        role="presentation"
+      >
+        <div>
+          <div className="singleeco">{name}</div>
+          <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
+          <button
+            className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
+            type="button"
+            onClick={this.switchGraphs}
+            data-tooltip
+            title="Ampliar información"
+          >
+            <ExpandMoreIcon />
+          </button>
+          <h3>
+            En Ecosistémas Estratégicos:
+            <b>{`${(Number(percentage) * 100).toFixed(2)} %`}</b>
+          </h3>
+          <div className="graficaeco">
+            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+              'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
+              '', '%')}
           </div>
         </div>
+        <div className="graficaeco2">
+          {showGraphs
+          && DetailsView(nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
+            ['#5564a4', '#92ba3a', '#5aa394'],
+            ['#75680f', '#b1b559', '#5aa394'])
+          }
+        </div>
+      </div>
     );
   }
 }

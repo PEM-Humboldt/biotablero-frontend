@@ -121,6 +121,10 @@ export default withTooltip(
             className="graphinfo2"
             tooltip="¿Qué significa?"
             customButton
+            onMouseMove={(e) => {
+              if (tooltipTimeout) clearTimeout(tooltipTimeout);
+              handleMouseOver(e, '¿Qué significa?', showTooltip);
+            }}
           />
         )}
         <svg width={width - 40} height={height}>

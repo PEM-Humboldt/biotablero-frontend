@@ -13,6 +13,7 @@ import localPoint from '@vx/event/build/localPoint';
  * @param {string} datum value to show inside tooltip
  */
 const handleMouseOver = (event, datum, showTooltip) => {
+  console.log(datum);
   const coords = localPoint(event.target.ownerSVGElement, event);
   showTooltip({
     tooltipLeft: coords.x,
