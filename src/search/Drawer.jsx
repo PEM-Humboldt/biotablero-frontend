@@ -170,7 +170,8 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, handlerInfoGraph, openInfoGraph, layerName, area,
+      classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
+      layerName, area,
     } = this.props;
     const {
       data: {
@@ -223,7 +224,7 @@ class Drawer extends React.Component {
               (
                 <div key="2">
                   {Overview(generalSE, listSE, areaPA, coverage,
-                    handlerInfoGraph, openInfoGraph)}
+                    handlerInfoGraph, openInfoGraph, area.id, geofence.id)}
                 </div>
               ),
               (

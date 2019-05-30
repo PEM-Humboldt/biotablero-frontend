@@ -101,6 +101,36 @@ class RestAPI {
   }
 
   /**
+   * Recover the national percentage according to the selected strategic ecosystems
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSENationalPercentage(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
+  }
+
+  /**
+   * Recover the coverage by selected strategic ecosystems and geofence
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSECoverageByGeofence(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/coverage`);
+  }
+
+  /**
+   * Recover the protected area by selected strategic ecosystems and geofence
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSEPAByGeofence(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/pa`);
+  }
+
+  /**
    * Recover a list with all protected areas available in the database
    */
   static getAllProtectedAreas() {

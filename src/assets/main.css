@@ -1386,11 +1386,11 @@ div[id*="panel"] button:hover {
 	color: #e84a5f;
 	padding: 8px;
 	border: 1px solid #e84a5f;
-	margin-top: 10px;
+	margin-top: 5px;
 	background-color: #fff;
 }
 
-.graphcontainer h4 b {
+.graphcontainer h4 b  {
 	font-weight: 600;
 	color: #2a363b;
 	margin-left: 10px;
@@ -1410,11 +1410,49 @@ div[id*="panel"] button:hover {
 
 .graphcontainer h6 {
 	font-size: 14px;
-	margin-left: 15px;
+	margin-left: 10px;
+	font-weight: 400;
+	padding-bottom: 3px;
+	border-bottom: 1px solid #2a363b;
+	color: #2a363b;
+	display: table;
+}
+
+.singleeco {
+	font-size: 16px;
+	margin-left: 5px;
+	font-weight: 400;
+	padding: 5px 7px 4px;
+	background-color: #2a363b;
+	color: #fff;
+	display: inline-block;
+}
+
+.singleeco2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: #2a363b;
+	border: 1px solid #2a363b;
+	padding: 4px 6px 3px;
+	display: inline-block;
+}
+
+.graphcontainer h3 {
+	font-size: 14px;
+	font-weight: 500;
+	padding: 3px 5px;
+	color: #2a363b;
+	margin: 0 0 5px 7px;
+	text-align: left;
+}
+
+.graphcontainer h3 b {
+	font-weight: 700;
+	margin-left: 10px;
 }
 
 .ecoest {
-	margin: 30px 12px 15px;
+	margin: 25px 12px 15px;
 	border: 1px solid #ea495f;
 	padding: 0 15px;
 }
@@ -1426,6 +1464,15 @@ div[id*="panel"] button:hover {
 
 .minusperc {
 	margin-left: -17px !important;
+}
+
+.graficaeco {
+	max-width: 600px;
+}
+
+.graficaeco2 {
+	max-width: 580px;
+	margin-left: 20px;
 }
 
 .informer header button{
@@ -1571,17 +1618,8 @@ p.legcomp {
 }
 
 .ecosystems {
-  margin-top: 5px;
-	color: #424242;
+  margin-top: 15px;
 }	
-
-.ecosystems h3 {
-  font-size: 18px;
-  color: #ffb5bd;
-  font-weight: 400;
-  padding-bottom: 5px;
-  text-align: left;
-}
 
 .Biomatit {
   color: #424242;
@@ -1638,8 +1676,22 @@ p.legcomp {
 	background-color: transparent;
 	text-align: right;
 	display: inline-block;
-	float: right;
 	outline: none;
+}
+
+.icongraph2 {
+	color: #e84a5f;
+	background-color: transparent;
+	cursor: pointer;
+	border: 0;
+	text-align: left;
+	display: inline-block;
+	outline: none;
+	vertical-align: bottom;
+}
+
+.icondelete {
+	float: right;
 }
 
 .icondelete:disabled {
@@ -1866,7 +1918,7 @@ tr.row2table:nth-child(odd){
   border-top-right-radius: 5px;
 }
 
-.titeco2 { /* César */ 
+.titeco2 { /* César */
 }
 
 .listSS {

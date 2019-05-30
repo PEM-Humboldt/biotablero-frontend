@@ -62,7 +62,7 @@ export default withTooltip(
 
     // bounds
     const xMax = width - margin.left - margin.right;
-    const yMax = 15;
+    const yMax = 25;
 
     // scales
     const xScale = scaleLinear({
@@ -84,7 +84,7 @@ export default withTooltip(
 
     return (
       <div>
-        <svg width={width - 5} height={20}>
+        <svg width={width - 15} height={35}>
           <Group top={margin.top} left={margin.left}>
             {`${Number((0.20 * 100).toFixed(2))} % `}
             <BarStackHorizontal
@@ -103,8 +103,10 @@ export default withTooltip(
                 }, 300);
               }}
               onMouseMove={dataSelected => (e) => {
+                const value = Object.values(dataJSON)
+                  .filter(item => (item.key || item.type) === dataSelected.key);
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                handleMouseOver(e, dataSelected, showTooltip);
+                handleMouseOver(e, value, showTooltip);
               }}
             />
           </Group>
@@ -115,24 +117,21 @@ export default withTooltip(
             left={tooltipLeft}
             style={{
               minWidth: 60,
-              backgroundColor: 'rgba(0,0,0,0.9)',
+              backgroundColor: 'rgba(42,42,42,0.9)',
               color: 'white',
               padding: 5,
               lineHeight: '1.5',
             }}
           >
-            <div style={{ color: zScale(tooltipData.key) }}>
+            <div style={{ color: zScale(tooltipData.key || tooltipData.type) }}>
               <strong>
-                {tooltipData.key}
+                {tooltipData[0].key || tooltipData[0].type}
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
-            </div>
-            <div>
-              <small>
-                {tooltipData.xFormatted}
-              </small>
+              {`${Number(tooltipData[0].area).toFixed(2)} ha`}
+              <br />
+              {`${Number(tooltipData[0].percentage * 100).toFixed(2)} ${units}`}
             </div>
           </TooltipWithBounds>
         )}

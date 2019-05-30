@@ -171,7 +171,7 @@ export default withTooltip(
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"
-              numTicks={8}
+              numTicks={5}
               tickStroke="#e84a5f"
               tickLabelProps={() => ({
                 fill: '#e84a5f',
