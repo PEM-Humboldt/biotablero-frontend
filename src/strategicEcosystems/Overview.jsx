@@ -75,11 +75,10 @@ const listEcosystems = (area, name, percentage,
 };
 
 const Overview = (/* TODO: Add all values required */
-  areaData, listSE, areaPA, coverage,
+  generalArea, listSE, areaPA, coverage,
   handlerInfoGraph, openInfoGraph,
   areaId, geofenceId, graphTitle, graphDescription,
 ) => {
-  const generalArea = (areaData ? areaData.area : 0);
   const ecosystemsArea = getArea(listSE);
   const protectedArea = getArea(areaPA);
   const areaH = 0;

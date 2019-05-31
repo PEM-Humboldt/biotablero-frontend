@@ -1619,7 +1619,7 @@ p.legcomp {
 
 .ecosystems {
   margin-top: 15px;
-}	
+}
 
 .Biomatit {
   color: #424242;
@@ -1865,6 +1865,7 @@ tr.row2table:nth-child(odd){
   color: #c2374d;
   font-weight: 400;
   background-color: #fff;
+  margin-bottom: 5px;
   margin-top: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }

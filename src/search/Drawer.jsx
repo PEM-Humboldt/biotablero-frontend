@@ -178,7 +178,8 @@ class Drawer extends React.Component {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
-    const generalSE = (areaSE ? areaSE[0] : areaSE);
+    const generalArea = (coverage ? Number(coverage[0].area).toFixed(2)
+      : Number(coverage).toFixed(2));
     const listSE = this.setListSE(areaSE);
     return (
       <div className="informer">
@@ -223,7 +224,7 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="2">
-                  {Overview(generalSE, listSE, areaPA, coverage,
+                  {Overview(generalArea, listSE, areaPA, coverage,
                     handlerInfoGraph, openInfoGraph, area.id, geofence.id,
                     'Área', 'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos')}
                 </div>
