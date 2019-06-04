@@ -162,11 +162,6 @@ class Drawer extends React.Component {
       });
   }
 
-  setListSE = data => (
-    // TODO: Implement handlerSE, selectedSE
-    data ? data.slice(1, data.length) : data
-  );
-
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
@@ -178,9 +173,9 @@ class Drawer extends React.Component {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
-    const generalArea = (coverage ? Number(coverage[0].area).toFixed(2)
-      : Number(coverage).toFixed(2));
-    const listSE = this.setListSE(areaSE);
+    const generalArea = (coverage && coverage[0] ? Number(coverage[0].area).toFixed(2) : 0);
+    const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
+    const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     return (
       <div className="informer">
         <button
@@ -224,9 +219,23 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="2">
-                  {Overview(generalArea, listSE, areaPA, coverage,
-                    handlerInfoGraph, openInfoGraph, area.id, geofence.id,
-                    'Área', 'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos')}
+                  {Overview(
+                    generalArea,
+                    ecosystemsArea,
+                    // removing the first response element, which is the total area in SE
+                    (areaSE ? areaSE.slice(1) : areaSE),
+                    protectedArea,
+                    // removing the first response element, which is the total area in PA
+                    (areaPA ? areaPA.slice(1) : areaPA),
+                    // removing the first response element, which is the total area in selected area
+                    (coverage ? coverage.slice(1) : coverage),
+                    handlerInfoGraph,
+                    openInfoGraph,
+                    area.id,
+                    geofence.id,
+                    'Área',
+                    'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos',
+                  )}
                 </div>
               ),
               (
