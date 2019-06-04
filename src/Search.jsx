@@ -335,7 +335,9 @@ class Search extends Component {
               (item) => {
                 if ((item.displayName === idLayer)) {
                   newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                } else newState.layers[item.displayName].active = false;
+                } else if (newState.layers[item.displayName]) {
+                  newState.layers[item.displayName].active = false;
+                }
               },
             );
             newState.area = areaList.find(

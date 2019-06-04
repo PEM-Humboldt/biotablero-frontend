@@ -113,17 +113,20 @@ export default withTooltip(
           >
             {graphTitle}
           </div>
-          {openInfoGraph && (openInfoGraph === graphTitle) && (
-            <ShortInfo
-              name={graphTitle}
-              description={graphDescription}
-              className="graphinfo"
-              tooltip="¿Qué significa?"
-              customButton
-            />
-          )
-        }
         </h2>
+        {openInfoGraph && (openInfoGraph === graphTitle) && (
+          <ShortInfo
+            name={graphTitle}
+            description={graphDescription}
+            className="graphinfo2"
+            tooltip="¿Qué significa?"
+            customButton
+            onMouseMove={(e) => {
+              if (tooltipTimeout) clearTimeout(tooltipTimeout);
+              handleMouseOver(e, '¿Qué significa?', showTooltip);
+            }}
+          />
+        )}
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
@@ -172,7 +175,7 @@ export default withTooltip(
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"
-              numTicks={8}
+              numTicks={5}
               tickStroke="#e84a5f"
               tickLabelProps={() => ({
                 fill: '#e84a5f',

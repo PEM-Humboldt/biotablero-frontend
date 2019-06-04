@@ -46,7 +46,6 @@ const GraphLoader = (
     }
     {
       (graphType === 'SmallBarStackGraph') ? (
-        // TODO: Usar name en el gráfico
         <SmallBarStackGraph
           dataJSON={data}
           colors={colors}
@@ -58,7 +57,6 @@ const GraphLoader = (
           openInfoGraph={openInfoGraph}
           handlerInfoGraph={handlerInfoGraph}
           graphDescription={graphDescription}
-          isSmall
         />
       ) : ('')
     }

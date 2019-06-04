@@ -1374,6 +1374,107 @@ div[id*="panel"] button:hover {
   padding: 15px !important;
 }
 
+.pt5 {
+	padding-top: 0 !important;
+}
+
+.graphcontainer h4 {
+	display: table;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: 400;
+	color: #e84a5f;
+	padding: 8px;
+	border: 1px solid #e84a5f;
+	margin-top: 5px;
+	background-color: #fff;
+}
+
+.graphcontainer h4 b  {
+	font-weight: 600;
+	color: #2a363b;
+	margin-left: 10px;
+	text-transform: none;
+}
+
+.graphcontainer h5 {
+	padding: 2px 4px;
+	font-weight: 600;
+	color: #fff;
+	background-color: #e84a5f;
+	margin: -7px 0 10px 10px;
+	text-transform: none;
+	font-size: 15px;
+	display: table;
+}
+
+.graphcontainer h6 {
+	font-size: 14px;
+	margin-left: 10px;
+	font-weight: 400;
+	padding-bottom: 3px;
+	border-bottom: 1px solid #2a363b;
+	color: #2a363b;
+	display: table;
+}
+
+.singleeco {
+	font-size: 16px;
+	margin-left: 5px;
+	font-weight: 400;
+	padding: 5px 7px 4px;
+	background-color: #2a363b;
+	color: #fff;
+	display: inline-block;
+}
+
+.singleeco2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: #2a363b;
+	border: 1px solid #2a363b;
+	padding: 4px 6px 3px;
+	display: inline-block;
+}
+
+.graphcontainer h3 {
+	font-size: 14px;
+	font-weight: 500;
+	padding: 3px 5px;
+	color: #2a363b;
+	margin: 0 0 5px 7px;
+	text-align: left;
+}
+
+.graphcontainer h3 b {
+	font-weight: 700;
+	margin-left: 10px;
+}
+
+.ecoest {
+	margin: 25px 12px 15px;
+	border: 1px solid #ea495f;
+	padding: 0 15px;
+}
+
+.minus20 {
+	margin-top: -20px !important;
+	margin-left: -27px !important;
+}
+
+.minusperc {
+	margin-left: -17px !important;
+}
+
+.graficaeco {
+	max-width: 600px;
+}
+
+.graficaeco2 {
+	max-width: 580px;
+	margin-left: 20px;
+}
+
 .informer header button{
   max-width: 500px !important;
 }
@@ -1408,26 +1509,41 @@ div[id*="panel"] button:hover {
   color: #424242;
 }
 
-/* TODO: César will adjust this new class for graph info*/
 .graphinfo {
-  float: none;
+  display: inline-block;
   cursor: pointer;
   margin-top: -3px;
 	border-style: none;
+	vertical-align: middle;
+	padding-right: 3px;
+	outline: none;
 }
 
-.graphinfo-true p {
+.MuiSvgIcon-root-1.graphinfo {
+	font-size: initial;
+}
+
+.graphinfo:hover {
+	color: #e84a5f;
+}
+
+.graphinfo2-true p {
 	font-family: 'Lato', sans-serif;
-	color: #ffffff;
+	color: #424242;
+	padding: 3px 15px 10px;
+
 }
 
-.graphinfo-true {
-	padding: 0;
+.graphinfo2-true {
 	-webkit-transition: all 1s;
 	-moz-transition: all 1s;
 	-ms-transition: all 1s;
 	-o-transition: all 1s;
 	transition: all 1s;
+	border-bottom: 1px solid #e84a5f;
+	width: 94%;
+	margin: 0 3%;
+	margin-bottom: 10px;
 }
 
 p.legcomp {
@@ -1502,41 +1618,7 @@ p.legcomp {
 }
 
 .ecosystems {
-  padding: 10px 15px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-  background-color: #345b6b;
-  border-radius: 5px;
-  margin-right: 5px;
-  min-width: 190px;
-  margin-top: 5px;
-	color: #fff;
-}
-
-.ecosystems h3 {
-  font-size: 18px;
-  color: #ffb5bd;
-  font-weight: 400;
-  padding-bottom: 5px;
-  text-align: left;
-}
-
-.ecosystems:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-}
-
-.ecosystems h4 {
-  font-size: 30px;
-  text-align: left;
-  margin-bottom: 15px;
-}
-
-.eco_title h3 {
-  font-size: 30px;
-	color: #e84a5f;
-}
-
-.eco_title h4 {
-	color: #ffedef;
+  margin-top: 15px;
 }
 
 .Biomatit {
@@ -1594,8 +1676,22 @@ p.legcomp {
 	background-color: transparent;
 	text-align: right;
 	display: inline-block;
-	float: right;
 	outline: none;
+}
+
+.icongraph2 {
+	color: #e84a5f;
+	background-color: transparent;
+	cursor: pointer;
+	border: 0;
+	text-align: left;
+	display: inline-block;
+	outline: none;
+	vertical-align: bottom;
+}
+
+.icondelete {
+	float: right;
 }
 
 .icondelete:disabled {
@@ -1769,6 +1865,7 @@ tr.row2table:nth-child(odd){
   color: #c2374d;
   font-weight: 400;
   background-color: #fff;
+  margin-bottom: 5px;
   margin-top: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
@@ -1822,13 +1919,7 @@ tr.row2table:nth-child(odd){
   border-top-right-radius: 5px;
 }
 
-.titeco2 {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: space-between;
+.titeco2 { /* César */
 }
 
 .listSS {
@@ -2298,7 +2389,6 @@ tspan, .vx-axis-label {
 	.contentView {
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
-
 	}
 
 	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */

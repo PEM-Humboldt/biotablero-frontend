@@ -162,23 +162,20 @@ class Drawer extends React.Component {
       });
   }
 
-  setListSE = data => (
-    // TODO: Implement handlerSE, selectedSE
-    data ? data.slice(1, data.length) : data
-  );
-
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, handlerInfoGraph, openInfoGraph, layerName, area,
+      classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
+      layerName, area,
     } = this.props;
     const {
       data: {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
-    const generalSE = (areaSE ? areaSE[0] : areaSE);
-    const listSE = this.setListSE(areaSE);
+    const generalArea = (coverage && coverage[0] ? Number(coverage[0].area).toFixed(2) : 0);
+    const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
+    const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     return (
       <div className="informer">
         <button
@@ -190,8 +187,9 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${area.name} / ${geofence.name}`}
+          {`${area.name} /`}
           <br />
+          {geofence.name}
           <b>
             {layerName}
           </b>
@@ -215,14 +213,29 @@ class Drawer extends React.Component {
                     'Biomas', colors, handlerInfoGraph, openInfoGraph,
                     'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
                   {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                    'Regiones Bióticas', colors, handlerInfoGraph, openInfoGraph,
+                    'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
                     'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
                 </div>
               ),
               (
                 <div key="2">
-                  {Overview(generalSE, listSE, areaPA, coverage,
-                    handlerInfoGraph, openInfoGraph)}
+                  {Overview(
+                    generalArea,
+                    ecosystemsArea,
+                    // removing the first response element, which is the total area in SE
+                    (areaSE ? areaSE.slice(1) : areaSE),
+                    protectedArea,
+                    // removing the first response element, which is the total area in PA
+                    (areaPA ? areaPA.slice(1) : areaPA),
+                    // removing the first response element, which is the total area in selected area
+                    (coverage ? coverage.slice(1) : coverage),
+                    handlerInfoGraph,
+                    openInfoGraph,
+                    area.id,
+                    geofence.id,
+                    'Área',
+                    'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos',
+                  )}
                 </div>
               ),
               (
