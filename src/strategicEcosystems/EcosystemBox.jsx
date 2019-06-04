@@ -47,10 +47,6 @@ class EcosystemBox extends Component {
           >
             <ExpandMoreIcon />
           </button>
-          <h3>
-            En Ecosistémas Estratégicos:
-            <b>{`${(Number(percentage) * 100).toFixed(2)} %`}</b>
-          </h3>
           <div className="graficaeco">
             {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
               'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
@@ -59,7 +55,8 @@ class EcosystemBox extends Component {
         </div>
         <div className="graficaeco2">
           {showGraphs
-          && DetailsView(nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
+          && DetailsView(nationalPercentage,
+            nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
             ['#5564a4', '#92ba3a', '#5aa394'],
             ['#75680f', '#b1b559', '#5aa394'])
           }
