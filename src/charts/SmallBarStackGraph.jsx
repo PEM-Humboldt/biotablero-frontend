@@ -6,6 +6,7 @@ import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
 import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
 import localPoint from '@vx/event/build/localPoint';
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 /**
  * Function to render tooltip inside the graph
  *
@@ -123,15 +124,15 @@ export default withTooltip(
               lineHeight: '1.5',
             }}
           >
-            <div style={{ color: zScale(tooltipData.key || tooltipData.type) }}>
+            <div style={{ color: '#e84a5f' }}>
               <strong>
                 {tooltipData[0].key || tooltipData[0].type}
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData[0].area).toFixed(2)} ha`}
+              {`${numberWithCommas(Number(tooltipData[0].area).toFixed(2))} ha`}
               <br />
-              {`${Number(tooltipData[0].percentage * 100).toFixed(2)} ${units}`}
+              {`${numberWithCommas(Number(tooltipData[0].percentage * 100).toFixed(2))} ${units}`}
             </div>
           </TooltipWithBounds>
         )}

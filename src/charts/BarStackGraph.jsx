@@ -10,6 +10,7 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 /**
  * Function to render tooltip inside the graph
  *
@@ -203,7 +204,7 @@ export default withTooltip(
               </strong>
             </div>
             <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} ${units}`}
+              {`${numberWithCommas(Number(tooltipData.data[tooltipData.key]).toFixed(2))} ${units}`}
             </div>
             <div>
               <small>

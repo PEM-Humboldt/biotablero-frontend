@@ -59,18 +59,16 @@ const Overview = (/* TODO: Add all values required */
       hectáreas totales
         <b>{`${numberWithCommas(generalArea)} ha`}</b>
       </h4>
-      <div className="ecoest">
-        <h4 className="minus20">
-        Cobertura
-        </h4>
-        <h6>
-        Natural y Transformada
-        </h6>
-        <div className="graficaeco">
-          {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-            'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-            'Estado de la cobertura en el área seleccionada', '%')}
-        </div>
+      <h4>
+      Cobertura
+      </h4>
+      <h6>
+      Natural y Transformada
+      </h6>
+      <div className="graficaeco">
+        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+          'Cobertura', ['#164f74', '#60bbd4', '#5aa394', '#5aa398'], handlerInfoGraph, openInfoGraph,
+          'Estado de la cobertura en el área seleccionada', '%')}
       </div>
       <h4>
       Áreas protegidas

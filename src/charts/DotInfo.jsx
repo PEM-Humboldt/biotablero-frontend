@@ -3,6 +3,9 @@ import React from 'react';
 import { GlyphCircle } from '@vx/glyph';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
+// Miles number format
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 let tooltipTimeout;
 
 export default withTooltip(({
@@ -15,7 +18,7 @@ export default withTooltip(({
   if (width < 10) return null;
   if (height < 10) return null;
 
-  const area = parseFloat(data.area).toFixed(2);
+  const area = numberWithCommas(parseFloat(data.area).toFixed(2));
   const percentage = parseFloat(data.percentage).toFixed(2);
 
   return (
@@ -67,7 +70,7 @@ export default withTooltip(({
             strokeWidth={6}
             fontSize={28}
           >
-            {`${area} Hectáreas`}
+            {`${area} ha`}
           </text>
         </svg>
         <h3>
@@ -87,9 +90,9 @@ export default withTooltip(({
             <div style={{ color: '#e9484d' }}>
               <div>
                 <b>
-                  {'Area total: '}
+                  {'Porcentaje del total: '}
                 </b>
-                {`${percentage} ha`}
+                {`${percentage} %`}
               </div>
             </div>
           </Tooltip>

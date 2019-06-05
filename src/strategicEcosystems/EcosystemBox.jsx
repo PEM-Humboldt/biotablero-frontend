@@ -50,7 +50,7 @@ class EcosystemBox extends Component {
           && DetailsView(nationalPercentage,
             percentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
             ['#164f74', '#60bbd4', '#5aa394'],
-            ['#75680f', '#b1b559', '#5aa394'])
+            ['#92ba3a', '#e9c948', '#5564a4'])
           }
         </div>
       </div>

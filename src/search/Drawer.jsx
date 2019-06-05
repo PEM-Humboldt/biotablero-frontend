@@ -19,6 +19,49 @@ const styles = () => ({
   },
 });
 
+const setCoverageLabels = (array) => {
+  const responseObject = {};
+  if (array) {
+    array.forEach((item) => {
+      let local;
+      let color;
+      switch (item.type) {
+        case 'Total':
+          local = item.type;
+          color = '#fff';
+          break;
+        case 'N':
+          local = 'Natural';
+          color = '#164f74';
+          break;
+        case 'S':
+          local = 'Secundaria';
+          color = '#60bbd4';
+          break;
+        case 'T':
+          local = 'Transformada';
+          color = '#5aa394';
+          break;
+        default:
+          local = 'Sin clasificar / Nubes';
+          color = '#9d9d9d';
+      }
+      if (responseObject[local]) {
+        responseObject[local].area += Number(item.area);
+        responseObject[local].percentage += Number(item.percentage);
+      } else {
+        responseObject[local] = {
+          area: Number(item.area),
+          percentage: Number(item.percentage),
+          type: local,
+          color,
+        };
+      }
+    });
+  }
+  return Object.values(responseObject);
+};
+
 class Drawer extends React.Component {
   constructor(props) {
     super(props);
@@ -47,7 +90,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            coverage: res,
+            coverage: setCoverageLabels(res),
           },
         }));
       })
@@ -162,6 +205,10 @@ class Drawer extends React.Component {
       });
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return ((this.state !== nextState));
+  }
+
   render() {
     const {
       geofence, geofenceData, colors, colorSZH, colorsFC,
@@ -173,7 +220,9 @@ class Drawer extends React.Component {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
-    const generalArea = (coverage && coverage[0] ? Number(coverage[0].area).toFixed(2) : 0);
+    const generalArea = (coverage && coverage[0]
+      ? Number(coverage[0].area).toFixed(2) : 0);
+    console.log(coverage);
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     return (
@@ -228,7 +277,8 @@ class Drawer extends React.Component {
                     // removing the first response element, which is the total area in PA
                     (areaPA ? areaPA.slice(1) : areaPA),
                     // removing the first response element, which is the total area in selected area
-                    (coverage ? coverage.slice(1) : coverage),
+                    (coverage && (coverage[0].type === 'Total')
+                      ? coverage.slice(1) : coverage),
                     handlerInfoGraph,
                     openInfoGraph,
                     area.id,
