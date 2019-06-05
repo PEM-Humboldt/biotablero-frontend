@@ -95,8 +95,9 @@ const Overview = (/* TODO: Add all values required */
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
         <EcosystemBox
           name="Bosque Seco Tropical"
-          percentage="0.40"
-          area={60}
+          percentage={0.40}
+          nationalPercentage={0.03}
+          area={numberWithCommas(60)}
           coverage={coverage}
           areaPA={listPA}
           handlerInfoGraph={handlerInfoGraph}
@@ -104,8 +105,9 @@ const Overview = (/* TODO: Add all values required */
         />
         <EcosystemBox
           name="Páramo"
-          percentage="0.15"
-          area={10}
+          percentage={0.15}
+          nationalPercentage={0.05}
+          area={numberWithCommas(10)}
           coverage={coverage}
           areaPA={listPA}
           handlerInfoGraph={handlerInfoGraph}

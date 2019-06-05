@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailsView from './DetailsView';
-import RenderGraph from '../charts/RenderGraph';
 
 class EcosystemBox extends Component {
   constructor(props) {
@@ -35,9 +34,6 @@ class EcosystemBox extends Component {
         className="ecosystems"
         role="presentation"
       >
-        {RenderGraph(area, '', '', 'TitleBarStackGraph',
-          name, null, handlerInfoGraph, openInfoGraph,
-          '', 'ha')}
         <div className="singleeco">{name}</div>
         <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
         <button
@@ -51,8 +47,8 @@ class EcosystemBox extends Component {
         </button>
         <div className="graficaeco2">
           {showGraphs
-          && DetailsView(percentage,
-            nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
+          && DetailsView(nationalPercentage,
+            percentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
             ['#164f74', '#60bbd4', '#5aa394'],
             ['#75680f', '#b1b559', '#5aa394'])
           }
@@ -64,8 +60,8 @@ class EcosystemBox extends Component {
 
 EcosystemBox.propTypes = {
   name: PropTypes.string,
-  percentage: PropTypes.string,
-  area: PropTypes.number,
+  percentage: PropTypes.number,
+  area: PropTypes.string,
   nationalPercentage: PropTypes.number,
   coverage: PropTypes.array,
   areaPA: PropTypes.array,
@@ -76,8 +72,8 @@ EcosystemBox.propTypes = {
 
 EcosystemBox.defaultProps = {
   name: null,
-  percentage: '0',
-  area: 0,
+  percentage: 0,
+  area: '0.00',
   nationalPercentage: 0,
   coverage: null,
   areaPA: null,
