@@ -6,6 +6,7 @@ import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import BarGraph from './BarGraph';
 import BarStackGraph from './BarStackGraph';
+import TitleBarStackGraph from './TitleBarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
@@ -21,6 +22,7 @@ const GraphLoader = (
     handlerInfoGraph,
     graphDescription,
     openInfoGraph,
+    style,
   },
 ) => (
   <div>
@@ -42,6 +44,18 @@ const GraphLoader = (
             graphDescription={graphDescription}
           />
         </div>
+      ) : ('')
+    }
+    {
+      (graphType === 'TitleBarStackGraph') ? (
+        <TitleBarStackGraph
+          input={data}
+          style={style}
+          graphTitle={graphTitle}
+          width={width}
+          height="150"
+          units={units}
+        />
       ) : ('')
     }
     {
@@ -153,6 +167,7 @@ GraphLoader.propTypes = {
   // Array or object, depending on graphType
   data: PropTypes.any.isRequired,
   activeBiome: PropTypes.string,
+  style: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   width: PropTypes.number,
@@ -175,6 +190,7 @@ GraphLoader.defaultProps = {
   width: 400,
   height: 250,
   showOnlyTitle: false,
+  style: 'singleeco',
   units: 'ha',
   withLeyends: false,
   handlerInfoGraph: () => {},

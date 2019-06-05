@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RenderGraph from '../charts/RenderGraph';
 import DetailsView from './DetailsView';
+import RenderGraph from '../charts/RenderGraph';
 
 class EcosystemBox extends Component {
   constructor(props) {
@@ -35,29 +35,25 @@ class EcosystemBox extends Component {
         className="ecosystems"
         role="presentation"
       >
-        <div>
-          <div className="singleeco">{name}</div>
-          <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
-          <button
-            className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
-            type="button"
-            onClick={this.switchGraphs}
-            data-tooltip
-            title="Ampliar información"
-          >
-            <ExpandMoreIcon />
-          </button>
-          <div className="graficaeco">
-            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-              'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-              '', '%')}
-          </div>
-        </div>
+        {RenderGraph(area, '', '', 'TitleBarStackGraph',
+          name, null, handlerInfoGraph, openInfoGraph,
+          '', 'ha')}
+        <div className="singleeco">{name}</div>
+        <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
+        <button
+          className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
+          type="button"
+          onClick={this.switchGraphs}
+          data-tooltip
+          title="Ampliar información"
+        >
+          <ExpandMoreIcon />
+        </button>
         <div className="graficaeco2">
           {showGraphs
-          && DetailsView(nationalPercentage,
+          && DetailsView(percentage,
             nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
-            ['#5564a4', '#92ba3a', '#5aa394'],
+            ['#164f74', '#60bbd4', '#5aa394'],
             ['#75680f', '#b1b559', '#5aa394'])
           }
         </div>

@@ -16,7 +16,7 @@ import GraphLoader from './GraphLoader';
  */
 const RenderGraph = (
   data, labelX, labelY, graph, graphTitle, colors,
-  handlerInfoGraph, openInfoGraph, graphDescription, units,
+  handlerInfoGraph, openInfoGraph, graphDescription, units, style,
 ) => {
   // While data is being retrieved from server
   let errorMessage = null;
@@ -47,6 +47,7 @@ const RenderGraph = (
             openInfoGraph={openInfoGraph}
             graphDescription={graphDescription}
             units={units}
+            style={style}
           />
         )
       )}
