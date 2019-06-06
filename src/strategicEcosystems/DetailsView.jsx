@@ -12,11 +12,15 @@ const DetailsView = (/* TODO: Add all values required */
   colorsAP, // color values for protectedArea
 ) => (
   <div>
-    { // TODO: Organize data
-    }
+    <h3>
+      Distribución de coberturas:
+    </h3>
     {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
       'Cobertura', colorsC, handlerInfoGraph, openInfoGraph,
       'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+    <h3>
+      Distribución en áreas protegidas:
+    </h3>
     {RenderGraph(protectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
       'Distribución de áreas protegidas y no protegidas', colorsAP, handlerInfoGraph, openInfoGraph,
       'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
@@ -25,7 +29,7 @@ const DetailsView = (/* TODO: Add all values required */
         En Ecosistemas Estratégicos:
         <b>{`${Number(sep).toFixed(2)} %`}</b>
         <br />
-        En SPN:
+        En Sistema Nacional:
         <b>{`${Number(npsp).toFixed(2)} %`}</b>
       </h3>
     }

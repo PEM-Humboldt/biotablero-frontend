@@ -8,7 +8,6 @@ import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
-
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 
