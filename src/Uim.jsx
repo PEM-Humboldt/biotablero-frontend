@@ -74,7 +74,8 @@ class Uim extends Component {
                 className="userBox"
                 style={{ fontSize: '40px' }}
               />
-            </button>)
+            </button>
+          )
         }
         {openModal && userLogged && (
           <ConfirmationModal

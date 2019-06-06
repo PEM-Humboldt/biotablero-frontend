@@ -130,7 +130,8 @@ class PopMenu extends Component {
           >
             <BackGraphIcon />
             {'Gráfico Biomas'}
-          </button>)
+          </button>
+          )
         }
         </div>
         <AddIcon />

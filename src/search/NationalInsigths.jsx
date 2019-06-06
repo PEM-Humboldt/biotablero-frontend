@@ -107,9 +107,9 @@ class NationalInsigths extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          ${area.name} /
+          {`${area.name} /`}
           <br />
-          ${geofence}
+          {`${geofence}`}
         </h1>
         {
           <div>
