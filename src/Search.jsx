@@ -437,10 +437,6 @@ class Search extends Component {
     return geofencesArray;
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return ((this.state !== nextState));
-  }
-
   render() {
     const { callbackUser, userLogged } = this.props;
     const {

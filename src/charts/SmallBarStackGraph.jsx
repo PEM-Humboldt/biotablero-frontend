@@ -60,6 +60,7 @@ export default withTooltip(
     const keys = dataJSON.map(item => item.key || item.type);
     const totals = dataJSON.reduce((total, current) => total
       + parseFloat(current.area || current.percentage), 0);
+    const userColors = colors || dataJSON.map(item => item.color);
 
     // bounds
     const xMax = width - margin.left - margin.right;
@@ -78,7 +79,7 @@ export default withTooltip(
     });
     const zScale = scaleOrdinal({
       domain: keys,
-      range: colors,
+      range: userColors,
     });
 
     let tooltipTimeout;

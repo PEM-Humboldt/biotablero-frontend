@@ -67,7 +67,7 @@ const Overview = (/* TODO: Add all values required */
       </h6>
       <div className="graficaeco">
         {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-          'Cobertura', ['#164f74', '#60bbd4', '#5aa394', '#5aa398'], handlerInfoGraph, openInfoGraph,
+          'Cobertura', null, handlerInfoGraph, openInfoGraph,
           'Estado de la cobertura en el área seleccionada', '%')}
       </div>
       <h4>
@@ -82,7 +82,7 @@ const Overview = (/* TODO: Add all values required */
         Distribución en área protegida:
         </h6>
         {RenderGraph(listPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          'Área protegida', null, handlerInfoGraph, openInfoGraph,
           '', '%')}
       </div>
       <div className="ecoest">
