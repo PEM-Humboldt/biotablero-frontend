@@ -7,7 +7,7 @@ import RenderGraph from '../charts/RenderGraph';
 
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
+const getPercentage = (part, total) => (part / total).toFixed(2);
 
 class EcosystemBox extends Component {
   constructor(props) {

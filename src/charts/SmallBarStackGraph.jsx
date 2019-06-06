@@ -113,7 +113,7 @@ export default withTooltip(
             />
           </Group>
         </svg>
-        {tooltipOpen && (
+        {tooltipOpen && (tooltipData[0].key !== '' || tooltipData[0].type) && (
           <TooltipWithBounds
             top={tooltipTop}
             left={tooltipLeft}
