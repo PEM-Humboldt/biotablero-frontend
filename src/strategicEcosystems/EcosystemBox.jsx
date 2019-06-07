@@ -63,9 +63,7 @@ class EcosystemBox extends Component {
         <div className="graficaeco2">
           {showGraphs
           && DetailsView(nationalPercentage,
-            percentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
-            ['#164f74', '#60bbd4', '#5aa394'],
-            ['#92ba3a', '#e9c948', '#5564a4'])
+            percentage, coverage, areaPA, handlerInfoGraph, openInfoGraph)
           }
         </div>
       </div>

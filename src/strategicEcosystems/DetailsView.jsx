@@ -1,6 +1,7 @@
 /** eslint verified */
 import React from 'react';
 import RenderGraph from '../charts/RenderGraph';
+import { setPAValues, setCoverageValues } from './FormatSE';
 
 const DetailsView = (/* TODO: Add all values required */
   npsp, // in national parks systems percentage
@@ -8,21 +9,19 @@ const DetailsView = (/* TODO: Add all values required */
   coverage, // By default, should load transformed and natural area by %
   protectedArea, // By default, should load transformed and natural area by %
   handlerInfoGraph, openInfoGraph, // values for coverage
-  colorsC, // color values for coverage
-  colorsAP, // color values for protectedArea
 ) => (
   <div>
     <h3>
       Distribución de coberturas:
     </h3>
-    {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-      'Cobertura', colorsC, handlerInfoGraph, openInfoGraph,
+    {RenderGraph(setCoverageValues(coverage), 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+      'Cobertura', null, handlerInfoGraph, openInfoGraph,
       'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
     <h3>
       Distribución en áreas protegidas:
     </h3>
-    {RenderGraph(protectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
-      'Distribución de áreas protegidas y no protegidas', colorsAP, handlerInfoGraph, openInfoGraph,
+    {RenderGraph(setPAValues(protectedArea), 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
+      'Distribución de áreas protegidas y no protegidas', null, handlerInfoGraph, openInfoGraph,
       'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
     {
       <h3>
