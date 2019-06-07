@@ -1,28 +1,37 @@
 /** eslint verified */
 import React from 'react';
 import RenderGraph from '../charts/RenderGraph';
+import { setPAValues, setCoverageValues } from './FormatSE';
 
 const DetailsView = (/* TODO: Add all values required */
-  protectedArea, // Used to calculate and show values for comparision
-  dataAreaType, // By default, should load transformed and natural area by %
-  dataProtectedArea, // By default, should load transformed and natural area by %
-  handlerInfoGraph, openInfoGraph, // values for dataAreaType
-  colorsNT, // color values for dataAreaType
-  colorsAP, // color values for dataProtectedArea
+  npsp, // percentage in "national system of protected areas" or SINAP
+  sep, // in strategic ecosystems percentage
+  coverage, // By default, should load transformed and natural area by %
+  protectedArea, // By default, should load transformed and natural area by %
+  handlerInfoGraph, openInfoGraph, // values for coverage
 ) => (
   <div>
-    { // TODO: Organize data
-    }
-    {RenderGraph(dataAreaType, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-      'Cobertura', colorsNT, handlerInfoGraph, openInfoGraph,
+    <h3>
+      Distribución de coberturas:
+    </h3>
+    {RenderGraph(setCoverageValues(coverage), 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+      'Cobertura', null, handlerInfoGraph, openInfoGraph,
       'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
-    {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
-      'Distribución de áreas protegidas y no protegidas', colorsAP, handlerInfoGraph, openInfoGraph,
+    <h3>
+      Distribución en áreas protegidas:
+    </h3>
+    {RenderGraph(setPAValues(protectedArea), 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
+      'Distribución de áreas protegidas y no protegidas', null, handlerInfoGraph, openInfoGraph,
       'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
-    {RenderGraph(dataProtectedArea, 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
-      'Distribución de áreas protegidas y no protegidas', ['#5f8f2c', '#667521', '#75680f'], handlerInfoGraph, openInfoGraph,
-      'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
-    {`${Number(protectedArea).toFixed(2)} % SPN`}
+    {
+      <h3>
+        En Ecosistemas Estratégicos:
+        <b>{`${Number(sep).toFixed(2)} %`}</b>
+        <br />
+        En Sistema Nacional:
+        <b>{`${Number(npsp).toFixed(2)} %`}</b>
+      </h3>
+    }
   </div>
 );
 

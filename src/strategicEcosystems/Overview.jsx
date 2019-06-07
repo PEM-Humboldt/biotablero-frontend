@@ -4,62 +4,11 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
 import EcosystemBox from './EcosystemBox';
-import RestAPI from '../api/RestAPI';
 import RenderGraph from '../charts/RenderGraph';
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
-
-const getDetailsBySE = (areaId, geofenceId, name) => {
-  console.log((areaId, geofenceId, name));
-  Promise.all(
-    [RestAPI.requestSENationalPercentage(areaId, geofenceId, name)
-      .then(res => res)
-      .catch(() => {})],
-    [RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
-      .then(res => res)
-      .catch(() => {})],
-    [RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
-      .then(res => res)
-      .catch(() => 0)],
-  ).then(response => response);
-};
-
-  /**
-   * Return the ecosystems and its content
-   */
-const listEcosystems = (area, name, percentage,
-  handlerInfoGraph, openInfoGraph, areaId, geofenceId) => {
-  console.log(areaId, geofenceId);
-  const {
-    coverageSE, // object
-    protectedAreaSE, // object
-    nationalPercentage, // value used for label
-  } = getDetailsBySE(areaId, geofenceId, name);
-  console.log(coverageSE, // object
-    protectedAreaSE, // object
-    nationalPercentage);
-  return (areaId && geofenceId && (
-    <EcosystemBox
-      key={name}
-      name={name}
-      percentage={percentage}
-      area={area}
-      coverage={RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
-        .then(res => res)
-        .catch(() => {})} // TODO: Call coverage for this ee
-      areaPA={RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
-        .then(res => res)
-        .catch(() => 0)} // TODO: Call areaPA for this ee
-      handlerInfoGraph={handlerInfoGraph}
-      openInfoGraph={openInfoGraph}
-      nationalPercentage={
-        RestAPI.requestSENationalPercentage(areaId, geofenceId, name)
-          .then(res => res)
-          .catch(() => {})
-      }
-    />
-  ));
-};
 
 const Overview = (/* TODO: Add all values required */
   generalArea,
@@ -108,24 +57,22 @@ const Overview = (/* TODO: Add all values required */
     <div className="graphcontainer pt5">
       <h4>
       hectáreas totales
-        <b>{`${generalArea} ha`}</b>
+        <b>{`${numberWithCommas(generalArea)} ha`}</b>
       </h4>
-      <div className="ecoest">
-        <h4 className="minus20">
-        Cobertura
-        </h4>
-        <h6>
-        Natural y Transformada
-        </h6>
-        <div className="graficaeco">
-          {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-            'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-            'Estado de la cobertura en el área seleccionada', '%')}
-        </div>
+      <h4>
+      Cobertura
+      </h4>
+      <h6>
+      Natural y Transformada
+      </h6>
+      <div className="graficaeco">
+        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
+          'Cobertura', null, handlerInfoGraph, openInfoGraph,
+          'Estado de la cobertura en el área seleccionada', '%')}
       </div>
       <h4>
       Áreas protegidas
-        <b>{`${protectedArea} ha `}</b>
+        <b>{`${numberWithCommas(protectedArea)} ha `}</b>
       </h4>
       <h5>
         {`${getPercentage(protectedArea, generalArea)} %`}
@@ -135,40 +82,32 @@ const Overview = (/* TODO: Add all values required */
         Distribución en área protegida:
         </h6>
         {RenderGraph(listPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#92ba3a', '#e9c948', '#5564a4'], handlerInfoGraph, openInfoGraph,
+          'Área protegida', null, handlerInfoGraph, openInfoGraph,
           '', '%')}
       </div>
       <div className="ecoest">
         <h4 className="minus20">
         Ecosistemas estratégicos
-          <b>{`${ecosystemsArea} ha`}</b>
+          <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
         </h4>
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
         <EcosystemBox
           name="Bosque Seco Tropical"
-          percentage="0.40"
-          area={60}
+          percentage={0.40}
+          nationalPercentage={0.03}
+          area={0}
+          total={Number(ecosystemsArea)}
           coverage={coverage}
           areaPA={listPA}
           handlerInfoGraph={handlerInfoGraph}
           openInfoGraph={openInfoGraph}
         />
-        { // (ecosystemsArea !== 0) && (
-        //   <EcosystemBox
-        //     name="Humedales"
-        //     percentage="0"
-        //     area={0}
-        //     coverage={coverage}
-        //     areaPA={}
-        //     handlerInfoGraph={handlerInfoGraph}
-        //     openInfoGraph={openInfoGraph}
-        //   />
-        // )
-        }
         <EcosystemBox
           name="Páramo"
-          percentage="0.15"
-          area={10}
+          percentage={0.15}
+          nationalPercentage={0.05}
+          area={100000}
+          total={Number(ecosystemsArea)}
           coverage={coverage}
           areaPA={listPA}
           handlerInfoGraph={handlerInfoGraph}

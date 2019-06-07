@@ -1402,7 +1402,7 @@ div[id*="panel"] button:hover {
 	font-weight: 600;
 	color: #fff;
 	background-color: #e84a5f;
-	margin: -7px 0 10px 10px;
+	margin: -7px 0 0 10px;
 	text-transform: none;
 	font-size: 15px;
 	display: table;
@@ -1412,6 +1412,7 @@ div[id*="panel"] button:hover {
 	font-size: 14px;
 	margin-left: 10px;
 	font-weight: 400;
+	margin-top: 10px;
 	padding-bottom: 3px;
 	border-bottom: 1px solid #2a363b;
 	color: #2a363b;
@@ -1454,7 +1455,7 @@ div[id*="panel"] button:hover {
 .ecoest {
 	margin: 25px 12px 15px;
 	border: 1px solid #ea495f;
-	padding: 0 15px;
+	padding: 0 15px 15px;
 }
 
 .minus20 {
@@ -1468,11 +1469,21 @@ div[id*="panel"] button:hover {
 
 .graficaeco {
 	max-width: 600px;
+ line-height: 1em !important;
 }
 
 .graficaeco2 {
-	max-width: 580px;
-	margin-left: 20px;
+	margin-left: 7px;
+	max-width: 593px;
+}
+
+.graficaeco2 svg {
+	margin: 0 !important;
+	line-height: 1em !important;
+}
+.graficaeco2 h3 {
+	margin-bottom: 0;
+	padding: 0;
 }
 
 .informer header button{
@@ -1619,6 +1630,7 @@ p.legcomp {
 
 .ecosystems {
   margin-top: 15px;
+  margin-bottom: 5px;
 }
 
 .Biomatit {

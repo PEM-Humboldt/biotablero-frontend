@@ -146,7 +146,8 @@ class NewProjectForm extends Component {
               title="Crear proyecto"
             >
               <AddProjectIcon />
-            </button>)
+            </button>
+            )
           }
         </div>
       </div>

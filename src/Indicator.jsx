@@ -28,11 +28,11 @@ class Indicator extends React.Component {
   };
 
   handleChipDelete = () => {
-    console.log('Acción borrar');
+    // console.log('Acción borrar');
   }
 
   handleChipClick = () => {
-    console.log('Acción click');
+    // console.log('Acción click');
   }
 
   render() {

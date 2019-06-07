@@ -2,8 +2,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import RenderGraph from '../charts/RenderGraph';
 import DetailsView from './DetailsView';
+import RenderGraph from '../charts/RenderGraph';
+
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+const getPercentage = (part, total) => (part / total).toFixed(2);
 
 class EcosystemBox extends Component {
   constructor(props) {
@@ -24,10 +28,15 @@ class EcosystemBox extends Component {
     }));
   }
 
+  areaToCompare = (name, area, total) => ([
+    { key: name, area, percentage: getPercentage(area, total) },
+    { key: '', area: (total - area), percentage: getPercentage((total - area), total) },
+  ])
+
   render() {
     const {
       name, percentage, area, nationalPercentage,
-      coverage, areaPA, handlerInfoGraph, openInfoGraph,
+      coverage, areaPA, handlerInfoGraph, openInfoGraph, total,
     } = this.props;
     const { showGraphs } = this.state;
     return (
@@ -35,9 +44,9 @@ class EcosystemBox extends Component {
         className="ecosystems"
         role="presentation"
       >
-        <div>
-          <div className="singleeco">{name}</div>
-          <div className="singleeco2">{`${Number(area).toFixed(2)} ha`}</div>
+        <div className="singleeco">{name}</div>
+        <div className="singleeco2">{`${numberWithCommas(Number(area).toFixed(2))} ha`}</div>
+        {(area !== 0 && total !== 0) && (
           <button
             className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
             type="button"
@@ -47,21 +56,14 @@ class EcosystemBox extends Component {
           >
             <ExpandMoreIcon />
           </button>
-          <h3>
-            En Ecosistémas Estratégicos:
-            <b>{`${(Number(percentage) * 100).toFixed(2)} %`}</b>
-          </h3>
-          <div className="graficaeco">
-            {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-              'Cobertura', ['#164f74', '#60bbd4', '#5aa394'], handlerInfoGraph, openInfoGraph,
-              '', '%')}
-          </div>
-        </div>
+        )}
+        {(area !== 0 && total !== 0) && RenderGraph(this.areaToCompare(name, area, total), '', '', 'SmallBarStackGraph',
+          'Área protegida', ['#51b4c1', '#fff'], handlerInfoGraph, openInfoGraph,
+          '', '%')}
         <div className="graficaeco2">
           {showGraphs
-          && DetailsView(nationalPercentage, coverage, areaPA, handlerInfoGraph, openInfoGraph,
-            ['#5564a4', '#92ba3a', '#5aa394'],
-            ['#75680f', '#b1b559', '#5aa394'])
+          && DetailsView(nationalPercentage,
+            percentage, coverage, areaPA, handlerInfoGraph, openInfoGraph)
           }
         </div>
       </div>
@@ -71,8 +73,9 @@ class EcosystemBox extends Component {
 
 EcosystemBox.propTypes = {
   name: PropTypes.string,
-  percentage: PropTypes.string,
+  percentage: PropTypes.number,
   area: PropTypes.number,
+  total: PropTypes.number,
   nationalPercentage: PropTypes.number,
   coverage: PropTypes.array,
   areaPA: PropTypes.array,
@@ -83,8 +86,9 @@ EcosystemBox.propTypes = {
 
 EcosystemBox.defaultProps = {
   name: null,
-  percentage: '0',
+  percentage: 0,
   area: 0,
+  total: 0,
   nationalPercentage: 0,
   coverage: null,
   areaPA: null,

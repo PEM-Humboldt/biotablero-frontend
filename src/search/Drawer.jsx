@@ -8,9 +8,9 @@ import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
-
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
+import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 
 const styles = () => ({
   root: {
@@ -47,7 +47,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            coverage: res,
+            coverage: setCoverageValues(res),
           },
         }));
       })
@@ -67,7 +67,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            areaPA: res,
+            areaPA: setPAValues(res),
           },
         }));
       })
@@ -173,7 +173,8 @@ class Drawer extends React.Component {
         fc, biomas, distritos, coverage, areaPA, areaSE,
       },
     } = this.state;
-    const generalArea = (coverage && coverage[0] ? Number(coverage[0].area).toFixed(2) : 0);
+    const generalArea = (coverage && coverage[0]
+      ? Number(coverage[0].area).toFixed(2) : 0);
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     return (
@@ -228,7 +229,8 @@ class Drawer extends React.Component {
                     // removing the first response element, which is the total area in PA
                     (areaPA ? areaPA.slice(1) : areaPA),
                     // removing the first response element, which is the total area in selected area
-                    (coverage ? coverage.slice(1) : coverage),
+                    (coverage && (coverage[0].type === 'Total')
+                      ? coverage.slice(1) : coverage),
                     handlerInfoGraph,
                     openInfoGraph,
                     area.id,
