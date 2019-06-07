@@ -4,7 +4,7 @@ import RenderGraph from '../charts/RenderGraph';
 import { setPAValues, setCoverageValues } from './FormatSE';
 
 const DetailsView = (/* TODO: Add all values required */
-  npsp, // in national parks systems percentage
+  npsp, // percentage in "national system of protected areas" or SINAP
   sep, // in strategic ecosystems percentage
   coverage, // By default, should load transformed and natural area by %
   protectedArea, // By default, should load transformed and natural area by %
