@@ -1469,11 +1469,21 @@ div[id*="panel"] button:hover {
 
 .graficaeco {
 	max-width: 600px;
+ line-height: 1em !important;
 }
 
 .graficaeco2 {
-	max-width: 580px;
-	margin-left: 20px;
+	margin-left: 7px;
+	max-width: 593px;
+}
+
+.graficaeco2 svg {
+	margin: 0 !important;
+	line-height: 1em !important;
+}
+.graficaeco2 h3 {
+	margin-bottom: 0;
+	padding: 0;
 }
 
 .informer header button{

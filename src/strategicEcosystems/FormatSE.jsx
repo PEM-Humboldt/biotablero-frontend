@@ -2,13 +2,10 @@ export const setPAValues = (array) => {
   const responseObject = [];
   let counter = -1;
   const colorsProtectedAreas = [
-    '#b3b638',
-    '#62591e',
     '#59651f',
-    '#7b6126',
-    '#5f8f2c',
     '#92ba3a',
     '#a5a95b',
+    '#5f8f2c',
   ];
   if (array) {
     array.forEach((item) => {
@@ -18,10 +15,10 @@ export const setPAValues = (array) => {
           color = '#fff';
           break;
         case 'No Protegida':
-          color = '#9d9d9d';
+          color = '#b9c9cf';
           break;
         default:
-          color = colorsProtectedAreas[counter];
+          color = colorsProtectedAreas[counter] || '#b3b638';
       }
       responseObject.push({
         area: Number(item.area),
@@ -60,7 +57,7 @@ export const setCoverageValues = (array) => {
           break;
         default:
           local = 'Sin clasificar / Nubes';
-          color = '#9d9d9d';
+          color = '#b9c9cf';
       }
       if (responseObject[local]) {
         responseObject[local].area += Number(item.area);

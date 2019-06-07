@@ -46,9 +46,6 @@ class EcosystemBox extends Component {
       >
         <div className="singleeco">{name}</div>
         <div className="singleeco2">{`${numberWithCommas(Number(area).toFixed(2))} ha`}</div>
-        {(area !== 0 && total !== 0) && RenderGraph(this.areaToCompare(name, area, total), '', '', 'SmallBarStackGraph',
-          'Área protegida', ['#70b438', '#fff'], handlerInfoGraph, openInfoGraph,
-          '', '%')}
         {(area !== 0 && total !== 0) && (
           <button
             className={`icongraph2 ${showGraphs ? 'rotate-false' : 'rotate-true'}`}
@@ -60,6 +57,9 @@ class EcosystemBox extends Component {
             <ExpandMoreIcon />
           </button>
         )}
+        {(area !== 0 && total !== 0) && RenderGraph(this.areaToCompare(name, area, total), '', '', 'SmallBarStackGraph',
+          'Área protegida', ['#51b4c1', '#fff'], handlerInfoGraph, openInfoGraph,
+          '', '%')}
         <div className="graficaeco2">
           {showGraphs
           && DetailsView(nationalPercentage,
