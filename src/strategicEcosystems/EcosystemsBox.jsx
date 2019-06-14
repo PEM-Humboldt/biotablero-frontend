@@ -83,7 +83,7 @@ class EcosystemsBox extends Component {
                 )
               }
               {
-                index && (
+                (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
                     areaId={areaId}
