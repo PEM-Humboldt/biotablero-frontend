@@ -1,9 +1,11 @@
 /** eslint verified */
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
 import { setPAValues, setCoverageValues } from './FormatSE';
+import RestAPI from '../api/RestAPI';
 
-const DetailsView = (/* TODO: Add all values required */
+const showDetails = (/* TODO: Add all values required */
   npsp, // percentage in "national system of protected areas" or SINAP
   sep, // in strategic ecosystems percentage
   coverage, // By default, should load transformed and natural area by %
@@ -34,5 +36,87 @@ const DetailsView = (/* TODO: Add all values required */
     }
   </div>
 );
+
+class DetailsView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      seDetail: null,
+      seCoverage: null,
+      sePA: null,
+    };
+  }
+
+  componentDidMount() {
+    const {
+      areaId, geofenceId, item,
+    } = this.props;
+    const name = item.type || item.name;
+
+    RestAPI.requestSEDetail(areaId, geofenceId, name)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          seDetail: res.national_percentage,
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          seDetail: 0,
+        }));
+      });
+
+    RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          seCoverage: res,
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          seCoverage: [],
+        }));
+      });
+
+    RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          sePA: res,
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          sePA: [],
+        }));
+      });
+  }
+
+  render() {
+    const {
+      item,
+    } = this.props;
+    const {
+      seDetail, seCoverage, sePA,
+    } = this.state;
+    return showDetails(seDetail, item.percentage, seCoverage, sePA, null, null);
+  }
+}
+
+DetailsView.propTypes = {
+  areaId: PropTypes.string,
+  geofenceId: PropTypes.string,
+  item: PropTypes.object,
+};
+
+DetailsView.defaultProps = {
+  areaId: 0,
+  geofenceId: 0,
+  item: {},
+};
 
 export default DetailsView;

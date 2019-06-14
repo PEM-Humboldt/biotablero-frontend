@@ -3,7 +3,7 @@ import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
-import EcosystemBox from './EcosystemBox';
+import EcosystemsBox from './EcosystemsBox';
 import RenderGraph from '../charts/RenderGraph';
 
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -91,28 +91,16 @@ const Overview = (/* TODO: Add all values required */
           <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
         </h4>
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
-        <EcosystemBox
-          name="Bosque Seco Tropical"
-          percentage={0.40}
-          nationalPercentage={0.03}
-          area={0}
-          total={Number(ecosystemsArea)}
-          coverage={coverage}
-          areaPA={listPA}
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
-        />
-        <EcosystemBox
-          name="Páramo"
-          percentage={0.15}
-          nationalPercentage={0.05}
-          area={100000}
-          total={Number(ecosystemsArea)}
-          coverage={coverage}
-          areaPA={listPA}
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
-        />
+        {!listSE && ('Cargando...')}
+        {listSE && (listSE[0].area === '0') && ('Información no disponible')}
+        {listSE && (listSE[0].area !== '0') && (
+          <EcosystemsBox
+            areaId={areaId}
+            total={Number(generalArea)}
+            geofenceId={geofenceId}
+            listSE={listSE}
+          />
+        )}
       </div>
     </div>
   </div>

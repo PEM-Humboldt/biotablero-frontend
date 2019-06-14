@@ -14,14 +14,16 @@ import GraphLoader from './GraphLoader';
  * @param {string} graphTitle graph title
  * @param {array} colors colors to sort elements inside the graph
  */
+
+
 const RenderGraph = (
   data, labelX, labelY, graph, graphTitle, colors,
   handlerInfoGraph, openInfoGraph, graphDescription, units,
 ) => {
   // While data is being retrieved from server
   let errorMessage = null;
-  if (data === null) errorMessage = 'Cargando información...';
-  else if (!data) errorMessage = `Información de ${graphTitle} no disponible`;
+  if (data === null || (data.length < 1)) errorMessage = 'Cargando información...';
+  else if (!data) errorMessage = `Información${graphTitle ? ` de ${graphTitle}` : ''} no disponible`;
   if (errorMessage) {
     // TODO: ask Cesar to make this message nicer
     return (
