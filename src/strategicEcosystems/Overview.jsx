@@ -63,7 +63,7 @@ const Overview = (/* TODO: Add all values required */
       Cobertura
       </h4>
       <h6>
-      Natural y Transformada
+      Natural, Secundaria y Transformada
       </h6>
       <div className="graficaeco">
         {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
@@ -96,7 +96,7 @@ const Overview = (/* TODO: Add all values required */
         {listSE && (listSE[0].area !== '0') && (
           <EcosystemsBox
             areaId={areaId}
-            total={Number(generalArea)}
+            total={Number(ecosystemsArea)}
             geofenceId={geofenceId}
             listSE={listSE}
           />
