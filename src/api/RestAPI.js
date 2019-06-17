@@ -101,12 +101,12 @@ class RestAPI {
   }
 
   /**
-   * Recover the national percentage according to the selected strategic ecosystems
+   * Recover details, like the national percentage, according to the selected strategic ecosystems
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
    * @param {Number} idSE id geofence to request details
    */
-  static requestSENationalPercentage(idArea, idGeofence, idSE) {
+  static requestSEDetail(idArea, idGeofence, idSE) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
   }
 
