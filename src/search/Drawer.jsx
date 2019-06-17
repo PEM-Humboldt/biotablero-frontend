@@ -236,7 +236,10 @@ class Drawer extends React.Component {
                     area.id,
                     geofence.id,
                     'Área',
-                    'resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos',
+                    ('resume la información de los ecosistemas presentes en el'
+                      + ' área seleccionada, y su distribución al interior de áreas protegidas'
+                      + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
+                      + ' no son representados en las gráficas.'),
                   )}
                 </div>
               ),

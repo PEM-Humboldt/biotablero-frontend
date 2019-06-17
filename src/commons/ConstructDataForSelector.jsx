@@ -24,6 +24,7 @@ const ConstructDataForSearch = (geofences) => {
       iconOption: 'expand',
       idLabel: `panel1-${geofence.id}`,
       options: geofence.data,
+      disabled: (geofence.id === 'se'),
     };
     areasArray.push(area);
   });

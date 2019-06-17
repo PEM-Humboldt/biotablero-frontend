@@ -131,7 +131,7 @@ class Selector extends React.Component {
               >
                 {options.map((secondLevel) => {
                   const {
-                    id: subId, label: subLabel,
+                    id: subId, label: subLabel, disabled: subDisabled,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
@@ -139,6 +139,7 @@ class Selector extends React.Component {
                       className="m0"
                       id={subId}
                       expanded={subExpanded === subId}
+                      disabled={subDisabled}
                       onChange={this.secondLevelChange(subId)}
                       key={subId}
                     >
