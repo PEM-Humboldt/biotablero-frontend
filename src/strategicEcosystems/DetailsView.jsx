@@ -14,7 +14,7 @@ const validateData = (data) => {
       </b>
     );
   }
-  if (data.length <= 0) return <b>Información no disponible</b>;
+  if (data.length <= 0) return <b>No disponible</b>;
   return false;
 };
 
