@@ -20,8 +20,8 @@ const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 const handleMouseOver = (event, datum, showTooltip) => {
   const coords = localPoint(event.target.ownerSVGElement, event);
   showTooltip({
-    tooltipLeft: coords.x,
-    tooltipTop: coords.y,
+    tooltipLeft: (coords ? coords.x : event.clientX),
+    tooltipTop: (coords ? coords.y : event.clientY),
     tooltipData: datum,
   });
 };
@@ -122,10 +122,6 @@ export default withTooltip(
             className="graphinfo2"
             tooltip="¿Qué significa?"
             customButton
-            onMouseMove={(e) => {
-              if (tooltipTimeout) clearTimeout(tooltipTimeout);
-              handleMouseOver(e, '¿Qué significa?', showTooltip);
-            }}
           />
         )}
         <svg width={width - 40} height={height}>
@@ -198,17 +194,19 @@ export default withTooltip(
               lineHeight: '1.5',
             }}
           >
-            <div style={{ color: zScale(tooltipData.key) }}>
+            <div style={{ color: (tooltipData ? zScale(tooltipData.key) : '#e84a5f') }}>
               <strong>
-                {tooltipData.key}
+                {tooltipData ? tooltipData.key : 'Más información'}
               </strong>
             </div>
-            <div>
-              {`${numberWithCommas(Number(tooltipData.data[tooltipData.key]).toFixed(2))} ${units}`}
-            </div>
+            {tooltipData.data && (
+              <div>
+                {`${numberWithCommas(Number(tooltipData.data[tooltipData.key]).toFixed(2))} ${units}`}
+              </div>
+            )}
             <div>
               <small>
-                {tooltipData.xFormatted}
+                {tooltipData && tooltipData.xFormatted}
               </small>
             </div>
           </TooltipWithBounds>
