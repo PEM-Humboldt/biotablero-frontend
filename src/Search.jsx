@@ -301,7 +301,7 @@ class Search extends Component {
         );
         return newState;
       });
-    } else if (idLayer && idLayer !== 'se') {
+    } else if (idLayer && idLayer !== 'se' && idLayer !== 'pa') {
       RestAPI.requestGeometryByArea(idLayer)
         .then((res) => {
           this.setState(prevState => ({
