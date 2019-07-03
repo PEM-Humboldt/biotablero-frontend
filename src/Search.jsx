@@ -1,5 +1,5 @@
 /** eslint verified */
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 
 import L from 'leaflet';
 import PropTypes from 'prop-types';
@@ -250,6 +250,7 @@ class Search extends Component {
               ...prevState.layers,
               [layer.id]: {
                 displayName: layer.name,
+                id: layer.id || layer.id_ea,
                 active: true,
                 layer: L.geoJSON(res, {
                   style: this.featureStyle,
@@ -284,18 +285,19 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { areaList, layers } = this.state;
+    // const [timeoutLayer, setTimeoutLayer] = useState(0);
 
     if (layers[idLayer]) {
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.layers[idLayer].active = !prevState.layers[idLayer].active;
         newState.area = areaList.find(
-          item => item.id === newState.layers[idLayer].displayName,
+          item => item.id === newState.layers[idLayer].id,
         );
         Object.values(newState.layers).forEach(
           (item) => {
-            if (item.displayName !== idLayer) {
-              newState.layers[item.displayName].active = false;
+            if (item.id !== idLayer) {
+              newState.layers[item.id].active = false;
             }
           },
         );
@@ -310,6 +312,7 @@ class Search extends Component {
               [idLayer]: {
                 displayName: idLayer,
                 active: false,
+                id: idLayer,
                 layer: L.geoJSON(
                   res,
                   {
