@@ -622,6 +622,10 @@ menu button.active {
 	color: #fff;
 }
 
+.mb10 {
+	margin-bottom: 5px;
+}
+
 .mb30 {
 	margin-top: 30px;
 	max-height: 700px;
@@ -1453,9 +1457,9 @@ div[id*="panel"] button:hover {
 }
 
 .ecoest {
-	margin: 25px 12px 15px;
+	margin: 25px 12px 10px;
 	border: 1px solid #ea495f;
-	padding: 0 15px 15px;
+	padding: 0 15px;
 }
 
 .minus20 {
@@ -1630,7 +1634,6 @@ p.legcomp {
 
 .ecosystems {
   margin-top: 15px;
-  margin-bottom: 5px;
 }
 
 .Biomatit {

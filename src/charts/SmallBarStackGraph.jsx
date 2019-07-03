@@ -36,10 +36,10 @@ export default withTooltip(
     showTooltip,
     units,
     margin = {
-      top: 5,
+      top: 3,
       left: 5,
       right: 5,
-      bottom: 5,
+      bottom: 3,
     },
   }) => {
     if (width < 10) return null;
@@ -86,7 +86,7 @@ export default withTooltip(
 
     return (
       <div>
-        <svg width={width - 15} height={35}>
+        <svg width={width - 15} height={30}>
           <Group top={margin.top} left={margin.left}>
             {`${Number((0.20 * 100).toFixed(2))} % `}
             <BarStackHorizontal

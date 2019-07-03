@@ -8,6 +8,18 @@ import RenderGraph from '../charts/RenderGraph';
 
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
+const helperAreaArrayIsEmpty = (array) => {
+  if (array) {
+    let isEmpty = true;
+    array.forEach((element) => {
+      if (element.area !== 0) {
+        isEmpty = false;
+      }
+      return isEmpty;
+    });
+  }
+};
+
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
 const Overview = (/* TODO: Add all values required */
@@ -92,8 +104,8 @@ const Overview = (/* TODO: Add all values required */
         </h4>
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
         {!listSE && ('Cargando...')}
-        {listSE && (listSE[0].area === '0') && ('Información no disponible')}
-        {listSE && (listSE[0].area !== '0') && (
+        {helperAreaArrayIsEmpty(listSE) && ('Información no disponible')}
+        {listSE && !helperAreaArrayIsEmpty(listSE) && (
           <EcosystemsBox
             areaId={areaId}
             total={Number(ecosystemsArea)}
