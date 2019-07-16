@@ -57,13 +57,13 @@ class EcosystemsBox extends Component {
         {total !== 0 && listSE.map((item) => {
           const index = showGraphs.indexOf(item.type);
           return (
-            <div key={item.type}>
+            <div className="mb10" key={item.type}>
               <div className="singleeco">{item.type}</div>
               <div className="singleeco2">
                 {`${numberWithCommas(Number(item.area).toFixed(2))} ha`}
               </div>
               {
-                (item.area !== 0 && total !== 0) && (
+                (item.area !== 0 && item.area !== '0') && (
                   <button
                     className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
                     type="button"
@@ -76,11 +76,12 @@ class EcosystemsBox extends Component {
                 )
               }
               {
-                RenderGraph(
-                  this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
-                  'Área protegida', ['#51b4c1', '#fff'], null, null,
-                  '', '%',
-                )
+                (item.area !== 0 && item.area !== '0') && (
+                  RenderGraph(
+                    this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
+                    'Área protegida', ['#51b4c1', '#fff'], null, null,
+                    '', '%',
+                  ))
               }
               {
                 (index > -1) && (
