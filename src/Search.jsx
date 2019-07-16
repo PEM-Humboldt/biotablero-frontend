@@ -1,5 +1,5 @@
 /** eslint verified */
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 
 import L from 'leaflet';
 import PropTypes from 'prop-types';
@@ -20,9 +20,8 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeLayers: null,
       activeLayer: null,
-      geofenceData: null,
+      subLayerData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -54,7 +53,7 @@ class Search extends Component {
       dataError: false,
       geofencesArray: [],
       areaList: [],
-      layerName: null,
+      subLayerName: null,
       layers: {},
       loadingModal: false,
       area: null,
@@ -395,9 +394,9 @@ class Search extends Component {
 
       newState = {
         ...newState,
-        geofenceData: null,
+        subLayerData: null,
         area: null,
-        layerName: null,
+        subLayerName: null,
         activeLayer: null,
         layers: {},
         openInfoGraph: null,
@@ -443,7 +442,7 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
+      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError,
       openInfoGraph,
     } = this.state;
@@ -546,13 +545,13 @@ class Search extends Component {
                 colors={colors}
                 colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
                 colorSZH={colorSZH}
-                geofenceData={geofenceData}
+                subLayerData={subLayerData}
                 geofence={activeLayer}
                 handlerBackButton={this.handlerBackButton}
                 handlerInfoGraph={name => this.handlerInfoGraph(name)}
                 openInfoGraph={openInfoGraph}
                 id
-                layerName={layerName}
+                subLayerName={subLayerName}
               />
             )}
             { activeLayer && area && (area.id === 'se') && (

@@ -164,9 +164,9 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofence, geofenceData, colors, colorSZH, colorsFC,
+      geofence, subLayerData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
-      layerName, area,
+      subLayerName, area,
     } = this.props;
     const {
       data: {
@@ -192,10 +192,11 @@ class Drawer extends React.Component {
           <br />
           {geofence.name}
           <b>
-            {layerName}
+            {subLayerName}
           </b>
         </h1>
-        { !layerName && (
+        { console.info(subLayerName) }
+        { !subLayerName && (
           <TabContainer
             classes={classes}
             titles={[
@@ -256,9 +257,9 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { layerName && geofenceData && (
+        { subLayerName && subLayerData && (
           <div className={classes.root}>
-            {RenderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
+            {RenderGraph(subLayerData, 'Subzonas Hidrográficas', 'Hectáreas',
               'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
@@ -273,21 +274,21 @@ Drawer.propTypes = {
   colors: PropTypes.array,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
-  geofenceData: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.string,
-  layerName: PropTypes.string,
+  subLayerData: PropTypes.array,
+  subLayerName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
   colors: ['#345b6b'],
   colorSZH: [],
   colorsFC: [],
-  geofenceData: {},
   geofence: { id: NaN, name: '' },
-  layerName: '',
+  subLayerData: {},
+  subLayerName: '',
   handlerBackButton: () => {},
   handlerInfoGraph: () => {},
   openInfoGraph: null,
