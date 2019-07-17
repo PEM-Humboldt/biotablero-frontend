@@ -543,7 +543,7 @@ class Search extends Component {
               <Drawer
                 area={area}
                 colors={colors}
-                colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
+                colorsFC={colorsFC}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
                 geofence={activeLayer}

@@ -195,7 +195,6 @@ class Drawer extends React.Component {
             {subLayerName}
           </b>
         </h1>
-        { console.info(subLayerName) }
         { !subLayerName && (
           <TabContainer
             classes={classes}
