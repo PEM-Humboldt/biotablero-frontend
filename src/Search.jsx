@@ -65,12 +65,45 @@ class Search extends Component {
     this.loadAreaList();
   }
 
+  setArea = (idLayer) => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      // TODO: Cargar la capa sólo cuando se ha cambiado el área, invirtiendo el
+      // orden en loadLayer y así en LoadLayer (externa) usar hooks para el llamado al RestAPI
+      // y controlar cuando montar o no una capa
+      if (newState.area && (newState.area.id === idLayer)) {
+        newState.area = null;
+      } else {
+        newState.area = newState.areaList.find(
+          item => item.id === idLayer,
+        );
+      }
+      return newState;
+    });
+  };
+
+  // setLayers = (layers) => {
+  //   this.setState((prevState) => {
+  //     const newState = { ...prevState };
+  //     newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+  //     Object.values(newState.layers).forEach(
+  //       (item) => {
+  //         if (item.id !== idLayer) {
+  //           newState.layers[item.id].active = false;
+  //         }
+  //       },
+  //     );
+  //     return newState;
+  //   });
+  // };
+
   loadAreaList = () => {
-    let { geofencesArray, areaList } = this.state;
     /**
      * Recover all geofences by default availables in the
-     * database for the Search Module
+     * database for the Search Module and sort them
      */
+    let tempAreaList;
+    let tempGeofencesArray;
     Promise.all([
       RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
@@ -79,17 +112,17 @@ class Search extends Component {
       RestAPI.getAllSEs(),
     ])
       .then(([pa, states, ea, basinSubzones, se]) => {
-        areaList = [
+        tempAreaList = [
           { name: 'Areas de manejo especial', data: pa, id: 'pa' },
           { name: 'Departamentos', data: states, id: 'states' },
           { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
           { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
-        geofencesArray = ConstructDataForSearch(areaList);
+        tempGeofencesArray = ConstructDataForSearch(tempAreaList);
         this.setState({
-          geofencesArray,
-          areaList,
+          geofencesArray: tempGeofencesArray,
+          areaList: tempAreaList,
         });
       })
       .catch(() => this.reportConnError());
@@ -283,16 +316,11 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadSecondLevelLayer = (idLayer) => {
-    const { areaList, layers } = this.state;
-    // const [timeoutLayer, setTimeoutLayer] = useState(0);
-
+    const { layers } = this.state;
     if (layers[idLayer]) {
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-        newState.area = areaList.find(
-          item => item.id === newState.layers[idLayer].id,
-        );
         Object.values(newState.layers).forEach(
           (item) => {
             if (item.id !== idLayer) {
@@ -342,11 +370,9 @@ class Search extends Component {
                 }
               },
             );
-            newState.area = areaList.find(
-              item => item.id === newState.layers[idLayer].displayName,
-            );
             return newState;
           });
+          this.setArea(idLayer);
         });
     }
   }
@@ -355,17 +381,7 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (id) => {
-    const { areaList } = this.state;
-    this.setState((prevState) => {
-      let newState = { ...prevState };
-      newState = {
-        ...newState,
-        area: areaList.find(
-          item => item.id === id,
-        ),
-      };
-      return newState;
-    });
+    this.setArea(id);
     this.loadSecondLevelLayer(id);
   }
 
