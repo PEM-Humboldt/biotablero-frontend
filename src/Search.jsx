@@ -61,7 +61,7 @@ class Search extends Component {
     };
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.loadAreaList();
   }
 
@@ -365,7 +365,8 @@ class Search extends Component {
               (item) => {
                 if ((item.displayName === idLayer)) {
                   newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                } else if (newState.layers[item.displayName]) {
+                } else if (prevState.layers[item.displayName]
+                  && (prevState.layers[item.displayName].active === true)) {
                   newState.layers[item.displayName].active = false;
                 }
               },

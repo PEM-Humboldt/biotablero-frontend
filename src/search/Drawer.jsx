@@ -234,7 +234,7 @@ class Drawer extends React.Component {
                     handlerInfoGraph,
                     openInfoGraph,
                     area.id,
-                    geofence.id,
+                    area.id === 'pa' ? geofence.name : geofence.id,
                     'Área',
                     ('resume la información de los ecosistemas presentes en el'
                       + ' área seleccionada, y su distribución al interior de áreas protegidas'
