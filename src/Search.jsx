@@ -373,9 +373,9 @@ class Search extends Component {
             );
             return newState;
           });
-          this.setArea(idLayer);
         });
     }
+    this.setArea(idLayer);
   }
 
   /** ****************************** */
@@ -393,6 +393,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
+    this.setArea(nameToOff);
     if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 

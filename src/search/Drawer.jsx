@@ -101,65 +101,67 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBiomes(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: false,
-          },
-        }));
-      });
+    if (area.id === 'ea') {
+      RestAPI.requestBiomes(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: false,
+            },
+          }));
+        });
 
-    RestAPI.requestCompensationFactor(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: false,
-          },
-        }));
-      });
+      RestAPI.requestCompensationFactor(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: false,
+            },
+          }));
+        });
 
-    RestAPI.requestBioticUnits(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: false,
-          },
-        }));
-      });
+      RestAPI.requestBioticUnits(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: false,
+            },
+          }));
+        });
+    }
   }
 
   render() {
@@ -207,15 +209,33 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="1">
-                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
-                    'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
-                    'representa las hectáreas sobre los Biomas IAvH analizados')}
-                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
-                    'Biomas', colors, handlerInfoGraph, openInfoGraph,
-                    'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
-                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                    'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
-                    'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
+                      'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
+                      'representa las hectáreas sobre los Biomas IAvH analizados')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
+                      'Biomas', colors, handlerInfoGraph, openInfoGraph,
+                      'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
+                      'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
+                      'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')
+                  }
+                  {(area.name !== 'Jurisdicciones ambientales')
+                    && (
+                    <div className="graphcard">
+                      <h2>
+                        Gráficas en construcción
+                      </h2>
+                      <p>
+                        Pronto más información
+                      </p>
+                    </div>
+                    )
+                  }
                 </div>
               ),
               (
