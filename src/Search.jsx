@@ -65,6 +65,10 @@ class Search extends Component {
     this.loadAreaList();
   }
 
+  componentDidMount() {
+    this.loadAreaList();
+  }
+
   setArea = (idLayer) => {
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -318,6 +322,8 @@ class Search extends Component {
   loadSecondLevelLayer = (idLayer) => {
     const { layers } = this.state;
     if (layers[idLayer]) {
+      this.setArea(idLayer);
+      console.log('controlx1');
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.layers[idLayer].active = !prevState.layers[idLayer].active;
@@ -331,6 +337,7 @@ class Search extends Component {
         return newState;
       });
     } else if (idLayer && idLayer !== 'se' && idLayer !== 'pa') {
+      console.log('controlx2');
       RestAPI.requestGeometryByArea(idLayer)
         .then((res) => {
           this.setState(prevState => ({
@@ -363,19 +370,51 @@ class Search extends Component {
             const newState = { ...prevState };
             Object.values(newState.layers).forEach(
               (item) => {
-                if ((item.displayName === idLayer)) {
-                  newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                } else if (prevState.layers[item.displayName]
+                console.info(prevState.layers[item.displayName] || 'Nada1');
+                console.info(newState.layers[item.displayName] || 'Nada2');
+                console.info(prevState.layers[idLayer] || 'Nada3');
+                console.info(newState.layers[idLayer] || 'Nada4');
+                console.info(item.displayName || 'Nada5');
+                console.info(idLayer || 'Nada6');
+                console.info(newState.area || 'Nada7');
+                // if () {
+                if (newState.layers[item.displayName] && (item.displayName === idLayer)) {
+                  if (!newState.activeLayer) {
+                    // Condition to load only one layer for innerElementChange
+                    console.log('control1');
+                    newState.layers[idLayer].active = !newState.layers[idLayer].active;
+                    this.setArea(idLayer);
+                    return newState;
+                  }
+                } if (prevState.layers[item.displayName]
                   && (prevState.layers[item.displayName].active === true)) {
+                  console.log('control2');
                   newState.layers[item.displayName].active = false;
+                  return newState;
                 }
+                console.log('control3');
+                newState.layers[idLayer].active = false;
+                return newState;
+              //  }
               },
             );
             return newState;
           });
         });
+      this.setArea(idLayer);
+    } else {
+      this.setArea(idLayer);
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        Object.values(newState.layers).forEach(
+          (item) => {
+            console.log(item);
+            newState.layers[item].active = false;
+            return newState;
+          },
+        );
+      });
     }
-    this.setArea(idLayer);
   }
 
   /** ****************************** */
