@@ -12,6 +12,17 @@ import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 
+const colorsRB = ['#003d59',
+  '#5a1d44',
+  '#902130',
+  '#6d819c',
+  '#db9d6b',
+  '#fb9334',
+  '#fe6625',
+  '#ab5727',
+  '#44857d',
+  '#167070'];
+
 const styles = () => ({
   root: {
     width: '100%',
@@ -225,7 +236,7 @@ class Drawer extends React.Component {
                   }
                   { (area.name === 'Jurisdicciones ambientales')
                     && RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                      'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
+                      'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
                       'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')
                   }
                   {(area.name !== 'Jurisdicciones ambientales')
