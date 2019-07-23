@@ -702,6 +702,7 @@ class Drawer extends React.Component {
           </b>
         </h1>
         <TabContainer
+          initialSelectedIndex={0}
           classes={classes}
           tabClasses="tabs2"
           titles={[

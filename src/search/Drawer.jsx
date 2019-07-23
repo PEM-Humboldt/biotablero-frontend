@@ -214,6 +214,7 @@ class Drawer extends React.Component {
         </h1>
         { !subLayerName && (
           <TabContainer
+            initialSelectedIndex={1}
             classes={classes}
             titles={[
               { label: 'Paisaje', icon: (<Paisaje />) },
@@ -223,7 +224,7 @@ class Drawer extends React.Component {
           >
             {[
               (
-                <div key="1">
+                <div key="1" selected>
                   { (area.name === 'Jurisdicciones ambientales')
                     && RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
                       'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
