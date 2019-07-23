@@ -35,6 +35,10 @@ class Drawer extends React.Component {
     };
   }
 
+  componentWillMount() {
+    this.setState(null);
+  }
+
   componentDidMount() {
     const {
       geofence, area,

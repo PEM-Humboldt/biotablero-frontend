@@ -14,7 +14,14 @@ class EcosystemsBox extends Component {
     super(props);
     this.state = {
       showGraphs: [],
+      stopLoad: false,
     };
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      stopLoad: true,
+    });
   }
 
   /**
@@ -32,7 +39,7 @@ class EcosystemsBox extends Component {
     }
     this.setState(prevState => ({
       ...prevState,
-      showGraphs: loaded,
+      showGraphs: !prevState.stopLoad ? loaded : false,
     }));
   }
 
@@ -48,13 +55,13 @@ class EcosystemsBox extends Component {
       total,
       listSE,
     } = this.props;
-    const { showGraphs } = this.state;
+    const { showGraphs, stopLoad } = this.state;
     return (
       <div
         className="ecosystems"
         role="presentation"
       >
-        {total !== 0 && listSE.map((item) => {
+        {!stopLoad && total !== 0 && listSE.map((item) => {
           const index = showGraphs.indexOf(item.type);
           return (
             <div className="mb10" key={item.type}>
@@ -75,16 +82,16 @@ class EcosystemsBox extends Component {
                   </button>
                 )
               }
-              {
-                (item.area !== 0 && item.area !== '0') && (
-                  RenderGraph(
-                    this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
-                    'Área protegida', ['#51b4c1', '#fff'], null, null,
-                    '', '%',
-                  ))
+              {!stopLoad
+                && (item.area !== 0 && item.area !== '0') && (
+                RenderGraph(
+                  this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
+                  'Área protegida', ['#51b4c1', '#fff'], null, null,
+                  '', '%',
+                ))
               }
-              {
-                (index > -1) && (
+              {!stopLoad
+                && (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
                     areaId={areaId}
@@ -92,7 +99,7 @@ class EcosystemsBox extends Component {
                     item={item}
                   />
                 </div>
-                )
+              )
               }
             </div>
           );
