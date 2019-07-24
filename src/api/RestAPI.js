@@ -1,5 +1,5 @@
 /** eslint verified */
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 
 class RestAPI {
   /**
@@ -207,7 +207,11 @@ class RestAPI {
    * @param {String} areaId area id to request
    */
   static requestGeometryByArea(areaId) {
-    return RestAPI.makeGetRequest(`${areaId}/layers/national`);
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
+      source,
+    };
   }
 
   /** ******************* */
@@ -364,13 +368,13 @@ class RestAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    */
-  static makeGetRequest(endpoint) {
-    return axios.get(RestAPI.getEndpointUrl(endpoint))
+  static makeGetRequest(endpoint, options) {
+    return axios.get(RestAPI.getEndpointUrl(endpoint), options)
       .then(res => res.data)
       .catch((error) => {
         let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
-        if (error.request.statusText === '') message = 'no-data-available';
+        if (error.request && error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
   }
