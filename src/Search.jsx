@@ -309,8 +309,10 @@ class Search extends Component {
    */
   loadSecondLevelLayer = (idLayer) => {
     const { layers, requestSource } = this.state;
+    let wasCancel = false;
     if (requestSource) {
       requestSource.cancel();
+      wasCancel = true;
     }
     if (layers[idLayer]) {
       this.setArea(idLayer);
@@ -319,7 +321,7 @@ class Search extends Component {
           ...prevState,
           requestSource: null,
         };
-        newState.layers[idLayer].active = !prevState.layers[idLayer].active;
+        newState.layers[idLayer].active = wasCancel ? true : !prevState.layers[idLayer].active;
         Object.values(newState.layers).forEach(
           (item) => {
             if (item.id !== idLayer) {
