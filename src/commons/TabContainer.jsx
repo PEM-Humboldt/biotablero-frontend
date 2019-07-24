@@ -8,9 +8,10 @@ import Typography from '@material-ui/core/Typography';
 
 class TabContainer extends React.Component {
   constructor(props) {
+    const { initialSelectedIndex } = props;
     super(props);
     this.state = {
-      value: 0,
+      value: initialSelectedIndex,
     };
   }
 
@@ -36,13 +37,16 @@ class TabContainer extends React.Component {
             textColor="secondary"
             centered
           >
-            {titles.map(({ label, icon, disabled }, i) => (
+            {titles.map(({
+              label, icon, disabled, selected,
+            }, i) => (
               <Tab
                 className={`tabs ${tabClasses}`}
                 label={label}
                 icon={icon}
                 key={i}
                 disabled={disabled}
+                selected={selected}
               />
             ))}
           </Tabs>
@@ -64,6 +68,7 @@ TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
   classes: PropTypes.object.isRequired,
   // Array of objects with info for each tab title (attributes: label, icon)
+  initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
   // Extra clases for 'Tab' component
   tabClasses: PropTypes.string,
@@ -71,6 +76,7 @@ TabContainer.propTypes = {
 
 TabContainer.defaultProps = {
   tabClasses: '',
+  initialSelectedIndex: 1,
 };
 
 export default TabContainer;

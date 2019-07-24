@@ -1,5 +1,5 @@
 /** eslint verified */
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 
 import L from 'leaflet';
 import PropTypes from 'prop-types';
@@ -20,9 +20,8 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeLayers: null,
       activeLayer: null,
-      geofenceData: null,
+      subLayerData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -54,24 +53,63 @@ class Search extends Component {
       dataError: false,
       geofencesArray: [],
       areaList: [],
-      layerName: null,
+      subLayerName: null,
       layers: {},
       loadingModal: false,
       area: null,
       userDataLoaded: false,
+      stopLoad: false,
     };
+  }
+
+  componentWillMount() {
+    this.loadAreaList();
   }
 
   componentDidMount() {
     this.loadAreaList();
   }
 
+  /**
+   * Control when to show the innerLayer
+   *
+   * @param {bool} value flag to control transition
+   */
+  setInnerLayer = (value) => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      newState.stopLoad = value;
+      return newState;
+    });
+    return value;
+  };
+
+  /**
+   * Set area state to control transitions
+   *
+   * @param {Object} idLayer value to set
+   */
+  setArea = (idLayer) => {
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      if (newState.area && (newState.area.id === idLayer)) {
+        newState.area = null;
+      } else {
+        newState.area = newState.areaList.find(
+          item => item.id === idLayer,
+        );
+      }
+      return newState;
+    });
+  };
+
   loadAreaList = () => {
-    let { geofencesArray, areaList } = this.state;
     /**
      * Recover all geofences by default availables in the
-     * database for the Search Module
+     * database for the Search Module and sort them
      */
+    let tempAreaList;
+    let tempGeofencesArray;
     Promise.all([
       RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
@@ -80,39 +118,39 @@ class Search extends Component {
       RestAPI.getAllSEs(),
     ])
       .then(([pa, states, ea, basinSubzones, se]) => {
-        areaList = [
+        tempAreaList = [
           { name: 'Areas de manejo especial', data: pa, id: 'pa' },
           { name: 'Departamentos', data: states, id: 'states' },
           { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
           { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
-        geofencesArray = ConstructDataForSearch(areaList);
+        tempGeofencesArray = ConstructDataForSearch(tempAreaList);
         this.setState({
-          geofencesArray,
-          areaList,
+          geofencesArray: tempGeofencesArray,
+          areaList: tempAreaList,
         });
       })
       .catch(() => this.reportConnError());
   }
 
-    /**
-     * Report a connection error from one of the child components
-     */
-    reportConnError = () => {
-      this.setState({
-        connError: true,
-      });
-    }
+  /**
+   * Report a connection error from one of the child components
+   */
+  reportConnError = () => {
+    this.setState({
+      connError: true,
+    });
+  }
 
-    /**
-     * Report dataset error from one of the child components
-     */
-    reportDataError = () => {
-      this.setState({
-        loadingModal: false,
-      });
-    }
+  /**
+   * Report dataset error from one of the child components
+   */
+  reportDataError = () => {
+    this.setState({
+      loadingModal: false,
+    });
+  }
 
   /**
    * Choose the right color for the biome inside the map, according
@@ -284,16 +322,12 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadSecondLevelLayer = (idLayer) => {
-    const { areaList, layers } = this.state;
-    // const [timeoutLayer, setTimeoutLayer] = useState(0);
-
+    const { layers, stopLoad } = this.state;
     if (layers[idLayer]) {
+      this.setArea(idLayer);
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-        newState.area = areaList.find(
-          item => item.id === newState.layers[idLayer].id,
-        );
         Object.values(newState.layers).forEach(
           (item) => {
             if (item.id !== idLayer) {
@@ -303,52 +337,64 @@ class Search extends Component {
         );
         return newState;
       });
-    } else if (idLayer && idLayer !== 'se' && idLayer !== 'pa') {
-      RestAPI.requestGeometryByArea(idLayer)
-        .then((res) => {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
-                active: false,
-                id: idLayer,
-                layer: L.geoJSON(
-                  res,
-                  {
-                    style: {
-                      color: '#e84a5f',
-                      weight: 0.5,
-                      fillColor: '#ffd8e2',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
+    } if (idLayer && idLayer !== 'se' && idLayer !== 'pa') {
+      this.setArea(idLayer);
+      if (!stopLoad) {
+        RestAPI.requestGeometryByArea(idLayer)
+          .then((res) => {
+            this.setState(prevState => ({
+              layers: {
+                ...prevState.layers,
+                [idLayer]: {
+                  displayName: idLayer,
+                  active: false,
+                  id: idLayer,
+                  layer: L.geoJSON(
+                    res,
+                    {
+                      style: {
+                        color: '#e84a5f',
+                        weight: 0.5,
+                        fillColor: '#ffd8e2',
+                        opacity: 0.6,
+                        fillOpacity: 0.4,
+                      },
+                      onEachFeature: (feature, layer) => (
+                        this.featureActions(feature, layer, idLayer)
+                      ),
                     },
-                    onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, idLayer)
-                    ),
-                  },
-                ),
+                  ),
+                },
               },
-            },
-          }));
+            }));
 
-          this.setState((prevState) => {
-            const newState = { ...prevState };
-            Object.values(newState.layers).forEach(
-              (item) => {
-                if ((item.displayName === idLayer)) {
-                  newState.layers[idLayer].active = !prevState.layers[idLayer].active;
-                } else if (newState.layers[item.displayName]) {
-                  newState.layers[item.displayName].active = false;
-                }
-              },
-            );
-            newState.area = areaList.find(
-              item => item.id === newState.layers[idLayer].displayName,
-            );
-            return newState;
+            this.setState((prevState) => {
+              const newState = { ...prevState };
+              Object.values(newState.layers).forEach(
+                (item) => {
+                  if (newState.layers[item.displayName] && (item.displayName === idLayer)) {
+                    if (!newState.activeLayer) {
+                      // Condition to load only one layer for innerElementChange
+                      newState.layers[idLayer].active = !newState.layers[idLayer].active;
+                      if (prevState.layers[item] && prevState.layers[item].active) {
+                        newState.layers[item].active = false;
+                      }
+                      this.setArea(idLayer); // To ensure area selected
+                      return newState;
+                    }
+                  } if (prevState.layers[item.displayName]
+                    && (prevState.layers[item.displayName].active === true)) {
+                    newState.layers[item.displayName].active = false;
+                    return newState;
+                  }
+                  newState.layers[idLayer].active = false;
+                  return newState;
+                },
+              );
+              return newState;
+            });
           });
-        });
+      }
     }
   }
 
@@ -356,17 +402,7 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (id) => {
-    const { areaList } = this.state;
-    this.setState((prevState) => {
-      let newState = { ...prevState };
-      newState = {
-        ...newState,
-        area: areaList.find(
-          item => item.id === id,
-        ),
-      };
-      return newState;
-    });
+    this.setArea(id);
     this.loadSecondLevelLayer(id);
   }
 
@@ -377,6 +413,9 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
+    const { area } = this.state;
+    this.setInnerLayer(true);
+    if (area === null) this.setArea(nameToOff);
     if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 
@@ -386,6 +425,7 @@ class Search extends Component {
 
   // TODO: Return from biome to jurisdicción
   handlerBackButton = () => {
+    this.setInnerLayer(false);
     this.setState((prevState) => {
       let newState = { ...prevState };
       const { layers } = prevState;
@@ -395,9 +435,9 @@ class Search extends Component {
 
       newState = {
         ...newState,
-        geofenceData: null,
+        subLayerData: null,
         area: null,
-        layerName: null,
+        subLayerName: null,
         activeLayer: null,
         layers: {},
         openInfoGraph: null,
@@ -422,14 +462,14 @@ class Search extends Component {
     });
   }
 
-    /**
-     * Close a given modal
-     *
-     * @param {String} state state value that controls the modal you want to close
-     */
-    handleCloseModal = state => () => {
-      this.setState({ [state]: false });
-    };
+  /**
+   * Close a given modal
+   *
+   * @param {String} state state value that controls the modal you want to close
+   */
+  handleCloseModal = state => () => {
+    this.setState({ [state]: false });
+  };
 
   /**
     * Function to control data options belonging to the companyId
@@ -443,7 +483,7 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, layerName, activeLayer, geofenceData, currentCompany, loadingModal,
+      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError,
       openInfoGraph,
     } = this.state;
@@ -544,15 +584,15 @@ class Search extends Component {
               <Drawer
                 area={area}
                 colors={colors}
-                colorsFC={colorsFC.map(obj => Object.values(obj)[0])}
+                colorsFC={colorsFC}
                 colorSZH={colorSZH}
-                geofenceData={geofenceData}
+                subLayerData={subLayerData}
                 geofence={activeLayer}
                 handlerBackButton={this.handlerBackButton}
                 handlerInfoGraph={name => this.handlerInfoGraph(name)}
                 openInfoGraph={openInfoGraph}
                 id
-                layerName={layerName}
+                subLayerName={subLayerName}
               />
             )}
             { activeLayer && area && (area.id === 'se') && (

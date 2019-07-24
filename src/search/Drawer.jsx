@@ -12,6 +12,17 @@ import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 
+const colorsRB = ['#003d59',
+  '#5a1d44',
+  '#902130',
+  '#6d819c',
+  '#db9d6b',
+  '#fb9334',
+  '#fe6625',
+  '#ab5727',
+  '#44857d',
+  '#167070'];
+
 const styles = () => ({
   root: {
     width: '100%',
@@ -33,6 +44,10 @@ class Drawer extends React.Component {
         areaPA: null, // area fields for protected areas
       },
     };
+  }
+
+  componentWillMount() {
+    this.setState(null);
   }
 
   componentDidMount() {
@@ -101,72 +116,74 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestBiomes(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: false,
-          },
-        }));
-      });
+    if (area.id === 'ea') {
+      RestAPI.requestBiomes(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: false,
+            },
+          }));
+        });
 
-    RestAPI.requestCompensationFactor(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: false,
-          },
-        }));
-      });
+      RestAPI.requestCompensationFactor(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: false,
+            },
+          }));
+        });
 
-    RestAPI.requestBioticUnits(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: false,
-          },
-        }));
-      });
+      RestAPI.requestBioticUnits(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: false,
+            },
+          }));
+        });
+    }
   }
 
   render() {
     const {
-      geofence, geofenceData, colors, colorSZH, colorsFC,
+      geofence, subLayerData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
-      layerName, area,
+      subLayerName, area,
     } = this.props;
     const {
       data: {
@@ -192,11 +209,12 @@ class Drawer extends React.Component {
           <br />
           {geofence.name}
           <b>
-            {layerName}
+            {subLayerName}
           </b>
         </h1>
-        { !layerName && (
+        { !subLayerName && (
           <TabContainer
+            initialSelectedIndex={1}
             classes={classes}
             titles={[
               { label: 'Paisaje', icon: (<Paisaje />) },
@@ -206,16 +224,34 @@ class Drawer extends React.Component {
           >
             {[
               (
-                <div key="1">
-                  {RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
-                    'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
-                    'representa las hectáreas sobre los Biomas IAvH analizados')}
-                  {RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
-                    'Biomas', colors, handlerInfoGraph, openInfoGraph,
-                    'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')}
-                  {RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                    'Regiones Bióticas', ['#92ba3a', '#70b438', '#5f8f2c'], handlerInfoGraph, openInfoGraph,
-                    'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')}
+                <div key="1" selected>
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
+                      'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
+                      'representa las hectáreas sobre los Biomas IAvH analizados')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
+                      'Biomas', colors, handlerInfoGraph, openInfoGraph,
+                      'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
+                      'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
+                      'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')
+                  }
+                  {(area.name !== 'Jurisdicciones ambientales')
+                    && (
+                    <div className="graphcard">
+                      <h2>
+                        Gráficas en construcción
+                      </h2>
+                      <p>
+                        Pronto más información
+                      </p>
+                    </div>
+                    )
+                  }
                 </div>
               ),
               (
@@ -234,7 +270,7 @@ class Drawer extends React.Component {
                     handlerInfoGraph,
                     openInfoGraph,
                     area.id,
-                    geofence.id,
+                    area.id === 'pa' ? geofence.name : geofence.id,
                     'Área',
                     ('resume la información de los ecosistemas presentes en el'
                       + ' área seleccionada, y su distribución al interior de áreas protegidas'
@@ -256,9 +292,9 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { layerName && geofenceData && (
+        { subLayerName && subLayerData && (
           <div className={classes.root}>
-            {RenderGraph(geofenceData, 'Subzonas Hidrográficas', 'Hectáreas',
+            {RenderGraph(subLayerData, 'Subzonas Hidrográficas', 'Hectáreas',
               'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
@@ -273,21 +309,21 @@ Drawer.propTypes = {
   colors: PropTypes.array,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
-  geofenceData: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.string,
-  layerName: PropTypes.string,
+  subLayerData: PropTypes.array,
+  subLayerName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
   colors: ['#345b6b'],
   colorSZH: [],
   colorsFC: [],
-  geofenceData: {},
   geofence: { id: NaN, name: '' },
-  layerName: '',
+  subLayerData: {},
+  subLayerName: '',
   handlerBackButton: () => {},
   handlerInfoGraph: () => {},
   openInfoGraph: null,

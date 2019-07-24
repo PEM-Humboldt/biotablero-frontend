@@ -86,9 +86,13 @@ export default withTooltip(
       domain: data.map(y),
       padding: 0.1,
     });
-    const zScale = scaleOrdinal({
+    const validColors = colors && colors.map((obj => Object.values(obj)[0]));
+    const zScale = (validColors[0] === '#') ? scaleOrdinal({
       domain: keys,
       range: colors,
+    }) : scaleOrdinal({
+      domain: colors.map((obj => Object.keys(obj)[0])),
+      range: colors.map((obj => Object.values(obj)[0])),
     });
 
     let tooltipTimeout;

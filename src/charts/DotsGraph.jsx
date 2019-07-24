@@ -86,7 +86,7 @@ export default withTooltip(({
               fill={checkColor(point)}
               left={margin.left + xScale(x(point))}
               top={yScale(y(point))}
-              size={xScale(x(point)) * 1.2}
+              size={xScale(x(point)) + 20}
               onMouseEnter={() => () => {
                 clearTimeout(tooltipTimeout);
                 showTooltip({

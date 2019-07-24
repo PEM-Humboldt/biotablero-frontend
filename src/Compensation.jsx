@@ -234,13 +234,13 @@ class Compensation extends Component {
   }
 
   clickFeature = (event, parentLayer) => {
-    const { properties } = event.target.feature;
+    const { properties } = event.feature;
     if ('id_biome' in properties) {
       this.setState({ currentBiome: properties.name });
     } else if ('id_strategy' in properties) {
       this.setState({ clickedStrategy: properties.id_strategy });
     }
-    this.highlightFeature(event.target, parentLayer);
+    this.highlightFeature(event, parentLayer);
   }
 
   /** ************************ */

@@ -57,6 +57,7 @@ class DetailsView extends Component {
       seDetail: null,
       seCoverage: null,
       sePA: null,
+      stopLoad: false,
     };
   }
 
@@ -65,48 +66,57 @@ class DetailsView extends Component {
       areaId, geofenceId, item,
     } = this.props;
     const name = item.type || item.name;
+    const { stopLoad } = this.state;
 
-    RestAPI.requestSEDetail(areaId, geofenceId, name)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          seDetail: res.national_percentage,
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          seDetail: 0,
-        }));
-      });
+    if (!stopLoad) {
+      RestAPI.requestSEDetail(areaId, geofenceId, name)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            seDetail: res.national_percentage,
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            seDetail: 0,
+          }));
+        });
 
-    RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          seCoverage: res,
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          seCoverage: false,
-        }));
-      });
+      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            seCoverage: res,
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            seCoverage: false,
+          }));
+        });
 
-    RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          sePA: res,
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          sePA: false,
-        }));
-      });
+      RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            sePA: res,
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            sePA: false,
+          }));
+        });
+    }
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      stopLoad: true,
+    });
   }
 
   render() {
@@ -114,9 +124,11 @@ class DetailsView extends Component {
       item,
     } = this.props;
     const {
-      seDetail, seCoverage, sePA,
+      seDetail, seCoverage, sePA, stopLoad,
     } = this.state;
-    return showDetails(seDetail, item.percentage, seCoverage, sePA, null, null);
+    return (
+      !stopLoad ? showDetails(seDetail, item.percentage, seCoverage, sePA, null, null) : null
+    );
   }
 }
 
