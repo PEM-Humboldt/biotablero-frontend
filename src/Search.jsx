@@ -337,58 +337,46 @@ class Search extends Component {
       this.setState({ requestSource: source });
 
       request.then((res) => {
-        this.setState(prevState => ({
-          layers: {
-            ...prevState.layers,
-            [idLayer]: {
-              displayName: idLayer,
-              active: false,
-              id: idLayer,
-              layer: L.geoJSON(
-                res,
-                {
-                  style: {
-                    color: '#e84a5f',
-                    weight: 0.5,
-                    fillColor: '#ffd8e2',
-                    opacity: 0.6,
-                    fillOpacity: 0.4,
-                  },
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(feature, layer, idLayer)
-                  ),
-                },
-              ),
-            },
-          },
-        }));
-
         this.setState((prevState) => {
           const newState = {
             ...prevState,
+            layers: {
+              ...prevState.layers,
+              [idLayer]: {
+                displayName: idLayer,
+                active: false,
+                id: idLayer,
+                layer: L.geoJSON(
+                  res,
+                  {
+                    style: {
+                      color: '#e84a5f',
+                      weight: 0.5,
+                      fillColor: '#ffd8e2',
+                      opacity: 0.6,
+                      fillOpacity: 0.4,
+                    },
+                    onEachFeature: (feature, layer) => (
+                      this.featureActions(feature, layer, idLayer)
+                    ),
+                  },
+                ),
+              },
+            },
             requestSource: null,
           };
-          Object.values(newState.layers).forEach(
-            (item) => {
-              if (newState.layers[item.displayName] && (item.displayName === idLayer)) {
-                if (!newState.activeLayer) {
-                  // Condition to load only one layer for innerElementChange
-                  newState.layers[idLayer].active = !newState.layers[idLayer].active;
-                  if (prevState.layers[item] && prevState.layers[item].active) {
-                    newState.layers[item].active = false;
-                  }
-                  this.setArea(idLayer); // To ensure area selected
-                  return newState;
-                }
-              } if (prevState.layers[item.displayName]
-                && (prevState.layers[item.displayName].active === true)) {
-                newState.layers[item.displayName].active = false;
-                return newState;
-              }
+
+          Object.values(newState.layers).forEach((item) => {
+            if (newState.layers[item.displayName] && (item.displayName === idLayer)
+              && !newState.activeLayer) {
+              newState.layers[idLayer].active = !newState.layers[idLayer].active;
+            } else if (newState.layers[item.displayName]
+              && (newState.layers[item.displayName].active === true)) {
+              newState.layers[item.displayName].active = false;
+            } else {
               newState.layers[idLayer].active = false;
-              return newState;
-            },
-          );
+            }
+          });
           return newState;
         });
       });
