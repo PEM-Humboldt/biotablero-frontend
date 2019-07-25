@@ -214,15 +214,40 @@ class Drawer extends React.Component {
         </h1>
         { !subLayerName && (
           <TabContainer
-            initialSelectedIndex={1}
+            initialSelectedIndex={0}
             classes={classes}
             titles={[
-              { label: 'Paisaje', icon: (<Paisaje />) },
               { label: 'Ecosistemas', icon: (<Ecosistemas />) },
+              { label: 'Paisaje', icon: (<Paisaje />) },
               { label: 'Especies', icon: (<Especies />) },
             ]}
           >
             {[
+              (
+                <div key="2">
+                  {Overview(
+                    generalArea,
+                    ecosystemsArea,
+                    // removing the first response element, which is the total area in SE
+                    (areaSE ? areaSE.slice(1) : areaSE),
+                    protectedArea,
+                    // removing the first response element, which is the total area in PA
+                    (areaPA ? areaPA.slice(1) : areaPA),
+                    // removing the first response element, which is the total area in selected area
+                    (coverage && (coverage[0].type === 'Total')
+                      ? coverage.slice(1) : coverage),
+                    handlerInfoGraph,
+                    openInfoGraph,
+                    area.id,
+                    area.id === 'pa' ? geofence.name : geofence.id,
+                    'Área',
+                    ('resume la información de los ecosistemas presentes en el'
+                      + ' área seleccionada, y su distribución al interior de áreas protegidas'
+                      + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
+                      + ' no son representados en las gráficas.'),
+                  )}
+                </div>
+              ),
               (
                 <div key="1" selected>
                   { (area.name === 'Jurisdicciones ambientales')
@@ -252,31 +277,6 @@ class Drawer extends React.Component {
                     </div>
                     )
                   }
-                </div>
-              ),
-              (
-                <div key="2">
-                  {Overview(
-                    generalArea,
-                    ecosystemsArea,
-                    // removing the first response element, which is the total area in SE
-                    (areaSE ? areaSE.slice(1) : areaSE),
-                    protectedArea,
-                    // removing the first response element, which is the total area in PA
-                    (areaPA ? areaPA.slice(1) : areaPA),
-                    // removing the first response element, which is the total area in selected area
-                    (coverage && (coverage[0].type === 'Total')
-                      ? coverage.slice(1) : coverage),
-                    handlerInfoGraph,
-                    openInfoGraph,
-                    area.id,
-                    area.id === 'pa' ? geofence.name : geofence.id,
-                    'Área',
-                    ('resume la información de los ecosistemas presentes en el'
-                      + ' área seleccionada, y su distribución al interior de áreas protegidas'
-                      + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
-                      + ' no son representados en las gráficas.'),
-                  )}
                 </div>
               ),
               (
