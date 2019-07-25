@@ -62,10 +62,6 @@ class Search extends Component {
     };
   }
 
-  componentWillMount() {
-    this.loadAreaList();
-  }
-
   componentDidMount() {
     this.loadAreaList();
   }
@@ -227,32 +223,12 @@ class Search extends Component {
   clickFeature = (event, parentLayer) => {
     const { area } = this.state;
     this.highlightFeature(event, parentLayer);
-    this.handleClickOnArea(event, parentLayer);
     let value = this.findFirstId(event.target.feature.properties);
     if (!value) value = this.findSecondId(event.target.feature.properties);
     const toLoad = Object.values(area.data).filter(
       element => element.id === value.toString(),
     )[0];
     if (value) this.innerElementChange(parentLayer, toLoad);
-  }
-
-  /**
-   * When a click event occurs on a biome layer in the searches module,
-   *  request info by basinSubzones
-   *
-   * @param {Object} event event object
-   */
-  handleClickOnArea = (event, parentLayer) => {
-    const { areaList } = this.state;
-    areaList.forEach(
-      (item) => {
-        if (item.id === parentLayer) {
-          this.secondLevelChange(parentLayer);
-        }
-      },
-    );
-    // TODO: When the promise is rejected, we need to show a "Data not available" error
-    // (in the table). But the application won't break as it currently is
   }
 
   /**
@@ -312,36 +288,38 @@ class Search extends Component {
    * @param {String} idLayer Layer ID
    * @param {String} parentLayer Parent layer ID
    */
-  loadSecondLevelLayer = (idLayer) => {
+  loadSecondLevelLayer = (idLayer, show) => {
     const { layers, requestSource } = this.state;
-    let wasCancel = false;
     if (requestSource) {
       requestSource.cancel();
-      wasCancel = true;
     }
+
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+        requestSource: null,
+      };
+      Object.values(newState.layers).forEach((item) => {
+        newState.layers[item.id].active = false;
+      });
+      return newState;
+    });
+
     if (layers[idLayer]) {
-      this.setArea(idLayer);
       this.setState((prevState) => {
-        const newState = {
-          ...prevState,
-          requestSource: null,
-        };
-        newState.layers[idLayer].active = wasCancel ? true : !prevState.layers[idLayer].active;
-        Object.values(newState.layers).forEach(
-          (item) => {
-            if (item.id !== idLayer) {
-              newState.layers[item.id].active = false;
-            }
-          },
-        );
+        const newState = { ...prevState };
+        newState.layers[idLayer].active = show;
+        if (newState.layers[idLayer].active) {
+          this.setArea(idLayer);
+        }
         return newState;
       });
-    } else if (idLayer && idLayer !== 'se' && idLayer !== 'pa') {
-      this.setArea(idLayer);
+    } else if (show && idLayer && idLayer !== 'se' && idLayer !== 'pa') {
       const { request, source } = RestAPI.requestGeometryByArea(idLayer);
       this.setState({ requestSource: source });
 
       request.then((res) => {
+        this.setArea(idLayer);
         this.setState((prevState) => {
           const newState = {
             ...prevState,
@@ -349,7 +327,7 @@ class Search extends Component {
               ...prevState.layers,
               [idLayer]: {
                 displayName: idLayer,
-                active: false,
+                active: true,
                 id: idLayer,
                 layer: L.geoJSON(
                   res,
@@ -368,20 +346,7 @@ class Search extends Component {
                 ),
               },
             },
-            requestSource: null,
           };
-
-          Object.values(newState.layers).forEach((item) => {
-            if (newState.layers[item.displayName] && (item.displayName === idLayer)
-              && !newState.activeLayer) {
-              newState.layers[idLayer].active = !newState.layers[idLayer].active;
-            } else if (newState.layers[item.displayName]
-              && (newState.layers[item.displayName].active === true)) {
-              newState.layers[item.displayName].active = false;
-            } else {
-              newState.layers[idLayer].active = false;
-            }
-          });
           return newState;
         });
       });
@@ -391,9 +356,8 @@ class Search extends Component {
   /** ****************************** */
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
-  secondLevelChange = (id) => {
-    this.setArea(id);
-    this.loadSecondLevelLayer(id);
+  secondLevelChange = (id, expanded) => {
+    this.loadSecondLevelLayer(id, expanded);
   }
 
   /**
