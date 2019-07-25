@@ -262,9 +262,14 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadLayer = (layer, parentLayer) => {
+    const { requestSource } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
     this.setState({
       loadingModal: true,
       activeLayer: layer,
+      requestSource: null,
     });
     RestAPI.requestBiomesbyEA(layer.id)
       .then((res) => {
