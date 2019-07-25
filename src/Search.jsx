@@ -317,12 +317,13 @@ class Search extends Component {
           },
         },
       }));
-    } else if (show && idLayer && idLayer !== 'se' && idLayer !== 'pa') {
+    } else if (show && idLayer && idLayer !== 'se') {
       const { request, source } = RestAPI.requestGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 
       request.then((res) => {
+        if (!res) return;
         this.setState((prevState) => {
           const newState = {
             ...prevState,
