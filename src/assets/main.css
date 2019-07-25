@@ -448,7 +448,7 @@ menu button.active {
 }
 
 .showHome:focus {
-	outline: 0;
+	outline: none !important;
 }
 
 .rotate {
@@ -620,6 +620,10 @@ menu button.active {
 	background-color: #2a363b;
 	background-image: url(./img/down2.png);
 	color: #fff;
+}
+
+.mb10 {
+	margin-bottom: 5px;
 }
 
 .mb30 {
@@ -1037,16 +1041,10 @@ footer h3 a, .footersm h3 a {
 	padding-bottom: 50px;
 }
 
-.filter-display-container span {
-	font-weight: 400;
+.filter-display-container {
 	font-size: 15px;
 	color: #2a363b;
 	display: block;
-	padding-top: 10px;
-}
-
-.filter-display-container {
-	margin-bottom: 1px solid #6c6c6c;
 	background-color: #547a82;
 	padding: 20px;
 }
@@ -1080,7 +1078,7 @@ a#reset-filters {
 }
 
 #options > div {
-	padding: 0 30px;
+	padding: 5px;
 }
 
 #options h5 {
@@ -1297,6 +1295,17 @@ a#reset-filters {
   text-transform: uppercase;
 }*/
 
+div[class*="hjhLld"] {
+	font-size: 14px !important;
+  font-weight: bold;
+	line-height: normal !important;
+}
+
+div[class*="eaRHYv"] {
+	font-size: 14px !important;
+	line-height: normal;
+}
+
 .inlineb {
   display: inline-block !important;
 	margin: 10px 20px;
@@ -1367,7 +1376,118 @@ div[id*="panel"] button:hover {
 .graphcontainer {
   margin: 0;
   padding: 15px !important;
-  overflow: hidden;
+}
+
+.pt5 {
+	padding-top: 0 !important;
+}
+
+.graphcontainer h4 {
+	display: table;
+	text-transform: uppercase;
+	font-size: 18px;
+	font-weight: 400;
+	color: #e84a5f;
+	padding: 8px;
+	border: 1px solid #e84a5f;
+	margin-top: 5px;
+	background-color: #fff;
+}
+
+.graphcontainer h4 b  {
+	font-weight: 600;
+	color: #2a363b;
+	margin-left: 10px;
+	text-transform: none;
+}
+
+.graphcontainer h5 {
+	padding: 2px 4px;
+	font-weight: 600;
+	color: #fff;
+	background-color: #e84a5f;
+	margin: -7px 0 0 10px;
+	text-transform: none;
+	font-size: 15px;
+	display: table;
+}
+
+.graphcontainer h6 {
+	font-size: 14px;
+	margin-left: 10px;
+	font-weight: 400;
+	margin-top: 10px;
+	padding-bottom: 3px;
+	border-bottom: 1px solid #2a363b;
+	color: #2a363b;
+	display: table;
+}
+
+.singleeco {
+	font-size: 16px;
+	margin-left: 5px;
+	font-weight: 400;
+	padding: 5px 7px 4px;
+	background-color: #2a363b;
+	color: #fff;
+	display: inline-block;
+}
+
+.singleeco2 {
+	font-size: 16px;
+	font-weight: 600;
+	color: #2a363b;
+	border: 1px solid #2a363b;
+	padding: 4px 6px 3px;
+	display: inline-block;
+}
+
+.graphcontainer h3 {
+	font-size: 14px;
+	font-weight: 500;
+	padding: 3px 5px;
+	color: #2a363b;
+	margin: 0 0 5px 7px;
+	text-align: left;
+}
+
+.graphcontainer h3 b {
+	font-weight: 700;
+	margin-left: 10px;
+}
+
+.ecoest {
+	margin: 25px 12px 10px;
+	border: 1px solid #ea495f;
+	padding: 0 15px;
+}
+
+.minus20 {
+	margin-top: -20px !important;
+	margin-left: -27px !important;
+}
+
+.minusperc {
+	margin-left: -17px !important;
+}
+
+.graficaeco {
+	max-width: 600px;
+ line-height: 1em !important;
+}
+
+.graficaeco2 {
+	margin: 0 0 12px 5px;
+	max-width: 593px;
+}
+
+.graficaeco2 svg {
+	margin: 0 !important;
+	line-height: 1em !important;
+}
+.graficaeco2 h3 {
+	margin-bottom: 0;
+	padding: 0;
 }
 
 .informer header button{
@@ -1402,6 +1522,43 @@ div[id*="panel"] button:hover {
   text-align: right;
   font-size: 14px;
   color: #424242;
+}
+
+.graphinfo {
+  display: inline-block;
+  cursor: pointer;
+  margin-top: -3px;
+	border-style: none;
+	vertical-align: middle;
+	padding-right: 3px;
+	outline: none;
+}
+
+.MuiSvgIcon-root-1.graphinfo {
+	font-size: initial;
+}
+
+.graphinfo:hover {
+	color: #e84a5f;
+}
+
+.graphinfo2-true p {
+	font-family: 'Lato', sans-serif;
+	color: #424242;
+	padding: 3px 15px 10px;
+
+}
+
+.graphinfo2-true {
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-ms-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
+	border-bottom: 1px solid #e84a5f;
+	width: 94%;
+	margin: 0 3%;
+	margin-bottom: 10px;
 }
 
 p.legcomp {
@@ -1475,6 +1632,10 @@ p.legcomp {
   text-align: left;
 }
 
+.ecosystems {
+  margin-top: 15px;
+}
+
 .Biomatit {
   color: #424242;
   padding: 5px;
@@ -1530,8 +1691,22 @@ p.legcomp {
 	background-color: transparent;
 	text-align: right;
 	display: inline-block;
-	float: right;
 	outline: none;
+}
+
+.icongraph2 {
+	color: #e84a5f;
+	background-color: transparent;
+	cursor: pointer;
+	border: 0;
+	text-align: left;
+	display: inline-block;
+	outline: none;
+	vertical-align: bottom;
+}
+
+.icondelete {
+	float: right;
 }
 
 .icondelete:disabled {
@@ -1705,6 +1880,7 @@ tr.row2table:nth-child(odd){
   color: #c2374d;
   font-weight: 400;
   background-color: #fff;
+  margin-bottom: 5px;
   margin-top: 5px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
@@ -1741,6 +1917,14 @@ tr.row2table:nth-child(odd){
 	margin-top: -9px;
 }
 
+.overview {
+  background-color: #2a363b;
+  color: #fff;
+	padding: 10px 10px 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
 .titecositema {
   margin-top: 8px;
   background-color: #2a363b;
@@ -1750,13 +1934,14 @@ tr.row2table:nth-child(odd){
   border-top-right-radius: 5px;
 }
 
-.titeco2 {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: space-between;
+.titeco2 { /* César */
+}
+
+.listSS {
+	margin-top: 10px;
+	background: #fff;
+	color: #e84a5f;
+	border-radius: 3px;
 }
 
 .HasSelected {
@@ -2219,7 +2404,6 @@ tspan, .vx-axis-label {
 	.contentView {
 	  -webkit-flex: 1 0 100%;
 	          flex: 1 0 100%;
-
 	}
 
 	.viewfinderShow {/*  TODO: Implementing resizing button to apply these 2 styles */

@@ -9,15 +9,15 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import SaveIcon from '@material-ui/icons/Save';
 import DownloadIcon from '@material-ui/icons/FileDownload';
+import RestAPI from '../api/RestAPI';
 
 import CustomInputNumber from './CustomInputNumber';
-import GraphLoader from '../GraphLoader';
+import GraphLoader from '../charts/GraphLoader';
 import PopMenu from './PopMenu';
-import TabContainer from '../TabContainer';
-import TableStylized from '../TableStylized';
+import TabContainer from '../commons/TabContainer';
+import TableStylized from '../commons/TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import StrategiesBox from './StrategiesBox';
-import RestAPI from '../api/REST';
 import ConfirmationModal from '../ConfirmationModal';
 
 const styles = () => ({
@@ -116,7 +116,9 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const { biomesImpacted, companyId, projectId } = this.props;
+    const {
+      biomesImpacted, companyId, projectId,
+    } = this.props;
     if (biomesImpacted.length <= 0) {
       RestAPI.getAllBiomes()
         .then(biomes => (
@@ -251,7 +253,9 @@ class Drawer extends React.Component {
    * Send biomesDraft to persist in the backend
    */
   sendAddBiomesToProject = () => {
-    const { companyId, projectId, reloadProject } = this.props;
+    const {
+      companyId, projectId, reloadProject,
+    } = this.props;
     const { biomesDraft } = this.state;
     RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft)
       .then(() => {
@@ -690,13 +694,15 @@ class Drawer extends React.Component {
           <BackIcon />
         </button>
         <h1>
-          {`${areaName} / ${subAreaName}`}
+          {`${areaName} /`}
           <br />
+          {subAreaName}
           <b>
             {basinName}
           </b>
         </h1>
         <TabContainer
+          initialSelectedIndex={0}
           classes={classes}
           tabClasses="tabs2"
           titles={[
@@ -722,7 +728,7 @@ class Drawer extends React.Component {
                   />
                 )}
                 <TableStylized
-                  headers={['BIOMA IAVH', 'F.C', 'NAT (Ha)', 'SEC (Ha)', 'TRANS (Ha)', 'AFECT (%)', 'TOTAL (Ha)']}
+                  headers={['BIOMA IAVH', 'F.C', 'NAT (ha)', 'SEC (ha)', 'TRANS (ha)', 'AFECT (%)', 'TOTAL (ha)']}
                   rows={tableRows}
                   footers={[totals.name, totals.fc, totals.affected_natural,
                     totals.affected_secondary, totals.affected_transformed,

@@ -3,9 +3,9 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import Home from './Home';
-import ShortInfo from './home/ShortInfo';
 import Search from './Search';
 import Compensation from './Compensation';
+import Indicator from './Indicator';
 import './assets/main.css';
 
 class App extends React.Component {
@@ -31,6 +31,17 @@ class App extends React.Component {
     const { user } = this.state;
     return (
       <Search
+        userLogged={user}
+        callbackUser={this.callbackUser}
+        {...props}
+      />
+    );
+  }
+
+  loadIndicator = (props) => {
+    const { user } = this.state;
+    return (
+      <Indicator
         userLogged={user}
         callbackUser={this.callbackUser}
         {...props}
@@ -70,9 +81,9 @@ class App extends React.Component {
         <Switch>
           <Route exact path="/" render={this.loadHome} />
           <Route path="/Consultas" render={this.loadSearch} />
+          <Route path="/Indicadores" render={this.loadHome} />
           <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
           <Route path="/Alertas" render={this.loadHome} />
-          <Route path="/ShortInfo" component={ShortInfo} />
         </Switch>
       </main>
     );

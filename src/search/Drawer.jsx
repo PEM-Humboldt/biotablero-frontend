@@ -6,11 +6,22 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
-import { ParentSize } from '@vx/responsive';
+import RestAPI from '../api/RestAPI';
+import Overview from '../strategicEcosystems/Overview';
+import RenderGraph from '../charts/RenderGraph';
+import TabContainer from '../commons/TabContainer';
+import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 
-import RestAPI from '../api/REST';
-import GraphLoader from '../GraphLoader';
-import TabContainer from '../TabContainer';
+const colorsRB = ['#003d59',
+  '#5a1d44',
+  '#902130',
+  '#6d819c',
+  '#db9d6b',
+  '#fb9334',
+  '#fe6625',
+  '#ab5727',
+  '#44857d',
+  '#167070'];
 
 const styles = () => ({
   root: {
@@ -28,119 +39,161 @@ class Drawer extends React.Component {
         biomas: null,
         distritos: null,
         fc: null,
+        coverage: null, // coverage area
+        areaSE: null, // area fields for strategic ecosystems
+        areaPA: null, // area fields for protected areas
       },
     };
   }
 
-  componentDidMount() {
-    RestAPI.requestCarByBiomeArea('CORPOBOYACA')
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            biomas: false,
-          },
-        }));
-      });
-    RestAPI.requestCarByFCArea('CORPOBOYACA')
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            fc: false,
-          },
-        }));
-      });
-    RestAPI.requestCarByDistritosArea('CORPOBOYACA')
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            distritos: false,
-          },
-        }));
-      });
+  componentWillMount() {
+    this.setState(null);
   }
 
-  /**
-   * Function to render a graph
-   *
-   * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
-   *  or an Object with the data.
-   * @param {string} labelX axis X label
-   * @param {string} labelY axis Y label
-   * @param {string} graph graph type
-   * @param {string} graphTitle graph title
-   */
-  renderGraph = (data, labelX, labelY, graph, graphTitle, colors) => {
-    // While data is being retrieved from server
-    let errorMessage = null;
-    if (data === null) errorMessage = 'Loading data...';
-    else if (!data) errorMessage = `Data for ${graphTitle} not available`;
-    if (errorMessage) {
-      // TODO: ask Cesar to make this message nicer
-      return (
-        <div className="errorData">
-          {errorMessage}
-        </div>
-      );
+  componentDidMount() {
+    const {
+      geofence, area,
+    } = this.props;
+    const searchId = geofence.id || geofence.name;
+
+    RestAPI.requestCoverage(area.id, searchId)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            coverage: setCoverageValues(res),
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            coverage: false,
+          },
+        }));
+      });
+
+    RestAPI.requestProtectedAreas(area.id, searchId)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaPA: setPAValues(res),
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaPA: false,
+          },
+        }));
+      });
+
+    RestAPI.requestStrategicEcosystems(area.id, searchId)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaSE: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            areaSE: false,
+          },
+        }));
+      });
+
+    if (area.id === 'ea') {
+      RestAPI.requestBiomes(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              biomas: false,
+            },
+          }));
+        });
+
+      RestAPI.requestCompensationFactor(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              fc: false,
+            },
+          }));
+        });
+
+      RestAPI.requestBioticUnits(area.id, searchId)
+        .then((res) => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: res,
+            },
+          }));
+        })
+        .catch(() => {
+          this.setState(prevState => ({
+            ...prevState,
+            data: {
+              ...prevState.data,
+              distritos: false,
+            },
+          }));
+        });
     }
-    return (
-      <ParentSize className="nocolor">
-        {parent => (
-          parent.width && (
-            <GraphLoader
-              width={parent.width}
-              height={parent.height}
-              graphType={graph}
-              data={data}
-              labelX={labelX}
-              labelY={labelY}
-              graphTitle={graphTitle}
-              colors={colors}
-            />
-          )
-        )}
-      </ParentSize>
-    );
   }
 
   render() {
     const {
-      basinName, basinData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, layerName, subAreaName,
+      geofence, subLayerData, colors, colorSZH, colorsFC,
+      classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
+      subLayerName, area,
     } = this.props;
-    const { data: { fc, biomas, distritos } } = this.state;
+    const {
+      data: {
+        fc, biomas, distritos, coverage, areaPA, areaSE,
+      },
+    } = this.state;
+    const generalArea = (coverage && coverage[0]
+      ? Number(coverage[0].area).toFixed(2) : 0);
+    const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
+    const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     return (
       <div className="informer">
         <button
@@ -152,37 +205,78 @@ class Drawer extends React.Component {
         </button>
         <div className="iconsection mt2" />
         <h1>
-          {`${subAreaName} / ${basinName}`}
+          {`${area.name} /`}
           <br />
+          {geofence.name}
           <b>
-            {layerName}
+            {subLayerName}
           </b>
         </h1>
-        { !layerName && (
+        { !subLayerName && (
           <TabContainer
+            initialSelectedIndex={0}
             classes={classes}
             titles={[
-              { label: 'Paisaje', icon: (<Paisaje />) },
               { label: 'Ecosistemas', icon: (<Ecosistemas />) },
+              { label: 'Paisaje', icon: (<Paisaje />) },
               { label: 'Especies', icon: (<Especies />) },
             ]}
           >
             {[
               (
-                <div key="1">
-                  {this.renderGraph(fc, 'Hectáreas', 'F C', 'BarStackHorizontal', 'Factor de Compensación', colorsFC)}
-                  {this.renderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackHorizontal', 'Biomas', colors)}
-                  {this.renderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackHorizontal', 'Regiones Bióticas', colors)}
+                <div key="2">
+                  {Overview(
+                    generalArea,
+                    ecosystemsArea,
+                    // removing the first response element, which is the total area in SE
+                    (areaSE ? areaSE.slice(1) : areaSE),
+                    protectedArea,
+                    // removing the first response element, which is the total area in PA
+                    (areaPA ? areaPA.slice(1) : areaPA),
+                    // removing the first response element, which is the total area in selected area
+                    (coverage && (coverage[0].type === 'Total')
+                      ? coverage.slice(1) : coverage),
+                    handlerInfoGraph,
+                    openInfoGraph,
+                    area.id,
+                    area.id === 'pa' ? geofence.name : geofence.id,
+                    'Área',
+                    ('resume la información de los ecosistemas presentes en el'
+                      + ' área seleccionada, y su distribución al interior de áreas protegidas'
+                      + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
+                      + ' no son representados en las gráficas.'),
+                  )}
                 </div>
               ),
               (
-                <div className="graphcard" key="2">
-                  <h2>
-                    Gráficas en construcción
-                  </h2>
-                  <p>
-                    Pronto más información
-                  </p>
+                <div key="1" selected>
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
+                      'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
+                      'representa las hectáreas sobre los Biomas IAvH analizados')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
+                      'Biomas', colors, handlerInfoGraph, openInfoGraph,
+                      'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')
+                  }
+                  { (area.name === 'Jurisdicciones ambientales')
+                    && RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
+                      'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
+                      'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')
+                  }
+                  {(area.name !== 'Jurisdicciones ambientales')
+                    && (
+                    <div className="graphcard">
+                      <h2>
+                        Gráficas en construcción
+                      </h2>
+                      <p>
+                        Pronto más información
+                      </p>
+                    </div>
+                    )
+                  }
                 </div>
               ),
               (
@@ -198,10 +292,10 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { layerName && basinData && (
+        { subLayerName && subLayerData && (
           <div className={classes.root}>
-            {this.renderGraph(basinData, 'Subzonas Hidrográficas', 'Hectáreas',
-              'BarVertical', 'HAs por Subzonas Hidrográficas', colorSZH)}
+            {RenderGraph(subLayerData, 'Subzonas Hidrográficas', 'Hectáreas',
+              'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
           </div>
         )}
       </div>
@@ -210,26 +304,29 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  basinData: PropTypes.array,
-  basinName: PropTypes.string,
-  colors: PropTypes.array,
+  area: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  handlerBackButton: PropTypes.func,
-  layerName: PropTypes.string,
-  subAreaName: PropTypes.string,
+  colors: PropTypes.array,
   colorSZH: PropTypes.array,
   colorsFC: PropTypes.array,
+  geofence: PropTypes.object,
+  handlerBackButton: PropTypes.func,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
+  subLayerData: PropTypes.array,
+  subLayerName: PropTypes.string,
 };
 
 Drawer.defaultProps = {
-  basinData: [],
-  basinName: '',
   colors: ['#345b6b'],
-  layerName: '',
-  handlerBackButton: () => {},
-  subAreaName: '',
   colorSZH: [],
   colorsFC: [],
+  geofence: { id: NaN, name: '' },
+  subLayerData: {},
+  subLayerName: '',
+  handlerBackButton: () => {},
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
 };
 
 export default withStyles(styles)(Drawer);

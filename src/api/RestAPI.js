@@ -1,5 +1,5 @@
 /** eslint verified */
-import axios from 'axios';
+import axios, { CancelToken } from 'axios';
 
 class RestAPI {
   /**
@@ -23,7 +23,157 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover all eas available in the database
+   * Recover biomes located in the selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestBiomes(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/generalBiome`);
+  }
+
+  /**
+   * Recover biotic units by selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestBioticUnits(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/bioticUnit`);
+  }
+
+  /**
+   * Recover compensation Factor values by selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestCompensationFactor(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/compensationFactor`);
+  }
+
+  /**
+   * Recover coverage area by selected area
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request the coverage
+   */
+  static requestCoverage(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/coverage`);
+  }
+
+  /**
+   * Recover protected areas values by selected area
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request the protected areas
+   */
+  static requestProtectedAreas(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/pa`);
+  }
+
+  /**
+   * Recover the strategic ecosystems values by selected area
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestStrategicEcosystems(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  }
+
+  /**
+   * Recover the national area by selected strategic ecosystems
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestNationalSE(idGeofence) {
+    return RestAPI.makeGetRequest(`se/${idGeofence}/national`);
+  }
+
+  /**
+   * Recover the national coverage by selected strategic ecosystems
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestNationalCoverage(idGeofence) {
+    return RestAPI.makeGetRequest(`se/${idGeofence}/coverage`);
+  }
+
+  /**
+   * Recover the national protected area by selected strategic ecosystems
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestNationalPA(idGeofence) {
+    return RestAPI.makeGetRequest(`se/${idGeofence}/pa`);
+  }
+
+  /**
+   * Recover details, like the national percentage, according to the selected strategic ecosystems
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSEDetail(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
+  }
+
+  /**
+   * Recover the coverage by selected strategic ecosystems and geofence
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSECoverageByGeofence(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/coverage`);
+  }
+
+  /**
+   * Recover the protected area by selected strategic ecosystems and geofence
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request
+   * @param {Number} idSE id geofence to request details
+   */
+  static requestSEPAByGeofence(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/pa`);
+  }
+
+  /**
+   * Recover a list with all protected areas available in the database
+   */
+  static getAllProtectedAreas() {
+    return RestAPI.makeGetRequest('pa/categories');
+  }
+
+  /**
+   * Recover a list with all basin areas available in the database
+   */
+  static getAllBasinAreas() {
+    return RestAPI.makeGetRequest('basinAreas');
+  }
+
+  /**
+   * Recover a list with all basin zones available in the database
+   */
+  static getAllZones() {
+    return RestAPI.makeGetRequest('basinZones');
+  }
+
+  /**
+   * Recover a list with all basin subzones available in the database
+   */
+  static getAllSubzones() {
+    return RestAPI.makeGetRequest('basinSubzones');
+  }
+
+  /**
+   * Recover a list with all States available in the database
+   */
+  static getAllStates() {
+    return RestAPI.makeGetRequest('states');
+  }
+
+  /**
+   * Recover a list with all Strategic Ecosystems availables in the database
+   */
+  static getAllSEs() {
+    return RestAPI.makeGetRequest('se/primary');
+  }
+
+  /**
+   * Recover a list with all Environmental Authorities availables in the database
    */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
@@ -44,34 +194,24 @@ class RestAPI {
    * @param {String} biome biome's name to request
    */
   static requestBiomeBySZH(eaId, biomeName) {
-    return RestAPI.makeGetRequest(`geofences/ea/${eaId}/biome/${biomeName}/subzone`);
+    return RestAPI.makeGetRequest(`ea/${eaId}/biome/${biomeName}/subzone`);
   }
 
-  /**
-   * Request area information for ea by biotic units
-   *
-   * @param {String} idCAR id CAR to request
-   */
-  static requestCarByDistritosArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/bioticUnit`);
-  }
+  /** ******************** */
+  /** MAPS - SEARCH MODULE */
+  /** ******************** */
 
   /**
-   * Request area information for ea by compensation factor
+   * Request area geometry by id
    *
-   * @param {String} idCAR id CAR to request
+   * @param {String} areaId area id to request
    */
-  static requestCarByFCArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/compensationFactor`);
-  }
-
-  /**
-   * Request area information for ea by biomes
-   *
-   * @param {String} idCAR id CAR to request
-   */
-  static requestCarByBiomeArea(idCAR) {
-    return RestAPI.makeGetRequest(`geofences/ea/${idCAR}/generalBiome`);
+  static requestGeometryByArea(areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
+      source,
+    };
   }
 
   /** ******************* */
@@ -228,13 +368,13 @@ class RestAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    */
-  static makeGetRequest(endpoint) {
-    return axios.get(RestAPI.getEndpointUrl(endpoint))
+  static makeGetRequest(endpoint, options) {
+    return axios.get(RestAPI.getEndpointUrl(endpoint), options)
       .then(res => res.data)
       .catch((error) => {
         let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
-        if (error.request.statusText === '') message = 'no-data-available';
+        if (error.request && error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
   }

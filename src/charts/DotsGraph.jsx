@@ -16,7 +16,7 @@ let tooltipTimeout;
 
 export default withTooltip(({
   width, height, colors, dataJSON: points, activeBiome, labelX, labelY, elementOnClick,
-  hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop,
+  hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop, units,
 }) => {
   const margin = {
     top: 20, bottom: 60, left: 80, right: 40,
@@ -86,7 +86,7 @@ export default withTooltip(({
               fill={checkColor(point)}
               left={margin.left + xScale(x(point))}
               top={yScale(y(point))}
-              size={xScale(x(point)) * 1.2}
+              size={xScale(x(point)) + 20}
               onMouseEnter={() => () => {
                 clearTimeout(tooltipTimeout);
                 showTooltip({
@@ -170,7 +170,7 @@ export default withTooltip(({
               <b>
                 {'Natural: '}
               </b>
-              {`${Number(z(tooltipData)).toFixed(2)} Ha`}
+              {`${Number(z(tooltipData)).toFixed(2)} ${units}`}
             </div>
           </div>
         </Tooltip>

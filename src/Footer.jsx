@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import logohumboldt from './assets/img/logohumboldt.png';
 import logosiac from './assets/img/logosiac.png';
-import './assets/main.css';
 
 const Footer = (
   {

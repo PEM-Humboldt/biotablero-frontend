@@ -69,7 +69,7 @@ class PopMenu extends Component {
   /**
    * Print Select element for different environmental authorities
    *
-   * @param {String} subBasin Name of the szh to list options
+   * @param {String} subBasin Name of the basinSubzones to list options
    */
   renderEAs = () => {
     const { biome, subBasin, ea } = this.state;
@@ -130,7 +130,8 @@ class PopMenu extends Component {
           >
             <BackGraphIcon />
             {'Gráfico Biomas'}
-          </button>)
+          </button>
+          )
         }
         </div>
         <AddIcon />

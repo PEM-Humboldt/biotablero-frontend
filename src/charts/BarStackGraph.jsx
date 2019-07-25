@@ -4,8 +4,27 @@ import { BarStackHorizontal } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft } from '@vx/axis';
 import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
-import { withTooltip, Tooltip } from '@vx/tooltip';
-import Descargar from '@material-ui/icons/Save';
+import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
+import localPoint from '@vx/event/build/localPoint';
+import DownloadIcon from '@material-ui/icons/Save';
+import InfoIcon from '@material-ui/icons/Info';
+import ShortInfo from '../commons/ShortInfo';
+
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+/**
+ * Function to render tooltip inside the graph
+ *
+ * @param {string} event event on graph
+ * @param {string} datum value to show inside tooltip
+ */
+const handleMouseOver = (event, datum, showTooltip) => {
+  const coords = localPoint(event.target.ownerSVGElement, event);
+  showTooltip({
+    tooltipLeft: (coords ? coords.x : event.clientX),
+    tooltipTop: (coords ? coords.y : event.clientY),
+    tooltipData: datum,
+  });
+};
 
 export default withTooltip(
   ({
@@ -28,6 +47,10 @@ export default withTooltip(
     tooltipData,
     hideTooltip,
     showTooltip,
+    units,
+    handlerInfoGraph,
+    openInfoGraph,
+    graphDescription,
   }) => {
     if (width < 10) return null;
     // accessors
@@ -38,14 +61,15 @@ export default withTooltip(
         key: setName,
       };
       data.forEach((item) => {
-        transformedData[item.key] = `${item.area}`;
+        transformedData[item.key || item.type] = `${item.area || item.percentage}`;
       });
       return transformedData;
     };
 
     const data = [prepareData(dataJSON, labelY)];
-    const keys = dataJSON.map(fc => fc.key);
-    const totals = dataJSON.reduce((total, current) => total + parseFloat(current.area), 0);
+    const keys = dataJSON.map(item => item.key || item.type);
+    const totals = dataJSON.reduce((total, current) => total
+      + parseFloat(current.area || current.percentage), 0);
 
     // bounds
     const xMax = width - margin.left - margin.right;
@@ -60,21 +84,50 @@ export default withTooltip(
     const yScale = scaleBand({
       rangeRound: [yMax, 0],
       domain: data.map(y),
-      padding: 0.3,
+      padding: 0.1,
     });
-    const zScale = scaleOrdinal({
+    const validColors = colors && colors.map((obj => Object.values(obj)[0]));
+    const zScale = (validColors[0] === '#') ? scaleOrdinal({
       domain: keys,
       range: colors,
+    }) : scaleOrdinal({
+      domain: colors.map((obj => Object.keys(obj)[0])),
+      range: colors.map((obj => Object.values(obj)[0])),
     });
 
     let tooltipTimeout;
 
     return (
-      <div className="graphcard">
+      <div>
         <h2>
-          <Descargar className="icondown" />
-          {graphTitle}
+          <DownloadIcon className="icondown" />
+          <InfoIcon
+            className="graphinfo"
+            data-tooltip
+            title="¿Qué significa este gráfico?"
+            onClick={() => {
+              handlerInfoGraph(graphTitle);
+            }}
+          />
+          <div
+            className="graphinfo"
+            onClick={() => handlerInfoGraph(graphTitle)}
+            onKeyPress={() => handlerInfoGraph(graphTitle)}
+            role="button"
+            tabIndex="0"
+          >
+            {graphTitle}
+          </div>
         </h2>
+        {openInfoGraph && (openInfoGraph === graphTitle) && (
+          <ShortInfo
+            name={graphTitle}
+            description={graphDescription}
+            className="graphinfo2"
+            tooltip="¿Qué significa?"
+            customButton
+          />
+        )}
         <svg width={width - 40} height={height}>
           <Group top={margin.top} left={margin.left}>
             <BarStackHorizontal
@@ -92,13 +145,9 @@ export default withTooltip(
                   hideTooltip();
                 }, 300);
               }}
-              onMouseMove={dataSelected => () => {
+              onMouseMove={dataSelected => (e) => {
                 if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                showTooltip({
-                  tooltipData: dataSelected,
-                  tooltipTop: margin.top + yScale(y(dataSelected.data)),
-                  tooltipLeft: margin.left + dataSelected.width + 75,
-                });
+                handleMouseOver(e, dataSelected, showTooltip);
               }}
             />
             <AxisLeft
@@ -119,7 +168,7 @@ export default withTooltip(
             />
             <AxisBottom
               scale={xScale}
-              top={yMax - 10}
+              top={yMax}
               label={labelX}
               labelProps={{
                 fill: '#e84a5f',
@@ -127,6 +176,7 @@ export default withTooltip(
                 textAnchor: 'middle',
               }}
               stroke="#e84a5f"
+              numTicks={5}
               tickStroke="#e84a5f"
               tickLabelProps={() => ({
                 fill: '#e84a5f',
@@ -137,7 +187,7 @@ export default withTooltip(
           </Group>
         </svg>
         {tooltipOpen && (
-          <Tooltip
+          <TooltipWithBounds
             top={tooltipTop}
             left={tooltipLeft}
             style={{
@@ -148,20 +198,22 @@ export default withTooltip(
               lineHeight: '1.5',
             }}
           >
-            <div style={{ color: zScale(tooltipData.key) }}>
+            <div style={{ color: (tooltipData ? zScale(tooltipData.key) : '#e84a5f') }}>
               <strong>
-                {tooltipData.key}
+                {tooltipData ? tooltipData.key : 'Más información'}
               </strong>
             </div>
-            <div>
-              {`${Number(tooltipData.data[tooltipData.key]).toFixed(2)} Ha`}
-            </div>
+            {tooltipData.data && (
+              <div>
+                {`${numberWithCommas(Number(tooltipData.data[tooltipData.key]).toFixed(2))} ${units}`}
+              </div>
+            )}
             <div>
               <small>
-                {tooltipData.xFormatted}
+                {tooltipData && tooltipData.xFormatted}
               </small>
             </div>
-          </Tooltip>
+          </TooltipWithBounds>
         )}
       </div>
     );

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TableStylized from '../TableStylized';
+import TableStylized from '../commons/TableStylized';
 
 class StrategiesBox extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class StrategiesBox extends Component {
 
   render() {
     const {
-      biome, subBasin, ea, area, strategies, elementSuggested,
+      biome, subBasin, ea, area, strategies, elementSuggested, units,
     } = this.props;
     const { showTable } = this.state;
     const tableHeaders = ['Estrategia', 'Héctareas', 'Agregar'];
@@ -47,7 +47,7 @@ class StrategiesBox extends Component {
             </div>
             <div>
               <div className="HasSelected">
-                {`${Number(area).toFixed(2)} Ha`}
+                {`${Number(area).toFixed(2)} ${units}`}
               </div>
               <div>
                 <button
@@ -84,11 +84,13 @@ StrategiesBox.propTypes = {
   strategies: PropTypes.array.isRequired,
   elementSuggested: PropTypes.any,
   showTable: PropTypes.bool,
+  units: PropTypes.string,
 };
 
 StrategiesBox.defaultProps = {
   elementSuggested: '',
   showTable: true,
+  units: 'ha',
 };
 
 export default StrategiesBox;

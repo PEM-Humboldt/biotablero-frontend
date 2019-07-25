@@ -2,11 +2,13 @@ import React from 'react';
 import { Bar } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft } from '@vx/axis';
-import { scaleLinear, scaleBand } from '@vx/scale';
+import { scaleLinear, scaleBand, scaleOrdinal } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import Descargar from '@material-ui/icons/Save';
 
-// Se exporta el SGV construido
+// Miles number format
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// SVG export
 export default withTooltip(({
   tooltipOpen,
   tooltipLeft,
@@ -18,6 +20,8 @@ export default withTooltip(({
   labelY,
   graphTitle,
   colors,
+  withLeyends, // TODO: Control if names in axis X are showed
+  units,
   ...props
 }) => {
   const { width, dataJSON, area } = props;
@@ -26,7 +30,10 @@ export default withTooltip(({
   const prepareData = (data) => {
     const transformedData = [];
     data.forEach((item) => {
-      transformedData.push({ name: `${item.key}`, area_V: `${item.area}` });
+      transformedData.push({
+        name: `${item.key || item.type || item.category}`,
+        area_V: `${item.area || item.percentage}`,
+      });
     });
     return transformedData;
   };
@@ -43,6 +50,7 @@ export default withTooltip(({
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
+  const keys = dataJSON.map(item => item.key || item.type);
 
   // Ayuda a obtener el dato que se quiere
   const x = d => d.name;
@@ -59,6 +67,10 @@ export default withTooltip(({
     rangeRound: [yMax, 0],
     domain: [0, Math.max(...data.map(y))],
     nice: false,
+  });
+  const zScale = scaleOrdinal({
+    domain: keys,
+    range: colors,
   });
 
   // Junta las escalas y el accesor para construir cada punto
@@ -87,9 +99,10 @@ export default withTooltip(({
                 <Bar
                   x={xPoint(d)}
                   y={yMax - barHeight}
+                  z={zScale(d)}
                   height={barHeight}
                   width={xScale.bandwidth()}
-                  fill={colors}
+                  fill={zScale(d.name || d.key)}
                   onMouseLeave={() => () => {
                     tooltipTimeout = setTimeout(() => {
                       hideTooltip();
@@ -156,7 +169,7 @@ export default withTooltip(({
               </strong>
               <br />
               <div>
-                {`${Number(tooltipData.area_V).toFixed(2)} Ha`}
+                {`${numberWithCommas(Number(tooltipData.area_V).toFixed(2))} ${units}`}
               </div>
             </div>
           </Tooltip>

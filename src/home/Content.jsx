@@ -19,8 +19,7 @@ const Content = ({ activeModule, setActiveModule, userLogged }) => (
       idBtn="indbtn"
       firstLineContent="indicadores de"
       secondLineContent="biodiversidad"
-      localLink="Indicadores"
-      externalLink="http://humboldt-156715.appspot.com/filters.html"
+      localLink="/Indicadores"
     />
     { userLogged ? ( // TODO: Implementing user validation
       <MenuButton
