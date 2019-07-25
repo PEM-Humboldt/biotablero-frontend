@@ -55,7 +55,7 @@ class Selector extends React.Component {
     this.setState({
       subExpanded: expanded ? subPanel : false,
     });
-    handlers[1](subPanel);
+    handlers[1](subPanel, expanded);
   };
 
   componentWillUnmounted() {
