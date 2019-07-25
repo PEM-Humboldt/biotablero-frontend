@@ -320,9 +320,9 @@ class Search extends Component {
     } else if (show && idLayer && idLayer !== 'se' && idLayer !== 'pa') {
       const { request, source } = RestAPI.requestGeometryByArea(idLayer);
       this.setState({ requestSource: source });
+      this.setArea(idLayer);
 
       request.then((res) => {
-        this.setArea(idLayer);
         this.setState((prevState) => {
           const newState = {
             ...prevState,
