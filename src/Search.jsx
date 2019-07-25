@@ -72,17 +72,14 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      if (newState.area && (newState.area.id === idLayer)) {
-        newState.area = null;
-      } else {
-        newState.area = newState.areaList.find(
-          item => item.id === idLayer,
-        );
-      }
-      return newState;
-    });
+    const { area } = this.state;
+    if (!area || (area && area.id !== idLayer)) {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.area = prevState.areaList.find(item => item.id === idLayer);
+        return newState;
+      });
+    }
   };
 
   loadAreaList = () => {
@@ -266,20 +263,22 @@ class Search extends Component {
               },
             },
           }));
-
-          this.setState((prevState) => {
-            const newState = {
-              ...prevState,
-              loadingModal: false,
-            };
-            if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-            if (prevState.layers[layer.id]) {
-              newState.layers[layer.id].active = true;
-            }
-            return newState;
-          });
         } else this.reportDataError();
-      }).catch(() => this.reportDataError());
+      })
+      .catch(() => this.reportDataError())
+      .finally(() => {
+        this.setState((prevState) => {
+          const newState = {
+            ...prevState,
+            loadingModal: false,
+          };
+          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
+          if (prevState.layers[layer.id]) {
+            newState.layers[layer.id].active = true;
+          }
+          return newState;
+        });
+      });
   }
 
   /**
@@ -306,14 +305,18 @@ class Search extends Component {
     });
 
     if (layers[idLayer]) {
-      this.setState((prevState) => {
-        const newState = { ...prevState };
-        newState.layers[idLayer].active = show;
-        if (newState.layers[idLayer].active) {
-          this.setArea(idLayer);
-        }
-        return newState;
-      });
+      if (show) {
+        this.setArea(idLayer);
+      }
+      this.setState(prevState => ({
+        layers: {
+          ...prevState.layers,
+          [prevState.layers[idLayer]]: {
+            ...prevState.layers[idLayer],
+            active: show,
+          },
+        },
+      }));
     } else if (show && idLayer && idLayer !== 'se' && idLayer !== 'pa') {
       const { request, source } = RestAPI.requestGeometryByArea(idLayer);
       this.setState({ requestSource: source });
@@ -367,8 +370,6 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    const { area } = this.state;
-    if (area === null) this.setArea(nameToOff);
     if (nameToOn) this.loadLayer(nameToOn, nameToOff);
   }
 
