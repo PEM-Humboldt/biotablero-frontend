@@ -7,7 +7,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "./node_modules/eslint/bin/eslint.js src/"
+    "lint": "npx eslint src"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
