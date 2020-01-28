@@ -3,6 +3,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import logohumboldt from './assets/img/logohumboldt.png';
 import logosiac from './assets/img/logosiac.png';
+import nasa from './assets/img/nasa.png';
+import temple from './assets/img/temple.png';
 
 const Footer = (
   {
@@ -18,11 +20,17 @@ const Footer = (
             <img src={logohumboldt} alt="" />
           </a>
         </div>
-        <div>
+        <div className="colaboradores">
           <h4>
             Colaboradores
           </h4>
-          <a href="http://www.siac.gov.co/siac.html">
+          <a href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer">
+            <img src={nasa} alt="" />
+          </a>
+          <a href="https://www.temple.edu/" target="_blank" rel="noopener noreferrer">
+            <img src={temple} alt="" />
+          </a>
+          <a href="http://www.siac.gov.co/siac.html" target="_blank" rel="noopener noreferrer">
             <img src={logosiac} alt="" />
           </a>
         </div>
