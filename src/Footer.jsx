@@ -24,13 +24,13 @@ const Footer = (
           <h4>
             Colaboradores
           </h4>
-          <a href="https://www.nasa.gov/">
+          <a href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer">
             <img src={nasa} alt="" />
           </a>
-          <a href="https://www.temple.edu/">
+          <a href="https://www.temple.edu/" target="_blank" rel="noopener noreferrer">
             <img src={temple} alt="" />
           </a>
-          <a href="http://www.siac.gov.co/siac.html">
+          <a href="http://www.siac.gov.co/siac.html" target="_blank" rel="noopener noreferrer">
             <img src={logosiac} alt="" />
           </a>
         </div>
