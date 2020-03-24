@@ -7,7 +7,10 @@ assignees: ''
 
 ---
 
-### Description:
+## Descripción:
 
-### Acceptance criteria:
-- [ ]
+### Resultado:
+
+### Endpoints relacionados con esta tarea:
+
+## Consideraciones:
