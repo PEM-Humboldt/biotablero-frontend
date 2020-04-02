@@ -1,5 +1,6 @@
 /** eslint verified */
 import React from 'react';
+import AddIcon from '@material-ui/icons/Add';
 
 const description = companyName => (
   <div>
@@ -75,4 +76,25 @@ const dataGEB = {
   ],
 };
 
-export { description, dataGEB };
+const dataPaisajes = [
+  {
+    id: 'Factor de compensación',
+    name: 'Factor de compensación',
+    disabled: false,
+    expandIcon: <AddIcon />,
+    detailId: 'Prueba',
+    options: [],
+    className: 'm0',
+  },
+  {
+    id: 'Huella humana',
+    name: 'Huella humana',
+    disabled: false,
+    expandIcon: <AddIcon />,
+    detailId: 'Prueba',
+    options: [],
+    className: 'm0 selector-expanded',
+  },
+];
+
+export { description, dataGEB, dataPaisajes };
