@@ -17,7 +17,7 @@ class Accordion extends React.Component {
     };
   }
 
-  firstLevelChange = panel => (event, expanded) => {
+  onChange = panel => (event, expanded) => {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
@@ -34,18 +34,19 @@ class Accordion extends React.Component {
   }
 
   render() {
-    const { children, description, iconClass } = this.props;
-    const { expanded, selected } = this.state;
+    const { children, classNameSelected } = this.props;
+    // to implement "selected" state to refer current element
+    const { expanded } = this.state;
     const data = dataPaisajes;
     return (
       <div>
         {(Object.keys(data).length > 0)
           && data.map(counter => (
             <ExpansionPanel
-              className={counter.className}
+              className={classNameSelected}
               id={counter.id}
+              expanded={expanded === counter.id}
               disabled={false}
-        // onChange={this.firstLevelChange(id)}
               key={counter.id}
             >
               <ExpansionPanelSummary
@@ -63,14 +64,16 @@ class Accordion extends React.Component {
 
 Accordion.propTypes = {
   children: PropTypes.any,
+  classNameSelected: PropTypes.string,
   handlers: PropTypes.arrayOf(PropTypes.func),
-  description: PropTypes.object,
+  description: PropTypes.string, // to implement as tooltip or another option
 };
 
 Accordion.defaultProps = {
   children: null,
+  classNameSelected: 'm0 selector-expanded',
   handlers: [],
-  description: {},
+  description: '',
 };
 
 export default Accordion;
