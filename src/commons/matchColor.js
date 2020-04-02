@@ -23,6 +23,12 @@ const match = {
   },
 };
 
+const cache = {
+  biomas: { counter: 0 },
+  bioticReg: { counter: 0 },
+  pa: { counter: 1 },
+};
+
 /**
  * returns the color determined for a given value.
  *
@@ -48,9 +54,18 @@ const matchColor = (type) => {
         if (idx === -1) return null;
         return palette[idx];
       };
+    case 'biomas':
+    case 'bioticReg':
+      return (value) => {
+        if (cache[type][value]) return cache[type][value];
+        const { counter } = cache[type];
+        cache[type][value] = palette[counter];
+        cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
+        return palette[counter];
+      };
     default:
       return '#345b6b';
   }
-}
+};
 
 export default matchColor;
