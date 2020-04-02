@@ -82,18 +82,16 @@ const dataPaisajes = [
     name: 'Factor de compensación',
     disabled: false,
     expandIcon: <AddIcon />,
-    detailId: 'Prueba',
-    options: [],
-    className: 'm0',
+    detailId: 'Factor de compensación en área de consulta',
+    description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
   },
   {
     id: 'Huella humana',
     name: 'Huella humana',
     disabled: false,
     expandIcon: <AddIcon />,
-    detailId: 'Prueba',
-    options: [],
-    className: 'm0 selector-expanded',
+    detailId: 'Huella humana en el área',
+    description: 'Representa diferentes análisis de huella humana en esta área de consulta',
   },
 ];
 
