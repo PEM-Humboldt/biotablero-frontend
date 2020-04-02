@@ -6,48 +6,43 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import { dataPaisajes } from '../search/assets/selectorData';
-
 class Accordion extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       expanded: null,
-      selected: null,
     };
   }
 
-  onChange = panel => (event, expanded) => {
-    const { handlers } = this.props;
-    const expandedPanel = expanded ? panel : false;
-    handlers[0](expandedPanel);
-    this.setState(prevState => ({
-      expanded: expandedPanel,
-      selected: expanded ? panel : prevState.expanded,
-    }));
-    return null;
-  };
-
-  componentWillUnmounted() {
-    const { handlers } = this.props;
-    handlers[0](false);
-  }
-
   render() {
-    const { children, classNameSelected } = this.props;
-    // to implement "selected" state to refer current element
+    const {
+      accordionLabelsData, // Titles and data required for the accordion label
+      // Template in file, use this one: import { dataPaisajes } from '../search/assets/selectorData';
+      /* Template: [{
+        id: 'Huella humana',
+        name: 'Huella humana',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Huella humana en el área',
+        description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+      }]
+      */
+      children, // any component to show inside this array item from accordionLabelsData
+      classNameSelected, // className defined in CSS file to selected item this accordion
+      classNameDefault, // className defined in CSS file to default item for this accordion
+    } = this.props;
     const { expanded } = this.state;
-    const data = dataPaisajes;
     return (
       <div>
-        {(Object.keys(data).length > 0)
-          && data.map(counter => (
+        {(Object.keys(accordionLabelsData).length > 0)
+          && accordionLabelsData.map(counter => (
             <ExpansionPanel
-              className={classNameSelected}
-              id={counter.id}
-              expanded={expanded === counter.id}
+              className={expanded !== counter.id ? classNameDefault : classNameSelected}
               disabled={false}
+              expanded={expanded === counter.id}
+              id={counter.id}
               key={counter.id}
+              onClick={() => (this.setState({ expanded: expanded !== counter.id ? counter.id : null }))}
             >
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -63,17 +58,17 @@ class Accordion extends React.Component {
 }
 
 Accordion.propTypes = {
+  accordionLabelsData: PropTypes.array,
   children: PropTypes.any,
+  classNameDefault: PropTypes.string,
   classNameSelected: PropTypes.string,
-  handlers: PropTypes.arrayOf(PropTypes.func),
-  description: PropTypes.string, // to implement as tooltip or another option
 };
 
 Accordion.defaultProps = {
+  accordionLabelsData: [],
   children: null,
+  classNameDefault: 'm0',
   classNameSelected: 'm0 selector-expanded',
-  handlers: [],
-  description: '',
 };
 
 export default Accordion;
