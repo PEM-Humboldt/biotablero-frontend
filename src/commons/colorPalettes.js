@@ -53,4 +53,8 @@ export default {
     '#a5a95b',
     '#5f8f2c',
   ],
+  seBlue: [
+    '#ffffff',
+    '#51b4c1',
+  ],
 };

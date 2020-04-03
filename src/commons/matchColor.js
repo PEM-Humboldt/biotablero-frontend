@@ -21,6 +21,10 @@ const match = {
     palette: 'green',
     sort: ['No Protegida'],
   },
+  se: {
+    palette: 'seBlue',
+    sort: [undefined],
+  },
   default: {
     palette: ['#345b6b'],
   },
@@ -82,6 +86,12 @@ const matchColor = (type) => {
         cache.pa[value] = palette[counter];
         cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
         return palette[counter];
+      };
+    case 'se':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return palette[palette.length - 1];
+        return palette[idx];
       };
     default:
       return palette[0];
