@@ -5,7 +5,7 @@ import colorPalettes from './colorPalettes';
 const match = {
   fc: {
     palette: 'rainbowFc',
-    sort: [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10],
+    sort: [10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6, 5.5, 5, 4.5, 4],
   },
   biomas: {
     palette: 'greenBiomes',
@@ -19,7 +19,7 @@ const match = {
   },
   pa: {
     palette: 'green',
-    sort: 'No protegida - others',
+    sort: ['No Protegida'],
   },
   default: {
     palette: ['#345b6b'],
@@ -72,6 +72,16 @@ const matchColor = (type) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];
         return palette[idx];
+      };
+    case 'pa':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx !== -1) return palette[idx];
+        if (cache.pa[value]) return cache.pa[value];
+        const { counter } = cache.pa;
+        cache.pa[value] = palette[counter];
+        cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
+        return palette[counter];
       };
     default:
       return palette[0];
