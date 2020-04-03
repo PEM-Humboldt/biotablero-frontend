@@ -16,57 +16,74 @@ class Accordion extends React.Component {
 
   render() {
     const {
-      accordionLabelsData, // Titles and data required for the accordion label
-      // Template in file, use this one: import { dataPaisajes } from '../search/assets/selectorData';
+      componentsArray, // Titles, data and component as the content for each accordion level
       /* Template: [{
+      label: {
+        id: 'Factor de compensación',
+        name: 'Factor de compensación',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Factor de compensación en área de consulta',
+        description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
+      },
+      component: RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
+        'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
+        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
+    },
+    {
+      label: {
         id: 'Huella humana',
         name: 'Huella humana',
         disabled: false,
         expandIcon: <AddIcon />,
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
-      }]
+      },
+      component: RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
+        'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
+        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
+    },
+    ];
       */
-      children, // any component to show inside this array item from accordionLabelsData
       classNameSelected, // className defined in CSS file to selected item this accordion
       classNameDefault, // className defined in CSS file to default item for this accordion
     } = this.props;
     const { expanded } = this.state;
     return (
       <div>
-        {(Object.keys(accordionLabelsData).length > 0)
-          && accordionLabelsData.map(counter => (
-            <ExpansionPanel
-              className={expanded !== counter.id ? classNameDefault : classNameSelected}
-              disabled={false}
-              expanded={expanded === counter.id}
-              id={counter.id}
-              key={counter.id}
-              onClick={() => (this.setState({ expanded: expanded !== counter.id ? counter.id : null }))}
-            >
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
+        {(Object.keys(componentsArray).length > 0)
+          && componentsArray.map((counter) => {
+            return (
+              <ExpansionPanel
+                className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
+                disabled={false}
+                expanded={expanded === counter.label.id}
+                id={counter.label.id}
+                key={counter.label.id}
+                onClick={() => (this.setState({ expanded: expanded !== counter.label.id ? counter.label.id : null }))}
               >
-                {counter.id}
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{children}</ExpansionPanelDetails>
-            </ExpansionPanel>
-          ))}
+                <ExpansionPanelSummary
+                  expandIcon={<ExpandMoreIcon />}
+                >
+                  {counter.label.id}
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>{counter.component}</ExpansionPanelDetails>
+              </ExpansionPanel>
+            );
+          })}
       </div>
     );
   }
 }
 
 Accordion.propTypes = {
-  accordionLabelsData: PropTypes.array,
-  children: PropTypes.any,
+  componentsArray: PropTypes.array,
   classNameDefault: PropTypes.string,
   classNameSelected: PropTypes.string,
 };
 
 Accordion.defaultProps = {
-  accordionLabelsData: [],
-  children: null,
+  componentsArray: [],
   classNameDefault: 'm0',
   classNameSelected: 'm0 selector-expanded',
 };

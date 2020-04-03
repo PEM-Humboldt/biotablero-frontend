@@ -1,6 +1,5 @@
 /** eslint verified */
 import React from 'react';
-import AddIcon from '@material-ui/icons/Add';
 
 const description = companyName => (
   <div>
@@ -76,23 +75,4 @@ const dataGEB = {
   ],
 };
 
-const dataPaisajes = [
-  {
-    id: 'Factor de compensación',
-    name: 'Factor de compensación',
-    disabled: false,
-    expandIcon: <AddIcon />,
-    detailId: 'Factor de compensación en área de consulta',
-    description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
-  },
-  {
-    id: 'Huella humana',
-    name: 'Huella humana',
-    disabled: false,
-    expandIcon: <AddIcon />,
-    detailId: 'Huella humana en el área',
-    description: 'Representa diferentes análisis de huella humana en esta área de consulta',
-  },
-];
-
-export { description, dataGEB, dataPaisajes };
+export { description, dataGEB };
