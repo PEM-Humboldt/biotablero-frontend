@@ -60,7 +60,9 @@ class Accordion extends React.Component {
                 expanded={expanded === counter.label.id}
                 id={counter.label.id}
                 key={counter.label.id}
-                onClick={() => (this.setState({ expanded: expanded !== counter.label.id ? counter.label.id : null }))}
+                onChange={() => (this.setState({
+                  expanded: expanded !== counter.label.id ? counter.label.id : null,
+                }))}
               >
                 <ExpansionPanelSummary
                   expandIcon={<ExpandMoreIcon />}
