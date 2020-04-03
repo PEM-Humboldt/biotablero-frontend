@@ -15,11 +15,14 @@ const match = {
   },
   coverage: {
     palette: 'blue',
-    sort: 'N-S-T-others',
+    sort: ['Natural', 'Secundaria', 'Transformada'],
   },
   pa: {
     palette: 'green',
     sort: 'No protegida - others',
+  },
+  default: {
+    palette: ['#345b6b'],
   },
 };
 
@@ -44,8 +47,9 @@ const cache = {
  * biomas, bioticReg, coverage and pa will receive strings
  */
 const matchColor = (type) => {
-  const palette = colorPalettes[match[type].palette];
-  const sort = match[type].sort || null;
+  const info = match[type] || match.default;
+  const palette = colorPalettes[info.palette];
+  const sort = info.sort || [];
   switch (type) {
     case 'fc':
       return (value) => {
@@ -63,8 +67,14 @@ const matchColor = (type) => {
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
       };
+    case 'coverage':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return palette[palette.length - 1];
+        return palette[idx];
+      };
     default:
-      return '#345b6b';
+      return palette[0];
   }
 };
 
