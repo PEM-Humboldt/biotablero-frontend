@@ -14,6 +14,16 @@ class Accordion extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { componentsArray } = this.props;
+    // This will force to open the first level in accordion when it is loaded by first time
+    if (Object.keys(componentsArray).length > 0) {
+      this.setState({
+        expanded: componentsArray[0].label.id,
+      });
+    }
+  }
+
   render() {
     const {
       componentsArray, // Titles, data and component as the content for each accordion level
@@ -52,27 +62,25 @@ class Accordion extends React.Component {
     return (
       <div>
         {(Object.keys(componentsArray).length > 0)
-          && componentsArray.map((counter) => {
-            return (
-              <ExpansionPanel
-                className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
-                disabled={false}
-                expanded={expanded === counter.label.id}
-                id={counter.label.id}
-                key={counter.label.id}
-                onChange={() => (this.setState({
-                  expanded: expanded !== counter.label.id ? counter.label.id : null,
-                }))}
+          && componentsArray.map(counter => (
+            <ExpansionPanel
+              className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
+              disabled={false}
+              expanded={expanded === counter.label.id}
+              id={counter.label.id}
+              key={counter.label.id}
+              onChange={() => (this.setState({
+                expanded: expanded !== counter.label.id ? counter.label.id : null,
+              }))}
+            >
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
               >
-                <ExpansionPanelSummary
-                  expandIcon={<ExpandMoreIcon />}
-                >
-                  {counter.label.id}
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>{counter.component}</ExpansionPanelDetails>
-              </ExpansionPanel>
-            );
-          })}
+                {counter.label.id}
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>{counter.component}</ExpansionPanelDetails>
+            </ExpansionPanel>
+          ))}
       </div>
     );
   }
