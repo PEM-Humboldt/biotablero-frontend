@@ -25,8 +25,12 @@ const match = {
     palette: 'seBlue',
     sort: [undefined],
   },
+  biomeComp: {
+    palette: 'shortFC',
+    sort: ['high', 'medium', 'low'],
+  },
   default: {
-    palette: ['#345b6b'],
+    palette: 'default',
   },
 };
 
@@ -72,6 +76,7 @@ const matchColor = (type) => {
         return palette[counter];
       };
     case 'coverage':
+    case 'biomeComp':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];

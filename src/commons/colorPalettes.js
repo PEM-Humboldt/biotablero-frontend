@@ -57,4 +57,10 @@ export default {
     '#ffffff',
     '#51b4c1',
   ],
+  shortFC: [
+    '#ea495f',
+    '#eabc47',
+    '#51b4c1',
+  ],
+  default: ['#345b6b'],
 };
