@@ -6,11 +6,15 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
+import AddIcon from '@material-ui/icons/Add';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
+import CompensationFactor from './CompensationFactor';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
+
+import Accordion from '../commons/Accordion';
 
 const colorsRB = ['#003d59',
   '#5a1d44',
@@ -194,6 +198,41 @@ class Drawer extends React.Component {
       ? Number(coverage[0].area).toFixed(2) : 0);
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
+    const componentsArray = [{
+      label: {
+        id: 'Factor de compensación',
+        name: 'Factor de compensación',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Factor de compensación en área de consulta',
+        description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
+      },
+      component: CompensationFactor(
+        area.name, // areaName
+        colors, // biomesColors
+        biomas, // biomesData
+        colorsRB, // bioticRegionsColors,
+        distritos, // bioticRegionsData,
+        colorsFC, // compensationFactorColors,
+        fc, // compensationFactorData,
+        handlerInfoGraph,
+        openInfoGraph,
+      ),
+    },
+    {
+      label: {
+        id: 'Huella humana',
+        name: 'Huella humana',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Huella humana en el área',
+        description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+      },
+      component: RenderGraph(distritos, 'Hectáreas', 'Huella humana', 'BarStackGraph',
+        'Huella humana', colorsRB, handlerInfoGraph, openInfoGraph,
+        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
+    },
+    ];
     return (
       <div className="informer">
         <button
@@ -250,33 +289,9 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="1" selected>
-                  { (area.name === 'Jurisdicciones ambientales')
-                    && RenderGraph(fc, 'Hectáreas', 'F C', 'BarStackGraph',
-                      'Factor de Compensación', colorsFC, handlerInfoGraph, openInfoGraph,
-                      'representa las hectáreas sobre los Biomas IAvH analizados')
-                  }
-                  { (area.name === 'Jurisdicciones ambientales')
-                    && RenderGraph(biomas, 'Hectáreas', 'Biomas', 'BarStackGraph',
-                      'Biomas', colors, handlerInfoGraph, openInfoGraph,
-                      'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta')
-                  }
-                  { (area.name === 'Jurisdicciones ambientales')
-                    && RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-                      'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
-                      'muestra las hectáreas por cada región biótica en el área de consulta seleccionada')
-                  }
-                  {(area.name !== 'Jurisdicciones ambientales')
-                    && (
-                    <div className="graphcard">
-                      <h2>
-                        Gráficas en construcción
-                      </h2>
-                      <p>
-                        Pronto más información
-                      </p>
-                    </div>
-                    )
-                  }
+                  <Accordion
+                    componentsArray={componentsArray}
+                  />
                 </div>
               ),
               (
