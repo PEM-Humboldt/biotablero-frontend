@@ -16,7 +16,7 @@ const CompensationFactor = (
   <div className="graphcard">
     <div className="graphcontainer">
       <h4>
-      hectáreas totales
+        hectáreas totales
         <b> 1,827,103.00 ha</b>
       </h4>
       { /* 'Jurisdicciones ambientales' is the only data currently available */}
