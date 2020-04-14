@@ -26,35 +26,7 @@ class Accordion extends React.Component {
 
   render() {
     const {
-      componentsArray, // Titles, data and component as the content for each accordion level
-      /* Template: [{
-      label: {
-        id: 'Factor de compensación',
-        name: 'Factor de compensación',
-        disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Factor de compensación en área de consulta',
-        description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
-      },
-      component: RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-        'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
-        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
-    },
-    {
-      label: {
-        id: 'Huella humana',
-        name: 'Huella humana',
-        disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Huella humana en el área',
-        description: 'Representa diferentes análisis de huella humana en esta área de consulta',
-      },
-      component: RenderGraph(distritos, 'Hectáreas', 'Regiones Bióticas', 'BarStackGraph',
-        'Regiones Bióticas', colorsRB, handlerInfoGraph, openInfoGraph,
-        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
-    },
-    ];
-      */
+      componentsArray,
       classNameSelected,
       classNameDefault,
     } = this.props;
@@ -87,7 +59,17 @@ class Accordion extends React.Component {
 }
 
 Accordion.propTypes = {
-  componentsArray: PropTypes.array,
+  componentsArray: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      disable: PropTypes.bool,
+      expandIcon: PropTypes.object,
+      detailId: PropTypes.string,
+      description: PropTypes.string,
+    }),
+    component: PropTypes.object, // Component to show inside the accordion
+  })),
   classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
   classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
 };
