@@ -55,8 +55,8 @@ class Accordion extends React.Component {
     },
     ];
       */
-      classNameSelected, // className defined in CSS file to selected item this accordion
-      classNameDefault, // className defined in CSS file to default item for this accordion
+      classNameSelected,
+      classNameDefault,
     } = this.props;
     const { expanded } = this.state;
     return (
@@ -88,8 +88,8 @@ class Accordion extends React.Component {
 
 Accordion.propTypes = {
   componentsArray: PropTypes.array,
-  classNameDefault: PropTypes.string,
-  classNameSelected: PropTypes.string,
+  classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
+  classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
 };
 
 Accordion.defaultProps = {
