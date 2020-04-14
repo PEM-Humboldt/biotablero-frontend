@@ -28,7 +28,6 @@
     "chart.js": "^2.8.0",
     "d3": "5.5.0",
     "d3-array": "2.0.3",
-    "eslint": "4.19.1",
     "leaflet": "1.4.0",
     "npm": "^6.4.1",
     "prop-types": "15.6.2",
@@ -43,11 +42,12 @@
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
+    "eslint": "^6.8.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-react-app": "^2.1.0",
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.11.0"
+    "eslint-plugin-react": "^7.19.0"
   },
   "dependenciesComments": {
     "eslint-plugin-jsx-a11y": "Keep in ^5.1.1 version to avoid warnings"
