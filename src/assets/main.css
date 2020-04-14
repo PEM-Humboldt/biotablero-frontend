@@ -1109,6 +1109,19 @@ a#reset-filters {
           flex-flow: row;
   height: calc(100vh - 141px);
 }
+
+.mapsmTitle {
+	position: absolute;
+	top:100px;
+	left:50px;
+	background-color: #fff;
+	color: #e84a5f;
+	border-bottom: 1px solid #e84a5f;
+	font-size: 15px;
+	z-index:1;
+	display: inline-block;
+	padding: 5px 12px;
+}
 /*Map container*/
 .viewfinder {
   margin: 2px;
@@ -1122,12 +1135,13 @@ a#reset-filters {
 }
 /*All information container*/
 .contentView {
-	overflow: auto;
-  -webkit-flex: 1 1 40%;
-          flex: 1 1 40%;
-  flex-direction: column;
-  -webkit-order: 2;
-          order: 2;
+overflow: auto;
+	-webkit-flex: 1 1 40%;
+	flex: 1 1 40%;
+	flex-direction: column;
+	-webkit-order: 2;
+	order: 2;
+	z-index:2;
 }
 
 .selector {
