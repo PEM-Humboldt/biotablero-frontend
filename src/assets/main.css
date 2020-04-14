@@ -1110,7 +1110,7 @@ a#reset-filters {
   height: calc(100vh - 141px);
 }
 
-.mapsmTitle {
+.mapsTitle {
 	position: absolute;
 	top:100px;
 	left:50px;
