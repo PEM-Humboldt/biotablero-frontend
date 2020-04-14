@@ -69,13 +69,12 @@ Accordion.propTypes = {
       description: PropTypes.string,
     }),
     component: PropTypes.object, // Component to show inside the accordion
-  })),
+  })).isRequired,
   classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
   classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
 };
 
 Accordion.defaultProps = {
-  componentsArray: [],
   classNameDefault: 'm0',
   classNameSelected: 'm0 selector-expanded',
 };
