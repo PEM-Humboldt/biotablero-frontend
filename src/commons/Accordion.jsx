@@ -17,7 +17,7 @@ class Accordion extends React.Component {
   componentDidMount() {
     const { componentsArray } = this.props;
     // This will force to open the first level in accordion when it is loaded by first time
-    if (Object.keys(componentsArray).length > 0) {
+    if (componentsArray.length > 0) {
       this.setState({
         expanded: componentsArray[0].label.id,
       });
@@ -33,7 +33,7 @@ class Accordion extends React.Component {
     const { expanded } = this.state;
     return (
       <div>
-        {(Object.keys(componentsArray).length > 0)
+        {(componentsArray.length > 0)
           && componentsArray.map(counter => (
             <ExpansionPanel
               className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
