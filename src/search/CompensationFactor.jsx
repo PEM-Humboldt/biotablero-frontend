@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
 
-function CompensationFactor(props) {
+const CompensationFactor = (props) => {
   const {
     areaName,
     biomesColors,
@@ -38,30 +38,22 @@ function CompensationFactor(props) {
       </div>
     </div>
   );
-}
+};
 
 CompensationFactor.propTypes = {
-  areaName: PropTypes.any,
-  biomesColors: PropTypes.any,
-  biomesData: PropTypes.any,
-  bioticRegionsColors: PropTypes.any,
-  bioticRegionsData: PropTypes.any,
-  compensationFactorColors: PropTypes.any,
-  compensationFactorData: PropTypes.any,
-  handlerInfoGraph: PropTypes.any,
-  openInfoGraph: PropTypes.any,
+  areaName: PropTypes.string.isRequired,
+  biomesColors: PropTypes.object.isRequired,
+  biomesData: PropTypes.object.isRequired,
+  bioticRegionsColors: PropTypes.object.isRequired,
+  bioticRegionsData: PropTypes.object.isRequired,
+  compensationFactorColors: PropTypes.object.isRequired,
+  compensationFactorData: PropTypes.object.isRequired,
+  handlerInfoGraph: PropTypes.func.isRequired,
+  openInfoGraph: PropTypes.object,
 };
 
 CompensationFactor.defaultProps = {
-  areaName: ' ',
-  biomesColors: ' ',
-  biomesData: ' ',
-  bioticRegionsColors: ' ',
-  bioticRegionsData: ' ',
-  compensationFactorColors: ' ',
-  compensationFactorData: ' ',
-  handlerInfoGraph: ' ',
-  openInfoGraph: ' ',
+  openInfoGraph: '',
 };
 
 export default CompensationFactor;
