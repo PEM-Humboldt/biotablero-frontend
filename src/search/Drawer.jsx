@@ -207,17 +207,17 @@ class Drawer extends React.Component {
         detailId: 'Factor de compensación en área de consulta',
         description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
       },
-      component: CompensationFactor(
-        area.name, // areaName
-        colors, // biomesColors
-        biomas, // biomesData
-        colorsRB, // bioticRegionsColors,
-        distritos, // bioticRegionsData,
-        colorsFC, // compensationFactorColors,
-        fc, // compensationFactorData,
-        handlerInfoGraph,
-        openInfoGraph,
-      ),
+      component: <CompensationFactor
+        areaName={area.name}
+        biomesColors={colors}
+        biomesData={biomas}
+        bioticRegionsColors={colorsRB}
+        bioticRegionsData={distritos}
+        compensationFactorColors={colorsFC}
+        compensationFactorData={fc}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
+      />,
     },
     {
       label: {
