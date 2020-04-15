@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -10,6 +9,7 @@ import AddIcon from '@material-ui/icons/Add';
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
 import CompensationFactor from './CompensationFactor';
+import HumanFootprint from './HumanFootprint';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
@@ -228,9 +228,7 @@ class Drawer extends React.Component {
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
-      component: RenderGraph(distritos, 'Hectáreas', 'Huella humana', 'BarStackGraph',
-        'Huella humana', colorsRB, handlerInfoGraph, openInfoGraph,
-        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
+      component: HumanFootprint(geofence),
     },
     ];
     return (
