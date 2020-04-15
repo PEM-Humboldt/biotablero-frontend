@@ -228,7 +228,7 @@ class Drawer extends React.Component {
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
-      component: HumanFootprint(geofence),
+      component: (<HumanFootprint geofence={geofence} />),
     },
     ];
     return (
