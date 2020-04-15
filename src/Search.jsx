@@ -520,6 +520,9 @@ class Search extends Component {
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
+          <div className="mapsTitle">
+            Titulo del mapa
+          </div>
           <div className="contentView">
             { !activeLayer && (
               <Selector
