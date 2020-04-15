@@ -1,11 +1,12 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
+import PropTypes from 'prop-types';
 import Accordion from '../commons/Accordion';
 import CurrentFootprint from '../humanFootprint/CurrentFootprint';
 import TimelineFootprint from '../humanFootprint/TimelineFootprint';
-import PersistenceFooprint from '../humanFootprint/PersistenceHumanFootprint';
+import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
-const HumanFootprint = (geofence) => {
+const HumanFootprint = (props) => {
   const componentsArray = [{
     label: {
       id: 'Huella humana actual',
@@ -15,7 +16,7 @@ const HumanFootprint = (geofence) => {
       detailId: 'Huella humana actual en área de consulta',
       description: 'Huella humana identificada en el último año de medición disponible, sobre el área de consulta',
     },
-    component: CurrentFootprint(geofence),
+    component: CurrentFootprint(props),
   },
   {
     label: {
@@ -26,7 +27,7 @@ const HumanFootprint = (geofence) => {
       detailId: 'Huella humana a través del tiempo en el área',
       description: 'Representa diferentes análisis de huella humana en esta área de consulta',
     },
-    component: TimelineFootprint(geofence),
+    component: TimelineFootprint(props),
   },
   {
     label: {
@@ -37,7 +38,7 @@ const HumanFootprint = (geofence) => {
       detailId: 'Persistencia de la huella humana en la unidad de consulta',
       description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
     },
-    component: PersistenceFooprint(geofence),
+    component: PersistenceFooprint(props),
   },
   ];
   return (
@@ -50,9 +51,10 @@ const HumanFootprint = (geofence) => {
 };
 
 HumanFootprint.propTypes = {
-};
-
-HumanFootprint.defaultProps = {
+  props: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
 };
 
 export default HumanFootprint;
