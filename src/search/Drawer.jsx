@@ -228,9 +228,17 @@ class Drawer extends React.Component {
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
-      component: RenderGraph(distritos, 'Hectáreas', 'Huella humana', 'BarStackGraph',
-        'Huella humana', colorsRB, handlerInfoGraph, openInfoGraph,
-        'muestra las hectáreas por cada región biótica en el área de consulta seleccionada'),
+      component: <RenderGraph
+        graph="BarStackGraph"
+        data={distritos}
+        graphTitle="Huella humana"
+        colors={colorsRB}
+        labelX="Hectáreas"
+        labelY="Huella humana"
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
+        graphDescription="muestra las hectáreas por cada región biótica en el área de consulta seleccionada"
+      />,
     },
     ];
     return (
@@ -309,8 +317,15 @@ class Drawer extends React.Component {
         )}
         { subLayerName && subLayerData && (
           <div className={classes.root}>
-            {RenderGraph(subLayerData, 'Subzonas Hidrográficas', 'Hectáreas',
-              'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
+            <RenderGraph
+              graph="BarVertical"
+              data={subLayerData}
+              graphTitle="ha por Subzonas Hidrográficas"
+              colors={colorSZH}
+              labelX="Subzonas Hidrográficas"
+              labelY="Hectáreas"
+              units="ha"
+            />
           </div>
         )}
       </div>
