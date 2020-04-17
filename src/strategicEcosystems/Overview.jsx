@@ -68,22 +68,31 @@ const Overview = (/* TODO: Add all values required */
     )}
     <div className="graphcontainer pt5">
       <h4>
-      hectáreas totales
+        hectáreas totales
         <b>{`${numberWithCommas(generalArea)} ha`}</b>
       </h4>
       <h4>
-      Cobertura
+        Cobertura
       </h4>
       <h6>
-      Natural, Secundaria y Transformada
+        Natural, Secundaria y Transformada
       </h6>
       <div className="graficaeco">
-        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-          'Cobertura', null, handlerInfoGraph, openInfoGraph,
-          'Estado de la cobertura en el área seleccionada', '%')}
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={coverage}
+          graphTitle="Cobertura"
+          colors={null}
+          labelX="Tipo de área"
+          labelY="Comparación"
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription="Estado de la cobertura en el área seleccionada"
+          units="%"
+        />
       </div>
       <h4>
-      Áreas protegidas
+        Áreas protegidas
         <b>{`${numberWithCommas(protectedArea)} ha `}</b>
       </h4>
       <h5>
@@ -91,15 +100,24 @@ const Overview = (/* TODO: Add all values required */
       </h5>
       <div className="graficaeco">
         <h6>
-        Distribución en área protegida:
+          Distribución en área protegida:
         </h6>
-        {RenderGraph(listPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', null, handlerInfoGraph, openInfoGraph,
-          '', '%')}
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={listPA}
+          graphTitle="Área protegida"
+          colors={null}
+          labelX=""
+          labelY=""
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription=""
+          units="%"
+        />
       </div>
       <div className="ecoest">
         <h4 className="minus20">
-        Ecosistemas estratégicos
+          Ecosistemas estratégicos
           <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
         </h4>
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>

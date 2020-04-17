@@ -49,14 +49,14 @@ const RenderGraph = (props) => {
       {parent => (
         parent.width && (
           <GraphLoader
-            width={parent.width}
-            height={parent.height}
             graphType={graph}
             data={data}
-            labelX={labelX}
-            labelY={labelY}
             graphTitle={graphTitle}
             colors={colors}
+            width={parent.width}
+            height={parent.height}
+            labelX={labelX}
+            labelY={labelY}
             handlerInfoGraph={handlerInfoGraph}
             openInfoGraph={openInfoGraph}
             graphDescription={graphDescription}
