@@ -1,23 +1,33 @@
 /** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ParentSize } from '@vx/responsive';
 import GraphLoader from './GraphLoader';
 
 /**
  * Function to render a graph
  *
- * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
- *  or an Object with the data.
+ * @param {any} data Graph data, it can be null (data hasn't loaded),
+ *  false (data not available) or an Object with the data.
  * @param {string} labelX axis X label
  * @param {string} labelY axis Y label
  * @param {string} graph graph type
  * @param {string} graphTitle graph title
  * @param {array} colors colors to sort elements inside the graph
  */
-const RenderGraph = (
-  data, labelX, labelY, graph, graphTitle, colors,
-  handlerInfoGraph, openInfoGraph, graphDescription, units,
-) => {
+const RenderGraph = (props) => {
+  const {
+    graph,
+    data,
+    graphTitle,
+    colors,
+    labelX,
+    labelY,
+    handlerInfoGraph,
+    openInfoGraph,
+    graphDescription,
+    units,
+  } = props;
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
@@ -56,6 +66,30 @@ const RenderGraph = (
       )}
     </ParentSize>
   );
+};
+
+RenderGraph.propTypes = {
+  graph: PropTypes.string.isRequired,
+  data: PropTypes.any.isRequired, // Array or object, depending on graphType
+  graphTitle: PropTypes.string,
+  colors: PropTypes.array,
+  labelX: PropTypes.string,
+  labelY: PropTypes.string,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
+  graphDescription: PropTypes.string,
+  units: PropTypes.string,
+};
+
+RenderGraph.defaultProps = {
+  graphTitle: '',
+  colors: ['blue'],
+  labelX: '',
+  labelY: '',
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
+  graphDescription: null,
+  units: 'ha',
 };
 
 export default RenderGraph;
