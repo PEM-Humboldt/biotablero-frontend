@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 
 const description = companyName => (
@@ -19,7 +18,7 @@ const description = companyName => (
       <b>
         paisaje
       </b>
-      {', de 3 distintas maneras:'}
+      , de 3 distintas maneras:
     </p>
     <p>
       <i>

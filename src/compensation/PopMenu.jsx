@@ -1,4 +1,3 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
 import BackGraphIcon from '@material-ui/icons/Timeline';
@@ -129,7 +128,7 @@ class PopMenu extends Component {
             }}
           >
             <BackGraphIcon />
-            {'Gráfico Biomas'}
+            Gráfico Biomas
           </button>
           )
         }

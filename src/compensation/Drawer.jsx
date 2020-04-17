@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -783,7 +782,7 @@ class Drawer extends React.Component {
                     href={this.downloadPlanUrl()}
                   >
                     <DownloadIcon className="icondown" />
-                    {'Descargar plan'}
+                    Descargar plan
                   </Button>
                 )}
                 {tableError && (
