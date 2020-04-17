@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
+import TotalArea from '../commons/TotalArea';
 
 const PersistenceFootprint = ({ geofence }) => (
   <div className="graphcontainer pt5">
@@ -8,10 +9,9 @@ const PersistenceFootprint = ({ geofence }) => (
       Persistencia de huella humana en
       {` ${geofence.name}`}
     </h3>
-    <h4>
-      hectáreas totales
-      <b> 1111111 ha</b>
-    </h4>
+    <TotalArea
+      value={1111111}
+    />
     <h4>
       Cobertura
     </h4>
