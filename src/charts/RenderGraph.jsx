@@ -7,13 +7,17 @@ import GraphLoader from './GraphLoader';
 /**
  * Function to render a graph
  *
+ * @param {string} graph graph type
  * @param {any} data Graph data, it can be null (data hasn't loaded),
  *  false (data not available) or an Object with the data.
- * @param {string} labelX axis X label
- * @param {string} labelY axis Y label
- * @param {string} graph graph type
  * @param {string} graphTitle graph title
  * @param {array} colors colors to sort elements inside the graph
+ * @param {string} labelX axis X label
+ * @param {string} labelY axis Y label
+ * @param {func} handlerInfoGraph function to handle additional information
+ * @param {string} openInfoGraph additional information for the graph
+ * @param {string} graphDescription description of the graph
+ * @param {string} units units of data inside the graph
  */
 const RenderGraph = (props) => {
   const {
