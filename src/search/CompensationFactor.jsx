@@ -15,6 +15,7 @@ const CompensationFactor = (props) => {
     handlerInfoGraph,
     openInfoGraph,
   } = props;
+  console.log('biomesData: ', biomesData);
   return (
     <div style={{ width: '100%' }}>
       <div className="graphcontainer">
