@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
-import TotalArea from '../commons/TotalArea';
+import GeneralArea from '../commons/GeneralArea';
 
-const PersistenceFootprint = ({ geofence }) => (
+const PersistenceFootprint = ({ generalArea, geofence }) => (
   <div className="graphcontainer pt5">
     <h3>
       Persistencia de huella humana en
       {` ${geofence.name}`}
     </h3>
-    <TotalArea
-      value={1111111}
+    <GeneralArea
+      value={generalArea}
     />
     <h4>
       Cobertura
@@ -35,6 +35,7 @@ const PersistenceFootprint = ({ geofence }) => (
 );
 
 PersistenceFootprint.propTypes = {
+  generalArea: PropTypes.string.isRequired,
   geofence: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,

@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import TotalArea from '../commons/TotalArea';
+import GeneralArea from '../commons/GeneralArea';
 
-const TimelineFootprint = ({ geofence }) => (
+const TimelineFootprint = ({ generalArea, geofence }) => (
   <div className="graphcontainer pt5">
     <h3>
       Huella humana a través del tiempo y por ecosistemas estratégicos en
       {` ${geofence.name}`}
     </h3>
-    <TotalArea
-      value={1111112}
+    <GeneralArea
+      value={generalArea}
     />
     <h4>
       Valores promedio en el área
@@ -36,6 +36,7 @@ const TimelineFootprint = ({ geofence }) => (
 );
 
 TimelineFootprint.propTypes = {
+  generalArea: PropTypes.string.isRequired,
   geofence: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,
