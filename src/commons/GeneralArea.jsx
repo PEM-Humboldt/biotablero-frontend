@@ -3,15 +3,15 @@ import PropTypes from 'prop-types';
 
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-const TotalArea = ({ value }) => (
+const GeneralArea = ({ value }) => (
   <h4>
     hectáreas totales
-    <b>{`${numberWithCommas(value)} ha`}</b>
+    <b>{`${numberWithCommas(Number(value).toFixed(2))} ha`}</b>
   </h4>
 );
 
-TotalArea.propTypes = {
+GeneralArea.propTypes = {
   value: PropTypes.string.isRequired,
 };
 
-export default TotalArea;
+export default GeneralArea;
