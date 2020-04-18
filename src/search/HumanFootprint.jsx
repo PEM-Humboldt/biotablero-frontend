@@ -66,7 +66,7 @@ const HumanFootprint = ({ generalArea, geofence }) => {
 };
 
 HumanFootprint.propTypes = {
-  generalArea: PropTypes.string.isRequired,
+  generalArea: PropTypes.number.isRequired,
   geofence: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,

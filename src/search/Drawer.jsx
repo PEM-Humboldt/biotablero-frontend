@@ -67,7 +67,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            generalArea: res.total_area,
+            generalArea: Number(res.total_area),
           },
         }));
       })
