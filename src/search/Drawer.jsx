@@ -46,6 +46,7 @@ class Drawer extends React.Component {
         coverage: null, // coverage area
         areaSE: null, // area fields for strategic ecosystems
         areaPA: null, // area fields for protected areas
+        generalArea: 0,
       },
     };
   }
@@ -59,6 +60,27 @@ class Drawer extends React.Component {
       geofence, area,
     } = this.props;
     const searchId = geofence.id || geofence.name;
+
+    RestAPI.requestTotalAreaInGeofence(area.id, searchId)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            generalArea: res.total_area,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            generalArea: 0,
+          },
+        }));
+      });
+
 
     RestAPI.requestCoverage(area.id, searchId)
       .then((res) => {
@@ -191,11 +213,9 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        fc, biomas, distritos, coverage, areaPA, areaSE,
+        fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
       },
     } = this.state;
-    const generalArea = (coverage && coverage[0]
-      ? Number(coverage[0].area).toFixed(2) : 0);
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     const componentsArray = [{
@@ -228,7 +248,12 @@ class Drawer extends React.Component {
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
-      component: (<HumanFootprint geofence={geofence} />),
+      component: (
+        <HumanFootprint
+          generalArea={generalArea}
+          geofence={geofence}
+        />
+      ),
     },
     ];
     return (

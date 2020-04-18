@@ -131,6 +131,15 @@ class RestAPI {
   }
 
   /**
+   * Recover area value in the selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestTotalAreaInGeofence(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
+  }
+
+  /**
    * Recover a list with all protected areas available in the database
    */
   static getAllProtectedAreas() {

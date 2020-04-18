@@ -3,7 +3,7 @@ import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
-import TotalArea from '../commons/TotalArea';
+import GeneralArea from '../commons/GeneralArea';
 import EcosystemsBox from './EcosystemsBox';
 import RenderGraph from '../charts/RenderGraph';
 
@@ -68,7 +68,7 @@ const Overview = (/* TODO: Add all values required */
       />
     )}
     <div className="graphcontainer pt5">
-      <TotalArea
+      <GeneralArea
         value={generalArea}
       />
       <h4>
