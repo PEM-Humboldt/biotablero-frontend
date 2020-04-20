@@ -307,8 +307,15 @@ class Drawer extends React.Component {
         )}
         { subLayerName && subLayerData && (
           <div className={classes.root}>
-            {RenderGraph(subLayerData, 'Subzonas Hidrográficas', 'Hectáreas',
-              'BarVertical', 'ha por Subzonas Hidrográficas', colorSZH, 'ha', false)}
+            <RenderGraph
+              graph="BarVertical"
+              data={subLayerData}
+              graphTitle="ha por Subzonas Hidrográficas"
+              colors={colorSZH}
+              labelX="Subzonas Hidrográficas"
+              labelY="Hectáreas"
+              units="ha"
+            />
           </div>
         )}
       </div>
