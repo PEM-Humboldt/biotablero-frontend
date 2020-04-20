@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -111,22 +110,20 @@ class NationalInsigths extends React.Component {
           <br />
           {`${geofence}`}
         </h1>
-        {
-          <div>
-            {(data.national)
+        <div>
+          {(data.national)
               && (RenderGraph(data.national, null, null,
                 'DotInfo', 'Nacional', null, handlerInfoGraph, false, 'null', 'ha')
               )}
-            {(data.coverage)
+          {(data.coverage)
               && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
                 'BarVertical', 'Tipo de cobertura', colors, 'ha', false)
               )}
-            {(data.pa)
+          {(data.pa)
               && (RenderGraph(data.pa, 'Área protegida', 'Hectáreas',
                 'BarVertical', 'Tipo de áreas protegidas', colors, 'ha', false)
               )}
-          </div>
-        }
+        </div>
       </div>
     );
   }
