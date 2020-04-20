@@ -74,7 +74,7 @@ const RenderGraph = (props) => {
 
 RenderGraph.propTypes = {
   graph: PropTypes.string.isRequired,
-  data: PropTypes.any.isRequired, // Array or object, depending on graphType
+  data: PropTypes.any, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
   colors: PropTypes.array,
   labelX: PropTypes.string,
@@ -86,6 +86,7 @@ RenderGraph.propTypes = {
 };
 
 RenderGraph.defaultProps = {
+  data: null,
   graphTitle: '',
   colors: ['blue'],
   labelX: '',

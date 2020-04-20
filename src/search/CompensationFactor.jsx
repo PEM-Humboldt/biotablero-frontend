@@ -81,18 +81,21 @@ const CompensationFactor = (props) => {
 
 CompensationFactor.propTypes = {
   areaName: PropTypes.string.isRequired,
-  biomesColors: PropTypes.object.isRequired,
-  biomesData: PropTypes.array.isRequired,
-  bioticRegionsColors: PropTypes.object.isRequired,
-  bioticRegionsData: PropTypes.array.isRequired,
-  compensationFactorColors: PropTypes.object.isRequired,
-  compensationFactorData: PropTypes.array.isRequired,
+  biomesColors: PropTypes.array.isRequired,
+  biomesData: PropTypes.array,
+  bioticRegionsColors: PropTypes.array.isRequired,
+  bioticRegionsData: PropTypes.array,
+  compensationFactorColors: PropTypes.array.isRequired,
+  compensationFactorData: PropTypes.array,
   handlerInfoGraph: PropTypes.func.isRequired,
   openInfoGraph: PropTypes.object,
 };
 
 CompensationFactor.defaultProps = {
   openInfoGraph: '',
+  biomesData: null,
+  bioticRegionsData: null,
+  compensationFactorData: null,
 };
 
 export default CompensationFactor;
