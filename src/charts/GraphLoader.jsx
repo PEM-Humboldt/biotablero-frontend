@@ -92,7 +92,7 @@ const GraphLoader = (props) => {
           <div className="graphcard pb">
             <h2>
               <DownloadIcon className="icondown" />
-              Ecosistemas Equivalentes
+               Ecosistemas Equivalentes
             </h2>
             { !showOnlyTitle && (
               <div>
