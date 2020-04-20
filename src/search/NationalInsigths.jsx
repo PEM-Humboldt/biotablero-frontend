@@ -112,17 +112,48 @@ class NationalInsigths extends React.Component {
         </h1>
         <div>
           {(data.national)
-              && (RenderGraph(data.national, null, null,
-                'DotInfo', 'Nacional', null, handlerInfoGraph, false, 'null', 'ha')
-              )}
+            && (
+            <RenderGraph
+              graph="DotInfo"
+              data={data.national}
+              graphTitle="Nacional"
+              colors={null}
+              labelX={null}
+              labelY={null}
+              handlerInfoGraph={handlerInfoGraph}
+              openInfoGraph={false}
+              units="ha"
+            />
+            )
+          }
           {(data.coverage)
-              && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
-                'BarVertical', 'Tipo de cobertura', colors, 'ha', false)
-              )}
+            && (
+            <RenderGraph
+              graph="BarVertical"
+              data={data.coverage}
+              graphTitle="Tipo de cobertura"
+              colors={colors}
+              labelX="Cobertura"
+              labelY="Hectáreas"
+              openInfoGraph={false}
+              units="ha"
+            />
+            )
+          }
           {(data.pa)
-              && (RenderGraph(data.pa, 'Área protegida', 'Hectáreas',
-                'BarVertical', 'Tipo de áreas protegidas', colors, 'ha', false)
-              )}
+            && (
+            <RenderGraph
+              graph="BarVertical"
+              data={data.pa}
+              graphTitle="Tipo de áreas protegidas"
+              colors={colors}
+              labelX="Área protegida"
+              labelY="Hectáreas"
+              openInfoGraph={false}
+              units="ha"
+            />
+            )
+          }
         </div>
       </div>
     );

@@ -19,17 +19,25 @@ const PersistenceFootprint = ({ geofence }) => (
       Estable natural, Dinámica, Estable alta
     </h6>
     <div className="graficaeco">
-      {RenderGraph([
-        {
-          area: 732206, percentage: 0.29405913098887474, type: 'Estable natural', color: '#5aa394',
-        }, {
-          area: 70749, percentage: 0.03807574570316536, type: 'Dinámica', color: '#fb6a2a',
-        }, {
-          area: 1054399, percentage: 0.5674571823442289, type: 'Estable alta', color: '#b3433b',
-        }],
-      'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-      'Cobertura', null, null, null,
-      'Estado de la cobertura en el área seleccionada', '%')}
+      <RenderGraph
+        graph="SmallBarStackGraph"
+        data={[
+          {
+            area: 732206, percentage: 0.29405913098887474, type: 'Estable natural', color: '#5aa394',
+          }, {
+            area: 70749, percentage: 0.03807574570316536, type: 'Dinámica', color: '#fb6a2a',
+          }, {
+            area: 1054399, percentage: 0.5674571823442289, type: 'Estable alta', color: '#b3433b',
+          }]}
+        graphTitle="Cobertura"
+        colors={null}
+        labelX="Tipo de área"
+        labelY="Comparación"
+        handlerInfoGraph={null}
+        openInfoGraph={null}
+        graphDescription="Estado de la cobertura en el área seleccionada"
+        units="%"
+      />
     </div>
   </div>
 );
