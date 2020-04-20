@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';

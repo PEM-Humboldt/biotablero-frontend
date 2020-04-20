@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -37,7 +36,7 @@ class Menu extends React.Component {
           </Link>
           <Link to="./Indicadores" onClick={this.changeMenuState}>
             <li>
-            Indicadores
+              Indicadores
             </li>
           </Link>
           { userLogged ? (

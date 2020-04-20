@@ -1,4 +1,3 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
