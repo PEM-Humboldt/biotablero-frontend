@@ -61,7 +61,7 @@ class Drawer extends React.Component {
     } = this.props;
     const searchId = geofence.id || geofence.name;
 
-    RestAPI.requestTotalAreaInGeofence(area.id, searchId)
+    RestAPI.requestGeofenceDetails(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
@@ -72,12 +72,6 @@ class Drawer extends React.Component {
         }));
       })
       .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-          },
-        }));
       });
 
 
