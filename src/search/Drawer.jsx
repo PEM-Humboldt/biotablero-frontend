@@ -46,7 +46,7 @@ class Drawer extends React.Component {
         coverage: null, // coverage area
         areaSE: null, // area fields for strategic ecosystems
         areaPA: null, // area fields for protected areas
-        generalArea: 0,
+        generalArea: 0, // general area value in the current geofence
       },
     };
   }
@@ -76,7 +76,6 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            generalArea: 0,
           },
         }));
       });
