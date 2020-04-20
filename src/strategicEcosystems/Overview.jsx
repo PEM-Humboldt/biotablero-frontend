@@ -71,10 +71,6 @@ const Overview = (/* TODO: Add all values required */
         value={generalArea}
       />
       <h4>
-        hectáreas totales
-        <b>{`${numberWithCommas(generalArea)} ha`}</b>
-      </h4>
-      <h4>
         Cobertura
       </h4>
       <h6>
