@@ -131,11 +131,11 @@ class RestAPI {
   }
 
   /**
-   * Recover area value in the selected area
+   * Recover details in the selected area
    * @param {Number} idArea id area to request, f.e. ea
    * @param {Number} idGeofence id geofence to request, f.e. idCAR
    */
-  static requestTotalAreaInGeofence(idArea, idGeofence) {
+  static requestGeofenceDetails(idArea, idGeofence) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 
