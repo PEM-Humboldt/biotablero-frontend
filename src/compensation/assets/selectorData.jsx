@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 
 const description = companyName => (
@@ -15,7 +14,7 @@ const description = companyName => (
       <b>
         ¿Dónde y cómo compensar?
       </b>
-      {', para esto:'}
+      , para esto:
     </p>
     <p>
       <i>

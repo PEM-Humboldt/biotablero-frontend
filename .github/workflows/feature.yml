@@ -1,0 +1,23 @@
+name: CI for features
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  dev:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: 8.12.0
+    - name: Run linter
+      run: |
+        npm ci
+        npm run lint
+      env:
+        CI: true

@@ -19,41 +19,50 @@ const CompensationFactor = (props) => {
     <div style={{ width: '100%' }}>
       <div className="graphcontainer">
         {(areaName && areaName === 'Jurisdicciones ambientales')
-          && RenderGraph(
-            compensationFactorData,
-            'Hectáreas',
-            'F C',
-            'BarStackGraph',
-            'Factor de Compensación',
-            compensationFactorColors,
-            handlerInfoGraph,
-            openInfoGraph,
-            'representa las hectáreas sobre los Biomas IAvH analizados',
-          )}
+          && (
+          <RenderGraph
+            graph="BarStackGraph"
+            data={compensationFactorData}
+            graphTitle="Factor de Compensación"
+            colors={compensationFactorColors}
+            labelX="Hectáreas"
+            labelY="F C"
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
+            graphDescription="representa las hectáreas sobre los Biomas IAvH analizados"
+          />
+          )
+        }
         {(areaName && areaName === 'Jurisdicciones ambientales')
-          && RenderGraph(
-            biomesData,
-            'Hectáreas',
-            'Biomas',
-            'BarStackGraph',
-            'Biomas',
-            biomesColors,
-            handlerInfoGraph,
-            openInfoGraph,
-            'agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta',
-          )}
+          && (
+            <RenderGraph
+              graph="BarStackGraph"
+              data={biomesData}
+              graphTitle="Biomas"
+              colors={biomesColors}
+              labelX="Hectáreas"
+              labelY="Biomas"
+              handlerInfoGraph={handlerInfoGraph}
+              openInfoGraph={openInfoGraph}
+              graphDescription="agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta"
+            />
+          )
+        }
         {(areaName && areaName === 'Jurisdicciones ambientales')
-          && RenderGraph(
-            bioticRegionsData,
-            'Hectáreas',
-            'Regiones Bióticas',
-            'BarStackGraph',
-            'Regiones Bióticas',
-            bioticRegionsColors,
-            handlerInfoGraph,
-            openInfoGraph,
-            'muestra las hectáreas por cada región biótica en el área de consulta seleccionada',
-          )}
+          && (
+            <RenderGraph
+              graph="BarStackGraph"
+              data={bioticRegionsData}
+              graphTitle="Regiones Bióticas"
+              colors={bioticRegionsColors}
+              labelX="Hectáreas"
+              labelY="Regiones Bióticas"
+              handlerInfoGraph={handlerInfoGraph}
+              openInfoGraph={openInfoGraph}
+              graphDescription="muestra las hectáreas por cada región biótica en el área de consulta seleccionada"
+            />
+          )
+        }
         {(areaName && areaName !== 'Jurisdicciones ambientales')
           && (
             <div className="graphcard">
@@ -72,18 +81,21 @@ const CompensationFactor = (props) => {
 
 CompensationFactor.propTypes = {
   areaName: PropTypes.string.isRequired,
-  biomesColors: PropTypes.object.isRequired,
-  biomesData: PropTypes.array.isRequired,
-  bioticRegionsColors: PropTypes.object.isRequired,
-  bioticRegionsData: PropTypes.array.isRequired,
-  compensationFactorColors: PropTypes.object.isRequired,
-  compensationFactorData: PropTypes.array.isRequired,
+  biomesColors: PropTypes.array.isRequired,
+  biomesData: PropTypes.array,
+  bioticRegionsColors: PropTypes.array.isRequired,
+  bioticRegionsData: PropTypes.array,
+  compensationFactorColors: PropTypes.array.isRequired,
+  compensationFactorData: PropTypes.array,
   handlerInfoGraph: PropTypes.func.isRequired,
   openInfoGraph: PropTypes.object,
 };
 
 CompensationFactor.defaultProps = {
   openInfoGraph: '',
+  biomesData: null,
+  bioticRegionsData: null,
+  compensationFactorData: null,
 };
 
 export default CompensationFactor;

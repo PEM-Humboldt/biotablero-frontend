@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
@@ -72,15 +71,28 @@ const Overview = (/* TODO: Add all values required */
         value={generalArea}
       />
       <h4>
+        hectáreas totales
+        <b>{`${numberWithCommas(generalArea)} ha`}</b>
+      </h4>
+      <h4>
         Cobertura
       </h4>
       <h6>
         Natural, Secundaria y Transformada
       </h6>
       <div className="graficaeco">
-        {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-          'Cobertura', null, handlerInfoGraph, openInfoGraph,
-          'Estado de la cobertura en el área seleccionada', '%')}
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={coverage}
+          graphTitle="Cobertura"
+          colors={null}
+          labelX="Tipo de área"
+          labelY="Comparación"
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription="Estado de la cobertura en el área seleccionada"
+          units="%"
+        />
       </div>
       <h4>
         Áreas protegidas
@@ -93,9 +105,18 @@ const Overview = (/* TODO: Add all values required */
         <h6>
           Distribución en área protegida:
         </h6>
-        {RenderGraph(listPA, '', '', 'SmallBarStackGraph',
-          'Área protegida', null, handlerInfoGraph, openInfoGraph,
-          '', '%')}
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={listPA}
+          graphTitle="Área protegida"
+          colors={null}
+          labelX=""
+          labelY=""
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription=""
+          units="%"
+        />
       </div>
       <div className="ecoest">
         <h4 className="minus20">

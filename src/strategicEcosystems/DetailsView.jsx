@@ -1,4 +1,3 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
@@ -28,25 +27,49 @@ const showDetails = (/* TODO: Add all values required */
   <div>
     <h3>
       Distribución de coberturas:
-      {validateData(coverage) || RenderGraph(setCoverageValues(coverage), 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-        'Cobertura', null, handlerInfoGraph, openInfoGraph,
-        'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+      {validateData(coverage)
+        || (
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={setCoverageValues(coverage)}
+          graphTitle="Cobertura"
+          colors={null}
+          labelX="Tipo de área"
+          labelY="Comparación"
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription="muestra la proporción del tipo de área en este ecosistema estratégico"
+          units="%"
+        />
+        )
+      }
     </h3>
     <h3>
       Distribución en áreas protegidas:
-      {validateData(protectedArea) || RenderGraph(setPAValues(protectedArea), 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
-        'Distribución de áreas protegidas y no protegidas', null, handlerInfoGraph, openInfoGraph,
-        'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
+      {validateData(protectedArea)
+        || (
+        <RenderGraph
+          graph="SmallBarStackGraph"
+          data={setPAValues(protectedArea)}
+          graphTitle="Distribución de áreas protegidas y no protegidas"
+          colors={null}
+          labelX="Áreas protegidas y no protegidas"
+          labelY="Comparación"
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          graphDescription="representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida"
+          units="%"
+        />
+        )
+      }
     </h3>
-    {
-      <h3>
-        En Ecosistemas Estratégicos:
-        <b>{`${Number(sep).toFixed(2)} %`}</b>
-        <br />
-        En Sistema Nacional:
-        <b>{`${Number(npsp).toFixed(2)} %`}</b>
-      </h3>
-    }
+    <h3>
+      En Ecosistemas Estratégicos:
+      <b>{`${Number(sep).toFixed(2)} %`}</b>
+      <br />
+      En Sistema Nacional:
+      <b>{`${Number(npsp).toFixed(2)} %`}</b>
+    </h3>
   </div>
 );
 

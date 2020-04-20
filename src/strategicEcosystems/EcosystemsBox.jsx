@@ -83,12 +83,21 @@ class EcosystemsBox extends Component {
                 )
               }
               {!stopLoad
-                && (item.area !== 0 && item.area !== '0') && (
-                RenderGraph(
-                  this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
-                  'Área protegida', ['#51b4c1', '#fff'], null, null,
-                  '', '%',
-                ))
+                && (item.area !== 0 && item.area !== '0')
+                  && (
+                  <RenderGraph
+                    graph="SmallBarStackGraph"
+                    data={this.areaToCompare(item.type, item.area, total)}
+                    graphTitle="Área protegida"
+                    colors={['#51b4c1', '#fff']}
+                    labelX=""
+                    labelY=""
+                    handlerInfoGraph={null}
+                    openInfoGraph={null}
+                    graphDescription=""
+                    units="%"
+                  />
+                  )
               }
               {!stopLoad
                 && (index > -1) && (
