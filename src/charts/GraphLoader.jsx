@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
@@ -83,7 +82,7 @@ const GraphLoader = (
         <div className="graphcard pb">
           <h2>
             <DownloadIcon className="icondown" />
-              Ecosistemas Equivalentes
+            Ecosistemas Equivalentes
           </h2>
           { !showOnlyTitle && (
             <div>

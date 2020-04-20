@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
@@ -68,14 +67,14 @@ const Overview = (/* TODO: Add all values required */
     )}
     <div className="graphcontainer pt5">
       <h4>
-      hectáreas totales
+        hectáreas totales
         <b>{`${numberWithCommas(generalArea)} ha`}</b>
       </h4>
       <h4>
-      Cobertura
+        Cobertura
       </h4>
       <h6>
-      Natural, Secundaria y Transformada
+        Natural, Secundaria y Transformada
       </h6>
       <div className="graficaeco">
         {RenderGraph(coverage, 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
@@ -83,7 +82,7 @@ const Overview = (/* TODO: Add all values required */
           'Estado de la cobertura en el área seleccionada', '%')}
       </div>
       <h4>
-      Áreas protegidas
+        Áreas protegidas
         <b>{`${numberWithCommas(protectedArea)} ha `}</b>
       </h4>
       <h5>
@@ -91,7 +90,7 @@ const Overview = (/* TODO: Add all values required */
       </h5>
       <div className="graficaeco">
         <h6>
-        Distribución en área protegida:
+          Distribución en área protegida:
         </h6>
         {RenderGraph(listPA, '', '', 'SmallBarStackGraph',
           'Área protegida', null, handlerInfoGraph, openInfoGraph,
@@ -99,7 +98,7 @@ const Overview = (/* TODO: Add all values required */
       </div>
       <div className="ecoest">
         <h4 className="minus20">
-        Ecosistemas estratégicos
+          Ecosistemas estratégicos
           <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
         </h4>
         <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>

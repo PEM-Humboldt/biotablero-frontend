@@ -1,4 +1,3 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
@@ -38,15 +37,13 @@ const showDetails = (/* TODO: Add all values required */
         'Distribución de áreas protegidas y no protegidas', null, handlerInfoGraph, openInfoGraph,
         'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
     </h3>
-    {
-      <h3>
-        En Ecosistemas Estratégicos:
-        <b>{`${Number(sep).toFixed(2)} %`}</b>
-        <br />
-        En Sistema Nacional:
-        <b>{`${Number(npsp).toFixed(2)} %`}</b>
-      </h3>
-    }
+    <h3>
+      En Ecosistemas Estratégicos:
+      <b>{`${Number(sep).toFixed(2)} %`}</b>
+      <br />
+      En Sistema Nacional:
+      <b>{`${Number(npsp).toFixed(2)} %`}</b>
+    </h3>
   </div>
 );
 
