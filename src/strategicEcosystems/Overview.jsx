@@ -2,6 +2,7 @@ import React from 'react';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
+import GeneralArea from '../commons/GeneralArea';
 import EcosystemsBox from './EcosystemsBox';
 import RenderGraph from '../charts/RenderGraph';
 
@@ -66,10 +67,9 @@ const Overview = (/* TODO: Add all values required */
       />
     )}
     <div className="graphcontainer pt5">
-      <h4>
-        hectáreas totales
-        <b>{`${numberWithCommas(generalArea)} ha`}</b>
-      </h4>
+      <GeneralArea
+        value={generalArea}
+      />
       <h4>
         Cobertura
       </h4>
