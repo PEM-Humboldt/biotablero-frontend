@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
@@ -8,9 +7,7 @@ import GeneralArea from '../commons/GeneralArea';
 import EcosystemsBox from './EcosystemsBox';
 import RenderGraph from '../charts/RenderGraph';
 
-const numberWithCommas = (x) => {
-  x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-};
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 const helperAreaArrayIsEmpty = (array) => {
   if (array) {
@@ -41,20 +38,6 @@ const Overview = (props) => {
     graphTitle,
     graphDescription,
   } = props;
-/*
-  console.log('generalArea',typeof(generalArea));
-  console.log('ecosystemsArea',typeof(ecosystemsArea));
-  console.log('listSE',typeof(listSE));
-  console.log('protectedArea',typeof(protectedArea));
-  console.log('listPA',typeof(listPA));
-  console.log('coverage',typeof(coverage));
-  console.log('handlerInfoGraph',typeof(handlerInfoGraph));
-  console.log('openInfoGraph',typeof(openInfoGraph));
-  console.log('areaId',typeof(areaId));
-  console.log('geofenceId',typeof(geofenceId));
-  console.log('graphTitle',typeof(graphTitle));
-  console.log('graphDescription',typeof(graphDescription));
-*/
   return (
     <div className="graphcard">
       <h2>
@@ -157,29 +140,29 @@ const Overview = (props) => {
 };
 
 Overview.propTypes = {
-  generalArea: PropTypes.any,
-  ecosystemsArea: PropTypes.any,
-  listSE: PropTypes.any,
-  protectedArea: PropTypes.any,
-  listPA: PropTypes.any,
-  coverage: PropTypes.any,
-  handlerInfoGraph: PropTypes.any,
-  openInfoGraph: PropTypes.any,
-  areaId: PropTypes.any,
-  geofenceId: PropTypes.any,
-  graphTitle: PropTypes.any,
-  graphDescription: PropTypes.any,
+  generalArea: PropTypes.number,
+  ecosystemsArea: PropTypes.number,
+  listSE: PropTypes.array,
+  protectedArea: PropTypes.number,
+  listPA: PropTypes.array,
+  coverage: PropTypes.array,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.object,
+  areaId: PropTypes.string,
+  geofenceId: PropTypes.string,
+  graphTitle: PropTypes.string,
+  graphDescription: PropTypes.string,
 };
 
 Overview.defaultProps = {
-  generalArea: '',
-  ecosystemsArea: '',
-  listSE: '',
-  protectedArea: '',
-  listPA: '',
-  coverage: '',
-  handlerInfoGraph: '',
-  openInfoGraph: '',
+  generalArea: 0,
+  ecosystemsArea: 0,
+  listSE: null,
+  protectedArea: 0,
+  listPA: null,
+  coverage: null,
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
   areaId: '',
   geofenceId: '',
   graphTitle: '',
