@@ -280,27 +280,28 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="2">
-                  {Overview(
-                    generalArea,
-                    ecosystemsArea,
-                    // removing the first response element, which is the total area in SE
-                    (areaSE ? areaSE.slice(1) : areaSE),
-                    protectedArea,
-                    // removing the first response element, which is the total area in PA
-                    (areaPA ? areaPA.slice(1) : areaPA),
-                    // removing the first response element, which is the total area in selected area
-                    (coverage && (coverage[0].type === 'Total')
-                      ? coverage.slice(1) : coverage),
-                    handlerInfoGraph,
-                    openInfoGraph,
-                    area.id,
-                    area.id === 'pa' ? geofence.name : geofence.id,
-                    'Área',
-                    ('resume la información de los ecosistemas presentes en el'
+                  <Overview
+                    generalArea={Number(generalArea)}
+                    ecosystemsArea={Number(ecosystemsArea)}
+                    // First element removed, which is the total area in SE
+                    listSE={(areaSE ? areaSE.slice(1) : areaSE)}
+                    protectedArea={Number(protectedArea)}
+                    // First element removed, which is the total area in PA
+                    listPA={(areaPA ? areaPA.slice(1) : areaPA)}
+                    // First element removed, which is the total area in the selected area
+                    coverage={(coverage && (coverage[0].type === 'Total') ? coverage.slice(1) : coverage)}
+                    handlerInfoGraph={handlerInfoGraph}
+                    openInfoGraph={openInfoGraph}
+                    areaId={area.id}
+                    geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
+                    graphTitle="Área"
+                    graphDescription={
+                      'resume la información de los ecosistemas presentes en el'
                       + ' área seleccionada, y su distribución al interior de áreas protegidas'
                       + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
-                      + ' no son representados en las gráficas.'),
-                  )}
+                      + ' no son representados en las gráficas.'
+                      }
+                  />
                 </div>
               ),
               (
