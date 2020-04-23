@@ -42,7 +42,7 @@ const HumanFootprint = ({ geofence }) => {
   },
   ];
   return (
-    <div className="accContainer">
+    <div>
       <Accordion
         componentsArray={componentsArray}
         classNameDefault='m1'
