@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 
 const TimelineFootprint = ({ geofence }) => (
   <div className="graphcontainer pt5">
-    <h3>
-      Huella humana a través del tiempo y por ecosistemas estratégicos en
-      {` ${geofence.name}`}
-    </h3>
     <h4>
       hectáreas totales
       <b> 1111112 ha</b>

@@ -4,10 +4,6 @@ import RenderGraph from '../charts/RenderGraph';
 
 const PersistenceFootprint = ({ geofence }) => (
   <div className="graphcontainer pt5">
-    <h3>
-      Persistencia de huella humana en
-      {` ${geofence.name}`}
-    </h3>
     <h4>
       hectáreas totales
       <b> 1111111 ha</b>

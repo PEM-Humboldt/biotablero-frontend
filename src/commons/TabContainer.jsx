@@ -53,7 +53,7 @@ class TabContainer extends React.Component {
         </AppBar>
         {children.map((child, i) => (
           value === i && (
-            <Typography key={i} component="div" style={{ padding: 8 * 3 }}>
+            <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
               {child}
             </Typography>
           )

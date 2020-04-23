@@ -4,10 +4,6 @@ import RenderGraph from '../charts/RenderGraph';
 
 const CurrentFootprint = ({ geofence }) => (
   <div className="graphcontainer pt5">
-    <h3>
-      Huella humana actual en
-      {` ${geofence.name}`}
-    </h3>
     <h4>
       hectáreas totales
       <b> 1111111 ha</b>

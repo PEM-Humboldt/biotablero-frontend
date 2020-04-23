@@ -9,7 +9,7 @@ import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 const HumanFootprint = ({ geofence }) => {
   const componentsArray = [{
     label: {
-      id: 'Huella humana actual',
+      id: 'Actual',
       name: 'Huella humana en el último año',
       disabled: false,
       expandIcon: <AddIcon />,
@@ -20,7 +20,7 @@ const HumanFootprint = ({ geofence }) => {
   },
   {
     label: {
-      id: 'Huella humana en el tiempo',
+      id: 'Histórico y Ecosistémas estratégicos',
       name: 'Huella humana a través del tiempo',
       disabled: false,
       expandIcon: <AddIcon />,
@@ -31,7 +31,7 @@ const HumanFootprint = ({ geofence }) => {
   },
   {
     label: {
-      id: 'Persistencia de huella humana',
+      id: 'Persistencia',
       name: 'Persistencia',
       disabled: false,
       expandIcon: <AddIcon />,
@@ -42,9 +42,11 @@ const HumanFootprint = ({ geofence }) => {
   },
   ];
   return (
-    <div>
+    <div className="accContainer">
       <Accordion
         componentsArray={componentsArray}
+        classNameDefault='m1'
+        classNameSelected='m1 accordionSelected'
       />
     </div>
   );

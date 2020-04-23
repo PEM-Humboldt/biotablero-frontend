@@ -1259,11 +1259,38 @@ overflow: auto;
 }
 
 
-.m0 {
+.m0, .m0b {
     margin: 0 !important;
     color: #2a363b;
     font-size: 14px;
 }
+
+.m0b > div:nth-child(1) {
+	background-color: #a1b6bf;
+}
+
+.m1 {
+	color: #424242;
+	display: inline-block;
+	width: 100%;
+	background-color: #ebebeb !important;
+}
+
+.m0b div[class*="MuiExpansionPanelDetails-root"] {
+	padding: 6px 8px !important;
+}
+
+.accordionSelected {
+	background-color: #fff !important;
+}
+
+.accordionSelected > div:nth-child(1) {
+	color: #2a363b;
+	text-transform: uppercase;
+	font-size: 18px;
+	letter-spacing: 1;
+}
+
 
 .leaflet-container {
 	height: auto;
@@ -1309,10 +1336,6 @@ overflow: auto;
 .disabled {
   background-color: #000;
 }
-
-/*div[class*="MuiExpansionPanelSummary-expanded-"] {
-  text-transform: uppercase;
-}*/
 
 div[class*="hjhLld"] {
 	font-size: 14px !important;
@@ -1391,7 +1414,6 @@ div[id*="panel"] button:hover {
   padding: 0;
 }
 
-/*div[class*="MuiTypography-body1"],*/
 .graphcontainer {
   margin: 0;
   padding: 15px !important;
