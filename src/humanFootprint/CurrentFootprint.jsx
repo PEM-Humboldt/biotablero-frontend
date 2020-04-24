@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
+import GeneralArea from '../commons/GeneralArea';
 
-const CurrentFootprint = ({ geofence }) => (
+const CurrentFootprint = ({ generalArea, geofence }) => (
   <div className="graphcontainer pt5">
-    <h4>
-      hectáreas totales
-      <b> 1111111 ha</b>
-    </h4>
+    <GeneralArea
+      value={generalArea}
+    />
     <h4>
       Cobertura
     </h4>
@@ -41,6 +41,7 @@ const CurrentFootprint = ({ geofence }) => (
 );
 
 CurrentFootprint.propTypes = {
+  generalArea: PropTypes.number.isRequired,
   geofence: PropTypes.shape({
     id: PropTypes.string,
     name: PropTypes.string,

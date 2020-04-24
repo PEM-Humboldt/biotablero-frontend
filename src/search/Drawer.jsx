@@ -46,6 +46,7 @@ class Drawer extends React.Component {
         coverage: null, // coverage area
         areaSE: null, // area fields for strategic ecosystems
         areaPA: null, // area fields for protected areas
+        generalArea: 0, // general area value in the current geofence
       },
     };
   }
@@ -59,6 +60,20 @@ class Drawer extends React.Component {
       geofence, area,
     } = this.props;
     const searchId = geofence.id || geofence.name;
+
+    RestAPI.requestGeofenceDetails(area.id, searchId)
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            generalArea: Number(res.total_area),
+          },
+        }));
+      })
+      .catch(() => {
+      });
+
 
     RestAPI.requestCoverage(area.id, searchId)
       .then((res) => {
@@ -191,11 +206,9 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        fc, biomas, distritos, coverage, areaPA, areaSE,
+        fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
       },
     } = this.state;
-    const generalArea = (coverage && coverage[0]
-      ? Number(coverage[0].area).toFixed(2) : 0);
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     const componentsArray = [{
@@ -228,7 +241,12 @@ class Drawer extends React.Component {
         detailId: 'Huella humana en el área',
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
-      component: (<HumanFootprint geofence={geofence} />),
+      component: (
+        <HumanFootprint
+          generalArea={generalArea}
+          geofence={geofence}
+        />
+      ),
     },
     ];
     return (
@@ -262,27 +280,28 @@ class Drawer extends React.Component {
             {[
               (
                 <div key="2">
-                  {Overview(
-                    generalArea,
-                    ecosystemsArea,
-                    // removing the first response element, which is the total area in SE
-                    (areaSE ? areaSE.slice(1) : areaSE),
-                    protectedArea,
-                    // removing the first response element, which is the total area in PA
-                    (areaPA ? areaPA.slice(1) : areaPA),
-                    // removing the first response element, which is the total area in selected area
-                    (coverage && (coverage[0].type === 'Total')
-                      ? coverage.slice(1) : coverage),
-                    handlerInfoGraph,
-                    openInfoGraph,
-                    area.id,
-                    area.id === 'pa' ? geofence.name : geofence.id,
-                    'Área',
-                    ('resume la información de los ecosistemas presentes en el'
+                  <Overview
+                    generalArea={Number(generalArea)}
+                    ecosystemsArea={Number(ecosystemsArea)}
+                    // First element removed, which is the total area in SE
+                    listSE={(areaSE ? areaSE.slice(1) : areaSE)}
+                    protectedArea={Number(protectedArea)}
+                    // First element removed, which is the total area in PA
+                    listPA={(areaPA ? areaPA.slice(1) : areaPA)}
+                    // First element removed, which is the total area in the selected area
+                    coverage={(coverage && (coverage[0].type === 'Total') ? coverage.slice(1) : coverage)}
+                    handlerInfoGraph={handlerInfoGraph}
+                    openInfoGraph={openInfoGraph}
+                    areaId={area.id}
+                    geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
+                    graphTitle="Área"
+                    graphDescription={
+                      'resume la información de los ecosistemas presentes en el'
                       + ' área seleccionada, y su distribución al interior de áreas protegidas'
                       + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
-                      + ' no son representados en las gráficas.'),
-                  )}
+                      + ' no son representados en las gráficas.'
+                      }
+                  />
                 </div>
               ),
               (
