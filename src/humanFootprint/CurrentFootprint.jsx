@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
 import GeneralArea from '../commons/GeneralArea';
 
-const CurrentFootprint = ({ generalArea, geofence }) => (
+const CurrentFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -42,10 +42,6 @@ const CurrentFootprint = ({ generalArea, geofence }) => (
 
 CurrentFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  geofence: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }).isRequired,
 };
 
 export default CurrentFootprint;

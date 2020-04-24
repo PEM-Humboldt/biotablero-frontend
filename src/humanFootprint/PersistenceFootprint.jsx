@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import RenderGraph from '../charts/RenderGraph';
 import GeneralArea from '../commons/GeneralArea';
 
-const PersistenceFootprint = ({ generalArea, geofence }) => (
+const PersistenceFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -40,10 +40,6 @@ const PersistenceFootprint = ({ generalArea, geofence }) => (
 
 PersistenceFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  geofence: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }).isRequired,
 };
 
 export default PersistenceFootprint;
