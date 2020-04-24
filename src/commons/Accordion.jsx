@@ -75,8 +75,8 @@ Accordion.propTypes = {
 };
 
 Accordion.defaultProps = {
-  classNameDefault: 'm0',
-  classNameSelected: 'm0 selector-expanded',
+  classNameDefault: 'm0b',
+  classNameSelected: 'm0b selector-expanded',
 };
 
 export default Accordion;
