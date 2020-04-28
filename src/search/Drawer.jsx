@@ -289,7 +289,7 @@ class Drawer extends React.Component {
                     // First element removed, which is the total area in PA
                     listPA={(areaPA ? areaPA.slice(1) : areaPA)}
                     // First element removed, which is the total area in the selected area
-                    coverage={(coverage && (coverage[0].type === 'Total') ? coverage.slice(1) : coverage)}
+                    coverage={coverage}
                     handlerInfoGraph={handlerInfoGraph}
                     openInfoGraph={openInfoGraph}
                     areaId={area.id}
