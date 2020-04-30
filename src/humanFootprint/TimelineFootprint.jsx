@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import GeneralArea from '../commons/GeneralArea';
+import MultiLinesGraph from '../charts/MultiLinesGraph';
+
+import { dataLines } from '../search/assets/selectorData';
+
 
 const TimelineFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
@@ -15,7 +19,9 @@ const TimelineFootprint = ({ generalArea }) => (
     </h6>
     <div className="graficaeco">
       <h2>
-        Nuevo gráfico
+        <MultiLinesGraph
+          data={dataLines}
+        />
       </h2>
       <h4>
         Bosque seco tropical
