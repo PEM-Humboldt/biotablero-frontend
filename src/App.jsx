@@ -1,6 +1,6 @@
 /** eslint verified */
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Home from './Home';
 import Search from './Search';
@@ -16,53 +16,55 @@ class App extends React.Component {
     };
   }
 
-  loadHome = (props) => {
+  loadHome = ({ location }) => {
     const { user } = this.state;
     return (
       <Home
         userLogged={user}
         callbackUser={this.callbackUser}
-        {...props}
+        referrer={location.referrer}
       />
     );
   }
 
-  loadSearch = (props) => {
+  loadSearch = () => {
     const { user } = this.state;
     return (
       <Search
         userLogged={user}
         callbackUser={this.callbackUser}
-        {...props}
       />
     );
   }
 
-  loadIndicator = (props) => {
+  loadIndicator = () => {
     const { user } = this.state;
     return (
       <Indicator
         userLogged={user}
         callbackUser={this.callbackUser}
-        {...props}
       />
     );
   }
 
-  loadCompensator = (props) => {
+  loadCompensator = ({ location }) => {
     const { user } = this.state;
     if (user) {
       return (
         <Compensation
           userLogged={user}
           callbackUser={this.callbackUser}
-          {...props}
         />
       );
     }
-    const newProps = { ...props };
-    newProps.location.pathname = '/';
-    return this.loadHome(newProps);
+    return (
+      <Redirect
+        to={{
+          pathname: '/',
+          referrer: location.pathname,
+        }}
+      />
+    );
   }
 
   callbackUser = (user) => {
