@@ -8,6 +8,7 @@ import BarStackGraph from './BarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
+import LargeBarStackGraphNIVO from './LargeBarStackGraphNIVO';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -29,7 +30,9 @@ const GraphLoader = (props) => {
     handlerInfoGraph,
     graphDescription,
     openInfoGraph,
+    zScale: zScaleInput,
   } = props;
+  console.log('GraphLoader zScaleInput', zScaleInput);
   return (
     <div>
       {
@@ -150,6 +153,24 @@ const GraphLoader = (props) => {
           </div>
         ) : ('')
       }
+      {
+        (graphType === 'LargeBarStackGraphNIVO') ? (
+          <div className="graphcard pb">
+            <LargeBarStackGraphNIVO
+              data={data}
+              graphTitle={graphTitle}
+              labelX={labelX}
+              labelY={labelY}
+              width={width}
+              height={150}
+              handlerInfoGraph={handlerInfoGraph}
+              openInfoGraph={openInfoGraph}
+              graphDescription={graphDescription}
+              zScale={zScaleInput}
+            />
+          </div>
+        ) : ('')
+      }
     </div>
   );
 };
@@ -171,6 +192,7 @@ GraphLoader.propTypes = {
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   elementOnClick: PropTypes.func,
+  zScale: PropTypes.any,
 };
 
 GraphLoader.defaultProps = {
@@ -188,6 +210,7 @@ GraphLoader.defaultProps = {
   openInfoGraph: null,
   graphDescription: null,
   elementOnClick: () => {},
+  zScale: null,
 };
 
 export default GraphLoader;

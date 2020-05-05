@@ -16,6 +16,8 @@ import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 
+import matchColor from './commons/matchColor';
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -138,14 +140,16 @@ class Search extends Component {
    * @param {Object} feature target object
    */
   featureStyle = (feature) => {
+    /*
     const { colorsFC } = this.state;
     const valueFC = Math.min(
       (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
     );
     const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
+    */
     const styleReturn = {
       stroke: false,
-      fillColor: colorFound,
+      fillColor: matchColor('fc')(feature.properties.compensation_factor),
       fillOpacity: 0.7,
     };
     return styleReturn;
@@ -441,6 +445,7 @@ class Search extends Component {
       colors, colorsFC, colorSZH, layers, connError, dataError,
       openInfoGraph,
     } = this.state;
+    console.log('Search (import) matchColor', matchColor);
     return (
       <Layout
         moduleName="Consultas"
@@ -550,6 +555,7 @@ class Search extends Component {
                 openInfoGraph={openInfoGraph}
                 id
                 subLayerName={subLayerName}
+                matchColor={matchColor}
               />
             )}
             { activeLayer && area && (area.id === 'se') && (

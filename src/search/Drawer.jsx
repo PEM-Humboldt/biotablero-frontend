@@ -202,8 +202,9 @@ class Drawer extends React.Component {
     const {
       geofence, subLayerData, colors, colorSZH, colorsFC,
       classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
-      subLayerName, area,
+      subLayerName, area, matchColor,
     } = this.props;
+    console.log('Drawer matchColor', matchColor);
     const {
       data: {
         fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
@@ -230,6 +231,7 @@ class Drawer extends React.Component {
         compensationFactorData={fc}
         handlerInfoGraph={handlerInfoGraph}
         openInfoGraph={openInfoGraph}
+        matchColor={matchColor}
       />,
     },
     {
@@ -354,6 +356,7 @@ Drawer.propTypes = {
   openInfoGraph: PropTypes.string,
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
+  matchColor: PropTypes.any,
 };
 
 Drawer.defaultProps = {
@@ -366,6 +369,7 @@ Drawer.defaultProps = {
   handlerBackButton: () => {},
   handlerInfoGraph: () => {},
   openInfoGraph: null,
+  matchColor: null,
 };
 
 export default withStyles(styles)(Drawer);
