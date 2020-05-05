@@ -75,7 +75,6 @@ class App extends React.Component {
   };
 
   render() {
-    // TODO: Change path to Home when user get
     return (
       <main>
         <Switch>
