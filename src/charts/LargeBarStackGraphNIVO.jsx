@@ -19,11 +19,22 @@ const LargeBarStackGraphNIVO = (props) => {
     zScale,
   } = props;
 
+  /**
+   * Give format to a big number
+   *
+   * @param {number} x number to be formatted
+   */
   const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-  const prepareData = (rawData, setName) => {
+  /**
+   * Transform structure of data to be passed to component as a prop
+   *
+   * @param {array} rawData raw data from RestAPI
+   * @param {String} key id for data of each bar o serie
+   */
+  const transformData = (rawData, key) => {
     const transformedData = {
-      key: setName,
+      key,
     };
     rawData.forEach((item) => {
       transformedData[String(item.key)] = Number(item.area);
@@ -31,9 +42,9 @@ const LargeBarStackGraphNIVO = (props) => {
     return transformedData;
   };
 
-  const transformedData = [prepareData(data, labelY)];
+  const transformedData = [transformData(data, labelY)];
   const keys = data.map(item => String(item.key));
-  console.log('LargeBarStackGraphNIVO zScale', zScale);
+
   return (
     <div>
       <h2>
@@ -78,8 +89,7 @@ const LargeBarStackGraphNIVO = (props) => {
             left: 40,
           }}
           padding={0.18}
-          colors={zScale}
-          // colors={{ scheme: 'nivo' }}
+          colors={obj => zScale(parseFloat(obj.id))}
           enableGridX
           borderWidth={0}
           borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
@@ -89,9 +99,7 @@ const LargeBarStackGraphNIVO = (props) => {
             tickSize: 0,
             tickPadding: 0,
             tickRotation: 0,
-            // tickValues: 8,
             format: '.2s',
-            // format: d => `${d} ha`,
             legend: labelX,
             legendPosition: 'middle',
             legendOffset: 25,
@@ -104,14 +112,6 @@ const LargeBarStackGraphNIVO = (props) => {
           animate
           motionStiffness={90}
           motionDamping={15}
-          /*
-          theme={{
-            markers: { textColor: '#000', fontSize: '9' },
-            axis: { legend: { text: { fontSize: '12' } } },
-            legends: { text: { fontSize: '10' } },
-          }}
-          */
-          // gridXValues={8} // Lineas a mostrar en el GridX
           tooltip={({ id, value, color }) => (
             <div>
               <strong style={{ color }}>
@@ -128,7 +128,7 @@ const LargeBarStackGraphNIVO = (props) => {
                 background: '#333',
               },
             },
-            axis: { legend: { text: { fontSize: '16' } } },
+            axis: { legend: { text: { fontSize: '14' } } },
           }}
         />
       </div>
@@ -146,7 +146,7 @@ LargeBarStackGraphNIVO.propTypes = {
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
-  zScale: PropTypes.any,
+  zScale: PropTypes.func,
 };
 
 LargeBarStackGraphNIVO.defaultProps = {
@@ -158,7 +158,7 @@ LargeBarStackGraphNIVO.defaultProps = {
   handlerInfoGraph: () => {},
   openInfoGraph: null,
   graphDescription: null,
-  zScale: null,
+  zScale: () => {},
 };
 
 export default LargeBarStackGraphNIVO;

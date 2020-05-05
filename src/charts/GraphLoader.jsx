@@ -32,7 +32,6 @@ const GraphLoader = (props) => {
     openInfoGraph,
     zScale: zScaleInput,
   } = props;
-  console.log('GraphLoader zScaleInput', zScaleInput);
   return (
     <div>
       {
@@ -192,7 +191,7 @@ GraphLoader.propTypes = {
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   elementOnClick: PropTypes.func,
-  zScale: PropTypes.any,
+  zScale: PropTypes.func,
 };
 
 GraphLoader.defaultProps = {
@@ -210,7 +209,7 @@ GraphLoader.defaultProps = {
   openInfoGraph: null,
   graphDescription: null,
   elementOnClick: () => {},
-  zScale: null,
+  zScale: () => {},
 };
 
 export default GraphLoader;

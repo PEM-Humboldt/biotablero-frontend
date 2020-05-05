@@ -445,7 +445,6 @@ class Search extends Component {
       colors, colorsFC, colorSZH, layers, connError, dataError,
       openInfoGraph,
     } = this.state;
-    console.log('Search (import) matchColor', matchColor);
     return (
       <Layout
         moduleName="Consultas"

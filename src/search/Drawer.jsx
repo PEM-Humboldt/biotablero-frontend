@@ -204,7 +204,6 @@ class Drawer extends React.Component {
       classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
       subLayerName, area, matchColor,
     } = this.props;
-    console.log('Drawer matchColor', matchColor);
     const {
       data: {
         fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
@@ -356,7 +355,7 @@ Drawer.propTypes = {
   openInfoGraph: PropTypes.string,
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
-  matchColor: PropTypes.any,
+  matchColor: PropTypes.func,
 };
 
 Drawer.defaultProps = {
@@ -369,7 +368,7 @@ Drawer.defaultProps = {
   handlerBackButton: () => {},
   handlerInfoGraph: () => {},
   openInfoGraph: null,
-  matchColor: null,
+  matchColor: () => {},
 };
 
 export default withStyles(styles)(Drawer);

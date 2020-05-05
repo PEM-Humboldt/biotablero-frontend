@@ -16,8 +16,6 @@ const CompensationFactor = (props) => {
     openInfoGraph,
     matchColor,
   } = props;
-  console.log('CompensationFactor matchColor', matchColor);
-  // console.log('CompensationFactor matchColor - FC', matchColor('fc'));
   return (
     <div style={{ width: '100%' }}>
       <div className="graphcontainer">
@@ -26,7 +24,7 @@ const CompensationFactor = (props) => {
             <RenderGraph
               graph="LargeBarStackGraphNIVO"
               data={compensationFactorData}
-              graphTitle="Factor de Compensación NIVO"
+              graphTitle="Factor de Compensación"
               labelX="Hectáreas"
               labelY="FC"
               handlerInfoGraph={handlerInfoGraph}
@@ -36,7 +34,8 @@ const CompensationFactor = (props) => {
             />
           )
         }
-        {(areaName && areaName === 'Jurisdicciones ambientales')
+        {/*
+        (areaName && areaName === 'Jurisdicciones ambientales')
           && (
           <RenderGraph
             graph="BarStackGraph"
@@ -50,6 +49,7 @@ const CompensationFactor = (props) => {
             graphDescription="representa las hectáreas sobre los Biomas IAvH analizados"
           />
           )
+        */
         }
         {(areaName && areaName === 'Jurisdicciones ambientales')
           && (
@@ -107,7 +107,7 @@ CompensationFactor.propTypes = {
   compensationFactorData: PropTypes.array,
   handlerInfoGraph: PropTypes.func.isRequired,
   openInfoGraph: PropTypes.object,
-  matchColor: PropTypes.any,
+  matchColor: PropTypes.func,
 };
 
 CompensationFactor.defaultProps = {
@@ -115,7 +115,7 @@ CompensationFactor.defaultProps = {
   biomesData: null,
   bioticRegionsData: null,
   compensationFactorData: null,
-  matchColor: null,
+  matchColor: () => {},
 };
 
 export default CompensationFactor;

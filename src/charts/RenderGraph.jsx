@@ -33,7 +33,6 @@ const RenderGraph = (props) => {
     units,
     zScale,
   } = props;
-  console.log('RenderGraph zScale', zScale);
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
@@ -86,7 +85,7 @@ RenderGraph.propTypes = {
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   units: PropTypes.string,
-  zScale: PropTypes.any,
+  zScale: PropTypes.func,
 };
 
 RenderGraph.defaultProps = {
@@ -99,7 +98,7 @@ RenderGraph.defaultProps = {
   openInfoGraph: null,
   graphDescription: null,
   units: 'ha',
-  zScale: null,
+  zScale: () => {},
 };
 
 export default RenderGraph;
