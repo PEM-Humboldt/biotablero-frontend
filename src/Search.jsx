@@ -49,7 +49,6 @@ class Search extends Component {
         { 10: '#c3374d' },
       ],
       connError: false,
-      currentCompany: null,
       dataError: false,
       geofencesArray: [],
       areaList: [],
@@ -57,7 +56,6 @@ class Search extends Component {
       layers: {},
       loadingModal: false,
       area: null,
-      userDataLoaded: false,
       requestSource: null,
     };
   }
@@ -425,21 +423,12 @@ class Search extends Component {
     this.setState({ [state]: false });
   };
 
-  /**
-    * Function to control data options belonging to the companyId
-    * TODO: Add data from the current company in geofencesArray
-    */
-  getData = () => {
-    const { geofencesArray } = this.state;
-    return geofencesArray;
-  }
-
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
+      area, subLayerName, activeLayer, subLayerData, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError,
-      openInfoGraph,
+      openInfoGraph, geofencesArray,
     } = this.state;
     return (
       <Layout
@@ -531,8 +520,8 @@ class Search extends Component {
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
-                description={description(currentCompany)}
-                data={this.getData()}
+                description={description(null)}
+                data={geofencesArray}
                 expandedId={0}
                 iconClass="iconsection"
               />
