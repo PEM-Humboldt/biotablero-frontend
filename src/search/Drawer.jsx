@@ -16,17 +16,6 @@ import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE'
 
 import Accordion from '../commons/Accordion';
 
-const colorsRB = ['#003d59',
-  '#5a1d44',
-  '#902130',
-  '#6d819c',
-  '#db9d6b',
-  '#fb9334',
-  '#fe6625',
-  '#ab5727',
-  '#44857d',
-  '#167070'];
-
 const styles = () => ({
   root: {
     width: '100%',
@@ -200,9 +189,16 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofence, subLayerData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
-      subLayerName, area, matchColor,
+      geofence,
+      subLayerData,
+      colorSZH,
+      classes,
+      handlerBackButton,
+      handlerInfoGraph,
+      openInfoGraph,
+      subLayerName,
+      area,
+      matchColor,
     } = this.props;
     const {
       data: {
@@ -222,11 +218,8 @@ class Drawer extends React.Component {
       },
       component: <CompensationFactor
         areaName={area.name}
-        biomesColors={colors}
         biomesData={biomas}
-        bioticRegionsColors={colorsRB}
         bioticRegionsData={distritos}
-        compensationFactorColors={colorsFC}
         compensationFactorData={fc}
         handlerInfoGraph={handlerInfoGraph}
         openInfoGraph={openInfoGraph}
@@ -346,9 +339,7 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  colors: PropTypes.array,
   colorSZH: PropTypes.array,
-  colorsFC: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   handlerInfoGraph: PropTypes.func,
@@ -359,9 +350,7 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  colors: ['#345b6b'],
   colorSZH: [],
-  colorsFC: [],
   geofence: { id: NaN, name: '' },
   subLayerData: {},
   subLayerName: '',
