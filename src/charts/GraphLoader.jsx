@@ -4,7 +4,6 @@ import DownloadIcon from '@material-ui/icons/Save';
 import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import BarGraph from './BarGraph';
-import BarStackGraph from './BarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
@@ -35,26 +34,6 @@ const GraphLoader = (props) => {
   } = props;
   return (
     <div>
-      {
-        (graphType === 'BarStackGraph') ? (
-          // TODO: Usar name en el gráfico
-          <div className="graphcard pb">
-            <BarStackGraph
-              dataJSON={data}
-              colors={colors}
-              graphTitle={graphTitle}
-              labelX={labelX}
-              labelY={labelY}
-              width={width}
-              height="150"
-              units={units}
-              openInfoGraph={openInfoGraph}
-              handlerInfoGraph={handlerInfoGraph}
-              graphDescription={graphDescription}
-            />
-          </div>
-        ) : ('')
-      }
       {
         (graphType === 'SmallBarStackGraph') ? (
           <SmallBarStackGraph
