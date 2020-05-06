@@ -55,7 +55,8 @@ class Search extends Component {
       subLayerName: null,
       layers: {},
       loadingModal: false,
-      area: null,
+      areaType: null,
+      areaId: null,
       requestSource: null,
     };
   }
@@ -70,11 +71,11 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    const { area } = this.state;
-    if (!area || (area && area.id !== idLayer)) {
+    const { areaType } = this.state;
+    if (!areaType || (areaType && areaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.area = prevState.areaList.find(item => item.id === idLayer);
+        newState.areaType = prevState.areaList.find(item => item.id === idLayer);
         return newState;
       });
     }
@@ -181,7 +182,7 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, area } = this.state;
+    const { activeLayer, areaType } = this.state;
     const point = event.target;
     const areaPopup = {
       closeButton: false,
@@ -190,7 +191,7 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
-    if (area && (parentLayer === area.id)) {
+    if (areaType && (parentLayer === areaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
@@ -208,19 +209,19 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { area, layers } = this.state;
+    const { areaType, layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (area && (parentLayer === area.id)) {
+    if (areaType && (parentLayer === areaType.id)) {
       feature.closePopup();
     }
   }
 
   clickFeature = (event, parentLayer) => {
-    const { area } = this.state;
+    const { areaType } = this.state;
     this.highlightFeature(event, parentLayer);
     let value = this.findFirstId(event.target.feature.properties);
     if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(area.data).filter(
+    const toLoad = Object.values(areaType.data).filter(
       element => element.id === value.toString(),
     )[0];
     if (value) this.innerElementChange(parentLayer, toLoad);
@@ -388,7 +389,7 @@ class Search extends Component {
       newState = {
         ...newState,
         subLayerData: null,
-        area: null,
+        areaType: null,
         subLayerName: null,
         activeLayer: null,
         layers: {},
@@ -426,7 +427,7 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, subLayerName, activeLayer, subLayerData, loadingModal,
+      areaType, areaId, subLayerName, subLayerData, loadingModal,
       colors, colorsFC, colorSZH, layers, connError, dataError,
       openInfoGraph, geofencesArray,
     } = this.state;
@@ -513,7 +514,7 @@ class Search extends Component {
             Titulo del mapa
           </div>
           <div className="contentView">
-            { !activeLayer && (
+            { (!areaType || !areaId) && (
               <Selector
                 handlers={[
                   () => {},
@@ -526,14 +527,14 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { activeLayer && area && (area.id !== 'se') && (
+            { areaType && areaId && (areaType.id !== 'se') && (
               <Drawer
-                area={area}
+                area={areaType}
                 colors={colors}
                 colorsFC={colorsFC}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
-                geofence={activeLayer}
+                geofence={areaType}
                 handlerBackButton={this.handlerBackButton}
                 handlerInfoGraph={name => this.handlerInfoGraph(name)}
                 openInfoGraph={openInfoGraph}
@@ -541,11 +542,11 @@ class Search extends Component {
                 subLayerName={subLayerName}
               />
             )}
-            { activeLayer && area && (area.id === 'se') && (
+            { areaType && areaId && (areaType.id === 'se') && (
               <NationalInsigths
-                area={area}
+                area={areaType}
                 colors={colors}
-                geofence={activeLayer}
+                geofence={areaType}
                 handlerBackButton={this.handlerBackButton}
                 id
               />
