@@ -35,21 +35,6 @@ class Search extends Component {
         '#75680f',
         '#7b6126'],
       colorSZH: ['#345b6b'],
-      colorsFC: [
-        { 4: '#7b56a5' },
-        { 4.5: '#6256a5' },
-        { 5: '#5564a4' },
-        { 5.5: '#4a8fb8' },
-        { 6: '#51b4c1' },
-        { 6.5: '#81bb47' },
-        { 7: '#a4c051' },
-        { 7.5: '#b1b559' },
-        { 8: '#eabc47' },
-        { 8.5: '#d5753d' },
-        { 9: '#ea5948' },
-        { 9.5: '#ea495f' },
-        { 10: '#c3374d' },
-      ],
       connError: false,
       currentCompany: null,
       dataError: false,
@@ -135,18 +120,11 @@ class Search extends Component {
 
   /**
    * Choose the right color for the biome inside the map, according
-   *  with colorsFC state
+   *  with matchColor function
    *
    * @param {Object} feature target object
    */
   featureStyle = (feature) => {
-    /*
-    const { colorsFC } = this.state;
-    const valueFC = Math.min(
-      (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
-    );
-    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
-    */
     const styleReturn = {
       stroke: false,
       fillColor: matchColor('fc')(feature.properties.compensation_factor),
@@ -441,8 +419,17 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
+      area,
+      subLayerName,
+      activeLayer,
+      subLayerData,
+      currentCompany,
+      loadingModal,
+      colors,
+      colorSZH,
+      layers,
+      connError,
+      dataError,
       openInfoGraph,
     } = this.state;
     return (
@@ -544,8 +531,6 @@ class Search extends Component {
             { activeLayer && area && (area.id !== 'se') && (
               <Drawer
                 area={area}
-                colors={colors}
-                colorsFC={colorsFC}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
                 geofence={activeLayer}
