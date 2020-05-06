@@ -16,6 +16,8 @@ import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 
+import matchColor from './commons/matchColor';
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -33,21 +35,6 @@ class Search extends Component {
         '#75680f',
         '#7b6126'],
       colorSZH: ['#345b6b'],
-      colorsFC: [
-        { 4: '#7b56a5' },
-        { 4.5: '#6256a5' },
-        { 5: '#5564a4' },
-        { 5.5: '#4a8fb8' },
-        { 6: '#51b4c1' },
-        { 6.5: '#81bb47' },
-        { 7: '#a4c051' },
-        { 7.5: '#b1b559' },
-        { 8: '#eabc47' },
-        { 8.5: '#d5753d' },
-        { 9: '#ea5948' },
-        { 9.5: '#ea495f' },
-        { 10: '#c3374d' },
-      ],
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -76,6 +63,7 @@ class Search extends Component {
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.areaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.areaId = null;
         return newState;
       });
     }
@@ -132,19 +120,14 @@ class Search extends Component {
 
   /**
    * Choose the right color for the biome inside the map, according
-   *  with colorsFC state
+   *  with matchColor function
    *
    * @param {Object} feature target object
    */
   featureStyle = (feature) => {
-    const { colorsFC } = this.state;
-    const valueFC = Math.min(
-      (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
-    );
-    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
     const styleReturn = {
       stroke: false,
-      fillColor: colorFound,
+      fillColor: matchColor('fc')(feature.properties.compensation_factor),
       fillOpacity: 0.7,
     };
     return styleReturn;
@@ -370,7 +353,10 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    if (nameToOn) this.loadLayer(nameToOn, nameToOff);
+    if (nameToOn) {
+      this.setState({ areaId: nameToOn });
+      this.loadLayer(nameToOn, nameToOff);
+    }
   }
 
   /** ************************************* */
@@ -427,9 +413,18 @@ class Search extends Component {
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      areaType, areaId, subLayerName, subLayerData, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
-      openInfoGraph, geofencesArray,
+      areaType,
+      areaId,
+      subLayerName,
+      subLayerData,
+      loadingModal,
+      colors,
+      colorSZH,
+      layers,
+      connError,
+      dataError,
+      openInfoGraph,
+      geofencesArray,
     } = this.state;
     return (
       <Layout
@@ -530,23 +525,22 @@ class Search extends Component {
             { areaType && areaId && (areaType.id !== 'se') && (
               <Drawer
                 area={areaType}
-                colors={colors}
-                colorsFC={colorsFC}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
-                geofence={areaType}
+                geofence={areaId}
                 handlerBackButton={this.handlerBackButton}
                 handlerInfoGraph={name => this.handlerInfoGraph(name)}
                 openInfoGraph={openInfoGraph}
                 id
                 subLayerName={subLayerName}
+                matchColor={matchColor}
               />
             )}
             { areaType && areaId && (areaType.id === 'se') && (
               <NationalInsigths
                 area={areaType}
                 colors={colors}
-                geofence={areaType}
+                geofence={areaId}
                 handlerBackButton={this.handlerBackButton}
                 id
               />
