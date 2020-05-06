@@ -31,6 +31,7 @@ const GraphLoader = (props) => {
     graphDescription,
     openInfoGraph,
     zScale: zScaleInput,
+    padding,
   } = props;
   return (
     <div>
@@ -154,20 +155,15 @@ const GraphLoader = (props) => {
       }
       {
         (graphType === 'LargeBarStackGraphNIVO') ? (
-          <div className="graphcard pb">
-            <LargeBarStackGraphNIVO
-              data={data}
-              graphTitle={graphTitle}
-              labelX={labelX}
-              labelY={labelY}
-              width={width}
-              height={150}
-              handlerInfoGraph={handlerInfoGraph}
-              openInfoGraph={openInfoGraph}
-              graphDescription={graphDescription}
-              zScale={zScaleInput}
-            />
-          </div>
+          <LargeBarStackGraphNIVO
+            data={data}
+            labelX={labelX}
+            labelY={labelY}
+            width={width}
+            height={150}
+            zScale={zScaleInput}
+            padding={padding}
+          />
         ) : ('')
       }
     </div>
@@ -192,6 +188,7 @@ GraphLoader.propTypes = {
   graphDescription: PropTypes.string,
   elementOnClick: PropTypes.func,
   zScale: PropTypes.func,
+  padding: PropTypes.number,
 };
 
 GraphLoader.defaultProps = {
@@ -210,6 +207,7 @@ GraphLoader.defaultProps = {
   graphDescription: null,
   elementOnClick: () => {},
   zScale: () => {},
+  padding: 0.25,
 };
 
 export default GraphLoader;
