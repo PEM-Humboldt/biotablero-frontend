@@ -6,7 +6,7 @@ import CurrentFootprint from '../humanFootprint/CurrentFootprint';
 import TimelineFootprint from '../humanFootprint/TimelineFootprint';
 import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
-const HumanFootprint = ({ generalArea, geofence }) => {
+const HumanFootprint = ({ generalArea }) => {
   const componentsArray = [{
     label: {
       id: 'Actual',
@@ -19,7 +19,6 @@ const HumanFootprint = ({ generalArea, geofence }) => {
     component: (
       <CurrentFootprint
         generalArea={generalArea}
-        geofence={geofence}
       />
     ),
   },
@@ -35,7 +34,6 @@ const HumanFootprint = ({ generalArea, geofence }) => {
     component: (
       <TimelineFootprint
         generalArea={generalArea}
-        geofence={geofence}
       />
     ),
   },
@@ -51,7 +49,6 @@ const HumanFootprint = ({ generalArea, geofence }) => {
     component: (
       <PersistenceFooprint
         generalArea={generalArea}
-        geofence={geofence}
       />
     ),
   },
@@ -69,10 +66,6 @@ const HumanFootprint = ({ generalArea, geofence }) => {
 
 HumanFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  geofence: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }).isRequired,
 };
 
 export default HumanFootprint;
