@@ -17,6 +17,7 @@ const LargeBarStackGraphNIVO = (props) => {
    * Give format to a big number
    *
    * @param {number} x number to be formatted
+   * @returns {String} number formatted setting decimals and thousands properly
    */
   const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
@@ -25,6 +26,7 @@ const LargeBarStackGraphNIVO = (props) => {
    *
    * @param {array} rawData raw data from RestAPI
    * @param {String} key id for data of each bar o serie
+   * @returns {array} transformed data ready to be used by graph component
    */
   const transformData = (rawData, key) => {
     const transformedData = {
@@ -33,16 +35,15 @@ const LargeBarStackGraphNIVO = (props) => {
     rawData.forEach((item) => {
       transformedData[String(item.key)] = Number(item.area);
     });
-    return transformedData;
+    return [transformedData];
   };
 
-  const transformedData = [transformData(data, labelY)];
   const keys = data.map(item => String(item.key));
 
   return (
     <div style={{ width, height }}>
       <ResponsiveBar
-        data={transformedData}
+        data={transformData(data, labelY)}
         keys={keys}
         indexBy="key"
         layout="horizontal"
