@@ -21,84 +21,85 @@ const CompensationFactor = (props) => {
     <div style={{ width: '100%' }}>
       <div className="graphcontainer">
         <div className="graphcard pb">
-          <h2>
-            <DownloadIcon className="icondown" />
-            <InfoIcon
-              className="graphinfo"
-              data-tooltip
-              title="¿Qué significa este gráfico?"
-              onClick={() => {
-                handlerInfoGraph('Factor de Compensación');
-              }}
-            />
-            <div
-              className="graphinfo"
-              onClick={() => handlerInfoGraph('Factor de Compensación')}
-              onKeyPress={() => handlerInfoGraph('Factor de Compensación')}
-              role="button"
-              tabIndex="0"
-            >
-              Factor de Compensación
-            </div>
-          </h2>
-          {openInfoGraph && (openInfoGraph === 'Factor de Compensación') && (
-            <ShortInfo
-              name="Factor de Compensación"
-              description="representa las hectáreas sobre los Biomas IAvH analizados"
-              className="graphinfo2"
-              tooltip="¿Qué significa?"
-              customButton
-            />
-          )}
-          {(areaName && areaName === 'Jurisdicciones ambientales')
-            && (
-              <RenderGraph
-                graph="LargeBarStackGraphNIVO"
-                data={compensationFactorData}
-                graphTitle="Factor de Compensación"
-                labelX="Hectáreas"
-                labelY="Factor de Compensación"
-                handlerInfoGraph={handlerInfoGraph}
-                openInfoGraph={openInfoGraph}
-                graphDescription="representa las hectáreas sobre los Biomas IAvH analizados"
-                zScale={matchColor('fc')}
-                padding={0.25}
-              />
-            )
-          }
-          {(areaName && areaName === 'Jurisdicciones ambientales')
-            && (
-              <RenderGraph
-                graph="LargeBarStackGraphNIVO"
-                data={biomesData}
-                graphTitle="Biomas"
-                labelX="Hectáreas"
-                labelY="Biomas"
-                handlerInfoGraph={handlerInfoGraph}
-                openInfoGraph={openInfoGraph}
-                graphDescription="agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta"
-                zScale={matchColor('biomas')}
-                padding={0.3}
-              />
-            )
-          }
-          {(areaName && areaName === 'Jurisdicciones ambientales')
-            && (
-              <RenderGraph
-                graph="LargeBarStackGraphNIVO"
-                data={bioticRegionsData}
-                graphTitle="Regiones Bióticas"
-                labelX="Hectáreas"
-                labelY="Regiones Bióticas"
-                handlerInfoGraph={handlerInfoGraph}
-                openInfoGraph={openInfoGraph}
-                graphDescription="muestra las hectáreas por cada región biótica en el área de consulta seleccionada"
-                zScale={matchColor('bioticReg')}
-                padding={0.3}
-              />
-            )
-          }
-          {(areaName && areaName !== 'Jurisdicciones ambientales')
+          {(areaName === 'Jurisdicciones ambientales')
+            && [
+              (
+                <h2>
+                  <DownloadIcon className="icondown" />
+                  <InfoIcon
+                    className="graphinfo"
+                    data-tooltip
+                    title="¿Qué significa este gráfico?"
+                    onClick={() => {
+                      handlerInfoGraph('Factor de Compensación');
+                    }}
+                  />
+                  <div
+                    className="graphinfo"
+                    onClick={() => handlerInfoGraph('Factor de Compensación')}
+                    onKeyPress={() => handlerInfoGraph('Factor de Compensación')}
+                    role="button"
+                    tabIndex="0"
+                  >
+                    Factor de Compensación
+                  </div>
+                </h2>
+              ),
+              (
+                openInfoGraph && (openInfoGraph === 'Factor de Compensación') && (
+                <ShortInfo
+                  name="Factor de Compensación"
+                  description="representa las hectáreas sobre los Biomas IAvH analizados"
+                  className="graphinfo2"
+                  tooltip="¿Qué significa?"
+                  customButton
+                />
+                )
+              ),
+              (
+                <RenderGraph
+                  graph="LargeBarStackGraph"
+                  data={compensationFactorData}
+                  graphTitle="Factor de Compensación"
+                  labelX="Hectáreas"
+                  labelY="Factor de Compensación"
+                  handlerInfoGraph={handlerInfoGraph}
+                  openInfoGraph={openInfoGraph}
+                  graphDescription="representa las hectáreas sobre los Biomas IAvH analizados"
+                  zScale={matchColor('fc')}
+                  padding={0.25}
+                />
+              ),
+              (
+                <RenderGraph
+                  graph="LargeBarStackGraph"
+                  data={biomesData}
+                  graphTitle="Biomas"
+                  labelX="Hectáreas"
+                  labelY="Biomas"
+                  handlerInfoGraph={handlerInfoGraph}
+                  openInfoGraph={openInfoGraph}
+                  graphDescription="agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta"
+                  zScale={matchColor('biomas')}
+                  padding={0.3}
+                />
+              ),
+              (
+                <RenderGraph
+                  graph="LargeBarStackGraph"
+                  data={bioticRegionsData}
+                  graphTitle="Regiones Bióticas"
+                  labelX="Hectáreas"
+                  labelY="Regiones Bióticas"
+                  handlerInfoGraph={handlerInfoGraph}
+                  openInfoGraph={openInfoGraph}
+                  graphDescription="muestra las hectáreas por cada región biótica en el área de consulta seleccionada"
+                  zScale={matchColor('bioticReg')}
+                  padding={0.3}
+                />
+              ),
+            ]}
+          {(areaName !== 'Jurisdicciones ambientales')
             && (
               <div className="graphcard">
                 <h2>

@@ -7,7 +7,7 @@ import BarGraph from './BarGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
-import LargeBarStackGraphNIVO from './LargeBarStackGraphNIVO';
+import LargeBarStackGraph from './LargeBarStackGraph';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -29,7 +29,7 @@ const GraphLoader = (props) => {
     handlerInfoGraph,
     graphDescription,
     openInfoGraph,
-    zScale: zScaleInput,
+    zScale,
     padding,
   } = props;
   return (
@@ -133,14 +133,14 @@ const GraphLoader = (props) => {
         ) : ('')
       }
       {
-        (graphType === 'LargeBarStackGraphNIVO') ? (
-          <LargeBarStackGraphNIVO
+        (graphType === 'LargeBarStackGraph') ? (
+          <LargeBarStackGraph
             data={data}
             labelX={labelX}
             labelY={labelY}
             width={width}
             height={150}
-            zScale={zScaleInput}
+            zScale={zScale}
             padding={padding}
           />
         ) : ('')
