@@ -1,4 +1,3 @@
-/** eslint verified */
 // TODO: Ajustar evento del Autocompletar sobre el mapa
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -67,9 +66,7 @@ class Selector extends React.Component {
         return (
           <Autocomplete
             valueSelected={(value) => {
-              const itemSelected = data.find(
-                item => item.name === value : value,
-              );
+              const itemSelected = data.find(item => item.name === value);
               handlers[2](parent, itemSelected);
             }}
             name={label || name}

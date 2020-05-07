@@ -16,6 +16,8 @@ class App extends React.Component {
     };
   }
 
+  buildQuery = queryString => new URLSearchParams(queryString);
+
   loadHome = ({ location }) => {
     const { user } = this.state;
     return (
@@ -27,12 +29,15 @@ class App extends React.Component {
     );
   }
 
-  loadSearch = () => {
+  loadSearch = ({ location }) => {
+    const query = this.buildQuery(location.search);
     const { user } = this.state;
     return (
       <Search
         userLogged={user}
         callbackUser={this.callbackUser}
+        areaTypeId={query.get('area_type')}
+        areaIdId={query.get('area_id')}
       />
     );
   }

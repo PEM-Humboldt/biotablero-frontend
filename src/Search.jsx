@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
+import { withRouter } from 'react-router-dom';
 
 import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './commons/MapViewer';
@@ -15,7 +16,6 @@ import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
-
 import matchColor from './commons/matchColor';
 
 class Search extends Component {
@@ -49,6 +49,10 @@ class Search extends Component {
   }
 
   componentDidMount() {
+    const { areaTypeId, areaIdId, history } = this.props;
+    if (!areaTypeId || !areaIdId) {
+      history.replace(history.location.pathname);
+    }
     this.loadAreaList();
   }
 
@@ -95,6 +99,24 @@ class Search extends Component {
         this.setState({
           geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
+        }, () => {
+          const { areaTypeId, areaIdId, history } = this.props;
+          if (!areaTypeId || !areaIdId) return;
+
+          const inputArea = tempAreaList.find(area => area.id === areaTypeId);
+          if (inputArea && inputArea.data && inputArea.data.length > 0) {
+            let field = 'id';
+            if (areaTypeId === 'pa') field = 'name';
+            const inputId = inputArea.data.find(area => area[field] === areaIdId);
+            if (inputId) {
+              this.setArea(areaTypeId);
+              this.setState({ areaId: inputId });
+            } else {
+              history.replace(history.location.pathname);
+            }
+          } else {
+            history.replace(history.location.pathname);
+          }
         });
       })
       .catch(() => this.reportConnError());
@@ -354,7 +376,14 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     if (nameToOn) {
-      this.setState({ areaId: nameToOn });
+      this.setState(
+        { areaId: nameToOn },
+        () => {
+          const { history } = this.props;
+          const { areaType, areaId } = this.state;
+          history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
+        },
+      );
       this.loadLayer(nameToOn, nameToOff);
     }
   }
@@ -366,22 +395,20 @@ class Search extends Component {
   // TODO: Return from biome to the selected environmental authority
   handlerBackButton = () => {
     this.setState((prevState) => {
-      let newState = { ...prevState };
+      const newState = { ...prevState };
       const { layers } = prevState;
       Object.keys(layers).forEach((layerKey) => {
         newState.layers[layerKey].active = false;
       });
 
-      newState = {
+      return {
         ...newState,
-        subLayerData: null,
         areaType: null,
-        subLayerName: null,
-        activeLayer: null,
-        layers: {},
-        openInfoGraph: null,
+        areaId: null,
       };
-      return newState;
+    }, () => {
+      const { history } = this.props;
+      history.replace(history.location.pathname);
     });
   }
 
@@ -555,10 +582,22 @@ class Search extends Component {
 Search.propTypes = {
   callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
+  areaTypeId: PropTypes.string,
+  areaIdId: PropTypes.string,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+  }),
 };
 
 Search.defaultProps = {
   userLogged: null,
+  areaTypeId: null,
+  areaIdId: null,
+  history: {},
 };
 
-export default Search;
+export default withRouter(Search);

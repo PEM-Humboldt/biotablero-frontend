@@ -6,6 +6,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import AddIcon from '@material-ui/icons/Add';
+
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
 import CompensationFactor from './CompensationFactor';
@@ -13,7 +14,6 @@ import HumanFootprint from './HumanFootprint';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
-
 import Accordion from '../commons/Accordion';
 
 const styles = () => ({
