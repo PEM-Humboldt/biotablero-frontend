@@ -29,7 +29,7 @@ const GraphLoader = (props) => {
     handlerInfoGraph,
     graphDescription,
     openInfoGraph,
-    zScale: zScaleInput,
+    zScale,
     padding,
   } = props;
   return (
@@ -140,7 +140,7 @@ const GraphLoader = (props) => {
             labelY={labelY}
             width={width}
             height={150}
-            zScale={zScaleInput}
+            zScale={zScale}
             padding={padding}
           />
         ) : ('')
