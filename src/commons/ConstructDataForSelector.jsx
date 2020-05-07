@@ -25,6 +25,7 @@ const ConstructDataForSearch = (geofences) => {
       idLabel: `panel1-${geofence.id}`,
       options: geofence.data,
       disabled: (geofence.id === 'se'),
+      selected: geofence.selected,
     };
     areasArray.push(area);
   });
@@ -33,7 +34,6 @@ const ConstructDataForSearch = (geofences) => {
     {
       id: 'Geocerca',
       idLabel: 'panel1-Geocerca',
-      // id='geofences' is used to mark it as selected in the first load
       detailId: 'geofences',
       label: 'Área de consulta',
       options: areasArray,

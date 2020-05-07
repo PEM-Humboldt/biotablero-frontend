@@ -58,13 +58,6 @@ class Selector extends React.Component {
     handlers[1](subPanel, expanded);
   };
 
-  componentWillUnmounted() {
-    const { handlers } = this.props;
-    handlers[0](false);
-    handlers[1](false);
-    handlers[2](false);
-  }
-
   renderInnerElement = (parent, size, data) => ({
     type, label, name, id_project: projectId,
   }) => {
