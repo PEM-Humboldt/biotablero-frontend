@@ -61,8 +61,9 @@ const matchColor = (type) => {
   switch (type) {
     case 'fc':
       return (value) => {
-        let idx = sort.indexOf(value);
-        if (idx === -1) idx = sort.indexOf(value + 0.25);
+        const numValue = parseFloat(value);
+        let idx = sort.indexOf(numValue);
+        if (idx === -1) idx = sort.indexOf(numValue + 0.25);
         if (idx === -1) return null;
         return palette[idx];
       };
