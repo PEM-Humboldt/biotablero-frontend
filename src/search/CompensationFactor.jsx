@@ -53,7 +53,7 @@ const CompensationFactor = (props) => {
           {(areaName && areaName === 'Jurisdicciones ambientales')
             && (
               <RenderGraph
-                graph="LargeBarStackGraphNIVO"
+                graph="LargeBarStackGraph"
                 data={compensationFactorData}
                 graphTitle="Factor de Compensación"
                 labelX="Hectáreas"
@@ -69,7 +69,7 @@ const CompensationFactor = (props) => {
           {(areaName && areaName === 'Jurisdicciones ambientales')
             && (
               <RenderGraph
-                graph="LargeBarStackGraphNIVO"
+                graph="LargeBarStackGraph"
                 data={biomesData}
                 graphTitle="Biomas"
                 labelX="Hectáreas"
@@ -85,7 +85,7 @@ const CompensationFactor = (props) => {
           {(areaName && areaName === 'Jurisdicciones ambientales')
             && (
               <RenderGraph
-                graph="LargeBarStackGraphNIVO"
+                graph="LargeBarStackGraph"
                 data={bioticRegionsData}
                 graphTitle="Regiones Bióticas"
                 labelX="Hectáreas"

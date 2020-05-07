@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
 
-const LargeBarStackGraphNIVO = (props) => {
+const LargeBarStackGraph = (props) => {
   const {
     data,
     labelX,
@@ -98,7 +98,7 @@ const LargeBarStackGraphNIVO = (props) => {
   );
 };
 
-LargeBarStackGraphNIVO.propTypes = {
+LargeBarStackGraph.propTypes = {
   data: PropTypes.array.isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
@@ -108,7 +108,7 @@ LargeBarStackGraphNIVO.propTypes = {
   padding: PropTypes.number,
 };
 
-LargeBarStackGraphNIVO.defaultProps = {
+LargeBarStackGraph.defaultProps = {
   labelX: '',
   labelY: '',
   width: 581,
@@ -117,4 +117,4 @@ LargeBarStackGraphNIVO.defaultProps = {
   padding: 0.25,
 };
 
-export default LargeBarStackGraphNIVO;
+export default LargeBarStackGraph;

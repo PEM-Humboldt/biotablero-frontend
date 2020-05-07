@@ -7,7 +7,7 @@ import BarGraph from './BarGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
-import LargeBarStackGraphNIVO from './LargeBarStackGraphNIVO';
+import LargeBarStackGraph from './LargeBarStackGraph';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -133,8 +133,8 @@ const GraphLoader = (props) => {
         ) : ('')
       }
       {
-        (graphType === 'LargeBarStackGraphNIVO') ? (
-          <LargeBarStackGraphNIVO
+        (graphType === 'LargeBarStackGraph') ? (
+          <LargeBarStackGraph
             data={data}
             labelX={labelX}
             labelY={labelY}
