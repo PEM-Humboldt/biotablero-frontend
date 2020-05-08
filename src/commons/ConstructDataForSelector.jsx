@@ -25,7 +25,6 @@ const ConstructDataForSearch = (geofences) => {
       idLabel: `panel1-${geofence.id}`,
       options: geofence.data,
       disabled: (geofence.id === 'se'),
-      selected: geofence.selected,
     };
     areasArray.push(area);
   });
