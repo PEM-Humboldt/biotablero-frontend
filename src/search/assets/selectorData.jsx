@@ -77,7 +77,6 @@ const dataGEB = {
 const dataLines = [
   {
     id: 'Área total',
-    color: 'hsl(45°, 14%, 60%)',
     data: [
       {
         x: '1970',
@@ -103,7 +102,6 @@ const dataLines = [
   },
   {
     id: 'Páramo',
-    color: 'hsl(190, 70%, 50%)',
     data: [
       {
         x: '1970',
@@ -129,7 +127,6 @@ const dataLines = [
   },
   {
     id: 'Humedales',
-    color: 'hsl(161, 70%, 50%)',
     data: [
       {
         x: '1970',
@@ -155,7 +152,6 @@ const dataLines = [
   },
   {
     id: 'Bosques Secos',
-    color: 'hsl(161, 70%, 50%)',
     data: [
       {
         x: '1970',

@@ -5,7 +5,7 @@ import { ResponsiveLine } from '@nivo/line';
 const MultiLinesGraph = ({
   data,
 }) => (
-  <div style={{ height: '400px', width: '750px' }}>
+  <div style={{ height: '490px', width: '750px' }}>
     <ResponsiveLine
       data={data}
       curve="cardinal"
@@ -53,14 +53,14 @@ const MultiLinesGraph = ({
       useMesh
       legends={[
         {
-          anchor: 'bottom-right',
-          direction: 'column',
+          anchor: 'bottom-left',
+          direction: 'row',
           justify: false,
-          translateX: 100,
-          translateY: 0,
+          translateX: 10,
+          translateY: 90,
           itemsSpacing: 0,
           itemDirection: 'left-to-right',
-          itemWidth: 80,
+          itemWidth: 150,
           itemHeight: 20,
           itemOpacity: 0.75,
           symbolSize: 12,

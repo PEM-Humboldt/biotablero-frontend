@@ -29,6 +29,10 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
+  hfPersistence: {
+    palette: 'sEco',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
   default: {
     palette: 'default',
   },
@@ -93,6 +97,12 @@ const matchColor = (type) => {
         return palette[counter];
       };
     case 'se':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return palette[palette.length - 1];
+        return palette[idx];
+      };
+    case 'hfPersistence':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];
