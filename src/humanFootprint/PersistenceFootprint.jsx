@@ -14,18 +14,6 @@ const data = [
   },
 ];
 
-const data2 = [
-  {
-    area: 732206, key: 'Estable natural',
-  }, {
-    area: 70749, key: 'Dinámica',
-  }, {
-    area: 1054399, key: 'Estable alta',
-  },
-];
-
-console.log(data2);
-
 const PersistenceFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
