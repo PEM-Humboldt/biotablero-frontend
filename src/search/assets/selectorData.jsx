@@ -76,6 +76,32 @@ const dataGEB = {
 
 const dataLines = [
   {
+    id: 'Área total',
+    color: 'hsl(45°, 14%, 60%)',
+    data: [
+      {
+        x: '1970',
+        y: 75,
+      },
+      {
+        x: '1990',
+        y: 65,
+      },
+      {
+        x: '2000',
+        y: 68,
+      },
+      {
+        x: '2015',
+        y: 89,
+      },
+      {
+        x: '2018',
+        y: 80,
+      },
+    ],
+  },
+  {
     id: 'Páramo',
     color: 'hsl(190, 70%, 50%)',
     data: [
@@ -149,7 +175,6 @@ const dataLines = [
       },
       {
         x: '2018',
-        y: 55,
         y: 55,
       },
     ],
