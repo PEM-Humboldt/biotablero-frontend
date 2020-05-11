@@ -31,6 +31,8 @@ const RenderGraph = (props) => {
     openInfoGraph,
     graphDescription,
     units,
+    zScale,
+    padding,
   } = props;
   // While data is being retrieved from server
   let errorMessage = null;
@@ -65,6 +67,8 @@ const RenderGraph = (props) => {
             openInfoGraph={openInfoGraph}
             graphDescription={graphDescription}
             units={units}
+            zScale={zScale}
+            padding={padding}
           />
         )
       )}
@@ -83,6 +87,8 @@ RenderGraph.propTypes = {
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   units: PropTypes.string,
+  zScale: PropTypes.func,
+  padding: PropTypes.number,
 };
 
 RenderGraph.defaultProps = {
@@ -95,6 +101,8 @@ RenderGraph.defaultProps = {
   openInfoGraph: null,
   graphDescription: null,
   units: 'ha',
+  zScale: () => {},
+  padding: 0.25,
 };
 
 export default RenderGraph;

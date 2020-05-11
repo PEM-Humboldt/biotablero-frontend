@@ -33,7 +33,6 @@ const ConstructDataForSearch = (geofences) => {
     {
       id: 'Geocerca',
       idLabel: 'panel1-Geocerca',
-      // id='geofences' is used to mark it as selected in the first load
       detailId: 'geofences',
       label: 'Área de consulta',
       options: areasArray,

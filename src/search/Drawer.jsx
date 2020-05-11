@@ -6,6 +6,7 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 import AddIcon from '@material-ui/icons/Add';
+
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
 import CompensationFactor from './CompensationFactor';
@@ -13,19 +14,7 @@ import HumanFootprint from './HumanFootprint';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
-
 import Accordion from '../commons/Accordion';
-
-const colorsRB = ['#003d59',
-  '#5a1d44',
-  '#902130',
-  '#6d819c',
-  '#db9d6b',
-  '#fb9334',
-  '#fe6625',
-  '#ab5727',
-  '#44857d',
-  '#167070'];
 
 const styles = () => ({
   root: {
@@ -200,9 +189,16 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofence, subLayerData, colors, colorSZH, colorsFC,
-      classes, handlerBackButton, handlerInfoGraph, openInfoGraph,
-      subLayerName, area,
+      geofence,
+      subLayerData,
+      colorSZH,
+      classes,
+      handlerBackButton,
+      handlerInfoGraph,
+      openInfoGraph,
+      subLayerName,
+      area,
+      matchColor,
     } = this.props;
     const {
       data: {
@@ -211,43 +207,41 @@ class Drawer extends React.Component {
     } = this.state;
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
-    const componentsArray = [{
-      label: {
-        id: 'Factor de compensación',
-        name: 'Factor de compensación',
-        disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Factor de compensación en área de consulta',
-        description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
+    const componentsArray = [
+      {
+        label: {
+          id: 'Factor de compensación',
+          name: 'Factor de compensación',
+          disabled: false,
+          expandIcon: <AddIcon />,
+          detailId: 'Factor de compensación en área de consulta',
+          description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
+        },
+        component: <CompensationFactor
+          areaName={area.name}
+          biomesData={biomas}
+          bioticRegionsData={distritos}
+          compensationFactorData={fc}
+          handlerInfoGraph={handlerInfoGraph}
+          openInfoGraph={openInfoGraph}
+          matchColor={matchColor}
+        />,
       },
-      component: <CompensationFactor
-        areaName={area.name}
-        biomesColors={colors}
-        biomesData={biomas}
-        bioticRegionsColors={colorsRB}
-        bioticRegionsData={distritos}
-        compensationFactorColors={colorsFC}
-        compensationFactorData={fc}
-        handlerInfoGraph={handlerInfoGraph}
-        openInfoGraph={openInfoGraph}
-      />,
-    },
-    {
-      label: {
-        id: 'Huella humana',
-        name: 'Huella humana',
-        disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Huella humana en el área',
-        description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+      {
+        label: {
+          id: 'Huella humana',
+          name: 'Huella humana',
+          disabled: false,
+          expandIcon: <AddIcon />,
+          detailId: 'Huella humana en el área',
+          description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+        },
+        component: (
+          <HumanFootprint
+            generalArea={generalArea}
+          />
+        ),
       },
-      component: (
-        <HumanFootprint
-          generalArea={generalArea}
-          geofence={geofence}
-        />
-      ),
-    },
     ];
     return (
       <div className="informer">
@@ -345,27 +339,25 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  colors: PropTypes.array,
   colorSZH: PropTypes.array,
-  colorsFC: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.string,
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
+  matchColor: PropTypes.func,
 };
 
 Drawer.defaultProps = {
-  colors: ['#345b6b'],
   colorSZH: [],
-  colorsFC: [],
   geofence: { id: NaN, name: '' },
   subLayerData: {},
   subLayerName: '',
   handlerBackButton: () => {},
   handlerInfoGraph: () => {},
   openInfoGraph: null,
+  matchColor: () => {},
 };
 
 export default withStyles(styles)(Drawer);

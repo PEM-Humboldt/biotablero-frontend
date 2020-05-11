@@ -1,11 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
+import matchColor from '../commons/matchColor';
 
 const MultiLinesGraph = ({
-  data,
+  colors, data,
 }) => (
-  <div style={{ height: '490px', width: '750px' }}>
+  <div style={{ height: '400px', width: '750px' }}>
+    <h2>
+      Seccion 2: Huella humana a través del tiempo
+    </h2>
+    {console.log(matchColor(colors))}
     <ResponsiveLine
       data={data}
       curve="cardinal"
@@ -43,7 +48,7 @@ const MultiLinesGraph = ({
         legendOffset: -40,
         legendPosition: 'middle',
       }}
-      colors={{ scheme: 'category10' }}
+      colors={matchColor(colors)}
       pointSize={10}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
@@ -53,14 +58,14 @@ const MultiLinesGraph = ({
       useMesh
       legends={[
         {
-          anchor: 'bottom-left',
-          direction: 'row',
+          anchor: 'bottom-right',
+          direction: 'column',
           justify: false,
-          translateX: 10,
-          translateY: 90,
+          translateX: 100,
+          translateY: 0,
           itemsSpacing: 0,
           itemDirection: 'left-to-right',
-          itemWidth: 150,
+          itemWidth: 80,
           itemHeight: 20,
           itemOpacity: 0.75,
           symbolSize: 12,
@@ -82,17 +87,20 @@ const MultiLinesGraph = ({
 );
 
 MultiLinesGraph.propTypes = {
+  colors: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    color: PropTypes.string,
-    data: PropTypes.arrayOf(PropTypes.shape({
-      x: PropTypes.string,
-      y: PropTypes.number,
-    })),
+    label: PropTypes.shape({
+      id: PropTypes.string,
+      data: PropTypes.arrayOf(PropTypes.shape({
+        x: PropTypes.string,
+        y: PropTypes.number,
+      })),
+    }),
   })).isRequired,
 };
 
 MultiLinesGraph.defaultProps = {
+  colors: 'sEco',
 };
 
 export default MultiLinesGraph;

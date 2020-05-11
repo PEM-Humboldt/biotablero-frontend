@@ -20,6 +20,7 @@ const TimelineFootprint = ({ generalArea }) => (
     <div className="graficaeco">
       <h2>
         <MultiLinesGraph
+          colors="sEco"
           data={dataLines}
         />
       </h2>

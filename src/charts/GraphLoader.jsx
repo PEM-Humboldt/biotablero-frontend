@@ -4,10 +4,10 @@ import DownloadIcon from '@material-ui/icons/Save';
 import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import BarGraph from './BarGraph';
-import BarStackGraph from './BarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
+import LargeBarStackGraph from './LargeBarStackGraph';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -29,29 +29,11 @@ const GraphLoader = (props) => {
     handlerInfoGraph,
     graphDescription,
     openInfoGraph,
+    zScale,
+    padding,
   } = props;
   return (
     <div>
-      {
-        (graphType === 'BarStackGraph') ? (
-          // TODO: Usar name en el gráfico
-          <div className="graphcard pb">
-            <BarStackGraph
-              dataJSON={data}
-              colors={colors}
-              graphTitle={graphTitle}
-              labelX={labelX}
-              labelY={labelY}
-              width={width}
-              height="150"
-              units={units}
-              openInfoGraph={openInfoGraph}
-              handlerInfoGraph={handlerInfoGraph}
-              graphDescription={graphDescription}
-            />
-          </div>
-        ) : ('')
-      }
       {
         (graphType === 'SmallBarStackGraph') ? (
           <SmallBarStackGraph
@@ -150,6 +132,19 @@ const GraphLoader = (props) => {
           </div>
         ) : ('')
       }
+      {
+        (graphType === 'LargeBarStackGraph') ? (
+          <LargeBarStackGraph
+            data={data}
+            labelX={labelX}
+            labelY={labelY}
+            width={width}
+            height={150}
+            zScale={zScale}
+            padding={padding}
+          />
+        ) : ('')
+      }
     </div>
   );
 };
@@ -171,6 +166,8 @@ GraphLoader.propTypes = {
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   elementOnClick: PropTypes.func,
+  zScale: PropTypes.func,
+  padding: PropTypes.number,
 };
 
 GraphLoader.defaultProps = {
@@ -188,6 +185,8 @@ GraphLoader.defaultProps = {
   openInfoGraph: null,
   graphDescription: null,
   elementOnClick: () => {},
+  zScale: () => {},
+  padding: 0.25,
 };
 
 export default GraphLoader;

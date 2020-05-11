@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import L from 'leaflet';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
+import { withRouter } from 'react-router-dom';
 
 import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './commons/MapViewer';
@@ -15,6 +16,7 @@ import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
 import Layout from './Layout';
 import RestAPI from './api/RestAPI';
+import matchColor from './commons/matchColor';
 
 class Search extends Component {
   constructor(props) {
@@ -33,36 +35,24 @@ class Search extends Component {
         '#75680f',
         '#7b6126'],
       colorSZH: ['#345b6b'],
-      colorsFC: [
-        { 4: '#7b56a5' },
-        { 4.5: '#6256a5' },
-        { 5: '#5564a4' },
-        { 5.5: '#4a8fb8' },
-        { 6: '#51b4c1' },
-        { 6.5: '#81bb47' },
-        { 7: '#a4c051' },
-        { 7.5: '#b1b559' },
-        { 8: '#eabc47' },
-        { 8.5: '#d5753d' },
-        { 9: '#ea5948' },
-        { 9.5: '#ea495f' },
-        { 10: '#c3374d' },
-      ],
       connError: false,
-      currentCompany: null,
       dataError: false,
       geofencesArray: [],
       areaList: [],
       subLayerName: null,
       layers: {},
       loadingModal: false,
-      area: null,
-      userDataLoaded: false,
+      areaType: null,
+      areaId: null,
       requestSource: null,
     };
   }
 
   componentDidMount() {
+    const { areaTypeId, areaIdId, history } = this.props;
+    if (!areaTypeId || !areaIdId) {
+      history.replace(history.location.pathname);
+    }
     this.loadAreaList();
   }
 
@@ -72,11 +62,12 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    const { area } = this.state;
-    if (!area || (area && area.id !== idLayer)) {
+    const { areaType } = this.state;
+    if (!areaType || (areaType && areaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.area = prevState.areaList.find(item => item.id === idLayer);
+        newState.areaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.areaId = null;
         return newState;
       });
     }
@@ -108,6 +99,24 @@ class Search extends Component {
         this.setState({
           geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
+        }, () => {
+          const { areaTypeId, areaIdId, history } = this.props;
+          if (!areaTypeId || !areaIdId) return;
+
+          const inputArea = tempAreaList.find(area => area.id === areaTypeId);
+          if (inputArea && inputArea.data && inputArea.data.length > 0) {
+            let field = 'id';
+            if (areaTypeId === 'pa') field = 'name';
+            const inputId = inputArea.data.find(area => area[field] === areaIdId);
+            if (inputId) {
+              this.setArea(areaTypeId);
+              this.setState({ areaId: inputId });
+            } else {
+              history.replace(history.location.pathname);
+            }
+          } else {
+            history.replace(history.location.pathname);
+          }
         });
       })
       .catch(() => this.reportConnError());
@@ -133,19 +142,14 @@ class Search extends Component {
 
   /**
    * Choose the right color for the biome inside the map, according
-   *  with colorsFC state
+   *  with matchColor function
    *
    * @param {Object} feature target object
    */
   featureStyle = (feature) => {
-    const { colorsFC } = this.state;
-    const valueFC = Math.min(
-      (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
-    );
-    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
     const styleReturn = {
       stroke: false,
-      fillColor: colorFound,
+      fillColor: matchColor('fc')(feature.properties.compensation_factor),
       fillOpacity: 0.7,
     };
     return styleReturn;
@@ -183,7 +187,7 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, area } = this.state;
+    const { activeLayer, areaType } = this.state;
     const point = event.target;
     const areaPopup = {
       closeButton: false,
@@ -192,7 +196,7 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
-    if (area && (parentLayer === area.id)) {
+    if (areaType && (parentLayer === areaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
@@ -210,19 +214,19 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { area, layers } = this.state;
+    const { areaType, layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (area && (parentLayer === area.id)) {
+    if (areaType && (parentLayer === areaType.id)) {
       feature.closePopup();
     }
   }
 
   clickFeature = (event, parentLayer) => {
-    const { area } = this.state;
+    const { areaType } = this.state;
     this.highlightFeature(event, parentLayer);
     let value = this.findFirstId(event.target.feature.properties);
     if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(area.data).filter(
+    const toLoad = Object.values(areaType.data).filter(
       element => element.id === value.toString(),
     )[0];
     if (value) this.innerElementChange(parentLayer, toLoad);
@@ -371,7 +375,17 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    if (nameToOn) this.loadLayer(nameToOn, nameToOff);
+    if (nameToOn) {
+      this.setState(
+        { areaId: nameToOn },
+        () => {
+          const { history } = this.props;
+          const { areaType, areaId } = this.state;
+          history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
+        },
+      );
+      this.loadLayer(nameToOn, nameToOff);
+    }
   }
 
   /** ************************************* */
@@ -381,22 +395,20 @@ class Search extends Component {
   // TODO: Return from biome to the selected environmental authority
   handlerBackButton = () => {
     this.setState((prevState) => {
-      let newState = { ...prevState };
+      const newState = { ...prevState };
       const { layers } = prevState;
       Object.keys(layers).forEach((layerKey) => {
         newState.layers[layerKey].active = false;
       });
 
-      newState = {
+      return {
         ...newState,
-        subLayerData: null,
-        area: null,
-        subLayerName: null,
-        activeLayer: null,
-        layers: {},
-        openInfoGraph: null,
+        areaType: null,
+        areaId: null,
       };
-      return newState;
+    }, () => {
+      const { history } = this.props;
+      history.replace(history.location.pathname);
     });
   }
 
@@ -425,21 +437,21 @@ class Search extends Component {
     this.setState({ [state]: false });
   };
 
-  /**
-    * Function to control data options belonging to the companyId
-    * TODO: Add data from the current company in geofencesArray
-    */
-  getData = () => {
-    const { geofencesArray } = this.state;
-    return geofencesArray;
-  }
-
   render() {
     const { callbackUser, userLogged } = this.props;
     const {
-      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
+      areaType,
+      areaId,
+      subLayerName,
+      subLayerData,
+      loadingModal,
+      colors,
+      colorSZH,
+      layers,
+      connError,
+      dataError,
       openInfoGraph,
+      geofencesArray,
     } = this.state;
     return (
       <Layout
@@ -524,39 +536,38 @@ class Search extends Component {
             Titulo del mapa
           </div>
           <div className="contentView">
-            { !activeLayer && (
+            { (!areaType || !areaId) && (
               <Selector
                 handlers={[
                   () => {},
                   this.secondLevelChange,
                   this.innerElementChange,
                 ]}
-                description={description(currentCompany)}
-                data={this.getData()}
+                description={description(null)}
+                data={geofencesArray}
                 expandedId={0}
                 iconClass="iconsection"
               />
             )}
-            { activeLayer && area && (area.id !== 'se') && (
+            { areaType && areaId && (areaType.id !== 'se') && (
               <Drawer
-                area={area}
-                colors={colors}
-                colorsFC={colorsFC}
+                area={areaType}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
-                geofence={activeLayer}
+                geofence={areaId}
                 handlerBackButton={this.handlerBackButton}
                 handlerInfoGraph={name => this.handlerInfoGraph(name)}
                 openInfoGraph={openInfoGraph}
                 id
                 subLayerName={subLayerName}
+                matchColor={matchColor}
               />
             )}
-            { activeLayer && area && (area.id === 'se') && (
+            { areaType && areaId && (areaType.id === 'se') && (
               <NationalInsigths
-                area={area}
+                area={areaType}
                 colors={colors}
-                geofence={activeLayer}
+                geofence={areaId}
                 handlerBackButton={this.handlerBackButton}
                 id
               />
@@ -571,10 +582,22 @@ class Search extends Component {
 Search.propTypes = {
   callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
+  areaTypeId: PropTypes.string,
+  areaIdId: PropTypes.string,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+  }),
 };
 
 Search.defaultProps = {
   userLogged: null,
+  areaTypeId: null,
+  areaIdId: null,
+  history: {},
 };
 
-export default Search;
+export default withRouter(Search);
