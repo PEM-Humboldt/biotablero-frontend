@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GeneralArea from '../commons/GeneralArea';
 import MultiLinesGraph from '../charts/MultiLinesGraph';
+import matchColor from '../commons/matchColor';
 
 import { dataLines } from '../search/assets/selectorData';
 
@@ -15,24 +16,15 @@ const TimelineFootprint = ({ generalArea }) => (
       Valores promedio en el área
     </h4>
     <h6>
-      Natural, Baja, Media y Alta
+      Diferenciados entre área total y cada ecosistema estratégico
     </h6>
     <div className="graficaeco">
       <h2>
         <MultiLinesGraph
-          colors="sEco"
+          colors={matchColor('hfPersistence')}
           data={dataLines}
         />
       </h2>
-      <h4>
-        Bosque seco tropical
-      </h4>
-      <h4>
-        Humedal
-      </h4>
-      <h4>
-        Páramo
-      </h4>
       Área del ecosistema dentro de la unidad de consulta: 332 ha
     </div>
   </div>

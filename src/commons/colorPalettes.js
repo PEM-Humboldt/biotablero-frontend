@@ -63,10 +63,10 @@ export default {
     '#51b4c1',
   ],
   sEco: [
-    'hsl(45°, 14%, 60%)', // Área total
-    'hsl(225°, 70%, 54%)', // Páramo
-    'hsl(51°, 82%, 80%)', // Humedales
-    'hsl(161, 70%, 50%)', // Bosques Secos
+    '#cf324e', // Área total
+    '#29418a', // Páramo
+    '#ccb325', // Humedales
+    '#3cb58e', // Bosques Secos
   ],
   default: ['#345b6b'],
 };
