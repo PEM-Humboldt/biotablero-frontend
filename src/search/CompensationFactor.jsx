@@ -40,8 +40,7 @@ const CompensationFactor = (props) => {
                     onKeyPress={() => handlerInfoGraph('Factor de Compensación')}
                     role="button"
                     tabIndex="0"
-                  >
-                  </div>
+                  />
                   <DownloadIcon className="icondown" />
                 </h2>
               ),
@@ -72,7 +71,7 @@ const CompensationFactor = (props) => {
               ),
               (
                 <h3>
-                 Biomas
+                  Biomas
                 </h3>
               ),
               (
@@ -91,7 +90,7 @@ const CompensationFactor = (props) => {
               ),
               (
                 <h3>
-                 Regiones Bióticas
+                  Regiones Bióticas
                 </h3>
               ),
               (
