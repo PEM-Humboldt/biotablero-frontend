@@ -6,7 +6,7 @@ import RestAPI from '../api/RestAPI';
 
 /**
  *
- * Validate id data exist before rendering graph
+ * Validate if data exist before rendering graph
  *
  * @param {array} data percentage in "national system of protected areas" or SINAP
  * @returns {object} validation of data availability and existence
