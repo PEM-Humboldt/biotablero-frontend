@@ -1270,7 +1270,7 @@ overflow: auto;
 }
 
 .m1 {
-	color: #424242;
+	color: #4a585f;
 	display: inline-block;
 	width: 100%;
 	background-color: #ebebeb !important;
@@ -1285,10 +1285,11 @@ overflow: auto;
 }
 
 .accordionSelected > div:nth-child(1) {
-	color: #2a363b;
+	color: #e84a5f;
 	text-transform: uppercase;
 	font-size: 18px;
 	letter-spacing: 1;
+	border-bottom:1px solid #e84a5f;
 }
 
 
@@ -1576,6 +1577,12 @@ div[id*="panel"] button:hover {
 	outline: none;
 }
 
+.graphcardAcc .graphinfo {
+	padding-left: 3px;
+	padding-right: 0;
+	color: #cccccc;
+}
+
 .MuiSvgIcon-root-1.graphinfo {
 	font-size: initial;
 }
@@ -1597,10 +1604,49 @@ div[id*="panel"] button:hover {
 	-ms-transition: all 1s;
 	-o-transition: all 1s;
 	transition: all 1s;
-	border-bottom: 1px solid #e84a5f;
+	border-bottom: 1px solid #dddddd;
 	width: 94%;
 	margin: 0 3%;
 	margin-bottom: 10px;
+}
+
+.graphcardAcc {
+	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+	margin-bottom: 5px;
+	padding-bottom: 10px;
+}
+
+.graphcardAcc h2 {
+	color: #e84a5f;
+	text-transform: uppercase;
+	font-size: 18px;
+	letter-spacing: 1;
+	border-bottom:1px solid #e84a5f;
+	font-weight: 400;
+	padding: 22px 24px;
+	text-align: left;
+	margin-bottom: 10px;
+}
+
+.graphcardAcc .icondown {
+  cursor: pointer;
+  margin-top: -3px;
+  color: #2a363b;
+  float: right;
+}
+
+.graphcardAcc h3 {
+	display: inline-block;
+	padding: 5px 12px;
+	text-align: left;
+	font-size: 14px;
+	margin: 12px 15px 8px;
+	letter-spacing: 1;
+	text-transform: uppercase;
+	border: 1px solid #4a585f;
+	color: #4a585f;
 }
 
 p.legcomp {
@@ -2376,7 +2422,7 @@ tspan, .vx-axis-label {
 .load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e32759; vertical-align: top;}
 
 @keyframes loadingA {
-    0 {height: 15px;}
+    0% {height: 15px;}
     50% {height: 35px;}
     100% {height: 15px;}
 }
