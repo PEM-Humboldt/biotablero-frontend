@@ -102,7 +102,7 @@ const Overview = (props) => {
         </h6>
         <div className="graficaeco">
           <RenderGraph
-            graph="SmallBarStackGraphNIVO"
+            graph="SmallBarStackGraph"
             data={coverage}
             zScale={matchColor('coverage')}
             units="ha"
@@ -120,7 +120,7 @@ const Overview = (props) => {
             Distribución en área protegida:
           </h6>
           <RenderGraph
-            graph="SmallBarStackGraphNIVO"
+            graph="SmallBarStackGraph"
             data={listPA}
             zScale={matchColor('pa')}
             units="ha"

@@ -47,7 +47,7 @@ const showDetails = (/* TODO: Add all values required */
       {validateData(coverage)
         || (
           <RenderGraph
-            graph="SmallBarStackGraphNIVO"
+            graph="SmallBarStackGraph"
             data={setCoverageValues(coverage)}
             zScale={matchColor('coverage')}
             units="ha"
@@ -60,7 +60,7 @@ const showDetails = (/* TODO: Add all values required */
       {validateData(protectedArea)
         || (
           <RenderGraph
-            graph="SmallBarStackGraphNIVO"
+            graph="SmallBarStackGraph"
             data={setPAValues(protectedArea)}
             zScale={matchColor('pa')}
             units="ha"

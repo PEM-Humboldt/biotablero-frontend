@@ -99,7 +99,7 @@ class EcosystemsBox extends Component {
                 && (item.area !== 0 && item.area !== '0')
                   && (
                     <RenderGraph
-                      graph="SmallBarStackGraphNIVO"
+                      graph="SmallBarStackGraph"
                       data={this.preProcessData(item.type, item.area, total)}
                       zScale={matchColor('se')}
                       units="ha"

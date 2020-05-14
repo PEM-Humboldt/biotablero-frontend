@@ -4,11 +4,10 @@ import DownloadIcon from '@material-ui/icons/Save';
 import ReactChartkick, { LineChart } from 'react-chartkick';
 import Chart from 'chart.js';
 import BarGraph from './BarGraph';
-import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
-import SmallBarStackGraphNIVO from './SmallBarStackGraphNIVO';
+import SmallBarStackGraph from './SmallBarStackGraph';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -27,27 +26,33 @@ const GraphLoader = (props) => {
     showOnlyTitle,
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
-    handlerInfoGraph,
-    graphDescription,
-    openInfoGraph,
     zScale,
     padding,
   } = props;
   return (
     <div>
       {
-        (graphType === 'SmallBarStackGraph') ? (
-          <SmallBarStackGraph
-            dataJSON={data}
-            colors={colors}
-            graphTitle={graphTitle}
+        (graphType === 'LargeBarStackGraph') ? (
+          <LargeBarStackGraph
+            data={data}
+            labelX={labelX}
             labelY={labelY}
             width={width}
-            height="150"
+            height={150}
+            zScale={zScale}
+            padding={padding}
+          />
+        ) : ('')
+      }
+      {
+        (graphType === 'SmallBarStackGraph') ? (
+          <SmallBarStackGraph
+            data={data}
+            width={width}
+            height={30}
+            zScale={zScale}
+            padding={padding}
             units={units}
-            openInfoGraph={openInfoGraph}
-            handlerInfoGraph={handlerInfoGraph}
-            graphDescription={graphDescription}
           />
         ) : ('')
       }
@@ -133,31 +138,6 @@ const GraphLoader = (props) => {
           </div>
         ) : ('')
       }
-      {
-        (graphType === 'LargeBarStackGraph') ? (
-          <LargeBarStackGraph
-            data={data}
-            labelX={labelX}
-            labelY={labelY}
-            width={width}
-            height={150}
-            zScale={zScale}
-            padding={padding}
-          />
-        ) : ('')
-      }
-      {
-        (graphType === 'SmallBarStackGraphNIVO') ? (
-          <SmallBarStackGraphNIVO
-            data={data}
-            width={width}
-            height={30}
-            zScale={zScale}
-            padding={padding}
-            units={units}
-          />
-        ) : ('')
-      }
     </div>
   );
 };
@@ -175,9 +155,6 @@ GraphLoader.propTypes = {
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
-  handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.string,
-  graphDescription: PropTypes.string,
   elementOnClick: PropTypes.func,
   zScale: PropTypes.func,
   padding: PropTypes.number,
@@ -194,9 +171,6 @@ GraphLoader.defaultProps = {
   showOnlyTitle: false,
   units: 'ha',
   withLeyends: false,
-  handlerInfoGraph: () => {},
-  openInfoGraph: null,
-  graphDescription: null,
   elementOnClick: () => {},
   zScale: () => {},
   padding: 0.25,
