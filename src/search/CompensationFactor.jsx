@@ -19,13 +19,13 @@ const CompensationFactor = (props) => {
   } = props;
   return (
     <div style={{ width: '100%' }}>
-      <div className="graphcontainer">
-        <div className="graphcard pb">
+      <div className="graphinside">
+        <div className="graphcardAcc">
           {(areaName === 'Jurisdicciones ambientales')
             && [
               (
                 <h2>
-                  <DownloadIcon className="icondown" />
+                  Factor de Compensación
                   <InfoIcon
                     className="graphinfo"
                     data-tooltip
@@ -41,15 +41,15 @@ const CompensationFactor = (props) => {
                     role="button"
                     tabIndex="0"
                   >
-                    Factor de Compensación
                   </div>
+                  <DownloadIcon className="icondown" />
                 </h2>
               ),
               (
                 openInfoGraph && (openInfoGraph === 'Factor de Compensación') && (
                 <ShortInfo
-                  name="Factor de Compensación"
-                  description="representa las hectáreas sobre los Biomas IAvH analizados"
+                  name="Factor de Compensación."
+                  description="La primera gráfica muestra la cantidad de hectareas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
                   className="graphinfo2"
                   tooltip="¿Qué significa?"
                   customButton
@@ -71,6 +71,11 @@ const CompensationFactor = (props) => {
                 />
               ),
               (
+                <h3>
+                 Biomas
+                </h3>
+              ),
+              (
                 <RenderGraph
                   graph="LargeBarStackGraph"
                   data={biomesData}
@@ -83,6 +88,11 @@ const CompensationFactor = (props) => {
                   zScale={matchColor('biomas')}
                   padding={0.3}
                 />
+              ),
+              (
+                <h3>
+                 Regiones Bióticas
+                </h3>
               ),
               (
                 <RenderGraph

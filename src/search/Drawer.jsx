@@ -210,7 +210,7 @@ class Drawer extends React.Component {
     const componentsArray = [
       {
         label: {
-          id: 'Factor de compensación',
+          id: 'FC y Biomas',
           name: 'Factor de compensación',
           disabled: false,
           expandIcon: <AddIcon />,
