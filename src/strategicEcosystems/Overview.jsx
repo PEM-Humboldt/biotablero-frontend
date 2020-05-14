@@ -98,7 +98,7 @@ const Overview = (props) => {
           Cobertura
         </h4>
         <h6>
-          Natural, Secundaria y Transformada - NIVO
+          Natural, Secundaria y Transformada:
         </h6>
         <div className="graficaeco">
           <RenderGraph
@@ -117,7 +117,7 @@ const Overview = (props) => {
         </h5>
         <div className="graficaeco">
           <h6>
-            Distribución en área protegida NIVO:
+            Distribución en área protegida:
           </h6>
           <RenderGraph
             graph="SmallBarStackGraphNIVO"
