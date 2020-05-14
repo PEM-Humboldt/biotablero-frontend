@@ -64,9 +64,9 @@ export default {
   ],
   sEco: [
     '#cf324e', // Área total
-    '#29418a', // Páramo
-    '#ccb325', // Humedales
-    '#3cb58e', // Bosques Secos
+    '#3cb58e', // Páramo
+    '#29418a', // Humedales
+    '#ccb325', // Bosques Secos
   ],
   default: ['#345b6b'],
 };
