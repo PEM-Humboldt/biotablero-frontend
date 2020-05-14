@@ -8,6 +8,7 @@ import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
+import SmallBarStackGraphNIVO from './SmallBarStackGraphNIVO';
 
 ReactChartkick.addAdapter(Chart);
 
@@ -142,6 +143,18 @@ const GraphLoader = (props) => {
             height={150}
             zScale={zScale}
             padding={padding}
+          />
+        ) : ('')
+      }
+      {
+        (graphType === 'SmallBarStackGraphNIVO') ? (
+          <SmallBarStackGraphNIVO
+            data={data}
+            width={width}
+            height={30}
+            zScale={zScale}
+            padding={padding}
+            units={units}
           />
         ) : ('')
       }
