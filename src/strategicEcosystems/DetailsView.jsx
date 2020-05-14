@@ -44,7 +44,7 @@ const showDetails = (/* TODO: Add all values required */
   <div>
     <h3>
       Distribución de coberturas:
-      { validateData(coverage)
+      {validateData(coverage)
         || (
           <RenderGraph
             graph="SmallBarStackGraphNIVO"
