@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ResponsiveLine } from '@nivo/line';
+import { ResponsiveBump } from '@nivo/bump';
 
 const MultiLinesGraph = ({
   colors, data,
