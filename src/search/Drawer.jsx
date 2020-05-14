@@ -295,6 +295,7 @@ class Drawer extends React.Component {
                       + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
                       + ' no son representados en las gráficas.'
                       }
+                    matchColor={matchColor}
                   />
                 </div>
               ),

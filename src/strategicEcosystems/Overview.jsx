@@ -7,8 +7,20 @@ import GeneralArea from '../commons/GeneralArea';
 import EcosystemsBox from './EcosystemsBox';
 import RenderGraph from '../charts/RenderGraph';
 
+/**
+ * Give format to a big number
+ *
+ * @param {number} x number to be formatted
+ * @returns {String} number formatted setting decimals and thousands properly
+ */
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
+/**
+ * Check if an array is empty according to area value
+ *
+ * @param {array} array array to be validated
+ * @returns {boolean} boolean that indicates if array is empty
+ */
 const helperAreaArrayIsEmpty = (array) => {
   if (array) {
     let isEmpty = true;
@@ -21,6 +33,13 @@ const helperAreaArrayIsEmpty = (array) => {
   }
 };
 
+/**
+ * Calculate percentage for a given value according to total
+ *
+ * @param {number} part value for the given part
+ * @param {number} total value obtained by adding all parts
+ * @returns {number} percentage associated to each part
+ */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
 const Overview = (props) => {
@@ -37,7 +56,9 @@ const Overview = (props) => {
     geofenceId,
     graphTitle,
     graphDescription,
+    matchColor,
   } = props;
+
   return (
     <div className="graphcard">
       <h2>
@@ -77,20 +98,14 @@ const Overview = (props) => {
           Cobertura
         </h4>
         <h6>
-          Natural, Secundaria y Transformada
+          Natural, Secundaria y Transformada - NIVO
         </h6>
         <div className="graficaeco">
           <RenderGraph
-            graph="SmallBarStackGraph"
+            graph="SmallBarStackGraphNIVO"
             data={coverage}
-            graphTitle="Cobertura"
-            colors={null}
-            labelX="Tipo de área"
-            labelY="Comparación"
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
-            graphDescription="Estado de la cobertura en el área seleccionada"
-            units="%"
+            zScale={matchColor('coverage')}
+            units="ha"
           />
         </div>
         <h4>
@@ -102,19 +117,13 @@ const Overview = (props) => {
         </h5>
         <div className="graficaeco">
           <h6>
-            Distribución en área protegida:
+            Distribución en área protegida NIVO:
           </h6>
           <RenderGraph
-            graph="SmallBarStackGraph"
+            graph="SmallBarStackGraphNIVO"
             data={listPA}
-            graphTitle="Área protegida"
-            colors={null}
-            labelX=""
-            labelY=""
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
-            graphDescription=""
-            units="%"
+            zScale={matchColor('pa')}
+            units="ha"
           />
         </div>
         <div className="ecoest">
@@ -131,6 +140,7 @@ const Overview = (props) => {
               total={Number(ecosystemsArea)}
               geofenceId={geofenceId}
               listSE={listSE}
+              matchColor={matchColor}
             />
           )}
         </div>
@@ -152,6 +162,7 @@ Overview.propTypes = {
   geofenceId: PropTypes.string,
   graphTitle: PropTypes.string,
   graphDescription: PropTypes.string,
+  matchColor: PropTypes.func,
 };
 
 Overview.defaultProps = {
@@ -167,6 +178,7 @@ Overview.defaultProps = {
   geofenceId: '',
   graphTitle: '',
   graphDescription: '',
+  matchColor: () => {},
 };
 
 export default Overview;
