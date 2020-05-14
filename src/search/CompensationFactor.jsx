@@ -48,7 +48,7 @@ const CompensationFactor = (props) => {
                 openInfoGraph && (openInfoGraph === 'Factor de Compensación') && (
                 <ShortInfo
                   name="Factor de Compensación."
-                  description="La primera gráfica muestra la cantidad de hectareas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
+                  description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
                   className="graphinfo2"
                   tooltip="¿Qué significa?"
                   customButton
