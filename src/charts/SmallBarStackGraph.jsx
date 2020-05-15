@@ -1,143 +1,139 @@
-/** eslint verified */
 import React from 'react';
-import { BarStackHorizontal } from '@vx/shape';
-import { Group } from '@vx/group';
-import { scaleBand, scaleLinear, scaleOrdinal } from '@vx/scale';
-import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
-import localPoint from '@vx/event/build/localPoint';
+import PropTypes from 'prop-types';
+import { ResponsiveBar } from '@nivo/bar';
 
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-/**
- * Function to render tooltip inside the graph
- *
- * @param {string} event event on graph
- * @param {string} datum value to show inside tooltip
- */
-const handleMouseOver = (event, datum, showTooltip) => {
-  const coords = localPoint(event.target.ownerSVGElement, event);
-  showTooltip({
-    tooltipLeft: coords.x,
-    tooltipTop: coords.y,
-    tooltipData: datum,
-  });
+const SmallBarStackGraph = (props) => {
+  const {
+    data,
+    width,
+    height,
+    zScale,
+    units,
+  } = props;
+
+  /**
+   * Give format to a big number
+   *
+   * @param {number} x number to be formatted
+   * @returns {String} number formatted setting decimals and thousands properly
+   */
+  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  /**
+   * Transform data structure to be passed to component as a prop
+   *
+   * @param {array} rawData raw data from RestAPI
+   * @returns {array} transformed data ready to be used by graph component
+   */
+  const transformData = (rawData) => {
+    const transformedData = {
+      key: 'key',
+    };
+    rawData.forEach((item) => {
+      transformedData[String(item.key || item.type)] = Number(item.area || item.percentage);
+    });
+    return [transformedData];
+  };
+
+  /**
+   * Get keys to be passed to component as a prop
+   *
+   * @returns {array} ids of each bar
+   */
+  const keys = data.map(item => String(item.key || item.type));
+
+  /**
+   * Get percentage for each value
+   *
+   * @param {string} id id or key for each value
+   * @returns {number} percentage associated to each value
+   */
+  const getPercentage = id => data.find(item => item.key || item.type === id).percentage;
+
+  /**
+   * Get tooltip for graph component according to id of bar
+   *
+   * @param {string} id id for each bar
+   * @param {number} value value for each bar
+   * @returns {func} tooltip for component
+   */
+  const getToolTip = (id, value) => {
+    if (id !== 'NA') {
+      return (
+        <div style={{
+          backgroundColor: '#333',
+          color: '#ffffff',
+          padding: '5px 10px',
+          lineHeight: '1.5',
+          borderRadius: 5,
+          minWidth: 60,
+          boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
+        }}
+        >
+          <strong style={{ color: '#e84a5f' }}>
+            {id}
+          </strong>
+          <div>
+            {`${numberWithCommas(value.toFixed(2))} ${units}`}
+            <br />
+            {`${numberWithCommas((getPercentage(id) * 100).toFixed(2))}%`}
+          </div>
+        </div>
+      );
+    }
+    return (
+      <div style={{ display: 'none' }} />
+    );
+  };
+
+  return (
+    <div style={{ width, height }}>
+      <ResponsiveBar
+        data={transformData(data)}
+        keys={keys}
+        indexBy="key"
+        layout="horizontal"
+        margin={{
+          top: 0,
+          right: 5,
+          bottom: 0,
+          left: 5,
+        }}
+        padding={0.19}
+        colors={obj => zScale(obj.id)}
+        enableGridY={false}
+        axisLeft={null}
+        enableLabel={false}
+        animate
+        motionStiffness={90}
+        motionDamping={15}
+        tooltip={({ id, value }) => (getToolTip(id, value))}
+        theme={{
+          tooltip: {
+            container: {
+              padding: 0,
+            },
+          },
+        }
+        }
+      />
+    </div>
+  );
 };
 
-export default withTooltip(
-  ({
-    dataJSON,
-    width,
-    colors,
-    labelY,
-    tooltipOpen,
-    tooltipLeft,
-    tooltipTop,
-    tooltipData,
-    hideTooltip,
-    showTooltip,
-    units,
-    margin = {
-      top: 3,
-      left: 5,
-      right: 5,
-      bottom: 3,
-    },
-  }) => {
-    if (width < 10) return null;
-    // accessors
-    const y = () => 1;
+SmallBarStackGraph.propTypes = {
+  data: PropTypes.array.isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  zScale: PropTypes.func,
+  units: PropTypes.string,
+};
 
-    const prepareData = (data, setName) => {
-      const transformedData = {
-        key: setName,
-      };
-      data.forEach((item) => {
-        transformedData[item.key || item.type] = `${item.area || item.percentage}`;
-      });
-      return transformedData;
-    };
+SmallBarStackGraph.defaultProps = {
+  width: 581,
+  height: 30,
+  zScale: () => {},
+  units: 'ha',
+};
 
-    const data = [prepareData(dataJSON, labelY)];
-    const keys = dataJSON.map(item => item.key || item.type);
-    const totals = dataJSON.reduce((total, current) => total
-      + parseFloat(current.area || current.percentage), 0);
-    const userColors = colors || dataJSON.map(item => item.color);
-
-    // bounds
-    const xMax = width - margin.left - margin.right;
-    const yMax = 25;
-
-    // scales
-    const xScale = scaleLinear({
-      rangeRound: [0, xMax],
-      domain: [0, totals], // TODO: Cambiar "0" por funcion min de d3-array
-      nice: false,
-    });
-    const yScale = scaleBand({
-      rangeRound: [yMax, 0],
-      domain: data.map(y),
-      padding: 0.1,
-    });
-    const zScale = scaleOrdinal({
-      domain: keys,
-      range: userColors,
-    });
-
-    let tooltipTimeout;
-
-    return (
-      <div>
-        <svg width={width - 15} height={30}>
-          <Group top={margin.top} left={margin.left}>
-            {`${Number((0.20 * 100).toFixed(2))} % `}
-            <BarStackHorizontal
-              data={data}
-              keys={keys}
-              width={xMax}
-              height={yMax}
-              y={y}
-              xScale={xScale}
-              yScale={yScale}
-              zScale={zScale}
-              // TODO: onClick should highlight area selected on the map
-              onMouseLeave={() => () => {
-                tooltipTimeout = setTimeout(() => {
-                  hideTooltip();
-                }, 300);
-              }}
-              onMouseMove={dataSelected => (e) => {
-                const value = Object.values(dataJSON)
-                  .filter(item => (item.key || item.type) === dataSelected.key);
-                if (tooltipTimeout) clearTimeout(tooltipTimeout);
-                handleMouseOver(e, value, showTooltip);
-              }}
-            />
-          </Group>
-        </svg>
-        {tooltipOpen && (tooltipData[0].key !== '' || tooltipData[0].type) && (
-          <TooltipWithBounds
-            top={tooltipTop}
-            left={tooltipLeft}
-            style={{
-              minWidth: 60,
-              backgroundColor: 'rgba(42,42,42,0.9)',
-              color: 'white',
-              padding: 5,
-              lineHeight: '1.5',
-            }}
-          >
-            <div style={{ color: '#e84a5f' }}>
-              <strong>
-                {tooltipData[0].key || tooltipData[0].type}
-              </strong>
-            </div>
-            <div>
-              {`${numberWithCommas(Number(tooltipData[0].area).toFixed(2))} ha`}
-              <br />
-              {`${numberWithCommas(Number(tooltipData[0].percentage * 100).toFixed(2))} ${units}`}
-            </div>
-          </TooltipWithBounds>
-        )}
-      </div>
-    );
-  },
-);
+export default SmallBarStackGraph;

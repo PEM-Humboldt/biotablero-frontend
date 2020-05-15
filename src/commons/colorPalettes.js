@@ -54,7 +54,7 @@ export default {
     '#5f8f2c',
   ],
   seBlue: [
-    '#ffffff',
+    'rgba(255,255,255,0)',
     '#51b4c1',
   ],
   shortFC: [

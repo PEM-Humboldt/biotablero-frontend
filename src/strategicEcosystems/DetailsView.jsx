@@ -4,6 +4,13 @@ import RenderGraph from '../charts/RenderGraph';
 import { setPAValues, setCoverageValues } from './FormatSE';
 import RestAPI from '../api/RestAPI';
 
+/**
+ *
+ * Validate if data exist before rendering graph
+ *
+ * @param {array} data percentage in "national system of protected areas" or SINAP
+ * @returns {object} validation of data availability and existence
+ */
 const validateData = (data) => {
   if (data === null) {
     return (
@@ -17,30 +24,34 @@ const validateData = (data) => {
   return false;
 };
 
-const showDetails = (/* TODO: Add all values required */
-  npsp, // percentage in "national system of protected areas" or SINAP
-  sep, // in strategic ecosystems percentage
-  coverage, // By default, should load transformed and natural area by %
-  protectedArea, // By default, should load transformed and natural area by %
-  handlerInfoGraph, openInfoGraph, // values for coverage
+/**
+ * Return details for each strategic ecosystem
+ *
+ * @param {number} npsp percentage in "national system of protected areas" or SINAP
+ * @param {number} sep percentage in strategic ecosystems
+ * @param {array} coverage by default, should load transformed and natural area by %
+ * @param {array} protectedArea by default, should load transformed and natural area by %
+ * @param {func} matchColor function to set the color
+ * @returns {div} details for each strategic ecosystem
+ */
+const showDetails = (
+  npsp,
+  sep,
+  coverage,
+  protectedArea,
+  matchColor,
 ) => (
   <div>
     <h3>
       Distribución de coberturas:
       {validateData(coverage)
         || (
-        <RenderGraph
-          graph="SmallBarStackGraph"
-          data={setCoverageValues(coverage)}
-          graphTitle="Cobertura"
-          colors={null}
-          labelX="Tipo de área"
-          labelY="Comparación"
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
-          graphDescription="muestra la proporción del tipo de área en este ecosistema estratégico"
-          units="%"
-        />
+          <RenderGraph
+            graph="SmallBarStackGraph"
+            data={setCoverageValues(coverage)}
+            zScale={matchColor('coverage')}
+            units="ha"
+          />
         )
       }
     </h3>
@@ -48,18 +59,12 @@ const showDetails = (/* TODO: Add all values required */
       Distribución en áreas protegidas:
       {validateData(protectedArea)
         || (
-        <RenderGraph
-          graph="SmallBarStackGraph"
-          data={setPAValues(protectedArea)}
-          graphTitle="Distribución de áreas protegidas y no protegidas"
-          colors={null}
-          labelX="Áreas protegidas y no protegidas"
-          labelY="Comparación"
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
-          graphDescription="representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida"
-          units="%"
-        />
+          <RenderGraph
+            graph="SmallBarStackGraph"
+            data={setPAValues(protectedArea)}
+            zScale={matchColor('pa')}
+            units="ha"
+          />
         )
       }
     </h3>
@@ -86,8 +91,11 @@ class DetailsView extends Component {
 
   componentDidMount() {
     const {
-      areaId, geofenceId, item,
+      areaId,
+      geofenceId,
+      item,
     } = this.props;
+
     const name = item.type || item.name;
     const { stopLoad } = this.state;
 
@@ -145,13 +153,28 @@ class DetailsView extends Component {
   render() {
     const {
       item,
+      matchColor,
     } = this.props;
+
     const {
-      seDetail, seCoverage, sePA, stopLoad,
+      seDetail,
+      seCoverage,
+      sePA,
+      stopLoad,
     } = this.state;
-    return (
-      !stopLoad ? showDetails(seDetail, item.percentage, seCoverage, sePA, null, null) : null
-    );
+
+    if (!stopLoad) {
+      return (
+        showDetails(
+          seDetail,
+          item.percentage,
+          seCoverage,
+          sePA,
+          matchColor,
+        )
+      );
+    }
+    return null;
   }
 }
 
@@ -159,12 +182,14 @@ DetailsView.propTypes = {
   areaId: PropTypes.string,
   geofenceId: PropTypes.string,
   item: PropTypes.object,
+  matchColor: PropTypes.func,
 };
 
 DetailsView.defaultProps = {
   areaId: 0,
   geofenceId: 0,
   item: {},
+  matchColor: () => {},
 };
 
 export default DetailsView;
