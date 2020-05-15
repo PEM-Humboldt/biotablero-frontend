@@ -1,18 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ResponsiveBump } from '@nivo/bump';
+import { ResponsiveLine } from '@nivo/line';
+import colorPalettes from '../commons/colorPalettes';
 
 const MultiLinesGraph = ({
   colors, data,
 }) => (
-  <div style={{ height: '490px', width: '750px' }}>
+  <div style={{ height: '490px', width: '450px' }}>
     <ResponsiveLine
       data={data}
       curve="cardinal"
       margin={{
         top: 50,
         left: 60,
-        right: 110,
+        right: 20,
         bottom: 100,
       }}
       xScale={{ type: 'point' }}
@@ -44,6 +45,18 @@ const MultiLinesGraph = ({
         legendPosition: 'middle',
       }}
       colors={obj => colors(obj.id)}
+      blendMode="multiply"
+      activeFillOpacity={1}
+      fillOpacity={0.3}
+      inactiveFillOpacity={0.2}
+      borderWidth={2}
+      activeBorderWidth={3}
+      inactiveBorderWidth={1}
+      borderColor={{ from: 'color', modifiers: [['darker', '0.3']] }}
+      borderOpacity={0.95}
+      activeBorderOpacity={0.95}
+      inactiveBorderOpacity={0.05}
+      startLabel="Área total"
       pointSize={10}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
@@ -56,11 +69,11 @@ const MultiLinesGraph = ({
           anchor: 'bottom-left',
           direction: 'row',
           justify: false,
-          translateX: 10,
-          translateY: 90,
-          itemsSpacing: 100,
+          translateX: -50,
+          translateY: 100,
+          itemsSpacing: 30,
           itemDirection: 'left-to-right',
-          itemWidth: 50,
+          itemWidth: 90,
           itemHeight: 80,
           itemOpacity: 0.75,
           symbolSize: 12,
@@ -73,10 +86,17 @@ const MultiLinesGraph = ({
                 itemBackground: 'rgba(0, 0, 0, .03)',
                 itemOpacity: 1,
               },
+              onClick: (d) => {
+                const colorsLow = data.map(series => (series.id === d.id
+                  ? '#ff3344' : colors(d.id)));
+                console.log('colorsLow', colorsLow, colorPalettes);
+              },
             },
           ],
         },
       ]}
+      isInteractive
+      animate
     />
   </div>
 );

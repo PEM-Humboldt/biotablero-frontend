@@ -105,7 +105,6 @@ const matchColor = (type) => {
       };
     case 'hfPersistence':
       return (value) => {
-        console.log(value);
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];
         return palette[idx];
