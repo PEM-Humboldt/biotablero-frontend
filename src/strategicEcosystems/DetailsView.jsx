@@ -34,7 +34,7 @@ const validateData = (data) => {
  * @param {func} matchColor function to set the color
  * @returns {div} details for each strategic ecosystem
  */
-const showDetails = (/* TODO: Add all values required */
+const showDetails = (
   npsp,
   sep,
   coverage,
@@ -162,16 +162,19 @@ class DetailsView extends Component {
       sePA,
       stopLoad,
     } = this.state;
-    return (
-      !stopLoad
-        ? showDetails(
+
+    if (!stopLoad) {
+      return (
+        showDetails(
           seDetail,
           item.percentage,
           seCoverage,
           sePA,
           matchColor,
-        ) : null
-    );
+        )
+      );
+    }
+    return null;
   }
 }
 
