@@ -210,7 +210,7 @@ class Drawer extends React.Component {
     const componentsArray = [
       {
         label: {
-          id: 'Factor de compensación',
+          id: 'FC y Biomas',
           name: 'Factor de compensación',
           disabled: false,
           expandIcon: <AddIcon />,
@@ -295,6 +295,7 @@ class Drawer extends React.Component {
                       + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
                       + ' no son representados en las gráficas.'
                       }
+                    matchColor={matchColor}
                   />
                 </div>
               ),

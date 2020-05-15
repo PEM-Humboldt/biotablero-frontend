@@ -1,12 +1,24 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailsView from './DetailsView';
 import RenderGraph from '../charts/RenderGraph';
 
+/**
+ * Give format to a big number
+ *
+ * @param {number} x number to be formatted
+ * @returns {String} number formatted setting decimals and thousands properly
+ */
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
+/**
+   * Calculate percentage for a given value according to total
+   *
+   * @param {number} part value for the given part
+   * @param {number} total value obtained by adding all parts
+   * @returns {number} percentage associated to each part
+   */
 const getPercentage = (part, total) => (part / total).toFixed(2);
 
 class EcosystemsBox extends Component {
@@ -43,9 +55,9 @@ class EcosystemsBox extends Component {
     }));
   }
 
-  areaToCompare = (name, area, total) => ([
+  preProcessData = (name, area, total) => ([
     { key: name, area, percentage: getPercentage(area, total) },
-    { key: '', area: (total - area), percentage: getPercentage((total - area), total) },
+    { key: 'NA', area: (total - area), percentage: getPercentage((total - area), total) },
   ])
 
   render() {
@@ -54,6 +66,7 @@ class EcosystemsBox extends Component {
       geofenceId,
       total,
       listSE,
+      matchColor,
     } = this.props;
     const { showGraphs, stopLoad } = this.state;
     return (
@@ -85,18 +98,12 @@ class EcosystemsBox extends Component {
               {!stopLoad
                 && (item.area !== 0 && item.area !== '0')
                   && (
-                  <RenderGraph
-                    graph="SmallBarStackGraph"
-                    data={this.areaToCompare(item.type, item.area, total)}
-                    graphTitle="Área protegida"
-                    colors={['#51b4c1', '#fff']}
-                    labelX=""
-                    labelY=""
-                    handlerInfoGraph={null}
-                    openInfoGraph={null}
-                    graphDescription=""
-                    units="%"
-                  />
+                    <RenderGraph
+                      graph="SmallBarStackGraph"
+                      data={this.preProcessData(item.type, item.area, total)}
+                      zScale={matchColor('se')}
+                      units="ha"
+                    />
                   )
               }
               {!stopLoad
@@ -106,6 +113,7 @@ class EcosystemsBox extends Component {
                     areaId={areaId}
                     geofenceId={geofenceId}
                     item={item}
+                    matchColor={matchColor}
                   />
                 </div>
               )
@@ -124,6 +132,7 @@ EcosystemsBox.propTypes = {
   geofenceId: PropTypes.string,
   listSE: PropTypes.array,
   total: PropTypes.number,
+  matchColor: PropTypes.func,
 };
 
 EcosystemsBox.defaultProps = {
@@ -131,6 +140,7 @@ EcosystemsBox.defaultProps = {
   geofenceId: 0,
   listSE: [],
   total: 0,
+  matchColor: () => {},
 };
 
 export default EcosystemsBox;

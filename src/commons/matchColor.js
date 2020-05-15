@@ -23,7 +23,7 @@ const match = {
   },
   se: {
     palette: 'seBlue',
-    sort: [undefined],
+    sort: ['NA'],
   },
   biomeComp: {
     palette: 'shortFC',
