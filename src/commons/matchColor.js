@@ -81,11 +81,6 @@ const matchColor = (type) => {
         return palette[counter];
       };
     case 'currentHFP':
-      return (value) => {
-        const idx = sort.indexOf(value);
-        if (idx === -1) return palette[palette.length - 1];
-        return palette[idx];
-      };
     case 'coverage':
     case 'biomeComp':
       return (value) => {
