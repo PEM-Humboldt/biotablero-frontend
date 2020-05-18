@@ -33,6 +33,10 @@ const match = {
     palette: 'currentHFP',
     sort: ['Natural', 'Baja', 'Media', 'Alta'],
   },
+  persistenceHFP: {
+    palette: 'persistenceHFP',
+    sort: ['Estable natural', 'Dinámica', 'Estable alta'],
+  },
   default: {
     palette: 'default',
   },
@@ -80,6 +84,7 @@ const matchColor = (type) => {
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
       };
+    case 'persistenceHFP':
     case 'currentHFP':
     case 'coverage':
     case 'biomeComp':

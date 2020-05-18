@@ -68,5 +68,10 @@ export default {
     '#e66c29',
     '#cf324e',
   ],
+  persistenceHFP: [
+    '#3fbf9f',
+    '#646e55',
+    '#cf324e',
+  ],
   default: ['#345b6b'],
 };

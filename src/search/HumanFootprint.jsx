@@ -50,6 +50,7 @@ const HumanFootprint = ({ generalArea, matchColor }) => {
     component: (
       <PersistenceFooprint
         generalArea={generalArea}
+        matchColor={matchColor}
       />
     ),
   },
