@@ -12,7 +12,6 @@ import NewProjectForm from './compensation/NewProjectForm';
 import Selector from './commons/Selector';
 import GeoServerAPI from './api/GeoServerAPI';
 import RestAPI from './api/RestAPI';
-import Layout from './Layout';
 import description from './compensation/assets/selectorData';
 
 class Compensation extends Component {
@@ -403,19 +402,14 @@ class Compensation extends Component {
   }
 
   render() {
-    const { callbackUser, userLogged } = this.props;
+    const { userLogged } = this.props;
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
       regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
       currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
-      <Layout
-        moduleName="Compensaciones"
-        showFooterLogos={false}
-        callbackUser={callbackUser}
-        userLogged={userLogged}
-      >
+      <div>
         {/** Modals section: new project, connection error or loading message */}
         <Modal
           aria-labelledby="simple-modal-title"
@@ -524,13 +518,12 @@ class Compensation extends Component {
             }
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
 Compensation.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
 };
 

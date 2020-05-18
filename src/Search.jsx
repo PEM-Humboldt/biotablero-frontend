@@ -14,7 +14,6 @@ import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
-import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
 
@@ -438,7 +437,6 @@ class Search extends Component {
   };
 
   render() {
-    const { callbackUser, userLogged } = this.props;
     const {
       areaType,
       areaId,
@@ -454,12 +452,7 @@ class Search extends Component {
       geofencesArray,
     } = this.state;
     return (
-      <Layout
-        moduleName="Consultas"
-        showFooterLogos={false}
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
+      <div>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -574,14 +567,12 @@ class Search extends Component {
             )}
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
 Search.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
   areaTypeId: PropTypes.string,
   areaIdId: PropTypes.string,
   history: PropTypes.shape({
@@ -594,7 +585,6 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
-  userLogged: null,
   areaTypeId: null,
   areaIdId: null,
   history: {},

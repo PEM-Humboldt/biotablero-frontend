@@ -7,6 +7,7 @@ import Search from './Search';
 import Compensation from './Compensation';
 import Indicator from './Indicator';
 import './assets/main.css';
+import Layout from './Layout';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,11 +22,17 @@ class App extends React.Component {
   loadHome = ({ location }) => {
     const { user } = this.state;
     return (
-      <Home
+      <Layout
+        showFooterLogos
         userLogged={user}
         callbackUser={this.callbackUser}
-        referrer={location.referrer}
-      />
+      >
+        <Home
+          userLogged={user}
+          callbackUser={this.callbackUser}
+          referrer={location.referrer}
+        />
+      </Layout>
     );
   }
 
@@ -33,12 +40,17 @@ class App extends React.Component {
     const query = this.buildQuery(location.search);
     const { user } = this.state;
     return (
-      <Search
+      <Layout
+        moduleName="Consultas"
+        showFooterLogos={false}
         userLogged={user}
         callbackUser={this.callbackUser}
-        areaTypeId={query.get('area_type')}
-        areaIdId={query.get('area_id')}
-      />
+      >
+        <Search
+          areaTypeId={query.get('area_type')}
+          areaIdId={query.get('area_id')}
+        />
+      </Layout>
     );
   }
 
@@ -56,10 +68,16 @@ class App extends React.Component {
     const { user } = this.state;
     if (user) {
       return (
-        <Compensation
-          userLogged={user}
+        <Layout
+          moduleName="Compensaciones"
+          showFooterLogos={false}
           callbackUser={this.callbackUser}
-        />
+          userLogged={user}
+        >
+          <Compensation
+            userLogged={user}
+          />
+        </Layout>
       );
     }
     return (

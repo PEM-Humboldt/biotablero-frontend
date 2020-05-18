@@ -7,7 +7,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import Content from './home/Content';
 import Information from './home/Information';
 import ShortInfo from './commons/ShortInfo';
-import Layout from './Layout';
 
 class Home extends React.Component {
   constructor(props) {
@@ -23,16 +22,10 @@ class Home extends React.Component {
   }
 
   render() {
-    const {
-      callbackUser, userLogged,
-    } = this.props;
+    const { userLogged } = this.props;
     const { activeModule, loginModal } = this.state;
     return (
-      <Layout
-        showFooterLogos
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
+      <div>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -74,13 +67,12 @@ class Home extends React.Component {
           />
           <Information activeModule={activeModule} />
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
 Home.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
   userLogged: PropTypes.object,
   referrer: PropTypes.string,
 };
