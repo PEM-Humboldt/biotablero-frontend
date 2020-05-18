@@ -51,7 +51,6 @@ const GraphLoader = (props) => {
             width={width}
             height={30}
             zScale={zScale}
-            padding={padding}
             units={units}
           />
         ) : ('')
