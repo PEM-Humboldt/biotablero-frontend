@@ -48,7 +48,7 @@ const SmallBarStackGraph = (props) => {
    * @param {string} id id or key for each value
    * @returns {number} percentage associated to each value
    */
-  const getPercentage = id => data.find(item => item.key || item.type === id).percentage;
+  const getPercentage = id => data.find(item => (item.key || item.type) === id).percentage;
 
   /**
    * Get tooltip for graph component according to id of bar
