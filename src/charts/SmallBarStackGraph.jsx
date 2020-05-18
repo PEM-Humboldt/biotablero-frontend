@@ -100,6 +100,7 @@ const SmallBarStackGraph = (props) => {
           left: 5,
         }}
         padding={0.19}
+        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
         colors={obj => zScale(obj.id)}
         enableGridY={false}
         axisLeft={null}

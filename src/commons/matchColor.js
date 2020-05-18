@@ -29,6 +29,10 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
+  currentHFP: {
+    palette: 'currentHFP',
+    sort: ['Natural', 'Baja', 'Media', 'Alta'],
+  },
   default: {
     palette: 'default',
   },
@@ -75,6 +79,12 @@ const matchColor = (type) => {
         cache[type][value] = palette[counter];
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
+      };
+    case 'currentHFP':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return palette[palette.length - 1];
+        return palette[idx];
       };
     case 'coverage':
     case 'biomeComp':

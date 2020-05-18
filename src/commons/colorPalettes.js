@@ -62,5 +62,11 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
+  currentHFP: [
+    '#3fbf9f',
+    '#d5a529',
+    '#e66c29',
+    '#cf324e',
+  ],
   default: ['#345b6b'],
 };

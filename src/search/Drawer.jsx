@@ -239,6 +239,7 @@ class Drawer extends React.Component {
         component: (
           <HumanFootprint
             generalArea={generalArea}
+            matchColor={matchColor}
           />
         ),
       },
