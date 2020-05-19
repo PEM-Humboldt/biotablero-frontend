@@ -1,44 +1,29 @@
-/** eslint verified */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Modal from '@material-ui/core/Modal';
 import Login from './Login';
 import ConfirmationModal from './ConfirmationModal';
+import AppContext from './AppContext';
 
-/* Uim: User Interface Manager */
 class Uim extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      openModal: false,
+      logoutDialog: false,
+      loginDialog: false,
     };
   }
 
-  handleCloseModal = () => {
-    const { openModal } = this.state;
-    this.setState({ openModal: !openModal });
-  };
-
-  setUser = (user) => {
-    const { callbackUser, activeModule } = this.props;
-    if (user) {
-      user.then((res) => {
-        callbackUser(res, activeModule);
-        return true;
-      });
-    }
-    callbackUser(null);
-    this.handleCloseModal();
-    return false;
+  toggleModal = modal => () => {
+    this.setState(state => ({ [modal]: !state[modal] }));
   };
 
   render() {
-    const { userLogged } = this.props;
-    const { openModal } = this.state;
+    const { logoutDialog, loginDialog } = this.state;
+    const { user, setUser } = this.context;
     return (
       <div>
-        { userLogged ? (
+        { user ? (
           <div className="userBox">
             <div className="userInfo">
               <a
@@ -50,13 +35,13 @@ class Uim extends Component {
                 <span />
               </a>
               <h6>
-                {userLogged.name}
+                {user.name}
               </h6>
             </div>
             <button
               type="button"
               className="iconUserLogged"
-              onClick={this.handleCloseModal}
+              onClick={() => this.toggleModal('logoutDialog')()}
               data-tooltip
               title="Cerrar sesión"
             />
@@ -66,7 +51,7 @@ class Uim extends Component {
             <button
               type="button"
               className="loginBtn"
-              onClick={this.handleCloseModal}
+              onClick={this.toggleModal('loginDialog')}
               data-tooltip
               title="Iniciar sesión"
             >
@@ -77,47 +62,33 @@ class Uim extends Component {
             </button>
           )
         }
-        {openModal && userLogged && (
-          <ConfirmationModal
-            open={openModal}
-            styleCustom="newBiomeAlarm nBA2"
-            onClose={() => this.handleCloseModal()}
-            message="¿Desea cerrar sesión?"
-            onContinue={() => {
-              this.setUser(null);
-            }
-            }
-            onCancel={() => this.handleCloseModal()}
+        <ConfirmationModal
+          open={logoutDialog}
+          styleCustom="newBiomeAlarm nBA2"
+          onClose={this.toggleModal('logoutDialog')}
+          message="¿Desea cerrar sesión?"
+          onContinue={() => {
+            setUser(null);
+            this.setState({ loginDialog: false, logoutDialog: false });
+          }}
+          onCancel={this.toggleModal('logoutDialog')}
+        />
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={!user && loginDialog}
+          onClose={this.handleCloseModal}
+          disableAutoFocus
+        >
+          <Login
+            modalControl={this.toggleModal('loginDialog')}
           />
-        )}
-        {openModal && !userLogged && (
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={openModal}
-            onClose={this.handleCloseModal}
-            disableAutoFocus
-          >
-            <Login
-              openModal={openModal}
-              openModalControl={this.handleCloseModal}
-              setUser={this.setUser}
-            />
-          </Modal>
-        )}
+        </Modal>
       </div>
     );
   }
 }
 
-Uim.propTypes = {
-  activeModule: PropTypes.string.isRequired,
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
-};
-
-Uim.defaultProps = {
-  userLogged: null,
-};
+Uim.contextType = AppContext;
 
 export default Uim;

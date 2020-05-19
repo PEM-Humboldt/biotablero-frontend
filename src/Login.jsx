@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CloseIcon from '@material-ui/icons/Close';
 import RestAPI from './api/RestAPI';
+import AppContext from './AppContext';
 
 class Login extends Component {
   constructor(props) {
@@ -15,11 +16,6 @@ class Login extends Component {
     };
   }
 
-  handleCloseModal = () => {
-    const { openModalControl } = this.props;
-    openModalControl();
-  };
-
   validateForm = () => {
     const { username, password } = this.state;
     return username.length > 0 && password.length > 0;
@@ -31,25 +27,22 @@ class Login extends Component {
     });
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-  }
-
   render() {
-    const { setUser } = this.props;
     const { username, password } = this.state;
+    const { modalControl } = this.props;
+    const { setUser } = this.context;
     return (
       <div className="login">
         <button
           type="button"
           className="closebtn"
-          onClick={this.handleCloseModal}
+          onClick={modalControl}
           data-tooltip
           title="Cerrar"
         >
           <CloseIcon />
         </button>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={event => event.preventDefault()}>
           <input
             className="loginInput"
             type="text"
@@ -73,7 +66,8 @@ class Login extends Component {
             disabled={!this.validateForm()}
             type="submit"
             onClick={() => {
-              setUser(RestAPI.requestUser(username, password).then(res => res));
+              RestAPI.requestUser(username, password)
+                .then(res => setUser(res));
             }}
           >
             Ingresar
@@ -92,14 +86,10 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
-  openModalControl: PropTypes.func,
-  setUser: PropTypes.func,
-};
+Login.contextType = AppContext;
 
-Login.defaultProps = {
-  openModalControl: () => {},
-  setUser: () => {},
+Login.propTypes = {
+  modalControl: PropTypes.func.isRequired,
 };
 
 export default Login;

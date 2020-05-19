@@ -8,14 +8,12 @@ import Uim from './Uim';
 
 const Header = ({
   activeModule,
-  userLogged,
-  callbackUser,
   headerNames: { parent, child },
 }) => (
   <header className="cabezote">
     <div>
       <nav>
-        <Menu userLogged={userLogged} />
+        <Menu />
       </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
@@ -32,20 +30,13 @@ const Header = ({
           <div className="iconsection" />
         </div>
       )}
-      <Uim
-        value="Uim"
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-        activeModule={activeModule}
-      />
+      <Uim />
     </div>
   </header>
 );
 
 Header.propTypes = {
   activeModule: PropTypes.string,
-  userLogged: PropTypes.object,
-  callbackUser: PropTypes.func.isRequired,
   headerNames: PropTypes.shape({
     parent: PropTypes.string,
     child: PropTypes.string,
@@ -54,7 +45,6 @@ Header.propTypes = {
 
 Header.defaultProps = {
   activeModule: '',
-  userLogged: null,
   headerNames: { parent: null, child: null },
 };
 
