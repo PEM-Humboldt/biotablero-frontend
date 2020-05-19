@@ -30,7 +30,7 @@ const SmallBarStackGraph = (props) => {
       key: 'key',
     };
     rawData.forEach((item) => {
-      transformedData[String(item.key || item.type)] = Number(item.area || item.percentage);
+      transformedData[String(item.key || item.type || 'undefined')] = Number(item.area || item.percentage);
     });
     return [transformedData];
   };
@@ -48,7 +48,7 @@ const SmallBarStackGraph = (props) => {
    * @param {string} id id or key for each value
    * @returns {number} percentage associated to each value
    */
-  const getPercentage = id => data.find(item => item.key || item.type === id).percentage;
+  const getPercentage = id => data.find(item => (item.key || item.type || 'undefined') === id).percentage;
 
   /**
    * Get tooltip for graph component according to id of bar
@@ -71,7 +71,7 @@ const SmallBarStackGraph = (props) => {
         }}
         >
           <strong style={{ color: '#e84a5f' }}>
-            {id}
+            {(id !== 'undefined') ? id : ''}
           </strong>
           <div>
             {`${numberWithCommas(value.toFixed(2))} ${units}`}
