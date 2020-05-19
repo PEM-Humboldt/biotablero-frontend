@@ -99,7 +99,12 @@ class Search extends Component {
           geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
         }, () => {
-          const { areaTypeId, areaIdId, history } = this.props;
+          const {
+            areaTypeId,
+            areaIdId,
+            history,
+            setHeaderNames,
+          } = this.props;
           if (!areaTypeId || !areaIdId) return;
 
           const inputArea = tempAreaList.find(area => area.id === areaTypeId);
@@ -109,7 +114,13 @@ class Search extends Component {
             const inputId = inputArea.data.find(area => area[field] === areaIdId);
             if (inputId) {
               this.setArea(areaTypeId);
-              this.setState({ areaId: inputId });
+              this.setState(
+                { areaId: inputId },
+                () => {
+                  const { areaType, areaId } = this.state;
+                  setHeaderNames(areaType.name, areaId.name);
+                },
+              );
             } else {
               history.replace(history.location.pathname);
             }
@@ -374,6 +385,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
+    const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
         { areaId: nameToOn },
@@ -381,6 +393,7 @@ class Search extends Component {
           const { history } = this.props;
           const { areaType, areaId } = this.state;
           history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
+          setHeaderNames(areaType.name, areaId.name);
         },
       );
       this.loadLayer(nameToOn, nameToOff);
@@ -406,8 +419,9 @@ class Search extends Component {
         areaId: null,
       };
     }, () => {
-      const { history } = this.props;
+      const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
+      setHeaderNames(null, null);
     });
   }
 
@@ -582,12 +596,14 @@ Search.propTypes = {
       pathname: PropTypes.string,
     }),
   }),
+  setHeaderNames: PropTypes.func,
 };
 
 Search.defaultProps = {
   areaTypeId: null,
   areaIdId: null,
   history: {},
+  setHeaderNames: () => {},
 };
 
 export default withRouter(Search);

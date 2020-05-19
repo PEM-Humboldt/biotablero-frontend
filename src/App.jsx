@@ -14,6 +14,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: null,
+      headerNames: {},
     };
   }
 
@@ -38,17 +39,19 @@ class App extends React.Component {
 
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
-    const { user } = this.state;
+    const { user, headerNames } = this.state;
     return (
       <Layout
         moduleName="Consultas"
         showFooterLogos={false}
         userLogged={user}
         callbackUser={this.callbackUser}
+        headerNames={headerNames}
       >
         <Search
           areaTypeId={query.get('area_type')}
           areaIdId={query.get('area_id')}
+          setHeaderNames={this.setHeaderNames}
         />
       </Layout>
     );
@@ -98,6 +101,12 @@ class App extends React.Component {
     }
     return user;
   };
+
+  setHeaderNames = (parent, child) => {
+    this.setState({
+      headerNames: { parent, child },
+    });
+  }
 
   render() {
     return (
