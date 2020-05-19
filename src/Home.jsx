@@ -22,7 +22,6 @@ class Home extends React.Component {
   }
 
   render() {
-    const { userLogged } = this.props;
     const { activeModule, loginModal } = this.state;
     return (
       <div>
@@ -63,7 +62,6 @@ class Home extends React.Component {
           <Content
             activeModule={activeModule}
             setActiveModule={this.setActiveModule}
-            userLogged={userLogged}
           />
           <Information activeModule={activeModule} />
         </div>
@@ -73,12 +71,10 @@ class Home extends React.Component {
 }
 
 Home.propTypes = {
-  userLogged: PropTypes.object,
   referrer: PropTypes.string,
 };
 
 Home.defaultProps = {
-  userLogged: null,
   referrer: '',
 };
 

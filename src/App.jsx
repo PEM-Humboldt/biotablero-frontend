@@ -21,20 +21,11 @@ class App extends React.Component {
 
   buildQuery = queryString => new URLSearchParams(queryString);
 
-  loadHome = ({ location }) => {
-    const { user } = this.state;
-    return (
-      <Layout
-        showFooterLogos
-      >
-        <Home
-          userLogged={user}
-          callbackUser={this.callbackUser}
-          referrer={location.referrer}
-        />
-      </Layout>
-    );
-  }
+  loadHome = ({ location }) => (
+    <Layout showFooterLogos>
+      <Home referrer={location.referrer} />
+    </Layout>
+  );
 
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
@@ -54,16 +45,14 @@ class App extends React.Component {
     );
   }
 
-  loadIndicator = () => {
-    return (
-      <Layout
-        moduleName="Indicadores"
-        showFooterLogos
-      >
-        <Indicator />
-      </Layout>
-    );
-  }
+  loadIndicator = () => (
+    <Layout
+      moduleName="Indicadores"
+      showFooterLogos
+    >
+      <Indicator />
+    </Layout>
+  );
 
   loadCompensator = ({ location }) => {
     const { user } = this.state;
@@ -73,9 +62,7 @@ class App extends React.Component {
           moduleName="Compensaciones"
           showFooterLogos={false}
         >
-          <Compensation
-            userLogged={user}
-          />
+          <Compensation />
         </Layout>
       );
     }

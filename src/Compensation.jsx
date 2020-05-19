@@ -1,6 +1,4 @@
-/** eslint verified */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import L from 'leaflet';
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -402,7 +400,6 @@ class Compensation extends Component {
   }
 
   render() {
-    const { userLogged } = this.props;
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
       regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
@@ -512,7 +509,6 @@ class Compensation extends Component {
                 showStrategies={this.showStrategiesLayer}
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
-                userId={userLogged.id}
               />
               )
             }
@@ -522,13 +518,5 @@ class Compensation extends Component {
     );
   }
 }
-
-Compensation.propTypes = {
-  userLogged: PropTypes.object,
-};
-
-Compensation.defaultProps = {
-  userLogged: null,
-};
 
 export default Compensation;
