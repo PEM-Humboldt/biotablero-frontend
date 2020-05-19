@@ -71,7 +71,7 @@ const SmallBarStackGraph = (props) => {
         }}
         >
           <strong style={{ color: '#e84a5f' }}>
-            {((id !== 'undefined') ? id : '')}
+            {(id !== 'undefined') ? id : ''}
           </strong>
           <div>
             {`${numberWithCommas(value.toFixed(2))} ${units}`}
