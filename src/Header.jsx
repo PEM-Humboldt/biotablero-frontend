@@ -16,12 +16,20 @@ const Header = ({ activeModule, userLogged, callbackUser }) => (
     </div>
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
-    <Uim
-      value="Uim"
-      userLogged={userLogged}
-      callbackUser={callbackUser}
-      activeModule={activeModule}
-    />
+    <div className="header_info">
+      <h1>
+        jurisdicciones ambientales /
+        <br />
+        Corporacion Autonoma Regional de Cundinamarca
+      </h1>
+      <div className="iconsection" />
+      <Uim
+        value="Uim"
+        userLogged={userLogged}
+        callbackUser={callbackUser}
+        activeModule={activeModule}
+      />
+    </div>
   </header>
 );
 

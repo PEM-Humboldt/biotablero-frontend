@@ -1154,7 +1154,7 @@ overflow: auto;
 	font-size: 12px;
 }
 
-.selector h1, .informer h1 {
+.selector h1 {
   padding: 20px;
   background-color: #e84a5f;
   color: #fff;
@@ -1165,15 +1165,26 @@ overflow: auto;
   margin: 0;
 }
 
-.informer h1 {
-  font-size: 1.3em;
-  font-weight: 400;
+.drawer_header {
+	display: flex;
+	align-items: center;
+	background-color: #e84a5f;
 }
 
-.informer h1 b {
-  text-transform: none;
-  font-weight: 400;
-  margin-left: 5px;
+.header_info {
+	background-color: #e84a5f;
+	display: flex;
+	align-items: center;
+}
+
+.header_info h1 {
+  font-size: 1.3em;
+	font-weight: 400;
+	color: #fff;
+  text-transform: uppercase;
+  text-align: left;
+	margin: 0;
+	padding: 20px;
 }
 
 .iconsection {
@@ -1382,7 +1393,7 @@ div[id*="panel"] button:hover {
 .geobtn {
   border: none;
   background-color: transparent;
-  color: #e84a5f;
+  color: #fff;
   outline: none;
   cursor: pointer;
   border-bottom: 1px solid transparent;

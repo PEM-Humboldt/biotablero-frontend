@@ -689,17 +689,24 @@ class Drawer extends React.Component {
 
     return (
       <div className="informer">
-        <button type="button" className="geobtn" onClick={() => back()}>
-          <BackIcon />
-        </button>
-        <h1>
-          {`${areaName} /`}
-          <br />
-          {subAreaName}
-          <b>
-            {basinName}
-          </b>
-        </h1>
+        <div className="drawer_header">
+          <button
+            className="geobtn"
+            type="button"
+            onClick={() => back()}
+          >
+            <BackIcon />
+          </button>
+          <div>...</div>
+          {/* <h1>
+            {`${areaName} /`}
+            <br />
+            {subAreaName}
+            <b>
+              {basinName}
+            </b>
+          </h1> */}
+        </div>
         <TabContainer
           initialSelectedIndex={0}
           classes={classes}

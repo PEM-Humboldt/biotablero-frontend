@@ -246,22 +246,16 @@ class Drawer extends React.Component {
     ];
     return (
       <div className="informer">
-        <button
-          className="geobtn"
-          type="button"
-          onClick={handlerBackButton}
-        >
-          <BackIcon />
-        </button>
-        <div className="iconsection mt2" />
-        <h1>
-          {`${area.name} /`}
-          <br />
-          {geofence.name}
-          <b>
-            {subLayerName}
-          </b>
-        </h1>
+        <div className="drawer_header">
+          <button
+            className="geobtn"
+            type="button"
+            onClick={handlerBackButton}
+          >
+            <BackIcon />
+          </button>
+          <div>hectáreas totales 5,306,866 ha</div> {/* Without decimals */}
+        </div>
         { !subLayerName && (
           <TabContainer
             initialSelectedIndex={0}
