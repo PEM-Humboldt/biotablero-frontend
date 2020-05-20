@@ -39,7 +39,6 @@ class App extends React.Component {
         <Search
           areaTypeId={query.get('area_type')}
           areaIdId={query.get('area_id')}
-          setHeaderNames={this.setHeaderNames}
         />
       </Layout>
     );
@@ -88,7 +87,11 @@ class App extends React.Component {
     const { user } = this.state;
     return (
       <AppContext.Provider
-        value={{ user, setUser: this.setUser }}
+        value={{
+          user,
+          setUser: this.setUser,
+          setHeaderNames: this.setHeaderNames,
+        }}
       >
         <main>
           <Switch>

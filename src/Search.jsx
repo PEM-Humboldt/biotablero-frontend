@@ -16,6 +16,7 @@ import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
 import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
+import AppContext from './AppContext';
 
 class Search extends Component {
   constructor(props) {
@@ -103,8 +104,8 @@ class Search extends Component {
             areaTypeId,
             areaIdId,
             history,
-            setHeaderNames,
           } = this.props;
+          const { setHeaderNames } = this.context;
           if (!areaTypeId || !areaIdId) return;
 
           const inputArea = tempAreaList.find(area => area.id === areaTypeId);
@@ -385,7 +386,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    const { setHeaderNames } = this.props;
+    const { setHeaderNames } = this.context;
     if (nameToOn) {
       this.setState(
         { areaId: nameToOn },
@@ -419,7 +420,8 @@ class Search extends Component {
         areaId: null,
       };
     }, () => {
-      const { history, setHeaderNames } = this.props;
+      const { history } = this.props;
+      const { setHeaderNames } = this.context;
       history.replace(history.location.pathname);
       setHeaderNames(null, null);
     });
@@ -596,14 +598,14 @@ Search.propTypes = {
       pathname: PropTypes.string,
     }),
   }),
-  setHeaderNames: PropTypes.func,
 };
 
 Search.defaultProps = {
   areaTypeId: null,
   areaIdId: null,
   history: {},
-  setHeaderNames: () => {},
 };
 
 export default withRouter(Search);
+
+Search.contextType = AppContext;
