@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import L from 'leaflet';
-
 import CloseIcon from '@material-ui/icons/Close';
+import L from 'leaflet';
 import Modal from '@material-ui/core/Modal';
+import React, { Component } from 'react';
+
 import { ConstructDataForCompensation } from './commons/ConstructDataForSelector';
 import MapViewer from './commons/MapViewer';
 import Drawer from './compensation/Drawer';
@@ -11,13 +11,9 @@ import Selector from './commons/Selector';
 import GeoServerAPI from './api/GeoServerAPI';
 import RestAPI from './api/RestAPI';
 import description from './compensation/assets/selectorData';
+import AppContext from './AppContext';
 
 class Compensation extends Component {
-  static getDerivedStateFromProps = nextProps => ({
-    currentCompanyId: nextProps.userLogged.company.id,
-    currentCompany: nextProps.userLogged.username.toUpperCase(),
-  })
-
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +44,16 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    this.loadProjectsList();
+    const { user } = this.context;
+    if (user && user.company && user.username) {
+      this.setState(
+        {
+          currentCompanyId: user.company.id,
+          currentCompany: user.username.toUpperCase(),
+        },
+        () => this.loadProjectsList(),
+      );
+    }
   }
 
   loadProjectsList = () => {
@@ -518,5 +523,7 @@ class Compensation extends Component {
     );
   }
 }
+
+Compensation.contextType = AppContext;
 
 export default Compensation;

@@ -680,7 +680,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, subAreaName, biomesImpacted, currentBiome,
+      back, basinName, colors, classes, biomesImpacted, currentBiome,
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
@@ -813,14 +813,12 @@ class Drawer extends React.Component {
 Drawer.contextType = AppContext;
 
 Drawer.propTypes = {
-  areaName: PropTypes.string,
   back: PropTypes.func,
   basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   currentBiome: PropTypes.string,
   biomesImpacted: PropTypes.array,
-  subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
   showStrategies: PropTypes.func.isRequired,
   updateCurrentBiome: PropTypes.func,
@@ -834,14 +832,12 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  areaName: '',
   back: () => {},
   basinName: '',
   colors: ['#eabc47'],
   currentBiome: '',
   biomesImpacted: [],
   updateCurrentBiome: () => {},
-  subAreaName: '',
   impactedBiomesDecisionTree: {},
   reportConnError: () => {},
   clickedStrategy: null,
