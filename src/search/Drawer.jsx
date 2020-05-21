@@ -248,7 +248,6 @@ class Drawer extends React.Component {
             generalArea={generalArea}
             selection={hFPSelection}
             setSelection={(text) => {
-              console.log(text);
               this.setState(prevState => ({
                 ...prevState,
                 hFPSelection: text,

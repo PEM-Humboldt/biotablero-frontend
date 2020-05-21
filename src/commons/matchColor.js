@@ -71,9 +71,7 @@ const cache = {
  * The rest of the types will receive strings.
  */
 const matchColor = (type) => {
-  console.log('type', type);
   const info = match[type] || match.default;
-  console.log('info', info);
   const palette = colorPalettes[info.palette];
   const sort = info.sort || [];
   switch (type) {
