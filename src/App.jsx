@@ -54,12 +54,13 @@ class App extends React.Component {
   );
 
   loadCompensator = ({ location }) => {
-    const { user } = this.state;
+    const { user, headerNames } = this.state;
     if (user) {
       return (
         <Layout
           moduleName="Compensaciones"
           showFooterLogos={false}
+          headerNames={headerNames}
         >
           <Compensation />
         </Layout>

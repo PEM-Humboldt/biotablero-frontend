@@ -680,7 +680,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      back, basinName, colors, classes, biomesImpacted, currentBiome,
+      back, colors, classes, biomesImpacted, currentBiome,
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
@@ -699,15 +699,7 @@ class Drawer extends React.Component {
           >
             <BackIcon />
           </button>
-          <div>...</div>
-          {/* <h1>
-            {`${areaName} /`}
-            <br />
-            {subAreaName}
-            <b>
-              {basinName}
-            </b>
-          </h1> */}
+          <div />
         </div>
         <TabContainer
           initialSelectedIndex={0}
@@ -814,7 +806,6 @@ Drawer.contextType = AppContext;
 
 Drawer.propTypes = {
   back: PropTypes.func,
-  basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   currentBiome: PropTypes.string,
@@ -833,7 +824,6 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   back: () => {},
-  basinName: '',
   colors: ['#eabc47'],
   currentBiome: '',
   biomesImpacted: [],

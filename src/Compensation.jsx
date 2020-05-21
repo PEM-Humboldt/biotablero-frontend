@@ -149,6 +149,13 @@ class Compensation extends Component {
         }
         newState.loadingModal = false;
         return newState;
+      }, () => {
+        const { setHeaderNames } = this.context;
+        const {
+          currentCompany,
+          currentProject: { id_region: idRegion, label, prj_status: prjStatus },
+        } = this.state;
+        setHeaderNames(`${currentCompany} ${idRegion}`, `${prjStatus} ${label}`);
       });
     });
   }
@@ -291,6 +298,9 @@ class Compensation extends Component {
       currentProject: null,
       currentRegion: null,
       biomesImpacted: [],
+    }, () => {
+      const { setHeaderNames } = this.context;
+      setHeaderNames(null, null);
     });
     this.loadProjectsList();
   }
@@ -498,15 +508,12 @@ class Compensation extends Component {
             {
               currentProject && (
               <Drawer
-                areaName={`${currentCompany} ${currentProject.id_region}`}
                 back={this.handlerBackButton}
-                basinName={currentProject.label}
                 colors={colors.map(obj => Object.values(obj)[0])}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}
                 impactedBiomesDecisionTree={impactedBiomesDecisionTree}
-                subAreaName={currentProject.prj_status}
                 companyId={currentCompanyId}
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}
