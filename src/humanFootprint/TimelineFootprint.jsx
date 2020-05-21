@@ -20,7 +20,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
     <div className="graficaeco">
       <h2>
         <MultiLinesGraph
-          clicked={(point, event) => setSelection(point, event, 'clicked')}
+          setSelection={setSelection}
           colors={matchColor(selection)}
           data={dataLines}
         />

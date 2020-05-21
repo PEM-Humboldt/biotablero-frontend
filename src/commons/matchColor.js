@@ -33,16 +33,16 @@ const match = {
     palette: 'Área total',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  sE1: {
-    palette: 'sE1',
+  Páramo: {
+    palette: 'Páramo',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  sE2: {
-    palette: 'sE2',
+  Humedales: {
+    palette: 'Humedales',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  sE3: {
-    palette: 'sE3',
+  'Bosques Secos': {
+    palette: 'Bosques Secos',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   default: {
@@ -112,6 +112,9 @@ const matchColor = (type) => {
         return palette[counter];
       };
     case 'Área total':
+    case 'Páramo':
+    case 'Humedales':
+    case 'Bosques Secos':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);

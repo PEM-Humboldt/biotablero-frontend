@@ -70,14 +70,14 @@ export default {
   ],
   Páramo: [ // Páramo seleccionado
     '#cf324e', // Área total
-    '#3cb58e', // Páramo
+    '#29418a', // Páramo
     '#a8daca', // Humedales
     '#e8cc8e', // Bosques Secos
   ],
   Humedales: [ // Humedales seleccionados
     '#cf324e', // Área total
     '#878cae', // Páramo
-    '#29418a', // Humedales
+    '#3cb58e', // Humedales
     '#e8cc8e', // Bosques Secos
   ],
   'Bosques Secos': [ // Bosques Secos seleccionados
