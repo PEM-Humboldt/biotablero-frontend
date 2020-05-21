@@ -7,7 +7,7 @@ import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import SaveIcon from '@material-ui/icons/Save';
-import DownloadIcon from '@material-ui/icons/FileDownload';
+import DownloadIcon from '@material-ui/icons/GetApp';
 import RestAPI from '../api/RestAPI';
 
 import CustomInputNumber from './CustomInputNumber';

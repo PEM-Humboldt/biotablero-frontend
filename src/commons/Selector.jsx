@@ -4,7 +4,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileUploadIcon from '@material-ui/icons/FileUpload';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
@@ -117,7 +117,7 @@ class Selector extends React.Component {
               <ExpansionPanelSummary
                 expandIcon={
                   (((iconOption === 'add') && <AddIcon />)
-                  || ((iconOption === 'upload') && <FileUploadIcon />)
+                  || ((iconOption === 'upload') && <CloudUploadIcon />)
                   || ((iconOption === 'edit') && <EditIcon />)
                   || (<ExpandMoreIcon />))
                 }
@@ -144,7 +144,7 @@ class Selector extends React.Component {
                       <ExpansionPanelSummary
                         expandIcon={
                           (((iconOption === 'add') && <AddIcon />)
-                          || ((iconOption === 'upload') && <FileUploadIcon />)
+                          || ((iconOption === 'upload') && <CloudUploadIcon />)
                           || ((iconOption === 'edit') && <EditIcon />)
                           || (<ExpandMoreIcon />))
                         }

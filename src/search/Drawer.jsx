@@ -254,7 +254,8 @@ class Drawer extends React.Component {
           >
             <BackIcon />
           </button>
-          <div>hectáreas totales 5,306,866 ha</div> {/* Without decimals */}
+          {/* TODO: when replacing for actual value, it must be without decimals */}
+          <div>hectáreas totales 5,306,866 ha</div>
         </div>
         { !subLayerName && (
           <TabContainer
