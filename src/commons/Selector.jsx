@@ -57,13 +57,13 @@ class Selector extends React.Component {
     handlers[1](subPanel, expanded);
   };
 
-  renderInnerElement = (parent, size, data) => (obj, index) => {
+  renderInnerElement = (parent, listSize, data) => (obj, index) => {
     const {
       type, label, name, id_project: projectId,
     } = obj;
     const { handlers } = this.props;
-    switch (size) {
-      case 1:
+    switch (listSize) {
+      case 'large':
         return (
           <Autocomplete
             valueSelected={(value) => {
@@ -154,7 +154,7 @@ class Selector extends React.Component {
                       <ExpansionPanelDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
                         {subOptions.length < 7
                           ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
-                          : [{ subOptions }].map(this.renderInnerElement(subId, 1, subOptions))}
+                          : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                   );
