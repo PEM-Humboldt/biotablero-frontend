@@ -57,9 +57,10 @@ class Selector extends React.Component {
     handlers[1](subPanel, expanded);
   };
 
-  renderInnerElement = (parent, size, data) => ({
-    type, label, name, id_project: projectId,
-  }) => {
+  renderInnerElement = (parent, size, data) => (obj, index) => {
+    const {
+      type, label, name, id_project: projectId,
+    } = obj;
     const { handlers } = this.props;
     switch (size) {
       case 1:
@@ -71,14 +72,14 @@ class Selector extends React.Component {
             }}
             name={label || name}
             data={data}
-            key={`${type}-${label || name}`}
+            key={`${type}-${label || name}-${index}`}
           />
         );
       default:
         return (
           <button
             type="button"
-            key={`${type}-${label || name}`}
+            key={`${type}-${label || name}-${index}`}
             name={name}
             onClick={() => handlers[2](parent, projectId || name)}
           >
