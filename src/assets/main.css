@@ -221,7 +221,7 @@ header h3 a {
     position: relative;
 	padding: 4px 10px 0;
 	resize: both;
-	color: #c3c3c3;
+	color: #fff;
 }
 
 .userBox:hover {
@@ -257,14 +257,6 @@ header h3 a {
   border: none;
   outline: none;
   cursor: pointer;
-}
-
-.logoGEB {
-	height: 52px;
-	width: 113px;
-	background: url(./img/LogoGEB.png) no-repeat center;
-	display: inline-block;
-	cursor: pointer;
 }
 
 header h4 {
@@ -2169,11 +2161,7 @@ tspan, .vx-axis-label {
 	right: 20px;
 }
 
-.login .npcontent  {
-	padding: 15px;
-}
-
-.login {
+.uim_modal {
 	position: fixed;
 	width: 300px;
 	background-color: #ffffff;
@@ -2182,12 +2170,21 @@ tspan, .vx-axis-label {
 	right: 0;
 	border-radius: 5px 0 0 5px;
 	padding: 140px 20px 30px;
-	background-image: url(./img/login.png);/*
-	background-image: url(./img/bgmountain.png);*/
+}
+
+.uim_modal.loginModal {
+	background-image: url(./img/login.png);
+	/*background-image: url(./img/bgmountain.png);*/
 	background-repeat: no-repeat;
 }
 
-.login:hover {
+.uim_modal.userModal {
+	background-image: url(./img/LogoGEB.png);
+	background-position: 50% 20%;
+	background-repeat: no-repeat;
+}
+
+.uim_modal:hover {
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
@@ -2204,7 +2201,7 @@ tspan, .vx-axis-label {
 	color: #aaa;
 }
 
-.loginbtn {
+.loginbtn, .logoutbtn {
 	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
@@ -2217,7 +2214,7 @@ tspan, .vx-axis-label {
 	font-size: 12px;
 }
 
-.login .closebtn {
+.uim_modal .closebtn {
 	color: #ea485f;
 	position: relative;
 }

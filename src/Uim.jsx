@@ -1,89 +1,114 @@
-import React, { Component } from 'react';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import AccountCircleOutlined from '@material-ui/icons/AccountCircleOutlined';
+import CloseIcon from '@material-ui/icons/Close';
 import Modal from '@material-ui/core/Modal';
-import Login from './Login';
-import ConfirmationModal from './ConfirmationModal';
+import React, { Component } from 'react';
+
 import AppContext from './AppContext';
+import ConfirmationModal from './ConfirmationModal';
+import Login from './Login';
+import UserInfo from './UserInfo';
 
 class Uim extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      logoutDialog: false,
-      loginDialog: false,
+      loginModal: false,
+      logoutModal: false,
+      userModal: false,
     };
   }
 
-  toggleModal = modal => () => {
-    this.setState(state => ({ [modal]: !state[modal] }));
+  /**
+   * Meant to be used by onClick handlers. Set the state for the corresponding
+   * modal to true, and the others to false.
+   *
+   * @params {String} modal modal name to turn on
+   *
+   * @returns {function}
+   */
+  showModal = modal => () => {
+    switch (modal) {
+      case 'loginModal':
+        this.setState({ loginModal: true, logoutModal: false, userModal: false });
+        break;
+      case 'logoutModal':
+        this.setState({ loginModal: false, logoutModal: true, userModal: false });
+        break;
+      case 'userModal':
+        this.setState({ loginModal: false, logoutModal: false, userModal: true });
+        break;
+      default:
+        break;
+    }
   };
 
+  /**
+   * Meant to be used by onClick handlers. Set the state for the corresponding
+   * modal to false
+   *
+   * @params {String} modal modal name to turn off
+   *
+   * @returns {function}{void}
+   */
+  turnOffModal = modal => () => {
+    this.setState({ [modal]: false });
+  }
+
   render() {
-    const { logoutDialog, loginDialog } = this.state;
+    const { loginModal, userModal, logoutModal } = this.state;
     const { user, setUser } = this.context;
+    const whichModal = user
+      ? { modal: 'userModal', state: userModal }
+      : { modal: 'loginModal', state: loginModal };
     return (
       <div>
-        { user ? (
-          <div className="userBox">
-            <div className="userInfo">
-              <a
-                href="https://www.grupoenergiabogota.com/"
-                rel="noopener noreferrer"
-                target="_blank"
-                className="logoGEB"
-              >
-                <span />
-              </a>
-              <h6>
-                {user.name}
-              </h6>
-            </div>
-            <button
-              type="button"
-              className="iconUserLogged"
-              onClick={() => this.toggleModal('logoutDialog')()}
-              data-tooltip
-              title="Cerrar sesión"
-            />
-          </div>
-        )
-          : (
-            <button
-              type="button"
-              className="loginBtn"
-              onClick={this.toggleModal('loginDialog')}
-              data-tooltip
-              title="Iniciar sesión"
-            >
-              <AccountCircle
-                className="userBox"
-                style={{ fontSize: '40px' }}
-              />
-            </button>
-          )
-        }
-        <ConfirmationModal
-          open={logoutDialog}
-          styleCustom="newBiomeAlarm nBA2"
-          onClose={this.toggleModal('logoutDialog')}
-          message="¿Desea cerrar sesión?"
-          onContinue={() => {
-            setUser(null);
-            this.setState({ loginDialog: false, logoutDialog: false });
-          }}
-          onCancel={this.toggleModal('logoutDialog')}
-        />
+        <button
+          type="button"
+          className="loginBtn"
+          onClick={this.showModal(whichModal.modal)}
+          data-tooltip
+          title="Iniciar sesión"
+        >
+          { user
+            ? (<AccountCircle className="userBox" style={{ fontSize: '40px' }} />)
+            : (<AccountCircleOutlined className="userBox" style={{ fontSize: '40px' }} />)
+          }
+        </button>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={!user && loginDialog}
-          onClose={this.handleCloseModal}
+          open={whichModal.state}
+          onClose={this.turnOffModal(whichModal.modal)}
           disableAutoFocus
         >
-          <Login
-            modalControl={this.toggleModal('loginDialog')}
-          />
+          <div className={`uim_modal ${whichModal.modal}`}>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={this.turnOffModal(whichModal.modal)}
+              data-tooltip
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+            { !user
+              ? (<Login />)
+              : (<UserInfo logoutHandler={this.showModal('logoutModal')} />)
+            }
+          </div>
         </Modal>
+        <ConfirmationModal
+          open={logoutModal}
+          styleCustom="newBiomeAlarm nBA2"
+          onClose={this.turnOffModal('logoutModal')}
+          message="¿Desea cerrar sesión?"
+          onContinue={() => {
+            setUser(null);
+            this.turnOffModal('logoutModal')();
+          }}
+          onCancel={this.turnOffModal('logoutModal')}
+        />
       </div>
     );
   }

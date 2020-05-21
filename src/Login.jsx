@@ -1,9 +1,7 @@
-/** eslint verified */
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CloseIcon from '@material-ui/icons/Close';
-import RestAPI from './api/RestAPI';
+
 import AppContext from './AppContext';
+import RestAPI from './api/RestAPI';
 
 class Login extends Component {
   constructor(props) {
@@ -29,19 +27,9 @@ class Login extends Component {
 
   render() {
     const { username, password } = this.state;
-    const { modalControl } = this.props;
     const { setUser } = this.context;
     return (
       <div className="login">
-        <button
-          type="button"
-          className="closebtn"
-          onClick={modalControl}
-          data-tooltip
-          title="Cerrar"
-        >
-          <CloseIcon />
-        </button>
         <form onSubmit={event => event.preventDefault()}>
           <input
             className="loginInput"
@@ -87,9 +75,5 @@ class Login extends Component {
 }
 
 Login.contextType = AppContext;
-
-Login.propTypes = {
-  modalControl: PropTypes.func.isRequired,
-};
 
 export default Login;
