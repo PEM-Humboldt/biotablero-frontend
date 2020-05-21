@@ -62,10 +62,28 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
-  sEco: [
+  'Área total': [ // Área total seleccionada
+    '#cf324e', // Área total
+    '#878cae', // Páramo
+    '#a8daca', // Humedales
+    '#e8cc8e', // Bosques Secos
+  ],
+  Páramo: [ // Páramo seleccionado
     '#cf324e', // Área total
     '#3cb58e', // Páramo
+    '#a8daca', // Humedales
+    '#e8cc8e', // Bosques Secos
+  ],
+  Humedales: [ // Humedales seleccionados
+    '#cf324e', // Área total
+    '#878cae', // Páramo
     '#29418a', // Humedales
+    '#e8cc8e', // Bosques Secos
+  ],
+  'Bosques Secos': [ // Bosques Secos seleccionados
+    '#cf324e', // Área total
+    '#878cae', // Páramo
+    '#a8daca', // Humedales
     '#ccb325', // Bosques Secos
   ],
   default: ['#345b6b'],

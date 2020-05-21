@@ -29,8 +29,20 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
-  hfPersistence: {
-    palette: 'sEco',
+  'Área total': {
+    palette: 'Área total',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  sE1: {
+    palette: 'sE1',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  sE2: {
+    palette: 'sE2',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  sE3: {
+    palette: 'sE3',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   default: {
@@ -59,7 +71,9 @@ const cache = {
  * The rest of the types will receive strings.
  */
 const matchColor = (type) => {
+  console.log('type', type);
   const info = match[type] || match.default;
+  console.log('info', info);
   const palette = colorPalettes[info.palette];
   const sort = info.sort || [];
   switch (type) {
@@ -97,13 +111,8 @@ const matchColor = (type) => {
         cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
         return palette[counter];
       };
+    case 'Área total':
     case 'se':
-      return (value) => {
-        const idx = sort.indexOf(value);
-        if (idx === -1) return palette[palette.length - 1];
-        return palette[idx];
-      };
-    case 'hfPersistence':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];

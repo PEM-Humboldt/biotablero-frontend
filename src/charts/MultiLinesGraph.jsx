@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
-import colorPalettes from '../commons/colorPalettes';
 
 const MultiLinesGraph = ({
-  colors, data,
+  setSelection, colors, data,
 }) => (
   <div style={{ height: '490px', width: '450px' }}>
     <ResponsiveLine
+      onClick={(point) => {
+        console.log(point);
+        setSelection(point.serieId || point.id)}}
       data={data}
       curve="cardinal"
       margin={{
@@ -76,6 +78,10 @@ const MultiLinesGraph = ({
           itemWidth: 90,
           itemHeight: 80,
           itemOpacity: 0.75,
+          onClick: (point) => {
+            console.log(point);
+            setSelection(point.serieId || point.id);
+          },
           symbolSize: 12,
           symbolShape: 'circle',
           symbolBorderColor: 'rgba(0, 0, 0, .5)',
@@ -85,11 +91,6 @@ const MultiLinesGraph = ({
               style: {
                 itemBackground: 'rgba(0, 0, 0, .03)',
                 itemOpacity: 1,
-              },
-              onClick: (d) => {
-                const colorsLow = data.map(series => (series.id === d.id
-                  ? '#ff3344' : colors(d.id)));
-                console.log('colorsLow', colorsLow, colorPalettes);
               },
             },
           ],
@@ -102,6 +103,7 @@ const MultiLinesGraph = ({
 );
 
 MultiLinesGraph.propTypes = {
+  setSelection: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.shape({

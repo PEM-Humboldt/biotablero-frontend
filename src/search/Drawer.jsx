@@ -37,6 +37,7 @@ class Drawer extends React.Component {
         areaPA: null, // area fields for protected areas
         generalArea: 0, // general area value in the current geofence
       },
+      hFPSelection: null,
     };
   }
 
@@ -49,6 +50,11 @@ class Drawer extends React.Component {
       geofence, area,
     } = this.props;
     const searchId = geofence.id || geofence.name;
+
+    this.setState(prevState => ({
+      ...prevState,
+      hFPSelection: 'Área total',
+    }));
 
     RestAPI.requestGeofenceDetails(area.id, searchId)
       .then((res) => {
@@ -204,6 +210,7 @@ class Drawer extends React.Component {
       data: {
         fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
       },
+      hFPSelection,
     } = this.state;
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
@@ -239,6 +246,14 @@ class Drawer extends React.Component {
         component: (
           <HumanFootprint
             generalArea={generalArea}
+            selection={hFPSelection}
+            setSelection={(text) => {
+              console.log(text);
+              this.setState(prevState => ({
+                ...prevState,
+                hFPSelection: text,
+              }));
+            }}
           />
         ),
       },

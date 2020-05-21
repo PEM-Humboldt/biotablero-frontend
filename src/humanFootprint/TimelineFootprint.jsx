@@ -6,8 +6,7 @@ import matchColor from '../commons/matchColor';
 
 import { dataLines } from '../search/assets/selectorData';
 
-
-const TimelineFootprint = ({ generalArea }) => (
+const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -21,7 +20,8 @@ const TimelineFootprint = ({ generalArea }) => (
     <div className="graficaeco">
       <h2>
         <MultiLinesGraph
-          colors={matchColor('hfPersistence')}
+          clicked={(point, event) => setSelection(point, event, 'clicked')}
+          colors={matchColor(selection)}
           data={dataLines}
         />
       </h2>
@@ -32,6 +32,8 @@ const TimelineFootprint = ({ generalArea }) => (
 
 TimelineFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
+  selection: PropTypes.string.isRequired,
+  setSelection: PropTypes.func.isRequired,
 };
 
 export default TimelineFootprint;
