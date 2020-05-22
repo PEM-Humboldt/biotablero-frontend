@@ -1,6 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import AppContext from '../AppContext';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { userLogged } = this.props; // TODO: Implementing user validation
+    const { user } = this.context;
     const { openMenu } = this.state;
     return (
       <div id="menuToggle">
@@ -39,7 +39,7 @@ class Menu extends React.Component {
               Indicadores
             </li>
           </Link>
-          { userLogged ? (
+          { user ? (
             <Link to="/GEB/Compensaciones" onClick={this.changeMenuState}>
               <li>
                 Compensaciones
@@ -58,12 +58,6 @@ class Menu extends React.Component {
   }
 }
 
-Menu.propTypes = {
-  userLogged: PropTypes.object,
-};
-
-Menu.defaultProps = {
-  userLogged: null,
-};
+Menu.contextType = AppContext;
 
 export default Menu;

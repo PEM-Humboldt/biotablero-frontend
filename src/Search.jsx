@@ -14,9 +14,9 @@ import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
-import Layout from './Layout';
 import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
+import AppContext from './AppContext';
 
 class Search extends Component {
   constructor(props) {
@@ -100,7 +100,12 @@ class Search extends Component {
           geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
         }, () => {
-          const { areaTypeId, areaIdId, history } = this.props;
+          const {
+            areaTypeId,
+            areaIdId,
+            history,
+          } = this.props;
+          const { setHeaderNames } = this.context;
           if (!areaTypeId || !areaIdId) return;
 
           const inputArea = tempAreaList.find(area => area.id === areaTypeId);
@@ -110,7 +115,13 @@ class Search extends Component {
             const inputId = inputArea.data.find(area => area[field] === areaIdId);
             if (inputId) {
               this.setArea(areaTypeId);
-              this.setState({ areaId: inputId });
+              this.setState(
+                { areaId: inputId },
+                () => {
+                  const { areaType, areaId } = this.state;
+                  setHeaderNames(areaType.name, areaId.name);
+                },
+              );
             } else {
               history.replace(history.location.pathname);
             }
@@ -375,6 +386,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
+    const { setHeaderNames } = this.context;
     if (nameToOn) {
       this.setState(
         { areaId: nameToOn },
@@ -382,6 +394,7 @@ class Search extends Component {
           const { history } = this.props;
           const { areaType, areaId } = this.state;
           history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
+          setHeaderNames(areaType.name, areaId.name);
         },
       );
       this.loadLayer(nameToOn, nameToOff);
@@ -408,7 +421,9 @@ class Search extends Component {
       };
     }, () => {
       const { history } = this.props;
+      const { setHeaderNames } = this.context;
       history.replace(history.location.pathname);
+      setHeaderNames(null, null);
     });
   }
 
@@ -438,7 +453,6 @@ class Search extends Component {
   };
 
   render() {
-    const { callbackUser, userLogged } = this.props;
     const {
       areaType,
       areaId,
@@ -454,12 +468,7 @@ class Search extends Component {
       geofencesArray,
     } = this.state;
     return (
-      <Layout
-        moduleName="Consultas"
-        showFooterLogos={false}
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
+      <div>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -574,14 +583,12 @@ class Search extends Component {
             )}
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
 Search.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
   areaTypeId: PropTypes.string,
   areaIdId: PropTypes.string,
   history: PropTypes.shape({
@@ -594,10 +601,11 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
-  userLogged: null,
   areaTypeId: null,
   areaIdId: null,
   history: {},
 };
 
 export default withRouter(Search);
+
+Search.contextType = AppContext;

@@ -6,34 +6,46 @@ import Menu from './header/Menu';
 import Title from './header/Title';
 import Uim from './Uim';
 
-const Header = ({ activeModule, userLogged, callbackUser }) => (
+const Header = ({
+  activeModule,
+  headerNames: { parent, child },
+}) => (
   <header className="cabezote">
     <div>
       <nav>
-        <Menu userLogged={userLogged} />
+        <Menu />
       </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
-    <Uim
-      value="Uim"
-      userLogged={userLogged}
-      callbackUser={callbackUser}
-      activeModule={activeModule}
-    />
+    <div className="header_info">
+      {parent && child && (
+        <div style={{ display: 'flex' }}>
+          <h1>
+            {`${parent} /`}
+            <br />
+            {child}
+          </h1>
+          <div className="iconsection" />
+        </div>
+      )}
+      <Uim />
+    </div>
   </header>
 );
 
 Header.propTypes = {
   activeModule: PropTypes.string,
-  userLogged: PropTypes.object,
-  callbackUser: PropTypes.func.isRequired,
+  headerNames: PropTypes.shape({
+    parent: PropTypes.string,
+    child: PropTypes.string,
+  }),
 };
 
 Header.defaultProps = {
   activeModule: '',
-  userLogged: null,
+  headerNames: { parent: null, child: null },
 };
 
 export default Header;
