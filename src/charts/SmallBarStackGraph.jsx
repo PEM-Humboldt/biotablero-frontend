@@ -5,7 +5,6 @@ import { ResponsiveBar } from '@nivo/bar';
 const SmallBarStackGraph = (props) => {
   const {
     data,
-    width,
     height,
     zScale,
     units,
@@ -87,7 +86,7 @@ const SmallBarStackGraph = (props) => {
   };
 
   return (
-    <div style={{ width, height }}>
+    <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data)}
         keys={keys}
@@ -124,14 +123,12 @@ const SmallBarStackGraph = (props) => {
 
 SmallBarStackGraph.propTypes = {
   data: PropTypes.array.isRequired,
-  width: PropTypes.number,
   height: PropTypes.number,
   zScale: PropTypes.func,
   units: PropTypes.string,
 };
 
 SmallBarStackGraph.defaultProps = {
-  width: 581,
   height: 30,
   zScale: () => {},
   units: 'ha',
