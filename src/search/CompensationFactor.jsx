@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 
 
 const CompensationFactor = (props) => {
@@ -56,15 +56,12 @@ const CompensationFactor = (props) => {
                 )
               ),
               (
-                <RenderGraph
-                  graph="LargeBarStackGraph"
+                <GraphLoader
+                  graphType="LargeBarStackGraph"
                   data={compensationFactorData}
-                  graphTitle="Factor de Compensación"
                   labelX="Hectáreas"
                   labelY="Factor de Compensación"
-                  handlerInfoGraph={handlerInfoGraph}
-                  openInfoGraph={openInfoGraph}
-                  graphDescription="representa las hectáreas sobre los Biomas IAvH analizados"
+                  units="ha"
                   zScale={matchColor('fc')}
                   padding={0.25}
                 />
@@ -75,15 +72,12 @@ const CompensationFactor = (props) => {
                 </h3>
               ),
               (
-                <RenderGraph
-                  graph="LargeBarStackGraph"
+                <GraphLoader
+                  graphType="LargeBarStackGraph"
                   data={biomesData}
-                  graphTitle="Biomas"
                   labelX="Hectáreas"
                   labelY="Biomas"
-                  handlerInfoGraph={handlerInfoGraph}
-                  openInfoGraph={openInfoGraph}
-                  graphDescription="agrupa los biomas definidos a nivel nacional y presentes en esta área de consulta"
+                  units="ha"
                   zScale={matchColor('biomas')}
                   padding={0.3}
                 />
@@ -94,15 +88,12 @@ const CompensationFactor = (props) => {
                 </h3>
               ),
               (
-                <RenderGraph
-                  graph="LargeBarStackGraph"
+                <GraphLoader
+                  graphType="LargeBarStackGraph"
                   data={bioticRegionsData}
-                  graphTitle="Regiones Bióticas"
                   labelX="Hectáreas"
                   labelY="Regiones Bióticas"
-                  handlerInfoGraph={handlerInfoGraph}
-                  openInfoGraph={openInfoGraph}
-                  graphDescription="muestra las hectáreas por cada región biótica en el área de consulta seleccionada"
+                  units="ha"
                   zScale={matchColor('bioticReg')}
                   padding={0.3}
                 />

@@ -5,7 +5,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
 import GeneralArea from '../commons/GeneralArea';
 import EcosystemsBox from './EcosystemsBox';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 
 /**
  * Give format to a big number
@@ -101,11 +101,11 @@ const Overview = (props) => {
           Natural, Secundaria y Transformada:
         </h6>
         <div className="graficaeco">
-          <RenderGraph
-            graph="SmallBarStackGraph"
+          <GraphLoader
+            graphType="SmallBarStackGraph"
             data={coverage}
-            zScale={matchColor('coverage')}
             units="ha"
+            zScale={matchColor('coverage')}
           />
         </div>
         <h4>
@@ -119,11 +119,11 @@ const Overview = (props) => {
           <h6>
             Distribución en área protegida:
           </h6>
-          <RenderGraph
-            graph="SmallBarStackGraph"
+          <GraphLoader
+            graphType="SmallBarStackGraph"
             data={listPA}
-            zScale={matchColor('pa')}
             units="ha"
+            zScale={matchColor('pa')}
           />
         </div>
         <div className="ecoest">
