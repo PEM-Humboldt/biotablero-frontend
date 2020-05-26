@@ -7,59 +7,63 @@ import Search from './Search';
 import Compensation from './Compensation';
 import Indicator from './Indicator';
 import './assets/main.css';
+import Layout from './Layout';
+import AppContext from './AppContext';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: null,
+      headerNames: {},
     };
   }
 
   buildQuery = queryString => new URLSearchParams(queryString);
 
-  loadHome = ({ location }) => {
-    const { user } = this.state;
-    return (
-      <Home
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        referrer={location.referrer}
-      />
-    );
-  }
+  loadHome = ({ location }) => (
+    <Layout showFooterLogos>
+      <Home referrer={location.referrer} />
+    </Layout>
+  );
 
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
-    const { user } = this.state;
+    const { headerNames } = this.state;
     return (
-      <Search
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        areaTypeId={query.get('area_type')}
-        areaIdId={query.get('area_id')}
-      />
+      <Layout
+        moduleName="Consultas"
+        showFooterLogos={false}
+        headerNames={headerNames}
+      >
+        <Search
+          areaTypeId={query.get('area_type')}
+          areaIdId={query.get('area_id')}
+        />
+      </Layout>
     );
   }
 
-  loadIndicator = () => {
-    const { user } = this.state;
-    return (
-      <Indicator
-        userLogged={user}
-        callbackUser={this.callbackUser}
-      />
-    );
-  }
+  loadIndicator = () => (
+    <Layout
+      moduleName="Indicadores"
+      showFooterLogos
+    >
+      <Indicator />
+    </Layout>
+  );
 
   loadCompensator = ({ location }) => {
-    const { user } = this.state;
+    const { user, headerNames } = this.state;
     if (user) {
       return (
-        <Compensation
-          userLogged={user}
-          callbackUser={this.callbackUser}
-        />
+        <Layout
+          moduleName="Compensaciones"
+          showFooterLogos={false}
+          headerNames={headerNames}
+        >
+          <Compensation />
+        </Layout>
       );
     }
     return (
@@ -72,26 +76,34 @@ class App extends React.Component {
     );
   }
 
-  callbackUser = (user) => {
-    if (user) {
-      this.setState({ user });
-    } else {
-      this.setState({ user: null });
-    }
-    return user;
-  };
+  setUser = user => this.setState({ user });
+
+  setHeaderNames = (parent, child) => {
+    this.setState({
+      headerNames: { parent, child },
+    });
+  }
 
   render() {
+    const { user } = this.state;
     return (
-      <main>
-        <Switch>
-          <Route exact path="/" render={this.loadHome} />
-          <Route path="/Consultas" render={this.loadSearch} />
-          <Route path="/Indicadores" render={this.loadHome} />
-          <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
-          <Route path="/Alertas" render={this.loadHome} />
-        </Switch>
-      </main>
+      <AppContext.Provider
+        value={{
+          user,
+          setUser: this.setUser,
+          setHeaderNames: this.setHeaderNames,
+        }}
+      >
+        <main>
+          <Switch>
+            <Route exact path="/" render={this.loadHome} />
+            <Route path="/Consultas" render={this.loadSearch} />
+            <Route path="/Indicadores" render={this.loadHome} />
+            <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
+            <Route path="/Alertas" render={this.loadHome} />
+          </Switch>
+        </main>
+      </AppContext.Provider>
     );
   }
 }

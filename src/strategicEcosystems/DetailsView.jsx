@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 import { setPAValues, setCoverageValues } from './FormatSE';
 import RestAPI from '../api/RestAPI';
 
@@ -46,11 +46,11 @@ const showDetails = (
       Distribución de coberturas:
       {validateData(coverage)
         || (
-          <RenderGraph
-            graph="SmallBarStackGraph"
+          <GraphLoader
+            graphType="SmallBarStackGraph"
             data={setCoverageValues(coverage)}
-            zScale={matchColor('coverage')}
             units="ha"
+            zScale={matchColor('coverage')}
           />
         )
       }
@@ -59,11 +59,11 @@ const showDetails = (
       Distribución en áreas protegidas:
       {validateData(protectedArea)
         || (
-          <RenderGraph
-            graph="SmallBarStackGraph"
+          <GraphLoader
+            graphType="SmallBarStackGraph"
             data={setPAValues(protectedArea)}
-            zScale={matchColor('pa')}
             units="ha"
+            zScale={matchColor('pa')}
           />
         )
       }

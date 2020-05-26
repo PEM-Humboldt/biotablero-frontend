@@ -221,7 +221,7 @@ header h3 a {
     position: relative;
 	padding: 4px 10px 0;
 	resize: both;
-	color: #c3c3c3;
+	color: #fff;
 }
 
 .userBox:hover {
@@ -257,14 +257,6 @@ header h3 a {
   border: none;
   outline: none;
   cursor: pointer;
-}
-
-.logoGEB {
-	height: 52px;
-	width: 113px;
-	background: url(./img/LogoGEB.png) no-repeat center;
-	display: inline-block;
-	cursor: pointer;
 }
 
 header h4 {
@@ -1154,7 +1146,7 @@ overflow: auto;
 	font-size: 12px;
 }
 
-.selector h1, .informer h1 {
+.selector h1 {
   padding: 20px;
   background-color: #e84a5f;
   color: #fff;
@@ -1165,15 +1157,26 @@ overflow: auto;
   margin: 0;
 }
 
-.informer h1 {
-  font-size: 1.3em;
-  font-weight: 400;
+.drawer_header {
+	display: flex;
+	align-items: center;
+	background-color: #e84a5f;
 }
 
-.informer h1 b {
-  text-transform: none;
-  font-weight: 400;
-  margin-left: 5px;
+.header_info {
+	background-color: #e84a5f;
+	display: flex;
+	align-items: center;
+}
+
+.header_info h1 {
+  font-size: 1.3em;
+	font-weight: 400;
+	color: #fff;
+  text-transform: uppercase;
+  text-align: left;
+	margin: 0;
+	padding: 20px;
 }
 
 .iconsection {
@@ -1382,7 +1385,7 @@ div[id*="panel"] button:hover {
 .geobtn {
   border: none;
   background-color: transparent;
-  color: #e84a5f;
+  color: #fff;
   outline: none;
   cursor: pointer;
   border-bottom: 1px solid transparent;
@@ -2158,11 +2161,7 @@ tspan, .vx-axis-label {
 	right: 20px;
 }
 
-.login .npcontent  {
-	padding: 15px;
-}
-
-.login {
+.uim_modal {
 	position: fixed;
 	width: 300px;
 	background-color: #ffffff;
@@ -2171,12 +2170,21 @@ tspan, .vx-axis-label {
 	right: 0;
 	border-radius: 5px 0 0 5px;
 	padding: 140px 20px 30px;
-	background-image: url(./img/login.png);/*
-	background-image: url(./img/bgmountain.png);*/
+}
+
+.uim_modal.loginModal {
+	background-image: url(./img/login.png);
+	/*background-image: url(./img/bgmountain.png);*/
 	background-repeat: no-repeat;
 }
 
-.login:hover {
+.uim_modal.userModal {
+	background-image: url(./img/LogoGEB.png);
+	background-position: 50% 20%;
+	background-repeat: no-repeat;
+}
+
+.uim_modal:hover {
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
@@ -2193,7 +2201,7 @@ tspan, .vx-axis-label {
 	color: #aaa;
 }
 
-.loginbtn {
+.loginbtn, .logoutbtn {
 	margin-top: 30px;
 	outline: none;
 	cursor: pointer;
@@ -2206,7 +2214,7 @@ tspan, .vx-axis-label {
 	font-size: 12px;
 }
 
-.login .closebtn {
+.uim_modal .closebtn {
 	color: #ea485f;
 	position: relative;
 }

@@ -244,28 +244,24 @@ class Drawer extends React.Component {
             generalArea={generalArea}
             selection={hFPSelection}
             setSelection={setHFPSelection}
+            matchColor={matchColor}
           />
         ),
       },
     ];
     return (
       <div className="informer">
-        <button
-          className="geobtn"
-          type="button"
-          onClick={handlerBackButton}
-        >
-          <BackIcon />
-        </button>
-        <div className="iconsection mt2" />
-        <h1>
-          {`${area.name} /`}
-          <br />
-          {geofence.name}
-          <b>
-            {subLayerName}
-          </b>
-        </h1>
+        <div className="drawer_header">
+          <button
+            className="geobtn"
+            type="button"
+            onClick={handlerBackButton}
+          >
+            <BackIcon />
+          </button>
+          {/* TODO: when replacing for actual value, it must be without decimals */}
+          <div>hectáreas totales 5,306,866 ha</div>
+        </div>
         { !subLayerName && (
           <TabContainer
             initialSelectedIndex={0}

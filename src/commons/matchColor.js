@@ -45,6 +45,14 @@ const match = {
     palette: 'Bosques Secos',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
+  currentHFP: {
+    palette: 'currentHFP',
+    sort: ['Natural', 'Baja', 'Media', 'Alta'],
+  },
+  persistenceHFP: {
+    palette: 'persistenceHFP',
+    sort: ['Estable natural', 'Dinámica', 'Estable alta'],
+  },
   default: {
     palette: 'default',
   },
@@ -92,13 +100,10 @@ const matchColor = (type) => {
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
       };
+    case 'persistenceHFP':
+    case 'currentHFP':
     case 'coverage':
     case 'biomeComp':
-      return (value) => {
-        const idx = sort.indexOf(value);
-        if (idx === -1) return palette[palette.length - 1];
-        return palette[idx];
-      };
     case 'pa':
       return (value) => {
         const idx = sort.indexOf(value);

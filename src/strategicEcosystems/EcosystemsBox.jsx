@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DetailsView from './DetailsView';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 
 /**
  * Give format to a big number
@@ -98,11 +98,11 @@ class EcosystemsBox extends Component {
               {!stopLoad
                 && (item.area !== 0 && item.area !== '0')
                   && (
-                    <RenderGraph
-                      graph="SmallBarStackGraph"
+                    <GraphLoader
+                      graphType="SmallBarStackGraph"
                       data={this.preProcessData(item.type, item.area, total)}
-                      zScale={matchColor('se')}
                       units="ha"
+                      zScale={matchColor('se')}
                     />
                   )
               }

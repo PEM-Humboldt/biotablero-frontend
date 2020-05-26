@@ -6,7 +6,12 @@ import CurrentFootprint from '../humanFootprint/CurrentFootprint';
 import TimelineFootprint from '../humanFootprint/TimelineFootprint';
 import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
-const HumanFootprint = ({ generalArea, selection, setSelection }) => {
+const HumanFootprint = ({
+  generalArea,
+  matchColor,
+  selection,
+  setSelection,
+}) => {
   const componentsArray = [{
     label: {
       id: 'Actual',
@@ -19,6 +24,7 @@ const HumanFootprint = ({ generalArea, selection, setSelection }) => {
     component: (
       <CurrentFootprint
         generalArea={generalArea}
+        matchColor={matchColor}
       />
     ),
   },
@@ -51,6 +57,7 @@ const HumanFootprint = ({ generalArea, selection, setSelection }) => {
     component: (
       <PersistenceFooprint
         generalArea={generalArea}
+        matchColor={matchColor}
       />
     ),
   },
@@ -70,6 +77,11 @@ HumanFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
+  matchColor: PropTypes.func,
+};
+
+HumanFootprint.defaultProps = {
+  matchColor: () => {},
 };
 
 export default HumanFootprint;

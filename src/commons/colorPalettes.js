@@ -86,5 +86,16 @@ export default {
     '#a8daca', // Humedales
     '#ccb325', // Bosques Secos
   ],
+  currentHFP: [
+    '#3fbf9f',
+    '#d5a529',
+    '#e66c29',
+    '#cf324e',
+  ],
+  persistenceHFP: [
+    '#3fbf9f',
+    '#646e55',
+    '#cf324e',
+  ],
   default: ['#345b6b'],
 };

@@ -7,7 +7,6 @@ const LargeBarStackGraph = (props) => {
     data,
     labelX,
     labelY,
-    width,
     height,
     zScale,
     padding,
@@ -41,7 +40,7 @@ const LargeBarStackGraph = (props) => {
   const keys = data.map(item => String(item.key));
 
   return (
-    <div style={{ width, height }}>
+    <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data, labelY)}
         keys={keys}
@@ -102,7 +101,6 @@ LargeBarStackGraph.propTypes = {
   data: PropTypes.array.isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.number,
   height: PropTypes.number,
   zScale: PropTypes.func,
   padding: PropTypes.number,
@@ -111,7 +109,6 @@ LargeBarStackGraph.propTypes = {
 LargeBarStackGraph.defaultProps = {
   labelX: '',
   labelY: '',
-  width: 581,
   height: 150,
   zScale: () => {},
   padding: 0.25,

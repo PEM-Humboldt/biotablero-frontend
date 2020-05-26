@@ -7,7 +7,7 @@ import DondeIcon from '@material-ui/icons/Beenhere';
 import BackIcon from '@material-ui/icons/FirstPage';
 import { ParentSize } from '@vx/responsive';
 import SaveIcon from '@material-ui/icons/Save';
-import DownloadIcon from '@material-ui/icons/FileDownload';
+import DownloadIcon from '@material-ui/icons/GetApp';
 import RestAPI from '../api/RestAPI';
 
 import CustomInputNumber from './CustomInputNumber';
@@ -18,6 +18,7 @@ import TableStylized from '../commons/TableStylized';
 import NewBiomeForm from './NewBiomeForm';
 import StrategiesBox from './StrategiesBox';
 import ConfirmationModal from '../ConfirmationModal';
+import AppContext from '../AppContext';
 
 const styles = () => ({
   root: {
@@ -452,8 +453,9 @@ class Drawer extends React.Component {
       companyId,
       projectId,
       updateCurrentBiome,
-      userId,
     } = this.props;
+    let { user } = this.context;
+    if (!user) user = { id: null };
     const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
     const strategiesToSave = selectedStrategies.map(strategy => ({
       id_biome: biome.id,
@@ -461,7 +463,7 @@ class Drawer extends React.Component {
       id_subzone: subBasin.id,
       id_strategy: strategy.id,
       area: strategy.value,
-      id_user: userId,
+      id_user: user.id,
     }));
     RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
       .then(() => {
@@ -678,7 +680,7 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      areaName, back, basinName, colors, classes, subAreaName, biomesImpacted, currentBiome,
+      back, colors, classes, biomesImpacted, currentBiome,
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
@@ -689,17 +691,16 @@ class Drawer extends React.Component {
 
     return (
       <div className="informer">
-        <button type="button" className="geobtn" onClick={() => back()}>
-          <BackIcon />
-        </button>
-        <h1>
-          {`${areaName} /`}
-          <br />
-          {subAreaName}
-          <b>
-            {basinName}
-          </b>
-        </h1>
+        <div className="drawer_header">
+          <button
+            className="geobtn"
+            type="button"
+            onClick={() => back()}
+          >
+            <BackIcon />
+          </button>
+          <div />
+        </div>
         <TabContainer
           initialSelectedIndex={0}
           classes={classes}
@@ -801,15 +802,14 @@ class Drawer extends React.Component {
   }
 }
 
+Drawer.contextType = AppContext;
+
 Drawer.propTypes = {
-  areaName: PropTypes.string,
   back: PropTypes.func,
-  basinName: PropTypes.string,
   colors: PropTypes.array,
   classes: PropTypes.object.isRequired,
   currentBiome: PropTypes.string,
   biomesImpacted: PropTypes.array,
-  subAreaName: PropTypes.string,
   // Function to handle onClick event on the graph
   showStrategies: PropTypes.func.isRequired,
   updateCurrentBiome: PropTypes.func,
@@ -820,22 +820,17 @@ Drawer.propTypes = {
   impactedBiomesDecisionTree: PropTypes.object,
   reportConnError: PropTypes.func,
   clickedStrategy: PropTypes.number,
-  userId: PropTypes.number,
 };
 
 Drawer.defaultProps = {
-  areaName: '',
   back: () => {},
-  basinName: '',
   colors: ['#eabc47'],
   currentBiome: '',
   biomesImpacted: [],
   updateCurrentBiome: () => {},
-  subAreaName: '',
   impactedBiomesDecisionTree: {},
   reportConnError: () => {},
   clickedStrategy: null,
-  userId: null,
 };
 
 export default withStyles(styles)(Drawer);

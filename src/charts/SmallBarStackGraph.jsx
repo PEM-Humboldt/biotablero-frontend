@@ -5,7 +5,6 @@ import { ResponsiveBar } from '@nivo/bar';
 const SmallBarStackGraph = (props) => {
   const {
     data,
-    width,
     height,
     zScale,
     units,
@@ -30,7 +29,7 @@ const SmallBarStackGraph = (props) => {
       key: 'key',
     };
     rawData.forEach((item) => {
-      transformedData[String(item.key || item.type)] = Number(item.area || item.percentage);
+      transformedData[String(item.key || item.type || 'undefined')] = Number(item.area || item.percentage);
     });
     return [transformedData];
   };
@@ -48,7 +47,7 @@ const SmallBarStackGraph = (props) => {
    * @param {string} id id or key for each value
    * @returns {number} percentage associated to each value
    */
-  const getPercentage = id => data.find(item => item.key || item.type === id).percentage;
+  const getPercentage = id => data.find(item => (item.key || item.type || 'undefined') === id).percentage;
 
   /**
    * Get tooltip for graph component according to id of bar
@@ -71,7 +70,7 @@ const SmallBarStackGraph = (props) => {
         }}
         >
           <strong style={{ color: '#e84a5f' }}>
-            {id}
+            {(id !== 'undefined') ? id : ''}
           </strong>
           <div>
             {`${numberWithCommas(value.toFixed(2))} ${units}`}
@@ -87,7 +86,7 @@ const SmallBarStackGraph = (props) => {
   };
 
   return (
-    <div style={{ width, height }}>
+    <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data)}
         keys={keys}
@@ -100,6 +99,7 @@ const SmallBarStackGraph = (props) => {
           left: 5,
         }}
         padding={0.19}
+        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
         colors={obj => zScale(obj.id)}
         enableGridY={false}
         axisLeft={null}
@@ -123,14 +123,12 @@ const SmallBarStackGraph = (props) => {
 
 SmallBarStackGraph.propTypes = {
   data: PropTypes.array.isRequired,
-  width: PropTypes.number,
   height: PropTypes.number,
   zScale: PropTypes.func,
   units: PropTypes.string,
 };
 
 SmallBarStackGraph.defaultProps = {
-  width: 581,
   height: 30,
   zScale: () => {},
   units: 'ha',
