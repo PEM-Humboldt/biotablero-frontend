@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
 
 const PersistenceFootprint = ({ generalArea, matchColor }) => (
@@ -12,8 +12,8 @@ const PersistenceFootprint = ({ generalArea, matchColor }) => (
       Estable natural, Dinámica, Estable alta
     </h6>
     <div className="graficaeco">
-      <RenderGraph
-        graph="SmallBarStackGraph"
+      <GraphLoader
+        graphType="SmallBarStackGraph"
         data={[
           {
             area: 732206, key: 'Estable natural', percentage: 0.394059131,
@@ -23,8 +23,8 @@ const PersistenceFootprint = ({ generalArea, matchColor }) => (
             area: 1054399, key: 'Estable alta', percentage: 0.567457182,
           },
         ]}
-        zScale={matchColor('persistenceHFP')}
         units="ha"
+        zScale={matchColor('persistenceHFP')}
       />
     </div>
   </div>

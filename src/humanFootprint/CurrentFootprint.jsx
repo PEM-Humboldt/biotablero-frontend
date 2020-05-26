@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RenderGraph from '../charts/RenderGraph';
+import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
 
 const CurrentFootprint = ({ generalArea, matchColor }) => (
@@ -15,8 +15,8 @@ const CurrentFootprint = ({ generalArea, matchColor }) => (
       Natural, Baja, Media y Alta
     </h6>
     <div className="graficaeco">
-      <RenderGraph
-        graph="SmallBarStackGraph"
+      <GraphLoader
+        graphType="SmallBarStackGraph"
         data={[
           {
             area: 732206, percentage: 0.29405913098887474, type: 'Natural',
@@ -27,8 +27,8 @@ const CurrentFootprint = ({ generalArea, matchColor }) => (
           }, {
             area: 521758, percentage: 0.30040794096373092685, type: 'Alta',
           }]}
-        zScale={matchColor('currentHFP')}
         units="ha"
+        zScale={matchColor('currentHFP')}
       />
     </div>
   </div>
