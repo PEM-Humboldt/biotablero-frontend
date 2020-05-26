@@ -177,5 +177,37 @@ const dataLines = [
   },
 ];
 
+const changeValues = [
+  {
+    axis: 'y',
+    value: 15,
+    type: 'Natural',
+    legendPosition: 'top-left',
+  },
+  {
+    axis: 'y',
+    value: 30,
+    type: 'Baja',
+    legendPosition: 'top-left',
+  },
+  {
+    axis: 'y',
+    value: 60,
+    type: 'Media',
+    legendPosition: 'top-left',
+  },
+  {
+    axis: 'y',
+    value: 100,
+    type: 'Alta',
+    legendPosition: 'top-left',
+  },
+];
 
-export { description, dataGEB, dataLines };
+
+export {
+  changeValues,
+  description,
+  dataGEB,
+  dataLines,
+};
