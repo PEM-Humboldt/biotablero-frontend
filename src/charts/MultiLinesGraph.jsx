@@ -7,7 +7,7 @@ const MultiLinesGraph = ({
 }) => (
   <div style={{ height: '490px', width: '450px' }}>
     <ResponsiveLine
-      onClick={point => setSelection(point.serieId || point.id)}
+      onMouseEnter={point => setSelection(point.serieId || point.id)}
       data={data}
       curve="cardinal"
       margin={{
@@ -76,7 +76,7 @@ const MultiLinesGraph = ({
           itemWidth: 90,
           itemHeight: 80,
           itemOpacity: 0.75,
-          onClick: point => setSelection(point.serieId || point.id),
+          onMouseEnter: point => setSelection(point.serieId || point.id),
           symbolSize: 12,
           symbolShape: 'circle',
           symbolBorderColor: 'rgba(0, 0, 0, .5)',
