@@ -14,7 +14,7 @@ const description = companyName => (
       <b>
         especies
       </b>
-      {' "y" '}
+      y
       <b>
         paisaje
       </b>
@@ -181,25 +181,41 @@ const changeValues = [
   {
     axis: 'y',
     value: 15,
-    type: 'Natural',
+    legend: 'Natural',
+    lineStyle: { stroke: '#09646b', strokeWidth: 2 },
+    textStyle: {
+      fill: '#7b7b99',
+    },
     legendPosition: 'top-left',
   },
   {
     axis: 'y',
     value: 30,
-    type: 'Baja',
+    legend: 'Baja',
+    lineStyle: { stroke: '#09646b', strokeWidth: 2 },
+    textStyle: {
+      fill: '#7b7b99',
+    },
     legendPosition: 'top-left',
   },
   {
     axis: 'y',
     value: 60,
-    type: 'Media',
+    legend: 'Media',
+    lineStyle: { stroke: '#09646b', strokeWidth: 2 },
+    textStyle: {
+      fill: '#7b7b99',
+    },
     legendPosition: 'top-left',
   },
   {
     axis: 'y',
     value: 100,
-    type: 'Alta',
+    legend: 'Alta',
+    lineStyle: { stroke: '#09646b', strokeWidth: 2 },
+    textStyle: {
+      fill: '#7b7b99',
+    },
     legendPosition: 'top-left',
   },
 ];
