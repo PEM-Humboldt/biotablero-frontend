@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 
 const MultiLinesGraph = ({
-  setSelection, colors, data,
+  markers, setSelection, colors, data,
 }) => (
   <div style={{ height: '490px', width: '450px' }}>
     <ResponsiveLine
       onMouseEnter={point => setSelection(point.serieId || point.id)}
       data={data}
       curve="cardinal"
+      markers={markers}
+      crosshairType="cross"
       margin={{
         top: 50,
         left: 60,
@@ -98,6 +100,12 @@ const MultiLinesGraph = ({
 );
 
 MultiLinesGraph.propTypes = {
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    axis: PropTypes.string,
+    value: PropTypes.number,
+    type: PropTypes.string,
+    legendPosition: PropTypes.string,
+  })),
   setSelection: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
@@ -112,6 +120,7 @@ MultiLinesGraph.propTypes = {
 };
 
 MultiLinesGraph.defaultProps = {
+  markers: [],
 };
 
 export default MultiLinesGraph;

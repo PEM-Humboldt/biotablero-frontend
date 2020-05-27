@@ -4,7 +4,7 @@ import GeneralArea from '../commons/GeneralArea';
 import MultiLinesGraph from '../charts/MultiLinesGraph';
 import matchColor from '../commons/matchColor';
 
-import { dataLines } from '../search/assets/selectorData';
+import { changeValues, dataLines } from '../search/assets/selectorData';
 
 const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
   <div className="graphcontainer pt5">
@@ -23,6 +23,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
           setSelection={setSelection}
           colors={matchColor(selection)}
           data={dataLines}
+          markers={changeValues}
         />
       </h2>
       Área del ecosistema dentro de la unidad de consulta: 332 ha
