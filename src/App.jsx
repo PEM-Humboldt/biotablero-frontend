@@ -39,6 +39,7 @@ class App extends React.Component {
         <Search
           areaTypeId={query.get('area_type')}
           areaIdId={query.get('area_id')}
+          setHeaderNames={this.setHeaderNames}
         />
       </Layout>
     );
@@ -62,7 +63,7 @@ class App extends React.Component {
           showFooterLogos={false}
           headerNames={headerNames}
         >
-          <Compensation />
+          <Compensation setHeaderNames={this.setHeaderNames} />
         </Layout>
       );
     }
@@ -91,7 +92,6 @@ class App extends React.Component {
         value={{
           user,
           setUser: this.setUser,
-          setHeaderNames: this.setHeaderNames,
         }}
       >
         <main>

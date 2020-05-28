@@ -1,12 +1,10 @@
-/** eslint verified */
+import { withRouter } from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
+import L from 'leaflet';
+import Modal from '@material-ui/core/Modal';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import L from 'leaflet';
-import PropTypes from 'prop-types';
-import Modal from '@material-ui/core/Modal';
-import { withRouter } from 'react-router-dom';
-
-import CloseIcon from '@material-ui/icons/Close';
 import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
@@ -104,8 +102,8 @@ class Search extends Component {
             areaTypeId,
             areaIdId,
             history,
+            setHeaderNames,
           } = this.props;
-          const { setHeaderNames } = this.context;
           if (!areaTypeId || !areaIdId) return;
 
           const inputArea = tempAreaList.find(area => area.id === areaTypeId);
@@ -386,7 +384,7 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    const { setHeaderNames } = this.context;
+    const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
         { areaId: nameToOn },
@@ -420,8 +418,7 @@ class Search extends Component {
         areaId: null,
       };
     }, () => {
-      const { history } = this.props;
-      const { setHeaderNames } = this.context;
+      const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
       setHeaderNames(null, null);
     });
@@ -598,6 +595,7 @@ Search.propTypes = {
       pathname: PropTypes.string,
     }),
   }),
+  setHeaderNames: PropTypes.func.isRequired,
 };
 
 Search.defaultProps = {
