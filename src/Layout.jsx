@@ -9,11 +9,13 @@ const Layout = ({
   moduleName,
   showFooterLogos,
   headerNames,
+  uim,
 }) => (
   <div>
     <Header
       activeModule={moduleName}
       headerNames={headerNames}
+      uim={uim}
     />
     {children}
     <Footer showLogos={showFooterLogos} />
@@ -25,6 +27,7 @@ Layout.propTypes = {
   moduleName: PropTypes.string,
   showFooterLogos: PropTypes.bool,
   headerNames: PropTypes.object,
+  uim: PropTypes.node,
 };
 
 Layout.defaultProps = {
@@ -32,6 +35,7 @@ Layout.defaultProps = {
   moduleName: '',
   showFooterLogos: true,
   headerNames: {},
+  uim: null,
 };
 
 export default Layout;

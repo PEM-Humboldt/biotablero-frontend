@@ -1,6 +1,6 @@
+import { PropTypes } from 'prop-types';
 import React, { Component } from 'react';
 
-import AppContext from './AppContext';
 import RestAPI from './api/RestAPI';
 
 class Login extends Component {
@@ -27,7 +27,7 @@ class Login extends Component {
 
   render() {
     const { username, password } = this.state;
-    const { setUser } = this.context;
+    const { setUser } = this.props;
     return (
       <div className="login">
         <form onSubmit={event => event.preventDefault()}>
@@ -74,6 +74,8 @@ class Login extends Component {
   }
 }
 
-Login.contextType = AppContext;
+Login.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
 
 export default Login;
