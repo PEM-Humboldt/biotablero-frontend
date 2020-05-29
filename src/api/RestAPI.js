@@ -1,6 +1,7 @@
 /** eslint verified */
 import axios, { CancelToken } from 'axios';
 import tmpCurrentHF from './tmp_current_hf.json';
+import tmpHFPersistence from './tmp_hf_persistence.json';
 
 class RestAPI {
   /**
@@ -231,7 +232,17 @@ class RestAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
   static requestCurrentHFGeometry() {
-    return { request: Promise.resolve(tmpCurrentHF) };
+    return Promise.resolve(tmpCurrentHF);
+  }
+
+  /**
+   * Get the geometry associated for the footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestHFPersistenceGeometry() {
+    return Promise.resolve(tmpHFPersistence);
   }
 
 
