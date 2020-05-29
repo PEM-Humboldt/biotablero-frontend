@@ -257,7 +257,7 @@ class Search extends Component {
       activeLayer: layer,
       requestSource: null,
     });
-    RestAPI.requestBiomesbyEA(layer.id)
+    RestAPI.requestBiomesbyEAGeometry(layer.id)
       .then((res) => {
         if (res.features) {
           this.setState(prevState => ({
@@ -331,7 +331,7 @@ class Search extends Component {
         },
       }));
     } else if (show && idLayer && idLayer !== 'se') {
-      const { request, source } = RestAPI.requestGeometryByArea(idLayer);
+      const { request, source } = RestAPI.requestGeofenceGeometry(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 

@@ -189,14 +189,6 @@ class RestAPI {
   }
 
   /**
-   * Request the geometry of the biomes by EA
-   * @param {String} eaId id ea to request
-   */
-  static requestBiomesbyEA(eaId) {
-    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
-  }
-
-  /**
    * Request area information for biomes by subzones
    *
    * @param {String} eaId EA id to request
@@ -211,17 +203,26 @@ class RestAPI {
   /** ******************** */
 
   /**
+   * Request the geometry of the biomes by EA
+   * @param {String} eaId id ea to request
+   */
+  static requestBiomesbyEAGeometry(eaId) {
+    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
+  }
+
+  /**
    * Request area geometry by id
    *
    * @param {String} areaId area id to request
    */
-  static requestGeometryByArea(areaId) {
+  static requestGeofenceGeometry(areaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
       source,
     };
   }
+
 
   /** ******************* */
   /** COMPENSATION MODULE */
@@ -371,6 +372,10 @@ class RestAPI {
   static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.getEndpointUrl(
     `companies/${companyId}/projects/${projectId}/strategies/download`,
   )
+
+  /** ************** */
+  /** BASE FUNCTIONS */
+  /** ************** */
 
   /**
    * Request an endpoint through a GET request
