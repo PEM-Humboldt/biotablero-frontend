@@ -116,8 +116,9 @@ class Search extends Component {
               this.setState(
                 { areaId: inputId },
                 () => {
-                  const { areaType, areaId } = this.state;
+                  const { areaType, areaId, activeLayer } = this.state;
                   setHeaderNames(areaType.name, areaId.name);
+                  if (!activeLayer) this.loadLayer(areaId);
                 },
               );
             } else {
