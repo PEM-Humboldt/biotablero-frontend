@@ -1,5 +1,6 @@
 /** eslint verified */
 import axios, { CancelToken } from 'axios';
+import tmpCurrentHF from './tmp_current_hf.json';
 
 class RestAPI {
   /**
@@ -221,6 +222,16 @@ class RestAPI {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
       source,
     };
+  }
+
+  /**
+   * Get the geometry associated for the current footprint in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestCurrentHFGeometry() {
+    return { request: Promise.resolve(tmpCurrentHF) };
   }
 
 
