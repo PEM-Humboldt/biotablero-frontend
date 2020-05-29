@@ -207,6 +207,8 @@ class RestAPI {
   /**
    * Request the geometry of the biomes by EA
    * @param {String} eaId id ea to request
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestBiomesbyEAGeometry(eaId) {
     return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
@@ -216,6 +218,9 @@ class RestAPI {
    * Request area geometry by id
    *
    * @param {String} areaId area id to request
+   *
+   * @return {Object} Including Promise with layer object to load in map and source reference to
+   * cancel the request
    */
   static requestGeofenceGeometry(areaId) {
     const source = CancelToken.source();
@@ -230,6 +235,8 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestCurrentHFGeometry() {
     return Promise.resolve(tmpCurrentHF);
@@ -240,6 +247,8 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestHFPersistenceGeometry() {
     return Promise.resolve(tmpHFPersistence);
