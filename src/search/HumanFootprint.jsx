@@ -8,7 +8,6 @@ import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = ({
   generalArea,
-  matchColor,
   selection,
   setSelection,
 }) => {
@@ -24,7 +23,6 @@ const HumanFootprint = ({
     component: (
       <CurrentFootprint
         generalArea={generalArea}
-        matchColor={matchColor}
       />
     ),
   },
@@ -57,7 +55,6 @@ const HumanFootprint = ({
     component: (
       <PersistenceFooprint
         generalArea={generalArea}
-        matchColor={matchColor}
       />
     ),
   },
@@ -77,11 +74,6 @@ HumanFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
-  matchColor: PropTypes.func,
-};
-
-HumanFootprint.defaultProps = {
-  matchColor: () => {},
 };
 
 export default HumanFootprint;
