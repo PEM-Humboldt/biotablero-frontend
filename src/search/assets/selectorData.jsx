@@ -177,58 +177,50 @@ const dataLines = [
   },
 ];
 
-const changeValues = [
+const changeValues = [ // Used colors from colorPalettes.jsx (currentHFPLower)
   {
     axis: 'y',
     value: 15,
     legend: 'Natural',
-    lineStyle: { stroke: '#3fbf9f', strokeWidth: 1 },
+    lineStyle: { stroke: '#addccd', strokeWidth: 1 },
     textStyle: {
-      fill: '#3fbf9f',
+      fill: '#addccd',
       fontSize: 9,
     },
     legendPosition: 'bottom-right',
-    orient: 'top',
-    tickRotation: -90,
   },
   {
     axis: 'y',
     value: 30,
     legend: 'Baja',
-    lineStyle: { stroke: '#d5a529', strokeWidth: 1 },
+    lineStyle: { stroke: '#eacf94', strokeWidth: 1 },
     textStyle: {
-      fill: '#d5a529',
+      fill: '#eacf94',
       fontSize: 9,
     },
     legendPosition: 'bottom-right',
-    orient: 'top',
-    tickRotation: -90,
   },
   {
     axis: 'y',
     value: 60,
     legend: 'Media',
-    lineStyle: { stroke: '#e66c29', strokeWidth: 1 },
+    lineStyle: { stroke: '#f2b48a', strokeWidth: 1 },
     textStyle: {
-      fill: '#e66c29',
+      fill: '#f2b48a',
       fontSize: 9,
     },
     legendPosition: 'bottom-right',
-    orient: 'top',
-    tickRotation: -90,
   },
   {
     axis: 'y',
     value: 100,
     legend: 'Alta',
-    lineStyle: { stroke: '#cf324e', strokeWidth: 1 },
+    lineStyle: { stroke: '#e49c98', strokeWidth: 1 },
     textStyle: {
-      fill: '#cf324e',
+      fill: '#e49c98',
       fontSize: 9,
     },
     legendPosition: 'bottom-right',
-    orient: 'top',
-    tickRotation: -90,
   },
 ];
 
