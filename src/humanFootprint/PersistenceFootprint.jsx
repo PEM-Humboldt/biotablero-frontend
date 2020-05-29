@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
+import matchColor from '../commons/matchColor';
 
-const PersistenceFootprint = ({ generalArea, matchColor }) => (
+const PersistenceFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -32,11 +33,6 @@ const PersistenceFootprint = ({ generalArea, matchColor }) => (
 
 PersistenceFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  matchColor: PropTypes.func,
-};
-
-PersistenceFootprint.defaultProps = {
-  matchColor: () => {},
 };
 
 export default PersistenceFootprint;

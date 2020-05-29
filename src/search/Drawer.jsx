@@ -244,7 +244,6 @@ class Drawer extends React.Component {
             generalArea={generalArea}
             selection={hFPSelection}
             setSelection={setHFPSelection}
-            matchColor={matchColor}
           />
         ),
       },
