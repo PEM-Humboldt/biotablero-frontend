@@ -100,10 +100,6 @@ const matchColor = (type) => {
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
       };
-    case 'persistenceHFP':
-    case 'currentHFP':
-    case 'coverage':
-    case 'biomeComp':
     case 'pa':
       return (value) => {
         const idx = sort.indexOf(value);
@@ -114,6 +110,10 @@ const matchColor = (type) => {
         cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
         return palette[counter];
       };
+    case 'persistenceHFP':
+    case 'currentHFP':
+    case 'coverage':
+    case 'biomeComp':
     case 'Área total':
     case 'Páramo':
     case 'Humedales':
