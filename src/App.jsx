@@ -1,14 +1,15 @@
-/** eslint verified */
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Home from './Home';
-import Search from './Search';
-import Compensation from './Compensation';
-import Indicator from './Indicator';
-import './assets/main.css';
-import Layout from './Layout';
 import AppContext from './AppContext';
+import Compensation from './Compensation';
+import Home from './Home';
+import Indicator from './Indicator';
+import Layout from './Layout';
+import Search from './Search';
+import Uim from './Uim';
+
+import './assets/main.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -21,50 +22,50 @@ class App extends React.Component {
 
   buildQuery = queryString => new URLSearchParams(queryString);
 
+  setUser = user => this.setState({ user });
+
+  setHeaderNames = (parent, child) => {
+    this.setState({
+      headerNames: { parent, child },
+    });
+  }
+
   loadHome = ({ location }) => (
-    <Layout showFooterLogos>
-      <Home referrer={location.referrer} />
-    </Layout>
+    this.loadComponent({
+      footerLogos: true,
+      component: (<Home referrer={location.referrer} />),
+    })
   );
 
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
-    const { headerNames } = this.state;
-    return (
-      <Layout
-        moduleName="Consultas"
-        showFooterLogos={false}
-        headerNames={headerNames}
-      >
-        <Search
-          areaTypeId={query.get('area_type')}
-          areaIdId={query.get('area_id')}
-        />
-      </Layout>
-    );
+    return this.loadComponent({
+      footerLogos: false,
+      name: 'Consultas',
+      component: (<Search
+        areaTypeId={query.get('area_type')}
+        areaIdId={query.get('area_id')}
+        setHeaderNames={this.setHeaderNames}
+      />),
+    });
   }
 
   loadIndicator = () => (
-    <Layout
-      moduleName="Indicadores"
-      showFooterLogos
-    >
-      <Indicator />
-    </Layout>
+    this.loadComponent({
+      footerLogos: true,
+      name: 'Indicadores',
+      component: (<Indicator />),
+    })
   );
 
   loadCompensator = ({ location }) => {
-    const { user, headerNames } = this.state;
+    const { user } = this.state;
     if (user) {
-      return (
-        <Layout
-          moduleName="Compensaciones"
-          showFooterLogos={false}
-          headerNames={headerNames}
-        >
-          <Compensation />
-        </Layout>
-      );
+      return this.loadComponent({
+        footerLogos: false,
+        name: 'Compensaciones',
+        component: (<Compensation setHeaderNames={this.setHeaderNames} />),
+      });
     }
     return (
       <Redirect
@@ -76,23 +77,25 @@ class App extends React.Component {
     );
   }
 
-  setUser = user => this.setState({ user });
-
-  setHeaderNames = (parent, child) => {
-    this.setState({
-      headerNames: { parent, child },
-    });
+  loadComponent = ({ footerLogos, name, component }) => {
+    const { headerNames } = this.state;
+    return (
+      <Layout
+        moduleName={name}
+        showFooterLogos={footerLogos}
+        headerNames={headerNames}
+        uim={<Uim setUser={this.setUser} />}
+      >
+        {component}
+      </Layout>
+    );
   }
 
   render() {
     const { user } = this.state;
     return (
       <AppContext.Provider
-        value={{
-          user,
-          setUser: this.setUser,
-          setHeaderNames: this.setHeaderNames,
-        }}
+        value={{ user }}
       >
         <main>
           <Switch>

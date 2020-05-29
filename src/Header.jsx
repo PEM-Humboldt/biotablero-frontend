@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 
 import Menu from './header/Menu';
 import Title from './header/Title';
-import Uim from './Uim';
 
 const Header = ({
   activeModule,
   headerNames: { parent, child },
+  uim,
 }) => (
   <header className="cabezote">
     <div>
@@ -30,7 +30,7 @@ const Header = ({
           <div className="iconsection" />
         </div>
       )}
-      <Uim />
+      {uim}
     </div>
   </header>
 );
@@ -41,11 +41,13 @@ Header.propTypes = {
     parent: PropTypes.string,
     child: PropTypes.string,
   }),
+  uim: PropTypes.node,
 };
 
 Header.defaultProps = {
   activeModule: '',
   headerNames: { parent: null, child: null },
+  uim: null,
 };
 
 export default Header;
