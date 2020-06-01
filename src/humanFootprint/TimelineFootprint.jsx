@@ -7,7 +7,7 @@ import matchColor from '../commons/matchColor';
 import { changeValues, dataLines } from '../search/assets/selectorData';
 
 const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
-  <div className="graphcontainer pt5">
+  <div className="graphcontainer pt5" style={{width: '100%' }}>
     <GeneralArea
       value={generalArea}
     />
