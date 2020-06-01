@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import GeneralArea from '../commons/GeneralArea';
-import MultiLinesGraph from '../charts/MultiLinesGraph';
+import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
 import { changeValues, dataLines } from '../search/assets/selectorData';
 
 const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
-  <div className="graphcontainer pt5" style={{width: '100%' }}>
+  <div className="graphcontainer pt5" style={{ width: '100%' }}>
     <GeneralArea
       value={generalArea}
     />
@@ -17,9 +17,10 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
     <h6>
       Diferenciados entre área total y cada ecosistema estratégico
     </h6>
-    <div className="graficaeco">
+    <div className="graficaeco" style={{ width: '100%' }}>
       <h2>
-        <MultiLinesGraph
+        <GraphLoader
+          graphType="MultiLinesGraph"
           setSelection={setSelection}
           colors={matchColor(selection)}
           data={dataLines}

@@ -6,6 +6,7 @@ import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
+import MultiLinesGraph from './MultiLinesGraph';
 
 const GraphLoader = (props) => {
   const {
@@ -24,6 +25,8 @@ const GraphLoader = (props) => {
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     zScale,
     padding,
+    setSelection,
+    markers,
   } = props;
 
   // While data is being retrieved from server
@@ -127,6 +130,17 @@ const GraphLoader = (props) => {
           height="100"
         />
       );
+    case 'MultiLinesGraph':
+      return (
+        <MultiLinesGraph
+          setSelection={setSelection}
+          colors={colors}
+          data={data}
+          markers={markers}
+          width={width}
+          height="490px"
+        />
+      );
     default:
       return '';
   }
@@ -148,6 +162,13 @@ GraphLoader.propTypes = {
   elementOnClick: PropTypes.func,
   zScale: PropTypes.func,
   padding: PropTypes.number,
+  setSelection: PropTypes.func,
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    axis: PropTypes.string,
+    value: PropTypes.number,
+    type: PropTypes.string,
+    legendPosition: PropTypes.string,
+  })),
 };
 
 GraphLoader.defaultProps = {
@@ -157,7 +178,7 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: 400,
+  width: '100%',
   height: 250,
   showOnlyTitle: false,
   units: 'ha',
@@ -165,6 +186,8 @@ GraphLoader.defaultProps = {
   elementOnClick: () => {},
   zScale: () => {},
   padding: 0.25,
+  setSelection: () => {},
+  markers: [],
 };
 
 export default GraphLoader;
