@@ -62,7 +62,7 @@ const CompensationFactor = (props) => {
                   labelX="Hectáreas"
                   labelY="Factor de Compensación"
                   units="ha"
-                  zScale={matchColor('fc')}
+                  colors={matchColor('fc')}
                   padding={0.25}
                 />
               ),
@@ -78,7 +78,7 @@ const CompensationFactor = (props) => {
                   labelX="Hectáreas"
                   labelY="Biomas"
                   units="ha"
-                  zScale={matchColor('biomas')}
+                  colors={matchColor('biomas')}
                   padding={0.3}
                 />
               ),
@@ -94,7 +94,7 @@ const CompensationFactor = (props) => {
                   labelX="Hectáreas"
                   labelY="Regiones Bióticas"
                   units="ha"
-                  zScale={matchColor('bioticReg')}
+                  colors={matchColor('bioticReg')}
                   padding={0.3}
                 />
               ),

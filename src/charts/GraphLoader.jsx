@@ -26,8 +26,8 @@ const GraphLoader = (props) => {
     showOnlyTitle,
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
-    zScale,
     padding,
+    zScale,
   } = props;
 
   // While data is being retrieved from server
@@ -56,7 +56,7 @@ const GraphLoader = (props) => {
             labelX={labelX}
             labelY={labelY}
             height={150}
-            zScale={zScale}
+            colors={colors}
             padding={padding}
           />
         ) : ('')
@@ -161,7 +161,6 @@ GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
   data: PropTypes.any, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
-  colors: PropTypes.array,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
@@ -171,6 +170,7 @@ GraphLoader.propTypes = {
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
+  colors: PropTypes.func,
   zScale: PropTypes.func,
   padding: PropTypes.number,
 };
@@ -178,7 +178,6 @@ GraphLoader.propTypes = {
 GraphLoader.defaultProps = {
   graphTitle: '',
   data: [],
-  colors: ['blue'],
   activeBiome: '',
   labelX: '',
   labelY: '',
@@ -188,6 +187,7 @@ GraphLoader.defaultProps = {
   units: 'ha',
   withLeyends: false,
   elementOnClick: () => {},
+  colors: () => {},
   zScale: () => {},
   padding: 0.25,
 };
