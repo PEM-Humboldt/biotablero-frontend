@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 
 const MultiLinesGraph = ({
-  markers, setSelection, colors, data, labelX,
+  markers, setSelection, colors, data, labelX, labelY,
 }) => (
   <div style={{ height: '490px', width: '450px' }}>
     <ResponsiveLine
@@ -42,7 +42,7 @@ const MultiLinesGraph = ({
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: 'Indice promedio Huella Humana',
+        legend: labelY,
         legendOffset: -40,
         legendPosition: 'middle',
       }}
@@ -118,11 +118,13 @@ MultiLinesGraph.propTypes = {
     }),
   })).isRequired,
   labelX: PropTypes.string,
+  labelY: PropTypes.string,
 };
 
 MultiLinesGraph.defaultProps = {
   markers: [],
   labelX: '',
+  labelY: '',
 };
 
 export default MultiLinesGraph;

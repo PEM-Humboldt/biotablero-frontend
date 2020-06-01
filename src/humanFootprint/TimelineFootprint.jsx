@@ -25,6 +25,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
           data={dataLines}
           markers={changeValues}
           labelX="Año"
+          labelY="Indice promedio Huella Humana"
         />
       </h2>
       Área del ecosistema dentro de la unidad de consulta: 332 ha
