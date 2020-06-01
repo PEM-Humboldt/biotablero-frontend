@@ -24,6 +24,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
           colors={matchColor(selection)}
           data={dataLines}
           markers={changeValues}
+          labelX="Año"
         />
       </h2>
       Área del ecosistema dentro de la unidad de consulta: 332 ha
