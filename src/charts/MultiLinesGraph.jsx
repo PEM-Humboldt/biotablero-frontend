@@ -10,7 +10,7 @@ const MultiLinesGraph = ({
   height,
   width,
 }) => (
-  <div style={{ height: { height }, width: { width } }}>
+  <div style={{ height, width }}>
     <ResponsiveLine
       onClick={point => setSelection(point.serieId || point.id)}
       data={data}
