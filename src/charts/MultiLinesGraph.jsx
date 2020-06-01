@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 
 const MultiLinesGraph = ({
-  markers, setSelection, colors, data,
+  markers,
+  setSelection,
+  colors,
+  data,
+  height,
+  width,
 }) => (
-  <div style={{ height: '490px', width: '450px' }}>
+  <div style={{ height: { height }, width: { width } }}>
     <ResponsiveLine
       onClick={point => setSelection(point.serieId || point.id)}
       data={data}
@@ -117,10 +122,14 @@ MultiLinesGraph.propTypes = {
       })),
     }),
   })).isRequired,
+  height: PropTypes.string,
+  width: PropTypes.string,
 };
 
 MultiLinesGraph.defaultProps = {
   markers: [],
+  height: '490px',
+  width: '100%',
 };
 
 export default MultiLinesGraph;
