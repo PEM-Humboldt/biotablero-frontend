@@ -14,7 +14,7 @@ const description = companyName => (
       <b>
         especies
       </b>
-      y
+      {' y '}
       <b>
         paisaje
       </b>
