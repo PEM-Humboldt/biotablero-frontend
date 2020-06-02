@@ -55,7 +55,7 @@ const match = {
   },
   eqEcoCompensation: {
     palette: 'eqEcoCompensation',
-    sort: ['medium', 'low', 'high', 'selected']
+    sort: ['medium', 'low', 'high', 'selected'],
   },
   default: {
     palette: 'default',
