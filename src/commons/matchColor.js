@@ -30,11 +30,11 @@ const match = {
     sort: ['high', 'medium', 'low'],
   },
   'Área total': {
-    palette: 'Área total',
+    palette: 'aTotal',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   Páramo: {
-    palette: 'Páramo',
+    palette: 'paramo',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   Humedales: {

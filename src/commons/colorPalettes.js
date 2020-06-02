@@ -62,13 +62,13 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
-  'Área total': [ // Área total seleccionada
+  aTotal: [ // Área total seleccionada
     '#cf324e', // Área total
     '#878cae', // Páramo
     '#a8daca', // Humedales
     '#e8cc8e', // Bosques Secos
   ],
-  Páramo: [ // Páramo seleccionado
+  paramo: [ // Páramo seleccionado
     '#cf324e', // Área total
     '#29418a', // Páramo
     '#a8daca', // Humedales
