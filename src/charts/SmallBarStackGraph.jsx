@@ -6,7 +6,7 @@ const SmallBarStackGraph = (props) => {
   const {
     data,
     height,
-    zScale,
+    colors,
     units,
   } = props;
 
@@ -100,7 +100,7 @@ const SmallBarStackGraph = (props) => {
         }}
         padding={0.19}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        colors={obj => zScale(obj.id)}
+        colors={obj => colors(obj.id)}
         enableGridY={false}
         axisLeft={null}
         enableLabel={false}
@@ -124,13 +124,13 @@ const SmallBarStackGraph = (props) => {
 SmallBarStackGraph.propTypes = {
   data: PropTypes.array.isRequired,
   height: PropTypes.number,
-  zScale: PropTypes.func,
+  colors: PropTypes.func,
   units: PropTypes.string,
 };
 
 SmallBarStackGraph.defaultProps = {
   height: 30,
-  zScale: () => {},
+  colors: () => {},
   units: 'ha',
 };
 

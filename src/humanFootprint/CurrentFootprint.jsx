@@ -29,7 +29,7 @@ const CurrentFootprint = ({ generalArea }) => (
             area: 521758, percentage: 0.30040794096373092685, type: 'Alta',
           }]}
         units="ha"
-        zScale={matchColor('currentHFP')}
+        colors={matchColor('currentHFP')}
       />
     </div>
   </div>

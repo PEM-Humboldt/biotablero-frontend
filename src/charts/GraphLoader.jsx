@@ -27,7 +27,6 @@ const GraphLoader = (props) => {
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
-    zScale,
   } = props;
 
   // While data is being retrieved from server
@@ -66,7 +65,7 @@ const GraphLoader = (props) => {
           <SmallBarStackGraph
             data={data}
             height={30}
-            zScale={zScale}
+            colors={colors}
             units={units}
           />
         ) : ('')
@@ -171,7 +170,6 @@ GraphLoader.propTypes = {
   withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
   colors: PropTypes.func,
-  zScale: PropTypes.func,
   padding: PropTypes.number,
 };
 
@@ -188,7 +186,6 @@ GraphLoader.defaultProps = {
   withLeyends: false,
   elementOnClick: () => {},
   colors: () => {},
-  zScale: () => {},
   padding: 0.25,
 };
 
