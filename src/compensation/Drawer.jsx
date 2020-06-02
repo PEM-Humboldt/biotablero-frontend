@@ -806,7 +806,7 @@ Drawer.contextType = AppContext;
 
 Drawer.propTypes = {
   back: PropTypes.func,
-  colors: PropTypes.array,
+  colors: PropTypes.func,
   classes: PropTypes.object.isRequired,
   currentBiome: PropTypes.string,
   biomesImpacted: PropTypes.array,
@@ -824,7 +824,7 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   back: () => {},
-  colors: ['#eabc47'],
+  colors: () => {},
   currentBiome: '',
   biomesImpacted: [],
   updateCurrentBiome: () => {},

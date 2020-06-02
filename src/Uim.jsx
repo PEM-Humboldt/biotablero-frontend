@@ -1,3 +1,4 @@
+import { PropTypes } from 'prop-types';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import AccountCircleOutlined from '@material-ui/icons/AccountCircleOutlined';
 import CloseIcon from '@material-ui/icons/Close';
@@ -57,7 +58,8 @@ class Uim extends Component {
 
   render() {
     const { loginModal, userModal, logoutModal } = this.state;
-    const { user, setUser } = this.context;
+    const { setUser } = this.props;
+    const { user } = this.context;
     const whichModal = user
       ? { modal: 'userModal', state: userModal }
       : { modal: 'loginModal', state: loginModal };
@@ -93,7 +95,7 @@ class Uim extends Component {
               <CloseIcon />
             </button>
             { !user
-              ? (<Login />)
+              ? (<Login setUser={setUser} />)
               : (<UserInfo logoutHandler={this.showModal('logoutModal')} />)
             }
           </div>
@@ -115,5 +117,8 @@ class Uim extends Component {
 }
 
 Uim.contextType = AppContext;
+Uim.propTypes = {
+  setUser: PropTypes.func.isRequired,
+};
 
 export default Uim;

@@ -1,6 +1,7 @@
 import CloseIcon from '@material-ui/icons/Close';
 import L from 'leaflet';
 import Modal from '@material-ui/core/Modal';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
 import { ConstructDataForCompensation } from './commons/ConstructDataForSelector';
@@ -150,7 +151,7 @@ class Compensation extends Component {
         newState.loadingModal = false;
         return newState;
       }, () => {
-        const { setHeaderNames } = this.context;
+        const { setHeaderNames } = this.props;
         const {
           currentCompany,
           currentProject: { id_region: idRegion, label, prj_status: prjStatus },
@@ -299,7 +300,7 @@ class Compensation extends Component {
       currentRegion: null,
       biomesImpacted: [],
     }, () => {
-      const { setHeaderNames } = this.context;
+      const { setHeaderNames } = this.props;
       setHeaderNames(null, null);
     });
     this.loadProjectsList();
@@ -532,5 +533,9 @@ class Compensation extends Component {
 }
 
 Compensation.contextType = AppContext;
+
+Compensation.propTypes = {
+  setHeaderNames: PropTypes.func.isRequired,
+};
 
 export default Compensation;

@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import ReactChartkick, { LineChart } from 'react-chartkick';
-import Chart from 'chart.js';
 import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
-
-ReactChartkick.addAdapter(Chart);
 
 const GraphLoader = (props) => {
   const {
@@ -46,114 +42,93 @@ const GraphLoader = (props) => {
     );
   }
 
-  return (
-    <div>
-      {
-        (graphType === 'LargeBarStackGraph') ? (
-          <LargeBarStackGraph
-            data={data}
-            labelX={labelX}
-            labelY={labelY}
-            height={150}
-            colors={colors}
-            padding={padding}
-          />
-        ) : ('')
-      }
-      {
-        (graphType === 'SmallBarStackGraph') ? (
-          <SmallBarStackGraph
-            data={data}
-            height={30}
-            colors={colors}
-            units={units}
-          />
-        ) : ('')
-      }
-      {
-        (graphType === 'BarVertical') ? (
-          <div>
-            <BarGraph
-              dataJSON={data}
-              colors={colors}
-              graphTitle={graphTitle}
-              labelX={labelX}
-              labelY={labelY}
-              width={width}
-              height={height}
-              units={units}
-              withLeyends={withLeyends}
-            />
-          </div>
-        ) : ('')
-      }
-      {
-        (graphType === 'Dots') ? (
-          // TODO: Move this custom content to src/compesation/Drawer
-          <div className="graphcard pb">
-            <h2>
-              <DownloadIcon className="icondown" />
-              Ecosistemas Equivalentes
-            </h2>
-            { !showOnlyTitle && (
-              <div>
-                <p className="legcomp">
-                  Agrega uno o varios Biomas a tus opciones de compensación
-                  <br />
-                  FC
-                  <b>
-                    Alto
-                  </b>
-                  <i>
-                    Medio
-                  </i>
-                  <em>
-                    Bajo
-                  </em>
-                  y cantidad de area afectada
-                </p>
-                <DotsGraph
-                  activeBiome={activeBiome}
-                  colors={colors}
-                  dataJSON={data}
-                  elementOnClick={elementOnClick}
-                  graphTitle={graphTitle}
-                  labelX={labelX}
-                  labelY={labelY}
-                  height="280"
-                  units={units}
-                  width={width}
-                />
-              </div>
-            )}
-          </div>
-        ) : ('')
-      }
-      {
-        (graphType === 'DotInfo') ? (
-          <div>
-            <DotInfo
-              data={data}
-              width={width}
-              height="100"
-            />
-          </div>
-        ) : ('')
-      }
-      {
-        (graphType === 'LineChart') ? (
-          <div>
-            <LineChart
-              // data={{ '2017-05-13': 2, '2017-05-14': 5 }}
-              data={data}
-              width={width}
-              height="100"
-            />
-          </div>
-        ) : ('')
-      }
-    </div>
-  );
+  switch (graphType) {
+    case 'LargeBarStackGraph':
+      return (
+        <LargeBarStackGraph
+          data={data}
+          labelX={labelX}
+          labelY={labelY}
+          height={150}
+          colors={colors}
+          padding={padding}
+        />
+      );
+    case 'SmallBarStackGraph':
+      return (
+        <SmallBarStackGraph
+          data={data}
+          height={30}
+          colors={colors}
+          units={units}
+        />
+      );
+    case 'BarVertical':
+      return (
+        <BarGraph
+          dataJSON={data}
+          colors={colors}
+          graphTitle={graphTitle}
+          labelX={labelX}
+          labelY={labelY}
+          width={width}
+          height={height}
+          units={units}
+          withLeyends={withLeyends}
+        />
+      );
+    case 'Dots':
+      return (
+        // TODO: Move this custom content to src/compesation/Drawer
+        <div className="graphcard pb">
+          <h2>
+            <DownloadIcon className="icondown" />
+            Ecosistemas Equivalentes
+          </h2>
+          { !showOnlyTitle && (
+            <div>
+              <p className="legcomp">
+                Agrega uno o varios Biomas a tus opciones de compensación
+                <br />
+                FC
+                <b>
+                  Alto
+                </b>
+                <i>
+                  Medio
+                </i>
+                <em>
+                  Bajo
+                </em>
+                y cantidad de area afectada
+              </p>
+              <DotsGraph
+                activeBiome={activeBiome}
+                colors={colors}
+                dataJSON={data}
+                elementOnClick={elementOnClick}
+                graphTitle={graphTitle}
+                labelX={labelX}
+                labelY={labelY}
+                height="280"
+                units={units}
+                width={width}
+              />
+            </div>
+          )}
+        </div>
+      );
+    case 'DotInfo':
+      return (
+        <DotInfo
+          data={data}
+          width={width}
+          height="100"
+        />
+      );
+    default:
+      return '';
+  }
 };
 
 GraphLoader.propTypes = {
