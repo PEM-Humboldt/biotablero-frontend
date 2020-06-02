@@ -4,7 +4,14 @@ import { ResponsiveLine } from '@nivo/line';
 
 const MultiLinesGraph = (props) => {
   const {
-    markers, setSelection, colors, data, labelX, labelY,
+    colors,
+    data,
+    labelX,
+    labelY,
+    markers,
+    setSelection,
+    yMin,
+    yMax,
   } = props;
   return (
     <div style={{ height: '490px', width: '450px' }}>
@@ -23,8 +30,8 @@ const MultiLinesGraph = (props) => {
         xScale={{ type: 'point' }}
         yScale={{
           type: 'linear',
-          min: 0,
-          max: 100,
+          min: yMin,
+          max: yMax,
           stacked: false,
           reverse: false,
         }}
@@ -122,12 +129,16 @@ MultiLinesGraph.propTypes = {
   })).isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
+  yMin: PropTypes.number,
+  yMax: PropTypes.number,
 };
 
 MultiLinesGraph.defaultProps = {
   markers: [],
   labelX: '',
   labelY: '',
+  yMin: 0,
+  yMax: 100,
 };
 
 export default MultiLinesGraph;
