@@ -83,7 +83,9 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
       <h2>
         <MultiLinesGraph
           setSelection={setSelection}
-          colors={matchColor(Object.keys(matchColorAndData).find(key => matchColorAndData[key] === selection))}
+          colors={matchColor(Object.keys(matchColorAndData).find(
+            key => matchColorAndData[key] === selection,
+          ))}
           data={dataLines}
           markers={changeValues}
           labelX="Año"
