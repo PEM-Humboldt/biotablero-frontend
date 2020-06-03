@@ -29,20 +29,20 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
-  'Área total': {
-    palette: 'aTotal',
+  hfTotal: {
+    palette: 'hfTotal',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  Páramo: {
-    palette: 'paramo',
+  hfMoor: {
+    palette: 'hfMoor',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  Humedales: {
-    palette: 'Humedales',
+  hfWetlands: {
+    palette: 'hfWetlands',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  'Bosques Secos': {
-    palette: 'Bosques Secos',
+  hfDryForest: {
+    palette: 'hfDryForest',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   currentHFP: {
@@ -118,10 +118,10 @@ const matchColor = (type) => {
     case 'currentHFP':
     case 'coverage':
     case 'biomeComp':
-    case 'Área total':
-    case 'Páramo':
-    case 'Humedales':
-    case 'Bosques Secos':
+    case 'hfTotal':
+    case 'hfMoor':
+    case 'hfWetlands':
+    case 'hfDryForest':
     case 'eqEcoCompensation':
     case 'se':
       return (value) => {
