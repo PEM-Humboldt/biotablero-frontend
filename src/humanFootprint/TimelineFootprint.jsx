@@ -4,8 +4,6 @@ import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
-import { dataLines } from '../search/assets/selectorData';
-
 const matchColorAndData = {
   'Área total': 'hfTotal',
   Páramo: 'hfMoor',
@@ -68,39 +66,48 @@ const changeValues = [
   },
 ];
 
-const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
-  <div className="graphcontainer pt5" style={{ width: '100%' }}>
-    <GeneralArea
-      value={generalArea}
-    />
-    <h4>
-      Valores promedio en el área
-    </h4>
-    <h6>
-      Diferenciados entre área total y cada ecosistema estratégico
-    </h6>
-    <div className="graficaeco" style={{ width: '100%' }}>
-      <h2>
-        <GraphLoader
-          graphType="MultiLinesGraph"
-          setSelection={setSelection}
-          colors={matchColor(matchColorAndData[selection])}
-          data={dataLines}
-          markers={changeValues}
-          labelX="Año"
-          labelY="Indice promedio Huella Humana"
-          width="100%"
-        />
-      </h2>
-      Área del ecosistema dentro de la unidad de consulta: 332 ha
+const TimelineFootprint = (props) => {
+  const {
+    generalArea,
+    selection,
+    setSelection,
+    data,
+  } = props;
+  return (
+    <div className="graphcontainer pt5" style={{ width: '100%' }}>
+      <GeneralArea
+        value={generalArea}
+      />
+      <h4>
+        Valores promedio en el área
+      </h4>
+      <h6>
+        Diferenciados entre área total y cada ecosistema estratégico
+      </h6>
+      <div className="graficaeco" style={{ width: '100%' }}>
+        <h2>
+          <GraphLoader
+            graphType="MultiLinesGraph"
+            setSelection={setSelection}
+            colors={matchColor(matchColorAndData[selection])}
+            data={data}
+            markers={changeValues}
+            labelX="Año"
+            labelY="Indice promedio Huella Humana"
+            width="100%"
+          />
+        </h2>
+        Área del ecosistema dentro de la unidad de consulta: 332 ha
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 TimelineFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default TimelineFootprint;

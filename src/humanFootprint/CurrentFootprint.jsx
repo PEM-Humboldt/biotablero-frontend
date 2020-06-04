@@ -4,7 +4,7 @@ import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
 import matchColor from '../commons/matchColor';
 
-const CurrentFootprint = ({ generalArea }) => (
+const CurrentFootprint = ({ generalArea, data }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -18,16 +18,7 @@ const CurrentFootprint = ({ generalArea }) => (
     <div className="graficaeco">
       <GraphLoader
         graphType="SmallBarStackGraph"
-        data={[
-          {
-            area: 732206, percentage: 0.29405913098887474, type: 'Natural',
-          }, {
-            area: 70749, percentage: 0.03807574570316536, type: 'Baja',
-          }, {
-            area: 533399, percentage: 0.3674571823442289, type: 'Media',
-          }, {
-            area: 521758, percentage: 0.30040794096373092685, type: 'Alta',
-          }]}
+        data={data}
         units="ha"
         colors={matchColor('currentHFP')}
       />
@@ -37,6 +28,7 @@ const CurrentFootprint = ({ generalArea }) => (
 
 CurrentFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default CurrentFootprint;
