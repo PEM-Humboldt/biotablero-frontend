@@ -53,10 +53,6 @@ const match = {
     palette: 'persistenceHFP',
     sort: ['Estable natural', 'Dinámica', 'Estable alta'],
   },
-  eqEcoCompensation: {
-    palette: 'eqEcoCompensation',
-    sort: ['medium', 'low', 'high', 'selected'],
-  },
   default: {
     palette: 'default',
   },
@@ -122,7 +118,6 @@ const matchColor = (type) => {
     case 'hfMoor':
     case 'hfWetlands':
     case 'hfDryForest':
-    case 'eqEcoCompensation':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);

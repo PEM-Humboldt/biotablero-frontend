@@ -103,11 +103,5 @@ export default {
     '#646e55',
     '#cf324e',
   ],
-  eqEcoCompensation: [ // Colors for equivalent ecosystems types
-    '#eabc47', // medium
-    '#51b4c1', // low
-    '#ea495f', // high
-    '#2a363b', // selected
-  ],
   default: ['#345b6b'],
 };
