@@ -102,7 +102,7 @@ class EcosystemsBox extends Component {
                       graphType="SmallBarStackGraph"
                       data={this.preProcessData(item.type, item.area, total)}
                       units="ha"
-                      zScale={matchColor('se')}
+                      colors={matchColor('se')}
                     />
                   )
               }

@@ -48,6 +48,7 @@ class Drawer extends React.Component {
     const {
       geofence, area,
     } = this.props;
+
     const searchId = geofence.id || geofence.name;
 
     RestAPI.requestGeofenceDetails(area.id, searchId)
@@ -199,6 +200,8 @@ class Drawer extends React.Component {
       subLayerName,
       area,
       matchColor,
+      hFPSelection,
+      setHFPSelection,
     } = this.props;
     const {
       data: {
@@ -239,7 +242,8 @@ class Drawer extends React.Component {
         component: (
           <HumanFootprint
             generalArea={generalArea}
-            matchColor={matchColor}
+            selection={hFPSelection}
+            setSelection={setHFPSelection}
           />
         ),
       },
@@ -344,6 +348,8 @@ Drawer.propTypes = {
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
+  hFPSelection: PropTypes.string.isRequired,
+  setHFPSelection: PropTypes.func.isRequired,
 };
 
 Drawer.defaultProps = {

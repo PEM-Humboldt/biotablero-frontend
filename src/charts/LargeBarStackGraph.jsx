@@ -8,7 +8,7 @@ const LargeBarStackGraph = (props) => {
     labelX,
     labelY,
     height,
-    zScale,
+    colors,
     padding,
   } = props;
 
@@ -53,7 +53,7 @@ const LargeBarStackGraph = (props) => {
           left: 40,
         }}
         padding={padding}
-        colors={obj => zScale(obj.id)}
+        colors={obj => colors(obj.id)}
         enableGridX
         borderWidth={0}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
@@ -102,7 +102,7 @@ LargeBarStackGraph.propTypes = {
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   height: PropTypes.number,
-  zScale: PropTypes.func,
+  colors: PropTypes.func,
   padding: PropTypes.number,
 };
 
@@ -110,7 +110,7 @@ LargeBarStackGraph.defaultProps = {
   labelX: '',
   labelY: '',
   height: 150,
-  zScale: () => {},
+  colors: () => {},
   padding: 0.25,
 };
 

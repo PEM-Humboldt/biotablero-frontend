@@ -29,6 +29,22 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
+  hfTotal: {
+    palette: 'hfTotal',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  hfMoor: {
+    palette: 'hfMoor',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  hfWetlands: {
+    palette: 'hfWetlands',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
+  hfDryForest: {
+    palette: 'hfDryForest',
+    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  },
   currentHFP: {
     palette: 'currentHFP',
     sort: ['Natural', 'Baja', 'Media', 'Alta'],
@@ -84,16 +100,6 @@ const matchColor = (type) => {
         cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
         return palette[counter];
       };
-    case 'persistenceHFP':
-    case 'currentHFP':
-    case 'coverage':
-    case 'biomeComp':
-    case 'se':
-      return (value) => {
-        const idx = sort.indexOf(value);
-        if (idx === -1) return palette[palette.length - 1];
-        return palette[idx];
-      };
     case 'pa':
       return (value) => {
         const idx = sort.indexOf(value);
@@ -103,6 +109,20 @@ const matchColor = (type) => {
         cache.pa[value] = palette[counter];
         cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
         return palette[counter];
+      };
+    case 'persistenceHFP':
+    case 'currentHFP':
+    case 'coverage':
+    case 'biomeComp':
+    case 'hfTotal':
+    case 'hfMoor':
+    case 'hfWetlands':
+    case 'hfDryForest':
+    case 'se':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return palette[palette.length - 1];
+        return palette[idx];
       };
     default:
       return palette[0];

@@ -50,7 +50,7 @@ const showDetails = (
             graphType="SmallBarStackGraph"
             data={setCoverageValues(coverage)}
             units="ha"
-            zScale={matchColor('coverage')}
+            colors={matchColor('coverage')}
           />
         )
       }
@@ -63,7 +63,7 @@ const showDetails = (
             graphType="SmallBarStackGraph"
             data={setPAValues(protectedArea)}
             units="ha"
-            zScale={matchColor('pa')}
+            colors={matchColor('pa')}
           />
         )
       }

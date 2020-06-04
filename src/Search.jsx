@@ -43,11 +43,19 @@ class Search extends Component {
       areaType: null,
       areaId: null,
       requestSource: null,
+      hFPSelection: null,
     };
   }
 
   componentDidMount() {
     const { areaTypeId, areaIdId, history } = this.props;
+    const { hFPSelection } = this.state;
+    if (!hFPSelection) {
+      this.setState(prevState => ({
+        ...prevState,
+        hFPSelection: 'Área total',
+      }));
+    }
     if (!areaTypeId || !areaIdId) {
       history.replace(history.location.pathname);
     }
@@ -464,6 +472,7 @@ class Search extends Component {
       dataError,
       openInfoGraph,
       geofencesArray,
+      hFPSelection,
     } = this.state;
     return (
       <div>
@@ -568,6 +577,13 @@ class Search extends Component {
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
+                hFPSelection={hFPSelection}
+                setHFPSelection={(text) => {
+                  this.setState(prevState => ({
+                    ...prevState,
+                    hFPSelection: text,
+                  }));
+                }}
               />
             )}
             { areaType && areaId && (areaType.id === 'se') && (

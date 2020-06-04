@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
+import matchColor from '../commons/matchColor';
 
-const CurrentFootprint = ({ generalArea, matchColor }) => (
+const CurrentFootprint = ({ generalArea }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -28,7 +29,7 @@ const CurrentFootprint = ({ generalArea, matchColor }) => (
             area: 521758, percentage: 0.30040794096373092685, type: 'Alta',
           }]}
         units="ha"
-        zScale={matchColor('currentHFP')}
+        colors={matchColor('currentHFP')}
       />
     </div>
   </div>
@@ -36,11 +37,6 @@ const CurrentFootprint = ({ generalArea, matchColor }) => (
 
 CurrentFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  matchColor: PropTypes.func,
-};
-
-CurrentFootprint.defaultProps = {
-  matchColor: () => {},
 };
 
 export default CurrentFootprint;

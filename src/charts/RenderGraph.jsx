@@ -23,14 +23,13 @@ const RenderGraph = (props) => {
     graph,
     data,
     graphTitle,
-    colors,
     labelX,
     labelY,
     handlerInfoGraph,
     openInfoGraph,
     graphDescription,
     units,
-    zScale,
+    colors,
     padding,
   } = props;
   // While data is being retrieved from server
@@ -66,7 +65,6 @@ const RenderGraph = (props) => {
             openInfoGraph={openInfoGraph}
             graphDescription={graphDescription}
             units={units}
-            zScale={zScale}
             padding={padding}
           />
         )
@@ -79,28 +77,26 @@ RenderGraph.propTypes = {
   graph: PropTypes.string.isRequired,
   data: PropTypes.any, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
-  colors: PropTypes.array,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   handlerInfoGraph: PropTypes.func,
   openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   units: PropTypes.string,
-  zScale: PropTypes.func,
+  colors: PropTypes.func,
   padding: PropTypes.number,
 };
 
 RenderGraph.defaultProps = {
   data: null,
   graphTitle: '',
-  colors: ['blue'],
   labelX: '',
   labelY: '',
   handlerInfoGraph: () => {},
   openInfoGraph: null,
   graphDescription: null,
   units: 'ha',
-  zScale: () => {},
+  colors: () => {},
   padding: 0.25,
 };
 
