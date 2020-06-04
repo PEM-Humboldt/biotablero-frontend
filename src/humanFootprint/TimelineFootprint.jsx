@@ -7,10 +7,10 @@ import matchColor from '../commons/matchColor';
 import { dataLines } from '../search/assets/selectorData';
 
 const matchColorAndData = {
-  hfTotal: 'Área total',
-  hfMoor: 'Páramo',
-  hfWetlands: 'Humedales',
-  hfDryForest: 'Bosques Secos',
+  'Área total': 'hfTotal',
+  Páramo: 'hfMoor',
+  Humedales: 'hfWetlands',
+  'Bosques Secos': 'hfDryForest',
 };
 
 const changeValues = [
@@ -83,9 +83,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
       <h2>
         <MultiLinesGraph
           setSelection={setSelection}
-          colors={matchColor(Object.keys(matchColorAndData).find(
-            key => matchColorAndData[key] === selection,
-          ))}
+          colors={matchColor(matchColorAndData[selection])}
           data={dataLines}
           markers={changeValues}
           labelX="Año"
