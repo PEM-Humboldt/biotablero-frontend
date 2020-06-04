@@ -25,7 +25,7 @@ const PersistenceFootprint = ({ generalArea }) => (
           },
         ]}
         units="ha"
-        zScale={matchColor('persistenceHFP')}
+        colors={matchColor('persistenceHFP')}
       />
     </div>
   </div>

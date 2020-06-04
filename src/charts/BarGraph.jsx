@@ -2,7 +2,7 @@ import React from 'react';
 import { Bar } from '@vx/shape';
 import { Group } from '@vx/group';
 import { AxisBottom, AxisLeft } from '@vx/axis';
-import { scaleLinear, scaleBand, scaleOrdinal } from '@vx/scale';
+import { scaleLinear, scaleBand } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import Descargar from '@material-ui/icons/Save';
 
@@ -50,7 +50,6 @@ export default withTooltip(({
   // Crea los límites del gráfico
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
-  const keys = dataJSON.map(item => item.key || item.type);
 
   // Ayuda a obtener el dato que se quiere
   const x = d => d.name;
@@ -67,10 +66,6 @@ export default withTooltip(({
     rangeRound: [yMax, 0],
     domain: [0, Math.max(...data.map(y))],
     nice: false,
-  });
-  const zScale = scaleOrdinal({
-    domain: keys,
-    range: colors,
   });
 
   // Junta las escalas y el accesor para construir cada punto
@@ -99,10 +94,10 @@ export default withTooltip(({
                 <Bar
                   x={xPoint(d)}
                   y={yMax - barHeight}
-                  z={zScale(d)}
+                  z={colors(d)}
                   height={barHeight}
                   width={xScale.bandwidth()}
-                  fill={zScale(d.name || d.key)}
+                  fill={colors(d.name || d.key)}
                   onMouseLeave={() => () => {
                     tooltipTimeout = setTimeout(() => {
                       hideTooltip();

@@ -14,7 +14,7 @@ const description = companyName => (
       <b>
         especies
       </b>
-      y
+      {' y '}
       <b>
         paisaje
       </b>
@@ -177,56 +177,7 @@ const dataLines = [
   },
 ];
 
-const changeValues = [ // Used colors from colorPalettes.jsx (currentHFPLower)
-  {
-    axis: 'y',
-    value: 15,
-    legend: 'Natural',
-    lineStyle: { stroke: '#addccd', strokeWidth: 1 },
-    textStyle: {
-      fill: '#addccd',
-      fontSize: 9,
-    },
-    legendPosition: 'bottom-right',
-  },
-  {
-    axis: 'y',
-    value: 30,
-    legend: 'Baja',
-    lineStyle: { stroke: '#eacf94', strokeWidth: 1 },
-    textStyle: {
-      fill: '#eacf94',
-      fontSize: 9,
-    },
-    legendPosition: 'bottom-right',
-  },
-  {
-    axis: 'y',
-    value: 60,
-    legend: 'Media',
-    lineStyle: { stroke: '#f2b48a', strokeWidth: 1 },
-    textStyle: {
-      fill: '#f2b48a',
-      fontSize: 9,
-    },
-    legendPosition: 'bottom-right',
-  },
-  {
-    axis: 'y',
-    value: 100,
-    legend: 'Alta',
-    lineStyle: { stroke: '#e49c98', strokeWidth: 1 },
-    textStyle: {
-      fill: '#e49c98',
-      fontSize: 9,
-    },
-    legendPosition: 'bottom-right',
-  },
-];
-
-
 export {
-  changeValues,
   description,
   dataGEB,
   dataLines,

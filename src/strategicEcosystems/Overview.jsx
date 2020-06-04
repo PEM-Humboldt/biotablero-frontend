@@ -105,7 +105,7 @@ const Overview = (props) => {
             graphType="SmallBarStackGraph"
             data={coverage}
             units="ha"
-            zScale={matchColor('coverage')}
+            colors={matchColor('coverage')}
           />
         </div>
         <h4>
@@ -123,7 +123,7 @@ const Overview = (props) => {
             graphType="SmallBarStackGraph"
             data={listPA}
             units="ha"
-            zScale={matchColor('pa')}
+            colors={matchColor('pa')}
           />
         </div>
         <div className="ecoest">

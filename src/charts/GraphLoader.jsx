@@ -23,7 +23,6 @@ const GraphLoader = (props) => {
     showOnlyTitle,
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
-    zScale,
     padding,
     setSelection,
     markers,
@@ -54,7 +53,7 @@ const GraphLoader = (props) => {
           labelX={labelX}
           labelY={labelY}
           height={150}
-          zScale={zScale}
+          colors={colors}
           padding={padding}
         />
       );
@@ -63,7 +62,7 @@ const GraphLoader = (props) => {
         <SmallBarStackGraph
           data={data}
           height={30}
-          zScale={zScale}
+          colors={colors}
           units={units}
         />
       );
@@ -150,17 +149,16 @@ GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
   data: PropTypes.any, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
-  colors: PropTypes.array,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.number,
+  width: PropTypes.string,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
-  zScale: PropTypes.func,
+  colors: PropTypes.func,
   padding: PropTypes.number,
   setSelection: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
@@ -174,7 +172,6 @@ GraphLoader.propTypes = {
 GraphLoader.defaultProps = {
   graphTitle: '',
   data: [],
-  colors: ['blue'],
   activeBiome: '',
   labelX: '',
   labelY: '',
@@ -184,7 +181,7 @@ GraphLoader.defaultProps = {
   units: 'ha',
   withLeyends: false,
   elementOnClick: () => {},
-  zScale: () => {},
+  colors: () => {},
   padding: 0.25,
   setSelection: () => {},
   markers: [],
