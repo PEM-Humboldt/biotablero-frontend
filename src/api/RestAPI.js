@@ -1,7 +1,7 @@
 /** eslint verified */
 import axios, { CancelToken } from 'axios';
-import tmpCurrentHF from './tmp_current_hf.json';
-import tmpHFPersistence from './tmp_hf_persistence.json';
+import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
+import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 
 class RestAPI {
   /**
@@ -239,7 +239,7 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestCurrentHFGeometry() {
-    return Promise.resolve(tmpCurrentHF);
+    return Promise.resolve(tmpCurrentHFGeo);
   }
 
   /**
@@ -251,7 +251,7 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestHFPersistenceGeometry() {
-    return Promise.resolve(tmpHFPersistence);
+    return Promise.resolve(tmpHFPersistenceGeo);
   }
 
 
