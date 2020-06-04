@@ -66,32 +66,40 @@ const changeValues = [
   },
 ];
 
-const TimelineFootprint = ({ generalArea, selection, setSelection, data }) => (
-  <div className="graphcontainer pt5">
-    <GeneralArea
-      value={generalArea}
-    />
-    <h4>
-      Valores promedio en el área
-    </h4>
-    <h6>
-      Diferenciados entre área total y cada ecosistema estratégico
-    </h6>
-    <div className="graficaeco">
-      <h2>
-        <MultiLinesGraph
-          setSelection={setSelection}
-          colors={matchColor(matchColorAndData[selection])}
-          data={data}
-          markers={changeValues}
-          labelX="Año"
-          labelY="Indice promedio Huella Humana"
-        />
-      </h2>
-      Área del ecosistema dentro de la unidad de consulta: 332 ha
+const TimelineFootprint = (props) => {
+  const {
+    generalArea,
+    selection,
+    setSelection,
+    data,
+  } = props;
+  return (
+    <div className="graphcontainer pt5">
+      <GeneralArea
+        value={generalArea}
+      />
+      <h4>
+        Valores promedio en el área
+      </h4>
+      <h6>
+        Diferenciados entre área total y cada ecosistema estratégico
+      </h6>
+      <div className="graficaeco">
+        <h2>
+          <MultiLinesGraph
+            setSelection={setSelection}
+            colors={matchColor(matchColorAndData[selection])}
+            data={data}
+            markers={changeValues}
+            labelX="Año"
+            labelY="Indice promedio Huella Humana"
+          />
+        </h2>
+        Área del ecosistema dentro de la unidad de consulta: 332 ha
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 TimelineFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
