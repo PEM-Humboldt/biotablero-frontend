@@ -4,8 +4,6 @@ import GeneralArea from '../commons/GeneralArea';
 import MultiLinesGraph from '../charts/MultiLinesGraph';
 import matchColor from '../commons/matchColor';
 
-import { dataLines } from '../search/assets/selectorData';
-
 const matchColorAndData = {
   'Área total': 'hfTotal',
   Páramo: 'hfMoor',
@@ -68,7 +66,7 @@ const changeValues = [
   },
 ];
 
-const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
+const TimelineFootprint = ({ generalArea, selection, setSelection, data }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -84,7 +82,7 @@ const TimelineFootprint = ({ generalArea, selection, setSelection }) => (
         <MultiLinesGraph
           setSelection={setSelection}
           colors={matchColor(matchColorAndData[selection])}
-          data={dataLines}
+          data={data}
           markers={changeValues}
           labelX="Año"
           labelY="Indice promedio Huella Humana"
@@ -99,6 +97,7 @@ TimelineFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default TimelineFootprint;

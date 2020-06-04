@@ -4,7 +4,7 @@ import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
 import matchColor from '../commons/matchColor';
 
-const PersistenceFootprint = ({ generalArea }) => (
+const PersistenceFootprint = ({ generalArea, data }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
       value={generalArea}
@@ -15,15 +15,7 @@ const PersistenceFootprint = ({ generalArea }) => (
     <div className="graficaeco">
       <GraphLoader
         graphType="SmallBarStackGraph"
-        data={[
-          {
-            area: 732206, key: 'Estable natural', percentage: 0.394059131,
-          }, {
-            area: 70749, key: 'Dinámica', percentage: 0.038075746,
-          }, {
-            area: 1054399, key: 'Estable alta', percentage: 0.567457182,
-          },
-        ]}
+        data={data}
         units="ha"
         colors={matchColor('persistenceHFP')}
       />
@@ -33,6 +25,7 @@ const PersistenceFootprint = ({ generalArea }) => (
 
 PersistenceFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
+  data: PropTypes.array.isRequired,
 };
 
 export default PersistenceFootprint;

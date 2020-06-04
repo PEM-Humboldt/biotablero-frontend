@@ -36,6 +36,9 @@ class Drawer extends React.Component {
         areaSE: null, // area fields for strategic ecosystems
         areaPA: null, // area fields for protected areas
         generalArea: 0, // general area value in the current geofence
+        currentHF: null,
+        hfPersistence: null,
+        hfTimeline: null,
       },
     };
   }
@@ -125,6 +128,66 @@ class Drawer extends React.Component {
         }));
       });
 
+    RestAPI.requestCurrentHF()
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            currentHF: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            currentHF: false,
+          },
+        }));
+      });
+
+    RestAPI.requestHFPersistence()
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            hfPersistence: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            hfPersistence: false,
+          },
+        }));
+      });
+
+    RestAPI.requestHFTimeline()
+      .then((res) => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            hfTimeline: res,
+          },
+        }));
+      })
+      .catch(() => {
+        this.setState(prevState => ({
+          ...prevState,
+          data: {
+            ...prevState.data,
+            hfTimeline: false,
+          },
+        }));
+      });
+
     if (area.id === 'ea') {
       RestAPI.requestBiomes(area.id, searchId)
         .then((res) => {
@@ -205,7 +268,16 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        fc, biomas, distritos, coverage, areaPA, areaSE, generalArea,
+        fc,
+        biomas,
+        distritos,
+        coverage,
+        areaPA,
+        areaSE,
+        generalArea,
+        currentHF,
+        hfPersistence,
+        hfTimeline,
       },
     } = this.state;
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
@@ -244,6 +316,9 @@ class Drawer extends React.Component {
             generalArea={generalArea}
             selection={hFPSelection}
             setSelection={setHFPSelection}
+            currentHF={currentHF}
+            hfPersistence={hfPersistence}
+            hfTimeline={hfTimeline}
           />
         ),
       },

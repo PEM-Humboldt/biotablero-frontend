@@ -1,7 +1,9 @@
-/** eslint verified */
 import axios, { CancelToken } from 'axios';
+import tmpCurrentHF from './tmp_current_hf.json';
 import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
+import tmpHFPersistence from './tmp_hf_persistence.json';
 import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
+import tmpHFTimeline from './tmp_hf_timeline.json';
 
 class RestAPI {
   /**
@@ -188,6 +190,43 @@ class RestAPI {
    */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
+  }
+
+  /**
+   * Get the current footprint data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the current human footprint
+   */
+  static requestCurrentHF() {
+    return Promise.resolve(tmpCurrentHF);
+  }
+
+  /**
+   * Get the persistence of human footprint data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
+   */
+  static requestHFPersistence() {
+    return Promise.resolve(tmpHFPersistence);
+  }
+
+  /**
+   * Get the human footprint timeline data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
+   * footprint timeline data
+   */
+  static requestHFTimeline() {
+    return Promise.resolve(tmpHFTimeline);
   }
 
   /**
