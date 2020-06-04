@@ -92,12 +92,6 @@ export default {
     '#e66c29',
     '#cf324e',
   ],
-  currentHFPLower: [
-    '#addccd',
-    '#eacf94',
-    '#f2b48a',
-    '#e49c98',
-  ],
   persistenceHFP: [
     '#3fbf9f',
     '#646e55',
