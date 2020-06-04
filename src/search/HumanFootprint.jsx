@@ -10,6 +10,9 @@ const HumanFootprint = ({
   generalArea,
   selection,
   setSelection,
+  currentHF,
+  hfPersistence,
+  hfTimeline,
 }) => {
   const componentsArray = [{
     label: {
@@ -23,6 +26,7 @@ const HumanFootprint = ({
     component: (
       <CurrentFootprint
         generalArea={generalArea}
+        data={currentHF}
       />
     ),
   },
@@ -40,6 +44,7 @@ const HumanFootprint = ({
         generalArea={generalArea}
         selection={selection}
         setSelection={setSelection}
+        data={hfTimeline}
       />
     ),
   },
@@ -55,6 +60,7 @@ const HumanFootprint = ({
     component: (
       <PersistenceFooprint
         generalArea={generalArea}
+        data={hfPersistence}
       />
     ),
   },
@@ -74,6 +80,9 @@ HumanFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
+  currentHF: PropTypes.array.isRequired,
+  hfPersistence: PropTypes.array.isRequired,
+  hfTimeline: PropTypes.array.isRequired,
 };
 
 export default HumanFootprint;
