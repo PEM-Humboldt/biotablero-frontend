@@ -117,7 +117,12 @@ const SmallBarStackGraph = (props) => {
 };
 
 SmallBarStackGraph.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    area: PropTypes.number.isRequired,
+    percentage: PropTypes.number,
+    label: PropTypes.string,
+  })).isRequired,
   height: PropTypes.number,
   colors: PropTypes.func,
   units: PropTypes.string,
