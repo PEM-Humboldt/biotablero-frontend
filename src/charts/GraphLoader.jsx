@@ -136,7 +136,6 @@ const GraphLoader = (props) => {
           colors={colors}
           data={data}
           markers={markers}
-          width={width}
           height="490px"
         />
       );
