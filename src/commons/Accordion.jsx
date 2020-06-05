@@ -32,7 +32,7 @@ class Accordion extends React.Component {
     } = this.props;
     const { expanded } = this.state;
     return (
-      <div>
+      <div style={{ width: '100%' }}>
         {(componentsArray.length > 0)
           && componentsArray.map(counter => (
             <ExpansionPanel

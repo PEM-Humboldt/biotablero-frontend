@@ -36,9 +36,9 @@ class Drawer extends React.Component {
         areaSE: null, // area fields for strategic ecosystems
         areaPA: null, // area fields for protected areas
         generalArea: 0, // general area value in the current geofence
-        currentHF: null,
-        hfPersistence: null,
-        hfTimeline: null,
+        currentHF: [],
+        hfPersistence: [],
+        hfTimeline: [],
       },
     };
   }

@@ -2,6 +2,36 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 
+const getToolTip = (point) => {
+  const {
+    data: { xFormatted, yFormatted },
+    serieColor,
+    serieId,
+  } = point;
+  return (
+    <div style={{
+      backgroundColor: '#333',
+      fontSize: 12,
+      padding: '5px 10px',
+      lineHeight: '1.5',
+      borderRadius: 5,
+      minWidth: 60,
+      boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
+    }}
+    >
+      <div>
+        <strong style={{ color: serieColor }}>
+          {`${serieId} en ${xFormatted}`}
+        </strong>
+        <br />
+        <div style={{ color: '#ffffff' }}>
+          {yFormatted}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const MultiLinesGraph = (props) => {
   const {
     colors,
@@ -12,11 +42,12 @@ const MultiLinesGraph = (props) => {
     setSelection,
     yMin,
     yMax,
+    height,
   } = props;
   return (
-    <div style={{ height: '490px', width: '450px' }}>
+    <div style={{ height }}>
       <ResponsiveLine
-        onMouseEnter={point => setSelection(point.serieId || point.id)}
+        onClick={point => setSelection(point.serieId || point.id)}
         data={data}
         curve="cardinal"
         markers={markers}
@@ -75,6 +106,14 @@ const MultiLinesGraph = (props) => {
         pointLabel="y"
         pointLabelYOffset={-12}
         useMesh
+        tooltip={point => getToolTip(point.point)}
+        theme={{
+          onMouseEnter: {
+            container: {
+              padding: 0,
+            },
+          },
+        }}
         legends={[
           {
             anchor: 'bottom-left',
@@ -87,8 +126,15 @@ const MultiLinesGraph = (props) => {
             itemWidth: 90,
             itemHeight: 80,
             itemOpacity: 0.75,
-            onMouseEnter: point => setSelection(point.serieId || point.id),
+            onClick: point => setSelection(point.serieId || point.id),
             symbolSize: 12,
+            legendOffset: {
+              onMouseEnter: {
+                container: {
+                  padding: 0,
+                },
+              },
+            },
             symbolShape: 'circle',
             symbolBorderColor: 'rgba(0, 0, 0, .5)',
             effects: [
@@ -131,6 +177,7 @@ MultiLinesGraph.propTypes = {
   labelY: PropTypes.string,
   yMin: PropTypes.number,
   yMax: PropTypes.number,
+  height: PropTypes.string,
 };
 
 MultiLinesGraph.defaultProps = {
@@ -139,6 +186,7 @@ MultiLinesGraph.defaultProps = {
   labelY: '',
   yMin: 0,
   yMax: 100,
+  height: '490px',
 };
 
 export default MultiLinesGraph;

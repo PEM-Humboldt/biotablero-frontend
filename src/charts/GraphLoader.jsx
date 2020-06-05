@@ -6,6 +6,7 @@ import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
+import MultiLinesGraph from './MultiLinesGraph';
 
 const GraphLoader = (props) => {
   const {
@@ -23,6 +24,8 @@ const GraphLoader = (props) => {
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
+    setSelection,
+    markers,
   } = props;
 
   // While data is being retrieved from server
@@ -126,6 +129,16 @@ const GraphLoader = (props) => {
           height="100"
         />
       );
+    case 'MultiLinesGraph':
+      return (
+        <MultiLinesGraph
+          setSelection={setSelection}
+          colors={colors}
+          data={data}
+          markers={markers}
+          height="490px"
+        />
+      );
     default:
       return '';
   }
@@ -138,7 +151,7 @@ GraphLoader.propTypes = {
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.number,
+  width: PropTypes.string,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
@@ -146,6 +159,13 @@ GraphLoader.propTypes = {
   elementOnClick: PropTypes.func,
   colors: PropTypes.func,
   padding: PropTypes.number,
+  setSelection: PropTypes.func,
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    axis: PropTypes.string,
+    value: PropTypes.number,
+    type: PropTypes.string,
+    legendPosition: PropTypes.string,
+  })),
 };
 
 GraphLoader.defaultProps = {
@@ -154,7 +174,7 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: 400,
+  width: '100%',
   height: 250,
   showOnlyTitle: false,
   units: 'ha',
@@ -162,6 +182,8 @@ GraphLoader.defaultProps = {
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
+  setSelection: () => {},
+  markers: [],
 };
 
 export default GraphLoader;

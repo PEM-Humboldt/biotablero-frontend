@@ -66,13 +66,11 @@ const HumanFootprint = ({
   },
   ];
   return (
-    <div>
-      <Accordion
-        componentsArray={componentsArray}
-        classNameDefault="m1"
-        classNameSelected="m1 accordionSelected"
-      />
-    </div>
+    <Accordion
+      componentsArray={componentsArray}
+      classNameDefault="m1"
+      classNameSelected="m1 accordionSelected"
+    />
   );
 };
 

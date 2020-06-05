@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import GeneralArea from '../commons/GeneralArea';
-import MultiLinesGraph from '../charts/MultiLinesGraph';
+import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
 const matchColorAndData = {
@@ -74,7 +74,7 @@ const TimelineFootprint = (props) => {
     data,
   } = props;
   return (
-    <div className="graphcontainer pt5">
+    <div className="graphcontainer pt5" style={{ width: '100%' }}>
       <GeneralArea
         value={generalArea}
       />
@@ -84,15 +84,17 @@ const TimelineFootprint = (props) => {
       <h6>
         Diferenciados entre área total y cada ecosistema estratégico
       </h6>
-      <div className="graficaeco">
+      <div className="graficaeco" style={{ width: '100%' }}>
         <h2>
-          <MultiLinesGraph
+          <GraphLoader
+            graphType="MultiLinesGraph"
             setSelection={setSelection}
             colors={matchColor(matchColorAndData[selection])}
             data={data}
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"
+            width="100%"
           />
         </h2>
         Área del ecosistema dentro de la unidad de consulta: 332 ha
