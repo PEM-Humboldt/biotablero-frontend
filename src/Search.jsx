@@ -126,7 +126,8 @@ class Search extends Component {
                 () => {
                   const { areaType, areaId, activeLayer } = this.state;
                   setHeaderNames(areaType.name, areaId.name);
-                  if (!activeLayer) this.loadLayer(areaId);
+                  console.log('loadAreaList activeLayer', activeLayer);
+                  // if (!activeLayer) this.loadLayer(areaId);
                 },
               );
             } else {
@@ -257,6 +258,8 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadLayer = (layer, parentLayer) => {
+    console.log('loadLayer - layer', layer);
+    console.log('loadLayer - parentLayer', parentLayer);
     const { requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -266,6 +269,43 @@ class Search extends Component {
       activeLayer: layer,
       requestSource: null,
     });
+
+    RestAPI.requestCurrentHFGeometry()
+      .then((res) => {
+        if (res.features) {
+          this.setState(prevState => ({
+            layers: {
+              ...prevState.layers,
+              [layer.id]: {
+                displayName: layer.name,
+                id: layer.id || layer.id_ea,
+                active: true,
+                layer: L.geoJSON(res, {
+                  style: this.featureStyle,
+                  onEachFeature: (feature, selectedLayer) => (
+                    this.featureActions(feature, selectedLayer, layer.id)
+                  ),
+                }),
+              },
+            },
+          }));
+        } else this.reportDataError();
+      })
+      .catch(() => this.reportDataError())
+      .finally(() => {
+        this.setState((prevState) => {
+          const newState = {
+            ...prevState,
+            loadingModal: false,
+          };
+          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
+          if (prevState.layers[layer.id]) {
+            newState.layers[layer.id].active = true;
+          }
+          return newState;
+        });
+      });
+
     RestAPI.requestBiomesbyEAGeometry(layer.id)
       .then((res) => {
         if (res.features) {
@@ -301,6 +341,134 @@ class Search extends Component {
           return newState;
         });
       });
+  }
+
+  /**
+   * Shut off all layers on the map
+   */
+
+  shutOffAllLayers = () => {
+    console.log('shutOffAllLayers - state', this.state);
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      const { layers } = prevState;
+      Object.keys(layers).forEach((layerKey) => {
+        newState.layers[layerKey].active = false;
+      });
+      console.log('shutOffAllLayers - newState', newState);
+      return {
+        ...newState,
+      };
+    });
+  }
+
+  /**
+   * Switch layer based on accordion open tab
+   *
+   * @param {Object} layer Layer ID
+   * @param {String} parentLayer Parent layer ID
+   */
+  switchLayer = (layerType, layer) => {
+    console.log('loadLayer - layer', layer); // { id: "CAR", name: "Corporacion Autonoma Regional de Cundinamarca" }
+    console.log('loadLayer - layerType', layerType); // ea
+    const { requestSource } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
+    console.log('loadLayer - requestSource', requestSource); // Object
+    this.setState({
+      loadingModal: true,
+      activeLayer: layer,
+      requestSource: null,
+    });
+
+    // const { layers } = this.state;
+    // console.log('layers', layers);
+
+    switch (layerType) {
+      case 'fc':
+        return (
+          RestAPI.requestBiomesbyEAGeometry(layer.id)
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [layer.id]: {
+                      displayName: layer.name,
+                      id: layer.id || layer.id_ea,
+                      active: true,
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle,
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(feature, selectedLayer, layer.id)
+                        ),
+                      }),
+                    },
+                  },
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+            .finally(() => {
+              this.setState((prevState) => {
+                const newState = {
+                  ...prevState,
+                  loadingModal: false,
+                };
+                if (prevState.layers[layerType]) newState.layers[layerType].active = false;
+                if (prevState.layers[layer.id]) {
+                  newState.layers[layer.id].active = true;
+                }
+                console.log('CASE newState', newState);
+                return newState;
+              });
+            })
+        );
+      case 'currentHFP':
+        return (
+          RestAPI.requestCurrentHFGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [layer.id]: {
+                      displayName: layer.name,
+                      id: layer.id || layer.id_ea,
+                      active: true,
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle,
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(feature, selectedLayer, layer.id)
+                        ),
+                      }),
+                    },
+                  },
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+            .finally(() => {
+              this.setState((prevState) => {
+                const newState = {
+                  ...prevState,
+                  loadingModal: false,
+                };
+                if (prevState.layers[layerType]) newState.layers[layerType].active = false;
+                if (prevState.layers[layer.id]) {
+                  newState.layers[layer.id].active = true;
+                }
+                console.log('CASE newState', newState);
+                return newState;
+              });
+            })
+        );
+      default:
+        return null;
+    }
   }
 
   /**
@@ -383,6 +551,7 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (id, expanded) => {
+    // console.log('secondLevelChange - this.loadSecondLevelLayer(id, expanded)', this.loadSecondLevelLayer(id, expanded));
     this.loadSecondLevelLayer(id, expanded);
   }
 
@@ -393,6 +562,8 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
+    // console.log('innerElementChange - nameToOff', nameToOff); // ea
+    // console.log('innerElementChange - nameToOn', nameToOn); // { id: "CAR", name: "Corporacion Autonoma Regional de Cundinamarca" }
     const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
@@ -404,7 +575,7 @@ class Search extends Component {
           setHeaderNames(areaType.name, areaId.name);
         },
       );
-      this.loadLayer(nameToOn, nameToOff);
+      // this.loadLayer(nameToOn, nameToOff);
     }
   }
 
@@ -526,6 +697,12 @@ class Search extends Component {
             </h2>
           </div>
         </Modal>
+        {// console.log('MapViewer')
+        }
+        {// console.log('layers', layers)
+        }
+        {// console.log('GeoServerAPI.getRequestURL()', GeoServerAPI.getRequestURL())
+        }
         <div className="appSearcher">
           <MapViewer
             layers={layers}
@@ -565,6 +742,10 @@ class Search extends Component {
                     hFPSelection: text,
                   }));
                 }}
+                handlersGeometry={[
+                  this.shutOffAllLayers,
+                  this.switchLayer,
+                ]}
               />
             )}
             { areaType && areaId && (areaType.id === 'se') && (

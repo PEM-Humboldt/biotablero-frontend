@@ -12,6 +12,7 @@ const HumanFootprint = ({
   currentHF,
   hfPersistence,
   hfTimeline,
+  handlersGeometry,
 }) => {
   const componentsArray = [{
     label: {
@@ -62,20 +63,32 @@ const HumanFootprint = ({
   },
   ];
   return (
-    <Accordion
-      componentsArray={componentsArray}
-      classNameDefault="m1"
-      classNameSelected="m1 accordionSelected"
-    />
+    <div>
+      {console.log('************ 2do Accordion ***************************')}
+      <Accordion
+        componentsArray={componentsArray}
+        classNameDefault="m1"
+        classNameSelected="m1 accordionSelected"
+        handlersGeometry={handlersGeometry}
+      />
+    </div>
   );
 };
 
 HumanFootprint.propTypes = {
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
-  currentHF: PropTypes.array.isRequired,
-  hfPersistence: PropTypes.array.isRequired,
-  hfTimeline: PropTypes.array.isRequired,
+  currentHF: PropTypes.array,
+  hfPersistence: PropTypes.array,
+  hfTimeline: PropTypes.array,
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
+};
+
+HumanFootprint.defaultProps = {
+  currentHF: [],
+  hfPersistence: [],
+  hfTimeline: [],
+  handlersGeometry: [],
 };
 
 export default HumanFootprint;

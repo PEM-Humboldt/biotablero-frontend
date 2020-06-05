@@ -32,9 +32,13 @@ class Selector extends React.Component {
   }
 
   firstLevelChange = panel => (event, expanded) => {
+    // console.log('firstLevelChange - expanded', expanded);
     const { handlers } = this.props;
+    // console.log('firstLevelChange - handlers', handlers);
     const expandedPanel = expanded ? panel : false;
+    // console.log('firstLevelChange - expandedPanel', expandedPanel);
     handlers[0](expandedPanel);
+    // console.log('firstLevelChange - handlers[0](expandedPanel)', handlers[0](expandedPanel));
     if (panel === 'addProject') {
       this.setState({
         expanded: null,
@@ -62,6 +66,22 @@ class Selector extends React.Component {
       type, label, name, id_project: projectId,
     } = obj;
     const { handlers } = this.props;
+    if (parent === 'ea') {
+      // console.log('************ PARAM ************');
+      // console.log('renderInnerElement - parent', parent);
+      // console.log('renderInnerElement - listSize', listSize);
+      // console.log('renderInnerElement - data', data);
+      // console.log('************ => (obj, index) => ************');
+      // console.log('renderInnerElement - obj', obj);
+      // console.log('renderInnerElement - index', index);
+      // console.log('************ HANDLERS => ************');
+      // console.log('renderInnerElement - handlers', handlers);
+      // console.log('************ OBJ DECONSTRUCT => ************');
+      // console.log('renderInnerElement - type', type);
+      // console.log('renderInnerElement - label', label);
+      // console.log('renderInnerElement - name', name);
+      // console.log('renderInnerElement - projectId', projectId);
+    }
     switch (listSize) {
       case 'large':
         return (
@@ -69,6 +89,12 @@ class Selector extends React.Component {
             valueSelected={(value) => {
               const itemSelected = data.find(item => item.name === value);
               handlers[2](parent, itemSelected);
+              // console.log('************ AUTOCOMPLETE VALUE SELECTED ************');
+              // console.log('Autocomplete - value', value);
+              // console.log('Autocomplete - itemSelected', itemSelected);
+              // console.log('Autocomplete - parent', parent);
+              // console.log('handlers', handlers);
+              // console.log('Autocomplete - handlers[2](parent, itemSelected)', handlers[2](parent, itemSelected));
             }}
             name={label || name}
             data={data}
@@ -100,11 +126,15 @@ class Selector extends React.Component {
         <div className="description">
           {description}
         </div>
+        {// console.log('render - data', data)
+        }
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
             id, label, disabled, iconOption, detailId, idLabel,
           } = firstLevel;
+          // console.log('render - firstLevel', firstLevel);
           const options = firstLevel.options || firstLevel.projectsStates || [];
+          // console.log('render - firstLevel.options || firstLevel.projectsStates || []', firstLevel.options || firstLevel.projectsStates || []);
           return (
             <ExpansionPanel
               className={`m0 ${selected === id ? 'selector-expanded' : ''}`}
@@ -127,11 +157,17 @@ class Selector extends React.Component {
               <ExpansionPanelDetails
                 id={detailId}
               >
+                {// console.log('ExpansionPanelDetails - detailId', detailId)
+                }
+                {// console.log('ExpansionPanelDetails - options', options)
+                }
                 {options.map((secondLevel) => {
                   const {
                     id: subId, label: subLabel, disabled: subDisabled,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
+                  // console.log('ExpansionPanelDetails - secondLevel', secondLevel);
+                  // console.log('ExpansionPanelDetails - subOptions', subOptions);
                   return (
                     <ExpansionPanel
                       className="m0"

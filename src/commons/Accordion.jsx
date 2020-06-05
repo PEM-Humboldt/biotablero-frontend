@@ -15,12 +15,43 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
-    const { componentsArray } = this.props;
+    const { componentsArray, handlersGeometry } = this.props;
     // This will force to open the first level in accordion when it is loaded by first time
-    if (componentsArray.length > 0) {
+    if (componentsArray.length > 0 && componentsArray[0].label.id === 'FC y Biomas') {
+      const defaultTab = componentsArray[0].label.id;
       this.setState({
-        expanded: componentsArray[0].label.id,
+        expanded: defaultTab,
       });
+      // this.loadLayer(defaultTab);
+      handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' });
+    }
+  }
+
+  /**
+   * Load layer based on expanded tab
+   *
+   * @param {String} layerType Layer type
+   */
+  loadLayer = (layerType) => {
+    const { handlersGeometry } = this.props;
+   
+    switch (layerType) {
+      case 'Huella humana':
+        return (
+          // console.log('componentsArray', this.props);
+          console.log('this.state', this.state)
+        );
+      case 'Actual':
+        return (
+          handlersGeometry[1]('currentHFP', { id: 'CARDER', name: 'Corporacion Autonoma Regional de Risaralda' })
+        );
+      case 'FC y Biomas':
+        console.log('componentsArray', this.props.componentsArray);
+        return (
+          handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' })
+        );
+      default:
+        return handlersGeometry[0]();
     }
   }
 
@@ -29,8 +60,12 @@ class Accordion extends React.Component {
       componentsArray,
       classNameSelected,
       classNameDefault,
+      handlersGeometry,
     } = this.props;
+    // console.log('ACC - handlersGeometry', handlersGeometry);
     const { expanded } = this.state;
+    // console.log('Accordion - expanded (RENDER)', expanded);
+    // console.log('Accordion - componentsArray', componentsArray);
     return (
       <div style={{ width: '100%' }}>
         {(componentsArray.length > 0)
@@ -41,9 +76,31 @@ class Accordion extends React.Component {
               expanded={expanded === counter.label.id}
               id={counter.label.id}
               key={counter.label.id}
-              onChange={() => (this.setState({
-                expanded: expanded !== counter.label.id ? counter.label.id : null,
-              }))}
+              onChange={() => {
+                console.log('Accordion - expanded INI', expanded);
+                console.log('Accordion - counter', counter);
+                const newTab = expanded !== counter.label.id;
+                /*
+                if(newTab) {
+                  console.log('Accordion - TRUE', counter.label.id);
+                } else {
+                  console.log('Accordion - FALSE', 'NULL');
+                }
+                */
+                this.setState({
+                  expanded: newTab ? counter.label.id : null,
+                });
+                // const { expanded: expandedFIN } = this.state;
+                console.log('Accordion - expanded FIN', this.state.expanded);
+                console.log('Accordion - expanded !== counter.label.id', expanded !== counter.label.id);
+
+                if (newTab) {
+                  return this.loadLayer(counter.label.id);
+                }
+                
+                return handlersGeometry[0]();
+                
+              }}
             >
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -72,11 +129,13 @@ Accordion.propTypes = {
   })).isRequired,
   classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
   classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };
 
 Accordion.defaultProps = {
   classNameDefault: 'm0b',
   classNameSelected: 'm0b selector-expanded',
+  handlersGeometry: [],
 };
 
 export default Accordion;
