@@ -18,24 +18,6 @@ import ShortInfo from '../commons/ShortInfo';
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 /**
- * Check if an array is empty according to area value
- *
- * @param {array} array array to be validated
- * @returns {boolean} boolean that indicates if array is empty
- */
-const helperAreaArrayIsEmpty = (array) => {
-  if (array) {
-    let isEmpty = true;
-    array.forEach((element) => {
-      if (element.area !== 0) {
-        isEmpty = false;
-      }
-      return isEmpty;
-    });
-  }
-};
-
-/**
  * Calculate percentage for a given value according to total
  *
  * @param {number} part value for the given part
@@ -47,7 +29,6 @@ const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 const Overview = (props) => {
   const {
     generalArea,
-    ecosystemsArea,
     listSE,
     listPA,
     coverage,
@@ -65,6 +46,25 @@ const Overview = (props) => {
   // First element removed, which is the total area in PA
   const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(2) : 0);
   const allPA = Array.isArray(listPA) && setPAValues(listPA.slice(1));
+
+  const ecosystemsArea = ((Array.isArray(listSE) && listSE[0] && listSE[0].area)
+    ? Number(listSE[0].area).toFixed(2)
+    : 0);
+  const allSE = Array.isArray(listSE) && listSE.slice(1);
+
+  const displaySE = (se) => {
+    if (!se) return ('Cargando...');
+    if (se.length <= 0) return ('Información no disponible');
+    return (
+      <EcosystemsBox
+        areaId={areaId}
+        total={Number(ecosystemsArea)}
+        geofenceId={geofenceId}
+        listSE={allSE}
+        matchColor={matchColor}
+      />
+    );
+  };
 
   return (
     <div className="graphcard">
@@ -139,17 +139,7 @@ const Overview = (props) => {
             <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
           </h4>
           <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
-          {!listSE && ('Cargando...')}
-          {helperAreaArrayIsEmpty(listSE) && ('Información no disponible')}
-          {listSE && !helperAreaArrayIsEmpty(listSE) && (
-            <EcosystemsBox
-              areaId={areaId}
-              total={Number(ecosystemsArea)}
-              geofenceId={geofenceId}
-              listSE={listSE}
-              matchColor={matchColor}
-            />
-          )}
+          {displaySE(allSE)}
         </div>
       </div>
     </div>
@@ -158,7 +148,6 @@ const Overview = (props) => {
 
 Overview.propTypes = {
   generalArea: PropTypes.number,
-  ecosystemsArea: PropTypes.number,
   listSE: PropTypes.array,
   listPA: PropTypes.array,
   coverage: PropTypes.array,
@@ -173,7 +162,6 @@ Overview.propTypes = {
 
 Overview.defaultProps = {
   generalArea: 0,
-  ecosystemsArea: 0,
   listSE: null,
   listPA: null,
   coverage: null,

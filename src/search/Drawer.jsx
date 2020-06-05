@@ -117,15 +117,7 @@ class Drawer extends React.Component {
           },
         }));
       })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaSE: false,
-          },
-        }));
-      });
+      .catch(() => {});
 
     RestAPI.requestCurrentHF()
       .then((res) => {
@@ -279,7 +271,6 @@ class Drawer extends React.Component {
         hfTimeline,
       },
     } = this.state;
-    const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
     const componentsArray = [
       {
         label: {
@@ -349,9 +340,7 @@ class Drawer extends React.Component {
                 <div key="2">
                   <Overview
                     generalArea={Number(generalArea)}
-                    ecosystemsArea={Number(ecosystemsArea)}
-                    // First element removed, which is the total area in SE
-                    listSE={(areaSE ? areaSE.slice(1) : areaSE)}
+                    listSE={areaSE}
                     listPA={areaPA}
                     coverage={coverage}
                     handlerInfoGraph={handlerInfoGraph}

@@ -1,5 +1,7 @@
-export const setPAValues = (array) => {
-  if (!array) return [];
+export const setPAValues = (arrayIn) => {
+  if (!arrayIn) return [];
+
+  const array = [...arrayIn];
   let np = array.pop();
   if (np.type !== 'No Protegida') {
     array.push(np);
@@ -17,7 +19,8 @@ export const setPAValues = (array) => {
       if (first.area < second.area) return 1;
       return 0;
     });
-  if (np) result.push(np);
+
+  if (np) result.push({ ...np, area: Number(np.area), label: np.type });
   return result;
 };
 
@@ -40,6 +43,7 @@ export const setCoverageValues = (array) => {
     }
     return {
       ...item,
+      area: Number(item.area),
       label,
     };
   });
