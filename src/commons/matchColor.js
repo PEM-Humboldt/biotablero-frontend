@@ -15,7 +15,7 @@ const match = {
   },
   coverage: {
     palette: 'blue',
-    sort: ['Natural', 'Secundaria', 'Transformada'],
+    sort: ['N', 'S', 'T'],
   },
   pa: {
     palette: 'green',

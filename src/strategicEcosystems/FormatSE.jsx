@@ -32,43 +32,25 @@ export const setPAValues = (array) => {
 };
 
 export const setCoverageValues = (array) => {
-  const responseObject = {};
-  if (!array) return null;
-  array.forEach((item) => {
-    let local;
-    let color;
+  if (!array) return [];
+  return array.map((item) => {
+    let label = '';
     switch (item.type) {
-      case 'Total':
-        local = item.type;
-        color = '#fff';
-        break;
       case 'N':
-        local = 'Natural';
-        color = '#164f74';
+        label = 'Natural';
         break;
       case 'S':
-        local = 'Secundaria';
-        color = '#60bbd4';
+        label = 'Secundaria';
         break;
       case 'T':
-        local = 'Transformada';
-        color = '#5aa394';
+        label = 'Transformada';
         break;
       default:
-        local = 'Sin clasificar / Nubes';
-        color = '#b9c9cf';
+        label = 'Sin clasificar / Nubes';
     }
-    if (responseObject[local]) {
-      responseObject[local].area += Number(item.area);
-      responseObject[local].percentage += Number(item.percentage);
-    } else {
-      responseObject[local] = {
-        area: Number(item.area),
-        percentage: Number(item.percentage),
-        type: local,
-        color,
-      };
-    }
+    return {
+      ...item,
+      label,
+    };
   });
-  return Object.values(responseObject);
 };
