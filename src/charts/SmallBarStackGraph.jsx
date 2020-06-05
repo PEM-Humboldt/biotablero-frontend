@@ -32,7 +32,7 @@ const SmallBarStackGraph = (props) => {
       transformedData[String(item.type)] = Number(item.area || item.percentage);
       transformedData[`${String(item.type)}Color`] = colors(item.type);
       transformedData[`${String(item.type)}Label`] = item.label;
-      transformedData[`${String(item.type)}Percentage`] = item.percentage;
+      transformedData[`${String(item.type)}Percentage`] = Number(item.percentage);
     });
     return [transformedData];
   };

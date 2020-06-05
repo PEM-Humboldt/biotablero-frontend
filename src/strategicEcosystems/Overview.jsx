@@ -1,11 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
-import GeneralArea from '../commons/GeneralArea';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 import EcosystemsBox from './EcosystemsBox';
+import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
+import ShortInfo from '../commons/ShortInfo';
 
 /**
  * Give format to a big number
@@ -47,7 +49,6 @@ const Overview = (props) => {
     generalArea,
     ecosystemsArea,
     listSE,
-    protectedArea,
     listPA,
     coverage,
     handlerInfoGraph,
@@ -58,6 +59,12 @@ const Overview = (props) => {
     graphDescription,
     matchColor,
   } = props;
+
+  const coverageData = setCoverageValues(coverage);
+
+  // First element removed, which is the total area in PA
+  const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(2) : 0);
+  const allPA = Array.isArray(listPA) && setPAValues(listPA.slice(1));
 
   return (
     <div className="graphcard">
@@ -103,17 +110,17 @@ const Overview = (props) => {
         <div className="graficaeco">
           <GraphLoader
             graphType="SmallBarStackGraph"
-            data={coverage}
+            data={coverageData}
             units="ha"
             colors={matchColor('coverage')}
           />
         </div>
         <h4>
           Áreas protegidas
-          <b>{`${numberWithCommas(protectedArea)} ha `}</b>
+          <b>{`${numberWithCommas(totalPA)} ha `}</b>
         </h4>
         <h5>
-          {`${getPercentage(protectedArea, generalArea)} %`}
+          {`${getPercentage(totalPA, generalArea)} %`}
         </h5>
         <div className="graficaeco">
           <h6>
@@ -121,7 +128,7 @@ const Overview = (props) => {
           </h6>
           <GraphLoader
             graphType="SmallBarStackGraph"
-            data={listPA}
+            data={allPA}
             units="ha"
             colors={matchColor('pa')}
           />
@@ -153,7 +160,6 @@ Overview.propTypes = {
   generalArea: PropTypes.number,
   ecosystemsArea: PropTypes.number,
   listSE: PropTypes.array,
-  protectedArea: PropTypes.number,
   listPA: PropTypes.array,
   coverage: PropTypes.array,
   handlerInfoGraph: PropTypes.func,
@@ -169,7 +175,6 @@ Overview.defaultProps = {
   generalArea: 0,
   ecosystemsArea: 0,
   listSE: null,
-  protectedArea: 0,
   listPA: null,
   coverage: null,
   handlerInfoGraph: () => {},

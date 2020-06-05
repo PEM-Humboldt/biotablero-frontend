@@ -13,7 +13,6 @@ import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
-import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 import Accordion from '../commons/Accordion';
 
 const styles = () => ({
@@ -32,10 +31,10 @@ class Drawer extends React.Component {
         biomas: null,
         distritos: null,
         fc: null,
-        coverage: null, // coverage area
-        areaSE: null, // area fields for strategic ecosystems
-        areaPA: null, // area fields for protected areas
-        generalArea: 0, // general area value in the current geofence
+        coverage: null,
+        areaSE: null,
+        areaPA: null,
+        generalArea: 0,
         currentHF: [],
         hfPersistence: [],
         hfTimeline: [],
@@ -74,7 +73,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            coverage: setCoverageValues(res),
+            coverage: res,
           },
         }));
       })
@@ -94,7 +93,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            areaPA: setPAValues(res),
+            areaPA: res,
           },
         }));
       })
@@ -281,7 +280,6 @@ class Drawer extends React.Component {
       },
     } = this.state;
     const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
-    const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     const componentsArray = [
       {
         label: {
@@ -354,10 +352,7 @@ class Drawer extends React.Component {
                     ecosystemsArea={Number(ecosystemsArea)}
                     // First element removed, which is the total area in SE
                     listSE={(areaSE ? areaSE.slice(1) : areaSE)}
-                    protectedArea={Number(protectedArea)}
-                    // First element removed, which is the total area in PA
-                    listPA={(areaPA ? areaPA.slice(1) : areaPA)}
-                    // First element removed, which is the total area in the selected area
+                    listPA={areaPA}
                     coverage={coverage}
                     handlerInfoGraph={handlerInfoGraph}
                     openInfoGraph={openInfoGraph}
