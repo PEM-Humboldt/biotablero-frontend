@@ -43,10 +43,9 @@ const MultiLinesGraph = (props) => {
     yMin,
     yMax,
     height,
-    width,
   } = props;
   return (
-    <div style={{ height, width }}>
+    <div style={{ height }}>
       <ResponsiveLine
         onClick={point => setSelection(point.serieId || point.id)}
         data={data}
@@ -179,7 +178,6 @@ MultiLinesGraph.propTypes = {
   yMin: PropTypes.number,
   yMax: PropTypes.number,
   height: PropTypes.string,
-  width: PropTypes.string,
 };
 
 MultiLinesGraph.defaultProps = {
@@ -189,7 +187,6 @@ MultiLinesGraph.defaultProps = {
   yMin: 0,
   yMax: 100,
   height: '490px',
-  width: '100%',
 };
 
 export default MultiLinesGraph;
