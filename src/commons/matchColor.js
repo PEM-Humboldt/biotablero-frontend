@@ -47,7 +47,8 @@ const match = {
   },
   currentHFP: {
     palette: 'currentHFP',
-    sort: ['Natural', 'Baja', 'Media', 'Alta'],
+    // TODO: This could change once the API endpoint is implemented
+    sort: ['natural', 'baja', 'media', 'alta'],
   },
   persistenceHFP: {
     palette: 'persistenceHFP',

@@ -18,7 +18,10 @@ const CurrentFootprint = ({ generalArea, data }) => (
     <div className="graficaeco">
       <GraphLoader
         graphType="SmallBarStackGraph"
-        data={data}
+        data={data.map(item => ({
+          ...item,
+          label: `${item.type[0].toUpperCase()}${item.type.slice(1)}`,
+        }))}
         units="ha"
         colors={matchColor('currentHFP')}
       />

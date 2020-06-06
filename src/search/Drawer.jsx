@@ -129,15 +129,7 @@ class Drawer extends React.Component {
           },
         }));
       })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            currentHF: false,
-          },
-        }));
-      });
+      .catch(() => {});
 
     RestAPI.requestHFPersistence()
       .then((res) => {
