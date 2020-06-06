@@ -6,7 +6,7 @@ import matchColor from '../commons/matchColor';
 
 const matchColorAndData = {
   'Área total': 'hfTotal',
-  Páramo: 'hfMoor',
+  Páramo: 'hfParamo',
   Humedales: 'hfWetlands',
   'Bosques Secos': 'hfDryForest',
 };

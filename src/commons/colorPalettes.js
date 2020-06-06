@@ -62,25 +62,25 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
-  hfTotal: [ // Área total seleccionada
+  hfTotal: [ // total area selected
     '#cf324e',
     '#878cae',
     '#a8daca',
     '#e8cc8e',
   ],
-  hfMoor: [ // Páramo seleccionado
+  hfParamo: [ // paramo selected
     '#cf324e',
     '#29418a',
     '#a8daca',
     '#e8cc8e',
   ],
-  hfWetlands: [ // Humedales seleccionados
+  hfWetlands: [ // wetlands selected
     '#cf324e',
     '#878cae',
     '#3cb58e',
     '#e8cc8e',
   ],
-  hfDryForest: [ // Bosques Secos seleccionados
+  hfDryForest: [ // tropical dry forest selected
     '#cf324e',
     '#878cae',
     '#a8daca',

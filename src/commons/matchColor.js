@@ -33,8 +33,8 @@ const match = {
     palette: 'hfTotal',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
-  hfMoor: {
-    palette: 'hfMoor',
+  hfParamo: {
+    palette: 'hfParamo',
     sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
   },
   hfWetlands: {
@@ -117,7 +117,7 @@ const matchColor = (type) => {
     case 'coverage':
     case 'biomeComp':
     case 'hfTotal':
-    case 'hfMoor':
+    case 'hfParamo':
     case 'hfWetlands':
     case 'hfDryForest':
     case 'se':
