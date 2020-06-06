@@ -3,7 +3,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
+import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
 import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
