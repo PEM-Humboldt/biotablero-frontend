@@ -52,7 +52,8 @@ const match = {
   },
   persistenceHFP: {
     palette: 'persistenceHFP',
-    sort: ['Estable natural', 'Dinámica', 'Estable alta'],
+    // TODO: This could change once the API endpoint is implemented
+    sort: ['estable_natural', 'dinamica', 'estable_alta'],
   },
   default: {
     palette: 'default',

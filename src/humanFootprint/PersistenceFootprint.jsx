@@ -4,6 +4,12 @@ import GraphLoader from '../charts/GraphLoader';
 import GeneralArea from '../commons/GeneralArea';
 import matchColor from '../commons/matchColor';
 
+const getLabel = {
+  estable_natural: 'Estable Natural',
+  dinamica: 'Dinámica',
+  estable_alta: 'Estable Alta',
+};
+
 const PersistenceFootprint = ({ generalArea, data }) => (
   <div className="graphcontainer pt5">
     <GeneralArea
@@ -15,7 +21,10 @@ const PersistenceFootprint = ({ generalArea, data }) => (
     <div className="graficaeco">
       <GraphLoader
         graphType="SmallBarStackGraph"
-        data={data}
+        data={data.map(item => ({
+          ...item,
+          label: getLabel[item.type],
+        }))}
         units="ha"
         colors={matchColor('persistenceHFP')}
       />

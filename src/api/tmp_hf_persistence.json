@@ -1,11 +1,11 @@
 [
   {
-    "area": 163338.479965581, "percentage": 0.84860319, "type": "Dinámica"
+    "area": 19422.0899745865, "percentage": 0.100904866408734, "type": "estable_natural"
   },
   {
-    "area": 9718.65000066086, "percentage": 0.050491944032445, "type": "Estable alta"
+    "area": 163338.479965581, "percentage": 0.84860319, "type": "dinamica"
   },
   {
-    "area": 19422.0899745865, "percentage": 0.100904866408734, "type": "Estable natural"
+    "area": 9718.65000066086, "percentage": 0.050491944032445, "type": "estable_alta"
   }
 ]
