@@ -12,7 +12,9 @@ export const setPAValues = (arrayIn) => {
     .map(item => ({
       ...item,
       area: Number(item.area),
-      label: item.type,
+      // TODO: Maybe modify backend to always return type
+      label: item.type || item.label,
+      type: item.type || item.label,
     }))
     .sort((first, second) => {
       if (first.area > second.area) return -1;

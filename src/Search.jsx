@@ -126,7 +126,8 @@ class Search extends Component {
                 () => {
                   const { areaType, areaId, activeLayer } = this.state;
                   setHeaderNames(areaType.name, areaId.name);
-                  if (!activeLayer) this.loadLayer(areaId);
+                  // TODO remove areaType validation when implemented better control over layers
+                  if (!activeLayer && areaType.id === 'ea') this.loadLayer(areaId);
                 },
               );
             } else {
