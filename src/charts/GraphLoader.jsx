@@ -55,6 +55,7 @@ const GraphLoader = (props) => {
           height={150}
           colors={colors}
           padding={padding}
+          units={units}
         />
       );
     case 'SmallBarStackGraph':
