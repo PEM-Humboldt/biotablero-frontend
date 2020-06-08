@@ -24,7 +24,7 @@ const GraphLoader = (props) => {
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
-    setSelection,
+    onClickHandler,
     markers,
   } = props;
 
@@ -132,7 +132,7 @@ const GraphLoader = (props) => {
     case 'MultiLinesGraph':
       return (
         <MultiLinesGraph
-          setSelection={setSelection}
+          onClickHandler={onClickHandler}
           colors={colors}
           data={data}
           markers={markers}
@@ -159,7 +159,7 @@ GraphLoader.propTypes = {
   elementOnClick: PropTypes.func,
   colors: PropTypes.func,
   padding: PropTypes.number,
-  setSelection: PropTypes.func,
+  onClickHandler: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
     axis: PropTypes.string,
     value: PropTypes.number,
@@ -182,7 +182,7 @@ GraphLoader.defaultProps = {
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
-  setSelection: () => {},
+  onClickHandler: () => {},
   markers: [],
 };
 

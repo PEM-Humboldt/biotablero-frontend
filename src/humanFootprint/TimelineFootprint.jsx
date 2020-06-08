@@ -88,7 +88,7 @@ const TimelineFootprint = (props) => {
         <h2>
           <GraphLoader
             graphType="MultiLinesGraph"
-            setSelection={setSelection}
+            onClickHandler={setSelection}
             colors={matchColor(matchColorAndData[selection])}
             data={data}
             markers={changeValues}

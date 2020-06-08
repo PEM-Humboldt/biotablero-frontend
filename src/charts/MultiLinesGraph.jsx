@@ -39,7 +39,7 @@ const MultiLinesGraph = (props) => {
     labelX,
     labelY,
     markers,
-    setSelection,
+    onClickHandler,
     yMin,
     yMax,
     height,
@@ -47,7 +47,7 @@ const MultiLinesGraph = (props) => {
   return (
     <div style={{ height }}>
       <ResponsiveLine
-        onClick={point => setSelection(point.serieId || point.id)}
+        onClick={point => onClickHandler(point.serieId || point.id)}
         data={data}
         curve="cardinal"
         markers={markers}
@@ -126,7 +126,7 @@ const MultiLinesGraph = (props) => {
             itemWidth: 90,
             itemHeight: 80,
             itemOpacity: 0.75,
-            onClick: point => setSelection(point.serieId || point.id),
+            onClick: point => onClickHandler(point.serieId || point.id),
             symbolSize: 12,
             legendOffset: {
               onMouseEnter: {
@@ -162,7 +162,7 @@ MultiLinesGraph.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  setSelection: PropTypes.func.isRequired,
+  onClickHandler: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.shape({
