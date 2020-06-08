@@ -34,7 +34,7 @@ const HumanFootprint = ({
   },
   {
     label: {
-      id: 'Histórico y Ecosistémas estratégicos',
+      id: 'Histórico y Ecosistémas estratégicos (EE)',
       name: 'Huella humana a través del tiempo',
       disabled: false,
       expandIcon: <AddIcon />,
