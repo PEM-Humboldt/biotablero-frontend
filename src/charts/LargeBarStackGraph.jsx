@@ -10,6 +10,7 @@ const LargeBarStackGraph = (props) => {
     height,
     colors,
     padding,
+    units,
   } = props;
 
   /**
@@ -80,7 +81,7 @@ const LargeBarStackGraph = (props) => {
               {id}
             </strong>
             <div style={{ color: '#ffffff' }}>
-              {numberWithCommas(Number(value).toFixed(2))}
+              {`${numberWithCommas(value.toFixed(2))} ${units}`}
             </div>
           </div>
         )}
@@ -104,6 +105,7 @@ LargeBarStackGraph.propTypes = {
   height: PropTypes.number,
   colors: PropTypes.func,
   padding: PropTypes.number,
+  units: PropTypes.string,
 };
 
 LargeBarStackGraph.defaultProps = {
@@ -112,6 +114,7 @@ LargeBarStackGraph.defaultProps = {
   height: 150,
   colors: () => {},
   padding: 0.25,
+  units: 'ha',
 };
 
 export default LargeBarStackGraph;
