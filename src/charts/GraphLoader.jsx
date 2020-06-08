@@ -137,7 +137,7 @@ const GraphLoader = (props) => {
           colors={colors}
           data={data}
           markers={markers}
-          height="490px"
+          height={490}
         />
       );
     default:
