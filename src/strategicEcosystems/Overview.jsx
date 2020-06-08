@@ -45,7 +45,7 @@ const Overview = (props) => {
 
   // First element removed, which is the total area in PA
   const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(2) : 0);
-  const allPA = Array.isArray(listPA) && setPAValues(listPA.slice(1));
+  const allPA = Array.isArray(listPA) ? setPAValues(listPA.slice(1)) : [];
 
   const ecosystemsArea = ((Array.isArray(listSE) && listSE[0] && listSE[0].area)
     ? Number(listSE[0].area).toFixed(2)

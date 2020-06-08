@@ -146,7 +146,7 @@ const GraphLoader = (props) => {
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.any, // Array or object, depending on graphType
+  data: PropTypes.any.isRequired, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
@@ -170,7 +170,6 @@ GraphLoader.propTypes = {
 
 GraphLoader.defaultProps = {
   graphTitle: '',
-  data: [],
   activeBiome: '',
   labelX: '',
   labelY: '',
