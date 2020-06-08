@@ -40,7 +40,8 @@ const match = {
       'wetland',
       'wetlandSel',
       'dryForest',
-      'dryForestSel'],
+      'dryForestSel',
+    ],
   },
   currentHFP: {
     palette: 'currentHFP',

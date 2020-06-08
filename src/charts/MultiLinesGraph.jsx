@@ -72,6 +72,7 @@ class MultiLinesGraph extends React.Component {
 
   render() {
     const {
+      colors,
       labelX,
       labelY,
       markers,
@@ -80,7 +81,7 @@ class MultiLinesGraph extends React.Component {
       height,
     } = this.props;
 
-    const { data } = this.state;
+    const { data, labels } = this.state;
 
     if (!data) return null;
 
@@ -157,6 +158,11 @@ class MultiLinesGraph extends React.Component {
           legends={[
             {
               anchor: 'bottom-left',
+              data: Object.keys(labels).map(id => ({
+                id,
+                label: labels[id],
+                color: colors(id),
+              })),
               direction: 'row',
               justify: false,
               translateX: -50,
