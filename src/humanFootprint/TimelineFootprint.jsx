@@ -67,82 +67,86 @@ const changeValues = [
   },
 ];
 
-const TimelineFootprint = (props) => {
-  const {
-    selection,
-    setSelection,
-    data,
-    handlerInfoGraph,
-    openInfoGraph,
-  } = props;
-  return (
-    <div className="graphcontainer pt6">
-      <h2>
-        <InfoIcon
-          className="graphinfo"
-          data-tooltip
-          title="¿Qué significa este gráfico?"
-          onClick={() => {
-            handlerInfoGraph('TimelineFootprint');
-          }}
-        />
-        <div
-          className="graphinfo"
-          onClick={() => handlerInfoGraph('TimelineFootprint')}
-          onKeyPress={() => handlerInfoGraph('TimelineFootprint')}
-          role="button"
-          tabIndex="0"
-        />
-      </h2>
-      {(
-        openInfoGraph && (openInfoGraph === 'TimelineFootprint') && (
-        <ShortInfo
-          name="Huella Humana en el tiempo"
-          description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
-          className="graphinfo2"
-          tooltip="¿Qué significa?"
-          customButton
-        />
-        )
-      )}
-      <h6>
-        Huella humana comparada con EE
-      </h6>
-      <p>
-        Haz clic en un ecosistema para ver su comportamiento
-      </p>
-      <div>
+class TimelineFootprint extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showInfoGraph: false,
+    };
+  }
+
+  toggleInfoGraph = () => {
+    this.setState(prevState => ({
+      showInfoGraph: !prevState.showInfoGraph,
+    }));
+  };
+
+  render() {
+    const {
+      selection,
+      setSelection,
+      data,
+    } = this.props;
+    const { showInfoGraph } = this.state;
+    return (
+      <div className="graphcontainer pt6">
         <h2>
-          <GraphLoader
-            graphType="MultiLinesGraph"
-            setSelection={setSelection}
-            colors={matchColor(matchColorAndData[selection])}
-            data={data}
-            markers={changeValues}
-            labelX="Año"
-            labelY="Indice promedio Huella Humana"
-            width="100%"
+          <InfoIcon
+            className="graphinfo"
+            data-tooltip
+            title="¿Qué significa este gráfico?"
+            onClick={() => this.toggleInfoGraph()}
+          />
+          <div
+            className="graphinfo"
+            onClick={() => this.toggleInfoGraph()}
+            onKeyPress={() => this.toggleInfoGraph()}
+            role="button"
+            tabIndex="0"
           />
         </h2>
+        {(
+          showInfoGraph && (
+          <ShortInfo
+            name="Huella Humana en el tiempo"
+            description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
+            className="graphinfo2"
+            tooltip="¿Qué significa?"
+            customButton
+          />
+          )
+        )}
+        <h6>
+          Huella humana comparada con EE
+        </h6>
         <p>
-          Área del ecosistema dentro de la unidad de consulta: 332 ha
+          Haz clic en un ecosistema para ver su comportamiento
         </p>
+        <div>
+          <h2>
+            <GraphLoader
+              graphType="MultiLinesGraph"
+              setSelection={setSelection}
+              colors={matchColor(matchColorAndData[selection])}
+              data={data}
+              markers={changeValues}
+              labelX="Año"
+              labelY="Indice promedio Huella Humana"
+            />
+          </h2>
+          <p>
+            Área del ecosistema dentro de la unidad de consulta: 332 ha
+          </p>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 TimelineFootprint.propTypes = {
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
-  handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.string,
-};
-
-TimelineFootprint.defaultProps = {
-  handlerInfoGraph: () => {},
-  openInfoGraph: null,
 };
 
 export default TimelineFootprint;
