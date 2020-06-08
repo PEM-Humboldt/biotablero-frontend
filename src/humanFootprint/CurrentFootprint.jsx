@@ -29,9 +29,7 @@ class CurrentFootprint extends React.Component {
             className="graphinfo"
             data-tooltip
             title="¿Qué significa este gráfico?"
-            onClick={() => {
-              this.toggleInfoGraph();
-            }}
+            onClick={() => this.toggleInfoGraph()}
           />
           <div
             className="graphinfo"
