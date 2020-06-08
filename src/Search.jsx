@@ -53,7 +53,7 @@ class Search extends Component {
     if (!hFPSelection) {
       this.setState(prevState => ({
         ...prevState,
-        hFPSelection: 'Área total',
+        hFPSelection: 'aTotal',
       }));
     }
     if (!areaTypeId || !areaIdId) {
@@ -473,7 +473,6 @@ class Search extends Component {
       dataError,
       openInfoGraph,
       geofencesArray,
-      hFPSelection,
     } = this.state;
     return (
       <div>
@@ -578,7 +577,6 @@ class Search extends Component {
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
-                hFPSelection={hFPSelection}
                 setHFPSelection={(text) => {
                   this.setState(prevState => ({
                     ...prevState,

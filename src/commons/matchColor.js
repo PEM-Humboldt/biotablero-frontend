@@ -29,21 +29,18 @@ const match = {
     palette: 'shortFC',
     sort: ['high', 'medium', 'low'],
   },
-  hfTotal: {
-    palette: 'hfTotal',
-    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
-  },
-  hfParamo: {
-    palette: 'hfParamo',
-    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
-  },
-  hfWetlands: {
-    palette: 'hfWetlands',
-    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
-  },
-  hfDryForest: {
-    palette: 'hfDryForest',
-    sort: ['Área total', 'Páramo', 'Humedales', 'Bosques Secos'],
+  hfTimeline: {
+    palette: 'hfTimeline',
+    // TODO: The id part could change once the API endpoint is implemented
+    sort: [
+      'aTotal',
+      'aTotalSel',
+      'paramo',
+      'paramoSel',
+      'wetland',
+      'wetlandSel',
+      'dryForest',
+      'dryForestSel'],
   },
   currentHFP: {
     palette: 'currentHFP',
@@ -116,10 +113,7 @@ const matchColor = (type) => {
     case 'currentHFP':
     case 'coverage':
     case 'biomeComp':
-    case 'hfTotal':
-    case 'hfParamo':
-    case 'hfWetlands':
-    case 'hfDryForest':
+    case 'hfTimeline':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);

@@ -62,29 +62,15 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
-  hfTotal: [ // total area selected
+  hfTimeline: [
+    '#cf324e',
     '#cf324e',
     '#878cae',
+    '#29418a', // paramo selected
     '#a8daca',
+    '#3cb58e', // wetlands selected
     '#e8cc8e',
-  ],
-  hfParamo: [ // paramo selected
-    '#cf324e',
-    '#29418a',
-    '#a8daca',
-    '#e8cc8e',
-  ],
-  hfWetlands: [ // wetlands selected
-    '#cf324e',
-    '#878cae',
-    '#3cb58e',
-    '#e8cc8e',
-  ],
-  hfDryForest: [ // tropical dry forest selected
-    '#cf324e',
-    '#878cae',
-    '#a8daca',
-    '#ccb325',
+    '#ccb325', // tropical dry forest selected
   ],
   currentHFP: [
     '#3fbf9f',

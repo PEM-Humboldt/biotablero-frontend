@@ -4,13 +4,6 @@ import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
-const matchColorAndData = {
-  'Área total': 'hfTotal',
-  Páramo: 'hfParamo',
-  Humedales: 'hfWetlands',
-  'Bosques Secos': 'hfDryForest',
-};
-
 const changeValues = [
   {
     axis: 'y',
@@ -66,10 +59,26 @@ const changeValues = [
   },
 ];
 
+const getLabel = (type) => {
+  switch (type) {
+    case 'paramo': return 'Páramos';
+    case 'wetland': return 'Húmedales';
+    case 'dryForest': return 'Bosques secos';
+    default: return 'Área Total';
+  }
+};
+
+const processData = (data) => {
+  if (!data) return [];
+  return data.map(obj => ({
+    ...obj,
+    label: getLabel(obj.id),
+  }));
+};
+
 const TimelineFootprint = (props) => {
   const {
     generalArea,
-    selection,
     setSelection,
     data,
   } = props;
@@ -89,8 +98,8 @@ const TimelineFootprint = (props) => {
           <GraphLoader
             graphType="MultiLinesGraph"
             onClickHandler={setSelection}
-            colors={matchColor(matchColorAndData[selection])}
-            data={data}
+            colors={matchColor('hfTimeline')}
+            data={processData(data)}
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"
@@ -105,7 +114,6 @@ const TimelineFootprint = (props) => {
 
 TimelineFootprint.propTypes = {
   generalArea: PropTypes.number.isRequired,
-  selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
 };
