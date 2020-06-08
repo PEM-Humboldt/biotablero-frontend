@@ -13,7 +13,7 @@ class CurrentFootprint extends React.Component {
     };
   }
 
-  showInfoGraph = () => {
+  toggleInfoGraph = () => {
     this.setState(prevState => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
@@ -30,13 +30,13 @@ class CurrentFootprint extends React.Component {
             data-tooltip
             title="¿Qué significa este gráfico?"
             onClick={() => {
-              this.showInfoGraph();
+              this.toggleInfoGraph();
             }}
           />
           <div
             className="graphinfo"
-            onClick={() => this.showInfoGraph()}
-            onKeyPress={() => this.showInfoGraph()}
+            onClick={() => this.toggleInfoGraph()}
+            onKeyPress={() => this.toggleInfoGraph()}
             role="button"
             tabIndex="0"
           />
