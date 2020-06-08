@@ -8,6 +8,7 @@ class MultiLinesGraph extends React.Component {
     this.state = {
       data: null,
       labels: {},
+      selectedId: null,
     };
   }
 
@@ -61,7 +62,7 @@ class MultiLinesGraph extends React.Component {
       if (obj.id === selectedId) return { ...obj, color: colors(`${obj.id}Sel`) };
       return { ...obj, color: colors(obj.id) };
     });
-    this.setState({ data: transformedData });
+    this.setState({ data: transformedData, selectedId });
   };
 
   selectLine = (point) => {
@@ -81,7 +82,7 @@ class MultiLinesGraph extends React.Component {
       height,
     } = this.props;
 
-    const { data, labels } = this.state;
+    const { data, labels, selectedId } = this.state;
 
     if (!data) return null;
 
@@ -158,11 +159,14 @@ class MultiLinesGraph extends React.Component {
           legends={[
             {
               anchor: 'bottom-left',
-              data: Object.keys(labels).map(id => ({
-                id,
-                label: labels[id],
-                color: colors(id),
-              })),
+              data: Object.keys(labels).map((id) => {
+                const color = id === selectedId ? colors(`${id}Sel`) : colors(id);
+                return {
+                  id,
+                  label: labels[id],
+                  color,
+                };
+              }),
               direction: 'row',
               justify: false,
               translateX: -50,
