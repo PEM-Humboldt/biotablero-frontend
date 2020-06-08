@@ -13,6 +13,8 @@ const HumanFootprint = ({
   currentHF,
   hfPersistence,
   hfTimeline,
+  handlerInfoGraph,
+  openInfoGraph,
 }) => {
   const componentsArray = [{
     label: {
@@ -27,6 +29,8 @@ const HumanFootprint = ({
       <CurrentFootprint
         generalArea={generalArea}
         data={currentHF}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
       />
     ),
   },
@@ -45,6 +49,8 @@ const HumanFootprint = ({
         selection={selection}
         setSelection={setSelection}
         data={hfTimeline}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
       />
     ),
   },
@@ -61,6 +67,8 @@ const HumanFootprint = ({
       <PersistenceFooprint
         generalArea={generalArea}
         data={hfPersistence}
+        handlerInfoGraph={handlerInfoGraph}
+        openInfoGraph={openInfoGraph}
       />
     ),
   },
@@ -81,6 +89,13 @@ HumanFootprint.propTypes = {
   currentHF: PropTypes.array.isRequired,
   hfPersistence: PropTypes.array.isRequired,
   hfTimeline: PropTypes.array.isRequired,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
+};
+
+HumanFootprint.defaultProps = {
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
 };
 
 export default HumanFootprint;

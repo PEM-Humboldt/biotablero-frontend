@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GeneralArea from '../commons/GeneralArea';
+import InfoIcon from '@material-ui/icons/Info';
+import ShortInfo from '../commons/ShortInfo';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
@@ -68,23 +69,49 @@ const changeValues = [
 
 const TimelineFootprint = (props) => {
   const {
-    generalArea,
     selection,
     setSelection,
     data,
+    handlerInfoGraph,
+    openInfoGraph,
   } = props;
   return (
-    <div className="graphcontainer pt5" style={{ width: '100%' }}>
-      <GeneralArea
-        value={generalArea}
-      />
-      <h4>
-        Valores promedio en el área
-      </h4>
+    <div className="graphcontainer pt6">
+      <h2>
+        <InfoIcon
+          className="graphinfo"
+          data-tooltip
+          title="¿Qué significa este gráfico?"
+          onClick={() => {
+            handlerInfoGraph('TimelineFootprint');
+          }}
+        />
+        <div
+          className="graphinfo"
+          onClick={() => handlerInfoGraph('TimelineFootprint')}
+          onKeyPress={() => handlerInfoGraph('TimelineFootprint')}
+          role="button"
+          tabIndex="0"
+        />
+      </h2>
+      {(
+        openInfoGraph && (openInfoGraph === 'TimelineFootprint') && (
+        <ShortInfo
+          name="Huella Humana en el tiempo"
+          description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
+          className="graphinfo2"
+          tooltip="¿Qué significa?"
+          customButton
+        />
+        )
+      )}
       <h6>
-        Diferenciados entre área total y cada ecosistema estratégico
+        Huella humana comparada con EE
       </h6>
-      <div className="graficaeco" style={{ width: '100%' }}>
+      <p>
+        Haz clic en un ecosistema para ver su comportamiento
+      </p>
+      <div>
         <h2>
           <GraphLoader
             graphType="MultiLinesGraph"
@@ -97,17 +124,25 @@ const TimelineFootprint = (props) => {
             width="100%"
           />
         </h2>
-        Área del ecosistema dentro de la unidad de consulta: 332 ha
+        <p>
+          Área del ecosistema dentro de la unidad de consulta: 332 ha
+        </p>
       </div>
     </div>
   );
 };
 
 TimelineFootprint.propTypes = {
-  generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
+  handlerInfoGraph: PropTypes.func,
+  openInfoGraph: PropTypes.string,
+};
+
+TimelineFootprint.defaultProps = {
+  handlerInfoGraph: () => {},
+  openInfoGraph: null,
 };
 
 export default TimelineFootprint;

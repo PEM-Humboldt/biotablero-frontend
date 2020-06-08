@@ -319,6 +319,8 @@ class Drawer extends React.Component {
             currentHF={currentHF}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
+            handlerInfoGraph={handlerInfoGraph}
+            openInfoGraph={openInfoGraph}
           />
         ),
       },
