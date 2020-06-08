@@ -29,8 +29,6 @@ const HumanFootprint = ({
       <CurrentFootprint
         generalArea={generalArea}
         data={currentHF}
-        handlerInfoGraph={handlerInfoGraph}
-        openInfoGraph={openInfoGraph}
       />
     ),
   },
