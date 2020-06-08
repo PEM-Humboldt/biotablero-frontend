@@ -1,14 +1,14 @@
 [
   {
-    "area": 102881.969963357, "percentage": 0.534509491440089, "type": "Baja"
+    "area": 19422.0899745865, "percentage": 0.100904866408734, "key": "Natural"
   },
   {
-    "area": 60456.5100022236, "percentage": 0.314093698118733, "type": "Media"
+    "area": 102881.969963357, "percentage": 0.534509491440089, "key": "Baja"
   },
   {
-    "area": 9718.65000066086, "percentage": 0.050491944032445, "type": "Alta"
+    "area": 60456.5100022236, "percentage": 0.314093698118733, "key": "Media"
   },
   {
-    "area": 19422.0899745865, "percentage": 0.100904866408734, "type": "Natural"
+    "area": 9718.65000066086, "percentage": 0.050491944032445, "key": "Alta"
   }
 ]
