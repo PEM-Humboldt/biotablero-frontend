@@ -93,7 +93,10 @@ class NationalInsigths extends React.Component {
   render() {
     const { data } = this.state;
     const {
-      area, colors, geofence, handlerBackButton, handlerInfoGraph,
+      area,
+      colors,
+      geofence,
+      handlerBackButton,
     } = this.props;
     return (
       <div className="informer">
@@ -120,8 +123,6 @@ class NationalInsigths extends React.Component {
               colors={null}
               labelX={null}
               labelY={null}
-              handlerInfoGraph={handlerInfoGraph}
-              openInfoGraph={false}
               units="ha"
             />
             )
@@ -135,7 +136,6 @@ class NationalInsigths extends React.Component {
               colors={colors}
               labelX="Cobertura"
               labelY="Hectáreas"
-              openInfoGraph={false}
               units="ha"
             />
             )
@@ -149,7 +149,6 @@ class NationalInsigths extends React.Component {
               colors={colors}
               labelX="Área protegida"
               labelY="Hectáreas"
-              openInfoGraph={false}
               units="ha"
             />
             )
@@ -165,14 +164,12 @@ NationalInsigths.propTypes = {
   colors: PropTypes.array,
   geofence: PropTypes.string,
   handlerBackButton: PropTypes.func,
-  handlerInfoGraph: PropTypes.func,
 };
 
 NationalInsigths.defaultProps = {
   colors: ['#345b6b'],
   geofence: '',
   handlerBackButton: () => {},
-  handlerInfoGraph: () => {},
 };
 
 export default withStyles(styles)(NationalInsigths);

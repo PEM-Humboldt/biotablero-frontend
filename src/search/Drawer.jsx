@@ -241,8 +241,6 @@ class Drawer extends React.Component {
       colorSZH,
       classes,
       handlerBackButton,
-      handlerInfoGraph,
-      openInfoGraph,
       subLayerName,
       area,
       matchColor,
@@ -277,8 +275,6 @@ class Drawer extends React.Component {
           biomesData={biomas}
           bioticRegionsData={distritos}
           compensationFactorData={fc}
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
           matchColor={matchColor}
         />,
       },
@@ -333,17 +329,8 @@ class Drawer extends React.Component {
                     listSE={areaSE}
                     listPA={areaPA}
                     coverage={coverage}
-                    handlerInfoGraph={handlerInfoGraph}
-                    openInfoGraph={openInfoGraph}
                     areaId={area.id}
                     geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
-                    graphTitle="Área"
-                    graphDescription={
-                      'resume la información de los ecosistemas presentes en el'
-                      + ' área seleccionada, y su distribución al interior de áreas protegidas'
-                      + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
-                      + ' no son representados en las gráficas.'
-                      }
                     matchColor={matchColor}
                   />
                 </div>
@@ -392,8 +379,6 @@ Drawer.propTypes = {
   colorSZH: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.string,
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
@@ -406,8 +391,6 @@ Drawer.defaultProps = {
   subLayerData: {},
   subLayerName: '',
   handlerBackButton: () => {},
-  handlerInfoGraph: () => {},
-  openInfoGraph: null,
   matchColor: () => {},
 };
 

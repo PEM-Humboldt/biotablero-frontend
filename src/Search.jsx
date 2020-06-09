@@ -434,22 +434,6 @@ class Search extends Component {
     });
   }
 
-  // Keeping only one info graph active
-  handlerInfoGraph = (title) => {
-    this.setState((prevState) => {
-      let newState = { ...prevState };
-      let value = null;
-      if (prevState.openInfoGraph === title) value = null;
-      else value = title;
-      newState = {
-        ...newState,
-        openInfoGraph: value,
-      };
-
-      return newState;
-    });
-  }
-
   /**
    * Close a given modal
    *
@@ -471,7 +455,6 @@ class Search extends Component {
       layers,
       connError,
       dataError,
-      openInfoGraph,
       geofencesArray,
     } = this.state;
     return (
@@ -572,8 +555,6 @@ class Search extends Component {
                 subLayerData={subLayerData}
                 geofence={areaId}
                 handlerBackButton={this.handlerBackButton}
-                handlerInfoGraph={name => this.handlerInfoGraph(name)}
-                openInfoGraph={openInfoGraph}
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}

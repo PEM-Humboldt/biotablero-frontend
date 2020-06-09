@@ -156,47 +156,43 @@ class MultiLinesGraph extends React.Component {
               },
             },
           }}
-          legends={[
-            {
-              anchor: 'bottom-left',
-              data: Object.keys(labels).map((id) => {
-                const color = id === selectedId ? colors(`${id}Sel`) : colors(id);
-                return {
-                  id,
-                  label: labels[id],
-                  color,
-                };
-              }),
-              direction: 'row',
-              justify: false,
-              translateX: -50,
-              translateY: 100,
-              itemsSpacing: 30,
-              itemDirection: 'left-to-right',
-              itemWidth: 90,
-              itemHeight: 80,
-              itemOpacity: 0.75,
-              onClick: this.selectLine,
-              symbolSize: 12,
-              legendOffset: {
-                onMouseEnter: {
-                  container: {
-                    padding: 0,
-                  },
+          legends={[{
+            anchor: 'bottom-left',
+            data: Object.keys(labels).map((id) => {
+              const color = id === selectedId ? colors(`${id}Sel`) : colors(id);
+              return {
+                id,
+                label: labels[id],
+                color,
+              };
+            }),
+            direction: 'row',
+            justify: false,
+            translateX: -50,
+            translateY: 100,
+            itemsSpacing: 5,
+            itemDirection: 'left-to-right',
+            itemWidth: 105,
+            itemHeight: 40,
+            itemOpacity: 0.75,
+            onClick: this.selectLine,
+            symbolSize: 12,
+            legendOffset: {
+              onMouseEnter: {
+                container: {
+                  padding: 0,
                 },
               },
-              symbolShape: 'circle',
-              symbolBorderColor: 'rgba(0, 0, 0, .5)',
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemBackground: 'rgba(0, 0, 0, .03)',
-                  },
-                },
-              ],
             },
-          ]}
+            symbolShape: 'circle',
+            symbolBorderColor: 'rgba(0, 0, 0, .5)',
+            effects: [{
+              on: 'hover',
+              style: {
+                itemBackground: 'rgba(0, 0, 0, .03)',
+              },
+            }],
+          }]}
           isInteractive
           animate
         />
