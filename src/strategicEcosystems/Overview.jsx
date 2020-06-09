@@ -92,11 +92,7 @@ class Overview extends React.Component {
         {showInfoGraph && (
           <ShortInfo
             name="Área"
-            description={
-              'resume la información de los ecosistemas presentes en el'
-              + ' área seleccionada, y su distribución al interior de áreas protegidas'
-              + ' y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1%'
-              + ' no son representados en las gráficas.'}
+            description="resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1% no son representados en las gráficas."
             className="graphinfo2"
             tooltip="¿Qué significa?"
             customButton
