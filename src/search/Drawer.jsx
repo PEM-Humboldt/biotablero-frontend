@@ -297,8 +297,6 @@ class Drawer extends React.Component {
           biomesData={biomas}
           bioticRegionsData={distritos}
           compensationFactorData={fc}
-          handlerInfoGraph={handlerInfoGraph}
-          openInfoGraph={openInfoGraph}
           matchColor={matchColor}
         />,
       },
@@ -319,8 +317,6 @@ class Drawer extends React.Component {
             currentHF={currentHF}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
           />
         ),
       },
