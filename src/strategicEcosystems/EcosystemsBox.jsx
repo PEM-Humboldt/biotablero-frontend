@@ -57,12 +57,12 @@ class EcosystemsBox extends Component {
 
   preProcessData = (name, area, total) => ([
     {
-      type: name,
+      key: name,
       area: Number(area),
       percentage: getPercentage(Number(area), total),
       label: name,
     },
-    { type: 'NA', area: (total - area), percentage: getPercentage((total - area), total) },
+    { key: 'NA', area: (total - area), percentage: getPercentage((total - area), total) },
   ])
 
   render() {

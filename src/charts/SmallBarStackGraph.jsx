@@ -29,10 +29,10 @@ const SmallBarStackGraph = (props) => {
       key: 'key',
     };
     rawData.forEach((item) => {
-      transformedData[String(item.type)] = Number(item.area || item.percentage);
-      transformedData[`${String(item.type)}Color`] = colors(item.type);
-      transformedData[`${String(item.type)}Label`] = item.label;
-      transformedData[`${String(item.type)}Percentage`] = Number(item.percentage);
+      transformedData[String(item.key)] = Number(item.area || item.percentage);
+      transformedData[`${String(item.key)}Color`] = colors(item.key);
+      transformedData[`${String(item.key)}Label`] = item.label;
+      transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
     });
     return [transformedData];
   };
@@ -42,7 +42,7 @@ const SmallBarStackGraph = (props) => {
    *
    * @returns {array} ids of each bar
    */
-  const keys = data.map(item => String(item.type));
+  const keys = data.map(item => String(item.key));
 
   /**
    * Get tooltip for graph component according to id of bar
@@ -118,7 +118,7 @@ const SmallBarStackGraph = (props) => {
 
 SmallBarStackGraph.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape({
-    type: PropTypes.string.isRequired,
+    key: PropTypes.string.isRequired,
     area: PropTypes.number.isRequired,
     percentage: PropTypes.number,
     label: PropTypes.string,

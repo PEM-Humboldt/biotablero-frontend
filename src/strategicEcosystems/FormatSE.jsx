@@ -14,7 +14,7 @@ export const setPAValues = (arrayIn) => {
       area: Number(item.area),
       // TODO: Maybe modify backend to always return type
       label: item.type || item.label,
-      type: item.type || item.label,
+      key: item.type || item.label,
     }))
     .sort((first, second) => {
       if (first.area > second.area) return -1;
@@ -22,7 +22,14 @@ export const setPAValues = (arrayIn) => {
       return 0;
     });
 
-  if (np) result.push({ ...np, area: Number(np.area), label: np.type });
+  if (np) {
+    result.push({
+      ...np,
+      key: np.type,
+      area: Number(np.area),
+      label: np.type,
+    });
+  }
   return result;
 };
 
@@ -45,6 +52,7 @@ export const setCoverageValues = (array) => {
     }
     return {
       ...item,
+      key: item.type,
       area: Number(item.area),
       label,
     };
