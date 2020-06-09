@@ -20,6 +20,15 @@ class CompensationFactor extends React.Component {
     }));
   };
 
+  processData = (data) => {
+    if (!data) return [];
+    return data.map(obj => ({
+      key: `${obj.key}`,
+      area: parseFloat(obj.area),
+      label: `${obj.key}`,
+    }));
+  };
+
   render() {
     const {
       areaName,
@@ -34,8 +43,8 @@ class CompensationFactor extends React.Component {
         <div className="graphinside">
           <div className="graphcardAcc">
             {(areaName === 'Jurisdicciones ambientales')
-              && [
-                (
+              ? (
+                <div>
                   <h2>
                     Factor de Compensación
                     <InfoIcon
@@ -53,64 +62,51 @@ class CompensationFactor extends React.Component {
                     />
                     <DownloadIcon className="icondown" />
                   </h2>
-                ),
-                (
-                  showInfoGraph && (
-                  <ShortInfo
-                    name="Factor de Compensación."
-                    description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
-                    className="graphinfo2"
-                    tooltip="¿Qué significa?"
-                    customButton
-                  />
-                  )
-                ),
-                (
+                  {showInfoGraph && (
+                    <ShortInfo
+                      name="Factor de Compensación."
+                      description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
+                      className="graphinfo2"
+                      tooltip="¿Qué significa?"
+                      customButton
+                    />
+                  )}
                   <GraphLoader
                     graphType="LargeBarStackGraph"
-                    data={compensationFactorData}
+                    data={this.processData(compensationFactorData)}
                     labelX="Hectáreas"
                     labelY="Factor de Compensación"
                     units="ha"
                     colors={matchColor('fc')}
                     padding={0.25}
                   />
-                ),
-                (
                   <h3>
                     Biomas
                   </h3>
-                ),
-                (
                   <GraphLoader
                     graphType="LargeBarStackGraph"
-                    data={biomesData}
+                    data={this.processData(biomesData)}
                     labelX="Hectáreas"
                     labelY="Biomas"
                     units="ha"
                     colors={matchColor('biomas')}
                     padding={0.3}
                   />
-                ),
-                (
                   <h3>
                     Regiones Bióticas
                   </h3>
-                ),
-                (
                   <GraphLoader
                     graphType="LargeBarStackGraph"
-                    data={bioticRegionsData}
+                    data={this.processData(bioticRegionsData)}
                     labelX="Hectáreas"
                     labelY="Regiones Bióticas"
                     units="ha"
                     colors={matchColor('bioticReg')}
                     padding={0.3}
                   />
-                ),
-              ]}
-            {(areaName !== 'Jurisdicciones ambientales')
-              && (
+                </div>
+              )
+              : (
                 <div className="graphcard">
                   <h2>
                     Gráficas en construcción
@@ -119,7 +115,8 @@ class CompensationFactor extends React.Component {
                     Pronto más información
                   </p>
                 </div>
-              )}
+              )
+            }
           </div>
         </div>
       </div>
