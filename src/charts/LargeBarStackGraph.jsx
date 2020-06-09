@@ -33,7 +33,10 @@ const LargeBarStackGraph = (props) => {
       key,
     };
     rawData.forEach((item) => {
-      transformedData[String(item.key)] = Number(item.area);
+      transformedData[String(item.key)] = Number(item.area || item.percentage);
+      transformedData[`${String(item.key)}Color`] = colors(item.key);
+      transformedData[`${String(item.key)}Label`] = item.label;
+      transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
     });
     return [transformedData];
   };
@@ -75,13 +78,13 @@ const LargeBarStackGraph = (props) => {
         animate
         motionStiffness={90}
         motionDamping={15}
-        tooltip={({ id, value, color }) => (
+        tooltip={({ id, data: allData, color }) => (
           <div>
             <strong style={{ color }}>
-              {id}
+              {allData[`${id}Label`]}
             </strong>
             <div style={{ color: '#ffffff' }}>
-              {`${numberWithCommas(value.toFixed(2))} ${units}`}
+              {`${numberWithCommas(allData[id].toFixed(2))} ${units}`}
             </div>
           </div>
         )}
@@ -99,7 +102,12 @@ const LargeBarStackGraph = (props) => {
 };
 
 LargeBarStackGraph.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    area: PropTypes.number.isRequired,
+    percentage: PropTypes.number,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   height: PropTypes.number,

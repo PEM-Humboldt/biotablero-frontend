@@ -64,7 +64,7 @@ class PersistenceFootprint extends React.Component {
             graphType="LargeBarStackGraph"
             data={data.map(item => ({
               ...item,
-              label: getLabel[item.type],
+              label: getLabel[item.key],
             }))}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"

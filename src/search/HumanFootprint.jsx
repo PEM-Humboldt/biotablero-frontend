@@ -12,52 +12,53 @@ const HumanFootprint = ({
   hfPersistence,
   hfTimeline,
 }) => {
-  const componentsArray = [{
-    label: {
-      id: 'Actual',
-      name: 'Huella humana en el último año',
-      disabled: false,
-      expandIcon: <AddIcon />,
-      detailId: 'Huella humana actual en área de consulta',
-      description: 'Huella humana identificada en el último año de medición disponible, sobre el área de consulta',
+  const componentsArray = [
+    {
+      label: {
+        id: 'Actual',
+        name: 'Huella humana en el último año',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Huella humana actual en área de consulta',
+        description: 'Huella humana identificada en el último año de medición disponible, sobre el área de consulta',
+      },
+      component: (
+        <CurrentFootprint
+          data={currentHF}
+        />
+      ),
     },
-    component: (
-      <CurrentFootprint
-        data={currentHF}
-      />
-    ),
-  },
-  {
-    label: {
-      id: 'Histórico y Ecosistémas estratégicos (EE)',
-      name: 'Huella humana a través del tiempo',
-      disabled: false,
-      expandIcon: <AddIcon />,
-      detailId: 'Huella humana a través del tiempo en el área',
-      description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+    {
+      label: {
+        id: 'Histórico y Ecosistémas estratégicos (EE)',
+        name: 'Huella humana a través del tiempo',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Huella humana a través del tiempo en el área',
+        description: 'Representa diferentes análisis de huella humana en esta área de consulta',
+      },
+      component: (
+        <TimelineFootprint
+          setSelection={setSelection}
+          data={hfTimeline}
+        />
+      ),
     },
-    component: (
-      <TimelineFootprint
-        setSelection={setSelection}
-        data={hfTimeline}
-      />
-    ),
-  },
-  {
-    label: {
-      id: 'Persistencia',
-      name: 'Persistencia',
-      disabled: false,
-      expandIcon: <AddIcon />,
-      detailId: 'Persistencia de la huella humana en la unidad de consulta',
-      description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
+    {
+      label: {
+        id: 'Persistencia',
+        name: 'Persistencia',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Persistencia de la huella humana en la unidad de consulta',
+        description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
+      },
+      component: (
+        <PersistenceFooprint
+          data={hfPersistence}
+        />
+      ),
     },
-    component: (
-      <PersistenceFooprint
-        data={hfPersistence}
-      />
-    ),
-  },
   ];
   return (
     <Accordion

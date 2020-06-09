@@ -56,7 +56,10 @@ class CurrentFootprint extends React.Component {
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
-            data={data}
+            data={data.map(item => ({
+              ...item,
+              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
+            }))}
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
