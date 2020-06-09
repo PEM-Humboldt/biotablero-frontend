@@ -124,10 +124,8 @@ class Search extends Component {
               this.setState(
                 { areaId: inputId },
                 () => {
-                  const { areaType, areaId, activeLayer } = this.state;
+                  const { areaType, areaId } = this.state;
                   setHeaderNames(areaType.name, areaId.name);
-                  console.log('loadAreaList activeLayer', activeLayer);
-                  // if (!activeLayer) this.loadLayer(areaId);
                 },
               );
             } else {
@@ -160,15 +158,18 @@ class Search extends Component {
   }
 
   /**
-   * Choose the right color for the biome inside the map, according
+   * Choose the right color for the section inside the map, according
    *  with matchColor function
-   *
+   * 
+   * @param {String} type layer type
    * @param {Object} feature target object
    */
-  featureStyle = (feature) => {
+
+  featureStyle = type => (feature) => {
+    const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
       stroke: false,
-      fillColor: matchColor('fc')(feature.properties.compensation_factor),
+      fillColor: matchColor(type)(key),
       fillOpacity: 0.7,
     };
     return styleReturn;
@@ -200,7 +201,6 @@ class Search extends Component {
       {
         mouseover: event => this.highlightFeature(event, parentLayer),
         mouseout: event => this.resetHighlight(event, parentLayer),
-        click: event => this.clickFeature(event, parentLayer),
       },
     );
   }
@@ -258,8 +258,6 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   loadLayer = (layer, parentLayer) => {
-    console.log('loadLayer - layer', layer);
-    console.log('loadLayer - parentLayer', parentLayer);
     const { requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -348,14 +346,12 @@ class Search extends Component {
    */
 
   shutOffAllLayers = () => {
-    console.log('shutOffAllLayers - state', this.state);
     this.setState((prevState) => {
       const newState = { ...prevState };
       const { layers } = prevState;
       Object.keys(layers).forEach((layerKey) => {
         newState.layers[layerKey].active = false;
       });
-      console.log('shutOffAllLayers - newState', newState);
       return {
         ...newState,
       };
@@ -369,21 +365,15 @@ class Search extends Component {
    * @param {String} parentLayer Parent layer ID
    */
   switchLayer = (layerType, layer) => {
-    console.log('loadLayer - layer', layer); // { id: "CAR", name: "Corporacion Autonoma Regional de Cundinamarca" }
-    console.log('loadLayer - layerType', layerType); // ea
     const { requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
-    console.log('loadLayer - requestSource', requestSource); // Object
     this.setState({
       loadingModal: true,
       activeLayer: layer,
       requestSource: null,
     });
-
-    // const { layers } = this.state;
-    // console.log('layers', layers);
 
     switch (layerType) {
       case 'fc':
@@ -400,7 +390,7 @@ class Search extends Component {
                       id: layer.id || layer.id_ea,
                       active: true,
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle,
+                        style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(feature, selectedLayer, layer.id)
                         ),
@@ -421,7 +411,6 @@ class Search extends Component {
                 if (prevState.layers[layer.id]) {
                   newState.layers[layer.id].active = true;
                 }
-                console.log('CASE newState', newState);
                 return newState;
               });
             })
@@ -440,7 +429,7 @@ class Search extends Component {
                       id: layer.id || layer.id_ea,
                       active: true,
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle,
+                        style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(feature, selectedLayer, layer.id)
                         ),
@@ -461,7 +450,6 @@ class Search extends Component {
                 if (prevState.layers[layer.id]) {
                   newState.layers[layer.id].active = true;
                 }
-                console.log('CASE newState', newState);
                 return newState;
               });
             })
@@ -551,7 +539,6 @@ class Search extends Component {
   /** LISTENERS FOR SELECTOR CHANGES */
   /** ****************************** */
   secondLevelChange = (id, expanded) => {
-    // console.log('secondLevelChange - this.loadSecondLevelLayer(id, expanded)', this.loadSecondLevelLayer(id, expanded));
     this.loadSecondLevelLayer(id, expanded);
   }
 
@@ -562,8 +549,6 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    // console.log('innerElementChange - nameToOff', nameToOff); // ea
-    // console.log('innerElementChange - nameToOn', nameToOn); // { id: "CAR", name: "Corporacion Autonoma Regional de Cundinamarca" }
     const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
@@ -697,12 +682,6 @@ class Search extends Component {
             </h2>
           </div>
         </Modal>
-        {// console.log('MapViewer')
-        }
-        {// console.log('layers', layers)
-        }
-        {// console.log('GeoServerAPI.getRequestURL()', GeoServerAPI.getRequestURL())
-        }
         <div className="appSearcher">
           <MapViewer
             layers={layers}

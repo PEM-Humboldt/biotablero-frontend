@@ -265,8 +265,6 @@ class Drawer extends React.Component {
       setHFPSelection,
       handlersGeometry,
     } = this.props;
-    // console.log('handlerGeometry', handlerGeometry);
-    // console.log('handlers', handlers);
     const {
       data: {
         fc,
@@ -366,7 +364,6 @@ class Drawer extends React.Component {
               ),
               (
                 <div key="1" selected>
-                  {console.log('************ 1er Accordion ***************************')}
                   <Accordion
                     componentsArray={componentsArray}
                     handlersGeometry={handlersGeometry}

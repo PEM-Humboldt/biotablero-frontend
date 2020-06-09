@@ -64,7 +64,6 @@ const HumanFootprint = ({
   ];
   return (
     <div>
-      {console.log('************ 2do Accordion ***************************')}
       <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"

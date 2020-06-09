@@ -22,7 +22,6 @@ class Accordion extends React.Component {
       this.setState({
         expanded: defaultTab,
       });
-      // this.loadLayer(defaultTab);
       handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' });
     }
   }
@@ -34,19 +33,12 @@ class Accordion extends React.Component {
    */
   loadLayer = (layerType) => {
     const { handlersGeometry } = this.props;
-   
     switch (layerType) {
-      case 'Huella humana':
-        return (
-          // console.log('componentsArray', this.props);
-          console.log('this.state', this.state)
-        );
       case 'Actual':
         return (
           handlersGeometry[1]('currentHFP', { id: 'CARDER', name: 'Corporacion Autonoma Regional de Risaralda' })
         );
       case 'FC y Biomas':
-        console.log('componentsArray', this.props.componentsArray);
         return (
           handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' })
         );
@@ -62,10 +54,7 @@ class Accordion extends React.Component {
       classNameDefault,
       handlersGeometry,
     } = this.props;
-    // console.log('ACC - handlersGeometry', handlersGeometry);
     const { expanded } = this.state;
-    // console.log('Accordion - expanded (RENDER)', expanded);
-    // console.log('Accordion - componentsArray', componentsArray);
     return (
       <div style={{ width: '100%' }}>
         {(componentsArray.length > 0)
@@ -77,29 +66,15 @@ class Accordion extends React.Component {
               id={counter.label.id}
               key={counter.label.id}
               onChange={() => {
-                console.log('Accordion - expanded INI', expanded);
-                console.log('Accordion - counter', counter);
                 const newTab = expanded !== counter.label.id;
-                /*
-                if(newTab) {
-                  console.log('Accordion - TRUE', counter.label.id);
-                } else {
-                  console.log('Accordion - FALSE', 'NULL');
-                }
-                */
                 this.setState({
                   expanded: newTab ? counter.label.id : null,
                 });
-                // const { expanded: expandedFIN } = this.state;
-                console.log('Accordion - expanded FIN', this.state.expanded);
-                console.log('Accordion - expanded !== counter.label.id', expanded !== counter.label.id);
 
                 if (newTab) {
                   return this.loadLayer(counter.label.id);
                 }
-                
                 return handlersGeometry[0]();
-                
               }}
             >
               <ExpansionPanelSummary
