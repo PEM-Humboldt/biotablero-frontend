@@ -289,7 +289,6 @@ class Drawer extends React.Component {
         },
         component: (
           <HumanFootprint
-            generalArea={generalArea}
             setSelection={setHFPSelection}
             currentHF={currentHF}
             hfPersistence={hfPersistence}

@@ -7,7 +7,6 @@ import TimelineFootprint from '../humanFootprint/TimelineFootprint';
 import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = ({
-  generalArea,
   setSelection,
   currentHF,
   hfPersistence,
@@ -24,7 +23,6 @@ const HumanFootprint = ({
     },
     component: (
       <CurrentFootprint
-        generalArea={generalArea}
         data={currentHF}
       />
     ),
@@ -40,7 +38,6 @@ const HumanFootprint = ({
     },
     component: (
       <TimelineFootprint
-        generalArea={generalArea}
         setSelection={setSelection}
         data={hfTimeline}
       />
@@ -57,7 +54,6 @@ const HumanFootprint = ({
     },
     component: (
       <PersistenceFooprint
-        generalArea={generalArea}
         data={hfPersistence}
       />
     ),
@@ -73,7 +69,6 @@ const HumanFootprint = ({
 };
 
 HumanFootprint.propTypes = {
-  generalArea: PropTypes.number.isRequired,
   setSelection: PropTypes.func.isRequired,
   currentHF: PropTypes.array.isRequired,
   hfPersistence: PropTypes.array.isRequired,
