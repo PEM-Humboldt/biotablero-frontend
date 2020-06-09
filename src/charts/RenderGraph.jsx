@@ -13,8 +13,6 @@ import GraphLoader from './GraphLoader';
  * @param {array} colors colors to sort elements inside the graph
  * @param {string} labelX axis X label
  * @param {string} labelY axis Y label
- * @param {func} handlerInfoGraph function to handle additional information
- * @param {string} openInfoGraph additional information for the graph
  * @param {string} graphDescription description of the graph
  * @param {string} units units of data inside the graph
  */
@@ -25,8 +23,6 @@ const RenderGraph = (props) => {
     graphTitle,
     labelX,
     labelY,
-    handlerInfoGraph,
-    openInfoGraph,
     graphDescription,
     units,
     colors,
@@ -61,8 +57,6 @@ const RenderGraph = (props) => {
             height={parent.height}
             labelX={labelX}
             labelY={labelY}
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
             graphDescription={graphDescription}
             units={units}
             padding={padding}
@@ -79,8 +73,6 @@ RenderGraph.propTypes = {
   graphTitle: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.string,
   graphDescription: PropTypes.string,
   units: PropTypes.string,
   colors: PropTypes.func,
@@ -92,8 +84,6 @@ RenderGraph.defaultProps = {
   graphTitle: '',
   labelX: '',
   labelY: '',
-  handlerInfoGraph: () => {},
-  openInfoGraph: null,
   graphDescription: null,
   units: 'ha',
   colors: () => {},

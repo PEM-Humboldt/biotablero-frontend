@@ -7,7 +7,6 @@ import TimelineFootprint from '../humanFootprint/TimelineFootprint';
 import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = ({
-  generalArea,
   selection,
   setSelection,
   currentHF,
@@ -25,14 +24,13 @@ const HumanFootprint = ({
     },
     component: (
       <CurrentFootprint
-        generalArea={generalArea}
         data={currentHF}
       />
     ),
   },
   {
     label: {
-      id: 'Histórico y Ecosistémas estratégicos',
+      id: 'Histórico y Ecosistémas estratégicos (EE)',
       name: 'Huella humana a través del tiempo',
       disabled: false,
       expandIcon: <AddIcon />,
@@ -41,7 +39,6 @@ const HumanFootprint = ({
     },
     component: (
       <TimelineFootprint
-        generalArea={generalArea}
         selection={selection}
         setSelection={setSelection}
         data={hfTimeline}
@@ -59,7 +56,6 @@ const HumanFootprint = ({
     },
     component: (
       <PersistenceFooprint
-        generalArea={generalArea}
         data={hfPersistence}
       />
     ),
@@ -75,7 +71,6 @@ const HumanFootprint = ({
 };
 
 HumanFootprint.propTypes = {
-  generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   currentHF: PropTypes.array.isRequired,

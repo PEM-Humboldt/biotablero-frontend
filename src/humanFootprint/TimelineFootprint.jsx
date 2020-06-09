@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GeneralArea from '../commons/GeneralArea';
+import InfoIcon from '@material-ui/icons/Info';
+import ShortInfo from '../commons/ShortInfo';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
@@ -66,45 +67,83 @@ const changeValues = [
   },
 ];
 
-const TimelineFootprint = (props) => {
-  const {
-    generalArea,
-    selection,
-    setSelection,
-    data,
-  } = props;
-  return (
-    <div className="graphcontainer pt5" style={{ width: '100%' }}>
-      <GeneralArea
-        value={generalArea}
-      />
-      <h4>
-        Valores promedio en el área
-      </h4>
-      <h6>
-        Diferenciados entre área total y cada ecosistema estratégico
-      </h6>
-      <div className="graficaeco" style={{ width: '100%' }}>
+class TimelineFootprint extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showInfoGraph: false,
+    };
+  }
+
+  toggleInfoGraph = () => {
+    this.setState(prevState => ({
+      showInfoGraph: !prevState.showInfoGraph,
+    }));
+  };
+
+  render() {
+    const {
+      selection,
+      setSelection,
+      data,
+    } = this.props;
+    const { showInfoGraph } = this.state;
+    return (
+      <div className="graphcontainer pt6">
         <h2>
-          <GraphLoader
-            graphType="MultiLinesGraph"
-            setSelection={setSelection}
-            colors={matchColor(matchColorAndData[selection])}
-            data={data}
-            markers={changeValues}
-            labelX="Año"
-            labelY="Indice promedio Huella Humana"
-            width="100%"
+          <InfoIcon
+            className="graphinfo"
+            data-tooltip
+            title="¿Qué significa este gráfico?"
+            onClick={() => this.toggleInfoGraph()}
+          />
+          <div
+            className="graphinfo"
+            onClick={() => this.toggleInfoGraph()}
+            onKeyPress={() => this.toggleInfoGraph()}
+            role="button"
+            tabIndex="0"
           />
         </h2>
-        Área del ecosistema dentro de la unidad de consulta: 332 ha
+        {(
+          showInfoGraph && (
+          <ShortInfo
+            name="Huella Humana en el tiempo"
+            description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
+            className="graphinfo2"
+            tooltip="¿Qué significa?"
+            customButton
+          />
+          )
+        )}
+        <h6>
+          Huella humana comparada con EE
+        </h6>
+        <p>
+          Haz clic en un ecosistema para ver su comportamiento
+        </p>
+        <div>
+          <h2>
+            <GraphLoader
+              graphType="MultiLinesGraph"
+              setSelection={setSelection}
+              colors={matchColor(matchColorAndData[selection])}
+              data={data}
+              markers={changeValues}
+              labelX="Año"
+              labelY="Indice promedio Huella Humana"
+            />
+          </h2>
+          <p>
+            Área del ecosistema dentro de la unidad de consulta: 332 ha
+          </p>
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 TimelineFootprint.propTypes = {
-  generalArea: PropTypes.number.isRequired,
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
