@@ -177,7 +177,7 @@ MultiLinesGraph.propTypes = {
   labelY: PropTypes.string,
   yMin: PropTypes.number,
   yMax: PropTypes.number,
-  height: PropTypes.string,
+  height: PropTypes.number,
 };
 
 MultiLinesGraph.defaultProps = {
@@ -186,7 +186,7 @@ MultiLinesGraph.defaultProps = {
   labelY: '',
   yMin: 0,
   yMax: 100,
-  height: '490px',
+  height: 490,
 };
 
 export default MultiLinesGraph;
