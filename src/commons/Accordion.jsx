@@ -21,7 +21,7 @@ class Accordion extends React.Component {
       this.setState({
         expanded: defaultTab,
       });
-      if (defaultTab === 'fc') handlersGeometry[1](componentsArray[0].label.id);
+      if (defaultTab === 'fc') handlersGeometry[1](defaultTab);
     }
   }
 
