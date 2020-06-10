@@ -560,7 +560,6 @@ class Search extends Component {
           setHeaderNames(areaType.name, areaId.name);
         },
       );
-      // this.loadLayer(nameToOn, nameToOff);
     }
   }
 
