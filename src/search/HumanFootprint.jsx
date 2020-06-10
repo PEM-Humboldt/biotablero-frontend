@@ -12,11 +12,12 @@ const HumanFootprint = ({
   currentHF,
   hfPersistence,
   hfTimeline,
+  handlersGeometry,
 }) => {
   const componentsArray = [{
     label: {
-      id: 'Actual',
-      name: 'Huella humana en el último año',
+      id: 'currentHFP',
+      name: 'Actual',
       disabled: false,
       expandIcon: <AddIcon />,
       detailId: 'Huella humana actual en área de consulta',
@@ -30,8 +31,8 @@ const HumanFootprint = ({
   },
   {
     label: {
-      id: 'Histórico y Ecosistémas estratégicos (EE)',
-      name: 'Huella humana a través del tiempo',
+      id: 'timeLineHFP',
+      name: 'Histórico y Ecosistémas estratégicos (EE)',
       disabled: false,
       expandIcon: <AddIcon />,
       detailId: 'Huella humana a través del tiempo en el área',
@@ -47,7 +48,7 @@ const HumanFootprint = ({
   },
   {
     label: {
-      id: 'Persistencia',
+      id: 'persistenceHFP',
       name: 'Persistencia',
       disabled: false,
       expandIcon: <AddIcon />,
@@ -62,20 +63,31 @@ const HumanFootprint = ({
   },
   ];
   return (
-    <Accordion
-      componentsArray={componentsArray}
-      classNameDefault="m1"
-      classNameSelected="m1 accordionSelected"
-    />
+    <div>
+      <Accordion
+        componentsArray={componentsArray}
+        classNameDefault="m1"
+        classNameSelected="m1 accordionSelected"
+        handlersGeometry={handlersGeometry}
+      />
+    </div>
   );
 };
 
 HumanFootprint.propTypes = {
   selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
-  currentHF: PropTypes.array.isRequired,
-  hfPersistence: PropTypes.array.isRequired,
-  hfTimeline: PropTypes.array.isRequired,
+  currentHF: PropTypes.array,
+  hfPersistence: PropTypes.array,
+  hfTimeline: PropTypes.array,
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
+};
+
+HumanFootprint.defaultProps = {
+  currentHF: [],
+  hfPersistence: [],
+  hfTimeline: [],
+  handlersGeometry: [],
 };
 
 export default HumanFootprint;

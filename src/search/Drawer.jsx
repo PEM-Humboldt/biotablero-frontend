@@ -263,6 +263,7 @@ class Drawer extends React.Component {
       matchColor,
       hFPSelection,
       setHFPSelection,
+      handlersGeometry,
     } = this.props;
     const {
       data: {
@@ -283,8 +284,8 @@ class Drawer extends React.Component {
     const componentsArray = [
       {
         label: {
-          id: 'FC y Biomas',
-          name: 'Factor de compensación',
+          id: 'fc',
+          name: 'FC y Biomas',
           disabled: false,
           expandIcon: <AddIcon />,
           detailId: 'Factor de compensación en área de consulta',
@@ -300,7 +301,7 @@ class Drawer extends React.Component {
       },
       {
         label: {
-          id: 'Huella humana',
+          id: 'hfp',
           name: 'Huella humana',
           disabled: false,
           expandIcon: <AddIcon />,
@@ -314,6 +315,7 @@ class Drawer extends React.Component {
             currentHF={currentHF}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
+            handlersGeometry={handlersGeometry}
           />
         ),
       },
@@ -364,6 +366,7 @@ class Drawer extends React.Component {
                 <div key="1" selected>
                   <Accordion
                     componentsArray={componentsArray}
+                    handlersGeometry={handlersGeometry}
                   />
                 </div>
               ),
@@ -409,6 +412,7 @@ Drawer.propTypes = {
   matchColor: PropTypes.func,
   hFPSelection: PropTypes.string.isRequired,
   setHFPSelection: PropTypes.func.isRequired,
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };
 
 Drawer.defaultProps = {
@@ -418,6 +422,7 @@ Drawer.defaultProps = {
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},
+  handlersGeometry: [],
 };
 
 export default withStyles(styles)(Drawer);
