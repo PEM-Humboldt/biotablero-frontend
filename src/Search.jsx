@@ -252,99 +252,8 @@ class Search extends Component {
   }
 
   /**
-   * Load layer based on selection
-   *
-   * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
-   */
-  loadLayer = (layer, parentLayer) => {
-    const { requestSource } = this.state;
-    if (requestSource) {
-      requestSource.cancel();
-    }
-    this.setState({
-      loadingModal: true,
-      activeLayer: layer,
-      requestSource: null,
-    });
-
-    RestAPI.requestCurrentHFGeometry()
-      .then((res) => {
-        if (res.features) {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [layer.id]: {
-                displayName: layer.name,
-                id: layer.id || layer.id_ea,
-                active: true,
-                layer: L.geoJSON(res, {
-                  style: this.featureStyle,
-                  onEachFeature: (feature, selectedLayer) => (
-                    this.featureActions(feature, selectedLayer, layer.id)
-                  ),
-                }),
-              },
-            },
-          }));
-        } else this.reportDataError();
-      })
-      .catch(() => this.reportDataError())
-      .finally(() => {
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            loadingModal: false,
-          };
-          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-          if (prevState.layers[layer.id]) {
-            newState.layers[layer.id].active = true;
-          }
-          return newState;
-        });
-      });
-
-    RestAPI.requestBiomesbyEAGeometry(layer.id)
-      .then((res) => {
-        if (res.features) {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [layer.id]: {
-                displayName: layer.name,
-                id: layer.id || layer.id_ea,
-                active: true,
-                layer: L.geoJSON(res, {
-                  style: this.featureStyle,
-                  onEachFeature: (feature, selectedLayer) => (
-                    this.featureActions(feature, selectedLayer, layer.id)
-                  ),
-                }),
-              },
-            },
-          }));
-        } else this.reportDataError();
-      })
-      .catch(() => this.reportDataError())
-      .finally(() => {
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            loadingModal: false,
-          };
-          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-          if (prevState.layers[layer.id]) {
-            newState.layers[layer.id].active = true;
-          }
-          return newState;
-        });
-      });
-  }
-
-  /**
    * Shut off all layers on the map
    */
-
   shutOffAllLayers = () => (
     this.setState((prevState) => {
       const newState = {
@@ -360,10 +269,9 @@ class Search extends Component {
   );
 
   /**
-   * Switch layer based on accordion open tab
+   * Switch layer based on accordion opened tab
    *
-   * @param {Object} layer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * @param {String} layerType layer type
    */
   switchLayer = (layerType) => {
     const { requestSource, selectedArea } = this.state;
