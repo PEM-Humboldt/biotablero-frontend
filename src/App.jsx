@@ -43,8 +43,8 @@ class App extends React.Component {
       footerLogos: false,
       name: 'Consultas',
       component: (<Search
-        areaTypeId={query.get('area_type')}
-        areaIdId={query.get('area_id')}
+        selectedAreaTypeId={query.get('area_type')}
+        selectedAreaId={query.get('area_id')}
         setHeaderNames={this.setHeaderNames}
       />),
     });

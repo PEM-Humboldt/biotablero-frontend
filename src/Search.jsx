@@ -40,15 +40,15 @@ class Search extends Component {
       subLayerName: null,
       layers: {},
       loadingModal: false,
-      areaType: null,
-      areaId: null,
+      selectedAreaType: null,
+      selectedArea: null,
       requestSource: null,
       hFPSelection: null,
     };
   }
 
   componentDidMount() {
-    const { areaTypeId, areaIdId, history } = this.props;
+    const { selectedAreaTypeId, selectedAreaId, history } = this.props;
     const { hFPSelection } = this.state;
     if (!hFPSelection) {
       this.setState(prevState => ({
@@ -56,7 +56,7 @@ class Search extends Component {
         hFPSelection: 'Área total',
       }));
     }
-    if (!areaTypeId || !areaIdId) {
+    if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
     this.loadAreaList();
@@ -68,12 +68,12 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    const { areaType } = this.state;
-    if (!areaType || (areaType && areaType.id !== idLayer)) {
+    const { selectedAreaType } = this.state;
+    if (!selectedAreaType || (selectedAreaType && selectedAreaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.areaType = prevState.areaList.find(item => item.id === idLayer);
-        newState.areaId = null;
+        newState.selectedAreaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.selectedArea = null;
         return newState;
       });
     }
@@ -107,25 +107,25 @@ class Search extends Component {
           areaList: tempAreaList,
         }, () => {
           const {
-            areaTypeId,
-            areaIdId,
+            selectedAreaTypeId,
+            selectedAreaId,
             history,
             setHeaderNames,
           } = this.props;
-          if (!areaTypeId || !areaIdId) return;
+          if (!selectedAreaTypeId || !selectedAreaId) return;
 
-          const inputArea = tempAreaList.find(area => area.id === areaTypeId);
+          const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             let field = 'id';
-            if (areaTypeId === 'pa') field = 'name';
-            const inputId = inputArea.data.find(area => area[field] === areaIdId);
+            if (selectedAreaTypeId === 'pa') field = 'name';
+            const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
             if (inputId) {
-              this.setArea(areaTypeId);
+              this.setArea(selectedAreaTypeId);
               this.setState(
-                { areaId: inputId },
+                { selectedArea: inputId },
                 () => {
-                  const { areaType, areaId } = this.state;
-                  setHeaderNames(areaType.name, areaId.name);
+                  const { selectedAreaType, selectedArea } = this.state;
+                  setHeaderNames(selectedAreaType.name, selectedArea.name);
                 },
               );
             } else {
@@ -206,7 +206,7 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, areaType } = this.state;
+    const { activeLayer, selectedAreaType } = this.state;
     const point = event.target;
     const areaPopup = {
       closeButton: false,
@@ -215,7 +215,7 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
-    if (areaType && (parentLayer === areaType.id)) {
+    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
@@ -233,19 +233,19 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { areaType, layers } = this.state;
+    const { selectedAreaType, layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (areaType && (parentLayer === areaType.id)) {
+    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       feature.closePopup();
     }
   }
 
   clickFeature = (event, parentLayer) => {
-    const { areaType } = this.state;
+    const { selectedAreaType } = this.state;
     this.highlightFeature(event, parentLayer);
     let value = this.findFirstId(event.target.feature.properties);
     if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(areaType.data).filter(
+    const toLoad = Object.values(selectedAreaType.data).filter(
       element => element.id === value.toString(),
     )[0];
     if (value) this.innerElementChange(parentLayer, toLoad);
@@ -552,12 +552,12 @@ class Search extends Component {
     const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
-        { areaId: nameToOn },
+        { selectedArea: nameToOn },
         () => {
           const { history } = this.props;
-          const { areaType, areaId } = this.state;
-          history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
-          setHeaderNames(areaType.name, areaId.name);
+          const { selectedAreaType, selectedArea } = this.state;
+          history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
+          setHeaderNames(selectedAreaType.name, selectedArea.name);
         },
       );
     }
@@ -578,8 +578,8 @@ class Search extends Component {
 
       return {
         ...newState,
-        areaType: null,
-        areaId: null,
+        selectedAreaType: null,
+        selectedArea: null,
       };
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -599,8 +599,8 @@ class Search extends Component {
 
   render() {
     const {
-      areaType,
-      areaId,
+      selectedAreaType,
+      selectedArea,
       subLayerName,
       subLayerData,
       loadingModal,
@@ -690,7 +690,7 @@ class Search extends Component {
             Titulo del mapa
           </div>
           <div className="contentView">
-            { (!areaType || !areaId) && (
+            { (!selectedAreaType || !selectedArea) && (
               <Selector
                 handlers={[
                   () => {},
@@ -703,12 +703,12 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { areaType && areaId && (areaType.id !== 'se') && (
+            { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
-                area={areaType}
+                area={selectedAreaType}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
-                geofence={areaId}
+                geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
                 subLayerName={subLayerName}
@@ -726,11 +726,11 @@ class Search extends Component {
                 ]}
               />
             )}
-            { areaType && areaId && (areaType.id === 'se') && (
+            { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
               <NationalInsigths
-                area={areaType}
+                area={selectedAreaType}
                 colors={colors}
-                geofence={areaId}
+                geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
               />
@@ -743,8 +743,8 @@ class Search extends Component {
 }
 
 Search.propTypes = {
-  areaTypeId: PropTypes.string,
-  areaIdId: PropTypes.string,
+  selectedAreaTypeId: PropTypes.string,
+  selectedAreaId: PropTypes.string,
   history: PropTypes.shape({
     push: PropTypes.func,
     replace: PropTypes.func,
@@ -756,8 +756,8 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
-  areaTypeId: null,
-  areaIdId: null,
+  selectedAreaTypeId: null,
+  selectedAreaId: null,
   history: {},
 };
 
