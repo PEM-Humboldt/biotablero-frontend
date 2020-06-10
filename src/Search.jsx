@@ -160,7 +160,7 @@ class Search extends Component {
   /**
    * Choose the right color for the section inside the map, according
    *  with matchColor function
-   * 
+   *
    * @param {String} type layer type
    * @param {Object} feature target object
    */

@@ -71,11 +71,6 @@ class CurrentFootprint extends React.Component {
 
 CurrentFootprint.propTypes = {
   data: PropTypes.array.isRequired,
-  handlerGeometry: PropTypes.func,
-};
-
-CurrentFootprint.defaultProps = {
-  handlerGeometry: () => {},
 };
 
 export default CurrentFootprint;
