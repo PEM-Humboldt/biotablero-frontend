@@ -40,15 +40,15 @@ class Search extends Component {
       subLayerName: null,
       layers: {},
       loadingModal: false,
-      areaType: null,
-      areaId: null,
+      selectedAreaType: null,
+      selectedArea: null,
       requestSource: null,
       hFPSelection: null,
     };
   }
 
   componentDidMount() {
-    const { areaTypeId, areaIdId, history } = this.props;
+    const { selectedAreaTypeId, selectedAreaId, history } = this.props;
     const { hFPSelection } = this.state;
     if (!hFPSelection) {
       this.setState(prevState => ({
@@ -56,7 +56,7 @@ class Search extends Component {
         hFPSelection: 'aTotal',
       }));
     }
-    if (!areaTypeId || !areaIdId) {
+    if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
     this.loadAreaList();
@@ -68,12 +68,12 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    const { areaType } = this.state;
-    if (!areaType || (areaType && areaType.id !== idLayer)) {
+    const { selectedAreaType } = this.state;
+    if (!selectedAreaType || (selectedAreaType && selectedAreaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.areaType = prevState.areaList.find(item => item.id === idLayer);
-        newState.areaId = null;
+        newState.selectedAreaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.selectedArea = null;
         return newState;
       });
     }
@@ -107,27 +107,25 @@ class Search extends Component {
           areaList: tempAreaList,
         }, () => {
           const {
-            areaTypeId,
-            areaIdId,
+            selectedAreaTypeId,
+            selectedAreaId,
             history,
             setHeaderNames,
           } = this.props;
-          if (!areaTypeId || !areaIdId) return;
+          if (!selectedAreaTypeId || !selectedAreaId) return;
 
-          const inputArea = tempAreaList.find(area => area.id === areaTypeId);
+          const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             let field = 'id';
-            if (areaTypeId === 'pa') field = 'name';
-            const inputId = inputArea.data.find(area => area[field] === areaIdId);
+            if (selectedAreaTypeId === 'pa') field = 'name';
+            const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
             if (inputId) {
-              this.setArea(areaTypeId);
+              this.setArea(selectedAreaTypeId);
               this.setState(
-                { areaId: inputId },
+                { selectedArea: inputId },
                 () => {
-                  const { areaType, areaId, activeLayer } = this.state;
-                  setHeaderNames(areaType.name, areaId.name);
-                  // TODO remove areaType validation when implemented better control over layers
-                  if (!activeLayer && areaType.id === 'ea') this.loadLayer(areaId);
+                  const { selectedAreaType, selectedArea } = this.state;
+                  setHeaderNames(selectedAreaType.name, selectedArea.name);
                 },
               );
             } else {
@@ -160,15 +158,18 @@ class Search extends Component {
   }
 
   /**
-   * Choose the right color for the biome inside the map, according
-   *  with matchColor function
+   * Choose the right color for the section inside the map, according
+   *  to matchColor function
    *
+   * @param {String} type layer type
    * @param {Object} feature target object
    */
-  featureStyle = (feature) => {
+
+  featureStyle = type => (feature) => {
+    const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
       stroke: false,
-      fillColor: matchColor('fc')(feature.properties.compensation_factor),
+      fillColor: matchColor(type)(key),
       fillOpacity: 0.7,
     };
     return styleReturn;
@@ -195,18 +196,17 @@ class Search extends Component {
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
 
-  featureActions = (feature, layer, parentLayer) => {
+  featureActions = (layer, parentLayer) => {
     layer.on(
       {
         mouseover: event => this.highlightFeature(event, parentLayer),
         mouseout: event => this.resetHighlight(event, parentLayer),
-        click: event => this.clickFeature(event, parentLayer),
       },
     );
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, areaType } = this.state;
+    const { activeLayer, selectedAreaType } = this.state;
     const point = event.target;
     const areaPopup = {
       closeButton: false,
@@ -215,7 +215,7 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
-    if (areaType && (parentLayer === areaType.id)) {
+    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
@@ -233,75 +233,115 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { areaType, layers } = this.state;
+    const { selectedAreaType, layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (areaType && (parentLayer === areaType.id)) {
+    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       feature.closePopup();
     }
   }
 
   clickFeature = (event, parentLayer) => {
-    const { areaType } = this.state;
+    const { selectedAreaType } = this.state;
     this.highlightFeature(event, parentLayer);
     let value = this.findFirstId(event.target.feature.properties);
     if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(areaType.data).filter(
+    const toLoad = Object.values(selectedAreaType.data).filter(
       element => element.id === value.toString(),
     )[0];
     if (value) this.innerElementChange(parentLayer, toLoad);
   }
 
   /**
-   * Load layer based on selection
-   *
-   * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * Shut off all layers on the map
    */
-  loadLayer = (layer, parentLayer) => {
-    const { requestSource } = this.state;
+  shutOffAllLayers = () => (
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+        loadingModal: false,
+      };
+      const { layers } = prevState;
+      Object.keys(layers).forEach((layerKey) => {
+        newState.layers[layerKey].active = false;
+      });
+      return newState;
+    })
+  );
+
+  /**
+   * Switch layer based on accordion opened tab
+   *
+   * @param {String} layerType layer type
+   */
+  switchLayer = (layerType) => {
+    const { requestSource, selectedArea } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
     this.setState({
       loadingModal: true,
-      activeLayer: layer,
+      activeLayer: selectedArea,
       requestSource: null,
     });
-    RestAPI.requestBiomesbyEAGeometry(layer.id)
-      .then((res) => {
-        if (res.features) {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [layer.id]: {
-                displayName: layer.name,
-                id: layer.id || layer.id_ea,
-                active: true,
-                layer: L.geoJSON(res, {
-                  style: this.featureStyle,
-                  onEachFeature: (feature, selectedLayer) => (
-                    this.featureActions(feature, selectedLayer, layer.id)
-                  ),
-                }),
-              },
-            },
-          }));
-        } else this.reportDataError();
-      })
-      .catch(() => this.reportDataError())
-      .finally(() => {
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            loadingModal: false,
-          };
-          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-          if (prevState.layers[layer.id]) {
-            newState.layers[layer.id].active = true;
-          }
-          return newState;
-        });
-      });
+
+    switch (layerType) {
+      case 'fc':
+        return (
+          RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
+      case 'currentHFP':
+        return (
+          RestAPI.requestCurrentHFGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
+      default:
+        return this.shutOffAllLayers();
+    }
   }
 
   /**
@@ -367,7 +407,7 @@ class Search extends Component {
                       fillOpacity: 0.4,
                     },
                     onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, idLayer)
+                      this.featureActions(layer, idLayer)
                     ),
                   },
                 ),
@@ -397,15 +437,14 @@ class Search extends Component {
     const { setHeaderNames } = this.props;
     if (nameToOn) {
       this.setState(
-        { areaId: nameToOn },
+        { selectedArea: nameToOn },
         () => {
           const { history } = this.props;
-          const { areaType, areaId } = this.state;
-          history.push(`?area_type=${areaType.id}&area_id=${areaId.id || areaId.name}`);
-          setHeaderNames(areaType.name, areaId.name);
+          const { selectedAreaType, selectedArea } = this.state;
+          history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
+          setHeaderNames(selectedAreaType.name, selectedArea.name);
         },
       );
-      this.loadLayer(nameToOn, nameToOff);
     }
   }
 
@@ -424,8 +463,8 @@ class Search extends Component {
 
       return {
         ...newState,
-        areaType: null,
-        areaId: null,
+        selectedAreaType: null,
+        selectedArea: null,
       };
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -445,8 +484,8 @@ class Search extends Component {
 
   render() {
     const {
-      areaType,
-      areaId,
+      selectedAreaType,
+      selectedArea,
       subLayerName,
       subLayerData,
       loadingModal,
@@ -535,7 +574,7 @@ class Search extends Component {
             Titulo del mapa
           </div>
           <div className="contentView">
-            { (!areaType || !areaId) && (
+            { (!selectedAreaType || !selectedArea) && (
               <Selector
                 handlers={[
                   () => {},
@@ -548,12 +587,12 @@ class Search extends Component {
                 iconClass="iconsection"
               />
             )}
-            { areaType && areaId && (areaType.id !== 'se') && (
+            { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
-                area={areaType}
+                area={selectedAreaType}
                 colorSZH={colorSZH}
                 subLayerData={subLayerData}
-                geofence={areaId}
+                geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
                 subLayerName={subLayerName}
@@ -564,13 +603,17 @@ class Search extends Component {
                     hFPSelection: text,
                   }));
                 }}
+                handlersGeometry={[
+                  this.shutOffAllLayers,
+                  this.switchLayer,
+                ]}
               />
             )}
-            { areaType && areaId && (areaType.id === 'se') && (
+            { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
               <NationalInsigths
-                area={areaType}
+                area={selectedAreaType}
                 colors={colors}
-                geofence={areaId}
+                geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
               />
@@ -583,8 +626,8 @@ class Search extends Component {
 }
 
 Search.propTypes = {
-  areaTypeId: PropTypes.string,
-  areaIdId: PropTypes.string,
+  selectedAreaTypeId: PropTypes.string,
+  selectedAreaId: PropTypes.string,
   history: PropTypes.shape({
     push: PropTypes.func,
     replace: PropTypes.func,
@@ -596,8 +639,8 @@ Search.propTypes = {
 };
 
 Search.defaultProps = {
-  areaTypeId: null,
-  areaIdId: null,
+  selectedAreaTypeId: null,
+  selectedAreaId: null,
   history: {},
 };
 

@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -15,12 +14,14 @@ class Accordion extends React.Component {
   }
 
   componentDidMount() {
-    const { componentsArray } = this.props;
+    const { componentsArray, handlersGeometry } = this.props;
     // This will force to open the first level in accordion when it is loaded by first time
     if (componentsArray.length > 0) {
+      const defaultTab = componentsArray[0].label.id;
       this.setState({
-        expanded: componentsArray[0].label.id,
+        expanded: defaultTab,
       });
+      if (defaultTab === 'fc') handlersGeometry[1](defaultTab);
     }
   }
 
@@ -29,28 +30,34 @@ class Accordion extends React.Component {
       componentsArray,
       classNameSelected,
       classNameDefault,
+      handlersGeometry,
     } = this.props;
     const { expanded } = this.state;
     return (
       <div style={{ width: '100%' }}>
         {(componentsArray.length > 0)
-          && componentsArray.map(counter => (
+          && componentsArray.map(item => (
             <ExpansionPanel
-              className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
+              className={expanded !== item.label.id ? classNameDefault : classNameSelected}
               disabled={false}
-              expanded={expanded === counter.label.id}
-              id={counter.label.id}
-              key={counter.label.id}
-              onChange={() => (this.setState({
-                expanded: expanded !== counter.label.id ? counter.label.id : null,
-              }))}
+              expanded={expanded === item.label.id}
+              id={item.label.id}
+              key={item.label.id}
+              onChange={() => {
+                const newTabSelected = expanded !== item.label.id;
+                this.setState({
+                  expanded: newTabSelected ? item.label.id : null,
+                });
+                if (newTabSelected) return handlersGeometry[1](item.label.id);
+                return handlersGeometry[0]();
+              }}
             >
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
               >
-                {counter.label.id}
+                {item.label.name}
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{counter.component}</ExpansionPanelDetails>
+              <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
             </ExpansionPanel>
           ))}
       </div>
@@ -72,11 +79,13 @@ Accordion.propTypes = {
   })).isRequired,
   classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
   classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };
 
 Accordion.defaultProps = {
   classNameDefault: 'm0b',
   classNameSelected: 'm0b selector-expanded',
+  handlersGeometry: [],
 };
 
 export default Accordion;
