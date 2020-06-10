@@ -159,7 +159,7 @@ class Search extends Component {
 
   /**
    * Choose the right color for the section inside the map, according
-   *  with matchColor function
+   *  to matchColor function
    *
    * @param {String} type layer type
    * @param {Object} feature target object
@@ -196,7 +196,7 @@ class Search extends Component {
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
 
-  featureActions = (feature, layer, parentLayer) => {
+  featureActions = (layer, parentLayer) => {
     layer.on(
       {
         mouseover: event => this.highlightFeature(event, parentLayer),
@@ -296,33 +296,21 @@ class Search extends Component {
                     ...prevState.layers,
                     [selectedArea.id]: {
                       displayName: selectedArea.name,
-                      id: selectedArea.id || selectedArea.id_ea,
+                      id: selectedArea.id,
                       active: true,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(feature, selectedLayer, selectedArea.id)
+                          this.featureActions(selectedLayer, selectedArea.id)
                         ),
                       }),
                     },
                   },
+                  loadingModal: false,
                 }));
               } else this.reportDataError();
             })
             .catch(() => this.reportDataError())
-            .finally(() => {
-              this.setState((prevState) => {
-                const newState = {
-                  ...prevState,
-                  loadingModal: false,
-                };
-                if (prevState.layers[layerType]) newState.layers[layerType].active = false;
-                if (prevState.layers[selectedArea.id]) {
-                  newState.layers[selectedArea.id].active = true;
-                }
-                return newState;
-              });
-            })
         );
       case 'currentHFP':
         return (
@@ -335,33 +323,21 @@ class Search extends Component {
                     ...prevState.layers,
                     [selectedArea.id]: {
                       displayName: selectedArea.name,
-                      id: selectedArea.id || selectedArea.id_ea,
+                      id: selectedArea.id,
                       active: true,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(feature, selectedLayer, selectedArea.id)
+                          this.featureActions(selectedLayer, selectedArea.id)
                         ),
                       }),
                     },
                   },
+                  loadingModal: false,
                 }));
               } else this.reportDataError();
             })
             .catch(() => this.reportDataError())
-            .finally(() => {
-              this.setState((prevState) => {
-                const newState = {
-                  ...prevState,
-                  loadingModal: false,
-                };
-                if (prevState.layers[layerType]) newState.layers[layerType].active = false;
-                if (prevState.layers[selectedArea.id]) {
-                  newState.layers[selectedArea.id].active = true;
-                }
-                return newState;
-              });
-            })
         );
       default:
         return this.shutOffAllLayers();
@@ -431,7 +407,7 @@ class Search extends Component {
                       fillOpacity: 0.4,
                     },
                     onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, idLayer)
+                      this.featureActions(layer, idLayer)
                     ),
                   },
                 ),
