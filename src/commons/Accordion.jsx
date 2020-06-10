@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -17,33 +16,12 @@ class Accordion extends React.Component {
   componentDidMount() {
     const { componentsArray, handlersGeometry } = this.props;
     // This will force to open the first level in accordion when it is loaded by first time
-    if (componentsArray.length > 0 && componentsArray[0].label.id === 'FC y Biomas') {
+    if (componentsArray.length > 0) {
       const defaultTab = componentsArray[0].label.id;
       this.setState({
         expanded: defaultTab,
       });
-      handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' });
-    }
-  }
-
-  /**
-   * Load layer based on expanded tab
-   *
-   * @param {String} layerType Layer type
-   */
-  loadLayer = (layerType) => {
-    const { handlersGeometry } = this.props;
-    switch (layerType) {
-      case 'Actual':
-        return (
-          handlersGeometry[1]('currentHFP', { id: 'CARDER', name: 'Corporacion Autonoma Regional de Risaralda' })
-        );
-      case 'FC y Biomas':
-        return (
-          handlersGeometry[1]('fc', { id: 'CAM', name: 'Corporacion Autonoma Regional del Alto Magdalena' })
-        );
-      default:
-        return handlersGeometry[0]();
+      if (defaultTab === 'fc') handlersGeometry[1](componentsArray[0].label.id);
     }
   }
 
@@ -58,31 +36,28 @@ class Accordion extends React.Component {
     return (
       <div style={{ width: '100%' }}>
         {(componentsArray.length > 0)
-          && componentsArray.map(counter => (
+          && componentsArray.map(item => (
             <ExpansionPanel
-              className={expanded !== counter.label.id ? classNameDefault : classNameSelected}
+              className={expanded !== item.label.id ? classNameDefault : classNameSelected}
               disabled={false}
-              expanded={expanded === counter.label.id}
-              id={counter.label.id}
-              key={counter.label.id}
+              expanded={expanded === item.label.id}
+              id={item.label.id}
+              key={item.label.id}
               onChange={() => {
-                const newTab = expanded !== counter.label.id;
+                const newTabSelected = expanded !== item.label.id;
                 this.setState({
-                  expanded: newTab ? counter.label.id : null,
+                  expanded: newTabSelected ? item.label.id : null,
                 });
-
-                if (newTab) {
-                  return this.loadLayer(counter.label.id);
-                }
+                if (newTabSelected) return handlersGeometry[1](item.label.id);
                 return handlersGeometry[0]();
               }}
             >
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
               >
-                {counter.label.id}
+                {item.label.name}
               </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{counter.component}</ExpansionPanelDetails>
+              <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
             </ExpansionPanel>
           ))}
       </div>

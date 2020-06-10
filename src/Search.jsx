@@ -345,18 +345,19 @@ class Search extends Component {
    * Shut off all layers on the map
    */
 
-  shutOffAllLayers = () => {
+  shutOffAllLayers = () => (
     this.setState((prevState) => {
-      const newState = { ...prevState };
+      const newState = {
+        ...prevState,
+        loadingModal: false,
+      };
       const { layers } = prevState;
       Object.keys(layers).forEach((layerKey) => {
         newState.layers[layerKey].active = false;
       });
-      return {
-        ...newState,
-      };
-    });
-  }
+      return newState;
+    })
+  );
 
   /**
    * Switch layer based on accordion open tab
@@ -364,35 +365,35 @@ class Search extends Component {
    * @param {Object} layer Layer ID
    * @param {String} parentLayer Parent layer ID
    */
-  switchLayer = (layerType, layer) => {
-    const { requestSource } = this.state;
+  switchLayer = (layerType) => {
+    const { requestSource, selectedArea } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
     this.setState({
       loadingModal: true,
-      activeLayer: layer,
+      activeLayer: selectedArea,
       requestSource: null,
     });
 
     switch (layerType) {
       case 'fc':
         return (
-          RestAPI.requestBiomesbyEAGeometry(layer.id)
+          RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
                   layers: {
                     ...prevState.layers,
-                    [layer.id]: {
-                      displayName: layer.name,
-                      id: layer.id || layer.id_ea,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id || selectedArea.id_ea,
                       active: true,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(feature, selectedLayer, layer.id)
+                          this.featureActions(feature, selectedLayer, selectedArea.id)
                         ),
                       }),
                     },
@@ -408,8 +409,8 @@ class Search extends Component {
                   loadingModal: false,
                 };
                 if (prevState.layers[layerType]) newState.layers[layerType].active = false;
-                if (prevState.layers[layer.id]) {
-                  newState.layers[layer.id].active = true;
+                if (prevState.layers[selectedArea.id]) {
+                  newState.layers[selectedArea.id].active = true;
                 }
                 return newState;
               });
@@ -424,14 +425,14 @@ class Search extends Component {
                 this.setState(prevState => ({
                   layers: {
                     ...prevState.layers,
-                    [layer.id]: {
-                      displayName: layer.name,
-                      id: layer.id || layer.id_ea,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id || selectedArea.id_ea,
                       active: true,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(feature, selectedLayer, layer.id)
+                          this.featureActions(feature, selectedLayer, selectedArea.id)
                         ),
                       }),
                     },
@@ -447,15 +448,15 @@ class Search extends Component {
                   loadingModal: false,
                 };
                 if (prevState.layers[layerType]) newState.layers[layerType].active = false;
-                if (prevState.layers[layer.id]) {
-                  newState.layers[layer.id].active = true;
+                if (prevState.layers[selectedArea.id]) {
+                  newState.layers[selectedArea.id].active = true;
                 }
                 return newState;
               });
             })
         );
       default:
-        return null;
+        return this.shutOffAllLayers();
     }
   }
 
