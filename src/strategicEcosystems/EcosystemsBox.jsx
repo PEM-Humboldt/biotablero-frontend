@@ -19,7 +19,7 @@ const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
    * @param {number} total value obtained by adding all parts
    * @returns {number} percentage associated to each part
    */
-const getPercentage = (part, total) => (part / total).toFixed(2);
+const getPercentage = (part, total) => (part / total);
 
 class EcosystemsBox extends Component {
   constructor(props) {
@@ -56,7 +56,12 @@ class EcosystemsBox extends Component {
   }
 
   preProcessData = (name, area, total) => ([
-    { key: name, area, percentage: getPercentage(area, total) },
+    {
+      key: name,
+      area: Number(area),
+      percentage: getPercentage(Number(area), total),
+      label: name,
+    },
     { key: 'NA', area: (total - area), percentage: getPercentage((total - area), total) },
   ])
 
@@ -69,6 +74,7 @@ class EcosystemsBox extends Component {
       matchColor,
     } = this.props;
     const { showGraphs, stopLoad } = this.state;
+
     return (
       <div
         className="ecosystems"
@@ -82,32 +88,26 @@ class EcosystemsBox extends Component {
               <div className="singleeco2">
                 {`${numberWithCommas(Number(item.area).toFixed(2))} ha`}
               </div>
-              {
-                (item.area !== 0 && item.area !== '0') && (
-                  <button
-                    className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
-                    type="button"
-                    onClick={() => this.switchGraphs(item.type)}
-                    data-tooltip
-                    title="Ampliar información"
-                  >
-                    <ExpandMoreIcon />
-                  </button>
-                )
-              }
-              {!stopLoad
-                && (item.area !== 0 && item.area !== '0')
-                  && (
-                    <GraphLoader
-                      graphType="SmallBarStackGraph"
-                      data={this.preProcessData(item.type, item.area, total)}
-                      units="ha"
-                      colors={matchColor('se')}
-                    />
-                  )
-              }
-              {!stopLoad
-                && (index > -1) && (
+              {(Number(item.area) !== 0) && (
+                <button
+                  className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
+                  type="button"
+                  onClick={() => this.switchGraphs(item.type)}
+                  data-tooltip
+                  title="Ampliar información"
+                >
+                  <ExpandMoreIcon />
+                </button>
+              )}
+              {!stopLoad && (Number(item.area) !== 0) && (
+                <GraphLoader
+                  graphType="SmallBarStackGraph"
+                  data={this.preProcessData(item.type, item.area, total)}
+                  units="ha"
+                  colors={matchColor('se')}
+                />
+              )}
+              {!stopLoad && (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
                     areaId={areaId}
@@ -116,8 +116,7 @@ class EcosystemsBox extends Component {
                     matchColor={matchColor}
                   />
                 </div>
-              )
-              }
+              )}
             </div>
           );
         })

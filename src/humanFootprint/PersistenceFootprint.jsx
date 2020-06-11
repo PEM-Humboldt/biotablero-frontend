@@ -5,6 +5,12 @@ import ShortInfo from '../commons/ShortInfo';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
+const getLabel = {
+  estable_natural: 'Estable Natural',
+  dinamica: 'Dinámica',
+  estable_alta: 'Estable Alta',
+};
+
 class PersistenceFootprint extends React.Component {
   constructor(props) {
     super(props);
@@ -56,7 +62,10 @@ class PersistenceFootprint extends React.Component {
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
-            data={data}
+            data={data.map(item => ({
+              ...item,
+              label: getLabel[item.key],
+            }))}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"

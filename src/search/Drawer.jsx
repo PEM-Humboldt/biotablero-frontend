@@ -13,7 +13,6 @@ import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
 import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
-import { setPAValues, setCoverageValues } from '../strategicEcosystems/FormatSE';
 import Accordion from '../commons/Accordion';
 
 const styles = () => ({
@@ -32,10 +31,10 @@ class Drawer extends React.Component {
         biomas: null,
         distritos: null,
         fc: null,
-        coverage: null, // coverage area
-        areaSE: null, // area fields for strategic ecosystems
-        areaPA: null, // area fields for protected areas
-        generalArea: 0, // general area value in the current geofence
+        coverage: null,
+        areaSE: null,
+        areaPA: null,
+        generalArea: 0,
         currentHF: [],
         hfPersistence: [],
         hfTimeline: [],
@@ -74,7 +73,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            coverage: setCoverageValues(res),
+            coverage: res,
           },
         }));
       })
@@ -94,7 +93,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            areaPA: setPAValues(res),
+            areaPA: res,
           },
         }));
       })
@@ -118,15 +117,7 @@ class Drawer extends React.Component {
           },
         }));
       })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaSE: false,
-          },
-        }));
-      });
+      .catch(() => {});
 
     RestAPI.requestCurrentHF()
       .then((res) => {
@@ -138,15 +129,7 @@ class Drawer extends React.Component {
           },
         }));
       })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            currentHF: false,
-          },
-        }));
-      });
+      .catch(() => {});
 
     RestAPI.requestHFPersistence()
       .then((res) => {
@@ -261,7 +244,6 @@ class Drawer extends React.Component {
       subLayerName,
       area,
       matchColor,
-      hFPSelection,
       setHFPSelection,
       handlersGeometry,
     } = this.props;
@@ -279,8 +261,6 @@ class Drawer extends React.Component {
         hfTimeline,
       },
     } = this.state;
-    const ecosystemsArea = (areaSE && areaSE[0] ? Number(areaSE[0].area).toFixed(2) : 0);
-    const protectedArea = (areaPA && areaPA[0] ? Number(areaPA[0].area).toFixed(2) : 0);
     const componentsArray = [
       {
         label: {
@@ -310,7 +290,6 @@ class Drawer extends React.Component {
         },
         component: (
           <HumanFootprint
-            selection={hFPSelection}
             setSelection={setHFPSelection}
             currentHF={currentHF}
             hfPersistence={hfPersistence}
@@ -348,13 +327,8 @@ class Drawer extends React.Component {
                 <div key="2">
                   <Overview
                     generalArea={Number(generalArea)}
-                    ecosystemsArea={Number(ecosystemsArea)}
-                    // First element removed, which is the total area in SE
-                    listSE={(areaSE ? areaSE.slice(1) : areaSE)}
-                    protectedArea={Number(protectedArea)}
-                    // First element removed, which is the total area in PA
-                    listPA={(areaPA ? areaPA.slice(1) : areaPA)}
-                    // First element removed, which is the total area in the selected area
+                    listSE={areaSE}
+                    listPA={areaPA}
                     coverage={coverage}
                     areaId={area.id}
                     geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
@@ -410,7 +384,6 @@ Drawer.propTypes = {
   subLayerData: PropTypes.array,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
-  hFPSelection: PropTypes.string.isRequired,
   setHFPSelection: PropTypes.func.isRequired,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };

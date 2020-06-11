@@ -29,7 +29,10 @@ const SmallBarStackGraph = (props) => {
       key: 'key',
     };
     rawData.forEach((item) => {
-      transformedData[String(item.key || item.type || 'undefined')] = Number(item.area || item.percentage);
+      transformedData[String(item.key)] = Number(item.area || item.percentage);
+      transformedData[`${String(item.key)}Color`] = colors(item.key);
+      transformedData[`${String(item.key)}Label`] = item.label;
+      transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
     });
     return [transformedData];
   };
@@ -39,24 +42,16 @@ const SmallBarStackGraph = (props) => {
    *
    * @returns {array} ids of each bar
    */
-  const keys = data.map(item => String(item.key || item.type));
-
-  /**
-   * Get percentage for each value
-   *
-   * @param {string} id id or key for each value
-   * @returns {number} percentage associated to each value
-   */
-  const getPercentage = id => data.find(item => (item.key || item.type || 'undefined') === id).percentage;
+  const keys = data.map(item => String(item.key));
 
   /**
    * Get tooltip for graph component according to id of bar
    *
    * @param {string} id id for each bar
-   * @param {number} value value for each bar
+   * @param {Object} allData transformed data with all information needed
    * @returns {func} tooltip for component
    */
-  const getToolTip = (id, value) => {
+  const getToolTip = (id, allData) => {
     if (id !== 'NA') {
       return (
         <div style={{
@@ -70,12 +65,12 @@ const SmallBarStackGraph = (props) => {
         }}
         >
           <strong style={{ color: '#e84a5f' }}>
-            {(id !== 'undefined') ? id : ''}
+            {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
           <div>
-            {`${numberWithCommas(value.toFixed(2))} ${units}`}
+            {`${numberWithCommas(allData[id].toFixed(2))} ${units}`}
             <br />
-            {`${numberWithCommas((getPercentage(id) * 100).toFixed(2))}%`}
+            {`${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(2))}%`}
           </div>
         </div>
       );
@@ -100,14 +95,14 @@ const SmallBarStackGraph = (props) => {
         }}
         padding={0.19}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        colors={obj => colors(obj.id)}
+        colors={({ id, data: allData }) => allData[`${id}Color`]}
         enableGridY={false}
         axisLeft={null}
         enableLabel={false}
         animate
         motionStiffness={90}
         motionDamping={15}
-        tooltip={({ id, value }) => (getToolTip(id, value))}
+        tooltip={({ id, data: allData }) => getToolTip(id, allData)}
         theme={{
           tooltip: {
             container: {
@@ -122,7 +117,12 @@ const SmallBarStackGraph = (props) => {
 };
 
 SmallBarStackGraph.propTypes = {
-  data: PropTypes.array.isRequired,
+  data: PropTypes.arrayOf(PropTypes.shape({
+    key: PropTypes.string.isRequired,
+    area: PropTypes.number.isRequired,
+    percentage: PropTypes.number,
+    label: PropTypes.string,
+  })).isRequired,
   height: PropTypes.number,
   colors: PropTypes.func,
   units: PropTypes.string,

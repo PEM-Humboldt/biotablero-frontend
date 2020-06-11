@@ -62,29 +62,15 @@ export default {
     '#eabc47',
     '#51b4c1',
   ],
-  hfTotal: [ // Área total seleccionada
-    '#cf324e', // Área total
-    '#878cae', // Páramo
-    '#a8daca', // Humedales
-    '#e8cc8e', // Bosques Secos
-  ],
-  hfMoor: [ // Páramo seleccionado
-    '#cf324e', // Área total
-    '#29418a', // Páramo
-    '#a8daca', // Humedales
-    '#e8cc8e', // Bosques Secos
-  ],
-  hfWetlands: [ // Humedales seleccionados
-    '#cf324e', // Área total
-    '#878cae', // Páramo
-    '#3cb58e', // Humedales
-    '#e8cc8e', // Bosques Secos
-  ],
-  hfDryForest: [ // Bosques Secos seleccionados
-    '#cf324e', // Área total
-    '#878cae', // Páramo
-    '#a8daca', // Humedales
-    '#ccb325', // Bosques Secos
+  hfTimeline: [
+    '#cf324e',
+    '#cf324e',
+    '#878cae',
+    '#29418a', // paramo selected
+    '#a8daca',
+    '#3cb58e', // wetlands selected
+    '#e8cc8e',
+    '#ccb325', // tropical dry forest selected
   ],
   currentHFP: [
     '#3fbf9f',

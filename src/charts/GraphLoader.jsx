@@ -24,7 +24,7 @@ const GraphLoader = (props) => {
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
-    setSelection,
+    onClickHandler,
     markers,
   } = props;
 
@@ -133,7 +133,7 @@ const GraphLoader = (props) => {
     case 'MultiLinesGraph':
       return (
         <MultiLinesGraph
-          setSelection={setSelection}
+          onClickHandler={onClickHandler}
           colors={colors}
           data={data}
           markers={markers}
@@ -147,7 +147,7 @@ const GraphLoader = (props) => {
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.any, // Array or object, depending on graphType
+  data: PropTypes.any.isRequired, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
@@ -160,7 +160,7 @@ GraphLoader.propTypes = {
   elementOnClick: PropTypes.func,
   colors: PropTypes.func,
   padding: PropTypes.number,
-  setSelection: PropTypes.func,
+  onClickHandler: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
     axis: PropTypes.string,
     value: PropTypes.number,
@@ -171,7 +171,6 @@ GraphLoader.propTypes = {
 
 GraphLoader.defaultProps = {
   graphTitle: '',
-  data: [],
   activeBiome: '',
   labelX: '',
   labelY: '',
@@ -183,7 +182,7 @@ GraphLoader.defaultProps = {
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
-  setSelection: () => {},
+  onClickHandler: () => {},
   markers: [],
 };
 

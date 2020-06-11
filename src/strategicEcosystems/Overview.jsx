@@ -1,11 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
-import GeneralArea from '../commons/GeneralArea';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
+import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
+import ShortInfo from '../commons/ShortInfo';
 
 /**
  * Give format to a big number
@@ -14,24 +16,6 @@ import GraphLoader from '../charts/GraphLoader';
  * @returns {String} number formatted setting decimals and thousands properly
  */
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-/**
- * Check if an array is empty according to area value
- *
- * @param {array} array array to be validated
- * @returns {boolean} boolean that indicates if array is empty
- */
-const helperAreaArrayIsEmpty = (array) => {
-  if (array) {
-    let isEmpty = true;
-    array.forEach((element) => {
-      if (element.area !== 0) {
-        isEmpty = false;
-      }
-      return isEmpty;
-    });
-  }
-};
 
 /**
  * Calculate percentage for a given value according to total
@@ -56,19 +40,50 @@ class Overview extends React.Component {
     }));
   };
 
+  /**
+   * Returns the right component depending on the list of strategic ecosystems
+   * @param {Array} allSE data to validate component returned
+   * @param {Number} ecosystemsArea total strategic ecosystem area
+   *
+   * @returns {node} Component to be displayed
+   */
+  displaySE = (allSE, ecosystemsArea) => {
+    if (!allSE) return ('Cargando...');
+    if (allSE.length <= 0) return ('Información no disponible');
+
+    const { areaId, geofenceId, matchColor } = this.props;
+    return (
+      <EcosystemsBox
+        areaId={areaId}
+        total={Number(ecosystemsArea)}
+        geofenceId={geofenceId}
+        listSE={allSE}
+        matchColor={matchColor}
+      />
+    );
+  };
+
   render() {
     const {
       generalArea,
-      ecosystemsArea,
       listSE,
-      protectedArea,
       listPA,
       coverage,
-      areaId,
-      geofenceId,
       matchColor,
     } = this.props;
     const { showInfoGraph } = this.state;
+
+    const coverageData = setCoverageValues(coverage);
+
+    // First element removed, which is the total area in PA
+    const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(2) : 0);
+    const allPA = Array.isArray(listPA) ? setPAValues(listPA.slice(1)) : [];
+
+    const ecosystemsArea = ((Array.isArray(listSE) && listSE[0] && listSE[0].area)
+      ? Number(listSE[0].area).toFixed(2)
+      : 0);
+    const allSE = Array.isArray(listSE) && listSE.slice(1);
+
     return (
       <div className="graphcard">
         <h2>
@@ -111,17 +126,17 @@ class Overview extends React.Component {
           <div className="graficaeco">
             <GraphLoader
               graphType="SmallBarStackGraph"
-              data={coverage}
+              data={coverageData}
               units="ha"
               colors={matchColor('coverage')}
             />
           </div>
           <h4>
             Áreas protegidas
-            <b>{`${numberWithCommas(protectedArea)} ha `}</b>
+            <b>{`${numberWithCommas(totalPA)} ha `}</b>
           </h4>
           <h5>
-            {`${getPercentage(protectedArea, generalArea)} %`}
+            {`${getPercentage(totalPA, generalArea)} %`}
           </h5>
           <div className="graficaeco">
             <h6>
@@ -129,7 +144,7 @@ class Overview extends React.Component {
             </h6>
             <GraphLoader
               graphType="SmallBarStackGraph"
-              data={listPA}
+              data={allPA}
               units="ha"
               colors={matchColor('pa')}
             />
@@ -140,17 +155,7 @@ class Overview extends React.Component {
               <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
             </h4>
             <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
-            {!listSE && ('Cargando...')}
-            {helperAreaArrayIsEmpty(listSE) && ('Información no disponible')}
-            {listSE && !helperAreaArrayIsEmpty(listSE) && (
-              <EcosystemsBox
-                areaId={areaId}
-                total={Number(ecosystemsArea)}
-                geofenceId={geofenceId}
-                listSE={listSE}
-                matchColor={matchColor}
-              />
-            )}
+            {this.displaySE(allSE, ecosystemsArea)}
           </div>
         </div>
       </div>
@@ -160,9 +165,7 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   generalArea: PropTypes.number,
-  ecosystemsArea: PropTypes.number,
   listSE: PropTypes.array,
-  protectedArea: PropTypes.number,
   listPA: PropTypes.array,
   coverage: PropTypes.array,
   areaId: PropTypes.string,
@@ -172,9 +175,7 @@ Overview.propTypes = {
 
 Overview.defaultProps = {
   generalArea: 0,
-  ecosystemsArea: 0,
   listSE: null,
-  protectedArea: 0,
   listPA: null,
   coverage: null,
   areaId: '',

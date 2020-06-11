@@ -5,13 +5,14 @@ import { setPAValues, setCoverageValues } from './FormatSE';
 import RestAPI from '../api/RestAPI';
 
 /**
- *
  * Validate if data exist before rendering graph
  *
- * @param {array} data percentage in "national system of protected areas" or SINAP
- * @returns {object} validation of data availability and existence
+ * @param {array} data information to load graphs
+ * @param {function} colorFunc function to assign colors in a graph
+ *
+ * @returns {string | boolean} validation of data availability and existence
  */
-const validateData = (data) => {
+const loadData = (data, colorFunc) => {
   if (data === null) {
     return (
       <b>
@@ -20,8 +21,15 @@ const validateData = (data) => {
       </b>
     );
   }
-  if (data.length <= 0) return <b>No disponible</b>;
-  return false;
+  if (data.length <= 0) return (<b>No disponible</b>);
+  return (
+    <GraphLoader
+      graphType="SmallBarStackGraph"
+      data={data}
+      units="ha"
+      colors={colorFunc}
+    />
+  );
 };
 
 /**
@@ -29,10 +37,10 @@ const validateData = (data) => {
  *
  * @param {number} npsp percentage in "national system of protected areas" or SINAP
  * @param {number} sep percentage in strategic ecosystems
- * @param {array} coverage by default, should load transformed and natural area by %
- * @param {array} protectedArea by default, should load transformed and natural area by %
+ * @param {array} coverage data about coverages
+ * @param {array} protectedArea data about protected areas
  * @param {func} matchColor function to set the color
- * @returns {div} details for each strategic ecosystem
+ * @returns {div} node for each strategic ecosystem
  */
 const showDetails = (
   npsp,
@@ -44,29 +52,11 @@ const showDetails = (
   <div>
     <h3>
       Distribución de coberturas:
-      {validateData(coverage)
-        || (
-          <GraphLoader
-            graphType="SmallBarStackGraph"
-            data={setCoverageValues(coverage)}
-            units="ha"
-            colors={matchColor('coverage')}
-          />
-        )
-      }
+      {loadData(setCoverageValues(coverage), matchColor('coverage'))}
     </h3>
     <h3>
       Distribución en áreas protegidas:
-      {validateData(protectedArea)
-        || (
-          <GraphLoader
-            graphType="SmallBarStackGraph"
-            data={setPAValues(protectedArea)}
-            units="ha"
-            colors={matchColor('pa')}
-          />
-        )
-      }
+      {loadData(setPAValues(protectedArea), matchColor('pa'))}
     </h3>
     <h3>
       En Ecosistemas Estratégicos:
@@ -124,7 +114,7 @@ class DetailsView extends Component {
         .catch(() => {
           this.setState(prevState => ({
             ...prevState,
-            seCoverage: false,
+            seCoverage: [],
           }));
         });
 
@@ -138,7 +128,7 @@ class DetailsView extends Component {
         .catch(() => {
           this.setState(prevState => ({
             ...prevState,
-            sePA: false,
+            sePA: [],
           }));
         });
     }
@@ -162,7 +152,6 @@ class DetailsView extends Component {
       sePA,
       stopLoad,
     } = this.state;
-
     if (!stopLoad) {
       return (
         showDetails(

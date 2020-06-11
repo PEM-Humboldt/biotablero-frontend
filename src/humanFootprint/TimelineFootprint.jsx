@@ -5,13 +5,6 @@ import ShortInfo from '../commons/ShortInfo';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 
-const matchColorAndData = {
-  'Área total': 'hfTotal',
-  Páramo: 'hfMoor',
-  Humedales: 'hfWetlands',
-  'Bosques Secos': 'hfDryForest',
-};
-
 const changeValues = [
   {
     axis: 'y',
@@ -81,9 +74,37 @@ class TimelineFootprint extends React.Component {
     }));
   };
 
+  /**
+   * Defines the label for a given data
+   * @param {string} type data identifier
+   *
+   * @returns {string} label to be used for tooltips, legends, etc.
+   */
+  getLabel = (type) => {
+    switch (type) {
+      case 'paramo': return 'Páramos';
+      case 'wetland': return 'Húmedales';
+      case 'dryForest': return 'Bosques secos';
+      default: return 'Área Total';
+    }
+  };
+
+  /**
+   * Transform data to fit in the graph structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} data transformed
+   */
+  processData = (data) => {
+    if (!data) return [];
+    return data.map(obj => ({
+      ...obj,
+      label: this.getLabel(obj.id),
+    }));
+  };
+
   render() {
     const {
-      selection,
       setSelection,
       data,
     } = this.props;
@@ -126,9 +147,9 @@ class TimelineFootprint extends React.Component {
           <h2>
             <GraphLoader
               graphType="MultiLinesGraph"
-              setSelection={setSelection}
-              colors={matchColor(matchColorAndData[selection])}
-              data={data}
+              onClickHandler={setSelection}
+              colors={matchColor('hfTimeline')}
+              data={this.processData(data)}
               markers={changeValues}
               labelX="Año"
               labelY="Indice promedio Huella Humana"
@@ -144,7 +165,6 @@ class TimelineFootprint extends React.Component {
 }
 
 TimelineFootprint.propTypes = {
-  selection: PropTypes.string.isRequired,
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
 };
