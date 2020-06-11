@@ -74,6 +74,12 @@ class TimelineFootprint extends React.Component {
     }));
   };
 
+  /**
+   * Defines the label for a given data
+   * @param {string} type data identifier
+   *
+   * @returns {string} label to be used for tooltips, legends, etc.
+   */
   getLabel = (type) => {
     switch (type) {
       case 'paramo': return 'Páramos';
@@ -83,6 +89,12 @@ class TimelineFootprint extends React.Component {
     }
   };
 
+  /**
+   * Transform data to fit in the graph structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} data transformed
+   */
   processData = (data) => {
     if (!data) return [];
     return data.map(obj => ({

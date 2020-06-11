@@ -40,9 +40,16 @@ class Overview extends React.Component {
     }));
   };
 
-  displaySE = (se, ecosystemsArea, allSE) => {
-    if (!se) return ('Cargando...');
-    if (se.length <= 0) return ('Información no disponible');
+  /**
+   * Returns the right component depending on the list of strategic ecosystems
+   * @param {Array} allSE data to validate component returned
+   * @param {Number} ecosystemsArea total strategic ecosystem area
+   *
+   * @returns {node} Component to be displayed
+   */
+  displaySE = (allSE, ecosystemsArea) => {
+    if (!allSE) return ('Cargando...');
+    if (allSE.length <= 0) return ('Información no disponible');
 
     const { areaId, geofenceId, matchColor } = this.props;
     return (
@@ -148,7 +155,7 @@ class Overview extends React.Component {
               <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
             </h4>
             <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
-            {this.displaySE(allSE, ecosystemsArea, allSE)}
+            {this.displaySE(allSE, ecosystemsArea)}
           </div>
         </div>
       </div>

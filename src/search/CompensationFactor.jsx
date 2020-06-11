@@ -20,6 +20,12 @@ class CompensationFactor extends React.Component {
     }));
   };
 
+  /**
+   * Transform data to fit in the graph structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} data transformed
+   */
   processData = (data) => {
     if (!data) return [];
     return data.map(obj => ({
