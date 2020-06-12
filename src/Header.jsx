@@ -11,7 +11,7 @@ const Header = ({
   uim,
 }) => (
   <header className="cabezote">
-    <div>
+    <div className="cabezoteLeft">
       <nav>
         <Menu />
       </nav>
@@ -21,11 +21,11 @@ const Header = ({
         to be upload when user is active */}
     <div className="header_info">
       {parent && child && (
-        <div style={{ display: 'flex' }}>
+        <div className="cabezoteRight">
           <h1>
-            {`${parent} /`}
+            <b>{`${child}`}</b>
             <br />
-            {child}
+            {parent}
           </h1>
           <div className="iconsection" />
         </div>

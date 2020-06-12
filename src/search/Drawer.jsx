@@ -318,7 +318,7 @@ class Drawer extends React.Component {
           >
             <BackIcon />
           </button>
-          <div>
+          <div className="HAgen">
             <h4>
               hectáreas totales
               <b>{`${numberWithCommas(generalArea.toFixed(0))} ha`}</b>
