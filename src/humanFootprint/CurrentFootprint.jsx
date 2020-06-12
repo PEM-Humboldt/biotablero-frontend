@@ -20,7 +20,7 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, currentHFPValue } = this.props;
     const { showInfoGraph } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -50,6 +50,10 @@ class CurrentFootprint extends React.Component {
           />
           )
         )}
+        <div>
+          Huella humana actual:
+          {currentHFPValue}
+        </div>
         <h6>
           Natural, Baja, Media y Alta
         </h6>
@@ -74,6 +78,11 @@ class CurrentFootprint extends React.Component {
 
 CurrentFootprint.propTypes = {
   data: PropTypes.array.isRequired,
+  currentHFPValue: PropTypes.number,
+};
+
+CurrentFootprint.defaultProps = {
+  currentHFPValue: 0,
 };
 
 export default CurrentFootprint;
