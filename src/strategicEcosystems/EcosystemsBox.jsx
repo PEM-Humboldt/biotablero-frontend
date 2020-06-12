@@ -86,7 +86,7 @@ class EcosystemsBox extends Component {
             <div className="mb10" key={item.type}>
               <div className="singleeco">{item.type}</div>
               <div className="singleeco2">
-                {`${numberWithCommas(Number(item.area).toFixed(2))} ha`}
+                {`${numberWithCommas(Number(item.area).toFixed(0))} ha`}
               </div>
               {(Number(item.area) !== 0) && (
                 <button

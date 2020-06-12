@@ -84,7 +84,7 @@ const LargeBarStackGraph = (props) => {
               {allData[`${id}Label`]}
             </strong>
             <div style={{ color: '#ffffff' }}>
-              {`${numberWithCommas(allData[id].toFixed(2))} ${units}`}
+              {`${numberWithCommas(allData[id].toFixed(0))} ${units}`}
             </div>
           </div>
         )}
