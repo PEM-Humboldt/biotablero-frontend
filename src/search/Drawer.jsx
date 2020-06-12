@@ -38,7 +38,7 @@ class Drawer extends React.Component {
         areaPA: null,
         generalArea: 0,
         currentHF: [],
-        currentHFPValue: 88,
+        currentHFPValue: 0,
         hfPersistence: [],
         hfTimeline: [],
       },
