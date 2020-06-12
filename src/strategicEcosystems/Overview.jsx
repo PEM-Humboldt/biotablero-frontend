@@ -5,7 +5,6 @@ import React from 'react';
 
 import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
-import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
 import ShortInfo from '../commons/ShortInfo';
 
@@ -114,9 +113,6 @@ class Overview extends React.Component {
           />
         )}
         <div className="graphcontainer pt5">
-          <GeneralArea
-            value={generalArea}
-          />
           <h4>
             Cobertura
           </h4>

@@ -22,6 +22,8 @@ const styles = () => ({
   },
 });
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 class Drawer extends React.Component {
   constructor(props) {
     super(props);
@@ -309,8 +311,12 @@ class Drawer extends React.Component {
           >
             <BackIcon />
           </button>
-          {/* TODO: when replacing for actual value, it must be without decimals */}
-          <div>hectáreas totales 5,306,866 ha</div>
+          <div>
+            <h4>
+              hectáreas totales
+              <b>{`${numberWithCommas(generalArea.toFixed(0))} ha`}</b>
+            </h4>
+          </div>
         </div>
         { !subLayerName && (
           <TabContainer
