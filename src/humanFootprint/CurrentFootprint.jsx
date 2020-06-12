@@ -50,7 +50,7 @@ class CurrentFootprint extends React.Component {
           />
           )
         )}
-        <div>  
+        <div>
           <h6>
             Huella humana actual
           </h6>
