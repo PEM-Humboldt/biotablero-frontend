@@ -22,6 +22,8 @@ const styles = () => ({
   },
 });
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 class Drawer extends React.Component {
   constructor(props) {
     super(props);
@@ -36,6 +38,7 @@ class Drawer extends React.Component {
         areaPA: null,
         generalArea: 0,
         currentHF: [],
+        currentHFPValue: 0,
         hfPersistence: [],
         hfTimeline: [],
       },
@@ -153,11 +156,15 @@ class Drawer extends React.Component {
 
     RestAPI.requestHFTimeline()
       .then((res) => {
+        const aTotalData = res.find(o => o.id === 'aTotal').data;
+        const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
+        const currentHFPValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
             hfTimeline: res,
+            currentHFPValue,
           },
         }));
       })
@@ -257,6 +264,7 @@ class Drawer extends React.Component {
         areaSE,
         generalArea,
         currentHF,
+        currentHFPValue,
         hfPersistence,
         hfTimeline,
       },
@@ -292,6 +300,7 @@ class Drawer extends React.Component {
           <HumanFootprint
             setSelection={setHFPSelection}
             currentHF={currentHF}
+            currentHFPValue={currentHFPValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
             handlersGeometry={handlersGeometry}
@@ -309,8 +318,12 @@ class Drawer extends React.Component {
           >
             <BackIcon />
           </button>
-          {/* TODO: when replacing for actual value, it must be without decimals */}
-          <div>hectáreas totales 5,306,866 ha</div>
+          <div className="HAgen">
+            <h4>
+              hectáreas totales
+              <b>{`${numberWithCommas(generalArea.toFixed(0))} ha`}</b>
+            </h4>
+          </div>
         </div>
         { !subLayerName && (
           <TabContainer

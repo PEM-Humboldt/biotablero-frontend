@@ -9,6 +9,7 @@ import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 const HumanFootprint = ({
   setSelection,
   currentHF,
+  currentHFPValue,
   hfPersistence,
   hfTimeline,
   handlersGeometry,
@@ -26,6 +27,7 @@ const HumanFootprint = ({
       component: (
         <CurrentFootprint
           data={currentHF}
+          currentHFPValue={currentHFPValue}
         />
       ),
     },
@@ -76,6 +78,7 @@ const HumanFootprint = ({
 HumanFootprint.propTypes = {
   setSelection: PropTypes.func.isRequired,
   currentHF: PropTypes.array,
+  currentHFPValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
@@ -83,6 +86,7 @@ HumanFootprint.propTypes = {
 
 HumanFootprint.defaultProps = {
   currentHF: [],
+  currentHFPValue: 0,
   hfPersistence: [],
   hfTimeline: [],
   handlersGeometry: [],

@@ -68,9 +68,9 @@ const SmallBarStackGraph = (props) => {
             {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
           <div>
-            {`${numberWithCommas(allData[id].toFixed(2))} ${units}`}
+            {`${numberWithCommas(allData[id].toFixed(0))} ${units}`}
             <br />
-            {`${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(2))}%`}
+            {`${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(0))}%`}
           </div>
         </div>
       );

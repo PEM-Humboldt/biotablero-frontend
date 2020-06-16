@@ -5,7 +5,6 @@ import React from 'react';
 
 import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
-import GeneralArea from '../commons/GeneralArea';
 import GraphLoader from '../charts/GraphLoader';
 import ShortInfo from '../commons/ShortInfo';
 
@@ -76,11 +75,11 @@ class Overview extends React.Component {
     const coverageData = setCoverageValues(coverage);
 
     // First element removed, which is the total area in PA
-    const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(2) : 0);
+    const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(0) : 0);
     const allPA = Array.isArray(listPA) ? setPAValues(listPA.slice(1)) : [];
 
     const ecosystemsArea = ((Array.isArray(listSE) && listSE[0] && listSE[0].area)
-      ? Number(listSE[0].area).toFixed(2)
+      ? Number(listSE[0].area).toFixed(0)
       : 0);
     const allSE = Array.isArray(listSE) && listSE.slice(1);
 
@@ -114,9 +113,6 @@ class Overview extends React.Component {
           />
         )}
         <div className="graphcontainer pt5">
-          <GeneralArea
-            value={generalArea}
-          />
           <h4>
             Cobertura
           </h4>

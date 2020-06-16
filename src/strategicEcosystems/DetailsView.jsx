@@ -60,10 +60,10 @@ const showDetails = (
     </h3>
     <h3>
       En Ecosistemas Estratégicos:
-      <b>{`${Number(sep).toFixed(2)} %`}</b>
+      <b>{`${Number(sep).toFixed(0)} %`}</b>
       <br />
       En Sistema Nacional:
-      <b>{`${Number(npsp).toFixed(2)} %`}</b>
+      <b>{`${Number(npsp).toFixed(0)} %`}</b>
     </h3>
   </div>
 );

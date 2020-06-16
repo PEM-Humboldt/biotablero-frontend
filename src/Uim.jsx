@@ -64,7 +64,7 @@ class Uim extends Component {
       ? { modal: 'userModal', state: userModal }
       : { modal: 'loginModal', state: loginModal };
     return (
-      <div>
+      <div className="loginBtnCont">
         <button
           type="button"
           className="loginBtn"

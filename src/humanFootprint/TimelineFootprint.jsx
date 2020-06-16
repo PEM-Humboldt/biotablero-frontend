@@ -155,9 +155,12 @@ class TimelineFootprint extends React.Component {
               labelY="Indice promedio Huella Humana"
             />
           </h2>
-          <p>
-            Área del ecosistema dentro de la unidad de consulta: 332 ha
-          </p>
+          <h6>
+            Área del ecosistema dentro de la unidad de consulta
+          </h6>
+          <h5>
+            332 ha
+          </h5>
         </div>
       </div>
     );
