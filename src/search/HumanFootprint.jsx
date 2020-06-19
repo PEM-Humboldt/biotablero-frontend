@@ -28,6 +28,7 @@ const HumanFootprint = ({
         <CurrentFootprint
           data={currentHF}
           currentHFPValue={currentHFPValue}
+          handlersGeometry={handlersGeometry}
         />
       ),
     },
@@ -59,6 +60,7 @@ const HumanFootprint = ({
       component: (
         <PersistenceFooprint
           data={hfPersistence}
+          handlersGeometry={handlersGeometry}
         />
       ),
     },

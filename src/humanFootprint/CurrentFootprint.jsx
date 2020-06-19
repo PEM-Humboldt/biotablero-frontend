@@ -20,7 +20,11 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const { data, currentHFPValue } = this.props;
+    const {
+      data,
+      currentHFPValue,
+      handlersGeometry,
+    } = this.props;
     const { showInfoGraph } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -73,6 +77,7 @@ class CurrentFootprint extends React.Component {
             units="ha"
             colors={matchColor('currentHFP')}
             padding={0.25}
+            onClickHandler={handlersGeometry[2]}
           />
         </div>
       </div>
@@ -83,10 +88,12 @@ class CurrentFootprint extends React.Component {
 CurrentFootprint.propTypes = {
   data: PropTypes.array.isRequired,
   currentHFPValue: PropTypes.number,
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };
 
 CurrentFootprint.defaultProps = {
   currentHFPValue: 0,
+  handlersGeometry: [],
 };
 
 export default CurrentFootprint;

@@ -11,6 +11,7 @@ const LargeBarStackGraph = (props) => {
     colors,
     padding,
     units,
+    onClickHandler,
   } = props;
 
   /**
@@ -47,6 +48,7 @@ const LargeBarStackGraph = (props) => {
     <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data, labelY)}
+        onClick={category => onClickHandler(category.id)}
         keys={keys}
         indexBy="key"
         layout="horizontal"
@@ -114,6 +116,7 @@ LargeBarStackGraph.propTypes = {
   colors: PropTypes.func,
   padding: PropTypes.number,
   units: PropTypes.string,
+  onClickHandler: PropTypes.func.isRequired,
 };
 
 LargeBarStackGraph.defaultProps = {

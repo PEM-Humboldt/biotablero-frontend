@@ -26,7 +26,7 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, handlersGeometry } = this.props;
     const { showInfoGraph } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -71,6 +71,7 @@ class PersistenceFootprint extends React.Component {
             units="ha"
             colors={matchColor('persistenceHFP')}
             padding={0.25}
+            onClickHandler={handlersGeometry[2]}
           />
         </div>
       </div>
@@ -80,6 +81,11 @@ class PersistenceFootprint extends React.Component {
 
 PersistenceFootprint.propTypes = {
   data: PropTypes.array.isRequired,
+  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
+};
+
+PersistenceFootprint.defaultProps = {
+  handlersGeometry: [],
 };
 
 export default PersistenceFootprint;

@@ -56,6 +56,7 @@ const GraphLoader = (props) => {
           colors={colors}
           padding={padding}
           units={units}
+          onClickHandler={onClickHandler}
         />
       );
     case 'SmallBarStackGraph':
