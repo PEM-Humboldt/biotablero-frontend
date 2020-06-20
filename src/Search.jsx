@@ -16,6 +16,9 @@ import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
 import AppContext from './AppContext';
 
+/**
+ * Get the label tooltip on the map
+ */
 const getLabel = {
   natural: 'Natural',
   baja: 'Baja',
@@ -98,12 +101,11 @@ class Search extends Component {
     }
   };
 
+  /**
+   * Recover all geofences by default available in the
+   * database for the Search Module and sort them
+   */
   loadAreaList = () => {
-    /**
-     * Recover all geofences by default available in the
-     * database for the Search Module and sort them
-     */
-    console.log('loadAreaList');
     let tempAreaList;
     let tempGeofencesArray;
     Promise.all([
@@ -132,17 +134,13 @@ class Search extends Component {
             history,
             setHeaderNames,
           } = this.props;
-          console.log('selectedAreaTypeId', selectedAreaTypeId);
-          console.log('selectedAreaId', selectedAreaId);
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
           const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
-          console.log('inputArea', inputArea);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             let field = 'id';
             if (selectedAreaTypeId === 'pa') field = 'name';
             const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
-            console.log('inputId', inputId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);
               this.setState(
@@ -188,7 +186,6 @@ class Search extends Component {
    * @param {String} type layer type
    * @param {Object} feature target object
    */
-
   featureStyle = type => (feature) => {
     const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
@@ -229,6 +226,12 @@ class Search extends Component {
     );
   }
 
+  /**
+   * Highlight specific feature on the map
+   *
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} parentLayer layer type
+   */
   highlightFeature = (event, parentLayer) => {
     const { activeLayer, selectedAreaType, layers } = this.state;
     const point = event.target;
@@ -240,12 +243,6 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
-    console.log('activeLayer', activeLayer);
-    console.log('parentLayer', parentLayer);
-    console.log('point', point);
-    console.log('selectedAreaType', selectedAreaType);
-    console.log('state', this.state);
-    console.log('activeGeometry', activeGeometryType);
     if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
@@ -277,11 +274,9 @@ class Search extends Component {
 
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { selectedAreaType, layers } = this.state;
+    const { layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
-      feature.closePopup();
-    }
+    feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
@@ -340,7 +335,6 @@ class Search extends Component {
    */
   switchLayer = (layerType) => {
     const { requestSource, selectedArea } = this.state;
-    console.log('switchLayer selectedArea', selectedArea);
     if (requestSource) {
       requestSource.cancel();
     }
@@ -531,7 +525,6 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     const { setHeaderNames } = this.props;
-    console.log('nameToOn (selectedArea)', nameToOn);
     if (nameToOn) {
       this.setState(
         { selectedArea: nameToOn },
