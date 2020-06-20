@@ -16,6 +16,17 @@ import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
 import AppContext from './AppContext';
 
+const getLabel = {
+  natural: 'Natural',
+  baja: 'Baja',
+  media: 'Media',
+  alta: 'Alta',
+  estable_natural: 'Estable Natural',
+  dinamica: 'Dinámica',
+  estable_alta: 'Estable Alta',
+};
+
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +74,14 @@ class Search extends Component {
   }
 
   /**
+   * Give format to a big number
+   *
+   * @param {number} x number to be formatted
+   * @returns {String} number formatted setting decimals and thousands properly
+   */
+  numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  /**
    * Set area state to control transitions
    *
    * @param {Object} idLayer value to set
@@ -84,6 +103,7 @@ class Search extends Component {
      * Recover all geofences by default available in the
      * database for the Search Module and sort them
      */
+    console.log('loadAreaList');
     let tempAreaList;
     let tempGeofencesArray;
     Promise.all([
@@ -112,13 +132,17 @@ class Search extends Component {
             history,
             setHeaderNames,
           } = this.props;
+          console.log('selectedAreaTypeId', selectedAreaTypeId);
+          console.log('selectedAreaId', selectedAreaId);
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
           const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
+          console.log('inputArea', inputArea);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             let field = 'id';
             if (selectedAreaTypeId === 'pa') field = 'name';
             const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
+            console.log('inputId', inputId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);
               this.setState(
@@ -206,8 +230,9 @@ class Search extends Component {
   }
 
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, selectedAreaType } = this.state;
+    const { activeLayer, selectedAreaType, layers } = this.state;
     const point = event.target;
+    const activeGeometryType = layers[activeLayer.id].type;
     const areaPopup = {
       closeButton: false,
     };
@@ -215,6 +240,12 @@ class Search extends Component {
       weight: 1,
       fillOpacity: 1,
     });
+    console.log('activeLayer', activeLayer);
+    console.log('parentLayer', parentLayer);
+    console.log('point', point);
+    console.log('selectedAreaType', selectedAreaType);
+    console.log('state', this.state);
+    console.log('activeGeometry', activeGeometryType);
     if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
       point.bindPopup(
         `<b>${this.findFirstName(point.feature.properties)}</b>
@@ -223,10 +254,23 @@ class Search extends Component {
       ).openPopup();
     }
     if (activeLayer && (parentLayer === activeLayer.id)) {
-      point.bindPopup(
-        `<b>Bioma:</b> ${point.feature.properties.name_biome}
-         <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-      ).openPopup();
+      switch (activeGeometryType) {
+        case 'fc':
+          point.bindPopup(
+            `<b>Bioma:</b> ${point.feature.properties.name_biome}
+              <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+          ).openPopup();
+          return;
+        case 'persistenceHFP':
+        case 'currentHFP':
+          point.bindPopup(
+            `<b>${getLabel[point.feature.properties.key]}:</b>
+            <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
+          ).openPopup();
+          return;
+        default:
+          return;
+      }
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
@@ -296,6 +340,7 @@ class Search extends Component {
    */
   switchLayer = (layerType) => {
     const { requestSource, selectedArea } = this.state;
+    console.log('switchLayer selectedArea', selectedArea);
     if (requestSource) {
       requestSource.cancel();
     }
@@ -319,6 +364,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'fc',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -346,6 +392,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'currentHFP',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -373,6 +420,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'persistenceHFP',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -483,6 +531,7 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     const { setHeaderNames } = this.props;
+    console.log('nameToOn (selectedArea)', nameToOn);
     if (nameToOn) {
       this.setState(
         { selectedArea: nameToOn },
