@@ -272,6 +272,12 @@ class Search extends Component {
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
 
+  /**
+   * Reset highlight specific feature on the map
+   *
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} parentLayer layer type
+   */
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
     const { layers } = this.state;
