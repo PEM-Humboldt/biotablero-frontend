@@ -19,7 +19,8 @@ import AppContext from './AppContext';
 /**
  * Get the label tooltip on the map
  */
-const getLabel = {
+// TODO: Centralize as it is used in more that one component
+const tooltipLabel = {
   natural: 'Natural',
   baja: 'Baja',
   media: 'Media',
@@ -261,7 +262,7 @@ class Search extends Component {
         case 'persistenceHFP':
         case 'currentHFP':
           point.bindPopup(
-            `<b>${getLabel[point.feature.properties.key]}:</b>
+            `<b>${tooltipLabel[point.feature.properties.key]}:</b>
             <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
           ).openPopup();
           return;
