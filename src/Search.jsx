@@ -252,6 +252,27 @@ class Search extends Component {
   }
 
   /**
+   * Highlight sub-layer by clicking on the specific category on the graph
+   *
+   * @param {String} idCategory id of category selected on the map
+   */
+  clickOnGraph = (idCategory) => {
+    const { activeLayer } = this.state;
+    const { layers } = this.state;
+    const selectedSubLayer = layers[activeLayer.id].layer;
+    selectedSubLayer.eachLayer((layer) => {
+      if (layer.feature.properties.key === idCategory) {
+        layer.setStyle({
+          weight: 1,
+          fillOpacity: 1,
+        });
+      } else {
+        selectedSubLayer.resetStyle(layer);
+      }
+    });
+  };
+
+  /**
    * Shut off all layers on the map
    */
   shutOffAllLayers = () => (
@@ -633,6 +654,7 @@ class Search extends Component {
                 handlersGeometry={[
                   this.shutOffAllLayers,
                   this.switchLayer,
+                  this.clickOnGraph,
                 ]}
               />
             )}
