@@ -66,9 +66,9 @@ class MultiLinesGraph extends React.Component {
   };
 
   selectLine = (point) => {
-    const { onClickHandler } = this.props;
+    const { onClickGraphHandler } = this.props;
     this.changeSelected(point.serieId || point.id);
-    onClickHandler(point.serieId || point.id);
+    onClickGraphHandler(point.serieId || point.id);
   };
 
   render() {
@@ -208,7 +208,7 @@ MultiLinesGraph.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  onClickHandler: PropTypes.func.isRequired,
+  onClickGraphHandler: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
