@@ -16,6 +16,21 @@ import RestAPI from './api/RestAPI';
 import matchColor from './commons/matchColor';
 import AppContext from './AppContext';
 
+/**
+ * Get the label tooltip on the map
+ */
+// TODO: Centralize as it is used in more that one component
+const tooltipLabel = {
+  natural: 'Natural',
+  baja: 'Baja',
+  media: 'Media',
+  alta: 'Alta',
+  estable_natural: 'Estable Natural',
+  dinamica: 'Dinámica',
+  estable_alta: 'Estable Alta',
+};
+
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +78,14 @@ class Search extends Component {
   }
 
   /**
+   * Give format to a big number
+   *
+   * @param {number} x number to be formatted
+   * @returns {String} number formatted setting decimals and thousands properly
+   */
+  numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+  /**
    * Set area state to control transitions
    *
    * @param {Object} idLayer value to set
@@ -79,11 +102,11 @@ class Search extends Component {
     }
   };
 
+  /**
+   * Recover all geofences by default available in the
+   * database for the Search Module and sort them
+   */
   loadAreaList = () => {
-    /**
-     * Recover all geofences by default available in the
-     * database for the Search Module and sort them
-     */
     let tempAreaList;
     let tempGeofencesArray;
     Promise.all([
@@ -164,7 +187,6 @@ class Search extends Component {
    * @param {String} type layer type
    * @param {Object} feature target object
    */
-
   featureStyle = type => (feature) => {
     const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
@@ -205,9 +227,16 @@ class Search extends Component {
     );
   }
 
+  /**
+   * Highlight specific feature on the map
+   *
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} parentLayer layer type
+   */
   highlightFeature = (event, parentLayer) => {
-    const { activeLayer, selectedAreaType } = this.state;
+    const { activeLayer, selectedAreaType, layers } = this.state;
     const point = event.target;
+    const activeGeometryType = layers[activeLayer.id].type;
     const areaPopup = {
       closeButton: false,
     };
@@ -223,21 +252,38 @@ class Search extends Component {
       ).openPopup();
     }
     if (activeLayer && (parentLayer === activeLayer.id)) {
-      point.bindPopup(
-        `<b>Bioma:</b> ${point.feature.properties.name_biome}
-         <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-      ).openPopup();
+      switch (activeGeometryType) {
+        case 'fc':
+          point.bindPopup(
+            `<b>Bioma:</b> ${point.feature.properties.name_biome}
+              <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+          ).openPopup();
+          return;
+        case 'persistenceHFP':
+        case 'currentHFP':
+          point.bindPopup(
+            `<b>${tooltipLabel[point.feature.properties.key]}:</b>
+            <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
+          ).openPopup();
+          return;
+        default:
+          return;
+      }
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
 
+  /**
+   * Reset highlight specific feature on the map
+   *
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} parentLayer layer type
+   */
   resetHighlight = (event, parentLayer) => {
     const feature = event.target;
-    const { selectedAreaType, layers } = this.state;
+    const { layers } = this.state;
     layers[parentLayer].layer.resetStyle(feature);
-    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
-      feature.closePopup();
-    }
+    feature.closePopup();
   }
 
   clickFeature = (event, parentLayer) => {
@@ -319,6 +365,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'fc',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -346,6 +393,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'currentHFP',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -373,6 +421,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
+                      type: 'persistenceHFP',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
