@@ -408,6 +408,34 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
+      case 'timelineHFP':
+        return (
+          RestAPI.requestHFTimelineGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'hfTimeline',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
       case 'persistenceHFP':
         return (
           RestAPI.requestHFPersistenceGeometry()
