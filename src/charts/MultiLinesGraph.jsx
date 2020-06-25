@@ -16,8 +16,8 @@ class MultiLinesGraph extends React.Component {
     const { data, colors } = this.props;
     const labels = {};
     const newData = data.map((obj) => {
-      labels[obj.id] = obj.label;
-      return { ...obj, color: colors(obj.id) };
+      labels[obj.key] = obj.label;
+      return { ...obj, color: colors(obj.key) };
     });
     this.setState({
       data: newData,
@@ -59,16 +59,17 @@ class MultiLinesGraph extends React.Component {
   changeSelected = (selectedId) => {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
-      if (obj.id === selectedId) return { ...obj, color: colors(`${obj.id}Sel`) };
-      return { ...obj, color: colors(obj.id) };
+      if (obj.key === selectedId) return { ...obj, color: colors(`${obj.key}Sel`) };
+      return { ...obj, color: colors(obj.key) };
     });
     this.setState({ data: transformedData, selectedId });
   };
 
   selectLine = (point) => {
+    console.log(point);
     const { onClickGraphHandler } = this.props;
-    this.changeSelected(point.serieId || point.id);
-    onClickGraphHandler(point.serieId || point.id);
+    this.changeSelected(point.serieId || point.id || point.key);
+    onClickGraphHandler(point.serieId || point.id || point.key);
   };
 
   render() {
@@ -211,7 +212,7 @@ MultiLinesGraph.propTypes = {
   onClickGraphHandler: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
+    key: PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.shape({
       x: PropTypes.string,
       y: PropTypes.number,

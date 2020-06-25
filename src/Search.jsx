@@ -260,6 +260,7 @@ class Search extends Component {
           ).openPopup();
           return;
         case 'persistenceHFP':
+        case 'hfTimeline':
         case 'currentHFP':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
@@ -384,6 +385,7 @@ class Search extends Component {
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
+              console.log(res);
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
@@ -408,10 +410,11 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'timelineHFP':
+      case 'hfTimeline':
         return (
           RestAPI.requestHFTimelineGeometry()
             .then((res) => {
+              console.log(res);
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({

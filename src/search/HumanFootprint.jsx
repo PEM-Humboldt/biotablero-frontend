@@ -34,7 +34,7 @@ const HumanFootprint = ({
     },
     {
       label: {
-        id: 'timeLineHFP',
+        id: 'hfTimeline',
         name: 'Histórico y Ecosistémas estratégicos (EE)',
         disabled: false,
         expandIcon: <AddIcon />,

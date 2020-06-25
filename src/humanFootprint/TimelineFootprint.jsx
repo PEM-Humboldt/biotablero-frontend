@@ -99,7 +99,7 @@ class TimelineFootprint extends React.Component {
     if (!data) return [];
     return data.map(obj => ({
       ...obj,
-      label: this.getLabel(obj.id),
+      label: this.getLabel(obj.key),
     }));
   };
 

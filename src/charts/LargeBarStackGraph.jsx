@@ -48,7 +48,9 @@ const LargeBarStackGraph = (props) => {
     <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data, labelY)}
-        onClick={category => onClickGraphHandler(category.id)}
+        onClick={(category) => {
+          console.log(category);
+          onClickGraphHandler(category.id)}}
         keys={keys}
         indexBy="key"
         layout="horizontal"

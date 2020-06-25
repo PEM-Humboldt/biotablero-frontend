@@ -1,6 +1,7 @@
 [
   {
     "id": "paramo",
+    "key": "paramo",
     "data": [
       {
         "x": "1970",
@@ -26,6 +27,7 @@
   },
   {
     "id": "wetland",
+    "key": "wetland",
     "data": [
       {
         "x": "1970",
@@ -51,6 +53,7 @@
   },
   {
     "id": "dryForest",
+    "key": "dryForest",
     "data": [
       {
         "x": "1970",
@@ -76,6 +79,7 @@
   },
   {
     "id": "aTotal",
+    "key": "aTotal",
     "data": [
       {
         "x": "1970",
