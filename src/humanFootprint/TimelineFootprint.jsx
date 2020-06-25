@@ -107,6 +107,7 @@ class TimelineFootprint extends React.Component {
     const {
       setSelection,
       data,
+      onClickGraphHandler,
     } = this.props;
     const { showInfoGraph } = this.state;
     return (
@@ -153,6 +154,7 @@ class TimelineFootprint extends React.Component {
               markers={changeValues}
               labelX="Año"
               labelY="Indice promedio Huella Humana"
+              onClickGraphHandler={onClickGraphHandler}
             />
           </h2>
           <h6>
@@ -170,6 +172,11 @@ class TimelineFootprint extends React.Component {
 TimelineFootprint.propTypes = {
   setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
+  onClickGraphHandler: PropTypes.func,
+};
+
+TimelineFootprint.defaultProps = {
+  onClickGraphHandler: () => {},
 };
 
 export default TimelineFootprint;
