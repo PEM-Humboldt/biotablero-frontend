@@ -4,6 +4,7 @@ import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
 import tmpHFPersistence from './tmp_hf_persistence.json';
 import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
+import tmpHFTimelineGeo from './tmp_hf_timeline_geo.json';
 
 class RestAPI {
   /**
@@ -279,6 +280,18 @@ class RestAPI {
    */
   static requestCurrentHFGeometry() {
     return Promise.resolve(tmpCurrentHFGeo);
+  }
+
+  /**
+   * Get the geometry associated for the footprint timeline in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestHFTimelineGeometry() {
+    return Promise.resolve(tmpHFTimelineGeo);
   }
 
   /**
