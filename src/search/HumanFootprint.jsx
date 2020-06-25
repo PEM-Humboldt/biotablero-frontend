@@ -45,6 +45,7 @@ const HumanFootprint = ({
         <TimelineFootprint
           setSelection={setSelection}
           data={hfTimeline}
+          onClickGraphHandler={handlersGeometry[2]}
         />
       ),
     },
