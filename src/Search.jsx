@@ -28,6 +28,9 @@ const tooltipLabel = {
   estable_natural: 'Estable Natural',
   dinamica: 'Dinámica',
   estable_alta: 'Estable Alta',
+  paramo: 'Páramos',
+  wetland: 'Húmedales',
+  dryForest: 'Bosques secos',
 };
 
 
@@ -259,8 +262,8 @@ class Search extends Component {
               <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
           ).openPopup();
           return;
-        case 'persistenceHFP':
         case 'hfTimeline':
+        case 'persistenceHFP':
         case 'currentHFP':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
@@ -385,7 +388,6 @@ class Search extends Component {
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
-              console.log(res);
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
@@ -414,7 +416,6 @@ class Search extends Component {
         return (
           RestAPI.requestHFTimelineGeometry()
             .then((res) => {
-              console.log(res);
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
