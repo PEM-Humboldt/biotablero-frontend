@@ -14,10 +14,20 @@ class MultiLinesGraph extends React.Component {
 
   componentDidMount() {
     const { data, colors } = this.props;
+    this.setData(data, colors);
+  }
+
+  /**
+   * Add fields required in data by other components, including NIVO Line (field id)
+   *
+   * @param {Object} data API response to be rendered
+   * @param {Func} colors handle color to be asigned by data type
+   */
+  setData = (data, colors) => {
     const labels = {};
     const newData = data.map((obj) => {
       labels[obj.key] = obj.label;
-      return { ...obj, color: colors(obj.key) };
+      return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({
       data: newData,
@@ -59,8 +69,8 @@ class MultiLinesGraph extends React.Component {
   changeSelected = (selectedId) => {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
-      if (obj.key === selectedId) return { ...obj, color: colors(`${obj.key}Sel`) };
-      return { ...obj, color: colors(obj.key) };
+      if (obj.key === selectedId) return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
+      return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({ data: transformedData, selectedId });
   };
