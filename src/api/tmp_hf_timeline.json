@@ -1,6 +1,5 @@
 [
   {
-    "id": "paramo",
     "key": "paramo",
     "data": [
       {
@@ -26,7 +25,6 @@
     ]
   },
   {
-    "id": "wetland",
     "key": "wetland",
     "data": [
       {
@@ -52,7 +50,6 @@
     ]
   },
   {
-    "id": "dryForest",
     "key": "dryForest",
     "data": [
       {
@@ -78,7 +75,6 @@
     ]
   },
   {
-    "id": "aTotal",
     "key": "aTotal",
     "data": [
       {
