@@ -77,8 +77,8 @@ class MultiLinesGraph extends React.Component {
 
   selectLine = (point) => {
     const { onClickGraphHandler } = this.props;
-    this.changeSelected(point.serieId || point.id || point.key);
-    onClickGraphHandler(point.serieId || point.id || point.key);
+    this.changeSelected(point.serieId || point.id);
+    onClickGraphHandler(point.serieId || point.id);
   };
 
   render() {
