@@ -28,9 +28,10 @@ const tooltipLabel = {
   estable_natural: 'Estable Natural',
   dinamica: 'Dinámica',
   estable_alta: 'Estable Alta',
-  paramo: 'Páramos',
-  wetland: 'Húmedales',
-  dryForest: 'Bosques secos',
+  aTotal: 'Total',
+  paramo: 'Páramo',
+  wetland: 'Humedal',
+  dryForest: 'Bosque Seco Tropical',
 };
 
 
@@ -96,6 +97,36 @@ class Search extends Component {
       });
     }
   };
+
+  /**
+   * Set subLayerData state to handle detailed information
+   */
+  setSubLayerData = (type, idSE) => {
+    const { selectedAreaTypeId, selectedAreaId } = this.props;
+    switch (type) {
+      /**
+       * Recover details for strategic ecosystems (SE) in the selected area
+       */
+      case 'hfTimeline':
+        RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
+          .then((value) => {
+            const res = typeof (value) === 'object' ? [{...value, type: idSE }] : value;
+            this.setState(prevState => ({
+              ...prevState,
+              subLayerData: res,
+            }));
+          })
+          .catch(() => {
+            this.setState(prevState => ({
+              ...prevState,
+              subLayerData: null,
+            }));
+          });
+        break;
+      default:
+        break;
+    }
+  }
 
   /**
    * Recover all geofences by default available in the
@@ -308,6 +339,8 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
+        console.log(layer.feature.properties, idCategory, tooltipLabel[idCategory]);
+        console.log(this.setSubLayerData('hfTimeline', tooltipLabel[idCategory]));
       } else {
         selectedSubLayer.resetStyle(layer);
       }

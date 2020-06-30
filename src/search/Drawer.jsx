@@ -302,6 +302,7 @@ class Drawer extends React.Component {
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
             handlersGeometry={handlersGeometry}
+            subLayerData={subLayerData}
           />
         ),
       },
