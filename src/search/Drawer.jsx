@@ -30,9 +30,6 @@ class Drawer extends React.Component {
     this.state = {
       value: 0,
       data: {
-        biomas: null,
-        distritos: null,
-        fc: null,
         coverage: null,
         areaSE: null,
         areaPA: null,
@@ -177,68 +174,6 @@ class Drawer extends React.Component {
           },
         }));
       });
-
-    if (area.id === 'ea') {
-      RestAPI.requestBiomes(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              biomas: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              biomas: false,
-            },
-          }));
-        });
-
-      RestAPI.requestCompensationFactor(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              fc: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              fc: false,
-            },
-          }));
-        });
-
-      RestAPI.requestBioticUnits(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              distritos: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              distritos: false,
-            },
-          }));
-        });
-    }
   }
 
   render() {
@@ -255,9 +190,6 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        fc,
-        biomas,
-        distritos,
         coverage,
         areaPA,
         areaSE,
@@ -279,10 +211,8 @@ class Drawer extends React.Component {
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
-          areaName={area.name}
-          biomesData={biomas}
-          bioticRegionsData={distritos}
-          compensationFactorData={fc}
+          area={area}
+          geofence={geofence}
           matchColor={matchColor}
         />,
       },
