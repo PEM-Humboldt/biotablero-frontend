@@ -66,13 +66,6 @@ class Search extends Component {
 
   componentDidMount() {
     const { selectedAreaTypeId, selectedAreaId, history } = this.props;
-    const { hFPSelection } = this.state;
-    if (!hFPSelection) {
-      this.setState(prevState => ({
-        ...prevState,
-        hFPSelection: 'aTotal',
-      }));
-    }
     if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
