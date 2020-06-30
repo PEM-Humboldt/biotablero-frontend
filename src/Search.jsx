@@ -339,8 +339,7 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
-        console.log(layer.feature.properties, idCategory, tooltipLabel[idCategory]);
-        console.log(this.setSubLayerData('hfTimeline', tooltipLabel[idCategory]));
+        this.setSubLayerData('hfTimeline', tooltipLabel[idCategory]);
       } else {
         selectedSubLayer.resetStyle(layer);
       }
