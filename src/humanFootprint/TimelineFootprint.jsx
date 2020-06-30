@@ -105,7 +105,6 @@ class TimelineFootprint extends React.Component {
 
   render() {
     const {
-      setSelection,
       data,
       onClickGraphHandler,
     } = this.props;
@@ -148,7 +147,6 @@ class TimelineFootprint extends React.Component {
           <h2>
             <GraphLoader
               graphType="MultiLinesGraph"
-              onClickHandler={setSelection}
               colors={matchColor('hfTimeline')}
               data={this.processData(data)}
               markers={changeValues}
@@ -170,7 +168,6 @@ class TimelineFootprint extends React.Component {
 }
 
 TimelineFootprint.propTypes = {
-  setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
 };

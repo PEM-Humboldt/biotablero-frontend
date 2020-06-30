@@ -61,7 +61,6 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      hFPSelection: null,
     };
   }
 
@@ -726,12 +725,6 @@ class Search extends Component {
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
-                setHFPSelection={(text) => {
-                  this.setState(prevState => ({
-                    ...prevState,
-                    hFPSelection: text,
-                  }));
-                }}
                 handlersGeometry={[
                   this.shutOffAllLayers,
                   this.switchLayer,

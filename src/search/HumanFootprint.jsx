@@ -7,7 +7,6 @@ import TimelineFootprint from '../humanFootprint/TimelineFootprint';
 import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = ({
-  setSelection,
   currentHF,
   currentHFPValue,
   hfPersistence,
@@ -43,7 +42,6 @@ const HumanFootprint = ({
       },
       component: (
         <TimelineFootprint
-          setSelection={setSelection}
           data={hfTimeline}
           onClickGraphHandler={handlersGeometry[2]}
         />
@@ -79,7 +77,6 @@ const HumanFootprint = ({
 };
 
 HumanFootprint.propTypes = {
-  setSelection: PropTypes.func.isRequired,
   currentHF: PropTypes.array,
   currentHFPValue: PropTypes.number,
   hfPersistence: PropTypes.array,

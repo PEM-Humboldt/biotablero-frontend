@@ -145,6 +145,20 @@ class RestAPI {
   }
 
   /**
+   * Recover details for strategic ecosystems (SE) in the selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   * @param {Number} idSE id SE to request, f.e. CRQ
+   *
+   * @returns {Array} of objects
+   */
+  static requestSEDetails(idArea, idGeofence, idSE) {
+    return RestAPI.makeGetRequest(idSE
+      ? `${idArea}/${idGeofence}/se/${idSE}`
+      : `${idArea}/${idGeofence}/se`);
+  }
+
+  /**
    * Recover a list with all protected areas available in the database
    */
   static getAllProtectedAreas() {
