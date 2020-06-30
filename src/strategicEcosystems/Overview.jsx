@@ -6,6 +6,7 @@ import React from 'react';
 import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
 import GraphLoader from '../charts/GraphLoader';
+import RestAPI from '../api/RestAPI';
 import ShortInfo from '../commons/ShortInfo';
 
 /**
@@ -30,7 +31,46 @@ class Overview extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
+      coverage: [],
+      protectedAreas: [],
+      PAArea: 0,
+      strategicEcosistems: [],
+      SEArea: 0,
+      loadingSE: true,
     };
+  }
+
+  componentDidMount() {
+    const { geofenceId, areaId } = this.props;
+
+    RestAPI.requestCoverage(areaId, geofenceId)
+      .then((res) => {
+        this.setState({ coverage: setCoverageValues(res) });
+      })
+      .catch(() => {});
+
+    RestAPI.requestProtectedAreas(areaId, geofenceId)
+      .then((res) => {
+        if (Array.isArray(res) && res[0]) {
+          const totalPA = Number(res[0].area).toFixed(0);
+          const allPA = setPAValues(res.slice(1));
+          this.setState({ protectedAreas: allPA, PAArea: totalPA });
+        }
+      })
+      .catch(() => {});
+
+    RestAPI.requestStrategicEcosystems(areaId, geofenceId)
+      .then((res) => {
+        if (Array.isArray(res) && res[0]) {
+          const ecosystemsArea = Number(res[0].area).toFixed(0);
+          const allSE = res.slice(1);
+          this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        this.setState({ loadingSE: false });
+      });
   }
 
   toggleInfo = () => {
@@ -47,10 +87,12 @@ class Overview extends React.Component {
    * @returns {node} Component to be displayed
    */
   displaySE = (allSE, ecosystemsArea) => {
-    if (!allSE) return ('Cargando...');
+    const { loadingSE } = this.state;
+    if (loadingSE) return ('Cargando...');
     if (allSE.length <= 0) return ('Información no disponible');
 
     const { areaId, geofenceId, matchColor } = this.props;
+
     return (
       <EcosystemsBox
         areaId={areaId}
@@ -65,23 +107,16 @@ class Overview extends React.Component {
   render() {
     const {
       generalArea,
-      listSE,
-      listPA,
-      coverage,
       matchColor,
     } = this.props;
-    const { showInfoGraph } = this.state;
-
-    const coverageData = setCoverageValues(coverage);
-
-    // First element removed, which is the total area in PA
-    const totalPA = (Array.isArray(listPA) ? Number(listPA[0].area).toFixed(0) : 0);
-    const allPA = Array.isArray(listPA) ? setPAValues(listPA.slice(1)) : [];
-
-    const ecosystemsArea = ((Array.isArray(listSE) && listSE[0] && listSE[0].area)
-      ? Number(listSE[0].area).toFixed(0)
-      : 0);
-    const allSE = Array.isArray(listSE) && listSE.slice(1);
+    const {
+      showInfoGraph,
+      coverage,
+      protectedAreas,
+      PAArea,
+      strategicEcosistems,
+      SEArea,
+    } = this.state;
 
     return (
       <div className="graphcard">
@@ -122,17 +157,17 @@ class Overview extends React.Component {
           <div className="graficaeco">
             <GraphLoader
               graphType="SmallBarStackGraph"
-              data={coverageData}
+              data={coverage}
               units="ha"
               colors={matchColor('coverage')}
             />
           </div>
           <h4>
             Áreas protegidas
-            <b>{`${numberWithCommas(totalPA)} ha `}</b>
+            <b>{`${numberWithCommas(PAArea)} ha `}</b>
           </h4>
           <h5>
-            {`${getPercentage(totalPA, generalArea)} %`}
+            {`${getPercentage(PAArea, generalArea)} %`}
           </h5>
           <div className="graficaeco">
             <h6>
@@ -140,7 +175,7 @@ class Overview extends React.Component {
             </h6>
             <GraphLoader
               graphType="SmallBarStackGraph"
-              data={allPA}
+              data={protectedAreas}
               units="ha"
               colors={matchColor('pa')}
             />
@@ -148,10 +183,10 @@ class Overview extends React.Component {
           <div className="ecoest">
             <h4 className="minus20">
               Ecosistemas estratégicos
-              <b>{`${numberWithCommas(ecosystemsArea)} ha`}</b>
+              <b>{`${numberWithCommas(SEArea)} ha`}</b>
             </h4>
-            <h5 className="minusperc">{`${getPercentage(ecosystemsArea, generalArea)} %`}</h5>
-            {this.displaySE(allSE, ecosystemsArea)}
+            <h5 className="minusperc">{`${getPercentage(SEArea, generalArea)} %`}</h5>
+            {this.displaySE(strategicEcosistems, SEArea)}
           </div>
         </div>
       </div>
@@ -161,21 +196,13 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   generalArea: PropTypes.number,
-  listSE: PropTypes.array,
-  listPA: PropTypes.array,
-  coverage: PropTypes.array,
-  areaId: PropTypes.string,
-  geofenceId: PropTypes.string,
+  areaId: PropTypes.string.isRequired,
+  geofenceId: PropTypes.string.isRequired,
   matchColor: PropTypes.func,
 };
 
 Overview.defaultProps = {
   generalArea: 0,
-  listSE: null,
-  listPA: null,
-  coverage: null,
-  areaId: '',
-  geofenceId: '',
   matchColor: () => {},
 };
 

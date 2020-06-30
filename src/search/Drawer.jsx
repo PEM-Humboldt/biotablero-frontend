@@ -30,9 +30,6 @@ class Drawer extends React.Component {
     this.state = {
       value: 0,
       data: {
-        coverage: null,
-        areaSE: null,
-        areaPA: null,
         generalArea: 0,
         currentHF: [],
         currentHFPValue: 0,
@@ -60,60 +57,6 @@ class Drawer extends React.Component {
           data: {
             ...prevState.data,
             generalArea: Number(res.total_area),
-          },
-        }));
-      })
-      .catch(() => {
-      });
-
-
-    RestAPI.requestCoverage(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            coverage: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            coverage: false,
-          },
-        }));
-      });
-
-    RestAPI.requestProtectedAreas(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaPA: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaPA: false,
-          },
-        }));
-      });
-
-    RestAPI.requestStrategicEcosystems(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaSE: res,
           },
         }));
       })
@@ -190,9 +133,6 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       data: {
-        coverage,
-        areaPA,
-        areaSE,
         generalArea,
         currentHF,
         currentHFPValue,
@@ -269,9 +209,6 @@ class Drawer extends React.Component {
                 <div key="2">
                   <Overview
                     generalArea={Number(generalArea)}
-                    listSE={areaSE}
-                    listPA={areaPA}
-                    coverage={coverage}
                     areaId={area.id}
                     geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
                     matchColor={matchColor}
