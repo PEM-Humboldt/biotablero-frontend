@@ -14,19 +14,10 @@ class MultiLinesGraph extends React.Component {
 
   componentDidMount() {
     const { data, colors } = this.props;
-    this.setData(data, colors);
-  }
-
-  /**
-   * Add fields required in data by other components, including NIVO Line (field id)
-   *
-   * @param {Object} data API response to be rendered
-   * @param {Func} colors handle color to be asigned by data type
-   */
-  setData = (data, colors) => {
     const labels = {};
     const newData = data.map((obj) => {
       labels[obj.key] = obj.label;
+      // "id" field is required for NIVO Line component
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({
@@ -35,6 +26,11 @@ class MultiLinesGraph extends React.Component {
     });
   }
 
+  /**
+   * Organize customized tooltip for this graph
+   *
+   * @param {object} point datum selected in the graph
+   */
   getToolTip = (point) => {
     const {
       data: { xFormatted, yFormatted },
@@ -66,15 +62,26 @@ class MultiLinesGraph extends React.Component {
     );
   };
 
+  /**
+   * Set state values updated by user action with the data structure required
+   *
+   * @param {string} selectedId identify the value selected in data
+   */
   changeSelected = (selectedId) => {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
+      // "id" field is required for NIVO Line component
       if (obj.key === selectedId) return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({ data: transformedData, selectedId });
   };
 
+  /**
+   * Handle events to be updated when a line in the graph is selected
+   *
+   * @param {object} point retrieve the datum selected in the graph
+   */
   selectLine = (point) => {
     const { onClickGraphHandler } = this.props;
     this.changeSelected(point.serieId || point.id);
