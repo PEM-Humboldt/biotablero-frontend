@@ -72,6 +72,11 @@ class MultiLinesGraph extends React.Component {
     this.setState({ data: transformedData, selectedId });
   };
 
+  /**
+   * Handle events to be updated when a line in the graph is selected
+   *
+   * @param {object} point retrieve the datum selected in the graph
+   */
   selectLine = (point) => {
     const { onClickGraphHandler } = this.props;
     this.changeSelected(point.serieId || point.id);
