@@ -14,19 +14,10 @@ class MultiLinesGraph extends React.Component {
 
   componentDidMount() {
     const { data, colors } = this.props;
-    this.setData(data, colors);
-  }
-
-  /**
-   * Add fields required in data by other components, including NIVO Line (field id)
-   *
-   * @param {Object} data API response to be rendered
-   * @param {Func} colors handle color to be asigned by data type
-   */
-  setData = (data, colors) => {
     const labels = {};
     const newData = data.map((obj) => {
       labels[obj.key] = obj.label;
+      // "id" field is required in NIVO Line component
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({
