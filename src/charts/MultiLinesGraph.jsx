@@ -17,7 +17,7 @@ class MultiLinesGraph extends React.Component {
     const labels = {};
     const newData = data.map((obj) => {
       labels[obj.key] = obj.label;
-      // "id" field is required in NIVO Line component
+      // "id" field is required for NIVO Line component
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({
