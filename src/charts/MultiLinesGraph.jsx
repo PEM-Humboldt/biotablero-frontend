@@ -26,6 +26,11 @@ class MultiLinesGraph extends React.Component {
     });
   }
 
+  /**
+   * Organize customized tooltip for this graph
+   *
+   * @param {object} point datum selected in the graph
+   */
   getToolTip = (point) => {
     const {
       data: { xFormatted, yFormatted },
