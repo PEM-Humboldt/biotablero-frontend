@@ -57,9 +57,15 @@ class MultiLinesGraph extends React.Component {
     );
   };
 
+  /**
+   * Set state values updated by user action with the data structure required
+   *
+   * @param {string} selectedId identify the value selected in data
+   */
   changeSelected = (selectedId) => {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
+      // "id" field is required for NIVO Line component
       if (obj.key === selectedId) return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
