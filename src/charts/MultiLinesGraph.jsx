@@ -16,8 +16,9 @@ class MultiLinesGraph extends React.Component {
     const { data, colors } = this.props;
     const labels = {};
     const newData = data.map((obj) => {
-      labels[obj.id] = obj.label;
-      return { ...obj, color: colors(obj.id) };
+      labels[obj.key] = obj.label;
+      // "id" field is required for NIVO Line component
+      return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({
       data: newData,
@@ -25,6 +26,11 @@ class MultiLinesGraph extends React.Component {
     });
   }
 
+  /**
+   * Organize customized tooltip for this graph
+   *
+   * @param {object} point datum selected in the graph
+   */
   getToolTip = (point) => {
     const {
       data: { xFormatted, yFormatted },
@@ -56,15 +62,26 @@ class MultiLinesGraph extends React.Component {
     );
   };
 
+  /**
+   * Set state values updated by user action with the data structure required
+   *
+   * @param {string} selectedId identify the value selected in data
+   */
   changeSelected = (selectedId) => {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
-      if (obj.id === selectedId) return { ...obj, color: colors(`${obj.id}Sel`) };
-      return { ...obj, color: colors(obj.id) };
+      // "id" field is required for NIVO Line component
+      if (obj.key === selectedId) return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
+      return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({ data: transformedData, selectedId });
   };
 
+  /**
+   * Handle events to be updated when a line in the graph is selected
+   *
+   * @param {object} point retrieve the datum selected in the graph
+   */
   selectLine = (point) => {
     const { onClickGraphHandler } = this.props;
     this.changeSelected(point.serieId || point.id);
@@ -211,7 +228,7 @@ MultiLinesGraph.propTypes = {
   onClickGraphHandler: PropTypes.func.isRequired,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
+    key: PropTypes.string,
     data: PropTypes.arrayOf(PropTypes.shape({
       x: PropTypes.string,
       y: PropTypes.number,

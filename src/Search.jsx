@@ -28,6 +28,9 @@ const tooltipLabel = {
   estable_natural: 'Estable Natural',
   dinamica: 'Dinámica',
   estable_alta: 'Estable Alta',
+  paramo: 'Páramos',
+  wetland: 'Húmedales',
+  dryForest: 'Bosques secos',
 };
 
 
@@ -259,6 +262,7 @@ class Search extends Component {
               <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
           ).openPopup();
           return;
+        case 'hfTimeline':
         case 'persistenceHFP':
         case 'currentHFP':
           point.bindPopup(
@@ -394,6 +398,34 @@ class Search extends Component {
                       id: selectedArea.id,
                       active: true,
                       type: 'currentHFP',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
+      case 'hfTimeline':
+        return (
+          RestAPI.requestHFTimelineGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'hfTimeline',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (

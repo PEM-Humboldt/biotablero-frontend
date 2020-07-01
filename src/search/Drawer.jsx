@@ -156,7 +156,7 @@ class Drawer extends React.Component {
 
     RestAPI.requestHFTimeline()
       .then((res) => {
-        const aTotalData = res.find(o => o.id === 'aTotal').data;
+        const aTotalData = res.find(o => o.key === 'aTotal').data;
         const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
         const currentHFPValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
         this.setState(prevState => ({
