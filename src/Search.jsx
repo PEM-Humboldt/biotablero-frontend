@@ -99,32 +99,22 @@ class Search extends Component {
   };
 
   /**
-   * Set subLayerData state to handle detailed information
+   * Set in state all details for strategic ecosystems (SE) in the selected area
+   *
+   * @param {string} type data type required
+   * @param {string} idSE identifier for strategic ecosystem
    */
   setSubLayerData = (type, idSE) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    switch (type) {
-      /**
-       * Recover details for strategic ecosystems (SE) in the selected area
-       */
-      case 'hfTimeline':
-        RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
-          .then((value) => {
-            const res = typeof (value) === 'object' ? [{ ...value, type: idSE }] : value;
-            this.setState(prevState => ({
-              ...prevState,
-              subLayerData: res,
-            }));
-          })
-          .catch(() => {
-            this.setState(prevState => ({
-              ...prevState,
-              subLayerData: null,
-            }));
-          });
-        break;
-      default:
-        break;
+    if (type === 'hfTimeline') {
+      RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
+        .then((value) => {
+          const res = typeof (value) === 'object' ? [{ ...value, type: idSE }] : value;
+          this.setState(prevState => ({
+            ...prevState,
+            subLayerData: res,
+          }));
+        });
     }
   }
 
