@@ -110,7 +110,7 @@ class TimelineFootprint extends React.Component {
     const {
       data,
       onClickGraphHandler,
-      subLayerData,
+      timelineHFPArea,
     } = this.props;
     const { showInfoGraph } = this.state;
     return (
@@ -159,14 +159,14 @@ class TimelineFootprint extends React.Component {
               onClickGraphHandler={onClickGraphHandler}
             />
           </h2>
-          {subLayerData && subLayerData[0].type !== 'Total'
+          {timelineHFPArea && timelineHFPArea[0].type !== 'Total'
           && (
             <div>
               <h6>
-                {`${subLayerData[0].type} dentro de la unidad de consulta`}
+                {`${timelineHFPArea[0].type} dentro de la unidad de consulta`}
               </h6>
               <h5>
-                {`${numberWithCommas(Number(subLayerData[0].total_area).toFixed(2))} ha`}
+                {`${numberWithCommas(Number(timelineHFPArea[0].total_area).toFixed(2))} ha`}
               </h5>
             </div>
           )}
@@ -179,12 +179,12 @@ class TimelineFootprint extends React.Component {
 TimelineFootprint.propTypes = {
   data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
-  subLayerData: PropTypes.arrayOf(PropTypes.object),
+  timelineHFPArea: PropTypes.arrayOf(PropTypes.object),
 };
 
 TimelineFootprint.defaultProps = {
   onClickGraphHandler: () => {},
-  subLayerData: [],
+  timelineHFPArea: [],
 };
 
 export default TimelineFootprint;

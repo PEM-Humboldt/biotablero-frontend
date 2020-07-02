@@ -244,7 +244,7 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence,
-      subLayerData,
+      timelineHFPArea,
       colorSZH,
       classes,
       handlerBackButton,
@@ -302,7 +302,7 @@ class Drawer extends React.Component {
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
             handlersGeometry={handlersGeometry}
-            subLayerData={subLayerData}
+            timelineHFPArea={timelineHFPArea}
           />
         ),
       },
@@ -370,11 +370,11 @@ class Drawer extends React.Component {
           </TabContainer>
         )}
         {/* // TODO: This functionality should be implemented again
-          subLayerName && subLayerData && (
+          subLayerName && timelineHFPArea && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={subLayerData}
+              data={timelineHFPArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -394,7 +394,7 @@ Drawer.propTypes = {
   colorSZH: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  subLayerData: PropTypes.array,
+  timelineHFPArea: PropTypes.array,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
@@ -403,7 +403,7 @@ Drawer.propTypes = {
 Drawer.defaultProps = {
   colorSZH: [],
   geofence: { id: NaN, name: '' },
-  subLayerData: {},
+  timelineHFPArea: {},
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},

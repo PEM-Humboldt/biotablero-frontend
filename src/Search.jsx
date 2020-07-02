@@ -40,7 +40,6 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayer: null,
-      subLayerData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -62,6 +61,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      timelineHFPArea: null,
     };
   }
 
@@ -99,7 +99,7 @@ class Search extends Component {
   };
 
   /**
-   * Set in state all details for strategic ecosystems (SE) in the selected area
+   * Set in state timelineHFP area details for strategic ecosystems (SE) in the selected area
    *
    * @param {string} type data type required
    * @param {string} idSE identifier for strategic ecosystem
@@ -112,9 +112,14 @@ class Search extends Component {
           const res = typeof (value) === 'object' ? [{ ...value, type: idSE }] : value;
           this.setState(prevState => ({
             ...prevState,
-            subLayerData: res,
+            timelineHFPArea: res,
           }));
         });
+    } else {
+      this.setState(prevState => ({
+        ...prevState,
+        timelineHFPArea: null,
+      }));
     }
   }
 
@@ -330,6 +335,7 @@ class Search extends Component {
           fillOpacity: 1,
         });
         switch (idCategory) {
+          case 'aTotal':
           case 'paramo':
           case 'wetland':
           case 'dryForest':
@@ -638,7 +644,7 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      subLayerData,
+      timelineHFPArea,
       loadingModal,
       colors,
       colorSZH,
@@ -742,7 +748,7 @@ class Search extends Component {
               <Drawer
                 area={selectedAreaType}
                 colorSZH={colorSZH}
-                subLayerData={subLayerData}
+                timelineHFPArea={timelineHFPArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
