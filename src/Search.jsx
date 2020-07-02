@@ -329,7 +329,15 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
-        this.setTimelineHFPData('hfTimeline', tooltipLabel[idCategory]);
+        switch (idCategory) {
+          case 'paramo':
+          case 'wetland':
+          case 'dryForest':
+            this.setTimelineHFPData('hfTimeline', tooltipLabel[idCategory]);
+            break;
+          default:
+            break;
+        }
       } else {
         selectedSubLayer.resetStyle(layer);
       }
