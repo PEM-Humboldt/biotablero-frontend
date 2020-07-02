@@ -369,7 +369,8 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { subLayerName && subLayerData && (
+        {/* // TODO: This functionality should be implemented again
+          subLayerName && subLayerData && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
@@ -381,7 +382,7 @@ class Drawer extends React.Component {
               units="ha"
             />
           </div>
-        )}
+        ) */}
       </div>
     );
   }
