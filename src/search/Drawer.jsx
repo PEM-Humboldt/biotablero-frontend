@@ -11,7 +11,6 @@ import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
 import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
-import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import Accordion from '../commons/Accordion';
 
@@ -245,7 +244,6 @@ class Drawer extends React.Component {
     const {
       geofence,
       timelineHFPArea,
-      colorSZH,
       classes,
       handlerBackButton,
       subLayerName,
@@ -391,7 +389,6 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  colorSZH: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   timelineHFPArea: PropTypes.array,
@@ -401,7 +398,6 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  colorSZH: [],
   geofence: { id: NaN, name: '' },
   timelineHFPArea: {},
   subLayerName: '',

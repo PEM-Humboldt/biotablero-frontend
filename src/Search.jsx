@@ -50,7 +50,6 @@ class Search extends Component {
         '#667521',
         '#75680f',
         '#7b6126'],
-      colorSZH: ['#345b6b'],
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -647,7 +646,6 @@ class Search extends Component {
       timelineHFPArea,
       loadingModal,
       colors,
-      colorSZH,
       layers,
       connError,
       dataError,
@@ -747,7 +745,6 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                colorSZH={colorSZH}
                 timelineHFPArea={timelineHFPArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
