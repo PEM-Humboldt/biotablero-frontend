@@ -104,7 +104,7 @@ class Search extends Component {
    * @param {string} type data type required
    * @param {string} idSE identifier for strategic ecosystem
    */
-  setSubLayerData = (type, idSE) => {
+  setTimelineHFPData = (type, idSE) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
     if (type === 'hfTimeline') {
       RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
@@ -329,7 +329,7 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
-        this.setSubLayerData('hfTimeline', tooltipLabel[idCategory]);
+        this.setTimelineHFPData('hfTimeline', tooltipLabel[idCategory]);
       } else {
         selectedSubLayer.resetStyle(layer);
       }
