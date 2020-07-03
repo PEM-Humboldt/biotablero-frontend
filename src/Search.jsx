@@ -106,7 +106,7 @@ class Search extends Component {
   setTimelineHFPData = (type, idSE) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
     if (type === 'hfTimeline') {
-      RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
+      RestAPI.requestSEDetail(selectedAreaTypeId, selectedAreaId, idSE)
         .then((value) => {
           const res = typeof (value) === 'object' ? [{ ...value, type: idSE }] : value;
           this.setState(prevState => ({
