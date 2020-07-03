@@ -391,7 +391,7 @@ Drawer.propTypes = {
   classes: PropTypes.object.isRequired,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  timelineHFPArea: PropTypes.array,
+  timelineHFPArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),

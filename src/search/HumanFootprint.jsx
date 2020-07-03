@@ -84,7 +84,7 @@ HumanFootprint.propTypes = {
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
-  timelineHFPArea: PropTypes.arrayOf(PropTypes.object),
+  timelineHFPArea: PropTypes.object,
 };
 
 HumanFootprint.defaultProps = {
@@ -93,7 +93,7 @@ HumanFootprint.defaultProps = {
   hfPersistence: [],
   hfTimeline: [],
   handlersGeometry: [],
-  timelineHFPArea: [],
+  timelineHFPArea: {},
 };
 
 export default HumanFootprint;
