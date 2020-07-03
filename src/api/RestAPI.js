@@ -112,7 +112,9 @@ class RestAPI {
    * @param {Number} idSE id geofence to request details
    */
   static requestSEDetail(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
+    return RestAPI.makeGetRequest(idSE
+      ? `${idArea}/${idGeofence}/se/${idSE}`
+      : `${idArea}/${idGeofence}/se`);
   }
 
   /**
@@ -142,20 +144,6 @@ class RestAPI {
    */
   static requestGeofenceDetails(idArea, idGeofence) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
-  }
-
-  /**
-   * Recover details for strategic ecosystems (SE) in the selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   * @param {Number} idSE id SE to request, f.e. CRQ
-   *
-   * @returns {Array} of objects
-   */
-  static requestSEDetails(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(idSE
-      ? `${idArea}/${idGeofence}/se/${idSE}`
-      : `${idArea}/${idGeofence}/se`);
   }
 
   /**
