@@ -109,7 +109,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestSEDetail(area.id, searchId)
+    RestAPI.requestSEDetails(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
