@@ -73,15 +73,6 @@ class RestAPI {
   }
 
   /**
-   * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
-   */
-  static requestStrategicEcosystems(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
-  }
-
-  /**
    * Recover the national area by selected strategic ecosystems
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
@@ -106,7 +97,7 @@ class RestAPI {
   }
 
   /**
-   * Recover details, like the national percentage, according to the selected strategic ecosystems
+   * Recover the strategic ecosystems values, according to the selected strategic ecosystems
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
    * @param {Number} idSE id geofence to request details
