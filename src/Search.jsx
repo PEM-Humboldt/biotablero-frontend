@@ -105,19 +105,13 @@ class Search extends Component {
    */
   setTimelineHFData = (type, idSE) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    if (type === 'hfTimeline') {
-      RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
-        .then((value) => {
-          const res = { ...value, type: idSE };
-          this.setState({
-            timelineHFArea: res,
-          });
+    RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
+      .then((value) => {
+        const res = { ...value, type: idSE };
+        this.setState({
+          timelineHFArea: res,
         });
-    } else {
-      this.setState({
-        timelineHFArea: null,
       });
-    }
   }
 
   /**
