@@ -105,7 +105,7 @@ class Search extends Component {
    */
   setTimelineHFData = (type, idSE) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
+    RestAPI.requestSEDetailInEA(selectedAreaTypeId, selectedAreaId, idSE)
       .then((value) => {
         const res = { ...value, type: idSE };
         this.setState({
