@@ -109,7 +109,7 @@ class RestAPI {
    * Recover the strategic ecosystems values according to the selected strategic ecosystems
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} idSE id strategic ecosystem to request details
    */
   static requestSEDetails(idArea, idGeofence, idSE) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
