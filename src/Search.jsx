@@ -326,13 +326,15 @@ class Search extends Component {
           fillOpacity: 1,
         });
         switch (idCategory) {
-          case 'aTotal':
           case 'paramo':
           case 'wetland':
           case 'dryForest':
             this.setTimelineHFData('hfTimeline', tooltipLabel[idCategory]);
             break;
           default:
+            this.setState({
+              timelineHFArea: null,
+            });
             break;
         }
       } else {
