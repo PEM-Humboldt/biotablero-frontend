@@ -159,8 +159,7 @@ class TimelineFootprint extends React.Component {
               onClickGraphHandler={onClickGraphHandler}
             />
           </h2>
-          {timelineHFArea && timelineHFArea.type !== 'Total'
-          && (
+          {timelineHFArea && timelineHFArea.type !== 'Total' && (
             <div>
               <h6>
                 {`${timelineHFArea.type} dentro de la unidad de consulta`}
