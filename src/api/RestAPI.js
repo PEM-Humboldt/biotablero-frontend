@@ -4,6 +4,9 @@ import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
 import tmpHFPersistence from './tmp_hf_persistence.json';
 import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
+import tmpHFTDryForestGeo from './tmp_hf_timeline_dryForest_geo.json';
+import tmpHFTParamoGeo from './tmp_hf_timeline_paramo_geo.json';
+import tmpHFTWetlandGeo from './tmp_hf_timeline_wetland_geo.json';
 import tmpHFTimelineGeo from './tmp_hf_timeline_geo.json';
 
 class RestAPI {
