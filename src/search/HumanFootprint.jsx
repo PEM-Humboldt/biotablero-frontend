@@ -12,7 +12,7 @@ const HumanFootprint = ({
   hfPersistence,
   hfTimeline,
   handlersGeometry,
-  timelineHFPArea,
+  timelineHFArea,
 }) => {
   const componentsArray = [
     {
@@ -45,7 +45,7 @@ const HumanFootprint = ({
         <TimelineFootprint
           data={hfTimeline}
           onClickGraphHandler={handlersGeometry[2]}
-          timelineHFPArea={timelineHFPArea}
+          timelineHFArea={timelineHFArea}
         />
       ),
     },
@@ -84,7 +84,7 @@ HumanFootprint.propTypes = {
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
-  timelineHFPArea: PropTypes.object,
+  timelineHFArea: PropTypes.object,
 };
 
 HumanFootprint.defaultProps = {
@@ -93,7 +93,7 @@ HumanFootprint.defaultProps = {
   hfPersistence: [],
   hfTimeline: [],
   handlersGeometry: [],
-  timelineHFPArea: {},
+  timelineHFArea: {},
 };
 
 export default HumanFootprint;
