@@ -109,7 +109,7 @@ class Drawer extends React.Component {
         }));
       });
 
-    RestAPI.requestSEDetails(area.id, searchId)
+    RestAPI.requestStrategicEcosystems(area.id, searchId)
       .then((res) => {
         this.setState(prevState => ({
           ...prevState,
