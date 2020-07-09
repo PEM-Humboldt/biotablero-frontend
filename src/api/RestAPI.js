@@ -298,6 +298,28 @@ class RestAPI {
   }
 
   /**
+   * Get the geometry associated for the footprint timeline in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestHFTimelineGeometryBySE(seType) {
+    switch (seType) {
+      case 'dryForest':
+        return Promise.resolve(tmpHFTDryForestGeo);
+      case 'paramo':
+        return Promise.resolve(tmpHFTParamoGeo);
+      case 'wetland':
+        return Promise.resolve(tmpHFTWetlandGeo);
+      default:
+        return Promise.resolve(tmpHFTimelineGeo);
+    }
+  }
+
+  /**
    * Get the geometry associated for the footprint persistence in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
