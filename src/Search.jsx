@@ -109,16 +109,14 @@ class Search extends Component {
       RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
         .then((value) => {
           const res = { ...value, type: idSE };
-          this.setState(prevState => ({
-            ...prevState,
+          this.setState({
             timelineHFArea: res,
-          }));
+          });
         });
     } else {
-      this.setState(prevState => ({
-        ...prevState,
+      this.setState({
         timelineHFArea: null,
-      }));
+      });
     }
   }
 
