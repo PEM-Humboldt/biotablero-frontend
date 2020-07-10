@@ -111,7 +111,7 @@ class RestAPI {
    * @param {Number} idGeofence id geofence to request
    * @param {Number} seType strategic ecosystem type to request details
    */
-  static requestSEDetailInEA(idArea, idGeofence, seType) {
+  static requestSEDetailInArea(idArea, idGeofence, seType) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}`);
   }
 
