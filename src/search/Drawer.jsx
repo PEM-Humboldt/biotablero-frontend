@@ -11,7 +11,6 @@ import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
 import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
-import RenderGraph from '../charts/RenderGraph';
 import TabContainer from '../commons/TabContainer';
 import Accordion from '../commons/Accordion';
 
@@ -244,14 +243,12 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence,
-      subLayerData,
-      colorSZH,
+      timelineHFArea,
       classes,
       handlerBackButton,
       subLayerName,
       area,
       matchColor,
-      setHFPSelection,
       handlersGeometry,
     } = this.props;
     const {
@@ -298,12 +295,12 @@ class Drawer extends React.Component {
         },
         component: (
           <HumanFootprint
-            setSelection={setHFPSelection}
             currentHF={currentHF}
             currentHFPValue={currentHFPValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
             handlersGeometry={handlersGeometry}
+            timelineHFArea={timelineHFArea}
           />
         ),
       },
@@ -370,11 +367,12 @@ class Drawer extends React.Component {
             ]}
           </TabContainer>
         )}
-        { subLayerName && subLayerData && (
+        {/* // TODO: This functionality should be implemented again
+          subLayerName && timelineHFArea && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={subLayerData}
+              data={timelineHFArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -382,7 +380,7 @@ class Drawer extends React.Component {
               units="ha"
             />
           </div>
-        )}
+        ) */}
       </div>
     );
   }
@@ -391,20 +389,17 @@ class Drawer extends React.Component {
 Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
-  colorSZH: PropTypes.array,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  subLayerData: PropTypes.array,
+  timelineHFArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
-  setHFPSelection: PropTypes.func.isRequired,
   handlersGeometry: PropTypes.arrayOf(PropTypes.func),
 };
 
 Drawer.defaultProps = {
-  colorSZH: [],
   geofence: { id: NaN, name: '' },
-  subLayerData: {},
+  timelineHFArea: {},
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},

@@ -28,9 +28,10 @@ const tooltipLabel = {
   estable_natural: 'Estable Natural',
   dinamica: 'Dinámica',
   estable_alta: 'Estable Alta',
-  paramo: 'Páramos',
-  wetland: 'Húmedales',
-  dryForest: 'Bosques secos',
+  aTotal: 'Total',
+  paramo: 'Páramo',
+  wetland: 'Humedal',
+  dryForest: 'Bosque Seco Tropical',
 };
 
 
@@ -39,7 +40,6 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayer: null,
-      subLayerData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -50,7 +50,6 @@ class Search extends Component {
         '#667521',
         '#75680f',
         '#7b6126'],
-      colorSZH: ['#345b6b'],
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -61,19 +60,12 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      hFPSelection: null,
+      timelineHFArea: null,
     };
   }
 
   componentDidMount() {
     const { selectedAreaTypeId, selectedAreaId, history } = this.props;
-    const { hFPSelection } = this.state;
-    if (!hFPSelection) {
-      this.setState(prevState => ({
-        ...prevState,
-        hFPSelection: 'aTotal',
-      }));
-    }
     if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
@@ -104,6 +96,22 @@ class Search extends Component {
       });
     }
   };
+
+  /**
+   * Set in state timelineHFP area details for strategic ecosystems (SE) in the selected area
+   *
+   * @param {string} seType type of strategic ecosystem to request
+   */
+  setTimelineHFData = (seType) => {
+    const { selectedAreaTypeId, selectedAreaId } = this.props;
+    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
+      .then((value) => {
+        const res = { ...value, type: seType };
+        this.setState({
+          timelineHFArea: res,
+        });
+      });
+  }
 
   /**
    * Recover all geofences by default available in the
@@ -316,6 +324,18 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
+        switch (idCategory) {
+          case 'paramo':
+          case 'wetland':
+          case 'dryForest':
+            this.setTimelineHFData(tooltipLabel[idCategory]);
+            break;
+          default:
+            this.setState({
+              timelineHFArea: null,
+            });
+            break;
+        }
       } else {
         selectedSubLayer.resetStyle(layer);
       }
@@ -616,10 +636,9 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      subLayerData,
+      timelineHFArea,
       loadingModal,
       colors,
-      colorSZH,
       layers,
       connError,
       dataError,
@@ -719,19 +738,12 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                colorSZH={colorSZH}
-                subLayerData={subLayerData}
+                timelineHFArea={timelineHFArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
-                setHFPSelection={(text) => {
-                  this.setState(prevState => ({
-                    ...prevState,
-                    hFPSelection: text,
-                  }));
-                }}
                 handlersGeometry={[
                   this.shutOffAllLayers,
                   this.switchLayer,

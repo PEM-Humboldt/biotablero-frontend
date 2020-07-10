@@ -60,6 +60,8 @@ const changeValues = [
   },
 ];
 
+const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
 class TimelineFootprint extends React.Component {
   constructor(props) {
     super(props);
@@ -79,13 +81,14 @@ class TimelineFootprint extends React.Component {
    * @param {string} type data identifier
    *
    * @returns {string} label to be used for tooltips, legends, etc.
+   * Max. length = 16 characters
    */
   getLabel = (type) => {
     switch (type) {
-      case 'paramo': return 'Páramos';
-      case 'wetland': return 'Húmedales';
-      case 'dryForest': return 'Bosques secos';
-      default: return 'Área Total';
+      case 'paramo': return 'Páramo';
+      case 'wetland': return 'Humedal';
+      case 'dryForest': return 'Bosque seco';
+      default: return 'Área total';
     }
   };
 
@@ -105,9 +108,9 @@ class TimelineFootprint extends React.Component {
 
   render() {
     const {
-      setSelection,
       data,
       onClickGraphHandler,
+      timelineHFArea,
     } = this.props;
     const { showInfoGraph } = this.state;
     return (
@@ -148,7 +151,6 @@ class TimelineFootprint extends React.Component {
           <h2>
             <GraphLoader
               graphType="MultiLinesGraph"
-              onClickHandler={setSelection}
               colors={matchColor('hfTimeline')}
               data={this.processData(data)}
               markers={changeValues}
@@ -157,12 +159,16 @@ class TimelineFootprint extends React.Component {
               onClickGraphHandler={onClickGraphHandler}
             />
           </h2>
-          <h6>
-            Área del ecosistema dentro de la unidad de consulta
-          </h6>
-          <h5>
-            332 ha
-          </h5>
+          {timelineHFArea && timelineHFArea.type !== 'Total' && (
+            <div>
+              <h6>
+                {`${timelineHFArea.type} dentro de la unidad de consulta`}
+              </h6>
+              <h5>
+                {`${numberWithCommas(Number(timelineHFArea.total_area).toFixed(2))} ha`}
+              </h5>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -170,13 +176,14 @@ class TimelineFootprint extends React.Component {
 }
 
 TimelineFootprint.propTypes = {
-  setSelection: PropTypes.func.isRequired,
   data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
+  timelineHFArea: PropTypes.object,
 };
 
 TimelineFootprint.defaultProps = {
   onClickGraphHandler: () => {},
+  timelineHFArea: {},
 };
 
 export default TimelineFootprint;

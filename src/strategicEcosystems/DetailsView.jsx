@@ -90,7 +90,7 @@ class DetailsView extends Component {
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSEDetail(areaId, geofenceId, name)
+      RestAPI.requestSEDetailInArea(areaId, geofenceId, name)
         .then((res) => {
           this.setState(prevState => ({
             ...prevState,
