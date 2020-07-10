@@ -106,7 +106,7 @@ class RestAPI {
   }
 
   /**
-   * Recover the strategic ecosystems values in the environmental authority selected
+   * Recover the strategic ecosystems values in the area selected
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
    * @param {Number} seType strategic ecosystem type to request details
