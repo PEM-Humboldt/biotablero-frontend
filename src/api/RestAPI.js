@@ -119,20 +119,20 @@ class RestAPI {
    * Recover the coverage by selected strategic ecosystems and geofence
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSECoverageByGeofence(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/coverage`);
+  static requestSECoverageByGeofence(idArea, idGeofence, seType) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/coverage`);
   }
 
   /**
    * Recover the protected area by selected strategic ecosystems and geofence
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSEPAByGeofence(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/pa`);
+  static requestSEPAByGeofence(idArea, idGeofence, seType) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/pa`);
   }
 
   /**
