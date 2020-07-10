@@ -100,13 +100,13 @@ class Search extends Component {
   /**
    * Set in state timelineHFP area details for strategic ecosystems (SE) in the selected area
    *
-   * @param {string} idSE identifier for strategic ecosystem
+   * @param {string} seType type of strategic ecosystem to request
    */
-  setTimelineHFData = (idSE) => {
+  setTimelineHFData = (seType) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    RestAPI.requestSEDetailInEA(selectedAreaTypeId, selectedAreaId, idSE)
+    RestAPI.requestSEDetailInEA(selectedAreaTypeId, selectedAreaId, seType)
       .then((value) => {
-        const res = { ...value, type: idSE };
+        const res = { ...value, type: seType };
         this.setState({
           timelineHFArea: res,
         });
