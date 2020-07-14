@@ -19,16 +19,20 @@ class TabContainer extends React.Component {
    * Function to change visible content on tabs click
    */
   changeTab = (event, value) => {
+    const { handlerShutOffAllLayers } = this.props;
     this.setState({ value });
+    if (value === 0 || value === 2) {
+      handlerShutOffAllLayers();
+    }
   };
 
   render() {
     const {
-      classes, children, titles, tabClasses,
+      children, titles, tabClasses,
     } = this.props;
     const { value } = this.state;
     return (
-      <div className={classes.root}>
+      <div>
         <AppBar position="static" color="default">
           <Tabs
             value={value}
@@ -66,17 +70,18 @@ class TabContainer extends React.Component {
 TabContainer.propTypes = {
   // Array of elements to print in each tab content (order should match titles order)
   children: PropTypes.node.isRequired,
-  classes: PropTypes.object.isRequired,
   // Array of objects with info for each tab title (attributes: label, icon)
   initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
   // Extra clases for 'Tab' component
   tabClasses: PropTypes.string,
+  handlerShutOffAllLayers: PropTypes.func,
 };
 
 TabContainer.defaultProps = {
   tabClasses: '',
   initialSelectedIndex: 1,
+  handlerShutOffAllLayers: () => {},
 };
 
 export default TabContainer;
