@@ -10,7 +10,7 @@ class Landscape extends React.Component {
     super(props);
     this.state = {
       expandedLevel1: 'fc',
-      expandedLevel2: 'currentHFP',
+      expandedLevel2: 'currentHF',
     };
   }
 
@@ -33,7 +33,7 @@ class Landscape extends React.Component {
     switch (level) {
       case '1':
         this.setState({ expandedLevel1: expandedTab });
-        if (expandedTab === 'hfp') {
+        if (expandedTab === 'hf') {
           handlerSwitchLayer(expandedLevel2);
         } else {
           handlerSwitchLayer(expandedTab);
@@ -58,7 +58,7 @@ class Landscape extends React.Component {
       biomas,
       distritos,
       currentHF,
-      currentHFPValue,
+      currentHFValue,
       hfPersistence,
       hfTimeline,
       areaName,
@@ -86,7 +86,7 @@ class Landscape extends React.Component {
       },
       {
         label: {
-          id: 'hfp',
+          id: 'hf',
           name: 'Huella humana',
           disabled: false,
           expandIcon: <AddIcon />,
@@ -96,7 +96,7 @@ class Landscape extends React.Component {
         component: (
           <HumanFootprint
             currentHF={currentHF}
-            currentHFPValue={currentHFPValue}
+            currentHFValue={currentHFValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
             timelineHFArea={timelineHFArea}
@@ -123,7 +123,7 @@ Landscape.propTypes = {
   biomas: PropTypes.array,
   distritos: PropTypes.array,
   currentHF: PropTypes.array,
-  currentHFPValue: PropTypes.number,
+  currentHFValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   areaName: PropTypes.string,
@@ -138,7 +138,7 @@ Landscape.defaultProps = {
   biomas: [],
   distritos: [],
   currentHF: [],
-  currentHFPValue: 0,
+  currentHFValue: 0,
   hfPersistence: [],
   hfTimeline: [],
   areaName: '',

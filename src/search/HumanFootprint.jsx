@@ -9,7 +9,7 @@ import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 const HumanFootprint = (props) => {
   const {
     currentHF,
-    currentHFPValue,
+    currentHFValue,
     hfPersistence,
     hfTimeline,
     timelineHFArea,
@@ -20,7 +20,7 @@ const HumanFootprint = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'currentHFP',
+        id: 'currentHF',
         name: 'Actual',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -30,7 +30,7 @@ const HumanFootprint = (props) => {
       component: (
         <CurrentFootprint
           data={currentHF}
-          currentHFPValue={currentHFPValue}
+          currentHFValue={currentHFValue}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -54,7 +54,7 @@ const HumanFootprint = (props) => {
     },
     {
       label: {
-        id: 'persistenceHFP',
+        id: 'persistenceHF',
         name: 'Persistencia',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -84,7 +84,7 @@ const HumanFootprint = (props) => {
 
 HumanFootprint.propTypes = {
   currentHF: PropTypes.array,
-  currentHFPValue: PropTypes.number,
+  currentHFValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   timelineHFArea: PropTypes.object,
@@ -94,7 +94,7 @@ HumanFootprint.propTypes = {
 
 HumanFootprint.defaultProps = {
   currentHF: [],
-  currentHFPValue: 0,
+  currentHFValue: 0,
   hfPersistence: [],
   hfTimeline: [],
   timelineHFArea: {},

@@ -98,7 +98,7 @@ class Search extends Component {
   };
 
   /**
-   * Set in state timelineHFP area details for strategic ecosystems (SE) in the selected area
+   * Set in state timelineHF area details for strategic ecosystems (SE) in the selected area
    *
    * @param {string} seType type of strategic ecosystem to request
    */
@@ -271,8 +271,8 @@ class Search extends Component {
           ).openPopup();
           return;
         case 'hfTimeline':
-        case 'persistenceHFP':
-        case 'currentHFP':
+        case 'persistenceHF':
+        case 'currentHF':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
             <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
@@ -404,7 +404,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'currentHFP':
+      case 'currentHF':
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
@@ -417,7 +417,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'currentHFP',
+                      type: 'currentHF',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -460,7 +460,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'persistenceHFP':
+      case 'persistenceHF':
         return (
           RestAPI.requestHFPersistenceGeometry()
             .then((res) => {
@@ -473,7 +473,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'persistenceHFP',
+                      type: 'persistenceHF',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (

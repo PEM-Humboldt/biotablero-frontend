@@ -25,7 +25,7 @@ class CurrentFootprint extends React.Component {
   render() {
     const {
       data,
-      currentHFPValue,
+      currentHFValue,
       onClickGraphHandler,
     } = this.props;
     const { showInfoGraph } = this.state;
@@ -62,7 +62,7 @@ class CurrentFootprint extends React.Component {
             Huella humana actual
           </h6>
           <h5>
-            {currentHFPValue}
+            {currentHFValue}
           </h5>
         </div>
         <h6>
@@ -78,7 +78,7 @@ class CurrentFootprint extends React.Component {
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
-            colors={matchColor('currentHFP')}
+            colors={matchColor('currentHF')}
             padding={0.25}
             onClickGraphHandler={onClickGraphHandler}
           />
@@ -90,12 +90,12 @@ class CurrentFootprint extends React.Component {
 
 CurrentFootprint.propTypes = {
   data: PropTypes.array.isRequired,
-  currentHFPValue: PropTypes.number,
+  currentHFValue: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
 };
 
 CurrentFootprint.defaultProps = {
-  currentHFPValue: 0,
+  currentHFValue: 0,
   onClickGraphHandler: () => {},
 };
 

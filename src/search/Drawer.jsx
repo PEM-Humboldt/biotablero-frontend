@@ -34,7 +34,7 @@ class Drawer extends React.Component {
         areaPA: null,
         generalArea: 0,
         currentHF: [],
-        currentHFPValue: 0,
+        currentHFValue: 0,
         hfPersistence: [],
         hfTimeline: [],
       },
@@ -154,13 +154,13 @@ class Drawer extends React.Component {
       .then((res) => {
         const aTotalData = res.find(o => o.key === 'aTotal').data;
         const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
-        const currentHFPValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
+        const currentHFValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
             hfTimeline: res,
-            currentHFPValue,
+            currentHFValue,
           },
         }));
       })
@@ -259,7 +259,7 @@ class Drawer extends React.Component {
         areaSE,
         generalArea,
         currentHF,
-        currentHFPValue,
+        currentHFValue,
         hfPersistence,
         hfTimeline,
       },
@@ -308,7 +308,7 @@ class Drawer extends React.Component {
                 biomas={biomas}
                 distritos={distritos}
                 currentHF={currentHF}
-                currentHFPValue={currentHFPValue}
+                currentHFValue={currentHFValue}
                 hfPersistence={hfPersistence}
                 hfTimeline={hfTimeline}
                 areaName={area.name}
