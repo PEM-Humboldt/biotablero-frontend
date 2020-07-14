@@ -33,7 +33,7 @@ class Drawer extends React.Component {
         areaSE: null,
         areaPA: null,
         generalArea: 0,
-        currentHF: [],
+        hfCurrent: [],
         hfCurrentValue: 0,
         hfPersistence: [],
         hfTimeline: [],
@@ -124,7 +124,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            currentHF: res,
+            hfCurrent: res,
           },
         }));
       })
@@ -258,7 +258,7 @@ class Drawer extends React.Component {
         areaPA,
         areaSE,
         generalArea,
-        currentHF,
+        hfCurrent,
         hfCurrentValue,
         hfPersistence,
         hfTimeline,
@@ -307,7 +307,7 @@ class Drawer extends React.Component {
                 fc={fc}
                 biomas={biomas}
                 distritos={distritos}
-                currentHF={currentHF}
+                hfCurrent={hfCurrent}
                 hfCurrentValue={hfCurrentValue}
                 hfPersistence={hfPersistence}
                 hfTimeline={hfTimeline}

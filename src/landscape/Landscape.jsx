@@ -10,7 +10,7 @@ class Landscape extends React.Component {
     super(props);
     this.state = {
       expandedLevel1: 'fc',
-      expandedLevel2: 'currentHF',
+      expandedLevel2: 'hfCurrent',
     };
   }
 
@@ -57,7 +57,7 @@ class Landscape extends React.Component {
       fc,
       biomas,
       distritos,
-      currentHF,
+      hfCurrent,
       hfCurrentValue,
       hfPersistence,
       hfTimeline,
@@ -95,7 +95,7 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            currentHF={currentHF}
+            hfCurrent={hfCurrent}
             hfCurrentValue={hfCurrentValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
@@ -122,7 +122,7 @@ Landscape.propTypes = {
   fc: PropTypes.array,
   biomas: PropTypes.array,
   distritos: PropTypes.array,
-  currentHF: PropTypes.array,
+  hfCurrent: PropTypes.array,
   hfCurrentValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
@@ -137,7 +137,7 @@ Landscape.defaultProps = {
   fc: [],
   biomas: [],
   distritos: [],
-  currentHF: [],
+  hfCurrent: [],
   hfCurrentValue: 0,
   hfPersistence: [],
   hfTimeline: [],

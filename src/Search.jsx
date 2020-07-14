@@ -271,8 +271,8 @@ class Search extends Component {
           ).openPopup();
           return;
         case 'hfTimeline':
-        case 'persistenceHF':
-        case 'currentHF':
+        case 'hfPersistence':
+        case 'hfCurrent':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
             <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
@@ -404,7 +404,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'currentHF':
+      case 'hfCurrent':
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
@@ -417,7 +417,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'currentHF',
+                      type: 'hfCurrent',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -460,7 +460,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'persistenceHF':
+      case 'hfPersistence':
         return (
           RestAPI.requestHFPersistenceGeometry()
             .then((res) => {
@@ -473,7 +473,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'persistenceHF',
+                      type: 'hfPersistence',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (

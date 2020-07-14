@@ -78,7 +78,7 @@ class CurrentFootprint extends React.Component {
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
-            colors={matchColor('currentHF')}
+            colors={matchColor('hfCurrent')}
             padding={0.25}
             onClickGraphHandler={onClickGraphHandler}
           />

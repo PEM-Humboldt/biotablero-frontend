@@ -72,7 +72,7 @@ class PersistenceFootprint extends React.Component {
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
-            colors={matchColor('persistenceHF')}
+            colors={matchColor('hfPersistence')}
             padding={0.25}
             onClickGraphHandler={onClickGraphHandler}
           />
