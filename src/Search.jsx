@@ -744,11 +744,9 @@ class Search extends Component {
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
-                handlersGeometry={[
-                  this.shutOffAllLayers,
-                  this.switchLayer,
-                  this.clickOnGraph,
-                ]}
+                handlerShutOffAllLayers={this.shutOffAllLayers}
+                handlerSwitchLayer={this.switchLayer}
+                handlerClickOnGraph={this.clickOnGraph}
               />
             )}
             { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (

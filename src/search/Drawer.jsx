@@ -5,14 +5,11 @@ import BackIcon from '@material-ui/icons/FirstPage';
 import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
-import AddIcon from '@material-ui/icons/Add';
 
 import RestAPI from '../api/RestAPI';
 import Overview from '../strategicEcosystems/Overview';
-import CompensationFactor from './CompensationFactor';
-import HumanFootprint from './HumanFootprint';
 import TabContainer from '../commons/TabContainer';
-import Accordion from '../commons/Accordion';
+import Landscape from '../landscape/Landscape';
 
 const styles = () => ({
   root: {
@@ -244,12 +241,13 @@ class Drawer extends React.Component {
     const {
       geofence,
       timelineHFArea,
-      classes,
       handlerBackButton,
       subLayerName,
       area,
       matchColor,
-      handlersGeometry,
+      handlerShutOffAllLayers,
+      handlerSwitchLayer,
+      handlerClickOnGraph,
     } = this.props;
     const {
       data: {
@@ -266,45 +264,6 @@ class Drawer extends React.Component {
         hfTimeline,
       },
     } = this.state;
-    const componentsArray = [
-      {
-        label: {
-          id: 'fc',
-          name: 'FC y Biomas',
-          disabled: false,
-          expandIcon: <AddIcon />,
-          detailId: 'Factor de compensación en área de consulta',
-          description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
-        },
-        component: <CompensationFactor
-          areaName={area.name}
-          biomesData={biomas}
-          bioticRegionsData={distritos}
-          compensationFactorData={fc}
-          matchColor={matchColor}
-        />,
-      },
-      {
-        label: {
-          id: 'hfp',
-          name: 'Huella humana',
-          disabled: false,
-          expandIcon: <AddIcon />,
-          detailId: 'Huella humana en el área',
-          description: 'Representa diferentes análisis de huella humana en esta área de consulta',
-        },
-        component: (
-          <HumanFootprint
-            currentHF={currentHF}
-            currentHFPValue={currentHFPValue}
-            hfPersistence={hfPersistence}
-            hfTimeline={hfTimeline}
-            handlersGeometry={handlersGeometry}
-            timelineHFArea={timelineHFArea}
-          />
-        ),
-      },
-    ];
     return (
       <div className="informer">
         <div className="drawer_header">
@@ -325,46 +284,48 @@ class Drawer extends React.Component {
         { !subLayerName && (
           <TabContainer
             initialSelectedIndex={0}
-            classes={classes}
             titles={[
               { label: 'Ecosistemas', icon: (<Ecosistemas />) },
               { label: 'Paisaje', icon: (<Paisaje />) },
               { label: 'Especies', icon: (<Especies />) },
             ]}
+            handlerShutOffAllLayers={handlerShutOffAllLayers}
           >
-            {[
-              (
-                <div key="2">
-                  <Overview
-                    generalArea={Number(generalArea)}
-                    listSE={areaSE}
-                    listPA={areaPA}
-                    coverage={coverage}
-                    areaId={area.id}
-                    geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
-                    matchColor={matchColor}
-                  />
-                </div>
-              ),
-              (
-                <div key="1" selected>
-                  <Accordion
-                    componentsArray={componentsArray}
-                    handlersGeometry={handlersGeometry}
-                  />
-                </div>
-              ),
-              (
-                <div className="graphcard" key="3">
-                  <h2>
-                    Gráficas en construcción
-                  </h2>
-                  <p>
-                    Pronto más información
-                  </p>
-                </div>
-              ),
-            ]}
+            <div>
+              <Overview
+                generalArea={Number(generalArea)}
+                listSE={areaSE}
+                listPA={areaPA}
+                coverage={coverage}
+                areaId={area.id}
+                geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
+                matchColor={matchColor}
+              />
+            </div>
+            <div>
+              <Landscape
+                fc={fc}
+                biomas={biomas}
+                distritos={distritos}
+                currentHF={currentHF}
+                currentHFPValue={currentHFPValue}
+                hfPersistence={hfPersistence}
+                hfTimeline={hfTimeline}
+                areaName={area.name}
+                matchColor={matchColor}
+                timelineHFArea={timelineHFArea}
+                handlerSwitchLayer={handlerSwitchLayer}
+                handlerClickOnGraph={handlerClickOnGraph}
+              />
+            </div>
+            <div className="graphcard">
+              <h2>
+                Gráficas en construcción
+              </h2>
+              <p>
+                Pronto más información
+              </p>
+            </div>
           </TabContainer>
         )}
         {/* // TODO: This functionality should be implemented again
@@ -388,13 +349,14 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   area: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
   timelineHFArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
-  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
+  handlerShutOffAllLayers: PropTypes.func,
+  handlerSwitchLayer: PropTypes.func,
+  handlerClickOnGraph: PropTypes.func,
 };
 
 Drawer.defaultProps = {
@@ -403,7 +365,9 @@ Drawer.defaultProps = {
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},
-  handlersGeometry: [],
+  handlerShutOffAllLayers: () => {},
+  handlerSwitchLayer: () => {},
+  handlerClickOnGraph: () => {},
 };
 
 export default withStyles(styles)(Drawer);
