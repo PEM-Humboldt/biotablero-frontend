@@ -60,7 +60,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      timelineHFArea: null,
+      hfTimelineArea: null,
     };
   }
 
@@ -108,7 +108,7 @@ class Search extends Component {
       .then((value) => {
         const res = { ...value, type: seType };
         this.setState({
-          timelineHFArea: res,
+          hfTimelineArea: res,
         });
       });
   }
@@ -332,7 +332,7 @@ class Search extends Component {
             break;
           default:
             this.setState({
-              timelineHFArea: null,
+              hfTimelineArea: null,
             });
             break;
         }
@@ -636,7 +636,7 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      timelineHFArea,
+      hfTimelineArea,
       loadingModal,
       colors,
       layers,
@@ -738,7 +738,7 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                timelineHFArea={timelineHFArea}
+                hfTimelineArea={hfTimelineArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id

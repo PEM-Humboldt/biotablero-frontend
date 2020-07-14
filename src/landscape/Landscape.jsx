@@ -63,7 +63,7 @@ class Landscape extends React.Component {
       hfTimeline,
       areaName,
       matchColor,
-      timelineHFArea,
+      hfTimelineArea,
       handlerClickOnGraph,
     } = this.props;
     const componentsArray = [
@@ -99,7 +99,7 @@ class Landscape extends React.Component {
             hfCurrentValue={hfCurrentValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
-            timelineHFArea={timelineHFArea}
+            hfTimelineArea={hfTimelineArea}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -128,7 +128,7 @@ Landscape.propTypes = {
   hfTimeline: PropTypes.array,
   areaName: PropTypes.string,
   matchColor: PropTypes.func,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
 };
@@ -143,7 +143,7 @@ Landscape.defaultProps = {
   hfTimeline: [],
   areaName: '',
   matchColor: () => {},
-  timelineHFArea: {},
+  hfTimelineArea: {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},
 };

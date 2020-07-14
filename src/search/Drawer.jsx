@@ -240,7 +240,7 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence,
-      timelineHFArea,
+      hfTimelineArea,
       handlerBackButton,
       subLayerName,
       area,
@@ -313,7 +313,7 @@ class Drawer extends React.Component {
                 hfTimeline={hfTimeline}
                 areaName={area.name}
                 matchColor={matchColor}
-                timelineHFArea={timelineHFArea}
+                hfTimelineArea={hfTimelineArea}
                 handlerSwitchLayer={handlerSwitchLayer}
                 handlerClickOnGraph={handlerClickOnGraph}
               />
@@ -329,11 +329,11 @@ class Drawer extends React.Component {
           </TabContainer>
         )}
         {/* // TODO: This functionality should be implemented again
-          subLayerName && timelineHFArea && (
+          subLayerName && hfTimelineArea && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={timelineHFArea}
+              data={hfTimelineArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -351,7 +351,7 @@ Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
@@ -361,7 +361,7 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   geofence: { id: NaN, name: '' },
-  timelineHFArea: {},
+  hfTimelineArea: {},
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},

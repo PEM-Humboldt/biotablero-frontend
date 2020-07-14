@@ -12,7 +12,7 @@ const HumanFootprint = (props) => {
     hfCurrentValue,
     hfPersistence,
     hfTimeline,
-    timelineHFArea,
+    hfTimelineArea,
     handlerClickOnGraph,
     handlerAccordionGeometry,
   } = props;
@@ -48,7 +48,7 @@ const HumanFootprint = (props) => {
         <TimelineFootprint
           data={hfTimeline}
           onClickGraphHandler={handlerClickOnGraph}
-          timelineHFArea={timelineHFArea}
+          hfTimelineArea={hfTimelineArea}
         />
       ),
     },
@@ -87,7 +87,7 @@ HumanFootprint.propTypes = {
   hfCurrentValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
 };
@@ -97,7 +97,7 @@ HumanFootprint.defaultProps = {
   hfCurrentValue: 0,
   hfPersistence: [],
   hfTimeline: [],
-  timelineHFArea: {},
+  hfTimelineArea: {},
   handlerClickOnGraph: () => {},
   handlerAccordionGeometry: () => {},
 };
