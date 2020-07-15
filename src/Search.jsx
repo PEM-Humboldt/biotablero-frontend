@@ -98,7 +98,7 @@ class Search extends Component {
   };
 
   /**
-   * Set in state timelineHF area details for strategic ecosystems (SE) in the selected area
+   * Set in state hfTimelineArea area details for strategic ecosystems (SE) in the selected area
    *
    * @param {string} seType type of strategic ecosystem to request
    */
