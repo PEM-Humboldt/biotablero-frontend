@@ -5,7 +5,6 @@ import ShortInfo from '../../commons/ShortInfo';
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 
-
 class CurrentFootprint extends React.Component {
   constructor(props) {
     super(props);

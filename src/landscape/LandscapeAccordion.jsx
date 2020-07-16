@@ -34,10 +34,8 @@ class LandscapeAccordion extends React.Component {
     const { expanded } = this.state;
     return (
       <div>
-        {(componentsArray.length > 0)
-          && componentsArray.map(item => (
-            (!item.label.disabled)
-            && (
+        {(componentsArray.length > 0) && componentsArray.map(item => (
+          (!item.label.disabled) && (
             <ExpansionPanel
               className={expanded !== item.label.id ? classNameDefault : classNameSelected}
               expanded={expanded === item.label.id}
@@ -57,8 +55,7 @@ class LandscapeAccordion extends React.Component {
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
             </ExpansionPanel>
-            )
-          ))}
+          )))}
       </div>
     );
   }
