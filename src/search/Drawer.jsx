@@ -33,8 +33,8 @@ class Drawer extends React.Component {
         areaSE: null,
         areaPA: null,
         generalArea: 0,
-        currentHF: [],
-        currentHFPValue: 0,
+        hfCurrent: [],
+        hfCurrentValue: 0,
         hfPersistence: [],
         hfTimeline: [],
       },
@@ -124,7 +124,7 @@ class Drawer extends React.Component {
           ...prevState,
           data: {
             ...prevState.data,
-            currentHF: res,
+            hfCurrent: res,
           },
         }));
       })
@@ -154,13 +154,13 @@ class Drawer extends React.Component {
       .then((res) => {
         const aTotalData = res.find(o => o.key === 'aTotal').data;
         const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
-        const currentHFPValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
+        const hfCurrentValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
         this.setState(prevState => ({
           ...prevState,
           data: {
             ...prevState.data,
             hfTimeline: res,
-            currentHFPValue,
+            hfCurrentValue,
           },
         }));
       })
@@ -240,7 +240,7 @@ class Drawer extends React.Component {
   render() {
     const {
       geofence,
-      timelineHFArea,
+      hfTimelineArea,
       handlerBackButton,
       subLayerName,
       area,
@@ -258,8 +258,8 @@ class Drawer extends React.Component {
         areaPA,
         areaSE,
         generalArea,
-        currentHF,
-        currentHFPValue,
+        hfCurrent,
+        hfCurrentValue,
         hfPersistence,
         hfTimeline,
       },
@@ -307,13 +307,13 @@ class Drawer extends React.Component {
                 fc={fc}
                 biomas={biomas}
                 distritos={distritos}
-                currentHF={currentHF}
-                currentHFPValue={currentHFPValue}
+                hfCurrent={hfCurrent}
+                hfCurrentValue={hfCurrentValue}
                 hfPersistence={hfPersistence}
                 hfTimeline={hfTimeline}
                 areaName={area.name}
                 matchColor={matchColor}
-                timelineHFArea={timelineHFArea}
+                hfTimelineArea={hfTimelineArea}
                 handlerSwitchLayer={handlerSwitchLayer}
                 handlerClickOnGraph={handlerClickOnGraph}
               />
@@ -329,11 +329,11 @@ class Drawer extends React.Component {
           </TabContainer>
         )}
         {/* // TODO: This functionality should be implemented again
-          subLayerName && timelineHFArea && (
+          subLayerName && hfTimelineArea && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={timelineHFArea}
+              data={hfTimelineArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -351,7 +351,7 @@ Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
@@ -361,7 +361,7 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   geofence: { id: NaN, name: '' },
-  timelineHFArea: {},
+  hfTimelineArea: {},
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},

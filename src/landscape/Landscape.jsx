@@ -10,7 +10,7 @@ class Landscape extends React.Component {
     super(props);
     this.state = {
       expandedLevel1: 'fc',
-      expandedLevel2: 'currentHFP',
+      expandedLevel2: 'hfCurrent',
     };
   }
 
@@ -33,7 +33,7 @@ class Landscape extends React.Component {
     switch (level) {
       case '1':
         this.setState({ expandedLevel1: expandedTab });
-        if (expandedTab === 'hfp') {
+        if (expandedTab === 'hf') {
           handlerSwitchLayer(expandedLevel2);
         } else {
           handlerSwitchLayer(expandedTab);
@@ -57,13 +57,13 @@ class Landscape extends React.Component {
       fc,
       biomas,
       distritos,
-      currentHF,
-      currentHFPValue,
+      hfCurrent,
+      hfCurrentValue,
       hfPersistence,
       hfTimeline,
       areaName,
       matchColor,
-      timelineHFArea,
+      hfTimelineArea,
       handlerClickOnGraph,
     } = this.props;
     const componentsArray = [
@@ -86,7 +86,7 @@ class Landscape extends React.Component {
       },
       {
         label: {
-          id: 'hfp',
+          id: 'hf',
           name: 'Huella humana',
           disabled: false,
           expandIcon: <AddIcon />,
@@ -95,11 +95,11 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            currentHF={currentHF}
-            currentHFPValue={currentHFPValue}
+            hfCurrent={hfCurrent}
+            hfCurrentValue={hfCurrentValue}
             hfPersistence={hfPersistence}
             hfTimeline={hfTimeline}
-            timelineHFArea={timelineHFArea}
+            hfTimelineArea={hfTimelineArea}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -122,13 +122,13 @@ Landscape.propTypes = {
   fc: PropTypes.array,
   biomas: PropTypes.array,
   distritos: PropTypes.array,
-  currentHF: PropTypes.array,
-  currentHFPValue: PropTypes.number,
+  hfCurrent: PropTypes.array,
+  hfCurrentValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
   areaName: PropTypes.string,
   matchColor: PropTypes.func,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
 };
@@ -137,13 +137,13 @@ Landscape.defaultProps = {
   fc: [],
   biomas: [],
   distritos: [],
-  currentHF: [],
-  currentHFPValue: 0,
+  hfCurrent: [],
+  hfCurrentValue: 0,
   hfPersistence: [],
   hfTimeline: [],
   areaName: '',
   matchColor: () => {},
-  timelineHFArea: {},
+  hfTimelineArea: {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},
 };
