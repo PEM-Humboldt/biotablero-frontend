@@ -1,22 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
-import LandscapeAccordion from '../commons/LandscapeAccordion';
-import CompensationFactor from '../search/CompensationFactor';
-import HumanFootprint from '../search/HumanFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
+import CompensationFactor from './CompensationFactor';
+import HumanFootprint from './HumanFootprint';
 
 class Landscape extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expandedLevel1: 'fc',
-      expandedLevel2: 'hfCurrent',
+      expandedLevel1: null,
+      expandedLevel2: null,
     };
   }
 
   componentDidMount() {
-    const { handlerSwitchLayer } = this.props;
-    handlerSwitchLayer('fc');
+    const { areaName, handlerSwitchLayer } = this.props;
+    this.setState({ expandedLevel2: 'hfCurrent' });
+    if (areaName === 'Jurisdicciones ambientales') {
+      this.setState({ expandedLevel1: 'fc' });
+      handlerSwitchLayer('fc');
+    } else {
+      this.setState({ expandedLevel1: 'hf' });
+      handlerSwitchLayer('hfCurrent');
+    }
   }
 
   /**
@@ -71,13 +78,12 @@ class Landscape extends React.Component {
         label: {
           id: 'fc',
           name: 'FC y Biomas',
-          disabled: false,
+          disabled: areaName !== 'Jurisdicciones ambientales',
           expandIcon: <AddIcon />,
           detailId: 'Factor de compensación en área de consulta',
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
-          areaName={areaName}
           biomesData={biomas}
           bioticRegionsData={distritos}
           compensationFactorData={fc}
