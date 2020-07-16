@@ -13,6 +13,9 @@ class CurrentFootprint extends React.Component {
     };
   }
 
+  /**
+   * Show or hide the detailed information on each graph
+   */
   toggleInfoGraph = () => {
     this.setState(prevState => ({
       showInfoGraph: !prevState.showInfoGraph,
