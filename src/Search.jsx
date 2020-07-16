@@ -270,7 +270,9 @@ class Search extends Component {
               <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
           ).openPopup();
           return;
-        case 'hfTimeline':
+        case 'paramo':
+        case 'dryForest':
+        case 'wetland':
         case 'hfPersistence':
         case 'hfCurrent':
           point.bindPopup(
