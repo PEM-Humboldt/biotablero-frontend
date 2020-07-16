@@ -72,6 +72,18 @@ export default {
     '#e8cc8e',
     '#ccb325', // tropical dry forest selected
   ],
+  paramo: [
+    '#878cae',
+    '#29418a', // paramo selected
+  ],
+  dryForest: [
+    '#a8daca',
+    '#3cb58e', // wetlands selected
+  ],
+  wetland: [
+    '#e8cc8e',
+    '#ccb325', // tropical dry forest selected
+  ],
   currentHFP: [
     '#3fbf9f',
     '#d5a529',

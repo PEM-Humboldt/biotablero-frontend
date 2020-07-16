@@ -318,6 +318,7 @@ class Search extends Component {
     const { activeLayer } = this.state;
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
+    this.switchLayer(idCategory);
     selectedSubLayer.eachLayer((layer) => {
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
@@ -432,9 +433,9 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'hfTimeline':
+      case 'paramo':
         return (
-          RestAPI.requestHFTimelineGeometry()
+          RestAPI.requestHFTimelineGeometryBySE('paramo')
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();
@@ -445,7 +446,63 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'hfTimeline',
+                      type: 'paramo',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
+      case 'dryForest':
+        return (
+          RestAPI.requestHFTimelineGeometryBySE('dryForest')
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'dryForest',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle(layerType),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
+            .catch(() => this.reportDataError())
+        );
+      case 'wetland':
+        return (
+          RestAPI.requestHFTimelineGeometryBySE('wetland')
+            .then((res) => {
+              if (res.features) {
+                this.shutOffAllLayers();
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'wetland',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
