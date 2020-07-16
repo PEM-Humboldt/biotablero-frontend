@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
-import GraphLoader from '../charts/GraphLoader';
-import matchColor from '../commons/matchColor';
+import ShortInfo from '../../commons/ShortInfo';
+import GraphLoader from '../../charts/GraphLoader';
+import matchColor from '../../commons/matchColor';
 
 const changeValues = [
   {

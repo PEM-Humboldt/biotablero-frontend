@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
-import LandscapeAccordion from '../commons/LandscapeAccordion';
-import CompensationFactor from '../search/CompensationFactor';
-import HumanFootprint from '../search/HumanFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
+import CompensationFactor from './CompensationFactor';
+import HumanFootprint from './HumanFootprint';
 
 class Landscape extends React.Component {
   constructor(props) {

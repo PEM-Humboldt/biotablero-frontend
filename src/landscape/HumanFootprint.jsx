@@ -1,10 +1,10 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
-import LandscapeAccordion from '../commons/LandscapeAccordion';
-import CurrentFootprint from '../humanFootprint/CurrentFootprint';
-import TimelineFootprint from '../humanFootprint/TimelineFootprint';
-import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
+import CurrentFootprint from './humanFootprint/CurrentFootprint';
+import TimelineFootprint from './humanFootprint/TimelineFootprint';
+import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = (props) => {
   const {
