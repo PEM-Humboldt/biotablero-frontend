@@ -72,13 +72,13 @@ export default {
     '#e8cc8e',
     '#ccb325', // tropical dry forest selected
   ],
-  currentHFP: [
+  hfCurrent: [
     '#3fbf9f',
     '#d5a529',
     '#e66c29',
     '#cf324e',
   ],
-  persistenceHFP: [
+  hfPersistence: [
     '#3fbf9f',
     '#646e55',
     '#cf324e',

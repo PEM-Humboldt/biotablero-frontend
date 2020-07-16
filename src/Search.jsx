@@ -60,7 +60,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      timelineHFArea: null,
+      hfTimelineArea: null,
     };
   }
 
@@ -98,7 +98,7 @@ class Search extends Component {
   };
 
   /**
-   * Set in state timelineHFP area details for strategic ecosystems (SE) in the selected area
+   * Set in state hfTimelineArea area details for strategic ecosystems (SE) in the selected area
    *
    * @param {string} seType type of strategic ecosystem to request
    */
@@ -108,7 +108,7 @@ class Search extends Component {
       .then((value) => {
         const res = { ...value, type: seType };
         this.setState({
-          timelineHFArea: res,
+          hfTimelineArea: res,
         });
       });
   }
@@ -271,8 +271,8 @@ class Search extends Component {
           ).openPopup();
           return;
         case 'hfTimeline':
-        case 'persistenceHFP':
-        case 'currentHFP':
+        case 'hfPersistence':
+        case 'hfCurrent':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
             <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
@@ -332,7 +332,7 @@ class Search extends Component {
             break;
           default:
             this.setState({
-              timelineHFArea: null,
+              hfTimelineArea: null,
             });
             break;
         }
@@ -404,7 +404,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'currentHFP':
+      case 'hfCurrent':
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
@@ -417,7 +417,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'currentHFP',
+                      type: 'hfCurrent',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -460,7 +460,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'persistenceHFP':
+      case 'hfPersistence':
         return (
           RestAPI.requestHFPersistenceGeometry()
             .then((res) => {
@@ -473,7 +473,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'persistenceHFP',
+                      type: 'hfPersistence',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -636,7 +636,7 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      timelineHFArea,
+      hfTimelineArea,
       loadingModal,
       colors,
       layers,
@@ -738,7 +738,7 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                timelineHFArea={timelineHFArea}
+                hfTimelineArea={hfTimelineArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id

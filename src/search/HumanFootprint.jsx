@@ -8,11 +8,11 @@ import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = (props) => {
   const {
-    currentHF,
-    currentHFPValue,
+    hfCurrent,
+    hfCurrentValue,
     hfPersistence,
     hfTimeline,
-    timelineHFArea,
+    hfTimelineArea,
     handlerClickOnGraph,
     handlerAccordionGeometry,
   } = props;
@@ -20,7 +20,7 @@ const HumanFootprint = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'currentHFP',
+        id: 'hfCurrent',
         name: 'Actual',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -29,8 +29,8 @@ const HumanFootprint = (props) => {
       },
       component: (
         <CurrentFootprint
-          data={currentHF}
-          currentHFPValue={currentHFPValue}
+          data={hfCurrent}
+          hfCurrentValue={hfCurrentValue}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -48,13 +48,13 @@ const HumanFootprint = (props) => {
         <TimelineFootprint
           data={hfTimeline}
           onClickGraphHandler={handlerClickOnGraph}
-          timelineHFArea={timelineHFArea}
+          hfTimelineArea={hfTimelineArea}
         />
       ),
     },
     {
       label: {
-        id: 'persistenceHFP',
+        id: 'hfPersistence',
         name: 'Persistencia',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -83,21 +83,21 @@ const HumanFootprint = (props) => {
 };
 
 HumanFootprint.propTypes = {
-  currentHF: PropTypes.array,
-  currentHFPValue: PropTypes.number,
+  hfCurrent: PropTypes.array,
+  hfCurrentValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
-  timelineHFArea: PropTypes.object,
+  hfTimelineArea: PropTypes.object,
   handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
 };
 
 HumanFootprint.defaultProps = {
-  currentHF: [],
-  currentHFPValue: 0,
+  hfCurrent: [],
+  hfCurrentValue: 0,
   hfPersistence: [],
   hfTimeline: [],
-  timelineHFArea: {},
+  hfTimelineArea: {},
   handlerClickOnGraph: () => {},
   handlerAccordionGeometry: () => {},
 };
