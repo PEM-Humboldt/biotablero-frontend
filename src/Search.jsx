@@ -519,6 +519,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
+      case 'hfTimeline':
       case 'hfPersistence':
         return (
           RestAPI.requestHFPersistenceGeometry()
@@ -534,7 +535,7 @@ class Search extends Component {
                       active: true,
                       type: 'hfPersistence',
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
+                        style: this.featureStyle('hfPersistence'),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(selectedLayer, selectedArea.id)
                         ),
