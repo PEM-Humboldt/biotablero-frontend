@@ -40,7 +40,6 @@ class CompensationFactor extends React.Component {
 
   render() {
     const {
-      areaName,
       biomesData,
       bioticRegionsData,
       compensationFactorData,
@@ -51,81 +50,65 @@ class CompensationFactor extends React.Component {
       <div style={{ width: '100%' }}>
         <div className="graphinside">
           <div className="graphcardAcc">
-            {(areaName === 'Jurisdicciones ambientales')
-              ? (
-                <div>
-                  <h2>
-                    Factor de Compensación
-                    <InfoIcon
-                      className="graphinfo"
-                      data-tooltip
-                      title="¿Qué significa este gráfico?"
-                      onClick={() => this.toggleInfoGraph()}
-                    />
-                    <div
-                      className="graphinfo"
-                      onClick={() => this.toggleInfoGraph()}
-                      onKeyPress={() => this.toggleInfoGraph()}
-                      role="button"
-                      tabIndex="0"
-                    />
-                    <DownloadIcon className="icondown" />
-                  </h2>
-                  {showInfoGraph && (
-                    <ShortInfo
-                      name="Factor de Compensación."
-                      description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
-                      className="graphinfo2"
-                      tooltip="¿Qué significa?"
-                      customButton
-                    />
-                  )}
-                  <GraphLoader
-                    graphType="LargeBarStackGraph"
-                    data={this.processData(compensationFactorData)}
-                    labelX="Hectáreas"
-                    labelY="Factor de Compensación"
-                    units="ha"
-                    colors={matchColor('fc')}
-                    padding={0.25}
-                  />
-                  <h3>
-                    Biomas
-                  </h3>
-                  <GraphLoader
-                    graphType="LargeBarStackGraph"
-                    data={this.processData(biomesData)}
-                    labelX="Hectáreas"
-                    labelY="Biomas"
-                    units="ha"
-                    colors={matchColor('biomas')}
-                    padding={0.3}
-                  />
-                  <h3>
-                    Regiones Bióticas
-                  </h3>
-                  <GraphLoader
-                    graphType="LargeBarStackGraph"
-                    data={this.processData(bioticRegionsData)}
-                    labelX="Hectáreas"
-                    labelY="Regiones Bióticas"
-                    units="ha"
-                    colors={matchColor('bioticReg')}
-                    padding={0.3}
-                  />
-                </div>
-              )
-              : (
-                <div className="graphcard">
-                  <h2>
-                    Gráficas en construcción
-                  </h2>
-                  <p>
-                    Pronto más información
-                  </p>
-                </div>
-              )
-            }
+            <h2>
+              Factor de Compensación
+              <InfoIcon
+                className="graphinfo"
+                data-tooltip
+                title="¿Qué significa este gráfico?"
+                onClick={() => this.toggleInfoGraph()}
+              />
+              <div
+                className="graphinfo"
+                onClick={() => this.toggleInfoGraph()}
+                onKeyPress={() => this.toggleInfoGraph()}
+                role="button"
+                tabIndex="0"
+              />
+              <DownloadIcon className="icondown" />
+            </h2>
+            {showInfoGraph && (
+              <ShortInfo
+                name="Factor de Compensación."
+                description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
+                className="graphinfo2"
+                tooltip="¿Qué significa?"
+                customButton
+              />
+            )}
+            <GraphLoader
+              graphType="LargeBarStackGraph"
+              data={this.processData(compensationFactorData)}
+              labelX="Hectáreas"
+              labelY="Factor de Compensación"
+              units="ha"
+              colors={matchColor('fc')}
+              padding={0.25}
+            />
+            <h3>
+              Biomas
+            </h3>
+            <GraphLoader
+              graphType="LargeBarStackGraph"
+              data={this.processData(biomesData)}
+              labelX="Hectáreas"
+              labelY="Biomas"
+              units="ha"
+              colors={matchColor('biomas')}
+              padding={0.3}
+            />
+            <h3>
+              Regiones Bióticas
+            </h3>
+            <GraphLoader
+              graphType="LargeBarStackGraph"
+              data={this.processData(bioticRegionsData)}
+              labelX="Hectáreas"
+              labelY="Regiones Bióticas"
+              units="ha"
+              colors={matchColor('bioticReg')}
+              padding={0.3}
+            />
           </div>
         </div>
       </div>
@@ -134,7 +117,6 @@ class CompensationFactor extends React.Component {
 }
 
 CompensationFactor.propTypes = {
-  areaName: PropTypes.string.isRequired,
   biomesData: PropTypes.array,
   bioticRegionsData: PropTypes.array,
   compensationFactorData: PropTypes.array,
