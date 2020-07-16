@@ -437,7 +437,7 @@ class Search extends Component {
         );
       case 'paramo':
         return (
-          RestAPI.requestHFTimelineGeometryBySE('paramo')
+          RestAPI.requestSEGeometryInGeofence('paramo')
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();
@@ -465,7 +465,7 @@ class Search extends Component {
         );
       case 'dryForest':
         return (
-          RestAPI.requestHFTimelineGeometryBySE('dryForest')
+          RestAPI.requestSEGeometryInGeofence('dryForest')
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();
@@ -493,7 +493,7 @@ class Search extends Component {
         );
       case 'wetland':
         return (
-          RestAPI.requestHFTimelineGeometryBySE('wetland')
+          RestAPI.requestSEGeometryInGeofence('wetland')
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();

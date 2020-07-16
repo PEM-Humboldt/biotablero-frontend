@@ -293,7 +293,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestHFTimelineGeometryBySE(seType) {
+  static requestSEGeometryInGeofence(seType) {
     switch (seType) {
       case 'dryForest':
         return Promise.resolve(tmpHFTDryForestGeo);
