@@ -328,11 +328,7 @@ class Search extends Component {
           this.switchLayer(idCategory);
           this.setTimelineHFData(tooltipLabel[idCategory]);
           break;
-        default:
-          this.setState({
-            hfTimelineArea: null,
-          });
-          break;
+        // no default
       }
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
@@ -376,6 +372,7 @@ class Search extends Component {
       loadingModal: true,
       activeLayer: selectedArea,
       requestSource: null,
+      hfTimelineArea: null,
     });
     switch (layerType) {
       case 'fc':
