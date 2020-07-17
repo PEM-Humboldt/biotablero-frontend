@@ -257,17 +257,34 @@ class RestAPI {
   }
 
   /**
-   * Request area geometry by id
+   * Request area geometry by id divided by geofences
    *
    * @param {String} areaId area id to request
    *
    * @return {Object} Including Promise with layer object to load in map and source reference to
    * cancel the request
    */
-  static requestGeofenceGeometry(areaId) {
+  static requestNationalGeometryByArea(areaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Request a specific geofence geometry identified by area and geofence
+   *
+   * @param {String} areaId area id to request
+   * @param {String} geofenceId geofence id to request
+   *
+   * @return {Object} Including Promise with layer object to load in map and source reference to
+   * cancel the request
+   */
+  static requestGeofenceGeometryByArea(areaId, geofenceId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
       source,
     };
   }
