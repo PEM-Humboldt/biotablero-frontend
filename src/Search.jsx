@@ -312,7 +312,7 @@ class Search extends Component {
   }
 
   /**
-   * Highlight sub-layer by clicking on the specific category on the graph
+   * Handle events happened on graphs
    *
    * @param {String} idCategory id of category selected on the map
    */
@@ -321,6 +321,7 @@ class Search extends Component {
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
     selectedSubLayer.eachLayer((layer) => {
+      // 'switch' for strategic ecosystem selected
       switch (idCategory) {
         case 'paramo':
         case 'wetland':
@@ -330,6 +331,7 @@ class Search extends Component {
           break;
         // no default
       }
+      // 'if' to highlight feature on map
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
           weight: 1,
