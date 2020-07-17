@@ -361,7 +361,7 @@ class Search extends Component {
   );
 
   /**
-   * Switch layer based on accordion opened tab
+   * Switch layer based on graph showed
    *
    * @param {String} layerType layer type
    */
