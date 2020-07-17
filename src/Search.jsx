@@ -40,7 +40,6 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayer: null,
-      subLayerData: null,
       colors: ['#d49242',
         '#e9c948',
         '#b3b638',
@@ -51,7 +50,6 @@ class Search extends Component {
         '#667521',
         '#75680f',
         '#7b6126'],
-      colorSZH: ['#345b6b'],
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -62,6 +60,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      hfTimelineArea: null,
     };
   }
 
@@ -99,33 +98,19 @@ class Search extends Component {
   };
 
   /**
-   * Set subLayerData state to handle detailed information
+   * Set in state hfTimelineArea area details for strategic ecosystems (SE) in the selected area
+   *
+   * @param {string} seType type of strategic ecosystem to request
    */
-  setSubLayerData = (type, idSE) => {
+  setTimelineHFData = (seType) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    switch (type) {
-      /**
-       * Recover details for strategic ecosystems (SE) in the selected area
-       */
-      case 'hfTimeline':
-        RestAPI.requestSEDetails(selectedAreaTypeId, selectedAreaId, idSE)
-          .then((value) => {
-            const res = typeof (value) === 'object' ? [{ ...value, type: idSE }] : value;
-            this.setState(prevState => ({
-              ...prevState,
-              subLayerData: res,
-            }));
-          })
-          .catch(() => {
-            this.setState(prevState => ({
-              ...prevState,
-              subLayerData: null,
-            }));
-          });
-        break;
-      default:
-        break;
-    }
+    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
+      .then((value) => {
+        const res = { ...value, type: seType };
+        this.setState({
+          hfTimelineArea: res,
+        });
+      });
   }
 
   /**
@@ -286,8 +271,8 @@ class Search extends Component {
           ).openPopup();
           return;
         case 'hfTimeline':
-        case 'persistenceHFP':
-        case 'currentHFP':
+        case 'hfPersistence':
+        case 'hfCurrent':
           point.bindPopup(
             `<b>${tooltipLabel[point.feature.properties.key]}:</b>
             <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
@@ -339,7 +324,18 @@ class Search extends Component {
           weight: 1,
           fillOpacity: 1,
         });
-        this.setSubLayerData('hfTimeline', tooltipLabel[idCategory]);
+        switch (idCategory) {
+          case 'paramo':
+          case 'wetland':
+          case 'dryForest':
+            this.setTimelineHFData(tooltipLabel[idCategory]);
+            break;
+          default:
+            this.setState({
+              hfTimelineArea: null,
+            });
+            break;
+        }
       } else {
         selectedSubLayer.resetStyle(layer);
       }
@@ -408,7 +404,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'currentHFP':
+      case 'hfCurrent':
         return (
           RestAPI.requestCurrentHFGeometry()
             .then((res) => {
@@ -421,7 +417,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'currentHFP',
+                      type: 'hfCurrent',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -464,7 +460,7 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'persistenceHFP':
+      case 'hfPersistence':
         return (
           RestAPI.requestHFPersistenceGeometry()
             .then((res) => {
@@ -477,7 +473,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'persistenceHFP',
+                      type: 'hfPersistence',
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -640,10 +636,9 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      subLayerData,
+      hfTimelineArea,
       loadingModal,
       colors,
-      colorSZH,
       layers,
       connError,
       dataError,
@@ -743,18 +738,15 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                colorSZH={colorSZH}
-                subLayerData={subLayerData}
+                hfTimelineArea={hfTimelineArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id
                 subLayerName={subLayerName}
                 matchColor={matchColor}
-                handlersGeometry={[
-                  this.shutOffAllLayers,
-                  this.switchLayer,
-                  this.clickOnGraph,
-                ]}
+                handlerShutOffAllLayers={this.shutOffAllLayers}
+                handlerSwitchLayer={this.switchLayer}
+                handlerClickOnGraph={this.clickOnGraph}
               />
             )}
             { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (

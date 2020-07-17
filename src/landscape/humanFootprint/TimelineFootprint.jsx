@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
-import GraphLoader from '../charts/GraphLoader';
-import matchColor from '../commons/matchColor';
+import ShortInfo from '../../commons/ShortInfo';
+import GraphLoader from '../../charts/GraphLoader';
+import matchColor from '../../commons/matchColor';
 
 const changeValues = [
   {
@@ -70,6 +70,9 @@ class TimelineFootprint extends React.Component {
     };
   }
 
+  /**
+   * Show or hide the detailed information on each graph
+   */
   toggleInfoGraph = () => {
     this.setState(prevState => ({
       showInfoGraph: !prevState.showInfoGraph,
@@ -110,7 +113,7 @@ class TimelineFootprint extends React.Component {
     const {
       data,
       onClickGraphHandler,
-      subLayerData,
+      hfTimelineArea,
     } = this.props;
     const { showInfoGraph } = this.state;
     return (
@@ -159,14 +162,13 @@ class TimelineFootprint extends React.Component {
               onClickGraphHandler={onClickGraphHandler}
             />
           </h2>
-          {subLayerData && subLayerData[0].type !== 'Total'
-          && (
+          {hfTimelineArea && hfTimelineArea.type !== 'Total' && (
             <div>
               <h6>
-                {`${subLayerData[0].type} dentro de la unidad de consulta`}
+                {`${hfTimelineArea.type} dentro de la unidad de consulta`}
               </h6>
               <h5>
-                {`${numberWithCommas(Number(subLayerData[0].total_area).toFixed(2))} ha`}
+                {`${numberWithCommas(Number(hfTimelineArea.total_area).toFixed(2))} ha`}
               </h5>
             </div>
           )}
@@ -179,12 +181,12 @@ class TimelineFootprint extends React.Component {
 TimelineFootprint.propTypes = {
   data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
-  subLayerData: PropTypes.arrayOf(PropTypes.object),
+  hfTimelineArea: PropTypes.object,
 };
 
 TimelineFootprint.defaultProps = {
   onClickGraphHandler: () => {},
-  subLayerData: [],
+  hfTimelineArea: {},
 };
 
 export default TimelineFootprint;

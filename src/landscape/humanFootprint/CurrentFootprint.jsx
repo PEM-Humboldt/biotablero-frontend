@@ -1,17 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
-import GraphLoader from '../charts/GraphLoader';
-import matchColor from '../commons/matchColor';
+import ShortInfo from '../../commons/ShortInfo';
+import GraphLoader from '../../charts/GraphLoader';
+import matchColor from '../../commons/matchColor';
 
-const getLabel = {
-  estable_natural: 'Estable Natural',
-  dinamica: 'Dinámica',
-  estable_alta: 'Estable Alta',
-};
-
-class PersistenceFootprint extends React.Component {
+class CurrentFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,6 +13,9 @@ class PersistenceFootprint extends React.Component {
     };
   }
 
+  /**
+   * Show or hide the detailed information on each graph
+   */
   toggleInfoGraph = () => {
     this.setState(prevState => ({
       showInfoGraph: !prevState.showInfoGraph,
@@ -26,7 +23,11 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { data, onClickGraphHandler } = this.props;
+    const {
+      data,
+      hfCurrentValue,
+      onClickGraphHandler,
+    } = this.props;
     const { showInfoGraph } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -48,28 +49,36 @@ class PersistenceFootprint extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Persistencia Huella Humana"
-            description="Barra horizontal del mismo tipo a la de la sección 1 (o a las barras horizontales existentes en BioTablero) que muestra el área total de la unidad de consulta distribuida en los diferentes valores de persistencia"
+            name="Huella Humana Actual"
+            description="Se mostrará el valor promedio de la huella humana en el año más reciente para la unidad de consulta seleccionada previamente. Justo debajo una gráfica tipo barra horizontal apilada que mostrará la proporción de cada categoría para el año más reciente"
             className="graphinfo2"
             tooltip="¿Qué significa?"
             customButton
           />
           )
         )}
+        <div>
+          <h6>
+            Huella humana actual
+          </h6>
+          <h5>
+            {hfCurrentValue}
+          </h5>
+        </div>
         <h6>
-          Estable natural, Dinámica, Estable alta
+          Natural, Baja, Media y Alta
         </h6>
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={data.map(item => ({
               ...item,
-              label: getLabel[item.key],
+              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
             }))}
             labelX="Hectáreas"
-            labelY="Persistencia Huella Humana"
+            labelY="Huella Humana Actual"
             units="ha"
-            colors={matchColor('persistenceHFP')}
+            colors={matchColor('hfCurrent')}
             padding={0.25}
             onClickGraphHandler={onClickGraphHandler}
           />
@@ -79,13 +88,15 @@ class PersistenceFootprint extends React.Component {
   }
 }
 
-PersistenceFootprint.propTypes = {
+CurrentFootprint.propTypes = {
   data: PropTypes.array.isRequired,
+  hfCurrentValue: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
 };
 
-PersistenceFootprint.defaultProps = {
+CurrentFootprint.defaultProps = {
+  hfCurrentValue: 0,
   onClickGraphHandler: () => {},
 };
 
-export default PersistenceFootprint;
+export default CurrentFootprint;

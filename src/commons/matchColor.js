@@ -43,13 +43,13 @@ const match = {
       'dryForestSel',
     ],
   },
-  currentHFP: {
-    palette: 'currentHFP',
+  hfCurrent: {
+    palette: 'hfCurrent',
     // TODO: This could change once the API endpoint is implemented
     sort: ['natural', 'baja', 'media', 'alta'],
   },
-  persistenceHFP: {
-    palette: 'persistenceHFP',
+  hfPersistence: {
+    palette: 'hfPersistence',
     // TODO: This could change once the API endpoint is implemented
     sort: ['estable_natural', 'dinamica', 'estable_alta'],
   },
@@ -110,8 +110,8 @@ const matchColor = (type) => {
         cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
         return palette[counter];
       };
-    case 'persistenceHFP':
-    case 'currentHFP':
+    case 'hfPersistence':
+    case 'hfCurrent':
     case 'coverage':
     case 'biomeComp':
     case 'hfTimeline':

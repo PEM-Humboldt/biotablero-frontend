@@ -1,23 +1,26 @@
 import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
-import Accordion from '../commons/Accordion';
-import CurrentFootprint from '../humanFootprint/CurrentFootprint';
-import TimelineFootprint from '../humanFootprint/TimelineFootprint';
-import PersistenceFooprint from '../humanFootprint/PersistenceFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
+import CurrentFootprint from './humanFootprint/CurrentFootprint';
+import TimelineFootprint from './humanFootprint/TimelineFootprint';
+import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
 
-const HumanFootprint = ({
-  currentHF,
-  currentHFPValue,
-  hfPersistence,
-  hfTimeline,
-  handlersGeometry,
-  subLayerData,
-}) => {
+const HumanFootprint = (props) => {
+  const {
+    hfCurrent,
+    hfCurrentValue,
+    hfPersistence,
+    hfTimeline,
+    hfTimelineArea,
+    handlerClickOnGraph,
+    handlerAccordionGeometry,
+  } = props;
+
   const componentsArray = [
     {
       label: {
-        id: 'currentHFP',
+        id: 'hfCurrent',
         name: 'Actual',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -26,9 +29,9 @@ const HumanFootprint = ({
       },
       component: (
         <CurrentFootprint
-          data={currentHF}
-          currentHFPValue={currentHFPValue}
-          onClickGraphHandler={handlersGeometry[2]}
+          data={hfCurrent}
+          hfCurrentValue={hfCurrentValue}
+          onClickGraphHandler={handlerClickOnGraph}
         />
       ),
     },
@@ -44,14 +47,14 @@ const HumanFootprint = ({
       component: (
         <TimelineFootprint
           data={hfTimeline}
-          onClickGraphHandler={handlersGeometry[2]}
-          subLayerData={subLayerData}
+          onClickGraphHandler={handlerClickOnGraph}
+          hfTimelineArea={hfTimelineArea}
         />
       ),
     },
     {
       label: {
-        id: 'persistenceHFP',
+        id: 'hfPersistence',
         name: 'Persistencia',
         disabled: false,
         expandIcon: <AddIcon />,
@@ -61,39 +64,42 @@ const HumanFootprint = ({
       component: (
         <PersistenceFooprint
           data={hfPersistence}
-          onClickGraphHandler={handlersGeometry[2]}
+          onClickGraphHandler={handlerClickOnGraph}
         />
       ),
     },
   ];
   return (
     <div>
-      <Accordion
+      <LandscapeAccordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlersGeometry={handlersGeometry}
+        handlerAccordionGeometry={handlerAccordionGeometry}
+        level="2"
       />
     </div>
   );
 };
 
 HumanFootprint.propTypes = {
-  currentHF: PropTypes.array,
-  currentHFPValue: PropTypes.number,
+  hfCurrent: PropTypes.array,
+  hfCurrentValue: PropTypes.number,
   hfPersistence: PropTypes.array,
   hfTimeline: PropTypes.array,
-  handlersGeometry: PropTypes.arrayOf(PropTypes.func),
-  subLayerData: PropTypes.arrayOf(PropTypes.object),
+  hfTimelineArea: PropTypes.object,
+  handlerClickOnGraph: PropTypes.func,
+  handlerAccordionGeometry: PropTypes.func,
 };
 
 HumanFootprint.defaultProps = {
-  currentHF: [],
-  currentHFPValue: 0,
+  hfCurrent: [],
+  hfCurrentValue: 0,
   hfPersistence: [],
   hfTimeline: [],
-  handlersGeometry: [],
-  subLayerData: [],
+  hfTimelineArea: {},
+  handlerClickOnGraph: () => {},
+  handlerAccordionGeometry: () => {},
 };
 
 export default HumanFootprint;
