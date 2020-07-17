@@ -320,25 +320,25 @@ class Search extends Component {
     const { activeLayer } = this.state;
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
-    this.switchLayer(idCategory);
     selectedSubLayer.eachLayer((layer) => {
+      switch (idCategory) {
+        case 'paramo':
+        case 'wetland':
+        case 'dryForest':
+          this.switchLayer(idCategory);
+          this.setTimelineHFData(tooltipLabel[idCategory]);
+          break;
+        default:
+          this.setState({
+            hfTimelineArea: null,
+          });
+          break;
+      }
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
           weight: 1,
           fillOpacity: 1,
         });
-        switch (idCategory) {
-          case 'paramo':
-          case 'wetland':
-          case 'dryForest':
-            this.setTimelineHFData(tooltipLabel[idCategory]);
-            break;
-          default:
-            this.setState({
-              hfTimelineArea: null,
-            });
-            break;
-        }
       } else {
         selectedSubLayer.resetStyle(layer);
       }
@@ -377,7 +377,6 @@ class Search extends Component {
       activeLayer: selectedArea,
       requestSource: null,
     });
-
     switch (layerType) {
       case 'fc':
         return (
@@ -436,64 +435,10 @@ class Search extends Component {
             .catch(() => this.reportDataError())
         );
       case 'paramo':
-        return (
-          RestAPI.requestSEGeometryInGeofence('paramo')
-            .then((res) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'paramo',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
-                  },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
       case 'dryForest':
-        return (
-          RestAPI.requestSEGeometryInGeofence('dryForest')
-            .then((res) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'dryForest',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
-                  },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
       case 'wetland':
         return (
-          RestAPI.requestSEGeometryInGeofence('wetland')
+          RestAPI.requestSEGeometryInGeofence(layerType)
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();
@@ -504,7 +449,7 @@ class Search extends Component {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'wetland',
+                      type: layerType,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
