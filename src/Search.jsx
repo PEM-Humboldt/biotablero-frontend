@@ -300,17 +300,6 @@ class Search extends Component {
     feature.closePopup();
   }
 
-  clickFeature = (event, parentLayer) => {
-    const { selectedAreaType } = this.state;
-    this.highlightFeature(event, parentLayer);
-    let value = this.findFirstId(event.target.feature.properties);
-    if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(selectedAreaType.data).filter(
-      element => element.id === value.toString(),
-    )[0];
-    if (value) this.innerElementChange(parentLayer, toLoad);
-  }
-
   /**
    * Handle events happened on graphs
    *
