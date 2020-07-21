@@ -166,9 +166,6 @@ class Drawer extends React.Component {
             <div>
               <Overview
                 generalArea={Number(generalArea)}
-                listSE={areaSE}
-                listPA={areaPA}
-                coverage={coverage}
                 areaId={area.id}
                 geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
                 matchColor={matchColor}
@@ -176,14 +173,12 @@ class Drawer extends React.Component {
             </div>
             <div>
               <Landscape
-                fc={fc}
-                biomas={biomas}
-                distritos={distritos}
                 hfCurrent={hfCurrent}
                 hfCurrentValue={hfCurrentValue}
                 hfPersistence={hfPersistence}
                 hfTimeline={hfTimeline}
-                areaName={area.name}
+                area={area}
+                geofence={geofence}
                 matchColor={matchColor}
                 hfTimelineArea={hfTimelineArea}
                 handlerSwitchLayer={handlerSwitchLayer}

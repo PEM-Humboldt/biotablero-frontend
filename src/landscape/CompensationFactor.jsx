@@ -5,13 +5,43 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import ShortInfo from '../commons/ShortInfo';
 import GraphLoader from '../charts/GraphLoader';
+import RestAPI from '../api/RestAPI';
 
 class CompensationFactor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showInfoGraph: false,
+      biomes: [],
+      fc: [],
+      bioticUnits: [],
     };
+  }
+
+  componentDidMount() {
+    const { geofence, areaId } = this.props;
+
+    const searchId = geofence.id || geofence.name;
+
+    if (areaId !== 'ea') return;
+
+    RestAPI.requestBiomes(areaId, searchId)
+      .then((res) => {
+        this.setState({ biomes: this.processData(res) });
+      })
+      .catch(() => {});
+
+    RestAPI.requestCompensationFactor(areaId, searchId)
+      .then((res) => {
+        this.setState({ fc: this.processData(res) });
+      })
+      .catch(() => {});
+
+    RestAPI.requestBioticUnits(areaId, searchId)
+      .then((res) => {
+        this.setState({ bioticUnits: this.processData(res) });
+      })
+      .catch(() => {});
   }
 
   /**
@@ -40,12 +70,14 @@ class CompensationFactor extends React.Component {
 
   render() {
     const {
-      biomesData,
-      bioticRegionsData,
-      compensationFactorData,
       matchColor,
     } = this.props;
-    const { showInfoGraph } = this.state;
+    const {
+      showInfoGraph,
+      biomes,
+      fc,
+      bioticUnits,
+    } = this.state;
     return (
       <div style={{ width: '100%' }}>
         <div className="graphinside">
@@ -78,7 +110,7 @@ class CompensationFactor extends React.Component {
             )}
             <GraphLoader
               graphType="LargeBarStackGraph"
-              data={this.processData(compensationFactorData)}
+              data={fc}
               labelX="Hectáreas"
               labelY="Factor de Compensación"
               units="ha"
@@ -90,7 +122,7 @@ class CompensationFactor extends React.Component {
             </h3>
             <GraphLoader
               graphType="LargeBarStackGraph"
-              data={this.processData(biomesData)}
+              data={biomes}
               labelX="Hectáreas"
               labelY="Biomas"
               units="ha"
@@ -102,7 +134,7 @@ class CompensationFactor extends React.Component {
             </h3>
             <GraphLoader
               graphType="LargeBarStackGraph"
-              data={this.processData(bioticRegionsData)}
+              data={bioticUnits}
               labelX="Hectáreas"
               labelY="Regiones Bióticas"
               units="ha"
@@ -117,16 +149,16 @@ class CompensationFactor extends React.Component {
 }
 
 CompensationFactor.propTypes = {
-  biomesData: PropTypes.array,
-  bioticRegionsData: PropTypes.array,
-  compensationFactorData: PropTypes.array,
+  areaId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  geofence: PropTypes.object.isRequired,
   matchColor: PropTypes.func,
 };
 
 CompensationFactor.defaultProps = {
-  biomesData: null,
-  bioticRegionsData: null,
-  compensationFactorData: null,
+
   matchColor: () => {},
 };
 
