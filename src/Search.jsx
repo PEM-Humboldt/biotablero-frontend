@@ -104,13 +104,15 @@ class Search extends Component {
    */
   setTimelineHFData = (seType) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
-      .then((value) => {
-        const res = { ...value, type: seType };
-        this.setState({
-          hfTimelineArea: res,
+    if (seType !== 'aTotal') {
+      RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
+        .then((value) => {
+          const res = { ...value, type: seType };
+          this.setState({
+            hfTimelineArea: res,
+          });
         });
-      });
+    }
   }
 
   /**
@@ -315,6 +317,7 @@ class Search extends Component {
         case 'paramo':
         case 'wetland':
         case 'dryForest':
+        case 'aTotal':
           this.switchLayer(idCategory);
           this.setTimelineHFData(tooltipLabel[idCategory]);
           break;
@@ -426,13 +429,25 @@ class Search extends Component {
       case 'dryForest':
       case 'wetland':
         return (
-          RestAPI.requestHFGeometryBySEInGeofence(layerType)
-            .then((res) => {
+          Promise.all([
+            RestAPI.requestHFGeometryBySEInGeofence(layerType),
+            RestAPI.requestHFPersistenceGeometry(),
+          ])
+            .then(([res, res1]) => {
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
                   layers: {
                     ...prevState.layers,
+                    base: {
+                      displayName: 'aTotal',
+                      id: 'aTotal',
+                      active: true,
+                      type: 'aTotal',
+                      layer: L.geoJSON(res1, {
+                        style: this.featureStyle('hfPersistence'),
+                      }),
+                    },
                     [selectedArea.id]: {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
@@ -450,8 +465,33 @@ class Search extends Component {
                 }));
               } else this.reportDataError();
             })
+            .catch(() => this.reportDataError()),
+          RestAPI.requestHFPersistenceGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'hfPersistence',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle('hfPersistence'),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
             .catch(() => this.reportDataError())
         );
+      case 'aTotal':
       case 'hfTimeline':
       case 'hfPersistence':
         return (
