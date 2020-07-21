@@ -257,7 +257,7 @@ class RestAPI {
   }
 
   /**
-   * Request area geometry by id divided by geofences
+   * Request area geometry by id
    *
    * @param {String} areaId area id to request
    *
