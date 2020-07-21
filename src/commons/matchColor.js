@@ -37,10 +37,31 @@ const match = {
       'aTotalSel',
       'paramo',
       'paramoSel',
-      'wetland',
-      'wetlandSel',
       'dryForest',
       'dryForestSel',
+      'wetland',
+      'wetlandSel',
+    ],
+  },
+  paramo: {
+    palette: 'paramo',
+    sort: [
+      'paramo',
+      'paramoSel',
+    ],
+  },
+  dryForest: {
+    palette: 'dryForest',
+    sort: [
+      'dryForest',
+      'dryForestSel',
+    ],
+  },
+  wetland: {
+    palette: 'wetland',
+    sort: [
+      'wetland',
+      'wetlandSel',
     ],
   },
   hfCurrent: {
@@ -115,6 +136,9 @@ const matchColor = (type) => {
     case 'coverage':
     case 'biomeComp':
     case 'hfTimeline':
+    case 'paramo':
+    case 'dryForest':
+    case 'wetland':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);

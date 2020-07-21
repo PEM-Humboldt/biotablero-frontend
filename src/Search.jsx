@@ -104,13 +104,15 @@ class Search extends Component {
    */
   setTimelineHFData = (seType) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
-      .then((value) => {
-        const res = { ...value, type: seType };
-        this.setState({
-          hfTimelineArea: res,
+    if (seType !== 'aTotal') {
+      RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
+        .then((value) => {
+          const res = { ...value, type: seType };
+          this.setState({
+            hfTimelineArea: res,
+          });
         });
-      });
+    }
   }
 
   /**
@@ -270,7 +272,9 @@ class Search extends Component {
               <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
           ).openPopup();
           return;
-        case 'hfTimeline':
+        case 'paramo':
+        case 'dryForest':
+        case 'wetland':
         case 'hfPersistence':
         case 'hfCurrent':
           point.bindPopup(
@@ -298,19 +302,8 @@ class Search extends Component {
     feature.closePopup();
   }
 
-  clickFeature = (event, parentLayer) => {
-    const { selectedAreaType } = this.state;
-    this.highlightFeature(event, parentLayer);
-    let value = this.findFirstId(event.target.feature.properties);
-    if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(selectedAreaType.data).filter(
-      element => element.id === value.toString(),
-    )[0];
-    if (value) this.innerElementChange(parentLayer, toLoad);
-  }
-
   /**
-   * Highlight sub-layer by clicking on the specific category on the graph
+   * Handle events happened on graphs
    *
    * @param {String} idCategory id of category selected on the map
    */
@@ -319,23 +312,23 @@ class Search extends Component {
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
     selectedSubLayer.eachLayer((layer) => {
+      // 'switch' for strategic ecosystem selected
+      switch (idCategory) {
+        case 'paramo':
+        case 'wetland':
+        case 'dryForest':
+        case 'aTotal':
+          this.switchLayer(idCategory);
+          this.setTimelineHFData(tooltipLabel[idCategory]);
+          break;
+        // no default
+      }
+      // 'if' to highlight feature on map
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
           weight: 1,
           fillOpacity: 1,
         });
-        switch (idCategory) {
-          case 'paramo':
-          case 'wetland':
-          case 'dryForest':
-            this.setTimelineHFData(tooltipLabel[idCategory]);
-            break;
-          default:
-            this.setState({
-              hfTimelineArea: null,
-            });
-            break;
-        }
       } else {
         selectedSubLayer.resetStyle(layer);
       }
@@ -360,7 +353,7 @@ class Search extends Component {
   );
 
   /**
-   * Switch layer based on accordion opened tab
+   * Switch layer based on graph showed
    *
    * @param {String} layerType layer type
    */
@@ -373,8 +366,8 @@ class Search extends Component {
       loadingModal: true,
       activeLayer: selectedArea,
       requestSource: null,
+      hfTimelineArea: null,
     });
-
     switch (layerType) {
       case 'fc':
         return (
@@ -432,20 +425,34 @@ class Search extends Component {
             })
             .catch(() => this.reportDataError())
         );
-      case 'hfTimeline':
+      case 'paramo':
+      case 'dryForest':
+      case 'wetland':
         return (
-          RestAPI.requestHFTimelineGeometry()
-            .then((res) => {
+          Promise.all([
+            RestAPI.requestHFGeometryBySEInGeofence(layerType),
+            RestAPI.requestHFPersistenceGeometry(),
+          ])
+            .then(([res, res1]) => {
               if (res.features) {
                 this.shutOffAllLayers();
                 this.setState(prevState => ({
                   layers: {
                     ...prevState.layers,
+                    base: {
+                      displayName: 'aTotal',
+                      id: 'aTotal',
+                      active: true,
+                      type: 'aTotal',
+                      layer: L.geoJSON(res1, {
+                        style: this.featureStyle('hfPersistence'),
+                      }),
+                    },
                     [selectedArea.id]: {
                       displayName: selectedArea.name,
                       id: selectedArea.id,
                       active: true,
-                      type: 'hfTimeline',
+                      type: layerType,
                       layer: L.geoJSON(res, {
                         style: this.featureStyle(layerType),
                         onEachFeature: (feature, selectedLayer) => (
@@ -458,8 +465,34 @@ class Search extends Component {
                 }));
               } else this.reportDataError();
             })
+            .catch(() => this.reportDataError()),
+          RestAPI.requestHFPersistenceGeometry()
+            .then((res) => {
+              if (res.features) {
+                this.setState(prevState => ({
+                  layers: {
+                    ...prevState.layers,
+                    [selectedArea.id]: {
+                      displayName: selectedArea.name,
+                      id: selectedArea.id,
+                      active: true,
+                      type: 'hfPersistence',
+                      layer: L.geoJSON(res, {
+                        style: this.featureStyle('hfPersistence'),
+                        onEachFeature: (feature, selectedLayer) => (
+                          this.featureActions(selectedLayer, selectedArea.id)
+                        ),
+                      }),
+                    },
+                  },
+                  loadingModal: false,
+                }));
+              } else this.reportDataError();
+            })
             .catch(() => this.reportDataError())
         );
+      case 'aTotal':
+      case 'hfTimeline':
       case 'hfPersistence':
         return (
           RestAPI.requestHFPersistenceGeometry()
@@ -475,7 +508,7 @@ class Search extends Component {
                       active: true,
                       type: 'hfPersistence',
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
+                        style: this.featureStyle('hfPersistence'),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(selectedLayer, selectedArea.id)
                         ),
@@ -530,7 +563,7 @@ class Search extends Component {
         },
       }));
     } else if (show && idLayer && idLayer !== 'se') {
-      const { request, source } = RestAPI.requestGeofenceGeometry(idLayer);
+      const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 

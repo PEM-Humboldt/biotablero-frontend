@@ -4,7 +4,9 @@ import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
 import tmpHFPersistence from './tmp_hf_persistence.json';
 import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
-import tmpHFTimelineGeo from './tmp_hf_timeline_geo.json';
+import tmpHFTDryForestGeo from './tmp_hf_timeline_dryForest_geo.json';
+import tmpHFTParamoGeo from './tmp_hf_timeline_paramo_geo.json';
+import tmpHFTWetlandGeo from './tmp_hf_timeline_wetland_geo.json';
 
 class RestAPI {
   /**
@@ -262,10 +264,27 @@ class RestAPI {
    * @return {Object} Including Promise with layer object to load in map and source reference to
    * cancel the request
    */
-  static requestGeofenceGeometry(areaId) {
+  static requestNationalGeometryByArea(areaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Request a specific geofence geometry identified by area and geofence
+   *
+   * @param {String} areaId area id to request
+   * @param {String} geofenceId geofence id to request
+   *
+   * @return {Object} Including Promise with layer object to load in map and source reference to
+   * cancel the request
+   */
+  static requestGeofenceGeometryByArea(areaId, geofenceId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -283,15 +302,26 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated for the footprint timeline in the given area.
+   * According to the strategic ecosystem type, get the footprint timeline geometry
+   * associated to the selected area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestHFTimelineGeometry() {
-    return Promise.resolve(tmpHFTimelineGeo);
+  static requestHFGeometryBySEInGeofence(/* areaType, areaId, */ seType) {
+    switch (seType) {
+      case 'dryForest':
+        return Promise.resolve(tmpHFTDryForestGeo);
+      case 'paramo':
+        return Promise.resolve(tmpHFTParamoGeo);
+      case 'wetland':
+        return Promise.resolve(tmpHFTWetlandGeo);
+      // no default
+    }
+    return undefined;
   }
 
   /**
