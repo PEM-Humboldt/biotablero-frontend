@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
-import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
@@ -40,16 +39,6 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayer: null,
-      colors: ['#d49242',
-        '#e9c948',
-        '#b3b638',
-        '#acbf3b',
-        '#92ba3a',
-        '#70b438',
-        '#5f8f2c',
-        '#667521',
-        '#75680f',
-        '#7b6126'],
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -634,7 +623,6 @@ class Search extends Component {
   /** LISTENER FOR BUTTONS ON LATERAL PANEL */
   /** ************************************* */
 
-  // TODO: Return from biome to the selected environmental authority
   handlerBackButton = () => {
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -671,7 +659,6 @@ class Search extends Component {
       subLayerName,
       hfTimelineArea,
       loadingModal,
-      colors,
       layers,
       connError,
       dataError,
@@ -782,7 +769,8 @@ class Search extends Component {
                 handlerClickOnGraph={this.clickOnGraph}
               />
             )}
-            { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
+            {/* // TODO: This functionality should be implemented again
+             selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
               <NationalInsigths
                 area={selectedAreaType}
                 colors={colors}
@@ -790,7 +778,7 @@ class Search extends Component {
                 handlerBackButton={this.handlerBackButton}
                 id
               />
-            )}
+             ) */}
           </div>
         </div>
       </div>
