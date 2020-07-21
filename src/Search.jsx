@@ -523,7 +523,7 @@ class Search extends Component {
         },
       }));
     } else if (show && idLayer && idLayer !== 'se') {
-      const { request, source } = RestAPI.requestGeofenceGeometry(idLayer);
+      const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 
