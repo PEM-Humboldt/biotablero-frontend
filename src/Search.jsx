@@ -426,7 +426,7 @@ class Search extends Component {
       case 'dryForest':
       case 'wetland':
         return (
-          RestAPI.requestSEGeometryInGeofence(layerType)
+          RestAPI.requestHFGeometryBySEInGeofence(layerType)
             .then((res) => {
               if (res.features) {
                 this.shutOffAllLayers();

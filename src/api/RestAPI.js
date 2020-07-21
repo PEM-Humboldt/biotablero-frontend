@@ -302,7 +302,8 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated for the footprint timeline in the given area.
+   * According to the strategic ecosystem type, get the footprint timeline geometry
+   * associated to the selected area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
@@ -310,7 +311,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestSEGeometryInGeofence(/* areaType, areaId, */ seType) {
+  static requestHFGeometryBySEInGeofence(/* areaType, areaId, */ seType) {
     switch (seType) {
       case 'dryForest':
         return Promise.resolve(tmpHFTDryForestGeo);
