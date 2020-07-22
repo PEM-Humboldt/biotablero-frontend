@@ -49,7 +49,6 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      hfTimelineArea: null,
     };
   }
 
@@ -85,24 +84,6 @@ class Search extends Component {
       });
     }
   };
-
-  /**
-   * Set in state hfTimelineArea area details for strategic ecosystems (SE) in the selected area
-   *
-   * @param {string} seType type of strategic ecosystem to request
-   */
-  setTimelineHFData = (seType) => {
-    const { selectedAreaTypeId, selectedAreaId } = this.props;
-    if (seType !== 'aTotal') {
-      RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
-        .then((value) => {
-          const res = { ...value, type: seType };
-          this.setState({
-            hfTimelineArea: res,
-          });
-        });
-    }
-  }
 
   /**
    * Recover all geofences by default available in the
@@ -308,7 +289,6 @@ class Search extends Component {
         case 'dryForest':
         case 'aTotal':
           this.switchLayer(idCategory);
-          this.setTimelineHFData(tooltipLabel[idCategory]);
           break;
         // no default
       }
@@ -355,7 +335,6 @@ class Search extends Component {
       loadingModal: true,
       activeLayer: selectedArea,
       requestSource: null,
-      hfTimelineArea: null,
     });
     switch (layerType) {
       case 'fc':
@@ -657,7 +636,6 @@ class Search extends Component {
       selectedAreaType,
       selectedArea,
       subLayerName,
-      hfTimelineArea,
       loadingModal,
       layers,
       connError,
@@ -758,7 +736,6 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                hfTimelineArea={hfTimelineArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 id

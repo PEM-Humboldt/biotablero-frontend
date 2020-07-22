@@ -61,14 +61,9 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      hfCurrent,
-      hfCurrentValue,
-      hfPersistence,
-      hfTimeline,
       area: { name, id },
-      geofence,
+      geofenceId,
       matchColor,
-      hfTimelineArea,
       handlerClickOnGraph,
     } = this.props;
 
@@ -83,7 +78,7 @@ class Landscape extends React.Component {
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
-          geofence={geofence}
+          geofenceId={geofenceId}
           areaId={id}
           matchColor={matchColor}
         />,
@@ -99,11 +94,8 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            hfCurrent={hfCurrent}
-            hfCurrentValue={hfCurrentValue}
-            hfPersistence={hfPersistence}
-            hfTimeline={hfTimeline}
-            hfTimelineArea={hfTimelineArea}
+            geofenceId={geofenceId}
+            areaId={id}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -123,25 +115,18 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  hfCurrent: PropTypes.array,
-  hfCurrentValue: PropTypes.number,
-  hfPersistence: PropTypes.array,
-  hfTimeline: PropTypes.array,
   area: PropTypes.object.isRequired,
-  geofence: PropTypes.object.isRequired,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   matchColor: PropTypes.func,
-  hfTimelineArea: PropTypes.object,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
 };
 
 Landscape.defaultProps = {
-  hfCurrent: [],
-  hfCurrentValue: 0,
-  hfPersistence: [],
-  hfTimeline: [],
   matchColor: () => {},
-  hfTimelineArea: {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},
 };

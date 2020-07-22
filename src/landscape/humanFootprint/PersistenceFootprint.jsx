@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../../commons/ShortInfo';
+
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
+import RestAPI from '../../api/RestAPI';
+import ShortInfo from '../../commons/ShortInfo';
 
 const getLabel = {
   estable_natural: 'Estable Natural',
@@ -16,7 +18,21 @@ class PersistenceFootprint extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
+      hfPersistence: [],
     };
+  }
+
+  componentDidMount() {
+    RestAPI.requestHFPersistence()
+      .then((res) => {
+        this.setState({
+          hfPersistence: res.map(item => ({
+            ...item,
+            label: getLabel[item.key],
+          })),
+        });
+      })
+      .catch(() => {});
   }
 
   /**
@@ -29,8 +45,8 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { data, onClickGraphHandler } = this.props;
-    const { showInfoGraph } = this.state;
+    const { onClickGraphHandler } = this.props;
+    const { showInfoGraph, hfPersistence } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -65,10 +81,7 @@ class PersistenceFootprint extends React.Component {
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
-            data={data.map(item => ({
-              ...item,
-              label: getLabel[item.key],
-            }))}
+            data={hfPersistence}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
@@ -83,7 +96,6 @@ class PersistenceFootprint extends React.Component {
 }
 
 PersistenceFootprint.propTypes = {
-  data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
 };
 

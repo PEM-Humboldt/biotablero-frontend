@@ -8,13 +8,10 @@ import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
 
 const HumanFootprint = (props) => {
   const {
-    hfCurrent,
-    hfCurrentValue,
-    hfPersistence,
-    hfTimeline,
-    hfTimelineArea,
     handlerClickOnGraph,
     handlerAccordionGeometry,
+    areaId,
+    geofenceId,
   } = props;
 
   const componentsArray = [
@@ -29,8 +26,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <CurrentFootprint
-          data={hfCurrent}
-          hfCurrentValue={hfCurrentValue}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -46,9 +41,9 @@ const HumanFootprint = (props) => {
       },
       component: (
         <TimelineFootprint
-          data={hfTimeline}
           onClickGraphHandler={handlerClickOnGraph}
-          hfTimelineArea={hfTimelineArea}
+          areaId={areaId}
+          geofenceId={geofenceId}
         />
       ),
     },
@@ -63,7 +58,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <PersistenceFooprint
-          data={hfPersistence}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -83,21 +77,16 @@ const HumanFootprint = (props) => {
 };
 
 HumanFootprint.propTypes = {
-  hfCurrent: PropTypes.array,
-  hfCurrentValue: PropTypes.number,
-  hfPersistence: PropTypes.array,
-  hfTimeline: PropTypes.array,
-  hfTimelineArea: PropTypes.object,
   handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  areaId: PropTypes.string.isRequired,
 };
 
 HumanFootprint.defaultProps = {
-  hfCurrent: [],
-  hfCurrentValue: 0,
-  hfPersistence: [],
-  hfTimeline: [],
-  hfTimelineArea: {},
   handlerClickOnGraph: () => {},
   handlerAccordionGeometry: () => {},
 };

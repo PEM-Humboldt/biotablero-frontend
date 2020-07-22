@@ -19,25 +19,23 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
-    const { geofence, areaId } = this.props;
-
-    const searchId = geofence.id || geofence.name;
+    const { geofenceId, areaId } = this.props;
 
     if (areaId !== 'ea') return;
 
-    RestAPI.requestBiomes(areaId, searchId)
+    RestAPI.requestBiomes(areaId, geofenceId)
       .then((res) => {
         this.setState({ biomes: this.processData(res) });
       })
       .catch(() => {});
 
-    RestAPI.requestCompensationFactor(areaId, searchId)
+    RestAPI.requestCompensationFactor(areaId, geofenceId)
       .then((res) => {
         this.setState({ fc: this.processData(res) });
       })
       .catch(() => {});
 
-    RestAPI.requestBioticUnits(areaId, searchId)
+    RestAPI.requestBioticUnits(areaId, geofenceId)
       .then((res) => {
         this.setState({ bioticUnits: this.processData(res) });
       })
@@ -149,11 +147,11 @@ class CompensationFactor extends React.Component {
 }
 
 CompensationFactor.propTypes = {
-  areaId: PropTypes.oneOfType([
+  geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
-  geofence: PropTypes.object.isRequired,
+  areaId: PropTypes.string.isRequired,
   matchColor: PropTypes.func,
 };
 

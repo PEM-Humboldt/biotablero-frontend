@@ -24,14 +24,7 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
-      data: {
-        generalArea: 0,
-        hfCurrent: [],
-        hfCurrentValue: 0,
-        hfPersistence: [],
-        hfTimeline: [],
-      },
+      geofenceArea: 0,
     };
   }
 
@@ -48,77 +41,14 @@ class Drawer extends React.Component {
 
     RestAPI.requestGeofenceDetails(area.id, searchId)
       .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            generalArea: Number(res.total_area),
-          },
-        }));
+        this.setState({ geofenceArea: Number(res.total_area) });
       })
       .catch(() => {});
-
-    RestAPI.requestCurrentHF()
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfCurrent: res,
-          },
-        }));
-      })
-      .catch(() => {});
-
-    RestAPI.requestHFPersistence()
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfPersistence: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfPersistence: false,
-          },
-        }));
-      });
-
-    RestAPI.requestHFTimeline()
-      .then((res) => {
-        const aTotalData = res.find(o => o.key === 'aTotal').data;
-        const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
-        const hfCurrentValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfTimeline: res,
-            hfCurrentValue,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfTimeline: false,
-          },
-        }));
-      });
   }
 
   render() {
     const {
       geofence,
-      hfTimelineArea,
       handlerBackButton,
       subLayerName,
       area,
@@ -128,13 +58,7 @@ class Drawer extends React.Component {
       handlerClickOnGraph,
     } = this.props;
     const {
-      data: {
-        generalArea,
-        hfCurrent,
-        hfCurrentValue,
-        hfPersistence,
-        hfTimeline,
-      },
+      geofenceArea,
     } = this.state;
     return (
       <div className="informer">
@@ -149,7 +73,7 @@ class Drawer extends React.Component {
           <div className="HAgen">
             <h4>
               hectáreas totales
-              <b>{`${numberWithCommas(generalArea.toFixed(0))} ha`}</b>
+              <b>{`${numberWithCommas(geofenceArea.toFixed(0))} ha`}</b>
             </h4>
           </div>
         </div>
@@ -165,7 +89,7 @@ class Drawer extends React.Component {
           >
             <div>
               <Overview
-                generalArea={Number(generalArea)}
+                generalArea={Number(geofenceArea)}
                 areaId={area.id}
                 geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
                 matchColor={matchColor}
@@ -173,14 +97,9 @@ class Drawer extends React.Component {
             </div>
             <div>
               <Landscape
-                hfCurrent={hfCurrent}
-                hfCurrentValue={hfCurrentValue}
-                hfPersistence={hfPersistence}
-                hfTimeline={hfTimeline}
                 area={area}
-                geofence={geofence}
+                geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
                 matchColor={matchColor}
-                hfTimelineArea={hfTimelineArea}
                 handlerSwitchLayer={handlerSwitchLayer}
                 handlerClickOnGraph={handlerClickOnGraph}
               />
@@ -196,11 +115,10 @@ class Drawer extends React.Component {
           </TabContainer>
         )}
         {/* // TODO: This functionality should be implemented again
-          subLayerName && hfTimelineArea && (
+          subLayerName && (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={hfTimelineArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -218,7 +136,6 @@ Drawer.propTypes = {
   area: PropTypes.object.isRequired,
   geofence: PropTypes.object,
   handlerBackButton: PropTypes.func,
-  hfTimelineArea: PropTypes.object,
   subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
@@ -228,7 +145,6 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   geofence: { id: NaN, name: '' },
-  hfTimelineArea: {},
   subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},

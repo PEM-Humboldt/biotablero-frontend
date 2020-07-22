@@ -1,16 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../../commons/ShortInfo';
+
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
+import RestAPI from '../../api/RestAPI';
+import ShortInfo from '../../commons/ShortInfo';
 
 class CurrentFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showInfoGraph: false,
+      hfCurrent: [],
+      hfCurrentValue: 0,
     };
+  }
+
+  componentDidMount() {
+    RestAPI.requestCurrentHF()
+      .then((res) => {
+        this.setState({
+          hfCurrent: res.map(item => ({
+            ...item,
+            label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
+          })),
+        });
+      })
+      .catch(() => {});
+    // TODO: Change this request and logic when the correct endpoint is ready
+    RestAPI.requestHFTimeline()
+      .then((res) => {
+        const aTotalData = res.find(o => o.key === 'aTotal').data;
+        const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
+        const hfCurrentValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
+        this.setState({ hfCurrentValue });
+      })
+      .catch(() => {});
   }
 
   /**
@@ -23,11 +49,8 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const {
-      data,
-      hfCurrentValue,
-      onClickGraphHandler,
-    } = this.props;
+    const { onClickGraphHandler } = this.props;
+    const { hfCurrent, hfCurrentValue } = this.state;
     const { showInfoGraph } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -71,10 +94,7 @@ class CurrentFootprint extends React.Component {
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
-            data={data.map(item => ({
-              ...item,
-              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
-            }))}
+            data={hfCurrent}
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
@@ -89,13 +109,10 @@ class CurrentFootprint extends React.Component {
 }
 
 CurrentFootprint.propTypes = {
-  data: PropTypes.array.isRequired,
-  hfCurrentValue: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
 };
 
 CurrentFootprint.defaultProps = {
-  hfCurrentValue: 0,
   onClickGraphHandler: () => {},
 };
 
