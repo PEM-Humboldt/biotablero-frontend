@@ -12,15 +12,6 @@ import GraphLoader from '../charts/GraphLoader';
  */
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
-/**
-   * Calculate percentage for a given value according to total
-   *
-   * @param {number} part value for the given part
-   * @param {number} total value obtained by adding all parts
-   * @returns {number} percentage associated to each part
-   */
-const getPercentage = (part, total) => (part / total);
-
 class EcosystemsBox extends Component {
   constructor(props) {
     super(props);
@@ -54,16 +45,6 @@ class EcosystemsBox extends Component {
       showGraphs: !prevState.stopLoad ? loaded : false,
     }));
   }
-
-  preProcessData = (name, area, total) => ([
-    {
-      key: name,
-      area: Number(area),
-      percentage: getPercentage(Number(area), total),
-      label: name,
-    },
-    { key: 'NA', area: (total - area), percentage: getPercentage((total - area), total) },
-  ])
 
   render() {
     const {
@@ -102,7 +83,19 @@ class EcosystemsBox extends Component {
               {!stopLoad && (Number(item.area) !== 0) && (
                 <GraphLoader
                   graphType="SmallBarStackGraph"
-                  data={this.preProcessData(item.type, item.area, total)}
+                  data={[
+                    {
+                      key: item.type,
+                      area: Number(item.area),
+                      percentage: item.percentage,
+                      label: item.type,
+                    },
+                    {
+                      key: 'NA',
+                      area: (total - item.area),
+                      percentage: (total - item.area) / total,
+                    },
+                  ]}
                   units="ha"
                   colors={matchColor('se')}
                 />
@@ -112,7 +105,10 @@ class EcosystemsBox extends Component {
                   <DetailsView
                     areaId={areaId}
                     geofenceId={geofenceId}
-                    item={item}
+                    item={{
+                      ...item,
+                      percentage: item.percentage * 100,
+                    }}
                     matchColor={matchColor}
                   />
                 </div>

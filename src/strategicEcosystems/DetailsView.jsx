@@ -92,45 +92,21 @@ class DetailsView extends Component {
     if (!stopLoad) {
       RestAPI.requestSEDetailInArea(areaId, geofenceId, name)
         .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            seDetail: res.national_percentage,
-          }));
+          this.setState({ seDetail: res.national_percentage * 100 });
         })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            seDetail: 0,
-          }));
-        });
+        .catch(() => {});
 
       RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            seCoverage: res,
-          }));
+          this.setState({ seCoverage: res });
         })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            seCoverage: [],
-          }));
-        });
+        .catch(() => {});
 
       RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            sePA: res,
-          }));
+          this.setState({ sePA: res });
         })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            sePA: [],
-          }));
-        });
+        .catch(() => {});
     }
   }
 
