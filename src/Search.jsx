@@ -460,7 +460,7 @@ class Search extends Component {
                       active: true,
                       type: layerType,
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
+                        style: this.featureStyle('hfTimeline'),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(selectedLayer, selectedArea.id)
                         ),
