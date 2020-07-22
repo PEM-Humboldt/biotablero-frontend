@@ -358,7 +358,11 @@ class Search extends Component {
    * @param {String} layerType layer type
    */
   switchLayer = (layerType) => {
-    const { requestSource, selectedArea } = this.state;
+    const {
+      requestSource,
+      selectedArea,
+      selectedAreaType,
+    } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
@@ -430,7 +434,9 @@ class Search extends Component {
       case 'wetland':
         return (
           Promise.all([
-            RestAPI.requestHFGeometryBySEInGeofence(layerType),
+            RestAPI.requestHFGeometryBySEInGeofence(
+              selectedAreaType.id, selectedArea.id, layerType,
+            ),
             RestAPI.requestHFPersistenceGeometry(),
           ])
             .then(([res, res1]) => {
