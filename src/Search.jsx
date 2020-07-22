@@ -43,7 +43,6 @@ class Search extends Component {
       dataError: false,
       geofencesArray: [],
       areaList: [],
-      subLayerName: null,
       layers: {},
       loadingModal: false,
       selectedAreaType: null,
@@ -635,7 +634,6 @@ class Search extends Component {
     const {
       selectedAreaType,
       selectedArea,
-      subLayerName,
       loadingModal,
       layers,
       connError,
@@ -738,8 +736,6 @@ class Search extends Component {
                 area={selectedAreaType}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
-                id
-                subLayerName={subLayerName}
                 matchColor={matchColor}
                 handlerShutOffAllLayers={this.shutOffAllLayers}
                 handlerSwitchLayer={this.switchLayer}

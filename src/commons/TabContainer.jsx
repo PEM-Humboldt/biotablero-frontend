@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -68,12 +67,9 @@ class TabContainer extends React.Component {
 }
 
 TabContainer.propTypes = {
-  // Array of elements to print in each tab content (order should match titles order)
   children: PropTypes.node.isRequired,
-  // Array of objects with info for each tab title (attributes: label, icon)
   initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
-  // Extra clases for 'Tab' component
   tabClasses: PropTypes.string,
   handlerShutOffAllLayers: PropTypes.func,
 };

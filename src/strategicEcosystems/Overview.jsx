@@ -197,7 +197,10 @@ class Overview extends React.Component {
 Overview.propTypes = {
   generalArea: PropTypes.number,
   areaId: PropTypes.string.isRequired,
-  geofenceId: PropTypes.string.isRequired,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   matchColor: PropTypes.func,
 };
 

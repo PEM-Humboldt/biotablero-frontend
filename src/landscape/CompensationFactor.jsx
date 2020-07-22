@@ -156,7 +156,6 @@ CompensationFactor.propTypes = {
 };
 
 CompensationFactor.defaultProps = {
-
   matchColor: () => {},
 };
 

@@ -169,15 +169,17 @@ class DetailsView extends Component {
 
 DetailsView.propTypes = {
   areaId: PropTypes.string,
-  geofenceId: PropTypes.string,
-  item: PropTypes.object,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  item: PropTypes.object.isRequired,
   matchColor: PropTypes.func,
 };
 
 DetailsView.defaultProps = {
   areaId: 0,
   geofenceId: 0,
-  item: {},
   matchColor: () => {},
 };
 

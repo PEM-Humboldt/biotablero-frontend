@@ -128,7 +128,10 @@ class EcosystemsBox extends Component {
 
 EcosystemsBox.propTypes = {
   areaId: PropTypes.string,
-  geofenceId: PropTypes.string,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   listSE: PropTypes.array,
   total: PropTypes.number,
   matchColor: PropTypes.func,
