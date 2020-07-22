@@ -319,9 +319,9 @@ class RestAPI {
         return Promise.resolve(tmpHFTParamoGeo);
       case 'wetland':
         return Promise.resolve(tmpHFTWetlandGeo);
-      // no default
+      default:
+        return undefined;
     }
-    return undefined;
   }
 
   /**
