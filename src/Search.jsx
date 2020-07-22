@@ -312,17 +312,6 @@ class Search extends Component {
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
     selectedSubLayer.eachLayer((layer) => {
-      // 'switch' for strategic ecosystem selected
-      switch (idCategory) {
-        case 'paramo':
-        case 'wetland':
-        case 'dryForest':
-        case 'aTotal':
-          this.switchLayer(idCategory);
-          this.setTimelineHFData(tooltipLabel[idCategory]);
-          break;
-        // no default
-      }
       // 'if' to highlight feature on map
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
@@ -333,6 +322,18 @@ class Search extends Component {
         selectedSubLayer.resetStyle(layer);
       }
     });
+    // 'switch' for strategic ecosystem selected
+    switch (idCategory) {
+      case 'paramo':
+      case 'wetland':
+      case 'dryForest':
+      case 'aTotal':
+        this.switchLayer(idCategory);
+        this.setTimelineHFData(tooltipLabel[idCategory]);
+        break;
+      default:
+        break;
+    }
   };
 
   /**
