@@ -200,12 +200,12 @@ class Search extends Component {
    * @param {String} type layer type
    * @param {Object} feature target object
    */
-  featureStyle = type => (feature) => {
+  featureStyle = (type, fillOpacity) => (feature) => {
     const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
       stroke: false,
       fillColor: matchColor(type)(key),
-      fillOpacity: 0.7,
+      fillOpacity: fillOpacity || 0.7,
     };
     return styleReturn;
   }
@@ -312,17 +312,6 @@ class Search extends Component {
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
     selectedSubLayer.eachLayer((layer) => {
-      // 'switch' for strategic ecosystem selected
-      switch (idCategory) {
-        case 'paramo':
-        case 'wetland':
-        case 'dryForest':
-        case 'aTotal':
-          this.switchLayer(idCategory);
-          this.setTimelineHFData(tooltipLabel[idCategory]);
-          break;
-        // no default
-      }
       // 'if' to highlight feature on map
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
@@ -333,6 +322,18 @@ class Search extends Component {
         selectedSubLayer.resetStyle(layer);
       }
     });
+    // 'switch' for strategic ecosystem selected
+    switch (idCategory) {
+      case 'paramo':
+      case 'wetland':
+      case 'dryForest':
+      case 'aTotal':
+        this.switchLayer(idCategory);
+        this.setTimelineHFData(tooltipLabel[idCategory]);
+        break;
+      default:
+        break;
+    }
   };
 
   /**
@@ -451,7 +452,8 @@ class Search extends Component {
                       active: true,
                       type: 'aTotal',
                       layer: L.geoJSON(res1, {
-                        style: this.featureStyle('hfPersistence'),
+                        style: this.featureStyle('hfPersistence', 0.3),
+                        interactive: false,
                       }),
                     },
                     [selectedArea.id]: {
@@ -460,7 +462,7 @@ class Search extends Component {
                       active: true,
                       type: layerType,
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle('hfTimeline'),
+                        style: this.featureStyle('hfTimeline', 1),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(selectedLayer, selectedArea.id)
                         ),
