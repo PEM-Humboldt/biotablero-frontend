@@ -104,15 +104,13 @@ class Search extends Component {
    */
   setTimelineHFData = (seType) => {
     const { selectedAreaTypeId, selectedAreaId } = this.props;
-    if (seType !== 'aTotal') {
-      RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
-        .then((value) => {
-          const res = { ...value, type: seType };
-          this.setState({
-            hfTimelineArea: res,
-          });
+    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
+      .then((value) => {
+        const res = { ...value, type: seType };
+        this.setState({
+          hfTimelineArea: res,
         });
-    }
+      });
   }
 
   /**
@@ -327,11 +325,11 @@ class Search extends Component {
       case 'paramo':
       case 'wetland':
       case 'dryForest':
-      case 'aTotal':
         this.switchLayer(idCategory);
         this.setTimelineHFData(tooltipLabel[idCategory]);
         break;
       default:
+        this.setState({ hfTimelineArea: null });
         break;
     }
   };
