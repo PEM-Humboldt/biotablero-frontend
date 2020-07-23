@@ -447,6 +447,7 @@ class Search extends Component {
                       type: 'aTotal',
                       layer: L.geoJSON(res1, {
                         style: this.featureStyle('hfPersistence'),
+                        interactive: false,
                       }),
                     },
                     [selectedArea.id]: {
