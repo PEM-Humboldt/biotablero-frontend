@@ -66,23 +66,11 @@ export default {
     '#cf324e',
     '#cf324e',
     '#878cae',
-    '#29418a', // paramo selected
+    '#29418a',
     '#a8daca',
-    '#3cb58e', // wetlands selected
+    '#3cb58e',
     '#e8cc8e',
-    '#ccb325', // tropical dry forest selected
-  ],
-  paramo: [
-    '#878cae',
-    '#29418a', // paramo selected
-  ],
-  dryForest: [
-    '#a8daca',
-    '#3cb58e', // wetlands selected
-  ],
-  wetland: [
-    '#e8cc8e',
-    '#ccb325', // tropical dry forest selected
+    '#ccb325',
   ],
   hfCurrent: [
     '#3fbf9f',

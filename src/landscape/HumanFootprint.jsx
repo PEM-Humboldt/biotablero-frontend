@@ -32,6 +32,21 @@ const HumanFootprint = (props) => {
     },
     {
       label: {
+        id: 'hfPersistence',
+        name: 'Persistencia',
+        disabled: false,
+        expandIcon: <AddIcon />,
+        detailId: 'Persistencia de la huella humana en la unidad de consulta',
+        description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
+      },
+      component: (
+        <PersistenceFooprint
+          onClickGraphHandler={handlerClickOnGraph}
+        />
+      ),
+    },
+    {
+      label: {
         id: 'hfTimeline',
         name: 'Histórico y Ecosistémas estratégicos (EE)',
         disabled: false,
@@ -44,21 +59,6 @@ const HumanFootprint = (props) => {
           onClickGraphHandler={handlerClickOnGraph}
           areaId={areaId}
           geofenceId={geofenceId}
-        />
-      ),
-    },
-    {
-      label: {
-        id: 'hfPersistence',
-        name: 'Persistencia',
-        disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Persistencia de la huella humana en la unidad de consulta',
-        description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
-      },
-      component: (
-        <PersistenceFooprint
-          onClickGraphHandler={handlerClickOnGraph}
         />
       ),
     },

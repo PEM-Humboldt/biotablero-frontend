@@ -311,7 +311,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestHFGeometryBySEInGeofence(/* areaType, areaId, */ seType) {
+  static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
     switch (seType) {
       case 'dryForest':
         return Promise.resolve(tmpHFTDryForestGeo);
@@ -319,9 +319,9 @@ class RestAPI {
         return Promise.resolve(tmpHFTParamoGeo);
       case 'wetland':
         return Promise.resolve(tmpHFTWetlandGeo);
-      // no default
+      default:
+        return undefined;
     }
-    return undefined;
   }
 
   /**
