@@ -200,12 +200,12 @@ class Search extends Component {
    * @param {String} type layer type
    * @param {Object} feature target object
    */
-  featureStyle = type => (feature) => {
+  featureStyle = (type, fillOpacity) => (feature) => {
     const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
     const styleReturn = {
       stroke: false,
       fillColor: matchColor(type)(key),
-      fillOpacity: 0.7,
+      fillOpacity: fillOpacity || 0.7,
     };
     return styleReturn;
   }
@@ -446,7 +446,7 @@ class Search extends Component {
                       active: true,
                       type: 'aTotal',
                       layer: L.geoJSON(res1, {
-                        style: this.featureStyle('hfPersistence'),
+                        style: this.featureStyle('hfPersistence', 0.3),
                         interactive: false,
                       }),
                     },
@@ -456,7 +456,7 @@ class Search extends Component {
                       active: true,
                       type: layerType,
                       layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
+                        style: this.featureStyle(layerType, 1),
                         onEachFeature: (feature, selectedLayer) => (
                           this.featureActions(selectedLayer, selectedArea.id)
                         ),
