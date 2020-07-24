@@ -37,10 +37,10 @@ const match = {
       'aTotalSel',
       'paramo',
       'paramoSel',
-      'wetland',
-      'wetlandSel',
       'dryForest',
       'dryForestSel',
+      'wetland',
+      'wetlandSel',
     ],
   },
   hfCurrent: {
