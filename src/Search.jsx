@@ -218,7 +218,6 @@ class Search extends Component {
   highlightFeature = (event, parentLayer) => {
     const { activeLayer, selectedAreaType, layers } = this.state;
     const point = event.target;
-    const activeGeometryType = layers[activeLayer.id].type;
     const areaPopup = {
       closeButton: false,
     };
@@ -232,8 +231,8 @@ class Search extends Component {
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
         areaPopup,
       ).openPopup();
-    }
-    if (activeLayer && (parentLayer === activeLayer.id)) {
+    } else if (activeLayer && (parentLayer === activeLayer.id)) {
+      const activeGeometryType = layers[activeLayer.id] ? layers[activeLayer.id].type : null;
       switch (activeGeometryType) {
         case 'fc':
           point.bindPopup(
