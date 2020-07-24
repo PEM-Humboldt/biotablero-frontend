@@ -15,9 +15,9 @@ class Landscape extends React.Component {
   }
 
   componentDidMount() {
-    const { area: { name }, handlerSwitchLayer } = this.props;
+    const { areaId, handlerSwitchLayer } = this.props;
     this.setState({ expandedLevel2: 'hfCurrent' });
-    if (name === 'Jurisdicciones ambientales') {
+    if (areaId === 'ea') {
       this.setState({ expandedLevel1: 'fc' });
       handlerSwitchLayer('fc');
     } else {
@@ -61,7 +61,7 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      area: { name, id },
+      areaId,
       geofenceId,
       matchColor,
       handlerClickOnGraph,
@@ -72,14 +72,14 @@ class Landscape extends React.Component {
         label: {
           id: 'fc',
           name: 'FC y Biomas',
-          disabled: name !== 'Jurisdicciones ambientales',
+          disabled: false,
           expandIcon: <AddIcon />,
           detailId: 'Factor de compensación en área de consulta',
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
           geofenceId={geofenceId}
-          areaId={id}
+          areaId={areaId}
           matchColor={matchColor}
         />,
       },
@@ -95,7 +95,7 @@ class Landscape extends React.Component {
         component: (
           <HumanFootprint
             geofenceId={geofenceId}
-            areaId={id}
+            areaId={areaId}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -115,7 +115,7 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  area: PropTypes.object.isRequired,
+  areaId: PropTypes.string.isRequired,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,

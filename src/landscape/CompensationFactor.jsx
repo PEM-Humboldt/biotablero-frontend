@@ -12,9 +12,9 @@ class CompensationFactor extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
-      biomes: [],
-      fc: [],
-      bioticUnits: [],
+      biomes: null,
+      fc: null,
+      bioticUnits: null,
     };
   }
 
@@ -76,6 +76,19 @@ class CompensationFactor extends React.Component {
       fc,
       bioticUnits,
     } = this.state;
+
+    if (!biomes || !bioticUnits || !fc) {
+      return (
+        <div className="graphcard" style={{ width: '100%' }}>
+          <h2>
+            Gráficas en construcción
+          </h2>
+          <p>
+            Pronto más información
+          </p>
+        </div>
+      );
+    }
     return (
       <div style={{ width: '100%' }}>
         <div className="graphinside">

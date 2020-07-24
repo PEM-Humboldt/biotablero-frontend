@@ -28,10 +28,6 @@ class Drawer extends React.Component {
     };
   }
 
-  componentWillMount() {
-    this.setState(null);
-  }
-
   componentDidMount() {
     const {
       geofence, area,
@@ -56,9 +52,11 @@ class Drawer extends React.Component {
       handlerSwitchLayer,
       handlerClickOnGraph,
     } = this.props;
+
     const {
       geofenceArea,
     } = this.state;
+
     return (
       <div className="informer">
         <div className="drawer_header">
@@ -95,7 +93,7 @@ class Drawer extends React.Component {
           </div>
           <div>
             <Landscape
-              area={area}
+              areaId={area.id}
               geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
               matchColor={matchColor}
               handlerSwitchLayer={handlerSwitchLayer}
