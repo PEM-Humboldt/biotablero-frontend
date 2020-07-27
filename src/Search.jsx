@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import MapViewer from './commons/MapViewer';
 import Selector from './commons/Selector';
 import Drawer from './search/Drawer';
-import NationalInsigths from './search/NationalInsigths';
 import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
@@ -40,27 +39,15 @@ class Search extends Component {
     super(props);
     this.state = {
       activeLayer: null,
-      colors: ['#d49242',
-        '#e9c948',
-        '#b3b638',
-        '#acbf3b',
-        '#92ba3a',
-        '#70b438',
-        '#5f8f2c',
-        '#667521',
-        '#75680f',
-        '#7b6126'],
       connError: false,
       dataError: false,
       geofencesArray: [],
       areaList: [],
-      subLayerName: null,
       layers: {},
       loadingModal: false,
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      hfTimelineArea: null,
     };
   }
 
@@ -96,22 +83,6 @@ class Search extends Component {
       });
     }
   };
-
-  /**
-   * Set in state hfTimelineArea area details for strategic ecosystems (SE) in the selected area
-   *
-   * @param {string} seType type of strategic ecosystem to request
-   */
-  setTimelineHFData = (seType) => {
-    const { selectedAreaTypeId, selectedAreaId } = this.props;
-    RestAPI.requestSEDetailInArea(selectedAreaTypeId, selectedAreaId, seType)
-      .then((value) => {
-        const res = { ...value, type: seType };
-        this.setState({
-          hfTimelineArea: res,
-        });
-      });
-  }
 
   /**
    * Recover all geofences by default available in the
@@ -247,7 +218,6 @@ class Search extends Component {
   highlightFeature = (event, parentLayer) => {
     const { activeLayer, selectedAreaType, layers } = this.state;
     const point = event.target;
-    const activeGeometryType = layers[activeLayer.id].type;
     const areaPopup = {
       closeButton: false,
     };
@@ -261,8 +231,8 @@ class Search extends Component {
          ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
         areaPopup,
       ).openPopup();
-    }
-    if (activeLayer && (parentLayer === activeLayer.id)) {
+    } else if (activeLayer && (parentLayer === activeLayer.id)) {
+      const activeGeometryType = layers[activeLayer.id] ? layers[activeLayer.id].type : null;
       switch (activeGeometryType) {
         case 'fc':
           point.bindPopup(
@@ -310,7 +280,6 @@ class Search extends Component {
     const { layers } = this.state;
     const selectedSubLayer = layers[activeLayer.id].layer;
     selectedSubLayer.eachLayer((layer) => {
-      // 'if' to highlight feature on map
       if (layer.feature.properties.key === idCategory) {
         layer.setStyle({
           weight: 1,
@@ -326,10 +295,8 @@ class Search extends Component {
       case 'wetland':
       case 'dryForest':
         this.switchLayer(idCategory);
-        this.setTimelineHFData(tooltipLabel[idCategory]);
         break;
       default:
-        this.setState({ hfTimelineArea: null });
         break;
     }
   };
@@ -369,7 +336,6 @@ class Search extends Component {
       loadingModal: true,
       activeLayer: selectedArea,
       requestSource: null,
-      hfTimelineArea: null,
     });
     switch (layerType) {
       case 'fc':
@@ -640,7 +606,6 @@ class Search extends Component {
   /** LISTENER FOR BUTTONS ON LATERAL PANEL */
   /** ************************************* */
 
-  // TODO: Return from biome to the selected environmental authority
   handlerBackButton = () => {
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -674,10 +639,7 @@ class Search extends Component {
     const {
       selectedAreaType,
       selectedArea,
-      subLayerName,
-      hfTimelineArea,
       loadingModal,
-      colors,
       layers,
       connError,
       dataError,
@@ -777,18 +739,16 @@ class Search extends Component {
             { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
               <Drawer
                 area={selectedAreaType}
-                hfTimelineArea={hfTimelineArea}
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
-                id
-                subLayerName={subLayerName}
                 matchColor={matchColor}
                 handlerShutOffAllLayers={this.shutOffAllLayers}
                 handlerSwitchLayer={this.switchLayer}
                 handlerClickOnGraph={this.clickOnGraph}
               />
             )}
-            { selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
+            {/* // TODO: This functionality should be implemented again
+             selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
               <NationalInsigths
                 area={selectedAreaType}
                 colors={colors}
@@ -796,7 +756,7 @@ class Search extends Component {
                 handlerBackButton={this.handlerBackButton}
                 id
               />
-            )}
+             ) */}
           </div>
         </div>
       </div>

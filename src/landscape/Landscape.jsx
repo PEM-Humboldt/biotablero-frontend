@@ -15,9 +15,9 @@ class Landscape extends React.Component {
   }
 
   componentDidMount() {
-    const { areaName, handlerSwitchLayer } = this.props;
+    const { areaId, handlerSwitchLayer } = this.props;
     this.setState({ expandedLevel2: 'hfCurrent' });
-    if (areaName === 'Jurisdicciones ambientales') {
+    if (areaId === 'ea') {
       this.setState({ expandedLevel1: 'fc' });
       handlerSwitchLayer('fc');
     } else {
@@ -61,32 +61,25 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      fc,
-      biomas,
-      distritos,
-      hfCurrent,
-      hfCurrentValue,
-      hfPersistence,
-      hfTimeline,
-      areaName,
+      areaId,
+      geofenceId,
       matchColor,
-      hfTimelineArea,
       handlerClickOnGraph,
     } = this.props;
+
     const componentsArray = [
       {
         label: {
           id: 'fc',
           name: 'FC y Biomas',
-          disabled: areaName !== 'Jurisdicciones ambientales',
+          disabled: false,
           expandIcon: <AddIcon />,
           detailId: 'Factor de compensación en área de consulta',
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
-          biomesData={biomas}
-          bioticRegionsData={distritos}
-          compensationFactorData={fc}
+          geofenceId={geofenceId}
+          areaId={areaId}
           matchColor={matchColor}
         />,
       },
@@ -101,11 +94,8 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            hfCurrent={hfCurrent}
-            hfCurrentValue={hfCurrentValue}
-            hfPersistence={hfPersistence}
-            hfTimeline={hfTimeline}
-            hfTimelineArea={hfTimelineArea}
+            geofenceId={geofenceId}
+            areaId={areaId}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -125,31 +115,18 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  fc: PropTypes.array,
-  biomas: PropTypes.array,
-  distritos: PropTypes.array,
-  hfCurrent: PropTypes.array,
-  hfCurrentValue: PropTypes.number,
-  hfPersistence: PropTypes.array,
-  hfTimeline: PropTypes.array,
-  areaName: PropTypes.string,
+  areaId: PropTypes.string.isRequired,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   matchColor: PropTypes.func,
-  hfTimelineArea: PropTypes.object,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
 };
 
 Landscape.defaultProps = {
-  fc: [],
-  biomas: [],
-  distritos: [],
-  hfCurrent: [],
-  hfCurrentValue: 0,
-  hfPersistence: [],
-  hfTimeline: [],
-  areaName: '',
   matchColor: () => {},
-  hfTimelineArea: {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},
 };

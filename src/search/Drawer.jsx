@@ -24,25 +24,8 @@ class Drawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
-      data: {
-        biomas: null,
-        distritos: null,
-        fc: null,
-        coverage: null,
-        areaSE: null,
-        areaPA: null,
-        generalArea: 0,
-        hfCurrent: [],
-        hfCurrentValue: 0,
-        hfPersistence: [],
-        hfTimeline: [],
-      },
+      geofenceArea: 0,
     };
-  }
-
-  componentWillMount() {
-    this.setState(null);
   }
 
   componentDidMount() {
@@ -54,216 +37,26 @@ class Drawer extends React.Component {
 
     RestAPI.requestGeofenceDetails(area.id, searchId)
       .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            generalArea: Number(res.total_area),
-          },
-        }));
-      })
-      .catch(() => {
-      });
-
-
-    RestAPI.requestCoverage(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            coverage: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            coverage: false,
-          },
-        }));
-      });
-
-    RestAPI.requestProtectedAreas(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaPA: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaPA: false,
-          },
-        }));
-      });
-
-    RestAPI.requestStrategicEcosystems(area.id, searchId)
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            areaSE: res,
-          },
-        }));
+        this.setState({ geofenceArea: Number(res.total_area) });
       })
       .catch(() => {});
-
-    RestAPI.requestCurrentHF()
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfCurrent: res,
-          },
-        }));
-      })
-      .catch(() => {});
-
-    RestAPI.requestHFPersistence()
-      .then((res) => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfPersistence: res,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfPersistence: false,
-          },
-        }));
-      });
-
-    RestAPI.requestHFTimeline()
-      .then((res) => {
-        const aTotalData = res.find(o => o.key === 'aTotal').data;
-        const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
-        const hfCurrentValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfTimeline: res,
-            hfCurrentValue,
-          },
-        }));
-      })
-      .catch(() => {
-        this.setState(prevState => ({
-          ...prevState,
-          data: {
-            ...prevState.data,
-            hfTimeline: false,
-          },
-        }));
-      });
-
-    if (area.id === 'ea') {
-      RestAPI.requestBiomes(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              biomas: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              biomas: false,
-            },
-          }));
-        });
-
-      RestAPI.requestCompensationFactor(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              fc: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              fc: false,
-            },
-          }));
-        });
-
-      RestAPI.requestBioticUnits(area.id, searchId)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              distritos: res,
-            },
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            data: {
-              ...prevState.data,
-              distritos: false,
-            },
-          }));
-        });
-    }
   }
 
   render() {
     const {
       geofence,
-      hfTimelineArea,
       handlerBackButton,
-      subLayerName,
       area,
       matchColor,
       handlerShutOffAllLayers,
       handlerSwitchLayer,
       handlerClickOnGraph,
     } = this.props;
+
     const {
-      data: {
-        fc,
-        biomas,
-        distritos,
-        coverage,
-        areaPA,
-        areaSE,
-        generalArea,
-        hfCurrent,
-        hfCurrentValue,
-        hfPersistence,
-        hfTimeline,
-      },
+      geofenceArea,
     } = this.state;
+
     return (
       <div className="informer">
         <div className="drawer_header">
@@ -277,63 +70,50 @@ class Drawer extends React.Component {
           <div className="HAgen">
             <h4>
               hectáreas totales
-              <b>{`${numberWithCommas(generalArea.toFixed(0))} ha`}</b>
+              <b>{`${numberWithCommas(geofenceArea.toFixed(0))} ha`}</b>
             </h4>
           </div>
         </div>
-        { !subLayerName && (
-          <TabContainer
-            initialSelectedIndex={0}
-            titles={[
-              { label: 'Ecosistemas', icon: (<Ecosistemas />) },
-              { label: 'Paisaje', icon: (<Paisaje />) },
-              { label: 'Especies', icon: (<Especies />) },
-            ]}
-            handlerShutOffAllLayers={handlerShutOffAllLayers}
-          >
-            <div>
-              <Overview
-                generalArea={Number(generalArea)}
-                listSE={areaSE}
-                listPA={areaPA}
-                coverage={coverage}
-                areaId={area.id}
-                geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
-                matchColor={matchColor}
-              />
-            </div>
-            <div>
-              <Landscape
-                fc={fc}
-                biomas={biomas}
-                distritos={distritos}
-                hfCurrent={hfCurrent}
-                hfCurrentValue={hfCurrentValue}
-                hfPersistence={hfPersistence}
-                hfTimeline={hfTimeline}
-                areaName={area.name}
-                matchColor={matchColor}
-                hfTimelineArea={hfTimelineArea}
-                handlerSwitchLayer={handlerSwitchLayer}
-                handlerClickOnGraph={handlerClickOnGraph}
-              />
-            </div>
-            <div className="graphcard">
-              <h2>
-                Gráficas en construcción
-              </h2>
-              <p>
-                Pronto más información
-              </p>
-            </div>
-          </TabContainer>
-        )}
+        <TabContainer
+          initialSelectedIndex={0}
+          titles={[
+            { label: 'Ecosistemas', icon: (<Ecosistemas />) },
+            { label: 'Paisaje', icon: (<Paisaje />) },
+            { label: 'Especies', icon: (<Especies />) },
+          ]}
+          handlerShutOffAllLayers={handlerShutOffAllLayers}
+        >
+          <div>
+            <Overview
+              generalArea={Number(geofenceArea)}
+              areaId={area.id}
+              geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
+              matchColor={matchColor}
+            />
+          </div>
+          <div>
+            <Landscape
+              areaId={area.id}
+              geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
+              matchColor={matchColor}
+              handlerSwitchLayer={handlerSwitchLayer}
+              handlerClickOnGraph={handlerClickOnGraph}
+            />
+          </div>
+          <div className="graphcard">
+            <h2>
+              Gráficas en construcción
+            </h2>
+            <p>
+              Pronto más información
+            </p>
+          </div>
+        </TabContainer>
         {/* // TODO: This functionality should be implemented again
-          subLayerName && hfTimelineArea && (
+          (
           <div className={classes.root}>
             <RenderGraph
               graph="BarVertical"
-              data={hfTimelineArea}
               graphTitle="ha por Subzonas Hidrográficas"
               colors={colorSZH}
               labelX="Subzonas Hidrográficas"
@@ -348,11 +128,18 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  area: PropTypes.object.isRequired,
-  geofence: PropTypes.object,
+  area: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
+  geofence: PropTypes.shape({
+    id: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
+    name: PropTypes.string,
+  }).isRequired,
   handlerBackButton: PropTypes.func,
-  hfTimelineArea: PropTypes.object,
-  subLayerName: PropTypes.string,
   matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
@@ -360,9 +147,6 @@ Drawer.propTypes = {
 };
 
 Drawer.defaultProps = {
-  geofence: { id: NaN, name: '' },
-  hfTimelineArea: {},
-  subLayerName: '',
   handlerBackButton: () => {},
   matchColor: () => {},
   handlerShutOffAllLayers: () => {},

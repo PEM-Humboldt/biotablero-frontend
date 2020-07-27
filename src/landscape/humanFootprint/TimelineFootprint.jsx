@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../../commons/ShortInfo';
+
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
+import RestAPI from '../../api/RestAPI';
+import ShortInfo from '../../commons/ShortInfo';
 
 const changeValues = [
   {
@@ -67,7 +69,17 @@ class TimelineFootprint extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
+      hfTimeline: [],
+      selectedEcosystem: null,
     };
+  }
+
+  componentDidMount() {
+    RestAPI.requestHFTimeline()
+      .then((res) => {
+        this.setState({ hfTimeline: this.processData(res) });
+      })
+      .catch(() => {});
   }
 
   /**
@@ -80,6 +92,24 @@ class TimelineFootprint extends React.Component {
   };
 
   /**
+   * Set data about selected ecosystem
+   *
+   * @param {string} seType type of strategic ecosystem to request
+   */
+  setSelectedEcosystem = (seType) => {
+    const { areaId, geofenceId } = this.props;
+    if (seType !== 'aTotal') {
+      RestAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
+        .then((value) => {
+          const res = { ...value, type: seType };
+          this.setState({ selectedEcosystem: res });
+        });
+    } else {
+      this.setState({ selectedEcosystem: null });
+    }
+  }
+
+  /**
    * Defines the label for a given data
    * @param {string} type data identifier
    *
@@ -90,7 +120,7 @@ class TimelineFootprint extends React.Component {
     switch (type) {
       case 'paramo': return 'Páramo';
       case 'wetland': return 'Humedal';
-      case 'dryForest': return 'Bosque seco';
+      case 'dryForest': return 'Bosque Seco Tropical';
       default: return 'Área total';
     }
   };
@@ -105,17 +135,19 @@ class TimelineFootprint extends React.Component {
     if (!data) return [];
     return data.map(obj => ({
       ...obj,
-      label: this.getLabel(obj.key),
+      label: this.getLabel(obj.key).substr(0, 11),
     }));
   };
 
   render() {
     const {
-      data,
       onClickGraphHandler,
-      hfTimelineArea,
     } = this.props;
-    const { showInfoGraph } = this.state;
+    const {
+      showInfoGraph,
+      hfTimeline,
+      selectedEcosystem,
+    } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -155,20 +187,23 @@ class TimelineFootprint extends React.Component {
             <GraphLoader
               graphType="MultiLinesGraph"
               colors={matchColor('hfTimeline')}
-              data={this.processData(data)}
+              data={hfTimeline}
               markers={changeValues}
               labelX="Año"
               labelY="Indice promedio Huella Humana"
-              onClickGraphHandler={onClickGraphHandler}
+              onClickGraphHandler={(selection) => {
+                this.setSelectedEcosystem(selection);
+                onClickGraphHandler(selection);
+              }}
             />
           </h2>
-          {hfTimelineArea && hfTimelineArea.type !== 'Total' && (
+          {selectedEcosystem && (
             <div>
               <h6>
-                {`${hfTimelineArea.type} dentro de la unidad de consulta`}
+                {`${this.getLabel(selectedEcosystem.type)} dentro de la unidad de consulta`}
               </h6>
               <h5>
-                {`${numberWithCommas(Number(hfTimelineArea.total_area).toFixed(2))} ha`}
+                {`${numberWithCommas(Number(selectedEcosystem.total_area).toFixed(2))} ha`}
               </h5>
             </div>
           )}
@@ -179,14 +214,16 @@ class TimelineFootprint extends React.Component {
 }
 
 TimelineFootprint.propTypes = {
-  data: PropTypes.array.isRequired,
   onClickGraphHandler: PropTypes.func,
-  hfTimelineArea: PropTypes.object,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
+  areaId: PropTypes.string.isRequired,
 };
 
 TimelineFootprint.defaultProps = {
   onClickGraphHandler: () => {},
-  hfTimelineArea: {},
 };
 
 export default TimelineFootprint;
