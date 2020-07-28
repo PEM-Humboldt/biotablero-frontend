@@ -386,7 +386,8 @@ class Search extends Component {
       case 'paramo':
       case 'dryForest':
       case 'wetland':
-        RestAPI.requestHFGeometryBySEInGeofence(selectedAreaType.id, selectedArea.id, layerType)
+        RestAPI.requestHFGeometryBySEInGeofence(
+          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType)
           .then((res) => {
             if (res.features) {
               this.setState(prevState => ({
@@ -551,18 +552,10 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    this.setState((prevState) => {
-      const newState = { ...prevState };
-      const { layers } = prevState;
-      Object.keys(layers).forEach((layerKey) => {
-        newState.layers[layerKey].active = false;
-      });
-
-      return {
-        ...newState,
-        selectedAreaType: null,
-        selectedArea: null,
-      };
+    this.setState({
+      layers: {},
+      selectedAreaType: null,
+      selectedArea: null,
     }, () => {
       const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
