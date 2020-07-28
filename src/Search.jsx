@@ -185,32 +185,20 @@ class Search extends Component {
     };
   }
 
-  /** ******************************** */
-  /** HELPERS FOR MAP LAYER PROPERTIES */
-  /** ******************************** */
-
-  findFirstId = properties => properties.IDCAR
-      || properties.id_ea
-      || properties.id_state
-      || properties.id_subzone
-      || properties.id_biome;
-
-  findFirstName = properties => properties.IDCAR
-      || properties.name
-      || properties.name_subzone
-      || properties.name_biome;
-
-  findSecondId = properties => properties.id_biome;
-
   /** ************************ */
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
 
-  featureActions = (layer, parentLayer) => {
+  /**
+   * Listeners for leaflet on a layer
+   * @param {Object} layer layer to listen on
+   * @param {String} layerName layer name to identify its features and events
+   */
+  featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event, parentLayer),
-        mouseout: event => this.resetHighlight(event, parentLayer),
+        mouseover: event => this.highlightFeature(event, layerName),
+        mouseout: event => this.resetHighlight(event, layerName),
       },
     );
   }
@@ -219,46 +207,35 @@ class Search extends Component {
    * Highlight specific feature on the map
    *
    * @param {Object} event event captured by interacting with the map
-   * @param {String} parentLayer layer type
+   * @param {String} layerName Layer name the event belongs to
    */
-  highlightFeature = (event, parentLayer) => {
-    const { activeLayer, selectedAreaType, layers } = this.state;
+  highlightFeature = (event, layerName) => {
     const point = event.target;
-    const areaPopup = {
-      closeButton: false,
-    };
-    point.setStyle({
-      weight: 1,
-      fillOpacity: 1,
-    });
-    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
-      point.bindPopup(
-        `<b>${this.findFirstName(point.feature.properties)}</b>
-         ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
-        areaPopup,
-      ).openPopup();
-    } else if (activeLayer && (parentLayer === activeLayer.id)) {
-      const activeGeometryType = layers[activeLayer.id] ? layers[activeLayer.id].type : null;
-      switch (activeGeometryType) {
-        case 'fc':
-          point.bindPopup(
-            `<b>Bioma:</b> ${point.feature.properties.name_biome}
-              <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-          ).openPopup();
-          return;
-        case 'paramo':
-        case 'dryForest':
-        case 'wetland':
-        case 'hfPersistence':
-        case 'hfCurrent':
-          point.bindPopup(
-            `<b>${tooltipLabel[point.feature.properties.key]}:</b>
-            <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
-          ).openPopup();
-          return;
-        default:
-          return;
-      }
+    let changeStyle = true;
+    switch (layerName) {
+      case 'fc':
+        point.bindPopup(
+          `<b>Bioma:</b> ${point.feature.properties.name_biome}
+          <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+        ).openPopup();
+        break;
+      case 'hfCurrent':
+      case 'hfTimeline':
+      case 'hfPersistence':
+        point.bindPopup(
+          `<b>${tooltipLabel[point.feature.properties.key]}:</b>
+          <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
+        ).openPopup();
+        break;
+      default:
+        changeStyle = false;
+        break;
+    }
+    if (changeStyle) {
+      point.setStyle({
+        weight: 1,
+        fillOpacity: 1,
+      });
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
@@ -267,19 +244,19 @@ class Search extends Component {
    * Reset highlight specific feature on the map
    *
    * @param {Object} event event captured by interacting with the map
-   * @param {String} parentLayer layer type
+   * @param {String} layerName Layer name the event belongs to
    */
-  resetHighlight = (event, parentLayer) => {
+  resetHighlight = (event, layerName) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[parentLayer].layer.resetStyle(feature);
+    layers[layerName].layer.resetStyle(feature);
     feature.closePopup();
   }
 
   /**
    * Handle events happened on graphs
    *
-   * @param {String} idCategory id of category selected on the map
+   * @param {String} idCategory id of category selected on the graph
    */
   clickOnGraph = (idCategory) => {
     switch (idCategory) {
@@ -319,7 +296,6 @@ class Search extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          loadingModal: false,
         };
         const { layers } = prevState;
         Object.keys(layers).forEach((layerKey) => {
@@ -331,7 +307,6 @@ class Search extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          loadingModal: false,
         };
         newState.layers[layer].active = false;
         return newState;
@@ -359,22 +334,19 @@ class Search extends Component {
     });
     switch (layerType) {
       case 'fc':
+        this.shutOffLayer();
         RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
           .then((res) => {
             if (res.features) {
-              this.shutOffLayer();
               this.setState(prevState => ({
                 layers: {
                   ...prevState.layers,
                   fc: {
-                    displayName: selectedArea.name,
-                    id: selectedArea.id,
                     active: true,
-                    type: 'fc',
                     layer: L.geoJSON(res, {
                       style: this.featureStyle(layerType),
                       onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, selectedArea.id)
+                        this.featureActions(selectedLayer, 'fc')
                       ),
                     }),
                   },
@@ -387,22 +359,19 @@ class Search extends Component {
           .catch(() => this.reportDataError());
         break;
       case 'hfCurrent':
+        this.shutOffLayer();
         RestAPI.requestCurrentHFGeometry()
           .then((res) => {
             if (res.features) {
-              this.shutOffLayer();
               this.setState(prevState => ({
                 layers: {
                   ...prevState.layers,
                   hfCurrent: {
-                    displayName: selectedArea.name,
-                    id: selectedArea.id,
                     active: true,
-                    type: 'hfCurrent',
                     layer: L.geoJSON(res, {
                       style: this.featureStyle(layerType),
                       onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, selectedArea.id)
+                        this.featureActions(selectedLayer, 'hfCurrent')
                       ),
                     }),
                   },
@@ -424,14 +393,11 @@ class Search extends Component {
                 layers: {
                   ...prevState.layers,
                   se: {
-                    displayName: selectedArea.name,
-                    id: selectedArea.id,
                     active: true,
-                    type: layerType,
                     layer: L.geoJSON(res, {
                       style: this.featureStyle('border', 'white'),
                       onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, selectedArea.id)
+                        this.featureActions(selectedLayer, 'se')
                       ),
                       fitBounds: false,
                     }),
@@ -445,22 +411,19 @@ class Search extends Component {
         break;
       case 'hfTimeline':
       case 'hfPersistence':
+        this.shutOffLayer();
         RestAPI.requestHFPersistenceGeometry()
           .then((res) => {
             if (res.features) {
-              this.shutOffLayer();
               this.setState(prevState => ({
                 layers: {
                   ...prevState.layers,
                   hfPersistence: {
-                    displayName: selectedArea.name,
-                    id: selectedArea.id,
                     active: true,
-                    type: 'hfPersistence',
                     layer: L.geoJSON(res, {
                       style: this.featureStyle('hfPersistence'),
                       onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, selectedArea.id)
+                        this.featureActions(selectedLayer, 'hfPersistence')
                       ),
                     }),
                   },
@@ -474,6 +437,7 @@ class Search extends Component {
         break;
       default:
         this.shutOffLayer();
+        this.setState({ loadingModal: false });
         break;
     }
   }

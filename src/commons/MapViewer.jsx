@@ -130,6 +130,9 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
   userLogged: PropTypes.object,
+  // It's used in getDerivedStateFromProps but eslint won't realize
+  // eslint-disable-next-line react/no-unused-prop-types
+  layers: PropTypes.object.isRequired,
 };
 
 MapViewer.defaultProps = {
