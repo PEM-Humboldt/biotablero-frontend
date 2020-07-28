@@ -83,5 +83,6 @@ export default {
     '#646e55',
     '#cf324e',
   ],
+  border: ['#ffffff'],
   default: ['#345b6b'],
 };

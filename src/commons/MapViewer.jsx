@@ -77,11 +77,16 @@ class MapViewer extends React.Component {
    * @param {Boolean} state if it's false, then the layer should be hidden
    */
   showLayer = (layer, state) => {
+    let fitBounds = true;
+    if (layer.options.fitBounds === false) fitBounds = false;
+
     if (state === false) {
       this.mapRef.current.leafletElement.removeLayer(layer);
     } else {
       this.mapRef.current.leafletElement.addLayer(layer);
-      this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
+      if (fitBounds) {
+        this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
+      }
     }
   }
 
