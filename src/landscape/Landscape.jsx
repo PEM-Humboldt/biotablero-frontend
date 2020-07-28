@@ -72,7 +72,7 @@ class Landscape extends React.Component {
         label: {
           id: 'fc',
           name: 'FC y Biomas',
-          disabled: false,
+          disabled: areaId !== 'ea',
           expandIcon: <AddIcon />,
           detailId: 'Factor de compensación en área de consulta',
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
