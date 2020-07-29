@@ -227,6 +227,13 @@ class Search extends Component {
           <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
         ).openPopup();
         break;
+      case 'states':
+      case 'ea':
+        point.bindPopup(point.feature.properties.name).openPopup();
+        break;
+      case 'basinSubzones':
+        point.bindPopup(point.feature.properties.name_subzone).openPopup();
+        break;
       default:
         changeStyle = false;
         break;
@@ -387,7 +394,8 @@ class Search extends Component {
       case 'dryForest':
       case 'wetland':
         RestAPI.requestHFGeometryBySEInGeofence(
-          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType)
+          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
+        )
           .then((res) => {
             if (res.features) {
               this.setState(prevState => ({
@@ -447,7 +455,7 @@ class Search extends Component {
    * Load layer based on selection
    *
    * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * @param {Boolean} show whether to show or hide the layer
    */
   loadSecondLevelLayer = (idLayer, show) => {
     const { layers, requestSource } = this.state;
@@ -460,8 +468,8 @@ class Search extends Component {
         ...prevState,
         requestSource: null,
       };
-      Object.values(newState.layers).forEach((item) => {
-        newState.layers[item.id].active = false;
+      Object.keys(newState.layers).forEach((item) => {
+        newState.layers[item].active = false;
       });
       return newState;
     });
@@ -470,16 +478,12 @@ class Search extends Component {
       if (show) {
         this.setArea(idLayer);
       }
-      this.setState(prevState => ({
-        layers: {
-          ...prevState.layers,
-          [prevState.layers[idLayer]]: {
-            ...prevState.layers[idLayer],
-            active: show,
-          },
-        },
-      }));
-    } else if (show && idLayer && idLayer !== 'se') {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[idLayer].active = show;
+        return newState;
+      });
+    } else if (show) {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
@@ -487,31 +491,24 @@ class Search extends Component {
       request.then((res) => {
         if (!res) return;
         this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            layers: {
-              ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
-                active: true,
-                id: idLayer,
-                layer: L.geoJSON(
-                  res,
-                  {
-                    style: {
-                      color: '#e84a5f',
-                      weight: 0.5,
-                      fillColor: '#ffd8e2',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
-                    },
-                    onEachFeature: (feature, layer) => (
-                      this.featureActions(layer, idLayer)
-                    ),
-                  },
+          const newState = { ...prevState };
+          newState.layers[idLayer] = {
+            active: true,
+            layer: L.geoJSON(
+              res,
+              {
+                style: {
+                  color: '#e84a5f',
+                  weight: 0.5,
+                  fillColor: '#ffd8e2',
+                  opacity: 0.6,
+                  fillOpacity: 0.4,
+                },
+                onEachFeature: (feature, layer) => (
+                  this.featureActions(layer, idLayer)
                 ),
               },
-            },
+            ),
           };
           return newState;
         });
@@ -534,6 +531,10 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     const { setHeaderNames } = this.props;
+    const { requestSource } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
     if (nameToOn) {
       this.setState(
         { selectedArea: nameToOn },
@@ -545,6 +546,13 @@ class Search extends Component {
         },
       );
     }
+    if (nameToOff) {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[nameToOff].active = false;
+        return newState;
+      });
+    }
   }
 
   /** ************************************* */
@@ -552,10 +560,15 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    this.setState({
-      layers: {},
-      selectedAreaType: null,
-      selectedArea: null,
+    const unsetLayers = ['fc', 'hfCurrent', 'se', 'hfTimeline', 'hfPersistence'];
+    this.setState((prevState) => {
+      const newState = { ...prevState };
+      unsetLayers.forEach((layer) => {
+        if (newState.layers[layer]) delete newState.layers[layer];
+      });
+      newState.selectedAreaType = null;
+      newState.selectedArea = null;
+      return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
