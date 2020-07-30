@@ -1196,10 +1196,9 @@ overflow: auto;
   background-image: url(../assets/img/geografico.png);
   -webkit-background-size: contain;
   background-size: contain;
-  display: inline-block;
+  float: right;
   width: 65px;
   height: 65px;
-  vertical-align: middle;
 }
 
 .iconsec2 {
