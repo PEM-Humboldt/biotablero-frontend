@@ -34,28 +34,27 @@ class LandscapeAccordion extends React.Component {
     const { expanded } = this.state;
     return (
       <div>
-        {(componentsArray.length > 0) && componentsArray.map(item => (
-          (!item.label.disabled) && (
-            <ExpansionPanel
-              className={expanded !== item.label.id ? classNameDefault : classNameSelected}
-              expanded={expanded === item.label.id}
-              id={item.label.id}
-              key={item.label.id}
-              onChange={() => {
-                const newTabExpanded = expanded !== item.label.id;
-                const expandedTab = newTabExpanded ? item.label.id : null;
-                this.setState({ expanded: expandedTab });
-                handlerAccordionGeometry(level, expandedTab);
-              }}
+        {componentsArray.map(item => (
+          <ExpansionPanel
+            className={expanded !== item.label.id ? classNameDefault : classNameSelected}
+            expanded={expanded === item.label.id}
+            id={item.label.id}
+            key={item.label.id}
+            onChange={() => {
+              const newTabExpanded = expanded !== item.label.id;
+              const expandedTab = newTabExpanded ? item.label.id : null;
+              this.setState({ expanded: expandedTab });
+              handlerAccordionGeometry(level, expandedTab);
+            }}
+          >
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
             >
-              <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon />}
-              >
-                {item.label.name}
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
-            </ExpansionPanel>
-          )))}
+              {item.label.name}
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
+          </ExpansionPanel>
+        ))}
       </div>
     );
   }

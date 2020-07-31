@@ -163,48 +163,42 @@ class Search extends Component {
   }
 
   /**
-   * Choose the right color for the section inside the map, according
-   *  to matchColor function
-   *
+   * Choose the right color for the section inside the map, according to matchColor function
    * @param {String} type layer type
+   * @param {String} color optional key value to select color in match color palette
    * @param {Object} feature target object
    */
-  featureStyle = (type, fillOpacity) => (feature) => {
-    const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
-    const styleReturn = {
-      stroke: false,
-      fillColor: matchColor(type)(key),
-      fillOpacity: fillOpacity || 0.7,
+  featureStyle = (type, color = null) => (feature) => {
+    if (feature.properties) {
+      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
+      return {
+        stroke: false,
+        fillColor: matchColor(type)(key),
+        fillOpacity: 0.7,
+      };
+    }
+
+    return {
+      color: matchColor(type)(color),
+      weight: 2,
+      fillOpacity: 0,
     };
-    return styleReturn;
   }
-
-  /** ******************************** */
-  /** HELPERS FOR MAP LAYER PROPERTIES */
-  /** ******************************** */
-
-  findFirstId = properties => properties.IDCAR
-      || properties.id_ea
-      || properties.id_state
-      || properties.id_subzone
-      || properties.id_biome;
-
-  findFirstName = properties => properties.IDCAR
-      || properties.name
-      || properties.name_subzone
-      || properties.name_biome;
-
-  findSecondId = properties => properties.id_biome;
 
   /** ************************ */
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
 
-  featureActions = (layer, parentLayer) => {
+  /**
+   * Listeners for leaflet on a layer
+   * @param {Object} layer layer to listen on
+   * @param {String} layerName layer name to identify its features and events
+   */
+  featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event, parentLayer),
-        mouseout: event => this.resetHighlight(event, parentLayer),
+        mouseover: event => this.highlightFeature(event, layerName),
+        mouseout: event => this.resetHighlight(event, layerName),
       },
     );
   }
@@ -213,46 +207,42 @@ class Search extends Component {
    * Highlight specific feature on the map
    *
    * @param {Object} event event captured by interacting with the map
-   * @param {String} parentLayer layer type
+   * @param {String} layerName Layer name the event belongs to
    */
-  highlightFeature = (event, parentLayer) => {
-    const { activeLayer, selectedAreaType, layers } = this.state;
+  highlightFeature = (event, layerName) => {
     const point = event.target;
-    const areaPopup = {
-      closeButton: false,
-    };
-    point.setStyle({
-      weight: 1,
-      fillOpacity: 1,
-    });
-    if (selectedAreaType && (parentLayer === selectedAreaType.id)) {
-      point.bindPopup(
-        `<b>${this.findFirstName(point.feature.properties)}</b>
-         ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
-        areaPopup,
-      ).openPopup();
-    } else if (activeLayer && (parentLayer === activeLayer.id)) {
-      const activeGeometryType = layers[activeLayer.id] ? layers[activeLayer.id].type : null;
-      switch (activeGeometryType) {
-        case 'fc':
-          point.bindPopup(
-            `<b>Bioma:</b> ${point.feature.properties.name_biome}
-              <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-          ).openPopup();
-          return;
-        case 'paramo':
-        case 'dryForest':
-        case 'wetland':
-        case 'hfPersistence':
-        case 'hfCurrent':
-          point.bindPopup(
-            `<b>${tooltipLabel[point.feature.properties.key]}:</b>
-            <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
-          ).openPopup();
-          return;
-        default:
-          return;
-      }
+    let changeStyle = true;
+    switch (layerName) {
+      case 'fc':
+        point.bindPopup(
+          `<b>Bioma:</b> ${point.feature.properties.name_biome}
+          <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
+        ).openPopup();
+        break;
+      case 'hfCurrent':
+      case 'hfTimeline':
+      case 'hfPersistence':
+        point.bindPopup(
+          `<b>${tooltipLabel[point.feature.properties.key]}:</b>
+          <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
+        ).openPopup();
+        break;
+      case 'states':
+      case 'ea':
+        point.bindPopup(point.feature.properties.name).openPopup();
+        break;
+      case 'basinSubzones':
+        point.bindPopup(point.feature.properties.name_subzone).openPopup();
+        break;
+      default:
+        changeStyle = false;
+        break;
+    }
+    if (changeStyle) {
+      point.setStyle({
+        weight: 1,
+        fillOpacity: 1,
+      });
     }
     if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
   }
@@ -261,62 +251,75 @@ class Search extends Component {
    * Reset highlight specific feature on the map
    *
    * @param {Object} event event captured by interacting with the map
-   * @param {String} parentLayer layer type
+   * @param {String} layerName Layer name the event belongs to
    */
-  resetHighlight = (event, parentLayer) => {
+  resetHighlight = (event, layerName) => {
     const feature = event.target;
     const { layers } = this.state;
-    layers[parentLayer].layer.resetStyle(feature);
+    layers[layerName].layer.resetStyle(feature);
     feature.closePopup();
   }
 
   /**
    * Handle events happened on graphs
    *
-   * @param {String} idCategory id of category selected on the map
+   * @param {String} idCategory id of category selected on the graph
    */
   clickOnGraph = (idCategory) => {
-    const { activeLayer } = this.state;
-    const { layers } = this.state;
-    const selectedSubLayer = layers[activeLayer.id].layer;
-    selectedSubLayer.eachLayer((layer) => {
-      if (layer.feature.properties.key === idCategory) {
-        layer.setStyle({
-          weight: 1,
-          fillOpacity: 1,
-        });
-      } else {
-        selectedSubLayer.resetStyle(layer);
-      }
-    });
-    // 'switch' for strategic ecosystem selected
     switch (idCategory) {
       case 'paramo':
       case 'wetland':
       case 'dryForest':
+        this.shutOffLayer('se');
         this.switchLayer(idCategory);
         break;
-      default:
+      case 'aTotal':
+        this.shutOffLayer('se');
         break;
+      default: {
+        const { layers, activeLayer } = this.state;
+        const selectedSubLayer = layers[activeLayer].layer;
+        selectedSubLayer.eachLayer((layer) => {
+          if (layer.feature.properties.key === idCategory) {
+            layer.setStyle({
+              weight: 1,
+              fillOpacity: 1,
+            });
+          } else {
+            selectedSubLayer.resetStyle(layer);
+          }
+        });
+      }
     }
   };
 
   /**
-   * Shut off all layers on the map
+   * Shut off the specified layer on the map. If no layer is passed, all layers will be shut off
+   * @param {String} layer optional layer name to shut off
    */
-  shutOffAllLayers = () => (
-    this.setState((prevState) => {
-      const newState = {
-        ...prevState,
-        loadingModal: false,
-      };
-      const { layers } = prevState;
-      Object.keys(layers).forEach((layerKey) => {
-        newState.layers[layerKey].active = false;
+  shutOffLayer = (layer = null) => {
+    const { layers: { [layer]: layerInState } } = this.state;
+    if (!layer) {
+      this.setState((prevState) => {
+        const newState = {
+          ...prevState,
+        };
+        const { layers } = prevState;
+        Object.keys(layers).forEach((layerKey) => {
+          newState.layers[layerKey].active = false;
+        });
+        return newState;
       });
-      return newState;
-    })
-  );
+    } else if (layerInState) {
+      this.setState((prevState) => {
+        const newState = {
+          ...prevState,
+        };
+        newState.layers[layer].active = false;
+        return newState;
+      });
+    }
+  };
 
   /**
    * Switch layer based on graph showed
@@ -334,167 +337,117 @@ class Search extends Component {
     }
     this.setState({
       loadingModal: true,
-      activeLayer: selectedArea,
       requestSource: null,
     });
     switch (layerType) {
       case 'fc':
-        return (
-          RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
-            .then((res) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'fc',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
+        this.shutOffLayer();
+        RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
+          .then((res) => {
+            if (res.features) {
+              this.setState(prevState => ({
+                layers: {
+                  ...prevState.layers,
+                  fc: {
+                    active: true,
+                    layer: L.geoJSON(res, {
+                      style: this.featureStyle(layerType),
+                      onEachFeature: (feature, selectedLayer) => (
+                        this.featureActions(selectedLayer, 'fc')
+                      ),
+                    }),
                   },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
+                },
+                activeLayer: 'fc',
+                loadingModal: false,
+              }));
+            } else this.reportDataError();
+          })
+          .catch(() => this.reportDataError());
+        break;
       case 'hfCurrent':
-        return (
-          RestAPI.requestCurrentHFGeometry()
-            .then((res) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'hfCurrent',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle(layerType),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
+        this.shutOffLayer();
+        RestAPI.requestCurrentHFGeometry()
+          .then((res) => {
+            if (res.features) {
+              this.setState(prevState => ({
+                layers: {
+                  ...prevState.layers,
+                  hfCurrent: {
+                    active: true,
+                    layer: L.geoJSON(res, {
+                      style: this.featureStyle(layerType),
+                      onEachFeature: (feature, selectedLayer) => (
+                        this.featureActions(selectedLayer, 'hfCurrent')
+                      ),
+                    }),
                   },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
+                },
+                activeLayer: 'hfCurrent',
+                loadingModal: false,
+              }));
+            } else this.reportDataError();
+          })
+          .catch(() => this.reportDataError());
+        break;
       case 'paramo':
       case 'dryForest':
       case 'wetland':
-        return (
-          Promise.all([
-            RestAPI.requestHFGeometryBySEInGeofence(
-              selectedAreaType.id, selectedArea.id, layerType,
-            ),
-            RestAPI.requestHFPersistenceGeometry(),
-          ])
-            .then(([res, res1]) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    base: {
-                      displayName: 'aTotal',
-                      id: 'aTotal',
-                      active: true,
-                      type: 'aTotal',
-                      layer: L.geoJSON(res1, {
-                        style: this.featureStyle('hfPersistence', 0.3),
-                        interactive: false,
-                      }),
-                    },
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: layerType,
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle('hfTimeline', 1),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
+        RestAPI.requestHFGeometryBySEInGeofence(
+          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
+        )
+          .then((res) => {
+            if (res.features) {
+              this.setState(prevState => ({
+                layers: {
+                  ...prevState.layers,
+                  se: {
+                    active: true,
+                    layer: L.geoJSON(res, {
+                      style: this.featureStyle('border', 'white'),
+                      onEachFeature: (feature, selectedLayer) => (
+                        this.featureActions(selectedLayer, 'se')
+                      ),
+                      fitBounds: false,
+                    }),
                   },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError()),
-          RestAPI.requestHFPersistenceGeometry()
-            .then((res) => {
-              if (res.features) {
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'hfPersistence',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle('hfPersistence'),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
-                  },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
-      case 'aTotal':
+                },
+                loadingModal: false,
+              }));
+            } else this.reportDataError();
+          })
+          .catch(() => this.reportDataError());
+        break;
       case 'hfTimeline':
       case 'hfPersistence':
-        return (
-          RestAPI.requestHFPersistenceGeometry()
-            .then((res) => {
-              if (res.features) {
-                this.shutOffAllLayers();
-                this.setState(prevState => ({
-                  layers: {
-                    ...prevState.layers,
-                    [selectedArea.id]: {
-                      displayName: selectedArea.name,
-                      id: selectedArea.id,
-                      active: true,
-                      type: 'hfPersistence',
-                      layer: L.geoJSON(res, {
-                        style: this.featureStyle('hfPersistence'),
-                        onEachFeature: (feature, selectedLayer) => (
-                          this.featureActions(selectedLayer, selectedArea.id)
-                        ),
-                      }),
-                    },
+        this.shutOffLayer();
+        RestAPI.requestHFPersistenceGeometry()
+          .then((res) => {
+            if (res.features) {
+              this.setState(prevState => ({
+                layers: {
+                  ...prevState.layers,
+                  hfPersistence: {
+                    active: true,
+                    layer: L.geoJSON(res, {
+                      style: this.featureStyle('hfPersistence'),
+                      onEachFeature: (feature, selectedLayer) => (
+                        this.featureActions(selectedLayer, 'hfPersistence')
+                      ),
+                    }),
                   },
-                  loadingModal: false,
-                }));
-              } else this.reportDataError();
-            })
-            .catch(() => this.reportDataError())
-        );
+                },
+                activeLayer: 'hfPersistence',
+                loadingModal: false,
+              }));
+            } else this.reportDataError();
+          })
+          .catch(() => this.reportDataError());
+        break;
       default:
-        return this.shutOffAllLayers();
+        this.shutOffLayer();
+        this.setState({ loadingModal: false });
+        break;
     }
   }
 
@@ -502,7 +455,7 @@ class Search extends Component {
    * Load layer based on selection
    *
    * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * @param {Boolean} show whether to show or hide the layer
    */
   loadSecondLevelLayer = (idLayer, show) => {
     const { layers, requestSource } = this.state;
@@ -515,8 +468,8 @@ class Search extends Component {
         ...prevState,
         requestSource: null,
       };
-      Object.values(newState.layers).forEach((item) => {
-        newState.layers[item.id].active = false;
+      Object.keys(newState.layers).forEach((item) => {
+        newState.layers[item].active = false;
       });
       return newState;
     });
@@ -525,52 +478,43 @@ class Search extends Component {
       if (show) {
         this.setArea(idLayer);
       }
-      this.setState(prevState => ({
-        layers: {
-          ...prevState.layers,
-          [prevState.layers[idLayer]]: {
-            ...prevState.layers[idLayer],
-            active: show,
-          },
-        },
-      }));
-    } else if (show && idLayer && idLayer !== 'se') {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[idLayer].active = show;
+        return newState;
+      });
+    } else if (show) {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 
-      request.then((res) => {
-        if (!res) return;
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            layers: {
-              ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
-                active: true,
-                id: idLayer,
-                layer: L.geoJSON(
-                  res,
-                  {
-                    style: {
-                      color: '#e84a5f',
-                      weight: 0.5,
-                      fillColor: '#ffd8e2',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
-                    },
-                    onEachFeature: (feature, layer) => (
-                      this.featureActions(layer, idLayer)
-                    ),
+      request
+        .then((res) => {
+          if (!res) return;
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            newState.layers[idLayer] = {
+              active: true,
+              layer: L.geoJSON(
+                res,
+                {
+                  style: {
+                    color: '#e84a5f',
+                    weight: 0.5,
+                    fillColor: '#ffd8e2',
+                    opacity: 0.6,
+                    fillOpacity: 0.4,
                   },
-                ),
-              },
-            },
-          };
-          return newState;
-        });
-      });
+                  onEachFeature: (feature, layer) => (
+                    this.featureActions(layer, idLayer)
+                  ),
+                },
+              ),
+            };
+            return newState;
+          });
+        })
+        .catch(() => {});
     }
   }
 
@@ -589,6 +533,10 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     const { setHeaderNames } = this.props;
+    const { requestSource, layers } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
     if (nameToOn) {
       this.setState(
         { selectedArea: nameToOn },
@@ -600,6 +548,13 @@ class Search extends Component {
         },
       );
     }
+    if (nameToOff && layers[nameToOff]) {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[nameToOff].active = false;
+        return newState;
+      });
+    }
   }
 
   /** ************************************* */
@@ -607,18 +562,15 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
+    const unsetLayers = ['fc', 'hfCurrent', 'se', 'hfTimeline', 'hfPersistence'];
     this.setState((prevState) => {
       const newState = { ...prevState };
-      const { layers } = prevState;
-      Object.keys(layers).forEach((layerKey) => {
-        newState.layers[layerKey].active = false;
+      unsetLayers.forEach((layer) => {
+        if (newState.layers[layer]) delete newState.layers[layer];
       });
-
-      return {
-        ...newState,
-        selectedAreaType: null,
-        selectedArea: null,
-      };
+      newState.selectedAreaType = null;
+      newState.selectedArea = null;
+      return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
@@ -742,7 +694,7 @@ class Search extends Component {
                 geofence={selectedArea}
                 handlerBackButton={this.handlerBackButton}
                 matchColor={matchColor}
-                handlerShutOffAllLayers={this.shutOffAllLayers}
+                handlerShutOffAllLayers={this.shutOffLayer}
                 handlerSwitchLayer={this.switchLayer}
                 handlerClickOnGraph={this.clickOnGraph}
               />

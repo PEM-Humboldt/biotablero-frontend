@@ -53,6 +53,10 @@ const match = {
     // TODO: This could change once the API endpoint is implemented
     sort: ['estable_natural', 'dinamica', 'estable_alta'],
   },
+  border: {
+    palette: 'border',
+    sort: ['white'],
+  },
   default: {
     palette: 'default',
   },
@@ -121,8 +125,14 @@ const matchColor = (type) => {
         if (idx === -1) return palette[palette.length - 1];
         return palette[idx];
       };
+    case 'border':
+      return (value) => {
+        const idx = sort.indexOf(value);
+        if (idx === -1) return null;
+        return palette[idx];
+      };
     default:
-      return palette[0];
+      return () => palette[0];
   }
 };
 

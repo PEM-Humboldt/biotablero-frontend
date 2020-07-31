@@ -4,9 +4,6 @@ import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
 import tmpHFPersistence from './tmp_hf_persistence.json';
 import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
-import tmpHFTDryForestGeo from './tmp_hf_timeline_dryForest_geo.json';
-import tmpHFTParamoGeo from './tmp_hf_timeline_paramo_geo.json';
-import tmpHFTWetlandGeo from './tmp_hf_timeline_wetland_geo.json';
 
 class RestAPI {
   /**
@@ -314,11 +311,11 @@ class RestAPI {
   static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
     switch (seType) {
       case 'dryForest':
-        return Promise.resolve(tmpHFTDryForestGeo);
+        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`);
       case 'paramo':
-        return Promise.resolve(tmpHFTParamoGeo);
+        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`);
       case 'wetland':
-        return Promise.resolve(tmpHFTWetlandGeo);
+        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`);
       default:
         return undefined;
     }
