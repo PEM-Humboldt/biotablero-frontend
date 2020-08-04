@@ -488,31 +488,33 @@ class Search extends Component {
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 
-      request.then((res) => {
-        if (!res) return;
-        this.setState((prevState) => {
-          const newState = { ...prevState };
-          newState.layers[idLayer] = {
-            active: true,
-            layer: L.geoJSON(
-              res,
-              {
-                style: {
-                  color: '#e84a5f',
-                  weight: 0.5,
-                  fillColor: '#ffd8e2',
-                  opacity: 0.6,
-                  fillOpacity: 0.4,
+      request
+        .then((res) => {
+          if (!res) return;
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            newState.layers[idLayer] = {
+              active: true,
+              layer: L.geoJSON(
+                res,
+                {
+                  style: {
+                    color: '#e84a5f',
+                    weight: 0.5,
+                    fillColor: '#ffd8e2',
+                    opacity: 0.6,
+                    fillOpacity: 0.4,
+                  },
+                  onEachFeature: (feature, layer) => (
+                    this.featureActions(layer, idLayer)
+                  ),
                 },
-                onEachFeature: (feature, layer) => (
-                  this.featureActions(layer, idLayer)
-                ),
-              },
-            ),
-          };
-          return newState;
-        });
-      });
+              ),
+            };
+            return newState;
+          });
+        })
+        .catch(() => {});
     }
   }
 
@@ -531,7 +533,7 @@ class Search extends Component {
     */
   innerElementChange = (nameToOff, nameToOn) => {
     const { setHeaderNames } = this.props;
-    const { requestSource } = this.state;
+    const { requestSource, layers } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
@@ -546,7 +548,7 @@ class Search extends Component {
         },
       );
     }
-    if (nameToOff) {
+    if (nameToOff && layers[nameToOff]) {
       this.setState((prevState) => {
         const newState = { ...prevState };
         newState.layers[nameToOff].active = false;
