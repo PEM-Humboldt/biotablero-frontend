@@ -1,8 +1,4 @@
 import axios, { CancelToken } from 'axios';
-import tmpCurrentHF from './tmp_current_hf.json';
-import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
-import tmpHFPersistence from './tmp_hf_persistence.json';
-import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
 
 class RestAPI {
@@ -193,15 +189,27 @@ class RestAPI {
   }
 
   /**
-   * Get the current footprint data in the given area.
+   * Get the current human footprint value in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {String} Value for the current human footprint
+   */
+  static requestCurrentHFValue(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
+  }
+
+  /**
+   * Get the current human footprint data by categories in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
    * @return {Promise<Array>} Array of objects with data for the current human footprint
    */
-  static requestCurrentHF() {
-    return Promise.resolve(tmpCurrentHF);
+  static requestCurrentHFCategories(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
   }
 
   /**
@@ -212,8 +220,8 @@ class RestAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
    */
-  static requestHFPersistence() {
-    return Promise.resolve(tmpHFPersistence);
+  static requestHFPersistence(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
 
   /**
@@ -287,16 +295,29 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated for the current footprint in the given area.
+   * Get the geometry associated for the current human footprint in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestCurrentHFGeometry() {
-    return Promise.resolve(tmpCurrentHFGeo);
+  static requestCurrentHFGeometry(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`);
   }
+
+  /**
+   * Get the geometry associated for the human footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestHFPersistenceGeometry(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`);
+  }
+
 
   /**
    * According to the strategic ecosystem type, get the footprint timeline geometry
@@ -320,19 +341,6 @@ class RestAPI {
         return undefined;
     }
   }
-
-  /**
-   * Get the geometry associated for the footprint persistence in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestHFPersistenceGeometry() {
-    return Promise.resolve(tmpHFPersistenceGeo);
-  }
-
 
   /** ******************* */
   /** COMPENSATION MODULE */

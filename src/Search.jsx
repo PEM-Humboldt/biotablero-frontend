@@ -224,7 +224,7 @@ class Search extends Component {
       case 'hfPersistence':
         point.bindPopup(
           `<b>${tooltipLabel[point.feature.properties.key]}:</b>
-          <br>${this.numberWithCommas(Number(point.feature.properties.value))} ha`,
+          <br>${this.numberWithCommas(Number(point.feature.properties.area).toFixed(0))} ha`,
         ).openPopup();
         break;
       case 'states':
@@ -367,7 +367,7 @@ class Search extends Component {
         break;
       case 'hfCurrent':
         this.shutOffLayer();
-        RestAPI.requestCurrentHFGeometry()
+        RestAPI.requestCurrentHFGeometry(selectedAreaType.id, selectedArea.id || selectedArea.name)
           .then((res) => {
             if (res.features) {
               this.setState(prevState => ({
@@ -421,7 +421,9 @@ class Search extends Component {
       case 'hfTimeline':
       case 'hfPersistence':
         this.shutOffLayer();
-        RestAPI.requestHFPersistenceGeometry()
+        RestAPI.requestHFPersistenceGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        )
           .then((res) => {
             if (res.features) {
               this.setState(prevState => ({

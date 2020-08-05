@@ -13,12 +13,20 @@ class CurrentFootprint extends React.Component {
     this.state = {
       showInfoGraph: false,
       hfCurrent: [],
-      hfCurrentValue: 0,
+      hfCurrentValue: '0',
     };
   }
 
   componentDidMount() {
-    RestAPI.requestCurrentHF()
+    const { areaId, geofenceId } = this.props;
+    RestAPI.requestCurrentHFValue(areaId, geofenceId)
+      .then((res) => {
+        this.setState({
+          hfCurrentValue: Number(res.value).toFixed(2),
+        });
+      })
+      .catch(() => {});
+    RestAPI.requestCurrentHFCategories(areaId, geofenceId)
       .then((res) => {
         this.setState({
           hfCurrent: res.map(item => ({
@@ -26,15 +34,6 @@ class CurrentFootprint extends React.Component {
             label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
           })),
         });
-      })
-      .catch(() => {});
-    // TODO: Change this request and logic when the correct endpoint is ready
-    RestAPI.requestHFTimeline()
-      .then((res) => {
-        const aTotalData = res.find(o => o.key === 'aTotal').data;
-        const maxYear = Math.max(...aTotalData.map(o => Number(o.x)));
-        const hfCurrentValue = Number(aTotalData.find(o => Number(o.x) === maxYear).y);
-        this.setState({ hfCurrentValue });
       })
       .catch(() => {});
   }
@@ -109,6 +108,11 @@ class CurrentFootprint extends React.Component {
 }
 
 CurrentFootprint.propTypes = {
+  areaId: PropTypes.string.isRequired,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   onClickGraphHandler: PropTypes.func,
 };
 

@@ -23,7 +23,8 @@ class PersistenceFootprint extends React.Component {
   }
 
   componentDidMount() {
-    RestAPI.requestHFPersistence()
+    const { areaId, geofenceId } = this.props;
+    RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
         this.setState({
           hfPersistence: res.map(item => ({
@@ -96,6 +97,11 @@ class PersistenceFootprint extends React.Component {
 }
 
 PersistenceFootprint.propTypes = {
+  areaId: PropTypes.string.isRequired,
+  geofenceId: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]).isRequired,
   onClickGraphHandler: PropTypes.func,
 };
 
