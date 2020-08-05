@@ -1,8 +1,4 @@
 import axios, { CancelToken } from 'axios';
-import tmpCurrentHF from './tmp_current_hf.json';
-import tmpCurrentHFGeo from './tmp_current_hf_geo.json';
-import tmpHFPersistence from './tmp_hf_persistence.json';
-import tmpHFPersistenceGeo from './tmp_hf_persistence_geo.json';
 import tmpHFTimeline from './tmp_hf_timeline.json';
 
 class RestAPI {
