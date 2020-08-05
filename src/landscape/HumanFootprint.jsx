@@ -26,6 +26,8 @@ const HumanFootprint = (props) => {
       },
       component: (
         <CurrentFootprint
+          areaId={areaId}
+          geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -41,6 +43,8 @@ const HumanFootprint = (props) => {
       },
       component: (
         <PersistenceFooprint
+          areaId={areaId}
+          geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -56,9 +60,9 @@ const HumanFootprint = (props) => {
       },
       component: (
         <TimelineFootprint
-          onClickGraphHandler={handlerClickOnGraph}
           areaId={areaId}
           geofenceId={geofenceId}
+          onClickGraphHandler={handlerClickOnGraph}
         />
       ),
     },
