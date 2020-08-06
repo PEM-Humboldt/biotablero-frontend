@@ -1,10 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
+import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 class CurrentFootprint extends React.Component {
@@ -18,7 +19,8 @@ class CurrentFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.props;
+    const { geofenceId } = this.props;
+    const { areaId } = this.context;
     RestAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res) => {
         this.setState({
@@ -108,7 +110,6 @@ class CurrentFootprint extends React.Component {
 }
 
 CurrentFootprint.propTypes = {
-  areaId: PropTypes.string.isRequired,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -121,3 +122,5 @@ CurrentFootprint.defaultProps = {
 };
 
 export default CurrentFootprint;
+
+CurrentFootprint.contextType = SearchContext;

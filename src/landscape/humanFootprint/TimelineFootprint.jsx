@@ -5,6 +5,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
+import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 const changeValues = [
@@ -103,7 +104,8 @@ class TimelineFootprint extends React.Component {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType) => {
-    const { areaId, geofenceId } = this.props;
+    const { geofenceId } = this.props;
+    const { areaId } = this.context;
     if (seType !== 'aTotal') {
       RestAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
         .then((value) => {
@@ -225,7 +227,6 @@ TimelineFootprint.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
-  areaId: PropTypes.string.isRequired,
 };
 
 TimelineFootprint.defaultProps = {
@@ -233,3 +234,5 @@ TimelineFootprint.defaultProps = {
 };
 
 export default TimelineFootprint;
+
+TimelineFootprint.contextType = SearchContext;

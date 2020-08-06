@@ -5,6 +5,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
+import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 const getLabel = {
@@ -23,7 +24,8 @@ class PersistenceFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.props;
+    const { geofenceId } = this.props;
+    const { areaId } = this.context;
     RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
         this.setState({
@@ -97,7 +99,6 @@ class PersistenceFootprint extends React.Component {
 }
 
 PersistenceFootprint.propTypes = {
-  areaId: PropTypes.string.isRequired,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -110,3 +111,5 @@ PersistenceFootprint.defaultProps = {
 };
 
 export default PersistenceFootprint;
+
+PersistenceFootprint.contextType = SearchContext;

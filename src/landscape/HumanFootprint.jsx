@@ -1,16 +1,17 @@
-import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
-import LandscapeAccordion from './LandscapeAccordion';
+import React from 'react';
+
 import CurrentFootprint from './humanFootprint/CurrentFootprint';
-import TimelineFootprint from './humanFootprint/TimelineFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
 import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
+import TimelineFootprint from './humanFootprint/TimelineFootprint';
+
 
 const HumanFootprint = (props) => {
   const {
     handlerClickOnGraph,
     handlerAccordionGeometry,
-    areaId,
     geofenceId,
   } = props;
 
@@ -26,7 +27,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <CurrentFootprint
-          areaId={areaId}
           geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
@@ -43,7 +43,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <PersistenceFooprint
-          areaId={areaId}
           geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
@@ -60,7 +59,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <TimelineFootprint
-          areaId={areaId}
           geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
@@ -87,7 +85,6 @@ HumanFootprint.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
-  areaId: PropTypes.string.isRequired,
 };
 
 HumanFootprint.defaultProps = {

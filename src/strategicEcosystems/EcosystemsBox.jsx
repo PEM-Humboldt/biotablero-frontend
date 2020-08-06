@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import DetailsView from './DetailsView';
 import GraphLoader from '../charts/GraphLoader';
 
@@ -48,7 +49,6 @@ class EcosystemsBox extends Component {
 
   render() {
     const {
-      areaId,
       geofenceId,
       total,
       listSE,
@@ -103,7 +103,6 @@ class EcosystemsBox extends Component {
               {!stopLoad && (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
-                    areaId={areaId}
                     geofenceId={geofenceId}
                     item={{
                       ...item,
@@ -123,7 +122,6 @@ class EcosystemsBox extends Component {
 }
 
 EcosystemsBox.propTypes = {
-  areaId: PropTypes.string,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -134,7 +132,6 @@ EcosystemsBox.propTypes = {
 };
 
 EcosystemsBox.defaultProps = {
-  areaId: 0,
   geofenceId: 0,
   listSE: [],
   total: 0,

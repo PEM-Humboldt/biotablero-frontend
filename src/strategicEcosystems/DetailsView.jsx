@@ -1,8 +1,10 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import GraphLoader from '../charts/GraphLoader';
+import React, { Component } from 'react';
+
 import { setPAValues, setCoverageValues } from './FormatSE';
+import GraphLoader from '../charts/GraphLoader';
 import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
 
 /**
  * Validate if data exist before rendering graph
@@ -81,10 +83,10 @@ class DetailsView extends Component {
 
   componentDidMount() {
     const {
-      areaId,
       geofenceId,
       item,
     } = this.props;
+    const { areaId } = this.context;
 
     const name = item.type || item.name;
     const { stopLoad } = this.state;
@@ -144,7 +146,6 @@ class DetailsView extends Component {
 }
 
 DetailsView.propTypes = {
-  areaId: PropTypes.string,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -154,9 +155,9 @@ DetailsView.propTypes = {
 };
 
 DetailsView.defaultProps = {
-  areaId: 0,
   geofenceId: 0,
   matchColor: () => {},
 };
 
 export default DetailsView;
+DetailsView.contextType = SearchContext;

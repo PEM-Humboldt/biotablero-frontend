@@ -1,9 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import AddIcon from '@material-ui/icons/Add';
-import LandscapeAccordion from './LandscapeAccordion';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
+import SearchContext from '../SearchContext';
 
 class Landscape extends React.Component {
   constructor(props) {
@@ -15,7 +17,8 @@ class Landscape extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, handlerSwitchLayer } = this.props;
+    const { handlerSwitchLayer } = this.props;
+    const { areaId } = this.context;
     this.setState({ expandedLevel2: 'hfCurrent' });
     if (areaId === 'ea') {
       this.setState({ expandedLevel1: 'fc' });
@@ -61,11 +64,11 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      areaId,
       geofenceId,
       matchColor,
       handlerClickOnGraph,
     } = this.props;
+    const { areaId } = this.context;
 
     const componentsArray = [
       {
@@ -79,7 +82,6 @@ class Landscape extends React.Component {
         },
         component: <CompensationFactor
           geofenceId={geofenceId}
-          areaId={areaId}
           matchColor={matchColor}
         />,
       },
@@ -95,7 +97,6 @@ class Landscape extends React.Component {
         component: (
           <HumanFootprint
             geofenceId={geofenceId}
-            areaId={areaId}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -115,7 +116,6 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  areaId: PropTypes.string.isRequired,
   geofenceId: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
@@ -132,3 +132,5 @@ Landscape.defaultProps = {
 };
 
 export default Landscape;
+
+Landscape.contextType = SearchContext;

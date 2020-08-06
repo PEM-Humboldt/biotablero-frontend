@@ -1,11 +1,12 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import GraphLoader from '../charts/GraphLoader';
 import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
+import ShortInfo from '../commons/ShortInfo';
 
 class CompensationFactor extends React.Component {
   constructor(props) {
@@ -19,7 +20,8 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId, areaId } = this.props;
+    const { geofenceId } = this.props;
+    const { areaId } = this.context;
 
     if (areaId !== 'ea') return;
 
@@ -164,7 +166,6 @@ CompensationFactor.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]).isRequired,
-  areaId: PropTypes.string.isRequired,
   matchColor: PropTypes.func,
 };
 
@@ -173,3 +174,5 @@ CompensationFactor.defaultProps = {
 };
 
 export default CompensationFactor;
+
+CompensationFactor.contextType = SearchContext;
