@@ -2,9 +2,6 @@ import React from 'react';
 
 const description = companyName => (
   <div>
-    <h1>
-      Consultas geográficas
-    </h1>
     <p>
       {'En esta sección podrás encontrar información sobre '}
       <b>
