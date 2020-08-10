@@ -83,10 +83,12 @@ class DetailsView extends Component {
 
   componentDidMount() {
     const {
-      geofenceId,
       item,
     } = this.props;
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     const name = item.type || item.name;
     const { stopLoad } = this.state;
@@ -146,16 +148,11 @@ class DetailsView extends Component {
 }
 
 DetailsView.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
   item: PropTypes.object.isRequired,
   matchColor: PropTypes.func,
 };
 
 DetailsView.defaultProps = {
-  geofenceId: 0,
   matchColor: () => {},
 };
 

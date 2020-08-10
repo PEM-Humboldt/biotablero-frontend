@@ -104,8 +104,10 @@ class TimelineFootprint extends React.Component {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType) => {
-    const { geofenceId } = this.props;
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     if (seType !== 'aTotal') {
       RestAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
         .then((value) => {
@@ -223,10 +225,6 @@ class TimelineFootprint extends React.Component {
 
 TimelineFootprint.propTypes = {
   onClickGraphHandler: PropTypes.func,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
 };
 
 TimelineFootprint.defaultProps = {

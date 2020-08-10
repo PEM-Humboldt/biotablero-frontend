@@ -64,7 +64,6 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      geofenceId,
       matchColor,
       handlerClickOnGraph,
     } = this.props;
@@ -81,7 +80,6 @@ class Landscape extends React.Component {
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor
-          geofenceId={geofenceId}
           matchColor={matchColor}
         />,
       },
@@ -96,7 +94,6 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            geofenceId={geofenceId}
             handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
@@ -116,10 +113,6 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
   matchColor: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,

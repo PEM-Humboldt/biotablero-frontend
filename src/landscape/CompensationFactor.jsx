@@ -20,8 +20,10 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId } = this.props;
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     if (areaId !== 'ea') return;
 
@@ -162,10 +164,6 @@ class CompensationFactor extends React.Component {
 }
 
 CompensationFactor.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
   matchColor: PropTypes.func,
 };
 

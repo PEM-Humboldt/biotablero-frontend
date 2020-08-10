@@ -591,7 +591,6 @@ class Search extends Component {
 
   render() {
     const {
-      selectedArea,
       loadingModal,
       layers,
       connError,
@@ -599,7 +598,10 @@ class Search extends Component {
       geofencesArray,
     } = this.state;
 
-    const { selectedAreaTypeId } = this.props;
+    const {
+      selectedAreaTypeId,
+      selectedAreaId,
+    } = this.props;
 
     return (
       <div>
@@ -673,6 +675,7 @@ class Search extends Component {
         <SearchContext.Provider
           value={{
             areaId: selectedAreaTypeId,
+            geofenceId: selectedAreaId,
           }}
         >
           <div className="appSearcher">
@@ -684,7 +687,7 @@ class Search extends Component {
               Titulo del mapa
             </div>
             <div className="contentView">
-              { (!selectedAreaTypeId || !selectedArea) && (
+              { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
                   handlers={[
                     () => {},
@@ -697,9 +700,8 @@ class Search extends Component {
                   iconClass="iconsection"
                 />
               )}
-              { selectedAreaTypeId && selectedArea && (selectedAreaTypeId !== 'se') && (
+              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
-                  geofence={selectedArea}
                   handlerBackButton={this.handlerBackButton}
                   matchColor={matchColor}
                   handlerShutOffAllLayers={this.shutOffLayer}

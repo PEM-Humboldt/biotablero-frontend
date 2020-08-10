@@ -19,8 +19,11 @@ class CurrentFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId } = this.props;
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
+
     RestAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res) => {
         this.setState({
@@ -110,10 +113,6 @@ class CurrentFootprint extends React.Component {
 }
 
 CurrentFootprint.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
   onClickGraphHandler: PropTypes.func,
 };
 

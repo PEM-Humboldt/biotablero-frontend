@@ -31,11 +31,11 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      geofence,
-    } = this.props;
-    const { areaId } = this.context;
+      areaId,
+      geofenceId,
+    } = this.context;
 
-    const searchId = geofence.id || geofence.name;
+    const searchId = geofenceId;
 
     RestAPI.requestGeofenceDetails(areaId, searchId)
       .then((res) => {
@@ -46,14 +46,12 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofence,
       handlerBackButton,
       matchColor,
       handlerShutOffAllLayers,
       handlerSwitchLayer,
       handlerClickOnGraph,
     } = this.props;
-    const { areaId } = this.context;
 
     const {
       geofenceArea,
@@ -88,13 +86,11 @@ class Drawer extends React.Component {
           <div>
             <Overview
               generalArea={Number(geofenceArea)}
-              geofenceId={areaId === 'pa' ? geofence.name : geofence.id}
               matchColor={matchColor}
             />
           </div>
           <div>
             <Landscape
-              geofenceId={areaId === 'pa' ? geofence.name : geofence.id}
               matchColor={matchColor}
               handlerSwitchLayer={handlerSwitchLayer}
               handlerClickOnGraph={handlerClickOnGraph}
@@ -128,13 +124,6 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  geofence: PropTypes.shape({
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-    name: PropTypes.string,
-  }).isRequired,
   handlerBackButton: PropTypes.func,
   matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,

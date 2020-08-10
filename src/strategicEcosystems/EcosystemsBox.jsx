@@ -49,7 +49,6 @@ class EcosystemsBox extends Component {
 
   render() {
     const {
-      geofenceId,
       total,
       listSE,
       matchColor,
@@ -103,7 +102,6 @@ class EcosystemsBox extends Component {
               {!stopLoad && (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
-                    geofenceId={geofenceId}
                     item={{
                       ...item,
                       percentage: item.percentage * 100,
@@ -122,17 +120,12 @@ class EcosystemsBox extends Component {
 }
 
 EcosystemsBox.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
   listSE: PropTypes.array,
   total: PropTypes.number,
   matchColor: PropTypes.func,
 };
 
 EcosystemsBox.defaultProps = {
-  geofenceId: 0,
   listSE: [],
   total: 0,
   matchColor: () => {},

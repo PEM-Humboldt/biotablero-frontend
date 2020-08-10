@@ -12,7 +12,6 @@ const HumanFootprint = (props) => {
   const {
     handlerClickOnGraph,
     handlerAccordionGeometry,
-    geofenceId,
   } = props;
 
   const componentsArray = [
@@ -27,7 +26,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <CurrentFootprint
-          geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -43,7 +41,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <PersistenceFooprint
-          geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -59,7 +56,6 @@ const HumanFootprint = (props) => {
       },
       component: (
         <TimelineFootprint
-          geofenceId={geofenceId}
           onClickGraphHandler={handlerClickOnGraph}
         />
       ),
@@ -81,10 +77,6 @@ const HumanFootprint = (props) => {
 HumanFootprint.propTypes = {
   handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
 };
 
 HumanFootprint.defaultProps = {

@@ -42,8 +42,10 @@ class Overview extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId } = this.props;
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
@@ -93,12 +95,11 @@ class Overview extends React.Component {
     if (loadingSE) return ('Cargando...');
     if (allSE.length <= 0) return ('Información no disponible');
 
-    const { geofenceId, matchColor } = this.props;
+    const { matchColor } = this.props;
 
     return (
       <EcosystemsBox
         total={Number(ecosystemsArea)}
-        geofenceId={geofenceId}
         listSE={allSE}
         matchColor={matchColor}
       />
@@ -197,10 +198,6 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   generalArea: PropTypes.number,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
   matchColor: PropTypes.func,
 };
 
