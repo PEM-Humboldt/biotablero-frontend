@@ -80,6 +80,17 @@ header.cabezote {
 	display: inline-block;
 }
 
+.cabezoteRight h2 {
+	display: inline-block;
+	text-transform: uppercase;
+	font-size: 2.2em;
+	font-family: 'Lato', sans-serif;
+	color: #fff;
+	transform: translateY(50%);
+	-webkit-transform: translateY(50%);
+	padding: 0 8px;
+}
+
 nav {
 	display: inline-block;
 	cursor: pointer;
@@ -1192,7 +1203,7 @@ overflow: auto;
 	font-size: 1.3em;
 }
 
-.iconsection {
+.Consultasgeográficas {
   background-image: url(../assets/img/geografico.png);
   -webkit-background-size: contain;
   background-size: contain;
@@ -1201,7 +1212,7 @@ overflow: auto;
   height: 65px;
 }
 
-.iconsec2 {
+.Compensaciónambiental {
   background-image: url(../assets/img/compensaciones.png);
   -webkit-background-size: contain;
   background-size: contain;
