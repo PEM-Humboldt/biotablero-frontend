@@ -41,7 +41,7 @@ class App extends React.Component {
     const query = this.buildQuery(location.search);
     return this.loadComponent({
       footerLogos: false,
-      name: 'Consultas',
+      name: 'Consultas geográficas',
       component: (<Search
         selectedAreaTypeId={query.get('area_type')}
         selectedAreaId={query.get('area_id')}
@@ -63,7 +63,7 @@ class App extends React.Component {
     if (user) {
       return this.loadComponent({
         footerLogos: false,
-        name: 'Compensaciones',
+        name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
       });
     }
