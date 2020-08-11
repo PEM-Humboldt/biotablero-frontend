@@ -20,6 +20,14 @@ const Header = ({
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
     <div className="header_info">
+      {activeModule && !parent && !child && (
+        <div className="cabezoteRight">
+          <h2>
+            {`${activeModule}`}
+          </h2>
+          <div className={`${activeModule.replace(/ /g, '')}`} />
+        </div>
+      )}
       {parent && child && (
         <div className="cabezoteRight">
           <h1>
@@ -27,7 +35,7 @@ const Header = ({
             <br />
             {parent}
           </h1>
-          <div className="iconsection" />
+          <div className={`${activeModule.replace(/ /g, '')}`} />
         </div>
       )}
       {uim}
