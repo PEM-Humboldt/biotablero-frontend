@@ -224,7 +224,7 @@ class RestAPI {
   }
 
   /**
-   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   * Get the human footprint timeline data in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
