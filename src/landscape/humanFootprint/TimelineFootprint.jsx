@@ -76,7 +76,6 @@ class TimelineFootprint extends React.Component {
 
   componentDidMount() {
     const { areaId, geofenceId } = this.props;
-
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),
@@ -86,7 +85,7 @@ class TimelineFootprint extends React.Component {
       .then(([paramo, wetland, dryForest, aTotal]) => {
         this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
       })
-      .catch(() => this.reportConnError());
+      .catch(() => {});
   }
 
   /**
