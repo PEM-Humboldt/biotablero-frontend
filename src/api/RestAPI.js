@@ -1,5 +1,4 @@
 import axios, { CancelToken } from 'axios';
-import tmpHFTimeline from './tmp_hf_timeline.json';
 
 class RestAPI {
   /**
@@ -225,16 +224,29 @@ class RestAPI {
   }
 
   /**
-   * Get the human footprint timeline data in the given area.
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
+   * @return {Promise<Array>} Array of objects with human footprint timeline data in the given area
+   */
+  static requestTotalHFTimeline(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+  }
+
+  /**
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
+   *
    * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
    * footprint timeline data
    */
-  static requestHFTimeline() {
-    return Promise.resolve(tmpHFTimeline);
+  static requestSEHFTimeline(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}/hf/timeline`);
   }
 
   /**
