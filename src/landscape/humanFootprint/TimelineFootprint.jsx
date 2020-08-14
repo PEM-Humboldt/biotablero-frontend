@@ -139,7 +139,6 @@ class TimelineFootprint extends React.Component {
    * @returns {array} data transformed
    */
   processData = (data) => {
-    console.log('processData - data', data);
     if (!data) return [];
     return data.map(obj => ({
       ...obj,
