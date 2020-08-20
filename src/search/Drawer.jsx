@@ -49,7 +49,6 @@ class Drawer extends React.Component {
       handlerBackButton,
       handlerShutOffAllLayers,
       handlerSwitchLayer,
-      handlerClickOnGraph,
     } = this.props;
 
     const {
@@ -90,7 +89,6 @@ class Drawer extends React.Component {
           <div>
             <Landscape
               handlerSwitchLayer={handlerSwitchLayer}
-              handlerClickOnGraph={handlerClickOnGraph}
             />
           </div>
           <div className="graphcard">
@@ -124,14 +122,12 @@ Drawer.propTypes = {
   handlerBackButton: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
-  handlerClickOnGraph: PropTypes.func,
 };
 
 Drawer.defaultProps = {
   handlerBackButton: () => {},
   handlerShutOffAllLayers: () => {},
   handlerSwitchLayer: () => {},
-  handlerClickOnGraph: () => {},
 };
 
 export default withStyles(styles)(Drawer);

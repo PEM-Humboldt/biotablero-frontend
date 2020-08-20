@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
 
 import GraphLoader from '../../charts/GraphLoader';
@@ -50,7 +49,7 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { onClickGraphHandler } = this.props;
+    const { handlerClickOnGraph } = this.context;
     const { showInfoGraph, hfPersistence } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -92,21 +91,13 @@ class PersistenceFootprint extends React.Component {
             units="ha"
             colors={matchColor('hfPersistence')}
             padding={0.25}
-            onClickGraphHandler={onClickGraphHandler}
+            onClickGraphHandler={handlerClickOnGraph}
           />
         </div>
       </div>
     );
   }
 }
-
-PersistenceFootprint.propTypes = {
-  onClickGraphHandler: PropTypes.func,
-};
-
-PersistenceFootprint.defaultProps = {
-  onClickGraphHandler: () => {},
-};
 
 export default PersistenceFootprint;
 

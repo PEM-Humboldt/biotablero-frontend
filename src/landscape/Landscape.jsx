@@ -63,9 +63,6 @@ class Landscape extends React.Component {
   }
 
   render() {
-    const {
-      handlerClickOnGraph,
-    } = this.props;
     const { areaId } = this.context;
 
     const componentsArray = [
@@ -91,7 +88,6 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
-            handlerClickOnGraph={handlerClickOnGraph}
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
         ),
@@ -111,12 +107,10 @@ class Landscape extends React.Component {
 
 Landscape.propTypes = {
   handlerSwitchLayer: PropTypes.func,
-  handlerClickOnGraph: PropTypes.func,
 };
 
 Landscape.defaultProps = {
   handlerSwitchLayer: () => {},
-  handlerClickOnGraph: () => {},
 };
 
 export default Landscape;

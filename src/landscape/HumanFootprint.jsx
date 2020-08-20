@@ -10,7 +10,6 @@ import TimelineFootprint from './humanFootprint/TimelineFootprint';
 
 const HumanFootprint = (props) => {
   const {
-    handlerClickOnGraph,
     handlerAccordionGeometry,
   } = props;
 
@@ -25,9 +24,7 @@ const HumanFootprint = (props) => {
         description: 'Huella humana identificada en el último año de medición disponible, sobre el área de consulta',
       },
       component: (
-        <CurrentFootprint
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <CurrentFootprint />
       ),
     },
     {
@@ -40,9 +37,7 @@ const HumanFootprint = (props) => {
         description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
       },
       component: (
-        <PersistenceFooprint
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <PersistenceFooprint />
       ),
     },
     {
@@ -55,9 +50,7 @@ const HumanFootprint = (props) => {
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
       component: (
-        <TimelineFootprint
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <TimelineFootprint />
       ),
     },
   ];
@@ -75,12 +68,10 @@ const HumanFootprint = (props) => {
 };
 
 HumanFootprint.propTypes = {
-  handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
 };
 
 HumanFootprint.defaultProps = {
-  handlerClickOnGraph: () => {},
   handlerAccordionGeometry: () => {},
 };
 

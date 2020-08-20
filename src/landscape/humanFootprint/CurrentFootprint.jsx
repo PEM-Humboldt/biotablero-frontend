@@ -1,5 +1,4 @@
 import InfoIcon from '@material-ui/icons/Info';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import GraphLoader from '../../charts/GraphLoader';
@@ -53,7 +52,7 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const { onClickGraphHandler } = this.props;
+    const { handlerClickOnGraph } = this.context;
     const { hfCurrent, hfCurrentValue } = this.state;
     const { showInfoGraph } = this.state;
     return (
@@ -104,21 +103,13 @@ class CurrentFootprint extends React.Component {
             units="ha"
             colors={matchColor('hfCurrent')}
             padding={0.25}
-            onClickGraphHandler={onClickGraphHandler}
+            onClickGraphHandler={handlerClickOnGraph}
           />
         </div>
       </div>
     );
   }
 }
-
-CurrentFootprint.propTypes = {
-  onClickGraphHandler: PropTypes.func,
-};
-
-CurrentFootprint.defaultProps = {
-  onClickGraphHandler: () => {},
-};
 
 export default CurrentFootprint;
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
 
 import GraphLoader from '../../charts/GraphLoader';
@@ -151,8 +150,8 @@ class TimelineFootprint extends React.Component {
 
   render() {
     const {
-      onClickGraphHandler,
-    } = this.props;
+      handlerClickOnGraph,
+    } = this.context;
     const {
       showInfoGraph,
       hfTimeline,
@@ -203,7 +202,7 @@ class TimelineFootprint extends React.Component {
               labelY="Indice promedio Huella Humana"
               onClickGraphHandler={(selection) => {
                 this.setSelectedEcosystem(selection);
-                onClickGraphHandler(selection);
+                handlerClickOnGraph(selection);
               }}
             />
           </h2>
@@ -223,13 +222,6 @@ class TimelineFootprint extends React.Component {
   }
 }
 
-TimelineFootprint.propTypes = {
-  onClickGraphHandler: PropTypes.func,
-};
-
-TimelineFootprint.defaultProps = {
-  onClickGraphHandler: () => {},
-};
 
 export default TimelineFootprint;
 

@@ -676,6 +676,7 @@ class Search extends Component {
           value={{
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
+            handlerClickOnGraph: this.clickOnGraph,
           }}
         >
           <div className="appSearcher">
@@ -705,7 +706,6 @@ class Search extends Component {
                   handlerBackButton={this.handlerBackButton}
                   handlerShutOffAllLayers={this.shutOffLayer}
                   handlerSwitchLayer={this.switchLayer}
-                  handlerClickOnGraph={this.clickOnGraph}
                 />
               )}
               {/* // TODO: This functionality should be implemented again
