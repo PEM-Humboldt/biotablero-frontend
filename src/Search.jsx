@@ -703,7 +703,6 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  matchColor={matchColor}
                   handlerShutOffAllLayers={this.shutOffLayer}
                   handlerSwitchLayer={this.switchLayer}
                   handlerClickOnGraph={this.clickOnGraph}

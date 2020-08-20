@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 
 import DetailsView from './DetailsView';
 import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
 
 /**
  * Give format to a big number
@@ -51,7 +52,6 @@ class EcosystemsBox extends Component {
     const {
       total,
       listSE,
-      matchColor,
     } = this.props;
     const { showGraphs, stopLoad } = this.state;
 
@@ -106,7 +106,6 @@ class EcosystemsBox extends Component {
                       ...item,
                       percentage: item.percentage * 100,
                     }}
-                    matchColor={matchColor}
                   />
                 </div>
               )}
@@ -122,13 +121,11 @@ class EcosystemsBox extends Component {
 EcosystemsBox.propTypes = {
   listSE: PropTypes.array,
   total: PropTypes.number,
-  matchColor: PropTypes.func,
 };
 
 EcosystemsBox.defaultProps = {
   listSE: [],
   total: 0,
-  matchColor: () => {},
 };
 
 export default EcosystemsBox;

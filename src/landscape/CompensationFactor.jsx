@@ -1,9 +1,10 @@
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-import PropTypes from 'prop-types';
+
 import React from 'react';
 
 import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
 import SearchContext from '../SearchContext';
 import ShortInfo from '../commons/ShortInfo';
@@ -71,9 +72,6 @@ class CompensationFactor extends React.Component {
   };
 
   render() {
-    const {
-      matchColor,
-    } = this.props;
     const {
       showInfoGraph,
       biomes,
@@ -162,14 +160,6 @@ class CompensationFactor extends React.Component {
     );
   }
 }
-
-CompensationFactor.propTypes = {
-  matchColor: PropTypes.func,
-};
-
-CompensationFactor.defaultProps = {
-  matchColor: () => {},
-};
 
 export default CompensationFactor;
 

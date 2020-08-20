@@ -47,7 +47,6 @@ class Drawer extends React.Component {
   render() {
     const {
       handlerBackButton,
-      matchColor,
       handlerShutOffAllLayers,
       handlerSwitchLayer,
       handlerClickOnGraph,
@@ -86,12 +85,10 @@ class Drawer extends React.Component {
           <div>
             <Overview
               generalArea={Number(geofenceArea)}
-              matchColor={matchColor}
             />
           </div>
           <div>
             <Landscape
-              matchColor={matchColor}
               handlerSwitchLayer={handlerSwitchLayer}
               handlerClickOnGraph={handlerClickOnGraph}
             />
@@ -125,7 +122,6 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   handlerBackButton: PropTypes.func,
-  matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
@@ -133,7 +129,6 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   handlerBackButton: () => {},
-  matchColor: () => {},
   handlerShutOffAllLayers: () => {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},

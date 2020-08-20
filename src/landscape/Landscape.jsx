@@ -64,7 +64,6 @@ class Landscape extends React.Component {
 
   render() {
     const {
-      matchColor,
       handlerClickOnGraph,
     } = this.props;
     const { areaId } = this.context;
@@ -79,9 +78,7 @@ class Landscape extends React.Component {
           detailId: 'Factor de compensación en área de consulta',
           description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
-        component: <CompensationFactor
-          matchColor={matchColor}
-        />,
+        component: <CompensationFactor />,
       },
       {
         label: {
@@ -113,13 +110,11 @@ class Landscape extends React.Component {
 }
 
 Landscape.propTypes = {
-  matchColor: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
   handlerClickOnGraph: PropTypes.func,
 };
 
 Landscape.defaultProps = {
-  matchColor: () => {},
   handlerSwitchLayer: () => {},
   handlerClickOnGraph: () => {},
 };
