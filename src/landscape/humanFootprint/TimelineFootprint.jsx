@@ -76,7 +76,7 @@ class TimelineFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.props;
+    const { areaId, geofenceId } = this.context;
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),
