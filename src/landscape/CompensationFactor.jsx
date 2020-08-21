@@ -1,6 +1,5 @@
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-
 import React from 'react';
 
 import GraphLoader from '../charts/GraphLoader';
