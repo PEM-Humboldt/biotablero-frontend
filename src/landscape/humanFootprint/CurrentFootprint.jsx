@@ -53,8 +53,11 @@ class CurrentFootprint extends React.Component {
 
   render() {
     const { handlerClickOnGraph } = this.context;
-    const { hfCurrent, hfCurrentValue } = this.state;
-    const { showInfoGraph } = this.state;
+    const {
+      hfCurrent,
+      hfCurrentValue,
+      showInfoGraph,
+    } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
