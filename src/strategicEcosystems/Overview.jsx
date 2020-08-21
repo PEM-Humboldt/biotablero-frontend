@@ -6,7 +6,9 @@ import React from 'react';
 import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
 import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
 import ShortInfo from '../commons/ShortInfo';
 
 /**
@@ -41,7 +43,10 @@ class Overview extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId, areaId } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
@@ -91,15 +96,10 @@ class Overview extends React.Component {
     if (loadingSE) return ('Cargando...');
     if (allSE.length <= 0) return ('Información no disponible');
 
-    const { areaId, geofenceId, matchColor } = this.props;
-
     return (
       <EcosystemsBox
-        areaId={areaId}
         total={Number(ecosystemsArea)}
-        geofenceId={geofenceId}
         listSE={allSE}
-        matchColor={matchColor}
       />
     );
   };
@@ -107,7 +107,6 @@ class Overview extends React.Component {
   render() {
     const {
       generalArea,
-      matchColor,
     } = this.props;
     const {
       showInfoGraph,
@@ -196,17 +195,12 @@ class Overview extends React.Component {
 
 Overview.propTypes = {
   generalArea: PropTypes.number,
-  areaId: PropTypes.string.isRequired,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
-  matchColor: PropTypes.func,
 };
 
 Overview.defaultProps = {
   generalArea: 0,
-  matchColor: () => {},
 };
 
 export default Overview;
+
+Overview.contextType = SearchContext;

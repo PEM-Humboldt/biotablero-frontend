@@ -1,17 +1,16 @@
-import React from 'react';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
-import LandscapeAccordion from './LandscapeAccordion';
+import React from 'react';
+
 import CurrentFootprint from './humanFootprint/CurrentFootprint';
-import TimelineFootprint from './humanFootprint/TimelineFootprint';
+import LandscapeAccordion from './LandscapeAccordion';
 import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
+import TimelineFootprint from './humanFootprint/TimelineFootprint';
+
 
 const HumanFootprint = (props) => {
   const {
-    handlerClickOnGraph,
     handlerAccordionGeometry,
-    areaId,
-    geofenceId,
   } = props;
 
   const componentsArray = [
@@ -25,11 +24,7 @@ const HumanFootprint = (props) => {
         description: 'Huella humana identificada en el último año de medición disponible, sobre el área de consulta',
       },
       component: (
-        <CurrentFootprint
-          areaId={areaId}
-          geofenceId={geofenceId}
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <CurrentFootprint />
       ),
     },
     {
@@ -42,11 +37,7 @@ const HumanFootprint = (props) => {
         description: 'Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta',
       },
       component: (
-        <PersistenceFooprint
-          areaId={areaId}
-          geofenceId={geofenceId}
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <PersistenceFooprint />
       ),
     },
     {
@@ -59,11 +50,7 @@ const HumanFootprint = (props) => {
         description: 'Representa diferentes análisis de huella humana en esta área de consulta',
       },
       component: (
-        <TimelineFootprint
-          areaId={areaId}
-          geofenceId={geofenceId}
-          onClickGraphHandler={handlerClickOnGraph}
-        />
+        <TimelineFootprint />
       ),
     },
   ];
@@ -81,17 +68,10 @@ const HumanFootprint = (props) => {
 };
 
 HumanFootprint.propTypes = {
-  handlerClickOnGraph: PropTypes.func,
   handlerAccordionGeometry: PropTypes.func,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
-  areaId: PropTypes.string.isRequired,
 };
 
 HumanFootprint.defaultProps = {
-  handlerClickOnGraph: () => {},
   handlerAccordionGeometry: () => {},
 };
 

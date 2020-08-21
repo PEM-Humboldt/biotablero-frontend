@@ -1,11 +1,12 @@
-
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
-import ShortInfo from '../commons/ShortInfo';
+import React from 'react';
+
 import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
+import ShortInfo from '../commons/ShortInfo';
 
 class CompensationFactor extends React.Component {
   constructor(props) {
@@ -19,7 +20,10 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
-    const { geofenceId, areaId } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     if (areaId !== 'ea') return;
 
@@ -67,9 +71,6 @@ class CompensationFactor extends React.Component {
   };
 
   render() {
-    const {
-      matchColor,
-    } = this.props;
     const {
       showInfoGraph,
       biomes,
@@ -159,17 +160,6 @@ class CompensationFactor extends React.Component {
   }
 }
 
-CompensationFactor.propTypes = {
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
-  areaId: PropTypes.string.isRequired,
-  matchColor: PropTypes.func,
-};
-
-CompensationFactor.defaultProps = {
-  matchColor: () => {},
-};
-
 export default CompensationFactor;
+
+CompensationFactor.contextType = SearchContext;

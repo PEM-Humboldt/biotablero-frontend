@@ -5,15 +5,15 @@ import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import MapViewer from './commons/MapViewer';
-import Selector from './commons/Selector';
-import Drawer from './search/Drawer';
-import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
-import RestAPI from './api/RestAPI';
+import Drawer from './search/Drawer';
+import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
+import MapViewer from './commons/MapViewer';
 import matchColor from './commons/matchColor';
-import AppContext from './AppContext';
+import RestAPI from './api/RestAPI';
+import SearchContext from './SearchContext';
+import Selector from './commons/Selector';
 
 /**
  * Get the label tooltip on the map
@@ -591,14 +591,18 @@ class Search extends Component {
 
   render() {
     const {
-      selectedAreaType,
-      selectedArea,
       loadingModal,
       layers,
       connError,
       dataError,
       geofencesArray,
     } = this.state;
+
+    const {
+      selectedAreaTypeId,
+      selectedAreaId,
+    } = this.props;
+
     return (
       <div>
         <Modal
@@ -668,51 +672,55 @@ class Search extends Component {
             </h2>
           </div>
         </Modal>
-        <div className="appSearcher">
-          <MapViewer
-            layers={layers}
-            geoServerUrl={GeoServerAPI.getRequestURL()}
-          />
-          <div className="mapsTitle">
-            Titulo del mapa
+        <SearchContext.Provider
+          value={{
+            areaId: selectedAreaTypeId,
+            geofenceId: selectedAreaId,
+            handlerClickOnGraph: this.clickOnGraph,
+          }}
+        >
+          <div className="appSearcher">
+            <MapViewer
+              layers={layers}
+              geoServerUrl={GeoServerAPI.getRequestURL()}
+            />
+            <div className="mapsTitle">
+              Titulo del mapa
+            </div>
+            <div className="contentView">
+              { (!selectedAreaTypeId || !selectedAreaId) && (
+                <Selector
+                  handlers={[
+                    () => {},
+                    this.secondLevelChange,
+                    this.innerElementChange,
+                  ]}
+                  description={description(null)}
+                  data={geofencesArray}
+                  expandedId={0}
+                  iconClass="iconsection"
+                />
+              )}
+              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
+                <Drawer
+                  handlerBackButton={this.handlerBackButton}
+                  handlerShutOffAllLayers={this.shutOffLayer}
+                  handlerSwitchLayer={this.switchLayer}
+                />
+              )}
+              {/* // TODO: This functionality should be implemented again
+              selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
+                <NationalInsigths
+                  area={selectedAreaType}
+                  colors={colors}
+                  geofence={selectedArea}
+                  handlerBackButton={this.handlerBackButton}
+                  id
+                />
+              ) */}
+            </div>
           </div>
-          <div className="contentView">
-            { (!selectedAreaType || !selectedArea) && (
-              <Selector
-                handlers={[
-                  () => {},
-                  this.secondLevelChange,
-                  this.innerElementChange,
-                ]}
-                description={description(null)}
-                data={geofencesArray}
-                expandedId={0}
-                iconClass="iconsection"
-              />
-            )}
-            { selectedAreaType && selectedArea && (selectedAreaType.id !== 'se') && (
-              <Drawer
-                area={selectedAreaType}
-                geofence={selectedArea}
-                handlerBackButton={this.handlerBackButton}
-                matchColor={matchColor}
-                handlerShutOffAllLayers={this.shutOffLayer}
-                handlerSwitchLayer={this.switchLayer}
-                handlerClickOnGraph={this.clickOnGraph}
-              />
-            )}
-            {/* // TODO: This functionality should be implemented again
-             selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
-              <NationalInsigths
-                area={selectedAreaType}
-                colors={colors}
-                geofence={selectedArea}
-                handlerBackButton={this.handlerBackButton}
-                id
-              />
-             ) */}
-          </div>
-        </div>
+        </SearchContext.Provider>
       </div>
     );
   }
@@ -738,5 +746,3 @@ Search.defaultProps = {
 };
 
 export default withRouter(Search);
-
-Search.contextType = AppContext;

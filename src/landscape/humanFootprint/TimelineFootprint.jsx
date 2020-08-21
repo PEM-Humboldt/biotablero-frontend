@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
 
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
+import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 const changeValues = [
@@ -75,7 +75,7 @@ class TimelineFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.props;
+    const { areaId, geofenceId } = this.context;
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),
@@ -103,7 +103,10 @@ class TimelineFootprint extends React.Component {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType) => {
-    const { areaId, geofenceId } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     if (seType !== 'aTotal') {
       RestAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
         .then((value) => {
@@ -147,8 +150,8 @@ class TimelineFootprint extends React.Component {
 
   render() {
     const {
-      onClickGraphHandler,
-    } = this.props;
+      handlerClickOnGraph,
+    } = this.context;
     const {
       showInfoGraph,
       hfTimeline,
@@ -199,7 +202,7 @@ class TimelineFootprint extends React.Component {
               labelY="Indice promedio Huella Humana"
               onClickGraphHandler={(selection) => {
                 this.setSelectedEcosystem(selection);
-                onClickGraphHandler(selection);
+                handlerClickOnGraph(selection);
               }}
             />
           </h2>
@@ -219,17 +222,7 @@ class TimelineFootprint extends React.Component {
   }
 }
 
-TimelineFootprint.propTypes = {
-  onClickGraphHandler: PropTypes.func,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
-  areaId: PropTypes.string.isRequired,
-};
-
-TimelineFootprint.defaultProps = {
-  onClickGraphHandler: () => {},
-};
 
 export default TimelineFootprint;
+
+TimelineFootprint.contextType = SearchContext;

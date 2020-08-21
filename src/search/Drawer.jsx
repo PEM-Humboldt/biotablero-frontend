@@ -6,10 +6,11 @@ import Ecosistemas from '@material-ui/icons/Nature';
 import Especies from '@material-ui/icons/FilterVintage';
 import Paisaje from '@material-ui/icons/FilterHdr';
 
-import RestAPI from '../api/RestAPI';
-import Overview from '../strategicEcosystems/Overview';
-import TabContainer from '../commons/TabContainer';
 import Landscape from '../landscape/Landscape';
+import Overview from '../strategicEcosystems/Overview';
+import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
+import TabContainer from '../commons/TabContainer';
 
 const styles = () => ({
   root: {
@@ -30,12 +31,13 @@ class Drawer extends React.Component {
 
   componentDidMount() {
     const {
-      geofence, area,
-    } = this.props;
+      areaId,
+      geofenceId,
+    } = this.context;
 
-    const searchId = geofence.id || geofence.name;
+    const searchId = geofenceId;
 
-    RestAPI.requestGeofenceDetails(area.id, searchId)
+    RestAPI.requestGeofenceDetails(areaId, searchId)
       .then((res) => {
         this.setState({ geofenceArea: Number(res.total_area) });
       })
@@ -44,13 +46,9 @@ class Drawer extends React.Component {
 
   render() {
     const {
-      geofence,
       handlerBackButton,
-      area,
-      matchColor,
       handlerShutOffAllLayers,
       handlerSwitchLayer,
-      handlerClickOnGraph,
     } = this.props;
 
     const {
@@ -86,18 +84,11 @@ class Drawer extends React.Component {
           <div>
             <Overview
               generalArea={Number(geofenceArea)}
-              areaId={area.id}
-              geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
-              matchColor={matchColor}
             />
           </div>
           <div>
             <Landscape
-              areaId={area.id}
-              geofenceId={area.id === 'pa' ? geofence.name : geofence.id}
-              matchColor={matchColor}
               handlerSwitchLayer={handlerSwitchLayer}
-              handlerClickOnGraph={handlerClickOnGraph}
             />
           </div>
           <div className="graphcard">
@@ -128,30 +119,17 @@ class Drawer extends React.Component {
 }
 
 Drawer.propTypes = {
-  area: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-  }).isRequired,
-  geofence: PropTypes.shape({
-    id: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-    name: PropTypes.string,
-  }).isRequired,
   handlerBackButton: PropTypes.func,
-  matchColor: PropTypes.func,
   handlerShutOffAllLayers: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
-  handlerClickOnGraph: PropTypes.func,
 };
 
 Drawer.defaultProps = {
   handlerBackButton: () => {},
-  matchColor: () => {},
   handlerShutOffAllLayers: () => {},
   handlerSwitchLayer: () => {},
-  handlerClickOnGraph: () => {},
 };
 
 export default withStyles(styles)(Drawer);
+
+Drawer.contextType = SearchContext;

@@ -1,10 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import InfoIcon from '@material-ui/icons/Info';
 
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
+import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 const getLabel = {
@@ -23,7 +23,10 @@ class PersistenceFootprint extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
         this.setState({
@@ -46,7 +49,7 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { onClickGraphHandler } = this.props;
+    const { handlerClickOnGraph } = this.context;
     const { showInfoGraph, hfPersistence } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -88,7 +91,7 @@ class PersistenceFootprint extends React.Component {
             units="ha"
             colors={matchColor('hfPersistence')}
             padding={0.25}
-            onClickGraphHandler={onClickGraphHandler}
+            onClickGraphHandler={handlerClickOnGraph}
           />
         </div>
       </div>
@@ -96,17 +99,6 @@ class PersistenceFootprint extends React.Component {
   }
 }
 
-PersistenceFootprint.propTypes = {
-  areaId: PropTypes.string.isRequired,
-  geofenceId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]).isRequired,
-  onClickGraphHandler: PropTypes.func,
-};
-
-PersistenceFootprint.defaultProps = {
-  onClickGraphHandler: () => {},
-};
-
 export default PersistenceFootprint;
+
+PersistenceFootprint.contextType = SearchContext;
