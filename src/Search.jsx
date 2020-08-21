@@ -210,41 +210,44 @@ class Search extends Component {
    * @param {String} layerName Layer name the event belongs to
    */
   highlightFeature = (event, layerName) => {
-    const point = event.target;
+    const feature = event.target;
     let changeStyle = true;
+    const optionsTooltip = { sticky: true };
     switch (layerName) {
       case 'fc':
-        point.bindPopup(
-          `<b>Bioma:</b> ${point.feature.properties.name_biome}
-          <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-        ).openPopup();
+        feature.bindTooltip(
+          `<b>Bioma:</b> ${feature.feature.properties.name_biome}
+          <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
+          optionsTooltip,
+        ).openTooltip();
         break;
       case 'hfCurrent':
       case 'hfTimeline':
       case 'hfPersistence':
-        point.bindPopup(
-          `<b>${tooltipLabel[point.feature.properties.key]}:</b>
-          <br>${this.numberWithCommas(Number(point.feature.properties.area).toFixed(0))} ha`,
-        ).openPopup();
+        feature.bindTooltip(
+          `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
+          <br>${this.numberWithCommas(Number(feature.feature.properties.area).toFixed(0))} ha`,
+          optionsTooltip,
+        ).openTooltip();
         break;
       case 'states':
       case 'ea':
-        point.bindPopup(point.feature.properties.name).openPopup();
+        feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
         break;
       case 'basinSubzones':
-        point.bindPopup(point.feature.properties.name_subzone).openPopup();
+        feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
         break;
       default:
         changeStyle = false;
         break;
     }
     if (changeStyle) {
-      point.setStyle({
+      feature.setStyle({
         weight: 1,
         fillOpacity: 1,
       });
     }
-    if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
+    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
   }
 
   /**
