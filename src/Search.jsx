@@ -38,7 +38,7 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeLayer: null,
+      activeLayer: {},
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -290,7 +290,7 @@ class Search extends Component {
         this.shutOffLayer('dryForest');
         break;
       default: {
-        const { layers, activeLayer } = this.state;
+        const { layers, activeLayer: { id: activeLayer } } = this.state;
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
           if (layer.feature.properties.key === idCategory) {
@@ -358,17 +358,25 @@ class Search extends Component {
     let shutOtherLayers = true;
     let layerStyle = this.featureStyle(layerType);
     let fitBounds = true;
-    let newActiveLayer = layerType;
+    let newActiveLayer = null;
     let layerKey = layerType;
 
     switch (layerType) {
       case 'fc':
         request = () => RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
+        newActiveLayer = {
+          id: layerType,
+          name: 'FC - Biomas',
+        };
         break;
       case 'hfCurrent':
         request = () => RestAPI.requestCurrentHFGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
         );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH - Actual',
+        };
         break;
       case 'paramo':
       case 'dryForest':
@@ -379,7 +387,6 @@ class Search extends Component {
         shutOtherLayers = false;
         layerStyle = this.featureStyle('border', 'white');
         fitBounds = false;
-        newActiveLayer = null;
         break;
       case 'hfTimeline':
         request = () => RestAPI.requestHFPersistenceGeometry(
@@ -387,12 +394,19 @@ class Search extends Component {
         );
         layerStyle = this.featureStyle('hfPersistence');
         layerKey = 'hfPersistence';
-        newActiveLayer = 'hfPersistence';
+        newActiveLayer = {
+          id: 'hfPersistence',
+          name: 'HH - Histórico y Ecosistemas estratégicos (EE)',
+        };
         break;
       case 'hfPersistence':
         request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
         );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH - Persistencia',
+        };
         break;
       default:
         break;
@@ -403,12 +417,12 @@ class Search extends Component {
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
-          newState.layers[layerKey].active = true;
           newState.loadingModal = false;
           if (newActiveLayer) {
-            newState.layers[prevState.activeLayer].active = false;
+            newState.layers[prevState.activeLayer.id].active = false;
             newState.activeLayer = newActiveLayer;
           }
+          newState.layers[layerKey].active = true;
           return newState;
         });
       } else {
@@ -558,6 +572,7 @@ class Search extends Component {
       });
       newState.selectedAreaType = null;
       newState.selectedArea = null;
+      newState.activeLayer = {};
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -582,6 +597,7 @@ class Search extends Component {
       connError,
       dataError,
       geofencesArray,
+      activeLayer: { name: activeLayer },
     } = this.state;
 
     const {
@@ -670,9 +686,11 @@ class Search extends Component {
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
             />
-            <div className="mapsTitle">
-              Titulo del mapa
-            </div>
+            {activeLayer && (
+              <div className="mapsTitle">
+                {activeLayer}
+              </div>
+            )}
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
