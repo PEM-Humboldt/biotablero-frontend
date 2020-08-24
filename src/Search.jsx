@@ -38,7 +38,7 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeLayer: null,
+      activeLayer: {},
       connError: false,
       dataError: false,
       geofencesArray: [],
@@ -222,7 +222,6 @@ class Search extends Component {
         ).openTooltip();
         break;
       case 'hfCurrent':
-      case 'hfTimeline':
       case 'hfPersistence':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
@@ -271,16 +270,27 @@ class Search extends Component {
   clickOnGraph = (idCategory) => {
     switch (idCategory) {
       case 'paramo':
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('paramo');
+        break;
       case 'wetland':
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('wetland');
+        break;
       case 'dryForest':
-        this.shutOffLayer('se');
-        this.switchLayer(idCategory);
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('paramo');
+        this.switchLayer('dryForest');
         break;
       case 'aTotal':
-        this.shutOffLayer('se');
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
         break;
       default: {
-        const { layers, activeLayer } = this.state;
+        const { layers, activeLayer: { id: activeLayer } } = this.state;
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
           if (layer.feature.properties.key === idCategory) {
@@ -311,6 +321,7 @@ class Search extends Component {
         Object.keys(layers).forEach((layerKey) => {
           newState.layers[layerKey].active = false;
         });
+        newState.activeLayer = {};
         return newState;
       });
     } else if (layerInState) {
@@ -319,6 +330,7 @@ class Search extends Component {
           ...prevState,
         };
         newState.layers[layer].active = false;
+        if (prevState.activeLayer.id === layer) newState.activeLayer = {};
         return newState;
       });
     }
@@ -334,6 +346,7 @@ class Search extends Component {
       requestSource,
       selectedArea,
       selectedAreaType,
+      layers,
     } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -342,117 +355,102 @@ class Search extends Component {
       loadingModal: true,
       requestSource: null,
     });
+
+    let request = null;
+    let shutOtherLayers = true;
+    let layerStyle = this.featureStyle(layerType);
+    let fitBounds = true;
+    let newActiveLayer = null;
+    let layerKey = layerType;
+
     switch (layerType) {
       case 'fc':
-        this.shutOffLayer();
-        RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  fc: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle(layerType),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'fc')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'fc',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        request = () => RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
+        newActiveLayer = {
+          id: layerType,
+          name: 'FC - Biomas',
+        };
         break;
       case 'hfCurrent':
-        this.shutOffLayer();
-        RestAPI.requestCurrentHFGeometry(selectedAreaType.id, selectedArea.id || selectedArea.name)
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  hfCurrent: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle(layerType),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'hfCurrent')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'hfCurrent',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        request = () => RestAPI.requestCurrentHFGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH - Actual',
+        };
         break;
       case 'paramo':
       case 'dryForest':
       case 'wetland':
-        RestAPI.requestHFGeometryBySEInGeofence(
+        request = () => RestAPI.requestHFGeometryBySEInGeofence(
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
-        )
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  se: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle('border', 'white'),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'se')
-                      ),
-                      fitBounds: false,
-                    }),
-                  },
-                },
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle('border', 'white');
+        fitBounds = false;
         break;
       case 'hfTimeline':
-      case 'hfPersistence':
-        this.shutOffLayer();
-        RestAPI.requestHFPersistenceGeometry(
+        request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
-        )
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  hfPersistence: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle('hfPersistence'),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'hfPersistence')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'hfPersistence',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        );
+        layerStyle = this.featureStyle('hfPersistence');
+        layerKey = 'hfPersistence';
+        newActiveLayer = {
+          id: 'hfPersistence',
+          name: 'HH - Histórico y Ecosistemas estratégicos (EE)',
+        };
+        break;
+      case 'hfPersistence':
+        request = () => RestAPI.requestHFPersistenceGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH - Persistencia',
+        };
         break;
       default:
-        this.shutOffLayer();
-        this.setState({ loadingModal: false });
         break;
+    }
+
+    if (request) {
+      if (shutOtherLayers) this.shutOffLayer();
+      if (layers[layerKey]) {
+        this.setState((prevState) => {
+          const newState = prevState;
+          newState.loadingModal = false;
+          if (newActiveLayer) {
+            newState.activeLayer = newActiveLayer;
+          }
+          newState.layers[layerKey].active = true;
+          return newState;
+        });
+      } else {
+        request().then((res) => {
+          if (res.features) {
+            this.setState((prevState) => {
+              const newState = prevState;
+              newState.layers[layerKey] = {
+                active: true,
+                layer: L.geoJSON(res, {
+                  style: layerStyle,
+                  onEachFeature: (feature, selectedLayer) => (
+                    this.featureActions(selectedLayer, layerKey)
+                  ),
+                  fitBounds,
+                }),
+              };
+              newState.loadingModal = false;
+              if (newActiveLayer) newState.activeLayer = newActiveLayer;
+              return newState;
+            });
+          } else this.reportDataError();
+        }).catch(() => this.reportDataError());
+      }
+    } else {
+      this.shutOffLayer();
+      this.setState({ loadingModal: false });
     }
   }
 
@@ -567,7 +565,7 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    const unsetLayers = ['fc', 'hfCurrent', 'se', 'hfTimeline', 'hfPersistence'];
+    const unsetLayers = ['fc', 'hfCurrent', 'hfPersistence', 'paramo', 'dryForest', 'wetland'];
     this.setState((prevState) => {
       const newState = { ...prevState };
       unsetLayers.forEach((layer) => {
@@ -575,6 +573,7 @@ class Search extends Component {
       });
       newState.selectedAreaType = null;
       newState.selectedArea = null;
+      newState.activeLayer = {};
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -599,6 +598,7 @@ class Search extends Component {
       connError,
       dataError,
       geofencesArray,
+      activeLayer: { name: activeLayer },
     } = this.state;
 
     const {
@@ -687,9 +687,11 @@ class Search extends Component {
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
             />
-            <div className="mapsTitle">
-              Titulo del mapa
-            </div>
+            {activeLayer && (
+              <div className="mapsTitle">
+                {activeLayer}
+              </div>
+            )}
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
