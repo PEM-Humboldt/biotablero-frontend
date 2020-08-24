@@ -222,7 +222,6 @@ class Search extends Component {
         ).openTooltip();
         break;
       case 'hfCurrent':
-      case 'hfTimeline':
       case 'hfPersistence':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
@@ -353,117 +352,75 @@ class Search extends Component {
       loadingModal: true,
       requestSource: null,
     });
+
+    let request = null;
+    let shutOtherLayers = true;
+    let layerStyle = this.featureStyle(layerType);
+    let fitBounds = true;
+    let activeLayer = layerType;
+    let layerKey = layerType;
+
     switch (layerType) {
       case 'fc':
-        this.shutOffLayer();
-        RestAPI.requestBiomesbyEAGeometry(selectedArea.id)
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  fc: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle(layerType),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'fc')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'fc',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        request = RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
         break;
       case 'hfCurrent':
-        this.shutOffLayer();
-        RestAPI.requestCurrentHFGeometry(selectedAreaType.id, selectedArea.id || selectedArea.name)
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  hfCurrent: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle(layerType),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'hfCurrent')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'hfCurrent',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        request = RestAPI.requestCurrentHFGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
         break;
       case 'paramo':
       case 'dryForest':
       case 'wetland':
-        RestAPI.requestHFGeometryBySEInGeofence(
+        request = RestAPI.requestHFGeometryBySEInGeofence(
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
-        )
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  [layerType]: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle('border', 'white'),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, layerType)
-                      ),
-                      fitBounds: false,
-                    }),
-                  },
-                },
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle('border', 'white');
+        fitBounds = false;
+        activeLayer = null;
         break;
       case 'hfTimeline':
-      case 'hfPersistence':
-        this.shutOffLayer();
-        RestAPI.requestHFPersistenceGeometry(
+        request = RestAPI.requestHFPersistenceGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
-        )
-          .then((res) => {
-            if (res.features) {
-              this.setState(prevState => ({
-                layers: {
-                  ...prevState.layers,
-                  [layerType]: {
-                    active: true,
-                    layer: L.geoJSON(res, {
-                      style: this.featureStyle('hfPersistence'),
-                      onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'hfPersistence')
-                      ),
-                    }),
-                  },
-                },
-                activeLayer: 'hfPersistence',
-                loadingModal: false,
-              }));
-            } else this.reportDataError();
-          })
-          .catch(() => this.reportDataError());
+        );
+        layerStyle = this.featureStyle('hfPersistence');
+        layerKey = 'hfPersistence';
+        break;
+      case 'hfPersistence':
+        request = RestAPI.requestHFPersistenceGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
         break;
       default:
-        this.shutOffLayer();
-        this.setState({ loadingModal: false });
         break;
+    }
+
+    if (request) {
+      if (shutOtherLayers) this.shutOffLayer();
+      request.then((res) => {
+        if (res.features) {
+          this.setState((prevState) => {
+            const newState = prevState;
+            newState.layers[layerKey] = {
+              active: true,
+              layer: L.geoJSON(res, {
+                style: layerStyle,
+                onEachFeature: (feature, selectedLayer) => (
+                  this.featureActions(selectedLayer, layerKey)
+                ),
+                fitBounds,
+              }),
+            };
+            newState.loadingModal = false;
+            if (activeLayer) newState.activeLayer = activeLayer;
+            return newState;
+          });
+        } else this.reportDataError();
+      }).catch(() => this.reportDataError());
+    } else {
+      this.shutOffLayer();
+      this.setState({ loadingModal: false });
     }
   }
 
