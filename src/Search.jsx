@@ -271,13 +271,24 @@ class Search extends Component {
   clickOnGraph = (idCategory) => {
     switch (idCategory) {
       case 'paramo':
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('paramo');
+        break;
       case 'wetland':
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('wetland');
+        break;
       case 'dryForest':
-        this.shutOffLayer('se');
-        this.switchLayer(idCategory);
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('paramo');
+        this.switchLayer('dryForest');
         break;
       case 'aTotal':
-        this.shutOffLayer('se');
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
         break;
       default: {
         const { layers, activeLayer } = this.state;
@@ -404,12 +415,12 @@ class Search extends Component {
               this.setState(prevState => ({
                 layers: {
                   ...prevState.layers,
-                  se: {
+                  [layerType]: {
                     active: true,
                     layer: L.geoJSON(res, {
                       style: this.featureStyle('border', 'white'),
                       onEachFeature: (feature, selectedLayer) => (
-                        this.featureActions(selectedLayer, 'se')
+                        this.featureActions(selectedLayer, layerType)
                       ),
                       fitBounds: false,
                     }),
@@ -432,7 +443,7 @@ class Search extends Component {
               this.setState(prevState => ({
                 layers: {
                   ...prevState.layers,
-                  hfPersistence: {
+                  [layerType]: {
                     active: true,
                     layer: L.geoJSON(res, {
                       style: this.featureStyle('hfPersistence'),
