@@ -344,6 +344,7 @@ class Search extends Component {
       requestSource,
       selectedArea,
       selectedAreaType,
+      layers,
     } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -357,38 +358,39 @@ class Search extends Component {
     let shutOtherLayers = true;
     let layerStyle = this.featureStyle(layerType);
     let fitBounds = true;
-    let activeLayer = layerType;
+    let newActiveLayer = layerType;
     let layerKey = layerType;
 
     switch (layerType) {
       case 'fc':
-        request = RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
+        request = () => RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
         break;
       case 'hfCurrent':
-        request = RestAPI.requestCurrentHFGeometry(
+        request = () => RestAPI.requestCurrentHFGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
         );
         break;
       case 'paramo':
       case 'dryForest':
       case 'wetland':
-        request = RestAPI.requestHFGeometryBySEInGeofence(
+        request = () => RestAPI.requestHFGeometryBySEInGeofence(
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle('border', 'white');
         fitBounds = false;
-        activeLayer = null;
+        newActiveLayer = null;
         break;
       case 'hfTimeline':
-        request = RestAPI.requestHFPersistenceGeometry(
+        request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
         );
         layerStyle = this.featureStyle('hfPersistence');
         layerKey = 'hfPersistence';
+        newActiveLayer = 'hfPersistence';
         break;
       case 'hfPersistence':
-        request = RestAPI.requestHFPersistenceGeometry(
+        request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaType.id, selectedArea.id || selectedArea.name,
         );
         break;
@@ -398,26 +400,39 @@ class Search extends Component {
 
     if (request) {
       if (shutOtherLayers) this.shutOffLayer();
-      request.then((res) => {
-        if (res.features) {
-          this.setState((prevState) => {
-            const newState = prevState;
-            newState.layers[layerKey] = {
-              active: true,
-              layer: L.geoJSON(res, {
-                style: layerStyle,
-                onEachFeature: (feature, selectedLayer) => (
-                  this.featureActions(selectedLayer, layerKey)
-                ),
-                fitBounds,
-              }),
-            };
-            newState.loadingModal = false;
-            if (activeLayer) newState.activeLayer = activeLayer;
-            return newState;
-          });
-        } else this.reportDataError();
-      }).catch(() => this.reportDataError());
+      if (layers[layerKey]) {
+        this.setState((prevState) => {
+          const newState = prevState;
+          newState.layers[layerKey].active = true;
+          newState.loadingModal = false;
+          if (newActiveLayer) {
+            newState.layers[prevState.activeLayer].active = false;
+            newState.activeLayer = newActiveLayer;
+          }
+          return newState;
+        });
+      } else {
+        request().then((res) => {
+          if (res.features) {
+            this.setState((prevState) => {
+              const newState = prevState;
+              newState.layers[layerKey] = {
+                active: true,
+                layer: L.geoJSON(res, {
+                  style: layerStyle,
+                  onEachFeature: (feature, selectedLayer) => (
+                    this.featureActions(selectedLayer, layerKey)
+                  ),
+                  fitBounds,
+                }),
+              };
+              newState.loadingModal = false;
+              if (newActiveLayer) newState.activeLayer = newActiveLayer;
+              return newState;
+            });
+          } else this.reportDataError();
+        }).catch(() => this.reportDataError());
+      }
     } else {
       this.shutOffLayer();
       this.setState({ loadingModal: false });
@@ -535,7 +550,7 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    const unsetLayers = ['fc', 'hfCurrent', 'se', 'hfTimeline', 'hfPersistence'];
+    const unsetLayers = ['fc', 'hfCurrent', 'hfPersistence', 'paramo', 'dryForest', 'wetland'];
     this.setState((prevState) => {
       const newState = { ...prevState };
       unsetLayers.forEach((layer) => {
