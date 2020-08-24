@@ -321,6 +321,7 @@ class Search extends Component {
         Object.keys(layers).forEach((layerKey) => {
           newState.layers[layerKey].active = false;
         });
+        newState.activeLayer = {};
         return newState;
       });
     } else if (layerInState) {
@@ -329,6 +330,7 @@ class Search extends Component {
           ...prevState,
         };
         newState.layers[layer].active = false;
+        if (prevState.activeLayer.id === layer) newState.activeLayer = {};
         return newState;
       });
     }
@@ -419,7 +421,6 @@ class Search extends Component {
           const newState = prevState;
           newState.loadingModal = false;
           if (newActiveLayer) {
-            newState.layers[prevState.activeLayer.id].active = false;
             newState.activeLayer = newActiveLayer;
           }
           newState.layers[layerKey].active = true;
