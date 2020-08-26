@@ -270,7 +270,7 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestBiomesbyEAGeometry(eaId) {
-    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
+    return RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`);
   }
 
   /**
