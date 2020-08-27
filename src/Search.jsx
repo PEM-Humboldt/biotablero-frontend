@@ -415,13 +415,23 @@ class Search extends Component {
         };
         break;
       default:
-        request = () => RestAPI.requestGeofenceGeometryByArea(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        newActiveLayer = {
-          id: selectedAreaId,
-        };
+        if (selectedArea) {
+          request = () => RestAPI.requestGeofenceGeometryByArea(
+            selectedAreaType.id,
+            selectedArea.id || selectedArea.name,
+          );
+          newActiveLayer = {
+            id: selectedArea.id || selectedArea.name,
+          };
+        } else {
+          request = () => RestAPI.requestGeofenceGeometryByArea(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          newActiveLayer = {
+            id: selectedAreaId,
+          };
+        }
         break;
     }
 
@@ -576,7 +586,8 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    const unsetLayers = ['fc', 'hfCurrent', 'hfPersistence', 'paramo', 'dryForest', 'wetland'];
+    const { selectedAreaId } = this.props;
+    const unsetLayers = ['fc', 'hfCurrent', 'hfPersistence', 'paramo', 'dryForest', 'wetland', selectedAreaId];
     this.setState((prevState) => {
       const newState = { ...prevState };
       unsetLayers.forEach((layer) => {
