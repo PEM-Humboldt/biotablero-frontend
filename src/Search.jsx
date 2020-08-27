@@ -343,6 +343,10 @@ class Search extends Component {
    */
   switchLayer = (layerType) => {
     const {
+      selectedAreaId,
+      selectedAreaTypeId,
+    } = this.props;
+    const {
       requestSource,
       selectedArea,
       selectedAreaType,
@@ -411,6 +415,13 @@ class Search extends Component {
         };
         break;
       default:
+        request = () => RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        newActiveLayer = {
+          id: selectedAreaId,
+        };
         break;
     }
 
