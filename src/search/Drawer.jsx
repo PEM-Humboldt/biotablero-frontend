@@ -36,9 +36,9 @@ class Drawer extends React.Component {
     } = this.context;
 
     const { handlerSwitchLayer } = this.props;
-    handlerSwitchLayer();
 
     const searchId = geofenceId;
+    handlerSwitchLayer(searchId);
 
     RestAPI.requestGeofenceDetails(areaId, searchId)
       .then((res) => {
