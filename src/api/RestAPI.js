@@ -295,15 +295,10 @@ class RestAPI {
    * @param {String} areaId area id to request
    * @param {String} geofenceId geofence id to request
    *
-   * @return {Object} Including Promise with layer object to load in map and source reference to
-   * cancel the request
+   * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
-      source,
-    };
+    return RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`);
   }
 
   /**
