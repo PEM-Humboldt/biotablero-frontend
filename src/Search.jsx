@@ -686,6 +686,7 @@ class Search extends Component {
             <MapViewer
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
+              loadingModal={loadingModal}
             />
             {activeLayer && (
               <div className="mapsTitle">
