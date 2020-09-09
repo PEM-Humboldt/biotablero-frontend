@@ -41,6 +41,7 @@ class MapViewer extends React.Component {
 
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
+    const { loadingModal } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
@@ -48,7 +49,7 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0) {
+    if (countActiveLayers === 0 && !loadingModal) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
@@ -133,10 +134,12 @@ MapViewer.propTypes = {
   // It's used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
   layers: PropTypes.object.isRequired,
+  loadingModal: PropTypes.bool,
 };
 
 MapViewer.defaultProps = {
   userLogged: null,
+  loadingModal: false,
 };
 
 export default MapViewer;
