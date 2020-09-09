@@ -36,9 +36,9 @@ class Drawer extends React.Component {
     } = this.context;
 
     const { handlerSwitchLayer } = this.props;
+    handlerSwitchLayer('geofence');
 
     const searchId = geofenceId;
-    handlerSwitchLayer(searchId);
 
     RestAPI.requestGeofenceDetails(areaId, searchId)
       .then((res) => {
@@ -50,7 +50,6 @@ class Drawer extends React.Component {
   render() {
     const {
       handlerBackButton,
-      handlerShutOffAllLayers,
       handlerSwitchLayer,
     } = this.props;
 
@@ -82,7 +81,7 @@ class Drawer extends React.Component {
             { label: 'Paisaje', icon: (<Paisaje />) },
             { label: 'Especies', icon: (<Especies />) },
           ]}
-          handlerShutOffAllLayers={handlerShutOffAllLayers}
+          handlerSwitchLayer={handlerSwitchLayer}
         >
           <div>
             <Overview
@@ -123,13 +122,11 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   handlerBackButton: PropTypes.func,
-  handlerShutOffAllLayers: PropTypes.func,
   handlerSwitchLayer: PropTypes.func,
 };
 
 Drawer.defaultProps = {
   handlerBackButton: () => {},
-  handlerShutOffAllLayers: () => {},
   handlerSwitchLayer: () => {},
 };
 
