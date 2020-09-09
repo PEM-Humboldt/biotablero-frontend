@@ -18,10 +18,10 @@ class TabContainer extends React.Component {
    * Function to change visible content on tabs click
    */
   changeTab = (event, value) => {
-    const { handlerShutOffAllLayers } = this.props;
+    const { handlerSwitchLayer } = this.props;
     this.setState({ value });
     if (value === 0 || value === 2) {
-      handlerShutOffAllLayers();
+      handlerSwitchLayer('geofence');
     }
   };
 
@@ -71,13 +71,13 @@ TabContainer.propTypes = {
   initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
   tabClasses: PropTypes.string,
-  handlerShutOffAllLayers: PropTypes.func,
+  handlerSwitchLayer: PropTypes.func,
 };
 
 TabContainer.defaultProps = {
   tabClasses: '',
   initialSelectedIndex: 1,
-  handlerShutOffAllLayers: () => {},
+  handlerSwitchLayer: () => {},
 };
 
 export default TabContainer;

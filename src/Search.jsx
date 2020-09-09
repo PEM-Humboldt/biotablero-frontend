@@ -414,24 +414,16 @@ class Search extends Component {
           name: 'HH - Persistencia',
         };
         break;
+      case 'geofence':
+        request = () => RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        newActiveLayer = {
+          id: 'geofence',
+        };
+        break;
       default:
-        if (selectedArea) {
-          request = () => RestAPI.requestGeofenceGeometryByArea(
-            selectedAreaType.id,
-            selectedArea.id || selectedArea.name,
-          );
-          newActiveLayer = {
-            id: selectedArea.id || selectedArea.name,
-          };
-        } else {
-          request = () => RestAPI.requestGeofenceGeometryByArea(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          newActiveLayer = {
-            id: selectedAreaId,
-          };
-        }
         break;
     }
 
@@ -586,8 +578,15 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
-    const { selectedAreaId } = this.props;
-    const unsetLayers = ['fc', 'hfCurrent', 'hfPersistence', 'paramo', 'dryForest', 'wetland', selectedAreaId];
+    const unsetLayers = [
+      'fc',
+      'hfCurrent',
+      'hfPersistence',
+      'paramo',
+      'dryForest',
+      'wetland',
+      'geofence',
+    ];
     this.setState((prevState) => {
       const newState = { ...prevState };
       unsetLayers.forEach((layer) => {
@@ -731,7 +730,6 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  handlerShutOffAllLayers={this.shutOffLayer}
                   handlerSwitchLayer={this.switchLayer}
                 />
               )}
