@@ -440,7 +440,9 @@ class Search extends Component {
           return newState;
         });
       } else {
-        request().then((res) => {
+        const { request: apiRequest, source: apiSource } = request();
+        this.setState({ requestSource: apiSource });
+        apiRequest.then((res) => {
           if (res.features) {
             this.setState((prevState) => {
               const newState = prevState;
