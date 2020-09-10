@@ -372,7 +372,7 @@ class RestAPI {
         };
       default:
         return {
-          request: undefined,
+          request: Promise.reject(new Error('undefined option')),
           source,
         };
     }
