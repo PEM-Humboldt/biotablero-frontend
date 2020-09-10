@@ -1,6 +1,7 @@
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
 import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -34,6 +35,7 @@ class MapViewer extends React.Component {
       layers: {},
       activeLayers: [],
       update: false,
+      openErrorModal: true,
     };
 
     this.mapRef = React.createRef();
@@ -92,7 +94,13 @@ class MapViewer extends React.Component {
   }
 
   render() {
-    const { geoServerUrl, userLogged, loadingLayer } = this.props;
+    const {
+      geoServerUrl,
+      userLogged,
+      loadingLayer,
+      layerError,
+    } = this.props;
+    const { openErrorModal } = this.state;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <Modal
@@ -115,6 +123,32 @@ class MapViewer extends React.Component {
                 </div>
               </div>
             </h2>
+          </div>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={layerError && openErrorModal}
+          onClose={() => { this.setState({ openErrorModal: false }); }}
+          container={this}
+          style={{ position: 'absolute' }}
+          BackdropProps={{ style: { position: 'absolute' } }}
+          disableBackdropClick={false}
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Capa no disponible actualmente</b>
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              style={{ position: 'absolute' }}
+              onClick={() => { this.setState({ openErrorModal: false }); }}
+              data-tooltip
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
           </div>
         </Modal>
         <TileLayer
@@ -153,15 +187,18 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
   userLogged: PropTypes.object,
-  // It's used in getDerivedStateFromProps but eslint won't realize
+  loadingLayer: PropTypes.bool,
+  // They're used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
   layers: PropTypes.object.isRequired,
-  loadingLayer: PropTypes.bool,
+  // eslint-disable-next-line react/no-unused-prop-types
+  layerError: PropTypes.bool,
 };
 
 MapViewer.defaultProps = {
   userLogged: null,
   loadingLayer: false,
+  layerError: false,
 };
 
 export default MapViewer;

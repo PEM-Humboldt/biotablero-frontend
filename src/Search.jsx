@@ -40,7 +40,7 @@ class Search extends Component {
     this.state = {
       activeLayer: {},
       connError: false,
-      dataError: false,
+      layerError: false,
       geofencesArray: [],
       areaList: [],
       layers: {},
@@ -158,7 +158,7 @@ class Search extends Component {
    */
   reportDataError = () => {
     this.setState({
-      dataError: true,
+      layerError: true,
       loadingLayer: false,
     });
   }
@@ -354,6 +354,7 @@ class Search extends Component {
     }
     this.setState({
       loadingLayer: true,
+      layerError: false,
       requestSource: null,
     });
 
@@ -604,7 +605,7 @@ class Search extends Component {
       loadingLayer,
       layers,
       connError,
-      dataError,
+      layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
     } = this.state;
@@ -640,30 +641,6 @@ class Search extends Component {
             </button>
           </div>
         </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={dataError}
-          onClose={this.handleCloseModal('dataError')}
-          disableAutoFocus
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Opción no disponible temporalmente</b>
-              <br />
-              Consulta otra opción
-            </h2>
-            <button
-              type="button"
-              className="closebtn"
-              onClick={this.handleCloseModal('dataError')}
-              data-tooltip
-              title="Cerrar"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </Modal>
         <SearchContext.Provider
           value={{
             areaId: selectedAreaTypeId,
@@ -676,6 +653,7 @@ class Search extends Component {
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
+              layerError={layerError}
             />
             {activeLayer && (
               <div className="mapsTitle">
