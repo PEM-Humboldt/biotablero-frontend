@@ -462,7 +462,9 @@ class Search extends Component {
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
               return newState;
             });
-          } else this.reportDataError();
+          } else if (res !== 'request canceled') {
+            this.reportDataError();
+          }
         }).catch(() => this.reportDataError());
       }
     } else {
