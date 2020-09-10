@@ -270,7 +270,11 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestBiomesbyEAGeometry(eaId) {
-    return RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`);
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
+      source,
+    };
   }
 
   /**
@@ -295,8 +299,7 @@ class RestAPI {
    * @param {String} areaId area id to request
    * @param {String} geofenceId geofence id to request
    *
-   * @return {Object} Including Promise with layer object to load in map and source reference to
-   * cancel the request
+   * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
     const source = CancelToken.source();
@@ -315,7 +318,11 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestCurrentHFGeometry(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`);
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`, { cancelToken: source.token }),
+      source,
+    };
   }
 
   /**
@@ -327,7 +334,11 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestHFPersistenceGeometry(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`);
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`, { cancelToken: source.token }),
+      source,
+    };
   }
 
 
@@ -342,15 +353,28 @@ class RestAPI {
    * @return {Promise<Object>} layer object to be loaded in the map
    */
   static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
+    const source = CancelToken.source();
     switch (seType) {
       case 'dryForest':
-        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`);
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`, { cancelToken: source.token }),
+          source,
+        };
       case 'paramo':
-        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`);
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`, { cancelToken: source.token }),
+          source,
+        };
       case 'wetland':
-        return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`);
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`, { cancelToken: source.token }),
+          source,
+        };
       default:
-        return undefined;
+        return {
+          request: Promise.reject(new Error('undefined option')),
+          source,
+        };
     }
   }
 
