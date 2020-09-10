@@ -1,8 +1,8 @@
-/** eslint verified */
-import React from 'react';
-import PropTypes from 'prop-types';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
+import { Modal } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 
 const config = {};
@@ -41,7 +41,7 @@ class MapViewer extends React.Component {
 
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
-    const { loadingModal } = this.props;
+    const { loadingLayer } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
@@ -49,7 +49,7 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0 && !loadingModal) {
+    if (countActiveLayers === 0 && !loadingLayer) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
@@ -92,9 +92,31 @@ class MapViewer extends React.Component {
   }
 
   render() {
-    const { geoServerUrl, userLogged } = this.props;
+    const { geoServerUrl, userLogged, loadingLayer } = this.props;
     return (
-      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick} id="testingCl">
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loadingLayer}
+          disableAutoFocus
+          container={this}
+          style={{ position: 'absolute' }}
+          BackdropProps={{ style: { position: 'absolute' } }}
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Cargando</b>
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
+            </h2>
+          </div>
+        </Modal>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -134,12 +156,12 @@ MapViewer.propTypes = {
   // It's used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
   layers: PropTypes.object.isRequired,
-  loadingModal: PropTypes.bool,
+  loadingLayer: PropTypes.bool,
 };
 
 MapViewer.defaultProps = {
   userLogged: null,
-  loadingModal: false,
+  loadingLayer: false,
 };
 
 export default MapViewer;
