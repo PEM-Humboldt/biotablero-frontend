@@ -94,7 +94,7 @@ class MapViewer extends React.Component {
   render() {
     const { geoServerUrl, userLogged, loadingLayer } = this.props;
     return (
-      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick} id="testingCl">
+      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
