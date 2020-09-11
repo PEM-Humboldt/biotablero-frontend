@@ -540,6 +540,9 @@ class RestAPI {
     return axios.get(RestAPI.getEndpointUrl(endpoint), options)
       .then(res => res.data)
       .catch((error) => {
+        if (axios.isCancel(error)) {
+          return Promise.resolve('request canceled');
+        }
         let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
         if (error.request && error.request.statusText === '') message = 'no-data-available';

@@ -40,11 +40,11 @@ class Search extends Component {
     this.state = {
       activeLayer: {},
       connError: false,
-      dataError: false,
+      layerError: false,
       geofencesArray: [],
       areaList: [],
       layers: {},
-      loadingModal: false,
+      loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
@@ -158,7 +158,8 @@ class Search extends Component {
    */
   reportDataError = () => {
     this.setState({
-      loadingModal: false,
+      layerError: true,
+      loadingLayer: false,
     });
   }
 
@@ -356,7 +357,8 @@ class Search extends Component {
       requestSource.cancel();
     }
     this.setState({
-      loadingModal: true,
+      loadingLayer: true,
+      layerError: false,
       requestSource: null,
     });
 
@@ -432,7 +434,7 @@ class Search extends Component {
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
-          newState.loadingModal = false;
+          newState.loadingLayer = false;
           if (newActiveLayer) {
             newState.activeLayer = newActiveLayer;
           }
@@ -456,16 +458,18 @@ class Search extends Component {
                   fitBounds,
                 }),
               };
-              newState.loadingModal = false;
+              newState.loadingLayer = false;
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
               return newState;
             });
-          } else this.reportDataError();
+          } else if (res !== 'request canceled') {
+            this.reportDataError();
+          }
         }).catch(() => this.reportDataError());
       }
     } else {
       this.shutOffLayer();
-      this.setState({ loadingModal: false });
+      this.setState({ loadingLayer: false });
     }
   }
 
@@ -508,7 +512,7 @@ class Search extends Component {
 
       request
         .then((res) => {
-          if (!res) return;
+          if (!res || res === 'request canceled') return;
           this.setState((prevState) => {
             const newState = { ...prevState };
             newState.layers[idLayer] = {
@@ -580,6 +584,13 @@ class Search extends Component {
   /** ************************************* */
 
   handlerBackButton = () => {
+    const { requestSource } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
+    this.setState({
+      requestSource: null,
+    });
     const unsetLayers = [
       'fc',
       'hfCurrent',
@@ -616,10 +627,10 @@ class Search extends Component {
 
   render() {
     const {
-      loadingModal,
+      loadingLayer,
       layers,
       connError,
-      dataError,
+      layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
     } = this.state;
@@ -655,49 +666,6 @@ class Search extends Component {
             </button>
           </div>
         </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={dataError}
-          onClose={this.handleCloseModal('dataError')}
-          disableAutoFocus
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Opción no disponible temporalmente</b>
-              <br />
-              Consulta otra opción
-            </h2>
-            <button
-              type="button"
-              className="closebtn"
-              onClick={this.handleCloseModal('dataError')}
-              data-tooltip
-              title="Cerrar"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={loadingModal && !connError}
-          disableAutoFocus
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Cargando</b>
-              <div className="load-wrapp">
-                <div className="load-1">
-                  <div className="line" />
-                  <div className="line" />
-                  <div className="line" />
-                </div>
-              </div>
-            </h2>
-          </div>
-        </Modal>
         <SearchContext.Provider
           value={{
             areaId: selectedAreaTypeId,
@@ -709,7 +677,8 @@ class Search extends Component {
             <MapViewer
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
-              loadingModal={loadingModal}
+              loadingLayer={loadingLayer}
+              layerError={layerError}
             />
             {activeLayer && (
               <div className="mapsTitle">
