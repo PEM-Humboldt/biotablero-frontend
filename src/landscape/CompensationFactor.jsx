@@ -96,6 +96,9 @@ class CompensationFactor extends React.Component {
           <div className="graphcardAcc">
             <h2>
               Factor de Compensación
+              <DownloadIcon className="icondown" />
+            </h2>
+            <div className="graphinfobox">
               <InfoIcon
                 className="graphinfo"
                 data-tooltip
@@ -109,9 +112,7 @@ class CompensationFactor extends React.Component {
                 role="button"
                 tabIndex="0"
               />
-              <DownloadIcon className="icondown" />
-            </h2>
-            {showInfoGraph && (
+              {showInfoGraph && (
               <ShortInfo
                 name="Factor de Compensación."
                 description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
@@ -119,7 +120,8 @@ class CompensationFactor extends React.Component {
                 tooltip="¿Qué significa?"
                 customButton
               />
-            )}
+              )}
+            </div>
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={fc}
