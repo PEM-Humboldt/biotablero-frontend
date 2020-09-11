@@ -512,7 +512,7 @@ class Search extends Component {
 
       request
         .then((res) => {
-          if (!res) return;
+          if (!res || res === 'request canceled') return;
           this.setState((prevState) => {
             const newState = { ...prevState };
             newState.layers[idLayer] = {
