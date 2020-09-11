@@ -14,6 +14,7 @@ class CurrentFootprint extends React.Component {
       showInfoGraph: false,
       hfCurrent: [],
       hfCurrentValue: '0',
+      hfCurrentCategory: '',
     };
   }
 
@@ -27,6 +28,7 @@ class CurrentFootprint extends React.Component {
       .then((res) => {
         this.setState({
           hfCurrentValue: Number(res.value).toFixed(2),
+          hfCurrentCategory: res.category,
         });
       })
       .catch(() => {});
@@ -56,6 +58,7 @@ class CurrentFootprint extends React.Component {
     const {
       hfCurrent,
       hfCurrentValue,
+      hfCurrentCategory,
       showInfoGraph,
     } = this.state;
     return (
@@ -90,7 +93,7 @@ class CurrentFootprint extends React.Component {
           <h6>
             Huella humana actual
           </h6>
-          <h5>
+          <h5 style={{ backgroundColor: matchColor('hfCurrent')(hfCurrentCategory) }}>
             {hfCurrentValue}
           </h5>
         </div>
