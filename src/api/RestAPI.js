@@ -193,7 +193,7 @@ class RestAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {String} Value for the current human footprint
+   * @return {Object} Objecy with value and category for the current human footprint
    */
   static requestCurrentHFValue(areaType, areaId) {
     return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
