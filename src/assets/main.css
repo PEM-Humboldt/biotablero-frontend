@@ -1304,7 +1304,7 @@ overflow: auto;
 	background-color: #ebebeb !important;
 }
 
-.m0b div[class*="MuiExpansionPanelDetails-root"] {
+.m0b div[class*="MuiAccordionDetails-root"] {
 	padding: 6px 8px !important;
 }
 

@@ -1,8 +1,8 @@
 // TODO: Ajustar evento del Autocompletar sobre el mapa
 import React from 'react';
-import ExpansionPanel from '@material-ui/core/Accordion';
-import ExpansionPanelDetails from '@material-ui/core/AccordionDetails';
-import ExpansionPanelSummary from '@material-ui/core/AccordionSummary';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import EditIcon from '@material-ui/icons/Edit';
@@ -106,7 +106,7 @@ class Selector extends React.Component {
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
-            <ExpansionPanel
+            <Accordion
               className={`m0 ${selected === id ? 'selector-expanded' : ''}`}
               id={idLabel}
               expanded={expanded === id}
@@ -114,7 +114,7 @@ class Selector extends React.Component {
               onChange={this.firstLevelChange(id)}
               key={id}
             >
-              <ExpansionPanelSummary
+              <AccordionSummary
                 expandIcon={
                   (((iconOption === 'add') && <AddIcon />)
                   || ((iconOption === 'upload') && <CloudUploadIcon />)
@@ -123,8 +123,8 @@ class Selector extends React.Component {
                 }
               >
                 {label}
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails
+              </AccordionSummary>
+              <AccordionDetails
                 id={detailId}
               >
                 {options.map((secondLevel) => {
@@ -133,7 +133,7 @@ class Selector extends React.Component {
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
-                    <ExpansionPanel
+                    <Accordion
                       className="m0"
                       id={subId}
                       expanded={subExpanded === subId}
@@ -141,7 +141,7 @@ class Selector extends React.Component {
                       onChange={this.secondLevelChange(subId)}
                       key={subId}
                     >
-                      <ExpansionPanelSummary
+                      <AccordionSummary
                         expandIcon={
                           (((iconOption === 'add') && <AddIcon />)
                           || ((iconOption === 'upload') && <CloudUploadIcon />)
@@ -150,17 +150,17 @@ class Selector extends React.Component {
                         }
                       >
                         {subLabel}
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
+                      </AccordionSummary>
+                      <AccordionDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
                         {subOptions.length < 7
                           ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
                           : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                      </AccordionDetails>
+                    </Accordion>
                   );
                 })}
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
+              </AccordionDetails>
+            </Accordion>
           );
         }))}
       </div>
