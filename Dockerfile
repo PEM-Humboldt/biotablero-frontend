@@ -4,9 +4,9 @@ MAINTAINER Daniel Lopez "dlopez@humboldt.org.co"
 
 ENV NPM_CONFIG_LOGLEVEL warn
 COPY package.json package.json
-RUN npm install --production
+RUN npm install
 COPY . .
-RUN npm run build --production
+RUN npm run build
 
 # Release stage
 FROM node:8.11.3-alpine as release
