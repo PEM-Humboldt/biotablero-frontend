@@ -55,7 +55,7 @@ class MultiLinesGraph extends React.Component {
           </strong>
           <br />
           <div style={{ color: '#ffffff' }}>
-            {yFormatted}
+          {Number(Number(yFormatted).toFixed(2)).toLocaleString('es-CO')}
           </div>
         </div>
       </div>
