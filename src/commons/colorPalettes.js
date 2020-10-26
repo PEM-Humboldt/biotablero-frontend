@@ -65,12 +65,12 @@ export default {
   hfTimeline: [
     '#3d3c48',
     '#3d3c48',
-    '#95b4db',
-    '#2964ac',
-    '#d7e6ab',
-    '#99aa67',
     '#f1bd7f',
     '#da8634',
+    '#d7e6ab',
+    '#99aa67',
+    '#95b4db',
+    '#2964ac',
   ],
   hfCurrent: [
     '#3fbf9f',
@@ -83,7 +83,8 @@ export default {
     '#caaf71',
     '#e0526b',
   ],
-  border: ['#ffffff'],
-  // bosque seco #c5dc85 - Paramos # eaa04a - Humedales #6794cb
+  paramo: ['#eaa04a'],
+  dryForest: ['#c5dc85'],
+  wetland: ['#6794cb'],
   default: ['#345b6b'],
 };

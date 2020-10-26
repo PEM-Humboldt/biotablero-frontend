@@ -393,7 +393,7 @@ class Search extends Component {
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle('border', 'white');
+        layerStyle = this.featureStyle(layerType, layerType);
         fitBounds = false;
         break;
       case 'hfTimeline':
