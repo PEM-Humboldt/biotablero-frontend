@@ -180,9 +180,9 @@ class Search extends Component {
     }
 
     return {
-      color: matchColor(type)(color),
-      weight: 2,
-      fillOpacity: 0,
+      stroke: false,
+      fillColor: matchColor(type)(color),
+      fillOpacity: 0.7,
     };
   }
 
