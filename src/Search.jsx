@@ -383,7 +383,7 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: layerType,
-          name: 'HH - Actual',
+          name: 'HH promedio · 2018',
         };
         break;
       case 'paramo':
