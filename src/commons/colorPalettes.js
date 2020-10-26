@@ -63,14 +63,14 @@ export default {
     '#51b4c1',
   ],
   hfTimeline: [
-    '#cf324e',
-    '#cf324e',
-    '#e8cc8e',
-    '#ccb325',
-    '#a8daca',
-    '#3cb58e',
-    '#878cae',
-    '#29418a',
+    '#3d3c48',
+    '#3d3c48',
+    '#95b4db',
+    '#2964ac',
+    '#d7e6ab',
+    '#99aa67',
+    '#f1bd7f',
+    '#da8634',
   ],
   hfCurrent: [
     '#3fbf9f',
@@ -79,10 +79,11 @@ export default {
     '#cf324e',
   ],
   hfPersistence: [
-    '#3fbf9f',
-    '#646e55',
-    '#cf324e',
+    '#61a5a2',
+    '#caaf71',
+    '#e0526b',
   ],
   border: ['#ffffff'],
+  // bosque seco #c5dc85 - Paramos # eaa04a - Humedales #6794cb
   default: ['#345b6b'],
 };
