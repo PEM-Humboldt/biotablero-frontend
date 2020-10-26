@@ -65,12 +65,12 @@ export default {
   hfTimeline: [
     '#cf324e',
     '#cf324e',
-    '#878cae',
-    '#29418a',
-    '#a8daca',
-    '#3cb58e',
     '#e8cc8e',
     '#ccb325',
+    '#a8daca',
+    '#3cb58e',
+    '#878cae',
+    '#29418a',
   ],
   hfCurrent: [
     '#3fbf9f',
