@@ -180,9 +180,9 @@ class Search extends Component {
     }
 
     return {
-      color: matchColor(type)(color),
-      weight: 2,
-      fillOpacity: 0,
+      stroke: false,
+      fillColor: matchColor(type)(color),
+      fillOpacity: 0.7,
     };
   }
 
@@ -383,7 +383,7 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: layerType,
-          name: 'HH - Actual',
+          name: 'HH promedio · 2018',
         };
         break;
       case 'paramo':
@@ -393,7 +393,7 @@ class Search extends Component {
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle('border', 'white');
+        layerStyle = this.featureStyle(layerType, layerType);
         fitBounds = false;
         break;
       case 'hfTimeline':

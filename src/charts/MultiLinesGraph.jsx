@@ -50,7 +50,7 @@ class MultiLinesGraph extends React.Component {
       }}
       >
         <div>
-          <strong style={{ color: serieColor }}>
+          <strong style={{ color: serieId === 'aTotal' ? '#ffffff' : serieColor }}>
             {`${labels[serieId]} en ${xFormatted}`}
           </strong>
           <br />

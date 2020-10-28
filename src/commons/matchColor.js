@@ -53,9 +53,17 @@ const match = {
     // TODO: This could change once the API endpoint is implemented
     sort: ['estable_natural', 'dinamica', 'estable_alta'],
   },
-  border: {
-    palette: 'border',
-    sort: ['white'],
+  paramo: {
+    palette: 'paramo',
+    sort: ['paramo'],
+  },
+  dryForest: {
+    palette: 'dryForest',
+    sort: ['dryForest'],
+  },
+  wetland: {
+    palette: 'wetland',
+    sort: ['wetland'],
   },
   default: {
     palette: 'default',
@@ -125,7 +133,9 @@ const matchColor = (type) => {
         if (idx === -1) return palette[palette.length - 1];
         return palette[idx];
       };
-    case 'border':
+    case 'paramo':
+    case 'dryForest':
+    case 'wetland':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;

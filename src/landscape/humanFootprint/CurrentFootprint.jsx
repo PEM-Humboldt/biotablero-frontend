@@ -91,7 +91,7 @@ class CurrentFootprint extends React.Component {
         )}
         <div>
           <h6>
-            Huella humana actual
+            Huella humana promedio · 2018
           </h6>
           <h5 style={{ backgroundColor: matchColor('hfCurrent')(hfCurrentCategory) }}>
             {hfCurrentValue}
