@@ -59,6 +59,15 @@ class Search extends Component {
     this.loadAreaList();
   }
 
+  componentDidUpdate() {
+    const { history } = this.props;
+    history.listen((loc, action) => {
+      if (loc.search === '' && action === 'POP') {
+        this.shutOffLayer();
+      }
+    });
+  }
+
   /**
    * Give format to a big number
    *
@@ -732,6 +741,7 @@ Search.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    listen: PropTypes.func,
   }),
   setHeaderNames: PropTypes.func.isRequired,
 };
@@ -739,7 +749,9 @@ Search.propTypes = {
 Search.defaultProps = {
   selectedAreaTypeId: null,
   selectedAreaId: null,
-  history: {},
+  history: {
+    listen: () => {},
+  },
 };
 
 export default withRouter(Search);
