@@ -63,7 +63,7 @@ class Search extends Component {
     const { history } = this.props;
     history.listen((loc, action) => {
       if (loc.search === '' && action === 'POP') {
-        this.shutOffLayer();
+        this.handlerBackButton();
       }
     });
   }
