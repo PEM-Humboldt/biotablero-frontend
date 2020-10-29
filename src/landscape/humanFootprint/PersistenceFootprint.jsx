@@ -14,6 +14,8 @@ const getLabel = {
 };
 
 class PersistenceFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,20 +25,27 @@ class PersistenceFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
     } = this.context;
     RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfPersistence: res.map(item => ({
-            ...item,
-            label: getLabel[item.key],
-          })),
-        });
+        if (this.mounted) {
+          this.setState({
+            hfPersistence: res.map(item => ({
+              ...item,
+              label: getLabel[item.key],
+            })),
+          });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
