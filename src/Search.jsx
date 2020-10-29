@@ -617,6 +617,7 @@ class Search extends Component {
       newState.selectedAreaType = null;
       newState.selectedArea = null;
       newState.activeLayer = {};
+      newState.loadingLayer = false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
