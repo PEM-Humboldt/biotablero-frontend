@@ -9,6 +9,8 @@ import SearchContext from '../SearchContext';
 import ShortInfo from '../commons/ShortInfo';
 
 class CompensationFactor extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -20,6 +22,7 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -29,21 +32,31 @@ class CompensationFactor extends React.Component {
 
     RestAPI.requestBiomes(areaId, geofenceId)
       .then((res) => {
-        this.setState({ biomes: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ biomes: this.processData(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestCompensationFactor(areaId, geofenceId)
       .then((res) => {
-        this.setState({ fc: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ fc: this.processData(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestBioticUnits(areaId, geofenceId)
       .then((res) => {
-        this.setState({ bioticUnits: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ bioticUnits: this.processData(res) });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**

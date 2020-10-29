@@ -65,6 +65,8 @@ const changeValues = [
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 class TimelineFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -75,6 +77,8 @@ class TimelineFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
+
     const { areaId, geofenceId } = this.context;
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
@@ -83,9 +87,15 @@ class TimelineFootprint extends React.Component {
       RestAPI.requestTotalHFTimeline(areaId, geofenceId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
-        this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+        if (this.mounted) {
+          this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**

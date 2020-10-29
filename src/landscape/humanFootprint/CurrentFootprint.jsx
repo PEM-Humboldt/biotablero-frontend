@@ -8,6 +8,8 @@ import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 class CurrentFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -19,6 +21,7 @@ class CurrentFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -26,22 +29,30 @@ class CurrentFootprint extends React.Component {
 
     RestAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfCurrentValue: Number(res.value).toFixed(2),
-          hfCurrentCategory: res.category,
-        });
+        if (this.mounted) {
+          this.setState({
+            hfCurrentValue: Number(res.value).toFixed(2),
+            hfCurrentCategory: res.category,
+          });
+        }
       })
       .catch(() => {});
     RestAPI.requestCurrentHFCategories(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfCurrent: res.map(item => ({
-            ...item,
-            label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
-          })),
-        });
+        if (this.mounted) {
+          this.setState({
+            hfCurrent: res.map(item => ({
+              ...item,
+              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
+            })),
+          });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
