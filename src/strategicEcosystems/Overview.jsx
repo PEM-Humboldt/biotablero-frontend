@@ -29,6 +29,8 @@ const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
 class Overview extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +45,7 @@ class Overview extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -50,32 +53,44 @@ class Overview extends React.Component {
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
-        this.setState({ coverage: setCoverageValues(res) });
+        if (this.mounted) {
+          this.setState({ coverage: setCoverageValues(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
-        if (Array.isArray(res) && res[0]) {
-          const totalPA = Number(res[0].area).toFixed(0);
-          const allPA = setPAValues(res.slice(1));
-          this.setState({ protectedAreas: allPA, PAArea: totalPA });
+        if (this.mounted) {
+          if (Array.isArray(res) && res[0]) {
+            const totalPA = Number(res[0].area).toFixed(0);
+            const allPA = setPAValues(res.slice(1));
+            this.setState({ protectedAreas: allPA, PAArea: totalPA });
+          }
         }
       })
       .catch(() => {});
 
     RestAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
-        if (Array.isArray(res) && res[0]) {
-          const ecosystemsArea = Number(res[0].area).toFixed(0);
-          const allSE = res.slice(1);
-          this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+        if (this.mounted) {
+          if (Array.isArray(res) && res[0]) {
+            const ecosystemsArea = Number(res[0].area).toFixed(0);
+            const allSE = res.slice(1);
+            this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+          }
         }
       })
       .catch(() => {})
       .finally(() => {
-        this.setState({ loadingSE: false });
+        if (this.mounted) {
+          this.setState({ loadingSE: false });
+        }
       });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   toggleInfo = () => {

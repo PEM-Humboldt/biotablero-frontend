@@ -70,6 +70,8 @@ const showDetails = (
 );
 
 class DetailsView extends Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -81,6 +83,7 @@ class DetailsView extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       item,
     } = this.props;
@@ -95,25 +98,32 @@ class DetailsView extends Component {
     if (!stopLoad) {
       RestAPI.requestSEDetailInArea(areaId, geofenceId, name)
         .then((res) => {
-          this.setState({ seDetail: res.national_percentage * 100 });
+          if (this.mounted) {
+            this.setState({ seDetail: res.national_percentage * 100 });
+          }
         })
         .catch(() => {});
 
       RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState({ seCoverage: res });
+          if (this.mounted) {
+            this.setState({ seCoverage: res });
+          }
         })
         .catch(() => {});
 
       RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState({ sePA: res });
+          if (this.mounted) {
+            this.setState({ sePA: res });
+          }
         })
         .catch(() => {});
     }
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     this.setState({
       stopLoad: true,
     });
