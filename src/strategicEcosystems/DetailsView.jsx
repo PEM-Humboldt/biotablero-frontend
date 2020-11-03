@@ -45,8 +45,6 @@ const loadData = (data, colorFunc) => {
  * @returns {div} node for each strategic ecosystem
  */
 const showDetails = (
-  npsp,
-  sep,
   coverage,
   protectedArea,
 ) => (
@@ -59,13 +57,6 @@ const showDetails = (
       Distribución en áreas protegidas:
       {loadData(setPAValues(protectedArea), matchColor('pa'))}
     </h3>
-    {/* <h3>
-      En Ecosistemas Estratégicos:
-      <b>{`${Number(sep).toFixed(0)} %`}</b>
-      <br />
-      En Sistema Nacional:
-      <b>{`${Number(npsp).toFixed(0)} %`}</b>
-    </h3> */}
   </div>
 );
 
@@ -75,7 +66,6 @@ class DetailsView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      seDetail: null,
       seCoverage: null,
       sePA: null,
       stopLoad: false,
@@ -96,14 +86,6 @@ class DetailsView extends Component {
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSEDetailInArea(areaId, geofenceId, name)
-        .then((res) => {
-          if (this.mounted) {
-            this.setState({ seDetail: res.national_percentage * 100 });
-          }
-        })
-        .catch(() => {});
-
       RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
         .then((res) => {
           if (this.mounted) {
@@ -131,11 +113,6 @@ class DetailsView extends Component {
 
   render() {
     const {
-      item,
-    } = this.props;
-
-    const {
-      seDetail,
       seCoverage,
       sePA,
       stopLoad,
@@ -143,8 +120,6 @@ class DetailsView extends Component {
     if (!stopLoad) {
       return (
         showDetails(
-          seDetail,
-          item.percentage,
           seCoverage,
           sePA,
         )

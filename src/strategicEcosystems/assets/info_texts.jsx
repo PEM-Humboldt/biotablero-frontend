@@ -120,7 +120,6 @@ export const seText = (
       </li>
     </ul>
     <br />
-    <br />
     Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener
     en cuenta lo siguiente:
     <ul className="ul-padding">
