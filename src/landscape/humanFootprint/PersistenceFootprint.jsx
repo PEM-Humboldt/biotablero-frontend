@@ -65,7 +65,6 @@ class PersistenceFootprint extends React.Component {
         <h2>
           <InfoIcon
             className="graphinfo"
-            data-tooltip
             title="¿Qué significa este gráfico?"
             onClick={() => this.toggleInfoGraph()}
           />

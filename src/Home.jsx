@@ -42,7 +42,6 @@ class Home extends React.Component {
               type="button"
               className="closebtn"
               onClick={() => this.setState({ loginModal: false })}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />

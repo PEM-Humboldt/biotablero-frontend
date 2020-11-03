@@ -52,7 +52,6 @@ class NewBiomeForm extends Component {
                 addBiomeHandler(biomeSelected);
                 this.setState({ biomeSelected: null });
               }}
-              data-tooltip
               title="Agregar bioma"
             >
               <AddProjectIcon />

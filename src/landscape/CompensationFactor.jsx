@@ -114,7 +114,6 @@ class CompensationFactor extends React.Component {
             <div className="graphinfobox">
               <InfoIcon
                 className="graphinfo"
-                data-tooltip
                 title="¿Qué significa este gráfico?"
                 onClick={() => this.toggleInfoGraph()}
               />

@@ -73,7 +73,6 @@ class EcosystemsBox extends Component {
                   className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
                   type="button"
                   onClick={() => this.switchGraphs(item.type)}
-                  data-tooltip
                   title="Ampliar información"
                 >
                   <ExpandMoreIcon />
