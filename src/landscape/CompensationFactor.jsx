@@ -2,6 +2,8 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
+import { cFInfo } from './assets/info_texts';
+import { IconTooltip } from '../commons/tooltips';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
@@ -112,11 +114,12 @@ class CompensationFactor extends React.Component {
               <DownloadIcon className="icondown" />
             </h2>
             <div className="graphinfobox">
-              <InfoIcon
-                className="graphinfo"
-                title="¿Qué significa este gráfico?"
-                onClick={() => this.toggleInfoGraph()}
-              />
+              <IconTooltip title="Acerca de esta sección">
+                <InfoIcon
+                  className="graphinfo"
+                  onClick={() => this.toggleInfoGraph()}
+                />
+              </IconTooltip>
               <div
                 className="graphinfo"
                 onClick={() => this.toggleInfoGraph()}
@@ -125,13 +128,12 @@ class CompensationFactor extends React.Component {
                 tabIndex="0"
               />
               {showInfoGraph && (
-              <ShortInfo
-                name="Factor de Compensación."
-                description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
-                className="graphinfo2"
-                tooltip="¿Qué significa?"
-                customButton
-              />
+                <ShortInfo
+                  name="Factor de Compensación."
+                  description={cFInfo}
+                  className="graphinfo2"
+                  collapseButton={false}
+                />
               )}
             </div>
             <GraphLoader
