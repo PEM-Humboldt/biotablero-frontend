@@ -4,6 +4,7 @@ import React from 'react';
 
 import CompensationFactor from './CompensationFactor';
 import HumanFootprint from './HumanFootprint';
+import Forest from './Forest';
 import LandscapeAccordion from './LandscapeAccordion';
 import SearchContext from '../SearchContext';
 
@@ -88,6 +89,21 @@ class Landscape extends React.Component {
         },
         component: (
           <HumanFootprint
+            handlerAccordionGeometry={this.handlerAccordionGeometry}
+          />
+        ),
+      },
+      {
+        label: {
+          id: 'forest',
+          name: 'Bosques',
+          disabled: false,
+          expandIcon: <AddIcon />,
+          detailId: 'Bosques',
+          description: 'Bosques',
+        },
+        component: (
+          <Forest
             handlerAccordionGeometry={this.handlerAccordionGeometry}
           />
         ),
