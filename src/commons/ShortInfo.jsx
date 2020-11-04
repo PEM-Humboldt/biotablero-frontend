@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -22,34 +21,22 @@ class ShortInfo extends React.Component {
   render() {
     const { hide_text: hideText } = this.state;
     const {
-      name, description, tooltip, customButton, className,
+      name, description, tooltip, collapseButton, className,
     } = this.props;
     return (
       <div>
         <div
           className={`${className}-${hideText}`}
-        >
-          <p>
-            <b>
-              {name}
-            </b>
-            {` ${description}`}
-          </p>
-        </div>
-        {!customButton && (
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: `<p><b>${name}</b> ${description}</p>` }}
+        />
+        {collapseButton && (
           <button
             type="button"
             id="showHome"
             className={`showHome rotate-${hideText}`}
-            data-tooltip
             title={tooltip}
             onClick={this.handleClick}
-          />
-        )}
-        {customButton && (
-          <div
-            className={`${customButton}-${hideText}`}
-            title={tooltip}
           />
         )}
       </div>
@@ -58,17 +45,18 @@ class ShortInfo extends React.Component {
 }
 
 ShortInfo.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   className: PropTypes.string,
-  description: PropTypes.string,
-  tooltip: PropTypes.string.isRequired,
-  customButton: PropTypes.bool,
+  description: PropTypes.string.isRequired,
+  tooltip: PropTypes.string,
+  collapseButton: PropTypes.bool,
 };
 
 ShortInfo.defaultProps = {
+  name: '',
   className: 'hidden',
-  description: null,
-  customButton: false,
+  tooltip: '',
+  collapseButton: true,
 };
 
 export default ShortInfo;

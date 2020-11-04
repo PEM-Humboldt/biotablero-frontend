@@ -1648,8 +1648,8 @@ div[id*="panel"] button:hover {
 .graphinfo2-true p {
 	font-family: 'Lato', sans-serif;
 	color: #424242;
-	padding: 3px 8px 10px;
-
+	padding: 3px 8px 10px 20px;
+	text-align: left;
 }
 
 .graphinfo2-true {
@@ -1771,7 +1771,7 @@ p.legcomp {
   border-radius: 4px;
   font-weight: 500;
   font-size: 14px;
-  border: 0; 
+  border: 0;
 }
 
 .nocolor {
@@ -2493,6 +2493,10 @@ tspan, .vx-axis-label {
 
 .nBA2 {
 	padding-top: 100px;
+}
+
+.ul-padding {
+	padding-left: 15px;
 }
 
 /* Begin - Animate the loading */

@@ -144,7 +144,6 @@ class MapViewer extends React.Component {
               className="closebtn"
               style={{ position: 'absolute' }}
               onClick={() => { this.setState({ openErrorModal: false }); }}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />

@@ -69,7 +69,6 @@ class Uim extends Component {
           type="button"
           className="loginBtn"
           onClick={this.showModal(whichModal.modal)}
-          data-tooltip
           title="Iniciar sesión"
         >
           { user
@@ -89,7 +88,6 @@ class Uim extends Component {
               type="button"
               className="closebtn"
               onClick={this.turnOffModal(whichModal.modal)}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />

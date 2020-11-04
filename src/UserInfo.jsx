@@ -12,7 +12,6 @@ const UserInfo = ({ logoutHandler }) => (
         {user.name}
         <button
           className="logoutbtn"
-          data-tooltip
           title="Salir"
           type="button"
           onClick={logoutHandler}

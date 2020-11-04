@@ -115,7 +115,6 @@ class NewProjectForm extends Component {
             type="button"
             className="closebtn"
             onClick={handlers[1]}
-            data-tooltip
             title="Cerrar"
           >
             <CloseIcon />
@@ -142,7 +141,6 @@ class NewProjectForm extends Component {
               onClick={() => {
                 handlers[0](regionSelected, (newNameState || statusSelected), newName.trim());
               }}
-              data-tooltip
               title="Crear proyecto"
             >
               <AddProjectIcon />

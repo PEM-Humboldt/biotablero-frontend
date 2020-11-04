@@ -740,7 +740,6 @@ class Drawer extends React.Component {
                     type="button"
                     className="sendCreateBiomes"
                     onClick={() => { this.setState({ addBiomesToProjectModal: true }); }}
-                    data-tooltip
                     title="Guardar biomas en proyecto"
                   >
                     Guardar

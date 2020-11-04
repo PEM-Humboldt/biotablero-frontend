@@ -6,6 +6,8 @@ import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
 import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
+import { timelineHFText } from '../assets/info_texts';
+import { IconTooltip } from '../../commons/tooltips';
 
 const changeValues = [
   {
@@ -170,12 +172,12 @@ class TimelineFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfoGraph()}
-          />
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfoGraph()}
+            />
+          </IconTooltip>
           <div
             className="graphinfo"
             onClick={() => this.toggleInfoGraph()}
@@ -186,13 +188,12 @@ class TimelineFootprint extends React.Component {
         </h2>
         {(
           showInfoGraph && (
-          <ShortInfo
-            name="Huella Humana en el tiempo"
-            description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
-            className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
-          />
+            <ShortInfo
+              name="Huella Humana en el tiempo"
+              description={timelineHFText}
+              className="graphinfo2"
+              collapseButton={false}
+            />
           )
         )}
         <h6>

@@ -457,7 +457,6 @@ class Compensation extends Component {
               type="button"
               className="closebtn"
               onClick={this.handleCloseModal('connError')}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />
