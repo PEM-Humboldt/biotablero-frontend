@@ -1,6 +1,8 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
+import { IconTooltip } from '../../commons/tooltips';
+import { persistenceHFText } from '../assets/info_texts';
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
@@ -14,6 +16,8 @@ const getLabel = {
 };
 
 class PersistenceFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -23,20 +27,27 @@ class PersistenceFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
     } = this.context;
     RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfPersistence: res.map(item => ({
-            ...item,
-            label: getLabel[item.key],
-          })),
-        });
+        if (this.mounted) {
+          this.setState({
+            hfPersistence: res.map(item => ({
+              ...item,
+              label: getLabel[item.key],
+            })),
+          });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -54,12 +65,12 @@ class PersistenceFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfoGraph()}
-          />
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfoGraph()}
+            />
+          </IconTooltip>
           <div
             className="graphinfo"
             onClick={() => this.toggleInfoGraph()}
@@ -70,13 +81,12 @@ class PersistenceFootprint extends React.Component {
         </h2>
         {(
           showInfoGraph && (
-          <ShortInfo
-            name="Persistencia Huella Humana"
-            description="Barra horizontal del mismo tipo a la de la sección 1 (o a las barras horizontales existentes en BioTablero) que muestra el área total de la unidad de consulta distribuida en los diferentes valores de persistencia"
-            className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
-          />
+            <ShortInfo
+              name="Persistencia Huella Humana"
+              description={persistenceHFText}
+              className="graphinfo2"
+              collapseButton={false}
+            />
           )
         )}
         <h6>

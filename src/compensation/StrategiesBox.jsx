@@ -54,7 +54,6 @@ class StrategiesBox extends Component {
                   className={`icongraph ${showTable ? 'rotate-false' : 'rotate-true'}`}
                   type="button"
                   onClick={this.switchTable}
-                  data-tooltip
                   title="Mostrar / Ocultar estrategias"
                 >
                   <ExpandMoreIcon />

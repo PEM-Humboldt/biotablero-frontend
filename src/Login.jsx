@@ -49,7 +49,6 @@ class Login extends Component {
           />
           <button
             className={this.validateForm() ? 'loginbtn' : 'loginbtn disabled'}
-            data-tooltip
             title="Ingresar"
             disabled={!this.validateForm()}
             type="submit"
@@ -63,7 +62,6 @@ class Login extends Component {
           <button
             className="recoverbtn"
             type="button"
-            data-tooltip
             title="Acción no disponible"
           >
             Recuperar contraseña

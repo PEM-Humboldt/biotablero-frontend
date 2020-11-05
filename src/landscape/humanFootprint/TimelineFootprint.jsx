@@ -6,6 +6,8 @@ import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
 import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
+import { timelineHFText } from '../assets/info_texts';
+import { IconTooltip } from '../../commons/tooltips';
 
 const changeValues = [
   {
@@ -65,6 +67,8 @@ const changeValues = [
 const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 class TimelineFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -75,6 +79,8 @@ class TimelineFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
+
     const { areaId, geofenceId } = this.context;
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
@@ -83,9 +89,15 @@ class TimelineFootprint extends React.Component {
       RestAPI.requestTotalHFTimeline(areaId, geofenceId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
-        this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+        if (this.mounted) {
+          this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -160,12 +172,12 @@ class TimelineFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfoGraph()}
-          />
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfoGraph()}
+            />
+          </IconTooltip>
           <div
             className="graphinfo"
             onClick={() => this.toggleInfoGraph()}
@@ -176,13 +188,12 @@ class TimelineFootprint extends React.Component {
         </h2>
         {(
           showInfoGraph && (
-          <ShortInfo
-            name="Huella Humana en el tiempo"
-            description="Se mostrará una gráfica de 4 líneas, una con el valor promedio de la huella en cada año para la unidad de consulta, la cual siempre estará resaltada en el gráfico, y las demás mostrarán el valor promedio en cada ecosistema estratégico"
-            className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
-          />
+            <ShortInfo
+              name="Huella Humana en el tiempo"
+              description={timelineHFText}
+              className="graphinfo2"
+              collapseButton={false}
+            />
           )
         )}
         <h6>

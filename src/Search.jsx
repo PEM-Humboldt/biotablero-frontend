@@ -59,6 +59,15 @@ class Search extends Component {
     this.loadAreaList();
   }
 
+  componentDidUpdate() {
+    const { history } = this.props;
+    history.listen((loc, action) => {
+      if (loc.search === '' && action === 'POP') {
+        this.handlerBackButton();
+      }
+    });
+  }
+
   /**
    * Give format to a big number
    *
@@ -180,9 +189,9 @@ class Search extends Component {
     }
 
     return {
-      color: matchColor(type)(color),
-      weight: 2,
-      fillOpacity: 0,
+      stroke: false,
+      fillColor: matchColor(type)(color),
+      fillOpacity: 0.7,
     };
   }
 
@@ -383,7 +392,7 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: layerType,
-          name: 'HH - Actual',
+          name: 'HH promedio · 2018',
         };
         break;
       case 'paramo':
@@ -393,7 +402,7 @@ class Search extends Component {
           selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle('border', 'white');
+        layerStyle = this.featureStyle(layerType, layerType);
         fitBounds = false;
         break;
       case 'hfTimeline':
@@ -608,6 +617,7 @@ class Search extends Component {
       newState.selectedAreaType = null;
       newState.selectedArea = null;
       newState.activeLayer = {};
+      newState.loadingLayer = false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -659,7 +669,6 @@ class Search extends Component {
               type="button"
               className="closebtn"
               onClick={this.handleCloseModal('connError')}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />
@@ -732,6 +741,7 @@ Search.propTypes = {
     location: PropTypes.shape({
       pathname: PropTypes.string,
     }),
+    listen: PropTypes.func,
   }),
   setHeaderNames: PropTypes.func.isRequired,
 };
@@ -739,7 +749,9 @@ Search.propTypes = {
 Search.defaultProps = {
   selectedAreaTypeId: null,
   selectedAreaId: null,
-  history: {},
+  history: {
+    listen: () => {},
+  },
 };
 
 export default withRouter(Search);

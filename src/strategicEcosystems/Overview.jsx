@@ -3,6 +3,13 @@ import InfoIcon from '@material-ui/icons/Info';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import { InfoTooltip, IconTooltip } from '../commons/tooltips';
+import {
+  sectionInfo,
+  coverageText,
+  paText,
+  seText,
+} from './assets/info_texts';
 import { setPAValues, setCoverageValues } from './FormatSE';
 import EcosystemsBox from './EcosystemsBox';
 import GraphLoader from '../charts/GraphLoader';
@@ -29,6 +36,8 @@ const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
 class Overview extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +52,7 @@ class Overview extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -50,32 +60,44 @@ class Overview extends React.Component {
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
-        this.setState({ coverage: setCoverageValues(res) });
+        if (this.mounted) {
+          this.setState({ coverage: setCoverageValues(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
-        if (Array.isArray(res) && res[0]) {
-          const totalPA = Number(res[0].area).toFixed(0);
-          const allPA = setPAValues(res.slice(1));
-          this.setState({ protectedAreas: allPA, PAArea: totalPA });
+        if (this.mounted) {
+          if (Array.isArray(res) && res[0]) {
+            const totalPA = Number(res[0].area).toFixed(0);
+            const allPA = setPAValues(res.slice(1));
+            this.setState({ protectedAreas: allPA, PAArea: totalPA });
+          }
         }
       })
       .catch(() => {});
 
     RestAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
-        if (Array.isArray(res) && res[0]) {
-          const ecosystemsArea = Number(res[0].area).toFixed(0);
-          const allSE = res.slice(1);
-          this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+        if (this.mounted) {
+          if (Array.isArray(res) && res[0]) {
+            const ecosystemsArea = Number(res[0].area).toFixed(0);
+            const allSE = res.slice(1);
+            this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+          }
         }
       })
       .catch(() => {})
       .finally(() => {
-        this.setState({ loadingSE: false });
+        if (this.mounted) {
+          this.setState({ loadingSE: false });
+        }
       });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   toggleInfo = () => {
@@ -121,35 +143,30 @@ class Overview extends React.Component {
       <div className="graphcard">
         <h2>
           <DownloadIcon className="icondown" />
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfo()}
-          />
-          <div
-            className="graphinfo"
-            onClick={() => this.toggleInfo()}
-            onKeyPress={() => this.toggleInfo()}
-            role="button"
-            tabIndex="0"
-          >
-            Área
-          </div>
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfo()}
+            />
+          </IconTooltip>
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            name="Área"
-            description="resume la información de los ecosistemas presentes en el área seleccionada, y su distribución al interior de áreas protegidas y ecosistemas estratégicos. Nota: Aquellos valores inferiores al 1% no son representados en las gráficas."
+            description={sectionInfo}
             className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
+            collapseButton={false}
           />
         )}
         <div className="graphcontainer pt5">
-          <h4>
-            Cobertura
-          </h4>
+          <InfoTooltip
+            placement="left"
+            interactive
+            title={coverageText}
+          >
+            <h4>
+              Cobertura
+            </h4>
+          </InfoTooltip>
           <h6>
             Natural, Secundaria y Transformada:
           </h6>
@@ -161,16 +178,22 @@ class Overview extends React.Component {
               colors={matchColor('coverage')}
             />
           </div>
-          <h4>
-            Áreas protegidas
-            <b>{`${numberWithCommas(PAArea)} ha `}</b>
-          </h4>
+          <InfoTooltip
+            placement="left"
+            interactive
+            title={paText}
+          >
+            <h4>
+              Áreas protegidas
+              <b>{`${numberWithCommas(PAArea)} ha `}</b>
+            </h4>
+          </InfoTooltip>
           <h5>
             {`${getPercentage(PAArea, generalArea)} %`}
           </h5>
           <div className="graficaeco">
             <h6>
-              Distribución en área protegida:
+              Distribución por áreas protegidas:
             </h6>
             <GraphLoader
               graphType="SmallBarStackGraph"
@@ -180,10 +203,16 @@ class Overview extends React.Component {
             />
           </div>
           <div className="ecoest">
-            <h4 className="minus20">
-              Ecosistemas estratégicos
-              <b>{`${numberWithCommas(SEArea)} ha`}</b>
-            </h4>
+            <InfoTooltip
+              placement="left"
+              interactive
+              title={seText}
+            >
+              <h4 className="minus20">
+                Ecosistemas estratégicos
+                <b>{`${numberWithCommas(SEArea)} ha`}</b>
+              </h4>
+            </InfoTooltip>
             <h5 className="minusperc">{`${getPercentage(SEArea, generalArea)} %`}</h5>
             {this.displaySE(strategicEcosistems, SEArea)}
           </div>

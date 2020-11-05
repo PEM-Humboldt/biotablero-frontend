@@ -1,6 +1,8 @@
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
+import { currentHFText } from '../assets/info_texts';
+import { IconTooltip } from '../../commons/tooltips';
 import GraphLoader from '../../charts/GraphLoader';
 import matchColor from '../../commons/matchColor';
 import RestAPI from '../../api/RestAPI';
@@ -8,6 +10,8 @@ import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 
 class CurrentFootprint extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -19,6 +23,7 @@ class CurrentFootprint extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -26,22 +31,30 @@ class CurrentFootprint extends React.Component {
 
     RestAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfCurrentValue: Number(res.value).toFixed(2),
-          hfCurrentCategory: res.category,
-        });
+        if (this.mounted) {
+          this.setState({
+            hfCurrentValue: Number(res.value).toFixed(2),
+            hfCurrentCategory: res.category,
+          });
+        }
       })
       .catch(() => {});
     RestAPI.requestCurrentHFCategories(areaId, geofenceId)
       .then((res) => {
-        this.setState({
-          hfCurrent: res.map(item => ({
-            ...item,
-            label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
-          })),
-        });
+        if (this.mounted) {
+          this.setState({
+            hfCurrent: res.map(item => ({
+              ...item,
+              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
+            })),
+          });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -64,12 +77,12 @@ class CurrentFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfoGraph()}
-          />
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfoGraph()}
+            />
+          </IconTooltip>
           <div
             className="graphinfo"
             onClick={() => this.toggleInfoGraph()}
@@ -80,18 +93,17 @@ class CurrentFootprint extends React.Component {
         </h2>
         {(
           showInfoGraph && (
-          <ShortInfo
-            name="Huella Humana Actual"
-            description="Se mostrará el valor promedio de la huella humana en el año más reciente para la unidad de consulta seleccionada previamente. Justo debajo una gráfica tipo barra horizontal apilada que mostrará la proporción de cada categoría para el año más reciente"
-            className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
-          />
+            <ShortInfo
+              name="Huella Humana Actual"
+              description={currentHFText}
+              className="graphinfo2"
+              collapseButton={false}
+            />
           )
         )}
         <div>
           <h6>
-            Huella humana actual
+            Huella humana promedio · 2018
           </h6>
           <h5 style={{ backgroundColor: matchColor('hfCurrent')(hfCurrentCategory) }}>
             {hfCurrentValue}

@@ -2,6 +2,8 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
+import { cFInfo } from './assets/info_texts';
+import { IconTooltip } from '../commons/tooltips';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
@@ -9,6 +11,8 @@ import SearchContext from '../SearchContext';
 import ShortInfo from '../commons/ShortInfo';
 
 class CompensationFactor extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -20,6 +24,7 @@ class CompensationFactor extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
       areaId,
       geofenceId,
@@ -29,21 +34,31 @@ class CompensationFactor extends React.Component {
 
     RestAPI.requestBiomes(areaId, geofenceId)
       .then((res) => {
-        this.setState({ biomes: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ biomes: this.processData(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestCompensationFactor(areaId, geofenceId)
       .then((res) => {
-        this.setState({ fc: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ fc: this.processData(res) });
+        }
       })
       .catch(() => {});
 
     RestAPI.requestBioticUnits(areaId, geofenceId)
       .then((res) => {
-        this.setState({ bioticUnits: this.processData(res) });
+        if (this.mounted) {
+          this.setState({ bioticUnits: this.processData(res) });
+        }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -99,12 +114,12 @@ class CompensationFactor extends React.Component {
               <DownloadIcon className="icondown" />
             </h2>
             <div className="graphinfobox">
-              <InfoIcon
-                className="graphinfo"
-                data-tooltip
-                title="¿Qué significa este gráfico?"
-                onClick={() => this.toggleInfoGraph()}
-              />
+              <IconTooltip title="Acerca de esta sección">
+                <InfoIcon
+                  className="graphinfo"
+                  onClick={() => this.toggleInfoGraph()}
+                />
+              </IconTooltip>
               <div
                 className="graphinfo"
                 onClick={() => this.toggleInfoGraph()}
@@ -113,13 +128,12 @@ class CompensationFactor extends React.Component {
                 tabIndex="0"
               />
               {showInfoGraph && (
-              <ShortInfo
-                name="Factor de Compensación."
-                description="La primera gráfica muestra la cantidad de hectáreas por valor de compensación en el área seleccionada. Estos valores se consiguen al cruzar análisis entre las áreas de las dos siguientes gráficas, Biomas y Regiones bióticas del área seleccionada. "
-                className="graphinfo2"
-                tooltip="¿Qué significa?"
-                customButton
-              />
+                <ShortInfo
+                  name="Factor de Compensación."
+                  description={cFInfo}
+                  className="graphinfo2"
+                  collapseButton={false}
+                />
               )}
             </div>
             <GraphLoader

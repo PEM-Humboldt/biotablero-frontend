@@ -50,12 +50,12 @@ class MultiLinesGraph extends React.Component {
       }}
       >
         <div>
-          <strong style={{ color: serieColor }}>
+          <strong style={{ color: serieId === 'aTotal' ? '#ffffff' : serieColor }}>
             {`${labels[serieId]} en ${xFormatted}`}
           </strong>
           <br />
           <div style={{ color: '#ffffff' }}>
-            {yFormatted}
+            {Number(Number(yFormatted).toFixed(2)).toLocaleString('es-CO')}
           </div>
         </div>
       </div>
