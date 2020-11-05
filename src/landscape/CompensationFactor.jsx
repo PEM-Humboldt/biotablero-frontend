@@ -120,16 +120,9 @@ class CompensationFactor extends React.Component {
                   onClick={() => this.toggleInfoGraph()}
                 />
               </IconTooltip>
-              <div
-                className="graphinfo"
-                onClick={() => this.toggleInfoGraph()}
-                onKeyPress={() => this.toggleInfoGraph()}
-                role="button"
-                tabIndex="0"
-              />
               {showInfoGraph && (
                 <ShortInfo
-                  name="Factor de Compensación."
+                  name="Factor de Compensación"
                   description={cFInfo}
                   className="graphinfo2"
                   collapseButton={false}
