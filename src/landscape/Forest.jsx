@@ -1,4 +1,3 @@
-import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -18,9 +17,6 @@ const Forest = (props) => {
         id: 'forestLossPersistence',
         name: 'Perdida y persistencia',
         disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Perdida y persistencia',
-        description: 'Perdida y persistencia',
       },
       component: (
         <ForestLossPersistence />
@@ -31,9 +27,6 @@ const Forest = (props) => {
         id: 'forestIntegrity',
         name: 'Integridad',
         disabled: false,
-        expandIcon: <AddIcon />,
-        detailId: 'Integridad',
-        description: 'Integridad',
       },
       component: (
         <ForestIntegrity />

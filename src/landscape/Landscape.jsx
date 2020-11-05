@@ -1,4 +1,3 @@
-import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -72,9 +71,6 @@ class Landscape extends React.Component {
           id: 'fc',
           name: 'FC y Biomas',
           disabled: areaId !== 'ea',
-          expandIcon: <AddIcon />,
-          detailId: 'Factor de compensación en área de consulta',
-          description: 'Representa el coeficiente de relación entre BiomasIAvH y regiones bióticas',
         },
         component: <CompensationFactor />,
       },
@@ -83,9 +79,6 @@ class Landscape extends React.Component {
           id: 'hf',
           name: 'Huella humana',
           disabled: false,
-          expandIcon: <AddIcon />,
-          detailId: 'Huella humana en el área',
-          description: 'Representa diferentes análisis de huella humana en esta área de consulta',
         },
         component: (
           <HumanFootprint
@@ -98,9 +91,6 @@ class Landscape extends React.Component {
           id: 'forest',
           name: 'Bosques',
           disabled: false,
-          expandIcon: <AddIcon />,
-          detailId: 'Bosques',
-          description: 'Bosques',
         },
         component: (
           <Forest

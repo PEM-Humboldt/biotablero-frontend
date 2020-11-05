@@ -3,6 +3,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
+import { IconTooltip } from '../../commons/tooltips';
 
 class ForestIntegrity extends React.Component {
   constructor(props) {
@@ -30,19 +31,12 @@ class ForestIntegrity extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <InfoIcon
-            className="graphinfo"
-            data-tooltip
-            title="¿Qué significa este gráfico?"
-            onClick={() => this.toggleInfoGraph()}
-          />
-          <div
-            className="graphinfo"
-            onClick={() => this.toggleInfoGraph()}
-            onKeyPress={() => this.toggleInfoGraph()}
-            role="button"
-            tabIndex="0"
-          />
+          <IconTooltip title="Acerca de esta sección">
+            <InfoIcon
+              className="graphinfo"
+              onClick={() => this.toggleInfoGraph()}
+            />
+          </IconTooltip>
         </h2>
         {(
           showInfoGraph && (
@@ -50,8 +44,7 @@ class ForestIntegrity extends React.Component {
             name="Integridad"
             description="Integridad"
             className="graphinfo2"
-            tooltip="¿Qué significa?"
-            customButton
+            collapseButton={false}
           />
           )
         )}
