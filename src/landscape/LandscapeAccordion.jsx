@@ -66,9 +66,6 @@ LandscapeAccordion.propTypes = {
       id: PropTypes.string,
       name: PropTypes.string,
       disable: PropTypes.bool,
-      expandIcon: PropTypes.object,
-      detailId: PropTypes.string,
-      description: PropTypes.string,
     }),
     component: PropTypes.object, // Component to show inside the accordion
   })).isRequired,

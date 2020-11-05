@@ -71,13 +71,6 @@ class PersistenceFootprint extends React.Component {
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
-          <div
-            className="graphinfo"
-            onClick={() => this.toggleInfoGraph()}
-            onKeyPress={() => this.toggleInfoGraph()}
-            role="button"
-            tabIndex="0"
-          />
         </h2>
         {(
           showInfoGraph && (
