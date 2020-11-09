@@ -69,6 +69,7 @@ const GraphLoader = (props) => {
         />
       );
     case 'BarVertical':
+      // TODO: This graph is only used by commented code, probably many props won't work as expected
       return (
         <BarGraph
           dataJSON={data}
@@ -153,13 +154,17 @@ GraphLoader.propTypes = {
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.string,
+  width: PropTypes.number,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
-  colors: PropTypes.func,
+  // TODO: Remove array type once the charts in compensation are migrated
+  colors: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.array,
+  ]),
   padding: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
@@ -175,7 +180,6 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: '100%',
   height: 250,
   showOnlyTitle: false,
   units: 'ha',
