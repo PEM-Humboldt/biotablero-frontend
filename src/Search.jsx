@@ -358,8 +358,6 @@ class Search extends Component {
     } = this.props;
     const {
       requestSource,
-      selectedArea,
-      selectedAreaType,
       layers,
     } = this.state;
     if (requestSource) {
@@ -380,7 +378,7 @@ class Search extends Component {
 
     switch (layerType) {
       case 'fc':
-        request = () => RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
+        request = () => RestAPI.requestBiomesbyEAGeometry(selectedAreaId);
         newActiveLayer = {
           id: layerType,
           name: 'FC - Biomas',
@@ -388,7 +386,7 @@ class Search extends Component {
         break;
       case 'hfCurrent':
         request = () => RestAPI.requestCurrentHFGeometry(
-          selectedAreaType.id, selectedArea.id || selectedArea.name,
+          selectedAreaTypeId, selectedAreaId,
         );
         newActiveLayer = {
           id: layerType,
@@ -399,7 +397,7 @@ class Search extends Component {
       case 'dryForest':
       case 'wetland':
         request = () => RestAPI.requestHFGeometryBySEInGeofence(
-          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
+          selectedAreaTypeId, selectedAreaId, layerType,
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle(layerType, layerType);
@@ -407,7 +405,7 @@ class Search extends Component {
         break;
       case 'hfTimeline':
         request = () => RestAPI.requestHFPersistenceGeometry(
-          selectedAreaType.id, selectedArea.id || selectedArea.name,
+          selectedAreaTypeId, selectedAreaId,
         );
         layerStyle = this.featureStyle('hfPersistence');
         layerKey = 'hfPersistence';
@@ -418,7 +416,7 @@ class Search extends Component {
         break;
       case 'hfPersistence':
         request = () => RestAPI.requestHFPersistenceGeometry(
-          selectedAreaType.id, selectedArea.id || selectedArea.name,
+          selectedAreaTypeId, selectedAreaId,
         );
         newActiveLayer = {
           id: layerType,
