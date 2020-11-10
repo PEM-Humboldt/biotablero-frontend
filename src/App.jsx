@@ -47,6 +47,7 @@ class App extends React.Component {
         selectedAreaId={query.get('area_id')}
         setHeaderNames={this.setHeaderNames}
       />),
+      showHeaderNames: true,
     });
   }
 
@@ -65,6 +66,7 @@ class App extends React.Component {
         footerLogos: false,
         name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
+        showHeaderNames: true,
       });
     }
     return (
@@ -77,13 +79,18 @@ class App extends React.Component {
     );
   }
 
-  loadComponent = ({ footerLogos, name, component }) => {
+  loadComponent = ({
+    footerLogos,
+    name,
+    component,
+    showHeaderNames = false,
+  }) => {
     const { headerNames } = this.state;
     return (
       <Layout
         moduleName={name}
         showFooterLogos={footerLogos}
-        headerNames={headerNames}
+        headerNames={showHeaderNames ? headerNames : {}}
         uim={<Uim setUser={this.setUser} />}
       >
         {component}
