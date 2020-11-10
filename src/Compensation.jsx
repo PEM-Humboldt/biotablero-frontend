@@ -57,6 +57,11 @@ class Compensation extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { setHeaderNames } = this.props;
+    setHeaderNames(null, null);
+  }
+
   loadProjectsList = () => {
     const { currentCompanyId } = this.state;
     RestAPI.requestProjectsAndRegionsByCompany(currentCompanyId)
