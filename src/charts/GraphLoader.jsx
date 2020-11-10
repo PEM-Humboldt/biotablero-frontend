@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
@@ -17,12 +16,10 @@ const GraphLoader = (props) => {
     labelX,
     labelY,
     width,
-    height,
     elementOnClick,
     activeBiome,
     showOnlyTitle,
     units,
-    withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
     onClickGraphHandler,
     markers,
@@ -66,20 +63,6 @@ const GraphLoader = (props) => {
           height={30}
           colors={colors}
           units={units}
-        />
-      );
-    case 'BarVertical':
-      return (
-        <BarGraph
-          dataJSON={data}
-          colors={colors}
-          graphTitle={graphTitle}
-          labelX={labelX}
-          labelY={labelY}
-          width={width}
-          height={height}
-          units={units}
-          withLeyends={withLeyends}
         />
       );
     case 'Dots':
@@ -153,13 +136,15 @@ GraphLoader.propTypes = {
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.string,
-  height: PropTypes.number,
+  width: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
-  withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
-  colors: PropTypes.func,
+  // TODO: Remove array type once the charts in compensation are migrated
+  colors: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.array,
+  ]),
   padding: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
@@ -175,11 +160,8 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: '100%',
-  height: 250,
   showOnlyTitle: false,
   units: 'ha',
-  withLeyends: false,
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
