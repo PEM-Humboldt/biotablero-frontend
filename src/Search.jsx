@@ -712,16 +712,6 @@ class Search extends Component {
                   handlerSwitchLayer={this.switchLayer}
                 />
               )}
-              {/* // TODO: This functionality should be implemented again
-              selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
-                <NationalInsigths
-                  area={selectedAreaType}
-                  colors={colors}
-                  geofence={selectedArea}
-                  handlerBackButton={this.handlerBackButton}
-                  id
-                />
-              ) */}
             </div>
           </div>
         </SearchContext.Provider>

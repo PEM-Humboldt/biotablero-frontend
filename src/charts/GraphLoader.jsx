@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import BarGraph from './BarGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
@@ -17,12 +16,10 @@ const GraphLoader = (props) => {
     labelX,
     labelY,
     width,
-    height,
     elementOnClick,
     activeBiome,
     showOnlyTitle,
     units,
-    withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
     onClickGraphHandler,
     markers,
@@ -66,21 +63,6 @@ const GraphLoader = (props) => {
           height={30}
           colors={colors}
           units={units}
-        />
-      );
-    case 'BarVertical':
-      // TODO: This graph is only used by commented code, probably many props won't work as expected
-      return (
-        <BarGraph
-          dataJSON={data}
-          colors={colors}
-          graphTitle={graphTitle}
-          labelX={labelX}
-          labelY={labelY}
-          width={width}
-          height={height}
-          units={units}
-          withLeyends={withLeyends}
         />
       );
     case 'Dots':
@@ -155,10 +137,8 @@ GraphLoader.propTypes = {
   labelX: PropTypes.string,
   labelY: PropTypes.string,
   width: PropTypes.number,
-  height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
-  withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
   // TODO: Remove array type once the charts in compensation are migrated
   colors: PropTypes.oneOfType([
@@ -180,10 +160,8 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  height: 250,
   showOnlyTitle: false,
   units: 'ha',
-  withLeyends: false,
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,

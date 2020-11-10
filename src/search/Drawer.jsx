@@ -102,19 +102,6 @@ class Drawer extends React.Component {
             </p>
           </div>
         </TabContainer>
-        {/* // TODO: This functionality should be implemented again
-          (
-          <div className={classes.root}>
-            <RenderGraph
-              graph="BarVertical"
-              graphTitle="ha por Subzonas Hidrográficas"
-              colors={colorSZH}
-              labelX="Subzonas Hidrográficas"
-              labelY="Hectáreas"
-              units="ha"
-            />
-          </div>
-        ) */}
       </div>
     );
   }
