@@ -68,6 +68,11 @@ class Search extends Component {
     });
   }
 
+  componentWillUnmount() {
+    const { setHeaderNames } = this.props;
+    setHeaderNames(null, null);
+  }
+
   /**
    * Give format to a big number
    *
