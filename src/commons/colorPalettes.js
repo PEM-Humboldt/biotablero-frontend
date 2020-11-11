@@ -87,4 +87,10 @@ export default {
   dryForest: ['#8cb64c'],
   wetland: ['#6794cb'],
   default: ['#345b6b'],
+  forestLP: [
+    '#92ab58',
+    '#c65453',
+    '#268a9a',
+    '#c5b599',
+  ],
 };
