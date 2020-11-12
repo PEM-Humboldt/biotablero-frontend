@@ -2499,6 +2499,14 @@ tspan, .vx-axis-label {
 	padding-left: 15px;
 }
 
+.ul-padding-info-text {
+	padding-left: 70px;
+}
+
+.ul-padding-info-text li{
+	padding-top: 5px;
+}
+
 /* Begin - Animate the loading */
 .load-wrapp {
     width: 100px;
