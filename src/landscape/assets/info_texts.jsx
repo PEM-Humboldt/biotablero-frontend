@@ -12,10 +12,14 @@ El valor de la Huella Humana en el área de consulta se calcula a partir del val
 <br /><br />
 Una mayor proporción del IHEH media o alta representa áreas influenciadas en mayor medida por las actividades antrópicas, mientras que áreas con una mayor proporción de IHEH natural o baja mantienen condiciones de naturalidad importantes de conservar.
 <br /><br />
-El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en:  Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: 
+Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
+  Ver articulo.
+</a>
 <br /><br />
 El mapa con el IHEH a una resolución de 300 metros se encuentra disponible en 
-<a href="http://geonetwork.humboldt.org.co/" target="_blank" rel="noopener noreferrer">
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
   Geonetwork IAvH.
 </a>
 <br /><br />
@@ -36,12 +40,20 @@ Los valores de persistencia del IHEH pueden guiar las estrategias de conservaci�
 <br /><br />
 La gráfica muestra la proporción de área bajo las categorías Estable Alta, Dinámica y Estable Natural. Cada color representa una categoría y corresponde a los colores desplegados en el mapa.
 <br /><br />
-El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en:  Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: 
+Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
+  Ver articulo.
+</a>
 `;
 
 export const timelineHFText = `Con base en los valores promedio del IHEH para 1970, 1990, 2000, 2015 y 2018 se caracterizó la dinámica de la Huella Humana en los ecosistemas estratégicos y se compara con el valor del área consultada. Si la gráfica presenta las curvas para alguno de los ecosistemas estratégicos (líneas amarilla, azul o verde) por encima de la línea negra, se interpreta que para el área seleccionada la magnitud de la influencia acumulada de las actividades antrópicas ha sido mayor en un determinado ecosistema estratégico en comparación con otros ecosistemas presentes en el área consultada. Esto quiere decir que sobre los ecosistemas estratégicos se presentan más presiones que sobre otros ecosistemas en el área, lo que se puede interpretar como una mayor demanda de los servicios ecosistémicos que prestan y sobre los cuales se deben generar estrategias de uso sostenible si se quiere seguir aprovechando los beneficios derivados de su uso.
 <br /><br />
-El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en:  Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+El trabajo del IHEH es liderado por Camilo Correa-Ayram <a href="mailto:ccorrea@humboldt.org.co" target="_blank">ccorrea@humboldt.org.co</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: 
+Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
+  Ver articulo.
+</a>
 `;
 
 
@@ -92,7 +104,7 @@ export const bioticRegionsText = (
     Las cifras se calcularon con base en IAVH 2016. Componente biótico del Mapa Nacional de
     Ecosistemas Terrestres, Marinos y Costeros de Colombia a escala 1:100.000. Capa disponible en
     <a
-      href="http://geonetwork.humboldt.org.co/"
+      href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/a1afc35c-db98-4110-8093-98e599d1571e"
       target="_blank"
       rel="noopener noreferrer"
       style={{ color: '#51b4c1' }}
