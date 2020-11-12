@@ -231,7 +231,7 @@ class Search extends Component {
     switch (layerName) {
       case 'fc':
         feature.bindTooltip(
-          `<b>Bioma:</b> ${feature.feature.properties.name_biome}
+          `<b>Bioma-IAvH:</b> ${feature.feature.properties.name_biome}
           <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
           optionsTooltip,
         ).openTooltip();
