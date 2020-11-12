@@ -5,6 +5,7 @@ import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
 import LargeBarStackGraph from './LargeBarStackGraph';
 import SmallBarStackGraph from './SmallBarStackGraph';
+import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
 import MultiLinesGraph from './MultiLinesGraph';
 
 const GraphLoader = (props) => {
@@ -61,6 +62,15 @@ const GraphLoader = (props) => {
         <SmallBarStackGraph
           data={data}
           height={30}
+          colors={colors}
+          units={units}
+        />
+      );
+    case 'MultiSmallBarStackGraph':
+      return (
+        <MultiSmallBarStackGraph
+          data={data}
+          height={250}
           colors={colors}
           units={units}
         />

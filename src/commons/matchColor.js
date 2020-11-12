@@ -65,6 +65,10 @@ const match = {
     palette: 'wetland',
     sort: ['wetland'],
   },
+  forestLP: {
+    palette: 'forestLP',
+    sort: ['persistencia', 'perdida', 'ganancia', 'no_bosque'],
+  },
   default: {
     palette: 'default',
   },
@@ -127,6 +131,7 @@ const matchColor = (type) => {
     case 'coverage':
     case 'biomeComp':
     case 'hfTimeline':
+    case 'forestLP':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);
