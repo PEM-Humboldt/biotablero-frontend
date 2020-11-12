@@ -16,6 +16,8 @@ const getLabel = {
 };
 
 class ForestLossPersistence extends React.Component {
+  mounted = false;
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -56,6 +58,10 @@ class ForestLossPersistence extends React.Component {
         }
       })
       .catch(() => {});
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
