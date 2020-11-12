@@ -189,7 +189,6 @@ class TimelineFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              name="Huella Humana en el tiempo"
               description={timelineHFText}
               className="graphinfo2"
               collapseButton={false}
