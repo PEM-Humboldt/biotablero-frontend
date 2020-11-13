@@ -82,7 +82,7 @@ const LargeBarStackGraph = (props) => {
         motionDamping={15}
         tooltip={({ id, data: allData, color }) => (
           <div>
-            <strong style={{ color }}>
+            <strong style={{ color: color === '#003d59' ? '#ffffff' : color }}>
               {allData[`${id}Label`]}
             </strong>
             <div style={{ color: '#ffffff' }}>
