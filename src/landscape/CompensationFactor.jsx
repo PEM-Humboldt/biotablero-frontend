@@ -2,8 +2,12 @@ import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
-import { cFInfo } from './assets/info_texts';
-import { IconTooltip } from '../commons/tooltips';
+import { InfoTooltip, IconTooltip } from '../commons/tooltips';
+import {
+  cFInfo,
+  biomesText,
+  bioticRegionsText,
+} from './assets/info_texts';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
@@ -129,7 +133,6 @@ class CompensationFactor extends React.Component {
               />
               {showInfoGraph && (
                 <ShortInfo
-                  name="Factor de Compensación."
                   description={cFInfo}
                   className="graphinfo2"
                   collapseButton={false}
@@ -145,9 +148,15 @@ class CompensationFactor extends React.Component {
               colors={matchColor('fc')}
               padding={0.25}
             />
-            <h3>
-              Biomas
-            </h3>
+            <InfoTooltip
+              placement="left"
+              interactive
+              title={biomesText}
+            >
+              <h3>
+                Biomas
+              </h3>
+            </InfoTooltip>
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={biomes}
@@ -157,9 +166,15 @@ class CompensationFactor extends React.Component {
               colors={matchColor('biomas')}
               padding={0.3}
             />
-            <h3>
-              Regiones Bióticas
-            </h3>
+            <InfoTooltip
+              placement="left"
+              interactive
+              title={bioticRegionsText}
+            >
+              <h3>
+                Regiones Bióticas
+              </h3>
+            </InfoTooltip>
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={bioticUnits}

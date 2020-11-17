@@ -2,6 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
 
+const darkColors = {
+  '#003d59': '#003d59',
+  '#5a1d44': '#5a1d44',
+  '#902130': '#902130',
+};
+
 const LargeBarStackGraph = (props) => {
   const {
     data,
@@ -82,7 +88,7 @@ const LargeBarStackGraph = (props) => {
         motionDamping={15}
         tooltip={({ id, data: allData, color }) => (
           <div>
-            <strong style={{ color }}>
+            <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
               {allData[`${id}Label`]}
             </strong>
             <div style={{ color: '#ffffff' }}>
