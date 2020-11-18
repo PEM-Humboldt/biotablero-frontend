@@ -86,11 +86,19 @@ export default {
   paramo: ['#eaa04a'],
   dryForest: ['#8cb64c'],
   wetland: ['#6794cb'],
-  default: ['#345b6b'],
   forestLP: [
     '#92ab58',
     '#c65453',
     '#268a9a',
     '#c5b599',
   ],
+  SciHf: [
+    '#c65453',
+    '#ea6045',
+    '#f9bd7e',
+    '#0d6870',
+    '#756a37',
+    '#92ab58',
+  ],
+  default: ['#345b6b'],
 };

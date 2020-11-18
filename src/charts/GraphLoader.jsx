@@ -1,12 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import DotsGraph from './DotsGraph';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import DotInfo from './DotInfo';
+import DotsGraph from './DotsGraph';
 import LargeBarStackGraph from './LargeBarStackGraph';
-import SmallBarStackGraph from './SmallBarStackGraph';
-import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
 import MultiLinesGraph from './MultiLinesGraph';
+import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
+import PieGraph from './PieGraph';
+import SmallBarStackGraph from './SmallBarStackGraph';
 
 const GraphLoader = (props) => {
   const {
@@ -72,6 +74,14 @@ const GraphLoader = (props) => {
           data={data}
           height={250}
           colors={colors}
+          units={units}
+        />
+      );
+    case 'pie':
+      return (
+        <PieGraph
+          data={data}
+          height={350}
           units={units}
         />
       );
