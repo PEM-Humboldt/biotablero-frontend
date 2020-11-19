@@ -69,6 +69,16 @@ const match = {
     palette: 'forestLP',
     sort: ['persistencia', 'perdida', 'ganancia', 'no_bosque'],
   },
+  SciHf: {
+    palette: 'SciHf',
+    sort: ['alta-estable_alta',
+      'alta-dinamica',
+      'alta-estable_baja',
+      'moderada-estable_alta',
+      'moderada-dinamica',
+      'moderada-estable_baja',
+    ],
+  },
   default: {
     palette: 'default',
   },
@@ -132,6 +142,7 @@ const matchColor = (type) => {
     case 'biomeComp':
     case 'hfTimeline':
     case 'forestLP':
+    case 'SciHf':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);

@@ -32,7 +32,9 @@ const SmallBarStackGraph = (props) => {
       transformedData[String(item.key)] = Number(item.area || item.percentage);
       transformedData[`${String(item.key)}Color`] = colors(item.key);
       transformedData[`${String(item.key)}Label`] = item.label;
-      transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
+      if (item.percentage) {
+        transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
+      }
     });
     return [transformedData];
   };
@@ -70,7 +72,7 @@ const SmallBarStackGraph = (props) => {
           <div>
             {`${numberWithCommas(allData[id].toFixed(0))} ${units}`}
             <br />
-            {`${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(0))}%`}
+            {allData[`${id}Percentage`] ? `${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(0))}%` : ''}
           </div>
         </div>
       );

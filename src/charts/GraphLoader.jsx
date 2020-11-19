@@ -1,12 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import DotsGraph from './DotsGraph';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import DotInfo from './DotInfo';
+import DotsGraph from './DotsGraph';
 import LargeBarStackGraph from './LargeBarStackGraph';
-import SmallBarStackGraph from './SmallBarStackGraph';
-import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
 import MultiLinesGraph from './MultiLinesGraph';
+import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
+import PieGraph from './PieGraph';
+import SmallBarStackGraph from './SmallBarStackGraph';
 
 const GraphLoader = (props) => {
   const {
@@ -24,12 +26,13 @@ const GraphLoader = (props) => {
     padding,
     onClickGraphHandler,
     markers,
+    loading,
   } = props;
 
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
-  if (data === null) errorMessage = 'Cargando información...';
+  if (data === null || loading) errorMessage = 'Cargando información...';
   // (!data) if API doesn't respond
   else if (!data) errorMessage = 'Información no disponible';
   // (data.length <= 0) if API response in not object
@@ -73,6 +76,16 @@ const GraphLoader = (props) => {
           height={250}
           colors={colors}
           units={units}
+        />
+      );
+    case 'pie':
+      return (
+        <PieGraph
+          data={data}
+          height={350}
+          units={units}
+          colors={colors}
+          onClickHandler={onClickGraphHandler}
         />
       );
     case 'Dots':
@@ -141,7 +154,10 @@ const GraphLoader = (props) => {
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.any.isRequired, // Array or object, depending on graphType
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired,
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
@@ -163,6 +179,7 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
+  loading: PropTypes.bool,
 };
 
 GraphLoader.defaultProps = {
@@ -177,6 +194,7 @@ GraphLoader.defaultProps = {
   padding: 0.25,
   onClickGraphHandler: () => {},
   markers: [],
+  loading: false,
 };
 
 export default GraphLoader;

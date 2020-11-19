@@ -283,6 +283,19 @@ class RestAPI {
     return RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/persistence`);
   }
 
+  /**
+   * Get the structural condition index with human footprint persistence categories in the given
+   * area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Objects with value for the SCI and HF persistence
+   */
+  static requestSCIHF(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/hf`);
+  }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
