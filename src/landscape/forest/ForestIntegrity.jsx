@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from '../../commons/tooltips';
@@ -20,37 +20,31 @@ class ForestIntegrity extends React.Component {
           id: 'alta-estable_alta',
           label: 'SCI Alto - HH Alta',
           value: 0,
-          color: matchColor('SciHf')('alta-estable_alta'),
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
           label: 'SCI Alto - HH Dinámica',
           value: 0,
-          color: matchColor('SciHf')('alta-dinamica'),
         },
         'alta-estable_baja': {
           id: 'alta-estable_baja',
           label: 'SCI Alto - HH Baja',
           value: 0,
-          color: matchColor('SciHf')('alta-estable_baja'),
         },
         'moderada-estable_alta': {
           id: 'moderada-estable_alta',
           label: 'SCI Moderado - HH Alta',
           value: 0,
-          color: matchColor('SciHf')('moderada-estable_alta'),
         },
         'moderada-dinamica': {
           id: 'moderada-dinamica',
-          label: 'SCI Moderdo - HH Dinámica',
+          label: 'SCI Moderado - HH Dinámica',
           value: 0,
-          color: matchColor('SciHf')('moderada-dinamica'),
         },
         'moderada-estable_baja': {
           id: 'moderada-estable_baja',
           label: 'SCI Moderado - HH Baja',
           value: 0,
-          color: matchColor('SciHf')('moderada-estable_baja'),
         },
       },
       ProtectedAreas: {
@@ -61,6 +55,8 @@ class ForestIntegrity extends React.Component {
         'moderada-dinamica': [],
         'moderada-estable_baja': [],
       },
+      selectedCategory: null,
+      loading: true,
     };
   }
 
@@ -79,9 +75,9 @@ class ForestIntegrity extends React.Component {
             res.forEach((elem) => {
               const idx = `${elem.sci_cat}-${elem.hf_pers}`;
               cats[idx].value += elem.area;
-              PAs[idx].push({ id: elem.pa, label: elem.pa, value: elem.area });
+              PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
             });
-            return { SciHfCats: cats, ProtectedAreas: PAs };
+            return { SciHfCats: cats, ProtectedAreas: PAs, loading: false };
           });
         }
       })
@@ -102,7 +98,13 @@ class ForestIntegrity extends React.Component {
   };
 
   render() {
-    const { showInfoGraph, SciHfCats, ProtectedAreas } = this.state;
+    const {
+      showInfoGraph,
+      SciHfCats,
+      ProtectedAreas,
+      selectedCategory,
+      loading,
+    } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -125,12 +127,31 @@ class ForestIntegrity extends React.Component {
         )}
         <div>
           <GraphLoader
+            loading={loading}
             data={Object.values(SciHfCats)}
             graphType="pie"
-            colors={matchColor('SciHf')}
             units="ha"
+            colors={matchColor('SciHf')}
+            onClickGraphHandler={(sectionId) => {
+              this.setState({ selectedCategory: sectionId });
+            }}
           />
         </div>
+        {selectedCategory && (
+          <Fragment>
+            <h6>
+              Distribución en áreas protegidas
+            </h6>
+            <div style={{ padding: '0 12px' }}>
+              <GraphLoader
+                data={ProtectedAreas[selectedCategory]}
+                graphType="SmallBarStackGraph"
+                units="ha"
+                colors={matchColor('pa')}
+              />
+            </div>
+          </Fragment>
+        )}
       </div>
     );
   }

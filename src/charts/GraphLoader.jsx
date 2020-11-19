@@ -26,12 +26,13 @@ const GraphLoader = (props) => {
     padding,
     onClickGraphHandler,
     markers,
+    loading,
   } = props;
 
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
-  if (data === null) errorMessage = 'Cargando información...';
+  if (data === null || loading) errorMessage = 'Cargando información...';
   // (!data) if API doesn't respond
   else if (!data) errorMessage = 'Información no disponible';
   // (data.length <= 0) if API response in not object
@@ -83,6 +84,8 @@ const GraphLoader = (props) => {
           data={data}
           height={350}
           units={units}
+          colors={colors}
+          onClickHandler={onClickGraphHandler}
         />
       );
     case 'Dots':
@@ -151,7 +154,10 @@ const GraphLoader = (props) => {
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.any.isRequired, // Array or object, depending on graphType
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired,
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
@@ -173,6 +179,7 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
+  loading: PropTypes.bool,
 };
 
 GraphLoader.defaultProps = {
@@ -187,6 +194,7 @@ GraphLoader.defaultProps = {
   padding: 0.25,
   onClickGraphHandler: () => {},
   markers: [],
+  loading: false,
 };
 
 export default GraphLoader;
