@@ -26,9 +26,9 @@ class ForestIntegrity extends React.Component {
           label: 'SCI Alto - HH Dinámica',
           value: 0,
         },
-        'alta-estable_baja': {
-          id: 'alta-estable_baja',
-          label: 'SCI Alto - HH Baja',
+        'alta-estable_natural': {
+          id: 'alta-estable_natural',
+          label: 'SCI Alto - HH Natural',
           value: 0,
         },
         'moderada-estable_alta': {
@@ -41,19 +41,19 @@ class ForestIntegrity extends React.Component {
           label: 'SCI Moderado - HH Dinámica',
           value: 0,
         },
-        'moderada-estable_baja': {
-          id: 'moderada-estable_baja',
-          label: 'SCI Moderado - HH Baja',
+        'moderada-estable_natural': {
+          id: 'moderada-estable_natural',
+          label: 'SCI Moderado - HH Natural',
           value: 0,
         },
       },
       ProtectedAreas: {
         'alta-estable_alta': [],
         'alta-dinamica': [],
-        'alta-estable_baja': [],
+        'alta-estable_natural': [],
         'moderada-estable_alta': [],
         'moderada-dinamica': [],
-        'moderada-estable_baja': [],
+        'moderada-estable_natural': [],
       },
       selectedCategory: null,
       loading: true,
