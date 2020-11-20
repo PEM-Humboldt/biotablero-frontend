@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
+import formatNumber from '../commons/format';
 
 const darkColors = {
   '#003d59': '#003d59',
@@ -19,14 +20,6 @@ const LargeBarStackGraph = (props) => {
     units,
     onClickGraphHandler,
   } = props;
-
-  /**
-   * Give format to a big number
-   *
-   * @param {number} x number to be formatted
-   * @returns {String} number formatted setting decimals and thousands properly
-   */
-  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   /**
    * Transform data structure to be passed to component as a prop
@@ -92,7 +85,7 @@ const LargeBarStackGraph = (props) => {
               {allData[`${id}Label`]}
             </strong>
             <div style={{ color: '#ffffff' }}>
-              {`${numberWithCommas(allData[id].toFixed(0))} ${units}`}
+              {`${formatNumber(allData[id], 0)} ${units}`}
             </div>
           </div>
         )}

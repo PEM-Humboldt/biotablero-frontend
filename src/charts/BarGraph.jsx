@@ -5,9 +5,8 @@ import { AxisBottom, AxisLeft } from '@vx/axis';
 import { scaleLinear, scaleBand } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 import Descargar from '@material-ui/icons/Save';
+import formatNumber from '../commons/format';
 
-// Miles number format
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 // SVG export
 export default withTooltip(({
   tooltipOpen,
@@ -164,7 +163,7 @@ export default withTooltip(({
               </strong>
               <br />
               <div>
-                {`${numberWithCommas(Number(tooltipData.area_V).toFixed(2))} ${units}`}
+                {`${formatNumber(tooltipData.area_V, 2)} ${units}`}
               </div>
             </div>
           </Tooltip>

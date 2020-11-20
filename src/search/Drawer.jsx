@@ -11,6 +11,7 @@ import Overview from '../strategicEcosystems/Overview';
 import RestAPI from '../api/RestAPI';
 import SearchContext from '../SearchContext';
 import TabContainer from '../commons/TabContainer';
+import formatNumber from '../commons/format';
 
 const styles = () => ({
   root: {
@@ -18,8 +19,6 @@ const styles = () => ({
     backgroundColor: 'transparent',
   },
 });
-
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 class Drawer extends React.Component {
   constructor(props) {
@@ -70,7 +69,7 @@ class Drawer extends React.Component {
           <div className="HAgen">
             <h4>
               hectáreas totales
-              <b>{`${numberWithCommas(geofenceArea.toFixed(0))} ha`}</b>
+              <b>{`${formatNumber(geofenceArea, 0)} ha`}</b>
             </h4>
           </div>
         </div>
