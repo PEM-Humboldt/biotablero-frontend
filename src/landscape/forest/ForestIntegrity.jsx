@@ -147,7 +147,7 @@ class ForestIntegrity extends React.Component {
                 data={ProtectedAreas[selectedCategory]}
                 graphType="SmallBarStackGraph"
                 units="ha"
-                colors={matchColor('pa')}
+                colors={matchColor('pa', true)}
               />
             </div>
           </Fragment>
