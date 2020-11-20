@@ -8,6 +8,7 @@ import SearchContext from '../../SearchContext';
 import ShortInfo from '../../commons/ShortInfo';
 import { timelineHFText } from '../assets/info_texts';
 import { IconTooltip } from '../../commons/tooltips';
+import formatNumber from '../../commons/format';
 
 const changeValues = [
   {
@@ -63,8 +64,6 @@ const changeValues = [
     tickRotation: -90,
   },
 ];
-
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
 class TimelineFootprint extends React.Component {
   mounted = false;
@@ -222,7 +221,7 @@ class TimelineFootprint extends React.Component {
                 {`${this.getLabel(selectedEcosystem.type)} dentro de la unidad de consulta`}
               </h6>
               <h5>
-                {`${numberWithCommas(Number(selectedEcosystem.total_area).toFixed(2))} ha`}
+                {`${formatNumber(selectedEcosystem.total_area, 2)} ha`}
               </h5>
             </div>
           )}

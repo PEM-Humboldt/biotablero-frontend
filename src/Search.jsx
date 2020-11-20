@@ -14,6 +14,7 @@ import matchColor from './commons/matchColor';
 import RestAPI from './api/RestAPI';
 import SearchContext from './SearchContext';
 import Selector from './commons/Selector';
+import formatNumber from './commons/format';
 
 /**
  * Get the label tooltip on the map
@@ -72,14 +73,6 @@ class Search extends Component {
     const { setHeaderNames } = this.props;
     setHeaderNames(null, null);
   }
-
-  /**
-   * Give format to a big number
-   *
-   * @param {number} x number to be formatted
-   * @returns {String} number formatted setting decimals and thousands properly
-   */
-  numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   /**
    * Set area state to control transitions
@@ -240,7 +233,7 @@ class Search extends Component {
       case 'hfPersistence':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
-          <br>${this.numberWithCommas(Number(feature.feature.properties.area).toFixed(0))} ha`,
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
         ).openTooltip();
         break;
