@@ -105,6 +105,7 @@ class ForestIntegrity extends React.Component {
       selectedCategory,
       loading,
     } = this.state;
+    const { handlerClickOnGraph } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -134,6 +135,7 @@ class ForestIntegrity extends React.Component {
             colors={matchColor('SciHf')}
             onClickGraphHandler={(sectionId) => {
               this.setState({ selectedCategory: sectionId });
+              handlerClickOnGraph('SciHf', sectionId);
             }}
           />
         </div>

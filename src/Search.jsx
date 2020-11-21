@@ -174,11 +174,13 @@ class Search extends Component {
    * Choose the right color for the section inside the map, according to matchColor function
    * @param {String} type layer type
    * @param {String} color optional key value to select color in match color palette
+   * @param {String} fKey property name to use as key in the feature
+   *
    * @param {Object} feature target object
    */
-  featureStyle = (type, color = null) => (feature) => {
+  featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
-      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
+      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
       return {
         stroke: false,
         fillColor: matchColor(type)(key),
@@ -271,11 +273,12 @@ class Search extends Component {
   }
 
   /**
-   * Handle events happened on graphs
+   * Connects events on graphs with actions on map
    *
    * @param {String} idCategory id of category selected on the graph
+   * @param {String} subCategory in case idCategory is grouping a type of features
    */
-  clickOnGraph = (idCategory) => {
+  clickOnGraph = (idCategory, subCategory = null) => {
     switch (idCategory) {
       case 'paramo':
         this.shutOffLayer('wetland');
@@ -296,6 +299,25 @@ class Search extends Component {
         this.shutOffLayer('paramo');
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
+        break;
+      case 'SciHf': {
+        const sciCat = subCategory.substring(0, subCategory.indexOf('-'));
+        const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
+        const { layers, activeLayer: { id: activeLayer } } = this.state;
+        const selectedSubLayer = layers[activeLayer].layer;
+        selectedSubLayer.eachLayer((layer) => {
+          if (layer.feature.properties.sci_cat === sciCat
+            && layer.feature.properties.hf_pers === hfPers
+          ) {
+            layer.setStyle({
+              weight: 1,
+              fillOpacity: 1,
+            });
+          } else {
+            selectedSubLayer.resetStyle(layer);
+          }
+        });
+      }
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -369,7 +391,7 @@ class Search extends Component {
 
     let request = null;
     let shutOtherLayers = true;
-    let layerStyle = this.featureStyle(layerType);
+    let layerStyle = this.featureStyle({ type: layerType });
     let fitBounds = true;
     let newActiveLayer = null;
     let layerKey = layerType;
@@ -398,14 +420,14 @@ class Search extends Component {
           selectedAreaTypeId, selectedAreaId, layerType,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle(layerType, layerType);
+        layerStyle = this.featureStyle({ type: layerType, color: layerType });
         fitBounds = false;
         break;
       case 'hfTimeline':
         request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaTypeId, selectedAreaId,
         );
-        layerStyle = this.featureStyle('hfPersistence');
+        layerStyle = this.featureStyle({ type: 'hfPersistence' });
         layerKey = 'hfPersistence';
         newActiveLayer = {
           id: 'hfPersistence',
@@ -428,6 +450,16 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: 'geofence',
+        };
+        break;
+      case 'forestIntegrity':
+        request = () => RestAPI.requestSCIHFGeometry(
+          selectedAreaTypeId, selectedAreaId,
+        );
+        layerStyle = this.featureStyle({ type: layerType, fKey: 'sci_cat' });
+        newActiveLayer = {
+          id: layerType,
+          name: 'Índice de condición estructural de bosques',
         };
         break;
       default:
@@ -608,6 +640,7 @@ class Search extends Component {
       'dryForest',
       'wetland',
       'geofence',
+      'forestIntegrity',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };

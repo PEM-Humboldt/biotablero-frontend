@@ -100,5 +100,9 @@ export default {
     '#756a37',
     '#92ab58',
   ],
+  forestIntegrity: [ // TODO: Change colors with Cesar
+    '#756a37',
+    '#92ab58',
+  ],
   default: ['#345b6b'],
 };

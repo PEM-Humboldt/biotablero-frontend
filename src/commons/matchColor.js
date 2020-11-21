@@ -79,6 +79,10 @@ const match = {
       'moderada-estable_baja',
     ],
   },
+  forestIntegrity: {
+    palette: 'forestIntegrity',
+    sort: ['moderada', 'alta'],
+  },
   default: {
     palette: 'default',
   },
@@ -146,6 +150,7 @@ const matchColor = (type, resetCache = false) => {
     case 'hfTimeline':
     case 'forestLP':
     case 'SciHf':
+    case 'forestIntegrity':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);
