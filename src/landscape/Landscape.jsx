@@ -8,57 +8,51 @@ import LandscapeAccordion from './LandscapeAccordion';
 import SearchContext from '../SearchContext';
 
 class Landscape extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
+    const { areaId } = this.context;
     this.state = {
-      expandedLevel1: null,
-      expandedLevel2: null,
+      visible: areaId === 'ea' ? 'fc' : 'hf',
+      childMap: {
+        fc: 'fc',
+        hf: 'hfCurrent',
+        forest: 'forestLossPersistence',
+      },
     };
   }
 
   componentDidMount() {
     const { handlerSwitchLayer } = this.props;
-    const { areaId } = this.context;
-    this.setState({ expandedLevel2: 'hfCurrent' });
-    if (areaId === 'ea') {
-      this.setState({ expandedLevel1: 'fc' });
-      handlerSwitchLayer('fc');
-    } else {
-      this.setState({ expandedLevel1: 'hf' });
-      handlerSwitchLayer('hfCurrent');
-    }
+    const { visible, childMap } = this.state;
+    handlerSwitchLayer(childMap[visible]);
   }
 
   /**
-   * Transform data to fit in the graph structure
-   *
-   * @param {string} level accordion level
-   * @param {string} expandedTab accordion tab to be expanded or hidden
-   *
+   * Handles requests to load a layer when there are changes in accordions
+   * @param {String} level accordion level that's calling the function
+   * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-  handlerAccordionGeometry = (level, expandedTab) => {
+  handlerAccordionGeometry = (level, tabLayerId) => {
     const { handlerSwitchLayer } = this.props;
-    const { expandedLevel1, expandedLevel2 } = this.state;
+    const { visible, childMap } = this.state;
+    if (tabLayerId === null) handlerSwitchLayer(null);
 
     switch (level) {
       case '1':
-        this.setState({ expandedLevel1: expandedTab });
-        if (expandedTab === 'hf') {
-          handlerSwitchLayer(expandedLevel2);
-        } else {
-          handlerSwitchLayer(expandedTab);
-        }
+        this.setState({ visible: tabLayerId });
+        handlerSwitchLayer(childMap[tabLayerId]);
         break;
       case '2':
-        this.setState({ expandedLevel2: expandedTab });
-        if (expandedTab === null) {
-          handlerSwitchLayer(expandedLevel1);
-        } else {
-          handlerSwitchLayer(expandedTab);
-        }
+        this.setState(prev => ({
+          childMap: {
+            ...prev.childMap,
+            [visible]: tabLayerId,
+          },
+        }));
+        handlerSwitchLayer(tabLayerId);
         break;
       default:
-        handlerSwitchLayer(null);
+        break;
     }
   }
 
@@ -72,7 +66,7 @@ class Landscape extends React.Component {
           name: 'FC y Biomas',
           disabled: areaId !== 'ea',
         },
-        component: <CompensationFactor />,
+        component: CompensationFactor,
       },
       {
         label: {
@@ -80,11 +74,8 @@ class Landscape extends React.Component {
           name: 'Huella humana',
           disabled: false,
         },
-        component: (
-          <HumanFootprint
-            handlerAccordionGeometry={this.handlerAccordionGeometry}
-          />
-        ),
+        component: HumanFootprint,
+        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
       {
         label: {
@@ -92,11 +83,8 @@ class Landscape extends React.Component {
           name: 'Bosques',
           disabled: false,
         },
-        component: (
-          <Forest
-            handlerAccordionGeometry={this.handlerAccordionGeometry}
-          />
-        ),
+        component: Forest,
+        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
     ];
     return (
