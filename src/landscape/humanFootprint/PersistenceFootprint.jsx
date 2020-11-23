@@ -75,7 +75,6 @@ class PersistenceFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              name="Persistencia Huella Humana"
               description={persistenceHFText}
               className="graphinfo2"
               collapseButton={false}

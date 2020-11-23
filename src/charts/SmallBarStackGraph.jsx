@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
+import formatNumber from '../commons/format';
 
 const SmallBarStackGraph = (props) => {
   const {
@@ -9,14 +10,6 @@ const SmallBarStackGraph = (props) => {
     colors,
     units,
   } = props;
-
-  /**
-   * Give format to a big number
-   *
-   * @param {number} x number to be formatted
-   * @returns {String} number formatted setting decimals and thousands properly
-   */
-  const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
   /**
    * Transform data structure to be passed to component as a prop
@@ -70,9 +63,9 @@ const SmallBarStackGraph = (props) => {
             {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
           <div>
-            {`${numberWithCommas(allData[id].toFixed(0))} ${units}`}
+            {`${formatNumber(allData[id], 0)} ${units}`}
             <br />
-            {allData[`${id}Percentage`] ? `${numberWithCommas((allData[`${id}Percentage`] * 100).toFixed(0))}%` : ''}
+            {`${formatNumber(allData[`${id}Percentage`] * 100, 0)}%`}
           </div>
         </div>
       );

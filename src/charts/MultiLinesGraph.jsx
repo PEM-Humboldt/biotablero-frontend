@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
+import formatNumber from '../commons/format';
 
 class MultiLinesGraph extends React.Component {
   constructor() {
@@ -55,7 +56,7 @@ class MultiLinesGraph extends React.Component {
           </strong>
           <br />
           <div style={{ color: '#ffffff' }}>
-            {Number(Number(yFormatted).toFixed(2)).toLocaleString('es-CO')}
+            {formatNumber(yFormatted, 2)}
           </div>
         </div>
       </div>

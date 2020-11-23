@@ -14,6 +14,7 @@ import matchColor from './commons/matchColor';
 import RestAPI from './api/RestAPI';
 import SearchContext from './SearchContext';
 import Selector from './commons/Selector';
+import formatNumber from './commons/format';
 
 /**
  * Get the label tooltip on the map
@@ -68,13 +69,10 @@ class Search extends Component {
     });
   }
 
-  /**
-   * Give format to a big number
-   *
-   * @param {number} x number to be formatted
-   * @returns {String} number formatted setting decimals and thousands properly
-   */
-  numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  componentWillUnmount() {
+    const { setHeaderNames } = this.props;
+    setHeaderNames(null, null);
+  }
 
   /**
    * Set area state to control transitions
@@ -226,7 +224,7 @@ class Search extends Component {
     switch (layerName) {
       case 'fc':
         feature.bindTooltip(
-          `<b>Bioma:</b> ${feature.feature.properties.name_biome}
+          `<b>Bioma-IAvH:</b> ${feature.feature.properties.name_biome}
           <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
           optionsTooltip,
         ).openTooltip();
@@ -235,7 +233,7 @@ class Search extends Component {
       case 'hfPersistence':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
-          <br>${this.numberWithCommas(Number(feature.feature.properties.area).toFixed(0))} ha`,
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
         ).openTooltip();
         break;
@@ -453,6 +451,10 @@ class Search extends Component {
         this.setState({ requestSource: apiSource });
         apiRequest.then((res) => {
           if (res.features) {
+            if (res.features.length === 1 && !res.features[0].geometry) {
+              this.reportDataError();
+              return;
+            }
             this.setState((prevState) => {
               const newState = prevState;
               newState.layers[layerKey] = {
@@ -616,6 +618,7 @@ class Search extends Component {
       newState.selectedArea = null;
       newState.activeLayer = {};
       newState.loadingLayer = false;
+      newState.layerError = false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;

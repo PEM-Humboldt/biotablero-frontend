@@ -5,14 +5,7 @@ import React, { Component } from 'react';
 import DetailsView from './DetailsView';
 import GraphLoader from '../charts/GraphLoader';
 import matchColor from '../commons/matchColor';
-
-/**
- * Give format to a big number
- *
- * @param {number} x number to be formatted
- * @returns {String} number formatted setting decimals and thousands properly
- */
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+import formatNumber from '../commons/format';
 
 class EcosystemsBox extends Component {
   constructor(props) {
@@ -66,7 +59,7 @@ class EcosystemsBox extends Component {
             <div className="mb10" key={item.type}>
               <div className="singleeco">{item.type}</div>
               <div className="singleeco2">
-                {`${numberWithCommas(Number(item.area).toFixed(0))} ha`}
+                {`${formatNumber(item.area, 0)} ha`}
               </div>
               {(Number(item.area) !== 0) && (
                 <button

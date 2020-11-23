@@ -17,14 +17,7 @@ import matchColor from '../commons/matchColor';
 import RestAPI from '../api/RestAPI';
 import SearchContext from '../SearchContext';
 import ShortInfo from '../commons/ShortInfo';
-
-/**
- * Give format to a big number
- *
- * @param {number} x number to be formatted
- * @returns {String} number formatted setting decimals and thousands properly
- */
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+import formatNumber from '../commons/format';
 
 /**
  * Calculate percentage for a given value according to total
@@ -185,7 +178,7 @@ class Overview extends React.Component {
           >
             <h4>
               Áreas protegidas
-              <b>{`${numberWithCommas(PAArea)} ha `}</b>
+              <b>{`${formatNumber(PAArea, 0)} ha `}</b>
             </h4>
           </InfoTooltip>
           <h5>
@@ -210,7 +203,7 @@ class Overview extends React.Component {
             >
               <h4 className="minus20">
                 Ecosistemas estratégicos
-                <b>{`${numberWithCommas(SEArea)} ha`}</b>
+                <b>{`${formatNumber(SEArea, 0)} ha`}</b>
               </h4>
             </InfoTooltip>
             <h5 className="minusperc">{`${getPercentage(SEArea, generalArea)} %`}</h5>

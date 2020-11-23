@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -20,24 +19,21 @@ const Header = ({
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
     <div className="header_info">
-      {activeModule && !parent && !child && (
-        <div className="cabezoteRight">
+      <div className="cabezoteRight">
+        {activeModule && !parent && !child && (
           <h2>
             {`${activeModule}`}
           </h2>
-          <div className={`${activeModule.replace(/ /g, '')}`} />
-        </div>
-      )}
-      {parent && child && (
-        <div className="cabezoteRight">
+        )}
+        {parent && child && (
           <h1>
             <b>{`${child}`}</b>
             <br />
             {parent}
           </h1>
-          <div className={`${activeModule.replace(/ /g, '')}`} />
-        </div>
-      )}
+        )}
+        <div className={`${activeModule.replace(/ /g, '')}`} />
+      </div>
       {uim}
     </div>
   </header>

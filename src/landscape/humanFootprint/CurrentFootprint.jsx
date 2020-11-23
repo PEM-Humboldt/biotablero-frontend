@@ -87,7 +87,6 @@ class CurrentFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              name="Huella Humana Actual"
               description={currentHFText}
               className="graphinfo2"
               collapseButton={false}
