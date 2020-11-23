@@ -83,6 +83,10 @@ const match = {
     palette: 'forestIntegrity',
     sort: ['moderada', 'alta'],
   },
+  border: {
+    palette: 'border',
+    sort: ['white'],
+  },
   default: {
     palette: 'default',
   },
@@ -152,6 +156,7 @@ const matchColor = (type, resetCache = false) => {
     case 'SciHf':
     case 'forestIntegrity':
     case 'se':
+    case 'border':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];

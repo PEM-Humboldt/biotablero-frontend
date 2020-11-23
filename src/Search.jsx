@@ -181,6 +181,13 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      if (!key) {
+        return {
+          color: matchColor(type)(color),
+          weight: 2,
+          fillOpacity: 0,
+        };
+      }
       return {
         stroke: false,
         fillColor: matchColor(type)(key),
@@ -304,6 +311,11 @@ class Search extends Component {
         const sciCat = subCategory.substring(0, subCategory.indexOf('-'));
         const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
         const { layers, activeLayer: { id: activeLayer } } = this.state;
+
+        const psKeys = Object.keys(layers).filter(key => /SciHfPA-*/.test(key));
+        psKeys.forEach(key => this.shutOffLayer(key));
+        this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
+
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
           if (layer.feature.properties.sci_cat === sciCat
@@ -463,6 +475,15 @@ class Search extends Component {
         };
         break;
       default:
+        if (/SciHfPA-*/.test(layerType)) {
+          const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
+          request = () => RestAPI.requestSCIHFPAGeometry(
+            selectedAreaTypeId, selectedAreaId, sci, hf,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'border' });
+          fitBounds = false;
+        }
         break;
     }
 
