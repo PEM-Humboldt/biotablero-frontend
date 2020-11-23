@@ -13,17 +13,17 @@ Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
     npm install
 
+### 1.2 Configuración de variables de entorno:
+Crear una copia del archivo *.env* con el nombre *.env.local* actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
 
-### 1.2. Ejecución:
-Posterior a la instalación de paquetes, deberá crear una copia del archivo *.env* con el nombre *.env.local*, y actualizar los valores de las variables, de acuerdo a su entorno de desarrollo.
-
+### 1.3. Ejecución:
 Por último, ejecute la siguiente instrucción:
 
     npm start
 
-La instrucción iniciará el proyecto en su equipo local y se abrirá en el navegador.
+La instrucción iniciará el proyecto en su entorno local y se abrirá en el navegador.
 
-### 1.3. Verificar reglas de estilo (airbnb)
+### 1.4. Verificar reglas de estilo (airbnb)
 
 Ejecutar la siguiente linea:
 
@@ -37,7 +37,7 @@ Si ejecuta únicamente:
 
 Se verificarán los estilos de todo el folder *src/*
 
-### 1.4. Problemas
+### 1.5. Problemas
 
 En caso de tener inconvenientes al ejecutar npm start en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
 
@@ -49,7 +49,7 @@ Para desplegar como contenedor de Docker es necesario contar la versión 17.05.0
 
 Descargar el repositorio en el servidor donde se desplegará el servicio.
 
-Tenga en cuenta la configuración de [las variables de entorno](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#adding-custom-environment-variables): se deberá crear una copia del archivo *.env* con el nombre *.env.production.local*, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
+Tenga en cuenta la configuración de [las variables de entorno](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used): se deberá crear una copia del archivo *.env* con el nombre *.env.production.local*, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
 
 Ejecutar la siguiente instrucción para construir la imagen:
 
@@ -62,7 +62,7 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
-    
+
 ***
 
 *Ingeniería de Datos y Desarrollo

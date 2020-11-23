@@ -1,89 +1,94 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import ReactChartkick, { LineChart } from 'react-chartkick';
-import Chart from 'chart.js';
 import BarGraph from './BarGraph';
-import BarStackGraph from './BarStackGraph';
-import SmallBarStackGraph from './SmallBarStackGraph';
 import DotsGraph from './DotsGraph';
 import DotInfo from './DotInfo';
+import LargeBarStackGraph from './LargeBarStackGraph';
+import SmallBarStackGraph from './SmallBarStackGraph';
+import MultiLinesGraph from './MultiLinesGraph';
 
-ReactChartkick.addAdapter(Chart);
-
-const GraphLoader = (
-  {
-    graphType, data, graphTitle, labelX, labelY, width, height,
-    elementOnClick, colors, activeBiome, showOnlyTitle,
+const GraphLoader = (props) => {
+  const {
+    graphType,
+    data,
+    graphTitle,
+    colors,
+    labelX,
+    labelY,
+    width,
+    height,
+    elementOnClick,
+    activeBiome,
+    showOnlyTitle,
     units,
     withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
-    handlerInfoGraph,
-    graphDescription,
-    openInfoGraph,
-  },
-) => (
-  <div>
-    {
-      (graphType === 'BarStackGraph') ? (
-        // TODO: Usar name en el gráfico
-        <div className="graphcard pb">
-          <BarStackGraph
-            dataJSON={data}
-            colors={colors}
-            graphTitle={graphTitle}
-            labelX={labelX}
-            labelY={labelY}
-            width={width}
-            height="150"
-            units={units}
-            openInfoGraph={openInfoGraph}
-            handlerInfoGraph={handlerInfoGraph}
-            graphDescription={graphDescription}
-          />
-        </div>
-      ) : ('')
-    }
-    {
-      (graphType === 'SmallBarStackGraph') ? (
+    padding,
+    onClickGraphHandler,
+    markers,
+  } = props;
+
+  // While data is being retrieved from server
+  let errorMessage = null;
+  // (data === null) while waiting for API response
+  if (data === null) errorMessage = 'Cargando información...';
+  // (!data) if API doesn't respond
+  else if (!data) errorMessage = 'Información no disponible';
+  // (data.length <= 0) if API response in not object
+  else if (data.length <= 0) errorMessage = 'Información no disponible';
+  if (errorMessage) {
+    // TODO: ask Cesar to make this message nicer
+    return (
+      <div className="errorData">
+        {errorMessage}
+      </div>
+    );
+  }
+
+  switch (graphType) {
+    case 'LargeBarStackGraph':
+      return (
+        <LargeBarStackGraph
+          data={data}
+          labelX={labelX}
+          labelY={labelY}
+          height={150}
+          colors={colors}
+          padding={padding}
+          units={units}
+          onClickGraphHandler={onClickGraphHandler}
+        />
+      );
+    case 'SmallBarStackGraph':
+      return (
         <SmallBarStackGraph
+          data={data}
+          height={30}
+          colors={colors}
+          units={units}
+        />
+      );
+    case 'BarVertical':
+      return (
+        <BarGraph
           dataJSON={data}
           colors={colors}
           graphTitle={graphTitle}
+          labelX={labelX}
           labelY={labelY}
           width={width}
-          height="150"
+          height={height}
           units={units}
-          openInfoGraph={openInfoGraph}
-          handlerInfoGraph={handlerInfoGraph}
-          graphDescription={graphDescription}
+          withLeyends={withLeyends}
         />
-      ) : ('')
-    }
-    {
-      (graphType === 'BarVertical') ? (
-        <div>
-          <BarGraph
-            dataJSON={data}
-            colors={colors}
-            graphTitle={graphTitle}
-            labelX={labelX}
-            labelY={labelY}
-            width={width}
-            height={height}
-            units={units}
-            withLeyends={withLeyends}
-          />
-        </div>
-      ) : ('')
-    }
-    {
-      (graphType === 'Dots') ? (
+      );
+    case 'Dots':
+      return (
         // TODO: Move this custom content to src/compesation/Drawer
         <div className="graphcard pb">
           <h2>
             <DownloadIcon className="icondown" />
-              Ecosistemas Equivalentes
+            Ecosistemas Equivalentes
           </h2>
           { !showOnlyTitle && (
             <div>
@@ -117,69 +122,69 @@ const GraphLoader = (
             </div>
           )}
         </div>
-      ) : ('')
-    }
-    {
-      (graphType === 'DotInfo') ? (
-        <div>
-          <DotInfo
-            data={data}
-            width={width}
-            height="100"
-          />
-        </div>
-      ) : ('')
-    }
-    {
-      (graphType === 'LineChart') ? (
-        <div>
-          <LineChart
-            // data={{ '2017-05-13': 2, '2017-05-14': 5 }}
-            data={data}
-            width={width}
-            height="100"
-          />
-        </div>
-      ) : ('')
-    }
-  </div>
-);
+      );
+    case 'DotInfo':
+      return (
+        <DotInfo
+          data={data}
+          width={width}
+          height="100"
+        />
+      );
+    case 'MultiLinesGraph':
+      return (
+        <MultiLinesGraph
+          onClickGraphHandler={onClickGraphHandler}
+          colors={colors}
+          data={data}
+          markers={markers}
+          height={490}
+        />
+      );
+    default:
+      return '';
+  }
+};
 
 GraphLoader.propTypes = {
-  elementOnClick: PropTypes.func,
-  colors: PropTypes.array,
   graphType: PropTypes.string.isRequired,
+  data: PropTypes.any.isRequired, // Array or object, depending on graphType
   graphTitle: PropTypes.string,
-  // Array or object, depending on graphType
-  data: PropTypes.any.isRequired,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.number,
+  width: PropTypes.string,
   height: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   withLeyends: PropTypes.bool,
-  handlerInfoGraph: PropTypes.func,
-  openInfoGraph: PropTypes.string,
-  graphDescription: PropTypes.string,
+  elementOnClick: PropTypes.func,
+  colors: PropTypes.func,
+  padding: PropTypes.number,
+  onClickGraphHandler: PropTypes.func,
+  markers: PropTypes.arrayOf(PropTypes.shape({
+    axis: PropTypes.string,
+    value: PropTypes.number,
+    type: PropTypes.string,
+    legendPosition: PropTypes.string,
+  })),
 };
 
 GraphLoader.defaultProps = {
-  elementOnClick: () => {},
   graphTitle: '',
-  colors: ['blue'],
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: 400,
+  width: '100%',
   height: 250,
   showOnlyTitle: false,
   units: 'ha',
   withLeyends: false,
-  handlerInfoGraph: () => {},
-  openInfoGraph: null,
-  graphDescription: null,
+  elementOnClick: () => {},
+  colors: () => {},
+  padding: 0.25,
+  onClickGraphHandler: () => {},
+  markers: [],
 };
 
 export default GraphLoader;

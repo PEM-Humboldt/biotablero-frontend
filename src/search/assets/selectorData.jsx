@@ -1,11 +1,7 @@
-/** eslint verified */
 import React from 'react';
 
 const description = companyName => (
   <div>
-    <h1>
-      Consultas geográficas
-    </h1>
     <p>
       {'En esta sección podrás encontrar información sobre '}
       <b>
@@ -19,7 +15,7 @@ const description = companyName => (
       <b>
         paisaje
       </b>
-      {', de 3 distintas maneras:'}
+      , de 3 distintas maneras:
     </p>
     <p>
       <i>
@@ -75,4 +71,7 @@ const dataGEB = {
   ],
 };
 
-export { description, dataGEB };
+export {
+  description,
+  dataGEB,
+};

@@ -2,57 +2,52 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
+import CloseIcon from '@material-ui/icons/Close';
+
 import Content from './home/Content';
 import Information from './home/Information';
 import ShortInfo from './commons/ShortInfo';
-import Layout from './Layout';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       activeModule: 'search',
-      openModal: false,
+      loginModal: props.referrer === '/GEB/Compensaciones',
     };
   }
-
 
   setActiveModule = (name) => {
     this.setState({ activeModule: name });
   }
 
-  handleCloseModal = () => {
-    const { openModal } = this.state;
-    this.setState({ openModal: !openModal });
-  };
-
   render() {
-    const {
-      callbackUser, userLogged, ...props
-    } = this.props;
-    const { activeModule, openModal } = this.state;
+    const { activeModule, loginModal } = this.state;
     return (
-      <Layout
-        showFooterLogos
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
-        {(props.match.path === '/GEB/Compensaciones')
-          && (
-          <Modal
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-            open={openModal}
-            onClose={() => this.setUpRoute(props)}
-            disableAutoFocus
-          >
-            <div className="generalAlarm">
-              <h2>
-                Inicie sesión para ver contenido de compensaciones
-              </h2>
-            </div>
-          </Modal>
-          )}
+      <div>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loginModal}
+          onClose={() => this.setState({ loginModal: false })}
+          disableAutoFocus
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Inicie sesión</b>
+              <br />
+              para ver contenido de compensaciones
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={() => this.setState({ loginModal: false })}
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
         <div className="wrapper">
           <ShortInfo
             name="BioTablero"
@@ -66,24 +61,20 @@ class Home extends React.Component {
           <Content
             activeModule={activeModule}
             setActiveModule={this.setActiveModule}
-            userLogged={userLogged}
-            callbackUser={callbackUser}
-            {...this.newProps}
           />
           <Information activeModule={activeModule} />
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
 Home.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
+  referrer: PropTypes.string,
 };
 
 Home.defaultProps = {
-  userLogged: null,
+  referrer: '',
 };
 
 export default Home;

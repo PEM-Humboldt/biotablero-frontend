@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -6,13 +5,17 @@ import Footer from './Footer';
 import Header from './Header';
 
 const Layout = ({
-  children, moduleName, showFooterLogos, userLogged, callbackUser,
+  children,
+  moduleName,
+  showFooterLogos,
+  headerNames,
+  uim,
 }) => (
   <div>
     <Header
       activeModule={moduleName}
-      userLogged={userLogged}
-      callbackUser={callbackUser}
+      headerNames={headerNames}
+      uim={uim}
     />
     {children}
     <Footer showLogos={showFooterLogos} />
@@ -23,15 +26,16 @@ Layout.propTypes = {
   children: PropTypes.any,
   moduleName: PropTypes.string,
   showFooterLogos: PropTypes.bool,
-  userLogged: PropTypes.object,
-  callbackUser: PropTypes.func.isRequired,
+  headerNames: PropTypes.object,
+  uim: PropTypes.node,
 };
 
 Layout.defaultProps = {
   children: null,
   moduleName: '',
   showFooterLogos: true,
-  userLogged: null,
+  headerNames: {},
+  uim: null,
 };
 
 export default Layout;

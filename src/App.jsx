@@ -1,11 +1,14 @@
-/** eslint verified */
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
-import Home from './Home';
-import Search from './Search';
+import AppContext from './AppContext';
 import Compensation from './Compensation';
+import Home from './Home';
 import Indicator from './Indicator';
+import Layout from './Layout';
+import Search from './Search';
+import Uim from './Uim';
+
 import './assets/main.css';
 
 class App extends React.Component {
@@ -13,79 +16,97 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: null,
+      headerNames: {},
     };
   }
 
-  loadHome = (props) => {
-    const { user } = this.state;
-    return (
-      <Home
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        {...props}
-      />
-    );
+  buildQuery = queryString => new URLSearchParams(queryString);
+
+  setUser = user => this.setState({ user });
+
+  setHeaderNames = (parent, child) => {
+    this.setState({
+      headerNames: { parent, child },
+    });
   }
 
-  loadSearch = (props) => {
-    const { user } = this.state;
-    return (
-      <Search
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        {...props}
-      />
-    );
+  loadHome = ({ location }) => (
+    this.loadComponent({
+      footerLogos: true,
+      component: (<Home referrer={location.referrer} />),
+    })
+  );
+
+  loadSearch = ({ location }) => {
+    const query = this.buildQuery(location.search);
+    return this.loadComponent({
+      footerLogos: false,
+      name: 'Consultas geográficas',
+      component: (<Search
+        selectedAreaTypeId={query.get('area_type')}
+        selectedAreaId={query.get('area_id')}
+        setHeaderNames={this.setHeaderNames}
+      />),
+    });
   }
 
-  loadIndicator = (props) => {
-    const { user } = this.state;
-    return (
-      <Indicator
-        userLogged={user}
-        callbackUser={this.callbackUser}
-        {...props}
-      />
-    );
-  }
+  loadIndicator = () => (
+    this.loadComponent({
+      footerLogos: true,
+      name: 'Indicadores',
+      component: (<Indicator />),
+    })
+  );
 
-  loadCompensator = (props) => {
+  loadCompensator = ({ location }) => {
     const { user } = this.state;
     if (user) {
-      return (
-        <Compensation
-          userLogged={user}
-          callbackUser={this.callbackUser}
-          {...props}
-        />
-      );
+      return this.loadComponent({
+        footerLogos: false,
+        name: 'Compensación ambiental',
+        component: (<Compensation setHeaderNames={this.setHeaderNames} />),
+      });
     }
-    const newProps = { ...props };
-    newProps.location.pathname = '/';
-    return this.loadHome(newProps);
+    return (
+      <Redirect
+        to={{
+          pathname: '/',
+          referrer: location.pathname,
+        }}
+      />
+    );
   }
 
-  callbackUser = (user) => {
-    if (user) {
-      this.setState({ user });
-    } else {
-      this.setState({ user: null });
-    }
-    return user;
-  };
+  loadComponent = ({ footerLogos, name, component }) => {
+    const { headerNames } = this.state;
+    return (
+      <Layout
+        moduleName={name}
+        showFooterLogos={footerLogos}
+        headerNames={headerNames}
+        uim={<Uim setUser={this.setUser} />}
+      >
+        {component}
+      </Layout>
+    );
+  }
 
   render() {
-    // TODO: Change path to Home when user get
+    const { user } = this.state;
     return (
-      <main>
-        <Switch>
-          <Route exact path="/" render={this.loadHome} />
-          <Route path="/Consultas" render={this.loadSearch} />
-          <Route path="/Indicadores" render={this.loadHome} />
-          <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
-          <Route path="/Alertas" render={this.loadHome} />
-        </Switch>
-      </main>
+      <AppContext.Provider
+        value={{ user }}
+      >
+        <main>
+          <Switch>
+            <Route exact path="/" render={this.loadHome} />
+            <Route path="/Consultas" render={this.loadSearch} />
+            <Route path="/Indicadores" render={this.loadHome} />
+            <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
+            <Route path="/Alertas" render={this.loadHome} />
+          </Switch>
+        </main>
+      </AppContext.Provider>
     );
   }
 }

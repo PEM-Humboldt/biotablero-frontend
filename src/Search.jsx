@@ -1,69 +1,77 @@
-/** eslint verified */
+import { withRouter } from 'react-router-dom';
+import CloseIcon from '@material-ui/icons/Close';
+import L from 'leaflet';
+import Modal from '@material-ui/core/Modal';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import L from 'leaflet';
-import PropTypes from 'prop-types';
-import Modal from '@material-ui/core/Modal';
-
-import CloseIcon from '@material-ui/icons/Close';
-import MapViewer from './commons/MapViewer';
-import Selector from './commons/Selector';
-import Drawer from './search/Drawer';
-import NationalInsigths from './search/NationalInsigths';
-import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
 import { ConstructDataForSearch } from './commons/ConstructDataForSelector';
 import { description } from './search/assets/selectorData';
-import Layout from './Layout';
+import Drawer from './search/Drawer';
+import GeoServerAPI from './api/GeoServerAPI'; // TODO: Migrate functionalities to RestAPI
+import MapViewer from './commons/MapViewer';
+import matchColor from './commons/matchColor';
 import RestAPI from './api/RestAPI';
+import SearchContext from './SearchContext';
+import Selector from './commons/Selector';
+import formatNumber from './commons/format';
+
+/**
+ * Get the label tooltip on the map
+ */
+// TODO: Centralize as it is used in more that one component
+const tooltipLabel = {
+  natural: 'Natural',
+  baja: 'Baja',
+  media: 'Media',
+  alta: 'Alta',
+  estable_natural: 'Estable Natural',
+  dinamica: 'Dinámica',
+  estable_alta: 'Estable Alta',
+  aTotal: 'Total',
+  paramo: 'Páramo',
+  wetland: 'Humedal',
+  dryForest: 'Bosque Seco Tropical',
+};
+
 
 class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeLayer: null,
-      subLayerData: null,
-      colors: ['#d49242',
-        '#e9c948',
-        '#b3b638',
-        '#acbf3b',
-        '#92ba3a',
-        '#70b438',
-        '#5f8f2c',
-        '#667521',
-        '#75680f',
-        '#7b6126'],
-      colorSZH: ['#345b6b'],
-      colorsFC: [
-        { 4: '#7b56a5' },
-        { 4.5: '#6256a5' },
-        { 5: '#5564a4' },
-        { 5.5: '#4a8fb8' },
-        { 6: '#51b4c1' },
-        { 6.5: '#81bb47' },
-        { 7: '#a4c051' },
-        { 7.5: '#b1b559' },
-        { 8: '#eabc47' },
-        { 8.5: '#d5753d' },
-        { 9: '#ea5948' },
-        { 9.5: '#ea495f' },
-        { 10: '#c3374d' },
-      ],
+      activeLayer: {},
       connError: false,
-      currentCompany: null,
-      dataError: false,
+      layerError: false,
       geofencesArray: [],
       areaList: [],
-      subLayerName: null,
       layers: {},
-      loadingModal: false,
-      area: null,
-      userDataLoaded: false,
+      loadingLayer: false,
+      selectedAreaType: null,
+      selectedArea: null,
       requestSource: null,
     };
   }
 
   componentDidMount() {
+    const { selectedAreaTypeId, selectedAreaId, history } = this.props;
+    if (!selectedAreaTypeId || !selectedAreaId) {
+      history.replace(history.location.pathname);
+    }
     this.loadAreaList();
+  }
+
+  componentDidUpdate() {
+    const { history } = this.props;
+    history.listen((loc, action) => {
+      if (loc.search === '' && action === 'POP') {
+        this.handlerBackButton();
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    const { setHeaderNames } = this.props;
+    setHeaderNames(null, null);
   }
 
   /**
@@ -72,21 +80,22 @@ class Search extends Component {
    * @param {Object} idLayer value to set
    */
   setArea = (idLayer) => {
-    const { area } = this.state;
-    if (!area || (area && area.id !== idLayer)) {
+    const { selectedAreaType } = this.state;
+    if (!selectedAreaType || (selectedAreaType && selectedAreaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.area = prevState.areaList.find(item => item.id === idLayer);
+        newState.selectedAreaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.selectedArea = null;
         return newState;
       });
     }
   };
 
+  /**
+   * Recover all geofences by default available in the
+   * database for the Search Module and sort them
+   */
   loadAreaList = () => {
-    /**
-     * Recover all geofences by default available in the
-     * database for the Search Module and sort them
-     */
     let tempAreaList;
     let tempGeofencesArray;
     Promise.all([
@@ -108,6 +117,35 @@ class Search extends Component {
         this.setState({
           geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
+        }, () => {
+          const {
+            selectedAreaTypeId,
+            selectedAreaId,
+            history,
+            setHeaderNames,
+          } = this.props;
+          if (!selectedAreaTypeId || !selectedAreaId) return;
+
+          const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
+          if (inputArea && inputArea.data && inputArea.data.length > 0) {
+            let field = 'id';
+            if (selectedAreaTypeId === 'pa') field = 'name';
+            const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
+            if (inputId) {
+              this.setArea(selectedAreaTypeId);
+              this.setState(
+                { selectedArea: inputId },
+                () => {
+                  const { selectedAreaType, selectedArea } = this.state;
+                  setHeaderNames(selectedAreaType.name, selectedArea.name);
+                },
+              );
+            } else {
+              history.replace(history.location.pathname);
+            }
+          } else {
+            history.replace(history.location.pathname);
+          }
         });
       })
       .catch(() => this.reportConnError());
@@ -127,165 +165,330 @@ class Search extends Component {
    */
   reportDataError = () => {
     this.setState({
-      loadingModal: false,
+      layerError: true,
+      loadingLayer: false,
     });
   }
 
   /**
-   * Choose the right color for the biome inside the map, according
-   *  with colorsFC state
-   *
+   * Choose the right color for the section inside the map, according to matchColor function
+   * @param {String} type layer type
+   * @param {String} color optional key value to select color in match color palette
    * @param {Object} feature target object
    */
-  featureStyle = (feature) => {
-    const { colorsFC } = this.state;
-    const valueFC = Math.min(
-      (Math.ceil((feature.properties.compensation_factor * 10) / 5) * 5) / 10, 10,
-    );
-    const colorFound = Object.values(colorsFC.find(obj => Number(Object.keys(obj)) === valueFC));
-    const styleReturn = {
+  featureStyle = (type, color = null) => (feature) => {
+    if (feature.properties) {
+      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties.key;
+      return {
+        stroke: false,
+        fillColor: matchColor(type)(key),
+        fillOpacity: 0.7,
+      };
+    }
+
+    return {
       stroke: false,
-      fillColor: colorFound,
+      fillColor: matchColor(type)(color),
       fillOpacity: 0.7,
     };
-    return styleReturn;
   }
-
-  /** ******************************** */
-  /** HELPERS FOR MAP LAYER PROPERTIES */
-  /** ******************************** */
-
-  findFirstId = properties => properties.IDCAR
-      || properties.id_ea
-      || properties.id_state
-      || properties.id_subzone
-      || properties.id_biome;
-
-  findFirstName = properties => properties.IDCAR
-      || properties.name
-      || properties.name_subzone
-      || properties.name_biome;
-
-  findSecondId = properties => properties.id_biome;
 
   /** ************************ */
   /** LISTENERS FOR MAP LAYERS */
   /** ************************ */
 
-  featureActions = (feature, layer, parentLayer) => {
+  /**
+   * Listeners for leaflet on a layer
+   * @param {Object} layer layer to listen on
+   * @param {String} layerName layer name to identify its features and events
+   */
+  featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event, parentLayer),
-        mouseout: event => this.resetHighlight(event, parentLayer),
-        click: event => this.clickFeature(event, parentLayer),
+        mouseover: event => this.highlightFeature(event, layerName),
+        mouseout: event => this.resetHighlight(event, layerName),
       },
     );
   }
 
-  highlightFeature = (event, parentLayer) => {
-    const { activeLayer, area } = this.state;
-    const point = event.target;
-    const areaPopup = {
-      closeButton: false,
-    };
-    point.setStyle({
-      weight: 1,
-      fillOpacity: 1,
-    });
-    if (area && (parentLayer === area.id)) {
-      point.bindPopup(
-        `<b>${this.findFirstName(point.feature.properties)}</b>
-         ${point.feature.properties.NOMCAR ? `<br>${point.feature.properties.NOMCAR}` : ''}`,
-        areaPopup,
-      ).openPopup();
-    }
-    if (activeLayer && (parentLayer === activeLayer.id)) {
-      point.bindPopup(
-        `<b>Bioma:</b> ${point.feature.properties.name_biome}
-         <br><b>Factor de compensación:</b> ${point.feature.properties.compensation_factor}`,
-      ).openPopup();
-    }
-    if (!L.Browser.ie && !L.Browser.opera) point.bringToFront();
-  }
-
-  resetHighlight = (event, parentLayer) => {
+  /**
+   * Highlight specific feature on the map
+   *
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} layerName Layer name the event belongs to
+   */
+  highlightFeature = (event, layerName) => {
     const feature = event.target;
-    const { area, layers } = this.state;
-    layers[parentLayer].layer.resetStyle(feature);
-    if (area && (parentLayer === area.id)) {
-      feature.closePopup();
+    let changeStyle = true;
+    const optionsTooltip = { sticky: true };
+    switch (layerName) {
+      case 'fc':
+        feature.bindTooltip(
+          `<b>Bioma-IAvH:</b> ${feature.feature.properties.name_biome}
+          <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
+      case 'hfCurrent':
+      case 'hfPersistence':
+        feature.bindTooltip(
+          `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
+      case 'states':
+      case 'ea':
+        feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
+        break;
+      case 'basinSubzones':
+        feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
+        break;
+      default:
+        changeStyle = false;
+        break;
     }
-  }
-
-  clickFeature = (event, parentLayer) => {
-    const { area } = this.state;
-    this.highlightFeature(event, parentLayer);
-    let value = this.findFirstId(event.target.feature.properties);
-    if (!value) value = this.findSecondId(event.target.feature.properties);
-    const toLoad = Object.values(area.data).filter(
-      element => element.id === value.toString(),
-    )[0];
-    if (value) this.innerElementChange(parentLayer, toLoad);
+    if (changeStyle) {
+      feature.setStyle({
+        weight: 1,
+        fillOpacity: 1,
+      });
+    }
+    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
   }
 
   /**
-   * Load layer based on selection
+   * Reset highlight specific feature on the map
    *
-   * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * @param {Object} event event captured by interacting with the map
+   * @param {String} layerName Layer name the event belongs to
    */
-  loadLayer = (layer, parentLayer) => {
-    const { requestSource } = this.state;
+  resetHighlight = (event, layerName) => {
+    const feature = event.target;
+    const { layers } = this.state;
+    layers[layerName].layer.resetStyle(feature);
+    feature.closePopup();
+  }
+
+  /**
+   * Handle events happened on graphs
+   *
+   * @param {String} idCategory id of category selected on the graph
+   */
+  clickOnGraph = (idCategory) => {
+    switch (idCategory) {
+      case 'paramo':
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('paramo');
+        break;
+      case 'wetland':
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('dryForest');
+        this.switchLayer('wetland');
+        break;
+      case 'dryForest':
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('paramo');
+        this.switchLayer('dryForest');
+        break;
+      case 'aTotal':
+        this.shutOffLayer('paramo');
+        this.shutOffLayer('wetland');
+        this.shutOffLayer('dryForest');
+        break;
+      default: {
+        const { layers, activeLayer: { id: activeLayer } } = this.state;
+        const selectedSubLayer = layers[activeLayer].layer;
+        selectedSubLayer.eachLayer((layer) => {
+          if (layer.feature.properties.key === idCategory) {
+            layer.setStyle({
+              weight: 1,
+              fillOpacity: 1,
+            });
+          } else {
+            selectedSubLayer.resetStyle(layer);
+          }
+        });
+      }
+    }
+  };
+
+  /**
+   * Shut off the specified layer on the map. If no layer is passed, all layers will be shut off
+   * @param {String} layer optional layer name to shut off
+   */
+  shutOffLayer = (layer = null) => {
+    const { layers: { [layer]: layerInState } } = this.state;
+    if (!layer) {
+      this.setState((prevState) => {
+        const newState = {
+          ...prevState,
+        };
+        const { layers } = prevState;
+        Object.keys(layers).forEach((layerKey) => {
+          newState.layers[layerKey].active = false;
+        });
+        newState.activeLayer = {};
+        return newState;
+      });
+    } else if (layerInState) {
+      this.setState((prevState) => {
+        const newState = {
+          ...prevState,
+        };
+        newState.layers[layer].active = false;
+        if (prevState.activeLayer.id === layer) newState.activeLayer = {};
+        return newState;
+      });
+    }
+  };
+
+  /**
+   * Switch layer based on graph showed
+   *
+   * @param {String} layerType layer type
+   */
+  switchLayer = (layerType) => {
+    const {
+      selectedAreaId,
+      selectedAreaTypeId,
+    } = this.props;
+    const {
+      requestSource,
+      selectedArea,
+      selectedAreaType,
+      layers,
+    } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
     this.setState({
-      loadingModal: true,
-      activeLayer: layer,
+      loadingLayer: true,
+      layerError: false,
       requestSource: null,
     });
-    RestAPI.requestBiomesbyEA(layer.id)
-      .then((res) => {
-        if (res.features) {
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [layer.id]: {
-                displayName: layer.name,
-                id: layer.id || layer.id_ea,
-                active: true,
-                layer: L.geoJSON(res, {
-                  style: this.featureStyle,
-                  onEachFeature: (feature, selectedLayer) => (
-                    this.featureActions(feature, selectedLayer, layer.id)
-                  ),
-                }),
-              },
-            },
-          }));
-        } else this.reportDataError();
-      })
-      .catch(() => this.reportDataError())
-      .finally(() => {
+
+    let request = null;
+    let shutOtherLayers = true;
+    let layerStyle = this.featureStyle(layerType);
+    let fitBounds = true;
+    let newActiveLayer = null;
+    let layerKey = layerType;
+
+    switch (layerType) {
+      case 'fc':
+        request = () => RestAPI.requestBiomesbyEAGeometry(selectedArea.id);
+        newActiveLayer = {
+          id: layerType,
+          name: 'FC - Biomas',
+        };
+        break;
+      case 'hfCurrent':
+        request = () => RestAPI.requestCurrentHFGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH promedio · 2018',
+        };
+        break;
+      case 'paramo':
+      case 'dryForest':
+      case 'wetland':
+        request = () => RestAPI.requestHFGeometryBySEInGeofence(
+          selectedAreaType.id, selectedArea.id || selectedArea.name, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle(layerType, layerType);
+        fitBounds = false;
+        break;
+      case 'hfTimeline':
+        request = () => RestAPI.requestHFPersistenceGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
+        layerStyle = this.featureStyle('hfPersistence');
+        layerKey = 'hfPersistence';
+        newActiveLayer = {
+          id: 'hfPersistence',
+          name: 'HH - Histórico y Ecosistemas estratégicos (EE)',
+        };
+        break;
+      case 'hfPersistence':
+        request = () => RestAPI.requestHFPersistenceGeometry(
+          selectedAreaType.id, selectedArea.id || selectedArea.name,
+        );
+        newActiveLayer = {
+          id: layerType,
+          name: 'HH - Persistencia',
+        };
+        break;
+      case 'geofence':
+        request = () => RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        newActiveLayer = {
+          id: 'geofence',
+        };
+        break;
+      default:
+        break;
+    }
+
+    if (request) {
+      if (shutOtherLayers) this.shutOffLayer();
+      if (layers[layerKey]) {
         this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            loadingModal: false,
-          };
-          if (prevState.layers[parentLayer]) newState.layers[parentLayer].active = false;
-          if (prevState.layers[layer.id]) {
-            newState.layers[layer.id].active = true;
+          const newState = prevState;
+          newState.loadingLayer = false;
+          if (newActiveLayer) {
+            newState.activeLayer = newActiveLayer;
           }
+          newState.layers[layerKey].active = true;
           return newState;
         });
-      });
+      } else {
+        const { request: apiRequest, source: apiSource } = request();
+        this.setState({ requestSource: apiSource });
+        apiRequest.then((res) => {
+          if (res.features) {
+            if (res.features.length === 1 && !res.features[0].geometry) {
+              this.reportDataError();
+              return;
+            }
+            this.setState((prevState) => {
+              const newState = prevState;
+              newState.layers[layerKey] = {
+                active: true,
+                layer: L.geoJSON(res, {
+                  style: layerStyle,
+                  onEachFeature: (feature, selectedLayer) => (
+                    this.featureActions(selectedLayer, layerKey)
+                  ),
+                  fitBounds,
+                }),
+              };
+              newState.loadingLayer = false;
+              if (newActiveLayer) newState.activeLayer = newActiveLayer;
+              return newState;
+            });
+          } else if (res !== 'request canceled') {
+            this.reportDataError();
+          }
+        }).catch(() => this.reportDataError());
+      }
+    } else {
+      this.shutOffLayer();
+      this.setState({ loadingLayer: false });
+    }
   }
 
   /**
    * Load layer based on selection
    *
    * @param {String} idLayer Layer ID
-   * @param {String} parentLayer Parent layer ID
+   * @param {Boolean} show whether to show or hide the layer
    */
   loadSecondLevelLayer = (idLayer, show) => {
     const { layers, requestSource } = this.state;
@@ -298,8 +501,8 @@ class Search extends Component {
         ...prevState,
         requestSource: null,
       };
-      Object.values(newState.layers).forEach((item) => {
-        newState.layers[item.id].active = false;
+      Object.keys(newState.layers).forEach((item) => {
+        newState.layers[item].active = false;
       });
       return newState;
     });
@@ -308,52 +511,43 @@ class Search extends Component {
       if (show) {
         this.setArea(idLayer);
       }
-      this.setState(prevState => ({
-        layers: {
-          ...prevState.layers,
-          [prevState.layers[idLayer]]: {
-            ...prevState.layers[idLayer],
-            active: show,
-          },
-        },
-      }));
-    } else if (show && idLayer && idLayer !== 'se') {
-      const { request, source } = RestAPI.requestGeometryByArea(idLayer);
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[idLayer].active = show;
+        return newState;
+      });
+    } else if (show) {
+      const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
 
-      request.then((res) => {
-        if (!res) return;
-        this.setState((prevState) => {
-          const newState = {
-            ...prevState,
-            layers: {
-              ...prevState.layers,
-              [idLayer]: {
-                displayName: idLayer,
-                active: true,
-                id: idLayer,
-                layer: L.geoJSON(
-                  res,
-                  {
-                    style: {
-                      color: '#e84a5f',
-                      weight: 0.5,
-                      fillColor: '#ffd8e2',
-                      opacity: 0.6,
-                      fillOpacity: 0.4,
-                    },
-                    onEachFeature: (feature, layer) => (
-                      this.featureActions(feature, layer, idLayer)
-                    ),
+      request
+        .then((res) => {
+          if (!res || res === 'request canceled') return;
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            newState.layers[idLayer] = {
+              active: true,
+              layer: L.geoJSON(
+                res,
+                {
+                  style: {
+                    color: '#e84a5f',
+                    weight: 0.5,
+                    fillColor: '#ffd8e2',
+                    opacity: 0.6,
+                    fillOpacity: 0.4,
                   },
-                ),
-              },
-            },
-          };
-          return newState;
-        });
-      });
+                  onEachFeature: (feature, layer) => (
+                    this.featureActions(layer, idLayer)
+                  ),
+                },
+              ),
+            };
+            return newState;
+          });
+        })
+        .catch(() => {});
     }
   }
 
@@ -371,48 +565,67 @@ class Search extends Component {
     * @param {nameToOn} layer name to active and turn on in the map
     */
   innerElementChange = (nameToOff, nameToOn) => {
-    if (nameToOn) this.loadLayer(nameToOn, nameToOff);
+    const { setHeaderNames } = this.props;
+    const { requestSource, layers } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
+    if (nameToOn) {
+      this.setState(
+        { selectedArea: nameToOn },
+        () => {
+          const { history } = this.props;
+          const { selectedAreaType, selectedArea } = this.state;
+          history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
+          setHeaderNames(selectedAreaType.name, selectedArea.name);
+        },
+      );
+    }
+    if (nameToOff && layers[nameToOff]) {
+      this.setState((prevState) => {
+        const newState = { ...prevState };
+        newState.layers[nameToOff].active = false;
+        return newState;
+      });
+    }
   }
 
   /** ************************************* */
   /** LISTENER FOR BUTTONS ON LATERAL PANEL */
   /** ************************************* */
 
-  // TODO: Return from biome to the selected environmental authority
   handlerBackButton = () => {
-    this.setState((prevState) => {
-      let newState = { ...prevState };
-      const { layers } = prevState;
-      Object.keys(layers).forEach((layerKey) => {
-        newState.layers[layerKey].active = false;
-      });
-
-      newState = {
-        ...newState,
-        subLayerData: null,
-        area: null,
-        subLayerName: null,
-        activeLayer: null,
-        layers: {},
-        openInfoGraph: null,
-      };
-      return newState;
+    const { requestSource } = this.state;
+    if (requestSource) {
+      requestSource.cancel();
+    }
+    this.setState({
+      requestSource: null,
     });
-  }
-
-  // Keeping only one info graph active
-  handlerInfoGraph = (title) => {
+    const unsetLayers = [
+      'fc',
+      'hfCurrent',
+      'hfPersistence',
+      'paramo',
+      'dryForest',
+      'wetland',
+      'geofence',
+    ];
     this.setState((prevState) => {
-      let newState = { ...prevState };
-      let value = null;
-      if (prevState.openInfoGraph === title) value = null;
-      else value = title;
-      newState = {
-        ...newState,
-        openInfoGraph: value,
-      };
-
+      const newState = { ...prevState };
+      unsetLayers.forEach((layer) => {
+        if (newState.layers[layer]) delete newState.layers[layer];
+      });
+      newState.selectedAreaType = null;
+      newState.selectedArea = null;
+      newState.activeLayer = {};
+      newState.loadingLayer = false;
+      newState.layerError = false;
       return newState;
+    }, () => {
+      const { history, setHeaderNames } = this.props;
+      history.replace(history.location.pathname);
+      setHeaderNames(null, null);
     });
   }
 
@@ -425,29 +638,23 @@ class Search extends Component {
     this.setState({ [state]: false });
   };
 
-  /**
-    * Function to control data options belonging to the companyId
-    * TODO: Add data from the current company in geofencesArray
-    */
-  getData = () => {
-    const { geofencesArray } = this.state;
-    return geofencesArray;
-  }
-
   render() {
-    const { callbackUser, userLogged } = this.props;
     const {
-      area, subLayerName, activeLayer, subLayerData, currentCompany, loadingModal,
-      colors, colorsFC, colorSZH, layers, connError, dataError,
-      openInfoGraph,
+      loadingLayer,
+      layers,
+      connError,
+      layerError,
+      geofencesArray,
+      activeLayer: { name: activeLayer },
     } = this.state;
+
+    const {
+      selectedAreaTypeId,
+      selectedAreaId,
+    } = this.props;
+
     return (
-      <Layout
-        moduleName="Consultas"
-        showFooterLogos={false}
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
+      <div>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -465,113 +672,89 @@ class Search extends Component {
               type="button"
               className="closebtn"
               onClick={this.handleCloseModal('connError')}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />
             </button>
           </div>
         </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={dataError}
-          onClose={this.handleCloseModal('dataError')}
-          disableAutoFocus
+        <SearchContext.Provider
+          value={{
+            areaId: selectedAreaTypeId,
+            geofenceId: selectedAreaId,
+            handlerClickOnGraph: this.clickOnGraph,
+          }}
         >
-          <div className="generalAlarm">
-            <h2>
-              <b>Opción no disponible temporalmente</b>
-              <br />
-              Consulta otra opción
-            </h2>
-            <button
-              type="button"
-              className="closebtn"
-              onClick={this.handleCloseModal('dataError')}
-              data-tooltip
-              title="Cerrar"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={loadingModal && !connError}
-          disableAutoFocus
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Cargando</b>
-              <div className="load-wrapp">
-                <div className="load-1">
-                  <div className="line" />
-                  <div className="line" />
-                  <div className="line" />
-                </div>
+          <div className="appSearcher">
+            <MapViewer
+              layers={layers}
+              geoServerUrl={GeoServerAPI.getRequestURL()}
+              loadingLayer={loadingLayer}
+              layerError={layerError}
+            />
+            {activeLayer && (
+              <div className="mapsTitle">
+                {activeLayer}
               </div>
-            </h2>
+            )}
+            <div className="contentView">
+              { (!selectedAreaTypeId || !selectedAreaId) && (
+                <Selector
+                  handlers={[
+                    () => {},
+                    this.secondLevelChange,
+                    this.innerElementChange,
+                  ]}
+                  description={description(null)}
+                  data={geofencesArray}
+                  expandedId={0}
+                  iconClass="iconsection"
+                />
+              )}
+              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
+                <Drawer
+                  handlerBackButton={this.handlerBackButton}
+                  handlerSwitchLayer={this.switchLayer}
+                />
+              )}
+              {/* // TODO: This functionality should be implemented again
+              selectedAreaType && selectedArea && (selectedAreaType.id === 'se') && (
+                <NationalInsigths
+                  area={selectedAreaType}
+                  colors={colors}
+                  geofence={selectedArea}
+                  handlerBackButton={this.handlerBackButton}
+                  id
+                />
+              ) */}
+            </div>
           </div>
-        </Modal>
-        <div className="appSearcher">
-          <MapViewer
-            layers={layers}
-            geoServerUrl={GeoServerAPI.getRequestURL()}
-          />
-          <div className="contentView">
-            { !activeLayer && (
-              <Selector
-                handlers={[
-                  () => {},
-                  this.secondLevelChange,
-                  this.innerElementChange,
-                ]}
-                description={description(currentCompany)}
-                data={this.getData()}
-                expandedId={0}
-                iconClass="iconsection"
-              />
-            )}
-            { activeLayer && area && (area.id !== 'se') && (
-              <Drawer
-                area={area}
-                colors={colors}
-                colorsFC={colorsFC}
-                colorSZH={colorSZH}
-                subLayerData={subLayerData}
-                geofence={activeLayer}
-                handlerBackButton={this.handlerBackButton}
-                handlerInfoGraph={name => this.handlerInfoGraph(name)}
-                openInfoGraph={openInfoGraph}
-                id
-                subLayerName={subLayerName}
-              />
-            )}
-            { activeLayer && area && (area.id === 'se') && (
-              <NationalInsigths
-                area={area}
-                colors={colors}
-                geofence={activeLayer}
-                handlerBackButton={this.handlerBackButton}
-                id
-              />
-            )}
-          </div>
-        </div>
-      </Layout>
+        </SearchContext.Provider>
+      </div>
     );
   }
 }
 
 Search.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
+  selectedAreaTypeId: PropTypes.string,
+  selectedAreaId: PropTypes.string,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+    replace: PropTypes.func,
+    location: PropTypes.shape({
+      pathname: PropTypes.string,
+    }),
+    listen: PropTypes.func,
+  }),
+  setHeaderNames: PropTypes.func.isRequired,
 };
 
 Search.defaultProps = {
-  userLogged: null,
+  selectedAreaTypeId: null,
+  selectedAreaId: null,
+  history: {
+    listen: () => {},
+  },
 };
 
-export default Search;
+export default withRouter(Search);

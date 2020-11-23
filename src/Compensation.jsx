@@ -1,10 +1,9 @@
-/** eslint verified */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import L from 'leaflet';
-
 import CloseIcon from '@material-ui/icons/Close';
+import L from 'leaflet';
 import Modal from '@material-ui/core/Modal';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import { ConstructDataForCompensation } from './commons/ConstructDataForSelector';
 import MapViewer from './commons/MapViewer';
 import Drawer from './compensation/Drawer';
@@ -12,15 +11,10 @@ import NewProjectForm from './compensation/NewProjectForm';
 import Selector from './commons/Selector';
 import GeoServerAPI from './api/GeoServerAPI';
 import RestAPI from './api/RestAPI';
-import Layout from './Layout';
 import description from './compensation/assets/selectorData';
+import AppContext from './AppContext';
 
 class Compensation extends Component {
-  static getDerivedStateFromProps = nextProps => ({
-    currentCompanyId: nextProps.userLogged.company.id,
-    currentCompany: nextProps.userLogged.username.toUpperCase(),
-  })
-
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +45,21 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    this.loadProjectsList();
+    const { user } = this.context;
+    if (user && user.company && user.username) {
+      this.setState(
+        {
+          currentCompanyId: user.company.id,
+          currentCompany: user.username.toUpperCase(),
+        },
+        () => this.loadProjectsList(),
+      );
+    }
+  }
+
+  componentWillUnmount() {
+    const { setHeaderNames } = this.props;
+    setHeaderNames(null, null);
   }
 
   loadProjectsList = () => {
@@ -147,6 +155,13 @@ class Compensation extends Component {
         }
         newState.loadingModal = false;
         return newState;
+      }, () => {
+        const { setHeaderNames } = this.props;
+        const {
+          currentCompany,
+          currentProject: { id_region: idRegion, label, prj_status: prjStatus },
+        } = this.state;
+        setHeaderNames(`${currentCompany} ${idRegion}`, `${prjStatus} ${label}`);
       });
     });
   }
@@ -289,6 +304,9 @@ class Compensation extends Component {
       currentProject: null,
       currentRegion: null,
       biomesImpacted: [],
+    }, () => {
+      const { setHeaderNames } = this.props;
+      setHeaderNames(null, null);
     });
     this.loadProjectsList();
   }
@@ -403,19 +421,13 @@ class Compensation extends Component {
   }
 
   render() {
-    const { callbackUser, userLogged } = this.props;
     const {
       biomesImpacted, currentBiome, currentCompany, currentProject, currentRegion, colors, layers,
       regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
       currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
-      <Layout
-        moduleName="Compensaciones"
-        showFooterLogos={false}
-        callbackUser={callbackUser}
-        userLogged={userLogged}
-      >
+      <div>
         {/** Modals section: new project, connection error or loading message */}
         <Modal
           aria-labelledby="simple-modal-title"
@@ -450,7 +462,6 @@ class Compensation extends Component {
               type="button"
               className="closebtn"
               onClick={this.handleCloseModal('connError')}
-              data-tooltip
               title="Cerrar"
             >
               <CloseIcon />
@@ -502,15 +513,12 @@ class Compensation extends Component {
             {
               currentProject && (
               <Drawer
-                areaName={`${currentCompany} ${currentProject.id_region}`}
                 back={this.handlerBackButton}
-                basinName={currentProject.label}
                 colors={colors.map(obj => Object.values(obj)[0])}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}
                 impactedBiomesDecisionTree={impactedBiomesDecisionTree}
-                subAreaName={currentProject.prj_status}
                 companyId={currentCompanyId}
                 projectId={currentProjectId}
                 reloadProject={this.loadProject}
@@ -518,24 +526,20 @@ class Compensation extends Component {
                 showStrategies={this.showStrategiesLayer}
                 clickedStrategy={clickedStrategy}
                 updateClickedStrategy={this.updateClickedStrategy}
-                userId={userLogged.id}
               />
               )
             }
           </div>
         </div>
-      </Layout>
+      </div>
     );
   }
 }
 
-Compensation.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
-};
+Compensation.contextType = AppContext;
 
-Compensation.defaultProps = {
-  userLogged: null,
+Compensation.propTypes = {
+  setHeaderNames: PropTypes.func.isRequired,
 };
 
 export default Compensation;

@@ -1,13 +1,11 @@
-/** eslint verified */
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
 import DetailsView from './DetailsView';
-import RenderGraph from '../charts/RenderGraph';
-
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-const getPercentage = (part, total) => (part / total).toFixed(2);
+import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
+import formatNumber from '../commons/format';
 
 class EcosystemsBox extends Component {
   constructor(props) {
@@ -43,19 +41,13 @@ class EcosystemsBox extends Component {
     }));
   }
 
-  areaToCompare = (name, area, total) => ([
-    { key: name, area, percentage: getPercentage(area, total) },
-    { key: '', area: (total - area), percentage: getPercentage((total - area), total) },
-  ])
-
   render() {
     const {
-      areaId,
-      geofenceId,
       total,
       listSE,
     } = this.props;
     const { showGraphs, stopLoad } = this.state;
+
     return (
       <div
         className="ecosystems"
@@ -67,40 +59,48 @@ class EcosystemsBox extends Component {
             <div className="mb10" key={item.type}>
               <div className="singleeco">{item.type}</div>
               <div className="singleeco2">
-                {`${numberWithCommas(Number(item.area).toFixed(2))} ha`}
+                {`${formatNumber(item.area, 0)} ha`}
               </div>
-              {
-                (item.area !== 0 && item.area !== '0') && (
-                  <button
-                    className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
-                    type="button"
-                    onClick={() => this.switchGraphs(item.type)}
-                    data-tooltip
-                    title="Ampliar información"
-                  >
-                    <ExpandMoreIcon />
-                  </button>
-                )
-              }
-              {!stopLoad
-                && (item.area !== 0 && item.area !== '0') && (
-                RenderGraph(
-                  this.areaToCompare(item.type, item.area, total), '', '', 'SmallBarStackGraph',
-                  'Área protegida', ['#51b4c1', '#fff'], null, null,
-                  '', '%',
-                ))
-              }
-              {!stopLoad
-                && (index > -1) && (
+              {(Number(item.area) !== 0) && (
+                <button
+                  className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
+                  type="button"
+                  onClick={() => this.switchGraphs(item.type)}
+                  title="Ampliar información"
+                >
+                  <ExpandMoreIcon />
+                </button>
+              )}
+              {!stopLoad && (Number(item.area) !== 0) && (
+                <GraphLoader
+                  graphType="SmallBarStackGraph"
+                  data={[
+                    {
+                      key: item.type,
+                      area: Number(item.area),
+                      percentage: item.percentage,
+                      label: item.type,
+                    },
+                    {
+                      key: 'NA',
+                      area: (total - item.area),
+                      percentage: (total - item.area) / total,
+                    },
+                  ]}
+                  units="ha"
+                  colors={matchColor('se')}
+                />
+              )}
+              {!stopLoad && (index > -1) && (
                 <div className="graficaeco2">
                   <DetailsView
-                    areaId={areaId}
-                    geofenceId={geofenceId}
-                    item={item}
+                    item={{
+                      ...item,
+                      percentage: item.percentage * 100,
+                    }}
                   />
                 </div>
-              )
-              }
+              )}
             </div>
           );
         })
@@ -111,15 +111,11 @@ class EcosystemsBox extends Component {
 }
 
 EcosystemsBox.propTypes = {
-  areaId: PropTypes.string,
-  geofenceId: PropTypes.string,
   listSE: PropTypes.array,
   total: PropTypes.number,
 };
 
 EcosystemsBox.defaultProps = {
-  areaId: 0,
-  geofenceId: 0,
   listSE: [],
   total: 0,
 };

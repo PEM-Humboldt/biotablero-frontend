@@ -1,8 +1,9 @@
-/** eslint verified */
-import React from 'react';
-import PropTypes from 'prop-types';
 import 'leaflet/dist/leaflet.css';
 import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
+import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 
 const config = {};
@@ -34,6 +35,7 @@ class MapViewer extends React.Component {
       layers: {},
       activeLayers: [],
       update: false,
+      openErrorModal: true,
     };
 
     this.mapRef = React.createRef();
@@ -41,6 +43,7 @@ class MapViewer extends React.Component {
 
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
+    const { loadingLayer } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
@@ -48,7 +51,7 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0) {
+    if (countActiveLayers === 0 && !loadingLayer) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
@@ -77,18 +80,76 @@ class MapViewer extends React.Component {
    * @param {Boolean} state if it's false, then the layer should be hidden
    */
   showLayer = (layer, state) => {
+    let fitBounds = true;
+    if (layer.options.fitBounds === false) fitBounds = false;
+
     if (state === false) {
       this.mapRef.current.leafletElement.removeLayer(layer);
     } else {
       this.mapRef.current.leafletElement.addLayer(layer);
-      this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
+      if (fitBounds) {
+        this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
+      }
     }
   }
 
   render() {
-    const { geoServerUrl, userLogged } = this.props;
+    const {
+      geoServerUrl,
+      userLogged,
+      loadingLayer,
+      layerError,
+    } = this.props;
+    const { openErrorModal } = this.state;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={loadingLayer}
+          disableAutoFocus
+          container={this}
+          style={{ position: 'absolute' }}
+          BackdropProps={{ style: { position: 'absolute' } }}
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Cargando</b>
+              <div className="load-wrapp">
+                <div className="load-1">
+                  <div className="line" />
+                  <div className="line" />
+                  <div className="line" />
+                </div>
+              </div>
+            </h2>
+          </div>
+        </Modal>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={layerError && openErrorModal}
+          onClose={() => { this.setState({ openErrorModal: false }); }}
+          container={this}
+          style={{ position: 'absolute' }}
+          BackdropProps={{ style: { position: 'absolute' } }}
+          disableBackdropClick={false}
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Capa no disponible actualmente</b>
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              style={{ position: 'absolute' }}
+              onClick={() => { this.setState({ openErrorModal: false }); }}
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -125,10 +186,18 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
   userLogged: PropTypes.object,
+  loadingLayer: PropTypes.bool,
+  // They're used in getDerivedStateFromProps but eslint won't realize
+  // eslint-disable-next-line react/no-unused-prop-types
+  layers: PropTypes.object.isRequired,
+  // eslint-disable-next-line react/no-unused-prop-types
+  layerError: PropTypes.bool,
 };
 
 MapViewer.defaultProps = {
   userLogged: null,
+  loadingLayer: false,
+  layerError: false,
 };
 
 export default MapViewer;

@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import logohumboldt from './assets/img/logohumboldt.png';
@@ -42,7 +41,7 @@ const Footer = (
         Instituto de Investigación de Recursos Biológicos
         <br />
         <b>
-        Alexander von Humboldt
+          Alexander von Humboldt
         </b>
       </a>
       <h3>

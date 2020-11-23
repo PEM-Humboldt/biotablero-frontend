@@ -1,7 +1,6 @@
-/** eslint verified */
+import { PropTypes } from 'prop-types';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CloseIcon from '@material-ui/icons/Close';
+
 import RestAPI from './api/RestAPI';
 
 class Login extends Component {
@@ -15,11 +14,6 @@ class Login extends Component {
     };
   }
 
-  handleCloseModal = () => {
-    const { openModalControl } = this.props;
-    openModalControl();
-  };
-
   validateForm = () => {
     const { username, password } = this.state;
     return username.length > 0 && password.length > 0;
@@ -31,25 +25,12 @@ class Login extends Component {
     });
   }
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-  }
-
   render() {
-    const { setUser } = this.props;
     const { username, password } = this.state;
+    const { setUser } = this.props;
     return (
       <div className="login">
-        <button
-          type="button"
-          className="closebtn"
-          onClick={this.handleCloseModal}
-          data-tooltip
-          title="Cerrar"
-        >
-          <CloseIcon />
-        </button>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={event => event.preventDefault()}>
           <input
             className="loginInput"
             type="text"
@@ -68,12 +49,12 @@ class Login extends Component {
           />
           <button
             className={this.validateForm() ? 'loginbtn' : 'loginbtn disabled'}
-            data-tooltip
             title="Ingresar"
             disabled={!this.validateForm()}
             type="submit"
             onClick={() => {
-              setUser(RestAPI.requestUser(username, password).then(res => res));
+              RestAPI.requestUser(username, password)
+                .then(res => setUser(res));
             }}
           >
             Ingresar
@@ -81,7 +62,6 @@ class Login extends Component {
           <button
             className="recoverbtn"
             type="button"
-            data-tooltip
             title="Acción no disponible"
           >
             Recuperar contraseña
@@ -93,13 +73,7 @@ class Login extends Component {
 }
 
 Login.propTypes = {
-  openModalControl: PropTypes.func,
-  setUser: PropTypes.func,
-};
-
-Login.defaultProps = {
-  openModalControl: () => {},
-  setUser: () => {},
+  setUser: PropTypes.func.isRequired,
 };
 
 export default Login;

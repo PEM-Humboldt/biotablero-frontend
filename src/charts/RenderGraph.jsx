@@ -1,23 +1,33 @@
-/** eslint verified */
 import React from 'react';
+import PropTypes from 'prop-types';
 import { ParentSize } from '@vx/responsive';
 import GraphLoader from './GraphLoader';
 
 /**
  * Function to render a graph
  *
- * @param {any} data Graph data, it can be null (data hasn't loaded), false (data not available)
- *  or an Object with the data.
- * @param {string} labelX axis X label
- * @param {string} labelY axis Y label
  * @param {string} graph graph type
+ * @param {any} data Graph data, it can be null (data hasn't loaded),
+ *  false (data not available) or an Object with the data.
  * @param {string} graphTitle graph title
  * @param {array} colors colors to sort elements inside the graph
+ * @param {string} labelX axis X label
+ * @param {string} labelY axis Y label
+ * @param {string} graphDescription description of the graph
+ * @param {string} units units of data inside the graph
  */
-const RenderGraph = (
-  data, labelX, labelY, graph, graphTitle, colors,
-  handlerInfoGraph, openInfoGraph, graphDescription, units,
-) => {
+const RenderGraph = (props) => {
+  const {
+    graph,
+    data,
+    graphTitle,
+    labelX,
+    labelY,
+    graphDescription,
+    units,
+    colors,
+    padding,
+  } = props;
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
@@ -39,23 +49,45 @@ const RenderGraph = (
       {parent => (
         parent.width && (
           <GraphLoader
-            width={parent.width}
-            height={parent.height}
             graphType={graph}
             data={data}
-            labelX={labelX}
-            labelY={labelY}
             graphTitle={graphTitle}
             colors={colors}
-            handlerInfoGraph={handlerInfoGraph}
-            openInfoGraph={openInfoGraph}
+            width={parent.width}
+            height={parent.height}
+            labelX={labelX}
+            labelY={labelY}
             graphDescription={graphDescription}
             units={units}
+            padding={padding}
           />
         )
       )}
     </ParentSize>
   );
+};
+
+RenderGraph.propTypes = {
+  graph: PropTypes.string.isRequired,
+  data: PropTypes.any, // Array or object, depending on graphType
+  graphTitle: PropTypes.string,
+  labelX: PropTypes.string,
+  labelY: PropTypes.string,
+  graphDescription: PropTypes.string,
+  units: PropTypes.string,
+  colors: PropTypes.func,
+  padding: PropTypes.number,
+};
+
+RenderGraph.defaultProps = {
+  data: null,
+  graphTitle: '',
+  labelX: '',
+  labelY: '',
+  graphDescription: null,
+  units: 'ha',
+  colors: () => {},
+  padding: 0.25,
 };
 
 export default RenderGraph;

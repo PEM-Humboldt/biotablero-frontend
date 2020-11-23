@@ -1,4 +1,3 @@
-/** eslint verified */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -94,7 +93,10 @@ class NationalInsigths extends React.Component {
   render() {
     const { data } = this.state;
     const {
-      area, colors, geofence, handlerBackButton, handlerInfoGraph,
+      area,
+      colors,
+      geofence,
+      handlerBackButton,
     } = this.props;
     return (
       <div className="informer">
@@ -111,22 +113,47 @@ class NationalInsigths extends React.Component {
           <br />
           {`${geofence}`}
         </h1>
-        {
-          <div>
-            {(data.national)
-              && (RenderGraph(data.national, null, null,
-                'DotInfo', 'Nacional', null, handlerInfoGraph, false, 'null', 'ha')
-              )}
-            {(data.coverage)
-              && (RenderGraph(data.coverage, 'Cobertura', 'Hectáreas',
-                'BarVertical', 'Tipo de cobertura', colors, 'ha', false)
-              )}
-            {(data.pa)
-              && (RenderGraph(data.pa, 'Área protegida', 'Hectáreas',
-                'BarVertical', 'Tipo de áreas protegidas', colors, 'ha', false)
-              )}
-          </div>
-        }
+        <div>
+          {(data.national)
+            && (
+            <RenderGraph
+              graph="DotInfo"
+              data={data.national}
+              graphTitle="Nacional"
+              colors={null}
+              labelX={null}
+              labelY={null}
+              units="ha"
+            />
+            )
+          }
+          {(data.coverage)
+            && (
+            <RenderGraph
+              graph="BarVertical"
+              data={data.coverage}
+              graphTitle="Tipo de cobertura"
+              colors={colors}
+              labelX="Cobertura"
+              labelY="Hectáreas"
+              units="ha"
+            />
+            )
+          }
+          {(data.pa)
+            && (
+            <RenderGraph
+              graph="BarVertical"
+              data={data.pa}
+              graphTitle="Tipo de áreas protegidas"
+              colors={colors}
+              labelX="Área protegida"
+              labelY="Hectáreas"
+              units="ha"
+            />
+            )
+          }
+        </div>
       </div>
     );
   }
@@ -137,14 +164,12 @@ NationalInsigths.propTypes = {
   colors: PropTypes.array,
   geofence: PropTypes.string,
   handlerBackButton: PropTypes.func,
-  handlerInfoGraph: PropTypes.func,
 };
 
 NationalInsigths.defaultProps = {
   colors: ['#345b6b'],
   geofence: '',
   handlerBackButton: () => {},
-  handlerInfoGraph: () => {},
 };
 
 export default withStyles(styles)(NationalInsigths);

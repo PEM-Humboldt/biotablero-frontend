@@ -1,11 +1,21 @@
-/** eslint verified */
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import RenderGraph from '../charts/RenderGraph';
-import { setPAValues, setCoverageValues } from './FormatSE';
-import RestAPI from '../api/RestAPI';
+import React, { Component } from 'react';
 
-const validateData = (data) => {
+import { setPAValues, setCoverageValues } from './FormatSE';
+import GraphLoader from '../charts/GraphLoader';
+import matchColor from '../commons/matchColor';
+import RestAPI from '../api/RestAPI';
+import SearchContext from '../SearchContext';
+
+/**
+ * Validate if data exist before rendering graph
+ *
+ * @param {array} data information to load graphs
+ * @param {function} colorFunc function to assign colors in a graph
+ *
+ * @returns {string | boolean} validation of data availability and existence
+ */
+const loadData = (data, colorFunc) => {
   if (data === null) {
     return (
       <b>
@@ -14,47 +24,48 @@ const validateData = (data) => {
       </b>
     );
   }
-  if (data.length <= 0) return <b>No disponible</b>;
-  return false;
+  if (data.length <= 0) return (<b>No disponible</b>);
+  return (
+    <GraphLoader
+      graphType="SmallBarStackGraph"
+      data={data}
+      units="ha"
+      colors={colorFunc}
+    />
+  );
 };
 
-const showDetails = (/* TODO: Add all values required */
-  npsp, // percentage in "national system of protected areas" or SINAP
-  sep, // in strategic ecosystems percentage
-  coverage, // By default, should load transformed and natural area by %
-  protectedArea, // By default, should load transformed and natural area by %
-  handlerInfoGraph, openInfoGraph, // values for coverage
+/**
+ * Return details for each strategic ecosystem
+ *
+ * @param {number} npsp percentage in "national system of protected areas" or SINAP
+ * @param {number} sep percentage in strategic ecosystems
+ * @param {array} coverage data about coverages
+ * @param {array} protectedArea data about protected areas
+ * @returns {div} node for each strategic ecosystem
+ */
+const showDetails = (
+  coverage,
+  protectedArea,
 ) => (
   <div>
     <h3>
       Distribución de coberturas:
-      {validateData(coverage) || RenderGraph(setCoverageValues(coverage), 'Tipo de área', 'Comparación', 'SmallBarStackGraph',
-        'Cobertura', null, handlerInfoGraph, openInfoGraph,
-        'muestra la proporción del tipo de área en este ecosistema estratégico', '%')}
+      {loadData(setCoverageValues(coverage), matchColor('coverage'))}
     </h3>
     <h3>
       Distribución en áreas protegidas:
-      {validateData(protectedArea) || RenderGraph(setPAValues(protectedArea), 'Áreas protegidas y no protegidas', 'Comparación', 'SmallBarStackGraph',
-        'Distribución de áreas protegidas y no protegidas', null, handlerInfoGraph, openInfoGraph,
-        'representa las hectáreas en áreas protegidas y permite la comparación con el área no protegida', '%')}
+      {loadData(setPAValues(protectedArea), matchColor('pa'))}
     </h3>
-    {
-      <h3>
-        En Ecosistemas Estratégicos:
-        <b>{`${Number(sep).toFixed(2)} %`}</b>
-        <br />
-        En Sistema Nacional:
-        <b>{`${Number(npsp).toFixed(2)} %`}</b>
-      </h3>
-    }
   </div>
 );
 
 class DetailsView extends Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
-      seDetail: null,
       seCoverage: null,
       sePA: null,
       stopLoad: false,
@@ -62,58 +73,39 @@ class DetailsView extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const {
-      areaId, geofenceId, item,
+      item,
     } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
+
     const name = item.type || item.name;
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSEDetail(areaId, geofenceId, name)
-        .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            seDetail: res.national_percentage,
-          }));
-        })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            seDetail: 0,
-          }));
-        });
-
       RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            seCoverage: res,
-          }));
+          if (this.mounted) {
+            this.setState({ seCoverage: res });
+          }
         })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            seCoverage: false,
-          }));
-        });
+        .catch(() => {});
 
       RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
         .then((res) => {
-          this.setState(prevState => ({
-            ...prevState,
-            sePA: res,
-          }));
+          if (this.mounted) {
+            this.setState({ sePA: res });
+          }
         })
-        .catch(() => {
-          this.setState(prevState => ({
-            ...prevState,
-            sePA: false,
-          }));
-        });
+        .catch(() => {});
     }
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     this.setState({
       stopLoad: true,
     });
@@ -121,27 +113,25 @@ class DetailsView extends Component {
 
   render() {
     const {
-      item,
-    } = this.props;
-    const {
-      seDetail, seCoverage, sePA, stopLoad,
+      seCoverage,
+      sePA,
+      stopLoad,
     } = this.state;
-    return (
-      !stopLoad ? showDetails(seDetail, item.percentage, seCoverage, sePA, null, null) : null
-    );
+    if (!stopLoad) {
+      return (
+        showDetails(
+          seCoverage,
+          sePA,
+        )
+      );
+    }
+    return null;
   }
 }
 
 DetailsView.propTypes = {
-  areaId: PropTypes.string,
-  geofenceId: PropTypes.string,
-  item: PropTypes.object,
-};
-
-DetailsView.defaultProps = {
-  areaId: 0,
-  geofenceId: 0,
-  item: {},
+  item: PropTypes.object.isRequired,
 };
 
 export default DetailsView;
+DetailsView.contextType = SearchContext;

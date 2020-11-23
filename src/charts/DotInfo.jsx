@@ -2,9 +2,7 @@
 import React from 'react';
 import { GlyphCircle } from '@vx/glyph';
 import { withTooltip, Tooltip } from '@vx/tooltip';
-
-// Miles number format
-const numberWithCommas = x => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+import formatNumber from '../commons/format';
 
 let tooltipTimeout;
 
@@ -18,7 +16,7 @@ export default withTooltip(({
   if (width < 10) return null;
   if (height < 10) return null;
 
-  const area = numberWithCommas(parseFloat(data.area).toFixed(2));
+  const area = formatNumber(data.area, 2);
   const percentage = parseFloat(data.percentage).toFixed(2);
 
   return (

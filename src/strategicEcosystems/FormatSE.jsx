@@ -1,74 +1,60 @@
-export const setPAValues = (array) => {
-  if (!array) return null;
-  const responseObject = [];
-  let counter = -1;
-  const colorsProtectedAreas = [
-    '#59651f',
-    '#92ba3a',
-    '#a5a95b',
-    '#5f8f2c',
-  ];
-  array.forEach((item) => {
-    let color;
-    switch (item.type) {
-      case 'Total':
-        color = '#fff';
-        break;
-      case 'No Protegida':
-        color = '#b9c9cf';
-        break;
-      default:
-        color = colorsProtectedAreas[counter] || '#b3b638';
-    }
-    responseObject.push({
+export const setPAValues = (arrayIn) => {
+  if (!arrayIn) return [];
+
+  const array = [...arrayIn];
+  let np = array.pop();
+  if (np.type !== 'No Protegida') {
+    array.push(np);
+    np = null;
+  }
+  const result = array
+    .filter(item => Number(item.area) > 0)
+    .map(item => ({
+      ...item,
       area: Number(item.area),
-      percentage: Number(item.percentage),
-      type: item.type,
-      color,
+      // TODO: Maybe modify backend to always return type
+      label: item.type || item.label,
+      key: item.type || item.label,
+    }))
+    .sort((first, second) => {
+      if (first.area > second.area) return -1;
+      if (first.area < second.area) return 1;
+      return 0;
     });
-    counter += (1 % (colorsProtectedAreas.length / counter));
-  });
-  return Object.values(responseObject);
+
+  if (np) {
+    result.push({
+      ...np,
+      key: np.type,
+      area: Number(np.area),
+      label: np.type,
+    });
+  }
+  return result;
 };
 
 export const setCoverageValues = (array) => {
-  const responseObject = {};
-  if (!array) return null;
-  array.forEach((item) => {
-    let local;
-    let color;
+  if (!array) return [];
+  return array.map((item) => {
+    let label = '';
     switch (item.type) {
-      case 'Total':
-        local = item.type;
-        color = '#fff';
-        break;
       case 'N':
-        local = 'Natural';
-        color = '#164f74';
+        label = 'Natural';
         break;
       case 'S':
-        local = 'Secundaria';
-        color = '#60bbd4';
+        label = 'Secundaria';
         break;
       case 'T':
-        local = 'Transformada';
-        color = '#5aa394';
+        label = 'Transformada';
         break;
       default:
-        local = 'Sin clasificar / Nubes';
-        color = '#b9c9cf';
+        label = 'Sin clasificar / Nubes';
     }
-    if (responseObject[local]) {
-      responseObject[local].area += Number(item.area);
-      responseObject[local].percentage += Number(item.percentage);
-    } else {
-      responseObject[local] = {
-        area: Number(item.area),
-        percentage: Number(item.percentage),
-        type: local,
-        color,
-      };
-    }
+    return {
+      ...item,
+      key: item.type,
+      area: Number(item.area),
+      label,
+    };
   });
-  return Object.values(responseObject);
 };

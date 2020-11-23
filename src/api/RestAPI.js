@@ -1,4 +1,3 @@
-/** eslint verified */
 import axios, { CancelToken } from 'axios';
 
 class RestAPI {
@@ -68,15 +67,6 @@ class RestAPI {
   }
 
   /**
-   * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
-   */
-  static requestStrategicEcosystems(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
-  }
-
-  /**
    * Recover the national area by selected strategic ecosystems
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
@@ -101,33 +91,51 @@ class RestAPI {
   }
 
   /**
-   * Recover details, like the national percentage, according to the selected strategic ecosystems
+   * Recover the strategic ecosystems values by selected area
+   * @param {Number} idArea id area to request
+   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   */
+  static requestStrategicEcosystems(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  }
+
+  /**
+   * Recover the strategic ecosystems values in the area selected
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} seType strategic ecosystem type to request details
    */
-  static requestSEDetail(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}`);
+  static requestSEDetailInArea(idArea, idGeofence, seType) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}`);
   }
 
   /**
    * Recover the coverage by selected strategic ecosystems and geofence
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSECoverageByGeofence(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/coverage`);
+  static requestSECoverageByGeofence(idArea, idGeofence, seType) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/coverage`);
   }
 
   /**
    * Recover the protected area by selected strategic ecosystems and geofence
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request
-   * @param {Number} idSE id geofence to request details
+   * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSEPAByGeofence(idArea, idGeofence, idSE) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${idSE}/pa`);
+  static requestSEPAByGeofence(idArea, idGeofence, seType) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/pa`);
+  }
+
+  /**
+   * Recover details in the selected area
+   * @param {Number} idArea id area to request, f.e. ea
+   * @param {Number} idGeofence id geofence to request, f.e. idCAR
+   */
+  static requestGeofenceDetails(idArea, idGeofence) {
+    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 
   /**
@@ -180,11 +188,65 @@ class RestAPI {
   }
 
   /**
-   * Request the geometry of the biomes by EA
-   * @param {String} eaId id ea to request
+   * Get the current human footprint value in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Object} Objecy with value and category for the current human footprint
    */
-  static requestBiomesbyEA(eaId) {
-    return RestAPI.makeGetRequest(`biomes/ea/${eaId}`);
+  static requestCurrentHFValue(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
+  }
+
+  /**
+   * Get the current human footprint data by categories in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the current human footprint
+   */
+  static requestCurrentHFCategories(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
+  }
+
+  /**
+   * Get the persistence of human footprint data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
+   */
+  static requestHFPersistence(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
+  }
+
+  /**
+   * Get the human footprint timeline data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with human footprint timeline data in the given area
+   */
+  static requestTotalHFTimeline(areaType, areaId) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+  }
+
+  /**
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
+   *
+   * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
+   * footprint timeline data
+   */
+  static requestSEHFTimeline(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}/hf/timeline`);
   }
 
   /**
@@ -202,16 +264,118 @@ class RestAPI {
   /** ******************** */
 
   /**
+   * Request the geometry of the biomes by EA
+   * @param {String} eaId id ea to request
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestBiomesbyEAGeometry(eaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
    * Request area geometry by id
    *
    * @param {String} areaId area id to request
+   *
+   * @return {Object} Including Promise with layer object to load in map and source reference to
+   * cancel the request
    */
-  static requestGeometryByArea(areaId) {
+  static requestNationalGeometryByArea(areaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
       source,
     };
+  }
+
+  /**
+   * Request a specific geofence geometry identified by area and geofence
+   *
+   * @param {String} areaId area id to request
+   * @param {String} geofenceId geofence id to request
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestGeofenceGeometryByArea(areaId, geofenceId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the current human footprint in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestCurrentHFGeometry(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the human footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestHFPersistenceGeometry(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+
+  /**
+   * According to the strategic ecosystem type, get the footprint timeline geometry
+   * associated to the selected area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
+    const source = CancelToken.source();
+    switch (seType) {
+      case 'dryForest':
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`, { cancelToken: source.token }),
+          source,
+        };
+      case 'paramo':
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`, { cancelToken: source.token }),
+          source,
+        };
+      case 'wetland':
+        return {
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`, { cancelToken: source.token }),
+          source,
+        };
+      default:
+        return {
+          request: Promise.reject(new Error('undefined option')),
+          source,
+        };
+    }
   }
 
   /** ******************* */
@@ -363,6 +527,10 @@ class RestAPI {
     `companies/${companyId}/projects/${projectId}/strategies/download`,
   )
 
+  /** ************** */
+  /** BASE FUNCTIONS */
+  /** ************** */
+
   /**
    * Request an endpoint through a GET request
    *
@@ -372,6 +540,9 @@ class RestAPI {
     return axios.get(RestAPI.getEndpointUrl(endpoint), options)
       .then(res => res.data)
       .catch((error) => {
+        if (axios.isCancel(error)) {
+          return Promise.resolve('request canceled');
+        }
         let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
         if (error.request && error.request.statusText === '') message = 'no-data-available';

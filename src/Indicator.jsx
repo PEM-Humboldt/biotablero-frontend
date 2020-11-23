@@ -1,7 +1,4 @@
-/** eslint verified */
 import React from 'react';
-import PropTypes from 'prop-types';
-import Layout from './Layout';
 import CardManager from './indicator/CardManager';
 import ChipManager from './indicator/ChipManager';
 
@@ -36,40 +33,23 @@ class Indicator extends React.Component {
   }
 
   render() {
-    const { callbackUser, userLogged } = this.props;
     const { counterSelectedIndicator, filters } = this.state;
     return (
-      <Layout
-        moduleName="Indicadores"
-        showFooterLogos
-        userLogged={userLogged}
-        callbackUser={callbackUser}
-      >
-        <div id="filters">
-          <div id="options">
-            <h1>Filtros temáticos de indicadores</h1>
-            <ChipManager filters={filters} />
-          </div>
-          <div className="filter-display-container">
-            {`Mostrando ${counterSelectedIndicator === 0
-              ? `todos los ${cardsData.length} indicadores`
-              : `${counterSelectedIndicator === 1 ? '1 indicador' : `${counterSelectedIndicator} indicadores`}`}
-            `}
-          </div>
-          <CardManager cardsData={cardsData} />
+      <div id="filters">
+        <div id="options">
+          <h1>Filtros temáticos de indicadores</h1>
+          <ChipManager filters={filters} />
         </div>
-      </Layout>
+        <div className="filter-display-container">
+          {`Mostrando ${counterSelectedIndicator === 0
+            ? `todos los ${cardsData.length} indicadores`
+            : `${counterSelectedIndicator === 1 ? '1 indicador' : `${counterSelectedIndicator} indicadores`}`}
+          `}
+        </div>
+        <CardManager cardsData={cardsData} />
+      </div>
     );
   }
 }
-
-Indicator.propTypes = {
-  callbackUser: PropTypes.func.isRequired,
-  userLogged: PropTypes.object,
-};
-
-Indicator.defaultProps = {
-  userLogged: null,
-};
 
 export default Indicator;

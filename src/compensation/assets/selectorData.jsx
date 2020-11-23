@@ -1,11 +1,7 @@
-/** eslint verified */
 import React from 'react';
 
 const description = companyName => (
   <div>
-    <h1>
-      Compensaciones
-    </h1>
     <p>
       {'En esta sección podrás encontrar información sobre '}
       <b>
@@ -15,7 +11,7 @@ const description = companyName => (
       <b>
         ¿Dónde y cómo compensar?
       </b>
-      {', para esto:'}
+      , para esto:
     </p>
     <p>
       <i>

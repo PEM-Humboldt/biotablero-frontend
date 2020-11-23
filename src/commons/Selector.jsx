@@ -1,11 +1,10 @@
-/** eslint verified */
 // TODO: Ajustar evento del Autocompletar sobre el mapa
 import React from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import FileUploadIcon from '@material-ui/icons/FileUpload';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
@@ -58,37 +57,29 @@ class Selector extends React.Component {
     handlers[1](subPanel, expanded);
   };
 
-  componentWillUnmounted() {
+  renderInnerElement = (parent, listSize, data) => (obj, index) => {
+    const {
+      type, label, name, id_project: projectId,
+    } = obj;
     const { handlers } = this.props;
-    handlers[0](false);
-    handlers[1](false);
-    handlers[2](false);
-  }
-
-  renderInnerElement = (parent, size, data) => ({
-    type, label, name, id_project: projectId,
-  }) => {
-    const { handlers } = this.props;
-    switch (size) {
-      case 1:
+    switch (listSize) {
+      case 'large':
         return (
           <Autocomplete
             valueSelected={(value) => {
-              const itemSelected = data.find(
-                item => item.name === value : value,
-              );
+              const itemSelected = data.find(item => item.name === value);
               handlers[2](parent, itemSelected);
             }}
             name={label || name}
             data={data}
-            key={`${type}-${label || name}`}
+            key={`${type}-${label || name}-${index}`}
           />
         );
       default:
         return (
           <button
             type="button"
-            key={`${type}-${label || name}`}
+            key={`${type}-${label || name}-${index}`}
             name={name}
             onClick={() => handlers[2](parent, projectId || name)}
           >
@@ -126,7 +117,7 @@ class Selector extends React.Component {
               <ExpansionPanelSummary
                 expandIcon={
                   (((iconOption === 'add') && <AddIcon />)
-                  || ((iconOption === 'upload') && <FileUploadIcon />)
+                  || ((iconOption === 'upload') && <CloudUploadIcon />)
                   || ((iconOption === 'edit') && <EditIcon />)
                   || (<ExpandMoreIcon />))
                 }
@@ -153,7 +144,7 @@ class Selector extends React.Component {
                       <ExpansionPanelSummary
                         expandIcon={
                           (((iconOption === 'add') && <AddIcon />)
-                          || ((iconOption === 'upload') && <FileUploadIcon />)
+                          || ((iconOption === 'upload') && <CloudUploadIcon />)
                           || ((iconOption === 'edit') && <EditIcon />)
                           || (<ExpandMoreIcon />))
                         }
@@ -163,7 +154,7 @@ class Selector extends React.Component {
                       <ExpansionPanelDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
                         {subOptions.length < 7
                           ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
-                          : [{ subOptions }].map(this.renderInnerElement(subId, 1, subOptions))}
+                          : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
                       </ExpansionPanelDetails>
                     </ExpansionPanel>
                   );
