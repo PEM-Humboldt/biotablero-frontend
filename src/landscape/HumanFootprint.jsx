@@ -55,7 +55,7 @@ const HumanFootprint = (props) => {
     },
   ];
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <LandscapeAccordion
         componentsArray={componentsArray}
         classNameDefault="m1"

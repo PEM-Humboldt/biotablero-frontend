@@ -1,12 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import DownloadIcon from '@material-ui/icons/Save';
-import BarGraph from './BarGraph';
-import DotsGraph from './DotsGraph';
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import DotInfo from './DotInfo';
+import DotsGraph from './DotsGraph';
 import LargeBarStackGraph from './LargeBarStackGraph';
-import SmallBarStackGraph from './SmallBarStackGraph';
 import MultiLinesGraph from './MultiLinesGraph';
+import MultiSmallBarStackGraph from './MultiSmallBarStackGraph';
+import PieGraph from './PieGraph';
+import SmallBarStackGraph from './SmallBarStackGraph';
 
 const GraphLoader = (props) => {
   const {
@@ -17,21 +19,20 @@ const GraphLoader = (props) => {
     labelX,
     labelY,
     width,
-    height,
     elementOnClick,
     activeBiome,
     showOnlyTitle,
     units,
-    withLeyends, // TODO: use withLeyends to control if labels in x are showed in the axis X
     padding,
     onClickGraphHandler,
     markers,
+    loading,
   } = props;
 
   // While data is being retrieved from server
   let errorMessage = null;
   // (data === null) while waiting for API response
-  if (data === null) errorMessage = 'Cargando información...';
+  if (data === null || loading) errorMessage = 'Cargando información...';
   // (!data) if API doesn't respond
   else if (!data) errorMessage = 'Información no disponible';
   // (data.length <= 0) if API response in not object
@@ -68,18 +69,23 @@ const GraphLoader = (props) => {
           units={units}
         />
       );
-    case 'BarVertical':
+    case 'MultiSmallBarStackGraph':
       return (
-        <BarGraph
-          dataJSON={data}
+        <MultiSmallBarStackGraph
+          data={data}
+          height={250}
           colors={colors}
-          graphTitle={graphTitle}
-          labelX={labelX}
-          labelY={labelY}
-          width={width}
-          height={height}
           units={units}
-          withLeyends={withLeyends}
+        />
+      );
+    case 'pie':
+      return (
+        <PieGraph
+          data={data}
+          height={350}
+          units={units}
+          colors={colors}
+          onClickHandler={onClickGraphHandler}
         />
       );
     case 'Dots':
@@ -148,18 +154,23 @@ const GraphLoader = (props) => {
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.any.isRequired, // Array or object, depending on graphType
+  data: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired,
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.string,
-  height: PropTypes.number,
+  width: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
-  withLeyends: PropTypes.bool,
   elementOnClick: PropTypes.func,
-  colors: PropTypes.func,
+  // TODO: Remove array type once the charts in compensation are migrated
+  colors: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.array,
+  ]),
   padding: PropTypes.number,
   onClickGraphHandler: PropTypes.func,
   markers: PropTypes.arrayOf(PropTypes.shape({
@@ -168,6 +179,7 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
+  loading: PropTypes.bool,
 };
 
 GraphLoader.defaultProps = {
@@ -175,16 +187,14 @@ GraphLoader.defaultProps = {
   activeBiome: '',
   labelX: '',
   labelY: '',
-  width: '100%',
-  height: 250,
   showOnlyTitle: false,
   units: 'ha',
-  withLeyends: false,
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
   onClickGraphHandler: () => {},
   markers: [],
+  loading: false,
 };
 
 export default GraphLoader;
