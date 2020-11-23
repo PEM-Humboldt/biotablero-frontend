@@ -453,6 +453,10 @@ class Search extends Component {
         this.setState({ requestSource: apiSource });
         apiRequest.then((res) => {
           if (res.features) {
+            if (res.features.length === 1 && !res.features[0].geometry) {
+              this.reportDataError();
+              return;
+            }
             this.setState((prevState) => {
               const newState = prevState;
               newState.layers[layerKey] = {
@@ -616,6 +620,7 @@ class Search extends Component {
       newState.selectedArea = null;
       newState.activeLayer = {};
       newState.loadingLayer = false;
+      newState.layerError = false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
