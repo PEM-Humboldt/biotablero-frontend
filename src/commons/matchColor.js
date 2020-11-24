@@ -79,6 +79,14 @@ const match = {
       'moderada-estable_baja',
     ],
   },
+  forestIntegrity: {
+    palette: 'forestIntegrity',
+    sort: ['moderada', 'alta'],
+  },
+  border: {
+    palette: 'border',
+    sort: ['white'],
+  },
   default: {
     palette: 'default',
   },
@@ -97,14 +105,14 @@ const cache = {
  * pa has unique value for 'No protegida'.
  *
  * @param {string} type type of information to apply colors.
- * Available values: fc, biomas, bioticReg, coverage, pa, se, biomeComp, default.
+ * @param {boolean} resetCache whether to clean the cache before assigning colors. Applies to 'pa'
  *
- * @param {any} value value to asign a color, type of data will depend on type arg.
+ * @param {any} value value to assign a color, type of data will depend on type arg.
  *
  * fc will receive numbers between 4 and 10 (multiple of 0.25).
  * The rest of the types will receive strings.
  */
-const matchColor = (type) => {
+const matchColor = (type, resetCache = false) => {
   const info = match[type] || match.default;
   const palette = colorPalettes[info.palette];
   const sort = info.sort || [];
@@ -127,6 +135,9 @@ const matchColor = (type) => {
         return palette[counter];
       };
     case 'pa':
+      if (resetCache) {
+        cache.pa = { counter: 1 };
+      }
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx !== -1) return palette[idx];
@@ -143,7 +154,9 @@ const matchColor = (type) => {
     case 'hfTimeline':
     case 'forestLP':
     case 'SciHf':
+    case 'forestIntegrity':
     case 'se':
+    case 'border':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return palette[palette.length - 1];

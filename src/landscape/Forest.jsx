@@ -18,9 +18,7 @@ const Forest = (props) => {
         name: 'Perdida y persistencia',
         disabled: false,
       },
-      component: (
-        <ForestLossPersistence />
-      ),
+      component: ForestLossPersistence,
     },
     {
       label: {
@@ -28,9 +26,7 @@ const Forest = (props) => {
         name: 'Integridad',
         disabled: false,
       },
-      component: (
-        <ForestIntegrity />
-      ),
+      component: ForestIntegrity,
     },
   ];
   return (

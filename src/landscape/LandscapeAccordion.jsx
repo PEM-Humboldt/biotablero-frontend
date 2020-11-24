@@ -41,8 +41,7 @@ class LandscapeAccordion extends React.Component {
             id={item.label.id}
             key={item.label.id}
             onChange={() => {
-              const newTabExpanded = expanded !== item.label.id;
-              const expandedTab = newTabExpanded ? item.label.id : null;
+              const expandedTab = expanded !== item.label.id ? item.label.id : null;
               this.setState({ expanded: expandedTab });
               handlerAccordionGeometry(level, expandedTab);
             }}
@@ -52,7 +51,9 @@ class LandscapeAccordion extends React.Component {
             >
               {item.label.name}
             </ExpansionPanelSummary>
-            <ExpansionPanelDetails>{item.component}</ExpansionPanelDetails>
+            <ExpansionPanelDetails>
+              <item.component {...item.componentProps} />
+            </ExpansionPanelDetails>
           </ExpansionPanel>
         ))}
       </div>
@@ -67,7 +68,8 @@ LandscapeAccordion.propTypes = {
       name: PropTypes.string,
       disable: PropTypes.bool,
     }),
-    component: PropTypes.object, // Component to show inside the accordion
+    component: PropTypes.func,
+    componentProps: PropTypes.object,
   })).isRequired,
   classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
   classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
