@@ -451,6 +451,24 @@ class RestAPI {
     };
   }
 
+  /**
+   * Get the geometry associated to forest loss and persistence according to selected period
+   * and the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} period period
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestEcoChangeLPGeometry(areaType, areaId, period) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/layers/lp/period/${period}/categories/`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
