@@ -32,6 +32,10 @@ const tooltipLabel = {
   paramo: 'Páramo',
   wetland: 'Humedal',
   dryForest: 'Bosque Seco Tropical',
+  perdida: 'Pérdida',
+  persistencia: 'Persistencia',
+  ganancia: 'Ganancia',
+  no_bosque: 'No bosque',
 };
 
 
@@ -240,6 +244,11 @@ class Search extends Component {
         break;
       case 'hfCurrent':
       case 'hfPersistence':
+      case 'forestLP':
+      case 'forestLP-2016-2019':
+      case 'forestLP-2011-2015':
+      case 'forestLP-2006-2010':
+      case 'forestLP-2000-2005':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
@@ -306,6 +315,15 @@ class Search extends Component {
         this.shutOffLayer('paramo');
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
+        break;
+      case 'forestLP': {
+        const period = subCategory;
+        const { layers } = this.state;
+
+        const psKeys = Object.keys(layers).filter(key => /forestLP-*/.test(key));
+        psKeys.forEach(key => this.shutOffLayer(key));
+        this.switchLayer(`forestLP-${period}`);
+      }
         break;
       case 'SciHf': {
         const sciCat = subCategory.substring(0, subCategory.indexOf('-'));
@@ -474,6 +492,17 @@ class Search extends Component {
           name: 'Índice de condición estructural de bosques',
         };
         break;
+      case 'forestLP':
+        layerKey = 'forestLP-2016-2019';
+        request = () => RestAPI.requestEcoChangeLPGeometry(
+          selectedAreaTypeId, selectedAreaId, '2016-2019',
+        );
+        layerStyle = this.featureStyle({ type: 'forestLP' });
+        newActiveLayer = {
+          id: 'forestLP-2016-2019',
+          name: 'Pérdida y persistencia de bosque (2016-2019)',
+        };
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -483,6 +512,16 @@ class Search extends Component {
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: 'border' });
           fitBounds = false;
+        } else if (/forestLP-*/.test(layerType)) {
+          const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
+          request = () => RestAPI.requestEcoChangeLPGeometry(
+            selectedAreaTypeId, selectedAreaId, `${yearIni}-${yearEnd}`,
+          );
+          layerStyle = this.featureStyle({ type: 'forestLP' });
+          newActiveLayer = {
+            id: layerType,
+            name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
+          };
         }
         break;
     }

@@ -76,6 +76,7 @@ const GraphLoader = (props) => {
           height={250}
           colors={colors}
           units={units}
+          onClickHandler={onClickGraphHandler}
         />
       );
     case 'pie':
