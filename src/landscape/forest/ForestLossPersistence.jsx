@@ -122,6 +122,7 @@ class ForestLossPersistence extends React.Component {
             onClickGraphHandler={(period) => {
               handlerClickOnGraph('forestLP', period);
             }}
+            selectedIndexValue="2016-2019"
           />
         </div>
       </div>

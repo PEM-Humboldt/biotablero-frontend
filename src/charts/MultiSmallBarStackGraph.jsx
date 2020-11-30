@@ -2,8 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
 import formatNumber from '../commons/format';
+import { darkenColor } from '../commons/colorUtils';
 
 class MultiSmallBarStackGraph extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedIndexValue: props.selectedIndexValue,
+    };
+  }
+
   render() {
     const {
       data,
@@ -12,6 +20,9 @@ class MultiSmallBarStackGraph extends React.Component {
       units,
       onClickHandler,
     } = this.props;
+    const {
+      selectedIndexValue,
+    } = this.state;
 
     /**
    * Transform data structure to be passed to component as a prop
@@ -27,6 +38,7 @@ class MultiSmallBarStackGraph extends React.Component {
         element.data.forEach((item) => {
           object[String(item.key)] = Number(item.area);
           object[`${String(item.key)}Color`] = colors(item.key);
+          object[`${String(item.key)}DarkenColor`] = darkenColor(colors(item.key), 15);
           object[`${String(item.key)}Label`] = item.label;
           object[`${String(item.key)}Percentage`] = Number(item.percentage);
         });
@@ -57,7 +69,16 @@ class MultiSmallBarStackGraph extends React.Component {
           }}
           padding={0.35}
           borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-          colors={({ id, data: allData }) => allData[`${id}Color`]}
+          colors={({
+            id,
+            indexValue,
+            data: allData,
+          }) => {
+            if (indexValue === selectedIndexValue) {
+              return allData[`${id}DarkenColor`];
+            }
+            return allData[`${id}Color`];
+          }}
           enableGridY={false}
           enableGridX
           axisLeft={{
@@ -103,6 +124,7 @@ class MultiSmallBarStackGraph extends React.Component {
               },
           }}
           onClick={({ indexValue }) => {
+            this.setState({ selectedIndexValue: indexValue });
             onClickHandler(indexValue);
           }}
         />
@@ -125,6 +147,7 @@ MultiSmallBarStackGraph.propTypes = {
   colors: PropTypes.func,
   units: PropTypes.string,
   onClickHandler: PropTypes.func,
+  selectedIndexValue: PropTypes.string,
 };
 
 MultiSmallBarStackGraph.defaultProps = {
@@ -132,6 +155,7 @@ MultiSmallBarStackGraph.defaultProps = {
   colors: () => {},
   units: 'ha',
   onClickHandler: () => {},
+  selectedIndexValue: null,
 };
 
 export default MultiSmallBarStackGraph;
