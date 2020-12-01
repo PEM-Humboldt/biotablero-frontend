@@ -123,9 +123,9 @@ class MultiSmallBarStackGraph extends React.Component {
                 legend: { text: { fontSize: '14' } },
               },
           }}
-          onClick={({ indexValue }) => {
+          onClick={({ id, indexValue }) => {
             this.setState({ selectedIndexValue: indexValue });
-            onClickHandler(indexValue);
+            onClickHandler(indexValue, id);
           }}
         />
       </div>
