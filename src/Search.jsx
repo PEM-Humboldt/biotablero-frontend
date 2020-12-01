@@ -293,8 +293,9 @@ class Search extends Component {
    *
    * @param {String} idCategory id of category selected on the graph
    * @param {String} subCategory in case idCategory is grouping a type of features
+   * @param {String} selectedKey id of key selected on the graph
    */
-  clickOnGraph = (idCategory, subCategory = null) => {
+  clickOnGraph = (idCategory, subCategory = null, selectedKey) => {
     switch (idCategory) {
       case 'paramo':
         this.shutOffLayer('wetland');
@@ -322,7 +323,25 @@ class Search extends Component {
 
         const psKeys = Object.keys(layers).filter(key => /forestLP-*/.test(key));
         psKeys.forEach(key => this.shutOffLayer(key));
-        this.switchLayer(`forestLP-${period}`);
+
+        const highlightSelectedFeature = () => {
+          const { layers: updatedLayers, activeLayer: { id: activeLayer } } = this.state;
+          const selectedSubLayer = updatedLayers[activeLayer].layer;
+          if (selectedKey) {
+            selectedSubLayer.eachLayer((layer) => {
+              if (layer.feature.properties.key === selectedKey) {
+                layer.setStyle({
+                  weight: 1,
+                  fillOpacity: 1,
+                });
+              } else {
+                selectedSubLayer.resetStyle(layer);
+              }
+            });
+          }
+        };
+
+        this.switchLayer(`forestLP-${period}`, highlightSelectedFeature);
       }
         break;
       case 'SciHf': {
@@ -401,7 +420,7 @@ class Search extends Component {
    *
    * @param {String} layerType layer type
    */
-  switchLayer = (layerType) => {
+  switchLayer = (layerType, callback = () => {}) => {
     const {
       selectedAreaId,
       selectedAreaTypeId,
@@ -538,6 +557,7 @@ class Search extends Component {
           newState.layers[layerKey].active = true;
           return newState;
         });
+        callback();
       } else {
         const { request: apiRequest, source: apiSource } = request();
         this.setState({ requestSource: apiSource });
@@ -561,8 +581,10 @@ class Search extends Component {
               };
               newState.loadingLayer = false;
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
+
               return newState;
             });
+            callback();
           } else if (res !== 'request canceled') {
             this.reportDataError();
           }
