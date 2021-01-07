@@ -16,7 +16,7 @@ class Landscape extends React.Component {
       childMap: {
         fc: 'fc',
         hf: 'hfCurrent',
-        forest: 'forestLossPersistence',
+        forest: 'forestLP-2016-2019',
       },
     };
   }

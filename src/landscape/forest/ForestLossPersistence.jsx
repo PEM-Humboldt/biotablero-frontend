@@ -74,7 +74,12 @@ class ForestLossPersistence extends React.Component {
   };
 
   render() {
-    const { forestLP, forestPersistenceValue, showInfoGraph } = this.state;
+    const {
+      forestLP,
+      forestPersistenceValue,
+      showInfoGraph,
+    } = this.state;
+    const { handlerClickOnGraph } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -114,6 +119,10 @@ class ForestLossPersistence extends React.Component {
             data={forestLP}
             units="ha"
             colors={matchColor('forestLP')}
+            onClickGraphHandler={(period, key) => {
+              handlerClickOnGraph('forestLP', period, key);
+            }}
+            selectedIndexValue="2016-2019"
           />
         </div>
       </div>

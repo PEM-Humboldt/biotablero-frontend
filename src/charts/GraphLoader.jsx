@@ -27,6 +27,7 @@ const GraphLoader = (props) => {
     onClickGraphHandler,
     markers,
     loading,
+    selectedIndexValue,
   } = props;
 
   // While data is being retrieved from server
@@ -76,6 +77,8 @@ const GraphLoader = (props) => {
           height={250}
           colors={colors}
           units={units}
+          onClickHandler={onClickGraphHandler}
+          selectedIndexValue={selectedIndexValue}
         />
       );
     case 'pie':
@@ -180,6 +183,7 @@ GraphLoader.propTypes = {
     legendPosition: PropTypes.string,
   })),
   loading: PropTypes.bool,
+  selectedIndexValue: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
@@ -195,6 +199,7 @@ GraphLoader.defaultProps = {
   onClickGraphHandler: () => {},
   markers: [],
   loading: false,
+  selectedIndexValue: '',
 };
 
 export default GraphLoader;
