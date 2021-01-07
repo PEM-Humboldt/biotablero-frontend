@@ -511,17 +511,6 @@ class Search extends Component {
           name: 'Índice de condición estructural de bosques',
         };
         break;
-      case 'forestLP':
-        layerKey = 'forestLP-2016-2019';
-        request = () => RestAPI.requestEcoChangeLPGeometry(
-          selectedAreaTypeId, selectedAreaId, '2016-2019',
-        );
-        layerStyle = this.featureStyle({ type: 'forestLP' });
-        newActiveLayer = {
-          id: 'forestLP-2016-2019',
-          name: 'Pérdida y persistencia de bosque (2016-2019)',
-        };
-        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
