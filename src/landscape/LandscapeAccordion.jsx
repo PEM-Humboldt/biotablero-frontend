@@ -1,7 +1,7 @@
 import React from 'react';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -35,7 +35,7 @@ class LandscapeAccordion extends React.Component {
     return (
       <div>
         {componentsArray.map(item => (
-          <ExpansionPanel
+          <Accordion
             className={expanded !== item.label.id ? classNameDefault : classNameSelected}
             expanded={expanded === item.label.id}
             id={item.label.id}
@@ -46,15 +46,15 @@ class LandscapeAccordion extends React.Component {
               handlerAccordionGeometry(level, expandedTab);
             }}
           >
-            <ExpansionPanelSummary
+            <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >
               {item.label.name}
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails>
+            </AccordionSummary>
+            <AccordionDetails>
               <item.component {...item.componentProps} />
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </AccordionDetails>
+          </Accordion>
         ))}
       </div>
     );
