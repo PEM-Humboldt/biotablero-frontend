@@ -12,6 +12,7 @@
   "dependencies": {
     "@material-ui/core": "^4.0.0",
     "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.57",
     "@nivo/bar": "^0.61.1",
     "@nivo/bump": "^0.61.1",
     "@nivo/line": "^0.61.1",
