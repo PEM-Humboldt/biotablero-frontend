@@ -1,4 +1,3 @@
-// TODO: Ajustar evento del Autocompletar sobre el mapa
 import React from 'react';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -9,7 +8,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 
-import Autocomplete from './Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -66,13 +66,16 @@ class Selector extends React.Component {
       case 'large':
         return (
           <Autocomplete
-            valueSelected={(value) => {
-              const itemSelected = data.find(item => item.name === value);
-              handlers[2](parent, itemSelected);
+            id="autocomplete-selector"
+            options={data}
+            getOptionLabel={option => option.name}
+            onChange={(event, values) => {
+              handlers[2](parent, values);
             }}
-            name={label || name}
-            data={data}
+            style={{ width: '100%' }}
+            renderInput={params => <TextField {...params} label="Escriba el nombre a buscar" variant="outlined" />}
             key={`${type}-${label || name}-${index}`}
+            autoHighlight
           />
         );
       default:
