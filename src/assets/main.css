@@ -1289,7 +1289,7 @@ overflow: auto;
 
 .m0, .m0b {
     margin: 0 !important;
-    color: #2a363b;
+    color: #2a363b !important;
     font-size: 14px;
 }
 
@@ -1366,7 +1366,28 @@ overflow: auto;
   background-color: #000;
 }
 
-div[class*="hjhLld"] {
+.MuiFormLabel-root.Mui-focused {
+	color: #e84a5f !important;
+}
+
+.MuiOutlinedInput-root {
+	border-radius: 0 !important;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+	border-color: #2a363b !important;
+}
+
+.MuiAutocomplete-option[data-focus="true"] {
+	background-color: rgba(232, 74, 95, 0.04) !important;
+}
+
+*[class^='PrivateNotchedOutline-root'] {
+	border-left: 0px !important;
+	border-right: 0px !important;
+}
+
+/*div[class*="hjhLld"] {
 	font-size: 14px !important;
   font-weight: bold;
 	line-height: normal !important;
@@ -1375,14 +1396,14 @@ div[class*="hjhLld"] {
 div[class*="eaRHYv"] {
 	font-size: 14px !important;
 	line-height: normal;
-}
+}*/
 
-.inlineb {
+/*.inlineb {
   display: inline-block !important;
 	margin: 10px 20px;
-}
+}*/
 
-div[id*="panel"] button {
+/*div[id*="panel"] button {
   background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
@@ -1404,6 +1425,22 @@ div[id*="panel"] button:hover {
   color: #fff;
   background-color: #e84a5f;
 }
+
+.Select-menu-outer {
+	top: auto;
+	bottom: 100%;
+}
+
+.complist-longer .Select-menu-outer {
+	position: relative !important;
+	height: auto !important;
+	display: block !important;
+}
+
+.Select-option.is-focused  {
+    background-color: rgba(252, 228, 232) !important;
+}
+*/
 
 /*2do menu graficas*/
 
@@ -1837,20 +1874,6 @@ p.legcomp {
   height: 25px;
 }
 
-.Select-menu-outer {
-	top: auto;
-	bottom: 100%;
-}
-
-.complist-longer .Select-menu-outer {
-	position: relative !important;
-	height: auto !important;
-	display: block !important;
-}
-
-.Select-option.is-focused  {
-    background-color: rgba(252, 228, 232) !important;
-}
 
 .icondown {
   float: left;
