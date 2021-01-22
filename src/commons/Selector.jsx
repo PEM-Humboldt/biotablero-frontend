@@ -7,11 +7,8 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
-
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { makeStyles } from '@material-ui/core/styles';
-
 
 
 class Selector extends React.Component {
@@ -76,10 +73,8 @@ class Selector extends React.Component {
               handlers[2](parent, values);
             }}
             style={{ width: '100%' }}
-            renderInput={params =>
-               <TextField {...params} label="Escriba el nombre a buscar" placeholder="Seleccionar..."   variant="outlined"  InputLabelProps={{
-              shrink: true,
-            }}/>}
+            renderInput={params => <TextField {...params} label="Escriba el nombre a buscar" placeholder="Seleccionar..." variant="outlined" InputLabelProps={{ shrink: true }} />
+               }
             key={`${type}-${label || name}-${index}`}
             autoHighlight
           />
