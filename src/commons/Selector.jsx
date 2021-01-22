@@ -10,6 +10,9 @@ import PropTypes from 'prop-types';
 
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { makeStyles } from '@material-ui/core/styles';
+
+
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -73,7 +76,10 @@ class Selector extends React.Component {
               handlers[2](parent, values);
             }}
             style={{ width: '100%' }}
-            renderInput={params => <TextField {...params} label="Escriba el nombre a buscar" variant="outlined" />}
+            renderInput={params =>
+               <TextField {...params} label="Escriba el nombre a buscar" placeholder="Seleccionar..."   variant="outlined"  InputLabelProps={{
+              shrink: true,
+            }}/>}
             key={`${type}-${label || name}-${index}`}
             autoHighlight
           />
