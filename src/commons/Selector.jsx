@@ -73,7 +73,7 @@ class Selector extends React.Component {
               handlers[2](parent, values);
             }}
             style={{ width: '100%' }}
-            renderInput={params => <TextField {...params} label="Escriba el nombre a buscar" placeholder="Seleccionar..." variant="outlined" InputLabelProps={{ shrink: true }} />
+            renderInput={params => <TextField {...params} label="Escriba el nombre a buscar" placeholder="Seleccionar..." variant="standard" InputLabelProps={{ shrink: true }} />
                }
             key={`${type}-${label || name}-${index}`}
             autoHighlight
