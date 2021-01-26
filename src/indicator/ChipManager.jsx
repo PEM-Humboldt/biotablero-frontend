@@ -23,8 +23,6 @@ const theme = createMuiTheme({
       },
     },
   },
-  typography: {
-  },
 });
 
 const ChipManager = ({
