@@ -84,6 +84,14 @@ class Selector extends React.Component {
             )}
             key={`${type}-${label || name}-${index}`}
             autoHighlight
+            ListboxProps={
+              {
+                style: {
+                  maxHeight: '100px',
+                  border: '0px',
+                },
+              }
+            }
           />
         );
       default:
