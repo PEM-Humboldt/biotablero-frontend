@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import AddIcon from '@material-ui/icons/AddLocation';
 import BackGraphIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class PopMenu extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -19,16 +20,15 @@ class PopMenu extends Component {
     this.state = {
       biome: null,
       subBasin: null,
-      ea: null,
     };
   }
 
   /**
    * Event handler when a sub-basin option is selected
    */
-  handleSubBasinChange = (obj) => {
+  handleSubBasinChange = (event, values) => {
     const { subBasin } = this.state;
-    const subBasinSelected = obj ? obj.value : null;
+    const subBasinSelected = values ? values.value : null;
     const { loadStrategies, showDotsGraph } = this.props;
     if (!subBasinSelected || subBasinSelected !== subBasin) {
       showDotsGraph(true);
@@ -36,17 +36,15 @@ class PopMenu extends Component {
     }
     this.setState({
       subBasin: subBasinSelected,
-      ea: null,
     });
   }
 
   /**
    * Event handler when a CAR option is selected
    */
-  handleEAChange = (obj) => {
+  handleEAChange = (event, values) => {
     const { loadStrategies, showDotsGraph } = this.props;
-    const ea = obj ? obj.value : null;
-    this.setState({ ea });
+    const ea = values ? values.value : null;
     if (!ea) {
       showDotsGraph(true);
       loadStrategies(null);
@@ -71,7 +69,7 @@ class PopMenu extends Component {
    * @param {String} subBasin Name of the basinSubzones to list options
    */
   renderEAs = () => {
-    const { biome, subBasin, ea } = this.state;
+    const { biome, subBasin } = this.state;
     const { data: { [biome]: { [subBasin]: easObject } } } = this.props;
 
     let options = [];
@@ -79,12 +77,33 @@ class PopMenu extends Component {
       options = Object.keys(easObject).map(element => ({ value: element, label: element }));
     }
     return (
-      <Select
-        value={ea}
-        onChange={this.handleEAChange}
-        placeholder="Seleccione CAR"
-        options={options}
-      />
+      <div>
+        <Autocomplete
+          id="autocomplete-EAs"
+          autoHighlight
+          options={options}
+          getOptionLabel={option => option.label}
+          style={{ width: '100%' }}
+          key={`${biome}-${subBasin}`}
+          ListboxProps={
+            {
+              style: {
+                maxHeight: '100px',
+                border: '0px',
+              },
+            }
+          }
+          onChange={this.handleEAChange}
+          getOptionSelected={(option, value) => option.label === value.label}
+          renderInput={params => (
+            <TextField
+              {...params}
+              placeholder="Seleccione CAR"
+              variant="standard"
+            />
+          )}
+        />
+      </div>
     );
   }
 
@@ -95,19 +114,38 @@ class PopMenu extends Component {
   renderSubBasins = () => {
     const { biome } = this.state;
     const { data: { [biome]: subBasinsObj } } = this.props;
-
-    const { subBasin } = this.state;
     let options = [];
     if (subBasinsObj) {
       options = Object.keys(subBasinsObj).map(element => ({ value: element, label: element }));
     }
     return (
-      <Select
-        value={subBasin}
-        onChange={this.handleSubBasinChange}
-        placeholder="SubZona Hidrográfica"
-        options={options}
-      />
+      <div>
+        <Autocomplete
+          id="autocomplete-SubBasins"
+          autoHighlight
+          options={options}
+          getOptionLabel={option => option.label}
+          style={{ width: '100%' }}
+          key={`${biome}`}
+          ListboxProps={
+            {
+              style: {
+                maxHeight: '100px',
+                border: '0px',
+              },
+            }
+          }
+          onChange={this.handleSubBasinChange}
+          getOptionSelected={(option, value) => option.label === value.label}
+          renderInput={params => (
+            <TextField
+              {...params}
+              placeholder="SubZona Hidrográfica"
+              variant="standard"
+            />
+          )}
+        />
+      </div>
     );
   }
 
