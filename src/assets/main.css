@@ -1387,7 +1387,7 @@ overflow: auto;
 	border-right: 0px !important;
 }
 
-/*div[class*="hjhLld"] {
+div[class*="hjhLld"] {
 	font-size: 14px !important;
   font-weight: bold;
 	line-height: normal !important;
@@ -1396,14 +1396,14 @@ overflow: auto;
 div[class*="eaRHYv"] {
 	font-size: 14px !important;
 	line-height: normal;
-}*/
+}
 
-/*.inlineb {
+.inlineb {
   display: inline-block !important;
 	margin: 10px 20px;
-}*/
+}
 
-/*div[id*="panel"] button {
+#region button {
   background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
@@ -1420,7 +1420,7 @@ div[class*="eaRHYv"] {
   margin-bottom: 3px;
 }
 
-div[id*="panel"] button:hover {
+#region button:hover {
   border-right: 1px solid transparent;
   color: #fff;
   background-color: #e84a5f;
@@ -1440,7 +1440,7 @@ div[id*="panel"] button:hover {
 .Select-option.is-focused  {
     background-color: rgba(252, 228, 232) !important;
 }
-*/
+
 
 /*2do menu graficas*/
 
