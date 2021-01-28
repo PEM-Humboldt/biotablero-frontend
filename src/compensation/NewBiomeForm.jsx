@@ -1,8 +1,9 @@
 /** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Select from 'react-select';
 import AddProjectIcon from '@material-ui/icons/Check';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 class NewBiomeForm extends Component {
   constructor(props) {
@@ -15,7 +16,7 @@ class NewBiomeForm extends Component {
   /**
    * Event handler when a biomes option is selected
    */
-  handleChangeBiomes = (biomeSelected) => {
+  handleChangeBiomes = (event, biomeSelected) => {
     this.setState({ biomeSelected });
   }
 
@@ -23,15 +24,28 @@ class NewBiomeForm extends Component {
    * Return the biomes selector and its current value
    */
   listBiomes = () => {
-    const { biomeSelected } = this.state;
     const { biomes } = this.props;
     return (
-      <Select
-        ref={this.selectRef}
-        value={biomeSelected}
-        onChange={this.handleChangeBiomes}
-        placeholder="Biomas disponibles"
+      <Autocomplete
+        autoHighlight
         options={biomes.map(biome => ({ ...biome, label: biome.name }))}
+        getOptionLabel={biome => biome.name}
+        renderInput={params => (
+          <TextField
+            {...params}
+            placeholder="Biomas disponibles"
+            variant="outlined"
+          />
+        )}
+        ListboxProps={
+          {
+            style: {
+              maxHeight: '150px',
+              border: '0px',
+            },
+          }
+        }
+        onChange={this.handleChangeBiomes}
       />
     );
   }
