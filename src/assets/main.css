@@ -1374,6 +1374,14 @@ overflow: auto;
 	background-color: rgba(232, 74, 95, 0.04) !important;
 }
 
+.MuiInputBase-root{
+	background-color: #fff;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline, .MuiInput-underline::after{
+	border-color: #2a363b !important;
+}
+
 div[class*="hjhLld"] {
 	font-size: 14px !important;
   font-weight: bold;
@@ -2375,18 +2383,6 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 	border: none;
 	float: right;
-}
-
-.newProjectModal input {
-	padding: 0 10px;
-	box-sizing: border-box;
-	outline: none;
-	font-size: 12px;
-	width: 100%;
-}
-
-.newProjectModal input::placeholder {
-	color: #aaa;
 }
 
 .closebtn {
