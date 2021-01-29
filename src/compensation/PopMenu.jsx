@@ -77,33 +77,31 @@ class PopMenu extends Component {
       options = Object.keys(easObject).map(element => ({ value: element, label: element }));
     }
     return (
-      <div>
-        <Autocomplete
-          id="autocomplete-EAs"
-          autoHighlight
-          options={options}
-          getOptionLabel={option => option.label}
-          style={{ width: '100%' }}
-          key={`${biome}-${subBasin}`}
-          ListboxProps={
-            {
-              style: {
-                maxHeight: '100px',
-                border: '0px',
-              },
-            }
+      <Autocomplete
+        autoHighlight
+        options={options}
+        getOptionLabel={option => option.label}
+        style={{ width: '100%' }}
+        key={`${biome}-${subBasin}`}
+        ListboxProps={
+          {
+            style: {
+              maxHeight: '100px',
+              border: '0px',
+            },
           }
-          onChange={this.handleEAChange}
-          getOptionSelected={(option, value) => option.label === value.label}
-          renderInput={params => (
-            <TextField
-              {...params}
-              placeholder="Seleccione CAR"
-              variant="standard"
-            />
-          )}
-        />
-      </div>
+        }
+        onChange={this.handleEAChange}
+        getOptionSelected={(option, value) => option.label === value.label}
+        renderInput={params => (
+          <TextField
+            {...params}
+            placeholder="Seleccione CAR"
+            variant="outlined"
+            size="small"
+          />
+        )}
+      />
     );
   }
 
@@ -121,7 +119,6 @@ class PopMenu extends Component {
     return (
       <div>
         <Autocomplete
-          id="autocomplete-SubBasins"
           autoHighlight
           options={options}
           getOptionLabel={option => option.label}
@@ -141,7 +138,8 @@ class PopMenu extends Component {
             <TextField
               {...params}
               placeholder="SubZona Hidrográfica"
-              variant="standard"
+              variant="outlined"
+              size="small"
             />
           )}
         />
