@@ -45,6 +45,7 @@ class NewProjectForm extends Component {
             {...params}
             placeholder="Región"
             variant="outlined"
+            size="small"
           />
         )}
       />
@@ -88,18 +89,20 @@ class NewProjectForm extends Component {
               {...params}
               placeholder="Estado del proyecto"
               variant="outlined"
+              size="small"
             />
           )}
         />
         { // TODO: Handle error for new project if the company doesn' have regions and status
           (statusSelected === 'newState') && (<br />) && (
-            <input
-              className="projectInput"
-              type="text"
+            <TextField
               value={newNameState || ''}
               placeholder="Nuevo estado"
               onChange={this.handleChangeNameStatus}
-              maxLength="50"
+              inputProps={{ maxLength: 50 }}
+              variant="outlined"
+              fullWidth
+              size="small"
             />
           )
         }
@@ -148,13 +151,14 @@ class NewProjectForm extends Component {
           <br />
           {this.listStatus()}
           <br />
-          <input
-            className="projectInput"
-            type="text"
+          <TextField
             value={newName || ''}
             placeholder="Nombre del proyecto"
             onChange={this.handleChangeName}
-            maxLength="50"
+            variant="outlined"
+            inputProps={{ maxLength: 50 }}
+            fullWidth
+            size="small"
           />
           { // TODO: Handle error for new project if the company doesn' have regions and status
             regionSelected && (newNameState || statusSelected) && newName && (

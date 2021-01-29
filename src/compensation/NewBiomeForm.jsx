@@ -46,6 +46,7 @@ class NewBiomeForm extends Component {
           }
         }
         onChange={this.handleChangeBiomes}
+        size="small"
       />
     );
   }
