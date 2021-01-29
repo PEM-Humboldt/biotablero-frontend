@@ -28,7 +28,7 @@ class NewBiomeForm extends Component {
     return (
       <Autocomplete
         autoHighlight
-        options={biomes.map(biome => ({ ...biome, label: biome.name }))}
+        options={biomes}
         getOptionLabel={biome => biome.name}
         renderInput={params => (
           <TextField
