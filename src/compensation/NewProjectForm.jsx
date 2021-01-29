@@ -88,7 +88,6 @@ class NewProjectForm extends Component {
               {...params}
               placeholder="Estado del proyecto"
               variant="outlined"
-              maxLength="50"
             />
           )}
         />
