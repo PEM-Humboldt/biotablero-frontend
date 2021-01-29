@@ -1370,21 +1370,8 @@ overflow: auto;
 	color: #e84a5f !important;
 }
 
-.MuiOutlinedInput-root {
-	border-radius: 0 !important;
-}
-
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-	border-color: #2a363b !important;
-}
-
 .MuiAutocomplete-option[data-focus="true"] {
 	background-color: rgba(232, 74, 95, 0.04) !important;
-}
-
-*[class^='PrivateNotchedOutline-root'] {
-	border-left: 0px !important;
-	border-right: 0px !important;
 }
 
 div[class*="hjhLld"] {
