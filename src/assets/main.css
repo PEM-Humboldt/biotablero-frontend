@@ -1398,7 +1398,9 @@ div[class*="eaRHYv"] {
 	margin: 10px 20px;
 }
 
-#region button {
+
+
+#region .inlineb button {
   background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
@@ -1415,7 +1417,7 @@ div[class*="eaRHYv"] {
   margin-bottom: 3px;
 }
 
-#region button:hover {
+#region .inlineb button:hover {
   border-right: 1px solid transparent;
   color: #fff;
   background-color: #e84a5f;
