@@ -1,4 +1,3 @@
-/** eslint verified */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import AddProjectIcon from '@material-ui/icons/Check';
