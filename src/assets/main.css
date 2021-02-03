@@ -1289,7 +1289,7 @@ overflow: auto;
 
 .m0, .m0b {
     margin: 0 !important;
-    color: #2a363b;
+    color: #2a363b !important;
     font-size: 14px;
 }
 
@@ -1366,6 +1366,22 @@ overflow: auto;
   background-color: #000;
 }
 
+.MuiFormLabel-root.Mui-focused {
+	color: #e84a5f !important;
+}
+
+.MuiAutocomplete-option[data-focus="true"] {
+	background-color: rgba(232, 74, 95, 0.04) !important;
+}
+
+.MuiInputBase-root{
+	background-color: #fff;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline, .MuiInput-underline::after{
+	border-color: #2a363b !important;
+}
+
 div[class*="hjhLld"] {
 	font-size: 14px !important;
   font-weight: bold;
@@ -1382,7 +1398,9 @@ div[class*="eaRHYv"] {
 	margin: 10px 20px;
 }
 
-div[id*="panel"] button {
+
+
+#region .inlineb button {
   background-color: transparent;
   border: none;
   border-right: 1px solid #2a363b;
@@ -1399,11 +1417,27 @@ div[id*="panel"] button {
   margin-bottom: 3px;
 }
 
-div[id*="panel"] button:hover {
+#region .inlineb button:hover {
   border-right: 1px solid transparent;
   color: #fff;
   background-color: #e84a5f;
 }
+
+.Select-menu-outer {
+	top: auto;
+	bottom: 100%;
+}
+
+.complist-longer .Select-menu-outer {
+	position: relative !important;
+	height: auto !important;
+	display: block !important;
+}
+
+.Select-option.is-focused  {
+    background-color: rgba(252, 228, 232) !important;
+}
+
 
 /*2do menu graficas*/
 
@@ -1837,20 +1871,6 @@ p.legcomp {
   height: 25px;
 }
 
-.Select-menu-outer {
-	top: auto;
-	bottom: 100%;
-}
-
-.complist-longer .Select-menu-outer {
-	position: relative !important;
-	height: auto !important;
-	display: block !important;
-}
-
-.Select-option.is-focused  {
-    background-color: rgba(252, 228, 232) !important;
-}
 
 .icondown {
   float: left;
@@ -2365,18 +2385,6 @@ tspan, .vx-axis-label {
 	background-color: transparent;
 	border: none;
 	float: right;
-}
-
-.newProjectModal input {
-	padding: 0 10px;
-	box-sizing: border-box;
-	outline: none;
-	font-size: 12px;
-	width: 100%;
-}
-
-.newProjectModal input::placeholder {
-	color: #aaa;
 }
 
 .closebtn {

@@ -23,14 +23,13 @@ const theme = createMuiTheme({
       },
     },
   },
-  typography: { useNextVariants: true },
 });
 
 const ChipManager = ({
   filters,
 }) => (
   <MuiThemeProvider theme={theme}>
-    <Paper>
+    <Paper elevation={2}>
       {filters.map(filter => (
         <Chip
           clickable
