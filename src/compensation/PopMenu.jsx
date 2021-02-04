@@ -166,8 +166,7 @@ class PopMenu extends Component {
             <BackGraphIcon />
             Gráfico Biomas
           </button>
-          )
-        }
+          )}
         </div>
         <AddIcon />
         <div className="Biomatit">

@@ -104,8 +104,7 @@ const SmallBarStackGraph = (props) => {
               padding: 0,
             },
           },
-        }
-        }
+        }}
       />
     </div>
   );

@@ -140,7 +140,7 @@ class ForestIntegrity extends React.Component {
           />
         </div>
         {selectedCategory && (
-          <Fragment>
+          <>
             <h6>
               Distribución en áreas protegidas
             </h6>
@@ -152,7 +152,7 @@ class ForestIntegrity extends React.Component {
                 colors={matchColor('pa', true)}
               />
             </div>
-          </Fragment>
+          </>
         )}
       </div>
     );

@@ -7,7 +7,6 @@ import LandscapeAccordion from './LandscapeAccordion';
 import PersistenceFooprint from './humanFootprint/PersistenceFootprint';
 import TimelineFootprint from './humanFootprint/TimelineFootprint';
 
-
 const HumanFootprint = (props) => {
   const {
     handlerAccordionGeometry,

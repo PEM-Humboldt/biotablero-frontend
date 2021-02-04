@@ -56,9 +56,8 @@ Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: F
 </a>
 `;
 
-
 export const biomesText = (
-  <React.Fragment>
+  <>
     Un bioma es una región que presenta condiciones similares en cuanto a sus características
     climáticas, edáficas y vegetación zonal. La gráfica muestra las hectáreas por cada tipo
     de bioma presente en el área consultada. Entre más biomas diferentes se presenten en el
@@ -77,11 +76,11 @@ export const biomesText = (
       {' Mapa de Ecosistemas Continentales, Costeros y Marinos de Colombia (MEC)'}
     </a>
     , Versión 2.1, escala 1:100.000 (IDEAM et al. 2017).
-  </React.Fragment>
+  </>
 );
 
 export const bioticRegionsText = (
-  <React.Fragment>
+  <>
     Una región biótica es una unidad geográfica que presenta una composición de especies similar
     y que difiere de la composición de especies encontrada en otra unidad geográfica. Las unidades
     bióticas fueron generadas por el Instituto Humboldt a partir de mapas de distribución de
@@ -111,5 +110,5 @@ export const bioticRegionsText = (
     >
       {' Geonetwork IAvH.'}
     </a>
-  </React.Fragment>
+  </>
 );

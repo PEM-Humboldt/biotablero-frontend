@@ -5,7 +5,6 @@ import LandscapeAccordion from './LandscapeAccordion';
 import ForestLossPersistence from './forest/ForestLossPersistence';
 import ForestIntegrity from './forest/ForestIntegrity';
 
-
 const Forest = (props) => {
   const {
     handlerAccordionGeometry,

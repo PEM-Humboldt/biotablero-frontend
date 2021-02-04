@@ -70,8 +70,7 @@ class NewBiomeForm extends Component {
             >
               <AddProjectIcon />
             </button>
-          )
-          }
+          )}
         </div>
       </div>
     );

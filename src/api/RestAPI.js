@@ -378,7 +378,6 @@ class RestAPI {
     };
   }
 
-
   /**
    * According to the strategic ecosystem type, get the footprint timeline geometry
    * associated to the selected area

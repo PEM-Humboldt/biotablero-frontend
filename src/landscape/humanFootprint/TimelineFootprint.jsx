@@ -224,7 +224,6 @@ class TimelineFootprint extends React.Component {
   }
 }
 
-
 export default TimelineFootprint;
 
 TimelineFootprint.contextType = SearchContext;

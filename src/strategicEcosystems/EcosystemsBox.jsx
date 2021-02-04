@@ -103,8 +103,7 @@ class EcosystemsBox extends Component {
               )}
             </div>
           );
-        })
-      }
+        })}
       </div>
     );
   }

@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.new && nextProps.data.length > 0) {

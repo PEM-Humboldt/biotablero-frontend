@@ -5,7 +5,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const config = {};
 config.params = {
   center: [5.2500, -74.9167], // Location: Mariquita-Tolima

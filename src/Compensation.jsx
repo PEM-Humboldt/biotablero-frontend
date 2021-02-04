@@ -292,7 +292,6 @@ class Compensation extends Component {
       });
   }
 
-
   /** ***************************************** */
   /** LISTENER FOR BACK BUTTON ON LATERAL PANEL */
   /** ***************************************** */
