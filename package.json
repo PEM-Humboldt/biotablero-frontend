@@ -32,15 +32,15 @@
     "react-leaflet": "2.0.0",
     "react-masonry-component": "6.2.1",
     "react-router-dom": "4.3.1",
-    "react-scripts": "3.0.0"
+    "react-scripts": "4.0.2"
   },
   "devDependencies": {
-    "eslint": "5.16.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-react-app": "^2.1.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-jsx-a11y": "^5.1.1",
-    "eslint-plugin-react": "^7.19.0"
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "eslint-plugin-react-hooks": "^1.7.0"
   },
   "dependenciesComments": {
     "eslint-plugin-jsx-a11y": "Keep in ^5.1.1 version to avoid warnings"
