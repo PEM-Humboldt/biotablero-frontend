@@ -14,7 +14,7 @@ const CardManager = ({
   <Masonry
     options={masonryOptions}
   >
-    {cardsData.map(card => (
+    {cardsData.map((card) => (
       <Card
         key={card.title}
         title={card.title}

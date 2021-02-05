@@ -43,7 +43,7 @@ class CurrentFootprint extends React.Component {
       .then((res) => {
         if (this.mounted) {
           this.setState({
-            hfCurrent: res.map(item => ({
+            hfCurrent: res.map((item) => ({
               ...item,
               label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
             })),
@@ -61,7 +61,7 @@ class CurrentFootprint extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };

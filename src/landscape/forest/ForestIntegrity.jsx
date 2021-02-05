@@ -92,7 +92,7 @@ class ForestIntegrity extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };

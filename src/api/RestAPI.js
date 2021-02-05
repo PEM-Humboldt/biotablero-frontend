@@ -544,7 +544,7 @@ class RestAPI {
       details: 'Project created by user',
     };
     return RestAPI.makePostRequest(`companies/${companyId}/projects`, requestBody)
-      .then(res => ({
+      .then((res) => ({
         id_project: res.gid,
         id_company: res.id_company,
         region: res.id_region,
@@ -565,7 +565,7 @@ class RestAPI {
    * @param {Object[]} biomes Array of biomes info to associate
    */
   static addImpactedBiomesToProject(companyId, projectId, biomes) {
-    const cleanBiomes = biomes.map(biome => ({
+    const cleanBiomes = biomes.map((biome) => ({
       id_biome: biome.id_biome,
       natural_area_ha: biome.natural_area_ha,
       secondary_area_ha: biome.secondary_area_ha,
@@ -597,7 +597,7 @@ class RestAPI {
    * @param {Object[]} strategies list of strategies to save
    */
   static bulkSaveStrategies = (companyId, projectId, strategies) => Promise.all(
-    strategies.map(strategy => RestAPI.createProjectStrategy(companyId, projectId, strategy)),
+    strategies.map((strategy) => RestAPI.createProjectStrategy(companyId, projectId, strategy)),
   )
 
   /**
@@ -628,7 +628,7 @@ class RestAPI {
    */
   static makeGetRequest(endpoint, options) {
     return axios.get(RestAPI.getEndpointUrl(endpoint), options)
-      .then(res => res.data)
+      .then((res) => res.data)
       .catch((error) => {
         if (axios.isCancel(error)) {
           return Promise.resolve('request canceled');
@@ -648,7 +648,7 @@ class RestAPI {
    */
   static makePostRequest(endpoint, requestBody) {
     return axios.post(RestAPI.getEndpointUrl(endpoint), requestBody)
-      .then(res => res.data)
+      .then((res) => res.data)
       .catch((error) => {
         let message = 'Bad POST response. Try later';
         if (error.response) message = error.response.status;

@@ -36,10 +36,10 @@ class NewProjectForm extends Component {
       <Autocomplete
         autoHighlight
         options={regions}
-        getOptionLabel={option => option.label}
+        getOptionLabel={(option) => option.label}
         onChange={this.handleChangeRegion}
         getOptionSelected={(option, value) => option.label === value.label}
-        renderInput={params => (
+        renderInput={(params) => (
           <TextField
             {...params}
             placeholder="Región"
@@ -73,7 +73,7 @@ class NewProjectForm extends Component {
         <Autocomplete
           autoHighlight
           options={status}
-          getOptionLabel={option => option.label}
+          getOptionLabel={(option) => option.label}
           ListboxProps={
             {
               style: {
@@ -83,7 +83,7 @@ class NewProjectForm extends Component {
           }
           onChange={this.handleChangeStatus}
           getOptionSelected={(option, value) => option.label === value.label}
-          renderInput={params => (
+          renderInput={(params) => (
             <TextField
               {...params}
               placeholder="Estado del proyecto"

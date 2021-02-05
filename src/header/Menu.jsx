@@ -11,7 +11,7 @@ class Menu extends React.Component {
   }
 
   changeMenuState = () => {
-    this.setState(prevState => ({ openMenu: !prevState.openMenu }));
+    this.setState((prevState) => ({ openMenu: !prevState.openMenu }));
   }
 
   render() {

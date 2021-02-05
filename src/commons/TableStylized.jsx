@@ -1,4 +1,3 @@
-/** eslint verified */
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -23,7 +22,7 @@ const TableStylized = ({
       </thead>
       <tbody>
         {
-          rows.map(row => (
+          rows.map((row) => (
             <tr className="row2table" key={row.key}>
               {row.values.map((element, i) => (
                 <td key={`row-${row.key}-${i}`}>

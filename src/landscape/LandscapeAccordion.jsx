@@ -17,7 +17,7 @@ class LandscapeAccordion extends React.Component {
     const { componentsArray } = this.props;
     if (componentsArray.length > 0) {
       const defaultTab = componentsArray.find(
-        item => item.label.disabled === false,
+        (item) => item.label.disabled === false,
       ).label.id;
       this.setState({ expanded: defaultTab });
     }
@@ -34,7 +34,7 @@ class LandscapeAccordion extends React.Component {
     const { expanded } = this.state;
     return (
       <div>
-        {componentsArray.map(item => (
+        {componentsArray.map((item) => (
           <Accordion
             className={expanded !== item.label.id ? classNameDefault : classNameSelected}
             expanded={expanded === item.label.id}

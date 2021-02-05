@@ -37,7 +37,7 @@ const SmallBarStackGraph = (props) => {
    *
    * @returns {array} ids of each bar
    */
-  const keys = data.map(item => String(item.key));
+  const keys = data.map((item) => String(item.key));
 
   /**
    * Get tooltip for graph component according to id of bar

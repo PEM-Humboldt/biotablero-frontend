@@ -28,8 +28,8 @@ class NewBiomeForm extends Component {
       <Autocomplete
         autoHighlight
         options={biomes}
-        getOptionLabel={biome => biome.name}
-        renderInput={params => (
+        getOptionLabel={(biome) => biome.name}
+        renderInput={(params) => (
           <TextField
             {...params}
             placeholder="Biomas disponibles"

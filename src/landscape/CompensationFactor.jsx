@@ -69,7 +69,7 @@ class CompensationFactor extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };
@@ -82,7 +82,7 @@ class CompensationFactor extends React.Component {
    */
   processData = (data) => {
     if (!data) return [];
-    return data.map(obj => ({
+    return data.map((obj) => ({
       key: `${obj.key}`,
       area: parseFloat(obj.area),
       label: `${obj.key}`,

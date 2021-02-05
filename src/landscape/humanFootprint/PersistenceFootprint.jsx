@@ -36,7 +36,7 @@ class PersistenceFootprint extends React.Component {
       .then((res) => {
         if (this.mounted) {
           this.setState({
-            hfPersistence: res.map(item => ({
+            hfPersistence: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
@@ -54,7 +54,7 @@ class PersistenceFootprint extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };

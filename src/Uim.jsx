@@ -28,7 +28,7 @@ class Uim extends Component {
    *
    * @returns {function}
    */
-  showModal = modal => () => {
+  showModal = (modal) => () => {
     switch (modal) {
       case 'loginModal':
         this.setState({ loginModal: true, logoutModal: false, userModal: false });
@@ -52,7 +52,7 @@ class Uim extends Component {
    *
    * @returns {function}{void}
    */
-  turnOffModal = modal => () => {
+  turnOffModal = (modal) => () => {
     this.setState({ [modal]: false });
   }
 

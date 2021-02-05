@@ -10,10 +10,10 @@ class Indicator extends React.Component {
     this.state = {
       openModal: false,
       counterSelectedIndicator: 1,
-      filters: filtersData.map(category => (
+      filters: filtersData.map((category) => (
         {
           ...category,
-          ...category.filters.map(filter => ({ ...filter, selected: 'false' })),
+          ...category.filters.map((filter) => ({ ...filter, selected: 'false' })),
         }
       )),
     };

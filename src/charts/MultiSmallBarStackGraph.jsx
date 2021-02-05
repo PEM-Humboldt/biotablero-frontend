@@ -52,7 +52,7 @@ class MultiSmallBarStackGraph extends React.Component {
    *
    * @returns {array} ids of each bar category
    */
-    const keys = data[0] ? data[0].data.map(item => String(item.key)) : [];
+    const keys = data[0] ? data[0].data.map((item) => String(item.key)) : [];
 
     return (
       <div style={{ height }}>

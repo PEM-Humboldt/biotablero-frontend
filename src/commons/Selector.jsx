@@ -30,7 +30,7 @@ class Selector extends React.Component {
     };
   }
 
-  firstLevelChange = panel => (event, expanded) => {
+  firstLevelChange = (panel) => (event, expanded) => {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
@@ -39,7 +39,7 @@ class Selector extends React.Component {
         expanded: null,
       });
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
         subExpanded: null,
@@ -48,7 +48,7 @@ class Selector extends React.Component {
     return null;
   };
 
-  secondLevelChange = subPanel => (event, expanded) => {
+  secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
     this.setState({
       subExpanded: expanded ? subPanel : false,
@@ -67,12 +67,12 @@ class Selector extends React.Component {
           <Autocomplete
             id="autocomplete-selector"
             options={data}
-            getOptionLabel={option => option.name}
+            getOptionLabel={(option) => option.name}
             onChange={(event, values) => {
               handlers[2](parent, values);
             }}
             style={{ width: '100%' }}
-            renderInput={params => (
+            renderInput={(params) => (
               <TextField
                 {...params}
                 label="Escriba el nombre a buscar"

@@ -43,7 +43,7 @@ class Landscape extends React.Component {
         handlerSwitchLayer(childMap[tabLayerId]);
         break;
       case '2':
-        this.setState(prev => ({
+        this.setState((prev) => ({
           childMap: {
             ...prev.childMap,
             [visible]: tabLayerId,

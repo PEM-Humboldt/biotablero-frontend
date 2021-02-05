@@ -7,10 +7,10 @@ import { GlyphCircle } from '@vx/glyph';
 import { scaleLinear } from '@vx/scale';
 import { withTooltip, Tooltip } from '@vx/tooltip';
 
-const name = d => d.name;
-const x = d => d.affected_percentage;
-const y = d => d.fc;
-const z = d => d.affected_natural;
+const name = (d) => d.name;
+const x = (d) => d.affected_percentage;
+const y = (d) => d.fc;
+const z = (d) => d.affected_natural;
 
 let tooltipTimeout;
 
@@ -77,7 +77,7 @@ export default withTooltip(({
           top={margin.top}
           width={width - margin.left}
         >
-          {points.map(point => (
+          {points.map((point) => (
             <GlyphCircle
               className="dot"
               key={point.id}

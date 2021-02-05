@@ -173,12 +173,12 @@ class Compensation extends Component {
     };
     if (feature.properties.compensation_factor > 6.5
     && feature.properties.area_impacted_pct > 12) {
-      styleResponse.fillColor = Object.values(colors.find(obj => 'high' in obj));
+      styleResponse.fillColor = Object.values(colors.find((obj) => 'high' in obj));
     } else if (feature.properties.compensation_factor < 6.5
     && feature.properties.area_impacted_pct < 12) {
-      styleResponse.fillColor = Object.values(colors.find(obj => 'low' in obj));
+      styleResponse.fillColor = Object.values(colors.find((obj) => 'low' in obj));
     } else {
-      styleResponse.fillColor = Object.values(colors.find(obj => 'medium' in obj));
+      styleResponse.fillColor = Object.values(colors.find((obj) => 'medium' in obj));
     }
     return styleResponse;
   }
@@ -190,9 +190,9 @@ class Compensation extends Component {
   featureActions = (feature, layer, parentLayer) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event.target, parentLayer),
-        mouseout: event => this.resetHighlight(event.target, parentLayer),
-        click: event => this.clickFeature(event.target, parentLayer),
+        mouseover: (event) => this.highlightFeature(event.target, parentLayer),
+        mouseout: (event) => this.resetHighlight(event.target, parentLayer),
+        click: (event) => this.clickFeature(event.target, parentLayer),
       },
     );
   }
@@ -267,7 +267,7 @@ class Compensation extends Component {
    *
    * @param {String} state state value that controls the modal you want to close
    */
-  handleCloseModal = state => () => {
+  handleCloseModal = (state) => () => {
     this.setState({ [state]: false });
   };
 
@@ -414,8 +414,8 @@ class Compensation extends Component {
       });
       newAreas
         .sort((a, b) => a.feature.properties.area_ha - b.feature.properties.area_ha)
-        .forEach(area => this.highlightFeature(area, 'strategies'));
-      oldAreas.forEach(area => this.resetHighlight(area, 'strategies'));
+        .forEach((area) => this.highlightFeature(area, 'strategies'));
+      oldAreas.forEach((area) => this.resetHighlight(area, 'strategies'));
     });
   }
 
@@ -503,7 +503,9 @@ class Compensation extends Component {
                 description={description(currentCompany)}
                 data={regions}
                 expandedId={
-                  regions.length < 0 ? regions.findIndex(region => region.id === currentRegion) : 0
+                  regions.length < 0
+                  ? regions.findIndex((region) => region.id === currentRegion)
+                  : 0
                 }
                 iconClass="iconsec2"
               />
@@ -513,7 +515,7 @@ class Compensation extends Component {
               currentProject && (
               <Drawer
                 back={this.handlerBackButton}
-                colors={colors.map(obj => Object.values(obj)[0])}
+                colors={colors.map((obj) => Object.values(obj)[0])}
                 currentBiome={currentBiome}
                 updateCurrentBiome={this.updateCurrentBiome}
                 biomesImpacted={biomesImpacted}

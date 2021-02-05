@@ -57,7 +57,7 @@ class MapViewer extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
-    newActiveLayers = Object.keys(newActiveLayers).filter(name => newActiveLayers[name]);
+    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
     const { layers: oldLayers, activeLayers } = prevState;
     if (newActiveLayers.join() === activeLayers.join()) {
       return { update: false };
