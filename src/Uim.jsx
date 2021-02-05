@@ -28,7 +28,7 @@ class Uim extends Component {
    *
    * @returns {function}
    */
-  showModal = modal => () => {
+  showModal = (modal) => () => {
     switch (modal) {
       case 'loginModal':
         this.setState({ loginModal: true, logoutModal: false, userModal: false });
@@ -52,7 +52,7 @@ class Uim extends Component {
    *
    * @returns {function}{void}
    */
-  turnOffModal = modal => () => {
+  turnOffModal = (modal) => () => {
     this.setState({ [modal]: false });
   }
 
@@ -73,8 +73,7 @@ class Uim extends Component {
         >
           { user
             ? (<AccountCircle className="userBox" style={{ fontSize: '40px' }} />)
-            : (<AccountCircleOutlined className="userBox" style={{ fontSize: '40px' }} />)
-          }
+            : (<AccountCircleOutlined className="userBox" style={{ fontSize: '40px' }} />)}
         </button>
         <Modal
           aria-labelledby="simple-modal-title"
@@ -94,8 +93,7 @@ class Uim extends Component {
             </button>
             { !user
               ? (<Login setUser={setUser} />)
-              : (<UserInfo logoutHandler={this.showModal('logoutModal')} />)
-            }
+              : (<UserInfo logoutHandler={this.showModal('logoutModal')} />)}
           </div>
         </Modal>
         <ConfirmationModal

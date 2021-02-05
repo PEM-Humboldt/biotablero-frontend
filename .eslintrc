@@ -4,6 +4,11 @@
   "rules": {
     "react/forbid-prop-types": "off",
     "react/no-array-index-key": "off",
-    "jsx-a11y/label-has-associated-control": "off"
+    "react/jsx-no-duplicate-props": ["error", { "ignoreCase": false }],
+    "react/jsx-props-no-spreading": ["error", {
+      "exceptions": ["item.component"]
+    }],
+    "template-curly-spacing" : "off",
+    "indent": "off"
   }
 }

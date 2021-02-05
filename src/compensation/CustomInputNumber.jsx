@@ -26,7 +26,7 @@ class CustomInputNumber extends React.Component {
    * @param {String} action action performed
    */
   switchAction = (action, error = false) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       add: !prevState.add,
       inputError: error,
       value: action === '-' ? 0 : Number(prevState.value).toFixed(2),
@@ -55,6 +55,7 @@ class CustomInputNumber extends React.Component {
         <button
           className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
+          aria-label="Agregar hectareas"
           disabled={value <= 0}
           onClick={() => {
             const action = add ? '+' : '-';

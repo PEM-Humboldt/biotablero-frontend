@@ -1,6 +1,6 @@
 import React from 'react';
 
-const description = companyName => (
+const description = (companyName) => (
   <div>
     <p>
       {'En esta sección podrás encontrar información sobre '}

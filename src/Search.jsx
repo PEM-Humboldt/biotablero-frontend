@@ -38,7 +38,6 @@ const tooltipLabel = {
   no_bosque: 'No bosque',
 };
 
-
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -88,7 +87,7 @@ class Search extends Component {
     if (!selectedAreaType || (selectedAreaType && selectedAreaType.id !== idLayer)) {
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.selectedAreaType = prevState.areaList.find(item => item.id === idLayer);
+        newState.selectedAreaType = prevState.areaList.find((item) => item.id === idLayer);
         newState.selectedArea = null;
         return newState;
       });
@@ -130,11 +129,11 @@ class Search extends Component {
           } = this.props;
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
-          const inputArea = tempAreaList.find(area => area.id === selectedAreaTypeId);
+          const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             let field = 'id';
             if (selectedAreaTypeId === 'pa') field = 'name';
-            const inputId = inputArea.data.find(area => area[field] === selectedAreaId);
+            const inputId = inputArea.data.find((area) => area[field] === selectedAreaId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);
               this.setState(
@@ -218,8 +217,8 @@ class Search extends Component {
   featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: event => this.highlightFeature(event, layerName),
-        mouseout: event => this.resetHighlight(event, layerName),
+        mouseover: (event) => this.highlightFeature(event, layerName),
+        mouseout: (event) => this.resetHighlight(event, layerName),
       },
     );
   }
@@ -321,8 +320,8 @@ class Search extends Component {
         const period = subCategory;
         const { layers } = this.state;
 
-        const psKeys = Object.keys(layers).filter(key => /forestLP-*/.test(key));
-        psKeys.forEach(key => this.shutOffLayer(key));
+        const psKeys = Object.keys(layers).filter((key) => /forestLP-*/.test(key));
+        psKeys.forEach((key) => this.shutOffLayer(key));
 
         const highlightSelectedFeature = () => {
           const { layers: updatedLayers, activeLayer: { id: activeLayer } } = this.state;
@@ -349,8 +348,8 @@ class Search extends Component {
         const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
-        const psKeys = Object.keys(layers).filter(key => /SciHfPA-*/.test(key));
-        psKeys.forEach(key => this.shutOffLayer(key));
+        const psKeys = Object.keys(layers).filter((key) => /SciHfPA-*/.test(key));
+        psKeys.forEach((key) => this.shutOffLayer(key));
         this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
 
         const selectedSubLayer = layers[activeLayer].layer;
@@ -736,7 +735,7 @@ class Search extends Component {
    *
    * @param {String} state state value that controls the modal you want to close
    */
-  handleCloseModal = state => () => {
+  handleCloseModal = (state) => () => {
     this.setState({ [state]: false });
   };
 

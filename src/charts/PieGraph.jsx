@@ -6,10 +6,9 @@ import { lightenColor, darkenColor } from '../commons/colorUtils';
 
 const theme = {
   tooltip: {
-    container: {
-      background: '#333',
-      color: '#ffffff',
-    },
+    background: '#333',
+    color: '#ffffff',
+    padding: '5px 8px',
   },
 };
 
@@ -52,8 +51,8 @@ class PieGraph extends React.Component {
           radialLabelsTextColor={({ id }) => darkenColor(colors(id), 20)}
           radialLabelsLinkColor={{ from: 'color' }}
           radialLabelsLinkHorizontalLength={10}
-          enableSlicesLabels={false}
-          tooltip={({ label, value, color }) => (
+          enableSliceLabels={false}
+          tooltip={({ datum: { label, value, color } }) => (
             <div>
               <strong style={{ color: lightenColor(color, 15) }}>
                 {`${label}:`}

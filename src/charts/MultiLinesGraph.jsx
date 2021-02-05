@@ -146,7 +146,7 @@ class MultiLinesGraph extends React.Component {
             legendOffset: -40,
             legendPosition: 'middle',
           }}
-          colors={obj => obj.color}
+          colors={(obj) => obj.color}
           blendMode="multiply"
           activeFillOpacity={1}
           fillOpacity={0.3}
@@ -166,7 +166,7 @@ class MultiLinesGraph extends React.Component {
           pointLabel="y"
           pointLabelYOffset={-12}
           useMesh
-          tooltip={point => this.getToolTip(point.point)}
+          tooltip={(point) => this.getToolTip(point.point)}
           theme={{
             onMouseEnter: {
               container: {

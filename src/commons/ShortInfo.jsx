@@ -33,9 +33,9 @@ class ShortInfo extends React.Component {
         {collapseButton && (
           <button
             type="button"
-            id="showHome"
             className={`showHome rotate-${hideText}`}
             title={tooltip}
+            aria-label={tooltip}
             onClick={this.handleClick}
           />
         )}

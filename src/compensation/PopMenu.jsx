@@ -74,13 +74,13 @@ class PopMenu extends Component {
 
     let options = [];
     if (easObject) {
-      options = Object.keys(easObject).map(element => ({ value: element, label: element }));
+      options = Object.keys(easObject).map((element) => ({ value: element, label: element }));
     }
     return (
       <Autocomplete
         autoHighlight
         options={options}
-        getOptionLabel={option => option.label}
+        getOptionLabel={(option) => option.label}
         style={{ width: '100%' }}
         key={`${biome}-${subBasin}`}
         ListboxProps={
@@ -93,9 +93,11 @@ class PopMenu extends Component {
         }
         onChange={this.handleEAChange}
         getOptionSelected={(option, value) => option.label === value.label}
-        renderInput={params => (
+        renderInput={(params) => (
           <TextField
-            {...params}
+            InputProps={params.InputProps}
+            inputProps={params.inputProps}
+            fullWidth={params.fullWidth}
             placeholder="Seleccione CAR"
             variant="outlined"
             size="small"
@@ -114,14 +116,14 @@ class PopMenu extends Component {
     const { data: { [biome]: subBasinsObj } } = this.props;
     let options = [];
     if (subBasinsObj) {
-      options = Object.keys(subBasinsObj).map(element => ({ value: element, label: element }));
+      options = Object.keys(subBasinsObj).map((element) => ({ value: element, label: element }));
     }
     return (
       <div>
         <Autocomplete
           autoHighlight
           options={options}
-          getOptionLabel={option => option.label}
+          getOptionLabel={(option) => option.label}
           style={{ width: '100%' }}
           key={`${biome}`}
           ListboxProps={
@@ -134,9 +136,11 @@ class PopMenu extends Component {
           }
           onChange={this.handleSubBasinChange}
           getOptionSelected={(option, value) => option.label === value.label}
-          renderInput={params => (
+          renderInput={(params) => (
             <TextField
-              {...params}
+              InputProps={params.InputProps}
+              inputProps={params.inputProps}
+              fullWidth={params.fullWidth}
               placeholder="SubZona Hidrográfica"
               variant="outlined"
               size="small"
@@ -166,8 +170,7 @@ class PopMenu extends Component {
             <BackGraphIcon />
             Gráfico Biomas
           </button>
-          )
-        }
+          )}
         </div>
         <AddIcon />
         <div className="Biomatit">

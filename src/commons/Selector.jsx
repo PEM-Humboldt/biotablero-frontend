@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.new && nextProps.data.length > 0) {
@@ -31,7 +30,7 @@ class Selector extends React.Component {
     };
   }
 
-  firstLevelChange = panel => (event, expanded) => {
+  firstLevelChange = (panel) => (event, expanded) => {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
@@ -40,7 +39,7 @@ class Selector extends React.Component {
         expanded: null,
       });
     } else {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
         subExpanded: null,
@@ -49,7 +48,7 @@ class Selector extends React.Component {
     return null;
   };
 
-  secondLevelChange = subPanel => (event, expanded) => {
+  secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
     this.setState({
       subExpanded: expanded ? subPanel : false,
@@ -68,14 +67,16 @@ class Selector extends React.Component {
           <Autocomplete
             id="autocomplete-selector"
             options={data}
-            getOptionLabel={option => option.name}
+            getOptionLabel={(option) => option.name}
             onChange={(event, values) => {
               handlers[2](parent, values);
             }}
             style={{ width: '100%' }}
-            renderInput={params => (
+            renderInput={(params) => (
               <TextField
-                {...params}
+                InputProps={params.InputProps}
+                inputProps={params.inputProps}
+                fullWidth={params.fullWidth}
                 label="Escriba el nombre a buscar"
                 placeholder="Seleccionar..."
                 variant="standard"
@@ -199,6 +200,7 @@ Selector.propTypes = {
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
   iconClass: PropTypes.string,
+  expandedId: PropTypes.number,
 };
 
 Selector.defaultProps = {
@@ -206,6 +208,7 @@ Selector.defaultProps = {
   handlers: [],
   description: {},
   iconClass: '',
+  expandedId: 0,
 };
 
 export default Selector;

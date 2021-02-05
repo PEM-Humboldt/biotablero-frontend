@@ -41,13 +41,13 @@ const LargeBarStackGraph = (props) => {
     return [transformedData];
   };
 
-  const keys = data.map(item => String(item.key));
+  const keys = data.map((item) => String(item.key));
 
   return (
     <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data, labelY)}
-        onClick={category => onClickGraphHandler(category.id)}
+        onClick={(category) => onClickGraphHandler(category.id)}
         keys={keys}
         indexBy="key"
         layout="horizontal"
@@ -58,7 +58,7 @@ const LargeBarStackGraph = (props) => {
           left: 40,
         }}
         padding={padding}
-        colors={obj => colors(obj.id)}
+        colors={(obj) => colors(obj.id)}
         enableGridX
         borderWidth={0}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

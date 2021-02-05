@@ -94,7 +94,7 @@ class Overview extends React.Component {
   }
 
   toggleInfo = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };

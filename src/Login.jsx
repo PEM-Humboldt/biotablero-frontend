@@ -30,7 +30,7 @@ class Login extends Component {
     const { setUser } = this.props;
     return (
       <div className="login">
-        <form onSubmit={event => event.preventDefault()}>
+        <form onSubmit={(event) => event.preventDefault()}>
           <input
             className="loginInput"
             type="text"
@@ -54,7 +54,7 @@ class Login extends Component {
             type="submit"
             onClick={() => {
               RestAPI.requestUser(username, password)
-                .then(res => setUser(res));
+                .then((res) => setUser(res));
             }}
           >
             Ingresar

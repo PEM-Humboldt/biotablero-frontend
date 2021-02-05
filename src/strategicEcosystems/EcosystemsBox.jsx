@@ -35,7 +35,7 @@ class EcosystemsBox extends Component {
     } else {
       loaded.push(toLoad);
     }
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       ...prevState,
       showGraphs: !prevState.stopLoad ? loaded : false,
     }));
@@ -103,8 +103,7 @@ class EcosystemsBox extends Component {
               )}
             </div>
           );
-        })
-      }
+        })}
       </div>
     );
   }

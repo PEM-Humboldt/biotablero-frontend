@@ -103,7 +103,7 @@ class TimelineFootprint extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };
@@ -153,7 +153,7 @@ class TimelineFootprint extends React.Component {
    */
   processData = (data) => {
     if (!data) return [];
-    return data.map(obj => ({
+    return data.map((obj) => ({
       ...obj,
       label: this.getLabel(obj.key).substr(0, 11),
     }));
@@ -223,7 +223,6 @@ class TimelineFootprint extends React.Component {
     );
   }
 }
-
 
 export default TimelineFootprint;
 

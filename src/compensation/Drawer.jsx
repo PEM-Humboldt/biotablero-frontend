@@ -45,7 +45,7 @@ class Drawer extends React.Component {
    * @param {Array} data array of objects with information about compensations
    */
   static cleanWhatWhereData = (data) => {
-    const biomes = data.map(element => ({
+    const biomes = data.map((element) => ({
       id: element.id,
       biome_id: element.biome.id_biome,
       name: element.biome.name,
@@ -121,7 +121,7 @@ class Drawer extends React.Component {
     } = this.props;
     if (biomesImpacted.length <= 0) {
       RestAPI.getAllBiomes()
-        .then(biomes => (
+        .then((biomes) => (
           this.setState({
             controlAddingBiomes: true,
             allBiomes: biomes,
@@ -187,7 +187,7 @@ class Drawer extends React.Component {
       });
       return {
         biomesDraft: newBiomes,
-        allBiomes: prevState.allBiomes.filter(element => element.id_biome !== biome.id_biome),
+        allBiomes: prevState.allBiomes.filter((element) => element.id_biome !== biome.id_biome),
       };
     });
   }
@@ -435,7 +435,7 @@ class Drawer extends React.Component {
         case '-':
           state.selectedArea -= Number(value);
           state.selectedArea = Math.abs(state.selectedArea);
-          state.selectedStrategies = state.selectedStrategies.filter(s => s.id !== id);
+          state.selectedStrategies = state.selectedStrategies.filter((s) => s.id !== id);
           break;
         default:
           break;
@@ -457,7 +457,7 @@ class Drawer extends React.Component {
     let { user } = this.context;
     if (!user) user = { id: null };
     const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
-    const strategiesToSave = selectedStrategies.map(strategy => ({
+    const strategiesToSave = selectedStrategies.map((strategy) => ({
       id_biome: biome.id,
       id_ea: ea.id,
       id_subzone: subBasin.id,
@@ -473,7 +473,7 @@ class Drawer extends React.Component {
             biome,
             subBasin,
             ea,
-            strategies: selectedStrategies.map(strategy => ({
+            strategies: selectedStrategies.map((strategy) => ({
               id: strategy.id,
               name: strategy.name,
               value: strategy.value,
@@ -522,7 +522,7 @@ class Drawer extends React.Component {
         {Object.values(savedStrategies).map(({
           biome, ea, subBasin, area, strategies,
         }) => {
-          const tableRows = strategies.map(strategy => ({
+          const tableRows = strategies.map((strategy) => ({
             key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
             values: [
               strategy.name,
@@ -576,7 +576,7 @@ class Drawer extends React.Component {
         );
         if (savedStrategies[key]) {
           const found = savedStrategies[key]
-            .strategies.find(item => item.id === Number(strategy.id));
+            .strategies.find((item) => item.id === Number(strategy.id));
           if (found) addRow = found.value;
         }
         return {
@@ -635,7 +635,7 @@ class Drawer extends React.Component {
       ? { [currentBiome]: impactedBiomesDecisionTree[currentBiome] } : {};
     return (
       <ParentSize className="nocolor">
-        {parent => (
+        {(parent) => (
           parent.width && parent.height && (
             <PopMenu
               visibleGraph={DotsWhere}
@@ -657,7 +657,7 @@ class Drawer extends React.Component {
     if (graph === 'Dots' && DotsWhere) {
       return (
         <ParentSize className="nocolor">
-          {parent => (
+          {(parent) => (
             parent.width && parent.height && (
               <GraphLoader
                 width={parent.width}
@@ -668,7 +668,7 @@ class Drawer extends React.Component {
                 activeBiome={activeBiome}
                 labelX={labelX}
                 labelY={labelY}
-                elementOnClick={name => this.resetAreaSelected(name)}
+                elementOnClick={(name) => this.resetAreaSelected(name)}
               />
             )
           )}

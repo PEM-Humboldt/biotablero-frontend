@@ -20,9 +20,9 @@ class App extends React.Component {
     };
   }
 
-  buildQuery = queryString => new URLSearchParams(queryString);
+  buildQuery = (queryString) => new URLSearchParams(queryString);
 
-  setUser = user => this.setState({ user });
+  setUser = (user) => this.setState({ user });
 
   setHeaderNames = (parent, child) => {
     this.setState({

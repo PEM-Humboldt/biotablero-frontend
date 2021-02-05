@@ -37,9 +37,9 @@ class ForestLossPersistence extends React.Component {
       .then((res) => {
         if (this.mounted) {
           this.setState({
-            forestLP: res.map(item => ({
+            forestLP: res.map((item) => ({
               ...item,
-              data: item.data.map(element => ({
+              data: item.data.map((element) => ({
                 ...element,
                 label: getLabel[element.key],
               }
@@ -68,7 +68,7 @@ class ForestLossPersistence extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };

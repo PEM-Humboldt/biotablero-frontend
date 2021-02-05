@@ -5,7 +5,7 @@ export const sectionInfo = `En esta sección se presenta en hectáreas el tipo d
 Al interpretar estas cifras e indicadores se debe tener en cuenta que valores inferiores al 1% no son representados en las gráficas y que cualquier cálculo realizado a través de software SIG es una estimación del valor real y dependerá de los parámetros del sistema de proyección utilizado. El sistema de proyección utilizado para el cálculo de áreas en BioTablero es el Sistema MAGNA-SIRGAS con origen en Bogotá y adoptado para el país por el Instituto Geográfico Agustín Codazzi - IGAC.`;
 
 export const coverageText = (
-  <React.Fragment>
+  <>
     La medición del porcentaje de coberturas natural, secundaria y transformada da cuenta del grado
     de conservación o de transformación de los ecosistemas y es utilizado para medir el avance en el
     cumplimiento de metas de conservación globales. Entre mayor sea el porcentaje de cobertura
@@ -41,11 +41,11 @@ export const coverageText = (
         en este mapa.
       </li>
     </ul>
-  </React.Fragment>
+  </>
 );
 
 export const paText = (
-  <React.Fragment>
+  <>
     El indicador: “Porcentaje de área representada en áreas protegidas” es utilizado para medir el
     nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de
     biodiversidad (Sparks, 2011). Dependiendo del tipo de área protegida se puede desagregar la
@@ -85,11 +85,11 @@ export const paText = (
         RUNAP fueron incluidas en el cálculo una sola vez.
       </li>
     </ul>
-  </React.Fragment>
+  </>
 );
 
 export const seText = (
-  <React.Fragment>
+  <>
     Los Ecosistemas Estratégicos son aquellos destacados por su importancia biológica, por las
     contribuciones que generan a las personas, o por su nivel de vulnerabilidad en el país.
     Se presenta en hectáreas la cantidad de Páramos, Bosque Seco Tropical y Humedales para el
@@ -129,5 +129,5 @@ export const seText = (
         nacionales.
       </li>
     </ul>
-  </React.Fragment>
+  </>
 );

@@ -8,8 +8,8 @@ export const setPAValues = (arrayIn) => {
     np = null;
   }
   const result = array
-    .filter(item => Number(item.area) > 0)
-    .map(item => ({
+    .filter((item) => Number(item.area) > 0)
+    .map((item) => ({
       ...item,
       area: Number(item.area),
       // TODO: Maybe modify backend to always return type

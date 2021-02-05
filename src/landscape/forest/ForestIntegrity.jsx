@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from '../../commons/tooltips';
@@ -92,7 +92,7 @@ class ForestIntegrity extends React.Component {
    * Show or hide the detailed information on each graph
    */
   toggleInfoGraph = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };
@@ -140,7 +140,7 @@ class ForestIntegrity extends React.Component {
           />
         </div>
         {selectedCategory && (
-          <Fragment>
+          <>
             <h6>
               Distribución en áreas protegidas
             </h6>
@@ -152,7 +152,7 @@ class ForestIntegrity extends React.Component {
                 colors={matchColor('pa', true)}
               />
             </div>
-          </Fragment>
+          </>
         )}
       </div>
     );

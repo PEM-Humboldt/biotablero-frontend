@@ -5,7 +5,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-
 const config = {};
 config.params = {
   center: [5.2500, -74.9167], // Location: Mariquita-Tolima
@@ -58,7 +57,7 @@ class MapViewer extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
-    newActiveLayers = Object.keys(newActiveLayers).filter(name => newActiveLayers[name]);
+    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
     const { layers: oldLayers, activeLayers } = prevState;
     if (newActiveLayers.join() === activeLayers.join()) {
       return { update: false };

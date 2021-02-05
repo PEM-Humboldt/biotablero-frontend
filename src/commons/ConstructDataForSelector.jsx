@@ -1,13 +1,12 @@
-/** eslint verified */
 /**
  * Set the first letter of each word to uppercase
  */
-const FirstLetterUpperCase = sentence => (
+const FirstLetterUpperCase = (sentence) => (
   sentence
     .toLowerCase()
     .split(/ |-/)
-    .filter(str => str.length > 0)
-    .map(str => str[0].toUpperCase() + str.slice(1))
+    .filter((str) => str.length > 0)
+    .map((str) => str[0].toUpperCase() + str.slice(1))
     .join(' ')
 );
 
@@ -81,7 +80,7 @@ const ConstructDataForCompensation = (regions) => {
       const statusId = (statusKey === 'null') ? '(ESTADO SIN ASIGNAR)' : statusKey;
       const statusLabel = (statusId.length > 3)
         ? FirstLetterUpperCase(statusId) : statusId;
-      if (!statusList.find(st => st.value === statusId)) {
+      if (!statusList.find((st) => st.value === statusId)) {
         statusList.push({
           value: statusId,
           label: statusLabel,
@@ -93,7 +92,7 @@ const ConstructDataForCompensation = (regions) => {
         detailId: 'state',
         iconOption: 'expand',
         idLabel: FirstLetterUpperCase(statusLabel).replace(/ /g, ''),
-        projects: regions[regionKey][statusKey].map(project => ({
+        projects: regions[regionKey][statusKey].map((project) => ({
           id_project: project.gid,
           name: FirstLetterUpperCase(project.name),
           state: project.prj_status,

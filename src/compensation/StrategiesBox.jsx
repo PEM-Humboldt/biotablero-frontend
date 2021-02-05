@@ -18,7 +18,7 @@ class StrategiesBox extends Component {
    *
    */
   switchTable = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showTable: !prevState.showTable,
     }));
   }
