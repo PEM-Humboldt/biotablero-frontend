@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from '../../commons/tooltips';
