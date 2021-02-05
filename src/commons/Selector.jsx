@@ -198,6 +198,7 @@ Selector.propTypes = {
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
   iconClass: PropTypes.string,
+  expandedId: PropTypes.number,
 };
 
 Selector.defaultProps = {
@@ -205,6 +206,7 @@ Selector.defaultProps = {
   handlers: [],
   description: {},
   iconClass: '',
+  expandedId: 0,
 };
 
 export default Selector;
