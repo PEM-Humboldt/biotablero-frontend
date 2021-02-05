@@ -55,6 +55,7 @@ class CustomInputNumber extends React.Component {
         <button
           className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
           type="button"
+          aria-label="Agregar hectareas"
           disabled={value <= 0}
           onClick={() => {
             const action = add ? '+' : '-';
