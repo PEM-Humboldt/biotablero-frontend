@@ -9,7 +9,7 @@ import Layout from './Layout';
 import Search from './Search';
 import Uim from './Uim';
 
-import './assets/main.css';
+import 'main.css';
 
 class App extends React.Component {
   constructor(props) {

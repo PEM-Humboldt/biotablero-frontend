@@ -265,7 +265,7 @@ header h3 a {
 }
 
 .iconUserLogged {
-  background: url(../assets/img/logout.png) no-repeat center;
+  background: url(images/logout.png) no-repeat center;
   float: right;
   width: 20px;
   height: 22px;
@@ -293,7 +293,7 @@ header h4 b {
 .finderline {
 	width: 100%;
 	min-height: 400px;
-	background: url(./img/sky.jpg) no-repeat center center;
+	background: url(images/sky.jpg) no-repeat center center;
 	background-size: cover;
 	background-color: #2a363b;
 	padding: 20px 0;
@@ -329,7 +329,7 @@ h2 {
 	height: 280px;
 	margin: 35px 15px 15px;
 	display: inline-block;
-	background: url(./img/indicadores.png) no-repeat center center;
+	background: url(images/indicadores.png) no-repeat center center;
 	font-size: 30px;
 	line-height: 1;
 	text-transform: uppercase;
@@ -345,23 +345,23 @@ h2 {
 }
 
 .geo {
-	background-image: url(./img/geografico.png);
+	background-image: url(images/geografico.png);
 }
 
 .ind {
-	background-image: url(./img/indicadores.png);
+	background-image: url(images/indicadores.png);
 }
 
 .per {
-	background-image: url(./img/relaciones.png);
+	background-image: url(images/relaciones.png);
 }
 
 .com {
-	background-image: url(./img/compensaciones.png);
+	background-image: url(images/compensaciones.png);
 }
 
 .ale {
-	background-image: url(./img/alertas.png);
+	background-image: url(images/alertas.png);
 }
 
 .activeicon {
@@ -447,7 +447,7 @@ menu button.active {
 	min-width: 28px;
 	min-height: 28px;
 	background: none;
-	background-image: url(./img/downinfo.png);
+	background-image: url(images/downinfo.png);
 	border: none;
 	top: -14px;
 	left: 85px;
@@ -617,7 +617,7 @@ menu button.active {
 .download {
 	border: none;
 	padding: 10px 13px 10px 37px;
-	background: url(./img/down1.png) #fff 5px no-repeat;
+	background: url(images/down1.png) #fff 5px no-repeat;
 	color: #e84a5f;
 	font-size: 14px;
 	margin: 0 35px 20px;
@@ -626,7 +626,7 @@ menu button.active {
 
 .download:hover {
 	background-color: #2a363b;
-	background-image: url(./img/down2.png);
+	background-image: url(images/down2.png);
 	color: #fff;
 }
 
@@ -1205,7 +1205,7 @@ overflow: auto;
 }
 
 .Consultasgeográficas {
-  background-image: url(../assets/img/geografico.png);
+  background-image: url(images/geografico.png);
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
@@ -1214,7 +1214,7 @@ overflow: auto;
 }
 
 .Compensaciónambiental {
-  background-image: url(../assets/img/compensaciones.png);
+  background-image: url(images/compensaciones.png);
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
@@ -2282,13 +2282,13 @@ tspan, .vx-axis-label {
 }
 
 .uim_modal.loginModal {
-	background-image: url(./img/login.png);
-	/*background-image: url(./img/bgmountain.png);*/
+	background-image: url(images/login.png);
+	/*background-image: url(images/bgmountain.png);*/
 	background-repeat: no-repeat;
 }
 
 .uim_modal.userModal {
-	background-image: url(./img/LogoGEB.png);
+	background-image: url(images/LogoGEB.png);
 	background-position: 50% 20%;
 	background-repeat: no-repeat;
 }

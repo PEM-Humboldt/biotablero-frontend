@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import logohumboldt from './assets/img/logohumboldt.png';
-import logosiac from './assets/img/logosiac.png';
-import nasa from './assets/img/nasa.png';
-import temple from './assets/img/temple.png';
+import logohumboldt from 'images/logohumboldt.png';
+import logosiac from 'images/logosiac.png';
+import nasa from 'images/nasa.png';
+import temple from 'images/temple.png';
 
 const Footer = (
   {
