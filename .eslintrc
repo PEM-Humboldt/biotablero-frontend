@@ -7,6 +7,8 @@
     "react/jsx-no-duplicate-props": ["error", { "ignoreCase": false }],
     "react/jsx-props-no-spreading": ["error", {
       "exceptions": ["item.component"]
-    }]
+    }],
+    "template-curly-spacing" : "off",
+    "indent": "off"
   }
 }
