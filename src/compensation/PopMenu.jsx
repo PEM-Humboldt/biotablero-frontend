@@ -95,7 +95,9 @@ class PopMenu extends Component {
         getOptionSelected={(option, value) => option.label === value.label}
         renderInput={(params) => (
           <TextField
-            {...params}
+            InputProps={params.InputProps}
+            inputProps={params.inputProps}
+            fullWidth={params.fullWidth}
             placeholder="Seleccione CAR"
             variant="outlined"
             size="small"
@@ -136,7 +138,9 @@ class PopMenu extends Component {
           getOptionSelected={(option, value) => option.label === value.label}
           renderInput={(params) => (
             <TextField
-              {...params}
+              InputProps={params.InputProps}
+              inputProps={params.inputProps}
+              fullWidth={params.fullWidth}
               placeholder="SubZona Hidrográfica"
               variant="outlined"
               size="small"

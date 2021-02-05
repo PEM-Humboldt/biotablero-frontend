@@ -41,7 +41,9 @@ class NewProjectForm extends Component {
         getOptionSelected={(option, value) => option.label === value.label}
         renderInput={(params) => (
           <TextField
-            {...params}
+            InputProps={params.InputProps}
+            inputProps={params.inputProps}
+            fullWidth={params.fullWidth}
             placeholder="Región"
             variant="outlined"
             size="small"
@@ -85,7 +87,9 @@ class NewProjectForm extends Component {
           getOptionSelected={(option, value) => option.label === value.label}
           renderInput={(params) => (
             <TextField
-              {...params}
+              InputProps={params.InputProps}
+              inputProps={params.inputProps}
+              fullWidth={params.fullWidth}
               placeholder="Estado del proyecto"
               variant="outlined"
               size="small"

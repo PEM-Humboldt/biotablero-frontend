@@ -31,7 +31,9 @@ class NewBiomeForm extends Component {
         getOptionLabel={(biome) => biome.name}
         renderInput={(params) => (
           <TextField
-            {...params}
+            InputProps={params.InputProps}
+            inputProps={params.inputProps}
+            fullWidth={params.fullWidth}
             placeholder="Biomas disponibles"
             variant="outlined"
           />

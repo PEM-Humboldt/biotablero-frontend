@@ -74,7 +74,9 @@ class Selector extends React.Component {
             style={{ width: '100%' }}
             renderInput={(params) => (
               <TextField
-                {...params}
+                InputProps={params.InputProps}
+                inputProps={params.inputProps}
+                fullWidth={params.fullWidth}
                 label="Escriba el nombre a buscar"
                 placeholder="Seleccionar..."
                 variant="standard"
