@@ -124,4 +124,4 @@ const constructDataForCompensation = (regions) => {
   return { regionsList, statusList, regions: regionsArray };
 };
 
-export { constructDataForSearch, constructDataForCompensation  };
+export { constructDataForSearch, constructDataForCompensation };
