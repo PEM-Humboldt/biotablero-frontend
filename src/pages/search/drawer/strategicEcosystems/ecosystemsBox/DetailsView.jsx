@@ -1,0 +1,137 @@
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+
+import { setPAValues, setCoverageValues } from 'pages/search/drawer/strategicEcosystems/formatSE';
+import SearchContext from 'pages/search/SearchContext';
+import GraphLoader from 'components/charts/GraphLoader';
+import matchColor from 'utils/matchColor';
+import RestAPI from 'utils/restAPI';
+
+/**
+ * Validate if data exist before rendering graph
+ *
+ * @param {array} data information to load graphs
+ * @param {function} colorFunc function to assign colors in a graph
+ *
+ * @returns {string | boolean} validation of data availability and existence
+ */
+const loadData = (data, colorFunc) => {
+  if (data === null) {
+    return (
+      <b>
+        <br />
+        Cargando información...
+      </b>
+    );
+  }
+  if (data.length <= 0) return (<b>No disponible</b>);
+  return (
+    <GraphLoader
+      graphType="SmallBarStackGraph"
+      data={data}
+      units="ha"
+      colors={colorFunc}
+    />
+  );
+};
+
+/**
+ * Return details for each strategic ecosystem
+ *
+ * @param {number} npsp percentage in "national system of protected areas" or SINAP
+ * @param {number} sep percentage in strategic ecosystems
+ * @param {array} coverage data about coverages
+ * @param {array} protectedArea data about protected areas
+ * @returns {div} node for each strategic ecosystem
+ */
+const showDetails = (
+  coverage,
+  protectedArea,
+) => (
+  <div>
+    <h3>
+      Distribución de coberturas:
+      {loadData(setCoverageValues(coverage), matchColor('coverage'))}
+    </h3>
+    <h3>
+      Distribución en áreas protegidas:
+      {loadData(setPAValues(protectedArea), matchColor('pa'))}
+    </h3>
+  </div>
+);
+
+class DetailsView extends Component {
+  mounted = false;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      seCoverage: null,
+      sePA: null,
+      stopLoad: false,
+    };
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+    const {
+      item,
+    } = this.props;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
+
+    const name = item.type || item.name;
+    const { stopLoad } = this.state;
+
+    if (!stopLoad) {
+      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
+        .then((res) => {
+          if (this.mounted) {
+            this.setState({ seCoverage: res });
+          }
+        })
+        .catch(() => {});
+
+      RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
+        .then((res) => {
+          if (this.mounted) {
+            this.setState({ sePA: res });
+          }
+        })
+        .catch(() => {});
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    this.setState({
+      stopLoad: true,
+    });
+  }
+
+  render() {
+    const {
+      seCoverage,
+      sePA,
+      stopLoad,
+    } = this.state;
+    if (!stopLoad) {
+      return (
+        showDetails(
+          seCoverage,
+          sePA,
+        )
+      );
+    }
+    return null;
+  }
+}
+
+DetailsView.propTypes = {
+  item: PropTypes.object.isRequired,
+};
+
+export default DetailsView;
+DetailsView.contextType = SearchContext;

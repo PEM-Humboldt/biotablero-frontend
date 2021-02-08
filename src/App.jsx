@@ -1,13 +1,13 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import AppContext from './AppContext';
-import Compensation from './Compensation';
-import Home from './Home';
-import Indicator from './Indicator';
-import Layout from './Layout';
-import Search from './Search';
-import Uim from './Uim';
+import AppContext from 'app/AppContext';
+import Layout from 'app/Layout';
+import Uim from 'app/Uim';
+import Compensation from 'pages/Compensation';
+import Home from 'pages/Home';
+import Indicator from 'pages/Indicator';
+import Search from 'pages/Search';
 
 import 'main.css';
 
