@@ -332,7 +332,7 @@ class Compensation extends Component {
   }
 
   innerElementChange = (parent, projectId) => {
-    this.loadProject(projectId);
+    this.loadProject(typeof projectId === 'object' ? projectId.id_project : projectId);
   }
 
   /** ********************************* */
