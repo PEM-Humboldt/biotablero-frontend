@@ -243,7 +243,6 @@ class Search extends Component {
         break;
       case 'hfCurrent':
       case 'hfPersistence':
-      case 'forestLP':
       case 'forestLP-2016-2019':
       case 'forestLP-2011-2015':
       case 'forestLP-2006-2010':
