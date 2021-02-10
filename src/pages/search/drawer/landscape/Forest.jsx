@@ -13,7 +13,7 @@ const Forest = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'forestLP',
+        id: 'forestLP-2016-2019',
         name: 'Perdida y persistencia',
         disabled: false,
       },
