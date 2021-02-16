@@ -8,6 +8,7 @@ import Compensation from 'pages/Compensation';
 import Home from 'pages/Home';
 import Indicator from 'pages/Indicator';
 import Search from 'pages/Search';
+import CBMDashboard from 'pages/CBMDashboard';
 
 import 'main.css';
 
@@ -77,6 +78,14 @@ class App extends React.Component {
     );
   }
 
+  loadCBMDashboard = () => (
+    this.loadComponent({
+      footerLogos: true,
+      name: 'Monitoreo Comunitario',
+      component: (<CBMDashboard />),
+    })
+  );
+
   loadComponent = ({ footerLogos, name, component }) => {
     const { headerNames } = this.state;
     return (
@@ -104,6 +113,7 @@ class App extends React.Component {
             <Route path="/Indicadores" render={this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
+            <Route path="/Monitoreo" render={this.loadCBMDashboard} />
           </Switch>
         </main>
       </AppContext.Provider>
