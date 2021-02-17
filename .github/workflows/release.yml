@@ -15,11 +15,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.15
-    - run: npm install -g yarn
-    - name: Run linter
-      run: |
+    - run: |
+        npm install -g yarn
         yarn install
-        yarn workspaces foreach run build
-        yarn workspaces foreach run lint
+        yarn workspaces foreach run build-pkg
+    - name: Run linter
+      run: yarn workspaces foreach run lint
       env:
         CI: true
