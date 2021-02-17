@@ -11,7 +11,7 @@ Debe tener instalado [yarn](https://yarnpkg.com/) en su equipo local para la ins
 ### 1.1 Construcción de dependencias:
 Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
 
-    yarn workspaces foreach run build
+    yarn workspaces foreach run build-pkg
 
 ### 1.2. Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
