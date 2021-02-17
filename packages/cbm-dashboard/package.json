@@ -34,7 +34,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
     "format": "prettier -w \"src/*\"",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "build-dev": "rollup -cw --no-watch.clearScreen"
   },
   "keywords": [],
   "author": "",

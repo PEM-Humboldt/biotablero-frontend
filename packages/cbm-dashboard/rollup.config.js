@@ -6,11 +6,9 @@ export default {
   input: 'src/App.jsx',
   output: [
     {
-      // file: "cbm-dashboard.min.js",
       dir: './dist',
       format: 'cjs',
       exports: 'named',
-      sourcemap: true,
       strict: false,
     },
   ],
