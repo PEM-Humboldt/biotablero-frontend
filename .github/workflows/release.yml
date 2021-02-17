@@ -18,8 +18,8 @@ jobs:
     - run: npm install -g yarn
     - name: Run linter
       run: |
-        yarn workspaces foreach run build
         yarn install
+        yarn workspaces foreach run build
         yarn workspaces foreach run lint
       env:
         CI: true
