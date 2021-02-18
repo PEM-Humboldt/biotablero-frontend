@@ -33,7 +33,7 @@ class App extends React.Component {
 
   loadHome = ({ location }) => (
     this.loadComponent({
-      footerLogos: true,
+      logoSet: 'default',
       component: (<Home referrer={location.referrer} />),
     })
   );
@@ -41,7 +41,7 @@ class App extends React.Component {
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
     return this.loadComponent({
-      footerLogos: false,
+      logoSet: null,
       name: 'Consultas geográficas',
       component: (<Search
         selectedAreaTypeId={query.get('area_type')}
@@ -53,7 +53,7 @@ class App extends React.Component {
 
   loadIndicator = () => (
     this.loadComponent({
-      footerLogos: true,
+      logoSet: 'default',
       name: 'Indicadores',
       component: (<Indicator />),
     })
@@ -63,7 +63,7 @@ class App extends React.Component {
     const { user } = this.state;
     if (user) {
       return this.loadComponent({
-        footerLogos: false,
+        logoSet: null,
         name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
       });
@@ -80,18 +80,18 @@ class App extends React.Component {
 
   loadCBMDashboard = () => (
     this.loadComponent({
-      footerLogos: true,
+      logoSet: 'monitoreo',
       name: 'Monitoreo Comunitario',
       component: (<CBMDashboard />),
     })
   );
 
-  loadComponent = ({ footerLogos, name, component }) => {
+  loadComponent = ({ logoSet, name, component }) => {
     const { headerNames } = this.state;
     return (
       <Layout
         moduleName={name}
-        showFooterLogos={footerLogos}
+        footerLogos={logoSet}
         headerNames={headerNames}
         uim={<Uim setUser={this.setUser} />}
       >
