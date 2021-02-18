@@ -364,6 +364,10 @@ h2 {
 	background-image: url(images/alertas.png);
 }
 
+.mon {
+	background-image: url(images/mcomunitario.png);
+}
+
 .activeicon {
 	border-color: #fff;
 	border-radius: 10px;
