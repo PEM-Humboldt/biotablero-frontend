@@ -8,15 +8,15 @@ Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humbol
 
 Debe tener instalado [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto. Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
-### 1.1 Construcción de dependencias:
-Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
-
-    yarn workspaces foreach run build-pkg
-
-### 1.2. Instalación de paquetes:
+### 1.1 Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
     yarn install
+
+### 1.2 Construcción de dependencias:
+Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
+
+    yarn workspaces foreach run build-pkg
 
 ### 1.3 Configuración de variables de entorno:
 Crear una copia del archivo *.env* con el nombre *.env.local* actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
