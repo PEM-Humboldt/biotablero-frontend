@@ -1226,6 +1226,15 @@ overflow: auto;
   height: 65px;
 }
 
+.Monitoreocomunitario {
+  background-image: url(images/mcomunitario.png);
+  -webkit-background-size: contain;
+  background-size: contain;
+  float: right;
+  width: 65px;
+  height: 65px;
+}
+
 .mt2 {
   margin-top: 35px;
 }

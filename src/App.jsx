@@ -81,7 +81,7 @@ class App extends React.Component {
   loadCBMDashboard = () => (
     this.loadComponent({
       logoSet: 'monitoreo',
-      name: 'Monitoreo Comunitario',
+      name: 'Monitoreo comunitario',
       component: (<CBMDashboard />),
     })
   );

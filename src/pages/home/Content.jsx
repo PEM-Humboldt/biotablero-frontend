@@ -41,7 +41,7 @@ const Content = ({ activeModule, setActiveModule }) => (
           idBtn="alebtn"
           firstLineContent="alertas"
           secondLineContent="tempranas"
-          localLink="./Alertas"
+          localLink="/Alertas"
         />
         <MenuButton
           focusCallback={() => setActiveModule('monitoreo')}
@@ -49,7 +49,7 @@ const Content = ({ activeModule, setActiveModule }) => (
           idBtn="monbtn"
           firstLineContent="Monitoreo"
           secondLineContent="comunitario"
-          localLink="./Monitoreo"
+          localLink="/Monitoreo"
         />
       </div>
     )}
