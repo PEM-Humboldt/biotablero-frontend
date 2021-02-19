@@ -65,7 +65,7 @@ const descriptions = {
     ),
   },
   queEncuentras: {
-    title: '¿Qué encuentras en esta módulo?',
+    title: '¿Qué encuentras en este módulo?',
     description: (
       <p>
         {'Esta sitio contiene un tablero de control de indicadores de Biodiversidad para Colombia. Acá podrás '}

@@ -41,7 +41,15 @@ const Content = ({ activeModule, setActiveModule }) => (
           idBtn="alebtn"
           firstLineContent="alertas"
           secondLineContent="tempranas"
-          localLink="./Alertas"
+          localLink="/Alertas"
+        />
+        <MenuButton
+          focusCallback={() => setActiveModule('monitoreo')}
+          buttonStyles={`finder mon ${(activeModule === 'monitoreo') ? 'activeicon' : ''}`}
+          idBtn="monbtn"
+          firstLineContent="Monitoreo"
+          secondLineContent="comunitario"
+          localLink="/Monitoreo"
         />
       </div>
     )}

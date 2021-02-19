@@ -7,7 +7,7 @@ import Header from 'app/layout/Header';
 const Layout = ({
   children,
   moduleName,
-  showFooterLogos,
+  footerLogos,
   headerNames,
   uim,
 }) => (
@@ -18,14 +18,14 @@ const Layout = ({
       uim={uim}
     />
     {children}
-    <Footer showLogos={showFooterLogos} />
+    <Footer logosId={footerLogos} />
   </div>
 );
 
 Layout.propTypes = {
   children: PropTypes.any,
   moduleName: PropTypes.string,
-  showFooterLogos: PropTypes.bool,
+  footerLogos: PropTypes.string,
   headerNames: PropTypes.object,
   uim: PropTypes.node,
 };
@@ -33,7 +33,7 @@ Layout.propTypes = {
 Layout.defaultProps = {
   children: null,
   moduleName: '',
-  showFooterLogos: true,
+  footerLogos: null,
   headerNames: {},
   uim: null,
 };

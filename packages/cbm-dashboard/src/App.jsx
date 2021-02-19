@@ -8,7 +8,7 @@ const App = () => {
   const [metodology, setMetodology] = useState('');
 
   return (
-    <>
+    <div className="wrapper">
       <h1>Avances monitoreo comunitario</h1>
       <label htmlFor="sel_metodologia">
         Seleccione la metodología de monitoreo:
@@ -32,7 +32,7 @@ const App = () => {
       {metodology === '01_validacion_coberturas' && <M01 />}
       {metodology === '02_parcela_vegetacion' && <M02 />}
       {metodology === '06_medicion_lluvia' && <M06 />}
-    </>
+    </div>
   );
 };
 

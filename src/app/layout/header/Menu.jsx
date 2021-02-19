@@ -48,9 +48,14 @@ class Menu extends React.Component {
             </Link>
           )
             : '' }
-          <Link to="./Alertas" onClick={this.changeMenuState}>
+          <Link to="/Alertas" onClick={this.changeMenuState}>
             <li>
               Alertas
+            </li>
+          </Link>
+          <Link to="/Monitoreo" onClick={this.changeMenuState}>
+            <li>
+              Monitoreo comunitario
             </li>
           </Link>
         </ul>
