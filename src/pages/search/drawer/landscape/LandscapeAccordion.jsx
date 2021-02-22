@@ -46,6 +46,7 @@ class LandscapeAccordion extends React.Component {
               handlerAccordionGeometry(level, expandedTab);
             }}
             TransitionProps={{ unmountOnExit: true }}
+            disabled={item.label.deactivated}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}

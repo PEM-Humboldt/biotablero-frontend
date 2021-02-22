@@ -15,7 +15,8 @@ const Forest = (props) => {
       label: {
         id: 'forestLP-2016-2019',
         name: 'Perdida y persistencia',
-        disabled: false,
+        disabled: true,
+        deactivated: true,
       },
       component: ForestLossPersistence,
     },
@@ -24,6 +25,7 @@ const Forest = (props) => {
         id: 'forestIntegrity',
         name: 'Integridad',
         disabled: false,
+        deactivated: false,
       },
       component: ForestIntegrity,
     },
