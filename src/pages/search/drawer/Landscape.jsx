@@ -64,7 +64,7 @@ class Landscape extends React.Component {
         label: {
           id: 'fc',
           name: 'FC y Biomas',
-          disabled: areaId !== 'ea',
+          collapsed: areaId !== 'ea',
         },
         component: CompensationFactor,
       },
@@ -72,7 +72,6 @@ class Landscape extends React.Component {
         label: {
           id: 'hf',
           name: 'Huella humana',
-          disabled: false,
         },
         component: HumanFootprint,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
@@ -81,7 +80,6 @@ class Landscape extends React.Component {
         label: {
           id: 'forest',
           name: 'Bosques',
-          disabled: false,
         },
         component: Forest,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
