@@ -17,7 +17,7 @@ class LandscapeAccordion extends React.Component {
     const { componentsArray } = this.props;
     if (componentsArray.length > 0) {
       const defaultTab = componentsArray.find(
-        (item) => item.label.disabled === false,
+        (item) => !item.label.collapsed,
       ).label.id;
       this.setState({ expanded: defaultTab });
     }
@@ -46,7 +46,7 @@ class LandscapeAccordion extends React.Component {
               handlerAccordionGeometry(level, expandedTab);
             }}
             TransitionProps={{ unmountOnExit: true }}
-            disabled={item.label.deactivated}
+            disabled={item.label.disabled}
           >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -68,7 +68,8 @@ LandscapeAccordion.propTypes = {
     label: PropTypes.shape({
       id: PropTypes.string,
       name: PropTypes.string,
-      disable: PropTypes.bool,
+      disabled: PropTypes.bool,
+      collapsed: PropTypes.bool,
     }),
     component: PropTypes.func,
     componentProps: PropTypes.object,
