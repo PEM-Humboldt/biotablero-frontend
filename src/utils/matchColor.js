@@ -81,7 +81,7 @@ const match = {
   },
   forestIntegrity: {
     palette: 'forestIntegrity',
-    sort: ['moderada', 'alta'],
+    sort: ['baja_moderada', 'alta'],
   },
   border: {
     palette: 'border',

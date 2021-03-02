@@ -426,7 +426,7 @@ class RestAPI {
   static requestSCIHFGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/hf/layers`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(`sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
