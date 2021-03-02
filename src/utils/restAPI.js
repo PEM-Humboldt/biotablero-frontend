@@ -627,7 +627,13 @@ class RestAPI {
    * @param {String} endpoint endpoint to attach to url
    */
   static makeGetRequest(endpoint, options) {
-    return axios.get(RestAPI.getEndpointUrl(endpoint), options)
+    const config = {
+      ...options,
+      headers: {
+        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+      },
+    };
+    return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
       .then((res) => res.data)
       .catch((error) => {
         if (axios.isCancel(error)) {
@@ -647,7 +653,12 @@ class RestAPI {
    * @param {Object} requestBody JSON object with the request body
    */
   static makePostRequest(endpoint, requestBody) {
-    return axios.post(RestAPI.getEndpointUrl(endpoint), requestBody)
+    const config = {
+      headers: {
+        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+      },
+    };
+    return axios.post(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
         let message = 'Bad POST response. Try later';
@@ -655,11 +666,6 @@ class RestAPI {
         if (error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
-  }
-
-  static getEndpointUrl(endpoint) {
-    const port = process.env.REACT_APP_REST_PORT ? `:${process.env.REACT_APP_REST_PORT}` : '';
-    return `${process.env.REACT_APP_REST_HOST}${port}/${endpoint}`;
   }
 }
 

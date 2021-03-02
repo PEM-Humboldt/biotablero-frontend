@@ -65,8 +65,7 @@ class GeoServerAPI {
    * Request the base layer 'Regiones_geb'
    */
   static getRequestURL() {
-    const port = process.env.REACT_APP_GEOSERVER_PORT ? `:${process.env.REACT_APP_GEOSERVER_PORT}` : '';
-    return `${process.env.REACT_APP_GEOSERVER_HOST}${port}`;
+    return `${process.env.REACT_APP_GEOSERVER_URL}`;
   }
 
   /**
