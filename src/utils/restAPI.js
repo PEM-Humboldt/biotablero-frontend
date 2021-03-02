@@ -293,7 +293,7 @@ class RestAPI {
    * @return {Promise<Object>} Objects with value for the SCI and HF persistence
    */
   static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/hf`);
+    return RestAPI.makeGetRequest(`sci/hf?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /** ******************** */
