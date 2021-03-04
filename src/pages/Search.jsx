@@ -701,7 +701,7 @@ class Search extends Component {
     this.setState({
       requestSource: null,
     });
-    const unsetLayers = [
+    let unsetLayers = [
       'fc',
       'hfCurrent',
       'hfPersistence',
@@ -713,6 +713,10 @@ class Search extends Component {
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
+
+      const psKeys = Object.keys(newState.layers).filter((key) => /SciHfPA-*/.test(key));
+      unsetLayers = unsetLayers.concat(psKeys);
+
       unsetLayers.forEach((layer) => {
         if (newState.layers[layer]) delete newState.layers[layer];
       });

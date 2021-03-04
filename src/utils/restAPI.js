@@ -293,7 +293,7 @@ class RestAPI {
    * @return {Promise<Object>} Objects with value for the SCI and HF persistence
    */
   static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/hf`);
+    return RestAPI.makeGetRequest(`sci/hf?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /** ******************** */
@@ -426,7 +426,7 @@ class RestAPI {
   static requestSCIHFGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/hf/layers`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(`sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -445,7 +445,7 @@ class RestAPI {
   static requestSCIHFPAGeometry(areaType, areaId, sciCat, hfPers) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/sci/${sciCat}/hf/${hfPers}/layers/pa`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(`sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
