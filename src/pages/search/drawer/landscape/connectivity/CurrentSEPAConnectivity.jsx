@@ -1,8 +1,6 @@
 import React from 'react';
 
-import SearchContext from 'pages/search/SearchContext';
-
-class ConnectivityPAInTime extends React.Component {
+class CurrentSEPAConnectivity extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -38,6 +36,4 @@ class ConnectivityPAInTime extends React.Component {
   }
 }
 
-export default ConnectivityPAInTime;
-
-ConnectivityPAInTime.contextType = SearchContext;
+export default CurrentSEPAConnectivity;

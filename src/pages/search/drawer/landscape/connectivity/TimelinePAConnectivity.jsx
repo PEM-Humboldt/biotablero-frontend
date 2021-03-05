@@ -1,8 +1,6 @@
 import React from 'react';
 
-import SearchContext from 'pages/search/SearchContext';
-
-class ConnectivityPAActual extends React.Component {
+class TimelinePAConnectivity extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -38,6 +36,4 @@ class ConnectivityPAActual extends React.Component {
   }
 }
 
-export default ConnectivityPAActual;
-
-ConnectivityPAActual.contextType = SearchContext;
+export default TimelinePAConnectivity;

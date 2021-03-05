@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ConnectivityPAActual from 'pages/search/drawer/landscape/connectivity/ConnectivityPAActual';
-import ConnectivityPAInTime from 'pages/search/drawer/landscape/connectivity/ConnectivityPAInTime';
-import ConnectivityPAEE from 'pages/search/drawer/landscape/connectivity/ConnectivityPAEE';
+import CurrentPAConnectivity from 'pages/search/drawer/landscape/connectivity/CurrentPAConnectivity';
+import TimelinePAConnectivity from 'pages/search/drawer/landscape/connectivity/TimelinePAConnectivity';
+import CurrentSEPAConnectivity from 'pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivity';
 import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
 
 const ConnectivityPA = (props) => {
@@ -14,24 +14,24 @@ const ConnectivityPA = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'protectedActual',
+        id: 'currentPA',
         name: 'Actual',
       },
-      component: ConnectivityPAActual,
+      component: CurrentPAConnectivity,
     },
     {
       label: {
-        id: 'protectedInTime',
+        id: 'timelinePA',
         name: 'Histórico',
       },
-      component: ConnectivityPAInTime,
+      component: TimelinePAConnectivity,
     },
     {
         label: {
-          id: 'protectedEE',
+          id: 'strategicPA',
           name: 'Por Ecosistemas estratégicos',
         },
-        component: ConnectivityPAEE,
+        component: CurrentSEPAConnectivity,
       },
   ];
   return (

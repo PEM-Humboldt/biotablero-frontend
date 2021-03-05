@@ -1,8 +1,6 @@
 import React from 'react';
 
-import SearchContext from 'pages/search/SearchContext';
-
-class ConnectivityPAEE extends React.Component {
+class CurrentPAConnectivity extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -38,6 +36,4 @@ class ConnectivityPAEE extends React.Component {
   }
 }
 
-export default ConnectivityPAEE;
-
-ConnectivityPAEE.contextType = SearchContext;
+export default CurrentPAConnectivity;
