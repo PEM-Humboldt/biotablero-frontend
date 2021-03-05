@@ -4,6 +4,7 @@ import React from 'react';
 import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor';
 import Forest from 'pages/search/drawer/landscape/Forest';
 import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
+import ConnectivityPA from 'pages/search/drawer/landscape/ConnectivityPA';
 import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
 import SearchContext from 'pages/search/SearchContext';
 
@@ -82,6 +83,14 @@ class Landscape extends React.Component {
           name: 'Bosques',
         },
         component: Forest,
+        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+      },
+      {
+        label: {
+          id: 'connectivity',
+          name: 'Conectividad de Áreas Protegidas',
+        },
+        component: ConnectivityPA,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
     ];
