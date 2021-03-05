@@ -6,7 +6,7 @@ import TimelinePAConnectivity from 'pages/search/drawer/landscape/connectivity/T
 import CurrentSEPAConnectivity from 'pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivity';
 import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
 
-const ConnectivityPA = (props) => {
+const PAConnectivity = (props) => {
   const {
     handlerAccordionGeometry,
   } = props;
@@ -28,7 +28,7 @@ const ConnectivityPA = (props) => {
     },
     {
         label: {
-          id: 'strategicPA',
+          id: 'sePA',
           name: 'Por Ecosistemas estratégicos',
         },
         component: CurrentSEPAConnectivity,
@@ -47,12 +47,12 @@ const ConnectivityPA = (props) => {
   );
 };
 
-ConnectivityPA.propTypes = {
+PAConnectivity.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
 };
 
-ConnectivityPA.defaultProps = {
+PAConnectivity.defaultProps = {
   handlerAccordionGeometry: () => {},
 };
 
-export default ConnectivityPA;
+export default PAConnectivity;
