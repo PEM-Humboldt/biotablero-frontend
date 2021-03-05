@@ -14,21 +14,21 @@ const PAConnectivity = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'currentPA',
+        id: 'currentPAConn',
         name: 'Actual',
       },
       component: CurrentPAConnectivity,
     },
     {
       label: {
-        id: 'timelinePA',
+        id: 'timelinePAConn',
         name: 'Histórico',
       },
       component: TimelinePAConnectivity,
     },
     {
         label: {
-          id: 'sePA',
+          id: 'currentSEPAConn',
           name: 'Por Ecosistemas estratégicos',
         },
         component: CurrentSEPAConnectivity,

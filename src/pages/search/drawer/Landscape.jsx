@@ -18,7 +18,7 @@ class Landscape extends React.Component {
         fc: 'fc',
         hf: 'hfCurrent',
         forest: 'forestIntegrity',
-        connectivity: 'currentPA',
+        connectivity: 'currentPAConn',
       },
     };
   }
