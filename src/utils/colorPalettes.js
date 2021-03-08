@@ -104,6 +104,18 @@ export default {
     '#756a37',
     '#92ab58',
   ],
+  currentPAConn: [
+    '#ea495f',
+    '#51b4c1',
+    '#eabc47',
+  ],
+  dpc: [
+    '#c3374d',
+    '#ea5948',
+    '#eabc47',
+    '#a4c051',
+    '#51b4c1',
+  ],
   border: ['#ffffff'],
   default: ['#345b6b'],
 };
