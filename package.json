@@ -24,6 +24,7 @@
     "@vx/scale": "0.0.165",
     "@vx/tooltip": "0.0.165",
     "axios": "0.21.1",
+    "cbm-dashboard": "1.0.0",
     "chart.js": "^2.8.0",
     "leaflet": "1.4.0",
     "prop-types": "15.6.2",
@@ -33,9 +34,6 @@
     "react-masonry-component": "6.2.1",
     "react-router-dom": "5.2.0",
     "react-scripts": "4.0.2"
-  },
-  "optionalDependencies": {
-    "cbm-dashboard": "1.0.0"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
