@@ -108,7 +108,7 @@ class CurrentPAConnectivity extends React.Component {
               Indice Prot
             </h6>
             <h5 style={{ backgroundColor: '#d5753d' }}>
-              {prot}
+              {`${prot}%`}
             </h5>
           </div>
           <div>
