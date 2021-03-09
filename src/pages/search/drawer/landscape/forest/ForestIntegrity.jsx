@@ -80,6 +80,12 @@ class ForestIntegrity extends React.Component {
                 cats[idx].value += elem.area;
                 PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
               });
+              Object.keys(PAs).forEach(((sciHfCat) => {
+                PAs[sciHfCat] = PAs[sciHfCat].map((areas) => ({
+                  ...areas,
+                  percentage: areas.area / cats[sciHfCat].value,
+                }));
+              }));
               return { SciHfCats: cats, ProtectedAreas: PAs, loading: false };
             });
           }
