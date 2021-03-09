@@ -70,15 +70,19 @@ class ForestIntegrity extends React.Component {
     RestAPI.requestSCIHF(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState((prevState) => {
-            const { SciHfCats: cats, ProtectedAreas: PAs } = prevState;
-            res.forEach((elem) => {
-              const idx = `${elem.sci_cat}-${elem.hf_pers}`;
-              cats[idx].value += elem.area;
-              PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+          if (res.length <= 0) {
+            this.setState({ SciHfCats: {}, ProtectedAreas: {}, loading: false });
+          } else {
+            this.setState((prevState) => {
+              const { SciHfCats: cats, ProtectedAreas: PAs } = prevState;
+              res.forEach((elem) => {
+                const idx = `${elem.sci_cat}-${elem.hf_pers}`;
+                cats[idx].value += elem.area;
+                PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+              });
+              return { SciHfCats: cats, ProtectedAreas: PAs, loading: false };
             });
-            return { SciHfCats: cats, ProtectedAreas: PAs, loading: false };
-          });
+          }
         }
       })
       .catch(() => {});

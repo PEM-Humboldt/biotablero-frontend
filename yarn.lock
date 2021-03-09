@@ -4905,9 +4905,6 @@ __metadata:
     react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
-  dependenciesMeta:
-    cbm-dashboard:
-      optional: true
   languageName: unknown
   linkType: soft
 
