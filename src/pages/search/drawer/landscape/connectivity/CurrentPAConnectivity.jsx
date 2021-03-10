@@ -23,6 +23,7 @@ class CurrentPAConnectivity extends React.Component {
       currentPAConnectivity: [],
       dpc: [],
       prot: 0,
+      selectedPA: null,
     };
   }
 
@@ -54,6 +55,7 @@ class CurrentPAConnectivity extends React.Component {
         if (this.mounted) {
           this.setState({
             dpc: res,
+            selectedPA: res[res.length - 1].id,
           });
         }
       })
@@ -74,11 +76,13 @@ class CurrentPAConnectivity extends React.Component {
   };
 
   render() {
+    const { handlerClickOnGraph } = this.context;
     const {
       currentPAConnectivity,
       dpc,
       prot,
       showInfoGraph,
+      selectedPA,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -130,7 +134,8 @@ class CurrentPAConnectivity extends React.Component {
               graphType="MultiSmallSingleBarGraph"
               data={dpc}
               colors={matchColor('dpc')}
-              selectedIndexValue="Ucumari"
+              selectedIndexValue={selectedPA}
+              onClickGraphHandler={handlerClickOnGraph}
             />
           </div>
         </div>
