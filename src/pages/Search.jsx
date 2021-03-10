@@ -733,6 +733,7 @@ class Search extends Component {
       'wetland',
       'geofence',
       'forestIntegrity',
+      'currentPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
