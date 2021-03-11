@@ -116,6 +116,10 @@ export default {
     '#a4c051',
     '#51b4c1',
   ],
+  timelinePAConn: [
+    '#ea495f',
+    '#51b4c1',
+  ],
   border: ['#ffffff'],
   default: ['#345b6b'],
 };
