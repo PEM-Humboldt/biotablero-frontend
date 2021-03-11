@@ -320,6 +320,20 @@ class RestAPI {
     return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
   }
 
+  /**
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType number of protected area layers to return
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
+   */
+   static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`/connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
+  }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
