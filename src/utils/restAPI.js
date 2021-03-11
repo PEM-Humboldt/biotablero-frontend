@@ -320,6 +320,19 @@ class RestAPI {
     return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
   }
 
+    /**
+    * Get the timeline for each category of protected area connectivity in a given area
+    *
+    * @param {String} areaType area type id, f.e. "ea", "states"
+    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+    * @param {String} category category of index, fe. "prot", "prot_conn"
+    *
+    * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
+    */
+    static requestTimelinePAConnectivity(areaType, areaId, category) {
+      return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
+    }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
