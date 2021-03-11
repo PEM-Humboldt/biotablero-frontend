@@ -492,6 +492,23 @@ class RestAPI {
     };
   }
 
+  /**
+   * Get the layers of the protected areas with higher dPC value in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} paNumber number of protected areas to request, f.e. 5
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestDPCLayer(areaType, areaId, paNumber) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */

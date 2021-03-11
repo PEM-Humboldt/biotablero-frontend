@@ -184,16 +184,17 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      const ftype = type === 'currentPAConn' ? 'dpc' : type;
       if (!key) {
         return {
-          color: matchColor(type)(color),
+          color: matchColor(ftype)(color),
           weight: 2,
           fillOpacity: 0,
         };
       }
       return {
         stroke: false,
-        fillColor: matchColor(type)(key),
+        fillColor: matchColor(ftype)(key),
         fillOpacity: 0.7,
       };
     }
@@ -260,6 +261,14 @@ class Search extends Component {
       case 'basinSubzones':
         feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
         break;
+      case 'currentPAConn':
+        feature.bindTooltip(
+          `<b>${feature.feature.properties.key}:</b>
+          <br>${formatNumber(feature.feature.properties.value, 2)}
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
       default:
         changeStyle = false;
         break;
@@ -269,8 +278,8 @@ class Search extends Component {
         weight: 1,
         fillOpacity: 1,
       });
+      if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
     }
-    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
   }
 
   /**
@@ -509,6 +518,20 @@ class Search extends Component {
           name: 'Índice de condición estructural de bosques',
         };
         break;
+      case 'currentPAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          5,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
+        newActiveLayer = {
+          id: layerType,
+          name: 'Conectividad actual de áreas protegidas',
+        };
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -710,6 +733,7 @@ class Search extends Component {
       'wetland',
       'geofence',
       'forestIntegrity',
+      'currentPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
