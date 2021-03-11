@@ -497,7 +497,7 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number | String} paNumber number of protected areas to request, f.e. 5
+   * @param {Number} paNumber number of protected areas to request, f.e. 5
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
