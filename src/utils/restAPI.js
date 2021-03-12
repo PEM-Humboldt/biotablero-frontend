@@ -326,7 +326,7 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType number of protected area layers to return
+   * @param {String} seType strategic ecosystem type
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
