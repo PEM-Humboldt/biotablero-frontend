@@ -168,8 +168,8 @@ const matchColor = (type, resetCache = false) => {
     case 'SciHf':
     case 'forestIntegrity':
     case 'currentPAConn':
-    case 'timelinePAConn':
     case 'dpc':
+    case 'timelinePAConn':
     case 'se':
     case 'border':
       return (value) => {
