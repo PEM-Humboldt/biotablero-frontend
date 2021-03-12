@@ -7,21 +7,6 @@ import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 
-const changeValues = [
-  {
-    axis: 'y',
-    value: 80,
-    lineStyle: { stroke: '#3fbf9f', strokeWidth: 1 },
-    textStyle: {
-      fill: '#3fbf9f',
-      fontSize: 9,
-    },
-    legendPosition: 'bottom-right',
-    orient: 'top',
-    tickRotation: -90,
-  },
-];
-
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
 
@@ -42,7 +27,7 @@ class TimelinePAConnectivity extends React.Component {
     ])
       .then(([prot, protConn]) => {
         if (this.mounted) {
-          this.setState({ timelinePAConnectivity: prot.concat(protConn) });
+          this.setState({ timelinePAConnectivity: this.processData([prot, protConn]) });
         }
       });
   }
@@ -57,6 +42,34 @@ class TimelinePAConnectivity extends React.Component {
   toggleInfoGraph = () => {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
+    }));
+  };
+
+  /**
+   * Defines the label for a given data
+   * @param {string} key key identifier
+   *
+   * @returns {string} label to be used for tooltips and legends.
+   */
+  getLabel = (key) => {
+    switch (key) {
+      case 'prot': return 'Protegida';
+      case 'prot_conn': return 'Protegida Conectada';
+      default: return '';
+    }
+  };
+
+  /**
+   * Transform data to fit in the graph structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} transformed array
+   */
+  processData = (data) => {
+    if (!data) return [];
+    return data.map((obj) => ({
+      ...obj,
+      label: this.getLabel(obj.key),
     }));
   };
 
@@ -93,9 +106,9 @@ class TimelinePAConnectivity extends React.Component {
               graphType="MultiLinesGraph"
               colors={matchColor('timelinePAConn')}
               data={timelinePAConnectivity}
-              markers={changeValues}
               labelX="Año"
               labelY="Porcentaje"
+              units="%"
             />
           </div>
         </div>
