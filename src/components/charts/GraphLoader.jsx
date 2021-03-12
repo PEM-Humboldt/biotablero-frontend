@@ -159,6 +159,7 @@ const GraphLoader = (props) => {
           data={data}
           markers={markers}
           height={490}
+          units={units}
         />
       );
     default:
@@ -203,7 +204,7 @@ GraphLoader.defaultProps = {
   labelX: '',
   labelY: '',
   showOnlyTitle: false,
-  units: 'ha',
+  units: '',
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,

@@ -108,7 +108,7 @@ class TimelinePAConnectivity extends React.Component {
               data={timelinePAConnectivity}
               labelX="Año"
               labelY="Porcentaje"
-              units="%"
+              units=" %"
             />
           </div>
         </div>
