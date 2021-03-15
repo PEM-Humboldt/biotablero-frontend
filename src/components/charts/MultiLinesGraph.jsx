@@ -58,8 +58,7 @@ class MultiLinesGraph extends React.Component {
           </strong>
           <br />
           <div style={{ color: '#ffffff' }}>
-            {formatNumber(yFormatted, 2)}
-            { units }
+            {`${formatNumber(yFormatted, 2)} ${units}`}
           </div>
         </div>
       </div>

@@ -25,9 +25,9 @@ class TimelinePAConnectivity extends React.Component {
       RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot'),
       RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot_conn'),
     ])
-      .then(([prot, protConn]) => {
+      .then((res) => {
         if (this.mounted) {
-          this.setState({ timelinePAConnectivity: this.processData([prot, protConn]) });
+          this.setState({ timelinePAConnectivity: this.processData(res) });
         }
       });
   }
@@ -108,13 +108,13 @@ class TimelinePAConnectivity extends React.Component {
               data={timelinePAConnectivity}
               labelX="Año"
               labelY="Porcentaje"
-              units=" %"
+              units="%"
             />
           </div>
         </div>
       </div>
     );
-  }//
+  }
 }
 
 export default TimelinePAConnectivity;
