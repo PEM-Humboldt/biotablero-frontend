@@ -74,6 +74,7 @@ class CurrentPAConnectivity extends React.Component {
   };
 
   render() {
+    const { handlerClickOnGraph } = this.context;
     const {
       currentPAConnectivity,
       dpc,
@@ -130,7 +131,7 @@ class CurrentPAConnectivity extends React.Component {
               graphType="MultiSmallSingleBarGraph"
               data={dpc}
               colors={matchColor('dpc')}
-              selectedIndexValue="Ucumari"
+              onClickGraphHandler={handlerClickOnGraph}
             />
           </div>
         </div>
