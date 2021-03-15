@@ -93,7 +93,7 @@ const match = {
   },
   timelinePAConn: {
     palette: 'timelinePAConn',
-    sort: ['prot', 'prot_conn'],
+    sort: ['prot', 'protSel', 'prot_conn', 'prot_connSel'],
   },
   border: {
     palette: 'border',
