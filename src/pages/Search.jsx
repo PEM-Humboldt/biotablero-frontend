@@ -324,6 +324,9 @@ class Search extends Component {
 
         const highlightSelectedFeature = () => {
           const { layers: updatedLayers, activeLayer: { id: activeLayer } } = this.state;
+
+          if (!activeLayer || !layers[activeLayer]) return;
+
           const selectedSubLayer = updatedLayers[activeLayer].layer;
           if (selectedKey) {
             selectedSubLayer.eachLayer((layer) => {
@@ -347,6 +350,8 @@ class Search extends Component {
         const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
+        if (!activeLayer || !layers[activeLayer]) return;
+
         const psKeys = Object.keys(layers).filter((key) => /SciHfPA-*/.test(key));
         psKeys.forEach((key) => this.shutOffLayer(key));
         this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
@@ -368,6 +373,9 @@ class Search extends Component {
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
+
+        if (!activeLayer || !layers[activeLayer]) return;
+
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
           if (layer.feature.properties.key === idCategory) {
