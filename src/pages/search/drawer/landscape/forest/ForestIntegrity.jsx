@@ -145,7 +145,7 @@ class ForestIntegrity extends React.Component {
             colors={matchColor('SciHf')}
             onClickGraphHandler={(sectionId) => {
               this.setState({ selectedCategory: sectionId });
-              handlerClickOnGraph('SciHf', sectionId);
+              handlerClickOnGraph({ chartType: 'SciHf', selectedKey: sectionId });
             }}
           />
         </div>
