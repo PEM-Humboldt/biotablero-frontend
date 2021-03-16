@@ -91,6 +91,10 @@ const match = {
     palette: 'dpc',
     sort: ['muy_bajo', 'bajo', 'medio', 'alto', 'muy_alto'],
   },
+  timelinePAConn: {
+    palette: 'timelinePAConn',
+    sort: ['prot', 'protSel', 'prot_conn', 'prot_connSel'],
+  },
   border: {
     palette: 'border',
     sort: ['white'],
@@ -165,6 +169,7 @@ const matchColor = (type, resetCache = false) => {
     case 'forestIntegrity':
     case 'currentPAConn':
     case 'dpc':
+    case 'timelinePAConn':
     case 'se':
     case 'border':
       return (value) => {
