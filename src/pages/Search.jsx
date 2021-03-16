@@ -289,12 +289,12 @@ class Search extends Component {
   /**
    * Connects events on graphs with actions on map
    *
-   * @param {String} idCategory id of category selected on the graph
-   * @param {String} subCategory in case idCategory is grouping a type of features
-   * @param {String} selectedKey id of key selected on the graph
+   * @param {String} chartType id of chart emitting the event
+   * @param {String} chartSection in case chartType groups multiple charts
+   * @param {String} selectedKey selected key id on the graph
    */
-  clickOnGraph = (idCategory, subCategory = null, selectedKey) => {
-    switch (idCategory) {
+  clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
+    switch (chartType) {
       case 'paramo':
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
@@ -316,7 +316,7 @@ class Search extends Component {
         this.shutOffLayer('dryForest');
         break;
       case 'forestLP': {
-        const period = subCategory;
+        const period = chartSection;
         const { layers } = this.state;
 
         const psKeys = Object.keys(layers).filter((key) => /forestLP-*/.test(key));
@@ -346,8 +346,8 @@ class Search extends Component {
       }
         break;
       case 'SciHf': {
-        const sciCat = subCategory.substring(0, subCategory.indexOf('-'));
-        const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
+        const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
+        const hfPers = selectedKey.substring(selectedKey.indexOf('-') + 1, selectedKey.length);
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
         if (!activeLayer || !layers[activeLayer]) return;
@@ -378,7 +378,7 @@ class Search extends Component {
 
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === idCategory) {
+          if (layer.feature.properties.key === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,

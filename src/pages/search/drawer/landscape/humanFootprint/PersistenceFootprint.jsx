@@ -93,7 +93,7 @@ class PersistenceFootprint extends React.Component {
             units="ha"
             colors={matchColor('hfPersistence')}
             padding={0.25}
-            onClickGraphHandler={handlerClickOnGraph}
+            onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
       </div>
