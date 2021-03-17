@@ -520,7 +520,6 @@ class Search extends Component {
         };
         break;
       case 'currentPAConn':
-      case 'timelinePAConn':
         this.switchLayer('geofence');
         request = () => RestAPI.requestDPCLayer(
           selectedAreaTypeId,
@@ -532,6 +531,20 @@ class Search extends Component {
         newActiveLayer = {
           id: layerType,
           name: 'Conectividad actual de áreas protegidas',
+        };
+        break;
+      case 'timelinePAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          5,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
+        newActiveLayer = {
+          id: layerType,
+          name: 'Histórico de conectividad de áreas protegidas',
         };
         break;
       default:
