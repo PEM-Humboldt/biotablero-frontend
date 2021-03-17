@@ -541,10 +541,10 @@ class Search extends Component {
           5,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: 'currentPAConn' });
+        layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
         layerKey = 'currentPAConn';
         newActiveLayer = {
-          id: 'layerType',
+          id: 'currentPAConn',
           name: 'Histórico de conectividad áreas protegidas',
         };
         break;
