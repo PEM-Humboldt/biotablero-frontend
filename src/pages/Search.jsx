@@ -36,6 +36,8 @@ const tooltipLabel = {
   persistencia: 'Persistencia',
   ganancia: 'Ganancia',
   no_bosque: 'No bosque',
+  scialta: 'Alto',
+  scibaja_moderada: 'Bajo Moderado',
 };
 
 class Search extends Component {
@@ -250,6 +252,12 @@ class Search extends Component {
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
+      case 'forestIntegrity':
+        feature.bindTooltip(
+          `SCI ${tooltipLabel[`sci${feature.feature.properties.sci_cat}`]} - HH ${tooltipLabel[feature.feature.properties.hf_pers]}`,
           optionsTooltip,
         ).openTooltip();
         break;
