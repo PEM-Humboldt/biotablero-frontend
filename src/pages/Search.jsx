@@ -184,7 +184,7 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
-      const ftype = type === 'currentPAConn' ? 'dpc' : type;
+      const ftype = (type === 'currentPAConn' || type === 'timelinePAConn') ? 'dpc' : type;
       if (!key) {
         return {
           color: matchColor(ftype)(color),
@@ -262,9 +262,10 @@ class Search extends Component {
         feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
         break;
       case 'currentPAConn':
+      case 'timelinePAConn':
         feature.bindTooltip(
           `<b>${feature.feature.properties.key}:</b>
-          <br>${formatNumber(feature.feature.properties.value, 2)}
+          <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
         ).openTooltip();
@@ -532,6 +533,21 @@ class Search extends Component {
           name: 'Conectividad actual de áreas protegidas',
         };
         break;
+      case 'timelinePAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          5,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+        layerKey = 'currentPAConn';
+        newActiveLayer = {
+          id: 'currentPAConn',
+          name: 'Histórico de conectividad áreas protegidas',
+        };
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -734,6 +750,7 @@ class Search extends Component {
       'geofence',
       'forestIntegrity',
       'currentPAConn',
+      'timelinePAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
