@@ -2,6 +2,7 @@ import { ResponsivePie } from '@nivo/pie';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import formatNumber from 'utils/format';
 import { lightenColor, darkenColor } from 'utils/colorUtils';
 
 const theme = {
@@ -58,7 +59,7 @@ class PieGraph extends React.Component {
                 {`${label}:`}
               </strong>
               <div>
-                {String(value)}
+                {formatNumber(value, 2)}
                 {` ${units}`}
               </div>
             </div>

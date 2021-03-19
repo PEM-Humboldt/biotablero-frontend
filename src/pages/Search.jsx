@@ -36,6 +36,8 @@ const tooltipLabel = {
   persistencia: 'Persistencia',
   ganancia: 'Ganancia',
   no_bosque: 'No bosque',
+  scialta: 'Alto',
+  scibaja_moderada: 'Bajo Moderado',
 };
 
 class Search extends Component {
@@ -254,6 +256,12 @@ class Search extends Component {
           optionsTooltip,
         ).openTooltip();
         break;
+      case 'forestIntegrity':
+        feature.bindTooltip(
+          `SCI ${tooltipLabel[`sci${feature.feature.properties.sci_cat}`]} - HH ${tooltipLabel[feature.feature.properties.hf_pers]}`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
       case 'states':
       case 'ea':
         feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
@@ -299,12 +307,12 @@ class Search extends Component {
   /**
    * Connects events on graphs with actions on map
    *
-   * @param {String} idCategory id of category selected on the graph
-   * @param {String} subCategory in case idCategory is grouping a type of features
-   * @param {String} selectedKey id of key selected on the graph
+   * @param {String} chartType id of chart emitting the event
+   * @param {String} chartSection in case chartType groups multiple charts
+   * @param {String} selectedKey selected key id on the graph
    */
-  clickOnGraph = (idCategory, subCategory = null, selectedKey) => {
-    switch (idCategory) {
+  clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
+    switch (chartType) {
       case 'paramo':
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
@@ -326,7 +334,7 @@ class Search extends Component {
         this.shutOffLayer('dryForest');
         break;
       case 'forestLP': {
-        const period = subCategory;
+        const period = chartSection;
         const { layers } = this.state;
 
         const psKeys = Object.keys(layers).filter((key) => /forestLP-*/.test(key));
@@ -334,6 +342,9 @@ class Search extends Component {
 
         const highlightSelectedFeature = () => {
           const { layers: updatedLayers, activeLayer: { id: activeLayer } } = this.state;
+
+          if (!activeLayer || !layers[activeLayer]) return;
+
           const selectedSubLayer = updatedLayers[activeLayer].layer;
           if (selectedKey) {
             selectedSubLayer.eachLayer((layer) => {
@@ -353,9 +364,11 @@ class Search extends Component {
       }
         break;
       case 'SciHf': {
-        const sciCat = subCategory.substring(0, subCategory.indexOf('-'));
-        const hfPers = subCategory.substring(subCategory.indexOf('-') + 1, subCategory.length);
+        const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
+        const hfPers = selectedKey.substring(selectedKey.indexOf('-') + 1, selectedKey.length);
         const { layers, activeLayer: { id: activeLayer } } = this.state;
+
+        if (!activeLayer || !layers[activeLayer]) return;
 
         const psKeys = Object.keys(layers).filter((key) => /SciHfPA-*/.test(key));
         psKeys.forEach((key) => this.shutOffLayer(key));
@@ -378,9 +391,12 @@ class Search extends Component {
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
+
+        if (!activeLayer || !layers[activeLayer]) return;
+
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === idCategory) {
+          if (layer.feature.properties.key === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,
