@@ -1,7 +1,15 @@
 node_modules/*
 build
+.vscode
 
 .env.*
 .swp
 # Mac DS_Store files
 .DS_Store
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

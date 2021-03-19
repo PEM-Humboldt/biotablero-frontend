@@ -1,45 +1,36 @@
 
 # BioTablero
-Repositorio que almacena servicio de Front-End del BioTablero.
+Front-End de BioTablero.
 
-Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humboldt.org.co). El proyecto usa [Node.js](https://nodejs.org/) versión 8.10 y [React.js](https://reactjs.org) versión 3.5.2, junto a paquetes como [Create React App](https://github.com/facebookincubator/create-react-app), [React-scripts](https://www.npmjs.com/package/react-scripts) [D3](https://d3js.org), [Material-UI](https://material-ui.com), [VX](https://vx-demo.now.sh/), [Leaflet](https://leafletjs.com/), [React-leaflet](https://react-leaflet.js.org) y [Axios](https://alligator.io/react/axios-react/)
+Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humboldt.org.co). El proyecto usa [React.js](https://reactjs.org).
 
 ## 1. Instrucciones
 
-Debe tener instalado npm o yarn en su equipo local, para la instalación de paquetes y ejecución del proyecto. Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
+Debe tener instalado [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto. Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
-### 1.1. Instalación de paquetes:
+### 1.1 Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
-    npm install
+    yarn install
 
-### 1.2 Configuración de variables de entorno:
+### 1.2 Construcción de dependencias:
+Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
+
+    yarn workspaces foreach run build-pkg
+
+### 1.3 Configuración de variables de entorno:
 Crear una copia del archivo *.env* con el nombre *.env.local* actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
 
-### 1.3. Ejecución:
+### 1.4. Ejecución:
 Por último, ejecute la siguiente instrucción:
 
-    npm start
+    yarn start
 
 La instrucción iniciará el proyecto en su entorno local y se abrirá en el navegador.
 
-### 1.4. Verificar reglas de estilo (airbnb)
-
-Ejecutar la siguiente linea:
-
-    npm run lint -- <folder/archivo>
-
-Reemplazar <folder/archivo> con el path del folder o del archivo sobre el cual desea verificar los estilos.
-
-Si ejecuta únicamente:
-
-    npm run lint
-
-Se verificarán los estilos de todo el folder *src/*
-
 ### 1.5. Problemas
 
-En caso de tener inconvenientes al ejecutar npm start en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
+En caso de tener inconvenientes al ejecutar el proyecto en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
 
 ## 2. Despliegue con Docker
 
@@ -62,6 +53,30 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
     docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
+
+## 3. Utilitarios
+
+### Desarrollo en dependencias
+
+Para trabajar en una dependencia en específico y observar los cambios en estas, ejecute:
+
+    yarn workspace <nombre_paquete> run build-dev
+
+Tenga en cuenta las siguientes cosas:
+
+- El build toma más tiempo la primera vez que se genera, pero cada vez que se detecte un cambio puede tomar aproximadamente 5seg en volver a generarse.
+- Si desea habilitar el sourcemap puede hacerlo en la configuración de cada dependencia, o incluso mejor, ejecute la dependencia de forma independiente y trabaje directamente sobre ella.
+
+
+### Verificar reglas de estilo
+
+Ejecutar la siguiente linea para verificar los estilos del proyecto:
+
+    yarn run lint
+
+Para verificar los estilos de las dependencias propias ejecute:
+
+    yarn workspaces foreach run lint
 
 ***
 

@@ -1,15 +1,16 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
-import AppContext from './AppContext';
-import Compensation from './Compensation';
-import Home from './Home';
-import Indicator from './Indicator';
-import Layout from './Layout';
-import Search from './Search';
-import Uim from './Uim';
+import AppContext from 'app/AppContext';
+import Layout from 'app/Layout';
+import Uim from 'app/Uim';
+import Compensation from 'pages/Compensation';
+import Home from 'pages/Home';
+import Indicator from 'pages/Indicator';
+import Search from 'pages/Search';
+import CBMDashboard from 'pages/CBMDashboard';
 
-import './assets/main.css';
+import 'main.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -20,9 +21,9 @@ class App extends React.Component {
     };
   }
 
-  buildQuery = queryString => new URLSearchParams(queryString);
+  buildQuery = (queryString) => new URLSearchParams(queryString);
 
-  setUser = user => this.setState({ user });
+  setUser = (user) => this.setState({ user });
 
   setHeaderNames = (parent, child) => {
     this.setState({
@@ -32,7 +33,7 @@ class App extends React.Component {
 
   loadHome = ({ location }) => (
     this.loadComponent({
-      footerLogos: true,
+      logoSet: 'default',
       component: (<Home referrer={location.referrer} />),
     })
   );
@@ -40,7 +41,7 @@ class App extends React.Component {
   loadSearch = ({ location }) => {
     const query = this.buildQuery(location.search);
     return this.loadComponent({
-      footerLogos: false,
+      logoSet: null,
       name: 'Consultas geográficas',
       component: (<Search
         selectedAreaTypeId={query.get('area_type')}
@@ -52,7 +53,7 @@ class App extends React.Component {
 
   loadIndicator = () => (
     this.loadComponent({
-      footerLogos: true,
+      logoSet: 'default',
       name: 'Indicadores',
       component: (<Indicator />),
     })
@@ -62,7 +63,7 @@ class App extends React.Component {
     const { user } = this.state;
     if (user) {
       return this.loadComponent({
-        footerLogos: false,
+        logoSet: null,
         name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
       });
@@ -77,12 +78,20 @@ class App extends React.Component {
     );
   }
 
-  loadComponent = ({ footerLogos, name, component }) => {
+  loadCBMDashboard = () => (
+    this.loadComponent({
+      logoSet: 'monitoreo',
+      name: 'Monitoreo comunitario',
+      component: (<CBMDashboard />),
+    })
+  );
+
+  loadComponent = ({ logoSet, name, component }) => {
     const { headerNames } = this.state;
     return (
       <Layout
         moduleName={name}
-        showFooterLogos={footerLogos}
+        footerLogos={logoSet}
         headerNames={headerNames}
         uim={<Uim setUser={this.setUser} />}
       >
@@ -104,6 +113,7 @@ class App extends React.Component {
             <Route path="/Indicadores" render={this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
+            <Route path="/Monitoreo" render={this.loadHome} />
           </Switch>
         </main>
       </AppContext.Provider>
