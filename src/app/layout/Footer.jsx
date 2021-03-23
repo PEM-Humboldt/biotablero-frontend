@@ -41,7 +41,7 @@ const Footer = (
           {logoSet[logosId].map((name) => {
             if (!logosData[name]) return null;
             return (
-              <a href={logosData[name].url} target="_blank" rel="noopener noreferrer">
+              <a href={logosData[name].url} target="_blank" rel="noopener noreferrer" key={name}>
                 <img src={logosData[name].img} alt="" />
               </a>
             );

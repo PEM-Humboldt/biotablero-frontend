@@ -7,6 +7,7 @@ import DotsGraph from 'components/charts/DotsGraph';
 import LargeBarStackGraph from 'components/charts/LargeBarStackGraph';
 import MultiLinesGraph from 'components/charts/MultiLinesGraph';
 import MultiSmallBarStackGraph from 'components/charts/MultiSmallBarStackGraph';
+import MultiSmallSingleBarGraph from 'components/charts/MultiSmallSingleBarGraph';
 import PieGraph from 'components/charts/PieGraph';
 import SmallBarStackGraph from 'components/charts/SmallBarStackGraph';
 
@@ -81,6 +82,17 @@ const GraphLoader = (props) => {
           selectedIndexValue={selectedIndexValue}
         />
       );
+    case 'MultiSmallSingleBarGraph':
+      return (
+        <MultiSmallSingleBarGraph
+          data={data}
+          height={250}
+          colors={colors}
+          units={units}
+          onClickHandler={onClickGraphHandler}
+          selectedIndexValue={selectedIndexValue}
+        />
+      );
     case 'pie':
       return (
         <PieGraph
@@ -147,6 +159,7 @@ const GraphLoader = (props) => {
           data={data}
           markers={markers}
           height={490}
+          units={units}
         />
       );
     default:
@@ -191,7 +204,7 @@ GraphLoader.defaultProps = {
   labelX: '',
   labelY: '',
   showOnlyTitle: false,
-  units: 'ha',
+  units: '',
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,

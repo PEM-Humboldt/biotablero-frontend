@@ -40,6 +40,7 @@ class MultiLinesGraph extends React.Component {
       serieId,
     } = point;
     const { labels } = this.state;
+    const { units } = this.props;
     return (
       <div style={{
         backgroundColor: '#333',
@@ -57,7 +58,7 @@ class MultiLinesGraph extends React.Component {
           </strong>
           <br />
           <div style={{ color: '#ffffff' }}>
-            {formatNumber(yFormatted, 2)}
+            {`${formatNumber(yFormatted, 2)} ${units}`}
           </div>
         </div>
       </div>
@@ -241,6 +242,7 @@ MultiLinesGraph.propTypes = {
   yMin: PropTypes.number,
   yMax: PropTypes.number,
   height: PropTypes.number,
+  units: PropTypes.string,
 };
 
 MultiLinesGraph.defaultProps = {
@@ -250,6 +252,7 @@ MultiLinesGraph.defaultProps = {
   yMin: 0,
   yMax: 100,
   height: 490,
+  units: '',
 };
 
 export default MultiLinesGraph;

@@ -113,7 +113,7 @@ class CurrentFootprint extends React.Component {
             units="ha"
             colors={matchColor('hfCurrent')}
             padding={0.25}
-            onClickGraphHandler={handlerClickOnGraph}
+            onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
       </div>
