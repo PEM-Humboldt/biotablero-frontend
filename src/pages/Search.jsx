@@ -186,7 +186,7 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
-      const ftype = (type === 'currentPAConn' || type === 'timelinePAConn') ? 'dpc' : type;
+      const ftype = /PAConn$/.test(type) ? 'dpc' : type;
       if (!key) {
         return {
           color: matchColor(ftype)(color),
@@ -271,6 +271,7 @@ class Search extends Component {
         break;
       case 'currentPAConn':
       case 'timelinePAConn':
+      case 'currentSEPAConn':
         feature.bindTooltip(
           `<b>${feature.feature.properties.key}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
@@ -564,6 +565,20 @@ class Search extends Component {
           name: 'Histórico de conectividad áreas protegidas',
         };
         break;
+      case 'currentSEPAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+        layerKey = 'currentSEPAConn';
+        newActiveLayer = {
+          id: 'currentSEPAConn',
+          name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+        };
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -767,6 +782,7 @@ class Search extends Component {
       'forestIntegrity',
       'currentPAConn',
       'timelinePAConn',
+      'currentSEPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
