@@ -23,6 +23,7 @@ class CurrentSEPAConnectivity extends React.Component {
       currentPAConnParamo: [],
       currentPAConnDryForest: [],
       currentPAConnWetland: [],
+      selectedEcosystem: null,
     };
   }
 
@@ -88,10 +89,14 @@ class CurrentSEPAConnectivity extends React.Component {
 
   render() {
     const {
+      handlerClickOnGraph,
+    } = this.context;
+    const {
       currentPAConnParamo,
       currentPAConnDryForest,
       currentPAConnWetland,
       showInfoGraph,
+      selectedEcosystem,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -113,7 +118,7 @@ class CurrentSEPAConnectivity extends React.Component {
           )
         )}
         <div>
-          <h6>
+          <h6 style={{ fontWeight: selectedEcosystem === 'paramo' ? 'bold' : 'normal' }}>
             Páramo
           </h6>
           <div>
@@ -125,9 +130,13 @@ class CurrentSEPAConnectivity extends React.Component {
               units="ha"
               colors={matchColor('currentPAConn')}
               padding={0.25}
+              onClickGraphHandler={() => {
+                this.setState({ selectedEcosystem: 'paramo' });
+                handlerClickOnGraph({ chartType: 'paramo' });
+              }}
             />
           </div>
-          <h6>
+          <h6 style={{ fontWeight: selectedEcosystem === 'dryForest' ? 'bold' : 'normal' }}>
             Bosque Seco Tropical
           </h6>
           <div>
@@ -139,9 +148,13 @@ class CurrentSEPAConnectivity extends React.Component {
               units="ha"
               colors={matchColor('currentPAConn')}
               padding={0.25}
+              onClickGraphHandler={() => {
+                this.setState({ selectedEcosystem: 'dryForest' });
+                handlerClickOnGraph({ chartType: 'dryForest' });
+              }}
             />
           </div>
-          <h6>
+          <h6 style={{ fontWeight: selectedEcosystem === 'wetland' ? 'bold' : 'normal' }}>
             Humedal
           </h6>
           <div>
@@ -153,6 +166,10 @@ class CurrentSEPAConnectivity extends React.Component {
               units="ha"
               colors={matchColor('currentPAConn')}
               padding={0.25}
+              onClickGraphHandler={() => {
+                this.setState({ selectedEcosystem: 'wetland' });
+                handlerClickOnGraph({ chartType: 'wetland' });
+              }}
             />
           </div>
         </div>
