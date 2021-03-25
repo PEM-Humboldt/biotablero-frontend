@@ -11,7 +11,7 @@ import methodologiesList from './app/data/av_methodologies';
 import './main.css';
 
 const App = () => {
-  const [methodology, setMethodology] = useState('');
+  const [methodologyOption, setMethodologyOption] = useState({});
 
   return (
     <div className="wrapper wrapperCbmd">
@@ -41,8 +41,8 @@ const App = () => {
                   <AccordionDetails key={opt.id}>
                     <div
                       className="innerMet clickDiv"
-                      onClick={() => setMethodology(opt.id)}
-                      onKeyDown={() => setMethodology(opt.id)}
+                      onClick={() => setMethodologyOption(opt)}
+                      onKeyDown={() => setMethodologyOption(opt)}
                       role="button"
                       tabIndex={0}
                     >
@@ -54,7 +54,7 @@ const App = () => {
           ))}
         </div>
       </div>
-      <MethodologyBoard methodology={methodology} />
+      <MethodologyBoard methodology={methodologyOption} />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
 
 import 'main.css';
+import 'cbm-dashboard/dist/bundle.css';
 
 class App extends React.Component {
   constructor(props) {
