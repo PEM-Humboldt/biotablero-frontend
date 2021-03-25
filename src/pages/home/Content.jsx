@@ -44,8 +44,8 @@ const Content = ({ activeModule, setActiveModule }) => (
           localLink="/Alertas"
         />
         <MenuButton
-          focusCallback={() => setActiveModule('monitoreo')}
-          buttonStyles={`finder mon ${(activeModule === 'monitoreo') ? 'activeicon' : ''}`}
+          focusCallback={() => setActiveModule('cbmdashboard')}
+          buttonStyles={`finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`}
           idBtn="monbtn"
           firstLineContent="Monitoreo"
           secondLineContent="comunitario"

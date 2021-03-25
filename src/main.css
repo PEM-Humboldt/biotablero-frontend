@@ -37,9 +37,13 @@ h1, h2, h3, h4 {
     *zoom: 1;
 }
 
-a {
+a, .linkText {
 	text-decoration: none;
 	cursor: pointer;
+}
+
+.linkText {
+	color: #e84a5f;
 }
 
 #tooltip {

@@ -5,6 +5,7 @@ import AlertDescriptions from 'pages/home/information/Alerts';
 import CompensationDescriptions from 'pages/home/information/Compensations';
 import IndicatorDescriptions from 'pages/home/information/Indicators';
 import SearchDescriptions from 'pages/home/information/Searches';
+import CbmdDescriptions from 'pages/home/information/Cbmd';
 
 class Information extends React.Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class Information extends React.Component {
       indicator: IndicatorDescriptions,
       compensation: CompensationDescriptions,
       alert: AlertDescriptions,
+      cbmdashboard: CbmdDescriptions,
     };
   }
 

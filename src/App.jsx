@@ -11,6 +11,7 @@ import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
 
 import 'main.css';
+import 'cbm-dashboard/dist/bundle.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -113,7 +114,7 @@ class App extends React.Component {
             <Route path="/Indicadores" render={this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
-            <Route path="/Monitoreo" render={this.loadHome} />
+            <Route path="/Monitoreo" render={this.loadCBMDashboard} />
           </Switch>
         </main>
       </AppContext.Provider>

@@ -1,6 +1,7 @@
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import css from 'rollup-plugin-css-only';
 
 export default {
   input: 'src/App.jsx',
@@ -14,8 +15,9 @@ export default {
   ],
   plugins: [
     nodeResolve({ extensions: ['.jsx', '.js'] }),
+    babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' }),
     commonjs(),
-    babel({ exclude: 'node_modules/**' }),
+    css({ output: 'bundle.css' }),
   ],
   external: ['react', 'react-dom'],
 };
