@@ -6,6 +6,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useState } from 'react';
 
 import MethodologyBoard from './app/MethodologyBoard';
+import methodologiesList from './app/data/av_methodologies';
 
 import './main.css';
 
@@ -24,116 +25,33 @@ const App = () => {
         </h3>
         <h4>Seleccione la metodología de monitoreo: </h4>
         <div className="accordionCss">
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className="accTitle">
-                <b>01</b> · VALIDACIÓN DE COBERTURAS
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div
-                className="innerMet clickDiv"
-                onClick={() => setMethodology('01_validacion_coberturas')}
-                onKeyDown={() => setMethodology('01_validacion_coberturas')}
-                role="button"
-                tabIndex={0}
+          {methodologiesList.map((meth, idx) => (
+            <Accordion key={meth.title} disabled={!meth.enabled}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
               >
-                - Disturbios
-              </div>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel2a-content"
-              id="panel2a-header"
-            >
-              <Typography className="accTitle">
-                <b>02</b> · PARCELA DE VEGETACIÓN
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div
-                className="innerMet"
-                onClick={() => setMethodology('02_parcela_vegetacion')}
-                onKeyDown={() => setMethodology('02_parcela_vegetacion')}
-                role="button"
-                tabIndex={0}
-              >
-                - Hábito de crecimiento
-              </div>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion disabled>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
-              <Typography className="accTitle">
-                <b>03</b> · PUNTOS DE CONTEO
-              </Typography>
-            </AccordionSummary>
-          </Accordion>
-          <Accordion disabled>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
-              <Typography className="accTitle">
-                <b>04</b> · CÁMARAS TRAMPA
-              </Typography>
-            </AccordionSummary>
-          </Accordion>
-          <Accordion disabled>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
-              <Typography className="accTitle">
-                <b>05</b> · FLORACIÓN, FRUCTIFICACIÓN E INTERACCIÓN
-              </Typography>
-            </AccordionSummary>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography className="accTitle">
-                <b>06</b> · MEDICIÓN DE LLUVIA
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <div
-                className="innerMet"
-                onClick={() => setMethodology('06_medicion_lluvia')}
-                onKeyDown={() => setMethodology('06_medicion_lluvia')}
-                role="button"
-                tabIndex={0}
-              >
-                - Precipitación diaria
-              </div>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion disabled>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel3a-content"
-              id="panel3a-header"
-            >
-              <Typography className="accTitle">
-                <b>07</b> · MEDICIÓN DE CAUDAL
-              </Typography>
-            </AccordionSummary>
-          </Accordion>
+                <Typography className="accTitle">
+                  <b>{idx}</b> {`· ${meth.title}`}
+                </Typography>
+              </AccordionSummary>
+              {meth.options &&
+                meth.options.map((opt) => (
+                  <AccordionDetails key={opt.id}>
+                    <div
+                      className="innerMet clickDiv"
+                      onClick={() => setMethodology(opt.id)}
+                      onKeyDown={() => setMethodology(opt.id)}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {`- ${opt.name}`}
+                    </div>
+                  </AccordionDetails>
+                ))}
+            </Accordion>
+          ))}
         </div>
       </div>
       <MethodologyBoard methodology={methodology} />
