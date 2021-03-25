@@ -12,6 +12,8 @@ const M02 = () => {
 
   return (
     <div id="02_parcela_vegetacion">
+      <h2>Parcela de vegetación</h2>
+      <h3>Hábito de crecimiento</h3>
       <div id="habito_crecimiento">
         {!data ? (
           'cargando...'

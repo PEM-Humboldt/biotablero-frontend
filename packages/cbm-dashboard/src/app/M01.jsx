@@ -12,6 +12,8 @@ const M01 = () => {
 
   return (
     <div id="01_validacion_coberturas">
+      <h2>Validación de coberturas</h2>
+      <h3>Disturbios</h3>
       <div id="disturbios">
         {!data ? (
           'cargando...'

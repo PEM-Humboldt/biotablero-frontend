@@ -11,6 +11,8 @@ const M06 = () => {
   }, []);
   return (
     <div id="06_medicion_lluvia">
+      <h2>Medición de lluvia</h2>
+      <h3>Precipitación diaria</h3>
       <div id="reg_diarios">
         {!data ? (
           'cargando...'
