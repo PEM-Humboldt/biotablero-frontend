@@ -99,3 +99,8 @@
 .innerMet {
 	color: #6e6e6e;
 }
+
+.clickDiv {
+	cursor: pointer;
+	width: 100%;
+}
