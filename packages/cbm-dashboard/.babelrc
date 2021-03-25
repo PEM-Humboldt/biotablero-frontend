@@ -1,4 +1,5 @@
 {
   "presets": ["@babel/preset-react"],
-  "plugins": ["@babel/plugin-transform-runtime"]
+  // Uncomment to run as stand alone app
+  //"plugins": ["@babel/plugin-transform-runtime"]
 }
