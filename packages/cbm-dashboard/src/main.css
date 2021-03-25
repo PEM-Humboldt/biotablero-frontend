@@ -59,6 +59,10 @@
 	font-weight: 300;
 }
 
+.card h3 b {
+	font-weight: 700;
+}
+
 .card h4 {
 	margin-bottom: 10px;
 	font-size: 13px;
@@ -103,4 +107,8 @@
 .clickDiv {
 	cursor: pointer;
 	width: 100%;
+}
+
+.clickDiv.selected {
+	color: #e84a5f;
 }

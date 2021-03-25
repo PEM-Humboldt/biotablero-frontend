@@ -6,7 +6,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useState } from 'react';
 
 import MethodologyBoard from './app/MethodologyBoard';
-import methodologiesList from './app/data/av_methodologies';
+import methodologiesList from './app/data/available_methodologies';
 
 import './main.css';
 
@@ -33,14 +33,16 @@ const App = () => {
                 id="panel1a-header"
               >
                 <Typography className="accTitle">
-                  <b>{idx}</b> {`· ${meth.title}`}
+                  <b>{idx + 1}</b> {`· ${meth.title}`}
                 </Typography>
               </AccordionSummary>
               {meth.options &&
                 meth.options.map((opt) => (
                   <AccordionDetails key={opt.id}>
                     <div
-                      className="innerMet clickDiv"
+                      className={`innerMet clickDiv ${
+                        methodologyOption.id === opt.id ? 'selected' : ''
+                      }`}
                       onClick={() => setMethodologyOption(opt)}
                       onKeyDown={() => setMethodologyOption(opt)}
                       role="button"
