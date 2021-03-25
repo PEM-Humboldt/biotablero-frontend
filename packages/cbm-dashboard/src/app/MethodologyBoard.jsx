@@ -80,8 +80,8 @@ MethodologyBoard.propTypes = {
 
 MethodologyBoard.defaultProps = {
   methodology: {
-    id: '',
-    name: '',
+    id: '01_validacion_coberturas',
+    name: 'Disturbios',
   },
 };
 

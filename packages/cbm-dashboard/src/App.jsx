@@ -11,7 +11,10 @@ import methodologiesList from './app/data/available_methodologies';
 import './main.css';
 
 const App = () => {
-  const [methodologyOption, setMethodologyOption] = useState({});
+  const [methodologyOption, setMethodologyOption] = useState({
+    id: '01_validacion_coberturas',
+    name: 'Disturbios',
+  });
 
   return (
     <div className="wrapper wrapperCbmd">
