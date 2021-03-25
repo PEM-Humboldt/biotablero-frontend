@@ -56,10 +56,10 @@ const MethodologyBoard = ({ methodology }) => {
       <div className="graphInfo card">
         <h2>{methodology.name}</h2>
         <h3>
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
-          tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
-          quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
-          consequat.
+          En este espacio se describe la forma como se debe interpretar los datos y leer cada
+          gráfica a visualizar. El mismo cambiará en el momento de cambiar la gráfica, así como el
+          título de la misma. De momento se encuentra con el título de la primera gráfica de la
+          primera estrategia de monitoreo.
         </h3>
         {activeTab !== 'GENERAL' && (
           <h2>
