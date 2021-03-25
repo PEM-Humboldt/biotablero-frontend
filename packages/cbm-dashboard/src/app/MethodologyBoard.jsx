@@ -61,9 +61,11 @@ const MethodologyBoard = ({ methodology }) => {
           quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo
           consequat.
         </h3>
-        <h2>
-          Periodicidad <ThumbUpAltIcon /> <ThumbDownAltIcon />
-        </h2>
+        {activeTab !== 'GENERAL' && (
+          <h2>
+            Periodicidad <ThumbUpAltIcon /> <ThumbDownAltIcon />
+          </h2>
+        )}
       </div>
     </>
   );
