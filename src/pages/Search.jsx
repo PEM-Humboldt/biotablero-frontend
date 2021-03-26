@@ -808,6 +808,9 @@ class Search extends Component {
       'currentPAConn',
       'timelinePAConn',
       'currentSEPAConn',
+      'paramoPAConn',
+      'dryForestPAConn',
+      'wetlandPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
