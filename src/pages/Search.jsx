@@ -601,7 +601,7 @@ class Search extends Component {
           selectedAreaTypeId, selectedAreaId, layerType,
         );
         shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, color: layerType });
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
         fitBounds = false;
         break;
       default:
