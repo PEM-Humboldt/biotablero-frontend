@@ -131,7 +131,7 @@ class CurrentPAConnectivity extends React.Component {
               graphType="MultiSmallSingleBarGraph"
               data={dpc}
               colors={matchColor('dpc')}
-              onClickGraphHandler={handlerClickOnGraph}
+              onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
             />
           </div>
         </div>

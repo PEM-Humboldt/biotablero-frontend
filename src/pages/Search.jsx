@@ -186,7 +186,7 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
-      const ftype = (type === 'currentPAConn' || type === 'timelinePAConn') ? 'dpc' : type;
+      const ftype = /PAConn$/.test(type) ? 'dpc' : type;
       if (!key) {
         return {
           color: matchColor(ftype)(color),
@@ -197,14 +197,14 @@ class Search extends Component {
       return {
         stroke: false,
         fillColor: matchColor(ftype)(key),
-        fillOpacity: 0.7,
+        fillOpacity: 0.6,
       };
     }
 
     return {
       stroke: false,
       fillColor: matchColor(type)(color),
-      fillOpacity: 0.7,
+      fillOpacity: 0.6,
     };
   }
 
@@ -271,6 +271,7 @@ class Search extends Component {
         break;
       case 'currentPAConn':
       case 'timelinePAConn':
+      case 'currentSEPAConn':
         feature.bindTooltip(
           `<b>${feature.feature.properties.key}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
@@ -388,6 +389,21 @@ class Search extends Component {
           }
         });
       }
+        break;
+      case 'paramoPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('paramoPAConn');
+        break;
+      case 'wetlandPAConn':
+        this.shutOffLayer('paramoPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('wetlandPAConn');
+        break;
+      case 'dryForestPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('paramoPAConn');
+        this.switchLayer('dryForestPAConn');
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -563,6 +579,30 @@ class Search extends Component {
           id: 'currentPAConn',
           name: 'Histórico de conectividad áreas protegidas',
         };
+        break;
+      case 'currentSEPAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+        layerKey = 'currentSEPAConn';
+        newActiveLayer = {
+          id: 'currentSEPAConn',
+          name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+        };
+        break;
+      case 'paramoPAConn':
+      case 'dryForestPAConn':
+      case 'wetlandPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
         break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
@@ -767,6 +807,10 @@ class Search extends Component {
       'forestIntegrity',
       'currentPAConn',
       'timelinePAConn',
+      'currentSEPAConn',
+      'paramoPAConn',
+      'dryForestPAConn',
+      'wetlandPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
