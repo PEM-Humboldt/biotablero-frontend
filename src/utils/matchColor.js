@@ -66,16 +66,13 @@ const match = {
     sort: ['wetland'],
   },
   paramoPAConn: {
-    palette: 'paramoPAConn',
-    sort: ['paramoPAConn'],
+    palette: 'sePAConn',
   },
   dryForestPAConn: {
-    palette: 'dryForestPAConn',
-    sort: ['dryForestPAConn'],
+    palette: 'sePAConn',
   },
   wetlandPAConn: {
-    palette: 'wetlandPAConn',
-    sort: ['wetlandPAConn'],
+    palette: 'sePAConn',
   },
   forestLP: {
     palette: 'forestLP',
