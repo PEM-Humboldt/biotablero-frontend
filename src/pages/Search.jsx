@@ -197,14 +197,14 @@ class Search extends Component {
       return {
         stroke: false,
         fillColor: matchColor(ftype)(key),
-        fillOpacity: 0.7,
+        fillOpacity: 0.6,
       };
     }
 
     return {
       stroke: false,
       fillColor: matchColor(type)(color),
-      fillOpacity: 0.7,
+      fillOpacity: 0.6,
     };
   }
 
@@ -389,6 +389,21 @@ class Search extends Component {
           }
         });
       }
+        break;
+      case 'paramoPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('paramoPAConn');
+        break;
+      case 'wetlandPAConn':
+        this.shutOffLayer('paramoPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('wetlandPAConn');
+        break;
+      case 'dryForestPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('paramoPAConn');
+        this.switchLayer('dryForestPAConn');
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -578,6 +593,16 @@ class Search extends Component {
           id: 'currentSEPAConn',
           name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
         };
+        break;
+      case 'paramoPAConn':
+      case 'dryForestPAConn':
+      case 'wetlandPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: layerType });
+        fitBounds = false;
         break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
