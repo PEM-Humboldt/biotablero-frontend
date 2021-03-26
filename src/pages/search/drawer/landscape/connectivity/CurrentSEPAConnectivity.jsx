@@ -118,10 +118,11 @@ class CurrentSEPAConnectivity extends React.Component {
           )
         )}
         <div>
-          <h6 style={{ fontWeight: selectedEcosystem === 'paramo' ? 'bold' : 'normal' }}>
+          <h3>Haz clic en la gráfica para seleccionar un EE</h3>
+          <h6 className={selectedEcosystem === 'paramo' ? 'h6Selected' : null}>
             Páramo
           </h6>
-          <div>
+          <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnParamo}
@@ -132,14 +133,14 @@ class CurrentSEPAConnectivity extends React.Component {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: 'paramo' });
-                handlerClickOnGraph({ chartType: 'paramo' });
+                handlerClickOnGraph({ chartType: 'paramoPAConn' });
               }}
             />
           </div>
-          <h6 style={{ fontWeight: selectedEcosystem === 'dryForest' ? 'bold' : 'normal' }}>
+          <h6 className={selectedEcosystem === 'dryForest' ? 'h6Selected' : null}>
             Bosque Seco Tropical
           </h6>
-          <div>
+          <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnDryForest}
@@ -150,14 +151,14 @@ class CurrentSEPAConnectivity extends React.Component {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: 'dryForest' });
-                handlerClickOnGraph({ chartType: 'dryForest' });
+                handlerClickOnGraph({ chartType: 'dryForestPAConn' });
               }}
             />
           </div>
-          <h6 style={{ fontWeight: selectedEcosystem === 'wetland' ? 'bold' : 'normal' }}>
+          <h6 className={selectedEcosystem === 'wetland' ? 'h6Selected' : null}>
             Humedal
           </h6>
-          <div>
+          <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnWetland}
@@ -168,7 +169,7 @@ class CurrentSEPAConnectivity extends React.Component {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: 'wetland' });
-                handlerClickOnGraph({ chartType: 'wetland' });
+                handlerClickOnGraph({ chartType: 'wetlandPAConn' });
               }}
             />
           </div>
