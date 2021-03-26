@@ -86,6 +86,9 @@ export default {
   paramo: ['#eaa04a'],
   dryForest: ['#8cb64c'],
   wetland: ['#6794cb'],
+  paramoPAConn: ['#120000'],
+  dryForestPAConn: ['#120000'],
+  wetlandPAConn: ['#120000'],
   forestLP: [
     '#92ab58',
     '#c65453',
@@ -123,5 +126,5 @@ export default {
     '#2964ac',
   ],
   border: ['#ffffff'],
-  default: ['#345b6b'],
+  default: ['#b2bdc2'],
 };
