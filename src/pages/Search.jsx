@@ -573,9 +573,8 @@ class Search extends Component {
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-        layerKey = 'timelinePAConn';
         newActiveLayer = {
-          id: 'currentPAConn',
+          id: 'timelinePAConn',
           name: 'Histórico de conectividad áreas protegidas',
         };
         break;
@@ -587,7 +586,6 @@ class Search extends Component {
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
-        layerKey = 'currentSEPAConn';
         newActiveLayer = {
           id: 'currentSEPAConn',
           name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
@@ -600,7 +598,6 @@ class Search extends Component {
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
         fitBounds = false;
-        layerKey = 'paramoPAConn';
         newActiveLayer = {
           id: 'paramoPAConn',
           name: 'Conectividad actual de áreas protegidas - Páramo',
@@ -613,7 +610,6 @@ class Search extends Component {
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
         fitBounds = false;
-        layerKey = 'dryForestPAConn';
         newActiveLayer = {
           id: 'dryForestPAConn',
           name: 'Conectividad actual de áreas protegidas - Bosque Seco Tropical',
@@ -626,7 +622,6 @@ class Search extends Component {
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
         fitBounds = false;
-        layerKey = 'wetlandPAConn';
         newActiveLayer = {
           id: 'wetlandPAConn',
           name: 'Conectividad actual de áreas protegidas - Humedales',
