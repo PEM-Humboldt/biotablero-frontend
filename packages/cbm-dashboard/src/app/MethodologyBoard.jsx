@@ -63,7 +63,7 @@ const MethodologyBoard = ({ methodology }) => {
         </h3>
         {activeTab !== 'GENERAL' && (
           <h2>
-            Periodicidad <ThumbUpAltIcon /> <ThumbDownAltIcon />
+            Cumplimiento <ThumbUpAltIcon /> <ThumbDownAltIcon />
           </h2>
         )}
       </div>
