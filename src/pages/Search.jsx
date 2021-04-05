@@ -570,11 +570,10 @@ class Search extends Component {
         request = () => RestAPI.requestDPCLayer(
           selectedAreaTypeId,
           selectedAreaId,
-          5,
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-        layerKey = 'currentPAConn';
+        layerKey = 'timelinePAConn';
         newActiveLayer = {
           id: 'currentPAConn',
           name: 'Histórico de conectividad áreas protegidas',
@@ -595,7 +594,31 @@ class Search extends Component {
         };
         break;
       case 'paramoPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
+        layerKey = 'paramoPAConn';
+        newActiveLayer = {
+          id: 'paramoPAConn',
+          name: 'Conectividad actual de áreas protegidas - Páramo',
+        };
+        break;
       case 'dryForestPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
+        layerKey = 'dryForestPAConn';
+        newActiveLayer = {
+          id: 'dryForestPAConn',
+          name: 'Conectividad actual de áreas protegidas - Bosque Seco Tropical',
+        };
+        break;
       case 'wetlandPAConn':
         request = () => RestAPI.requestPAConnSELayer(
           selectedAreaTypeId, selectedAreaId, layerType,
@@ -603,6 +626,11 @@ class Search extends Component {
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
         fitBounds = false;
+        layerKey = 'wetlandPAConn';
+        newActiveLayer = {
+          id: 'wetlandPAConn',
+          name: 'Conectividad actual de áreas protegidas - Humedales',
+        };
         break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
