@@ -882,7 +882,7 @@ class Search extends Component {
     } = this.props;
 
     return (
-      <div>
+      <>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -913,7 +913,7 @@ class Search extends Component {
             handlerClickOnGraph: this.clickOnGraph,
           }}
         >
-          <div className="appSearcher">
+          <div className="appSearcher wrappergrid">
             <MapViewer
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
@@ -948,7 +948,7 @@ class Search extends Component {
             </div>
           </div>
         </SearchContext.Provider>
-      </div>
+      </>
     );
   }
 }

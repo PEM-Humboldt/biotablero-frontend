@@ -49,6 +49,7 @@ class App extends React.Component {
         selectedAreaId={query.get('area_id')}
         setHeaderNames={this.setHeaderNames}
       />),
+      className: 'fullgrid',
     });
   }
 
@@ -67,6 +68,7 @@ class App extends React.Component {
         logoSet: null,
         name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
+        className: 'fullgrid',
       });
     }
     return (
@@ -87,7 +89,7 @@ class App extends React.Component {
     })
   );
 
-  loadComponent = ({ logoSet, name, component }) => {
+  loadComponent = ({ logoSet, name, component, className = '' }) => {
     const { headerNames } = this.state;
     return (
       <Layout
@@ -95,6 +97,7 @@ class App extends React.Component {
         footerLogos={logoSet}
         headerNames={headerNames}
         uim={<Uim setUser={this.setUser} />}
+        className={className}
       >
         {component}
       </Layout>
@@ -111,7 +114,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={this.loadHome} />
+            <Route path="/Indicadores" render={this.loadIndicator} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
