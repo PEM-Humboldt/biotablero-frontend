@@ -17,7 +17,7 @@ const App = () => {
   });
 
   return (
-    <div className="wrapper wrapperCbmd">
+    <div className="wrapperCbmd">
       <div className="leftcol card">
         <h3>
           Resultados del monitoreo comunitario de

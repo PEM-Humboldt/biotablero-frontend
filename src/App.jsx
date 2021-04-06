@@ -49,6 +49,7 @@ class App extends React.Component {
         selectedAreaId={query.get('area_id')}
         setHeaderNames={this.setHeaderNames}
       />),
+      className: 'fullgrid',
     });
   }
 
@@ -67,6 +68,7 @@ class App extends React.Component {
         logoSet: null,
         name: 'Compensación ambiental',
         component: (<Compensation setHeaderNames={this.setHeaderNames} />),
+        className: 'fullgrid',
       });
     }
     return (
@@ -87,7 +89,9 @@ class App extends React.Component {
     })
   );
 
-  loadComponent = ({ logoSet, name, component }) => {
+  loadComponent = ({
+    logoSet, name, component, className = '',
+  }) => {
     const { headerNames } = this.state;
     return (
       <Layout
@@ -95,6 +99,7 @@ class App extends React.Component {
         footerLogos={logoSet}
         headerNames={headerNames}
         uim={<Uim setUser={this.setUser} />}
+        className={className}
       >
         {component}
       </Layout>

@@ -426,7 +426,7 @@ class Compensation extends Component {
       currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
     return (
-      <div>
+      <>
         {/** Modals section: new project, connection error or loading message */}
         <Modal
           aria-labelledby="simple-modal-title"
@@ -486,7 +486,7 @@ class Compensation extends Component {
             </h2>
           </div>
         </Modal>
-        <div className="appSearcher">
+        <div className="appSearcher wrappergrid">
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
@@ -532,7 +532,7 @@ class Compensation extends Component {
             }
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }
