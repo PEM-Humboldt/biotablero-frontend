@@ -781,6 +781,7 @@ class Drawer extends React.Component {
                     id="downloadStrategies"
                     type="button"
                     href={this.downloadPlanUrl()}
+                    disabled
                   >
                     <DownloadIcon className="icondown" />
                     Descargar plan
