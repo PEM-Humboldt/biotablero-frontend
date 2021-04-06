@@ -6,26 +6,26 @@ import loadCsv from './data/loadData';
 
 const M06 = ({ asocId }) => {
   const [data, setData] = useState(null);
-  const [colors, setColors] = useState(['#1f77b4', '#ff7f0e', '#2ca02c']);
+  const [colors, setColors] = useState(['#ab84ab', '#f9bb44', '#71c5a0']);
   useEffect(() => {
     const getData = async () => {
       const csvData = await loadCsv('reg_diarios');
       switch (asocId) {
         case 'AMUSI':
           setData({ 'Vereda 1': csvData['Vereda 1'] });
-          setColors(['#1f77b4']);
+          setColors(['#ab84ab']);
           break;
         case 'ASICAC':
           setData({ 'Vereda 2': csvData['Vereda 2'] });
-          setColors(['#ff7f0e']);
+          setColors(['#f9bb44']);
           break;
         case 'ASOBRASILAR':
           setData({ 'Vereda 3': csvData['Vereda 3'] });
-          setColors(['#2ca02c']);
+          setColors(['#71c5a0']);
           break;
         default:
           setData(csvData);
-          setColors(['#1f77b4', '#ff7f0e', '#2ca02c']);
+          setColors(['#ab84ab', '#f9bb44', '#71c5a0']);
           break;
       }
     };
