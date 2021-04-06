@@ -89,7 +89,9 @@ class App extends React.Component {
     })
   );
 
-  loadComponent = ({ logoSet, name, component, className = '' }) => {
+  loadComponent = ({
+    logoSet, name, component, className = '',
+  }) => {
     const { headerNames } = this.state;
     return (
       <Layout
