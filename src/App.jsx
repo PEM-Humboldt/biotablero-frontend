@@ -114,7 +114,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={this.loadIndicator} />
+            <Route path="/Indicadores" render={this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
