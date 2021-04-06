@@ -29,7 +29,7 @@ body {
 
 .wrappergrid {
 	grid-area: wrappergrid;
-	overflow-y: scroll;
+	overflow: auto;
 }
 
 header {
