@@ -1,4 +1,7 @@
 /* monitoreo */
+*:focus {
+ outline: none;
+}
 
 .wrapperCbmd {
 	padding: 10px;

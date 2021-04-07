@@ -51,7 +51,7 @@ const MethodologyBoard = ({ methodology }) => {
       <div className="Graph card">
         {methodology.id === '01_validacion_coberturas' && <M01 />}
         {methodology.id === '02_parcela_vegetacion' && <M02 />}
-        {methodology.id === '06_medicion_lluvia' && <M06 />}
+        {methodology.id === '06_medicion_lluvia' && <M06 asocId={activeTab} />}
       </div>
       <div className="graphInfo card">
         <h2>{methodology.name}</h2>
@@ -63,7 +63,7 @@ const MethodologyBoard = ({ methodology }) => {
         </h3>
         {activeTab !== 'GENERAL' && (
           <h2>
-            Periodicidad <ThumbUpAltIcon /> <ThumbDownAltIcon />
+            Cumplimiento <ThumbUpAltIcon /> <ThumbDownAltIcon />
           </h2>
         )}
       </div>
