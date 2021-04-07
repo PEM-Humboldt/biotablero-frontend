@@ -23,7 +23,7 @@ class Home extends React.Component {
   render() {
     const { activeModule, loginModal } = this.state;
     return (
-      <div>
+      <>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -63,7 +63,7 @@ class Home extends React.Component {
           />
           <Information activeModule={activeModule} />
         </div>
-      </div>
+      </>
     );
   }
 }

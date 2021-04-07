@@ -10,8 +10,9 @@ const Layout = ({
   footerLogos,
   headerNames,
   uim,
+  className,
 }) => (
-  <div>
+  <div className={className}>
     <Header
       activeModule={moduleName}
       headerNames={headerNames}
@@ -28,6 +29,7 @@ Layout.propTypes = {
   footerLogos: PropTypes.string,
   headerNames: PropTypes.object,
   uim: PropTypes.node,
+  className: PropTypes.string,
 };
 
 Layout.defaultProps = {
@@ -36,6 +38,7 @@ Layout.defaultProps = {
   footerLogos: null,
   headerNames: {},
   uim: null,
+  className: '',
 };
 
 export default Layout;

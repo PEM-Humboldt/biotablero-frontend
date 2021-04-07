@@ -1,37 +1,65 @@
+import Accordion from '@material-ui/core/Accordion';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React, { useState } from 'react';
 
-import M01 from './M01';
-import M02 from './M02';
-import M06 from './M06';
+import MethodologyBoard from './app/MethodologyBoard';
+import methodologiesList from './app/data/available_methodologies';
+
+import './main.css';
 
 const App = () => {
-  const [metodology, setMetodology] = useState('');
+  const [methodologyOption, setMethodologyOption] = useState({
+    id: '01_validacion_coberturas',
+    name: 'Disturbios',
+  });
 
   return (
-    <div className="wrapper">
-      <h1>Avances monitoreo comunitario</h1>
-      <label htmlFor="sel_metodologia">
-        Seleccione la metodología de monitoreo:
-        <select
-          id="sel_metodologia"
-          onChange={(event) => setMetodology(event.target.value)}
-          aria-label="metodologia"
-        >
-          <option disabled selected>
-            -- Seleccione una opción --
-          </option>
-          <option value="01_validacion_coberturas">
-            M01 - Validación de coberturas
-          </option>
-          <option value="02_parcela_vegetacion">
-            M02 - Parcela de vegetación
-          </option>
-          <option value="06_medicion_lluvia">M06 - Medición de lluvia</option>
-        </select>
-      </label>
-      {metodology === '01_validacion_coberturas' && <M01 />}
-      {metodology === '02_parcela_vegetacion' && <M02 />}
-      {metodology === '06_medicion_lluvia' && <M06 />}
+    <div className="wrapperCbmd">
+      <div className="leftcol card">
+        <h3>
+          Resultados del monitoreo comunitario de
+          <b> Variables Esenciales de Biodiversidad (VEB)</b> en Montes de María. Consiste en un
+          conjunto de gráficos que resumen la información recolectada en campo por tres asociaciones
+          comunitarias de la zona, a partir de siete metodologías de monitoreo planteadas según sus
+          metas para el territorio.
+        </h3>
+        <h4>Seleccione la metodología de monitoreo: </h4>
+        <div className="accordionCss">
+          {methodologiesList.map((meth, idx) => (
+            <Accordion key={meth.title} disabled={!meth.enabled}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className="accTitle">
+                  <b>{idx + 1}</b> {`· ${meth.title}`}
+                </Typography>
+              </AccordionSummary>
+              {meth.options &&
+                meth.options.map((opt) => (
+                  <AccordionDetails key={opt.id}>
+                    <div
+                      className={`innerMet clickDiv ${
+                        methodologyOption.id === opt.id ? 'selected' : ''
+                      }`}
+                      onClick={() => setMethodologyOption(opt)}
+                      onKeyDown={() => setMethodologyOption(opt)}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      {`- ${opt.name}`}
+                    </div>
+                  </AccordionDetails>
+                ))}
+            </Accordion>
+          ))}
+        </div>
+      </div>
+      <MethodologyBoard methodology={methodologyOption} />
     </div>
   );
 };

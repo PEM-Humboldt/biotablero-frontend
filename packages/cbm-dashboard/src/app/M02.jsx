@@ -12,7 +12,7 @@ const M02 = () => {
 
   return (
     <div id="02_parcela_vegetacion">
-      <h2>M02 - Parcela de vegetación</h2>
+      <h2>Parcela de vegetación</h2>
       <h3>Hábito de crecimiento</h3>
       <div id="habito_crecimiento">
         {!data ? (
@@ -30,7 +30,11 @@ const M02 = () => {
               margin: { t: 10 },
               barmode: 'stack',
             }}
-            config={{ displayModeBar: false, scrollZoom: true }}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            config={{ displayModeBar: false, scrollZoom: true, responsive: true }}
           />
         )}
       </div>

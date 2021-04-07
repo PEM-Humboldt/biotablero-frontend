@@ -296,6 +296,57 @@ class RestAPI {
     return RestAPI.makeGetRequest(`sci/hf?areaType=${areaType}&areaId=${areaId}`);
   }
 
+  /**
+   * Get the area distribution for each category of protected area connectivity in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity
+   */
+   static requestCurrentPAConnectivity(areaType, areaId) {
+    return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get the values of connectivity for the protected areas with higher dPC value in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Array of objects with data of the protected areas
+   */
+   static requestDPC(areaType, areaId, paNumber) {
+    return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
+  }
+
+  /**
+    * Get the timeline for each category of protected area connectivity in a given area
+    *
+    * @param {String} areaType area type id, f.e. "ea", "states"
+    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+    * @param {String} category category of index, fe. "prot", "prot_conn"
+    *
+    * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
+    */
+   static requestTimelinePAConnectivity(areaType, areaId, category) {
+    return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
+  }
+
+  /**
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
+   */
+   static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`/connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
+  }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
@@ -468,6 +519,68 @@ class RestAPI {
     };
   }
 
+  /**
+   * Get the layers of the protected areas with higher dPC value in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} paNumber number of protected areas to request, f.e. 5
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestDPCLayer(areaType, areaId, paNumber) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Get the layer of a strategic ecosystem in a given area.
+   * Data obtained from connectivity service
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestPAConnSELayer(areaType, areaId, seType) {
+    const source = CancelToken.source();
+    switch (seType) {
+      case 'dryForestPAConn':
+        return {
+          request: RestAPI.makeGetRequest(
+            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Bosque Seco Tropical`,
+            { cancelToken: source.token },
+          ),
+          source,
+        };
+      case 'paramoPAConn':
+        return {
+          request: RestAPI.makeGetRequest(
+            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Páramo`,
+            { cancelToken: source.token },
+          ),
+          source,
+        };
+      case 'wetlandPAConn':
+        return {
+          request: RestAPI.makeGetRequest(
+            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Humedal`,
+            { cancelToken: source.token },
+          ),
+          source,
+        };
+      default:
+        return {
+          request: Promise.reject(new Error('undefined option')),
+          source,
+        };
+    }
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
@@ -613,8 +726,8 @@ class RestAPI {
   /**
    * Download the strategies saved in the given project
    */
-  static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.getEndpointUrl(
-    `companies/${companyId}/projects/${projectId}/strategies/download`,
+  static downloadProjectStrategiesUrl = (companyId, projectId) => (
+    `companies/${companyId}/projects/${projectId}/strategies/download`
   )
 
   /** ************** */

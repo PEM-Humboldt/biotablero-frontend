@@ -12,7 +12,7 @@ const M01 = () => {
 
   return (
     <div id="01_validacion_coberturas">
-      <h2>M01 - Validación de coberturas</h2>
+      <h2>Validación de coberturas</h2>
       <h3>Disturbios</h3>
       <div id="disturbios">
         {!data ? (
@@ -28,7 +28,11 @@ const M01 = () => {
             layout={{
               margin: { t: 10 },
             }}
-            config={{ displayModeBar: false, scrollZoom: true }}
+            style={{
+              width: '100%',
+              height: '100%',
+            }}
+            config={{ displayModeBar: false, scrollZoom: true, responsive: true }}
           />
         )}
       </div>

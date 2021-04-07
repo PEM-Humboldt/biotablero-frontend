@@ -86,6 +86,7 @@ export default {
   paramo: ['#eaa04a'],
   dryForest: ['#8cb64c'],
   wetland: ['#6794cb'],
+  sePAConn: ['#120000'],
   forestLP: [
     '#92ab58',
     '#c65453',
@@ -104,6 +105,24 @@ export default {
     '#756a37',
     '#92ab58',
   ],
+  currentPAConn: [
+    '#ea495f',
+    '#51b4c1',
+    '#eabc47',
+  ],
+  dpc: [
+    '#c3374d',
+    '#ea5948',
+    '#eabc47',
+    '#a4c051',
+    '#51b4c1',
+  ],
+  timelinePAConn: [
+    '#afcc83',
+    '#628b41',
+    '#95b4db',
+    '#2964ac',
+  ],
   border: ['#ffffff'],
-  default: ['#345b6b'],
+  default: ['#b2bdc2'],
 };

@@ -186,24 +186,25 @@ class Search extends Component {
   featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
     if (feature.properties) {
       const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      const ftype = /PAConn$/.test(type) ? 'dpc' : type;
       if (!key) {
         return {
-          color: matchColor(type)(color),
+          color: matchColor(ftype)(color),
           weight: 2,
           fillOpacity: 0,
         };
       }
       return {
         stroke: false,
-        fillColor: matchColor(type)(key),
-        fillOpacity: 0.7,
+        fillColor: matchColor(ftype)(key),
+        fillOpacity: 0.6,
       };
     }
 
     return {
       stroke: false,
       fillColor: matchColor(type)(color),
-      fillOpacity: 0.7,
+      fillOpacity: 0.6,
     };
   }
 
@@ -268,6 +269,16 @@ class Search extends Component {
       case 'basinSubzones':
         feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
         break;
+      case 'currentPAConn':
+      case 'timelinePAConn':
+      case 'currentSEPAConn':
+        feature.bindTooltip(
+          `<b>${feature.feature.properties.key}:</b>
+          <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
       default:
         changeStyle = false;
         break;
@@ -277,8 +288,8 @@ class Search extends Component {
         weight: 1,
         fillOpacity: 1,
       });
+      if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
     }
-    if (!L.Browser.ie && !L.Browser.opera) feature.bringToFront();
   }
 
   /**
@@ -378,6 +389,21 @@ class Search extends Component {
           }
         });
       }
+        break;
+      case 'paramoPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('paramoPAConn');
+        break;
+      case 'wetlandPAConn':
+        this.shutOffLayer('paramoPAConn');
+        this.shutOffLayer('dryForestPAConn');
+        this.switchLayer('wetlandPAConn');
+        break;
+      case 'dryForestPAConn':
+        this.shutOffLayer('wetlandPAConn');
+        this.shutOffLayer('paramoPAConn');
+        this.switchLayer('dryForestPAConn');
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -523,6 +549,82 @@ class Search extends Component {
         newActiveLayer = {
           id: layerType,
           name: 'Índice de condición estructural de bosques',
+        };
+        break;
+      case 'currentPAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          5,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
+        newActiveLayer = {
+          id: layerType,
+          name: 'Conectividad actual de áreas protegidas',
+        };
+        break;
+      case 'timelinePAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+        newActiveLayer = {
+          id: 'timelinePAConn',
+          name: 'Histórico de conectividad áreas protegidas',
+        };
+        break;
+      case 'currentSEPAConn':
+        this.switchLayer('geofence');
+        request = () => RestAPI.requestDPCLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+        newActiveLayer = {
+          id: 'currentSEPAConn',
+          name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+        };
+        break;
+      case 'paramoPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
+        newActiveLayer = {
+          id: 'paramoPAConn',
+          name: 'Conectividad actual de áreas protegidas - Páramo',
+        };
+        break;
+      case 'dryForestPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
+        newActiveLayer = {
+          id: 'dryForestPAConn',
+          name: 'Conectividad actual de áreas protegidas - Bosque Seco Tropical',
+        };
+        break;
+      case 'wetlandPAConn':
+        request = () => RestAPI.requestPAConnSELayer(
+          selectedAreaTypeId, selectedAreaId, layerType,
+        );
+        shutOtherLayers = false;
+        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
+        fitBounds = false;
+        newActiveLayer = {
+          id: 'wetlandPAConn',
+          name: 'Conectividad actual de áreas protegidas - Humedales',
         };
         break;
       default:
@@ -726,6 +828,12 @@ class Search extends Component {
       'wetland',
       'geofence',
       'forestIntegrity',
+      'currentPAConn',
+      'timelinePAConn',
+      'currentSEPAConn',
+      'paramoPAConn',
+      'dryForestPAConn',
+      'wetlandPAConn',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -774,7 +882,7 @@ class Search extends Component {
     } = this.props;
 
     return (
-      <div>
+      <>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -805,7 +913,7 @@ class Search extends Component {
             handlerClickOnGraph: this.clickOnGraph,
           }}
         >
-          <div className="appSearcher">
+          <div className="appSearcher wrappergrid">
             <MapViewer
               layers={layers}
               geoServerUrl={GeoServerAPI.getRequestURL()}
@@ -840,7 +948,7 @@ class Search extends Component {
             </div>
           </div>
         </SearchContext.Provider>
-      </div>
+      </>
     );
   }
 }

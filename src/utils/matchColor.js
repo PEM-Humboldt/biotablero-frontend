@@ -65,6 +65,15 @@ const match = {
     palette: 'wetland',
     sort: ['wetland'],
   },
+  paramoPAConn: {
+    palette: 'sePAConn',
+  },
+  dryForestPAConn: {
+    palette: 'sePAConn',
+  },
+  wetlandPAConn: {
+    palette: 'sePAConn',
+  },
   forestLP: {
     palette: 'forestLP',
     sort: ['persistencia', 'perdida', 'ganancia', 'no_bosque'],
@@ -82,6 +91,18 @@ const match = {
   forestIntegrity: {
     palette: 'forestIntegrity',
     sort: ['baja_moderada', 'alta'],
+  },
+  currentPAConn: {
+    palette: 'currentPAConn',
+    sort: ['unprot', 'prot_conn', 'prot_unconn'],
+  },
+  dpc: {
+    palette: 'dpc',
+    sort: ['muy_bajo', 'bajo', 'medio', 'alto', 'muy_alto'],
+  },
+  timelinePAConn: {
+    palette: 'timelinePAConn',
+    sort: ['prot', 'protSel', 'prot_conn', 'prot_connSel'],
   },
   border: {
     palette: 'border',
@@ -155,6 +176,9 @@ const matchColor = (type, resetCache = false) => {
     case 'forestLP':
     case 'SciHf':
     case 'forestIntegrity':
+    case 'currentPAConn':
+    case 'dpc':
+    case 'timelinePAConn':
     case 'se':
     case 'border':
       return (value) => {
