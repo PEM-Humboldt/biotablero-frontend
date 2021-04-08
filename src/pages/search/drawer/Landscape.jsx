@@ -90,8 +90,6 @@ class Landscape extends React.Component {
         label: {
           id: 'connectivity',
           name: 'Conectividad de Áreas Protegidas',
-          disabled: true,
-          collapsed: true,
         },
         component: PAConnectivity,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
