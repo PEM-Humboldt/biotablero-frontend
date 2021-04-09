@@ -60,8 +60,7 @@ class Landscape extends React.Component {
 
   render() {
     const { areaId } = this.context;
-
-    const componentsArray = [
+    const initialArray = [
       {
         label: {
           id: 'fc',
@@ -95,6 +94,24 @@ class Landscape extends React.Component {
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
     ];
+
+    let selected = [];
+    switch (areaId) {
+      case 'states':
+      case 'basinSubzones':
+        selected = ['hf', 'forest', 'connectivity'];
+        break;
+      case 'ea':
+        selected = ['fc', 'hf', 'forest', 'connectivity'];
+        break;
+      case 'pa':
+        selected = ['hf', 'forest'];
+        break;
+      default:
+        break;
+    }
+    const componentsArray = initialArray.filter((f) => selected.includes(f.label.id));
+
     return (
       <LandscapeAccordion
         componentsArray={componentsArray}
