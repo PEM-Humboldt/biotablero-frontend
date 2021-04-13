@@ -126,6 +126,7 @@ class ForestIntegrity extends React.Component {
             />
           </IconTooltip>
         </h2>
+        <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
         {(
           showInfoGraph && (
           <ShortInfo
