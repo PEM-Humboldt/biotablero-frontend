@@ -183,9 +183,22 @@ class Search extends Component {
    *
    * @param {Object} feature target object
    */
-  featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
+  featureStyle = (objParams) => (feature) => {
+    const {
+      type,
+      color = null,
+      fKey = 'key',
+      compoundKey = false,
+    } = objParams;
     if (feature.properties) {
-      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      let key = fKey;
+      if (compoundKey) {
+        const keys = fKey.split('-');
+        key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
+        key = key.slice(1);
+      } else {
+        key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      }
       const ftype = /PAConn$/.test(type) ? 'dpc' : type;
       if (!key) {
         return {
@@ -545,7 +558,7 @@ class Search extends Component {
         request = () => RestAPI.requestSCIHFGeometry(
           selectedAreaTypeId, selectedAreaId,
         );
-        layerStyle = this.featureStyle({ type: layerType, fKey: 'sci_cat' });
+        layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
         newActiveLayer = {
           id: layerType,
           name: 'Índice de condición estructural de bosques',

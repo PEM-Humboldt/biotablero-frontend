@@ -101,10 +101,6 @@ export default {
     '#ea6045',
     '#f9bd7e',
   ],
-  forestIntegrity: [ // TODO: Change colors with Cesar
-    '#756a37',
-    '#92ab58',
-  ],
   currentPAConn: [
     '#ea495f',
     '#51b4c1',
