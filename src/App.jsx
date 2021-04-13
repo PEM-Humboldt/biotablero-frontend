@@ -86,6 +86,7 @@ class App extends React.Component {
       logoSet: 'monitoreo',
       name: 'Monitoreo comunitario',
       component: (<CBMDashboard />),
+      className: 'fullgrid',
     })
   );
 
