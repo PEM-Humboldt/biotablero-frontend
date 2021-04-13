@@ -94,16 +94,12 @@ export default {
     '#c5b599',
   ],
   SciHf: [
-    '#c65453',
+    '#003d59',
+    '#0d6870',
+    '#60bbd4',
+    '#902130',
     '#ea6045',
     '#f9bd7e',
-    '#0d6870',
-    '#756a37',
-    '#92ab58',
-  ],
-  forestIntegrity: [ // TODO: Change colors with Cesar
-    '#756a37',
-    '#92ab58',
   ],
   currentPAConn: [
     '#ea495f',

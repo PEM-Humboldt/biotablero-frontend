@@ -97,7 +97,7 @@ const GraphLoader = (props) => {
       return (
         <PieGraph
           data={data}
-          height={350}
+          height={500}
           units={units}
           colors={colors}
           onClickHandler={onClickGraphHandler}
