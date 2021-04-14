@@ -23,7 +23,7 @@ const HorizontalCenter = styled(Flex)`
 
 const Container = styled.div`
   height: stretch;
-  max-width: 1225px;
+  max-width: 1300px;
 `;
 
 function getPrevElement(list) {
@@ -46,7 +46,7 @@ function getNextElement(list) {
   return null;
 }
 
-function usePosition(ref) {
+function usePosition(ref, moreThan4) {
   const [prevElement, setPrevElement] = React.useState(null);
   const [nextElement, setNextElement] = React.useState(null);
 
@@ -75,7 +75,7 @@ function usePosition(ref) {
     return () => {
       element.removeEventListener('scroll', update, { passive: true });
     };
-  }, [ref]);
+  }, [ref, moreThan4]);
 
   const scrollToElement = React.useCallback(
     (element) => {
@@ -115,6 +115,7 @@ function usePosition(ref) {
 
 const CarouserContainer = styled(Relative)`
   overflow: hidden;
+  padding: 0 40px;
 `;
 
  const CarouselItem = styled.div`
@@ -126,7 +127,7 @@ const CarouserContainer = styled(Relative)`
 
   cursor: pointer;
 
-  bottom: 0;
+  top: 50%;
   z-index: 1;
 
   transition: transform 0.1s ease-in-out;
@@ -228,7 +229,7 @@ function Carousel({ children }) {
     hasItemsOnRight,
     scrollRight,
     scrollLeft,
-  } = usePosition(ref);
+  } = usePosition(ref, children.length > 4);
 
   return (
     <CarouserContainer role="region" aria-label="Colors carousel">
