@@ -2,7 +2,7 @@
  * Taken from css-tricks: https://css-tricks.com/a-super-flexible-css-carousel-enhanced-with-javascript-navigation/
  */
 
-/* global HTMLElement */
+/* eslint-env browser */
 
 import styled from 'styled-components';
 import React from 'react';
