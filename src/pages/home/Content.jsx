@@ -68,6 +68,7 @@ const Content = ({ activeModule, setActiveModule }) => {
                   focusCallback={module.focusCallback}
                   buttonStyles={module.buttonStyles}
                   idBtn={module.idBtn}
+                  key={module.idBtn}
                   firstLineContent={module.firstLineContent}
                   secondLineContent={module.secondLineContent}
                   localLink={module.localLink}
