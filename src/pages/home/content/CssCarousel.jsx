@@ -3,6 +3,7 @@
  */
 
 /* global HTMLElement */
+
 import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -23,7 +24,7 @@ const HorizontalCenter = styled(Flex)`
 
 const Container = styled.div`
   height: stretch;
-  max-width: 1200px;
+  max-width: 1225px;
 `;
 
 function getPrevElement(list) {
@@ -126,35 +127,26 @@ const CarouserContainer = styled(Relative)`
 
   cursor: pointer;
 
-  top: 50%;
+  bottom: 0;
   z-index: 1;
 
   transition: transform 0.1s ease-in-out;
 
-  background: white;
-  border-radius: 15px;
+  background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0;
 `;
 
  const LeftCarouselButton = styled(CarouselButton)`
   left: 0;
-  transform: translate(-100%, -50%);
-
-  ${CarouserContainer}:hover & {
-    transform: translate(0%, -50%);
-  }
+  transform: translate(0%, -50%);
 
   visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden')};
 `;
 
  const RightCarouselButton = styled(CarouselButton)`
   right: 0;
-  transform: translate(100%, -50%);
-
-  ${CarouserContainer}:hover & {
-    transform: translate(0%, -50%);
-  }
+  transform: translate(0%, -50%);
 
   visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? 'all' : 'hidden')};
 `;
@@ -200,7 +192,7 @@ ArrowLeft.propTypes = {
 
 ArrowLeft.defaultProps = {
   size: 30,
-  color: '#000000',
+  color: '#ffffff',
 };
 
 const ArrowRight = ({ size = 30, color = '#000000' }) => (
@@ -226,7 +218,7 @@ ArrowRight.propTypes = {
 
 ArrowRight.defaultProps = {
   size: 30,
-  color: '#000000',
+  color: '#ffffff',
 };
 
 function Carousel({ children }) {
