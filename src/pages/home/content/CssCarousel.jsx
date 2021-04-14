@@ -23,7 +23,7 @@ const HorizontalCenter = styled(Flex)`
 
 const Container = styled.div`
   height: stretch;
-  max-width: 1300px;
+  max-width: 1310px;
 `;
 
 function getPrevElement(list) {
@@ -113,7 +113,7 @@ function usePosition(ref, moreThan4) {
   };
 }
 
-const CarouserContainer = styled(Relative)`
+const CarouselContainer = styled(Relative)`
   overflow: hidden;
   padding: 0 40px;
 `;
@@ -232,7 +232,7 @@ function Carousel({ children }) {
   } = usePosition(ref, children.length > 4);
 
   return (
-    <CarouserContainer role="region" aria-label="Colors carousel">
+    <CarouselContainer role="region" aria-label="Colors carousel">
       <CarouselContainerInner ref={ref}>
         {React.Children.map(children, (child, index) => (
           <CarouselItem key={index}>{child}</CarouselItem>
@@ -252,7 +252,7 @@ function Carousel({ children }) {
       >
         <ArrowRight />
       </RightCarouselButton>
-    </CarouserContainer>
+    </CarouselContainer>
   );
 }
 
