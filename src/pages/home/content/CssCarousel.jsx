@@ -3,7 +3,6 @@
  */
 
 /* eslint-env browser */
-
 import styled from 'styled-components';
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -169,7 +168,7 @@ const CarouserContainer = styled(Relative)`
   }
 `;
 
-const ArrowLeft = ({ size = 30, color = '#000000' }) => (
+const ArrowLeft = ({ size, color }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -195,7 +194,7 @@ ArrowLeft.defaultProps = {
   color: '#ffffff',
 };
 
-const ArrowRight = ({ size = 30, color = '#000000' }) => (
+const ArrowRight = ({ size, color }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
