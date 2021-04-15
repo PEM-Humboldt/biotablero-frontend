@@ -552,44 +552,62 @@ class Search extends Component {
         };
         break;
       case 'currentPAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-          5,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: layerType,
-          name: 'Conectividad actual de áreas protegidas',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+            5,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Conectividad actual de áreas protegidas',
+          };
+        });
         break;
       case 'timelinePAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: 'timelinePAConn',
-          name: 'Histórico de conectividad áreas protegidas',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Histórico de conectividad áreas protegidas',
+          };
+        });
         break;
       case 'currentSEPAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: 'currentSEPAConn',
-          name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+          };
+        });
         break;
       case 'paramoPAConn':
         request = () => RestAPI.requestPAConnSELayer(
