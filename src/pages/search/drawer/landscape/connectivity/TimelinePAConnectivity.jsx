@@ -6,6 +6,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import SearchContext from 'pages/search/SearchContext';
 
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
@@ -118,3 +119,5 @@ class TimelinePAConnectivity extends React.Component {
 }
 
 export default TimelinePAConnectivity;
+
+TimelinePAConnectivity.contextType = SearchContext;
