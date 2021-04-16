@@ -19,6 +19,8 @@ class MultiSmallSingleBarGraph extends React.Component {
       colors,
       units,
       onClickHandler,
+      labelX,
+      labelY,
     } = this.props;
     const {
       selectedIndexValue,
@@ -42,9 +44,9 @@ class MultiSmallSingleBarGraph extends React.Component {
     /**
    * Get keys to be passed to component as a prop
    *
-   * @returns {array} ids of each bar category
+   * @returns {array} ids of each bar category removing duplicates
    */
-    const keys = data ? data.map((item) => String(item.key)) : [];
+    const keys = data ? [...new Set(data.map((item) => String(item.key)))] : [];
 
     return (
       <div style={{ height }}>
@@ -78,7 +80,7 @@ class MultiSmallSingleBarGraph extends React.Component {
             tickPadding: 3,
             tickRotation: 0,
             format: () => null,
-            legend: 'Áreas protegidas',
+            legend: labelY,
             legendPosition: 'middle',
             legendOffset: -30,
           }}
@@ -87,11 +89,12 @@ class MultiSmallSingleBarGraph extends React.Component {
             tickPadding: 0,
             tickRotation: 0,
             format: '.2f',
-            legend: 'dPC',
+            legend: labelX,
             legendPosition: 'start',
             legendOffset: 25,
           }}
           enableLabel
+          label={({ value }) => formatNumber(value, 2)}
           animate
           motionStiffness={90}
           motionDamping={15}
@@ -101,7 +104,7 @@ class MultiSmallSingleBarGraph extends React.Component {
                 {allData[`${id}Label`]}
               </strong>
               <div style={{ color: '#ffffff' }}>
-                {allData[id]}
+                {formatNumber(allData[id], 2)}
                 <br />
                 {`${formatNumber(allData[`${id}Area`], 2)} ${units}`}
               </div>
@@ -140,6 +143,8 @@ MultiSmallSingleBarGraph.propTypes = {
   units: PropTypes.string,
   onClickHandler: PropTypes.func,
   selectedIndexValue: PropTypes.string,
+  labelX: PropTypes.string,
+  labelY: PropTypes.string,
 };
 
 MultiSmallSingleBarGraph.defaultProps = {
@@ -148,6 +153,8 @@ MultiSmallSingleBarGraph.defaultProps = {
   units: 'ha',
   onClickHandler: () => {},
   selectedIndexValue: null,
+  labelX: '',
+  labelY: '',
 };
 
 export default MultiSmallSingleBarGraph;

@@ -6,6 +6,7 @@ import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
 
 const getLabel = {
   unprot: 'No protegida',
@@ -53,7 +54,7 @@ class CurrentPAConnectivity extends React.Component {
       .then((res) => {
         if (this.mounted) {
           this.setState({
-            dpc: res,
+            dpc: res.reverse(),
           });
         }
       })
@@ -109,7 +110,7 @@ class CurrentPAConnectivity extends React.Component {
               Indice Prot
             </h6>
             <h5 style={{ backgroundColor: '#d5753d' }}>
-              {`${prot}%`}
+              {`${formatNumber(prot, 2)}%`}
             </h5>
           </div>
           <div>
@@ -132,6 +133,7 @@ class CurrentPAConnectivity extends React.Component {
               data={dpc}
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
+              labelX="dPC"
             />
           </div>
         </div>
