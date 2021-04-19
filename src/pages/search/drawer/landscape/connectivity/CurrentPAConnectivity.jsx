@@ -109,7 +109,7 @@ class CurrentPAConnectivity extends React.Component {
             <h6>
               Indice Prot
             </h6>
-            <h5 style={{ backgroundColor: '#d5753d' }}>
+            <h5 style={{ backgroundColor: '#d5a529' }}>
               {`${formatNumber(prot, 2)}%`}
             </h5>
           </div>
@@ -136,6 +136,7 @@ class CurrentPAConnectivity extends React.Component {
               labelX="dPC"
             />
           </div>
+          <div className="dpcLegend" />
         </div>
       </div>
     );
