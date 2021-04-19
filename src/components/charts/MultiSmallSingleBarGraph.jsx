@@ -114,6 +114,8 @@ class MultiSmallSingleBarGraph extends React.Component {
             tooltip: {
               container: {
                 background: '#333',
+                maxWidth: '170px',
+
               },
             },
             axis:
