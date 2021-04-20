@@ -134,9 +134,16 @@ class CurrentPAConnectivity extends React.Component {
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
               labelX="dPC"
+              units="ha"
             />
           </div>
-          <div className="dpcLegend" />
+          <div className="dpcLegend">
+            <p className="dpc1">Muy bajo</p>
+            <p className="dpc2">Bajo</p>
+            <p className="dpc3">Medio</p>
+            <p className="dpc4">Alto</p>
+            <p className="dpc5">Muy alto</p>
+          </div>
         </div>
       </div>
     );

@@ -1802,6 +1802,44 @@ div[class*="eaRHYv"] {
 	border: 1px solid;
 }
 
+.dpcLegend{
+	margin-left: 25px;
+}
+
+.dpcLegend p{
+	font-size: 12px;
+	color: #424242;
+	line-height: 1;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.dpcLegend p::before {
+	display: inline-block;
+	content: "";
+	width: 12px;
+	height: 12px;
+	margin-right: 5px;
+	border-radius: 6px;
+	vertical-align: middle;
+}
+
+.dpc1::before {
+	background-color: #c3374d;
+}
+.dpc2::before {
+	background-color: #ea5948;
+}
+.dpc3::before {
+	background-color: #eabc47;
+}
+.dpc4::before {
+	background-color: #a4c051;
+}
+.dpc5::before {
+	background-color: #51b4c1;
+}
+
 p.legcomp {
   padding-top: 0;
 }
