@@ -102,9 +102,9 @@ export default {
     '#f9bd7e',
   ],
   currentPAConn: [
-    '#ea495f',
-    '#51b4c1',
-    '#eabc47',
+    '#b9c9cf',
+    '#b3b638',
+    '#d49242',
   ],
   dpc: [
     '#c3374d',
@@ -114,10 +114,10 @@ export default {
     '#51b4c1',
   ],
   timelinePAConn: [
-    '#afcc83',
-    '#628b41',
-    '#95b4db',
-    '#2964ac',
+    '#d5a529',
+    '#b0830f',
+    '#b3b638',
+    '#959912',
   ],
   border: ['#ffffff'],
   default: ['#b2bdc2'],

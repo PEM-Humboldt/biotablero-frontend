@@ -109,7 +109,7 @@ class CurrentPAConnectivity extends React.Component {
             <h6>
               Indice Prot
             </h6>
-            <h5 style={{ backgroundColor: '#d5753d' }}>
+            <h5 style={{ backgroundColor: '#d5a529' }}>
               {`${formatNumber(prot, 2)}%`}
             </h5>
           </div>
@@ -134,7 +134,15 @@ class CurrentPAConnectivity extends React.Component {
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
               labelX="dPC"
+              units="ha"
             />
+          </div>
+          <div className="dpcLegend">
+            <p className="dpc1">Muy bajo</p>
+            <p className="dpc2">Bajo</p>
+            <p className="dpc3">Medio</p>
+            <p className="dpc4">Alto</p>
+            <p className="dpc5">Muy alto</p>
           </div>
         </div>
       </div>
