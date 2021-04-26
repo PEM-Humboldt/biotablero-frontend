@@ -31,11 +31,11 @@ class MultiSmallSingleBarGraph extends React.Component {
         const object = {
           id: String(element.id),
         };
-        object[String(element.key)] = Number(element.value);
-        object[`${String(element.key)}Label`] = element.id;
-        object[`${String(element.key)}Color`] = colors(element.key);
-        object[`${String(element.key)}DarkenColor`] = darkenColor(colors(element.key), 15);
-        object[`${String(element.key)}Area`] = Number(element.area);
+        object[String(element.id)] = Number(element.value);
+        object[`${String(element.id)}Label`] = element.name;
+        object[`${String(element.id)}Color`] = colors(element.key);
+        object[`${String(element.id)}DarkenColor`] = darkenColor(colors(element.key), 15);
+        object[`${String(element.id)}Area`] = Number(element.area);
         return object;
       });
       return transformedData;
@@ -46,7 +46,7 @@ class MultiSmallSingleBarGraph extends React.Component {
    *
    * @returns {array} ids of each bar category removing duplicates
    */
-    const keys = data ? [...new Set(data.map((item) => String(item.key)))] : [];
+    const keys = data ? [...new Set(data.map((item) => String(item.id)))] : [];
 
     return (
       <div style={{ height }}>
