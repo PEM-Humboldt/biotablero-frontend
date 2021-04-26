@@ -286,7 +286,7 @@ class Search extends Component {
       case 'timelinePAConn':
       case 'currentSEPAConn':
         feature.bindTooltip(
-          `<b>${feature.feature.properties.key}:</b>
+          `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
@@ -425,7 +425,7 @@ class Search extends Component {
 
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === selectedKey) {
+          if (layer.feature.properties.key || layer.feature.properties.id === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,
