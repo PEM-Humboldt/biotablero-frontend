@@ -1802,11 +1802,15 @@ div[class*="eaRHYv"] {
 	border: 1px solid;
 }
 
-.dpcLegend{
+.dpcLegend {
 	margin-left: 25px;
 }
 
-.dpcLegend p{
+.fiLegend {
+	margin-bottom: 10px;
+}
+
+.dpcLegend p {
 	font-size: 12px;
 	color: #424242;
 	line-height: 1;
