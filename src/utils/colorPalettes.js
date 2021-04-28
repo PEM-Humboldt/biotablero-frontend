@@ -97,9 +97,9 @@ export default {
     '#003d59',
     '#0d6870',
     '#60bbd4',
-    '#902130',
-    '#ea6045',
-    '#f9bd7e',
+    '#f1bd7f',
+    '#da8634',
+    '#ab5727',
   ],
   currentPAConn: [
     '#b9c9cf',
@@ -119,6 +119,6 @@ export default {
     '#b3b638',
     '#959912',
   ],
-  border: ['#ffffff'],
+  border: ['#dce76b'],
   default: ['#b2bdc2'],
 };

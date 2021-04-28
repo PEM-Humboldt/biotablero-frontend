@@ -16,34 +16,34 @@ class ForestIntegrity extends React.Component {
     this.state = {
       showInfoGraph: false,
       SciHfCats: {
-        'alta-estable_alta': {
-          id: 'alta-estable_alta',
-          label: 'SCI Alto - HH Alta',
+        'alta-estable_natural': {
+          id: 'alta-estable_natural',
+          label: 'ICE Alto - HH Natural',
           value: 0,
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
-          label: 'SCI Alto - HH Dinámica',
+          label: 'ICE Alto - HH Dinámica',
           value: 0,
         },
-        'alta-estable_natural': {
-          id: 'alta-estable_natural',
-          label: 'SCI Alto - HH Natural',
-          value: 0,
-        },
-        'baja_moderada-estable_alta': {
-          id: 'baja_moderada-estable_alta',
-          label: 'SCI Bajo Moderado - HH Alta',
-          value: 0,
-        },
-        'baja_moderada-dinamica': {
-          id: 'baja_moderada-dinamica',
-          label: 'SCI Bajo Moderado - HH Dinámica',
+        'alta-estable_alta': {
+          id: 'alta-estable_alta',
+          label: 'ICE Alto - HH Alta',
           value: 0,
         },
         'baja_moderada-estable_natural': {
           id: 'baja_moderada-estable_natural',
-          label: 'SCI Bajo Moderado - HH Natural',
+          label: 'ICE Bajo Moderado - HH Natural',
+          value: 0,
+        },
+        'baja_moderada-dinamica': {
+          id: 'baja_moderada-dinamica',
+          label: 'ICE Bajo Moderado - HH Dinámica',
+          value: 0,
+        },
+        'baja_moderada-estable_alta': {
+          id: 'baja_moderada-estable_alta',
+          label: 'ICE Bajo Moderado - HH Alta',
           value: 0,
         },
       },
