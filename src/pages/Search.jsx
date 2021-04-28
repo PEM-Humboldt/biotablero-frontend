@@ -555,14 +555,23 @@ class Search extends Component {
         };
         break;
       case 'forestIntegrity':
-        request = () => RestAPI.requestSCIHFGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
-        newActiveLayer = {
-          id: layerType,
-          name: 'Índice de condición estructural de bosques',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+
+          request = () => RestAPI.requestSCIHFGeometry(
+            selectedAreaTypeId, selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Índice de condición estructural de bosques',
+          };
+        });
         break;
       case 'currentPAConn':
         this.switchLayer('geofence', () => {
