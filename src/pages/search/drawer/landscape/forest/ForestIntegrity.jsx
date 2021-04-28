@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
@@ -8,39 +7,8 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import { LegendColor, BorderLegendColor } from 'components/CssLegends';
 
-const Legend = styled.p`
-  display: block;
-  font-size: 12px;
-  color: #424242;
-  line-height: 1;
-  margin-right: 10px;
-
-  &:before {
-    display: inline-block;
-    content: "";
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    border-radius: 6px;
-    vertical-align: middle;
-  }
-`;
-
-const LegendColor = styled(Legend)`
-  &:before {
-    background-color: ${({ color }) => color};
-  }
-`;
-
-const BorderLegendColor = styled(Legend)`
-  &:before {
-    color: #ffffff;
-    border: 2px solid ${({ color }) => color};
-    width: 8px;
-    height: 8px;
-  }
-`;
 class ForestIntegrity extends React.Component {
   mounted = false;
 
@@ -186,6 +154,7 @@ class ForestIntegrity extends React.Component {
             {Object.keys(SciHfCats).map((cat) => (
               <LegendColor
                 color={matchColor('SciHf')(cat)}
+                orientation="column"
                 key={cat}
               >
                 {SciHfCats[cat].label}
