@@ -1806,42 +1806,12 @@ div[class*="eaRHYv"] {
 	margin-left: 25px;
 }
 
-.fiLegend {
-	margin-bottom: 10px;
-}
-
 .dpcLegend p {
-	font-size: 12px;
-	color: #424242;
-	line-height: 1;
-	display: inline-block;
 	margin-right: 10px;
 }
 
-.dpcLegend p::before {
-	display: inline-block;
-	content: "";
-	width: 12px;
-	height: 12px;
-	margin-right: 5px;
-	border-radius: 6px;
-	vertical-align: middle;
-}
-
-.dpc1::before {
-	background-color: #c3374d;
-}
-.dpc2::before {
-	background-color: #ea5948;
-}
-.dpc3::before {
-	background-color: #eabc47;
-}
-.dpc4::before {
-	background-color: #a4c051;
-}
-.dpc5::before {
-	background-color: #51b4c1;
+.fiLegend {
+	margin-bottom: 10px;
 }
 
 p.legcomp {
@@ -2151,27 +2121,15 @@ tr.row2table:nth-child(odd){
 }
 
 .errorData {
-  border: 1px solid #c2374d;
-  padding: 10px;
-  font-size: 16px;
+  padding: 10px 0px 10px 25px;
+  font-size: 14px;
   display: block;
-  text-align: right;
-  color: #c2374d;
+  text-align: left;
+  color: #cf5a16;
   font-weight: 400;
   background-color: #fff;
   margin-bottom: 5px;
   margin-top: 5px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-
-.errorData:before {
-  content: 'X';
-  float: left;
-  font-weight: 700;
-}
-
-.errorData:hover {
-  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 .graphcard td input {
