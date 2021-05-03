@@ -47,8 +47,9 @@ const LargeBarStackGraph = (props) => {
     /**
    * Get tooltip for graph component
    *
-   * @param {string} id id for each bar
+   * @param {String} id id for each bar
    * @param {Object} allData transformed data with all information needed
+   * @param {String} color color for each category inside a bar
    * @returns {func} tooltip for component
    */
      const getToolTip = (id, allData, color) => {
