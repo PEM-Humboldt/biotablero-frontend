@@ -20,7 +20,6 @@ class MultiSmallSingleBarGraph extends React.Component {
       units,
       onClickHandler,
       labelX,
-      labelY,
     } = this.props;
     const {
       selectedIndexValue,
@@ -75,15 +74,7 @@ class MultiSmallSingleBarGraph extends React.Component {
           }}
           enableGridY={false}
           enableGridX
-          axisLeft={{
-            tickSize: 0,
-            tickPadding: 3,
-            tickRotation: 0,
-            format: () => null,
-            legend: labelY,
-            legendPosition: 'middle',
-            legendOffset: -30,
-          }}
+          axisLeft={null}
           axisBottom={{
             tickSize: 0,
             tickPadding: 0,
@@ -146,7 +137,6 @@ MultiSmallSingleBarGraph.propTypes = {
   onClickHandler: PropTypes.func,
   selectedIndexValue: PropTypes.string,
   labelX: PropTypes.string,
-  labelY: PropTypes.string,
 };
 
 MultiSmallSingleBarGraph.defaultProps = {
@@ -156,7 +146,6 @@ MultiSmallSingleBarGraph.defaultProps = {
   onClickHandler: () => {},
   selectedIndexValue: null,
   labelX: '',
-  labelY: '',
 };
 
 export default MultiSmallSingleBarGraph;
