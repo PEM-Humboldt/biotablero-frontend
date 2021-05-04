@@ -46,8 +46,8 @@ class PieGraph extends React.Component {
           cornerRadius={3}
           borderWidth={1}
           borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
-          enableRadialLabels={false}
-          enableSliceLabels={false}
+          enableArcLinkLabels={false}
+          enableArcLabels={false}
           tooltip={({ datum: { label, value, color } }) => (
             <div>
               <strong style={{ color: lightenColor(color, 15) }}>
