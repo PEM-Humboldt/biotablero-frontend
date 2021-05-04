@@ -1,5 +1,34 @@
 import React from 'react';
 
+export const SCIHFText = `La  integridad ecológica se define como “la capacidad del sistema para mantener la estructura y las funciones del ecosistema utilizando procesos y elementos característicos de su ecorregión”. También se considera una respuesta a la historia de disturbios y presiones del ecosistema, así como de la diversidad de especies, hábitats y procesos ecológicos.
+<br /><br />
+Recientemente, se desarrolló el Índice de Condición Estructural (ICE), que tiene el objetivo de cuantificar el estado del dosel, cobertura, e historia de impactos de los bosques húmedos del mundo, y que contribuye a que las naciones puedan medir el avance en conservación referentes a las metas Aichi 5, 14 y 15, y el Objetivo de Desarrollo Sostenible 15, importante avance para el monitoreo del estado y calidad del bosque húmedo tropical en el tiempo.
+<br /><br />
+El ICE se construyó a partir de i) la cobertura de dosel del año 2010, ii) la altura del dosel para el año 2012, y iii) la pérdida de bosque en el periodo 2000-2017. Originalmente es categorizado en 18 clases, siendo 1 baja condición y 18 alta condición; sin embargo, para efectos del índice presentado en BioTablero, estas clases se reclasifican en dos categorías “Condición Baja a Moderada” (clases originales 1-13) y “Condición Alta” (clases originales 14-18). Así, los bosques con condición estructural alta representan una cobertura boscosa mayor al 75%, con una altura mayor a 15m, y que además no han tenido disturbios durante el periodo 2000-2017.
+<br /><br />
+Al sobreponer ICE con la persistencia del Índice de Huella Espacial Humana (IHEH) disponible en BioTablero se genera el Índice de Integridad Estructural Forestal (IIEF), que guía la identificación de estrategias para la planeación de la conservación al integrar las presiones humanas que pueden afectar la condición estructural de los bosques. Este se muestra en seis categorías correspondientes a las combinaciones entre las clases del ICE (Bajo moderado  y Alto) y la persistencia del IHEH (estable natural, dinámica yestable alta). Cada categoría muestra una gráfica adicional con la proporción de áreas protegidas en la categoría correspondiente, y plantea estrategias de conservación. Por ejemplo, en zonas de alta condición estructural, baja huella humana, y sobre áreas protegidas, se recomiendan incentivos comunitarios y la gestión activa para mantener la protección de los bosques, mientras en zonas fuera del sistema de áreas protegidas se recomienda la gestión de acuerdos de conservación para expandir su protección. En zonas con condición estructural baja a moderada y baja huella humana, se recomienda restaurar la estructura de los bosques mediante estrategias de restauración, agroforestería, y control de pastoreo y quema de fuegos, mientras en zonas con condición estructural alta y huella humana dinámica o alta, se puede restaurar la estructura con iniciativas de educación y ciencia ciudadana.
+<br /><br />
+Al interpretar los resultados de este indicador se debe tener en cuenta que: <br />
+<ol class="ul-padding-info-text">
+ <li>
+La resolución del indicador es de 300m. Escalas regionales y nacionales, no es recomendable para identificar patrones a nivel local.
+ </li>
+ <li>
+La información es del periodo  2000 a 2018.
+</li>
+ <li>
+El producto usado para definir la extensión de bosques es de carácter global, no representa al 100% la extensión de los bosques en algunos lugares del planeta. Debe mirarse en conjunto con otros indicadores como el de pérdida de bosques, que presenta una distribución ajustada de éstos de acuerdo al producto de extensión de bosques nacional presentado por el <a href="http://seinekan.ideam.gov.co/SMBYC/ApolloPro.aspx" target="_blank" rel="noopener noreferrer">
+IDEAM
+</a> y sus <a href="http://smbyc.ideam.gov.co/MonitoreoBC-WEB/reportes/paginaReportesBosqueNatural.jsp" target="_blank" rel="noopener noreferrer">
+sus capas y cifras
+</a>
+</li>
+<li>
+Se recomienda leer este indicador en conjunto con otros indicadores como el de proporción de pérdida de bosques, conectividad de áreas protegidas, y verificaciones en campo que soporten las decisiones ambientales.
+</li>
+</ol>
+`;
+
 export const cFInfo = `El Factor de Compensación (FC) determina un valor multiplicador de un área para casos de compensación por pérdida de biodiversidad, su valor va de 4 a 10, y depende de la representatividad en el Sistema Nacional de áreas protegidas, la rareza o endemismos a nivel de especies, la remanencia de ecosistemas naturales, y las tasas de transformación. Entré más alto el valor, mayor la cantidad de hectareas a compensar. Las unidades espaciales para las cuales se calcula el FC corresponden a la intersección entre Biomas y Regiones Bióticas (Biomas-IAvH) delimitadas en el Mapa de ecosistemas continentales, costeros y marinos de Colombia a escala 1:100.000.
 <br /><br />
 La gráfica muestra la cantidad de hectáreas por valor de compensación en el área consultada. Cada color representa un rango de valor de compensación y corresponde a los colores desplegados en el mapa. Si la gráfica del área consultada presenta una alta proporción con factores mayores o iguales a 6 se interpreta como un área en donde será costoso compensar la pérdida de biodiversidad ocasionadas por las intervenciones realizadas.
