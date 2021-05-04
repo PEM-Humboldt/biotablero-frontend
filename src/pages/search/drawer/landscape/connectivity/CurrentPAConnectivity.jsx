@@ -53,7 +53,7 @@ class CurrentPAConnectivity extends React.Component {
               ...item,
               label: getLabel[item.key],
             })),
-            prot: protConn && protUnconn ? protConn.percentage + protUnconn.percentage : 0,
+            prot: protConn && protUnconn ? (protConn.percentage + protUnconn.percentage) * 100 : 0,
           });
         }
       })
@@ -115,14 +115,6 @@ class CurrentPAConnectivity extends React.Component {
             Conectividad áreas protegidas
           </h6>
           <div>
-            <h6>
-              Porcentaje de área protegida
-            </h6>
-            <h5 style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}>
-              {`${formatNumber(prot, 2)}%`}
-            </h5>
-          </div>
-          <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnectivity}
@@ -133,9 +125,25 @@ class CurrentPAConnectivity extends React.Component {
               padding={0.25}
             />
           </div>
+          {currentPAConnectivity.length > 0 && (
+            <div>
+              <h6 className="innerInfo">
+                Porcentaje de área protegida
+              </h6>
+              <h5
+                className="innerInfoH5"
+                style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}
+              >
+                {`${formatNumber(prot, 2)}%`}
+              </h5>
+            </div>
+          )}
           <h6>
             Aporte de las áreas protegidas a la conectividad
           </h6>
+          <h3 className="innerInfoH3">
+            Haz clic en un área protegida para visualizarla
+          </h3>
           <div>
             <GraphLoader
               graphType="MultiSmallSingleBarGraph"

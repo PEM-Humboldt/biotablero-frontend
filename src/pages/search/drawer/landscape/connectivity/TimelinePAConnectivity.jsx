@@ -70,6 +70,10 @@ class TimelinePAConnectivity extends React.Component {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
+      data: obj.data.map((item) => ({
+        ...item,
+        y: item.y * 100,
+      })),
       label: this.getLabel(obj.key),
     }));
   };

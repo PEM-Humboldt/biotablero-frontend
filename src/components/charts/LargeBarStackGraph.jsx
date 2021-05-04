@@ -44,6 +44,41 @@ const LargeBarStackGraph = (props) => {
 
   const keys = data.map((item) => String(item.key));
 
+    /**
+   * Get tooltip for graph component
+   *
+   * @param {String} id id for each bar
+   * @param {Object} allData transformed data with all information needed
+   * @param {String} color color for each category inside a bar
+   * @returns {func} tooltip for component
+   */
+     const getToolTip = (id, allData, color) => {
+      if (allData[`${id}Percentage`]) {
+        return (
+          <div>
+            <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
+              {allData[`${id}Label`]}
+            </strong>
+            <div style={{ color: '#ffffff' }}>
+              {`${formatNumber(allData[id], 0)} ${units}`}
+              <br />
+              {`${formatNumber(allData[`${id}Percentage`] * 100, 2)}%`}
+            </div>
+          </div>
+        );
+      }
+      return (
+        <div>
+          <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
+            {allData[`${id}Label`]}
+          </strong>
+          <div style={{ color: '#ffffff' }}>
+            {`${formatNumber(allData[id], 0)} ${units}`}
+          </div>
+        </div>
+      );
+    };
+
   return (
     <div style={{ height }}>
       <ResponsiveBar
@@ -80,16 +115,7 @@ const LargeBarStackGraph = (props) => {
         animate
         motionStiffness={90}
         motionDamping={15}
-        tooltip={({ id, data: allData, color }) => (
-          <div>
-            <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
-              {allData[`${id}Label`]}
-            </strong>
-            <div style={{ color: '#ffffff' }}>
-              {`${formatNumber(allData[id], 0)} ${units}`}
-            </div>
-          </div>
-        )}
+        tooltip={({ id, data: allData, color }) => getToolTip(id, allData, color)}
         theme={{
           tooltip: {
             container: {

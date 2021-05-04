@@ -92,7 +92,6 @@ const GraphLoader = (props) => {
           onClickHandler={onClickGraphHandler}
           selectedIndexValue={selectedIndexValue}
           labelX={labelX}
-          labelY={labelY}
         />
       );
     case 'pie':
