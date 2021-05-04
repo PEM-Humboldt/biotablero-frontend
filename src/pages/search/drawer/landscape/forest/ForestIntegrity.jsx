@@ -7,6 +7,7 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import { LegendColor, BorderLegendColor } from 'components/CssLegends';
 
 class ForestIntegrity extends React.Component {
   mounted = false;
@@ -16,34 +17,34 @@ class ForestIntegrity extends React.Component {
     this.state = {
       showInfoGraph: false,
       SciHfCats: {
-        'alta-estable_alta': {
-          id: 'alta-estable_alta',
-          label: 'SCI Alto - HH Alta',
+        'alta-estable_natural': {
+          id: 'alta-estable_natural',
+          label: 'ICE Alto - HH Natural',
           value: 0,
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
-          label: 'SCI Alto - HH Dinámica',
+          label: 'ICE Alto - HH Dinámica',
           value: 0,
         },
-        'alta-estable_natural': {
-          id: 'alta-estable_natural',
-          label: 'SCI Alto - HH Natural',
-          value: 0,
-        },
-        'baja_moderada-estable_alta': {
-          id: 'baja_moderada-estable_alta',
-          label: 'SCI Bajo Moderado - HH Alta',
-          value: 0,
-        },
-        'baja_moderada-dinamica': {
-          id: 'baja_moderada-dinamica',
-          label: 'SCI Bajo Moderado - HH Dinámica',
+        'alta-estable_alta': {
+          id: 'alta-estable_alta',
+          label: 'ICE Alto - HH Alta',
           value: 0,
         },
         'baja_moderada-estable_natural': {
           id: 'baja_moderada-estable_natural',
-          label: 'SCI Bajo Moderado - HH Natural',
+          label: 'ICE Bajo Moderado - HH Natural',
+          value: 0,
+        },
+        'baja_moderada-dinamica': {
+          id: 'baja_moderada-dinamica',
+          label: 'ICE Bajo Moderado - HH Dinámica',
+          value: 0,
+        },
+        'baja_moderada-estable_alta': {
+          id: 'baja_moderada-estable_alta',
+          label: 'ICE Bajo Moderado - HH Alta',
           value: 0,
         },
       },
@@ -149,6 +150,20 @@ class ForestIntegrity extends React.Component {
               handlerClickOnGraph({ chartType: 'SciHf', selectedKey: sectionId });
             }}
           />
+          <div className="fiLegend">
+            {Object.keys(SciHfCats).map((cat) => (
+              <LegendColor
+                color={matchColor('SciHf')(cat)}
+                orientation="column"
+                key={cat}
+              >
+                {SciHfCats[cat].label}
+              </LegendColor>
+            ))}
+            <BorderLegendColor color={matchColor('border')()}>
+              Límite de áreas protegidas
+            </BorderLegendColor>
+          </div>
         </div>
         {selectedCategory && (
           <>

@@ -29,7 +29,7 @@ const PAConnectivity = (props) => {
     {
         label: {
           id: 'currentSEPAConn',
-          name: 'Por Ecosistemas estratégicos',
+          name: 'Ecosistemas Estratégicos (EE)',
         },
         component: CurrentSEPAConnectivity,
       },

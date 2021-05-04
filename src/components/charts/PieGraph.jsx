@@ -40,7 +40,7 @@ class PieGraph extends React.Component {
             }
             return colors(id);
           }}
-          margin={{ top: 30, bottom: 60 }}
+          margin={{ top: 30, bottom: 30 }}
           innerRadius={0.5}
           padAngle={0.7}
           cornerRadius={3}
@@ -64,31 +64,6 @@ class PieGraph extends React.Component {
             this.setState({ selectedId: id });
             onClickHandler(id);
           }}
-          legends={[
-            {
-              anchor: 'bottom-left',
-              direction: 'column',
-              justify: false,
-              translateX: 0,
-              translateY: 56,
-              itemsSpacing: 5,
-              itemWidth: 100,
-              itemHeight: 18,
-              itemTextColor: '#999',
-              itemDirection: 'left-to-right',
-              itemOpacity: 1,
-              symbolSize: 18,
-              symbolShape: 'circle',
-              effects: [
-                {
-                  on: 'hover',
-                  style: {
-                    itemTextColor: '#000',
-                  },
-                },
-              ],
-            },
-          ]}
         />
       </div>
     );

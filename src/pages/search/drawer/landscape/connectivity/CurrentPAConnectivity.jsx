@@ -7,11 +7,20 @@ import matchColor from 'utils/matchColor';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
+import { LegendColor } from 'components/CssLegends';
 
 const getLabel = {
   unprot: 'No protegida',
   prot_conn: 'Protegida conectada',
   prot_unconn: 'Protegida no conectada',
+};
+
+const legendDPCCategories = {
+  muy_bajo: 'Muy bajo',
+  bajo: 'Bajo',
+  medio: 'Medio',
+  alto: 'Alto',
+  muy_alto: 'Muy Alto',
 };
 
 class CurrentPAConnectivity extends React.Component {
@@ -107,9 +116,9 @@ class CurrentPAConnectivity extends React.Component {
           </h6>
           <div>
             <h6>
-              Indice Prot
+              Porcentaje de área protegida
             </h6>
-            <h5 style={{ backgroundColor: '#d5a529' }}>
+            <h5 style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}>
               {`${formatNumber(prot, 2)}%`}
             </h5>
           </div>
@@ -125,7 +134,7 @@ class CurrentPAConnectivity extends React.Component {
             />
           </div>
           <h6>
-            Áreas protegidas con mayor dPC
+            Aporte de las áreas protegidas a la conectividad
           </h6>
           <div>
             <GraphLoader
@@ -138,11 +147,14 @@ class CurrentPAConnectivity extends React.Component {
             />
           </div>
           <div className="dpcLegend">
-            <p className="dpc1">Muy bajo</p>
-            <p className="dpc2">Bajo</p>
-            <p className="dpc3">Medio</p>
-            <p className="dpc4">Alto</p>
-            <p className="dpc5">Muy alto</p>
+            {Object.keys(legendDPCCategories).map((cat) => (
+              <LegendColor
+                color={matchColor('dpc')(cat)}
+                key={cat}
+              >
+                {legendDPCCategories[cat]}
+              </LegendColor>
+            ))}
           </div>
         </div>
       </div>

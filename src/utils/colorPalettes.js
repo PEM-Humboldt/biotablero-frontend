@@ -97,9 +97,9 @@ export default {
     '#003d59',
     '#0d6870',
     '#60bbd4',
-    '#902130',
-    '#ea6045',
-    '#f9bd7e',
+    '#f1bd7f',
+    '#da8634',
+    '#ab5727',
   ],
   currentPAConn: [
     '#b9c9cf',
@@ -114,11 +114,11 @@ export default {
     '#51b4c1',
   ],
   timelinePAConn: [
-    '#d5a529',
-    '#b0830f',
+    '#00A292',
+    '#008273',
     '#b3b638',
     '#959912',
   ],
-  border: ['#ffffff'],
+  border: ['#dce76b'],
   default: ['#b2bdc2'],
 };
