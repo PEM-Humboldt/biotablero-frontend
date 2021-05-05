@@ -33,6 +33,7 @@ const BorderLegendColor = styled(Legend)`
     border: 2px solid ${({ color }) => color};
     width: 8px;
     height: 8px;
+    border-radius: 0;
   }
 `;
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
+
 import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -79,7 +80,11 @@ class ForestIntegrity extends React.Component {
               res.forEach((elem) => {
                 const idx = `${elem.sci_cat}-${elem.hf_pers}`;
                 cats[idx].value += elem.area;
-                PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+                if (elem.pa === 'No Protegida') {
+                  PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+                } else {
+                  PAs[idx].unshift({ key: elem.pa, label: elem.pa, area: elem.area });
+                }
               });
               Object.keys(PAs).forEach(((sciHfCat) => {
                 PAs[sciHfCat] = PAs[sciHfCat].map((areas) => ({
@@ -137,6 +142,9 @@ class ForestIntegrity extends React.Component {
           )
         )}
         <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
+        <BorderLegendColor color={matchColor('border')()}>
+          Límite de áreas protegidas
+        </BorderLegendColor>
         <div>
           <GraphLoader
             loading={loading}
@@ -159,9 +167,6 @@ class ForestIntegrity extends React.Component {
                 {SciHfCats[cat].label}
               </LegendColor>
             ))}
-            <BorderLegendColor color={matchColor('border')()}>
-              Límite de áreas protegidas
-            </BorderLegendColor>
           </div>
         </div>
         {selectedCategory && (
