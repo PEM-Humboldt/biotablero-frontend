@@ -74,8 +74,8 @@ LandscapeAccordion.propTypes = {
     component: PropTypes.func,
     componentProps: PropTypes.object,
   })).isRequired,
-  classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
-  classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
+  classNameDefault: PropTypes.string,
+  classNameSelected: PropTypes.string,
   handlerAccordionGeometry: PropTypes.func,
   level: PropTypes.string,
 };
