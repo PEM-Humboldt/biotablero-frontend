@@ -3,7 +3,7 @@ import React from 'react';
 
 import SpeciesNumber from 'pages/search/drawer/species/richness/SpeciesNumber';
 import SpeciesRecordsGaps from 'pages/search/drawer/species/richness/SpeciesRecordsGaps';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 
 const Richness = (props) => {
   const {
@@ -28,7 +28,7 @@ const Richness = (props) => {
   ];
   return (
     <div style={{ width: '100%' }}>
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"

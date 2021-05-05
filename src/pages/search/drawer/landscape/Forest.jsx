@@ -3,7 +3,7 @@ import React from 'react';
 
 import ForestIntegrity from 'pages/search/drawer/landscape/forest/ForestIntegrity';
 import ForestLossPersistence from 'pages/search/drawer/landscape/forest/ForestLossPersistence';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 
 const Forest = (props) => {
   const {
@@ -30,7 +30,7 @@ const Forest = (props) => {
   ];
   return (
     <div style={{ width: '100%' }}>
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"

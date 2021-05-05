@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import TropicalDryForest from 'pages/search/drawer/species/functionalDiversity/TropicalDryForest';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 
 const FunctionalDiversity = (props) => {
   const {
@@ -20,7 +20,7 @@ const FunctionalDiversity = (props) => {
   ];
   return (
     <div style={{ width: '100%' }}>
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"

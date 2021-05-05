@@ -3,7 +3,7 @@ import React from 'react';
 
 import Richness from 'pages/search/drawer/species/Richness';
 import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
 class Landscape extends React.Component {
@@ -88,7 +88,7 @@ class Landscape extends React.Component {
     const componentsArray = initialArray.filter((f) => selected.includes(f.label.id));
 
     return (
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
