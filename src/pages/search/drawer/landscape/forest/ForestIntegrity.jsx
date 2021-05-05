@@ -137,6 +137,9 @@ class ForestIntegrity extends React.Component {
           )
         )}
         <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
+        <BorderLegendColor color={matchColor('border')()}>
+          Límite de áreas protegidas
+        </BorderLegendColor>
         <div>
           <GraphLoader
             loading={loading}
@@ -159,9 +162,6 @@ class ForestIntegrity extends React.Component {
                 {SciHfCats[cat].label}
               </LegendColor>
             ))}
-            <BorderLegendColor color={matchColor('border')()}>
-              Límite de áreas protegidas
-            </BorderLegendColor>
           </div>
         </div>
         {selectedCategory && (
