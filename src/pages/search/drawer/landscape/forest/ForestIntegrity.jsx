@@ -1,6 +1,6 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
-
+import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
@@ -127,17 +127,16 @@ class ForestIntegrity extends React.Component {
             />
           </IconTooltip>
         </h2>
-        <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Integridad"
-            description="Integridad"
+            description={SCIHFText}
             className="graphinfo2"
             collapseButton={false}
           />
           )
         )}
+        <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
         <div>
           <GraphLoader
             loading={loading}
