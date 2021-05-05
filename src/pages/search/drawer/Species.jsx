@@ -6,7 +6,7 @@ import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity
 import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
-class Landscape extends React.Component {
+class Species extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -99,14 +99,14 @@ class Landscape extends React.Component {
   }
 }
 
-Landscape.propTypes = {
+Species.propTypes = {
   handlerSwitchLayer: PropTypes.func,
 };
 
-Landscape.defaultProps = {
+Species.defaultProps = {
   handlerSwitchLayer: () => {},
 };
 
-export default Landscape;
+export default Species;
 
-Landscape.contextType = SearchContext;
+Species.contextType = SearchContext;
