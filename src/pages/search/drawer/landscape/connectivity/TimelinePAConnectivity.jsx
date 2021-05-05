@@ -3,6 +3,7 @@ import React from 'react';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import InfoIcon from '@material-ui/icons/Info';
+import { TimelinePAConnText } from 'pages/search/drawer/landscape/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
@@ -96,7 +97,7 @@ class TimelinePAConnectivity extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description="Timeline PA Connectivity"
+              description={TimelinePAConnText}
               className="graphinfo2"
               collapseButton={false}
             />

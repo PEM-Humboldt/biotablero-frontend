@@ -2,6 +2,7 @@ import React from 'react';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import InfoIcon from '@material-ui/icons/Info';
+import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import SearchContext from 'pages/search/SearchContext';
@@ -104,7 +105,7 @@ class CurrentPAConnectivity extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description="Current PA Connectivity"
+              description={CurrentPAConnText}
               className="graphinfo2"
               collapseButton={false}
             />
