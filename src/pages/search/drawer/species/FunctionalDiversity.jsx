@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ForestIntegrity from 'pages/search/drawer/landscape/forest/ForestIntegrity';
-import ForestLossPersistence from 'pages/search/drawer/landscape/forest/ForestLossPersistence';
+import TropicalDryForest from 'pages/search/drawer/species/functionalDiversity/TropicalDryForest';
 import Accordion from 'pages/search/drawer/Accordion';
 
-const Forest = (props) => {
+const FunctionalDiversity = (props) => {
   const {
     handlerAccordionGeometry,
   } = props;
@@ -13,19 +12,10 @@ const Forest = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'forestLP-2016-2019',
-        name: 'Perdida y persistencia',
-        disabled: true,
-        collapsed: true,
+        id: 'tropicalDryForest',
+        name: 'Plantas del bosque seco',
       },
-      component: ForestLossPersistence,
-    },
-    {
-      label: {
-        id: 'forestIntegrity',
-        name: 'Integridad',
-      },
-      component: ForestIntegrity,
+      component: TropicalDryForest,
     },
   ];
   return (
@@ -41,12 +31,12 @@ const Forest = (props) => {
   );
 };
 
-Forest.propTypes = {
+FunctionalDiversity.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
 };
 
-Forest.defaultProps = {
+FunctionalDiversity.defaultProps = {
   handlerAccordionGeometry: () => {},
 };
 
-export default Forest;
+export default FunctionalDiversity;

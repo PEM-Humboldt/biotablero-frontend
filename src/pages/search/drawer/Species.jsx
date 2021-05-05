@@ -1,24 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor';
-import Forest from 'pages/search/drawer/landscape/Forest';
-import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
-import PAConnectivity from 'pages/search/drawer/landscape/PAConnectivity';
+import Richness from 'pages/search/drawer/species/Richness';
+import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity';
 import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
-class Landscape extends React.Component {
+class Species extends React.Component {
   constructor(props, context) {
     super(props, context);
-    const { areaId } = this.context;
     this.state = {
-      visible: areaId === 'ea' ? 'fc' : 'hf',
+      visible: 'richness',
       childMap: {
-        fc: 'fc',
-        hf: 'hfCurrent',
-        forest: 'forestIntegrity',
-        connectivity: 'currentPAConn',
+        richness: 'speciesNumber',
+        functionalDiversity: 'tropicalDryForest',
       },
     };
   }
@@ -63,34 +58,18 @@ class Landscape extends React.Component {
     const initialArray = [
       {
         label: {
-          id: 'fc',
-          name: 'FC y Biomas',
-          collapsed: areaId !== 'ea',
+          id: 'richness',
+          name: 'Riqueza',
         },
-        component: CompensationFactor,
-      },
-      {
-        label: {
-          id: 'hf',
-          name: 'Huella humana',
-        },
-        component: HumanFootprint,
+        component: Richness,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
       {
         label: {
-          id: 'forest',
-          name: 'Bosques',
+          id: 'functionalDiversity',
+          name: 'Diversidad Funcional',
         },
-        component: Forest,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
-      },
-      {
-        label: {
-          id: 'connectivity',
-          name: 'Conectividad de Áreas Protegidas',
-        },
-        component: PAConnectivity,
+        component: FunctionalDiversity,
         componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
       },
     ];
@@ -99,13 +78,9 @@ class Landscape extends React.Component {
     switch (areaId) {
       case 'states':
       case 'basinSubzones':
-        selected = ['hf', 'forest', 'connectivity'];
-        break;
       case 'ea':
-        selected = ['fc', 'hf', 'forest', 'connectivity'];
-        break;
       case 'pa':
-        selected = ['hf', 'forest'];
+        selected = ['richness', 'functionalDiversity'];
         break;
       default:
         break;
@@ -124,14 +99,14 @@ class Landscape extends React.Component {
   }
 }
 
-Landscape.propTypes = {
+Species.propTypes = {
   handlerSwitchLayer: PropTypes.func,
 };
 
-Landscape.defaultProps = {
+Species.defaultProps = {
   handlerSwitchLayer: () => {},
 };
 
-export default Landscape;
+export default Species;
 
-Landscape.contextType = SearchContext;
+Species.contextType = SearchContext;
