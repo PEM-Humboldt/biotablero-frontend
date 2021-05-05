@@ -91,7 +91,7 @@ const match = {
   },
   currentPAConn: {
     palette: 'currentPAConn',
-    sort: ['unprot', 'prot_conn', 'prot_unconn'],
+    sort: ['prot_conn', 'prot_unconn', 'unprot'],
   },
   dpc: {
     palette: 'dpc',

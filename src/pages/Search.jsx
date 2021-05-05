@@ -583,7 +583,6 @@ class Search extends Component {
           request = () => RestAPI.requestDPCLayer(
             selectedAreaTypeId,
             selectedAreaId,
-            5,
           );
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
