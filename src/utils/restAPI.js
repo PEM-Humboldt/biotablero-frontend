@@ -304,7 +304,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity
    */
-   static requestCurrentPAConnectivity(areaType, areaId) {
+  static requestCurrentPAConnectivity(areaType, areaId) {
     return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -316,7 +316,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of the protected areas
    */
-   static requestDPC(areaType, areaId, paNumber) {
+  static requestDPC(areaType, areaId, paNumber) {
     return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
   }
 
@@ -329,7 +329,7 @@ class RestAPI {
     *
     * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
     */
-   static requestTimelinePAConnectivity(areaType, areaId, category) {
+  static requestTimelinePAConnectivity(areaType, areaId, category) {
     return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
   }
 
@@ -343,7 +343,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
-   static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
+  static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
     return RestAPI.makeGetRequest(`connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
   }
 
