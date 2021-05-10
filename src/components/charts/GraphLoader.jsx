@@ -27,20 +27,18 @@ const GraphLoader = (props) => {
     padding,
     onClickGraphHandler,
     markers,
-    loading,
+    message,
     selectedIndexValue,
   } = props;
 
-  // While data is being retrieved from server
   let errorMessage = null;
-  // (data === null) while waiting for API response
-  if (data === null || loading) errorMessage = 'Cargando información...';
-  // (!data) if API doesn't respond
-  else if (!data) errorMessage = 'Información no disponible';
-  // (data.length <= 0) if API response in not object
-  else if (data.length <= 0) errorMessage = 'Información no disponible';
+  // TODO: don't relay on data being null for a loading state
+  if (data === null || message === 'loading') {
+    errorMessage = 'Cargando información...';
+  } else if (!data || data.length <= 0 || message === 'no-data') {
+    errorMessage = 'Información no disponible';
+  }
   if (errorMessage) {
-    // TODO: ask Cesar to make this message nicer
     return (
       <div className="errorData">
         {errorMessage}
@@ -196,7 +194,7 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  loading: PropTypes.bool,
+  loading: PropTypes.string,
   selectedIndexValue: PropTypes.string,
 };
 
