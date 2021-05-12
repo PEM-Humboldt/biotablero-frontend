@@ -209,9 +209,9 @@ const SingleBulletGraph = (props) => {
         }]}
         margin={{
           top: 38,
-          right: 50,
+          right: 30,
           bottom: 38,
-          left: 50,
+          left: 30,
         }}
         spacing={52}
         titleAlign="start"
