@@ -2,6 +2,7 @@ import DownloadIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import SingleBulletGraph from 'components/charts/SingleBulletGraph';
 import DotInfo from 'components/charts/DotInfo';
 import DotsGraph from 'components/charts/DotsGraph';
 import LargeBarStackGraph from 'components/charts/LargeBarStackGraph';
@@ -99,6 +100,15 @@ const GraphLoader = (props) => {
           data={data}
           height={500}
           units={units}
+          colors={colors}
+          onClickHandler={onClickGraphHandler}
+        />
+      );
+    case 'singleBullet':
+      return (
+        <SingleBulletGraph
+          data={data}
+          height={100}
           colors={colors}
           onClickHandler={onClickGraphHandler}
         />
@@ -210,7 +220,7 @@ GraphLoader.defaultProps = {
   padding: 0.25,
   onClickGraphHandler: () => {},
   markers: [],
-  loading: false,
+  message: null,
   selectedIndexValue: '',
 };
 
