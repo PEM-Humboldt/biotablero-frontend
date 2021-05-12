@@ -93,7 +93,7 @@ class Drawer extends React.Component {
               handlerSwitchLayer={handlerSwitchLayer}
             />
           </div>
-          <div className="graphcard">
+          <div>
             <Species
               handlerSwitchLayer={handlerSwitchLayer}
             />
