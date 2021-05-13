@@ -126,6 +126,8 @@ export default {
     '#562012',
     'blue',
     'red',
+    'purple',
+    'pink',
     '#3b6fa9',
     '#8bcde0',
   ],

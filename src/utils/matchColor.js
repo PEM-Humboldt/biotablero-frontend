@@ -110,6 +110,8 @@ const match = {
       'min_observed',
       'max_inferred',
       'max_observed',
+      'region_observed',
+      'region_inferred',
       'area',
       'region',
     ],

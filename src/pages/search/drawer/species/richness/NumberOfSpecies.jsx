@@ -53,13 +53,17 @@ class NumberOfSpecies extends React.Component {
             id: groupVal.id,
             ranges: {
               area: Math.max(limits.max_inferred, limits.max_observed),
-              region: groupVal.region,
+              region: Math.max(groupVal.region_observed, groupVal.region_inferred),
             },
             markers: {
               inferred: groupVal.inferred,
               observed: groupVal.observed,
             },
-            measures: limits,
+            measures: {
+              ...limits,
+              region_observed: groupVal.region_observed,
+              region_inferred: groupVal.region_inferred,
+            },
             title: getLabel[groupVal.id],
           });
         });
