@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ResponsiveBullet } from '@nivo/bullet';
 import { BasicTooltip, useTooltip } from '@nivo/tooltip';
+import { animated, to } from 'react-spring';
 
 /**
  * Get the key for a value inside an object
@@ -57,20 +58,22 @@ const LineMeasureWrap = (origMeasures, colors) => {
    */
   const LineMeasure = (props) => {
     const {
-      x,
-      width,
+      animatedProps: {
+        x,
+        width,
+      },
       data,
       onMouseLeave,
     } = props;
     const measureKey = findKey(origMeasures, data.v1);
-
     return (
-      <rect
-        x={x + width - 1.5}
-        y={-10}
-        width={3}
-        height={30}
-        fill={colors(measureKey)}
+      <animated.line
+        x1={to([x, width], (vx, vw) => vx + vw)}
+        x2={to([x, width], (vx, vw) => vx + vw)}
+        y1={-10}
+        y2={20}
+        stroke={colors(measureKey)}
+        strokeWidth={3}
         onMouseEnter={tooltip(data.v1, colors(measureKey))}
         onMouseLeave={onMouseLeave}
       />
@@ -78,8 +81,10 @@ const LineMeasureWrap = (origMeasures, colors) => {
   };
 
   LineMeasure.propTypes = {
-    x: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired,
+    animatedProps: PropTypes.shape({
+      x: PropTypes.object.isRequired,
+      width: PropTypes.object.isRequired,
+    }).isRequired,
     data: PropTypes.shape({
       v1: PropTypes.number.isRequired,
     }).isRequired,
@@ -160,31 +165,35 @@ const CircleMarkerWrap = (origMarkers, colors) => {
    */
   const NoTooltipRange = (props) => {
     const {
-      x,
-      y,
-      width,
-      height,
+      animatedProps: {
+        x,
+        y,
+        width,
+        height,
+      },
       data,
     } = props;
     const rangeKey = findKey(origRanges, data.v1);
 
     return (
-      <rect
-        x={x - 1}
+      <animated.rect
+        x={x}
         y={y}
-        ry={5}
-        width={width + 1}
-        height={height}
+        rx={5}
+        width={to(width, (value) => Math.max(value, 0))}
+        height={to(height, (value) => Math.max(value, 0))}
         fill={colors(rangeKey)}
       />
     );
   };
 
   NoTooltipRange.propTypes = {
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
+    animatedProps: PropTypes.shape({
+      x: PropTypes.object.isRequired,
+      y: PropTypes.object.isRequired,
+      width: PropTypes.object.isRequired,
+      height: PropTypes.object.isRequired,
+    }).isRequired,
     data: PropTypes.shape({
       v1: PropTypes.number.isRequired,
     }).isRequired,

@@ -5381,6 +5381,7 @@ __metadata:
     react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
+    react-spring: ^9.1.2
     styled-components: ^5.2.3
   languageName: unknown
   linkType: soft
@@ -17515,7 +17516,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-spring@npm:9.1.2":
+"react-spring@npm:9.1.2, react-spring@npm:^9.1.2":
   version: 9.1.2
   resolution: "react-spring@npm:9.1.2"
   dependencies:
