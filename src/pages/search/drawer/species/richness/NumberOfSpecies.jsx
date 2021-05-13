@@ -22,7 +22,7 @@ const getLabel = {
   max_observed: 'Máxima Observada relativa a la cerca',
 };
 
-class SpeciesNumber extends React.Component {
+class NumberOfSpecies extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -145,6 +145,6 @@ class SpeciesNumber extends React.Component {
   }
 }
 
-export default SpeciesNumber;
+export default NumberOfSpecies;
 
-SpeciesNumber.contextType = SearchContext;
+NumberOfSpecies.contextType = SearchContext;
