@@ -9,17 +9,39 @@ import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
 
-const getLabel = {
-  total: 'Riqueza Total',
-  endemic: 'Riqueza Endémicas',
-  invasive: 'Riqueza Invasoras',
-  threatened: 'Riqueza Amenazadas',
-  inferred: 'Inferida (BioModelos)',
-  observed: 'Observada (visor I2D)',
-  min_inferred: 'Mínima Inferida relativa a la cerca',
-  min_observed: 'Mínima Observada relativa a la cerca',
-  max_inferred: 'Máxima Inferida relativa a la cerca',
-  max_observed: 'Máxima Observada relativa a la cerca',
+const getLabel = (key, area) => {
+  let areaLbl = 'cerca';
+  switch (area) {
+    case 'states':
+      areaLbl = 'departamentos';
+      break;
+    case 'pa':
+      areaLbl = 'áreas de manejo especial';
+      break;
+    case 'ea':
+      areaLbl = 'jurisdicciones ambientales';
+      break;
+    case 'basinSubzones':
+      areaLbl = 'subzonas hidrográficas';
+      break;
+    default:
+    break;
+  }
+
+  return {
+    total: 'Total',
+    endemic: 'Endémicas',
+    invasive: 'Invasoras',
+    threatened: 'Amenazadas',
+    inferred: 'Inferido (BioModelos)',
+    observed: 'Observado (visor I2D)',
+    min_inferred: `Mínimo inferido por ${areaLbl}`,
+    min_observed: `Mínimo observado por ${areaLbl}`,
+    max_inferred: `Máximo inferido por ${areaLbl}`,
+    max_observed: `Máximo observado por ${areaLbl}`,
+    region_observed: 'Máximo observado por región biótica',
+    region_inferred: 'Máximo inferido por región biótica',
+  }[key];
 };
 
 class NumberOfSpecies extends React.Component {
@@ -64,7 +86,7 @@ class NumberOfSpecies extends React.Component {
               region_observed: groupVal.region_observed,
               region_inferred: groupVal.region_inferred,
             },
-            title: getLabel[groupVal.id],
+            title: getLabel(groupVal.id),
           });
         });
         this.setState({ data, message: null });
@@ -86,6 +108,7 @@ class NumberOfSpecies extends React.Component {
   };
 
   render() {
+    const { areaId } = this.context;
     const {
       showInfoGraph,
       message,
@@ -113,10 +136,10 @@ class NumberOfSpecies extends React.Component {
         )}
         <div className="richnessLegend">
           <TextLegend orientation="row" color={matchColor('richness')('observed')}>
-            {getLabel.observed}
+            {getLabel('observed', areaId)}
           </TextLegend>
           <TextLegend orientation="row" color={matchColor('richness')('inferred')}>
-            {getLabel.inferred}
+            {getLabel('inferred', areaId)}
           </TextLegend>
         </div>
         <div>
@@ -137,7 +160,7 @@ class NumberOfSpecies extends React.Component {
               color={matchColor('richness')(key)}
               key={key}
             >
-              {getLabel.min_observed}
+              {getLabel(key, areaId)}
             </LineLegend>
 
           ))}
