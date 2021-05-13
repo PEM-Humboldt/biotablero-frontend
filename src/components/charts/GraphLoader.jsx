@@ -110,6 +110,7 @@ const GraphLoader = (props) => {
           data={data}
           height={62}
           colors={colors}
+          onClickHandler={onClickGraphHandler}
         />
       );
     case 'Dots':

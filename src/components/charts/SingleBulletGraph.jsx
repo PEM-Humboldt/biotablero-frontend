@@ -172,6 +172,7 @@ const CircleMarkerWrap = (origMarkers, colors) => {
         height,
       },
       data,
+      onClick,
     } = props;
     const rangeKey = findKey(origRanges, data.v1);
 
@@ -183,6 +184,7 @@ const CircleMarkerWrap = (origMarkers, colors) => {
         width={to(width, (value) => Math.max(value, 0))}
         height={to(height, (value) => Math.max(value, 0))}
         fill={colors(rangeKey)}
+        onClick={onClick}
       />
     );
   };
@@ -197,6 +199,7 @@ const CircleMarkerWrap = (origMarkers, colors) => {
     data: PropTypes.shape({
       v1: PropTypes.number.isRequired,
     }).isRequired,
+    onClick: PropTypes.func.isRequired,
   };
 
   return NoTooltipRange;
@@ -206,7 +209,12 @@ const CircleMarkerWrap = (origMarkers, colors) => {
  * Important: measures and markers are inverted with respect to nivo documentation
  */
 const SingleBulletGraph = (props) => {
-  const { height, data, colors } = props;
+  const {
+    height,
+    data,
+    colors,
+    onClickHandler,
+  } = props;
   return (
     <div style={{ height, paddingBottom: '20px' }}>
       <ResponsiveBullet
@@ -230,6 +238,7 @@ const SingleBulletGraph = (props) => {
         measureComponent={LineMeasureWrap(data.measures, colors)}
         markerComponent={CircleMarkerWrap(data.markers, colors)}
         isInteractive
+        onRangeClick={onClickHandler}
       />
     </div>
   );
@@ -256,10 +265,12 @@ SingleBulletGraph.propTypes = {
   }).isRequired,
   height: PropTypes.number,
   colors: PropTypes.func.isRequired,
+  onClickHandler: PropTypes.func,
 };
 
 SingleBulletGraph.defaultProps = {
   height: 100,
+  onClickHandler: () => {},
 };
 
 export default SingleBulletGraph;

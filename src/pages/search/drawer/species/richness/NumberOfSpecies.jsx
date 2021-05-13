@@ -158,8 +158,10 @@ class NumberOfSpecies extends React.Component {
         </div>
         <div>
           {data.map((bar) => (
-            <>
-              <div className={`nos-title${bar.id === selected ? ' selected' : ''}`}>
+            <div key={bar.id}>
+              <div
+                className={`nos-title${bar.id === selected ? ' selected' : ''}`}
+              >
                 {getLabel(bar.id)}
                 <Icon image={biomodelos} />
                 <Icon image={mappoint} />
@@ -168,10 +170,10 @@ class NumberOfSpecies extends React.Component {
                 message={message}
                 data={bar}
                 graphType="singleBullet"
-                key={bar.id}
                 colors={matchColor('richness')}
+                onClickGraphHandler={() => { this.setState({ selected: bar.id }); }}
               />
-            </>
+            </div>
           ))}
         </div>
         <div className="richnessLegend">
