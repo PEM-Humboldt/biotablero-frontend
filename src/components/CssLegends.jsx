@@ -53,7 +53,19 @@ const LineLegend = styled(Legend)`
 `;
 
 const TextLegend = styled(Legend)`
+  margin-right: 1px;
   color: ${({ color }) => color};
+
+  &:before {
+    display: inline-block;
+    content: "";
+    background: ${({ image }) => (image ? `url(${image}) no-repeat center` : '')};
+    background-size: 15px;
+    width: 15px;
+    height: 26px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
 `;
 
 export {

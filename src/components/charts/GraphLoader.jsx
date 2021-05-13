@@ -108,7 +108,7 @@ const GraphLoader = (props) => {
       return (
         <SingleBulletGraph
           data={data}
-          height={100}
+          height={62}
           colors={colors}
         />
       );

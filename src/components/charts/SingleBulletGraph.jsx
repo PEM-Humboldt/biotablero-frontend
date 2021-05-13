@@ -208,7 +208,7 @@ const CircleMarkerWrap = (origMarkers, colors) => {
 const SingleBulletGraph = (props) => {
   const { height, data, colors } = props;
   return (
-    <div style={{ height }}>
+    <div style={{ height, paddingBottom: '20px' }}>
       <ResponsiveBullet
         data={[{
           ...data,
@@ -217,9 +217,9 @@ const SingleBulletGraph = (props) => {
           ranges: Object.values(data.ranges),
         }]}
         margin={{
-          top: 38,
+          top: 5,
           right: 30,
-          bottom: 38,
+          bottom: 32,
           left: 30,
         }}
         spacing={52}

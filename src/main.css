@@ -1802,8 +1802,21 @@ div[class*="eaRHYv"] {
 	border: 1px solid;
 }
 
+.nos-title {
+	margin: 0 30px;
+}
+
+.nos-title.legend {
+	margin-left: 15px;
+	margin-bottom: 15px;
+}
+
+.nos-title.selected {
+	font-weight: 600;
+}
+
 .richnessLegend {
-	margin: 10px 0 8px 25px;
+	margin: 10px 0 8px 15px;
 }
 
 .dpcLegend{

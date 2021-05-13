@@ -3,11 +3,15 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
+import Icon from 'components/CssIcons';
 import { LineLegend, TextLegend } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
+
+import biomodelos from 'images/biomodelos.png';
+import mappoint from 'images/mappoint.png';
 
 const getLabel = (key, area) => {
   let areaLbl = 'cerca';
@@ -53,6 +57,7 @@ class NumberOfSpecies extends React.Component {
       showInfoGraph: false,
       data: [],
       message: 'loading',
+      selected: 'total',
     };
   }
 
@@ -86,7 +91,7 @@ class NumberOfSpecies extends React.Component {
               region_observed: groupVal.region_observed,
               region_inferred: groupVal.region_inferred,
             },
-            title: getLabel(groupVal.id),
+            title: '',
           });
         });
         this.setState({ data, message: null });
@@ -113,6 +118,7 @@ class NumberOfSpecies extends React.Component {
       showInfoGraph,
       message,
       data,
+      selected,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -134,23 +140,38 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
-        <div className="richnessLegend">
-          <TextLegend orientation="row" color={matchColor('richness')('observed')}>
+        <div className="nos-title legend">
+          <TextLegend
+            orientation="row"
+            color={matchColor('richness')('observed')}
+            image={mappoint}
+          >
             {getLabel('observed', areaId)}
           </TextLegend>
-          <TextLegend orientation="row" color={matchColor('richness')('inferred')}>
+          <TextLegend
+            orientation="row"
+            color={matchColor('richness')('inferred')}
+            image={biomodelos}
+          >
             {getLabel('inferred', areaId)}
           </TextLegend>
         </div>
         <div>
           {data.map((bar) => (
-            <GraphLoader
-              message={message}
-              data={bar}
-              graphType="singleBullet"
-              key={bar.id}
-              colors={matchColor('richness')}
-            />
+            <>
+              <div className={`nos-title${bar.id === selected ? ' selected' : ''}`}>
+                {getLabel(bar.id)}
+                <Icon image={biomodelos} />
+                <Icon image={mappoint} />
+              </div>
+              <GraphLoader
+                message={message}
+                data={bar}
+                graphType="singleBullet"
+                key={bar.id}
+                colors={matchColor('richness')}
+              />
+            </>
           ))}
         </div>
         <div className="richnessLegend">
