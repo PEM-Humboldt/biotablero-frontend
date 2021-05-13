@@ -3,7 +3,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
-import { LegendColor } from 'components/CssLegends';
+import { LineLegend, TextLegend } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
@@ -112,12 +112,12 @@ class NumberOfSpecies extends React.Component {
           )
         )}
         <div className="richnessLegend">
-          <LegendColor orientation="row" color={matchColor('richness')('observed')}>
+          <TextLegend orientation="row" color={matchColor('richness')('observed')}>
             {getLabel.observed}
-          </LegendColor>
-          <LegendColor orientation="row" color={matchColor('richness')('inferred')}>
+          </TextLegend>
+          <TextLegend orientation="row" color={matchColor('richness')('inferred')}>
             {getLabel.inferred}
-          </LegendColor>
+          </TextLegend>
         </div>
         <div>
           {data.map((bar) => (
@@ -131,18 +131,16 @@ class NumberOfSpecies extends React.Component {
           ))}
         </div>
         <div className="richnessLegend">
-          <LegendColor orientation="row" color={matchColor('richness')('min_observed')}>
-            {getLabel.min_observed}
-          </LegendColor>
-          <LegendColor orientation="row" color={matchColor('richness')('min_inferred')}>
-            {getLabel.min_inferred}
-          </LegendColor>
-          <LegendColor orientation="row" color={matchColor('richness')('max_observed')}>
-            {getLabel.max_observed}
-          </LegendColor>
-          <LegendColor orientation="row" color={matchColor('richness')('max_inferred')}>
-            {getLabel.max_inferred}
-          </LegendColor>
+          {data[0] && Object.keys(data[0].measures).map((key) => (
+            <LineLegend
+              orientation="column"
+              color={matchColor('richness')(key)}
+              key={key}
+            >
+              {getLabel.min_observed}
+            </LineLegend>
+
+          ))}
         </div>
       </div>
     );
