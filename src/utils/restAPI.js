@@ -304,7 +304,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity
    */
-   static requestCurrentPAConnectivity(areaType, areaId) {
+  static requestCurrentPAConnectivity(areaType, areaId) {
     return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -316,7 +316,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of the protected areas
    */
-   static requestDPC(areaType, areaId, paNumber) {
+  static requestDPC(areaType, areaId, paNumber) {
     return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
   }
 
@@ -329,7 +329,7 @@ class RestAPI {
     *
     * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
     */
-   static requestTimelinePAConnectivity(areaType, areaId, category) {
+  static requestTimelinePAConnectivity(areaType, areaId, category) {
     return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
   }
 
@@ -343,8 +343,38 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
-   static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
+  static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
     return RestAPI.makeGetRequest(`connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
+  }
+
+  /**
+   * Get the number of species for the specified area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with observed, inferred and region number of species
+   */
+  static requestNumberOfSpecies(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
+    );
+  }
+
+  /**
+   * Get the thresholds for the number of species for the specified area type
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSThresholds(areaType, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/thresholds?areaType=${areaType}${group ? `&group=${group}` : ''}`,
+    );
   }
 
   /** ******************** */

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import SpeciesNumber from 'pages/search/drawer/species/richness/SpeciesNumber';
+import NumberOfSpecies from 'pages/search/drawer/species/richness/NumberOfSpecies';
 import SpeciesRecordsGaps from 'pages/search/drawer/species/richness/SpeciesRecordsGaps';
 import Accordion from 'pages/search/drawer/Accordion';
 
@@ -13,10 +13,10 @@ const Richness = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'speciesNumber',
+        id: 'numberOfSpecies',
         name: 'Número de especies',
       },
-      component: SpeciesNumber,
+      component: NumberOfSpecies,
     },
     {
       label: {

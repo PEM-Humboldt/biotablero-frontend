@@ -56,7 +56,7 @@ class ForestIntegrity extends React.Component {
         'baja_moderada-estable_natural': [],
       },
       selectedCategory: null,
-      loading: true,
+      loading: 'loading',
     };
   }
 
@@ -71,7 +71,7 @@ class ForestIntegrity extends React.Component {
       .then((res) => {
         if (this.mounted) {
           if (res.length <= 0) {
-            this.setState({ SciHfCats: {}, ProtectedAreas: {}, loading: false });
+            this.setState({ SciHfCats: {}, ProtectedAreas: {}, loading: 'no-data' });
           } else {
             this.setState((prevState) => {
               const { SciHfCats: cats, ProtectedAreas: PAs } = prevState;
@@ -86,7 +86,7 @@ class ForestIntegrity extends React.Component {
                   percentage: areas.area / cats[sciHfCat].value,
                 }));
               }));
-              return { SciHfCats: cats, ProtectedAreas: PAs, loading: false };
+              return { SciHfCats: cats, ProtectedAreas: PAs, loading: null };
             });
           }
         }
@@ -139,7 +139,7 @@ class ForestIntegrity extends React.Component {
         )}
         <div>
           <GraphLoader
-            loading={loading}
+            message={loading}
             data={Object.values(SciHfCats)}
             graphType="pie"
             units="ha"

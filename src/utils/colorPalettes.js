@@ -119,6 +119,18 @@ export default {
     '#b3b638',
     '#959912',
   ],
+  richness: [
+    '#c14020',
+    '#a1ae32',
+    '#562012',
+    '#5f683c',
+    'red',
+    'blue',
+    'pink',
+    'purple',
+    '#3b6fa9',
+    '#8bcde0',
+  ],
   border: ['#ffffff'],
   default: ['#b2bdc2'],
 };
