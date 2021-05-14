@@ -73,7 +73,7 @@ const LineMeasureWrap = (origMeasures, colors) => {
         y1={-10}
         y2={20}
         stroke={colors(measureKey)}
-        strokeWidth={3}
+        strokeWidth={2}
         onMouseEnter={tooltip(data.v1, colors(measureKey))}
         onMouseLeave={onMouseLeave}
       />
@@ -129,7 +129,7 @@ const CircleMarkerWrap = (origMarkers, colors) => {
         <circle
           cx={0}
           cy={y}
-          r={7}
+          r={6}
           fill={colors(markerKey)}
         />
       </g>
