@@ -140,6 +140,7 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
+        <h3>Haga click en la barra para visualizar su mapa</h3>
         <div className="nos-title legend">
           <TextLegend
             orientation="row"
