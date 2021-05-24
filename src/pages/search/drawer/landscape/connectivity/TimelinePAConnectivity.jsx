@@ -17,7 +17,6 @@ class TimelinePAConnectivity extends React.Component {
     this.state = {
       showInfoGraph: false,
       timelinePAConnectivity: [],
-      yLimit: 50,
     };
   }
 
@@ -84,7 +83,6 @@ class TimelinePAConnectivity extends React.Component {
     const {
       showInfoGraph,
       timelinePAConnectivity,
-      yLimit,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -117,7 +115,7 @@ class TimelinePAConnectivity extends React.Component {
               labelX="Año"
               labelY="Porcentaje"
               units="%"
-              yMax={yLimit}
+              yMax={50}
             />
           </div>
         </div>
