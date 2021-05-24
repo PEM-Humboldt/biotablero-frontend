@@ -29,6 +29,7 @@ const GraphLoader = (props) => {
     markers,
     loading,
     selectedIndexValue,
+    yMax,
   } = props;
 
   // While data is being retrieved from server
@@ -161,6 +162,7 @@ const GraphLoader = (props) => {
           markers={markers}
           height={490}
           units={units}
+          yMax={yMax}
         />
       );
     default:
