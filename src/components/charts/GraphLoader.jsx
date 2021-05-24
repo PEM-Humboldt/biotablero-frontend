@@ -209,7 +209,7 @@ GraphLoader.defaultProps = {
   labelY: '',
   showOnlyTitle: false,
   units: '',
-  yMax: '',
+  yMax: 100,
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
