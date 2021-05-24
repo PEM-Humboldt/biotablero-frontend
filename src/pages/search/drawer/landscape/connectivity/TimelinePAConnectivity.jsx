@@ -115,6 +115,7 @@ class TimelinePAConnectivity extends React.Component {
               labelX="Año"
               labelY="Porcentaje"
               units="%"
+              yMax={50}
             />
           </div>
         </div>

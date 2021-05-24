@@ -29,6 +29,7 @@ const GraphLoader = (props) => {
     markers,
     loading,
     selectedIndexValue,
+    yMax,
   } = props;
 
   // While data is being retrieved from server
@@ -161,6 +162,7 @@ const GraphLoader = (props) => {
           markers={markers}
           height={490}
           units={units}
+          yMax={yMax}
         />
       );
     default:
@@ -181,6 +183,7 @@ GraphLoader.propTypes = {
   width: PropTypes.number,
   showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
+  yMax: PropTypes.number,
   elementOnClick: PropTypes.func,
   // TODO: Remove array type once the charts in compensation are migrated
   colors: PropTypes.oneOfType([
@@ -206,6 +209,7 @@ GraphLoader.defaultProps = {
   labelY: '',
   showOnlyTitle: false,
   units: '',
+  yMax: 100,
   elementOnClick: () => {},
   colors: () => {},
   padding: 0.25,
