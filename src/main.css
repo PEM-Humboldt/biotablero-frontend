@@ -1767,13 +1767,6 @@ div[class*="eaRHYv"] {
 	margin-bottom: 10px;
 }
 
-.graphcardAcc .icondown {
-  cursor: pointer;
-  margin-top: -3px;
-  color: #2a363b;
-  float: right;
-}
-
 .graphcardAcc h3, .pt6 h6 {
 	display: inline-block;
 	padding: 5px 12px;
@@ -1941,11 +1934,15 @@ p.legcomp {
   height: 25px;
 }
 
+.graphcardAcc .icondown {
+	cursor: pointer;
+	color: #2a363b;
+	float: right;
+}
 
-.icondown {
-  float: left;
-  cursor: pointer;
-  margin-top: -3px;
+.icondown-container {
+	display: inline-block;
+	vertical-align: bottom;
 }
 
 .icongraph, .icondelete {
@@ -2595,6 +2592,7 @@ tspan, .vx-axis-label {
 .load-1 .line:nth-last-child(1) {animation: loadingA 1.5s 1s infinite; background-color: #d65e6e; vertical-align: top;}
 .load-1 .line:nth-last-child(2) {animation: loadingA 1.5s .5s infinite; vertical-align: top;}
 .load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e32759; vertical-align: top;}
+
 
 @keyframes loadingA {
     0% {height: 15px;}
