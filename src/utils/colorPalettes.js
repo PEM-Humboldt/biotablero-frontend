@@ -131,6 +131,14 @@ export default {
     '#fcc76f',
     '#fba76d',
   ],
+  gaps: [
+    '#1348a6',
+    '#1997f2',
+    '#0f3669',
+    '#abc074',
+    '#717e4f',
+    '#fcbd64',
+  ],
   border: ['#ffffff'],
   default: ['#b2bdc2'],
 };

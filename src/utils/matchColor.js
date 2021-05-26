@@ -116,6 +116,18 @@ const match = {
       'region',
     ],
   },
+  gaps: {
+    palette: 'gaps',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'min_threshold',
+      'max_threshold',
+      'area',
+    ],
+  },
   border: {
     palette: 'border',
   },
@@ -200,6 +212,7 @@ const matchColor = (type, resetCache = false) => {
     case 'dryForest':
     case 'wetland':
     case 'richness':
+    case 'gaps':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;
