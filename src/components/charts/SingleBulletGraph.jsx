@@ -45,10 +45,11 @@ const tooltip = (value, color) => {
  *
  * @param {Object} origMeasures keys for measure values
  * @param {Function} colors function to calculate color based on the key
+ * @param {Boolean} reverse to specify if the chart is reversed
  *
  * @returns Functional component for a measure in form of a line
  */
-const LineMeasureWrap = (origMeasures, colors) => {
+const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
   /**
    * Custom component to display bullet measures as lines (like markers)
    *
@@ -66,10 +67,14 @@ const LineMeasureWrap = (origMeasures, colors) => {
       onMouseLeave,
     } = props;
     const measureKey = findKey(origMeasures, data.v1);
+    const xVal = to([x, width], (vx, vw) => {
+      if (reverse) return vx;
+      return vx + vw;
+    });
     return (
       <animated.line
-        x1={to([x, width], (vx, vw) => vx + vw)}
-        x2={to([x, width], (vx, vw) => vx + vw)}
+        x1={xVal}
+        x2={xVal}
         y1={-10}
         y2={20}
         stroke={colors(measureKey)}
@@ -235,7 +240,7 @@ const SingleBulletGraph = (props) => {
         titleOffsetX={0}
         titleOffsetY={-30}
         rangeComponent={NoTooltipRangeWrap(data.ranges, colors)}
-        measureComponent={LineMeasureWrap(data.measures, colors)}
+        measureComponent={LineMeasureWrap(data.measures, colors)} // TODO: add reverse prop
         markerComponent={CircleMarkerWrap(data.markers, colors)}
         isInteractive
         onRangeClick={onClickHandler}
