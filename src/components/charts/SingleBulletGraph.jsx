@@ -219,6 +219,7 @@ const SingleBulletGraph = (props) => {
     data,
     colors,
     onClickHandler,
+    reverse,
   } = props;
   return (
     <div style={{ height, paddingBottom: '20px' }}>
@@ -243,6 +244,7 @@ const SingleBulletGraph = (props) => {
         measureComponent={LineMeasureWrap(data.measures, colors)} // TODO: add reverse prop
         markerComponent={CircleMarkerWrap(data.markers, colors)}
         isInteractive
+        reverse={reverse}
         onRangeClick={onClickHandler}
       />
     </div>
@@ -271,11 +273,13 @@ SingleBulletGraph.propTypes = {
   height: PropTypes.number,
   colors: PropTypes.func.isRequired,
   onClickHandler: PropTypes.func,
+  reverse: PropTypes.bool,
 };
 
 SingleBulletGraph.defaultProps = {
   height: 100,
   onClickHandler: () => {},
+  reverse: false,
 };
 
 export default SingleBulletGraph;
