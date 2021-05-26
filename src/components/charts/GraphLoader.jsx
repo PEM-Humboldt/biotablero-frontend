@@ -30,6 +30,7 @@ const GraphLoader = (props) => {
     markers,
     message,
     selectedIndexValue,
+    reverse,
   } = props;
 
   let errorMessage = null;
@@ -111,6 +112,7 @@ const GraphLoader = (props) => {
           height={62}
           colors={colors}
           onClickHandler={onClickGraphHandler}
+          reverse={reverse}
         />
       );
     case 'Dots':
