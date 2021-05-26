@@ -1,4 +1,4 @@
-import DownloadIcon from '@material-ui/icons/Save';
+import DownloadIcon from '@material-ui/icons/GetApp';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
@@ -13,6 +13,7 @@ import {
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import DownloadCSV from 'components/DownloadCSV';
 
 class CompensationFactor extends React.Component {
   mounted = false;
@@ -150,6 +151,10 @@ class CompensationFactor extends React.Component {
                 Biomas
               </h3>
             </InfoTooltip>
+            <DownloadCSV
+              data={biomes}
+              filename="biotablero_FactorDeCompensacion_Biomas.csv"
+            />
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={biomes}

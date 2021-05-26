@@ -9,6 +9,7 @@ import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
 import { LegendColor } from 'components/CssLegends';
+import DownloadCSV from 'components/DownloadCSV';
 
 const getLabel = {
   unprot: 'No protegida',
@@ -115,6 +116,10 @@ class CurrentPAConnectivity extends React.Component {
           <h6>
             Conectividad áreas protegidas
           </h6>
+          <DownloadCSV
+            data={currentPAConnectivity}
+            filename="Conectividad_AP_Actual.csv"
+          />
           <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
