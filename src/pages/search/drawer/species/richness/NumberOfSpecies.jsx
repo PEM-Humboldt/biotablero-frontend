@@ -133,8 +133,8 @@ class NumberOfSpecies extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Integridad"
-            description="Integridad"
+            name="Número de especies"
+            description="Número de especies"
             className="graphinfo2"
             collapseButton={false}
           />
