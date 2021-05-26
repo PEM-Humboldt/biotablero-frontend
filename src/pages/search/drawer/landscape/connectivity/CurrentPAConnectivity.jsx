@@ -118,7 +118,7 @@ class CurrentPAConnectivity extends React.Component {
           </h6>
           <DownloadCSV
             data={currentPAConnectivity}
-            filename="biotablero_currentPAConnectivity_data.csv"
+            filename="Conectividad_AP_Actual.csv"
           />
           <div>
             <GraphLoader
