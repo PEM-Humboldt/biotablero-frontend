@@ -9,6 +9,7 @@ import { IconTooltip } from 'components/Tooltips';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import DownloadCSV from 'components/DownloadCSV';
 
 const changeValues = [
   {
@@ -159,8 +160,31 @@ class TimelineFootprint extends React.Component {
     }));
   };
 
+  /**
+   * Transform data to fit in the csv download structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} data transformed
+   */
+   processDataCsv = (data) => {
+    if (!data) return [];
+    const transformedData = [];
+    data.forEach((obj) => {
+      obj.data.forEach((values) => {
+        transformedData.push({
+          key: obj.key,
+          x: values.x,
+          y: values.y,
+        });
+      });
+    });
+    return transformedData;
+  };
+
   render() {
     const {
+      areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -190,24 +214,28 @@ class TimelineFootprint extends React.Component {
         <h6>
           Huella humana comparada con EE
         </h6>
+        {(hfTimeline && hfTimeline.length > 0) && (
+          <DownloadCSV
+            data={this.processDataCsv(hfTimeline)}
+            filename={`bt_hf_timeline_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <p>
           Haz clic en un ecosistema para ver su comportamiento
         </p>
         <div>
-          <h2>
-            <GraphLoader
-              graphType="MultiLinesGraph"
-              colors={matchColor('hfTimeline')}
-              data={hfTimeline}
-              markers={changeValues}
-              labelX="Año"
-              labelY="Indice promedio Huella Humana"
-              onClickGraphHandler={(selection) => {
-                this.setSelectedEcosystem(selection);
-                handlerClickOnGraph({ chartType: selection });
-              }}
-            />
-          </h2>
+          <GraphLoader
+            graphType="MultiLinesGraph"
+            colors={matchColor('hfTimeline')}
+            data={hfTimeline}
+            markers={changeValues}
+            labelX="Año"
+            labelY="Indice promedio Huella Humana"
+            onClickGraphHandler={(selection) => {
+              this.setSelectedEcosystem(selection);
+              handlerClickOnGraph({ chartType: selection });
+            }}
+          />
           {selectedEcosystem && (
             <div>
               <h6>
