@@ -89,10 +89,12 @@ class PersistenceFootprint extends React.Component {
         <h6>
           Estable natural, Dinámica, Estable alta
         </h6>
-        <DownloadCSV
-          data={hfPersistence}
-          filename={`bt_huella_humana_persistencia_${areaId}_${geofenceId}.csv`}
-        />
+        {(hfPersistence && hfPersistence.length > 0) && (
+          <DownloadCSV
+            data={hfPersistence}
+            filename={`bt_huella_humana_persistencia_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"

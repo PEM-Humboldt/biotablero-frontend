@@ -109,10 +109,12 @@ class CurrentFootprint extends React.Component {
         <h6>
           Natural, Baja, Media y Alta
         </h6>
-        <DownloadCSV
-          data={hfCurrent}
-          filename={`bt_huella_humana_actual_${areaId}_${geofenceId}.csv`}
-        />
+        {(hfCurrent && hfCurrent.length > 0) && (
+          <DownloadCSV
+            data={hfCurrent}
+            filename={`bt_huella_humana_actual_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"

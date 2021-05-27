@@ -214,7 +214,7 @@ class TimelineFootprint extends React.Component {
         <h6>
           Huella humana comparada con EE
         </h6>
-        { (hfTimeline && hfTimeline.length > 0) && (
+        {(hfTimeline && hfTimeline.length > 0) && (
           <DownloadCSV
             data={this.processDataCsv(hfTimeline)}
             filename={`bt_huella_humana_historico_${areaId}_${geofenceId}.csv`}
