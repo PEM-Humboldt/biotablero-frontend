@@ -1,13 +1,15 @@
 import React from 'react';
+import InfoIcon from '@material-ui/icons/Info';
+
+import GraphLoader from 'components/charts/GraphLoader';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import InfoIcon from '@material-ui/icons/Info';
 import { CurrentSEPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
-import GraphLoader from 'components/charts/GraphLoader';
-import matchColor from 'utils/matchColor';
 import SearchContext from 'pages/search/SearchContext';
-import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
+import matchColor from 'utils/matchColor';
+import RestAPI from 'utils/restAPI';
 
 const getLabel = {
   unprot: 'No protegida',
@@ -115,6 +117,8 @@ class CurrentSEPAConnectivity extends React.Component {
 
   render() {
     const {
+      areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -151,6 +155,12 @@ class CurrentSEPAConnectivity extends React.Component {
           <h6 className={selectedEcosystem === 'paramo' ? 'h6Selected' : null}>
             Páramo
           </h6>
+          {(currentPAConnParamo && currentPAConnParamo.length > 0) && (
+          <DownloadCSV
+            data={currentPAConnParamo}
+            filename={`bt_connect_paramo_${areaId}_${geofenceId}.csv`}
+          />
+        )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -182,6 +192,12 @@ class CurrentSEPAConnectivity extends React.Component {
           <h6 className={selectedEcosystem === 'dryForest' ? 'h6Selected' : null}>
             Bosque Seco Tropical
           </h6>
+          {(currentPAConnDryForest && currentPAConnDryForest.length > 0) && (
+          <DownloadCSV
+            data={currentPAConnDryForest}
+            filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
+          />
+        )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -213,6 +229,12 @@ class CurrentSEPAConnectivity extends React.Component {
           <h6 className={selectedEcosystem === 'wetland' ? 'h6Selected' : null}>
             Humedal
           </h6>
+          {(currentPAConnWetland && currentPAConnWetland.length > 0) && (
+          <DownloadCSV
+            data={currentPAConnWetland}
+            filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
+          />
+        )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
