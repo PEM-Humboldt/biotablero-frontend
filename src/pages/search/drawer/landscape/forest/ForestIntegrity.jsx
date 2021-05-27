@@ -1,14 +1,15 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
-import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
-import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
+import { LegendColor, BorderLegendColor } from 'components/CssLegends';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
+import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import { LegendColor, BorderLegendColor } from 'components/CssLegends';
 
 class ForestIntegrity extends React.Component {
   mounted = false;
@@ -121,7 +122,11 @@ class ForestIntegrity extends React.Component {
       selectedCategory,
       loading,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -145,6 +150,12 @@ class ForestIntegrity extends React.Component {
         <BorderLegendColor color={matchColor('border')()}>
           Límite de áreas protegidas
         </BorderLegendColor>
+        {!loading && (
+          <DownloadCSV
+            data={Object.values(SciHfCats)}
+            filename={`bt_forest_integrity_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <div>
           <GraphLoader
             loading={loading}
@@ -174,6 +185,10 @@ class ForestIntegrity extends React.Component {
             <h6>
               Distribución en áreas protegidas
             </h6>
+            <DownloadCSV
+              data={Object.values(ProtectedAreas[selectedCategory])}
+              filename={`bt_fi_areas_${selectedCategory}_${areaId}_${geofenceId}.csv`}
+            />
             <div style={{ padding: '0 12px' }}>
               <GraphLoader
                 data={ProtectedAreas[selectedCategory]}
