@@ -122,7 +122,7 @@ class CompensationFactor extends React.Component {
               <DownloadCSV
                 className="icondown"
                 data={fc}
-                filename={`bt_fc_factor_compensacion_${areaId}_${geofenceId}.csv`}
+                filename={`bt_cf_compensation_factor_${areaId}_${geofenceId}.csv`}
               />
             </h2>
             <div className="graphinfobox">
@@ -160,7 +160,7 @@ class CompensationFactor extends React.Component {
             </InfoTooltip>
             <DownloadCSV
               data={biomes}
-              filename={`bt_fc_biomas_${areaId}_${geofenceId}.csv`}
+              filename={`bt_cf_biomes_${areaId}_${geofenceId}.csv`}
             />
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -182,7 +182,7 @@ class CompensationFactor extends React.Component {
             </InfoTooltip>
             <DownloadCSV
               data={bioticUnits}
-              filename={`bt_fc_regiones_bioticas_${areaId}_${geofenceId}.csv`}
+              filename={`bt_cf_biotic_units_${areaId}_${geofenceId}.csv`}
             />
             <GraphLoader
               graphType="LargeBarStackGraph"
