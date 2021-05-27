@@ -241,7 +241,7 @@ const SingleBulletGraph = (props) => {
         titleOffsetX={0}
         titleOffsetY={-30}
         rangeComponent={NoTooltipRangeWrap(data.ranges, colors)}
-        measureComponent={LineMeasureWrap(data.measures, colors)} // TODO: add reverse prop
+        measureComponent={LineMeasureWrap(data.measures, colors, reverse)}
         markerComponent={CircleMarkerWrap(data.markers, colors)}
         isInteractive
         reverse={reverse}
