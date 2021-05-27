@@ -8,6 +8,7 @@ import { IconTooltip } from 'components/Tooltips';
 import { TimelinePAConnText } from 'pages/search/drawer/landscape/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
+import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 
 class TimelinePAConnectivity extends React.Component {
@@ -80,21 +81,6 @@ class TimelinePAConnectivity extends React.Component {
     }));
   };
 
-  processDataCsv = (data) => {
-    if (!data) return [];
-    const transformedData = [];
-    data.forEach((obj) => {
-      obj.data.forEach((values) => {
-        transformedData.push({
-          key: obj.key,
-          x: values.x,
-          y: values.y,
-        });
-      });
-    });
-    return transformedData;
-  };
-
   render() {
     const {
       showInfoGraph,
@@ -129,7 +115,7 @@ class TimelinePAConnectivity extends React.Component {
           </h6>
           {(timelinePAConnectivity && timelinePAConnectivity.length > 0) && (
           <DownloadCSV
-            data={this.processDataCsv(timelinePAConnectivity)}
+            data={processDataCsv(timelinePAConnectivity)}
             filename={`bt_conn_timeline_${areaId}_${geofenceId}.csv`}
           />
           )}
