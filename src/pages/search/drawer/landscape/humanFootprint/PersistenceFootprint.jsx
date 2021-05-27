@@ -92,7 +92,7 @@ class PersistenceFootprint extends React.Component {
         {(hfPersistence && hfPersistence.length > 0) && (
           <DownloadCSV
             data={hfPersistence}
-            filename={`bt_huella_humana_persistencia_${areaId}_${geofenceId}.csv`}
+            filename={`bt_hh_persistencia_${areaId}_${geofenceId}.csv`}
           />
         )}
         <div>

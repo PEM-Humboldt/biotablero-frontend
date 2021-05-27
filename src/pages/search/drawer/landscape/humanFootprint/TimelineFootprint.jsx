@@ -217,7 +217,7 @@ class TimelineFootprint extends React.Component {
         {(hfTimeline && hfTimeline.length > 0) && (
           <DownloadCSV
             data={this.processDataCsv(hfTimeline)}
-            filename={`bt_huella_humana_historico_${areaId}_${geofenceId}.csv`}
+            filename={`bt_hh_historico_${areaId}_${geofenceId}.csv`}
           />
         )}
         <p>

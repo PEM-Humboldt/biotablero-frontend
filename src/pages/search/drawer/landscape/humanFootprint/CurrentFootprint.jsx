@@ -112,7 +112,7 @@ class CurrentFootprint extends React.Component {
         {(hfCurrent && hfCurrent.length > 0) && (
           <DownloadCSV
             data={hfCurrent}
-            filename={`bt_huella_humana_actual_${areaId}_${geofenceId}.csv`}
+            filename={`bt_hh_actual_${areaId}_${geofenceId}.csv`}
           />
         )}
         <div>
