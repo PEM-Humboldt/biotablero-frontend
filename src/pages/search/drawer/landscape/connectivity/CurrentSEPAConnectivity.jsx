@@ -158,7 +158,7 @@ class CurrentSEPAConnectivity extends React.Component {
           {(currentPAConnParamo && currentPAConnParamo.length > 0) && (
           <DownloadCSV
             data={currentPAConnParamo}
-            filename={`bt_connect_paramo_${areaId}_${geofenceId}.csv`}
+            filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
           />
         )}
           <div className="svgPointer">
