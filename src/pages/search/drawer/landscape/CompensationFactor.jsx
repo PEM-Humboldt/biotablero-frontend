@@ -1,8 +1,8 @@
-import DownloadIcon from '@material-ui/icons/GetApp';
 import InfoIcon from '@material-ui/icons/Info';
 import React from 'react';
 
 import GraphLoader from 'components/charts/GraphLoader';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { InfoTooltip, IconTooltip } from 'components/Tooltips';
 import {
@@ -13,7 +13,6 @@ import {
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import DownloadCSV from 'components/DownloadCSV';
 
 class CompensationFactor extends React.Component {
   mounted = false;
@@ -97,6 +96,10 @@ class CompensationFactor extends React.Component {
       fc,
       bioticUnits,
     } = this.state;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
     if (!biomes || !bioticUnits || !fc) {
       return (
@@ -116,7 +119,11 @@ class CompensationFactor extends React.Component {
           <div className="graphcardAcc">
             <h2>
               Factor de Compensación
-              <DownloadIcon className="icondown" />
+              <DownloadCSV
+                className="icondown"
+                data={fc}
+                filename={`bt_cf_compensation_factor_${areaId}_${geofenceId}.csv`}
+              />
             </h2>
             <div className="graphinfobox">
               <IconTooltip title="Acerca de esta sección">
@@ -153,7 +160,7 @@ class CompensationFactor extends React.Component {
             </InfoTooltip>
             <DownloadCSV
               data={biomes}
-              filename="biotablero_FactorDeCompensacion_Biomas.csv"
+              filename={`bt_cf_biomes_${areaId}_${geofenceId}.csv`}
             />
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -173,6 +180,10 @@ class CompensationFactor extends React.Component {
                 Regiones Bióticas
               </h3>
             </InfoTooltip>
+            <DownloadCSV
+              data={bioticUnits}
+              filename={`bt_cf_biotic_units_${areaId}_${geofenceId}.csv`}
+            />
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={bioticUnits}
