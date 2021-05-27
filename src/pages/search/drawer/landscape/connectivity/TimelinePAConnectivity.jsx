@@ -1,13 +1,14 @@
 import React from 'react';
+import InfoIcon from '@material-ui/icons/Info';
 
+import GraphLoader from 'components/charts/GraphLoader';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import InfoIcon from '@material-ui/icons/Info';
 import { TimelinePAConnText } from 'pages/search/drawer/landscape/InfoTexts';
-import GraphLoader from 'components/charts/GraphLoader';
+import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import SearchContext from 'pages/search/SearchContext';
 
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
@@ -79,11 +80,30 @@ class TimelinePAConnectivity extends React.Component {
     }));
   };
 
+  processDataCsv = (data) => {
+    if (!data) return [];
+    const transformedData = [];
+    data.forEach((obj) => {
+      obj.data.forEach((values) => {
+        transformedData.push({
+          key: obj.key,
+          x: values.x,
+          y: values.y,
+        });
+      });
+    });
+    return transformedData;
+  };
+
   render() {
     const {
       showInfoGraph,
       timelinePAConnectivity,
     } = this.state;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -107,6 +127,12 @@ class TimelinePAConnectivity extends React.Component {
           <h6>
             Conectividad áreas protegidas en el tiempo
           </h6>
+          {(timelinePAConnectivity && timelinePAConnectivity.length > 0) && (
+          <DownloadCSV
+            data={this.processDataCsv(timelinePAConnectivity)}
+            filename={`bt_conn_timeline_${areaId}_${geofenceId}.csv`}
+          />
+          )}
           <div>
             <GraphLoader
               graphType="MultiLinesGraph"
