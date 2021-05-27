@@ -1,15 +1,16 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
-import SearchContext from 'pages/search/SearchContext';
-import { timelineHFText } from 'pages/search/drawer/landscape/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
+import SearchContext from 'pages/search/SearchContext';
+import { timelineHFText } from 'pages/search/drawer/landscape/InfoTexts';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
+import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
-import DownloadCSV from 'components/DownloadCSV';
 
 const changeValues = [
   {
@@ -160,27 +161,6 @@ class TimelineFootprint extends React.Component {
     }));
   };
 
-  /**
-   * Transform data to fit in the csv download structure
-   * @param {array} data data to be transformed
-   *
-   * @returns {array} data transformed
-   */
-   processDataCsv = (data) => {
-    if (!data) return [];
-    const transformedData = [];
-    data.forEach((obj) => {
-      obj.data.forEach((values) => {
-        transformedData.push({
-          key: obj.key,
-          x: values.x,
-          y: values.y,
-        });
-      });
-    });
-    return transformedData;
-  };
-
   render() {
     const {
       areaId,
@@ -216,7 +196,7 @@ class TimelineFootprint extends React.Component {
         </h6>
         {(hfTimeline && hfTimeline.length > 0) && (
           <DownloadCSV
-            data={this.processDataCsv(hfTimeline)}
+            data={processDataCsv(hfTimeline)}
             filename={`bt_hf_timeline_${areaId}_${geofenceId}.csv`}
           />
         )}

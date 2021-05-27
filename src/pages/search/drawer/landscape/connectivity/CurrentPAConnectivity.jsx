@@ -1,15 +1,16 @@
 import React from 'react';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
 import InfoIcon from '@material-ui/icons/Info';
-import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+
 import GraphLoader from 'components/charts/GraphLoader';
-import matchColor from 'utils/matchColor';
-import SearchContext from 'pages/search/SearchContext';
-import RestAPI from 'utils/restAPI';
-import formatNumber from 'utils/format';
 import { LegendColor } from 'components/CssLegends';
 import DownloadCSV from 'components/DownloadCSV';
+import ShortInfo from 'components/ShortInfo';
+import { IconTooltip } from 'components/Tooltips';
+import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import SearchContext from 'pages/search/SearchContext';
+import matchColor from 'utils/matchColor';
+import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
 
 const getLabel = {
   unprot: 'No protegida',
@@ -86,7 +87,11 @@ class CurrentPAConnectivity extends React.Component {
   };
 
   render() {
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     const {
       currentPAConnectivity,
       dpc,
@@ -118,7 +123,7 @@ class CurrentPAConnectivity extends React.Component {
           </h6>
           <DownloadCSV
             data={currentPAConnectivity}
-            filename="Conectividad_AP_Actual.csv"
+            filename={`bt_conn_current_${areaId}_${geofenceId}.csv`}
           />
           <div>
             <GraphLoader
@@ -147,6 +152,10 @@ class CurrentPAConnectivity extends React.Component {
           <h6>
             Aporte de las áreas protegidas a la conectividad
           </h6>
+          <DownloadCSV
+            data={dpc}
+            filename={`bt_conn_dpc_${areaId}_${geofenceId}.csv`}
+          />
           <h3 className="innerInfoH3">
             Haz clic en un área protegida para visualizarla
           </h3>
