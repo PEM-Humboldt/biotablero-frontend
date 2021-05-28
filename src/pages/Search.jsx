@@ -203,7 +203,7 @@ class Search extends Component {
       if (!key) {
         return {
           color: matchColor(ftype)(color),
-          weight: 2,
+          weight: 1,
           fillOpacity: 0,
         };
       }
