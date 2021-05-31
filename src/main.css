@@ -1182,7 +1182,7 @@ overflow: auto;
 	z-index:2;
 }
 
-.contentView * {
+.contentView svg {
 	transition: all 1s ease;
 }
 
