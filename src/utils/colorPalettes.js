@@ -119,6 +119,6 @@ export default {
     '#92ab85',
     '#768a6b',
   ],
-  border: ['#dce76b'],
+  border: ['#fc6467'],
   default: ['#b2bdc2'],
 };

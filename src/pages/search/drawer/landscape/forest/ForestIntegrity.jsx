@@ -146,16 +146,16 @@ class ForestIntegrity extends React.Component {
           />
           )
         )}
-        <h3>Haz clic en la gráfica para visualizar las áreas protegidas</h3>
-        <BorderLegendColor color={matchColor('border')()}>
-          Límite de áreas protegidas
-        </BorderLegendColor>
         {!loading && (
           <DownloadCSV
             data={Object.values(SciHfCats)}
             filename={`bt_forest_integrity_${areaId}_${geofenceId}.csv`}
           />
         )}
+        <h3 className="inlineb">Haz clic en la gráfica para visualizar las áreas protegidas</h3>
+        <BorderLegendColor color={matchColor('border')()}>
+          Límite de áreas protegidas
+        </BorderLegendColor>
         <div>
           <GraphLoader
             loading={loading}
