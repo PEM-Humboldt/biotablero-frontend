@@ -120,6 +120,9 @@ const LargeBarStackGraph = (props) => {
           tooltip: {
             container: {
               background: '#333',
+              whiteSpace: 'nowrap',
+              position: 'absolute',
+              fontSize: 12,
             },
           },
           axis: { legend: { text: { fontSize: '14' } } },

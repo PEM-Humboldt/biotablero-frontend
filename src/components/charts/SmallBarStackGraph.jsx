@@ -103,6 +103,9 @@ const SmallBarStackGraph = (props) => {
           tooltip: {
             container: {
               padding: 0,
+              whiteSpace: 'nowrap',
+              position: 'absolute',
+              fontSize: 12,
             },
           },
         }}
