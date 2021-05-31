@@ -1328,8 +1328,7 @@ overflow: auto;
 .m0, .m0b {
     margin: 0 !important;
     color: #2a363b !important;
-    font-size: 12px;
-    line-height: 1.3;
+	font-size: 14px;
 }
 
 .m0b > div:nth-child(1) {
@@ -1721,6 +1720,8 @@ div[class*="eaRHYv"] {
 	color: #424242;
 	padding: 3px 8px 10px 20px;
 	text-align: left;
+	font-size: 12px;
+    line-height: 1.3;
 }
 
 .graphinfo2-true {
