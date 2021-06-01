@@ -159,8 +159,8 @@ class SpeciesRecordsGaps extends React.Component {
             colors={matchColor('richnessGaps')}
             onClickGraphHandler={() => { this.setState({ selected: 'gaps' }); }}
             reverse
-            labelXRight="Pocos datos"
-            labelXLeft="Muchos datos"
+            labelXLeft="Pocos datos"
+            labelXRight="Muchos datos"
           />
         </div>
         <div className="richnessLegend">
@@ -195,8 +195,8 @@ class SpeciesRecordsGaps extends React.Component {
             graphType="singleBullet"
             colors={matchColor('richnessGaps')}
             onClickGraphHandler={() => { this.setState({ selected: 'concentration' }); }}
-            labelXRight="Poco representado"
-            labelXLeft="Bien representado"
+            labelXLeft="Poco representado"
+            labelXRight="Bien representado"
           />
         </div>
         <div className="richnessLegend">

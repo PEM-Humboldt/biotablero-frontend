@@ -251,8 +251,8 @@ const SingleBulletGraph = (props) => {
       />
       {(labelXRight || labelXLeft) && (
         <div className="extraLegend">
-          <p>{labelXRight}</p>
           <p>{labelXLeft}</p>
+          <p>{labelXRight}</p>
         </div>
       )}
     </div>
