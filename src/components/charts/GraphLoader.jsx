@@ -37,7 +37,7 @@ const GraphLoader = (props) => {
   // TODO: don't relay on data being null for a loading state
   if (data === null || message === 'loading') {
     errorMessage = 'Cargando información...';
-  } else if (!data || data.length <= 0 || message === 'no-data') {
+  } else if (!data || data.length <= 0 || Object.keys(data).length === 0 || message === 'no-data') {
     errorMessage = 'Información no disponible';
   }
   if (errorMessage) {
