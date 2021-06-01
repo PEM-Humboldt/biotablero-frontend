@@ -100,8 +100,8 @@ const match = {
     palette: 'timelinePAConn',
     sort: ['prot', 'protSel', 'prot_conn', 'prot_connSel'],
   },
-  richness: {
-    palette: 'richness',
+  richnessNos: {
+    palette: 'richnessNos',
     // first values, then limits, then backgrounds
     sort: [
       'inferred',
@@ -116,8 +116,8 @@ const match = {
       'region',
     ],
   },
-  gaps: {
-    palette: 'gaps',
+  richnessGaps: {
+    palette: 'richnessGaps',
     // first values, then limits, then backgrounds
     sort: [
       'value',
@@ -211,8 +211,8 @@ const matchColor = (type, resetCache = false) => {
     case 'paramo':
     case 'dryForest':
     case 'wetland':
-    case 'richness':
-    case 'gaps':
+    case 'richnessNos':
+    case 'richnessGaps':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;

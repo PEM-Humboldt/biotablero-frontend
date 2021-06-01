@@ -156,7 +156,7 @@ class SpeciesRecordsGaps extends React.Component {
             message={message}
             data={gaps}
             graphType="singleBullet"
-            colors={matchColor('gaps')}
+            colors={matchColor('richnessGaps')}
             onClickGraphHandler={() => { this.setState({ selected: 'gaps' }); }}
             reverse
           />
@@ -165,7 +165,7 @@ class SpeciesRecordsGaps extends React.Component {
           {gaps.measures && Object.keys(gaps.measures).map((key) => (
             <LineLegend
               orientation="column"
-              color={matchColor('gaps')(key)}
+              color={matchColor('richnessGaps')(key)}
               key={key}
             >
               {getLabelGaps(key, areaId)}
@@ -174,7 +174,7 @@ class SpeciesRecordsGaps extends React.Component {
           ))}
           <LineLegend
             orientation="column"
-            color={matchColor('gaps')('value')}
+            color={matchColor('richnessGaps')('value')}
             key="value"
           >
             {getLabelGaps('value', areaId)}
@@ -189,7 +189,7 @@ class SpeciesRecordsGaps extends React.Component {
             message={message}
             data={concentration}
             graphType="singleBullet"
-            colors={matchColor('gaps')}
+            colors={matchColor('richnessGaps')}
             onClickGraphHandler={() => { this.setState({ selected: 'concentration' }); }}
           />
         </div>
@@ -197,7 +197,7 @@ class SpeciesRecordsGaps extends React.Component {
           {concentration.measures && Object.keys(concentration.measures).map((key) => (
             <LineLegend
               orientation="column"
-              color={matchColor('gaps')(key)}
+              color={matchColor('richnessGaps')(key)}
               key={key}
             >
               {getLabelConcentration(key, areaId)}
@@ -206,7 +206,7 @@ class SpeciesRecordsGaps extends React.Component {
           ))}
           <LineLegend
             orientation="column"
-            color={matchColor('gaps')('value')}
+            color={matchColor('richnessGaps')('value')}
             key="value"
           >
             {getLabelConcentration('value', areaId)}
