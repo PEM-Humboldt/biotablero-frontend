@@ -220,6 +220,8 @@ const SingleBulletGraph = (props) => {
     colors,
     onClickHandler,
     reverse,
+    labelXRight,
+    labelXLeft,
   } = props;
   return (
     <div style={{ height, paddingBottom: '20px' }}>
@@ -247,6 +249,12 @@ const SingleBulletGraph = (props) => {
         reverse={reverse}
         onRangeClick={onClickHandler}
       />
+      {(labelXRight || labelXLeft) && (
+        <div className="extraLegend">
+          <p>{labelXRight}</p>
+          <p>{labelXLeft}</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -274,12 +282,16 @@ SingleBulletGraph.propTypes = {
   colors: PropTypes.func.isRequired,
   onClickHandler: PropTypes.func,
   reverse: PropTypes.bool,
+  labelXRight: PropTypes.string,
+  labelXLeft: PropTypes.string,
 };
 
 SingleBulletGraph.defaultProps = {
   height: 100,
   onClickHandler: () => {},
   reverse: false,
+  labelXRight: null,
+  labelXLeft: null,
 };
 
 export default SingleBulletGraph;

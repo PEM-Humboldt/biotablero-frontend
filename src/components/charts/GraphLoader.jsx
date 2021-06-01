@@ -31,6 +31,8 @@ const GraphLoader = (props) => {
     message,
     selectedIndexValue,
     reverse,
+    labelXRight,
+    labelXLeft,
   } = props;
 
   let errorMessage = null;
@@ -113,6 +115,8 @@ const GraphLoader = (props) => {
           colors={colors}
           onClickHandler={onClickGraphHandler}
           reverse={reverse}
+          labelXRight={labelXRight}
+          labelXLeft={labelXLeft}
         />
       );
     case 'Dots':
@@ -208,6 +212,9 @@ GraphLoader.propTypes = {
   })),
   loading: PropTypes.string,
   selectedIndexValue: PropTypes.string,
+  reverse: PropTypes.bool,
+  labelXRight: PropTypes.string,
+  labelXLeft: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
@@ -224,6 +231,9 @@ GraphLoader.defaultProps = {
   markers: [],
   message: null,
   selectedIndexValue: '',
+  reverse: false,
+  labelXRight: null,
+  labelXLeft: null,
 };
 
 export default GraphLoader;
