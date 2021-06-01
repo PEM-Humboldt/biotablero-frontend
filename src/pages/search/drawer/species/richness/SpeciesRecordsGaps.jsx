@@ -7,6 +7,7 @@ import { LineLegend } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
+import RestAPI from 'utils/restAPI';
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -57,45 +58,57 @@ class SpeciesRecordsGaps extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
 
-    const gapsValues = {
-      id: 'gaps',
-      avg: 0.34,
-      min: 0.4,
-      max: 0.8,
-      min_threshold: 0.15,
-      max_threshold: 0.95,
-    };
+    RestAPI.requestGaps(areaId, geofenceId)
+      .then((res) => {
+        if (this.mounted) {
+          this.setState({
+            gaps: this.transformData(res),
+            message: null,
+          });
+        }
+      })
+      .catch(() => {});
 
-    const concentrationValues = {
-      id: 'concentration',
-      avg: 0.3,
-      min: 0.2,
-      max: 0.6,
-      min_threshold: 0.1,
-      max_threshold: 1,
-    };
-
-    [gapsValues, concentrationValues].forEach((item) => {
-      const { id, avg, ...limits } = item;
-      const object = {
-        id,
-        ranges: {
-          area: Math.max(limits.max, limits.max_threshold),
-        },
-        markers: {
-          value: avg,
-        },
-        measures: limits,
-        title: '',
-      };
-      this.setState({ [id]: object, message: null });
-    });
+    RestAPI.requestConcentration(areaId, geofenceId)
+      .then((res) => {
+        if (this.mounted) {
+          this.setState({
+            concentration: this.transformData(res),
+            message: null,
+          });
+        }
+      })
+      .catch(() => {});
   }
 
   componentWillUnmount() {
     this.mounted = false;
   }
+
+  /**
+   * Transform data structure to be passed to graph component as a prop
+   *
+   * @param {Object} rawData raw data from RestAPI
+   */
+   transformData = (rawData) => {
+    const { id, avg, ...limits } = rawData;
+    return {
+      id,
+      ranges: {
+        area: Math.max(limits.max, limits.max_threshold),
+      },
+      markers: {
+        value: avg,
+      },
+      measures: limits,
+      title: '',
+    };
+  };
 
   /**
    * Show or hide the detailed information on each graph
