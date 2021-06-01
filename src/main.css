@@ -1341,6 +1341,16 @@ overflow: auto;
 	padding: 6px 8px !important;
 }
 
+.extraLegend {
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	font-weight: 600;
+	padding: 0 30px 0 15px;
+	margin-top: -8px;
+	color: #424242;
+}
+
 .accordionSelected {
 	background-color: #fff !important;
 }
@@ -1804,6 +1814,12 @@ div[class*="eaRHYv"] {
 
 .nos-title {
 	margin: 0 30px;
+	line-height: 1;
+}
+
+.nos-title b {
+	font-size: 11px;
+	font-weight: 400;
 }
 
 .nos-title.legend {
