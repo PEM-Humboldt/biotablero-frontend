@@ -119,7 +119,7 @@ export default {
     '#b3b638',
     '#959912',
   ],
-  richness: [
+  richnessNos: [
     '#fc6467',
     '#9ba211',
     '#f16b7e',
@@ -130,6 +130,14 @@ export default {
     '#3d4726',
     '#fcc76f',
     '#fba76d',
+  ],
+  richnessGaps: [
+    '#1348a6',
+    '#1997f2',
+    '#0f3669',
+    '#abc074',
+    '#717e4f',
+    '#fcbd64',
   ],
   border: ['#ffffff'],
   default: ['#b2bdc2'],

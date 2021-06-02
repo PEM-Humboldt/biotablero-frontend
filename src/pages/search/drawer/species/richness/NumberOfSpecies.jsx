@@ -133,8 +133,8 @@ class NumberOfSpecies extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Integridad"
-            description="Integridad"
+            name="Número de especies"
+            description="Número de especies"
             className="graphinfo2"
             collapseButton={false}
           />
@@ -144,14 +144,14 @@ class NumberOfSpecies extends React.Component {
         <div className="nos-title legend">
           <TextLegend
             orientation="row"
-            color={matchColor('richness')('observed')}
+            color={matchColor('richnessNos')('observed')}
             image={mappoint}
           >
             {getLabel('observed', areaId)}
           </TextLegend>
           <TextLegend
             orientation="row"
-            color={matchColor('richness')('inferred')}
+            color={matchColor('richnessNos')('inferred')}
             image={biomodelos}
           >
             {getLabel('inferred', areaId)}
@@ -171,7 +171,7 @@ class NumberOfSpecies extends React.Component {
                 message={message}
                 data={bar}
                 graphType="singleBullet"
-                colors={matchColor('richness')}
+                colors={matchColor('richnessNos')}
                 onClickGraphHandler={() => { this.setState({ selected: bar.id }); }}
               />
             </div>
@@ -181,7 +181,7 @@ class NumberOfSpecies extends React.Component {
           {data[0] && Object.keys(data[0].measures).map((key) => (
             <LineLegend
               orientation="column"
-              color={matchColor('richness')(key)}
+              color={matchColor('richnessNos')(key)}
               key={key}
             >
               {getLabel(key, areaId)}

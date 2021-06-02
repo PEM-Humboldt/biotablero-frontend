@@ -219,6 +219,9 @@ const SingleBulletGraph = (props) => {
     data,
     colors,
     onClickHandler,
+    reverse,
+    labelXRight,
+    labelXLeft,
   } = props;
   return (
     <div style={{ height, paddingBottom: '20px' }}>
@@ -240,11 +243,18 @@ const SingleBulletGraph = (props) => {
         titleOffsetX={0}
         titleOffsetY={-30}
         rangeComponent={NoTooltipRangeWrap(data.ranges, colors)}
-        measureComponent={LineMeasureWrap(data.measures, colors)} // TODO: add reverse prop
+        measureComponent={LineMeasureWrap(data.measures, colors, reverse)}
         markerComponent={CircleMarkerWrap(data.markers, colors)}
         isInteractive
+        reverse={reverse}
         onRangeClick={onClickHandler}
       />
+      {(labelXRight || labelXLeft) && (
+        <div className="extraLegend">
+          <p>{labelXLeft}</p>
+          <p>{labelXRight}</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -271,11 +281,17 @@ SingleBulletGraph.propTypes = {
   height: PropTypes.number,
   colors: PropTypes.func.isRequired,
   onClickHandler: PropTypes.func,
+  reverse: PropTypes.bool,
+  labelXRight: PropTypes.string,
+  labelXLeft: PropTypes.string,
 };
 
 SingleBulletGraph.defaultProps = {
   height: 100,
   onClickHandler: () => {},
+  reverse: false,
+  labelXRight: null,
+  labelXLeft: null,
 };
 
 export default SingleBulletGraph;

@@ -30,13 +30,16 @@ const GraphLoader = (props) => {
     markers,
     message,
     selectedIndexValue,
+    reverse,
+    labelXRight,
+    labelXLeft,
   } = props;
 
   let errorMessage = null;
   // TODO: don't relay on data being null for a loading state
   if (data === null || message === 'loading') {
     errorMessage = 'Cargando información...';
-  } else if (!data || data.length <= 0 || message === 'no-data') {
+  } else if (!data || data.length <= 0 || Object.keys(data).length === 0 || message === 'no-data') {
     errorMessage = 'Información no disponible';
   }
   if (errorMessage) {
@@ -111,6 +114,9 @@ const GraphLoader = (props) => {
           height={62}
           colors={colors}
           onClickHandler={onClickGraphHandler}
+          reverse={reverse}
+          labelXRight={labelXRight}
+          labelXLeft={labelXLeft}
         />
       );
     case 'Dots':
@@ -206,6 +212,9 @@ GraphLoader.propTypes = {
   })),
   loading: PropTypes.string,
   selectedIndexValue: PropTypes.string,
+  reverse: PropTypes.bool,
+  labelXRight: PropTypes.string,
+  labelXLeft: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
@@ -222,6 +231,9 @@ GraphLoader.defaultProps = {
   markers: [],
   message: null,
   selectedIndexValue: '',
+  reverse: false,
+  labelXRight: null,
+  labelXLeft: null,
 };
 
 export default GraphLoader;
