@@ -40,7 +40,7 @@ class MultiSmallSingleBarGraph extends React.Component {
       return transformedData;
     };
 
-    /**
+  /**
    * Get keys to be passed to component as a prop
    *
    * @returns {array} ids of each bar category removing duplicates

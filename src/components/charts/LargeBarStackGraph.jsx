@@ -44,13 +44,13 @@ const LargeBarStackGraph = (props) => {
 
   const keys = data.map((item) => String(item.key));
 
-    /**
+  /**
    * Get tooltip for graph component
    *
    * @param {String} id id for each bar
    * @param {Object} allData transformed data with all information needed
    * @param {String} color color for each category inside a bar
-   * @returns {func} tooltip for component
+   * @returns {object} tooltip for component
    */
      const getToolTip = (id, allData, color) => {
       if (allData[`${id}Percentage`]) {
