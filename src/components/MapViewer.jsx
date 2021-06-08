@@ -96,7 +96,6 @@ class MapViewer extends React.Component {
   render() {
     const {
       geoServerUrl,
-      userLogged,
       loadingLayer,
       layerError,
     } = this.props;
@@ -169,15 +168,18 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        { userLogged ? ( // TODO: Implementing WMSTileLayer load from Compensator
+        {
           <WMSTileLayer
-            layers="Biotablero:Regiones_geb"
-            url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
+            srs="EPSG:4326"
+            layers="Biotablero:rich_All_int_raster"
+            format="image/png"
+            url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
             opacity={0.2}
+            transparent
             alt="Regiones"
+            styles="continuo"
           />
-        )
-          : '' }
+          }
       </Map>
     );
   }
@@ -185,7 +187,6 @@ class MapViewer extends React.Component {
 
 MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
-  userLogged: PropTypes.object,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
@@ -195,7 +196,6 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
-  userLogged: null,
   loadingLayer: false,
   layerError: false,
 };
