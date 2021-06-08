@@ -25,7 +25,7 @@ class MultiSmallBarStackGraph extends React.Component {
       selectedIndexValue,
     } = this.state;
 
-    /**
+  /**
    * Transform data structure to be passed to component as a prop
    *
    * @param {array} rawData raw data from RestAPI
@@ -48,7 +48,7 @@ class MultiSmallBarStackGraph extends React.Component {
       return transformedData;
     };
 
-    /**
+  /**
    * Get keys to be passed to component as a prop
    *
    * @returns {array} ids of each bar category

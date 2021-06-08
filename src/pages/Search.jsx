@@ -183,14 +183,27 @@ class Search extends Component {
    *
    * @param {Object} feature target object
    */
-  featureStyle = ({ type, color = null, fKey = 'key' }) => (feature) => {
+  featureStyle = (objParams) => (feature) => {
+    const {
+      type,
+      color = null,
+      fKey = 'key',
+      compoundKey = false,
+    } = objParams;
     if (feature.properties) {
-      const key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      let key = fKey;
+      if (compoundKey) {
+        const keys = fKey.split('-');
+        key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
+        key = key.slice(1);
+      } else {
+        key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+      }
       const ftype = /PAConn$/.test(type) ? 'dpc' : type;
       if (!key) {
         return {
           color: matchColor(ftype)(color),
-          weight: 2,
+          weight: 1,
           fillOpacity: 0,
         };
       }
@@ -273,7 +286,7 @@ class Search extends Component {
       case 'timelinePAConn':
       case 'currentSEPAConn':
         feature.bindTooltip(
-          `<b>${feature.feature.properties.key}:</b>
+          `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
@@ -412,7 +425,7 @@ class Search extends Component {
 
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === selectedKey) {
+          if (layer.feature.properties.key || layer.feature.properties.id === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,
@@ -542,54 +555,80 @@ class Search extends Component {
         };
         break;
       case 'forestIntegrity':
-        request = () => RestAPI.requestSCIHFGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        layerStyle = this.featureStyle({ type: layerType, fKey: 'sci_cat' });
-        newActiveLayer = {
-          id: layerType,
-          name: 'Índice de condición estructural de bosques',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+
+          request = () => RestAPI.requestSCIHFGeometry(
+            selectedAreaTypeId, selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Índice de condición estructural de bosques',
+          };
+        });
         break;
       case 'currentPAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-          5,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: layerType,
-          name: 'Conectividad actual de áreas protegidas',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Conectividad actual de áreas protegidas',
+          };
+        });
         break;
       case 'timelinePAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: 'timelinePAConn',
-          name: 'Histórico de conectividad áreas protegidas',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Histórico de conectividad áreas protegidas',
+          };
+        });
         break;
       case 'currentSEPAConn':
-        this.switchLayer('geofence');
-        request = () => RestAPI.requestDPCLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
-        newActiveLayer = {
-          id: 'currentSEPAConn',
-          name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestDPCLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+          };
+        });
         break;
       case 'paramoPAConn':
         request = () => RestAPI.requestPAConnSELayer(

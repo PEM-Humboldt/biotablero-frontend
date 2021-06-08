@@ -29,9 +29,7 @@ class PieGraph extends React.Component {
       colors,
       data,
     } = this.props;
-    const {
-      selectedId,
-    } = this.state;
+    const { selectedId } = this.state;
     return (
       <div style={{ height }}>
         <ResponsivePie
@@ -42,17 +40,14 @@ class PieGraph extends React.Component {
             }
             return colors(id);
           }}
-          margin={{ top: 30, bottom: 40 }}
+          margin={{ top: 30, bottom: 30 }}
           innerRadius={0.5}
           padAngle={0.7}
           cornerRadius={3}
           borderWidth={1}
           borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
-          radialLabel={({ label, value }) => (value > 0 ? label : `${label} (${value} ${units})`)}
-          radialLabelsTextColor={({ id }) => darkenColor(colors(id), 20)}
-          radialLabelsLinkColor={{ from: 'color' }}
-          radialLabelsLinkHorizontalLength={10}
-          enableSliceLabels={false}
+          enableArcLinkLabels={false}
+          enableArcLabels={false}
           tooltip={({ datum: { label, value, color } }) => (
             <div>
               <strong style={{ color: lightenColor(color, 15) }}>
@@ -76,11 +71,13 @@ class PieGraph extends React.Component {
 }
 
 PieGraph.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
-  })).isRequired,
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
   height: PropTypes.number,
   units: PropTypes.string,
   colors: PropTypes.func,

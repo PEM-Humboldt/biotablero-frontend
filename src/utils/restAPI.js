@@ -344,7 +344,7 @@ class RestAPI {
    * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
    static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`/connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
+    return RestAPI.makeGetRequest(`connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
   }
 
   /** ******************** */

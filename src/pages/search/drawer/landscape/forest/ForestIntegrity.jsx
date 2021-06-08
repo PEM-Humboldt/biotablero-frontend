@@ -1,10 +1,13 @@
 import React from 'react';
 import InfoIcon from '@material-ui/icons/Info';
 
-import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
+import { LegendColor, BorderLegendColor } from 'components/CssLegends';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
+import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 
@@ -16,34 +19,34 @@ class ForestIntegrity extends React.Component {
     this.state = {
       showInfoGraph: false,
       SciHfCats: {
-        'alta-estable_alta': {
-          id: 'alta-estable_alta',
-          label: 'SCI Alto - HH Alta',
+        'alta-estable_natural': {
+          id: 'alta-estable_natural',
+          label: 'ICE Alto - HH Natural',
           value: 0,
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
-          label: 'SCI Alto - HH Dinámica',
+          label: 'ICE Alto - HH Dinámica',
           value: 0,
         },
-        'alta-estable_natural': {
-          id: 'alta-estable_natural',
-          label: 'SCI Alto - HH Natural',
-          value: 0,
-        },
-        'baja_moderada-estable_alta': {
-          id: 'baja_moderada-estable_alta',
-          label: 'SCI Bajo Moderado - HH Alta',
-          value: 0,
-        },
-        'baja_moderada-dinamica': {
-          id: 'baja_moderada-dinamica',
-          label: 'SCI Bajo Moderado - HH Dinámica',
+        'alta-estable_alta': {
+          id: 'alta-estable_alta',
+          label: 'ICE Alto - HH Alta',
           value: 0,
         },
         'baja_moderada-estable_natural': {
           id: 'baja_moderada-estable_natural',
-          label: 'SCI Bajo Moderado - HH Natural',
+          label: 'ICE Bajo Moderado - HH Natural',
+          value: 0,
+        },
+        'baja_moderada-dinamica': {
+          id: 'baja_moderada-dinamica',
+          label: 'ICE Bajo Moderado - HH Dinámica',
+          value: 0,
+        },
+        'baja_moderada-estable_alta': {
+          id: 'baja_moderada-estable_alta',
+          label: 'ICE Bajo Moderado - HH Alta',
           value: 0,
         },
       },
@@ -78,7 +81,11 @@ class ForestIntegrity extends React.Component {
               res.forEach((elem) => {
                 const idx = `${elem.sci_cat}-${elem.hf_pers}`;
                 cats[idx].value += elem.area;
-                PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+                if (elem.pa === 'No Protegida') {
+                  PAs[idx].push({ key: elem.pa, label: elem.pa, area: elem.area });
+                } else {
+                  PAs[idx].unshift({ key: elem.pa, label: elem.pa, area: elem.area });
+                }
               });
               Object.keys(PAs).forEach(((sciHfCat) => {
                 PAs[sciHfCat] = PAs[sciHfCat].map((areas) => ({
@@ -115,7 +122,11 @@ class ForestIntegrity extends React.Component {
       selectedCategory,
       loading,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -129,13 +140,22 @@ class ForestIntegrity extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Integridad"
-            description="Integridad"
+            description={SCIHFText}
             className="graphinfo2"
             collapseButton={false}
           />
           )
         )}
+        {!loading && (
+          <DownloadCSV
+            data={Object.values(SciHfCats)}
+            filename={`bt_forest_integrity_${areaId}_${geofenceId}.csv`}
+          />
+        )}
+        <h3 className="inlineb">Haz clic en la gráfica para visualizar las áreas protegidas</h3>
+        <BorderLegendColor color={matchColor('border')()}>
+          Límite de áreas protegidas
+        </BorderLegendColor>
         <div>
           <GraphLoader
             loading={loading}
@@ -148,12 +168,27 @@ class ForestIntegrity extends React.Component {
               handlerClickOnGraph({ chartType: 'SciHf', selectedKey: sectionId });
             }}
           />
+          <div className="fiLegend">
+            {Object.keys(SciHfCats).map((cat) => (
+              <LegendColor
+                color={matchColor('SciHf')(cat)}
+                orientation="column"
+                key={cat}
+              >
+                {SciHfCats[cat].label}
+              </LegendColor>
+            ))}
+          </div>
         </div>
         {selectedCategory && (
           <>
             <h6>
               Distribución en áreas protegidas
             </h6>
+            <DownloadCSV
+              data={Object.values(ProtectedAreas[selectedCategory])}
+              filename={`bt_fi_areas_${selectedCategory}_${areaId}_${geofenceId}.csv`}
+            />
             <div style={{ padding: '0 12px' }}>
               <GraphLoader
                 data={ProtectedAreas[selectedCategory]}

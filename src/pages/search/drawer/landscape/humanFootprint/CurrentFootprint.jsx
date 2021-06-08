@@ -8,6 +8,7 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import DownloadCSV from 'components/DownloadCSV';
 
 class CurrentFootprint extends React.Component {
   mounted = false;
@@ -67,7 +68,11 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     const {
       hfCurrent,
       hfCurrentValue,
@@ -104,6 +109,12 @@ class CurrentFootprint extends React.Component {
         <h6>
           Natural, Baja, Media y Alta
         </h6>
+        {(hfCurrent && hfCurrent.length > 0) && (
+          <DownloadCSV
+            data={hfCurrent}
+            filename={`bt_hf_current_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"

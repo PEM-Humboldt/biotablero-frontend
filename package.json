@@ -1,6 +1,6 @@
 {
   "name": "biotablero",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -12,10 +12,10 @@
     "@material-ui/core": "^4.0.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
-    "@nivo/bar": "^0.67.0",
-    "@nivo/core": "^0.67.0",
-    "@nivo/line": "^0.67.0",
-    "@nivo/pie": "^0.67.0",
+    "@nivo/bar": "^0.69.0",
+    "@nivo/core": "^0.69.0",
+    "@nivo/line": "^0.69.0",
+    "@nivo/pie": "^0.69.0",
     "@vx/axis": "0.0.170",
     "@vx/glyph": "0.0.170",
     "@vx/grid": "0.0.170",
@@ -30,10 +30,12 @@
     "prop-types": "15.6.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-json-to-csv": "^1.0.4",
     "react-leaflet": "2.0.0",
     "react-masonry-component": "6.2.1",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.2"
+    "react-scripts": "4.0.2",
+    "styled-components": "^5.2.3"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

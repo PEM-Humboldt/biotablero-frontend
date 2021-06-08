@@ -1,16 +1,29 @@
 import React from 'react';
+import InfoIcon from '@material-ui/icons/Info';
+
+import GraphLoader from 'components/charts/GraphLoader';
+import { LegendColor } from 'components/CssLegends';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import InfoIcon from '@material-ui/icons/Info';
-import GraphLoader from 'components/charts/GraphLoader';
-import matchColor from 'utils/matchColor';
+import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
+import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
 
 const getLabel = {
   unprot: 'No protegida',
   prot_conn: 'Protegida conectada',
   prot_unconn: 'Protegida no conectada',
+};
+
+const legendDPCCategories = {
+  muy_bajo: 'Muy bajo',
+  bajo: 'Bajo',
+  medio: 'Medio',
+  alto: 'Alto',
+  muy_alto: 'Muy Alto',
 };
 
 class CurrentPAConnectivity extends React.Component {
@@ -43,7 +56,7 @@ class CurrentPAConnectivity extends React.Component {
               ...item,
               label: getLabel[item.key],
             })),
-            prot: protConn && protUnconn ? protConn.percentage + protUnconn.percentage : 0,
+            prot: protConn && protUnconn ? (protConn.percentage + protUnconn.percentage) * 100 : 0,
           });
         }
       })
@@ -53,7 +66,7 @@ class CurrentPAConnectivity extends React.Component {
       .then((res) => {
         if (this.mounted) {
           this.setState({
-            dpc: res,
+            dpc: res.reverse(),
           });
         }
       })
@@ -74,7 +87,11 @@ class CurrentPAConnectivity extends React.Component {
   };
 
   render() {
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     const {
       currentPAConnectivity,
       dpc,
@@ -94,7 +111,7 @@ class CurrentPAConnectivity extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description="Current PA Connectivity"
+              description={CurrentPAConnText}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -104,14 +121,10 @@ class CurrentPAConnectivity extends React.Component {
           <h6>
             Conectividad áreas protegidas
           </h6>
-          <div>
-            <h6>
-              Indice Prot
-            </h6>
-            <h5 style={{ backgroundColor: '#d5753d' }}>
-              {`${prot}%`}
-            </h5>
-          </div>
+          <DownloadCSV
+            data={currentPAConnectivity}
+            filename={`bt_conn_current_${areaId}_${geofenceId}.csv`}
+          />
           <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -123,16 +136,48 @@ class CurrentPAConnectivity extends React.Component {
               padding={0.25}
             />
           </div>
+          {currentPAConnectivity.length > 0 && (
+            <div>
+              <h6 className="innerInfo">
+                Porcentaje de área protegida
+              </h6>
+              <h5
+                className="innerInfoH5"
+                style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}
+              >
+                {`${formatNumber(prot, 2)}%`}
+              </h5>
+            </div>
+          )}
           <h6>
-            Áreas protegidas con mayor dPC
+            Aporte de las áreas protegidas a la conectividad
           </h6>
+          <DownloadCSV
+            data={dpc}
+            filename={`bt_conn_dpc_${areaId}_${geofenceId}.csv`}
+          />
+          <h3 className="innerInfoH3">
+            Haz clic en un área protegida para visualizarla
+          </h3>
           <div>
             <GraphLoader
               graphType="MultiSmallSingleBarGraph"
               data={dpc}
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
+              labelX="dPC"
+              units="ha"
             />
+          </div>
+          <div className="dpcLegend">
+            {Object.keys(legendDPCCategories).map((cat) => (
+              <LegendColor
+                color={matchColor('dpc')(cat)}
+                key={cat}
+              >
+                {legendDPCCategories[cat]}
+              </LegendColor>
+            ))}
           </div>
         </div>
       </div>

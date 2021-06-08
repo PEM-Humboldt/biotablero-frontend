@@ -1,4 +1,3 @@
-import DownloadIcon from '@material-ui/icons/Save';
 import InfoIcon from '@material-ui/icons/Info';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -135,7 +134,6 @@ class Overview extends React.Component {
     return (
       <div className="graphcard">
         <h2>
-          <DownloadIcon className="icondown" />
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon
               className="graphinfo"

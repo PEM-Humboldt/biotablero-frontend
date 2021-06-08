@@ -19,6 +19,7 @@ class MultiSmallSingleBarGraph extends React.Component {
       colors,
       units,
       onClickHandler,
+      labelX,
     } = this.props;
     const {
       selectedIndexValue,
@@ -29,22 +30,22 @@ class MultiSmallSingleBarGraph extends React.Component {
         const object = {
           id: String(element.id),
         };
-        object[String(element.key)] = Number(element.value);
-        object[`${String(element.key)}Label`] = element.id;
-        object[`${String(element.key)}Color`] = colors(element.key);
-        object[`${String(element.key)}DarkenColor`] = darkenColor(colors(element.key), 15);
-        object[`${String(element.key)}Area`] = Number(element.area);
+        object[String(element.id)] = Number(element.value);
+        object[`${String(element.id)}Label`] = element.name;
+        object[`${String(element.id)}Color`] = colors(element.key);
+        object[`${String(element.id)}DarkenColor`] = darkenColor(colors(element.key), 15);
+        object[`${String(element.id)}Area`] = Number(element.area);
         return object;
       });
       return transformedData;
     };
 
-    /**
+  /**
    * Get keys to be passed to component as a prop
    *
-   * @returns {array} ids of each bar category
+   * @returns {array} ids of each bar category removing duplicates
    */
-    const keys = data ? data.map((item) => String(item.key)) : [];
+    const keys = data ? [...new Set(data.map((item) => String(item.id)))] : [];
 
     return (
       <div style={{ height }}>
@@ -73,25 +74,18 @@ class MultiSmallSingleBarGraph extends React.Component {
           }}
           enableGridY={false}
           enableGridX
-          axisLeft={{
-            tickSize: 0,
-            tickPadding: 3,
-            tickRotation: 0,
-            format: () => null,
-            legend: 'Áreas protegidas',
-            legendPosition: 'middle',
-            legendOffset: -30,
-          }}
+          axisLeft={null}
           axisBottom={{
             tickSize: 0,
             tickPadding: 0,
             tickRotation: 0,
             format: '.2f',
-            legend: 'dPC',
+            legend: labelX,
             legendPosition: 'start',
             legendOffset: 25,
           }}
           enableLabel
+          label={({ value }) => formatNumber(value, 2)}
           animate
           motionStiffness={90}
           motionDamping={15}
@@ -101,7 +95,7 @@ class MultiSmallSingleBarGraph extends React.Component {
                 {allData[`${id}Label`]}
               </strong>
               <div style={{ color: '#ffffff' }}>
-                {allData[id]}
+                {formatNumber(allData[id], 2)}
                 <br />
                 {`${formatNumber(allData[`${id}Area`], 2)} ${units}`}
               </div>
@@ -111,6 +105,9 @@ class MultiSmallSingleBarGraph extends React.Component {
             tooltip: {
               container: {
                 background: '#333',
+                whiteSpace: 'nowrap',
+                position: 'absolute',
+                fontSize: 12,
               },
             },
             axis:
@@ -140,6 +137,7 @@ MultiSmallSingleBarGraph.propTypes = {
   units: PropTypes.string,
   onClickHandler: PropTypes.func,
   selectedIndexValue: PropTypes.string,
+  labelX: PropTypes.string,
 };
 
 MultiSmallSingleBarGraph.defaultProps = {
@@ -148,6 +146,7 @@ MultiSmallSingleBarGraph.defaultProps = {
   units: 'ha',
   onClickHandler: () => {},
   selectedIndexValue: null,
+  labelX: '',
 };
 
 export default MultiSmallSingleBarGraph;

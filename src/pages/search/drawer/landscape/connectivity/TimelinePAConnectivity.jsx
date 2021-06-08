@@ -1,10 +1,14 @@
 import React from 'react';
+import InfoIcon from '@material-ui/icons/Info';
 
+import GraphLoader from 'components/charts/GraphLoader';
+import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import InfoIcon from '@material-ui/icons/Info';
-import GraphLoader from 'components/charts/GraphLoader';
+import { TimelinePAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
+import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 
 class TimelinePAConnectivity extends React.Component {
@@ -69,6 +73,10 @@ class TimelinePAConnectivity extends React.Component {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
+      data: obj.data.map((item) => ({
+        ...item,
+        y: item.y * 100,
+      })),
       label: this.getLabel(obj.key),
     }));
   };
@@ -78,6 +86,10 @@ class TimelinePAConnectivity extends React.Component {
       showInfoGraph,
       timelinePAConnectivity,
     } = this.state;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -91,7 +103,7 @@ class TimelinePAConnectivity extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description="Timeline PA Connectivity"
+              description={TimelinePAConnText}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -101,6 +113,12 @@ class TimelinePAConnectivity extends React.Component {
           <h6>
             Conectividad áreas protegidas en el tiempo
           </h6>
+          {(timelinePAConnectivity && timelinePAConnectivity.length > 0) && (
+          <DownloadCSV
+            data={processDataCsv(timelinePAConnectivity)}
+            filename={`bt_conn_timeline_${areaId}_${geofenceId}.csv`}
+          />
+          )}
           <div>
             <GraphLoader
               graphType="MultiLinesGraph"
@@ -109,6 +127,7 @@ class TimelinePAConnectivity extends React.Component {
               labelX="Año"
               labelY="Porcentaje"
               units="%"
+              yMax={50}
             />
           </div>
         </div>
@@ -118,3 +137,5 @@ class TimelinePAConnectivity extends React.Component {
 }
 
 export default TimelinePAConnectivity;
+
+TimelinePAConnectivity.contextType = SearchContext;
