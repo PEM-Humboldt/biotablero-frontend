@@ -132,6 +132,9 @@ const match = {
   border: {
     palette: 'border',
   },
+  borderGeofence: {
+    palette: 'borderGeofence',
+  },
   default: {
     palette: 'default',
   },
@@ -220,6 +223,7 @@ const matchColor = (type, resetCache = false) => {
         return palette[idx];
       };
     case 'border':
+    case 'borderGeofence':
     default:
       return () => palette[0];
   }

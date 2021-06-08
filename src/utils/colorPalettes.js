@@ -140,5 +140,6 @@ export default {
     '#fcbd64',
   ],
   border: ['#fc6467'],
+  borderGeofence: ['#000000'],
   default: ['#b2bdc2'],
 };
