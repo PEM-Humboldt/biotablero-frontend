@@ -9,7 +9,9 @@ const Legend = styled.p`
   color: #424242;
   line-height: 1;
   margin-right: 10px;
+`;
 
+const PointLegend = styled(Legend)`
   &:before {
     display: inline-block;
     content: "";
@@ -21,21 +23,54 @@ const Legend = styled.p`
   }
 `;
 
-const LegendColor = styled(Legend)`
+const LegendColor = styled(PointLegend)`
   &:before {
     background-color: ${({ color }) => color};
   }
 `;
 
-const BorderLegendColor = styled(Legend)`
+const BorderLegendColor = styled(PointLegend)`
   &:before {
     color: #ffffff;
     border: 2px solid ${({ color }) => color};
     width: 7px;
     height: 7px;
     border-radius: 0;
-    vertical-align: bottom;
   }
 `;
 
-export { LegendColor, BorderLegendColor };
+const LineLegend = styled(Legend)`
+  &:before {
+    display: inline-block;
+    content: "";
+    width: 15px;
+    height: 8px;
+    margin-right: 5px;
+    margin-bottom: 4px;
+    border-bottom: 3px solid ${({ color }) => color};
+    vertical-align: middle;
+  }
+`;
+
+const TextLegend = styled(Legend)`
+  margin-right: 1px;
+  color: ${({ color }) => color};
+
+  &:before {
+    display: inline-block;
+    content: "";
+    background: ${({ image }) => (image ? `url(${image}) no-repeat center` : '')};
+    background-size: 15px;
+    width: 15px;
+    height: 26px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+`;
+
+export {
+  LegendColor,
+  BorderLegendColor,
+  LineLegend,
+  TextLegend,
+};
