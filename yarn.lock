@@ -2620,6 +2620,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nivo/bullet@npm:^0.69.1":
+  version: 0.69.1
+  resolution: "@nivo/bullet@npm:0.69.1"
+  dependencies:
+    "@nivo/axes": 0.69.1
+    "@nivo/colors": 0.69.0
+    "@nivo/legends": 0.69.0
+    "@nivo/tooltip": 0.69.0
+    d3-scale: ^3.2.3
+    react-spring: 9.1.2
+  peerDependencies:
+    "@nivo/core": 0.69.0
+    react: ">= 16.8.4 < 18.0.0"
+  checksum: 755e9419a0cf0b9174e0eebe17e4b7f842b666e1420db608289dc0fef953a5923018c1ac5379edc56dd0e34847cf66f85d735d8b29a03dc2d55b58ba7721f30b
+  languageName: node
+  linkType: hard
+
 "@nivo/colors@npm:0.69.0":
   version: 0.69.0
   resolution: "@nivo/colors@npm:0.69.0"
@@ -2736,7 +2753,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/tooltip@npm:0.69.0":
+"@nivo/tooltip@npm:0.69.0, @nivo/tooltip@npm:^0.69.0":
   version: 0.69.0
   resolution: "@nivo/tooltip@npm:0.69.0"
   dependencies:
@@ -5333,9 +5350,11 @@ __metadata:
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
     "@nivo/bar": ^0.69.0
+    "@nivo/bullet": ^0.69.1
     "@nivo/core": ^0.69.0
     "@nivo/line": ^0.69.0
     "@nivo/pie": ^0.69.0
+    "@nivo/tooltip": ^0.69.0
     "@vx/axis": 0.0.170
     "@vx/glyph": 0.0.170
     "@vx/grid": 0.0.170
@@ -5363,6 +5382,7 @@ __metadata:
     react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
+    react-spring: ^9.1.2
     styled-components: ^5.2.3
   languageName: unknown
   linkType: soft
@@ -17513,7 +17533,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-spring@npm:9.1.2":
+"react-spring@npm:9.1.2, react-spring@npm:^9.1.2":
   version: 9.1.2
   resolution: "react-spring@npm:9.1.2"
   dependencies:

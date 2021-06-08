@@ -1346,6 +1346,16 @@ overflow: auto;
 	padding: 6px 8px !important;
 }
 
+.extraLegend {
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	font-weight: 600;
+	padding: 0 30px 0 15px;
+	margin-top: -8px;
+	color: #424242;
+}
+
 .accordionSelected {
 	background-color: #fff !important;
 }
@@ -1802,6 +1812,29 @@ div[class*="eaRHYv"] {
 	margin-left: 0;
 	padding: 5px 12px;
 	border: 1px solid;
+}
+
+.nos-title {
+	margin: 0 30px;
+	line-height: 1;
+}
+
+.nos-title b {
+	font-size: 11px;
+	font-weight: 400;
+}
+
+.nos-title.legend {
+	margin-left: 15px;
+	margin-bottom: 15px;
+}
+
+.nos-title.selected {
+	font-weight: 600;
+}
+
+.richnessLegend {
+	margin: 10px 0 8px 15px;
 }
 
 .dpcLegend {

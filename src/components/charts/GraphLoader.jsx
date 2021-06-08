@@ -2,6 +2,7 @@ import DownloadIcon from '@material-ui/icons/Save';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import SingleBulletGraph from 'components/charts/SingleBulletGraph';
 import DotInfo from 'components/charts/DotInfo';
 import DotsGraph from 'components/charts/DotsGraph';
 import LargeBarStackGraph from 'components/charts/LargeBarStackGraph';
@@ -27,21 +28,22 @@ const GraphLoader = (props) => {
     padding,
     onClickGraphHandler,
     markers,
-    loading,
+    message,
     selectedIndexValue,
     yMax,
+    reverse,
+    labelXRight,
+    labelXLeft,
   } = props;
 
-  // While data is being retrieved from server
   let errorMessage = null;
-  // (data === null) while waiting for API response
-  if (data === null || loading) errorMessage = 'Cargando información...';
-  // (!data) if API doesn't respond
-  else if (!data) errorMessage = 'Información no disponible';
-  // (data.length <= 0) if API response in not object
-  else if (data.length <= 0) errorMessage = 'Información no disponible';
+  // TODO: don't relay on data being null for a loading state
+  if (data === null || message === 'loading') {
+    errorMessage = 'Cargando información...';
+  } else if (!data || data.length <= 0 || Object.keys(data).length === 0 || message === 'no-data') {
+    errorMessage = 'Información no disponible';
+  }
   if (errorMessage) {
-    // TODO: ask Cesar to make this message nicer
     return (
       <div className="errorData">
         {errorMessage}
@@ -103,6 +105,18 @@ const GraphLoader = (props) => {
           units={units}
           colors={colors}
           onClickHandler={onClickGraphHandler}
+        />
+      );
+    case 'singleBullet':
+      return (
+        <SingleBulletGraph
+          data={data}
+          height={62}
+          colors={colors}
+          onClickHandler={onClickGraphHandler}
+          reverse={reverse}
+          labelXRight={labelXRight}
+          labelXLeft={labelXLeft}
         />
       );
     case 'Dots':
@@ -198,8 +212,11 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  loading: PropTypes.bool,
+  loading: PropTypes.string,
   selectedIndexValue: PropTypes.string,
+  reverse: PropTypes.bool,
+  labelXRight: PropTypes.string,
+  labelXLeft: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
@@ -215,8 +232,11 @@ GraphLoader.defaultProps = {
   padding: 0.25,
   onClickGraphHandler: () => {},
   markers: [],
-  loading: false,
+  message: null,
   selectedIndexValue: '',
+  reverse: false,
+  labelXRight: null,
+  labelXLeft: null,
 };
 
 export default GraphLoader;
