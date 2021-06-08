@@ -8,6 +8,7 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import DownloadCSV from 'components/DownloadCSV';
 
 const getLabel = {
   estable_natural: 'Estable Natural',
@@ -60,7 +61,11 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     const { showInfoGraph, hfPersistence } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -84,6 +89,12 @@ class PersistenceFootprint extends React.Component {
         <h6>
           Estable natural, Dinámica, Estable alta
         </h6>
+        {(hfPersistence && hfPersistence.length > 0) && (
+          <DownloadCSV
+            data={hfPersistence}
+            filename={`bt_hf_persistence_${areaId}_${geofenceId}.csv`}
+          />
+        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"

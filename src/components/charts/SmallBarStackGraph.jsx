@@ -45,7 +45,7 @@ const SmallBarStackGraph = (props) => {
    *
    * @param {string} id id for each bar
    * @param {Object} allData transformed data with all information needed
-   * @returns {func} tooltip for component
+   * @returns {object} tooltip for component
    */
   const getToolTip = (id, allData) => {
     if (id !== 'NA') {
@@ -103,6 +103,9 @@ const SmallBarStackGraph = (props) => {
           tooltip: {
             container: {
               padding: 0,
+              whiteSpace: 'nowrap',
+              position: 'absolute',
+              fontSize: 12,
             },
           },
         }}

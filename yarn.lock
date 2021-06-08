@@ -5377,6 +5377,7 @@ __metadata:
     prop-types: 15.6.2
     react: ^17.0.1
     react-dom: ^17.0.1
+    react-json-to-csv: ^1.0.4
     react-leaflet: 2.0.0
     react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
@@ -13064,6 +13065,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"json-to-csv-export@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "json-to-csv-export@npm:1.0.2"
+  checksum: 63b7ca7bbf22226bfc5d254b21b5c4666b14b2f70c6dcdc96f7e3d98e38cf572da7513c8605e97020612f2cdd0096257b527d827601541d30eff7888cdb9d77a
+  languageName: node
+  linkType: hard
+
 "json3@npm:^3.3.2":
   version: 3.3.3
   resolution: "json3@npm:3.3.3"
@@ -17327,6 +17335,15 @@ fsevents@^1.2.7:
   version: 17.0.1
   resolution: "react-is@npm:17.0.1"
   checksum: 5a83dfc78e7adcb93d632bf367b0733db650e3abd2e9c57c33b87e50d201212c1884b0d7bcf13e692f1556189fa1b87f9f3e0ba10fe858fd6aebe83ed4fcd1ea
+  languageName: node
+  linkType: hard
+
+"react-json-to-csv@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "react-json-to-csv@npm:1.0.4"
+  dependencies:
+    json-to-csv-export: ^1.0.2
+  checksum: 935cb0846d7c1cf43ae4a41b784227e33c9a67373125a8243d62092a2323c0973b5e07c08aab6253229e4d2ebb5ecb7f649e6f904436283d95bbc7086e8ab66f
   languageName: node
   linkType: hard
 

@@ -203,7 +203,7 @@ class Search extends Component {
       if (!key) {
         return {
           color: matchColor(ftype)(color),
-          weight: 2,
+          weight: 1,
           fillOpacity: 0,
         };
       }
@@ -286,7 +286,7 @@ class Search extends Component {
       case 'timelinePAConn':
       case 'currentSEPAConn':
         feature.bindTooltip(
-          `<b>${feature.feature.properties.key}:</b>
+          `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
           optionsTooltip,
@@ -425,7 +425,7 @@ class Search extends Component {
 
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === selectedKey) {
+          if (layer.feature.properties.key || layer.feature.properties.id === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,
@@ -555,14 +555,23 @@ class Search extends Component {
         };
         break;
       case 'forestIntegrity':
-        request = () => RestAPI.requestSCIHFGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
-        newActiveLayer = {
-          id: layerType,
-          name: 'Índice de condición estructural de bosques',
-        };
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+
+          request = () => RestAPI.requestSCIHFGeometry(
+            selectedAreaTypeId, selectedAreaId,
+          );
+          shutOtherLayers = false;
+          layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Índice de condición estructural de bosques',
+          };
+        });
         break;
       case 'currentPAConn':
         this.switchLayer('geofence', () => {
@@ -574,7 +583,6 @@ class Search extends Component {
           request = () => RestAPI.requestDPCLayer(
             selectedAreaTypeId,
             selectedAreaId,
-            5,
           );
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });

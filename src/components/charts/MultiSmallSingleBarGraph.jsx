@@ -20,7 +20,6 @@ class MultiSmallSingleBarGraph extends React.Component {
       units,
       onClickHandler,
       labelX,
-      labelY,
     } = this.props;
     const {
       selectedIndexValue,
@@ -31,22 +30,22 @@ class MultiSmallSingleBarGraph extends React.Component {
         const object = {
           id: String(element.id),
         };
-        object[String(element.key)] = Number(element.value);
-        object[`${String(element.key)}Label`] = element.id;
-        object[`${String(element.key)}Color`] = colors(element.key);
-        object[`${String(element.key)}DarkenColor`] = darkenColor(colors(element.key), 15);
-        object[`${String(element.key)}Area`] = Number(element.area);
+        object[String(element.id)] = Number(element.value);
+        object[`${String(element.id)}Label`] = element.name;
+        object[`${String(element.id)}Color`] = colors(element.key);
+        object[`${String(element.id)}DarkenColor`] = darkenColor(colors(element.key), 15);
+        object[`${String(element.id)}Area`] = Number(element.area);
         return object;
       });
       return transformedData;
     };
 
-    /**
+  /**
    * Get keys to be passed to component as a prop
    *
    * @returns {array} ids of each bar category removing duplicates
    */
-    const keys = data ? [...new Set(data.map((item) => String(item.key)))] : [];
+    const keys = data ? [...new Set(data.map((item) => String(item.id)))] : [];
 
     return (
       <div style={{ height }}>
@@ -75,15 +74,7 @@ class MultiSmallSingleBarGraph extends React.Component {
           }}
           enableGridY={false}
           enableGridX
-          axisLeft={{
-            tickSize: 0,
-            tickPadding: 3,
-            tickRotation: 0,
-            format: () => null,
-            legend: labelY,
-            legendPosition: 'middle',
-            legendOffset: -30,
-          }}
+          axisLeft={null}
           axisBottom={{
             tickSize: 0,
             tickPadding: 0,
@@ -114,8 +105,9 @@ class MultiSmallSingleBarGraph extends React.Component {
             tooltip: {
               container: {
                 background: '#333',
-                maxWidth: '170px',
-
+                whiteSpace: 'nowrap',
+                position: 'absolute',
+                fontSize: 12,
               },
             },
             axis:
@@ -146,7 +138,6 @@ MultiSmallSingleBarGraph.propTypes = {
   onClickHandler: PropTypes.func,
   selectedIndexValue: PropTypes.string,
   labelX: PropTypes.string,
-  labelY: PropTypes.string,
 };
 
 MultiSmallSingleBarGraph.defaultProps = {
@@ -156,7 +147,6 @@ MultiSmallSingleBarGraph.defaultProps = {
   onClickHandler: () => {},
   selectedIndexValue: null,
   labelX: '',
-  labelY: '',
 };
 
 export default MultiSmallSingleBarGraph;

@@ -33,8 +33,8 @@ const BorderLegendColor = styled(PointLegend)`
   &:before {
     color: #ffffff;
     border: 2px solid ${({ color }) => color};
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 0;
   }
 `;

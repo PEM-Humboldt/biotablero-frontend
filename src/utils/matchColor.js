@@ -80,17 +80,18 @@ const match = {
   },
   SciHf: {
     palette: 'SciHf',
-    sort: ['alta-estable_alta',
-      'alta-dinamica',
+    sort: [
       'alta-estable_natural',
-      'baja_moderada-estable_alta',
-      'baja_moderada-dinamica',
+      'alta-dinamica',
+      'alta-estable_alta',
       'baja_moderada-estable_natural',
+      'baja_moderada-dinamica',
+      'baja_moderada-estable_alta',
     ],
   },
   currentPAConn: {
     palette: 'currentPAConn',
-    sort: ['unprot', 'prot_conn', 'prot_unconn'],
+    sort: ['prot_conn', 'prot_unconn', 'unprot'],
   },
   dpc: {
     palette: 'dpc',
