@@ -98,6 +98,7 @@ class MapViewer extends React.Component {
       geoServerUrl,
       loadingLayer,
       layerError,
+      WMSLayers,
     } = this.props;
     const { openErrorModal } = this.state;
     return (
@@ -168,18 +169,17 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        {
+        {WMSLayers && (
           <WMSTileLayer
             srs="EPSG:4326"
-            layers="Biotablero:rich_All_int_raster"
+            layers={WMSLayers.layer}
             format="image/png"
             url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
-            opacity={0.2}
+            opacity={0.4}
             transparent
-            alt="Regiones"
-            styles="continuo"
+            styles={WMSLayers.style}
           />
-          }
+        )}
       </Map>
     );
   }
@@ -193,11 +193,13 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
+  WMSLayers: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
   loadingLayer: false,
   layerError: false,
+  WMSLayers: null,
 };
 
 export default MapViewer;

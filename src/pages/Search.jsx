@@ -54,6 +54,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      WMSLayers: { layer: 'Biotablero:rich_All_int_raster', style: 'continuo' },
     };
   }
 
@@ -189,6 +190,7 @@ class Search extends Component {
       color = null,
       fKey = 'key',
       compoundKey = false,
+      weight = 0,
     } = objParams;
     if (feature.properties) {
       let key = fKey;
@@ -200,10 +202,11 @@ class Search extends Component {
         key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
       }
       const ftype = /PAConn$/.test(type) ? 'dpc' : type;
-      if (!key) {
+      const isBorder = !!/border/.test(type);
+      if (isBorder) {
         return {
           color: matchColor(ftype)(color),
-          weight: 1,
+          weight,
           fillOpacity: 0,
         };
       }
@@ -473,6 +476,17 @@ class Search extends Component {
    *
    * @param {String} layerType layer type
    */
+   switchWMSLayer = (layerName, style, callback = () => {}) => {
+    this.setState({
+      WMSLayers: { layer: layerName, style },
+    }, callback());
+   }
+
+  /**
+   * Switch layer based on graph showed
+   *
+   * @param {String} layerType layer type
+   */
   switchLayer = (layerType, callback = () => {}) => {
     const {
       selectedAreaId,
@@ -553,6 +567,24 @@ class Search extends Component {
         newActiveLayer = {
           id: 'geofence',
         };
+        break;
+      case 'numberOfSpecies':
+        this.switchWMSLayer('Biotablero:rich_All_int_raster', 'continuo', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+            requestSource: null,
+          });
+          request = () => RestAPI.requestGeofenceGeometryByArea(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          layerStyle = this.featureStyle({ type: 'border', color: 'black', weight: 2 });
+          newActiveLayer = {
+            id: layerType,
+            name: 'Riqueza - Número de especies',
+          };
+        });
         break;
       case 'forestIntegrity':
         this.switchLayer('geofence', () => {
@@ -673,7 +705,7 @@ class Search extends Component {
             selectedAreaTypeId, selectedAreaId, sci, hf,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'border' });
+          layerStyle = this.featureStyle({ type: 'border', color: 'rose', weight: 1 });
           fitBounds = false;
         } else if (/forestLP-*/.test(layerType)) {
           const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
@@ -873,6 +905,7 @@ class Search extends Component {
       'paramoPAConn',
       'dryForestPAConn',
       'wetlandPAConn',
+      'numberOfSpecies',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -913,6 +946,7 @@ class Search extends Component {
       layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
+      WMSLayers,
     } = this.state;
 
     const {
@@ -958,6 +992,7 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
+              WMSLayers={WMSLayers}
             />
             {activeLayer && (
               <div className="mapsTitle">
