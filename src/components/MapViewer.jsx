@@ -41,6 +41,27 @@ class MapViewer extends React.Component {
     this.mapRef = React.createRef();
   }
 
+  // Se invoca antes del render inicial o alguna actualización
+  // Debes devolver un objeto para actualizar el estado, o null para no actualizar nada.
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
+    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
+    const { layers: oldLayers, activeLayers } = prevState;
+    if (newActiveLayers.sort().join() === activeLayers.sort().join()) {
+      return { update: false };
+    }
+
+    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
+    Object.keys(oldLayers).forEach((name) => {
+      if (layers[name] !== oldLayers[name]) {
+        oldLayers[name].remove();
+      }
+    });
+    return { layers, activeLayers: newActiveLayers, update: true };
+  }
+
+  // Se invoca inmediatamente después de que la actualización ocurra.
+  // Este método no es llamado para el renderizador inicial
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
     const { loadingLayer } = this.props;
@@ -54,23 +75,6 @@ class MapViewer extends React.Component {
     if (countActiveLayers === 0 && !loadingLayer) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
-    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
-    const { layers: oldLayers, activeLayers } = prevState;
-    if (newActiveLayers.join() === activeLayers.join()) {
-      return { update: false };
-    }
-
-    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
-    Object.keys(oldLayers).forEach((name) => {
-      if (layers[name] !== oldLayers[name]) {
-        oldLayers[name].remove();
-      }
-    });
-    return { layers, activeLayers: newActiveLayers, update: true };
   }
 
   /**
@@ -173,11 +177,11 @@ class MapViewer extends React.Component {
           <WMSTileLayer
             srs="EPSG:4326"
             layers={WMSLayers.layer}
+            styles={WMSLayers.style}
             format="image/png"
             url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
             opacity={0.4}
             transparent
-            styles={WMSLayers.style}
           />
         )}
       </Map>
