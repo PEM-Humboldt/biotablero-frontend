@@ -54,7 +54,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      WMSLayers: { layer: 'Biotablero:rich_All_int_raster', style: 'continuo' },
+      WMSLayers: { /* layer: 'Biotablero:rich_All_int_raster', style: 'continuo' */ },
     };
   }
 
@@ -476,10 +476,10 @@ class Search extends Component {
    *
    * @param {String} layerType layer type
    */
-   switchWMSLayer = (layerName, style, callback = () => {}) => {
+   switchWMSLayer = (layerName, style) => {
     this.setState({
       WMSLayers: { layer: layerName, style },
-    }, callback());
+    });
    }
 
   /**
@@ -569,22 +569,16 @@ class Search extends Component {
         };
         break;
       case 'numberOfSpecies':
-        this.switchWMSLayer('Biotablero:rich_All_int_raster', 'continuo', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-            requestSource: null,
-          });
-          request = () => RestAPI.requestGeofenceGeometryByArea(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          layerStyle = this.featureStyle({ type: 'border', color: 'black', weight: 2 });
-          newActiveLayer = {
-            id: layerType,
-            name: 'Riqueza - Número de especies',
-          };
-        });
+        this.switchWMSLayer('Biotablero:rich_All_int_raster', 'continuo');
+        request = () => RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        layerStyle = this.featureStyle({ type: 'border', color: 'black', weight: 2 });
+        newActiveLayer = {
+          id: layerType,
+          name: 'Riqueza - Número de especies',
+        };
         break;
       case 'forestIntegrity':
         this.switchLayer('geofence', () => {
