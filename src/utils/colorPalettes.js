@@ -139,7 +139,9 @@ export default {
     '#717e4f',
     '#fcbd64',
   ],
-  border: ['#fc6467'],
-  borderGeofence: ['#000000'],
+  border: [
+    '#fc6467',
+    '#000000',
+  ],
   default: ['#b2bdc2'],
 };

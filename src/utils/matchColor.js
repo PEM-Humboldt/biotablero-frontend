@@ -129,11 +129,15 @@ const match = {
       'area',
     ],
   },
-  border: {
+  /* border: {
     palette: 'border',
   },
   borderGeofence: {
     palette: 'borderGeofence',
+  }, */
+  border: {
+    palette: 'border',
+    sort: ['rose', 'black'],
   },
   default: {
     palette: 'default',
@@ -217,13 +221,12 @@ const matchColor = (type, resetCache = false) => {
     case 'wetland':
     case 'richnessNos':
     case 'richnessGaps':
+    case 'border':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;
         return palette[idx];
       };
-    case 'border':
-    case 'borderGeofence':
     default:
       return () => palette[0];
   }
