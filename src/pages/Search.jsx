@@ -54,7 +54,7 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      WMSLayers: { /* layer: 'Biotablero:rich_All_int_raster', style: 'continuo' */ },
+      WMSLayers: { layer: 'Biotablero:rich_All_int_raster', style: 'continuo' },
     };
   }
 
