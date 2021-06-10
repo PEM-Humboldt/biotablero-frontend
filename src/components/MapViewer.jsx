@@ -1,4 +1,9 @@
-import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
+import {
+  ImageOverlay,
+  Map,
+  TileLayer,
+  WMSTileLayer,
+} from 'react-leaflet';
 import { Modal } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
@@ -64,7 +69,7 @@ class MapViewer extends React.Component {
   // Este método no es llamado para el renderizador inicial
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
-    const { loadingLayer } = this.props;
+    const { loadingLayer, rasterBounds } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
@@ -72,7 +77,7 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0 && !loadingLayer) {
+    if (countActiveLayers === 0 && !loadingLayer && !rasterBounds) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
@@ -103,6 +108,8 @@ class MapViewer extends React.Component {
       loadingLayer,
       layerError,
       WMSLayers,
+      rasterLayer,
+      rasterBounds,
     } = this.props;
     const { openErrorModal } = this.state;
     return (
@@ -158,6 +165,12 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
+        {rasterLayer && rasterBounds && (
+          <ImageOverlay
+            url={rasterLayer}
+            bounds={rasterBounds}
+          />
+        )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
           Compensaciones */}
@@ -198,12 +211,16 @@ MapViewer.propTypes = {
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
   WMSLayers: PropTypes.object,
+  rasterLayer: PropTypes.string,
+  rasterBounds: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
   loadingLayer: false,
   layerError: false,
   WMSLayers: null,
+  rasterLayer: '',
+  rasterBounds: null,
 };
 
 export default MapViewer;

@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
-import L from 'leaflet';
+import L, { LatLngBounds } from 'leaflet';
 import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -55,6 +55,8 @@ class Search extends Component {
       selectedArea: null,
       requestSource: null,
       WMSLayers: { layer: 'Biotablero:rich_All_int_raster', style: 'continuo' },
+      mapBounds: null,
+      rasterUrl: '',
     };
   }
 
@@ -457,6 +459,8 @@ class Search extends Component {
           newState.layers[layerKey].active = false;
         });
         newState.activeLayer = {};
+        newState.mapBounds = null;
+        newState.rasterUrl = '';
         return newState;
       });
     } else if (layerInState) {
@@ -511,6 +515,8 @@ class Search extends Component {
     let fitBounds = true;
     let newActiveLayer = null;
     let layerKey = layerType;
+    let isRaster = false;
+    let rasterUrl = '';
 
     switch (layerType) {
       case 'fc':
@@ -569,14 +575,9 @@ class Search extends Component {
         };
         break;
       case 'numberOfSpecies':
-        this.switchWMSLayer('Biotablero:rich_All_int_raster', 'continuo');
-        request = () => RestAPI.requestGeofenceGeometryByArea(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        layerStyle = this.featureStyle({ type: 'border', color: 'black', weight: 2 });
+        isRaster = true;
+        rasterUrl = `http://localhost:4003/richness/number-species/layer?areaType=${selectedAreaTypeId}&areaId=${selectedAreaId}`;
         newActiveLayer = {
-          id: layerType,
           name: 'Riqueza - Número de especies',
         };
         break;
@@ -715,8 +716,27 @@ class Search extends Component {
         break;
     }
 
+    if (shutOtherLayers) this.shutOffLayer();
+
+    if (isRaster) {
+      const geofenceLayer = layers.geofence;
+      let mapBounds = null;
+      if (geofenceLayer) {
+        mapBounds = geofenceLayer.layer.getBounds();
+      } else {
+        mapBounds = LatLngBounds(
+          [-78.9909352282, -4.29818694419], [-66.8763258531, 12.4373031682],
+        );
+      }
+      this.setState({
+          mapBounds,
+          rasterUrl,
+          activeLayer: newActiveLayer,
+          loadingLayer: false,
+      });
+    }
+
     if (request) {
-      if (shutOtherLayers) this.shutOffLayer();
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
@@ -760,7 +780,7 @@ class Search extends Component {
           }
         }).catch(() => this.reportDataError());
       }
-    } else {
+    } else if (!isRaster) {
       this.shutOffLayer();
       this.setState({ loadingLayer: false });
     }
@@ -915,6 +935,8 @@ class Search extends Component {
       newState.activeLayer = {};
       newState.loadingLayer = false;
       newState.layerError = false;
+      newState.mapBounds = null;
+      newState.rasterUrl = '';
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -940,7 +962,8 @@ class Search extends Component {
       layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
-      WMSLayers,
+      mapBounds,
+      rasterUrl,
     } = this.state;
 
     const {
@@ -986,7 +1009,8 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
-              WMSLayers={WMSLayers}
+              rasterLayer={rasterUrl}
+              rasterBounds={mapBounds}
             />
             {activeLayer && (
               <div className="mapsTitle">
