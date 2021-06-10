@@ -635,6 +635,18 @@ class RestAPI {
     }
   }
 
+  static requestNOSLayer(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
@@ -793,7 +805,7 @@ class RestAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    */
-  static makeGetRequest(endpoint, options) {
+  static makeGetRequest(endpoint, options = {}, completeRes = false) {
     const config = {
       ...options,
       headers: {
@@ -801,7 +813,12 @@ class RestAPI {
       },
     };
     return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
-      .then((res) => res.data)
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           return Promise.resolve('request canceled');
