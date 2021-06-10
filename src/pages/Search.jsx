@@ -516,7 +516,6 @@ class Search extends Component {
     let newActiveLayer = null;
     let layerKey = layerType;
     let isRaster = false;
-    let rasterUrl = '';
 
     switch (layerType) {
       case 'fc':
@@ -576,7 +575,10 @@ class Search extends Component {
         break;
       case 'numberOfSpecies':
         isRaster = true;
-        rasterUrl = `http://localhost:4003/richness/number-species/layer?areaType=${selectedAreaTypeId}&areaId=${selectedAreaId}`;
+        request = () => RestAPI.requestNOSLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
         newActiveLayer = {
           name: 'Riqueza - Número de especies',
         };
@@ -728,15 +730,18 @@ class Search extends Component {
           [-78.9909352282, -4.29818694419], [-66.8763258531, 12.4373031682],
         );
       }
-      this.setState({
-          mapBounds,
-          rasterUrl,
-          activeLayer: newActiveLayer,
-          loadingLayer: false,
+      const { request: apiRequest, source: apiSource } = request();
+      this.setState({ requestSource: apiSource });
+      apiRequest.then((res) => {
+        const rasterUrl = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+        this.setState({
+            mapBounds,
+            rasterUrl,
+            activeLayer: newActiveLayer,
+            loadingLayer: false,
+        });
       });
-    }
-
-    if (request) {
+    } else if (request) {
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
@@ -780,7 +785,7 @@ class Search extends Component {
           }
         }).catch(() => this.reportDataError());
       }
-    } else if (!isRaster) {
+    } else {
       this.shutOffLayer();
       this.setState({ loadingLayer: false });
     }
