@@ -585,8 +585,8 @@ class Search extends Component {
           legend: {
             from: 3,
             to: 2300,
-            fromColor: '#fff700',
-            toColor: '#fb2600',
+            fromColor: matchColor('richnessNos')('legend-from'),
+            toColor: matchColor('richnessNos')('legend-to'),
           },
         };
         break;
