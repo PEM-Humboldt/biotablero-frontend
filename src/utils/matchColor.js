@@ -103,7 +103,7 @@ const match = {
   },
   richnessNos: {
     palette: 'richnessNos',
-    // first values, then limits, then backgrounds
+    // first values, then limits, then backgrounds, then legend limits
     sort: [
       'inferred',
       'observed',
@@ -115,6 +115,8 @@ const match = {
       'region_observed',
       'area',
       'region',
+      'legend-from',
+      'legend-to',
     ],
   },
   richnessGaps: {

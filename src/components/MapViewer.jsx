@@ -106,10 +106,12 @@ class MapViewer extends React.Component {
       layerError,
       rasterLayer,
       rasterBounds,
+      mapTitle,
     } = this.props;
     const { openErrorModal } = this.state;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+        {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -207,6 +209,7 @@ MapViewer.propTypes = {
   layerError: PropTypes.bool,
   rasterLayer: PropTypes.string,
   rasterBounds: PropTypes.object,
+  mapTitle: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
@@ -215,6 +218,7 @@ MapViewer.defaultProps = {
   layerError: false,
   rasterLayer: '',
   rasterBounds: null,
+  mapTitle: null,
 };
 
 export default MapViewer;

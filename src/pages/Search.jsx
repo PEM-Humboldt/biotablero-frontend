@@ -13,6 +13,7 @@ import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
 import Selector from 'components/Selector';
 
@@ -576,6 +577,12 @@ class Search extends Component {
         );
         newActiveLayer = {
           name: 'Riqueza - Número de especies',
+          legend: {
+            from: 3,
+            to: 2300,
+            fromColor: matchColor('richnessNos')('legend-from'),
+            toColor: matchColor('richnessNos')('legend-to'),
+          },
         };
         break;
       case 'forestIntegrity':
@@ -962,7 +969,7 @@ class Search extends Component {
       connError,
       layerError,
       geofencesArray,
-      activeLayer: { name: activeLayer },
+      activeLayer: { name: activeLayer, legend },
       mapBounds,
       rasterUrl,
     } = this.state;
@@ -971,6 +978,22 @@ class Search extends Component {
       selectedAreaTypeId,
       selectedAreaId,
     } = this.props;
+
+    const mapTitle = !activeLayer ? null : (
+      <>
+        <div className="mapsTitle">
+          <div className="title">{activeLayer}</div>
+          {legend && (
+            <GradientLegend
+              from={legend.from}
+              to={legend.to}
+              fromColor={legend.fromColor}
+              toColor={legend.toColor}
+            />
+          )}
+        </div>
+      </>
+    );
 
     return (
       <>
@@ -1012,12 +1035,8 @@ class Search extends Component {
               layerError={layerError}
               rasterLayer={rasterUrl}
               rasterBounds={mapBounds}
+              mapTitle={mapTitle}
             />
-            {activeLayer && (
-              <div className="mapsTitle">
-                {activeLayer}
-              </div>
-            )}
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
