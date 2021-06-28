@@ -517,14 +517,23 @@ class Search extends Component {
         break;
       case 'paramo':
       case 'dryForest':
-      case 'wetland':
+      case 'wetland': {
         request = () => RestAPI.requestHFGeometryBySEInGeofence(
           selectedAreaTypeId, selectedAreaId, layerType,
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: layerType });
         fitBounds = false;
+        let name;
+        if (layerType === 'paramo') name = 'Páramos';
+        else if (layerType === 'dryForest') name = 'Bosque Seco Tropical';
+        else name = 'Humedales';
+        newActiveLayer = {
+          id: `${layerType}HH`,
+          name: `HH - Persistencia - ${name}`,
+        };
         break;
+      }
       case 'hfTimeline':
         request = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaTypeId, selectedAreaId,
@@ -533,7 +542,7 @@ class Search extends Component {
         layerKey = 'hfPersistence';
         newActiveLayer = {
           id: 'hfPersistence',
-          name: 'HH - Histórico y Ecosistemas estratégicos (EE)',
+          name: 'HH - Persistencia y Ecosistemas estratégicos (EE)',
         };
         break;
       case 'hfPersistence':
@@ -588,7 +597,7 @@ class Search extends Component {
           layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
           newActiveLayer = {
             id: layerType,
-            name: 'Conectividad actual de áreas protegidas',
+            name: 'Conectividad de áreas protegidas',
           };
         });
         break;
@@ -608,7 +617,7 @@ class Search extends Component {
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
-            name: 'Histórico de conectividad áreas protegidas',
+            name: 'Conectividad de áreas protegidas',
           };
         });
         break;
@@ -628,7 +637,7 @@ class Search extends Component {
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
-            name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
+            name: 'Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)',
           };
         });
         break;
@@ -641,7 +650,7 @@ class Search extends Component {
         fitBounds = false;
         newActiveLayer = {
           id: 'paramoPAConn',
-          name: 'Conectividad actual de áreas protegidas - Páramo',
+          name: 'Conectividad de áreas protegidas - Páramo',
         };
         break;
       case 'dryForestPAConn':
@@ -653,7 +662,7 @@ class Search extends Component {
         fitBounds = false;
         newActiveLayer = {
           id: 'dryForestPAConn',
-          name: 'Conectividad actual de áreas protegidas - Bosque Seco Tropical',
+          name: 'Conectividad de áreas protegidas - Bosque Seco Tropical',
         };
         break;
       case 'wetlandPAConn':
@@ -665,7 +674,7 @@ class Search extends Component {
         fitBounds = false;
         newActiveLayer = {
           id: 'wetlandPAConn',
-          name: 'Conectividad actual de áreas protegidas - Humedales',
+          name: 'Conectividad de áreas protegidas - Humedales',
         };
         break;
       default:
