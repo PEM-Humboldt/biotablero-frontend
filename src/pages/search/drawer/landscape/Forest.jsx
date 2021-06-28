@@ -8,6 +8,7 @@ import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion
 const Forest = (props) => {
   const {
     handlerAccordionGeometry,
+    openTab,
   } = props;
 
   const componentsArray = [
@@ -16,7 +17,7 @@ const Forest = (props) => {
         id: 'forestLP-2016-2019',
         name: 'Perdida y persistencia',
         disabled: true,
-        collapsed: true,
+        collapsed: openTab !== 'forestLP-2016-2019',
       },
       component: ForestLossPersistence,
     },
@@ -24,6 +25,7 @@ const Forest = (props) => {
       label: {
         id: 'forestIntegrity',
         name: 'Integridad',
+        collapsed: openTab !== 'forestIntegrity',
       },
       component: ForestIntegrity,
     },
@@ -43,10 +45,12 @@ const Forest = (props) => {
 
 Forest.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
+  openTab: PropTypes.string,
 };
 
 Forest.defaultProps = {
   handlerAccordionGeometry: () => {},
+  openTab: '',
 };
 
 export default Forest;

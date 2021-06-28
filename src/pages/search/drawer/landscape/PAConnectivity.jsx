@@ -9,6 +9,7 @@ import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion
 const PAConnectivity = (props) => {
   const {
     handlerAccordionGeometry,
+    openTab,
   } = props;
 
   const componentsArray = [
@@ -16,6 +17,7 @@ const PAConnectivity = (props) => {
       label: {
         id: 'currentPAConn',
         name: 'Actual',
+        collapsed: openTab !== 'currentPAConn',
       },
       component: CurrentPAConnectivity,
     },
@@ -23,6 +25,7 @@ const PAConnectivity = (props) => {
       label: {
         id: 'timelinePAConn',
         name: 'Histórico',
+        collapsed: openTab !== 'timelinePAConn',
       },
       component: TimelinePAConnectivity,
     },
@@ -30,6 +33,7 @@ const PAConnectivity = (props) => {
       label: {
         id: 'currentSEPAConn',
         name: 'Ecosistemas Estratégicos (EE)',
+        collapsed: openTab !== 'currentSEPAConn',
       },
       component: CurrentSEPAConnectivity,
     },
@@ -49,10 +53,12 @@ const PAConnectivity = (props) => {
 
 PAConnectivity.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
+  openTab: PropTypes.string,
 };
 
 PAConnectivity.defaultProps = {
   handlerAccordionGeometry: () => {},
+  openTab: '',
 };
 
 export default PAConnectivity;
