@@ -605,8 +605,9 @@ class Search extends Component {
           );
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          layerKey = 'currentPAConn';
           newActiveLayer = {
-            id: layerType,
+            id: 'currentPAConn',
             name: 'Histórico de conectividad áreas protegidas',
           };
         });
@@ -623,9 +624,10 @@ class Search extends Component {
             selectedAreaId,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentSEPAConn', fKey: 'dpc_cat' });
+          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          layerKey = 'currentPAConn';
           newActiveLayer = {
-            id: layerType,
+            id: 'currentPAConn',
             name: 'Conectividad actual de áreas protegidas por ecosistemas estratégicos',
           };
         });
