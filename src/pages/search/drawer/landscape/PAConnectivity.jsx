@@ -27,12 +27,12 @@ const PAConnectivity = (props) => {
       component: TimelinePAConnectivity,
     },
     {
-        label: {
-          id: 'currentSEPAConn',
-          name: 'Ecosistemas Estratégicos (EE)',
-        },
-        component: CurrentSEPAConnectivity,
+      label: {
+        id: 'currentSEPAConn',
+        name: 'Ecosistemas Estratégicos (EE)',
       },
+      component: CurrentSEPAConnectivity,
+    },
   ];
   return (
     <div style={{ width: '100%' }}>
