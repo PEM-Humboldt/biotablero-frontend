@@ -9,6 +9,7 @@ import { Modal } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
 import React from 'react';
+import AppContext from 'app/AppContext';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -42,9 +43,24 @@ class MapViewer extends React.Component {
       activeLayers: [],
       update: false,
       openErrorModal: true,
+      userLogged: {},
     };
 
     this.mapRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { user } = this.context;
+    if (user && user.company && user.username) {
+      this.setState(
+        {
+          userLogged: {
+            id: user.company.id,
+            currentCompany: user.username.toUpperCase(),
+          },
+        },
+      );
+    }
   }
 
   componentDidUpdate() {
@@ -102,11 +118,10 @@ class MapViewer extends React.Component {
   render() {
     const {
       geoServerUrl,
-      userLogged,
       loadingLayer,
       layerError,
     } = this.props;
-    const { openErrorModal } = this.state;
+    const { openErrorModal, userLogged } = this.state;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         <Modal
@@ -157,7 +172,7 @@ class MapViewer extends React.Component {
           </div>
         </Modal>
         <FeatureGroup>
-          <EditControl>Hola</EditControl>
+          <EditControl />
         </FeatureGroup>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -178,7 +193,11 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        { userLogged ? ( // TODO: Implementing WMSTileLayer load from Compensator
+        {
+          console.log(userLogged.id)
+        }
+        { (userLogged && userLogged.id === 1) ? (
+          // TODO: Implementing WMSTileLayer load from Compensator
           <WMSTileLayer
             layers="Biotablero:Regiones_geb"
             url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
@@ -192,9 +211,10 @@ class MapViewer extends React.Component {
   }
 }
 
+MapViewer.contextType = AppContext;
+
 MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
-  userLogged: PropTypes.object,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
@@ -204,7 +224,6 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
-  userLogged: null,
   loadingLayer: false,
   layerError: false,
 };
