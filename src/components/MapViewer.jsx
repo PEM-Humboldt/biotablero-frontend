@@ -1,4 +1,10 @@
-import { Map, TileLayer, WMSTileLayer } from 'react-leaflet';
+import {
+  Map,
+  TileLayer,
+  WMSTileLayer,
+  FeatureGroup,
+  } from 'react-leaflet';
+import { EditControl } from 'react-leaflet-draw';
 import { Modal } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
@@ -150,6 +156,9 @@ class MapViewer extends React.Component {
             </button>
           </div>
         </Modal>
+        <FeatureGroup>
+          <EditControl>Hola</EditControl>
+        </FeatureGroup>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
