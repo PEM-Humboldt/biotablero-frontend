@@ -5373,12 +5373,14 @@ __metadata:
     eslint-plugin-react-hooks: ^1.7.0
     husky: ^4.3.6
     leaflet: 1.4.0
+    leaflet-draw: ^1.0.4
     lint-staged: ^10.5.3
     prop-types: 15.6.2
     react: ^17.0.1
     react-dom: ^17.0.1
     react-json-to-csv: ^1.0.4
     react-leaflet: 2.0.0
+    react-leaflet-draw: ^0.19.8
     react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
@@ -9353,6 +9355,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-deep-equal@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "fast-deep-equal@npm:2.0.1"
+  checksum: ad315b79abe335f25271821447bdbbca5d7a6e5930da498fbb2628d28399e958a679adddbb665f5b2943bfd83d9dd375ac5fb45e9004c9516177008ebb7efc16
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^3.1.1":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -13321,6 +13330,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"leaflet-draw@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "leaflet-draw@npm:1.0.4"
+  checksum: 0029a41dd104446c42c900c289c06a2cd7edec6219347ff54afc20f5cd9a9a148acd812a25422d4678694b284d473b91452f4d65232b4bd7516731f049550d5f
+  languageName: node
+  linkType: hard
+
 "leaflet@npm:1.4.0":
   version: 1.4.0
   resolution: "leaflet@npm:1.4.0"
@@ -13503,7 +13519,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.0.0":
+"lodash-es@npm:^4.0.0, lodash-es@npm:^4.17.15":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: ff0e7bb9595594d8b9c32fbe15912eaeefd83266f6e6872fbc498533cf8c2f039d12d37034b33965f1c04ef66ec1d6da83377c77e84e14c51a137901bb50865e
@@ -17344,6 +17360,22 @@ fsevents@^1.2.7:
   dependencies:
     json-to-csv-export: ^1.0.2
   checksum: 935cb0846d7c1cf43ae4a41b784227e33c9a67373125a8243d62092a2323c0973b5e07c08aab6253229e4d2ebb5ecb7f649e6f904436283d95bbc7086e8ab66f
+  languageName: node
+  linkType: hard
+
+"react-leaflet-draw@npm:^0.19.8":
+  version: 0.19.8
+  resolution: "react-leaflet-draw@npm:0.19.8"
+  dependencies:
+    fast-deep-equal: ^2.0.1
+    lodash-es: ^4.17.15
+  peerDependencies:
+    leaflet: ^1.3.0
+    leaflet-draw: ^1.0.3
+    prop-types: ^15.5.2
+    react: ^16.3.0 || ^17.0.0
+    react-leaflet: ^2.0.0
+  checksum: 808a933a384078e1df33ebed3ceb33bb15294423bb2232cb270312365225200d49c31219b059b9de4f31622237c1394ffe5fec8c5a161f12d79376eea75052da
   languageName: node
   linkType: hard
 
