@@ -60,6 +60,7 @@ class Landscape extends React.Component {
 
   render() {
     const { areaId } = this.context;
+    const { childMap } = this.state;
     const initialArray = [
       {
         label: {
@@ -75,7 +76,10 @@ class Landscape extends React.Component {
           name: 'Huella humana',
         },
         component: HumanFootprint,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+        componentProps: {
+          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          openTab: childMap.hf,
+        },
       },
       {
         label: {
@@ -83,7 +87,10 @@ class Landscape extends React.Component {
           name: 'Bosques',
         },
         component: Forest,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+        componentProps: {
+          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          openTab: childMap.forest,
+        },
       },
       {
         label: {
@@ -91,7 +98,10 @@ class Landscape extends React.Component {
           name: 'Conectividad de Áreas Protegidas',
         },
         component: PAConnectivity,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+        componentProps: {
+          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          openTab: childMap.connectivity,
+        },
       },
     ];
 
