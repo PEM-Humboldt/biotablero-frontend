@@ -31,9 +31,9 @@ const Description = () => (
       <i>
         2
       </i>
-      {' Dibuja tu propia '}
+      {' Dibuja un '}
       <b>
-        línea o polígono
+        polígono
       </b>
     </p>
     <p>
