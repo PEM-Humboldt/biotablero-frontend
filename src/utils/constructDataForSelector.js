@@ -39,13 +39,6 @@ const constructDataForSearch = (geofences) => {
     {
       id: 'panel2',
       detailId: 'panel2',
-      label: 'Subir polígono',
-      iconOption: 'upload',
-      disabled: true,
-    },
-    {
-      id: 'panel3',
-      detailId: 'panel3',
       label: 'Dibujar polígono / Línea',
       iconOption: 'edit',
       disabled: true,
