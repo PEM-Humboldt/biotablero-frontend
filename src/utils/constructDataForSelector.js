@@ -40,8 +40,17 @@ const constructDataForSearch = (geofences) => {
       id: 'panel2',
       idLabel: 'panel2',
       detailId: 'panel2',
-      label: 'Dibujar polígono / Línea',
+      label: 'Dibujar polígono',
       iconOption: 'edit',
+      options: [
+        {
+          id: 'Test',
+          idLabel: 'ayuda',
+          label: 'Ahora puede utilizar las herramientas de edición que están sobre el mapa',
+          detailId: 'area',
+          disabled: true,
+        },
+      ],
     },
     {
       id: 'panel3',
