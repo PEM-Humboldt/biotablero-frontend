@@ -38,10 +38,10 @@ const constructDataForSearch = (geofences) => {
     },
     {
       id: 'panel2',
+      idLabel: 'panel2',
       detailId: 'panel2',
       label: 'Dibujar polígono / Línea',
       iconOption: 'edit',
-      disabled: true,
     },
   ];
   return geofencesArray;
