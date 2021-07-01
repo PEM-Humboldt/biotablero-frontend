@@ -43,6 +43,13 @@ const constructDataForSearch = (geofences) => {
       label: 'Dibujar polígono / Línea',
       iconOption: 'edit',
     },
+    {
+      id: 'panel3',
+      detailId: 'panel3',
+      label: 'Subir polígono',
+      iconOption: 'upload',
+      disabled: true,
+    },
   ];
   return geofencesArray;
 };
