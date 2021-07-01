@@ -1387,14 +1387,22 @@ overflow: auto;
 }
 
 .leaflet-control-zoom a {
-  background-color: #e84a5f !important;
-  color: #fff !important;
-  font-weight: 300 !important;
-  border-radius: 0 !important;
+	background-color: #e84a5f !important;
+	color: #fff !important;
+	font-weight: 300 !important;
+	border-radius: 0 !important;
+}
+
+.leaflet-draw a {
+	background-color: #e84a5f !important;
+	color: #fff !important;
+	background-blend-mode: multiply;
+	font-weight: 300 !important;
+	border-radius: 0 !important;
 }
 
 .leaflet-bar {
-  border: 0 !important;
+	border: 0 !important;
 }
 
 .selector-expanded > div:nth-child(1),
