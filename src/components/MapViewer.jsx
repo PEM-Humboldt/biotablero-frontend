@@ -43,24 +43,10 @@ class MapViewer extends React.Component {
       activeLayers: [],
       update: false,
       openErrorModal: true,
-      userLogged: {},
+      eraseDraw: false,
     };
 
     this.mapRef = React.createRef();
-  }
-
-  componentDidMount() {
-    const { user } = this.context;
-    if (user && user.company && user.username) {
-      this.setState(
-        {
-          userLogged: {
-            id: user.company.id,
-            currentCompany: user.username.toUpperCase(),
-          },
-        },
-      );
-    }
   }
 
   componentDidUpdate() {
@@ -115,15 +101,49 @@ class MapViewer extends React.Component {
     }
   }
 
+  onCreated = (e) => {
+    const { eraseDraw } = this.state;
+    const { createPolygon } = this.props;
+    console.log('Creado: ', e, 'Capas: ', this.mapRef, 'Estado: ', eraseDraw);
+    if (!eraseDraw) {
+      createPolygon(e.layer);
+    } else {
+      this.setState({
+        eraseDraw: true,
+      });
+    }
+  }
+
+  onEdited= (e) => {
+    const { savePolygon } = this.props;
+    // eslint-disable-next-line no-underscore-dangle
+    savePolygon(e.layers._layers);
+    console.log('Editado: ', e);
+  }
+
+  onDeleted= (e) => {
+    const { deletePolygon } = this.props;
+    // eslint-disable-next-line no-underscore-dangle
+    deletePolygon();
+    console.log('Eliminado: ', e);
+  }
+
   render() {
     const {
+      drawEnabled,
       geoServerUrl,
       loadingLayer,
       layerError,
     } = this.props;
-    const { openErrorModal, userLogged } = this.state;
+    const { openErrorModal, eraseDraw } = this.state;
+    const { user } = this.context;
     return (
-      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+      <Map
+        ref={this.mapRef}
+        center={config.params.center}
+        zoom={5}
+        onClick={this.onMapClick}
+      >
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -171,9 +191,33 @@ class MapViewer extends React.Component {
             </button>
           </div>
         </Modal>
-        <FeatureGroup>
-          <EditControl />
-        </FeatureGroup>
+        { (drawEnabled) ? (
+          <FeatureGroup>
+            <EditControl
+              ref={(editRef) => {
+                // eslint-disable-next-line no-underscore-dangle
+                    console.log(editRef ? editRef.leafletElement._map._layers : '');
+                if (eraseDraw) {
+                    // eslint-disable-next-line no-underscore-dangle
+                  console.log('¿Cómo borrar?', editRef ? editRef.leafletElement._map._layers : '');
+                }
+                // eslint-disable-next-line no-underscore-dangle
+                    console.log(editRef ? editRef.leafletElement._map._layers : '');
+              }}
+              onCreated={this.onCreated}
+              onEdited={this.onEdited}
+              onDeleted={this.onDeleted}
+              draw={{
+                polyline: false,
+                rectangle: false,
+                circle: false,
+                marker: false,
+                circlemarker: false,
+              }}
+            />
+          </FeatureGroup>
+        )
+        : '' }
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -193,15 +237,14 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        {
-          console.log(userLogged.id)
-        }
-        { (userLogged && userLogged.id === 1) ? (
+        { (user && user.id === 1) ? (
           // TODO: Implementing WMSTileLayer load from Compensator
           <WMSTileLayer
             layers="Biotablero:Regiones_geb"
-            url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
-            opacity={0.2}
+            format="image/png"
+            url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
+            opacity={0.4}
+            transparent
             alt="Regiones"
           />
         )
@@ -214,6 +257,10 @@ class MapViewer extends React.Component {
 MapViewer.contextType = AppContext;
 
 MapViewer.propTypes = {
+  drawEnabled: PropTypes.bool,
+  createPolygon: PropTypes.func,
+  savePolygon: PropTypes.func,
+  deletePolygon: PropTypes.func,
   geoServerUrl: PropTypes.string.isRequired,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
@@ -224,6 +271,10 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
+  drawEnabled: true,
+  createPolygon: () => {},
+  savePolygon: () => {},
+  deletePolygon: () => {},
   loadingLayer: false,
   layerError: false,
 };
