@@ -245,8 +245,8 @@ class Search extends Component {
           },
         );
         break;
-      case 'Guardar':
-        if (localPolygon.id) this.savePolygon(localPolygon);
+      case 'Confirmar':
+        if (localPolygon.id) this.confirmPolygon(localPolygon);
         else this.deletePolygon();
         break;
       case 'Borrar':
@@ -278,7 +278,7 @@ class Search extends Component {
    *
    * @param {Object} polygon polygons drawn in MapViewer
    */
-  savePolygon = (polygon) => {
+  confirmPolygon = (polygon) => {
     const { localPolygon } = this.state;
     if (polygon[localPolygon.id]) {
       const { _leaflet_id: polygonId, _latlngs: polygonLatlngs } = polygon[localPolygon.id];
@@ -854,8 +854,8 @@ class Search extends Component {
         return newState;
       });
     } else if (show) {
-      if (idLayer === 'Guardar' && localPolygon) {
-        RestAPI.requestCustomGeometry(localPolygon.id);
+      if (idLayer === 'Confirmar' && localPolygon) {
+        RestAPI.requestCustomGeometryData(localPolygon);
       } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
@@ -1048,7 +1048,7 @@ class Search extends Component {
               drawEnabled={drawEnabled}
               editDrawEnabled={editDrawEnabled}
               createPolygon={this.createPolygon}
-              savePolygon={this.savePolygon}
+              confirmPolygon={this.confirmPolygon}
               deletePolygon={this.deletePolygon}
             />
             {activeLayer && (

@@ -42,13 +42,13 @@ const constructDataForSearch = (geofences) => {
       detailId: 'panel2',
       label: 'Dibujar polígono',
       iconOption: 'edit',
-      text: '<Texto de ayuda>',
+      text: 'Usa el botón de polígono dentro del mapa, finaliza o cierra el polígono y confirma cuando sea el polígono a consultar',
       options: [
         {
-          id: 'Guardar',
-          idLabel: 'Guardar polígono',
-          label: 'Guardar polígono',
-          iconOption: 'save',
+          id: 'Confirmar',
+          idLabel: 'Confirmar polígono',
+          label: 'Confirmar polígono',
+          iconOption: 'confirm',
           detailId: 'area',
         },
         {

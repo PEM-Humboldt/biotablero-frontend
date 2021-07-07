@@ -106,9 +106,9 @@ class MapViewer extends React.Component {
   }
 
   onEdited= (e) => {
-    const { savePolygon } = this.props;
+    const { confirmPolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
-    savePolygon(e.layers._layers);
+    confirmPolygon(e.layers._layers);
   }
 
   onDeleted= () => {
@@ -250,7 +250,7 @@ MapViewer.propTypes = {
   drawEnabled: PropTypes.bool,
   editDrawEnabled: PropTypes.bool,
   createPolygon: PropTypes.func,
-  savePolygon: PropTypes.func,
+  confirmPolygon: PropTypes.func,
   deletePolygon: PropTypes.func,
   geoServerUrl: PropTypes.string.isRequired,
   loadingLayer: PropTypes.bool,
@@ -265,7 +265,7 @@ MapViewer.defaultProps = {
   drawEnabled: false,
   editDrawEnabled: false,
   createPolygon: () => {},
-  savePolygon: () => {},
+  confirmPolygon: () => {},
   deletePolygon: () => {},
   loadingLayer: false,
   layerError: false,

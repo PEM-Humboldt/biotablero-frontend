@@ -58,11 +58,11 @@ class Selector extends React.Component {
 
   secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
-    if (subPanel === 'Guardar') {
+    if (subPanel === 'Confirmar') {
       this.setState({
         expanded: null,
       });
-      handlers[3]('Guardar');
+      handlers[3]('Confirmar');
     } if (subPanel === 'Borrar') {
       this.setState({
         expanded: null,
@@ -190,7 +190,7 @@ class Selector extends React.Component {
                           (((subIconOption === 'add') && <AddIcon />)
                           || ((subIconOption === 'upload') && <CloudUploadIcon />)
                           || ((subIconOption === 'edit') && <EditIcon />)
-                          || ((subIconOption === 'save') && <CheckCircle />)
+                          || ((subIconOption === 'confirm') && <CheckCircle />)
                           || ((subIconOption === 'remove') && <HighlightOff />)
                           || (<ExpandMoreIcon />))
                         }
