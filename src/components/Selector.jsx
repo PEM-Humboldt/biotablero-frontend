@@ -35,13 +35,11 @@ class Selector extends React.Component {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
-    console.log('Panel: ', panel);
     if (panel === 'addProject') {
       this.setState({
         expanded: null,
       });
     } if (panel === 'draw') {
-      console.log('Para crear: ', handlers);
       handlers[3]('Crear');
       this.setState((prevState) => ({
         expanded: expandedPanel,
@@ -66,13 +64,14 @@ class Selector extends React.Component {
       });
       handlers[3]('Guardar');
     } if (subPanel === 'Borrar') {
-      console.log('Para borrar');
+      this.setState({
+        expanded: null,
+      });
       handlers[3]('Borrar');
     } else {
       this.setState({
         subExpanded: expanded ? subPanel : false,
       });
-      console.log('Cerré guardar');
       handlers[1](subPanel, expanded);
     }
   };
