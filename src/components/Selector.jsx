@@ -47,6 +47,7 @@ class Selector extends React.Component {
         subExpanded: null,
       }));
     } else {
+      handlers[3]('Borrar');
       this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
