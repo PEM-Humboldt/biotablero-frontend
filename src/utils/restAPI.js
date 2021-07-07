@@ -635,11 +635,21 @@ class RestAPI {
     }
   }
 
-  static requestNOSLayer(areaType, areaId) {
+  /**
+   * Get the layer of number of speceis for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestNOSLayer(areaType, areaId, group) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
-        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}`,
+        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}&group=${group}`,
         { cancelToken: source.token, responseType: 'arraybuffer' },
         true,
       ),
