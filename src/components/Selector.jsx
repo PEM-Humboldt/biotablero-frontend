@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { CheckCircle, HighlightOff } from '@material-ui/icons';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -36,10 +35,19 @@ class Selector extends React.Component {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
+    console.log('Panel: ', panel);
     if (panel === 'addProject') {
       this.setState({
         expanded: null,
       });
+    } if (panel === 'draw') {
+      console.log('Para crear: ', handlers);
+      handlers[3]('Crear');
+      this.setState((prevState) => ({
+        expanded: expandedPanel,
+        selected: expanded ? panel : prevState.expanded,
+        subExpanded: null,
+      }));
     } else {
       this.setState((prevState) => ({
         expanded: expandedPanel,
@@ -52,16 +60,21 @@ class Selector extends React.Component {
 
   secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
-    this.setState({
-      subExpanded: expanded ? subPanel : false,
-    });
-    handlers[1](subPanel, expanded);
-  };
-
-  drawPolygon = () => {
-    console.log('si valida');
-    const { handlers } = this.props;
-    handlers[2]();
+    if (subPanel === 'Guardar') {
+      this.setState({
+        expanded: null,
+      });
+      handlers[3]('Guardar');
+    } if (subPanel === 'Borrar') {
+      console.log('Para borrar');
+      handlers[3]('Borrar');
+    } else {
+      this.setState({
+        subExpanded: expanded ? subPanel : false,
+      });
+      console.log('Cerré guardar');
+      handlers[1](subPanel, expanded);
+    }
   };
 
   renderInnerElement = (parent, listSize, data) => (obj, index) => {
@@ -161,9 +174,7 @@ class Selector extends React.Component {
                     id: subId,
                     label: subLabel,
                     disabled: subDisabled,
-                    stopPropagation: subStopPropagation,
                     iconOption: subIconOption,
-                    text: subText,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
@@ -180,29 +191,17 @@ class Selector extends React.Component {
                           (((subIconOption === 'add') && <AddIcon />)
                           || ((subIconOption === 'upload') && <CloudUploadIcon />)
                           || ((subIconOption === 'edit') && <EditIcon />)
-                          || ((subIconOption === 'save'))
-                          || ((subIconOption === 'remove'))
+                          || ((subIconOption === 'save') && <CheckCircle />)
+                          || ((subIconOption === 'remove') && <HighlightOff />)
                           || (<ExpandMoreIcon />))
                         }
                       >
-                        {(subStopPropagation) && (
-                          <FormControlLabel
-                            control={
-                              ((subIconOption === 'save') && <CheckCircle />)
-                              || ((subIconOption === 'remove') && <HighlightOff />)
-                            }
-                            label={subLabel}
-                            onClick={(event) => event.stopPropagation()}
-                            onFocus={(event) => event.stopPropagation()}
-                          />
-)}
-                        {(!subStopPropagation) && (subLabel)}
+                        {subLabel}
                       </AccordionSummary>
                       <AccordionDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
                         {subOptions.length < 7
                           ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
                           : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
-                        {subText || ''}
                       </AccordionDetails>
                     </Accordion>
                   );

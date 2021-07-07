@@ -37,7 +37,7 @@ const constructDataForSearch = (geofences) => {
       options: areasArray,
     },
     {
-      id: 'panel2',
+      id: 'draw',
       idLabel: 'panel2',
       detailId: 'panel2',
       label: 'Dibujar polígono',
@@ -50,8 +50,6 @@ const constructDataForSearch = (geofences) => {
           label: 'Guardar polígono',
           iconOption: 'save',
           detailId: 'area',
-          stopPropagation: true,
-          text: 'Polígono guardado',
         },
         {
           id: 'Borrar',
@@ -59,8 +57,6 @@ const constructDataForSearch = (geofences) => {
           label: 'Borrar polígono',
           iconOption: 'remove',
           detailId: 'area',
-          stopPropagation: true,
-          text: 'Polígono borrado',
         },
       ],
     },
