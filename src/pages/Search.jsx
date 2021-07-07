@@ -54,6 +54,9 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      drawEnabled: false,
+      editDrawEnabled: false,
+      localPolygon: {},
     };
   }
 
@@ -219,6 +222,84 @@ class Search extends Component {
       fillColor: matchColor(type)(color),
       fillOpacity: 0.6,
     };
+  }
+
+  /** ******************* */
+  /** LISTENERS FOR DRAWS */
+  /** ******************* */
+
+  /**
+   * Handle events for a draw in MapViewer
+   *
+   * @param {String} polygon option to drawn in MapViewer
+   */
+  drawPolygon = (option) => {
+    const { localPolygon, drawEnabled } = this.state;
+    switch (option) {
+      case 'Crear':
+        this.setState(
+          {
+            drawEnabled: !drawEnabled,
+            editDrawEnabled: !drawEnabled,
+            localPolygon: {},
+          },
+        );
+        break;
+      case 'Guardar':
+        if (localPolygon.id) this.savePolygon(localPolygon);
+        else this.deletePolygon();
+        break;
+      case 'Borrar':
+        this.deletePolygon();
+      break;
+      default:
+        break;
+    }
+  }
+
+  /**
+   * Load object drawn in MapViewer in Search state
+   *
+   * @param {Object} polygon polygons drawn in MapViewer
+   */
+  createPolygon = (polygon) => {
+    // eslint-disable-next-line no-underscore-dangle
+    const { _leaflet_id: polygonId } = polygon;
+    this.setState(
+      {
+        localPolygon: { id: polygonId, latlngs: polygon.getLatLngs()[0] },
+        editDrawEnabled: false,
+      },
+    );
+  }
+
+  /**
+   * Save in database the object drawn in MapViewer and saved Search state
+   *
+   * @param {Object} polygon polygons drawn in MapViewer
+   */
+  savePolygon = (polygon) => {
+    const { localPolygon } = this.state;
+    if (polygon[localPolygon.id]) {
+      const { _leaflet_id: polygonId, _latlngs: polygonLatlngs } = polygon[localPolygon.id];
+      this.setState(
+      { localPolygon: { id: polygonId, latlngs: polygonLatlngs[0] } },
+      );
+    }
+  }
+
+  /**
+   * Delete the object drawn in MapViewer and saved Search state
+   *
+   * @param {Object} polygon polygons drawn in MapViewer
+   */
+  deletePolygon = () => {
+      this.setState(
+        {
+          localPolygon: {},
+          drawEnabled: false,
+        },
+      );
   }
 
   /** ************************ */
@@ -747,7 +828,7 @@ class Search extends Component {
    * @param {Boolean} show whether to show or hide the layer
    */
   loadSecondLevelLayer = (idLayer, show) => {
-    const { layers, requestSource } = this.state;
+    const { layers, requestSource, localPolygon } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
@@ -773,6 +854,9 @@ class Search extends Component {
         return newState;
       });
     } else if (show) {
+      if (idLayer === 'Guardar' && localPolygon) {
+        RestAPI.requestCustomGeometry(localPolygon.id);
+      } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
@@ -804,6 +888,7 @@ class Search extends Component {
           });
         })
         .catch(() => {});
+      }
     }
   }
 
@@ -913,6 +998,8 @@ class Search extends Component {
       layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
+      drawEnabled,
+      editDrawEnabled,
     } = this.state;
 
     const {
@@ -958,6 +1045,11 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
+              drawEnabled={drawEnabled}
+              editDrawEnabled={editDrawEnabled}
+              createPolygon={this.createPolygon}
+              savePolygon={this.savePolygon}
+              deletePolygon={this.deletePolygon}
             />
             {activeLayer && (
               <div className="mapsTitle">
@@ -971,6 +1063,7 @@ class Search extends Component {
                     () => {},
                     this.secondLevelChange,
                     this.innerElementChange,
+                    this.drawPolygon,
                   ]}
                   description={Description()}
                   data={geofencesArray}

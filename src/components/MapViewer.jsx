@@ -43,7 +43,6 @@ class MapViewer extends React.Component {
       activeLayers: [],
       update: false,
       openErrorModal: true,
-      eraseDraw: false,
     };
 
     this.mapRef = React.createRef();
@@ -102,40 +101,31 @@ class MapViewer extends React.Component {
   }
 
   onCreated = (e) => {
-    const { eraseDraw } = this.state;
     const { createPolygon } = this.props;
-    console.log('Creado: ', e, 'Capas: ', this.mapRef, 'Estado: ', eraseDraw);
-    if (!eraseDraw) {
-      createPolygon(e.layer);
-    } else {
-      this.setState({
-        eraseDraw: true,
-      });
-    }
+    createPolygon(e.layer);
   }
 
   onEdited= (e) => {
     const { savePolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
     savePolygon(e.layers._layers);
-    console.log('Editado: ', e);
   }
 
-  onDeleted= (e) => {
+  onDeleted= () => {
     const { deletePolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
     deletePolygon();
-    console.log('Eliminado: ', e);
   }
 
   render() {
     const {
       drawEnabled,
+      editDrawEnabled,
       geoServerUrl,
       loadingLayer,
       layerError,
     } = this.props;
-    const { openErrorModal, eraseDraw } = this.state;
+    const { openErrorModal } = this.state;
     const { user } = this.context;
     return (
       <Map
@@ -194,25 +184,25 @@ class MapViewer extends React.Component {
         { (drawEnabled) ? (
           <FeatureGroup>
             <EditControl
-              ref={(editRef) => {
-                // eslint-disable-next-line no-underscore-dangle
-                    console.log(editRef ? editRef.leafletElement._map._layers : '');
-                if (eraseDraw) {
-                    // eslint-disable-next-line no-underscore-dangle
-                  console.log('¿Cómo borrar?', editRef ? editRef.leafletElement._map._layers : '');
-                }
-                // eslint-disable-next-line no-underscore-dangle
-                    console.log(editRef ? editRef.leafletElement._map._layers : '');
-              }}
               onCreated={this.onCreated}
-              onEdited={this.onEdited}
-              onDeleted={this.onDeleted}
+              edit={{ edit: false, remove: false }}
               draw={{
                 polyline: false,
                 rectangle: false,
                 circle: false,
                 marker: false,
                 circlemarker: false,
+                polygon: ((editDrawEnabled) && ({
+                  allowIntersection: false,
+                  drawError: {
+                    color: '#e84a5f',
+                    message: '<strong>No se permite polígonos con intersecciones<strong>',
+                  },
+                  shapeOptions: {
+                    color: '#2a363b',
+                    clickable: true,
+                  },
+                })),
               }}
             />
           </FeatureGroup>
@@ -258,6 +248,7 @@ MapViewer.contextType = AppContext;
 
 MapViewer.propTypes = {
   drawEnabled: PropTypes.bool,
+  editDrawEnabled: PropTypes.bool,
   createPolygon: PropTypes.func,
   savePolygon: PropTypes.func,
   deletePolygon: PropTypes.func,
@@ -271,7 +262,8 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
-  drawEnabled: true,
+  drawEnabled: false,
+  editDrawEnabled: false,
   createPolygon: () => {},
   savePolygon: () => {},
   deletePolygon: () => {},
