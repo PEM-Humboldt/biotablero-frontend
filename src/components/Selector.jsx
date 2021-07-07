@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import { CheckCircle, HighlightOff } from '@material-ui/icons';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -122,7 +123,7 @@ class Selector extends React.Component {
         </div>
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
-            id, label, disabled, iconOption, detailId, idLabel,
+            id, label, disabled, iconOption, detailId, idLabel, text,
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
@@ -147,9 +148,15 @@ class Selector extends React.Component {
               <AccordionDetails
                 id={detailId}
               >
+                {text || ''}
                 {options.map((secondLevel) => {
                   const {
-                    id: subId, label: subLabel, disabled: subDisabled,
+                    id: subId,
+                    label: subLabel,
+                    disabled: subDisabled,
+                    propagation: subPropagation,
+                    iconOption: subIconOption,
+                    text: subText,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
@@ -163,11 +170,14 @@ class Selector extends React.Component {
                     >
                       <AccordionSummary
                         expandIcon={
-                          (((iconOption === 'add') && <AddIcon />)
-                          || ((iconOption === 'upload') && <CloudUploadIcon />)
-                          || ((iconOption === 'edit') && <EditIcon />)
+                          (((subIconOption === 'add') && <AddIcon />)
+                          || ((subIconOption === 'upload') && <CloudUploadIcon />)
+                          || ((subIconOption === 'edit') && <EditIcon />)
+                          || ((subIconOption === 'save') && <CheckCircle />)
+                          || ((subIconOption === 'remove') && <HighlightOff />)
                           || (<ExpandMoreIcon />))
                         }
+                        onClick={(subPropagation && ((event) => event.stopPropagation()))}
                       >
                         {subLabel}
                       </AccordionSummary>
@@ -175,6 +185,7 @@ class Selector extends React.Component {
                         {subOptions.length < 7
                           ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
                           : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
+                        {subText || ''}
                       </AccordionDetails>
                     </Accordion>
                   );
@@ -196,6 +207,8 @@ Selector.propTypes = {
     expandIcon: PropTypes.Component,
     detailId: PropTypes.string,
     options: PropTypes.array,
+    propagation: PropTypes.bool,
+    text: PropTypes.string,
   })),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
