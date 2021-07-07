@@ -408,17 +408,18 @@ class RestAPI {
   /**
    * Request data available to custom geometry
    *
-   * @param {String} polygon polygon saved
+   * @param {Object} polygon polygon saved
    *
-   * @return {Object} Including Promise with layer object to load in map and source reference to
-   * cancel the request
+   * @return {Object} with data related to the polygon
    */
   static requestCustomGeometryData(polygon) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`polygon/${polygon}`, { cancelToken: source.token }),
-      source,
-    };
+    /** TODO: implement all this endpoint and also the backend response
+     * to find information according to id and latLngs in polygon
+     * */
+    return RestAPI.makePostRequest('polygon', {
+      id_polygon: polygon.id,
+      latLngs: polygon.latLngs,
+    });
   }
 
   /**
