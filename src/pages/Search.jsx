@@ -39,6 +39,10 @@ const tooltipLabel = {
   no_bosque: 'No bosque',
   scialta: 'Alto',
   scibaja_moderada: 'Bajo Moderado',
+  total: 'Total',
+  endemic: 'Endémicas',
+  invasive: 'Invasoras',
+  threatened: 'Amenazadas',
 };
 
 class Search extends Component {
@@ -722,7 +726,7 @@ class Search extends Component {
           );
           newActiveLayer = {
             id: group,
-            name: 'Riqueza - Número de especies',
+            name: `Número de especies - ${tooltipLabel[group]}`,
             legend: {
               from: '3',
               to: '2300',
