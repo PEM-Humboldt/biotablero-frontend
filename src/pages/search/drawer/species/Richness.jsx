@@ -8,6 +8,7 @@ import Accordion from 'pages/search/drawer/Accordion';
 const Richness = (props) => {
   const {
     handlerAccordionGeometry,
+    openTab,
   } = props;
 
   const componentsArray = [
@@ -15,6 +16,7 @@ const Richness = (props) => {
       label: {
         id: 'numberOfSpecies',
         name: 'Número de especies',
+        collapsed: openTab !== 'numberOfSpecies',
       },
       component: NumberOfSpecies,
     },
@@ -22,6 +24,7 @@ const Richness = (props) => {
       label: {
         id: 'speciesRecordsGaps',
         name: 'Vacíos en registros de especies',
+        collapsed: openTab !== 'speciesRecordsGaps',
       },
       component: SpeciesRecordsGaps,
     },
@@ -41,10 +44,12 @@ const Richness = (props) => {
 
 Richness.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
+  openTab: PropTypes.string,
 };
 
 Richness.defaultProps = {
   handlerAccordionGeometry: () => {},
+  openTab: '',
 };
 
 export default Richness;
