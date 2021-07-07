@@ -406,6 +406,22 @@ class RestAPI {
   /** ******************** */
 
   /**
+   * Request custom geometry by id
+   *
+   * @param {String} polygonId polygon id saved
+   *
+   * @return {Object} Including Promise with layer object to load in map and source reference to
+   * cancel the request
+   */
+  static requestCustomGeometry(polygonId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`polygon/${polygonId}`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
    * Request the geometry of the biomes by EA
    * @param {String} eaId id ea to request
    *
