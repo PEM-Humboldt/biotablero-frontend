@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import { CheckCircle, HighlightOff } from '@material-ui/icons';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -55,6 +56,12 @@ class Selector extends React.Component {
       subExpanded: expanded ? subPanel : false,
     });
     handlers[1](subPanel, expanded);
+  };
+
+  drawPolygon = () => {
+    console.log('si valida');
+    const { handlers } = this.props;
+    handlers[2]();
   };
 
   renderInnerElement = (parent, listSize, data) => (obj, index) => {
@@ -154,7 +161,7 @@ class Selector extends React.Component {
                     id: subId,
                     label: subLabel,
                     disabled: subDisabled,
-                    propagation: subPropagation,
+                    stopPropagation: subStopPropagation,
                     iconOption: subIconOption,
                     text: subText,
                   } = secondLevel;
@@ -173,13 +180,23 @@ class Selector extends React.Component {
                           (((subIconOption === 'add') && <AddIcon />)
                           || ((subIconOption === 'upload') && <CloudUploadIcon />)
                           || ((subIconOption === 'edit') && <EditIcon />)
-                          || ((subIconOption === 'save') && <CheckCircle />)
-                          || ((subIconOption === 'remove') && <HighlightOff />)
+                          || ((subIconOption === 'save'))
+                          || ((subIconOption === 'remove'))
                           || (<ExpandMoreIcon />))
                         }
-                        onClick={(subPropagation && ((event) => event.stopPropagation()))}
                       >
-                        {subLabel}
+                        {(subStopPropagation) && (
+                          <FormControlLabel
+                            control={
+                              ((subIconOption === 'save') && <CheckCircle />)
+                              || ((subIconOption === 'remove') && <HighlightOff />)
+                            }
+                            label={subLabel}
+                            onClick={(event) => event.stopPropagation()}
+                            onFocus={(event) => event.stopPropagation()}
+                          />
+)}
+                        {(!subStopPropagation) && (subLabel)}
                       </AccordionSummary>
                       <AccordionDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
                         {subOptions.length < 7

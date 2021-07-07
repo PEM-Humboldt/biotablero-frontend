@@ -50,7 +50,7 @@ const constructDataForSearch = (geofences) => {
           label: 'Guardar polígono',
           iconOption: 'save',
           detailId: 'area',
-          propagation: false,
+          stopPropagation: true,
           text: 'Polígono guardado',
         },
         {
@@ -59,7 +59,7 @@ const constructDataForSearch = (geofences) => {
           label: 'Borrar polígono',
           iconOption: 'remove',
           detailId: 'area',
-          propagation: false,
+          stopPropagation: true,
           text: 'Polígono borrado',
         },
       ],
