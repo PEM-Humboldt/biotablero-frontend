@@ -421,6 +421,13 @@ class Search extends Component {
         this.shutOffLayer('paramoPAConn');
         this.switchLayer('dryForestPAConn');
         break;
+      case 'numberOfSpecies': {
+        const { activeLayer: { id: activeLayer } } = this.state;
+        if (activeLayer !== chartSection) {
+          this.switchLayer(`numberOfSpecies-${chartSection}`);
+        }
+      }
+        break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
@@ -569,22 +576,6 @@ class Search extends Component {
           id: 'geofence',
         };
         break;
-      case 'numberOfSpecies':
-        isRaster = true;
-        request = () => RestAPI.requestNOSLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        newActiveLayer = {
-          name: 'Riqueza - Número de especies',
-          legend: {
-            from: 3,
-            to: 2300,
-            fromColor: matchColor('richnessNos')('legend-from'),
-            toColor: matchColor('richnessNos')('legend-to'),
-          },
-        };
-        break;
       case 'forestIntegrity':
         this.switchLayer('geofence', () => {
           this.setState({
@@ -717,6 +708,27 @@ class Search extends Component {
           newActiveLayer = {
             id: layerType,
             name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
+          };
+        } else if (/numberOfSpecies*/.test(layerType)) {
+          let group = 'total';
+          const selected = layerType.match(/numberOfSpecies-(\w+)/);
+          if (selected) [, group] = selected;
+
+          isRaster = true;
+          request = () => RestAPI.requestNOSLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+            group,
+          );
+          newActiveLayer = {
+            id: group,
+            name: 'Riqueza - Número de especies',
+            legend: {
+              from: '3',
+              to: '2300',
+              fromColor: matchColor('richnessNos')('legend-from'),
+              toColor: matchColor('richnessNos')('legend-to'),
+            },
           };
         }
         break;

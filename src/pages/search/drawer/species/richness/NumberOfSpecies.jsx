@@ -113,7 +113,10 @@ class NumberOfSpecies extends React.Component {
   };
 
   render() {
-    const { areaId } = this.context;
+    const {
+      areaId,
+      handlerClickOnGraph,
+    } = this.context;
     const {
       showInfoGraph,
       message,
@@ -172,7 +175,13 @@ class NumberOfSpecies extends React.Component {
                 data={bar}
                 graphType="singleBullet"
                 colors={matchColor('richnessNos')}
-                onClickGraphHandler={() => { this.setState({ selected: bar.id }); }}
+                onClickGraphHandler={() => {
+                  this.setState({ selected: bar.id });
+                  handlerClickOnGraph({
+                    chartType: 'numberOfSpecies',
+                    chartSection: bar.id,
+                  });
+                }}
               />
             </div>
           ))}
