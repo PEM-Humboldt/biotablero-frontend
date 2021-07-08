@@ -600,44 +600,7 @@ class Search extends Component {
         });
         break;
       case 'currentPAConn':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-            requestSource: null,
-          });
-          request = () => RestAPI.requestDPCLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
-          newActiveLayer = {
-            id: layerType,
-            name: 'Conectividad de áreas protegidas',
-          };
-        });
-        break;
       case 'timelinePAConn':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-            requestSource: null,
-          });
-          request = () => RestAPI.requestDPCLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-          layerKey = 'currentPAConn';
-          newActiveLayer = {
-            id: 'currentPAConn',
-            name: 'Conectividad de áreas protegidas',
-          };
-        });
-        break;
       case 'currentSEPAConn':
         this.switchLayer('geofence', () => {
           this.setState({
@@ -654,7 +617,7 @@ class Search extends Component {
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
-            name: 'Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)',
+            name: `Conectividad de áreas protegidas${(layerType === 'currentSEPAConn') ? ' y Ecosistemas estratégicos (EE)' : ''}`,
           };
         });
         break;
