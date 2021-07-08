@@ -636,7 +636,7 @@ class RestAPI {
   }
 
   /**
-   * Get the layer of number of speceis for the specified group
+   * Get the layer of number of species for the specified group
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
@@ -655,6 +655,22 @@ class RestAPI {
       ),
       source,
     };
+  }
+
+  /**
+   * Get the threshold values for the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestNOSLayerThresholds(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+    );
   }
 
   /** ******************* */

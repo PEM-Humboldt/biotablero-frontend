@@ -488,8 +488,9 @@ class Search extends Component {
    * Switch layer based on graph showed
    *
    * @param {String} layerType layer type
+   * @param {function} callback operations to execute sequentially
    */
-  switchLayer = (layerType, callback = () => {}) => {
+  switchLayer = async (layerType, callback = () => {}) => {
     const {
       selectedAreaId,
       selectedAreaTypeId,
@@ -687,16 +688,26 @@ class Search extends Component {
             selectedAreaId,
             group,
           );
-          newActiveLayer = {
-            id: group,
-            name: `Número de especies - ${tooltipLabel[group]}`,
-            legend: {
-              from: '3',
-              to: '2300',
-              fromColor: matchColor('richnessNos')('legend-from'),
-              toColor: matchColor('richnessNos')('legend-to'),
-            },
-          };
+          try {
+            const { min, max } = await RestAPI.requestNOSLayerThresholds(
+              selectedAreaTypeId,
+              selectedAreaId,
+              group,
+            );
+            newActiveLayer = {
+              id: group,
+              name: `Número de especies - ${tooltipLabel[group]}`,
+              legend: {
+                from: min.toString(),
+                to: max.toString(),
+                fromColor: matchColor('richnessNos')('legend-from'),
+                toColor: matchColor('richnessNos')('legend-to'),
+              },
+            };
+          } catch {
+            this.reportDataError();
+            return;
+          }
         }
         break;
     }
@@ -723,7 +734,7 @@ class Search extends Component {
             activeLayer: newActiveLayer,
             loadingLayer: false,
         });
-      });
+      }).catch(() => this.reportDataError());
     } else if (request) {
       if (layers[layerKey]) {
         this.setState((prevState) => {
