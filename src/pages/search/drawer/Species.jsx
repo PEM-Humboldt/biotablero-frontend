@@ -55,6 +55,7 @@ class Species extends React.Component {
 
   render() {
     const { areaId } = this.context;
+    const { childMap } = this.state;
     const initialArray = [
       {
         label: {
@@ -62,7 +63,10 @@ class Species extends React.Component {
           name: 'Riqueza',
         },
         component: Richness,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+        componentProps: {
+          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          openTab: childMap.richness,
+        },
       },
       {
         label: {
@@ -70,7 +74,10 @@ class Species extends React.Component {
           name: 'Diversidad Funcional',
         },
         component: FunctionalDiversity,
-        componentProps: { handlerAccordionGeometry: this.handlerAccordionGeometry },
+        componentProps: {
+          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          openTab: childMap.functionalDiversity,
+        },
       },
     ];
 

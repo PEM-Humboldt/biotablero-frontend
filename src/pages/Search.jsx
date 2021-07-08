@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
-import L from 'leaflet';
+import L, { LatLngBounds } from 'leaflet';
 import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -13,6 +13,7 @@ import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
 import Selector from 'components/Selector';
 
@@ -38,6 +39,10 @@ const tooltipLabel = {
   no_bosque: 'No bosque',
   scialta: 'Alto',
   scibaja_moderada: 'Bajo Moderado',
+  total: 'Total',
+  endemic: 'Endémicas',
+  invasive: 'Invasoras',
+  threatened: 'Amenazadas',
 };
 
 class Search extends Component {
@@ -54,6 +59,8 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      mapBounds: null,
+      rasterUrl: '',
     };
   }
 
@@ -418,6 +425,13 @@ class Search extends Component {
         this.shutOffLayer('paramoPAConn');
         this.switchLayer('dryForestPAConn');
         break;
+      case 'numberOfSpecies': {
+        const { activeLayer: { id: activeLayer } } = this.state;
+        if (activeLayer !== chartSection) {
+          this.switchLayer(`numberOfSpecies-${chartSection}`);
+        }
+      }
+        break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
@@ -454,6 +468,8 @@ class Search extends Component {
           newState.layers[layerKey].active = false;
         });
         newState.activeLayer = {};
+        newState.mapBounds = null;
+        newState.rasterUrl = '';
         return newState;
       });
     } else if (layerInState) {
@@ -472,8 +488,9 @@ class Search extends Component {
    * Switch layer based on graph showed
    *
    * @param {String} layerType layer type
+   * @param {function} callback operations to execute sequentially
    */
-  switchLayer = (layerType, callback = () => {}) => {
+  switchLayer = async (layerType, callback = () => {}) => {
     const {
       selectedAreaId,
       selectedAreaTypeId,
@@ -497,6 +514,7 @@ class Search extends Component {
     let fitBounds = true;
     let newActiveLayer = null;
     let layerKey = layerType;
+    let isRaster = false;
 
     switch (layerType) {
       case 'fc':
@@ -583,44 +601,7 @@ class Search extends Component {
         });
         break;
       case 'currentPAConn':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-            requestSource: null,
-          });
-          request = () => RestAPI.requestDPCLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: layerType, fKey: 'dpc_cat' });
-          newActiveLayer = {
-            id: layerType,
-            name: 'Conectividad de áreas protegidas',
-          };
-        });
-        break;
       case 'timelinePAConn':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-            requestSource: null,
-          });
-          request = () => RestAPI.requestDPCLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
-          layerKey = 'currentPAConn';
-          newActiveLayer = {
-            id: 'currentPAConn',
-            name: 'Conectividad de áreas protegidas',
-          };
-        });
-        break;
       case 'currentSEPAConn':
         this.switchLayer('geofence', () => {
           this.setState({
@@ -637,7 +618,7 @@ class Search extends Component {
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
-            name: 'Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)',
+            name: `Conectividad de áreas protegidas${(layerType === 'currentSEPAConn') ? ' y Ecosistemas estratégicos (EE)' : ''}`,
           };
         });
         break;
@@ -696,12 +677,65 @@ class Search extends Component {
             id: layerType,
             name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
           };
+        } else if (/numberOfSpecies*/.test(layerType)) {
+          let group = 'total';
+          const selected = layerType.match(/numberOfSpecies-(\w+)/);
+          if (selected) [, group] = selected;
+
+          isRaster = true;
+          request = () => RestAPI.requestNOSLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+            group,
+          );
+          try {
+            const { min, max } = await RestAPI.requestNOSLayerThresholds(
+              selectedAreaTypeId,
+              selectedAreaId,
+              group,
+            );
+            newActiveLayer = {
+              id: group,
+              name: `Número de especies - ${tooltipLabel[group]}`,
+              legend: {
+                from: min.toString(),
+                to: max.toString(),
+                fromColor: matchColor('richnessNos')('legend-from'),
+                toColor: matchColor('richnessNos')('legend-to'),
+              },
+            };
+          } catch {
+            this.reportDataError();
+            return;
+          }
         }
         break;
     }
 
-    if (request) {
-      if (shutOtherLayers) this.shutOffLayer();
+    if (shutOtherLayers) this.shutOffLayer();
+
+    if (isRaster) {
+      const geofenceLayer = layers.geofence;
+      let mapBounds = null;
+      if (geofenceLayer) {
+        mapBounds = geofenceLayer.layer.getBounds();
+      } else {
+        mapBounds = LatLngBounds(
+          [-78.9909352282, -4.29818694419], [-66.8763258531, 12.4373031682],
+        );
+      }
+      const { request: apiRequest, source: apiSource } = request();
+      this.setState({ requestSource: apiSource });
+      apiRequest.then((res) => {
+        const rasterUrl = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+        this.setState({
+            mapBounds,
+            rasterUrl,
+            activeLayer: newActiveLayer,
+            loadingLayer: false,
+        });
+      }).catch(() => this.reportDataError());
+    } else if (request) {
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
@@ -899,6 +933,8 @@ class Search extends Component {
       newState.activeLayer = {};
       newState.loadingLayer = false;
       newState.layerError = false;
+      newState.mapBounds = null;
+      newState.rasterUrl = '';
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -923,13 +959,31 @@ class Search extends Component {
       connError,
       layerError,
       geofencesArray,
-      activeLayer: { name: activeLayer },
+      activeLayer: { name: activeLayer, legend },
+      mapBounds,
+      rasterUrl,
     } = this.state;
 
     const {
       selectedAreaTypeId,
       selectedAreaId,
     } = this.props;
+
+    const mapTitle = !activeLayer ? null : (
+      <>
+        <div className="mapsTitle">
+          <div className="title">{activeLayer}</div>
+          {legend && (
+            <GradientLegend
+              from={legend.from}
+              to={legend.to}
+              fromColor={legend.fromColor}
+              toColor={legend.toColor}
+            />
+          )}
+        </div>
+      </>
+    );
 
     return (
       <>
@@ -969,12 +1023,10 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
+              rasterLayer={rasterUrl}
+              rasterBounds={mapBounds}
+              mapTitle={mapTitle}
             />
-            {activeLayer && (
-              <div className="mapsTitle">
-                {activeLayer}
-              </div>
-            )}
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
