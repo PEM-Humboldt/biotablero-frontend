@@ -56,7 +56,9 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0 && !loadingLayer && !rasterBounds) {
+    if (rasterBounds) {
+      this.mapRef.current.leafletElement.fitBounds(rasterBounds);
+    } else if (countActiveLayers === 0 && !loadingLayer) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
