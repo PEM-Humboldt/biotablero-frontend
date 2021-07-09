@@ -412,7 +412,7 @@ class RestAPI {
    *
    * @return {Object} with data related to the polygon
    */
-  static requestCustomGeometryData(polygon) {
+  static requestCustomPolygonData(polygon) {
     /** TODO: implement all this endpoint and also the backend response
      * to find information according to id and latLngs in polygon
      * */

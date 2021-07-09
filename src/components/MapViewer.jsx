@@ -102,19 +102,26 @@ class MapViewer extends React.Component {
 
   onCreated = (e) => {
     const { createPolygon } = this.props;
-    createPolygon(e.layer);
+    // eslint-disable-next-line no-underscore-dangle
+    createPolygon(e.layer._leaflet_id, e.layer._latlngs[0]);
   }
 
   onEdited= (e) => {
-    const { confirmPolygon } = this.props;
+    const { createPolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
-    confirmPolygon(e.layers._layers);
+    createPolygon(
+      // eslint-disable-next-line no-underscore-dangle
+      Object.values(e.layers._layers)[0]._leaflet_id,
+      // eslint-disable-next-line no-underscore-dangle
+      Object.values(e.layers._layers)[0]._latlngs[0],
+      );
   }
 
-  onDeleted= () => {
-    const { deletePolygon } = this.props;
+  onRemoved= (e) => {
+    console.log('Removed', e);
+    const { removePolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
-    deletePolygon();
+    removePolygon(e);
   }
 
   render() {
@@ -184,8 +191,10 @@ class MapViewer extends React.Component {
         { (drawEnabled) ? (
           <FeatureGroup>
             <EditControl
-              onCreated={this.onCreated}
-              edit={{ edit: false, remove: false }}
+              onCreated={(e) => this.onCreated(e)}
+              onDelete={(e) => this.onRemoved(e)}
+              onEdited={(e) => this.onEdited(e)}
+              edit={{ edit: true, remove: true }}
               draw={{
                 polyline: false,
                 rectangle: false,
@@ -250,8 +259,7 @@ MapViewer.propTypes = {
   drawEnabled: PropTypes.bool,
   editDrawEnabled: PropTypes.bool,
   createPolygon: PropTypes.func,
-  confirmPolygon: PropTypes.func,
-  deletePolygon: PropTypes.func,
+  removePolygon: PropTypes.func,
   geoServerUrl: PropTypes.string.isRequired,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
@@ -265,8 +273,7 @@ MapViewer.defaultProps = {
   drawEnabled: false,
   editDrawEnabled: false,
   createPolygon: () => {},
-  confirmPolygon: () => {},
-  deletePolygon: () => {},
+  removePolygon: () => {},
   loadingLayer: false,
   layerError: false,
 };

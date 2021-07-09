@@ -15,6 +15,7 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import MapViewer from 'components/MapViewer';
 import Selector from 'components/Selector';
+import { Done } from '@material-ui/icons';
 
 /**
  * Get the label tooltip on the map
@@ -247,10 +248,10 @@ class Search extends Component {
         break;
       case 'Confirmar':
         if (localPolygon.id) this.confirmPolygon(localPolygon);
-        else this.deletePolygon();
+        else this.removePolygon();
         break;
       case 'Borrar':
-        this.deletePolygon();
+        this.removePolygon();
       break;
       default:
         break;
@@ -262,12 +263,10 @@ class Search extends Component {
    *
    * @param {Object} polygon polygons drawn in MapViewer
    */
-  createPolygon = (polygon) => {
-    // eslint-disable-next-line no-underscore-dangle
-    const { _leaflet_id: polygonId } = polygon;
+  createPolygon = (polygonId, polygonLatlngs) => {
     this.setState(
       {
-        localPolygon: { id: polygonId, latlngs: polygon.getLatLngs()[0] },
+        localPolygon: { id: polygonId, latlngs: polygonLatlngs },
         editDrawEnabled: false,
       },
     );
@@ -279,21 +278,26 @@ class Search extends Component {
    * @param {Object} polygon polygons drawn in MapViewer
    */
   confirmPolygon = (polygon) => {
+    console.log('{this.confirmPolygon(localPolygon)}');
     const { localPolygon } = this.state;
     if (polygon[localPolygon.id]) {
       const { _leaflet_id: polygonId, _latlngs: polygonLatlngs } = polygon[localPolygon.id];
       this.setState(
-      { localPolygon: { id: polygonId, latlngs: polygonLatlngs[0] } },
+      {
+        localPolygon: { id: polygonId, latlngs: polygonLatlngs[0] },
+        drawEnabled: false,
+      },
       );
     }
   }
 
   /**
-   * Delete the object drawn in MapViewer and saved Search state
+   * Remove the object drawn in MapViewer and saved Search state
    *
    * @param {Object} polygon polygons drawn in MapViewer
    */
-  deletePolygon = () => {
+  removePolygon = (polygon) => {
+    console.log(polygon);
       this.setState(
         {
           localPolygon: {},
@@ -855,7 +859,7 @@ class Search extends Component {
       });
     } else if (show) {
       if (idLayer === 'Confirmar' && localPolygon) {
-        RestAPI.requestCustomGeometryData(localPolygon);
+        RestAPI.requestCustomPolygonData(localPolygon);
       } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
@@ -1049,11 +1053,23 @@ class Search extends Component {
               editDrawEnabled={editDrawEnabled}
               createPolygon={this.createPolygon}
               confirmPolygon={this.confirmPolygon}
-              deletePolygon={this.deletePolygon}
+              removePolygon={this.removePolygon}
             />
             {activeLayer && (
               <div className="mapsTitle">
                 {activeLayer}
+              </div>
+            )}
+            {!editDrawEnabled && drawEnabled && (
+              <div
+                className="confirmButton"
+                title="Confirmar polígono"
+                role="button"
+                onKeyPress={this.confirmPolygon}
+                onClick={this.confirmPolygon}
+                tabIndex={0}
+              >
+                <Done />
               </div>
             )}
             <div className="contentView">
