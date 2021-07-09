@@ -37,28 +37,12 @@ const constructDataForSearch = (geofences) => {
       options: areasArray,
     },
     {
-      id: 'draw',
+      id: 'draw-polygon',
       idLabel: 'panel2',
       detailId: 'panel2',
       label: 'Dibujar polígono',
       iconOption: 'edit',
       text: 'Usa el botón de polígono dentro del mapa, finaliza o cierra el polígono y confirma cuando sea el polígono a consultar',
-      options: [
-        {
-          id: 'Confirmar',
-          idLabel: 'Confirmar polígono',
-          label: 'Confirmar polígono',
-          iconOption: 'confirm',
-          detailId: 'area',
-        },
-        {
-          id: 'Borrar',
-          idLabel: 'Borrar polígono',
-          label: 'Borrar polígono',
-          iconOption: 'remove',
-          detailId: 'area',
-        },
-      ],
     },
     {
       id: 'panel3',
