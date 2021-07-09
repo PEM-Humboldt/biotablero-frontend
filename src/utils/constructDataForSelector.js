@@ -42,7 +42,6 @@ const constructDataForSearch = (geofences) => {
       detailId: 'panel2',
       label: 'Dibujar polígono',
       iconOption: 'edit',
-      text: 'Usa el botón de polígono dentro del mapa, finaliza o cierra el polígono y confirma cuando sea el polígono a consultar',
     },
     {
       id: 'panel3',
