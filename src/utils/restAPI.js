@@ -638,6 +638,44 @@ class RestAPI {
     }
   }
 
+  /**
+   * Get the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestNOSLayer(areaType, areaId, group) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the threshold values for the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestNOSLayerThresholds(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+    );
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
@@ -796,7 +834,7 @@ class RestAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    */
-  static makeGetRequest(endpoint, options) {
+  static makeGetRequest(endpoint, options = {}, completeRes = false) {
     const config = {
       ...options,
       headers: {
@@ -804,7 +842,12 @@ class RestAPI {
       },
     };
     return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
-      .then((res) => res.data)
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           return Promise.resolve('request canceled');

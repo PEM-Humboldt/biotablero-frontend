@@ -1,9 +1,10 @@
 import {
+  ImageOverlay,
   Map,
   TileLayer,
   WMSTileLayer,
   FeatureGroup,
-  } from 'react-leaflet';
+} from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import { Modal } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -50,7 +51,7 @@ class MapViewer extends React.Component {
 
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
-    const { loadingLayer } = this.props;
+    const { loadingLayer, rasterBounds } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
@@ -58,7 +59,9 @@ class MapViewer extends React.Component {
       });
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (countActiveLayers === 0 && !loadingLayer) {
+    if (rasterBounds) {
+      this.mapRef.current.leafletElement.fitBounds(rasterBounds);
+    } else if (countActiveLayers === 0 && !loadingLayer) {
       this.mapRef.current.leafletElement.setView(config.params.center, 5);
     }
   }
@@ -130,16 +133,15 @@ class MapViewer extends React.Component {
       geoServerUrl,
       loadingLayer,
       layerError,
+      rasterLayer,
+      rasterBounds,
+      mapTitle,
     } = this.props;
     const { openErrorModal } = this.state;
     const { user } = this.context;
     return (
-      <Map
-        ref={this.mapRef}
-        center={config.params.center}
-        zoom={5}
-        onClick={this.onMapClick}
-      >
+      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+        {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -224,6 +226,12 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
+        {rasterLayer && rasterBounds && (
+          <ImageOverlay
+            url={rasterLayer}
+            bounds={rasterBounds}
+          />
+        )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
           Compensaciones */}
@@ -271,6 +279,9 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
+  rasterLayer: PropTypes.string,
+  rasterBounds: PropTypes.object,
+  mapTitle: PropTypes.object,
 };
 
 MapViewer.defaultProps = {
@@ -281,6 +292,9 @@ MapViewer.defaultProps = {
   deletePolygon: () => {},
   loadingLayer: false,
   layerError: false,
+  rasterLayer: '',
+  rasterBounds: null,
+  mapTitle: null,
 };
 
 export default MapViewer;
