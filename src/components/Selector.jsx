@@ -35,19 +35,20 @@ class Selector extends React.Component {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
+    handlers[3]('Disable polygon');
     if (panel === 'addProject') {
       this.setState({
         expanded: null,
       });
-    } if (panel === 'draw') {
-      handlers[3]('Crear');
+    } if (panel === 'draw-polygon') {
+      if (expandedPanel) handlers[3]('Create polygon');
       this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
         subExpanded: null,
       }));
     } else {
-      handlers[3]('Borrar');
+      handlers[3]('Disable polygon');
       this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
@@ -59,16 +60,16 @@ class Selector extends React.Component {
 
   secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
-    if (subPanel === 'Confirmar') {
+    if (subPanel === 'Confirm polygon') {
       this.setState({
         expanded: null,
       });
-      handlers[3]('Confirmar');
-    } if (subPanel === 'Borrar') {
+      handlers[3]('Confirm polygon');
+    } if (subPanel === 'Delete polygon') {
       this.setState({
         expanded: null,
       });
-      handlers[3]('Borrar');
+      handlers[3]('Delete polygon');
     } else {
       this.setState({
         subExpanded: expanded ? subPanel : false,
