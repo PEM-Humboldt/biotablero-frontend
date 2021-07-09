@@ -249,7 +249,6 @@ class Search extends Component {
         break;
       case 'Confirm polygon':
         if (localPolygon.id) this.confirmPolygon(localPolygon);
-        else this.deletePolygon();
         break;
       case 'Delete polygon':
         this.deletePolygon();
@@ -283,6 +282,8 @@ class Search extends Component {
    * @param {Object} polygon polygons drawn in MapViewer
    */
   confirmPolygon = () => {
+    const { localPolygon } = this.state;
+    RestAPI.requestCustomPolygonData(localPolygon);
     this.setState(
       {
         editPolygonEnabled: false,
@@ -846,7 +847,7 @@ class Search extends Component {
    * @param {Boolean} show whether to show or hide the layer
    */
   loadSecondLevelLayer = (idLayer, show) => {
-    const { layers, requestSource, localPolygon } = this.state;
+    const { layers, requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
     }
@@ -872,9 +873,6 @@ class Search extends Component {
         return newState;
       });
     } else if (show) {
-      if (idLayer === 'Confirm polygon' && localPolygon) {
-        RestAPI.requestCustomPolygonData(localPolygon);
-      } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
@@ -906,7 +904,6 @@ class Search extends Component {
           });
         })
         .catch(() => {});
-      }
     }
   }
 
