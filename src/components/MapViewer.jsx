@@ -117,17 +117,16 @@ class MapViewer extends React.Component {
       );
   }
 
-  onRemoved= (e) => {
-    console.log('Removed', e);
-    const { removePolygon } = this.props;
-    // eslint-disable-next-line no-underscore-dangle
-    removePolygon(e);
+  onDeleted= (e) => {
+    const { deletePolygon } = this.props;
+    deletePolygon(e);
   }
 
   render() {
     const {
-      drawEnabled,
-      editDrawEnabled,
+      drawPolygonEnabled,
+      createPolygonEnabled,
+      editPolygonEnabled,
       geoServerUrl,
       loadingLayer,
       layerError,
@@ -188,20 +187,24 @@ class MapViewer extends React.Component {
             </button>
           </div>
         </Modal>
-        { (drawEnabled) ? (
+        { (drawPolygonEnabled) ? (
           <FeatureGroup>
             <EditControl
               onCreated={(e) => this.onCreated(e)}
-              onDelete={(e) => this.onRemoved(e)}
+              onDeleted={(e) => this.onDeleted(e)}
               onEdited={(e) => this.onEdited(e)}
-              edit={{ edit: true, remove: true }}
+              edit={{
+                edit: editPolygonEnabled,
+                remove: editPolygonEnabled,
+               }}
               draw={{
                 polyline: false,
                 rectangle: false,
                 circle: false,
                 marker: false,
                 circlemarker: false,
-                polygon: ((editDrawEnabled) && ({
+                edit: false,
+                polygon: ((createPolygonEnabled) && ({
                   allowIntersection: false,
                   drawError: {
                     color: '#e84a5f',
@@ -256,10 +259,11 @@ class MapViewer extends React.Component {
 MapViewer.contextType = AppContext;
 
 MapViewer.propTypes = {
-  drawEnabled: PropTypes.bool,
-  editDrawEnabled: PropTypes.bool,
+  drawPolygonEnabled: PropTypes.bool,
+  createPolygonEnabled: PropTypes.bool,
+  editPolygonEnabled: PropTypes.bool,
   createPolygon: PropTypes.func,
-  removePolygon: PropTypes.func,
+  deletePolygon: PropTypes.func,
   geoServerUrl: PropTypes.string.isRequired,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
@@ -270,10 +274,11 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
-  drawEnabled: false,
-  editDrawEnabled: false,
+  drawPolygonEnabled: false,
+  createPolygonEnabled: false,
+  editPolygonEnabled: false,
   createPolygon: () => {},
-  removePolygon: () => {},
+  deletePolygon: () => {},
   loadingLayer: false,
   layerError: false,
 };

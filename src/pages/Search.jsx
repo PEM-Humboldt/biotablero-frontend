@@ -55,9 +55,10 @@ class Search extends Component {
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
-      drawEnabled: false,
-      editDrawEnabled: false,
       localPolygon: {},
+      drawPolygonEnabled: false,
+      createPolygonEnabled: false,
+      editPolygonEnabled: false,
     };
   }
 
@@ -235,23 +236,26 @@ class Search extends Component {
    * @param {String} polygon option to drawn in MapViewer
    */
   drawPolygon = (option) => {
-    const { localPolygon, drawEnabled } = this.state;
+    const { localPolygon } = this.state;
     switch (option) {
-      case 'Crear':
+      case 'Create polygon':
         this.setState(
           {
-            drawEnabled: !drawEnabled,
-            editDrawEnabled: !drawEnabled,
+            drawPolygonEnabled: true,
+            createPolygonEnabled: true,
             localPolygon: {},
           },
         );
         break;
-      case 'Confirmar':
+      case 'Confirm polygon':
         if (localPolygon.id) this.confirmPolygon(localPolygon);
-        else this.removePolygon();
+        else this.deletePolygon();
         break;
-      case 'Borrar':
-        this.removePolygon();
+      case 'Delete polygon':
+        this.deletePolygon();
+      break;
+      case 'Disable polygon':
+        this.disableDrawingTools();
       break;
       default:
         break;
@@ -267,7 +271,8 @@ class Search extends Component {
     this.setState(
       {
         localPolygon: { id: polygonId, latlngs: polygonLatlngs },
-        editDrawEnabled: false,
+        createPolygonEnabled: false,
+        editPolygonEnabled: true,
       },
     );
   }
@@ -277,33 +282,42 @@ class Search extends Component {
    *
    * @param {Object} polygon polygons drawn in MapViewer
    */
-  confirmPolygon = (polygon) => {
-    console.log('{this.confirmPolygon(localPolygon)}');
-    const { localPolygon } = this.state;
-    if (polygon[localPolygon.id]) {
-      const { _leaflet_id: polygonId, _latlngs: polygonLatlngs } = polygon[localPolygon.id];
-      this.setState(
+  confirmPolygon = () => {
+    this.setState(
       {
-        localPolygon: { id: polygonId, latlngs: polygonLatlngs[0] },
-        drawEnabled: false,
+        editPolygonEnabled: false,
+        createPolygonEnabled: false,
+        drawPolygonEnabled: false,
       },
       );
-    }
   }
 
   /**
    * Remove the object drawn in MapViewer and saved Search state
-   *
-   * @param {Object} polygon polygons drawn in MapViewer
    */
-  removePolygon = (polygon) => {
-    console.log(polygon);
+  deletePolygon = () => {
       this.setState(
         {
           localPolygon: {},
-          drawEnabled: false,
+          drawPolygonEnabled: true,
+          createPolygonEnabled: true,
+          editPolygonEnabled: false,
         },
       );
+  }
+
+  /**
+   * Remove all drawing tools in MapViewer
+   */
+  disableDrawingTools = () => {
+    this.setState(
+      {
+        localPolygon: {},
+        drawPolygonEnabled: false,
+        createPolygonEnabled: false,
+        editPolygonEnabled: false,
+      },
+    );
   }
 
   /** ************************ */
@@ -858,7 +872,7 @@ class Search extends Component {
         return newState;
       });
     } else if (show) {
-      if (idLayer === 'Confirmar' && localPolygon) {
+      if (idLayer === 'Confirm polygon' && localPolygon) {
         RestAPI.requestCustomPolygonData(localPolygon);
       } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
@@ -1002,8 +1016,9 @@ class Search extends Component {
       layerError,
       geofencesArray,
       activeLayer: { name: activeLayer },
-      drawEnabled,
-      editDrawEnabled,
+      drawPolygonEnabled,
+      createPolygonEnabled,
+      editPolygonEnabled,
     } = this.state;
 
     const {
@@ -1049,18 +1064,19 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
-              drawEnabled={drawEnabled}
-              editDrawEnabled={editDrawEnabled}
+              drawPolygonEnabled={drawPolygonEnabled}
+              createPolygonEnabled={createPolygonEnabled}
               createPolygon={this.createPolygon}
               confirmPolygon={this.confirmPolygon}
-              removePolygon={this.removePolygon}
+              deletePolygon={this.deletePolygon}
+              editPolygonEnabled={editPolygonEnabled}
             />
             {activeLayer && (
               <div className="mapsTitle">
                 {activeLayer}
               </div>
             )}
-            {!editDrawEnabled && drawEnabled && (
+            {!createPolygonEnabled && drawPolygonEnabled && (
               <div
                 className="confirmButton"
                 title="Confirmar polígono"
