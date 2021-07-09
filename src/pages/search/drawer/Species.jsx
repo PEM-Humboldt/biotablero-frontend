@@ -15,13 +15,30 @@ class Species extends React.Component {
         richness: 'numberOfSpecies',
         functionalDiversity: 'tropicalDryForest',
       },
+      availableComponents: ['richness', 'functionalDiversity'],
     };
   }
 
   componentDidMount() {
-    const { handlerSwitchLayer } = this.props;
+    const { areaId } = this.context;
     const { visible, childMap } = this.state;
-    handlerSwitchLayer(childMap[visible]);
+
+    let selected = [];
+    switch (areaId) {
+      case 'states':
+      case 'basinSubzones':
+      case 'ea':
+        selected = ['richness', 'functionalDiversity'];
+        break;
+      default:
+        break;
+    }
+    this.setState({ availableComponents: selected });
+
+    if (selected.includes(visible)) {
+      const { handlerSwitchLayer } = this.props;
+      handlerSwitchLayer(childMap[visible]);
+    }
   }
 
   /**
@@ -54,8 +71,7 @@ class Species extends React.Component {
   }
 
   render() {
-    const { areaId } = this.context;
-    const { childMap } = this.state;
+    const { childMap, availableComponents } = this.state;
     const initialArray = [
       {
         label: {
@@ -81,18 +97,7 @@ class Species extends React.Component {
       },
     ];
 
-    let selected = [];
-    switch (areaId) {
-      case 'states':
-      case 'basinSubzones':
-      case 'ea':
-      case 'pa':
-        selected = ['richness', 'functionalDiversity'];
-        break;
-      default:
-        break;
-    }
-    const componentsArray = initialArray.filter((f) => selected.includes(f.label.id));
+    const componentsArray = initialArray.filter((f) => availableComponents.includes(f.label.id));
 
     return (
       <Accordion
