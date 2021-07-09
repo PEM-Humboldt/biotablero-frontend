@@ -198,7 +198,7 @@ class MapViewer extends React.Component {
               edit={{
                 edit: editPolygonEnabled,
                 remove: editPolygonEnabled,
-               }}
+              }}
               draw={{
                 polyline: false,
                 rectangle: false,
