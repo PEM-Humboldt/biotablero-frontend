@@ -96,7 +96,9 @@ class NumberOfSpecies extends React.Component {
         });
         this.setState({ data, message: null });
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -161,6 +163,13 @@ class NumberOfSpecies extends React.Component {
           </TextLegend>
         </div>
         <div>
+          {message === 'no-data' && (
+            <GraphLoader
+              message={message}
+              data={[]}
+              graphType="singleBullet"
+            />
+          )}
           {data.map((bar) => (
             <div key={bar.id}>
               <div
