@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
-import Description from 'pages/search/SelectorData';
+import { Description } from 'pages/search/SelectorData';
 import { constructDataForSearch } from 'utils/constructDataForSelector';
 import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
@@ -293,11 +293,11 @@ class Search extends Component {
     RestAPI.requestCustomPolygonData(localPolygon);
     this.setState(
       {
+        drawPolygonEnabled: true,
         editPolygonEnabled: false,
         createPolygonEnabled: false,
-        drawPolygonEnabled: false,
       },
-      );
+    );
   }
 
   /**

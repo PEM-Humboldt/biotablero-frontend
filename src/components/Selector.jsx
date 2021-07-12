@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { CheckCircle, HighlightOff } from '@material-ui/icons';
+import { InstructionsForPolygon } from 'pages/search/SelectorData';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -28,6 +28,7 @@ class Selector extends React.Component {
       expanded: null,
       subExpanded: null,
       new: true,
+      showDrawGuide: false,
     };
   }
 
@@ -46,6 +47,7 @@ class Selector extends React.Component {
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
         subExpanded: null,
+        showDrawGuide: true,
       }));
     } else {
       handlers[3]('Disable polygon');
@@ -60,22 +62,10 @@ class Selector extends React.Component {
 
   secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
-    if (subPanel === 'Confirm polygon') {
-      this.setState({
-        expanded: null,
-      });
-      handlers[3]('Confirm polygon');
-    } if (subPanel === 'Delete polygon') {
-      this.setState({
-        expanded: null,
-      });
-      handlers[3]('Delete polygon');
-    } else {
       this.setState({
         subExpanded: expanded ? subPanel : false,
       });
       handlers[1](subPanel, expanded);
-    }
   };
 
   renderInnerElement = (parent, listSize, data) => (obj, index) => {
@@ -135,7 +125,9 @@ class Selector extends React.Component {
     const { description, iconClass } = this.props;
     let { data } = this.props;
     data = data || [];
-    const { expanded, selected, subExpanded } = this.state;
+    const {
+      expanded, selected, subExpanded, showDrawGuide,
+    } = this.state;
     return (
       <div className="selector">
         <div className={iconClass} />
@@ -144,7 +136,7 @@ class Selector extends React.Component {
         </div>
         { (data.length > 0) && (data.map((firstLevel) => {
           const {
-            id, label, disabled, iconOption, detailId, idLabel, text,
+            id, label, disabled, iconOption, detailId, idLabel,
           } = firstLevel;
           const options = firstLevel.options || firstLevel.projectsStates || [];
           return (
@@ -166,10 +158,10 @@ class Selector extends React.Component {
               >
                 {label}
               </AccordionSummary>
+              {showDrawGuide && (id === 'draw-polygon') ? <InstructionsForPolygon /> : ''}
               <AccordionDetails
                 id={detailId}
               >
-                {text || ''}
                 {options.map((secondLevel) => {
                   const {
                     id: subId,
@@ -192,8 +184,6 @@ class Selector extends React.Component {
                           (((subIconOption === 'add') && <AddIcon />)
                           || ((subIconOption === 'upload') && <CloudUploadIcon />)
                           || ((subIconOption === 'edit') && <EditIcon />)
-                          || ((subIconOption === 'confirm') && <CheckCircle />)
-                          || ((subIconOption === 'remove') && <HighlightOff />)
                           || (<ExpandMoreIcon />))
                         }
                       >

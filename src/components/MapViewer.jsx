@@ -112,12 +112,14 @@ class MapViewer extends React.Component {
   onEdited= (e) => {
     const { createPolygon } = this.props;
     // eslint-disable-next-line no-underscore-dangle
-    createPolygon(
+    if (e.layers._layers[0]) {
+      createPolygon(
       // eslint-disable-next-line no-underscore-dangle
       Object.values(e.layers._layers)[0]._leaflet_id,
       // eslint-disable-next-line no-underscore-dangle
       Object.values(e.layers._layers)[0]._latlngs[0],
       );
+    }
   }
 
   onDeleted= (e) => {

@@ -1171,6 +1171,28 @@ a#reset-filters {
 	height: 22px;
 }
 
+.confirmButton-text {
+	left:10px;
+	background-color: #e84a5f;
+	color: #501e23;
+	z-index:1;
+	display: block;
+	width: 30px;
+	height: 30px;
+	box-sizing: border-box;
+	padding: 4px;
+}
+
+.polygon-icons {
+	margin: 0 0 12px 5px;
+	max-width: 593px;
+}
+
+.polygon-icons svg {
+	margin: 0 !important;
+	line-height: 1em !important;
+}
+
 .mapsTitle {
 	position: relative;
 	left: 45px;

@@ -1,4 +1,8 @@
 import React from 'react';
+import { ReactComponent as CreatePolygon } from 'images/create-polygon.svg';
+import { ReactComponent as EditPolygon } from 'images/edit-polygon.svg';
+import { ReactComponent as DeletePolygon } from 'images/delete-polygon.svg';
+import { Done } from '@material-ui/icons';
 
 const Description = () => (
   <div>
@@ -49,4 +53,47 @@ const Description = () => (
   </div>
 );
 
-export default Description;
+const InstructionsForPolygon = () => (
+  <div>
+    <b>Sobre el mapa puedes:</b>
+    <br />
+    <br />
+    <div>
+      <div
+        className="create-polygon"
+      >
+        <CreatePolygon />
+      </div>
+      Dibujar un polígono
+    </div>
+    <br />
+    <div>
+      <div
+        className="polygon-icons"
+      >
+        <EditPolygon />
+      </div>
+      Editar el polígono dibujado
+    </div>
+    <br />
+    <div>
+      <div
+        className="polygon-icons"
+      >
+        <DeletePolygon />
+      </div>
+      Borrar el polígono dibujado
+    </div>
+    <br />
+    <div>
+      <div
+        className="polygon-icons"
+      >
+        <Done />
+      </div>
+      Confirmar el polígono a consultar
+    </div>
+  </div>
+);
+
+export { Description, InstructionsForPolygon };
