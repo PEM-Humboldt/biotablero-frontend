@@ -1,9 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 60" height="60" width="600">
-<style>
-  .a{
-    fill:#464646;
-  }
-</style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="318 17.8 24.7 24.2">
   <g class="a">
     <g class="a">
       <path d="M337 30.2v6a3 3 0 1-3 3h-10a3 3 0 1-3-3v-10c0-1.7 1.3-3 3-3h6.3l3.2-3.2H324a6 6 0 0-6 6v10a6 6 0 6 6h10a6 6 0 6-6v-8.8l-3 3" class="a"/>

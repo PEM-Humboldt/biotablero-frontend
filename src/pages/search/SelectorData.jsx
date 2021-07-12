@@ -54,45 +54,32 @@ const Description = () => (
 );
 
 const InstructionsForPolygon = () => (
-  <div>
-    <b>Sobre el mapa puedes:</b>
+  <div style={{ padding: '10px' }}>
+    <br />
+    <b>Usa los controles ubicados a la izquierda superior del mapa para:</b>
     <br />
     <br />
     <div>
-      <div
-        className="create-polygon"
-      >
-        <CreatePolygon />
-      </div>
-      Dibujar un polígono
+      <CreatePolygon className="polygon-icons" />
+      <div style={{ padding: '10px', display: 'inline-block' }}> Dibujar un polígono </div>
     </div>
     <br />
     <div>
-      <div
-        className="polygon-icons"
-      >
-        <EditPolygon />
-      </div>
-      Editar el polígono dibujado
+      <EditPolygon className="polygon-icons" />
+      <div style={{ padding: '10px', display: 'inline-block' }}> Editar el polígono dibujado </div>
     </div>
     <br />
     <div>
-      <div
-        className="polygon-icons"
-      >
-        <DeletePolygon />
-      </div>
-      Borrar el polígono dibujado
+      <DeletePolygon className="polygon-icons" />
+      <div style={{ padding: '10px', display: 'inline-block' }}> Borrar el polígono dibujado </div>
     </div>
     <br />
     <div>
-      <div
-        className="polygon-icons"
-      >
-        <Done />
-      </div>
-      Confirmar el polígono a consultar
+      <Done />
+      <div style={{ padding: '10px', display: 'inline-block' }}> Confirmar el polígono a consultar </div>
     </div>
+    <br />
+    <b>Se mostrarán las opciones a medida que se avance en el dibujo.</b>
   </div>
 );
 

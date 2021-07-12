@@ -1184,13 +1184,11 @@ a#reset-filters {
 }
 
 .polygon-icons {
-	margin: 0 0 12px 5px;
-	max-width: 593px;
-}
-
-.polygon-icons svg {
-	margin: 0 !important;
-	line-height: 1em !important;
+	font-size: 1.5rem;
+	display: inline-block;
+	fill:#464646;
+	width: 1em;
+	height: 1em;
 }
 
 .mapsTitle {
