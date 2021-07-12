@@ -62,10 +62,10 @@ class Selector extends React.Component {
 
   secondLevelChange = (subPanel) => (event, expanded) => {
     const { handlers } = this.props;
-      this.setState({
-        subExpanded: expanded ? subPanel : false,
-      });
-      handlers[1](subPanel, expanded);
+    this.setState({
+      subExpanded: expanded ? subPanel : false,
+    });
+    handlers[1](subPanel, expanded);
   };
 
   renderInnerElement = (parent, listSize, data) => (obj, index) => {
@@ -214,8 +214,6 @@ Selector.propTypes = {
     expandIcon: PropTypes.Component,
     detailId: PropTypes.string,
     options: PropTypes.array,
-    propagation: PropTypes.bool,
-    text: PropTypes.string,
   })),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
