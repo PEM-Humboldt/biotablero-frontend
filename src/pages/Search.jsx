@@ -16,7 +16,6 @@ import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
 import Selector from 'components/Selector';
-import { Done } from '@material-ui/icons';
 
 /**
  * Get the label tooltip on the map
@@ -62,8 +61,6 @@ class Search extends Component {
       requestSource: null,
       localPolygon: {},
       drawPolygonEnabled: false,
-      createPolygonEnabled: false,
-      editPolygonEnabled: false,
       mapBounds: null,
       rasterUrl: '',
     };
@@ -231,101 +228,6 @@ class Search extends Component {
       fillColor: matchColor(type)(color),
       fillOpacity: 0.6,
     };
-  }
-
-  /** ******************* */
-  /** LISTENERS FOR DRAWS */
-  /** ******************* */
-
-  /**
-   * Handle events for a draw in MapViewer
-   *
-   * @param {String} polygon option to drawn in MapViewer
-   */
-  drawPolygon = (option) => {
-    const { localPolygon } = this.state;
-    switch (option) {
-      case 'Create polygon':
-        this.setState(
-          {
-            drawPolygonEnabled: true,
-            createPolygonEnabled: true,
-            localPolygon: {},
-          },
-        );
-        break;
-      case 'Confirm polygon':
-        if (localPolygon.id) this.confirmPolygon(localPolygon);
-        break;
-      case 'Delete polygon':
-        this.deletePolygon();
-      break;
-      case 'Disable polygon':
-        this.disableDrawingTools();
-      break;
-      default:
-        break;
-    }
-  }
-
-  /**
-   * Load object drawn in MapViewer in Search state
-   *
-   * @param {Object} polygon polygons drawn in MapViewer
-   */
-  createPolygon = (polygonId, polygonLatlngs) => {
-    this.setState(
-      {
-        localPolygon: { id: polygonId, latlngs: polygonLatlngs },
-        createPolygonEnabled: false,
-        editPolygonEnabled: true,
-      },
-    );
-  }
-
-  /**
-   * Save in database the object drawn in MapViewer and saved Search state
-   *
-   * @param {Object} polygon polygons drawn in MapViewer
-   */
-  confirmPolygon = () => {
-    const { localPolygon } = this.state;
-    RestAPI.requestCustomPolygonData(localPolygon);
-    this.setState(
-      {
-        drawPolygonEnabled: true,
-        editPolygonEnabled: false,
-        createPolygonEnabled: false,
-      },
-    );
-  }
-
-  /**
-   * Remove the object drawn in MapViewer and saved Search state
-   */
-  deletePolygon = () => {
-      this.setState(
-        {
-          localPolygon: {},
-          drawPolygonEnabled: true,
-          createPolygonEnabled: true,
-          editPolygonEnabled: false,
-        },
-      );
-  }
-
-  /**
-   * Remove all drawing tools in MapViewer
-   */
-  disableDrawingTools = () => {
-    this.setState(
-      {
-        localPolygon: {},
-        drawPolygonEnabled: false,
-        createPolygonEnabled: false,
-        editPolygonEnabled: false,
-      },
-    );
   }
 
   /** ************************ */
@@ -991,6 +893,16 @@ class Search extends Component {
     }
   }
 
+  /**
+   * Loads polygon information
+   *
+   * @param {Object} polygon polygon to be searched
+   */
+  loadPolygonInfo = (polygon) => {
+    RestAPI.requestCustomPolygonData(polygon).catch(() => {});
+    this.setState({ drawPolygonEnabled: false });
+  }
+
   /** ************************************* */
   /** LISTENER FOR BUTTONS ON LATERAL PANEL */
   /** ************************************* */
@@ -1063,8 +975,6 @@ class Search extends Component {
       mapBounds,
       rasterUrl,
       drawPolygonEnabled,
-      createPolygonEnabled,
-      editPolygonEnabled,
     } = this.state;
 
     const {
@@ -1130,32 +1040,20 @@ class Search extends Component {
               rasterBounds={mapBounds}
               mapTitle={mapTitle}
               drawPolygonEnabled={drawPolygonEnabled}
-              createPolygonEnabled={createPolygonEnabled}
-              createPolygon={this.createPolygon}
-              confirmPolygon={this.confirmPolygon}
-              deletePolygon={this.deletePolygon}
-              editPolygonEnabled={editPolygonEnabled}
+              loadPolygonInfo={this.loadPolygonInfo}
             />
-            {!createPolygonEnabled && drawPolygonEnabled && (
-              <div
-                className="confirmButton"
-                title="Confirmar polígono"
-                role="button"
-                onKeyPress={this.confirmPolygon}
-                onClick={this.confirmPolygon}
-                tabIndex={0}
-              >
-                <Done />
-              </div>
-            )}
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
                   handlers={[
-                    () => {},
+                    () => {
+                      this.setState({ drawPolygonEnabled: false });
+                    },
                     this.secondLevelChange,
                     this.innerElementChange,
-                    this.drawPolygon,
+                    (val) => {
+                      this.setState({ drawPolygonEnabled: val });
+                    },
                   ]}
                   description={Description()}
                   data={geofencesArray}

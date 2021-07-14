@@ -1154,11 +1154,11 @@ a#reset-filters {
 
 .confirmButton {
 	position: absolute;
-	top:239px;
+	top: 143px;
 	left:10px;
 	background-color: #e84a5f;
 	color: #501e23;
-	z-index:1;
+	z-index: 401;
 	display: block;
 	width: 30px;
 	height: 30px;

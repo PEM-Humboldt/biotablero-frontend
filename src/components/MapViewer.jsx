@@ -1,16 +1,17 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import {
   ImageOverlay,
   Map,
   TileLayer,
   WMSTileLayer,
-  FeatureGroup,
 } from 'react-leaflet';
-import { EditControl } from 'react-leaflet-draw';
-import { Modal } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import PropTypes from 'prop-types';
-import React from 'react';
+
 import AppContext from 'app/AppContext';
+import DrawControl from 'components/mapViewer/DrawControl';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -103,41 +104,16 @@ class MapViewer extends React.Component {
     }
   }
 
-  onCreated = (e) => {
-    const { createPolygon } = this.props;
-    // eslint-disable-next-line no-underscore-dangle
-    createPolygon(e.layer._leaflet_id, e.layer._latlngs[0]);
-  }
-
-  onEdited= (e) => {
-    const { createPolygon } = this.props;
-    // eslint-disable-next-line no-underscore-dangle
-    if (e.layers._layers[0]) {
-      createPolygon(
-      // eslint-disable-next-line no-underscore-dangle
-      Object.values(e.layers._layers)[0]._leaflet_id,
-      // eslint-disable-next-line no-underscore-dangle
-      Object.values(e.layers._layers)[0]._latlngs[0],
-      );
-    }
-  }
-
-  onDeleted= (e) => {
-    const { deletePolygon } = this.props;
-    deletePolygon(e);
-  }
-
   render() {
     const {
-      drawPolygonEnabled,
-      createPolygonEnabled,
-      editPolygonEnabled,
       geoServerUrl,
       loadingLayer,
       layerError,
       rasterLayer,
       rasterBounds,
       mapTitle,
+      drawPolygonEnabled,
+      loadPolygonInfo,
     } = this.props;
     const { openErrorModal } = this.state;
     const { user } = this.context;
@@ -191,39 +167,7 @@ class MapViewer extends React.Component {
             </button>
           </div>
         </Modal>
-        { (drawPolygonEnabled) ? (
-          <FeatureGroup>
-            <EditControl
-              onCreated={(e) => this.onCreated(e)}
-              onDeleted={(e) => this.onDeleted(e)}
-              onEdited={(e) => this.onEdited(e)}
-              edit={{
-                edit: editPolygonEnabled,
-                remove: editPolygonEnabled,
-              }}
-              draw={{
-                polyline: false,
-                rectangle: false,
-                circle: false,
-                marker: false,
-                circlemarker: false,
-                edit: false,
-                polygon: ((createPolygonEnabled) && ({
-                  allowIntersection: false,
-                  drawError: {
-                    color: '#e84a5f',
-                    message: '<strong>No se permite polígonos con intersecciones<strong>',
-                  },
-                  shapeOptions: {
-                    color: '#2a363b',
-                    clickable: true,
-                  },
-                })),
-              }}
-            />
-          </FeatureGroup>
-        )
-        : '' }
+        { drawPolygonEnabled && (<DrawControl loadPolygonInfo={loadPolygonInfo} />)}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -270,10 +214,6 @@ MapViewer.contextType = AppContext;
 
 MapViewer.propTypes = {
   drawPolygonEnabled: PropTypes.bool,
-  createPolygonEnabled: PropTypes.bool,
-  editPolygonEnabled: PropTypes.bool,
-  createPolygon: PropTypes.func,
-  deletePolygon: PropTypes.func,
   geoServerUrl: PropTypes.string.isRequired,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
@@ -284,19 +224,17 @@ MapViewer.propTypes = {
   rasterLayer: PropTypes.string,
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
+  loadPolygonInfo: PropTypes.func,
 };
 
 MapViewer.defaultProps = {
   drawPolygonEnabled: false,
-  createPolygonEnabled: false,
-  editPolygonEnabled: false,
-  createPolygon: () => {},
-  deletePolygon: () => {},
   loadingLayer: false,
   layerError: false,
   rasterLayer: '',
   rasterBounds: null,
   mapTitle: null,
+  loadPolygonInfo: () => {},
 };
 
 export default MapViewer;

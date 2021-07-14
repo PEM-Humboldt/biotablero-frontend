@@ -414,10 +414,9 @@ class RestAPI {
    */
   static requestCustomPolygonData(polygon) {
     /** TODO: implement all this endpoint and also the backend response
-     * to find information according to id and latLngs in polygon
+     * to find information according to polygon coordinates
      * */
     return RestAPI.makePostRequest('polygon', {
-      id_polygon: polygon.id,
       latLngs: polygon.latLngs,
     });
   }

@@ -28,7 +28,6 @@ class Selector extends React.Component {
       expanded: null,
       subExpanded: null,
       new: true,
-      showDrawGuide: false,
     };
   }
 
@@ -36,21 +35,18 @@ class Selector extends React.Component {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
-    handlers[3]('Disable polygon');
     if (panel === 'addProject') {
       this.setState({
         expanded: null,
       });
     } if (panel === 'draw-polygon') {
-      if (expandedPanel) handlers[3]('Create polygon');
+      handlers[3](expanded);
       this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
         subExpanded: null,
-        showDrawGuide: true,
       }));
     } else {
-      handlers[3]('Disable polygon');
       this.setState((prevState) => ({
         expanded: expandedPanel,
         selected: expanded ? panel : prevState.expanded,
@@ -126,7 +122,7 @@ class Selector extends React.Component {
     let { data } = this.props;
     data = data || [];
     const {
-      expanded, selected, subExpanded, showDrawGuide,
+      expanded, selected, subExpanded,
     } = this.state;
     return (
       <div className="selector">
@@ -158,7 +154,9 @@ class Selector extends React.Component {
               >
                 {label}
               </AccordionSummary>
-              {showDrawGuide && (id === 'draw-polygon') ? <InstructionsForPolygon /> : ''}
+              {id === 'draw-polygon' && (
+                <InstructionsForPolygon />
+              )}
               <AccordionDetails
                 id={detailId}
               >
@@ -167,7 +165,6 @@ class Selector extends React.Component {
                     id: subId,
                     label: subLabel,
                     disabled: subDisabled,
-                    iconOption: subIconOption,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (
@@ -181,9 +178,9 @@ class Selector extends React.Component {
                     >
                       <AccordionSummary
                         expandIcon={
-                          (((subIconOption === 'add') && <AddIcon />)
-                          || ((subIconOption === 'upload') && <CloudUploadIcon />)
-                          || ((subIconOption === 'edit') && <EditIcon />)
+                          (((iconOption === 'add') && <AddIcon />)
+                          || ((iconOption === 'upload') && <CloudUploadIcon />)
+                          || ((iconOption === 'edit') && <EditIcon />)
                           || (<ExpandMoreIcon />))
                         }
                       >
