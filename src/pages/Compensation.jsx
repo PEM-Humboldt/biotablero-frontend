@@ -8,9 +8,9 @@ import { constructDataForCompensation } from 'utils/constructDataForSelector';
 import GeoServerAPI from 'utils/geoServerAPI';
 import RestAPI from 'utils/restAPI';
 import MapViewer from 'components/MapViewer';
-import Selector from 'components/Selector';
 import Drawer from 'pages/compensation/Drawer';
 import NewProjectForm from 'pages/compensation/NewProjectForm';
+import Selector from 'pages/compensation/Selector';
 import Description from 'pages/compensation/SelectorData';
 import AppContext from 'app/AppContext';
 
