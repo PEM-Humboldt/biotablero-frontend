@@ -70,7 +70,7 @@ class NumberOfSpecies extends React.Component {
 
     Promise.all([
       RestAPI.requestNumberOfSpecies(areaId, geofenceId, 'all'),
-      RestAPI.requestNSThresholds(areaId, 'all'),
+      RestAPI.requestNSThresholds(areaId, geofenceId, 'all'),
     ])
       .then(([values, thresholds]) => {
         const data = [];
