@@ -1136,11 +1136,6 @@ class Search extends Component {
               deletePolygon={this.deletePolygon}
               editPolygonEnabled={editPolygonEnabled}
             />
-            {activeLayer && (
-              <div className="mapsTitle">
-                {activeLayer}
-              </div>
-            )}
             {!createPolygonEnabled && drawPolygonEnabled && (
               <div
                 className="confirmButton"
