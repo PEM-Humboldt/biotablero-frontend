@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import L from 'leaflet';
 import { Done } from '@material-ui/icons';
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
@@ -70,8 +71,87 @@ class DrawControl extends React.Component {
     });
   }
 
+  /**
+   * Localization settings
+   */
+  localization = () => {
+    L.drawLocal = {
+      draw: {
+        toolbar: {
+          actions: {
+            title: 'Cancelar figura',
+            text: 'Cancelar',
+          },
+          finish: {
+            title: 'Terminar figura',
+            text: 'Terminar',
+          },
+          undo: {
+            title: 'Borrar último punto',
+            text: 'Deshacer',
+          },
+          buttons: {
+            ...L.drawLocal.draw.toolbar.buttons,
+            polygon: 'Dibujar polígono',
+          },
+        },
+        handlers: {
+          ...L.drawLocal.draw.handlers,
+          polygon: {
+            tooltip: {
+              start: 'Haga click para empezar la figura.',
+              cont: 'Haga click para continuar la figura.',
+              end: 'Haga click en el primer punto para cerrar la figura.',
+            },
+          },
+        },
+      },
+      edit: {
+        toolbar: {
+          actions: {
+            save: {
+              title: 'Terminar edición',
+              text: 'Terminar',
+            },
+            cancel: {
+              title: 'Cancelar edición',
+              text: 'Cancelar',
+            },
+            clearAll: {
+              title: 'Eliminar figura',
+              text: 'Eliminar',
+            },
+          },
+          buttons: {
+            edit: 'Editar figura',
+            editDisabled: 'No hay nada para editar',
+            remove: 'Eliminar Figura',
+            removeDisabled: 'Hay hay nada para eliminar',
+          },
+        },
+        handlers: {
+          edit: {
+            tooltip: {
+              text: 'Mueva los vertices del polígono para cambiar la figura.',
+              subtext: 'Haga click en Cancelar para deshacer los cambios.',
+            },
+          },
+          remove: {
+            tooltip: {
+              text: 'Haga click en el polígono para borrarlo',
+            },
+          },
+        },
+      },
+    };
+  }
+
   render() {
     const { editEnabled, createEnabled, polygon } = this.state;
+
+    this.localization();
+    L.EditToolbar.Delete.include({ removeAllLayers: false });
+
     return (
       <>
         <FeatureGroup>
@@ -90,7 +170,7 @@ class DrawControl extends React.Component {
               marker: false,
               circlemarker: false,
               edit: false,
-              polygon: ((createEnabled && !polygon) && ({
+              polygon: (createEnabled && !polygon) && ({
                 allowIntersection: false,
                 drawError: {
                   color: '#e84a5f',
@@ -100,14 +180,14 @@ class DrawControl extends React.Component {
                   color: '#2a363b',
                   clickable: true,
                 },
-              })),
+              }),
             }}
           />
         </FeatureGroup>
         {polygon && (
           <div
             className="confirmButton"
-            title="Confirmar polígono"
+            title="Enviar polígono"
             role="button"
             onKeyPress={this.confirmPolygon}
             onClick={this.confirmPolygon}
