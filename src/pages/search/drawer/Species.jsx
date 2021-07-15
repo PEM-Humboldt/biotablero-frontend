@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import Richness from 'pages/search/drawer/species/Richness';
 import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity';
-import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
 class Species extends React.Component {

@@ -38,7 +38,7 @@ class Accordion extends React.Component {
     } = this.props;
     const { expanded } = this.state;
     return (
-      <div>
+      <>
         {componentsArray.map((item) => (
           <AccordionUI
             className={expanded !== item.label.id ? classNameDefault : classNameSelected}
@@ -59,11 +59,13 @@ class Accordion extends React.Component {
               {item.label.name}
             </AccordionSummary>
             <AccordionDetails>
-              <item.component {...item.componentProps} />
+              {item.component && (
+                <item.component {...item.componentProps} />
+              )}
             </AccordionDetails>
           </AccordionUI>
         ))}
-      </div>
+      </>
     );
   }
 }

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import ForestIntegrity from 'pages/search/drawer/landscape/forest/ForestIntegrity';
 import ForestLossPersistence from 'pages/search/drawer/landscape/forest/ForestLossPersistence';
-import Accordion from 'pages/search/drawer/Accordion';
 
 const Forest = (props) => {
   const {

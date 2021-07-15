@@ -4,7 +4,7 @@ import Modal from '@material-ui/core/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
-import { constructDataForCompensation } from 'utils/constructDataForSelector';
+import constructDataForCompensation from 'pages/compensation/constructDataForSelector';
 import GeoServerAPI from 'utils/geoServerAPI';
 import RestAPI from 'utils/restAPI';
 import MapViewer from 'components/MapViewer';

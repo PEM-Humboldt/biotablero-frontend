@@ -1379,14 +1379,9 @@ overflow: auto;
   color: #4a585f;
 }
 
-#geofences,
 #region {
     display: block !important;
     padding-top: 0;
-}
-
-#panel2 {
-    display: block !important;
 }
 
 
@@ -1468,7 +1463,7 @@ overflow: auto;
 
 .selector-expanded > div:nth-child(1),
 #panel1-Geocerca > div:nth-child(1),
-#panel2 > div:nth-child(1),
+#draw-polygon > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;
   background-color: #2a363b;
@@ -1478,7 +1473,7 @@ overflow: auto;
 
 #panel1-Geocerca > div:nth-child(1) svg,
 .selector-expanded > div:nth-child(1) svg,
-#panel2 > div:nth-child(1) svg,
+#draw-polygon > div:nth-child(1) svg,
 #panel3 > div:nth-child(1) svg {
   color: #e84a5f;
 }

@@ -11,50 +11,6 @@ const FirstLetterUpperCase = (sentence) => (
 );
 
 /**
- * Set the data structure for Selector in the Search Module
- */
-const constructDataForSearch = (geofences) => {
-  const areasArray = [];
-  geofences.forEach((geofence) => {
-    const area = {
-      id: geofence.id,
-      label: geofence.name,
-      detailId: 'area',
-      iconOption: 'expand',
-      idLabel: `panel1-${geofence.id}`,
-      options: geofence.data,
-      disabled: (geofence.id === 'se'),
-    };
-    areasArray.push(area);
-  });
-
-  const geofencesArray = [
-    {
-      id: 'Geocerca',
-      idLabel: 'panel1-Geocerca',
-      detailId: 'geofences',
-      label: 'Área de consulta',
-      options: areasArray,
-    },
-    {
-      id: 'draw-polygon',
-      idLabel: 'panel2',
-      detailId: 'panel2',
-      label: 'Dibujar polígono',
-      iconOption: 'edit',
-    },
-    {
-      id: 'panel3',
-      detailId: 'panel3',
-      label: 'Subir polígono',
-      iconOption: 'upload',
-      disabled: true,
-    },
-  ];
-  return geofencesArray;
-};
-
-/**
  * Set the data structure for Selector in the Compensation Module
  */
 const constructDataForCompensation = (regions) => {
@@ -124,4 +80,4 @@ const constructDataForCompensation = (regions) => {
   return { regionsList, statusList, regions: regionsArray };
 };
 
-export { constructDataForSearch, constructDataForCompensation };
+export default constructDataForCompensation;

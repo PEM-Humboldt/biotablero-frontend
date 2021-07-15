@@ -7,15 +7,14 @@ import React, { Component } from 'react';
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
+import Selector from 'pages/search/Selector';
 import { Description } from 'pages/search/SelectorData';
-import { constructDataForSearch } from 'utils/constructDataForSelector';
 import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
-import Selector from 'components/Selector';
 
 /**
  * Get the label tooltip on the map
@@ -52,7 +51,6 @@ class Search extends Component {
       activeLayer: {},
       connError: false,
       layerError: false,
-      geofencesArray: [],
       areaList: [],
       layers: {},
       loadingLayer: false,
@@ -111,7 +109,6 @@ class Search extends Component {
    */
   loadAreaList = () => {
     let tempAreaList;
-    let tempGeofencesArray;
     Promise.all([
       RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
@@ -127,9 +124,7 @@ class Search extends Component {
           { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
-        tempGeofencesArray = constructDataForSearch(tempAreaList);
         this.setState({
-          geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
         }, () => {
           const {
@@ -788,12 +783,11 @@ class Search extends Component {
   }
 
   /**
-   * Load layer based on selection
+   * Load layer based on selection. If idLayer is null, judt turn off all layers
    *
    * @param {String} idLayer Layer ID
-   * @param {Boolean} show whether to show or hide the layer
    */
-  loadSecondLevelLayer = (idLayer, show) => {
+  loadSecondLevelLayer = (idLayer) => {
     const { layers, requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -810,16 +804,18 @@ class Search extends Component {
       return newState;
     });
 
+    if (!idLayer) {
+      return;
+    }
+
     if (layers[idLayer]) {
-      if (show) {
-        this.setArea(idLayer);
-      }
+      this.setArea(idLayer);
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.layers[idLayer].active = show;
+        newState.layers[idLayer].active = true;
         return newState;
       });
-    } else if (show) {
+    } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
@@ -970,7 +966,7 @@ class Search extends Component {
       layers,
       connError,
       layerError,
-      geofencesArray,
+      areaList,
       activeLayer: { name: activeLayer, legend },
       mapBounds,
       rasterUrl,
@@ -1045,20 +1041,19 @@ class Search extends Component {
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
-                  handlers={[
-                    () => {
+                  handlers={{
+                    areaListChange: () => {
                       this.setState({ drawPolygonEnabled: false });
                     },
-                    this.secondLevelChange,
-                    this.innerElementChange,
-                    (val) => {
+                    areaTypeChange: this.secondLevelChange,
+                    geofenceChange: this.innerElementChange,
+                    polygonOpen: (val) => {
                       this.setState({ drawPolygonEnabled: val });
                     },
-                  ]}
+                  }}
                   description={Description()}
-                  data={geofencesArray}
+                  areasData={areaList}
                   expandedId={0}
-                  iconClass="iconsection"
                 />
               )}
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
