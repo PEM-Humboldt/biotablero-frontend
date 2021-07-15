@@ -3,7 +3,7 @@ import React from 'react';
 
 import { SvgIcon } from '@material-ui/core';
 
-const Polygon = ({ color, fontSize }) => (
+const EditIcon = ({ color, fontSize }) => (
   <SvgIcon viewBox="318 17.8 24.7 24.2" style={{ color, fontSize }}>
     <path d="M337 30.2v6a3 3 0 1-3 3h-10a3 3 0 1-3-3v-10c0-1.7 1.3-3 3-3h6.3l3.2-3.2H324a6 6 0 0-6 6v10a6 6 0 6 6h10a6 6 0 6-6v-8.8l-3 3" />
     <path d="M338.7 24.6l-8.9 8.9H327V30.7l8.9-8.9z" />
@@ -12,14 +12,14 @@ const Polygon = ({ color, fontSize }) => (
   </SvgIcon>
 );
 
-Polygon.propTypes = {
+EditIcon.propTypes = {
   color: PropTypes.string,
   fontSize: PropTypes.number,
 };
 
-Polygon.defaultProps = {
+EditIcon.defaultProps = {
   color: '',
   fontSize: 24,
 };
 
-export default Polygon;
+export default EditIcon;
