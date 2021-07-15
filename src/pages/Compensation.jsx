@@ -425,6 +425,7 @@ class Compensation extends Component {
       regions, regionsList, statusList, newProjectModal, connError, currentCompanyId,
       currentProjectId, loadingModal, impactedBiomesDecisionTree, clickedStrategy,
     } = this.state;
+    const { user } = this.context;
     return (
       <>
         {/** Modals section: new project, connection error or loading message */}
@@ -490,6 +491,7 @@ class Compensation extends Component {
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
+            userLogged={user}
           />
           <div className="contentView">
             {

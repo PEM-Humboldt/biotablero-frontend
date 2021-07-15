@@ -10,7 +10,6 @@ import {
   WMSTileLayer,
 } from 'react-leaflet';
 
-import AppContext from 'app/AppContext';
 import DrawControl from 'components/mapViewer/DrawControl';
 
 import 'leaflet/dist/leaflet.css';
@@ -107,6 +106,7 @@ class MapViewer extends React.Component {
   render() {
     const {
       geoServerUrl,
+      userLogged,
       loadingLayer,
       layerError,
       rasterLayer,
@@ -116,7 +116,6 @@ class MapViewer extends React.Component {
       loadPolygonInfo,
     } = this.props;
     const { openErrorModal } = this.state;
-    const { user } = this.context;
     return (
       <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
         {mapTitle}
@@ -193,7 +192,7 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        { (user && user.id === 1) ? (
+        {userLogged && (
           // TODO: Implementing WMSTileLayer load from Compensator
           <WMSTileLayer
             layers="Biotablero:Regiones_geb"
@@ -203,18 +202,16 @@ class MapViewer extends React.Component {
             transparent
             alt="Regiones"
           />
-        )
-          : '' }
+        )}
       </Map>
     );
   }
 }
 
-MapViewer.contextType = AppContext;
-
 MapViewer.propTypes = {
   drawPolygonEnabled: PropTypes.bool,
   geoServerUrl: PropTypes.string.isRequired,
+  userLogged: PropTypes.object,
   loadingLayer: PropTypes.bool,
   // They're used in getDerivedStateFromProps but eslint won't realize
   // eslint-disable-next-line react/no-unused-prop-types
@@ -228,6 +225,7 @@ MapViewer.propTypes = {
 };
 
 MapViewer.defaultProps = {
+  userLogged: null,
   drawPolygonEnabled: false,
   loadingLayer: false,
   layerError: false,
