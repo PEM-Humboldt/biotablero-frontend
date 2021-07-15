@@ -412,7 +412,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestBiomesbyEAGeometry(eaId) {
+  static requestBiomesbyEAGeometry(eaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
