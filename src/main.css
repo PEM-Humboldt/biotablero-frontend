@@ -1183,14 +1183,6 @@ a#reset-filters {
 	padding: 4px;
 }
 
-.polygon-icons {
-	font-size: 1.5rem;
-	display: inline-block;
-	fill:#464646;
-	width: 1em;
-	height: 1em;
-}
-
 .mapsTitle {
 	position: relative;
 	left: 45px;
@@ -1458,7 +1450,7 @@ overflow: auto;
 }
 
 .leaflet-bar {
-	border: 0 !important;
+  border: 0 !important;
 }
 
 .selector-expanded > div:nth-child(1),
