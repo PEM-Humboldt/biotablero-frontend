@@ -9,7 +9,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import PropTypes from 'prop-types';
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import { InstructionsForPolygon } from 'pages/search/SelectorData';
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -39,13 +38,6 @@ class Selector extends React.Component {
       this.setState({
         expanded: null,
       });
-    } if (panel === 'draw-polygon') {
-      handlers[3](expanded);
-      this.setState((prevState) => ({
-        expanded: expandedPanel,
-        selected: expanded ? panel : prevState.expanded,
-        subExpanded: null,
-      }));
     } else {
       this.setState((prevState) => ({
         expanded: expandedPanel,
@@ -154,9 +146,6 @@ class Selector extends React.Component {
               >
                 {label}
               </AccordionSummary>
-              {id === 'draw-polygon' && (
-                <InstructionsForPolygon />
-              )}
               <AccordionDetails
                 id={detailId}
               >
