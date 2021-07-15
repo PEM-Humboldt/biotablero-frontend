@@ -131,6 +131,16 @@ const match = {
       'area',
     ],
   },
+  functionalDryForest: {
+    palette: 'functionalDryForest',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
   border: {
     palette: 'border',
   },
@@ -216,6 +226,7 @@ const matchColor = (type, resetCache = false) => {
     case 'wetland':
     case 'richnessNos':
     case 'richnessGaps':
+    case 'functionalDryForest':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;
