@@ -39,6 +39,16 @@ class Accordion extends React.Component {
     const { expanded } = this.state;
     return (
       <>
+        {componentsArray.length <= 0 && (
+          <div className="graphcard">
+            <h2>
+              Gráficas en construcción
+            </h2>
+            <p>
+              Pronto más información
+            </p>
+          </div>
+        )}
         {componentsArray.map((item) => (
           <AccordionUI
             className={expanded !== item.label.id ? classNameDefault : classNameSelected}
