@@ -783,7 +783,7 @@ class Search extends Component {
   }
 
   /**
-   * Load layer based on selection. If idLayer is null, judt turn off all layers
+   * Load layer based on selection. If idLayer is null, just turn off all layers
    *
    * @param {String} idLayer Layer ID
    */
