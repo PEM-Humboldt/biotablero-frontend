@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
 import Selector from 'pages/search/Selector';
-import { Description } from 'pages/search/SelectorData';
+import Description from 'pages/search/SelectorData';
 import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
@@ -1043,12 +1043,13 @@ class Search extends Component {
                 <Selector
                   handlers={{
                     areaListChange: () => {
+                      this.loadSecondLevelLayer(null);
                       this.setState({ drawPolygonEnabled: false });
                     },
                     areaTypeChange: this.secondLevelChange,
                     geofenceChange: this.innerElementChange,
-                    polygonOpen: (val) => {
-                      this.setState({ drawPolygonEnabled: val });
+                    polygonChange: () => {
+                      this.setState({ drawPolygonEnabled: true });
                     },
                   }}
                   description={Description()}

@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import EditIcon from '@material-ui/icons/Edit';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import Accordion from 'pages/search/Accordion';
+import EditPolygonIcon from 'pages/search/selector/EditIcon';
+import PolygonIcon from 'pages/search/selector/PolygonIcon';
+import RemoveIcon from 'pages/search/selector/RemoveIcon';
 
 const AreaAutocomplete = ({ options, areaType, onChange }) => (
   <Autocomplete
@@ -89,6 +93,103 @@ Geofences.propTypes = {
   onSelection: PropTypes.func.isRequired,
 };
 
+const DrawPolygon = () => {
+  const instructions = [
+    {
+      label: {
+        id: 'draw',
+        name: (
+          <div style={{ display: 'flex' }}>
+            <PolygonIcon />
+            <span style={{ paddingLeft: 10, alignSelf: 'center' }}>Dibujar</span>
+          </div>
+        ),
+      },
+      component: () => (
+        <div style={{ display: 'block' }}>
+          <div>
+            <b>Terminar:</b>
+            {' Conecta el primer y el último punto.'}
+          </div>
+          <br />
+          <div>
+            <b>Deshacer:</b>
+            {' Borra el último punto.'}
+          </div>
+          <br />
+          <div>
+            <b>Cancelar:</b>
+            {' Elimina todos los puntos.'}
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: {
+        id: 'edit',
+        name: (
+          <div style={{ display: 'flex' }}>
+            <EditPolygonIcon />
+            <span style={{ paddingLeft: 10, alignSelf: 'center' }}>Editar</span>
+          </div>
+        ),
+      },
+      component: () => (
+        <div style={{ display: 'block' }}>
+          <div>
+            <b>Terminar:</b>
+            {' Acepta la edición actual.'}
+          </div>
+          <br />
+          <div>
+            <b>Cancelar:</b>
+            {' Deshace toda la edición.'}
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: {
+        id: 'remove',
+        name: (
+          <div style={{ display: 'flex' }}>
+            <RemoveIcon />
+            <span style={{ paddingLeft: 10, alignSelf: 'center' }}>Borrar</span>
+          </div>
+        ),
+      },
+      component: () => (
+        <div style={{ display: 'block' }}>
+          <div>
+            <b>Terminar:</b>
+            {' Acepta la eliminación del polígono.'}
+          </div>
+          <br />
+          <div>
+            <b>Cancelar:</b>
+            {' Sale de este control.'}
+          </div>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div style={{ padding: '10px' }}>
+      Los controles a la izquierda superior del mapa se manejan así, después de dibujar el polígono
+      aparecerán las opciones extra.
+      <div style={{ width: '100%' }}>
+        <Accordion
+          componentsArray={instructions}
+          classNameDefault="m0"
+          classNameSelected="m0"
+          level="2"
+        />
+      </div>
+    </div>
+  );
+};
+
 const Selector = (props) => {
   const { areasData, description, handlers } = props;
 
@@ -109,8 +210,9 @@ const Selector = (props) => {
       label: {
         id: 'draw-polygon',
         name: 'Dibujar polígono',
+        icon: EditIcon,
       },
-      iconOption: 'edit',
+      component: DrawPolygon,
     },
     {
       label: {
@@ -120,6 +222,14 @@ const Selector = (props) => {
       },
     },
   ];
+
+  const onChange = (level, tabId) => {
+    if (tabId === 'draw-polygon') {
+      handlers.polygonChange();
+    } else {
+      handlers.areaListChange();
+    }
+  };
 
   return (
     <div className="selector">
@@ -131,7 +241,7 @@ const Selector = (props) => {
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
         level="1"
-        handlerAccordionGeometry={handlers.areaListChange}
+        handlerAccordionGeometry={onChange}
       />
     </div>
   );
@@ -147,7 +257,7 @@ Selector.propTypes = {
     areaListChange: PropTypes.func.isRequired,
     areaTypeChange: PropTypes.func.isRequired,
     geofenceChange: PropTypes.func.isRequired,
-    polygonOpen: PropTypes.func.isRequired,
+    polygonChange: PropTypes.func.isRequired,
   }).isRequired,
   description: PropTypes.object,
 };
