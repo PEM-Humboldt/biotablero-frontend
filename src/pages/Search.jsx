@@ -896,7 +896,16 @@ class Search extends Component {
    */
   loadPolygonInfo = (polygon) => {
     RestAPI.requestCustomPolygonData(polygon).catch(() => {});
-    this.setState({ drawPolygonEnabled: false });
+    this.setState((prev) => ({
+      drawPolygonEnabled: false,
+      layers: {
+        ...prev.layers,
+        polygon: {
+          active: true,
+          layer: L.polygon(polygon.latLngs, { fitBounds: true }),
+        },
+      },
+    }));
   }
 
   /** ************************************* */
