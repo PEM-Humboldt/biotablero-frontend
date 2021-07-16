@@ -135,6 +135,7 @@ const match = {
     palette: 'functionalDryForest',
     // first values, then limits, then backgrounds
     sort: [
+      'func_values',
       'value',
       'min',
       'max',

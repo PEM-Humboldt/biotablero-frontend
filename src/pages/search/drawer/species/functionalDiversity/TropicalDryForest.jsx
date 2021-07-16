@@ -138,19 +138,19 @@ class TropicalDryForest extends React.Component {
           <h6>
             Riqueza
           </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('value') }}>
+          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
             {values.richness}
           </h5>
           <h6>
             Uniformidad
           </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('value') }}>
+          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
             {values.uniformity}
           </h5>
           <h6>
             Divergencia
           </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('value') }}>
+          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
             {values.divergence}
           </h5>
         </div>
