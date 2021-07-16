@@ -13,6 +13,7 @@ class DrawControl extends React.Component {
       editEnabled: false,
       createEnabled: true,
       polygon: null,
+      confirmPolygon: false,
     };
   }
 
@@ -150,7 +151,12 @@ class DrawControl extends React.Component {
   }
 
   render() {
-    const { editEnabled, createEnabled, polygon } = this.state;
+    const {
+      editEnabled,
+      createEnabled,
+      polygon,
+      confirmPolygon,
+    } = this.state;
 
     this.localization();
 
@@ -187,16 +193,41 @@ class DrawControl extends React.Component {
           />
         </FeatureGroup>
         {polygon && (
-          <div
-            className="confirmButton"
-            title="Enviar polígono"
-            role="button"
-            onKeyPress={this.confirmPolygon}
-            onClick={this.confirmPolygon}
-            tabIndex={0}
-          >
-            <Done />
-          </div>
+          <>
+            <button
+              className="confirmButton"
+              title="Confirmar polígono"
+              type="button"
+              onClick={() => { this.setState({ confirmPolygon: true }); }}
+              tabIndex={0}
+            >
+              <Done />
+            </button>
+            {confirmPolygon && (
+              <ul className="confirmActions">
+                <li>
+                  <button
+                    className=""
+                    title="Enviar polígono"
+                    type="button"
+                    onClick={this.confirmPolygon}
+                  >
+                    Avanzar
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className=""
+                    title="Cancelar"
+                    type="button"
+                    onClick={() => { this.setState({ confirmPolygon: false }); }}
+                  >
+                    Cancelar
+                  </button>
+                </li>
+              </ul>
+            )}
+          </>
         )}
       </>
     );

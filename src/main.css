@@ -1153,17 +1153,18 @@ a#reset-filters {
 }
 
 .confirmButton {
-	position: absolute;
-	top: 143px;
-	left:10px;
-	background-color: #e84a5f;
-	color: #501e23;
-	z-index: 401;
-	display: block;
-	width: 30px;
-	height: 30px;
-	box-sizing: border-box;
-	padding: 4px;
+  position: absolute;
+  top: 143px;
+  left:10px;
+  background-color: #e84a5f;
+  color: #501e23;
+  z-index: 401;
+  display: block;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 4px;
+  border: none;
 }
 
 .confirmButton svg {
@@ -1171,16 +1172,28 @@ a#reset-filters {
 	height: 22px;
 }
 
-.confirmButton-text {
-	left:10px;
-	background-color: #e84a5f;
-	color: #501e23;
-	z-index:1;
-	display: block;
-	width: 30px;
-	height: 30px;
-	box-sizing: border-box;
-	padding: 4px;
+.confirmActions {
+  position: absolute;
+  top: 143px;
+  left: 42px;
+  z-index: 401;
+  box-sizing: border-box;
+}
+
+.confirmActions li {
+  list-style: none;
+  display: inline-block;
+}
+
+.confirmActions li button {
+  background-color: #e84a5f;
+  color: #fff;
+  border: none;
+  height: 30px;
+  width: 100%;
+  border-left: 1px solid #AAA;
+  padding: 0 10px;
+  font-size: 12px;
 }
 
 .mapsTitle {

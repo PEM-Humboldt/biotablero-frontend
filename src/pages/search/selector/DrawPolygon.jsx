@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Done } from '@material-ui/icons';
+
 import Accordion from 'pages/search/Accordion';
 import EditPolygonIcon from 'pages/search/selector/EditIcon';
 import PolygonIcon from 'pages/search/selector/PolygonIcon';
@@ -75,6 +77,35 @@ const DrawPolygon = () => {
           <div>
             <b>Terminar:</b>
             {' Acepta la eliminación del polígono.'}
+          </div>
+          <br />
+          <div>
+            <b>Cancelar:</b>
+            {' Sale de este control.'}
+          </div>
+          <br />
+          <div>
+            <b>Reiniciar:</b>
+            {' Elimina todo.'}
+          </div>
+        </div>
+      ),
+    },
+    {
+      label: {
+        id: 'confirm',
+        name: (
+          <div style={{ display: 'flex' }}>
+            <Done />
+            <span style={{ paddingLeft: 10, alignSelf: 'center' }}>Confirmar</span>
+          </div>
+        ),
+      },
+      component: () => (
+        <div style={{ display: 'block' }}>
+          <div>
+            <b>Avanzar:</b>
+            {' Acepta el polígono y muestra la información disponible.'}
           </div>
           <br />
           <div>
