@@ -49,12 +49,15 @@ class DrawControl extends React.Component {
   /**
    * Listens for the polygon deleted event
    */
-  onDeleted = () => {
-    this.setState({
-      polygon: null,
-      createEnabled: true,
-      editEnabled: false,
-    });
+  onDeleted = (e) => {
+    const deletedLayers = e.layers.getLayers();
+    if (deletedLayers.length > 0) {
+      this.setState({
+        polygon: null,
+        createEnabled: true,
+        editEnabled: false,
+      });
+    }
   }
 
   /**
@@ -118,8 +121,8 @@ class DrawControl extends React.Component {
               text: 'Cancelar',
             },
             clearAll: {
-              title: 'Eliminar figura',
-              text: 'Eliminar',
+              title: 'Eliminar todo',
+              text: 'Reiniciar',
             },
           },
           buttons: {
@@ -150,7 +153,6 @@ class DrawControl extends React.Component {
     const { editEnabled, createEnabled, polygon } = this.state;
 
     this.localization();
-    L.EditToolbar.Delete.include({ removeAllLayers: false });
 
     return (
       <>
