@@ -175,9 +175,11 @@ const DrawPolygon = () => {
   ];
 
   return (
-    <div style={{ padding: '10px' }}>
-      Los controles a la izquierda superior del mapa se manejan así, después de dibujar el polígono
-      aparecerán las opciones extra.
+    <div>
+      <div style={{ paddingBottom: 10 }}>
+        Los controles a la izquierda superior del mapa se manejan así, después de dibujar el
+        polígono aparecerán las opciones extra.
+      </div>
       <div style={{ width: '100%' }}>
         <Accordion
           componentsArray={instructions}
