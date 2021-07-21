@@ -141,6 +141,13 @@ export default {
     '#717e4f',
     '#fcbd64',
   ],
+  functionalDryForest: [
+    '#b74777',
+    '#29a86d',
+    '#5bb58b',
+    '#1d754c',
+    '#c5bb5a',
+  ],
   border: ['#fc6467'],
   default: ['#b2bdc2'],
 };
