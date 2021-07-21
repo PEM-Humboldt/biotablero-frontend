@@ -402,6 +402,30 @@ class RestAPI {
     return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
   }
 
+  /**
+   * Get values of functional diversity in the dry forest in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of functional diversity in the dry forest
+   */
+   static requestDryForestValues(areaType, areaId) {
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/values?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get values of functional features in the dry forest in a given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with values of functional features in the dry forest
+   */
+   static requestDryForestFeatures(areaType, areaId) {
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
+  }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
