@@ -1152,6 +1152,16 @@ a#reset-filters {
           flex-flow: row;
 }
 
+.drawPAcc {
+	width: 100%;
+}
+
+.drawPAcc .MuiAccordionSummary-content svg {
+	width: 20px;
+	height: 20px;
+	color: #e84a5f;
+}
+
 .confirmButton {
   position: absolute;
   top: 143px;
@@ -1163,17 +1173,18 @@ a#reset-filters {
   width: 30px;
   height: 30px;
   box-sizing: border-box;
-  padding: 4px;
+  padding: 5px;
   border: none;
 }
 
 .confirmButton svg {
-	width: 22px;
-	height: 22px;
+	width: 19px;
+	height: 19px;
 }
 
 .confirmActions {
   position: absolute;
+  font-weight: 400;
   top: 143px;
   left: 42px;
   z-index: 401;
@@ -1194,6 +1205,7 @@ a#reset-filters {
   border-left: 1px solid #AAA;
   padding: 0 10px;
   font-size: 12px;
+  cursor: pointer;
 }
 
 .mapsTitle {
@@ -1441,10 +1453,10 @@ overflow: auto;
 	background-color: #eeeeec;
 	-webkit-flex: 3 1 60%;
 					flex: 3 1 60%;
- -webkit-order: 1;
+ 	-webkit-order: 1;
 				 order: 1;
-  font-family: 'Roboto', sans-serif !important;
-  z-index: 0;
+  	font-family: 'Roboto', sans-serif !important;
+  	z-index: 0;
 }
 
 .leaflet-control-zoom a {
@@ -1458,7 +1470,7 @@ overflow: auto;
 	background-color: #e84a5f !important;
 	color: #fff !important;
 	background-blend-mode: multiply;
-	font-weight: 300 !important;
+	font-weight: 400 !important;
 	border-radius: 0 !important;
 }
 

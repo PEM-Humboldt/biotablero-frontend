@@ -76,7 +76,7 @@ const DrawPolygon = () => {
         <div style={{ display: 'block' }}>
           <div>
             <b>Terminar:</b>
-            {' Acepta la eliminación del polígono.'}
+            {' Después de seleccionar un polígono acepta su eliminación.'}
           </div>
           <br />
           <div>
@@ -118,8 +118,8 @@ const DrawPolygon = () => {
   ];
 
   return (
-    <div>
-      <div style={{ paddingBottom: 10 }}>
+    <div className="drawPAcc">
+      <div style={{ paddingBottom: 15 }}>
         Los controles a la izquierda superior del mapa se manejan así, después de dibujar el
         polígono aparecerán las opciones extra.
       </div>
