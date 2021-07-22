@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import TropicalDryForest from 'pages/search/drawer/species/functionalDiversity/TropicalDryForest';
-import Accordion from 'pages/search/drawer/Accordion';
 
 const FunctionalDiversity = (props) => {
   const {

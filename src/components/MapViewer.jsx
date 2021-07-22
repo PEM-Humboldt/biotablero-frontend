@@ -1,13 +1,16 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import { Modal } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import {
   ImageOverlay,
   Map,
   TileLayer,
   WMSTileLayer,
 } from 'react-leaflet';
-import { Modal } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import PropTypes from 'prop-types';
-import React from 'react';
+
+import DrawControl from 'components/mapViewer/DrawControl';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -109,6 +112,8 @@ class MapViewer extends React.Component {
       rasterLayer,
       rasterBounds,
       mapTitle,
+      drawPolygonEnabled,
+      loadPolygonInfo,
     } = this.props;
     const { openErrorModal } = this.state;
     return (
@@ -161,6 +166,7 @@ class MapViewer extends React.Component {
             </button>
           </div>
         </Modal>
+        { drawPolygonEnabled && (<DrawControl loadPolygonInfo={loadPolygonInfo} />)}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -186,21 +192,24 @@ class MapViewer extends React.Component {
         /> */}
         {/** TODO: La carga del WMSTileLayer depende del usuario activo,
             se debe ajustar esta carga cuando se implementen los usuarios */}
-        { userLogged ? ( // TODO: Implementing WMSTileLayer load from Compensator
+        {userLogged && (
+          // TODO: Implementing WMSTileLayer load from Compensator
           <WMSTileLayer
             layers="Biotablero:Regiones_geb"
-            url={`${geoServerUrl}/geoserver/Biotablero/wms?service=WMS`}
-            opacity={0.2}
+            format="image/png"
+            url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
+            opacity={0.4}
+            transparent
             alt="Regiones"
           />
-        )
-          : '' }
+        )}
       </Map>
     );
   }
 }
 
 MapViewer.propTypes = {
+  drawPolygonEnabled: PropTypes.bool,
   geoServerUrl: PropTypes.string.isRequired,
   userLogged: PropTypes.object,
   loadingLayer: PropTypes.bool,
@@ -212,15 +221,18 @@ MapViewer.propTypes = {
   rasterLayer: PropTypes.string,
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
+  loadPolygonInfo: PropTypes.func,
 };
 
 MapViewer.defaultProps = {
   userLogged: null,
+  drawPolygonEnabled: false,
   loadingLayer: false,
   layerError: false,
   rasterLayer: '',
   rasterBounds: null,
   mapTitle: null,
+  loadPolygonInfo: () => {},
 };
 
 export default MapViewer;

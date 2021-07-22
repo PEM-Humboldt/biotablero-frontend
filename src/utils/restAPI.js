@@ -698,6 +698,22 @@ class RestAPI {
     );
   }
 
+  /**
+   * Request data available to custom geometry
+   *
+   * @param {Object} polygon polygon saved
+   *
+   * @return {Object} with data related to the polygon
+   */
+   static requestCustomPolygonData(polygon) {
+    /** TODO: implement all this endpoint and also the backend response
+     * to find information according to polygon coordinates
+     * */
+    return RestAPI.makePostRequest('polygon', {
+      latLngs: polygon.latLngs,
+    });
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */

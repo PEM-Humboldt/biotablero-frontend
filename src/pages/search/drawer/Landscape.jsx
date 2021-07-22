@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor';
 import Forest from 'pages/search/drawer/landscape/Forest';
 import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
 import PAConnectivity from 'pages/search/drawer/landscape/PAConnectivity';
-import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
 class Landscape extends React.Component {

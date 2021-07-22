@@ -38,7 +38,7 @@ class Accordion extends React.Component {
     } = this.props;
     const { expanded } = this.state;
     return (
-      <div>
+      <>
         {componentsArray.length <= 0 && (
           <div className="graphcard">
             <h2>
@@ -64,16 +64,18 @@ class Accordion extends React.Component {
             disabled={item.label.disabled}
           >
             <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
+              expandIcon={item.label.icon ? (<item.label.icon />) : (<ExpandMoreIcon />)}
             >
               {item.label.name}
             </AccordionSummary>
             <AccordionDetails>
-              <item.component {...item.componentProps} />
+              {item.component && (
+                <item.component {...item.componentProps} />
+              )}
             </AccordionDetails>
           </AccordionUI>
         ))}
-      </div>
+      </>
     );
   }
 }
@@ -82,11 +84,15 @@ Accordion.propTypes = {
   componentsArray: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.shape({
       id: PropTypes.string,
-      name: PropTypes.string,
+      name: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+      ]),
       disabled: PropTypes.bool,
       collapsed: PropTypes.bool,
+      icon: PropTypes.elementType,
     }),
-    component: PropTypes.func,
+    component: PropTypes.elementType,
     componentProps: PropTypes.object,
   })).isRequired,
   classNameDefault: PropTypes.string,

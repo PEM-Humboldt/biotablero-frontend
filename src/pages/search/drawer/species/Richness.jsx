@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import NumberOfSpecies from 'pages/search/drawer/species/richness/NumberOfSpecies';
 import SpeciesRecordsGaps from 'pages/search/drawer/species/richness/SpeciesRecordsGaps';
-import Accordion from 'pages/search/drawer/Accordion';
 
 const Richness = (props) => {
   const {
