@@ -363,7 +363,7 @@ class RestAPI {
   }
 
   /**
-   * Get the thresholds for the number of species for the specified area type
+   * Get the thresholds for the number of species in the same biotic unit as the specified area id
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
@@ -375,6 +375,21 @@ class RestAPI {
   static requestNSThresholds(areaType, areaId, group) {
     return RestAPI.makeGetRequest(
       `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
+    );
+  }
+
+  /**
+   * Get the national max values specified area type
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSNationalMax(areaType, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/nationalMax?areaType=${areaType}${group ? `&group=${group}` : ''}`,
     );
   }
 
