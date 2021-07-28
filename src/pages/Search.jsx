@@ -74,8 +74,8 @@ class Search extends Component {
 
   componentDidUpdate() {
     const { history } = this.props;
-    history.listen((loc, action) => {
-      if (loc.search === '' && action === 'POP') {
+    history.listen((location, action) => {
+      if (location.search === '' && (action === 'PUSH' || action === 'POP')) {
         this.handlerBackButton();
       }
     });
