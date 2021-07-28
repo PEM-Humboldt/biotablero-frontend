@@ -45,6 +45,8 @@ const getLabel = (key, area) => {
     max_observed: `Máximo observado por ${areaLbl}`,
     region_observed: 'Máximo observado por región biótica',
     region_inferred: 'Máximo inferido por región biótica',
+    area: 'Valores del área de consulta',
+    region: 'Valores de la región biótica',
   }[key];
 };
 
@@ -221,6 +223,16 @@ class NumberOfSpecies extends React.Component {
         </div>
         <div className="richnessLegend">
           {data[0] && Object.keys(data[0].measures).map((key) => (
+            <LineLegend
+              orientation="column"
+              color={matchColor('richnessNos')(key)}
+              key={key}
+            >
+              {getLabel(key, areaId)}
+            </LineLegend>
+
+          ))}
+          {data[0] && Object.keys(data[0].ranges).map((key) => (
             <LineLegend
               orientation="column"
               color={matchColor('richnessNos')(key)}
