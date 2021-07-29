@@ -45,6 +45,8 @@ const getLabel = (key, area) => {
     max_observed: `Máximo observado por ${areaLbl}`,
     region_observed: 'Máximo observado por región biótica',
     region_inferred: 'Máximo inferido por región biótica',
+    area: 'Valores del área de consulta',
+    region: 'Valores de la región biótica',
   }[key];
 };
 
@@ -58,6 +60,7 @@ class NumberOfSpecies extends React.Component {
       data: [],
       message: 'loading',
       selected: 'total',
+      maximumValues: [],
     };
   }
 
@@ -71,8 +74,9 @@ class NumberOfSpecies extends React.Component {
     Promise.all([
       RestAPI.requestNumberOfSpecies(areaId, geofenceId, 'all'),
       RestAPI.requestNSThresholds(areaId, geofenceId, 'all'),
+      RestAPI.requestNSNationalMax(areaId, 'all'),
     ])
-      .then(([values, thresholds]) => {
+      .then(([values, thresholds, nationalMax]) => {
         const data = [];
         values.forEach((groupVal) => {
           const { id, ...limits } = thresholds.find((e) => e.id === groupVal.id);
@@ -94,7 +98,7 @@ class NumberOfSpecies extends React.Component {
             title: '',
           });
         });
-        this.setState({ data, message: null });
+        this.setState({ data, maximumValues: nationalMax, message: null });
       })
       .catch(() => {
         this.setState({ message: 'no-data' });
@@ -124,6 +128,7 @@ class NumberOfSpecies extends React.Component {
       message,
       data,
       selected,
+      maximumValues,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -175,9 +180,28 @@ class NumberOfSpecies extends React.Component {
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
               >
-                {getLabel(bar.id)}
-                <Icon image={biomodelos} />
-                <Icon image={mappoint} />
+                <span style={{ display: 'block' }}>
+                  {getLabel(bar.id)}
+                </span>
+                <div style={{ display: 'inline-block' }}>
+                  <span>
+                    {'Máximo observado nacional: '}
+                  </span>
+                  {maximumValues.find((e) => e.id === bar.id).max_observed}
+                  <br />
+                  <span>
+                    {'Máximo inferido nacional: '}
+                  </span>
+                  {maximumValues.find((e) => e.id === bar.id).max_inferred}
+                </div>
+                <div style={{ float: 'right' }}>
+                  <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
+                    <Icon image={biomodelos} />
+                  </a>
+                  <a href="http://i2d.humboldt.org.co/visor-I2D/" target="_blank" rel="noopener noreferrer">
+                    <Icon image={mappoint} />
+                  </a>
+                </div>
               </div>
               <div className="svgPointer">
                 <GraphLoader
@@ -199,6 +223,16 @@ class NumberOfSpecies extends React.Component {
         </div>
         <div className="richnessLegend">
           {data[0] && Object.keys(data[0].measures).map((key) => (
+            <LineLegend
+              orientation="column"
+              color={matchColor('richnessNos')(key)}
+              key={key}
+            >
+              {getLabel(key, areaId)}
+            </LineLegend>
+
+          ))}
+          {data[0] && Object.keys(data[0].ranges).map((key) => (
             <LineLegend
               orientation="column"
               color={matchColor('richnessNos')(key)}

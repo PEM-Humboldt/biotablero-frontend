@@ -5,7 +5,7 @@ const Icon = styled.div`
   background-size: 15px;
   width: 15px;
   height: 26px;
-  float: right;
+  display: inline-block;
 `;
 
 export default Icon;

@@ -1835,6 +1835,7 @@ div[class*="eaRHYv"] {
 .nos-title {
 	margin: 0 30px;
 	line-height: 1;
+  color: #6f6f6f;
 }
 
 .nos-title b {
@@ -1847,8 +1848,12 @@ div[class*="eaRHYv"] {
 	margin-bottom: 15px;
 }
 
-.nos-title.selected {
+.nos-title span {
 	font-weight: 600;
+}
+
+.nos-title.selected {
+  color: #2a363b;
 }
 
 .richnessLegend {
@@ -2248,9 +2253,6 @@ tr.row2table:nth-child(odd){
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-}
-
-.titeco2 { /* César */
 }
 
 .listSS {
