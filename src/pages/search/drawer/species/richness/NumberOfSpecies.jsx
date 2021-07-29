@@ -236,16 +236,24 @@ class NumberOfSpecies extends React.Component {
             </LineLegend>
 
           ))}
-          {data[0] && Object.keys(data[0].measures).map((key) => (
-            <LineLegend
-              orientation="column"
-              color={matchColor('richnessNos')(key)}
-              key={key}
-            >
-              {getLabel(key, areaId)}
-            </LineLegend>
+          {data[0] && Object.keys(data[0].measures)
+            .sort((first, second) => {
+              if (/inferred$/.test(first)) return 0;
+              if (/inferred$/.test(second)) return 1;
+              if (/^min/.test(first)) return 0;
+              if (/^max/.test(first)) return 0;
+              return 1;
+            })
+            .map((key) => (
+              <LineLegend
+                orientation="column"
+                color={matchColor('richnessNos')(key)}
+                key={key}
+              >
+                {getLabel(key, areaId)}
+              </LineLegend>
 
-          ))}
+            ))}
         </div>
       </div>
     );
