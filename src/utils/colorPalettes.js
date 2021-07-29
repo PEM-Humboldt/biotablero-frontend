@@ -130,8 +130,8 @@ export default {
     '#506327',
     '#fcc76f',
     '#fba76d',
-    '#fff700',
-    '#fb2600',
+    '#c1d03f',
+    '#9a6108',
   ],
   richnessGaps: [
     '#1348a6',
