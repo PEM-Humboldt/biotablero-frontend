@@ -185,12 +185,12 @@ class NumberOfSpecies extends React.Component {
                 </span>
                 <div style={{ display: 'inline-block' }}>
                   <span>
-                    {'Máximo observado: '}
+                    {'Máximo observado nacional: '}
                   </span>
                   {maximumValues.find((e) => e.id === bar.id).max_observed}
                   <br />
                   <span>
-                    {'Máximo inferido: '}
+                    {'Máximo inferido nacional: '}
                   </span>
                   {maximumValues.find((e) => e.id === bar.id).max_inferred}
                 </div>
