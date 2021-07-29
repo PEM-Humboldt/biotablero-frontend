@@ -78,7 +78,7 @@ const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
         y1={-10}
         y2={20}
         stroke={colors(measureKey)}
-        strokeWidth={2}
+        strokeWidth={2.5}
         onMouseEnter={tooltip(data.v1, colors(measureKey))}
         onMouseLeave={onMouseLeave}
       />
@@ -224,7 +224,7 @@ const SingleBulletGraph = (props) => {
     labelXLeft,
   } = props;
   return (
-    <div style={{ height, paddingBottom: '20px' }}>
+    <div style={{ height }}>
       <ResponsiveBullet
         data={[{
           ...data,
