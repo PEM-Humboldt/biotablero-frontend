@@ -13,7 +13,7 @@ import ShortInfo from 'components/ShortInfo';
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
 import biomodelos2 from 'images/biomodelos2.png';
-import mappoint2 from 'images/mappoint2.png';
+// import mappoint2 from 'images/mappoint2.png';
 
 const getLabel = (key, area) => {
   let areaLbl = 'cerca';
@@ -187,12 +187,12 @@ class NumberOfSpecies extends React.Component {
                 </div>
                 <div className="numberSP">
                   <div>
-                    {'Máximo inferido nacional: '}
+                    {'Max. inferido nacional: '}
                     <b>
                       {maximumValues.find((e) => e.id === bar.id).max_inferred}
                     </b>
                     <br />
-                    {'Máximo observado nacional: '}
+                    {'Max. observado nacional: '}
                     <b>
                       {maximumValues.find((e) => e.id === bar.id).max_observed}
                     </b>
@@ -201,9 +201,9 @@ class NumberOfSpecies extends React.Component {
                     <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
                       <Icon image={biomodelos} image2={biomodelos2} />
                     </a>
-                    <a href="http://i2d.humboldt.org.co/visor-I2D/" target="_blank" rel="noopener noreferrer">
+                    {/* <a href="http://i2d.humboldt.org.co/visor-I2D/" target="_blank" rel="noopener noreferrer">
                       <Icon image={mappoint} image2={mappoint2} />
-                    </a>
+                    </a> */}
                   </div>
                 </div>
               </div>
