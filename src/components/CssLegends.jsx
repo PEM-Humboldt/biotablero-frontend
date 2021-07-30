@@ -44,7 +44,7 @@ const LineLegend = styled(Legend)`
     display: inline-block;
     content: "";
     width: 15px;
-    height: 8px;
+    height: 3px;
     margin-right: 5px;
     margin-bottom: 4px;
     border-bottom: 3px solid ${({ color }) => color};

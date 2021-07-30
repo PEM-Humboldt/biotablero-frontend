@@ -12,6 +12,7 @@ import ShortInfo from 'components/ShortInfo';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
+import biomodelos2 from 'images/biomodelos2.png';
 
 const getLabel = (key, area) => {
   let areaLbl = 'cerca';
@@ -33,20 +34,20 @@ const getLabel = (key, area) => {
   }
 
   return {
-    total: 'Total',
-    endemic: 'Endémicas',
-    invasive: 'Invasoras',
-    threatened: 'Amenazadas',
+    total: 'TOTAL',
+    endemic: 'ENDÉMICAS',
+    invasive: 'INVASORAS',
+    threatened: 'AMENAZADAS',
     inferred: 'Inferido (BioModelos)',
     observed: 'Observado (visor I2D)',
-    min_inferred: `Mínimo inferido por ${areaLbl}`,
-    min_observed: `Mínimo observado por ${areaLbl}`,
-    max_inferred: `Máximo inferido por ${areaLbl}`,
-    max_observed: `Máximo observado por ${areaLbl}`,
-    region_observed: 'Máximo observado por región biótica',
-    region_inferred: 'Máximo inferido por región biótica',
-    area: 'Valores del área de consulta',
-    region: 'Valores de la región biótica',
+    min_inferred: `Min. inferido ${areaLbl} de la R.B.`,
+    min_observed: `Min. observado ${areaLbl} de la R.B.`,
+    max_inferred: `Max. inferido ${areaLbl} de la R.B.`,
+    max_observed: `Max. observado ${areaLbl} de la R.B.`,
+    region_observed: 'Observado región biótica',
+    region_inferred: 'Inferido región biótica',
+    area: 'Área de consulta',
+    region: 'Región biótica (R.B.)',
   }[key];
 };
 
@@ -92,8 +93,8 @@ class NumberOfSpecies extends React.Component {
             },
             measures: {
               ...limits,
-              region_observed: groupVal.region_observed,
               region_inferred: groupVal.region_inferred,
+              region_observed: groupVal.region_observed,
             },
             title: '',
           });
@@ -154,17 +155,17 @@ class NumberOfSpecies extends React.Component {
         <div className="nos-title legend">
           <TextLegend
             orientation="row"
-            color={matchColor('richnessNos')('observed')}
-            image={mappoint}
-          >
-            {getLabel('observed', areaId)}
-          </TextLegend>
-          <TextLegend
-            orientation="row"
             color={matchColor('richnessNos')('inferred')}
             image={biomodelos}
           >
             {getLabel('inferred', areaId)}
+          </TextLegend>
+          <TextLegend
+            orientation="row"
+            color={matchColor('richnessNos')('observed')}
+            image={mappoint}
+          >
+            {getLabel('observed', areaId)}
           </TextLegend>
         </div>
         <div>
@@ -180,27 +181,27 @@ class NumberOfSpecies extends React.Component {
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
               >
-                <span style={{ display: 'block' }}>
+                <div>
                   {getLabel(bar.id)}
-                </span>
-                <div style={{ display: 'inline-block' }}>
-                  <span>
-                    {'Máximo observado nacional: '}
-                  </span>
-                  {maximumValues.find((e) => e.id === bar.id).max_observed}
-                  <br />
-                  <span>
-                    {'Máximo inferido nacional: '}
-                  </span>
-                  {maximumValues.find((e) => e.id === bar.id).max_inferred}
                 </div>
-                <div style={{ float: 'right' }}>
-                  <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
-                    <Icon image={biomodelos} />
-                  </a>
-                  <a href="http://i2d.humboldt.org.co/visor-I2D/" target="_blank" rel="noopener noreferrer">
-                    <Icon image={mappoint} />
-                  </a>
+                <div className="numberSP">
+                  <div>
+                    {'Max. inferido nacional: '}
+                    <b>
+                      {maximumValues.find((e) => e.id === bar.id).max_inferred}
+                    </b>
+                    <br />
+                    {'Max. observado nacional: '}
+                    <b>
+                      {maximumValues.find((e) => e.id === bar.id).max_observed}
+                    </b>
+                  </div>
+                  <div>
+                    <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
+                      <Icon image={biomodelos} image2={biomodelos2} />
+                    </a>
+                    {/* TODO: Add I2D link when it's ready (import mappoint2 image) */}
+                  </div>
                 </div>
               </div>
               <div className="svgPointer">
@@ -222,16 +223,6 @@ class NumberOfSpecies extends React.Component {
           ))}
         </div>
         <div className="richnessLegend">
-          {data[0] && Object.keys(data[0].measures).map((key) => (
-            <LineLegend
-              orientation="column"
-              color={matchColor('richnessNos')(key)}
-              key={key}
-            >
-              {getLabel(key, areaId)}
-            </LineLegend>
-
-          ))}
           {data[0] && Object.keys(data[0].ranges).map((key) => (
             <LineLegend
               orientation="column"
@@ -242,6 +233,24 @@ class NumberOfSpecies extends React.Component {
             </LineLegend>
 
           ))}
+          {data[0] && Object.keys(data[0].measures)
+            .sort((first, second) => {
+              if (/inferred$/.test(first)) return 0;
+              if (/inferred$/.test(second)) return 1;
+              if (/^min/.test(first)) return 0;
+              if (/^max/.test(first)) return 0;
+              return 1;
+            })
+            .map((key) => (
+              <LineLegend
+                orientation="column"
+                color={matchColor('richnessNos')(key)}
+                key={key}
+              >
+                {getLabel(key, areaId)}
+              </LineLegend>
+
+            ))}
         </div>
       </div>
     );
