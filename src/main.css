@@ -1833,18 +1833,18 @@ div[class*="eaRHYv"] {
 }
 
 .numberSP {
-	display: flex;
-  	justify-content:space-between;
+  display: flex;
+  justify-content:space-between;
 }
 
 .nos-title {
-	margin-left: 30px;
-	line-height: 1.2;
-  	color: #6f6f6f;
+  margin-left: 30px;
+  line-height: 1.2;
+  color: #6f6f6f;
 }
 
 .nos-title b {
-	color: tomato;
+  color: tomato;
 }
 
 .nos-title.legend {
@@ -1861,20 +1861,20 @@ div[class*="eaRHYv"] {
 }
 
 .numberSP a {
-	margin-right: 10px;
+  margin-right: 10px;
 }
 
 .numberSP a:hover {
-	color: tomato;
+  color: tomato;
 }
 
 .richnessLegend {
-	margin: 10px 0 5px 30px;
+  margin: 10px 0 5px 30px;
 }
 
 .richnessLegend p {
-	margin: 0;
-	margin-bottom: 2px;
+  margin: 0;
+  margin-bottom: 2px;
 }
 
 .dpcLegend {
