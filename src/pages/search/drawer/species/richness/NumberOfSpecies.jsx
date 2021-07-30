@@ -45,8 +45,8 @@ const getLabel = (key, area) => {
     min_observed: `Min. observado ${areaLbl} de la R.B.`,
     max_inferred: `Max. inferido ${areaLbl} de la R.B.`,
     max_observed: `Max. observado ${areaLbl} de la R.B.`,
-    region_observed: 'Max. observado región biótica',
-    region_inferred: 'Max. inferido región biótica',
+    region_observed: 'Observado región biótica',
+    region_inferred: 'Inferido región biótica',
     area: 'Área de consulta',
     region: 'Región biótica (R.B.)',
   }[key];
