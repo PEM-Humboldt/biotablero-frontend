@@ -259,15 +259,25 @@ class NumberOfSpecies extends React.Component {
                 </div>
                 <div className="numberSP">
                   <div>
-                    {'Max. inferido nacional: '}
-                    <b>
-                      {maximumValues.find((e) => e.id === bar.id).max_inferred}
-                    </b>
-                    <br />
-                    {'Max. observado nacional: '}
-                    <b>
-                      {maximumValues.find((e) => e.id === bar.id).max_observed}
-                    </b>
+                    {(filter === 'all' || filter === 'inferred') && (
+                      <>
+                        {'Max. inferido nacional: '}
+                        <b>
+                          {maximumValues.find((e) => e.id === bar.id).max_inferred}
+                        </b>
+                      </>
+                    )}
+                    {filter === 'all' && (
+                      <br />
+                    )}
+                    {(filter === 'all' || filter === 'observed') && (
+                      <>
+                        {'Max. observado nacional: '}
+                        <b>
+                          {maximumValues.find((e) => e.id === bar.id).max_observed}
+                        </b>
+                      </>
+                    )}
                   </div>
                   <div>
                     <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
