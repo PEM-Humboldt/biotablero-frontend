@@ -61,6 +61,7 @@ class NumberOfSpecies extends React.Component {
       showInfoGraph: false,
       data: [],
       allData: [],
+      filter: 'all',
       message: 'loading',
       selected: 'total',
       maximumValues: [],
@@ -147,28 +148,41 @@ class NumberOfSpecies extends React.Component {
    * @returns void
    */
   filter = (category) => () => {
-    const { allData } = this.state;
-    const newData = allData.map((group) => {
-      const regex = new RegExp(`${category}$`);
-      const measureKeys = Object.keys(group.measures).filter((key) => regex.test(key));
-      const areaKey = Object.keys(group.ranges.area).filter((key) => regex.test(key));
-      const regionKey = Object.keys(group.ranges.region).filter((key) => regex.test(key));
-      return {
-        id: group.id,
-        markers: {
-          [category]: group.markers[category],
-        },
-        measures: measureKeys.reduce(
-          (result, key) => ({ ...result, [key]: group.measures[key] }),
-          {},
-        ),
-        ranges: {
-          area: group.ranges.area[areaKey],
-          region: group.ranges.region[regionKey],
-        },
-      };
-    });
-    this.setState({ data: newData });
+    const { allData, filter } = this.state;
+    if (category === filter) {
+      this.setState({
+        data: allData.map((group) => ({
+          ...group,
+          ranges: {
+            area: group.ranges.area.max,
+            region: group.ranges.region.max,
+          },
+        })),
+        filter: 'all',
+      });
+    } else {
+      const newData = allData.map((group) => {
+        const regex = new RegExp(`${category}$`);
+        const measureKeys = Object.keys(group.measures).filter((key) => regex.test(key));
+        const areaKey = Object.keys(group.ranges.area).filter((key) => regex.test(key));
+        const regionKey = Object.keys(group.ranges.region).filter((key) => regex.test(key));
+        return {
+          id: group.id,
+          markers: {
+            [category]: group.markers[category],
+          },
+          measures: measureKeys.reduce(
+            (result, key) => ({ ...result, [key]: group.measures[key] }),
+            {},
+          ),
+          ranges: {
+            area: group.ranges.area[areaKey],
+            region: group.ranges.region[regionKey],
+          },
+        };
+      });
+      this.setState({ data: newData, filter: category });
+    }
   }
 
   render() {
@@ -182,6 +196,7 @@ class NumberOfSpecies extends React.Component {
       data,
       selected,
       maximumValues,
+      filter,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -206,6 +221,7 @@ class NumberOfSpecies extends React.Component {
         <h3>Haga click en la barra para visualizar su mapa</h3>
         <div className="nos-title legend">
           <TextLegend
+            className={`${filter === 'inferred' ? 'filtered' : ''}`}
             orientation="row"
             color={matchColor('richnessNos')('inferred')}
             image={biomodelos}
@@ -215,6 +231,7 @@ class NumberOfSpecies extends React.Component {
             {getLabel('inferred', areaId)}
           </TextLegend>
           <TextLegend
+            className={`${filter === 'observed' ? 'filtered' : ''}`}
             orientation="row"
             color={matchColor('richnessNos')('observed')}
             image={mappoint}

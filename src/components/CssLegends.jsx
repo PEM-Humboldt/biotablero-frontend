@@ -77,6 +77,10 @@ const TextLegend = styled(Legend)`
     width: 15px;
     height: 26px;
   }
+
+  &.filtered {
+    background-color: gray;
+  }
 `;
 
 export {
