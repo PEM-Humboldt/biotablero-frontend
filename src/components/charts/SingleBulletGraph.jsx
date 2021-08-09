@@ -260,24 +260,7 @@ const SingleBulletGraph = (props) => {
 };
 
 SingleBulletGraph.propTypes = {
-  data: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    ranges: PropTypes.shape({
-      area: PropTypes.number.isRequired,
-      region: PropTypes.number.isRequired,
-    }).isRequired,
-    markers: PropTypes.shape({
-      inferred: PropTypes.number.isRequired,
-      observed: PropTypes.number.isRequired,
-    }).isRequired,
-    measures: PropTypes.shape({
-      min_inferred: PropTypes.number.isRequired,
-      min_observed: PropTypes.number.isRequired,
-      max_inferred: PropTypes.number.isRequired,
-      max_observed: PropTypes.number.isRequired,
-    }).isRequired,
-    title: PropTypes.string,
-  }).isRequired,
+  data: PropTypes.object.isRequired,
   height: PropTypes.number,
   colors: PropTypes.func.isRequired,
   onClickHandler: PropTypes.func,
