@@ -66,6 +66,21 @@ const TextLegend = styled(Legend)`
     margin-right: 5px;
     vertical-align: middle;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover:before {
+    background: ${({ hoverImage }) => (hoverImage ? `url(${hoverImage}) no-repeat center` : '')};
+    background-size: 15px;
+    width: 15px;
+    height: 26px;
+  }
+
+  &.filtered {
+    background-color: gray;
+  }
 `;
 
 export {

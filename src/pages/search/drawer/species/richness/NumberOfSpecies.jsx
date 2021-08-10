@@ -13,6 +13,7 @@ import ShortInfo from 'components/ShortInfo';
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
 import biomodelos2 from 'images/biomodelos2.png';
+import mappoint2 from 'images/mappoint2.png';
 
 const getLabel = (key, area) => {
   let areaLbl = 'cerca';
@@ -59,6 +60,8 @@ class NumberOfSpecies extends React.Component {
     this.state = {
       showInfoGraph: false,
       data: [],
+      allData: [],
+      filter: 'all',
       message: 'loading',
       selected: 'total',
       maximumValues: [],
@@ -84,8 +87,16 @@ class NumberOfSpecies extends React.Component {
           data.push({
             id: groupVal.id,
             ranges: {
-              area: Math.max(limits.max_inferred, limits.max_observed),
-              region: Math.max(groupVal.region_observed, groupVal.region_inferred),
+              area: {
+                max: Math.max(limits.max_inferred, limits.max_observed),
+                max_inferred: limits.max_inferred,
+                max_observed: limits.max_observed,
+              },
+              region: {
+                max: Math.max(groupVal.region_observed, groupVal.region_inferred),
+                region_observed: groupVal.region_observed,
+                region_inferred: groupVal.region_inferred,
+              },
             },
             markers: {
               inferred: groupVal.inferred,
@@ -99,7 +110,18 @@ class NumberOfSpecies extends React.Component {
             title: '',
           });
         });
-        this.setState({ data, maximumValues: nationalMax, message: null });
+        this.setState({
+          data: data.map((group) => ({
+            ...group,
+            ranges: {
+              area: group.ranges.area.max,
+              region: group.ranges.region.max,
+            },
+          })),
+          allData: data,
+          maximumValues: nationalMax,
+          message: null,
+        });
       })
       .catch(() => {
         this.setState({ message: 'no-data' });
@@ -119,6 +141,50 @@ class NumberOfSpecies extends React.Component {
     }));
   };
 
+  /**
+   * Filter data by the given category
+   *
+   * @param {String} category category to filter by
+   * @returns void
+   */
+  filter = (category) => () => {
+    const { allData, filter } = this.state;
+    if (category === filter) {
+      this.setState({
+        data: allData.map((group) => ({
+          ...group,
+          ranges: {
+            area: group.ranges.area.max,
+            region: group.ranges.region.max,
+          },
+        })),
+        filter: 'all',
+      });
+    } else {
+      const newData = allData.map((group) => {
+        const regex = new RegExp(`${category}$`);
+        const measureKeys = Object.keys(group.measures).filter((key) => regex.test(key));
+        const areaKey = Object.keys(group.ranges.area).filter((key) => regex.test(key));
+        const regionKey = Object.keys(group.ranges.region).filter((key) => regex.test(key));
+        return {
+          id: group.id,
+          markers: {
+            [category]: group.markers[category],
+          },
+          measures: measureKeys.reduce(
+            (result, key) => ({ ...result, [key]: group.measures[key] }),
+            {},
+          ),
+          ranges: {
+            area: group.ranges.area[areaKey],
+            region: group.ranges.region[regionKey],
+          },
+        };
+      });
+      this.setState({ data: newData, filter: category });
+    }
+  }
+
   render() {
     const {
       areaId,
@@ -130,6 +196,7 @@ class NumberOfSpecies extends React.Component {
       data,
       selected,
       maximumValues,
+      filter,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -154,16 +221,22 @@ class NumberOfSpecies extends React.Component {
         <h3>Haga click en la barra para visualizar su mapa</h3>
         <div className="nos-title legend">
           <TextLegend
+            className={`${filter === 'inferred' ? 'filtered' : ''}`}
             orientation="row"
             color={matchColor('richnessNos')('inferred')}
             image={biomodelos}
+            hoverImage={biomodelos2}
+            onClick={this.filter('inferred')}
           >
             {getLabel('inferred', areaId)}
           </TextLegend>
           <TextLegend
+            className={`${filter === 'observed' ? 'filtered' : ''}`}
             orientation="row"
             color={matchColor('richnessNos')('observed')}
             image={mappoint}
+            hoverImage={mappoint2}
+            onClick={this.filter('observed')}
           >
             {getLabel('observed', areaId)}
           </TextLegend>
@@ -186,19 +259,29 @@ class NumberOfSpecies extends React.Component {
                 </div>
                 <div className="numberSP">
                   <div>
-                    {'Max. inferido nacional: '}
-                    <b>
-                      {maximumValues.find((e) => e.id === bar.id).max_inferred}
-                    </b>
-                    <br />
-                    {'Max. observado nacional: '}
-                    <b>
-                      {maximumValues.find((e) => e.id === bar.id).max_observed}
-                    </b>
+                    {(filter === 'all' || filter === 'inferred') && (
+                      <>
+                        {'Max. inferido nacional: '}
+                        <b>
+                          {maximumValues.find((e) => e.id === bar.id).max_inferred}
+                        </b>
+                      </>
+                    )}
+                    {filter === 'all' && (
+                      <br />
+                    )}
+                    {(filter === 'all' || filter === 'observed') && (
+                      <>
+                        {'Max. observado nacional: '}
+                        <b>
+                          {maximumValues.find((e) => e.id === bar.id).max_observed}
+                        </b>
+                      </>
+                    )}
                   </div>
                   <div>
                     <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
-                      <Icon image={biomodelos} image2={biomodelos2} />
+                      <Icon image={biomodelos} hoverImage={biomodelos2} />
                     </a>
                     {/* TODO: Add I2D link when it's ready (import mappoint2 image) */}
                   </div>
