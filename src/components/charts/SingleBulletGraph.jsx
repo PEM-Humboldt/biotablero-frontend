@@ -78,7 +78,7 @@ const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
         y1={-10}
         y2={20}
         stroke={colors(measureKey)}
-        strokeWidth={4}
+        strokeWidth={3}
         onMouseEnter={tooltip(data.v1, colors(measureKey))}
         onMouseLeave={onMouseLeave}
       />
