@@ -14,6 +14,8 @@ import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
 import biomodelos2 from 'images/biomodelos2.png';
 import mappoint2 from 'images/mappoint2.png';
+import biomodeloslink from 'images/biomodeloslink2.png';
+import biomodeloslink2 from 'images/biomodeloslink.png';
 
 const getLabel = (key, area) => {
   let areaLbl = 'cerca';
@@ -218,7 +220,7 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
-        <h3>Haga click en la barra para visualizar su mapa</h3>
+        <h3>Filtre con estos enlaces o haga click en cada barra para visualizar su mapa</h3>
         <div className="nos-title legend">
           <TextLegend
             className={`${filter === 'inferred' ? 'filtered' : ''}`}
@@ -281,7 +283,7 @@ class NumberOfSpecies extends React.Component {
                   </div>
                   <div>
                     <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
-                      <Icon image={biomodelos} hoverImage={biomodelos2} />
+                      <Icon image={biomodeloslink} hoverImage={biomodeloslink2} />
                     </a>
                     {/* TODO: Add I2D link when it's ready (import mappoint2 image) */}
                   </div>
