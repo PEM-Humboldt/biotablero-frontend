@@ -54,6 +54,7 @@ const LineLegend = styled(Legend)`
 
 const TextLegend = styled(Legend)`
   margin-right: 1px;
+  padding-bottom: 3px;
   color: ${({ color }) => color};
 
   &:before {
@@ -79,7 +80,7 @@ const TextLegend = styled(Legend)`
   }
 
   &.filtered {
-    background-color: gray;
+    border-bottom: 2px solid tomato;
   }
 `;
 
