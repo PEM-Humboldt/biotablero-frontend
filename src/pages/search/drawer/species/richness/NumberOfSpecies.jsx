@@ -220,7 +220,11 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
-        <h3>Filtre con estos enlaces o haga click en cada barra para visualizar su mapa</h3>
+        <h3>
+          Los siguientes enlaces cambian las gráficas entre inferido, observado o ambas.
+          Haga click en cada barra para visualizar su mapa,
+          que corresponden a los datos inferidos.
+        </h3>
         <div className="nos-title legend">
           <TextLegend
             className={`${filter === 'inferred' ? 'filtered' : ''}`}
