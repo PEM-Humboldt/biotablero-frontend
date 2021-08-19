@@ -145,7 +145,8 @@ class NumberOfSpecies extends React.Component {
    * @returns void
    */
   filter = (category) => () => {
-    const { allData, filter } = this.state;
+    const { allData, filter, selected } = this.state;
+    const { handlerClickOnGraph } = this.context;
     if (category === filter) {
       this.setState({
         data: allData.map((group) => ({
@@ -156,6 +157,11 @@ class NumberOfSpecies extends React.Component {
           },
         })),
         filter: 'all',
+      });
+      handlerClickOnGraph({
+        chartType: 'numberOfSpecies',
+        chartSection: 'all',
+        selectedKey: selected,
       });
     } else {
       const newData = allData.map((group) => {
@@ -179,6 +185,11 @@ class NumberOfSpecies extends React.Component {
         };
       });
       this.setState({ data: newData, filter: category });
+      handlerClickOnGraph({
+        chartType: 'numberOfSpecies',
+        chartSection: category,
+        selectedKey: selected,
+      });
     }
   }
 
@@ -300,7 +311,8 @@ class NumberOfSpecies extends React.Component {
                     this.setState({ selected: bar.id });
                     handlerClickOnGraph({
                       chartType: 'numberOfSpecies',
-                      chartSection: bar.id,
+                      chartSection: filter,
+                      selectedKey: bar.id,
                     });
                   }}
                 />

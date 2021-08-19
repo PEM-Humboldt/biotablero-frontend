@@ -427,8 +427,10 @@ class Search extends Component {
         break;
       case 'numberOfSpecies': {
         const { activeLayer: { id: activeLayer } } = this.state;
-        if (activeLayer !== chartSection) {
-          this.switchLayer(`numberOfSpecies-${chartSection}`);
+        if (chartSection !== 'inferred') {
+          this.switchLayer('geofence');
+        } else if (activeLayer !== selectedKey) {
+          this.switchLayer(`numberOfSpecies-${selectedKey}`);
         }
       }
         break;
