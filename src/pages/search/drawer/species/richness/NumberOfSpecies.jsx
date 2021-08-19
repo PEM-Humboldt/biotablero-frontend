@@ -113,16 +113,11 @@ class NumberOfSpecies extends React.Component {
           });
         });
         this.setState({
-          data: data.map((group) => ({
-            ...group,
-            ranges: {
-              area: group.ranges.area.max,
-              region: group.ranges.region.max,
-            },
-          })),
           allData: data,
           maximumValues: nationalMax,
           message: null,
+        }, () => {
+          this.filter('inferred')();
         });
       })
       .catch(() => {
