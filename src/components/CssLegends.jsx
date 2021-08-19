@@ -56,6 +56,7 @@ const LineLegend = styled(Legend)`
 const ThickLineLegend = styled(LineLegend)`
   &:before {
     border-bottom: 8px solid ${({ color }) => color};
+    height: 0px;
   }
 `;
 
