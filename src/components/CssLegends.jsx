@@ -17,9 +17,10 @@ const PointLegend = styled(Legend)`
     content: "";
     width: 12px;
     height: 12px;
-    margin-right: 5px;
+    margin-right: ${(props) => (props.marginRight ? props.marginRight : '5px')};
     border-radius: 6px;
     vertical-align: middle;
+    margin-left: ${(props) => (props.marginLeft ? props.marginLeft : '0')};
   }
 `;
 
@@ -49,6 +50,12 @@ const LineLegend = styled(Legend)`
     margin-bottom: 4px;
     border-bottom: 3px solid ${({ color }) => color};
     vertical-align: middle;
+  }
+`;
+
+const ThickLineLegend = styled(LineLegend)`
+  &:before {
+    border-bottom: 8px solid ${({ color }) => color};
   }
 `;
 
@@ -88,5 +95,6 @@ export {
   LegendColor,
   BorderLegendColor,
   LineLegend,
+  ThickLineLegend,
   TextLegend,
 };

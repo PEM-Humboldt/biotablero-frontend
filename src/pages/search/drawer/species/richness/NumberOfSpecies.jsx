@@ -3,8 +3,13 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
+import {
+  LegendColor,
+  LineLegend,
+  TextLegend,
+  ThickLineLegend,
+} from 'components/CssLegends';
 import Icon from 'components/CssIcons';
-import { LineLegend, TextLegend } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
@@ -206,6 +211,17 @@ class NumberOfSpecies extends React.Component {
       maximumValues,
       filter,
     } = this.state;
+
+    let legends = ['inferred', 'min_inferred', 'max_inferred', 'region_inferred',
+    'observed', 'min_observed', 'max_observed', 'region_observed'];
+
+    if (filter !== 'all') {
+      legends = legends.filter((leg) => {
+        const regex = new RegExp(`${filter}$`);
+        return regex.test(leg);
+      });
+    }
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -322,24 +338,29 @@ class NumberOfSpecies extends React.Component {
         </div>
         <div className="richnessLegend">
           {data[0] && Object.keys(data[0].ranges).map((key) => (
-            <LineLegend
+            <ThickLineLegend
               orientation="column"
               color={matchColor('richnessNos')(key)}
               key={key}
             >
               {getLabel(key, areaId)}
-            </LineLegend>
-
+            </ThickLineLegend>
           ))}
-          {data[0] && Object.keys(data[0].measures)
-            .sort((first, second) => {
-              if (/inferred$/.test(first)) return 0;
-              if (/inferred$/.test(second)) return 1;
-              if (/^min/.test(first)) return 0;
-              if (/^max/.test(first)) return 0;
-              return 1;
-            })
-            .map((key) => (
+          {data[0] && legends.map((key) => {
+            if (key === 'inferred' || key === 'observed') {
+              return (
+                <LegendColor
+                  orientation="column"
+                  color={matchColor('richnessNos')(key)}
+                  key={key}
+                  marginLeft="2px"
+                  marginRight="6px"
+                >
+                  {getLabel(key, areaId)}
+                </LegendColor>
+              );
+            }
+            return (
               <LineLegend
                 orientation="column"
                 color={matchColor('richnessNos')(key)}
@@ -347,8 +368,8 @@ class NumberOfSpecies extends React.Component {
               >
                 {getLabel(key, areaId)}
               </LineLegend>
-
-            ))}
+            );
+          })}
         </div>
       </div>
     );
