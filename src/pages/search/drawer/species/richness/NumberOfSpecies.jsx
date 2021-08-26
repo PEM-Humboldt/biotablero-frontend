@@ -22,7 +22,7 @@ import mappoint2 from 'images/mappoint2.png';
 import biomodeloslink from 'images/biomodeloslink.png';
 import biomodeloslink2 from 'images/biomodeloslink2.png';
 
-const getLabel = (key, area) => {
+const getLabel = (key, area, region) => {
   let areaLbl = 'cerca';
   switch (area) {
     case 'states':
@@ -48,14 +48,16 @@ const getLabel = (key, area) => {
     threatened: 'AMENAZADAS',
     inferred: 'Inferido (BioModelos)',
     observed: 'Observado (visor I2D)',
-    min_inferred: `Min. inferido ${areaLbl} de la R.B.`,
-    min_observed: `Min. observado ${areaLbl} de la R.B.`,
-    max_inferred: `Max. inferido ${areaLbl} de la R.B.`,
-    max_observed: `Max. observado ${areaLbl} de la R.B.`,
-    region_observed: 'Observado región biótica',
-    region_inferred: 'Inferido región biótica',
-    area: 'Área de consulta',
-    region: 'Región biótica (R.B.)',
+    min_inferred: `Min. inferido ${areaLbl} de la región ${region}`,
+    min_observed: `Min. observado ${areaLbl} de la región ${region}`,
+    max_inferred: `Max. inferido ${areaLbl} de la región ${region}`,
+    max_observed: `Max. observado ${areaLbl} de la región ${region}`,
+    region_observed: `Observado región ${region}`,
+    region_inferred: `Inferido región ${region}`,
+    area: `${areaLbl.replace(/^\w/, (l) => l.toUpperCase())} de la región ${region}`,
+    region: `Región ${region}`,
+    inferred2: 'Inferido en el área de consulta',
+    observed2: 'Observado en el área de consulta',
   }[key];
 };
 
@@ -71,6 +73,7 @@ class NumberOfSpecies extends React.Component {
       filter: 'all',
       message: 'loading',
       selected: 'total',
+      bioticRegion: 'Región Biótica',
       maximumValues: [],
     };
   }
@@ -89,7 +92,9 @@ class NumberOfSpecies extends React.Component {
     ])
       .then(([values, thresholds, nationalMax]) => {
         const data = [];
+        let region = null;
         values.forEach((groupVal) => {
+          if (!region) region = groupVal.region_name;
           const { id, ...limits } = thresholds.find((e) => e.id === groupVal.id);
           data.push({
             id: groupVal.id,
@@ -121,6 +126,7 @@ class NumberOfSpecies extends React.Component {
           allData: data,
           maximumValues: nationalMax,
           message: null,
+          bioticRegion: region,
         }, () => {
           this.filter('inferred')();
         });
@@ -210,6 +216,7 @@ class NumberOfSpecies extends React.Component {
       selected,
       maximumValues,
       filter,
+      bioticRegion,
     } = this.state;
 
     let legends = ['inferred', 'min_inferred', 'max_inferred', 'region_inferred',
@@ -343,7 +350,7 @@ class NumberOfSpecies extends React.Component {
               color={matchColor('richnessNos')(key)}
               key={key}
             >
-              {getLabel(key, areaId)}
+              {getLabel(key, areaId, bioticRegion)}
             </ThickLineLegend>
           ))}
           {data[0] && legends.map((key) => {
@@ -356,7 +363,7 @@ class NumberOfSpecies extends React.Component {
                   marginLeft="2px"
                   marginRight="6px"
                 >
-                  {getLabel(key, areaId)}
+                  {getLabel(`${key}2`, areaId, bioticRegion)}
                 </LegendColor>
               );
             }
@@ -366,7 +373,7 @@ class NumberOfSpecies extends React.Component {
                 color={matchColor('richnessNos')(key)}
                 key={key}
               >
-                {getLabel(key, areaId)}
+                {getLabel(key, areaId, bioticRegion)}
               </LineLegend>
             );
           })}
