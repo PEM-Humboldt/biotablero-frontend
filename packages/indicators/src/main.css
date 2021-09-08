@@ -1,0 +1,15 @@
+/* Indicadores */
+*:focus {
+  outline: none;
+}
+
+.wrapperIndicators {
+  padding: 10px;
+  box-sizing: border-box;
+  margin: 0;
+  display: grid;
+  /* grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.2fr 1.8fr 1fr; */
+  gap: 5px 5px;
+  background-color: tomato;
+}
