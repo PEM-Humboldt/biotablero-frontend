@@ -28,6 +28,7 @@
     "axios": "0.21.1",
     "cbm-dashboard": "1.0.0",
     "chart.js": "^2.8.0",
+    "indicators": "1.0.0",
     "leaflet": "1.4.0",
     "leaflet-draw": "^1.0.4",
     "prop-types": "15.6.2",
@@ -68,6 +69,7 @@
   ],
   "private": true,
   "workspaces": [
-    "packages/cbm-dashboard"
+    "packages/cbm-dashboard",
+    "packages/indicators"
   ]
 }
