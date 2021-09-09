@@ -14062,6 +14062,7 @@ fsevents@^1.2.7:
     prop-types: ^15.7.2
     react: ^17.0.1
     react-dom: ^17.0.1
+    react-masonry-component: ^6.3.0
     rollup: ^2.56.3
     rollup-plugin-css-only: ^3.1.0
   languageName: unknown
@@ -20695,6 +20696,22 @@ fsevents@^1.2.7:
   peerDependencies:
     react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
   checksum: 2c563f9c4d80cc183e9f724575158b9c7e07ea6885d7305b47f3c4774a187fae8b0981242f82c476c153a8b5dd298f4029822f5ca3eb655a7046dd95247d49f9
+  languageName: node
+  linkType: hard
+
+"react-masonry-component@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "react-masonry-component@npm:6.3.0"
+  dependencies:
+    create-react-class: ^15.6.2
+    element-resize-detector: ^1.1.9
+    imagesloaded: ^4.0.0
+    lodash: ^4.17.4
+    masonry-layout: ^4.2.0
+    prop-types: ^15.5.8
+  peerDependencies:
+    react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0 || ^17.0.0
+  checksum: 28ec321da43d68654cae815ddd37cfffd81befdd6ad8ebbf85c6d39be82f78f87ef7b9c04866ffbe0d9cbed583b356d216814a52e1972a64f5c77c89acfa34bc
   languageName: node
   linkType: hard
 
