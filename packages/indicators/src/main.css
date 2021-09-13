@@ -8,12 +8,12 @@
   box-sizing: border-box;
   margin: 0;
   display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-	grid-template-rows: 0.2fr 1.8fr 1fr;
+	grid-template-columns: 1fr 4fr;
 	gap: 5px 5px;
 	grid-template-areas:
-	    "leftnav";
-  background-color: tomato;
+    "leftnav";
+  background-color: #eeeeec;
+  min-height: calc(100vh - 269px);
 }
 
 .leftnav {
@@ -22,7 +22,7 @@
 
 .card2 h3 {
   padding: 15px;
-	background-color:#32324f;
+	background-color:#03344b;
   color: #f8f8f8;
 	transition: all 0.7s cubic-bezier(.25,.8,.25,1);
   border-bottom: 1px solid #e6e6e6;
@@ -30,8 +30,38 @@
 
 .card2 h4 {
   padding: 15px;
-  background-color:#32324f;
+  background-color:#03344b  ;
   color: #f8f8f8;
 	margin-bottom: 10px;
 	font-size: 13px;
+}
+
+.item {
+  background: #fff;
+  margin: 20px;
+  float: left;
+  width: 250px;
+  min-height: 220px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  border-radius: 5%;
+}
+
+.item:hover {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  background-color: #fecea8;
+}
+
+.item a {
+  font-size: 30px;
+  color: #e84a5f;
+  border-radius: 50%;
+  border: 1px solid #e84a5f;
+  float: right;
+  height: 46px;
+  width: 46px;
+  text-align: center;
+  line-height: 46px;
 }
