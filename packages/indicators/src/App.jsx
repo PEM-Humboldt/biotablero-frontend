@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
 import './main.css';
+import CardManager from './CardManager';
+import cardsData from './data/selectorData';
 
 const App = () => {
-  const [stateVal, setStateVal] = useState(1);
   const [openFilter, setOpenFilter] = useState(true);
 
   return (
@@ -22,19 +23,15 @@ const App = () => {
                 <button type="button" onClick={() => setOpenFilter(!openFilter)}>
                   x
                 </button>{' '}
-                8 filtros
+                (Prueba de apertura del menú)
               </h4>
             </div>
           )}
         </div>
       </div>
-      <div>27 indicadores</div>
-      <div>Este es el ejemplo de estado con hooks :D: {stateVal}</div>
       <div>
-        Aumenta el estado:{' '}
-        <button type="button" onClick={() => setStateVal(stateVal + 1)}>
-          ++
-        </button>
+        <div>{cardsData ? `${cardsData.length} indicadores` : 'No hay indicadores'}</div>
+        <CardManager cardsData={cardsData} />
       </div>
     </div>
   );
