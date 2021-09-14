@@ -2,6 +2,7 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only';
+import reactSvg from 'rollup-plugin-react-svg';
 
 export default {
   input: 'src/App.jsx',
@@ -18,6 +19,12 @@ export default {
     babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' }),
     commonjs(),
     css({ output: 'bundle.css' }),
+    reactSvg({
+      svgo: {
+        plugins: ['./src/icons/**'],
+        multipass: true,
+      },
+    }),
   ],
   external: ['react', 'react-dom'],
 };
