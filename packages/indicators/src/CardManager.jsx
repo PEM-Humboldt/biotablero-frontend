@@ -8,18 +8,16 @@ const masonryOptions = {
   transitionDuration: 0,
 };
 
-const style = {
-  fontSize: '26px !important',
-};
-
 const CardManager = ({ cardsData }) => (
-  <Masonry options={masonryOptions} style={style}>
+  <Masonry options={masonryOptions}>
     {cardsData.map((card) => (
       <Card
         key={card.title}
+        indicator={card.title}
         title={card.title}
-        description={card.description}
+        goal={card.goal}
         period={card.period}
+        scale={card.scale}
         action="./Indicadores"
       />
     ))}
@@ -27,7 +25,19 @@ const CardManager = ({ cardsData }) => (
 );
 
 CardManager.propTypes = {
-  cardsData: PropTypes.arrayOf.isRequired,
+  cardsData: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      goal: PropTypes.string,
+      period: PropTypes.string,
+      scale: PropTypes.string,
+      action: PropTypes.string,
+    })
+  ),
+};
+
+CardManager.defaultProps = {
+  cardsData: [],
 };
 
 export default CardManager;
