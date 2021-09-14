@@ -1320,6 +1320,15 @@ overflow: auto;
   height: 65px;
 }
 
+.Indicadores {
+	background-image: url(images/indicadores.png);
+	-webkit-background-size: contain;
+	background-size: contain;
+	float: right;
+	width: 65px;
+	height: 65px;
+  }
+
 .Compensaciónambiental {
   background-image: url(images/compensaciones.png);
   -webkit-background-size: contain;
