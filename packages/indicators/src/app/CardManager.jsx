@@ -19,6 +19,7 @@ const CardManager = ({ cardsData }) => (
         period={card.period}
         scale={card.scale}
         action="./Indicadores"
+        externalLink={card.externalLink}
       />
     ))}
   </Masonry>
