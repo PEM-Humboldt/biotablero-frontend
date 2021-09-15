@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 import './main.css';
-import CardManager from './CardManager';
-import cardsData from './data/selectorData';
+import CardManager from './app/CardManager';
+import cardsData from './app/data/selectorData';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
