@@ -147,7 +147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.15.5, @babel/core@npm:^7.12.0, @babel/core@npm:^7.15.5":
+"@babel/core@npm:7.15.5, @babel/core@npm:^7.12.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.4.5":
   version: 7.15.5
   resolution: "@babel/core@npm:7.15.5"
   dependencies:
@@ -2886,22 +2886,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.12.10, @babel/preset-react@npm:^7.12.5":
-  version: 7.12.13
-  resolution: "@babel/preset-react@npm:7.12.13"
-  dependencies:
-    "@babel/helper-plugin-utils": ^7.12.13
-    "@babel/plugin-transform-react-display-name": ^7.12.13
-    "@babel/plugin-transform-react-jsx": ^7.12.13
-    "@babel/plugin-transform-react-jsx-development": ^7.12.12
-    "@babel/plugin-transform-react-pure-annotations": ^7.12.1
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: b5e652172e1936fffdd303758c45ad7b3028d8cf51b053d383a2c5d3745726fbb3e38136269a00541ddf12dc3f6852076f8061be4e8fa69b23fbe49ae2e54db8
-  languageName: node
-  linkType: hard
-
-"@babel/preset-react@npm:^7.14.5":
+"@babel/preset-react@npm:^7.0.0, @babel/preset-react@npm:^7.14.5":
   version: 7.14.5
   resolution: "@babel/preset-react@npm:7.14.5"
   dependencies:
@@ -2914,6 +2899,21 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 58a96aef0a58c3c46548451ce9457b2fea7e06ac619c74ee71876700ec6ff6f8e021d71347dd1f4dc5ce558a4f96498ae5679319bbe86dd38ae00ca7b701a29e
+  languageName: node
+  linkType: hard
+
+"@babel/preset-react@npm:^7.12.10, @babel/preset-react@npm:^7.12.5":
+  version: 7.12.13
+  resolution: "@babel/preset-react@npm:7.12.13"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.12.13
+    "@babel/plugin-transform-react-display-name": ^7.12.13
+    "@babel/plugin-transform-react-jsx": ^7.12.13
+    "@babel/plugin-transform-react-jsx-development": ^7.12.12
+    "@babel/plugin-transform-react-pure-annotations": ^7.12.1
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: b5e652172e1936fffdd303758c45ad7b3028d8cf51b053d383a2c5d3745726fbb3e38136269a00541ddf12dc3f6852076f8061be4e8fa69b23fbe49ae2e54db8
   languageName: node
   linkType: hard
 
@@ -3590,6 +3590,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@material-ui/core@npm:^4.12.3":
+  version: 4.12.3
+  resolution: "@material-ui/core@npm:4.12.3"
+  dependencies:
+    "@babel/runtime": ^7.4.4
+    "@material-ui/styles": ^4.11.4
+    "@material-ui/system": ^4.12.1
+    "@material-ui/types": 5.1.0
+    "@material-ui/utils": ^4.11.2
+    "@types/react-transition-group": ^4.2.0
+    clsx: ^1.0.4
+    hoist-non-react-statics: ^3.3.2
+    popper.js: 1.16.1-lts
+    prop-types: ^15.7.2
+    react-is: ^16.8.0 || ^17.0.0
+    react-transition-group: ^4.4.0
+  peerDependencies:
+    "@types/react": ^16.8.6 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: eb193e1d7ece9c9f0221b9f6fd08ade166c8c9c9ad51f7823f1aeba6f159759d8727f827443d4df188e186d6dcf575288c277ca9541dc603c1f331692028c398
+  languageName: node
+  linkType: hard
+
 "@material-ui/icons@npm:^4.11.2, @material-ui/icons@npm:^4.9.1":
   version: 4.11.2
   resolution: "@material-ui/icons@npm:4.11.2"
@@ -3659,6 +3686,37 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@material-ui/styles@npm:^4.11.4":
+  version: 4.11.4
+  resolution: "@material-ui/styles@npm:4.11.4"
+  dependencies:
+    "@babel/runtime": ^7.4.4
+    "@emotion/hash": ^0.8.0
+    "@material-ui/types": 5.1.0
+    "@material-ui/utils": ^4.11.2
+    clsx: ^1.0.4
+    csstype: ^2.5.2
+    hoist-non-react-statics: ^3.3.2
+    jss: ^10.5.1
+    jss-plugin-camel-case: ^10.5.1
+    jss-plugin-default-unit: ^10.5.1
+    jss-plugin-global: ^10.5.1
+    jss-plugin-nested: ^10.5.1
+    jss-plugin-props-sort: ^10.5.1
+    jss-plugin-rule-value-function: ^10.5.1
+    jss-plugin-vendor-prefixer: ^10.5.1
+    prop-types: ^15.7.2
+  peerDependencies:
+    "@types/react": ^16.8.6 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: bbca7a43f95b3fae876b656ba163759cd6c26e55ce6c23da8392cbab4ac22cfb32c8c753c8a8e124e3d96cce7d60cb4db188cf2b1437ef6dc53d1c0d28b2fd86
+  languageName: node
+  linkType: hard
+
 "@material-ui/system@npm:^4.11.3":
   version: 4.11.3
   resolution: "@material-ui/system@npm:4.11.3"
@@ -3678,7 +3736,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@material-ui/types@npm:^5.1.0":
+"@material-ui/system@npm:^4.12.1":
+  version: 4.12.1
+  resolution: "@material-ui/system@npm:4.12.1"
+  dependencies:
+    "@babel/runtime": ^7.4.4
+    "@material-ui/utils": ^4.11.2
+    csstype: ^2.5.2
+    prop-types: ^15.7.2
+  peerDependencies:
+    "@types/react": ^16.8.6 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+  checksum: 20adfb298c69e8577589ef20eb01edf1bdeace473d1485390427f8effe2f4d3864bfe1ae7134d880140f32e64327ceb2cddd2950e62562771759e4532e4cd2f4
+  languageName: node
+  linkType: hard
+
+"@material-ui/types@npm:5.1.0, @material-ui/types@npm:^5.1.0":
   version: 5.1.0
   resolution: "@material-ui/types@npm:5.1.0"
   peerDependencies:
@@ -7032,6 +7109,15 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 4e06cb72a5bde563639d0af927b3fc733e20d1ae4e0d0ff09f4d0e3058f2b6e5eebf0d40420f9c9e4bc0d278f53c9e9d097509190c539836cef5fd8179490dff
+  languageName: node
+  linkType: hard
+
+"babel-plugin-react-svg@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "babel-plugin-react-svg@npm:3.0.3"
+  peerDependencies:
+    "@babel/plugin-syntax-jsx": ^7.2.0
+  checksum: 8ff976537833553126ff5ad110c6349cb749de514b0655008e0ba53d5be9e0513eec86d3ae87c133215ebb9ec32356bd947256fbf2d407e7c4a3299f4a4565cd
   languageName: node
   linkType: hard
 
@@ -14046,6 +14132,7 @@ fsevents@^1.2.7:
     "@babel/core": ^7.15.5
     "@babel/preset-env": ^7.15.4
     "@babel/preset-react": ^7.14.5
+    "@material-ui/core": ^4.12.3
     "@rollup/plugin-babel": ^5.3.0
     "@rollup/plugin-commonjs": ^20.0.0
     "@rollup/plugin-node-resolve": ^13.0.4
@@ -14065,6 +14152,7 @@ fsevents@^1.2.7:
     react-masonry-component: ^6.3.0
     rollup: ^2.56.3
     rollup-plugin-css-only: ^3.1.0
+    rollup-plugin-react-svg: ^3.0.3
   languageName: unknown
   linkType: soft
 
@@ -16168,10 +16256,24 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.clonedeep@npm:^4.5.0":
+  version: 4.5.0
+  resolution: "lodash.clonedeep@npm:4.5.0"
+  checksum: 41e2fe4c57c56a66a4775a6ddeebe9272f0ce4d257d97b3cb8724a9b01eeec9b09ce7e8603d6926baf5f48c287d988f0de4bf5aa244ea86b1f22c1e6f203cc27
+  languageName: node
+  linkType: hard
+
 "lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: b6042bd8c09ff1961c9127d32266316bc21f946ece5e3464a663ec61fadb98e7d56ec0ef7e23b47d393695310c19cf24e651c1756be6da91ac02c72be7f79465
+  languageName: node
+  linkType: hard
+
+"lodash.isplainobject@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "lodash.isplainobject@npm:4.0.6"
+  checksum: 72a114b610ec32a42b8cb47680d1729398caea0ee0631c0b220b97b21e7df19312377cb077acb6593bf6c5abdbdb43c530aa66b440e30d53324986d386808cd0
   languageName: node
   linkType: hard
 
@@ -20883,6 +20985,21 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"react-svg-core@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "react-svg-core@npm:3.0.3"
+  dependencies:
+    "@babel/core": ^7.4.5
+    "@babel/plugin-syntax-jsx": ^7.2.0
+    "@babel/preset-react": ^7.0.0
+    babel-plugin-react-svg: ^3.0.3
+    lodash.clonedeep: ^4.5.0
+    lodash.isplainobject: ^4.0.6
+    svgo: ^1.2.2
+  checksum: ae47b15a1b2de3a17feec5c7fae1c59f49ba036d693d89d19523c241cd274168ead0e6c2014e2feabc71bf7b1b4118081637ea189eebb2d4fcfc87f585524d6f
+  languageName: node
+  linkType: hard
+
 "react-transition-group@npm:^4.4.0":
   version: 4.4.1
   resolution: "react-transition-group@npm:4.4.1"
@@ -21767,6 +21884,16 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
+"rollup-plugin-react-svg@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "rollup-plugin-react-svg@npm:3.0.3"
+  dependencies:
+    react-svg-core: ^3.0.3
+    rollup-pluginutils: ^2.8.0
+  checksum: a70e3f8c74a9fb55319d8929d007e6b5f8bec54e9662773d7eec19d6a4aa47e9bf0d6a958e51298c8598c5af605f4a460023c7236d5b94acb8c37ea9c6c6afcd
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-terser@npm:^5.3.1":
   version: 5.3.1
   resolution: "rollup-plugin-terser@npm:5.3.1"
@@ -21782,7 +21909,7 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"rollup-pluginutils@npm:^2.8.1, rollup-pluginutils@npm:^2.8.2":
+"rollup-pluginutils@npm:^2.8.0, rollup-pluginutils@npm:^2.8.1, rollup-pluginutils@npm:^2.8.2":
   version: 2.8.2
   resolution: "rollup-pluginutils@npm:2.8.2"
   dependencies:
