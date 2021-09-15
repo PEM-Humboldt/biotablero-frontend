@@ -5,6 +5,7 @@ const cardsData = [
     goal: 'Forest area as a percentage of total land area (proposed indictor for SDG target 15.1)',
     period: '2010 - 2015',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '2',
@@ -12,6 +13,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '3',
@@ -19,6 +21,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '4',
@@ -26,6 +29,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '5',
@@ -33,6 +37,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '6',
@@ -40,6 +45,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '7',
@@ -47,6 +53,7 @@ const cardsData = [
     goal: 'Natural habitat extent (land area minus urban and agriculture)',
     period: '2005 - 2012',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
   {
     id: '8',
@@ -54,6 +61,7 @@ const cardsData = [
     goal: '',
     period: '',
     scale: 'Nacional, regional',
+    externalLink: './Indicadores',
   },
 ];
 
