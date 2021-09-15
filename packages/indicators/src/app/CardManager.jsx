@@ -12,13 +12,12 @@ const CardManager = ({ cardsData }) => (
   <Masonry options={masonryOptions}>
     {cardsData.map((card) => (
       <Card
-        key={card.title}
+        key={card.key}
         indicator={card.title}
         title={card.title}
         goal={card.goal}
         period={card.period}
         scale={card.scale}
-        action="./Indicadores"
         externalLink={card.externalLink}
       />
     ))}
@@ -32,7 +31,6 @@ CardManager.propTypes = {
       goal: PropTypes.string,
       period: PropTypes.string,
       scale: PropTypes.string,
-      action: PropTypes.string,
     })
   ),
 };
