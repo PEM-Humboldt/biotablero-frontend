@@ -12,7 +12,7 @@ const CardManager = ({ cardsData }) => (
   <Masonry options={masonryOptions}>
     {cardsData.map((card) => (
       <Card
-        key={card.key}
+        key={card.id}
         indicator={card.title}
         title={card.title}
         goal={card.goal}
