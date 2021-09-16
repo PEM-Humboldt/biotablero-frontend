@@ -30,7 +30,6 @@ const App = () => {
         </div>
       </div>
       <div>
-        <div>{cardsData ? `${cardsData.length} indicadores` : 'No hay indicadores'}</div>
         <CardManager cardsData={cardsData} />
       </div>
     </div>
