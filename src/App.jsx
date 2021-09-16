@@ -56,7 +56,7 @@ class App extends React.Component {
 
   loadIndicator = () => (
     this.loadComponent({
-      logoSet: 'default',
+      logoSet: null,
       name: 'Indicadores',
       component: (<Indicators />),
       className: 'fullgrid',
