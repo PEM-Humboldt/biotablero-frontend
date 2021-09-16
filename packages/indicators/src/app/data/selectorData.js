@@ -60,7 +60,7 @@ const cardsData = [
     title: '',
     goal: '',
     period: '',
-    scale: 'Nacional, regional',
+    scale: '',
     externalLink: './Indicadores',
   },
 ];
