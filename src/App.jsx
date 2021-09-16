@@ -6,7 +6,6 @@ import Layout from 'app/Layout';
 import Uim from 'app/Uim';
 import Compensation from 'pages/Compensation';
 import Home from 'pages/Home';
-// import Indicator from 'pages/Indicator';
 import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
 import Indicators from 'pages/Indicators';
