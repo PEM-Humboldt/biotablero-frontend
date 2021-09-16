@@ -29,8 +29,10 @@ const ChipManager = ({
 }) => (
   <MuiThemeProvider theme={theme}>
     <Paper elevation={2}>
-      {filters.map(() => (
+      {filters.map((element) => (
         <Chip
+          key={element.key}
+          label={element.label}
           clickable
         />
       ))}
