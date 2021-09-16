@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-component';
+import GetAppOutlinedIcon from '@material-ui/icons/GetAppOutlined';
 
 import Card from './cardManager/Card';
 
@@ -9,19 +10,27 @@ const masonryOptions = {
 };
 
 const CardManager = ({ cardsData }) => (
-  <Masonry options={masonryOptions}>
-    {cardsData.map((card) => (
-      <Card
-        key={card.id}
-        indicator={card.title}
-        title={card.title}
-        goal={card.goal}
-        period={card.period}
-        scale={card.scale}
-        externalLink={card.externalLink}
-      />
-    ))}
-  </Masonry>
+  <>
+    <div className="countD">
+      {cardsData ? `${cardsData.length} indicadores` : 'No hay indicadores'}
+    </div>
+    <div className="countDIcon">
+      <GetAppOutlinedIcon color="#e84a5f" />
+    </div>
+    <Masonry options={masonryOptions}>
+      {cardsData.map((card) => (
+        <Card
+          key={card.id}
+          indicator={card.title}
+          title={card.title}
+          goal={card.goal}
+          period={card.period}
+          scale={card.scale}
+          externalLink={card.externalLink}
+        />
+      ))}
+    </Masonry>
+  </>
 );
 
 CardManager.propTypes = {
