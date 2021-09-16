@@ -2,17 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LinkIcon from './URLIcon';
 
-const Card = ({ title, goal, period, scale, action, externalLink }) => (
+const Card = ({ title, goal, period, scale, externalLink }) => (
   <div className="indicatorCard">
     <h1>
       {title}
       <span className="links">
-        <a className="linkURL" href={externalLink} title="Ir al indicador">
+        <a className="linkURL" href={externalLink} title="Ir al enlace">
           <LinkIcon fontSize={50} />
         </a>
-        <a href={action} title="Abrir indicador">
+        <div
+          className="expandIndicatorButton"
+          onClick={() => {}}
+          onKeyDown={() => {}}
+          role="button"
+          title="Abrir indicador"
+          tabIndex={0}
+        >
           +
-        </a>
+        </div>
       </span>
     </h1>
     <h2>{period}</h2>
@@ -29,7 +36,6 @@ Card.propTypes = {
   goal: PropTypes.string,
   period: PropTypes.string,
   scale: PropTypes.string,
-  action: PropTypes.string.isRequired,
   externalLink: PropTypes.string.isRequired,
 };
 
