@@ -23,8 +23,6 @@ const App = () => {
       <div>
         <div className="countD">
           {cardsData ? `${cardsData.length} indicadores` : 'No hay indicadores'}
-        </div>
-        <div className="countDIcon">
           <SaveAltIcon color="#e84a5f" />
         </div>
         <CardManager cardsData={cardsData} />
