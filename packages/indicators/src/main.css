@@ -28,6 +28,10 @@
   max-width: 290px;
   display: flex;
   justify-content: space-between;
+  color: #03344b;
+}
+
+.countD svg {
   color: #e84a5f;
 }
 
