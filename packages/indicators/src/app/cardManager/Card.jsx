@@ -33,16 +33,14 @@ const Card = ({ title, goal, period, scale, externalLink }) => (
 
 Card.propTypes = {
   title: PropTypes.string.isRequired,
-  goal: PropTypes.string,
+  goal: PropTypes.string.isRequired,
   period: PropTypes.string,
-  scale: PropTypes.string,
+  scale: PropTypes.string.isRequired,
   externalLink: PropTypes.string.isRequired,
 };
 
 Card.defaultProps = {
-  goal: '',
   period: '',
-  scale: '',
 };
 
 export default Card;
