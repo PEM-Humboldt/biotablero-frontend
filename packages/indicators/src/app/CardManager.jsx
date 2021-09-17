@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Masonry from 'react-masonry-component';
-import GetAppOutlinedIcon from '@material-ui/icons/GetAppOutlined';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 import Card from './cardManager/Card';
 
@@ -15,7 +15,7 @@ const CardManager = ({ cardsData }) => (
       {cardsData ? `${cardsData.length} indicadores` : 'No hay indicadores'}
     </div>
     <div className="countDIcon">
-      <GetAppOutlinedIcon color="#e84a5f" />
+      <SaveAltIcon color="#e84a5f" />
     </div>
     <Masonry options={masonryOptions}>
       {cardsData.map((card) => (
