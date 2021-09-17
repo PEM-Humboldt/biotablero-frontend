@@ -16,7 +16,7 @@ const CardManager = ({ cardsData }) => (
         indicator={card.title}
         title={card.title}
         goal={card.goal}
-        period={card.period}
+        lastUpdate={card.lastUpdate}
         scale={card.scale}
         externalLink={card.externalLink}
       />
@@ -29,7 +29,7 @@ CardManager.propTypes = {
     PropTypes.shape({
       title: PropTypes.string.isRequired,
       goal: PropTypes.string,
-      period: PropTypes.string,
+      lastUpdate: PropTypes.string,
       scale: PropTypes.string,
     })
   ),
