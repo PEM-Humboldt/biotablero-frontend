@@ -17,16 +17,6 @@ const App = () => {
             </button>{' '}
             Filtros de búsqueda{' '}
           </h3>
-          {openFilter && (
-            <div>
-              <h4>
-                <button type="button" onClick={() => setOpenFilter(!openFilter)}>
-                  x
-                </button>{' '}
-                (Prueba de apertura del menú)
-              </h4>
-            </div>
-          )}
         </div>
       </div>
       <div>
