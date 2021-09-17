@@ -147,7 +147,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:7.15.5, @babel/core@npm:^7.12.0, @babel/core@npm:^7.15.5, @babel/core@npm:^7.4.5":
+"@babel/core@npm:7.15.5, @babel/core@npm:^7.12.0, @babel/core@npm:^7.15.5":
   version: 7.15.5
   resolution: "@babel/core@npm:7.15.5"
   dependencies:
@@ -2886,22 +2886,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.0.0, @babel/preset-react@npm:^7.14.5":
-  version: 7.14.5
-  resolution: "@babel/preset-react@npm:7.14.5"
-  dependencies:
-    "@babel/helper-plugin-utils": ^7.14.5
-    "@babel/helper-validator-option": ^7.14.5
-    "@babel/plugin-transform-react-display-name": ^7.14.5
-    "@babel/plugin-transform-react-jsx": ^7.14.5
-    "@babel/plugin-transform-react-jsx-development": ^7.14.5
-    "@babel/plugin-transform-react-pure-annotations": ^7.14.5
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 58a96aef0a58c3c46548451ce9457b2fea7e06ac619c74ee71876700ec6ff6f8e021d71347dd1f4dc5ce558a4f96498ae5679319bbe86dd38ae00ca7b701a29e
-  languageName: node
-  linkType: hard
-
 "@babel/preset-react@npm:^7.12.10, @babel/preset-react@npm:^7.12.5":
   version: 7.12.13
   resolution: "@babel/preset-react@npm:7.12.13"
@@ -2914,6 +2898,22 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: b5e652172e1936fffdd303758c45ad7b3028d8cf51b053d383a2c5d3745726fbb3e38136269a00541ddf12dc3f6852076f8061be4e8fa69b23fbe49ae2e54db8
+  languageName: node
+  linkType: hard
+
+"@babel/preset-react@npm:^7.14.5":
+  version: 7.14.5
+  resolution: "@babel/preset-react@npm:7.14.5"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.14.5
+    "@babel/helper-validator-option": ^7.14.5
+    "@babel/plugin-transform-react-display-name": ^7.14.5
+    "@babel/plugin-transform-react-jsx": ^7.14.5
+    "@babel/plugin-transform-react-jsx-development": ^7.14.5
+    "@babel/plugin-transform-react-pure-annotations": ^7.14.5
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 58a96aef0a58c3c46548451ce9457b2fea7e06ac619c74ee71876700ec6ff6f8e021d71347dd1f4dc5ce558a4f96498ae5679319bbe86dd38ae00ca7b701a29e
   languageName: node
   linkType: hard
 
@@ -7109,15 +7109,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 4e06cb72a5bde563639d0af927b3fc733e20d1ae4e0d0ff09f4d0e3058f2b6e5eebf0d40420f9c9e4bc0d278f53c9e9d097509190c539836cef5fd8179490dff
-  languageName: node
-  linkType: hard
-
-"babel-plugin-react-svg@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "babel-plugin-react-svg@npm:3.0.3"
-  peerDependencies:
-    "@babel/plugin-syntax-jsx": ^7.2.0
-  checksum: 8ff976537833553126ff5ad110c6349cb749de514b0655008e0ba53d5be9e0513eec86d3ae87c133215ebb9ec32356bd947256fbf2d407e7c4a3299f4a4565cd
   languageName: node
   linkType: hard
 
@@ -12339,7 +12330,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.1, fsevents@~2.3.2":
+"fsevents@^2.1.2, fsevents@^2.1.3, fsevents@~2.3.1":
   version: 2.3.2
   resolution: "fsevents@npm:2.3.2"
   dependencies:
@@ -12358,7 +12349,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>, fsevents@patch:fsevents@^2.1.3#builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.1#builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.2#builtin<compat/fsevents>":
+"fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>, fsevents@patch:fsevents@^2.1.3#builtin<compat/fsevents>, fsevents@patch:fsevents@~2.3.1#builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#builtin<compat/fsevents>::version=2.3.2&hash=11e9ea"
   dependencies:
@@ -14151,9 +14142,7 @@ fsevents@^1.2.7:
     react: ^17.0.1
     react-dom: ^17.0.1
     react-masonry-component: ^6.3.0
-    rollup: ^2.56.3
     rollup-plugin-css-only: ^3.1.0
-    rollup-plugin-react-svg: ^3.0.3
   languageName: unknown
   linkType: soft
 
@@ -16257,24 +16246,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lodash.clonedeep@npm:^4.5.0":
-  version: 4.5.0
-  resolution: "lodash.clonedeep@npm:4.5.0"
-  checksum: 41e2fe4c57c56a66a4775a6ddeebe9272f0ce4d257d97b3cb8724a9b01eeec9b09ce7e8603d6926baf5f48c287d988f0de4bf5aa244ea86b1f22c1e6f203cc27
-  languageName: node
-  linkType: hard
-
 "lodash.debounce@npm:^4.0.8":
   version: 4.0.8
   resolution: "lodash.debounce@npm:4.0.8"
   checksum: b6042bd8c09ff1961c9127d32266316bc21f946ece5e3464a663ec61fadb98e7d56ec0ef7e23b47d393695310c19cf24e651c1756be6da91ac02c72be7f79465
-  languageName: node
-  linkType: hard
-
-"lodash.isplainobject@npm:^4.0.6":
-  version: 4.0.6
-  resolution: "lodash.isplainobject@npm:4.0.6"
-  checksum: 72a114b610ec32a42b8cb47680d1729398caea0ee0631c0b220b97b21e7df19312377cb077acb6593bf6c5abdbdb43c530aa66b440e30d53324986d386808cd0
   languageName: node
   linkType: hard
 
@@ -20986,21 +20961,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-svg-core@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "react-svg-core@npm:3.0.3"
-  dependencies:
-    "@babel/core": ^7.4.5
-    "@babel/plugin-syntax-jsx": ^7.2.0
-    "@babel/preset-react": ^7.0.0
-    babel-plugin-react-svg: ^3.0.3
-    lodash.clonedeep: ^4.5.0
-    lodash.isplainobject: ^4.0.6
-    svgo: ^1.2.2
-  checksum: ae47b15a1b2de3a17feec5c7fae1c59f49ba036d693d89d19523c241cd274168ead0e6c2014e2feabc71bf7b1b4118081637ea189eebb2d4fcfc87f585524d6f
-  languageName: node
-  linkType: hard
-
 "react-transition-group@npm:^4.4.0":
   version: 4.4.1
   resolution: "react-transition-group@npm:4.4.1"
@@ -21885,16 +21845,6 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"rollup-plugin-react-svg@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "rollup-plugin-react-svg@npm:3.0.3"
-  dependencies:
-    react-svg-core: ^3.0.3
-    rollup-pluginutils: ^2.8.0
-  checksum: a70e3f8c74a9fb55319d8929d007e6b5f8bec54e9662773d7eec19d6a4aa47e9bf0d6a958e51298c8598c5af605f4a460023c7236d5b94acb8c37ea9c6c6afcd
-  languageName: node
-  linkType: hard
-
 "rollup-plugin-terser@npm:^5.3.1":
   version: 5.3.1
   resolution: "rollup-plugin-terser@npm:5.3.1"
@@ -21910,7 +21860,7 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"rollup-pluginutils@npm:^2.8.0, rollup-pluginutils@npm:^2.8.1, rollup-pluginutils@npm:^2.8.2":
+"rollup-pluginutils@npm:^2.8.1, rollup-pluginutils@npm:^2.8.2":
   version: 2.8.2
   resolution: "rollup-pluginutils@npm:2.8.2"
   dependencies:
@@ -21943,20 +21893,6 @@ resolve@^0.6.1:
   bin:
     rollup: dist/bin/rollup
   checksum: c512236087c32f661181d65489341a01fdd8a41ff3992479d049e999d9070387b20c8b37a5fbdda6af9507fce435e0b9dc510dbf058573575a157d3e61bd2bd4
-  languageName: node
-  linkType: hard
-
-"rollup@npm:^2.56.3":
-  version: 2.56.3
-  resolution: "rollup@npm:2.56.3"
-  dependencies:
-    fsevents: ~2.3.2
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    rollup: dist/bin/rollup
-  checksum: 459ac36f8d325385a6b66522bf60ea4ae1400b405de30d7c64c483cc875dbf11c4f6c352d796b2ec634a567a6db1ff1c48fe29d434354c1330c88bb187c539b4
   languageName: node
   linkType: hard
 
