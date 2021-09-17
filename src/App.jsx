@@ -8,7 +8,7 @@ import Compensation from 'pages/Compensation';
 import Home from 'pages/Home';
 import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
-import Indicators from 'pages/Indicators';
+import Indicator from 'pages/Indicator';
 
 import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
@@ -58,7 +58,7 @@ class App extends React.Component {
     this.loadComponent({
       logoSet: null,
       name: 'Indicadores',
-      component: (<Indicators />),
+      component: (<Indicator />),
       className: 'fullgrid',
     })
   );
