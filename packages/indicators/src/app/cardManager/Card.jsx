@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import LinkIcon from './URLIcon';
+import LinkIcon from './card/URLIcon';
 
 const Card = ({ title, goal, period, scale, externalLink }) => (
   <div className="indicatorCard">
