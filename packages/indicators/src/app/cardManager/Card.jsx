@@ -22,7 +22,7 @@ const Card = ({ title, goal, period, scale, externalLink }) => (
         </div>
       </span>
     </h1>
-    {period ? <h2>{period}</h2> : <h2> </h2>}
+    <h2>{period}</h2>
     <h3>OBJETIVO</h3>
     <h4>{goal}</h4>
     <br />
@@ -34,13 +34,9 @@ const Card = ({ title, goal, period, scale, externalLink }) => (
 Card.propTypes = {
   title: PropTypes.string.isRequired,
   goal: PropTypes.string.isRequired,
-  period: PropTypes.string,
+  period: PropTypes.string.isRequired,
   scale: PropTypes.string.isRequired,
   externalLink: PropTypes.string.isRequired,
-};
-
-Card.defaultProps = {
-  period: '',
 };
 
 export default Card;
