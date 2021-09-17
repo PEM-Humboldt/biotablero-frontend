@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import LinkIcon from './card/URLIcon';
 
-const Card = ({ title, goal, period, scale, externalLink }) => (
+const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
   <div className="indicatorCard">
     <h1>
       {title}
@@ -22,9 +22,9 @@ const Card = ({ title, goal, period, scale, externalLink }) => (
         </div>
       </span>
     </h1>
-    <h2>{period}</h2>
+    <h2>{lastUpdate}</h2>
     <h3>OBJETIVO</h3>
-    <h4>{goal}</h4>
+    <h4>{target}</h4>
     <br />
     <h3>ESCALA</h3>
     <h4>{scale}</h4>
@@ -33,8 +33,8 @@ const Card = ({ title, goal, period, scale, externalLink }) => (
 
 Card.propTypes = {
   title: PropTypes.string.isRequired,
-  goal: PropTypes.string.isRequired,
-  period: PropTypes.string.isRequired,
+  target: PropTypes.string.isRequired,
+  lastUpdate: PropTypes.string.isRequired,
   scale: PropTypes.string.isRequired,
   externalLink: PropTypes.string.isRequired,
 };

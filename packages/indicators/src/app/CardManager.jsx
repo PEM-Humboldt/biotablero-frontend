@@ -15,7 +15,7 @@ const CardManager = ({ cardsData }) => (
         key={card.id}
         indicator={card.title}
         title={card.title}
-        goal={card.goal}
+        target={card.target}
         lastUpdate={card.lastUpdate}
         scale={card.scale}
         externalLink={card.externalLink}
@@ -28,7 +28,7 @@ CardManager.propTypes = {
   cardsData: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string.isRequired,
-      goal: PropTypes.string,
+      target: PropTypes.string,
       lastUpdate: PropTypes.string,
       scale: PropTypes.string,
     })
