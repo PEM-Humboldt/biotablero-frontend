@@ -33,6 +33,14 @@
 
 .countD svg {
   color: #e84a5f;
+  font-size: 22px;
+}
+
+.downloadAll{
+  fill: #e84a5f;
+  border-color: transparent;
+  margin-top: -5px;
+  cursor: pointer;
 }
 
 .card2 h3 {

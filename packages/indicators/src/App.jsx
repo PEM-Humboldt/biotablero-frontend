@@ -24,7 +24,15 @@ const App = () => {
         <div className="countD">
           {cardsData.length > 0 ? (
             <>
-              {cardsData.length} indicadores <SaveAltIcon />
+              {cardsData.length} indicadores
+              <button
+                title="Descargar indicadores listados"
+                className="downloadAll"
+                type="button"
+                onClick={() => {}}
+              >
+                <SaveAltIcon />
+              </button>
             </>
           ) : (
             'No hay indicadores'
