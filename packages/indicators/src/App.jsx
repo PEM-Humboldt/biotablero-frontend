@@ -15,8 +15,8 @@ const App = () => {
           <h3>
             <button type="button" onClick={() => setOpenFilter(!openFilter)}>
               {openFilter ? '-' : '+'}
-            </button>{' '}
-            Filtros de búsqueda{' '}
+            </button>
+            Filtros de búsqueda
           </h3>
         </div>
       </div>
