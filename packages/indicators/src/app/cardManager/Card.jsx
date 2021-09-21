@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import LinkIcon from './card/URLIcon';
 
 const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
