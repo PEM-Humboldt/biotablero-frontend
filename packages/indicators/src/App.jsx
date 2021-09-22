@@ -15,10 +15,15 @@ const App = () => {
       <div className="leftnav">
         <div className="card2">
           <h3>
-            <button type="button" onClick={() => setOpenFilter(!openFilter)}>
+            <button
+              className="openFilters"
+              title="Ocultar filtros"
+              type="button"
+              onClick={() => setOpenFilter(!openFilter)}
+            >
               {openFilter ? <CloseIcon /> : <OpenIcon />}
             </button>
-            Filtros de búsqueda
+            <div className="text">Filtros de búsqueda</div>
           </h3>
         </div>
       </div>
@@ -28,8 +33,8 @@ const App = () => {
             <>
               {cardsData.length} indicadores
               <button
-                title="Descargar indicadores listados"
                 className="downloadAll"
+                title="Descargar indicadores listados"
                 type="button"
                 onClick={() => {}}
               >
