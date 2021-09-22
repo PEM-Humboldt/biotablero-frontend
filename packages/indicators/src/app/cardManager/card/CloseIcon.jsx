@@ -15,7 +15,7 @@ const CloseIcon = ({ color, fontSize }) => (
       x1="12"
       transform="translate(8.5 14.5)"
       fill="none"
-      stroke="#fff"
+      stroke={color}
       strokeLinecap="round"
       strokeWidth="2"
     />
@@ -28,7 +28,7 @@ CloseIcon.propTypes = {
 };
 
 CloseIcon.defaultProps = {
-  color: '',
+  color: '#fff',
   fontSize: 24,
 };
 

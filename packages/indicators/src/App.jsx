@@ -21,7 +21,7 @@ const App = () => {
               type="button"
               onClick={() => setOpenFilter(!openFilter)}
             >
-              {openFilter ? <CloseIcon /> : <OpenIcon color="#fff" />}
+              {openFilter ? <CloseIcon color="#fff" /> : <OpenIcon color="#fff" />}
             </button>
             <div className="text">Filtros de búsqueda</div>
           </h3>
@@ -38,7 +38,7 @@ const App = () => {
                 type="button"
                 onClick={() => {}}
               >
-                <DownloadIcon />
+                <DownloadIcon color="#e84a5f" />
               </button>
             </>
           ) : (

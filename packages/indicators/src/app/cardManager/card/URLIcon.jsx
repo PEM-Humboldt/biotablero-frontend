@@ -39,7 +39,7 @@ URLIcon.propTypes = {
 
 URLIcon.defaultProps = {
   color: '',
-  fontSize: 24,
+  fontSize: 19,
 };
 
 export default URLIcon;
