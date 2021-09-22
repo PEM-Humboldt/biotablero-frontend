@@ -24,7 +24,7 @@
   font-size: 18px;
   margin-left: 20px;
   margin-bottom: 10px;
-  padding: 20px 0 10px 0;
+  padding: 25px 0 10px 0;
   border-bottom: 1px solid #e84a5f;
   width: 290px;
   max-width: 290px;
@@ -53,20 +53,20 @@
 }
 
 .card2 h3 {
-  padding: 15px;
+  padding: 25px 15px 10px 15px;
 	background-color:#03344b;
   color: #f8f8f8;
 	transition: all 0.7s cubic-bezier(.25,.8,.25,1);
   border-bottom: 1px solid #e6e6e6;
   gap: 5px;
+  display: flex;
+  flex-direction: row;
 }
 
-.card2 h4 {
-  padding: 15px;
-  background-color:#03344b  ;
-  color: #f8f8f8;
-	margin-bottom: 10px;
-	font-size: 13px;
+.card2 .text {
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
 }
 
 .indicatorCard {
@@ -155,5 +155,12 @@
   width: 30px;
   text-align: center;
   line-height: 40px;
+  cursor: pointer;
+}
+
+.openFilters{
+  background-color: transparent;
+  border-color: transparent;
+  margin-top: -5px;
   cursor: pointer;
 }
