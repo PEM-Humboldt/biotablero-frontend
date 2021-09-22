@@ -2,14 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import LinkIcon from './card/URLIcon';
+import OpenIcon from './card/OpenIcon';
 
 const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
   <div className="indicatorCard">
-    <h1>
-      {title}
-      <span className="links">
+    <div className="cardTitles">
+      <h1>{title}</h1>
+      <div className="links">
         <a className="linkURL" href={externalLink} title="Ir al enlace">
-          <LinkIcon fontSize={50} />
+          <LinkIcon fontSize={19} />
         </a>
         <div
           className="expandIndicatorButton"
@@ -19,10 +20,10 @@ const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
           title="Abrir indicador"
           tabIndex={0}
         >
-          +
+          <OpenIcon fontSize={19} />
         </div>
-      </span>
-    </h1>
+      </div>
+    </div>
     <h2>{lastUpdate}</h2>
     <h3>OBJETIVO</h3>
     <h4>{target}</h4>

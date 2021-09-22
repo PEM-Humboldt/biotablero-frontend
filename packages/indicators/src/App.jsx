@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 import './main.css';
 import CardManager from './app/CardManager';
 import cardsData from './app/data/selectorData';
+import DownloadIcon from './app/cardManager/card/DownloadIcon';
+import OpenIcon from './app/cardManager/card/OpenIcon';
+import CloseIcon from './app/cardManager/card/CloseIcon';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
@@ -14,7 +16,7 @@ const App = () => {
         <div className="card2">
           <h3>
             <button type="button" onClick={() => setOpenFilter(!openFilter)}>
-              {openFilter ? '-' : '+'}
+              {openFilter ? <CloseIcon /> : <OpenIcon />}
             </button>
             Filtros de búsqueda
           </h3>
@@ -31,7 +33,7 @@ const App = () => {
                 type="button"
                 onClick={() => {}}
               >
-                <SaveAltIcon />
+                <DownloadIcon />
               </button>
             </>
           ) : (
