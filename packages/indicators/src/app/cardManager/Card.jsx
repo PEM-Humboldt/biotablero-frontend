@@ -20,7 +20,7 @@ const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
           title="Abrir indicador"
           tabIndex={0}
         >
-          <OpenIcon fontSize={19} />
+          <OpenIcon fontSize={19} color="#e84a60" />
         </div>
       </div>
     </div>

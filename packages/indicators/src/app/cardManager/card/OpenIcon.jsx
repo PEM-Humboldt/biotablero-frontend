@@ -12,7 +12,7 @@ const OpenIcon = ({ color, fontSize }) => (
         x2="15.88"
         transform="translate(744.5 329.5)"
         fill="none"
-        stroke="#e84a60"
+        stroke={color}
         strokeLinecap="round"
         strokeWidth="1.2"
       />
@@ -22,7 +22,7 @@ const OpenIcon = ({ color, fontSize }) => (
         x2="15.88"
         transform="translate(752.5 321.5) rotate(90)"
         fill="none"
-        stroke="#e84a60"
+        stroke={color}
         strokeLinecap="round"
         strokeWidth="1.2"
       />
@@ -37,7 +37,7 @@ OpenIcon.propTypes = {
 
 OpenIcon.defaultProps = {
   color: '',
-  fontSize: 24,
+  fontSize: 19,
 };
 
 export default OpenIcon;
