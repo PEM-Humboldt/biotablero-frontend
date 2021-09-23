@@ -75,6 +75,7 @@ class NumberOfSpecies extends React.Component {
       selected: 'total',
       bioticRegion: 'Región Biótica',
       maximumValues: [],
+      showErrorMessage: false,
     };
   }
 
@@ -93,9 +94,13 @@ class NumberOfSpecies extends React.Component {
       .then(([values, thresholds, nationalMax]) => {
         const data = [];
         let region = null;
+        let showErrorMessage = false;
         values.forEach((groupVal) => {
           if (!region) region = groupVal.region_name;
           const { id, ...limits } = thresholds.find((e) => e.id === groupVal.id);
+          const errorInferred = groupVal.inferred > groupVal.region_inferred;
+          const errorObserved = groupVal.observed > groupVal.region_observed;
+          showErrorMessage = errorInferred || errorObserved;
           data.push({
             id: groupVal.id,
             ranges: {
@@ -127,6 +132,7 @@ class NumberOfSpecies extends React.Component {
           maximumValues: nationalMax,
           message: null,
           bioticRegion: region,
+          showErrorMessage,
         }, () => {
           this.filter('inferred')();
         });
@@ -217,6 +223,7 @@ class NumberOfSpecies extends React.Component {
       maximumValues,
       filter,
       bioticRegion,
+      showErrorMessage,
     } = this.state;
 
     let legends = ['inferred', 'min_inferred', 'max_inferred', 'region_inferred',
@@ -254,6 +261,12 @@ class NumberOfSpecies extends React.Component {
           Haga click en cada barra para visualizar su mapa,
           que corresponden a los datos inferidos.
         </h3>
+        {showErrorMessage && (
+          <div className="disclaimer">
+            La riqueza inferida del área de consulta supera la de la región biótica en algunos
+            casos pues sus límites intersectan dos o más regiones bióticas.
+          </div>
+        )}
         <div className="nos-title legend">
           <TextLegend
             className={`${filter === 'inferred' ? 'filtered' : ''}`}
