@@ -1612,6 +1612,14 @@ div[class*="eaRHYv"] {
 	display: table;
 }
 
+.disclaimer {
+	font-size: 12px;
+	padding: 3px 6px;
+	color: #ffffff;
+	background-color: #5db1d4;
+	margin: 0 30px 10px 15px;
+}
+
 .singleeco {
 	font-size: 16px;
 	margin-left: 5px;
