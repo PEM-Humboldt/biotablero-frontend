@@ -34,11 +34,19 @@ const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
 );
 
 Card.propTypes = {
-  title: PropTypes.string.isRequired,
-  target: PropTypes.string.isRequired,
-  lastUpdate: PropTypes.string.isRequired,
-  scale: PropTypes.string.isRequired,
-  externalLink: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  target: PropTypes.string,
+  lastUpdate: PropTypes.string,
+  scale: PropTypes.string,
+  externalLink: PropTypes.string,
+};
+
+Card.defaultProps = {
+  title: '',
+  target: '',
+  lastUpdate: '',
+  scale: '',
+  externalLink: '',
 };
 
 export default Card;
