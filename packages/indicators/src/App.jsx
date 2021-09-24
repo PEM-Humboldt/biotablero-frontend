@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import './main.css';
 import CardManager from './app/CardManager';
 import cardsData from './app/data/selectorData';
-import DownloadIcon from './app/cardManager/card/DownloadIcon';
-import OpenIcon from './app/cardManager/card/OpenIcon';
-import CloseIcon from './app/cardManager/card/CloseIcon';
+import DownloadIcon from './app/DownloadIcon';
+import OpenIcon from './components/OpenIcon';
+import CloseIcon from './components/CloseIcon';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);

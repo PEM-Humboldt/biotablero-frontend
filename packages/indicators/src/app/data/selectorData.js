@@ -1,6 +1,6 @@
 const cardsData = [
   {
-    id: '1',
+    key: '1',
     title: 'Representatividad de los biomas andinos en los sistemas nacionales de áreas protegidas',
     target:
       'Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
@@ -9,7 +9,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '2',
+    key: '2',
     title: 'Porcentaje la distribución de especies sensibles',
     target:
       'Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
@@ -18,7 +18,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '3',
+    key: '3',
     title: 'Riqueza de especies asociadas a la pesca',
     target:
       'Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
@@ -27,7 +27,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '4',
+    key: '4',
     title: 'Número de especies potenciales a estar presente o potenciales a desaparecer',
     target:
       'En escenarios de cambio climático por grupo taxonómico a nivel nacional, por unidad político/administrativa o por región natural o áreas de interés',
@@ -36,7 +36,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '5',
+    key: '5',
     title: 'Porcentaje la distribución de especies sensibles',
     target:
       'Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
@@ -45,7 +45,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '6',
+    key: '6',
     title: 'Número de especies potenciales a estar presente o potenciales a desaparecer',
     target:
       'En escenarios de cambio climático por grupo taxonómico a nivel nacional, por unidad político/administrativa o por región natural o áreas de interés',
@@ -54,7 +54,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '7',
+    key: '7',
     title: 'Riqueza de especies asociadas a la pesca',
     target:
       'Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
@@ -63,7 +63,7 @@ const cardsData = [
     externalLink: './Indicadores',
   },
   {
-    id: '8',
+    key: '8',
     title: 'Número de especies potenciales a estar presente o potenciales a desaparecer',
     target:
       'En escenarios de cambio climático por grupo taxonómico a nivel nacional, por unidad político/administrativa o por región natural o áreas de interés',
