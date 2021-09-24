@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import LinkIcon from './card/URLIcon';
-import OpenIcon from './card/OpenIcon';
+import OpenIcon from '../../components/OpenIcon';
 
 const Card = ({ title, target, lastUpdate, scale, externalLink }) => (
   <div className="indicatorCard">
