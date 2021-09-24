@@ -98,9 +98,7 @@ class NumberOfSpecies extends React.Component {
         values.forEach((groupVal) => {
           if (!region) region = groupVal.region_name;
           const { id, ...limits } = thresholds.find((e) => e.id === groupVal.id);
-          const errorInferred = groupVal.inferred > groupVal.region_inferred;
-          const errorObserved = groupVal.observed > groupVal.region_observed;
-          showErrorMessage = errorInferred || errorObserved;
+          showErrorMessage = groupVal.inferred > groupVal.region_inferred;
           data.push({
             id: groupVal.id,
             ranges: {
