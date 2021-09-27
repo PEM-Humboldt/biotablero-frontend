@@ -1,5 +1,6 @@
 import React from 'react';
 import Masonry from 'react-masonry-component';
+import PropTypes from 'prop-types';
 
 import Card from './cardManager/Card';
 
@@ -23,7 +24,7 @@ const CardManager = ({ cardsData }) => (
 );
 
 CardManager.propTypes = {
-  ...Card.propTypes,
+  cardsData: PropTypes.arrayOf({ ...Card.propTypes }).isRequired,
 };
 
 export default CardManager;
