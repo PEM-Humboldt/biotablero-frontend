@@ -14,6 +14,7 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
+import { NumberOfSpeciesText } from 'pages/search/drawer/landscape/InfoTexts';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
@@ -247,8 +248,7 @@ class NumberOfSpecies extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Número de especies"
-            description="Número de especies"
+            description={NumberOfSpeciesText}
             className="graphinfo2"
             collapseButton={false}
           />

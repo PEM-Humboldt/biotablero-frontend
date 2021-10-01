@@ -232,6 +232,20 @@ Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: F
 </a>
 `;
 
+export const NumberOfSpeciesText = `Los mapas de riqueza inferida (total, endémicas, amenazadas e invasoras) representan el número de especies que potencialmente se encuentran en un área particular, y es calculada a partir de los modelos de distribución de especies siguiendo protocolos implementados en <a href="https://github.com/LBAB-Humboldt/modeling" target="_blank" rel="noopener noreferrer" style={{ color: #51b4c1 }}> BioModelos </a> (Velásquez-Tibatá et al. 2019). Los mapas de riqueza de especies presentan valores desde 1hasta n, dependiendo de la concentración de especies que se puedan encontrar en celdas de 1km2.Este tamaño de celda corresponde a las variables climáticas de WorldClim (Fick & Hijmans 2017) usadas durante el modelamiento.
+<br /><br />
+Los mapas fueron estimados para la extensión de  Colombia tomando como base 5808 BioModelos de especies en el programa R Cran (R Core Team 2018). El mapa de riqueza total de especies fue obtenido sumando los 5808 BioModelos haciendo un apilado de mapas. Para el caso de la riqueza de especies amenazadas se incluyeron aquellas especies categorizadas como En peligro crítico de extinción (CR), En peligro de extinción (EN) y Vulnerable (VU) según la UICN (2018, https://www.iucnredlist.org/). Para las especies invasoras se tomaron 23 especies de plantas y se modelaron siguiendo la metodología descrita por Salgado-Negret et al. (Sometido), dichas especies hacen parte de los listados nacionales de invasoras (Cárdenas-López et al., 2010). En el caso de las especies endémicas se subagruparon considerando los listados nacionales de especies publicados a través del Sistema de Información sobre Biodiversidad de Colombia (SiB Colombia) y se unieron con los mapas disponibles en el portal de la UICN (González et al. [2018] 2019).
+<br />
+Estos mapas de riqueza presentan el valor máximo a nivel nacional para que pueda ser contrastado con los valores promedio a nivel del área de consulta y a nivel de región (Caribe, Amazonas, Andes, Pacífico y Orinoquia). Adicionalmente, los valores de los mapas se pueden contrastar con los valores máximos y mínimos de riqueza inferida para los departamentos que hacen parte de la región a la que pertenece el área de consulta. En el geovisor se pueden ver los mapas de la riqueza (número de especies) inferida total y para especies endémicas y amenazadas en el área de consulta.
+<br /><br />
+<ul class="ul-padding-info-text">
+  <li>
+  Nota aclaratoria: Al ser un indicador calculado a partir de modelos de distribución de especies, es importante considerar que el número de especies reportado corresponde a un número potencial que se relaciona con la presencia probable de las especies en respuesta a las condiciones climáticas idóneas, más no de hábitat o de otro tipo de interacciones bióticas que determinan la presencia real de las especies. Mayor información puede ser consultada en biomodelos.humboldt.org.co o comunicarse directamente por correo electrónico a <a href="mailto:biomodelos@humboldt.org.co" target="_blank" rel="noopener noreferrer" style={{ color: #51b4c1 }}> biomodelos@humboldt.org.co </a>. Mapas de las especies usadas pueden ser consultados a través de BioModelos (<a href="http://biomodelos.humboldt.org.co/" target="_blank" rel="noopener noreferrer"style={{ color: #51b4c1 }}>http://biomodelos.humboldt.org.co/</a>).
+  </li>
+</ul>
+<br /><br />
+`;
+
 export const BiomesText = (
   <>
     Un bioma es una región que presenta condiciones similares en cuanto a sus características
@@ -286,179 +300,5 @@ export const BioticRegionsText = (
     >
       {' Geonetwork IAvH.'}
     </a>
-  </>
-);
-
-export const SpeciesRecordsGapsText = (
-  <>
-    {'El Análisis de Vacíos en Biodiversidad Continental para Colombia (AVBCC) '
-      + 'permite identificar las áreas en el país que cuentan con datos primarios '
-      + 'de biodiversidad disponibles en bases de datos como '}
-    <a
-      href="https://sibcolombia.net/"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ color: '#51b4c1' }}
-    >
-      SiB Colombia
-    </a>
-    {' y '}
-    <a
-      href="https://www.gbif.org/es/country/CO/summary"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ color: '#51b4c1' }}
-    >
-      GBIF
-    </a>
-    {'. Pero a la vez permite identificar los sitios con información faltante y por '
-      + 'ende los sitios en los cuales muestreos adicionales mejorarán el conocimiento '
-      + 'en biodiversidad. Esta aproximación se realiza calculando tres componentes: '
-      + 'i. Concentración de los datos en el espacio geográfico a partir de un cálculo '
-      + 'de densidad de registros, ii) Representatividad ambiental  siguiendo la '
-      + 'metodología propuesta por Aguiar et al. (2020) que consiste en modelar los '
-      + 'registros de especies sobre variables bioclimáticas; y iii) Complementariedad '
-      + 'de la riqueza de especies a partir de la presencia de especies en celdas de '
-      + 'kilómetro cuadrado y las estimaciones no paramétricas de Jackknife de primer '
-      + 'orden. La ruta metodológica hace parte de la propuesta de García Márquez et al. '
-      + '(2012) para la estimación de un índice espacial de los registros de especies. '}
-    <br />
-    {'Cada uno de los componentes resulta en un mapa con valores entre 0 y 1, siendo '
-      + '1 un sector bien representado, y 0 las áreas poco representadas o con mayor '
-      + 'vacíos de información. Y el índice integrado AVBCC se obtiene de promediar '
-      + 'los tres componentes usando herramientas de sistemas de información geográfica.'}
-    <br />
-    <br />
-    { 'El mapa de vacíos se encuentra disponible en el portal de datos geográficos '
-      + ' del Instituto (GeoNetwork) en formato de raster y se puede acceder al mismo '
-      + 'por medio del siguiente enlace. Todos los análisis se hicieron en el paquete '
-      + 'estadístico R, y las rutinas que se emplearon se encuentran disponibles en GitHUB '
-      + 'en el siguiente'}
-    {' '}
-    <a
-      href="https://github.com/crcruzr/Gap-selection-Index--GSI"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ color: '#51b4c1' }}
-    >
-      enlace
-    </a>
-    {'. Todos los análisis se hicieron en el paquete estadístico R, y las rutinas que se '
-    + 'emplearon se encuentran disponibles en GitHUB en el siguiente'}
-    <a
-      href="https://github.com/crcruzr/Gap-selection-Index--GSI"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ color: '#51b4c1' }}
-    >
-      enlace
-    </a>
-    .
-    <br />
-    <br />
-    Al momento de interpretar los valores del IHEH se debe tener en cuenta que:
-    <ul className="ul-padding-info-text">
-      <li>
-        { 'Los registros obtenidos para el presente análisis fueron descargados '
-          + 'en el primer trimestre del 2021. A dicho conjunto de datos se les aplicaron'
-          + 'rutinas de verificación geográfica y taxonómica que pueden ser consultadas '
-          + 'en los siguientes enlaces: '}
-        <li>
-          <a
-            href="https://github.com/LBAB-Humboldt/workFlow/blob/master/verifTax'.R"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: '#51b4c1' }}
-          >
-            Verificación Geográfica
-          </a>
-        </li>
-        <li>
-          <a
-            href="https://github.com/LBAB-Humboldt/workFlow/blob/master/verifGeo'.R"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: '#51b4c1' }}
-          >
-            Verificación Taxonómica
-          </a>
-        </li>
-      </li>
-      <li>
-        { 'La información obtenida en el presente análisis no cuantifica el nivel de sesgo '
-          + 'de la información obtenida, dado que el número de registros presente en un sector '
-          + 'puede estar influenciado por su cercanía a vías, ríos u otras unidades político-administrativas.'}
-      </li>
-    </ul>
-  </>
-);
-
-export const NumberOfSpeciesText = (
-  <>
-    {'Los mapas de riqueza inferida (total, endémicas, amenazadas e invasoras) representan el '
-      + 'número de especies que potencialmente se encuentran en un área particular, y es calculada '
-      + 'a partir de los modelos de distribución de especies siguiendo protocolos implementados en '}
-    <a
-      href="https://github.com/LBAB-Humboldt/modeling"
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{ color: '#51b4c1' }}
-    >
-      BioModelos
-    </a>
-    {'  (Velásquez-Tibatá et al. 2019). Los mapas de riqueza de especies presentan valores desde 1 '
-      + 'hasta n, dependiendo de la concentración de especies que se puedan encontrar en celdas de 1km2. '
-      + 'Este tamaño de celda corresponde a las variables climáticas de WorldClim (Fick & Hijmans 2017) '
-      + 'usadas durante el modelamiento.'}
-    <br />
-    { 'Los mapas fueron estimados para la extensión de  Colombia tomando como base 5808 BioModelos de '
-      + 'especies en el programa R Cran (R Core Team 2018). El mapa de riqueza total de especies fue obtenido '
-      + 'sumando los 5808 BioModelos haciendo un apilado de mapas. Para el caso de la riqueza de especies '
-      + 'amenazadas se incluyeron aquellas especies categorizadas como En peligro crítico de extinción (CR), '
-      + 'En peligro de extinción (EN) y Vulnerable (VU) según la UICN (2018, https://www.iucnredlist.org/). '
-      + 'Para las especies invasoras se tomaron 23 especies de plantas y se modelaron siguiendo la metodología '
-      + 'descrita por Salgado-Negret et al. (Sometido), dichas especies hacen parte de los listados nacionales '
-      + 'de invasoras (Cárdenas-López et al., 2010). En el caso de las especies endémicas se subagruparon '
-      + 'considerando los listados nacionales de especies publicados a través del Sistema de Información sobre '
-      + 'Biodiversidad de Colombia (SiB Colombia) y se unieron con los mapas disponibles en el portal de la UICN '
-      + '(González et al. [2018] 2019).'}
-    <br />
-    {' Estos mapas de riqueza presentan el valor máximo a nivel nacional para que pueda ser contrastado con los '
-    + 'valores promedio a nivel del área de consulta y a nivel de región (Caribe, Amazonas, Andes, Pacífico y '
-    + 'Orinoquia). Adicionalmente, los valores de los mapas se pueden contrastar con los valores máximos y mínimos '
-    + 'de riqueza inferida para los departamentos que hacen parte de la región a la que pertenece el área de consulta. '
-    + 'En el geovisor se pueden ver los mapas de la riqueza (número de especies) inferida total y para especies '
-    + 'endémicas y amenazadas en el área de consulta. '}
-    <ul className="ul-padding-info-text">
-      <li>
-        { 'Nota aclaratoria: Al ser un indicador calculado a partir de modelos de distribución de especies, es '
-        + 'importante considerar que el número de especies reportado corresponde a un número potencial que se '
-        + 'relaciona con la presencia probable de las especies en respuesta a las condiciones climáticas idóneas, '
-        + 'más no de hábitat o de otro tipo de interacciones bióticas que determinan la presencia real de las especies. '
-        + 'Mayor información puede ser consultada en biomodelos.humboldt.org.co o comunicarse directamente por correo '
-        + 'electrónico a '}
-        <a
-          href="mailto:biomodelos@humboldt.org.co"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#51b4c1' }}
-        >
-          biomodelos@humboldt.org.co
-        </a>
-        {'. Mapas de las especies usadas pueden ser consultados a través de '
-        + 'BioModelos ('}
-        <a
-          href="http://biomodelos.humboldt.org.co/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: '#51b4c1' }}
-        >
-          http://biomodelos.humboldt.org.co/
-        </a>
-        { '). '}
-        <br />
-        <br />
-      </li>
-    </ul>
   </>
 );
