@@ -24,7 +24,7 @@ const CardManager = ({ cardsData }) => (
 );
 
 CardManager.propTypes = {
-  cardsData: PropTypes.arrayOf({ ...Card.propTypes }).isRequired,
+  cardsData: PropTypes.arrayOf(PropTypes.shape({ ...Card.propTypes })).isRequired,
 };
 
 export default CardManager;
