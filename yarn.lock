@@ -7449,7 +7449,6 @@ __metadata:
     react-json-to-csv: ^1.0.4
     react-leaflet: 2.7.0
     react-leaflet-draw: 0.19.0
-    react-masonry-component: 6.2.1
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
     react-spring: ^9.1.2
@@ -20758,22 +20757,6 @@ fsevents@^1.2.7:
   version: 3.0.4
   resolution: "react-lifecycles-compat@npm:3.0.4"
   checksum: 82176a55ef7526414d770d5e07dc1d28b4c7f20281f22c6f53f3a98df9dbbb5d70c94bebee57b4ea8ccc2eee430b907ca7b564a42fbdd0ed21e7c43bfee35404
-  languageName: node
-  linkType: hard
-
-"react-masonry-component@npm:6.2.1":
-  version: 6.2.1
-  resolution: "react-masonry-component@npm:6.2.1"
-  dependencies:
-    create-react-class: ^15.6.2
-    element-resize-detector: ^1.1.9
-    imagesloaded: ^4.0.0
-    lodash: ^4.17.4
-    masonry-layout: ^4.2.0
-    prop-types: ^15.5.8
-  peerDependencies:
-    react: ^0.14.0 || ^15.0.0-0 || ^16.0.0-0
-  checksum: 2c563f9c4d80cc183e9f724575158b9c7e07ea6885d7305b47f3c4774a187fae8b0981242f82c476c153a8b5dd298f4029822f5ca3eb655a7046dd95247d49f9
   languageName: node
   linkType: hard
 
