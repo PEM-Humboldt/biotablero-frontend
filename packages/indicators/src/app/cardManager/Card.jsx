@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import LinkIcon from './URLIcon';
@@ -6,16 +6,22 @@ import OpenIcon from '../../components/OpenIcon';
 import ExpandedCard from './ExpandedCard';
 
 const Card = (props) => {
-  const { item, expandClick, isExpanded } = props;
+  const { item, expandClick, isExpanded, wasExpanded } = props;
 
   if (isExpanded) {
     return <ExpandedCard item={item} expandClick={expandClick} />;
   }
 
   const { id, title, target, lastUpdate, scale, externalLink } = item;
+  const cardRef = useRef();
+  useEffect(() => {
+    if (wasExpanded) {
+      cardRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [wasExpanded]);
 
   return (
-    <div id={id} className="indicatorCard">
+    <div id={id} className={`indicatorCard${wasExpanded ? ' no-transition' : ''}`} ref={cardRef}>
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">
@@ -48,6 +54,7 @@ Card.propTypes = {
   item: ExpandedCard.propTypes.item.isRequired,
   expandClick: PropTypes.func,
   isExpanded: PropTypes.bool.isRequired,
+  wasExpanded: PropTypes.bool.isRequired,
 };
 
 Card.defaultProps = {

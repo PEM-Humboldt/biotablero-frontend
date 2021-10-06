@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Masonry from 'react-masonry-component';
 import PropTypes from 'prop-types';
 
@@ -13,8 +13,14 @@ const masonryOptions = {
 
 const CardManager = ({ cardsData }) => {
   const [expanded, setExpanded] = useState(null);
+  const prevExpanded = useRef();
+
+  useEffect(() => {
+    prevExpanded.current = expanded;
+  }, [expanded]);
 
   const isExpanded = (elem) => expanded?.id === elem.id;
+  const wasExpanded = (elem) => prevExpanded?.current?.id === elem.id;
 
   return (
     <>
@@ -25,6 +31,7 @@ const CardManager = ({ cardsData }) => {
               key={card.id}
               item={card}
               isExpanded={isExpanded(card)}
+              wasExpanded={wasExpanded(card)}
               expandClick={() => {
                 if (isExpanded(card)) setExpanded(null);
                 else setExpanded(card);

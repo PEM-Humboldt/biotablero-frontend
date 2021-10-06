@@ -22,10 +22,8 @@ const ExpandedCard = ({ item, expandClick }) => {
   } = item;
   const cardRef = useRef();
   useEffect(() => {
-    // setTimeout(() => {
     cardRef.current.scrollIntoView({ behavior: 'smooth' });
-    // }, 250);
-  });
+  }, []);
 
   return (
     <div id={id} className="indicatorCard expandedCard" ref={cardRef}>
