@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import LinkIcon from './URLIcon';
@@ -20,9 +20,15 @@ const ExpandedCard = ({ item, expandClick }) => {
     ebv = [],
     source = '',
   } = item;
+  const cardRef = useRef();
+  useEffect(() => {
+    // setTimeout(() => {
+    cardRef.current.scrollIntoView({ behavior: 'smooth' });
+    // }, 250);
+  });
 
   return (
-    <div className="indicatorCard expandedCard">
+    <div id={id} className="indicatorCard expandedCard" ref={cardRef}>
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">

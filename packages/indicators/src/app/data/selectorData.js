@@ -54,6 +54,17 @@ const cardsData = [
     lastUpdate: '1938 - 2015',
     scale: 'Nacional, regional',
     externalLink: './Indicadores',
+    goals: ['ODS 13', 'ODS 12', 'POST 2020 10'],
+    periodicity: 'cada 5 años',
+    use: 'Indicadore para la evaluación sobre la biodiversodad de los países de la comunidad andina. (Documentos normaticos y reportes, NBSAP)',
+    description: `La representatividad ecológica de las áreas protegidas, ya sean privadas o públicas, es un elemento importante para asegurar que los esquemas de conservación in situ están acordes con las prioridades y objetivos de conservación. El análisis de la representatividad de las áreas protegidas y la evaluación del avance realizado por los países en la conservación de áreas representativas de sus ecosistemas, apoyarán el establecimiento de mecanismos de coordinación para la gestión de ecosistemas comunes, el fortalecimiento de la administración de las áreas protegidas transfronterizas existentes, y la colaboración entre los sistemas nacionales de áreas protegidas.
+
+    El indicador mide dos aspectos: 1. Variaciones temporales en la superficie ocupada por los sistemas de áreas protegidas respecto a la superficie total del territorio. 2. Porcentaje de representación de los ecosistemas en las áreas protegidas, en un periodo de tiempo definido.`,
+    requirements:
+      'Requiere una case cartográfica regional de áreas protegidas que puede generarse a partor de las bases de datos nacionales.',
+    ebv: ['Ecosistemas', 'Poblaciones'],
+    source:
+      'Van  der  Hammen,  T.  1995.  Global  Change,  Biodiversity,  and  Conservation  of  Neotropical  montane Forests. In. S. P. Churchill, H. Baslev, E. Forero & J. Luteyn (eds.). Biodiversity and Conservation of Neotropical Montane Forests. New York Botanical Garden. NY. USA.',
   },
   {
     id: '6',
@@ -81,6 +92,27 @@ const cardsData = [
     lastUpdate: '',
     scale: 'Nacional, regional',
     externalLink: './Indicadores',
+  },
+  {
+    id: '9',
+    title:
+      '2Representatividad de los biomas andinos en los sistemas nacionales de áreas protegidas',
+    target:
+      '2Evaluar la representatividad de la biodiversidad a escala ecosistémica en los sistemas nacionales de áreas protegidas, y su evolución temporal',
+    lastUpdate: '2010 - 2015',
+    scale: 'Nacional, regional',
+    externalLink: './Indicadores',
+    goals: ['ODS 13', 'ODS 12', 'POST 2020 10'],
+    periodicity: 'cada 5 años',
+    use: 'Indicadore para la evaluación sobre la biodiversodad de los países de la comunidad andina. (Documentos normaticos y reportes, NBSAP)',
+    description: `La representatividad ecológica de las áreas protegidas, ya sean privadas o públicas, es un elemento importante para asegurar que los esquemas de conservación in situ están acordes con las prioridades y objetivos de conservación. El análisis de la representatividad de las áreas protegidas y la evaluación del avance realizado por los países en la conservación de áreas representativas de sus ecosistemas, apoyarán el establecimiento de mecanismos de coordinación para la gestión de ecosistemas comunes, el fortalecimiento de la administración de las áreas protegidas transfronterizas existentes, y la colaboración entre los sistemas nacionales de áreas protegidas.
+
+    El indicador mide dos aspectos: 1. Variaciones temporales en la superficie ocupada por los sistemas de áreas protegidas respecto a la superficie total del territorio. 2. Porcentaje de representación de los ecosistemas en las áreas protegidas, en un periodo de tiempo definido.`,
+    requirements:
+      'Requiere una case cartográfica regional de áreas protegidas que puede generarse a partor de las bases de datos nacionales.',
+    ebv: ['Ecosistemas', 'Poblaciones'],
+    source:
+      'Van  der  Hammen,  T.  1995.  Global  Change,  Biodiversity,  and  Conservation  of  Neotropical  montane Forests. In. S. P. Churchill, H. Baslev, E. Forero & J. Luteyn (eds.). Biodiversity and Conservation of Neotropical Montane Forests. New York Botanical Garden. NY. USA.',
   },
 ];
 
