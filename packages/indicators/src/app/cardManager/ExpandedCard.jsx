@@ -46,27 +46,32 @@ const ExpandedCard = ({ item, expandClick }) => {
         </div>
       </div>
       <h2>{lastUpdate}</h2>
-      <h3>OBJETIVO - {id}</h3>
-      <h4>{target}</h4>
-      <br />
-      <h3>ESCALA</h3>
-      <h4>{scale}</h4>
-      <h3>METAS</h3>
-      <h4>{goals.join('\n')}</h4>
-      <h3>PERIODICIDAD</h3>
-      <h4>{periodicity}</h4>
-      <h3>CONTEXTO DE USO</h3>
-      <h4>{use}</h4>
-      <h3>DESCRIPCIÓN DEL INDICADOR</h3>
-      <h4> {description} </h4>
-      <h3>REQUERIMIENTO DE INFORMACIÓN PARA SI CÁLCULO</h3>
-      <h4>{requirements}</h4>
-      <br />
-      <h4>
-        <b>VEBs:</b> {ebv.join(',')}
-      </h4>
-      <h3>FUENTE</h3>
-      <h4>{source}</h4>
+      <div className="spliter">
+        <div className="colsm">
+          <h3>OBJETIVO - {id}</h3>
+          <h4>{target}</h4>
+          <h3>ESCALA</h3>
+          <h4>{scale}</h4>
+          <h3>METAS</h3>
+          <h4>{goals.join('\n')}</h4>
+          <h3>PERIODICIDAD</h3>
+          <h4>{periodicity}</h4>
+          <h3>CONTEXTO DE USO</h3>
+          <h4>{use}</h4>
+        </div>
+        <div className="colbg">
+          <h3>DESCRIPCIÓN DEL INDICADOR</h3>
+          <h4> {description} </h4>
+          <h3>REQUERIMIENTO DE INFORMACIÓN PARA SI CÁLCULO</h3>
+          <h4>{requirements}</h4>
+          <br />
+          <h4>
+            <b>VEBs:</b> {ebv.join(',')}
+          </h4>
+          <h3>FUENTE</h3>
+          <h4>{source}</h4>
+        </div>
+      </div>
     </div>
   );
 };

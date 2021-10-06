@@ -49,6 +49,7 @@
   gap: 10px;
   border-bottom: 1px solid #2a363b;
   padding-bottom: 15px;
+  justify-content: space-between;
 }
 
 .card2 h3 {
@@ -77,7 +78,7 @@
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border-radius: 5%;
+  border-radius: 15px;
 }
 
 .indicatorCard.no-transition {
@@ -85,13 +86,13 @@
 }
 
 .expandedCard {
-  width: 1380px;
-  border-radius: 1%;
+  min-width: 300px;
+  width: calc(100% - 75px);
   transition: none;
 }
 
 .indicatorCard:hover {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 7px rgba(0, 0, 0, 0.22);
   background-color: #fecea8;
 }
 
@@ -124,6 +125,7 @@
   text-align: left;
   font-style: normal;
   font-family: 'Lato', sans-serif;
+  margin-bottom: 0;
 }
 
 .indicatorCard h3 {
@@ -131,7 +133,8 @@
   font-size: 14px;
   color: #d49077;
   font-family: 'Lato', sans-serif;
-  padding: 0px 0px 0px 5px;
+  padding-left: 5px;
+  margin-top: 10px;
 }
 
 .indicatorCard h4 {
@@ -179,4 +182,32 @@
   border-color: transparent;
   margin-top: -5px;
   cursor: pointer;
+}
+
+.expandedCard h1 {
+  max-width: 500px;
+}
+
+@media (min-width: 1010px) {
+  .spliter {
+    display: inline-flex;
+    column-gap: 15px;
+  }
+
+  .colbg {
+    padding: 0 45px 0 15px;
+    border-left: 1px solid rgba(238, 238, 237, 255);
+  }
+}
+
+@media (min-width: 1352px) {
+  .expandedCard {
+    width: 1020px;
+  }
+}
+
+@media (min-width: 1804px) {
+  .expandedCard {
+    width: 1380px;
+  }
 }

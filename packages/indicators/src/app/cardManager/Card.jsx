@@ -43,7 +43,6 @@ const Card = (props) => {
       <h2>{lastUpdate}</h2>
       <h3>OBJETIVO - {id}</h3>
       <h4>{target}</h4>
-      <br />
       <h3>ESCALA</h3>
       <h4>{scale}</h4>
     </div>
