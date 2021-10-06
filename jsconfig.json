@@ -6,5 +6,5 @@
       "*": ["*"]
     }
   },
-  "exclude": ["node_modules", "static"]
+  "exclude": ["node_modules", "static", "build", "packages/**/node_modules"]
 }
