@@ -48,7 +48,7 @@ const ExpandedCard = ({ item, expandClick }) => {
       <h2>{lastUpdate}</h2>
       <div className="spliter">
         <div className="colsm">
-          <h3>OBJETIVO - {id}</h3>
+          <h3>OBJETIVO</h3>
           <h4>{target}</h4>
           <h3>ESCALA</h3>
           <h4>{scale}</h4>
