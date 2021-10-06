@@ -8,8 +8,8 @@ const CloseIcon = ({ color, fontSize }) => (
     <line
       id="Line_1"
       data-name="Line 1"
-      x1="12"
-      transform="translate(8.5 14.5)"
+      x1="17"
+      transform="translate(6 14.5)"
       fill="none"
       stroke={color}
       strokeLinecap="round"
