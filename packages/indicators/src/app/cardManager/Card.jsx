@@ -3,12 +3,16 @@ import PropTypes from 'prop-types';
 
 import LinkIcon from './URLIcon';
 import OpenIcon from '../../components/OpenIcon';
+import ExpandedCard from './ExpandedCard';
 
 const Card = (props) => {
-  const {
-    item: { id, title, target, lastUpdate, scale, externalLink },
-    expandClick,
-  } = props;
+  const { item, expandClick, isExpanded } = props;
+
+  if (isExpanded) {
+    return <ExpandedCard item={item} expandClick={expandClick} />;
+  }
+
+  const { id, title, target, lastUpdate, scale, externalLink } = item;
 
   return (
     <div id={id} className="indicatorCard">
@@ -41,15 +45,9 @@ const Card = (props) => {
 };
 
 Card.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string,
-    target: PropTypes.string,
-    lastUpdate: PropTypes.string,
-    scale: PropTypes.string,
-    externalLink: PropTypes.string,
-  }).isRequired,
+  item: ExpandedCard.propTypes.item.isRequired,
   expandClick: PropTypes.func,
+  isExpanded: PropTypes.bool.isRequired,
 };
 
 Card.defaultProps = {

@@ -3,7 +3,6 @@ import Masonry from 'react-masonry-component';
 import PropTypes from 'prop-types';
 
 import Card from './cardManager/Card';
-import ExpandedCard from './cardManager/ExpandedCard';
 
 const masonryOptions = {
   transitionDuration: 0,
@@ -17,16 +16,21 @@ const CardManager = ({ cardsData }) => {
 
   const isExpanded = (elem) => expanded?.id === elem.id;
 
-  const expandedItem = cardsData.find(isExpanded);
   return (
     <>
-      <ExpandedCard item={expandedItem} expandClick={() => setExpanded(null)} />
       <Masonry options={masonryOptions} enableResizableChildren>
         {cardsData.map((card) => {
-          if (!isExpanded(card)) {
-            return <Card key={card.id} item={card} expandClick={() => setExpanded(card)} />;
-          }
-          return '';
+          return (
+            <Card
+              key={card.id}
+              item={card}
+              isExpanded={isExpanded(card)}
+              expandClick={() => {
+                if (isExpanded(card)) setExpanded(null);
+                else setExpanded(card);
+              }}
+            />
+          );
         })}
       </Masonry>
     </>
@@ -34,7 +38,7 @@ const CardManager = ({ cardsData }) => {
 };
 
 CardManager.propTypes = {
-  cardsData: PropTypes.arrayOf(ExpandedCard.propTypes.item).isRequired,
+  cardsData: PropTypes.arrayOf(Card.propTypes.item).isRequired,
 };
 
 export default CardManager;

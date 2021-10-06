@@ -81,24 +81,9 @@
 }
 
 .expandedCard {
-  background-color: #fff;
-  margin: 10px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   width: 1380px;
   height: 500px;
   border-radius: 1%;
-  opacity: 1;
-  transition: all 1s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.expandedCard.noshow {
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  transition: all 1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .indicatorCard:hover {
@@ -106,8 +91,7 @@
   background-color: #fecea8;
 }
 
-.indicatorCard a,
-.expandedCard a {
+.indicatorCard a {
   border-radius: 50%;
   border: 1px solid #e84a5f;
   height: 30px;
@@ -116,8 +100,7 @@
   line-height: 40px;
 }
 
-.indicatorCard h1,
-.expandedCard h1 {
+.indicatorCard h1 {
   font-size: 24px;
   text-align: left;
   flex: 1;
@@ -126,8 +109,7 @@
   letter-spacing: 1px;
 }
 
-.indicatorCard h2,
-.expandedCard h2 {
+.indicatorCard h2 {
   font-size: 20px;
   color: #107e7c;
   padding-top: 10px;
@@ -136,8 +118,7 @@
   font-family: 'Lato', sans-serif;
 }
 
-.indicatorCard h3,
-.expandedCard h3 {
+.indicatorCard h3 {
   text-align: left;
   font-size: 14px;
   color: #d49077;
@@ -145,8 +126,7 @@
   padding: 0px 0px 0px 5px;
 }
 
-.indicatorCard h4,
-.expandedCard h4 {
+.indicatorCard h4 {
   text-align: left;
   font-size: 14px;
   color: #707070;

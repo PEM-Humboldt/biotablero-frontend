@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import LinkIcon from './URLIcon';
 import CloseIcon from '../../components/CloseIcon';
 
-const Card = ({ item, expandClick }) => {
-  if (!item) {
-    return <div className="expandedCard noshow" />;
-  }
+const ExpandedCard = ({ item, expandClick }) => {
   const {
     id,
     title,
@@ -25,7 +22,7 @@ const Card = ({ item, expandClick }) => {
   } = item;
 
   return (
-    <div className="expandedCard">
+    <div className="indicatorCard expandedCard">
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">
@@ -70,7 +67,7 @@ const Card = ({ item, expandClick }) => {
   );
 };
 
-Card.propTypes = {
+ExpandedCard.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string,
@@ -84,15 +81,14 @@ Card.propTypes = {
     ebv: PropTypes.arrayOf(PropTypes.string),
     source: PropTypes.string,
     requirements: PropTypes.string,
-
     externalLink: PropTypes.string,
   }),
   expandClick: PropTypes.func,
 };
 
-Card.defaultProps = {
+ExpandedCard.defaultProps = {
   item: null,
   expandClick: () => {},
 };
 
-export default Card;
+export default ExpandedCard;
