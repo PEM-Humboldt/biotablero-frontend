@@ -129,6 +129,9 @@ const match = {
       'min_threshold',
       'max_threshold',
       'area',
+      'legend-from',
+      'legend-middle',
+      'legend-to',
     ],
   },
   functionalDryForest: {
