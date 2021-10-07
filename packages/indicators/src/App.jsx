@@ -5,7 +5,7 @@ import CardManager from './app/CardManager';
 import cardsData from './app/data/selectorData';
 import DownloadIcon from './app/DownloadIcon';
 import OpenIcon from './components/OpenIcon';
-import CloseIcon from './app/CloseIcon';
+import CloseIcon from './components/CloseIcon';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
