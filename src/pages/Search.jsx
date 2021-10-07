@@ -655,6 +655,35 @@ class Search extends Component {
           name: 'Conectividad de áreas protegidas - Humedales',
         };
         break;
+      case 'speciesRecordsGaps':
+        isRaster = true;
+        request = () => RestAPI.requestGapsLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        try {
+          const { min, max } = await RestAPI.requestGapsLayerThresholds(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          newActiveLayer = {
+            id: 'speciesRecordsGaps',
+            name: 'Vacios en registros de especies',
+            legend: {
+              from: formatNumber(max * 100, 0),
+              to: formatNumber(min * 100, 0),
+              colors: [
+                matchColor('richnessGaps')('legend-to'),
+                matchColor('richnessGaps')('legend-middle'),
+                matchColor('richnessGaps')('legend-from'),
+              ],
+            },
+          };
+        } catch {
+          this.reportDataError();
+          return;
+        }
+      break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -697,8 +726,10 @@ class Search extends Component {
               legend: {
                 from: min.toString(),
                 to: max.toString(),
-                fromColor: matchColor('richnessNos')('legend-from'),
-                toColor: matchColor('richnessNos')('legend-to'),
+                colors: [
+                  matchColor('richnessNos')('legend-from'),
+                  matchColor('richnessNos')('legend-to'),
+                ],
               },
             };
           } catch {
@@ -993,10 +1024,9 @@ class Search extends Component {
           <div className="title">{activeLayer}</div>
           {legend && (
             <GradientLegend
-              from={legend.from}
-              to={legend.to}
-              fromColor={legend.fromColor}
-              toColor={legend.toColor}
+              fromValue={legend.from}
+              toValue={legend.to}
+              colors={legend.colors}
             />
           )}
         </div>
