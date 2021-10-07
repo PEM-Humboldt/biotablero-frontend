@@ -7,32 +7,33 @@ const Gradient = styled.div`
   height: 12px;
   width: 95%;
   margin: 0 auto;
-  background: linear-gradient(0.25turn, ${({ fromColor }) => fromColor}, ${({ toColor }) => toColor});
+  background: linear-gradient(
+    0.25turn,
+    ${({ colors }) => colors.join() }
+  );
 `;
 
 const GradientLegend = (props) => {
   const {
-    from,
-    to,
-    fromColor,
-    toColor,
+    fromValue,
+    toValue,
+    colors,
   } = props;
   return (
     <div className="gradientLegend">
-      <Gradient fromColor={fromColor} toColor={toColor} />
+      <Gradient colors={colors} />
       <div className="text">
-        <span>{from}</span>
-        <span>{to}</span>
+        <span>{fromValue}</span>
+        <span>{toValue}</span>
       </div>
     </div>
   );
 };
 
 GradientLegend.propTypes = {
-  from: PropTypes.string.isRequired,
-  to: PropTypes.string.isRequired,
-  fromColor: PropTypes.string.isRequired,
-  toColor: PropTypes.string.isRequired,
+  fromValue: PropTypes.string.isRequired,
+  toValue: PropTypes.string.isRequired,
+  colors: PropTypes.array.isRequired,
 };
 
 export default GradientLegend;
