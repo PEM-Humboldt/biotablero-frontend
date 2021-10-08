@@ -140,6 +140,9 @@ export default {
     '#abc074',
     '#717e4f',
     '#fcbd64',
+    '#2080a2',
+    '#eba62a',
+    '#ec5e41',
   ],
   functionalDryForest: [
     '#b74777',

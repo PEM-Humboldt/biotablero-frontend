@@ -714,6 +714,40 @@ class RestAPI {
     });
   }
 
+  /**
+   * Get the layer of gaps section of richness
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestGapsLayer(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `richness/gaps/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the threshold values for the layer of gaps section of richness
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestGapsLayerThresholds(areaType, areaId) {
+    return RestAPI.makeGetRequest(
+      `richness/gaps/layer/thresholds?areaType=${areaType}&areaId=${areaId}`,
+    );
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
