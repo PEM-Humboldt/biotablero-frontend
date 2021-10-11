@@ -670,8 +670,8 @@ class Search extends Component {
             id: 'speciesRecordsGaps',
             name: 'Vacios en registros de especies',
             legend: {
-              from: formatNumber(max * 100, 0),
-              to: formatNumber(min * 100, 0),
+              from: Math.round(max * 100).toString(),
+              to: Math.round(min * 100).toString(),
               colors: [
                 matchColor('richnessGaps')('legend-to'),
                 matchColor('richnessGaps')('legend-middle'),
