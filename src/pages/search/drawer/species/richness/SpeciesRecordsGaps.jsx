@@ -28,6 +28,8 @@ const getLabelGaps = (key, areaType) => ({
   value: 'Promedio de vacios en el área de consulta',
   min: 'Mínimo del área de consulta',
   max: 'Máximo del área de consulta',
+  min_region: 'Mínimo por región biótica',
+  max_region: 'Máximo por región biótica',
   min_threshold: `Mínimo por ${areaTypeName(areaType)}`,
   max_threshold: `Máximo por ${areaTypeName(areaType)}`,
 }[key]
@@ -36,6 +38,8 @@ const getLabelGaps = (key, areaType) => ({
 const getLabelConcentration = (key) => ({
   min: 'Mínimo del área de consulta',
   max: 'Máximo del área de consulta',
+  min_region: 'Mínimo por región biótica',
+  max_region: 'Máximo por región biótica',
   min_threshold: 'Mínimo nacional',
   max_threshold: 'Máximo nacional',
   value: 'Promedio de representación en el área de consulta',
@@ -51,7 +55,8 @@ class SpeciesRecordsGaps extends React.Component {
       showInfoGraph: false,
       gaps: {},
       concentration: {},
-      message: 'loading',
+      messageGaps: 'loading',
+      messageConc: 'loading',
       selected: 'gaps',
     };
   }
@@ -68,22 +73,26 @@ class SpeciesRecordsGaps extends React.Component {
         if (this.mounted) {
           this.setState({
             gaps: this.transformData(res),
-            message: null,
+            messageGaps: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ messageGaps: 'no-data' });
+      });
 
     RestAPI.requestConcentration(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
             concentration: this.transformData(res),
-            message: null,
+            messageConc: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ messageConc: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -96,14 +105,17 @@ class SpeciesRecordsGaps extends React.Component {
    * @param {Object} rawData raw data from RestAPI
    */
    transformData = (rawData) => {
-    const { id, avg, ...limits } = rawData;
+    const { id, avg, ...limits } = rawData[0];
+    Object.keys(limits).forEach((key) => {
+      Object.defineProperty(limits, key, { value: Math.round(limits[key] * 100) });
+    });
     return {
       id,
       ranges: {
-        area: Math.max(limits.max, limits.max_threshold),
+        area: Math.max(limits.max, limits.max_threshold, limits.max_region),
       },
       markers: {
-        value: avg,
+        value: avg * 100,
       },
       measures: limits,
       title: '',
@@ -123,7 +135,8 @@ class SpeciesRecordsGaps extends React.Component {
     const { areaId } = this.context;
     const {
       showInfoGraph,
-      message,
+      messageGaps,
+      messageConc,
       gaps,
       concentration,
       selected,
@@ -153,7 +166,7 @@ class SpeciesRecordsGaps extends React.Component {
         </div>
         <div>
           <GraphLoader
-            message={message}
+            message={messageGaps}
             data={gaps}
             graphType="singleBullet"
             colors={matchColor('richnessGaps')}
@@ -164,7 +177,7 @@ class SpeciesRecordsGaps extends React.Component {
           />
         </div>
         <div className="richnessLegend">
-          {gaps.measures && Object.keys(gaps.measures).map((key) => (
+          {messageGaps === null && gaps.measures && Object.keys(gaps.measures).map((key) => (
             <LineLegend
               orientation="column"
               color={matchColor('richnessGaps')(key)}
@@ -174,13 +187,15 @@ class SpeciesRecordsGaps extends React.Component {
             </LineLegend>
 
           ))}
-          <LineLegend
-            orientation="column"
-            color={matchColor('richnessGaps')('value')}
-            key="value"
-          >
-            {getLabelGaps('value', areaId)}
-          </LineLegend>
+          {messageGaps === null && (
+            <LineLegend
+              orientation="column"
+              color={matchColor('richnessGaps')('value')}
+              key="value"
+            >
+              {getLabelGaps('value', areaId)}
+            </LineLegend>
+          )}
         </div>
         <br />
         <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>
@@ -190,7 +205,7 @@ class SpeciesRecordsGaps extends React.Component {
         </div>
         <div>
           <GraphLoader
-            message={message}
+            message={messageConc}
             data={concentration}
             graphType="singleBullet"
             colors={matchColor('richnessGaps')}
