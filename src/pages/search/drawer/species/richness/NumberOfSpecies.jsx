@@ -14,7 +14,7 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
-import { NumberOfSpeciesText } from 'pages/search/drawer/landscape/InfoTexts';
+import { NumberOfSpeciesText, NumberOfSpeciesTextHelper } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
@@ -255,11 +255,7 @@ class NumberOfSpecies extends React.Component {
           )
         )}
         <h3>
-          Los siguientes enlaces cambian la visualización de las gráficas entre riqueza
-          observada y/o inferida. Para escoger entre riqueza observada o inferida haga
-          clic en el texto correspondiente. Para ver la riqueza observada e inferida al
-          mismo tiempo desactivelas. En la sección de riqueza inferida puede hacer clic
-          en cada barra para visualizar el mapa de riqueza correspondiente.
+          {NumberOfSpeciesTextHelper}
         </h3>
         {showErrorMessage && (
           <div className="disclaimer">
