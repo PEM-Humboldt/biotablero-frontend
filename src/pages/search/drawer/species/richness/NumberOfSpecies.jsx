@@ -14,6 +14,7 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
+import { NumberOfSpeciesText, NumberOfSpeciesTextHelper } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
@@ -247,17 +248,14 @@ class NumberOfSpecies extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Número de especies"
-            description="Número de especies"
+            description={NumberOfSpeciesText}
             className="graphinfo2"
             collapseButton={false}
           />
           )
         )}
         <h3>
-          Los siguientes enlaces cambian las gráficas entre inferido, observado o ambas.
-          Haga click en cada barra para visualizar su mapa,
-          que corresponden a los datos inferidos.
+          {NumberOfSpeciesTextHelper}
         </h3>
         {showErrorMessage && (
           <div className="disclaimer">

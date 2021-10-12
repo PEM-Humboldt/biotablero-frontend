@@ -8,6 +8,7 @@ import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
+import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -141,8 +142,7 @@ class SpeciesRecordsGaps extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            name="Vacios"
-            description="Vacios"
+            description={SpeciesRecordsGapsText}
             className="graphinfo2"
             collapseButton={false}
           />
