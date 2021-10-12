@@ -255,9 +255,11 @@ class NumberOfSpecies extends React.Component {
           )
         )}
         <h3>
-          Los siguientes enlaces cambian las gráficas entre inferido, observado o ambas.
-          Haga click en cada barra para visualizar su mapa,
-          que corresponden a los datos inferidos.
+          Los siguientes enlaces cambian la visualización de las gráficas entre riqueza
+          observada y/o inferida. Para escoger entre riqueza observada o inferida haga
+          clic en el texto correspondiente. Para ver la riqueza observada e inferida al
+          mismo tiempo desactivelas. En la sección de riqueza inferida puede hacer clic
+          en cada barra para visualizar el mapa de riqueza correspondiente.
         </h3>
         {showErrorMessage && (
           <div className="disclaimer">
