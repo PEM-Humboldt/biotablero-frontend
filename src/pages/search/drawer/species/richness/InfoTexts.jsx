@@ -60,3 +60,5 @@ Al momento de interpretar los valores del AVBCC se debe tener en cuenta que:
 </ul>
 </p>
 `;
+
+export const NumberOfSpeciesTextHelper = 'Los siguientes enlaces cambian la visualización de las gráficas entre riqueza observada y/o inferida. Para escoger entre riqueza observada o inferida haga clic en el texto correspondiente. Para ver la riqueza observada e inferida al mismo tiempo desactivelas. En la sección de riqueza inferida puede hacer clic en cada barra para visualizar el mapa de riqueza correspondiente.';
