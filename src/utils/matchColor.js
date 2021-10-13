@@ -128,6 +128,8 @@ const match = {
       'max',
       'min_threshold',
       'max_threshold',
+      'min_region',
+      'max_region',
       'area',
       'legend-from',
       'legend-middle',
