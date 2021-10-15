@@ -17,9 +17,10 @@ const PointLegend = styled(Legend)`
     content: "";
     width: 12px;
     height: 12px;
-    margin-right: 5px;
+    margin-right: ${(props) => (props.marginRight ? props.marginRight : '5px')};
     border-radius: 6px;
     vertical-align: middle;
+    margin-left: ${(props) => (props.marginLeft ? props.marginLeft : '0')};
   }
 `;
 
@@ -44,7 +45,7 @@ const LineLegend = styled(Legend)`
     display: inline-block;
     content: "";
     width: 15px;
-    height: 8px;
+    height: 3px;
     margin-right: 5px;
     margin-bottom: 4px;
     border-bottom: 3px solid ${({ color }) => color};
@@ -52,8 +53,16 @@ const LineLegend = styled(Legend)`
   }
 `;
 
+const ThickLineLegend = styled(LineLegend)`
+  &:before {
+    border-bottom: 8px solid ${({ color }) => color};
+    height: 0px;
+  }
+`;
+
 const TextLegend = styled(Legend)`
   margin-right: 1px;
+  padding-bottom: 3px;
   color: ${({ color }) => color};
 
   &:before {
@@ -66,11 +75,27 @@ const TextLegend = styled(Legend)`
     margin-right: 5px;
     vertical-align: middle;
   }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:hover:before {
+    background: ${({ hoverImage }) => (hoverImage ? `url(${hoverImage}) no-repeat center` : '')};
+    background-size: 15px;
+    width: 15px;
+    height: 26px;
+  }
+
+  &.filtered {
+    border-bottom: 2px solid tomato;
+  }
 `;
 
 export {
   LegendColor,
   BorderLegendColor,
   LineLegend,
+  ThickLineLegend,
   TextLegend,
 };

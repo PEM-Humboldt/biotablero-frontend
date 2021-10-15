@@ -74,8 +74,8 @@ class Search extends Component {
 
   componentDidUpdate() {
     const { history } = this.props;
-    history.listen((loc, action) => {
-      if (loc.search === '' && action === 'POP') {
+    history.listen((location, action) => {
+      if (location.search === '' && (action === 'PUSH' || action === 'POP')) {
         this.handlerBackButton();
       }
     });
@@ -424,8 +424,10 @@ class Search extends Component {
         break;
       case 'numberOfSpecies': {
         const { activeLayer: { id: activeLayer } } = this.state;
-        if (activeLayer !== chartSection) {
-          this.switchLayer(`numberOfSpecies-${chartSection}`);
+        if (chartSection !== 'inferred') {
+          this.switchLayer('geofence');
+        } else if (activeLayer !== selectedKey) {
+          this.switchLayer(`numberOfSpecies-${selectedKey}`);
         }
       }
         break;

@@ -35,7 +35,7 @@ class StrategiesBox extends Component {
           className="titecositema"
           role="presentation"
         >
-          <div className="titeco2">
+          <div>
             <div>
               <b className="addedBioma">{biome}</b>
               <br />

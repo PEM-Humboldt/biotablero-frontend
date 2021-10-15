@@ -1688,6 +1688,14 @@ div[class*="eaRHYv"] {
 	display: table;
 }
 
+.disclaimer {
+	font-size: 12px;
+	padding: 3px 6px;
+	color: #ffffff;
+	background-color: #5db1d4;
+	margin: 0 30px 10px 15px;
+}
+
 .singleeco {
 	font-size: 16px;
 	margin-left: 5px;
@@ -1908,14 +1916,19 @@ div[class*="eaRHYv"] {
 	border: 1px solid;
 }
 
+.numberSP {
+  display: flex;
+  justify-content:space-between;
+}
+
 .nos-title {
-	margin: 0 30px;
-	line-height: 1;
+  margin-left: 30px;
+  line-height: 1.2;
+  color: #6f6f6f;
 }
 
 .nos-title b {
-	font-size: 11px;
-	font-weight: 400;
+  color: tomato;
 }
 
 .nos-title.legend {
@@ -1924,11 +1937,28 @@ div[class*="eaRHYv"] {
 }
 
 .nos-title.selected {
-	font-weight: 600;
+  color: #2a363b;
+  font-weight: 600;
+  margin-left: 15px;
+  border-left: 2px solid tomato;
+  padding-left: 14px;
+}
+
+.numberSP a {
+  margin-right: 10px;
+}
+
+.numberSP a:hover {
+  color: tomato;
 }
 
 .richnessLegend {
-	margin: 10px 0 8px 15px;
+  margin: 10px 0 5px 30px;
+}
+
+.richnessLegend p {
+  margin: 0;
+  margin-bottom: 2px;
 }
 
 .dpcLegend {
@@ -2324,9 +2354,6 @@ tr.row2table:nth-child(odd){
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-}
-
-.titeco2 { /* César */
 }
 
 .listSS {

@@ -88,6 +88,7 @@ class Species extends React.Component {
         label: {
           id: 'functionalDiversity',
           name: 'Diversidad Funcional',
+          disabled: true,
         },
         component: FunctionalDiversity,
         componentProps: {
