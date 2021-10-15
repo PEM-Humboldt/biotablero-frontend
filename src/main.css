@@ -19,6 +19,10 @@ body {
 	height: 100%;
 }
 
+.sr-only {
+    display: none;
+}
+
 .fullgrid {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
@@ -1148,6 +1152,62 @@ a#reset-filters {
           flex-flow: row;
 }
 
+.drawPAcc {
+	width: 100%;
+}
+
+.drawPAcc .MuiAccordionSummary-content svg {
+	width: 20px;
+	height: 20px;
+	color: #e84a5f;
+}
+
+.confirmButton {
+  position: absolute;
+  top: 143px;
+  left:10px;
+  background-color: #e84a5f;
+  color: #501e23;
+  z-index: 401;
+  display: block;
+  width: 30px;
+  height: 30px;
+  box-sizing: border-box;
+  padding: 5px;
+  border: none;
+}
+
+.confirmButton svg {
+	width: 19px;
+	height: 19px;
+}
+
+.confirmActions {
+  position: absolute;
+  font-weight: 400;
+  top: 143px;
+  left: 42px;
+  z-index: 401;
+  box-sizing: border-box;
+}
+
+.confirmActions li {
+  list-style: none;
+  display: inline-block;
+}
+
+.confirmActions li button {
+  background-color: #e84a5f;
+  color: #fff;
+  border: none;
+  height: 30px;
+  width: 100%;
+  border-left: 1px solid #AAA;
+  padding: 0 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
 .mapsTitle {
 	position: relative;
 	left: 45px;
@@ -1260,6 +1320,15 @@ overflow: auto;
   height: 65px;
 }
 
+.Indicadores {
+	background-image: url(images/indicadores.png);
+	-webkit-background-size: contain;
+	background-size: contain;
+	float: right;
+	width: 65px;
+	height: 65px;
+  }
+
 .Compensaciónambiental {
   background-image: url(images/compensaciones.png);
   -webkit-background-size: contain;
@@ -1336,7 +1405,6 @@ overflow: auto;
   color: #4a585f;
 }
 
-#geofences,
 #region {
     display: block !important;
     padding-top: 0;
@@ -1394,17 +1462,25 @@ overflow: auto;
 	background-color: #eeeeec;
 	-webkit-flex: 3 1 60%;
 					flex: 3 1 60%;
- -webkit-order: 1;
+ 	-webkit-order: 1;
 				 order: 1;
-  font-family: 'Roboto', sans-serif !important;
-  z-index: 0;
+  	font-family: 'Roboto', sans-serif !important;
+  	z-index: 0;
 }
 
 .leaflet-control-zoom a {
-  background-color: #e84a5f !important;
-  color: #fff !important;
-  font-weight: 300 !important;
-  border-radius: 0 !important;
+	background-color: #e84a5f !important;
+	color: #fff !important;
+	font-weight: 300 !important;
+	border-radius: 0 !important;
+}
+
+.leaflet-draw a {
+	background-color: #e84a5f !important;
+	color: #fff !important;
+	background-blend-mode: multiply;
+	font-weight: 400 !important;
+	border-radius: 0 !important;
 }
 
 .leaflet-bar {
@@ -1413,7 +1489,7 @@ overflow: auto;
 
 .selector-expanded > div:nth-child(1),
 #panel1-Geocerca > div:nth-child(1),
-#panel2 > div:nth-child(1),
+#draw-polygon > div:nth-child(1),
 #panel3 > div:nth-child(1) {
   font-size: 15px;
   background-color: #2a363b;
@@ -1423,7 +1499,7 @@ overflow: auto;
 
 #panel1-Geocerca > div:nth-child(1) svg,
 .selector-expanded > div:nth-child(1) svg,
-#panel2 > div:nth-child(1) svg,
+#draw-polygon > div:nth-child(1) svg,
 #panel3 > div:nth-child(1) svg {
   color: #e84a5f;
 }

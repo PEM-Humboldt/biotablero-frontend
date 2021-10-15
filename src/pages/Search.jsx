@@ -7,15 +7,14 @@ import React, { Component } from 'react';
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
+import Selector from 'pages/search/Selector';
 import Description from 'pages/search/SelectorData';
-import { constructDataForSearch } from 'utils/constructDataForSelector';
 import formatNumber from 'utils/format';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
-import Selector from 'components/Selector';
 
 /**
  * Get the label tooltip on the map
@@ -52,13 +51,14 @@ class Search extends Component {
       activeLayer: {},
       connError: false,
       layerError: false,
-      geofencesArray: [],
       areaList: [],
       layers: {},
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
       requestSource: null,
+      localPolygon: {},
+      drawPolygonEnabled: false,
       mapBounds: null,
       rasterUrl: '',
     };
@@ -109,7 +109,6 @@ class Search extends Component {
    */
   loadAreaList = () => {
     let tempAreaList;
-    let tempGeofencesArray;
     Promise.all([
       RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
@@ -125,9 +124,7 @@ class Search extends Component {
           { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
           { name: 'Ecosistemas estratégicos', data: se, id: 'se' },
         ];
-        tempGeofencesArray = constructDataForSearch(tempAreaList);
         this.setState({
-          geofencesArray: tempGeofencesArray,
           areaList: tempAreaList,
         }, () => {
           const {
@@ -660,6 +657,35 @@ class Search extends Component {
           name: 'Conectividad de áreas protegidas - Humedales',
         };
         break;
+      case 'speciesRecordsGaps':
+        isRaster = true;
+        request = () => RestAPI.requestGapsLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        try {
+          const { min, max } = await RestAPI.requestGapsLayerThresholds(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          newActiveLayer = {
+            id: 'speciesRecordsGaps',
+            name: 'Vacios en registros de especies',
+            legend: {
+              from: Math.round(max * 100).toString(),
+              to: Math.round(min * 100).toString(),
+              colors: [
+                matchColor('richnessGaps')('legend-to'),
+                matchColor('richnessGaps')('legend-middle'),
+                matchColor('richnessGaps')('legend-from'),
+              ],
+            },
+          };
+        } catch {
+          this.reportDataError();
+          return;
+        }
+      break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -702,8 +728,10 @@ class Search extends Component {
               legend: {
                 from: min.toString(),
                 to: max.toString(),
-                fromColor: matchColor('richnessNos')('legend-from'),
-                toColor: matchColor('richnessNos')('legend-to'),
+                colors: [
+                  matchColor('richnessNos')('legend-from'),
+                  matchColor('richnessNos')('legend-to'),
+                ],
               },
             };
           } catch {
@@ -788,12 +816,11 @@ class Search extends Component {
   }
 
   /**
-   * Load layer based on selection
+   * Load layer based on selection. If idLayer is null, just turn off all layers
    *
    * @param {String} idLayer Layer ID
-   * @param {Boolean} show whether to show or hide the layer
    */
-  loadSecondLevelLayer = (idLayer, show) => {
+  loadSecondLevelLayer = (idLayer) => {
     const { layers, requestSource } = this.state;
     if (requestSource) {
       requestSource.cancel();
@@ -810,16 +837,18 @@ class Search extends Component {
       return newState;
     });
 
+    if (!idLayer) {
+      return;
+    }
+
     if (layers[idLayer]) {
-      if (show) {
-        this.setArea(idLayer);
-      }
+      this.setArea(idLayer);
       this.setState((prevState) => {
         const newState = { ...prevState };
-        newState.layers[idLayer].active = show;
+        newState.layers[idLayer].active = true;
         return newState;
       });
-    } else if (show) {
+    } else {
       const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
       this.setState({ requestSource: source });
       this.setArea(idLayer);
@@ -893,6 +922,25 @@ class Search extends Component {
     }
   }
 
+  /**
+   * Loads polygon information
+   *
+   * @param {Object} polygon polygon to be searched
+   */
+  loadPolygonInfo = (polygon) => {
+    RestAPI.requestCustomPolygonData(polygon).catch(() => {});
+    this.setState((prev) => ({
+      drawPolygonEnabled: false,
+      layers: {
+        ...prev.layers,
+        polygon: {
+          active: true,
+          layer: L.polygon(polygon.latLngs, { fitBounds: true }),
+        },
+      },
+    }));
+  }
+
   /** ************************************* */
   /** LISTENER FOR BUTTONS ON LATERAL PANEL */
   /** ************************************* */
@@ -960,10 +1008,11 @@ class Search extends Component {
       layers,
       connError,
       layerError,
-      geofencesArray,
+      areaList,
       activeLayer: { name: activeLayer, legend },
       mapBounds,
       rasterUrl,
+      drawPolygonEnabled,
     } = this.state;
 
     const {
@@ -977,10 +1026,9 @@ class Search extends Component {
           <div className="title">{activeLayer}</div>
           {legend && (
             <GradientLegend
-              from={legend.from}
-              to={legend.to}
-              fromColor={legend.fromColor}
-              toColor={legend.toColor}
+              fromValue={legend.from}
+              toValue={legend.to}
+              colors={legend.colors}
             />
           )}
         </div>
@@ -1028,19 +1076,26 @@ class Search extends Component {
               rasterLayer={rasterUrl}
               rasterBounds={mapBounds}
               mapTitle={mapTitle}
+              drawPolygonEnabled={drawPolygonEnabled}
+              loadPolygonInfo={this.loadPolygonInfo}
             />
             <div className="contentView">
               { (!selectedAreaTypeId || !selectedAreaId) && (
                 <Selector
-                  handlers={[
-                    () => {},
-                    this.secondLevelChange,
-                    this.innerElementChange,
-                  ]}
+                  handlers={{
+                    areaListChange: () => {
+                      this.loadSecondLevelLayer(null);
+                      this.setState({ drawPolygonEnabled: false });
+                    },
+                    areaTypeChange: this.secondLevelChange,
+                    geofenceChange: this.innerElementChange,
+                    polygonChange: () => {
+                      this.setState({ drawPolygonEnabled: true });
+                    },
+                  }}
                   description={Description()}
-                  data={geofencesArray}
+                  areasData={areaList}
                   expandedId={0}
-                  iconClass="iconsection"
                 />
               )}
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (

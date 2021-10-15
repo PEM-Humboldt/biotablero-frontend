@@ -128,6 +128,22 @@ const match = {
       'max',
       'min_threshold',
       'max_threshold',
+      'min_region',
+      'max_region',
+      'area',
+      'legend-from',
+      'legend-middle',
+      'legend-to',
+    ],
+  },
+  functionalDryForest: {
+    palette: 'functionalDryForest',
+    // first values, then limits, then backgrounds
+    sort: [
+      'func_values',
+      'value',
+      'min',
+      'max',
       'area',
     ],
   },
@@ -216,6 +232,7 @@ const matchColor = (type, resetCache = false) => {
     case 'wetland':
     case 'richnessNos':
     case 'richnessGaps':
+    case 'functionalDryForest':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;

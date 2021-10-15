@@ -6,12 +6,13 @@ import Layout from 'app/Layout';
 import Uim from 'app/Uim';
 import Compensation from 'pages/Compensation';
 import Home from 'pages/Home';
-import Indicator from 'pages/Indicator';
 import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
+import Indicator from 'pages/Indicator';
 
 import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
+import 'indicators/dist/bundle.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -55,9 +56,10 @@ class App extends React.Component {
 
   loadIndicator = () => (
     this.loadComponent({
-      logoSet: 'default',
+      logoSet: null,
       name: 'Indicadores',
       component: (<Indicator />),
+      className: 'fullgrid',
     })
   );
 
@@ -117,7 +119,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={this.loadHome} />
+            <Route path="/Indicadores" render={this.loadIndicator} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
