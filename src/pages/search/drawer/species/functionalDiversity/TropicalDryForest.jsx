@@ -17,6 +17,15 @@ const getFeatureLabel = {
   seed_mass: 'Masa de Semilla',
 };
 
+const getFeatureColors = {
+  leaf_area: 'functionalDFFeatureLA',
+  leaf_nitrogen: 'functionalDFFeatureLN',
+  maximun_height: 'functionalDFFeaturePH',
+  specific_leaf_area: 'functionalDFFeatureSLA',
+  wood_density: 'functionalDFFeatureSSD',
+  seed_mass: 'functionalDFFeatureSM',
+};
+
 class TropicalDryForest extends React.Component {
   mounted = false;
 
@@ -143,29 +152,42 @@ class TropicalDryForest extends React.Component {
             Información no disponible
           </div>
         )}
+        <h3>Haga click en un valor o rasgo para visualizar su mapa</h3>
         {messageValues !== 'no-data' && (
           <div>
             <h6>
               Riqueza
             </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
               {values.richness}
             </h5>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+              {values.richness_nal}
+            </h5>
+            <br />
             <h6>
               Uniformidad
             </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
               {values.uniformity}
             </h5>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+              {values.uniformity_nal}
+            </h5>
+            <br />
             <h6>
               Divergencia
             </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
               {values.divergence}
+            </h5>
+            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+              {values.divergence_nal}
             </h5>
           </div>
         )}
-        <h3>Haga click en la barra para visualizar su mapa</h3>
+        Valor nacional
+        <br />
         <div>
           <h6>
             Rasgos funcionales
@@ -191,7 +213,7 @@ class TropicalDryForest extends React.Component {
                   message={messageFeatures}
                   data={bar}
                   graphType="singleBullet"
-                  colors={matchColor('functionalDryForest')}
+                  colors={matchColor(getFeatureColors[bar.id])}
                   onClickGraphHandler={() => {
                     this.setState({ selected: bar.id });
                   }}
