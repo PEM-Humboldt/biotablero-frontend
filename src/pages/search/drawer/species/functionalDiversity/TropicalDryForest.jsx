@@ -37,7 +37,7 @@ class TropicalDryForest extends React.Component {
       features: [],
       messageValues: 'loading',
       messageFeatures: 'loading',
-      selected: null,
+      selected: 'richness',
     };
   }
 
@@ -154,40 +154,70 @@ class TropicalDryForest extends React.Component {
         )}
         <h3>Haga click en un valor o rasgo para visualizar su mapa</h3>
         {messageValues !== 'no-data' && (
-          <div>
-            <h6>
-              Riqueza
-            </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
-              {values.richness}
-            </h5>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
-              {values.richness_nal}
-            </h5>
-            <br />
-            <h6>
-              Uniformidad
-            </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
-              {values.uniformity}
-            </h5>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
-              {values.uniformity_nal}
-            </h5>
-            <br />
-            <h6>
-              Divergencia
-            </h6>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
-              {values.divergence}
-            </h5>
-            <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
-              {values.divergence_nal}
-            </h5>
+          <div className="svgPointer2">
+            <div
+              onClick={() => {
+                this.setState({ selected: 'richness' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'richness' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'richness' ? 'h6Selected' : null}>
+                Riqueza
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.richness}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.richness_nal}
+              </h5>
+            </div>
+            <div
+              onClick={() => {
+                this.setState({ selected: 'uniformity' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'uniformity' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'uniformity' ? 'h6Selected' : null}>
+                Uniformidad
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.uniformity}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.uniformity_nal}
+              </h5>
+            </div>
+            <div
+              onClick={() => {
+                this.setState({ selected: 'divergency' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'divergency' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'divergency' ? 'h6Selected' : null}>
+                Divergencia
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.divergence}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.divergence_nal}
+              </h5>
+            </div>
+            <p>Valor nacional</p>
           </div>
         )}
-        Valor nacional
-        <br />
         <div>
           <h6>
             Rasgos funcionales

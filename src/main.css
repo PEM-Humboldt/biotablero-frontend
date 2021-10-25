@@ -1863,7 +1863,7 @@ div[class*="eaRHYv"] {
 	margin: 5px 0 0 15px;
 }
 
-.svgPointer {
+.svgPointer, .svgPointer2 {
 	cursor: pointer;
 }
 
@@ -1907,6 +1907,24 @@ div[class*="eaRHYv"] {
 	color: #ffffff;
 	background-color: #120000;
 	font-weight: 600;
+}
+
+.svgPointer2 h6 {
+	margin-top: 0;
+	margin-bottom: 3px;
+	min-width: 100px;
+}
+
+.svgPointer2 h5 {
+	min-width: 40px;
+}
+
+.svgPointer2 p {
+	color: #fba76d;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+	font-weight: 600;
+	cursor: initial;
 }
 
 .pt6 h5 {
