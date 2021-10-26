@@ -59,6 +59,7 @@ const getLabel = (key, area, region) => {
     region: `Región ${region}`,
     inferred2: 'Inferido en el área de consulta',
     observed2: 'Observado en el área de consulta',
+    areaLbl,
   }[key];
 };
 
@@ -305,7 +306,7 @@ class NumberOfSpecies extends React.Component {
                   <div>
                     {(filter === 'all' || filter === 'inferred') && (
                       <>
-                        {'Max. inferido nacional: '}
+                        {` Max. inferido en ${getLabel('areaLbl', areaId)} a nivel nacional: `}
                         <b>
                           {maximumValues.find((e) => e.id === bar.id).max_inferred}
                         </b>
@@ -316,7 +317,7 @@ class NumberOfSpecies extends React.Component {
                     )}
                     {(filter === 'all' || filter === 'observed') && (
                       <>
-                        {'Max. observado nacional: '}
+                        {` Max. observado en ${getLabel('areaLbl', areaId)} a nivel nacional: `}
                         <b>
                           {maximumValues.find((e) => e.id === bar.id).max_observed}
                         </b>
