@@ -25,7 +25,6 @@ const Richness = (props) => {
         id: 'speciesRecordsGaps',
         name: 'Vacíos en registros de especies',
         collapsed: openTab !== 'speciesRecordsGaps',
-        disabled: true,
       },
       component: SpeciesRecordsGaps,
     },
