@@ -3,7 +3,7 @@ import InfoIcon from '@material-ui/icons/Info';
 
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
-import { LineLegend } from 'components/CssLegends';
+import { LineLegend, LegendColor } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
@@ -171,12 +171,23 @@ class SpeciesRecordsGaps extends React.Component {
             graphType="singleBullet"
             colors={matchColor('richnessGaps')}
             onClickGraphHandler={() => { this.setState({ selected: 'gaps' }); }}
-            reverse
-            labelXLeft="Pocos datos"
-            labelXRight="Muchos datos"
+            labelXLeft="Muchos datos"
+            labelXRight="Pocos datos"
           />
         </div>
+        <br />
         <div className="richnessLegend">
+          {messageGaps === null && (
+            <LegendColor
+              orientation="column"
+              color={matchColor('richnessGaps')('value')}
+              key="value"
+              marginLeft="2px"
+              marginRight="6px"
+            >
+              {getLabelGaps('value', areaId)}
+            </LegendColor>
+          )}
           {messageGaps === null && gaps.measures && Object.keys(gaps.measures).map((key) => (
             <LineLegend
               orientation="column"
@@ -187,15 +198,6 @@ class SpeciesRecordsGaps extends React.Component {
             </LineLegend>
 
           ))}
-          {messageGaps === null && (
-            <LineLegend
-              orientation="column"
-              color={matchColor('richnessGaps')('value')}
-              key="value"
-            >
-              {getLabelGaps('value', areaId)}
-            </LineLegend>
-          )}
         </div>
         <br />
         <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>
@@ -214,7 +216,17 @@ class SpeciesRecordsGaps extends React.Component {
             labelXRight="Bien representado"
           />
         </div>
+        <br />
         <div className="richnessLegend">
+          <LegendColor
+            orientation="column"
+            color={matchColor('richnessGaps')('value')}
+            key="value"
+            marginLeft="2px"
+            marginRight="6px"
+          >
+            {getLabelConcentration('value', areaId)}
+          </LegendColor>
           {concentration.measures && Object.keys(concentration.measures).map((key) => (
             <LineLegend
               orientation="column"
@@ -225,13 +237,6 @@ class SpeciesRecordsGaps extends React.Component {
             </LineLegend>
 
           ))}
-          <LineLegend
-            orientation="column"
-            color={matchColor('richnessGaps')('value')}
-            key="value"
-          >
-            {getLabelConcentration('value', areaId)}
-          </LineLegend>
         </div>
       </div>
     );
