@@ -6,6 +6,7 @@ import nasa from 'images/nasa.png';
 import temple from 'images/temple.png';
 import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
+import umed from 'images/umed.png';
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -13,11 +14,12 @@ const logosData = {
   siac: { img: logoSiac, url: 'http://www.siac.gov.co/siac.html' },
   geobon: { img: geobon, url: 'https://geobon.org/' },
   usaid: { img: usaid, url: 'https://www.usaid.gov/' },
+  umed: { img: umed, url: 'https://udemedellin.edu.co/' },
 };
 
 const logoSet = {
   default: ['nasa', 'temple', 'siac'],
-  monitoreo: ['usaid', 'geobon', 'temple'],
+  monitoreo: ['usaid', 'geobon', 'umed', 'temple'],
 };
 
 const Footer = (

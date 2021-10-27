@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import ForestIntegrity from 'pages/search/drawer/landscape/forest/ForestIntegrity';
-import ForestLossPersistence from 'pages/search/drawer/landscape/forest/ForestLossPersistence';
+import NumberOfSpecies from 'pages/search/drawer/species/richness/NumberOfSpecies';
+import SpeciesRecordsGaps from 'pages/search/drawer/species/richness/SpeciesRecordsGaps';
 import Accordion from 'pages/search/drawer/Accordion';
 
-const Forest = (props) => {
+const Richness = (props) => {
   const {
     handlerAccordionGeometry,
     openTab,
@@ -14,20 +14,20 @@ const Forest = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'forestLP-2016-2019',
-        name: 'Perdida y persistencia',
-        disabled: true,
-        collapsed: openTab !== 'forestLP-2016-2019',
+        id: 'numberOfSpecies',
+        name: 'Número de especies',
+        collapsed: openTab !== 'numberOfSpecies',
       },
-      component: ForestLossPersistence,
+      component: NumberOfSpecies,
     },
     {
       label: {
-        id: 'forestIntegrity',
-        name: 'Integridad',
-        collapsed: openTab !== 'forestIntegrity',
+        id: 'speciesRecordsGaps',
+        name: 'Vacíos en registros de especies',
+        collapsed: openTab !== 'speciesRecordsGaps',
+        disabled: true,
       },
-      component: ForestIntegrity,
+      component: SpeciesRecordsGaps,
     },
   ];
   return (
@@ -43,14 +43,14 @@ const Forest = (props) => {
   );
 };
 
-Forest.propTypes = {
+Richness.propTypes = {
   handlerAccordionGeometry: PropTypes.func,
   openTab: PropTypes.string,
 };
 
-Forest.defaultProps = {
+Richness.defaultProps = {
   handlerAccordionGeometry: () => {},
   openTab: '',
 };
 
-export default Forest;
+export default Richness;

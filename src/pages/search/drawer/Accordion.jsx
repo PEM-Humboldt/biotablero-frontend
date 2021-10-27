@@ -1,11 +1,11 @@
 import React from 'react';
-import Accordion from '@material-ui/core/Accordion';
+import AccordionUI from '@material-ui/core/Accordion';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-class LandscapeAccordion extends React.Component {
+class Accordion extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,9 +16,14 @@ class LandscapeAccordion extends React.Component {
   componentDidMount() {
     const { componentsArray } = this.props;
     if (componentsArray.length > 0) {
-      const defaultTab = componentsArray.find(
+      let defaultTab = componentsArray.find(
         (item) => !item.label.collapsed,
-      ).label.id;
+      );
+      if (defaultTab) {
+        defaultTab = defaultTab.label.id;
+      } else {
+        defaultTab = null;
+      }
       this.setState({ expanded: defaultTab });
     }
   }
@@ -34,8 +39,18 @@ class LandscapeAccordion extends React.Component {
     const { expanded } = this.state;
     return (
       <div>
+        {componentsArray.length <= 0 && (
+          <div className="graphcard">
+            <h2>
+              Gráficas en construcción
+            </h2>
+            <p>
+              Pronto más información
+            </p>
+          </div>
+        )}
         {componentsArray.map((item) => (
-          <Accordion
+          <AccordionUI
             className={expanded !== item.label.id ? classNameDefault : classNameSelected}
             expanded={expanded === item.label.id}
             id={item.label.id}
@@ -56,14 +71,14 @@ class LandscapeAccordion extends React.Component {
             <AccordionDetails>
               <item.component {...item.componentProps} />
             </AccordionDetails>
-          </Accordion>
+          </AccordionUI>
         ))}
       </div>
     );
   }
 }
 
-LandscapeAccordion.propTypes = {
+Accordion.propTypes = {
   componentsArray: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.shape({
       id: PropTypes.string,
@@ -74,17 +89,17 @@ LandscapeAccordion.propTypes = {
     component: PropTypes.func,
     componentProps: PropTypes.object,
   })).isRequired,
-  classNameDefault: PropTypes.string, // defined in CSS file to default item for this accordion
-  classNameSelected: PropTypes.string, // defined in CSS file to selected item this accordion
+  classNameDefault: PropTypes.string,
+  classNameSelected: PropTypes.string,
   handlerAccordionGeometry: PropTypes.func,
   level: PropTypes.string,
 };
 
-LandscapeAccordion.defaultProps = {
+Accordion.defaultProps = {
   classNameDefault: 'm0b',
   classNameSelected: 'm0b selector-expanded',
   handlerAccordionGeometry: () => {},
   level: '1',
 };
 
-export default LandscapeAccordion;
+export default Accordion;

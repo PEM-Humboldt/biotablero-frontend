@@ -1149,17 +1149,35 @@ a#reset-filters {
 }
 
 .mapsTitle {
-	position: absolute;
-	top:100px;
-	left:50px;
-	background-color: #fff;
-	color: #e84a5f;
-	border-bottom: 1px solid #e84a5f;
+	position: relative;
+	left: 45px;
 	font-size: 15px;
-	z-index:1;
+	z-index: 401;
 	display: inline-block;
-	padding: 5px 12px;
 }
+
+.mapsTitle > .title {
+  background-color: #fff;
+  color: #e84a5f;
+	border-bottom: 1px solid #e84a5f;
+  padding: 5px 12px;
+}
+
+.gradientLegend {
+  background-color: #fff;
+  font-size: 9px;
+  font-weight: 600;
+  color: #2a363b;
+  margin-top: 1px;
+  padding: 5px 8px 3px;
+}
+
+.gradientLegend > .text {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0 auto;
+}
+
 /*Map container*/
 .viewfinder {
   margin: 2px;
@@ -1344,6 +1362,16 @@ overflow: auto;
 
 .m0b div[class*="MuiExpansionPanelDetails-root"] {
 	padding: 6px 8px !important;
+}
+
+.extraLegend {
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	font-weight: 600;
+	padding: 0 30px 0 15px;
+	margin-top: -8px;
+	color: #424242;
 }
 
 .accordionSelected {
@@ -1584,6 +1612,14 @@ div[class*="eaRHYv"] {
 	display: table;
 }
 
+.disclaimer {
+	font-size: 12px;
+	padding: 3px 6px;
+	color: #ffffff;
+	background-color: #5db1d4;
+	margin: 0 30px 10px 15px;
+}
+
 .singleeco {
 	font-size: 16px;
 	margin-left: 5px;
@@ -1802,6 +1838,52 @@ div[class*="eaRHYv"] {
 	margin-left: 0;
 	padding: 5px 12px;
 	border: 1px solid;
+}
+
+.numberSP {
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+}
+
+.nos-title {
+  margin-left: 30px;
+  line-height: 1.2;
+  color: #6f6f6f;
+}
+
+.nos-title b {
+  color: tomato;
+}
+
+.nos-title.legend {
+	margin-left: 15px;
+	margin-bottom: 15px;
+}
+
+.nos-title.selected {
+  color: #2a363b;
+  font-weight: 600;
+  margin-left: 15px;
+  border-left: 2px solid tomato;
+  padding-left: 14px;
+}
+
+.numberSP a {
+  margin-right: 10px;
+}
+
+.numberSP a:hover {
+  color: tomato;
+}
+
+.richnessLegend {
+  margin: 10px 0 5px 30px;
+}
+
+.richnessLegend p {
+  margin: 0;
+  margin-bottom: 2px;
 }
 
 .dpcLegend {
@@ -2197,9 +2279,6 @@ tr.row2table:nth-child(odd){
   color: #fff;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-}
-
-.titeco2 { /* César */
 }
 
 .listSS {

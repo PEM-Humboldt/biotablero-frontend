@@ -101,6 +101,36 @@ const match = {
     palette: 'timelinePAConn',
     sort: ['prot', 'protSel', 'prot_conn', 'prot_connSel'],
   },
+  richnessNos: {
+    palette: 'richnessNos',
+    // first values, then limits, then backgrounds, then legend limits
+    sort: [
+      'inferred',
+      'observed',
+      'min_inferred',
+      'min_observed',
+      'max_inferred',
+      'max_observed',
+      'region_inferred',
+      'region_observed',
+      'area',
+      'region',
+      'legend-from',
+      'legend-to',
+    ],
+  },
+  richnessGaps: {
+    palette: 'richnessGaps',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'min_threshold',
+      'max_threshold',
+      'area',
+    ],
+  },
   border: {
     palette: 'border',
   },
@@ -184,6 +214,8 @@ const matchColor = (type, resetCache = false) => {
     case 'paramo':
     case 'dryForest':
     case 'wetland':
+    case 'richnessNos':
+    case 'richnessGaps':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;

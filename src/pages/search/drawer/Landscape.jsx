@@ -5,7 +5,7 @@ import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor
 import Forest from 'pages/search/drawer/landscape/Forest';
 import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
 import PAConnectivity from 'pages/search/drawer/landscape/PAConnectivity';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 import SearchContext from 'pages/search/SearchContext';
 
 class Landscape extends React.Component {
@@ -123,7 +123,7 @@ class Landscape extends React.Component {
     const componentsArray = initialArray.filter((f) => selected.includes(f.label.id));
 
     return (
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"

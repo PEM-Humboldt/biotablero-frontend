@@ -304,7 +304,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity
    */
-   static requestCurrentPAConnectivity(areaType, areaId) {
+  static requestCurrentPAConnectivity(areaType, areaId) {
     return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -316,7 +316,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of the protected areas
    */
-   static requestDPC(areaType, areaId, paNumber) {
+  static requestDPC(areaType, areaId, paNumber) {
     return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
   }
 
@@ -329,7 +329,7 @@ class RestAPI {
     *
     * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
     */
-   static requestTimelinePAConnectivity(areaType, areaId, category) {
+  static requestTimelinePAConnectivity(areaType, areaId, category) {
     return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
   }
 
@@ -343,8 +343,78 @@ class RestAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
-   static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
+  static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
     return RestAPI.makeGetRequest(`connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
+  }
+
+  /**
+   * Get the number of species for the specified area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with observed, inferred and region number of species
+   */
+  static requestNumberOfSpecies(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
+    );
+  }
+
+  /**
+   * Get the thresholds for the number of species in the same biotic unit as the specified area id
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSThresholds(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
+    );
+  }
+
+  /**
+   * Get the national max values specified area type
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {String} group group to filter results
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSNationalMax(areaType, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/nationalMax?areaType=${areaType}${group ? `&group=${group}` : ''}`,
+    );
+  }
+
+  /**
+   * Get values for richness species gaps in the given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of richness species gaps
+   */
+   static requestGaps(areaType, areaId) {
+    return RestAPI.makeGetRequest(`richness/gaps?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get values for richness species concentration in the given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of richness species concentration
+   */
+   static requestConcentration(areaType, areaId) {
+    return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /** ******************** */
@@ -581,6 +651,44 @@ class RestAPI {
     }
   }
 
+  /**
+   * Get the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestNOSLayer(areaType, areaId, group) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the threshold values for the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestNOSLayerThresholds(areaType, areaId, group) {
+    return RestAPI.makeGetRequest(
+      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+    );
+  }
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
@@ -739,7 +847,7 @@ class RestAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    */
-  static makeGetRequest(endpoint, options) {
+  static makeGetRequest(endpoint, options = {}, completeRes = false) {
     const config = {
       ...options,
       headers: {
@@ -747,7 +855,12 @@ class RestAPI {
       },
     };
     return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
-      .then((res) => res.data)
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           return Promise.resolve('request canceled');

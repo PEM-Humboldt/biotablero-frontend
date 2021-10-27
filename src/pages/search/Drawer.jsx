@@ -8,6 +8,7 @@ import Paisaje from '@material-ui/icons/FilterHdr';
 
 import SearchContext from 'pages/search/SearchContext';
 import Landscape from 'pages/search/drawer/Landscape';
+import Species from 'pages/search/drawer/Species';
 import StrategicEcosystems from 'pages/search/drawer/StrategicEcosystems';
 import formatNumber from 'utils/format';
 import RestAPI from 'utils/restAPI';
@@ -92,13 +93,10 @@ class Drawer extends React.Component {
               handlerSwitchLayer={handlerSwitchLayer}
             />
           </div>
-          <div className="graphcard">
-            <h2>
-              Gráficas en construcción
-            </h2>
-            <p>
-              Pronto más información
-            </p>
+          <div>
+            <Species
+              handlerSwitchLayer={handlerSwitchLayer}
+            />
           </div>
         </TabContainer>
       </div>

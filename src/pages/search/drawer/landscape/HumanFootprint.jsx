@@ -5,7 +5,7 @@ import React from 'react';
 import CurrentFootprint from 'pages/search/drawer/landscape/humanFootprint/CurrentFootprint';
 import PersistenceFooprint from 'pages/search/drawer/landscape/humanFootprint/PersistenceFootprint';
 import TimelineFootprint from 'pages/search/drawer/landscape/humanFootprint/TimelineFootprint';
-import LandscapeAccordion from 'pages/search/drawer/landscape/LandscapeAccordion';
+import Accordion from 'pages/search/drawer/Accordion';
 
 const HumanFootprint = (props) => {
   const {
@@ -50,7 +50,7 @@ const HumanFootprint = (props) => {
   ];
   return (
     <div style={{ width: '100%' }}>
-      <LandscapeAccordion
+      <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
