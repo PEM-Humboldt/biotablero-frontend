@@ -17,7 +17,7 @@ class Species extends React.Component {
         functionalDiversity: 'tropicalDryForest',
       },
       availableComponents: ['richness', 'functionalDiversity'],
-      gapsFlag: false,
+      functionalFlag: false,
     };
   }
 
@@ -44,7 +44,7 @@ class Species extends React.Component {
 
     isFlagEnabled('functionalDiversity')
     .then((value) => {
-      this.setState({ gapsFlag: value });
+      this.setState({ functionalFlag: value });
     });
   }
 
@@ -78,7 +78,11 @@ class Species extends React.Component {
   }
 
   render() {
-    const { childMap, availableComponents, gapsFlag } = this.state;
+    const {
+      childMap,
+      availableComponents,
+      functionalFlag,
+    } = this.state;
     const initialArray = [
       {
         label: {
@@ -95,7 +99,7 @@ class Species extends React.Component {
         label: {
           id: 'functionalDiversity',
           name: 'Diversidad Funcional',
-          disabled: !gapsFlag,
+          disabled: !functionalFlag,
         },
         component: FunctionalDiversity,
         componentProps: {
