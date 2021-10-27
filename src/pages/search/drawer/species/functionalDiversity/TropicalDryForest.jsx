@@ -17,6 +17,15 @@ const getFeatureLabel = {
   seed_mass: 'Masa de Semilla',
 };
 
+const getFeatureColors = {
+  leaf_area: 'functionalDFFeatureLA',
+  leaf_nitrogen: 'functionalDFFeatureLN',
+  maximun_height: 'functionalDFFeaturePH',
+  specific_leaf_area: 'functionalDFFeatureSLA',
+  wood_density: 'functionalDFFeatureSSD',
+  seed_mass: 'functionalDFFeatureSM',
+};
+
 class TropicalDryForest extends React.Component {
   mounted = false;
 
@@ -26,8 +35,9 @@ class TropicalDryForest extends React.Component {
       showInfoGraph: false,
       values: {},
       features: [],
-      message: 'loading',
-      selected: null,
+      messageValues: 'loading',
+      messageFeatures: 'loading',
+      selected: 'richness',
     };
   }
 
@@ -43,22 +53,26 @@ class TropicalDryForest extends React.Component {
         if (this.mounted) {
           this.setState({
             values: res,
-            message: null,
+            messageValues: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ messageValues: 'no-data' });
+      });
 
     RestAPI.requestDryForestFeatures(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
             features: this.transformData(res),
-            message: null,
+            messageFeatures: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ messageFeatures: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -109,7 +123,8 @@ class TropicalDryForest extends React.Component {
   render() {
     const {
       showInfoGraph,
-      message,
+      messageValues,
+      messageFeatures,
       values,
       features,
       selected,
@@ -124,46 +139,94 @@ class TropicalDryForest extends React.Component {
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
             name="Plantas del bosque seco"
             description="Plantas del bosque seco"
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
-        <div>
-          <h6>
-            Riqueza
-          </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
-            {values.richness}
-          </h5>
-          <h6>
-            Uniformidad
-          </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
-            {values.uniformity}
-          </h5>
-          <h6>
-            Divergencia
-          </h6>
-          <h5 style={{ backgroundColor: matchColor('functionalDryForest')('func_values') }}>
-            {values.divergence}
-          </h5>
-        </div>
-        <h3>Haga click en la barra para visualizar su mapa</h3>
+        {messageValues === 'no-data' && (
+          <div className="errorData">
+            Información no disponible
+          </div>
+        )}
+        <h3>Haga click en un valor o rasgo para visualizar su mapa</h3>
+        {messageValues !== 'no-data' && (
+          <div className="svgPointer2">
+            <div
+              onClick={() => {
+                this.setState({ selected: 'richness' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'richness' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'richness' ? 'h6Selected' : null}>
+                Riqueza
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.richness}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.richness_nal}
+              </h5>
+            </div>
+            <div
+              onClick={() => {
+                this.setState({ selected: 'uniformity' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'uniformity' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'uniformity' ? 'h6Selected' : null}>
+                Uniformidad
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.uniformity}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.uniformity_nal}
+              </h5>
+            </div>
+            <div
+              onClick={() => {
+                this.setState({ selected: 'divergency' });
+              }}
+              onKeyDown={() => {
+                this.setState({ selected: 'divergency' });
+              }}
+              role="button"
+              tabIndex={0}
+            >
+              <h6 className={selected === 'divergency' ? 'h6Selected' : null}>
+                Divergencia
+              </h6>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value') }}>
+                {values.divergence}
+              </h5>
+              <h5 style={{ backgroundColor: matchColor('functionalDryForestValues')('value_nal') }}>
+                {values.divergence_nal}
+              </h5>
+            </div>
+            <p>Valor nacional</p>
+          </div>
+        )}
         <div>
           <h6>
             Rasgos funcionales
           </h6>
           <br />
           <br />
-          {message === 'no-data' && (
+          {messageFeatures === 'no-data' && (
             <GraphLoader
-              message={message}
+              message={messageFeatures}
               data={[]}
               graphType="singleBullet"
             />
@@ -177,10 +240,10 @@ class TropicalDryForest extends React.Component {
               </div>
               <div className="svgPointer">
                 <GraphLoader
-                  message={message}
+                  message={messageFeatures}
                   data={bar}
                   graphType="singleBullet"
-                  colors={matchColor('functionalDryForest')}
+                  colors={matchColor(getFeatureColors[bar.id])}
                   onClickGraphHandler={() => {
                     this.setState({ selected: bar.id });
                   }}

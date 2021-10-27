@@ -146,12 +146,45 @@ export default {
     '#eba62a',
     '#ec5e41',
   ],
-  functionalDryForest: [
+  functionalDryForestValues: [
     '#b74777',
-    '#29a86d',
+    '#fba76d',
+  ],
+  functionalDFFeatureLA: [
+    '#3d4726',
     '#5bb58b',
     '#1d754c',
-    '#c5bb5a',
+    '#4f861d',
+  ],
+  functionalDFFeatureLN: [
+    '#3d4726',
+    '#5bb58b',
+    '#1d754c',
+    '#6d9a1e',
+  ],
+  functionalDFFeaturePH: [
+    '#3d4726',
+    '#5bb58b',
+    '#1d754c',
+    '#a2aa16',
+  ],
+  functionalDFFeatureSLA: [
+    '#3d4726',
+    '#5bb58b',
+    '#1d754c',
+    '#e5ba11',
+  ],
+  functionalDFFeatureSSD: [
+    '#3d4726',
+    '#5bb58b',
+    '#1d754c',
+    '#b5924e',
+  ],
+  functionalDFFeatureSM: [
+    '#3d4726',
+    '#5bb58b',
+    '#1d754c',
+    '#916a31',
   ],
   border: ['#fc6467'],
   default: ['#b2bdc2'],
