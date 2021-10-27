@@ -5,6 +5,7 @@ import Accordion from 'pages/search/Accordion';
 import Richness from 'pages/search/drawer/species/Richness';
 import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity';
 import SearchContext from 'pages/search/SearchContext';
+import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
   constructor(props, context) {
@@ -16,6 +17,7 @@ class Species extends React.Component {
         functionalDiversity: 'tropicalDryForest',
       },
       availableComponents: ['richness', 'functionalDiversity'],
+      gapsFlag: false,
     };
   }
 
@@ -39,6 +41,11 @@ class Species extends React.Component {
       const { handlerSwitchLayer } = this.props;
       handlerSwitchLayer(childMap[visible]);
     }
+
+    isFlagEnabled('functionalDiversity')
+    .then((value) => {
+      this.setState({ gapsFlag: value });
+    });
   }
 
   /**
@@ -71,7 +78,7 @@ class Species extends React.Component {
   }
 
   render() {
-    const { childMap, availableComponents } = this.state;
+    const { childMap, availableComponents, gapsFlag } = this.state;
     const initialArray = [
       {
         label: {
@@ -88,6 +95,7 @@ class Species extends React.Component {
         label: {
           id: 'functionalDiversity',
           name: 'Diversidad Funcional',
+          disabled: !gapsFlag,
         },
         component: FunctionalDiversity,
         componentProps: {
