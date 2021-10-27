@@ -1937,6 +1937,7 @@ div[class*="eaRHYv"] {
 .numberSP {
   display: flex;
   justify-content:space-between;
+  align-items: center;
 }
 
 .nos-title {
