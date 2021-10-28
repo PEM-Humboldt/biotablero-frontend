@@ -164,7 +164,7 @@ class SpeciesRecordsGaps extends React.Component {
         <div className={`nos-title${selected === 'gaps' ? ' selected' : ''}`}>
           Vacios de datos
         </div>
-        <div>
+        <div className="svgPointer">
           <GraphLoader
             message={messageGaps}
             data={gaps}
@@ -205,7 +205,7 @@ class SpeciesRecordsGaps extends React.Component {
           <br />
           <b>5 km x 5 km</b>
         </div>
-        <div>
+        <div className="svgPointer">
           <GraphLoader
             message={messageConc}
             data={concentration}
