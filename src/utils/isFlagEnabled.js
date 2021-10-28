@@ -1,9 +1,7 @@
 import ExternalRequests from 'utils/externalRequests';
 
 const isFlagEnabled = (id) => (
-  ExternalRequests.requestFeaturesFlags(
-    'https://biotablero.s3.amazonaws.com/featureFlagsEnabled.json',
-  )
+  ExternalRequests.requestFeaturesFlags()
   .then((res) => {
     const feature = res.find((obj) => obj.id === id);
     return feature ? feature.enabled : false;

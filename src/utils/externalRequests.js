@@ -8,8 +8,8 @@ class ExternalRequests {
    *
    * @return {Promise<Array>} Array of objects with feature flags
    */
-  static requestFeaturesFlags(URL) {
-    return ExternalRequests.makeGetRequest(URL);
+  static requestFeaturesFlags() {
+    return ExternalRequests.makeGetRequest('https://biotablero.s3.amazonaws.com/featureFlagsEnabled.json');
   }
 
   /** ************** */
@@ -25,9 +25,6 @@ class ExternalRequests {
     return axios.get(URL)
       .then((res) => res.data)
       .catch((error) => {
-        if (axios.isCancel(error)) {
-          return Promise.resolve('request canceled');
-        }
         let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
         if (error.request && error.request.statusText === '') message = 'no-data-available';
