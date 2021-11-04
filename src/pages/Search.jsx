@@ -908,8 +908,10 @@ class Search extends Component {
         () => {
           const { history } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
-          history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
-          setHeaderNames(selectedAreaType.name, selectedArea.name);
+          if (selectedAreaType) {
+            history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
+            setHeaderNames(selectedAreaType.name, selectedArea.name);
+          }
         },
       );
     }
@@ -968,6 +970,7 @@ class Search extends Component {
       'paramoPAConn',
       'dryForestPAConn',
       'wetlandPAConn',
+      'speciesRecordsGaps',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
