@@ -27,12 +27,12 @@ const areaTypeName = (areaType) => {
 
 const getLabelGaps = (key, areaType) => ({
   value: 'Promedio de vacios en el área de consulta',
-  min: 'Mínimo del área de consulta',
-  max: 'Máximo del área de consulta',
-  min_region: 'Mínimo por región biótica',
-  max_region: 'Máximo por región biótica',
-  min_threshold: `Mínimo por ${areaTypeName(areaType)}`,
-  max_threshold: `Máximo por ${areaTypeName(areaType)}`,
+  min: 'Menos vacíos en el área de consulta',
+  max: 'Más vacíos en el área de consulta',
+  min_region: 'Menos vacíos en la región biótica',
+  max_region: 'Más vacíos en la región biótica',
+  min_threshold: `Menos vacíos en ${areaTypeName(areaType)}`,
+  max_threshold: `Más vacíos en ${areaTypeName(areaType)}`,
 }[key]
 );
 
