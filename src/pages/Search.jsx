@@ -1098,7 +1098,6 @@ class Search extends Component {
                   }}
                   description={Description()}
                   areasData={areaList}
-                  expandedId={0}
                 />
               )}
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
