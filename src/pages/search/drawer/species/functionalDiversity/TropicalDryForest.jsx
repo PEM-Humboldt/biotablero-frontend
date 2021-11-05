@@ -215,14 +215,23 @@ class TropicalDryForest extends React.Component {
                 {values.divergence_nal}
               </h5>
             </div>
-            <p>Valor nacional</p>
+            <p>
+              <span style={{ color: matchColor('functionalDryForestValues')('value') }}>
+                Valor área de consulta
+              </span>
+              <span style={{ color: matchColor('functionalDryForestValues')('value_nal') }}>
+                {' Valor nacional'}
+              </span>
+            </p>
           </div>
         )}
         <div>
           <h6>
             Rasgos funcionales
           </h6>
-          <br />
+          <h3>
+            Los valores de las barras van del mínimo al máximo nacional
+          </h3>
           <br />
           {messageFeatures === 'no-data' && (
             <GraphLoader
