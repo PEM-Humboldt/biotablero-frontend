@@ -908,7 +908,7 @@ class Search extends Component {
         () => {
           const { history } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
-          if (selectedAreaType) {
+          if (selectedAreaType && selectedArea) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
             setHeaderNames(selectedAreaType.name, selectedArea.name);
           }
