@@ -908,10 +908,8 @@ class Search extends Component {
         () => {
           const { history } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
-          if (selectedAreaType) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
             setHeaderNames(selectedAreaType.name, selectedArea.name);
-          }
         },
       );
     }
