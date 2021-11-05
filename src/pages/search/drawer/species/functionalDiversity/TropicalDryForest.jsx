@@ -9,12 +9,12 @@ import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
 
 const getFeatureLabel = {
-  leaf_area: 'Área Foliar',
-  leaf_nitrogen: 'Nitrógeno foliar',
-  maximun_height: 'Altura Máxima',
-  specific_leaf_area: 'Área Foliar Específica',
-  wood_density: 'Densidad de Madera',
-  seed_mass: 'Masa de Semilla',
+  leaf_area: 'Área Foliar (mm2)',
+  leaf_nitrogen: 'Nitrógeno foliar (%)',
+  maximun_height: 'Altura Máxima (m)',
+  specific_leaf_area: 'Área Foliar Específica (mg mm2)',
+  wood_density: 'Densidad de Madera (g cm3)',
+  seed_mass: 'Masa de Semilla (g)',
 };
 
 const getFeatureColors = {
