@@ -25,15 +25,16 @@ const areaTypeName = (areaType) => {
   }
 };
 
-const getLabelGaps = (key, areaType) => ({
-  value: 'Promedio de vacios en el área de consulta',
-  min: 'Menos vacíos en el área de consulta',
-  max: 'Más vacíos en el área de consulta',
-  min_region: 'Menos vacíos en la región biótica',
-  max_region: 'Más vacíos en la región biótica',
-  min_threshold: `Menos vacíos en ${areaTypeName(areaType)}`,
-  max_threshold: `Más vacíos en ${areaTypeName(areaType)}`,
-}[key]
+const getLabelGaps = (key, areaType, region) => (
+  {
+    value: 'Promedio de vacios en el área de consulta',
+    min: 'Menos vacíos en el área de consulta',
+    max: 'Más vacíos en el área de consulta',
+    min_region: `Menos vacíos en la región ${region}`,
+    max_region: `Más vacíos en la región ${region}`,
+    min_threshold: `Menos vacíos en ${areaTypeName(areaType)}`,
+    max_threshold: `Más vacíos en ${areaTypeName(areaType)}`,
+  }[key]
 );
 
 const getLabelConcentration = (key) => ({
@@ -59,6 +60,7 @@ class SpeciesRecordsGaps extends React.Component {
       messageGaps: 'loading',
       messageConc: 'loading',
       selected: 'gaps',
+      bioticRegion: 'Región Biótica',
     };
   }
 
@@ -72,9 +74,11 @@ class SpeciesRecordsGaps extends React.Component {
     RestAPI.requestGaps(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
+          const { region, ...data } = this.transformData(res);
           this.setState({
-            gaps: this.transformData(res),
+            gaps: data,
             messageGaps: null,
+            bioticRegion: region,
           });
         }
       })
@@ -85,9 +89,11 @@ class SpeciesRecordsGaps extends React.Component {
     RestAPI.requestConcentration(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
+          const { region, ...data } = this.transformData(res);
           this.setState({
-            concentration: this.transformData(res),
+            concentration: data,
             messageConc: null,
+            bioticRegion: region,
           });
         }
       })
@@ -105,12 +111,18 @@ class SpeciesRecordsGaps extends React.Component {
    *
    * @param {Object} rawData raw data from RestAPI
    */
-   transformData = (rawData) => {
-    const { id, avg, ...limits } = rawData[0];
+  transformData = (rawData) => {
+    const {
+      id,
+      avg,
+      region_name: regionName,
+      ...limits
+    } = rawData[0];
     Object.keys(limits).forEach((key) => {
       Object.defineProperty(limits, key, { value: Math.round(limits[key] * 100) });
     });
     return {
+      region: regionName,
       id,
       ranges: {
         area: Math.max(limits.max, limits.max_threshold, limits.max_region),
@@ -141,6 +153,7 @@ class SpeciesRecordsGaps extends React.Component {
       gaps,
       concentration,
       selected,
+      bioticRegion,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -194,7 +207,7 @@ class SpeciesRecordsGaps extends React.Component {
               color={matchColor('richnessGaps')(key)}
               key={key}
             >
-              {getLabelGaps(key, areaId)}
+              {getLabelGaps(key, areaId, bioticRegion)}
             </LineLegend>
 
           ))}
