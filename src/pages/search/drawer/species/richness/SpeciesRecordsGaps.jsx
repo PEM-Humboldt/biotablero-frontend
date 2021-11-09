@@ -32,8 +32,8 @@ const getLabelGaps = (key, areaType, region) => (
     max: 'Más vacíos en el área de consulta',
     min_region: `Menos vacíos en la región ${region}`,
     max_region: `Más vacíos en la región ${region}`,
-    min_threshold: `Menos vacíos en ${areaTypeName(areaType)}`,
-    max_threshold: `Más vacíos en ${areaTypeName(areaType)}`,
+    min_threshold: `Menos vacíos ${areaTypeName(areaType)} de la región ${region}`,
+    max_threshold: `Más vacíos ${areaTypeName(areaType)} de la región ${region}`,
   }[key]
 );
 
