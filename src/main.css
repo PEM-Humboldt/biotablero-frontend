@@ -1919,9 +1919,9 @@ div[class*="eaRHYv"] {
 	min-width: 40px;
 }
 
-.svgPointer2 p {
-	color: #fba76d;
+.svgPointer2 .p-label {
 	margin-bottom: 5px;
+  margin-left: 15px;
 	text-transform: uppercase;
 	font-weight: 600;
 	cursor: initial;

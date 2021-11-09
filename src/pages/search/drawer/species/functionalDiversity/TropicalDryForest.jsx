@@ -9,12 +9,12 @@ import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
 
 const getFeatureLabel = {
-  leaf_area: 'Área Foliar',
-  leaf_nitrogen: 'Nitrógeno foliar',
-  maximun_height: 'Altura Máxima',
-  specific_leaf_area: 'Área Foliar Específica',
-  wood_density: 'Densidad de Madera',
-  seed_mass: 'Masa de Semilla',
+  leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
+  leaf_nitrogen: { __html: '<div>Nitrógeno foliar (%)</div>' },
+  maximun_height: { __html: '<div>Altura Máxima (m)</div>' },
+  specific_leaf_area: { __html: '<div>Área Foliar Específica (mg/mm<sup>2</sup>)</div>' },
+  wood_density: { __html: '<div>Densidad de Madera (g/cm<sup>3</sup>)</div>' },
+  seed_mass: { __html: '<div>Masa de Semilla (g)</div>' },
 };
 
 const getFeatureColors = {
@@ -84,7 +84,7 @@ class TropicalDryForest extends React.Component {
    *
    * @param {Object} rawData raw data from RestAPI
    */
-   transformData = (rawData) => {
+  transformData = (rawData) => {
     const tranformedData = [];
     rawData.forEach((obj) => {
       const {
@@ -215,14 +215,23 @@ class TropicalDryForest extends React.Component {
                 {values.divergence_nal}
               </h5>
             </div>
-            <p>Valor nacional</p>
+            <div className="p-label">
+              <div style={{ color: matchColor('functionalDryForestValues')('value') }}>
+                Valor área de consulta
+              </div>
+              <div style={{ color: matchColor('functionalDryForestValues')('value_nal') }}>
+                {' Valor nacional'}
+              </div>
+            </div>
           </div>
         )}
         <div>
           <h6>
             Rasgos funcionales
           </h6>
-          <br />
+          <h3>
+            Los valores de las barras van del mínimo al máximo nacional
+          </h3>
           <br />
           {messageFeatures === 'no-data' && (
             <GraphLoader
@@ -235,9 +244,8 @@ class TropicalDryForest extends React.Component {
             <div key={bar.id}>
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
-              >
-                {getFeatureLabel[bar.id]}
-              </div>
+                dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
+              />
               <div className="svgPointer">
                 <GraphLoader
                   message={messageFeatures}

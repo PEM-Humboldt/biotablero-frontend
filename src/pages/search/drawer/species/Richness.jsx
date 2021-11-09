@@ -16,7 +16,7 @@ const Richness = (props) => {
 
   useEffect(() => {
     isFlagEnabled('speciesRecordsGaps')
-    .then((value) => setGapsFlag(value));
+      .then((value) => setGapsFlag(value));
   }, []);
 
   const componentsArray = [
