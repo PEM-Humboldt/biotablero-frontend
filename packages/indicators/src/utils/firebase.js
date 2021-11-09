@@ -31,7 +31,7 @@ const getDB = () => {
 const getIndicators = async () => {
   const db = getDB();
   const list = await getDocs(collection(db, 'indicadores'));
-  return list.docs.map((doc) => doc.data());
+  return list.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
 export default getIndicators;

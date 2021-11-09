@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import './main.css';
+// import cardsData from './app/data/selectorData';
 import CardManager from './app/CardManager';
-import cardsData from './app/data/selectorData';
+import CloseIcon from './components/CloseIcon';
 import DownloadIcon from './app/DownloadIcon';
 import OpenIcon from './components/OpenIcon';
-import CloseIcon from './components/CloseIcon';
+import getIndicators from './utils/firebase';
+
+import './main.css';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
+  const [cardsData, setCardsData] = useState([]);
+
+  useEffect(async () => {
+    const data = await getIndicators();
+    setCardsData(data);
+  }, []);
 
   return (
     <div className="wrapperIndicators">
