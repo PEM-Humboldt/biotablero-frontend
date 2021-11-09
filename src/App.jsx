@@ -10,6 +10,8 @@ import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
 import Indicator from 'pages/Indicator';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
 import 'indicators/dist/bundle.css';
@@ -20,7 +22,13 @@ class App extends React.Component {
     this.state = {
       user: null,
       headerNames: {},
+      indicatorsFlag: false,
     };
+  }
+
+  componentDidMount() {
+    isFlagEnabled('indicatorsModule')
+      .then((value) => this.setState({ indicatorsFlag: value }));
   }
 
   buildQuery = (queryString) => new URLSearchParams(queryString);
@@ -110,7 +118,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, indicatorsFlag } = this.state;
     return (
       <AppContext.Provider
         value={{ user }}
@@ -119,7 +127,7 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={this.loadIndicator} />
+            <Route path="/Indicadores" render={indicatorsFlag ? this.loadIndicator : this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
