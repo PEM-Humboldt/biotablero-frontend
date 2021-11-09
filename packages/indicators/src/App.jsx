@@ -12,10 +12,12 @@ import './main.css';
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
   const [cardsData, setCardsData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(async () => {
     const data = await getIndicators();
     setCardsData(data);
+    setLoading(false);
   }, []);
 
   return (
@@ -37,7 +39,9 @@ const App = () => {
       </div>
       <div>
         <div className="countD">
-          {cardsData.length > 0 ? (
+          {loading && 'Cargando información...'}
+          {!loading && cardsData.length <= 0 && 'No hay indicadores'}
+          {!loading && cardsData.length > 0 && (
             <>
               {cardsData.length} indicadores
               <button
@@ -49,8 +53,6 @@ const App = () => {
                 <DownloadIcon color="#e84a5f" />
               </button>
             </>
-          ) : (
-            'No hay indicadores'
           )}
         </div>
         <CardManager cardsData={cardsData} />
