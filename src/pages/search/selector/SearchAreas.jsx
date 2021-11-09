@@ -53,6 +53,7 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
       id: geofence.id,
       name: geofence.name,
       disabled: (geofence.id === 'se'),
+      collapsed: true,
     },
     component: AreaAutocomplete,
     componentProps: {
