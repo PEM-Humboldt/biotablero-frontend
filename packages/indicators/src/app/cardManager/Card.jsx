@@ -44,7 +44,7 @@ const Card = (props) => {
       <h3>OBJETIVO</h3>
       <h4>{target}</h4>
       <h3>ESCALA</h3>
-      <h4>{scale}</h4>
+      <h4>{scale.join(', ')}</h4>
     </div>
   );
 };

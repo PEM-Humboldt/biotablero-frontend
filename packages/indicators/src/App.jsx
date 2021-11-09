@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import './main.css';
+// import cardsData from './app/data/selectorData';
 import CardManager from './app/CardManager';
-import cardsData from './app/data/selectorData';
+import CloseIcon from './components/CloseIcon';
 import DownloadIcon from './app/DownloadIcon';
 import OpenIcon from './components/OpenIcon';
-import CloseIcon from './components/CloseIcon';
+import getIndicators from './utils/firebase';
+
+import './main.css';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
+  const [cardsData, setCardsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(async () => {
+    const data = await getIndicators();
+    setCardsData(data);
+    setLoading(false);
+  }, []);
 
   return (
     <div className="wrapperIndicators">
@@ -29,7 +39,9 @@ const App = () => {
       </div>
       <div>
         <div className="countD">
-          {cardsData.length > 0 ? (
+          {loading && 'Cargando información...'}
+          {!loading && cardsData.length <= 0 && 'No hay indicadores'}
+          {!loading && cardsData.length > 0 && (
             <>
               {cardsData.length} indicadores
               <button
@@ -41,8 +53,6 @@ const App = () => {
                 <DownloadIcon color="#e84a5f" />
               </button>
             </>
-          ) : (
-            'No hay indicadores'
           )}
         </div>
         <CardManager cardsData={cardsData} />

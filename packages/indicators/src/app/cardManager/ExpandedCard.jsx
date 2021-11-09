@@ -51,7 +51,7 @@ const ExpandedCard = ({ item, expandClick }) => {
           <h3>OBJETIVO</h3>
           <h4>{target}</h4>
           <h3>ESCALA</h3>
-          <h4>{scale}</h4>
+          <h4>{scale.join(', ')}</h4>
           <h3>METAS</h3>
           <h4>{goals.join('\n')}</h4>
           <h3>PERIODICIDAD</h3>
@@ -62,7 +62,7 @@ const ExpandedCard = ({ item, expandClick }) => {
         <div className="colbg">
           <h3>DESCRIPCIÓN DEL INDICADOR</h3>
           <h4> {description} </h4>
-          <h3>REQUERIMIENTO DE INFORMACIÓN PARA SI CÁLCULO</h3>
+          <h3>REQUERIMIENTO DE INFORMACIÓN PARA SU CÁLCULO</h3>
           <h4>{requirements}</h4>
           <br />
           <h4>
@@ -82,7 +82,7 @@ ExpandedCard.propTypes = {
     title: PropTypes.string,
     target: PropTypes.string,
     lastUpdate: PropTypes.string,
-    scale: PropTypes.string,
+    scale: PropTypes.arrayOf(PropTypes.string),
     goals: PropTypes.arrayOf(PropTypes.string),
     periodicity: PropTypes.string,
     use: PropTypes.string,
@@ -96,7 +96,20 @@ ExpandedCard.propTypes = {
 };
 
 ExpandedCard.defaultProps = {
-  item: null,
+  item: {
+    title: '',
+    target: '',
+    lastUpdate: '',
+    scale: [''],
+    goals: [''],
+    periodicity: '',
+    use: '',
+    description: '',
+    ebv: [''],
+    source: '',
+    requirements: '',
+    externalLink: '',
+  },
   expandClick: () => {},
 };
 
