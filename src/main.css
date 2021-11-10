@@ -1697,17 +1697,25 @@ div[class*="eaRHYv"] {
   padding: 7px 6px 3px;
 }
 
-.fullview {
+.fullview-container {
   padding-bottom: 6px;
   display: inline-block;
-  width: 40px;
-  vertical-align: bottom;
   margin-left: 15px;
   border-bottom: 2px solid transparent;
 }
 
-.fullview:hover {
+.fullview {
+  width: 40px;
+  vertical-align: bottom;
+}
+
+.fullview-container:hover {
   border-bottom: 2px solid #000000;
+  cursor: pointer;
+}
+
+.fullview-container.filtered {
+  border-bottom: 2px solid tomato;
 }
 
 .singleeco {
