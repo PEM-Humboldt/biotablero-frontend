@@ -256,15 +256,15 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
-        <h3>
-          {NumberOfSpeciesTextHelper}
-        </h3>
         {showErrorMessage && (
           <div className="disclaimer">
             La riqueza inferida del área de consulta supera la de la región biótica en algunos
             casos pues sus límites intersectan dos o más regiones bióticas.
           </div>
         )}
+        <h3>
+          {NumberOfSpeciesTextHelper}
+        </h3>
         <div className="nos-title legend">
           <TextLegend
             className={`${filter === 'inferred' ? 'filtered' : ''}`}
