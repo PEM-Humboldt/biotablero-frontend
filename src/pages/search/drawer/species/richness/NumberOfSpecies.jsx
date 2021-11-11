@@ -22,6 +22,7 @@ import biomodelos2 from 'images/biomodelos2.png';
 import mappoint2 from 'images/mappoint2.png';
 import biomodeloslink from 'images/biomodeloslink.png';
 import biomodeloslink2 from 'images/biomodeloslink2.png';
+import fullview from 'images/fullview.png';
 
 const getLabel = (key, area, region) => {
   let areaLbl = 'cerca';
@@ -163,9 +164,9 @@ class NumberOfSpecies extends React.Component {
    * @returns void
    */
   filter = (category) => () => {
-    const { allData, filter, selected } = this.state;
+    const { allData, selected } = this.state;
     const { handlerClickOnGraph } = this.context;
-    if (category === filter) {
+    if (category === 'all') {
       this.setState({
         data: allData.map((group) => ({
           ...group,
@@ -256,15 +257,15 @@ class NumberOfSpecies extends React.Component {
           />
           )
         )}
-        <h3>
-          {NumberOfSpeciesTextHelper}
-        </h3>
         {showErrorMessage && (
           <div className="disclaimer">
             La riqueza inferida del área de consulta supera la de la región biótica en algunos
             casos pues sus límites intersectan dos o más regiones bióticas.
           </div>
         )}
+        <h3>
+          {NumberOfSpeciesTextHelper}
+        </h3>
         <div className="nos-title legend">
           <TextLegend
             className={`${filter === 'inferred' ? 'filtered' : ''}`}
@@ -286,6 +287,19 @@ class NumberOfSpecies extends React.Component {
           >
             {getLabel('observed', areaId)}
           </TextLegend>
+          <div
+            className={`fullview-container${filter === 'all' ? ' filtered' : ''}`}
+            onClick={this.filter('all')}
+            onKeyPress={this.filter('all')}
+            role="button"
+            tabIndex={0}
+          >
+            <img
+              className="fullview"
+              src={fullview}
+              alt="Ver ambos"
+            />
+          </div>
         </div>
         <div>
           {message === 'no-data' && (

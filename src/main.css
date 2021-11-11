@@ -1690,10 +1690,32 @@ div[class*="eaRHYv"] {
 
 .disclaimer {
 	font-size: 12px;
-	padding: 3px 6px;
-	color: #ffffff;
-	background-color: #5db1d4;
-	margin: 0 30px 10px 15px;
+  color: #424242;
+  margin: 0 30px 10px 15px;
+  border-top: 1px solid #5db1d4;
+  border-bottom: 1px solid #5db1d4;
+  padding: 7px 6px 3px;
+}
+
+.fullview-container {
+  padding-bottom: 6px;
+  display: inline-block;
+  margin-left: 15px;
+  border-bottom: 2px solid transparent;
+}
+
+.fullview {
+  width: 40px;
+  vertical-align: bottom;
+}
+
+.fullview-container:hover {
+  border-bottom: 2px solid #000000;
+  cursor: pointer;
+}
+
+.fullview-container.filtered {
+  border-bottom: 2px solid tomato;
 }
 
 .singleeco {
