@@ -98,7 +98,9 @@ class ForestIntegrity extends React.Component {
           }
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ loading: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
