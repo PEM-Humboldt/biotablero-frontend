@@ -35,6 +35,15 @@ const Content = ({ activeModule, setActiveModule }) => {
       auth: true,
     },
     {
+      focusCallback: () => setActiveModule('portfolio'),
+      buttonStyles: `finder port ${(activeModule === 'portfolio') ? 'activeicon' : ''}`,
+      idBtn: 'portbtn',
+      firstLineContent: 'Portafolios',
+      secondLineContent: '',
+      localLink: '/Portafolios',
+      auth: false,
+    },
+    {
       focusCallback: () => setActiveModule('alert'),
       buttonStyles: `finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`,
       idBtn: 'alebtn',

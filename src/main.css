@@ -389,6 +389,10 @@ h2 {
 	background-image: url(images/compensaciones.png);
 }
 
+.port {
+  background-image: url(images/portafolios.png);
+}
+
 .ale {
 	background-image: url(images/alertas.png);
 }
@@ -1327,7 +1331,16 @@ overflow: auto;
 	float: right;
 	width: 65px;
 	height: 65px;
-  }
+}
+
+.Portafolios {
+	background-image: url(images/portafolios.png);
+	-webkit-background-size: contain;
+	background-size: contain;
+	float: right;
+	width: 65px;
+	height: 65px;
+}
 
 .Compensaciónambiental {
   background-image: url(images/compensaciones.png);

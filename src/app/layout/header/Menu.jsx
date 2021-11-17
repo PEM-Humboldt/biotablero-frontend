@@ -48,6 +48,11 @@ class Menu extends React.Component {
             </Link>
           )
             : '' }
+          <Link to="/Portafolios" onClick={this.changeMenuState}>
+            <li>
+              Portafolios
+            </li>
+          </Link>
           <Link to="/Alertas" onClick={this.changeMenuState}>
             <li>
               Alertas

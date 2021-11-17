@@ -9,6 +9,7 @@ import Home from 'pages/Home';
 import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
 import Indicator from 'pages/Indicator';
+import Portfolio from 'pages/Portfolio';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
 
@@ -91,6 +92,15 @@ class App extends React.Component {
     );
   }
 
+  loadPortfolio = () => (
+    this.loadComponent({
+      logoSet: null,
+      name: 'Portafolios',
+      component: (<Portfolio />),
+      className: 'fullgrid',
+    })
+  );
+
   loadCBMDashboard = () => (
     this.loadComponent({
       logoSet: 'monitoreo',
@@ -129,6 +139,7 @@ class App extends React.Component {
             <Route path="/Consultas" render={this.loadSearch} />
             <Route path="/Indicadores" render={indicatorsFlag ? this.loadIndicator : this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
+            <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
           </Switch>
