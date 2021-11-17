@@ -1,3 +1,10 @@
+ * , *:before, *:after { 
+     box-sizing:border-box; 
+     -moz-box-sizing:border-box; 
+     -webkit-box-sizing:border-box; 
+     -ms-box-sizing:border-box;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -402,7 +409,7 @@ h2 {
 }
 
 .activeicon {
-	border-color: #fff;
+	border: 2px solid #fff;
 	border-radius: 10px;
 }
 
@@ -2820,6 +2827,115 @@ tspan, .vx-axis-label {
 .load-1 .line:nth-last-child(2) {animation: loadingA 1.5s .5s infinite; vertical-align: top;}
 .load-1 .line:nth-last-child(3) {animation: loadingA 1.5s 0s infinite; background-color: #e32759; vertical-align: top;}
 
+.wrapperPort {
+	background: url(images/bg2Port.png) no-repeat bottom left;
+	background-size: contain;
+}
+
+.splitPort{
+	background: url(images/bg1Port.png) no-repeat top right;
+	background-size: 70vw;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2rem;
+	font-family: 'Lato', sans-serif;
+}
+
+.colPort2 {
+	width: 65vw;
+	min-height: calc(100vh - 210px);
+	min-width: 320px;
+	display: grid;
+	justify-content: center;
+  grid-gap: 10px;
+  grid-template-columns: [col1-start] auto [col2-start] auto [col2-end];
+  grid-template-rows: [row1-start] auto [row2-start] auto [row2-end];
+}
+
+.portCard {
+  width: 300px;
+  min-height: 220px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 15px;
+}
+
+.portcard:hover {
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 7px rgba(0, 0, 0, 0.22);
+}
+
+.pcTitle {
+	display: block;
+	border-bottom: 1px solid #2A363B;
+	text-transform: uppercase;
+	color: #2A363B;
+	font-weight: 700;
+	font-size: 1.3rem;
+	padding-bottom: 10px;
+	margin-bottom: 5px;
+}
+
+.pcDate {
+	color: #107E7C;
+	font-size: 1.3rem;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: 300;
+	margin-bottom: 10px;
+}
+
+.pcText {
+	font-size: 1rem;
+  font-weight: 400;
+  padding-left: 5px;
+  margin-bottom: 10px;
+  color: #707070;
+}
+
+.rowPort1 {
+  grid-column: col2-start;
+  grid-row: row1-start;
+  align-self: end;
+}
+
+.rowPort2 {
+  grid-column: col2-start;
+  grid-row: row2-start;
+  align-self: start;
+}
+
+.rowPort3 {
+  grid-column: col1-start;
+  grid-row: row1-start / row2-end;
+  align-self: center;
+}
+
+.colPort1 {
+	padding-left: 2rem;
+	width: 30vw;
+}
+
+.portTitle {
+	font-size: 5rem;
+	color: #22231C;
+	padding-bottom: 20px;
+	border-bottom: 2px solid #22231C;
+	font-weight: 700;
+	margin-bottom: 20px;
+	display: inline-block;
+}
+
+.portText1 {
+	display: grid;
+	color: #606060;
+	font-size: 1rem;
+	font-weight: 400;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 3rem;
+}
 
 @keyframes loadingA {
     0% {height: 15px;}
@@ -2829,6 +2945,21 @@ tspan, .vx-axis-label {
 /* End - Animate the loading */
 
 /* Media Queries */
+@media screen and (max-width: 1400px){
+	
+	.portText1 {
+		grid-template-columns: 1fr;
+		grid-gap: 1rem;
+	}
+	.colPort2 {
+	width: 50vw;
+	}
+	.colPort1 {
+		width: 40vw;
+	}
+
+}
+
 @media screen and (max-width: 1200px){
 
     .btnhome b {
@@ -2858,10 +2989,25 @@ tspan, .vx-axis-label {
     .content {
         width: 600px;
     }
+    .colPort2 {
+		width: 52vw;
+	  }
+    .colPort1 {
+		width: 35vw;
+	  }
+	  .portTitle {
+	  	font-size: 4rem;
+	  }
 }
 
 
 @media screen and (max-width: 980px){
+ 	.portCard {
+	  width: auto;
+	}
+	.pcText {
+		font-size: 0.9rem
+	}
 
 	.leaflet-container {
 		padding: 0;
@@ -2906,6 +3052,27 @@ tspan, .vx-axis-label {
 }
 
 @media screen and (max-width: 910px){
+	.colPort2 {
+	  grid-template-columns: 1fr;
+	  grid-template-rows: [row1-start] auto [row2-start] auto [row3-start] auto [row3-end];
+	}
+	.rowPort1 {
+	  grid-row: row1-start;
+	  align-self: center;
+	}
+
+	.rowPort2 {
+	  grid-row: row2-start;
+	  align-self: center;
+	}
+
+	.rowPort3 {
+	  grid-row: row3-start;
+	}
+  .portTitle {
+  	font-size: 3rem;
+  }
+
     .menuline {
         display: block;
     }
@@ -2940,6 +3107,27 @@ tspan, .vx-axis-label {
         color: #e84a5f;
         margin-bottom: 20px;
     }
+}
+
+@media screen and (max-width: 780px){
+	.wrapperPort {
+		background: url(images/bg4Port.png) no-repeat top right;
+	}
+}
+
+@media screen and (max-width: 680px){
+	.splitPort {
+		background: url(images/bg3Port.png) no-repeat bottom left;
+		background-size: 70vw;
+		display: inline-block;
+	}
+	.colPort2 {
+	width: auto;
+	}
+	.colPort1 {
+	width: auto;
+	margin-bottom: 50px;
+	}
 }
 
 @media screen and (max-width: 619px){
