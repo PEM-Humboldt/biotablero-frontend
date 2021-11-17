@@ -401,7 +401,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with values of richness species gaps
    */
-   static requestGaps(areaType, areaId) {
+  static requestGaps(areaType, areaId) {
     return RestAPI.makeGetRequest(`richness/gaps?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -413,7 +413,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with values of richness species concentration
    */
-   static requestConcentration(areaType, areaId) {
+  static requestConcentration(areaType, areaId) {
     return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -425,7 +425,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with values of functional diversity in the dry forest
    */
-   static requestDryForestValues(areaType, areaId) {
+  static requestDryForestValues(areaType, areaId) {
     return RestAPI.makeGetRequest(`functional-diversity/dry-forest/values?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -437,7 +437,7 @@ class RestAPI {
    *
    * @return {Promise<Array>} Array of objects with values of functional features in the dry forest
    */
-   static requestDryForestFeatures(areaType, areaId) {
+  static requestDryForestFeatures(areaType, areaId) {
     return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -622,7 +622,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestDPCLayer(areaType, areaId, paNumber) {
+  static requestDPCLayer(areaType, areaId, paNumber) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
@@ -640,7 +640,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestPAConnSELayer(areaType, areaId, seType) {
+  static requestPAConnSELayer(areaType, areaId, seType) {
     const source = CancelToken.source();
     switch (seType) {
       case 'dryForestPAConn':
@@ -685,7 +685,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestNOSLayer(areaType, areaId, group) {
+  static requestNOSLayer(areaType, areaId, group) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
@@ -720,7 +720,7 @@ class RestAPI {
    *
    * @return {Object} with data related to the polygon
    */
-   static requestCustomPolygonData(polygon) {
+  static requestCustomPolygonData(polygon) {
     /** TODO: implement all this endpoint and also the backend response
      * to find information according to polygon coordinates
      * */
@@ -737,7 +737,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestGapsLayer(areaType, areaId) {
+  static requestGapsLayer(areaType, areaId) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(

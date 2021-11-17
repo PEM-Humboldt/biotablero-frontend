@@ -8,8 +8,8 @@ import SearchContext from 'pages/search/SearchContext';
 import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
     this.state = {
       visible: 'richness',
       childMap: {
