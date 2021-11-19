@@ -109,7 +109,7 @@ class MapViewer extends React.Component {
       userLogged,
       loadingLayer,
       layerError,
-      rasterLayer,
+      rasterLayers,
       rasterBounds,
       mapTitle,
       drawPolygonEnabled,
@@ -171,11 +171,13 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {rasterLayer && rasterBounds && (
-          <ImageOverlay
-            url={rasterLayer}
-            bounds={rasterBounds}
-          />
+        {rasterLayers && rasterBounds && (
+          rasterLayers.map((ras) => (
+            <ImageOverlay
+              url={ras}
+              bounds={rasterBounds}
+            />
+          ))
         )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
@@ -218,7 +220,7 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
-  rasterLayer: PropTypes.string,
+  rasterLayers: PropTypes.array,
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
   loadPolygonInfo: PropTypes.func,
@@ -229,7 +231,7 @@ MapViewer.defaultProps = {
   drawPolygonEnabled: false,
   loadingLayer: false,
   layerError: false,
-  rasterLayer: '',
+  rasterLayers: [],
   rasterBounds: null,
   mapTitle: null,
   loadPolygonInfo: () => {},
