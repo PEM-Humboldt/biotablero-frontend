@@ -1,3 +1,4 @@
+import Item from 'pages/portfolio/Item';
 import React from 'react';
 
 const Portfolio = () => (
@@ -29,50 +30,41 @@ const Portfolio = () => (
         </div>
       </div>
       <div className="colPort2">
-        <div className="portCard rowPort1">
-          <div className="pcTitle">
-            NATURE MAP · WCMC
-          </div>
-          <div className="pcDate">
-            2021
-          </div>
-          <p className="pcText">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-            aliquam erat volutpat. Ut wisi enim ad minim veniam,
-            quis nostrud exerci tation ullamcorper suscipit
-            lobortis nisl ut aliquip ex ea commodo consequat.
-          </p>
+        <div className="rowPort1">
+          <Item
+            title="NATURE MAP · WCMC"
+            year="2021"
+            description={`Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              quis nostrud exerci tation ullamcorper suscipit
+              lobortis nisl ut aliquip ex ea commodo consequat.`}
+            link="http://portafolios.humboldt.org.co"
+          />
         </div>
-        <div className="portCard rowPort2">
-          <div className="pcTitle">
-            ELSA · PNUD
-          </div>
-          <div className="pcDate">
-            2020
-          </div>
-          <p className="pcText">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-            aliquam erat volutpat. Ut wisi enim ad minim veniam,
-            quis nostrud exerci tation ullamcorper suscipit
-            lobortis nisl ut aliquip ex ea commodo consequat.
-          </p>
+        <div className="rowPort2">
+          <Item
+            title="ELSA · PNUD"
+            year="2020"
+            description={`Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              quis nostrud exerci tation ullamcorper suscipit
+              lobortis nisl ut aliquip ex ea commodo consequat.`}
+            link="http://humboldt.org.co/es/"
+          />
         </div>
-        <div className="portCard rowPort3">
-          <div className="pcTitle">
-            WEPLAN FOREST
-          </div>
-          <div className="pcDate">
-            2021
-          </div>
-          <p className="pcText">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-            sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-            aliquam erat volutpat. Ut wisi enim ad minim veniam,
-            quis nostrud exerci tation ullamcorper suscipit
-            lobortis nisl ut aliquip ex ea commodo consequat.
-          </p>
+        <div className="rowPort3">
+          <Item
+            title="WEPLAN FOREST"
+            year="2021"
+            description={`Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              quis nostrud exerci tation ullamcorper suscipit
+              lobortis nisl ut aliquip ex ea commodo consequat.`}
+            link="http://humboldt.org.co/es/"
+          />
         </div>
       </div>
     </div>
