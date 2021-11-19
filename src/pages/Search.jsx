@@ -60,7 +60,7 @@ class Search extends Component {
       localPolygon: {},
       drawPolygonEnabled: false,
       mapBounds: null,
-      rasterUrl: '',
+      rasterUrls: [],
     };
   }
 
@@ -478,7 +478,7 @@ class Search extends Component {
         });
         newState.activeLayer = {};
         newState.mapBounds = null;
-        newState.rasterUrl = '';
+        newState.rasterUrls = [];
         return newState;
       });
     } else if (layerInState) {
@@ -772,11 +772,11 @@ class Search extends Component {
       Promise.all(promises).then(([res, legendValues]) => {
         this.activeRequests.delete(layerType);
         if (res !== 'request canceled') {
-          const rasterUrl = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+          const rasterUrls = [`data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`];
           if (mapLegend) mapLegend.resolve(legendValues);
           this.setState({
               mapBounds,
-              rasterUrl,
+              rasterUrls,
               loadingLayer: false,
           });
         }
@@ -1002,7 +1002,7 @@ class Search extends Component {
       newState.loadingLayer = false;
       newState.layerError = false;
       newState.mapBounds = null;
-      newState.rasterUrl = '';
+      newState.rasterUrls = [];
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -1029,7 +1029,7 @@ class Search extends Component {
       areaList,
       activeLayer: { name: activeLayer, legend },
       mapBounds,
-      rasterUrl,
+      rasterUrls,
       drawPolygonEnabled,
     } = this.state;
 
@@ -1091,7 +1091,7 @@ class Search extends Component {
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
-              rasterLayer={rasterUrl}
+              rasterLayers={rasterUrls}
               rasterBounds={mapBounds}
               mapTitle={mapTitle}
               drawPolygonEnabled={drawPolygonEnabled}
