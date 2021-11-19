@@ -220,7 +220,7 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
-  rasterLayers: PropTypes.array,
+  rasterLayers: PropTypes.arrayOf(PropTypes.string),
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
   loadPolygonInfo: PropTypes.func,
