@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import AppContext from 'app/AppContext';
 import MenuButton from 'pages/home/content/MenuButton';
 import CssCarousel from 'pages/home/content/CssCarousel';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 const Content = ({ activeModule, setActiveModule }) => {
+  const [showPort, setShowPort] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    isFlagEnabled('portfoliosModule')
+      .then((value) => setShowPort(value));
+    isFlagEnabled('alertsModule')
+      .then((value) => setShowAlert(value));
+  }, []);
+
   const modules = [
     {
       focusCallback: () => setActiveModule('search'),
@@ -34,7 +46,10 @@ const Content = ({ activeModule, setActiveModule }) => {
       localLink: '/GEB/Compensaciones',
       auth: true,
     },
-    {
+  ];
+
+  if (showPort) {
+    modules.push({
       focusCallback: () => setActiveModule('portfolio'),
       buttonStyles: `finder port ${(activeModule === 'portfolio') ? 'activeicon' : ''}`,
       idBtn: 'portbtn',
@@ -42,8 +57,10 @@ const Content = ({ activeModule, setActiveModule }) => {
       secondLineContent: 'Portafolios',
       localLink: '/Portafolios',
       auth: false,
-    },
-    {
+    });
+  }
+  if (showAlert) {
+    modules.push({
       focusCallback: () => setActiveModule('alert'),
       buttonStyles: `finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`,
       idBtn: 'alebtn',
@@ -51,17 +68,18 @@ const Content = ({ activeModule, setActiveModule }) => {
       secondLineContent: 'tempranas',
       localLink: '/Alertas',
       auth: false,
-    },
-    {
-      focusCallback: () => setActiveModule('cbmdashboard'),
-      buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,
-      idBtn: 'monbtn',
-      firstLineContent: 'Monitoreo',
-      secondLineContent: 'comunitario',
-      localLink: '/Monitoreo',
-      auth: false,
-    },
-  ];
+    });
+  }
+  modules.push({
+    focusCallback: () => setActiveModule('cbmdashboard'),
+    buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,
+    idBtn: 'monbtn',
+    firstLineContent: 'Monitoreo',
+    secondLineContent: 'comunitario',
+    localLink: '/Monitoreo',
+    auth: false,
+  });
+
   return (
     <AppContext.Consumer>
       {({ user }) => {
