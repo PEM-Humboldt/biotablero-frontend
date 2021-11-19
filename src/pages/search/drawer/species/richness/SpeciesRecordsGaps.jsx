@@ -78,7 +78,10 @@ class SpeciesRecordsGaps extends React.Component {
     RestAPI.requestGaps(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          const showErrorMessage = this.getLimitsOverflow(res);
+          const showErrorMessage = (
+            res[0].min < res[0].min_region
+            || res[0].max > res[0].max_region
+            );
           const { region, ...data } = this.transformData(res);
           this.setState({
             gaps: data,
@@ -142,14 +145,6 @@ class SpeciesRecordsGaps extends React.Component {
       measures: limits,
       title: '',
     };
-  };
-
-  getLimitsOverflow = (rawData) => {
-    const minLimit = (rawData[0].min < rawData[0].min_region
-      || rawData[0].min_threshold < rawData[0].min_region);
-    const maxLimit = (rawData[0].max > rawData[0].max_region
-      || rawData[0].max_threshold > rawData[0].max_region);
-      return (minLimit || maxLimit);
   };
 
   /**
