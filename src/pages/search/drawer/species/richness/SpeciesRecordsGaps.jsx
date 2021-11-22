@@ -191,7 +191,7 @@ class SpeciesRecordsGaps extends React.Component {
         {showErrorMessage && (
           <div className="disclaimer">
             Los vacíos en el área de consulta son mayores o menores que los de la región biótica
-            en algunos casos ya que sus límites intersectan dos o más regiones bióticas
+            ya que sus límites intersectan dos o más regiones bióticas.
           </div>
         )}
         <div className={`nos-title${selected === 'gaps' ? ' selected' : ''}`}>
