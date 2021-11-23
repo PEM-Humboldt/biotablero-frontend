@@ -64,6 +64,7 @@ class SpeciesRecordsGaps extends React.Component {
       selected: 'gaps',
       bioticRegion: 'Región Biótica',
       concentrationFlag: false,
+      showErrorMessage: false,
     };
   }
 
@@ -77,11 +78,16 @@ class SpeciesRecordsGaps extends React.Component {
     RestAPI.requestGaps(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
+          const showErrorMessage = (
+            res[0].min < res[0].min_region
+            || res[0].max > res[0].max_region
+            );
           const { region, ...data } = this.transformData(res);
           this.setState({
             gaps: data,
             messageGaps: null,
             bioticRegion: region,
+            showErrorMessage,
           });
         }
       })
@@ -161,6 +167,7 @@ class SpeciesRecordsGaps extends React.Component {
       selected,
       bioticRegion,
       concentrationFlag,
+      showErrorMessage,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -180,6 +187,12 @@ class SpeciesRecordsGaps extends React.Component {
             collapseButton={false}
           />
           )
+        )}
+        {showErrorMessage && (
+          <div className="disclaimer">
+            Los vacíos en el área de consulta son mayores o menores que los de la región biótica
+            ya que sus límites intersectan dos o más regiones bióticas.
+          </div>
         )}
         <div className={`nos-title${selected === 'gaps' ? ' selected' : ''}`}>
           Vacios de datos

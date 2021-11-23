@@ -339,14 +339,16 @@ class NumberOfSpecies extends React.Component {
                       </>
                     )}
                   </div>
-                  <div>
-                    <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
-                      <Icon image={biomodeloslink} hoverImage={biomodeloslink2} />
-                    </a>
-                    {/* TODO:
-                    Add I2D link when it's ready (import mappointlink and mappointlink2 images)
-                    */}
-                  </div>
+                  {(filter === 'inferred') && (
+                    <div>
+                      <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
+                        <Icon image={biomodeloslink} hoverImage={biomodeloslink2} />
+                      </a>
+                      {/* TODO:
+                      Add I2D link when it's ready (import mappointlink and mappointlink2 images)
+                      */}
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="svgPointer">
