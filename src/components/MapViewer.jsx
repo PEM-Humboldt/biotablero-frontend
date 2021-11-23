@@ -172,8 +172,9 @@ class MapViewer extends React.Component {
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
         {rasterLayers && rasterBounds && (
-          rasterLayers.map((ras) => (
+          rasterLayers.map((ras, index) => (
             <ImageOverlay
+              key={index}
               url={ras}
               bounds={rasterBounds}
             />
