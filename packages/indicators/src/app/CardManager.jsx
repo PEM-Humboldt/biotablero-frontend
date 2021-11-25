@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Masonry from 'react-masonry-component';
 import PropTypes from 'prop-types';
+
+import Masonry from 'react-masonry-component';
 
 import Card from './cardManager/Card';
 

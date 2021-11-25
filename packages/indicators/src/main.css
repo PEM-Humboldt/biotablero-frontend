@@ -52,9 +52,12 @@
   justify-content: space-between;
 }
 
+.card2 {
+  background-color: #03344b;
+}
+
 .card2 h3 {
   padding: 25px 15px 10px 15px;
-  background-color: #03344b;
   color: #f8f8f8;
   transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   border-bottom: 1px solid #e6e6e6;
@@ -67,6 +70,47 @@
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
+}
+
+.tagList {
+  margin: 5px 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.tagBox {
+  margin: 5px 0 !important;
+}
+
+.tagBox > div:nth-child(1) svg {
+  color: #fff;
+}
+
+.tagCat {
+  color: #fff !important;
+}
+
+.tagCat > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tagOptions {
+  background-color: #fff;
+  padding: 0 5px;
+}
+
+.selectedTags {
+  min-height: 20px;
+  margin: 5px 15px;
+  display: inline-block;
+}
+
+.selectedTags > div {
+  display: inline-block;
+  margin-right: 2px;
+  padding: 0 2px;
+  color: #fff;
 }
 
 .indicatorCard {

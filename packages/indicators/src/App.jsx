@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
 
-// import cardsData from './app/data/selectorData';
 import CardManager from './app/CardManager';
-import CloseIcon from './components/CloseIcon';
 import DownloadIcon from './app/DownloadIcon';
+import TagManager from './app/TagManager';
+import CloseIcon from './components/CloseIcon';
 import OpenIcon from './components/OpenIcon';
-import getIndicators from './utils/firebase';
+import useUpdateResults from './hooks/useUpdateResults';
+import { getTags } from './utils/firebase';
 
 import './main.css';
 
 const App = () => {
   const [openFilter, setOpenFilter] = useState(true);
-  const [cardsData, setCardsData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [tags, setTags] = useState(new Map());
+  const [loadingTags, setLoadingTags] = useState(true);
+  const { loading: loadingData, result: cardsData, updateFilters } = useUpdateResults();
 
   useEffect(async () => {
-    const data = await getIndicators();
-    setCardsData(data);
-    setLoading(false);
+    const tagsData = await getTags();
+    setTags(tagsData);
+    setLoadingTags(false);
   }, []);
+
+  const filterData = (filters) => {
+    updateFilters(filters);
+  };
 
   return (
     <div className="wrapperIndicators">
@@ -35,13 +41,22 @@ const App = () => {
             </button>
             <div className="text">Filtros de búsqueda</div>
           </h3>
+          {loadingTags && (
+            <div style={{ color: '#fff', margin: '5px 15px' }}>Cargando filtros...</div>
+          )}
+          {!loadingTags && tags.size <= 0 && (
+            <div style={{ color: '#fff', margin: '5px 15px' }}>No hay filtros disponibles</div>
+          )}
+          {!loadingTags && tags.size > 0 && openFilter && (
+            <TagManager data={tags} filterData={filterData} />
+          )}
         </div>
       </div>
       <div>
         <div className="countD">
-          {loading && 'Cargando información...'}
-          {!loading && cardsData.length <= 0 && 'No hay indicadores'}
-          {!loading && cardsData.length > 0 && (
+          {loadingData && 'Cargando información...'}
+          {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
+          {!loadingData && cardsData.length > 0 && (
             <>
               {cardsData.length} indicadores
               <button
