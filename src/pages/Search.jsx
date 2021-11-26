@@ -42,6 +42,10 @@ const tooltipLabel = {
   endemic: 'Endémicas',
   invasive: 'Invasoras',
   threatened: 'Amenazadas',
+  N: 'Natural',
+  S: 'Secundaria',
+  T: 'Transformada',
+  X: 'Sin clasificar / Nubes',
 };
 
 class Search extends Component {
@@ -303,6 +307,12 @@ class Search extends Component {
           `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          optionsTooltip,
+        ).openTooltip();
+        break;
+      case 'coverage':
+        feature.bindTooltip(
+          `<b>${tooltipLabel[feature.feature.properties.key]}</b>`,
           optionsTooltip,
         ).openTooltip();
         break;
@@ -587,6 +597,16 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: 'geofence',
+        };
+        break;
+      case 'coverage':
+        requestObj = RestAPI.requestCoveragesLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        newActiveLayer = {
+          id: 'coverage',
+          name: 'Coberturas',
         };
         break;
       case 'forestIntegrity':
@@ -986,6 +1006,7 @@ class Search extends Component {
       'dryForestPAConn',
       'wetlandPAConn',
       'speciesRecordsGaps',
+      'coverage',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
