@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DotIcon from '@material-ui/icons/FiberManualRecord';
+import CloseIcon from '@material-ui/icons/HighlightOff';
 
 const boxColors = [
   '#b1babc',
@@ -20,7 +21,10 @@ const boxColors = [
 
 const TagManager = (props) => {
   const { data, filterData } = props;
-  const [selected, updateSelected] = useReducer((state, value) => {
+  const [selected, updateSelected] = useReducer((state, { action, value }) => {
+    if (action === 'clear') {
+      return [];
+    }
     if (state.some((stateVal) => stateVal[0] === value[0])) {
       return state.filter((e) => e[0] !== value[0]);
     }
@@ -34,6 +38,21 @@ const TagManager = (props) => {
   return (
     <>
       <div className="tagList">
+        <div className="tagCount">
+          {selected.length > 0 && (
+            <h4>
+              <button
+                className="clearFilters"
+                title="Limpiar filtros"
+                type="button"
+                onClick={() => updateSelected({ action: 'clear' })}
+              >
+                <CloseIcon />
+              </button>
+              {`${selected.length} filtro${selected.length > 1 ? 's' : ''}`}
+            </h4>
+          )}
+        </div>
         {Array.from(data).map(([title, list], idx) => (
           <Accordion className="tagBox" key={title}>
             <AccordionSummary
@@ -58,7 +77,9 @@ const TagManager = (props) => {
                       type="checkbox"
                       value={tag}
                       checked={selected.some((stateVal) => stateVal[0] === tag)}
-                      onChange={() => updateSelected([tag, boxColors[idx]])}
+                      onChange={() =>
+                        updateSelected({ action: 'click', value: [tag, boxColors[idx]] })
+                      }
                     />
                     {tag}
                   </div>

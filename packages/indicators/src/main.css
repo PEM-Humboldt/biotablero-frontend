@@ -66,6 +66,18 @@
   flex-direction: row;
 }
 
+.card2 h4 {
+  padding-top: 5px;
+  color: #f8f8f8;
+  transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: row;
+}
+
+.card2 h4 svg {
+  color: #f8f8f8;
+}
+
 .card2 .text {
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
@@ -220,7 +232,8 @@
   cursor: pointer;
 }
 
-.openFilters {
+.openFilters,
+.clearFilters {
   background-color: transparent;
   border-color: transparent;
   margin-top: -5px;
