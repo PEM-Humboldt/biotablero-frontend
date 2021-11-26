@@ -36,7 +36,7 @@ class Drawer extends React.Component {
     } = this.context;
 
     const { handlerSwitchLayer } = this.props;
-    handlerSwitchLayer('geofence');
+    handlerSwitchLayer('coverage');
 
     const searchId = geofenceId;
 
