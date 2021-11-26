@@ -48,28 +48,64 @@ const ExpandedCard = ({ item, expandClick }) => {
       <h2>{lastUpdate}</h2>
       <div className="spliter">
         <div className="colsm">
-          <h3>OBJETIVO</h3>
-          <h4>{target}</h4>
-          <h3>ESCALA</h3>
-          <h4>{scale.join(', ')}</h4>
-          <h3>METAS</h3>
-          <h4>{goals.join('\n')}</h4>
-          <h3>PERIODICIDAD</h3>
-          <h4>{periodicity}</h4>
-          <h3>CONTEXTO DE USO</h3>
-          <h4>{use}</h4>
+          {target && (
+            <>
+              <h3>OBJETIVO</h3>
+              <h4>{target}</h4>
+            </>
+          )}
+          {scale.length > 0 && (
+            <>
+              <h3>ESCALA</h3>
+              <h4>{scale.join(', ')}</h4>
+            </>
+          )}
+          {goals.length > 0 && (
+            <>
+              <h3>METAS</h3>
+              <h4>{goals.join('\n')}</h4>
+            </>
+          )}
+          {periodicity && (
+            <>
+              <h3>PERIODICIDAD</h3>
+              <h4>{periodicity}</h4>
+            </>
+          )}
+          {use && (
+            <>
+              <h3>CONTEXTO DE USO</h3>
+              <h4>{use}</h4>
+            </>
+          )}
         </div>
         <div className="colbg">
-          <h3>DESCRIPCIÓN DEL INDICADOR</h3>
-          <h4> {description} </h4>
-          <h3>REQUERIMIENTO DE INFORMACIÓN PARA SU CÁLCULO</h3>
-          <h4>{requirements}</h4>
-          <br />
-          <h4>
-            <b>VEBs:</b> {ebv.join(',')}
-          </h4>
-          <h3>FUENTE</h3>
-          <h4>{source}</h4>
+          {description && (
+            <>
+              <h3>DESCRIPCIÓN DEL INDICADOR</h3>
+              <h4> {description} </h4>
+            </>
+          )}
+          {requirements && (
+            <>
+              <h3>REQUERIMIENTO DE INFORMACIÓN PARA SU CÁLCULO</h3>
+              <h4>{requirements}</h4>
+            </>
+          )}
+          {ebv.length > 0 && (
+            <>
+              <br />
+              <h4>
+                <b>VEBs:</b> {ebv.join(',')}
+              </h4>
+            </>
+          )}
+          {source && (
+            <>
+              <h3>FUENTE</h3>
+              <h4>{source}</h4>
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -100,12 +136,12 @@ ExpandedCard.defaultProps = {
     title: '',
     target: '',
     lastUpdate: '',
-    scale: [''],
-    goals: [''],
+    scale: [],
+    goals: [],
     periodicity: '',
     use: '',
     description: '',
-    ebv: [''],
+    ebv: [],
     source: '',
     requirements: '',
     externalLink: '',
