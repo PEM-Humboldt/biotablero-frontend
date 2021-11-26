@@ -492,6 +492,22 @@ class RestAPI {
   }
 
   /**
+   * Get the coverage layer divided by categories in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestCoveragesLayer(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/coverage/layer`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
    * Get the geometry associated for the current human footprint in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
