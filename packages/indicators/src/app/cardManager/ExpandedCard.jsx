@@ -72,12 +72,6 @@ const ExpandedCard = ({ item, expandClick }) => {
               <h4>{periodicity}</h4>
             </>
           )}
-          {use && (
-            <>
-              <h3>CONTEXTO DE USO</h3>
-              <h4>{use}</h4>
-            </>
-          )}
         </div>
         <div className="colbg">
           {description && (
@@ -98,6 +92,12 @@ const ExpandedCard = ({ item, expandClick }) => {
               <h4>
                 <b>VEBs:</b> {ebv.join(',')}
               </h4>
+            </>
+          )}
+          {use && (
+            <>
+              <h3>CONTEXTO DE USO</h3>
+              <h4>{use}</h4>
             </>
           )}
           {source && (
