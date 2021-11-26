@@ -685,35 +685,42 @@ class Search extends Component {
         };
         break;
       case 'speciesRecordsGaps':
-        isRaster = true;
-        requestObj = RestAPI.requestGapsLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        mapLegend = {
-          promise: RestAPI.requestGapsLayerThresholds(
+        this.switchLayer('geofence', () => {
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+          });
+
+          isRaster = true;
+          requestObj = RestAPI.requestGapsLayer(
             selectedAreaTypeId,
             selectedAreaId,
-          ),
-          resolve: (res) => {
-            this.setState({
-              activeLayer: {
-                id: 'speciesRecordsGaps',
-                name: 'Vacios en registros de especies',
-                legend: {
-                  from: Math.round(res.min * 100).toString(),
-                  to: Math.round(res.max * 100).toString(),
-                  colors: [
-                    matchColor('richnessGaps')('legend-from'),
-                    matchColor('richnessGaps')('legend-middle'),
-                    matchColor('richnessGaps')('legend-to'),
-                  ],
+          );
+          mapLegend = {
+            promise: RestAPI.requestGapsLayerThresholds(
+              selectedAreaTypeId,
+              selectedAreaId,
+            ),
+            resolve: (res) => {
+              this.setState({
+                activeLayer: {
+                  id: 'speciesRecordsGaps',
+                  name: 'Vacios en registros de especies',
+                  legend: {
+                    from: Math.round(res.min * 100).toString(),
+                    to: Math.round(res.max * 100).toString(),
+                    colors: [
+                      matchColor('richnessGaps')('legend-from'),
+                      matchColor('richnessGaps')('legend-middle'),
+                      matchColor('richnessGaps')('legend-to'),
+                    ],
+                  },
                 },
-              },
-            });
-          },
-        };
-      break;
+              });
+            },
+          };
+        });
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -734,39 +741,45 @@ class Search extends Component {
             name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
           };
         } else if (/numberOfSpecies*/.test(layerType)) {
-          let group = 'total';
-          const selected = layerType.match(/numberOfSpecies-(\w+)/);
-          if (selected) [, group] = selected;
+          this.switchLayer('geofence', () => {
+            this.setState({
+              loadingLayer: true,
+              layerError: false,
+            });
+            let group = 'total';
+            const selected = layerType.match(/numberOfSpecies-(\w+)/);
+            if (selected) [, group] = selected;
 
-          isRaster = true;
-          requestObj = RestAPI.requestNOSLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-            group,
-          );
-          mapLegend = {
-            promise: RestAPI.requestNOSLayerThresholds(
+            isRaster = true;
+            requestObj = RestAPI.requestNOSLayer(
               selectedAreaTypeId,
               selectedAreaId,
               group,
-            ),
-            resolve: (res) => {
-              this.setState({
-                activeLayer: {
-                  id: group,
-                  name: `Número de especies - ${tooltipLabel[group]}`,
-                  legend: {
-                    from: res.min.toString(),
-                    to: res.max.toString(),
-                    colors: [
-                      matchColor('richnessNos')('legend-from'),
-                      matchColor('richnessNos')('legend-to'),
-                    ],
+            );
+            mapLegend = {
+              promise: RestAPI.requestNOSLayerThresholds(
+                selectedAreaTypeId,
+                selectedAreaId,
+                group,
+              ),
+              resolve: (res) => {
+                this.setState({
+                  activeLayer: {
+                    id: group,
+                    name: `Número de especies - ${tooltipLabel[group]}`,
+                    legend: {
+                      from: res.min.toString(),
+                      to: res.max.toString(),
+                      colors: [
+                        matchColor('richnessNos')('legend-from'),
+                        matchColor('richnessNos')('legend-to'),
+                      ],
+                    },
                   },
-                },
-              });
-            },
-          };
+                });
+              },
+            };
+          });
         }
         break;
     }
