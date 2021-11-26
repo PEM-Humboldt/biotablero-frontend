@@ -1,10 +1,3 @@
- * , *:before, *:after {
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  -webkit-box-sizing:border-box;
-  -ms-box-sizing:border-box;
-}
-
 * {
 	margin: 0;
 	padding: 0;
@@ -2832,6 +2825,13 @@ tspan, .vx-axis-label {
 	background-size: contain;
 }
 
+.wrapperPort * , .wrapperPort *:before, .wrapperPort *:after {
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  -ms-box-sizing:border-box;
+}
+
 .splitPort{
 	background: url(images/bg1Port.png) no-repeat top right;
 	background-size: 70vw;
@@ -3045,6 +3045,7 @@ tspan, .vx-axis-label {
 	.backgraph {
 		margin-right: 5px;
 	} */
+
 	.iconsave {
 		margin-right: 5px;
 	}
