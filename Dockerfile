@@ -1,6 +1,6 @@
 # Build stage
 FROM node:14.15 as build
-MAINTAINER Daniel Lopez "dlopez@humboldt.org.co"
+LABEL maintainer="dlopez@humboldt.org.co"
 USER node
 
 ENV NPM_CONFIG_LOGLEVEL warn
@@ -9,6 +9,10 @@ WORKDIR /home/node/app
 
 COPY --chown=node:node . .
 WORKDIR /home/node/app/packages/cbm-dashboard
+RUN yarn install
+RUN yarn run build-pkg
+
+WORKDIR /home/node/app/packages/indicators
 RUN yarn install
 RUN yarn run build-pkg
 
