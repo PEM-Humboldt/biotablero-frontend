@@ -1,6 +1,6 @@
 # Build stage
 FROM node:14.15 as build
-LABEL maintainer=dlopez@humboldt.org.co"
+LABEL maintainer="dlopez@humboldt.org.co"
 USER node
 
 ENV NPM_CONFIG_LOGLEVEL warn
