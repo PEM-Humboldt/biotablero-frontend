@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import CardManager from './app/CardManager';
-import DownloadIcon from './app/DownloadIcon';
 import TagManager from './app/TagManager';
 import CloseIcon from './components/CloseIcon';
 import OpenIcon from './components/OpenIcon';
@@ -56,19 +55,7 @@ const App = () => {
         <div className="countD">
           {loadingData && 'Cargando información...'}
           {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
-          {!loadingData && cardsData.length > 0 && (
-            <>
-              {cardsData.length} indicadores
-              <button
-                className="downloadAll"
-                title="Descargar indicadores listados"
-                type="button"
-                onClick={() => {}}
-              >
-                <DownloadIcon color="#e84a5f" />
-              </button>
-            </>
-          )}
+          {!loadingData && cardsData.length > 0 && <>{cardsData.length} indicadores</>}
         </div>
         <CardManager cardsData={cardsData} />
       </div>
