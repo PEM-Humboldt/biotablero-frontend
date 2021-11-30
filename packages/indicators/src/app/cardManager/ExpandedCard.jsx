@@ -30,9 +30,11 @@ const ExpandedCard = ({ item, expandClick }) => {
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">
-          <a className="linkURL" href={externalLink} title="Ir al enlace">
-            <LinkIcon fontSize={19} />
-          </a>
+          {externalLink && (
+            <a className="linkURL" href={externalLink} title="Ir al enlace">
+              <LinkIcon fontSize={19} />
+            </a>
+          )}
           <div
             className="expandIndicatorButton"
             onClick={expandClick}
