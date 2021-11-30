@@ -26,8 +26,8 @@ const App = () => {
   };
 
   return (
-    <div className="wrapperIndicators">
-      <div className="leftnav">
+    <div className={`wrapperIndicators${openFilter ? '' : ' full-content'}`}>
+      <div className="leftnav-title">
         <div className="card2">
           <h3>
             <button
@@ -46,17 +46,19 @@ const App = () => {
           {!loadingTags && tags.size <= 0 && (
             <div style={{ color: '#fff', margin: '5px 15px' }}>No hay filtros disponibles</div>
           )}
-          {!loadingTags && tags.size > 0 && openFilter && (
-            <TagManager data={tags} filterData={filterData} />
-          )}
         </div>
       </div>
-      <div>
-        <div className="countD">
-          {loadingData && 'Cargando información...'}
-          {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
-          {!loadingData && cardsData.length > 0 && <>{cardsData.length} indicadores</>}
+      {!loadingTags && tags.size > 0 && (
+        <div className={`leftnav-filters${openFilter ? '' : ' hide'}`}>
+          <TagManager data={tags} filterData={filterData} />
         </div>
+      )}
+      <div className="countD">
+        {loadingData && 'Cargando información...'}
+        {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
+        {!loadingData && cardsData.length > 0 && <>{cardsData.length} indicadores</>}
+      </div>
+      <div className="masonry-cards">
         <CardManager cardsData={cardsData} />
       </div>
     </div>

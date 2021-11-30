@@ -8,18 +8,40 @@
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 4fr;
-  gap: 5px 5px;
-  grid-template-areas: 'leftnav';
+  grid-template-rows: min-content auto;
+  gap: 0;
+  grid-template-areas:
+    'leftnav-title countD'
+    'leftnav-filters masonry-cards';
   background-color: #eeeeec;
   min-height: calc(100vh - 269px);
   overflow-y: scroll;
 }
 
-.leftnav {
-  grid-area: leftnav;
+.wrapperIndicators.full-content {
+  grid-template-areas:
+    'leftnav-title countD'
+    'masonry-cards masonry-cards';
+}
+
+.leftnav-title {
+  grid-area: leftnav-title;
+}
+
+.leftnav-filters {
+  grid-area: leftnav-filters;
+}
+
+.leftnav-filters.hide {
+  display: none;
+}
+
+.masonry-cards {
+  grid-area: masonry-cards;
 }
 
 .countD {
+  grid-area: countD;
   font-size: 18px;
   margin-left: 20px;
   margin-bottom: 10px;
@@ -52,8 +74,9 @@
   justify-content: space-between;
 }
 
-.card2 {
+.leftnav-title, .leftnav-filters {
   background-color: #03344b;
+  color: #fff;
 }
 
 .card2 h3 {
@@ -66,15 +89,14 @@
   flex-direction: row;
 }
 
-.card2 h4 {
-  padding-top: 5px;
+.tagList h4 {
   color: #f8f8f8;
   transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: row;
 }
 
-.card2 h4 svg {
+.tagList h4 svg {
   color: #f8f8f8;
 }
 

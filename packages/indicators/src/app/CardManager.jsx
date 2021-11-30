@@ -24,24 +24,22 @@ const CardManager = ({ cardsData }) => {
   const wasExpanded = (elem) => prevExpanded?.current?.id === elem.id;
 
   return (
-    <>
-      <Masonry options={masonryOptions} enableResizableChildren>
-        {cardsData.map((card) => {
-          return (
-            <Card
-              key={card.id}
-              item={card}
-              isExpanded={isExpanded(card)}
-              wasExpanded={wasExpanded(card)}
-              expandClick={() => {
-                if (isExpanded(card)) setExpanded(null);
-                else setExpanded(card);
-              }}
-            />
-          );
-        })}
-      </Masonry>
-    </>
+    <Masonry options={masonryOptions} enableResizableChildren>
+      {cardsData.map((card) => {
+        return (
+          <Card
+            key={card.id}
+            item={card}
+            isExpanded={isExpanded(card)}
+            wasExpanded={wasExpanded(card)}
+            expandClick={() => {
+              if (isExpanded(card)) setExpanded(null);
+              else setExpanded(card);
+            }}
+          />
+        );
+      })}
+    </Masonry>
   );
 };
 
