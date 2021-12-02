@@ -4,29 +4,12 @@ import React from 'react';
 import { SvgIcon } from '@material-ui/core';
 
 const PlusIcon = ({ color, fontSize }) => (
-  <SvgIcon style={{ color, fontSize }} width="17.08" height="17.08" viewBox="0 0 17.08 17.08">
-    <g id="Group_8" data-name="Group 8" transform="translate(-743.9 -320.9)">
-      <line
-        id="Line_2"
-        data-name="Line 2"
-        x2="15.88"
-        transform="translate(744.5 329.5)"
-        fill="none"
-        stroke={color}
-        strokeLinecap="round"
-        strokeWidth="1.2"
-      />
-      <line
-        id="Line_3"
-        data-name="Line 3"
-        x2="15.88"
-        transform="translate(752.5 321.5) rotate(90)"
-        fill="none"
-        stroke={color}
-        strokeLinecap="round"
-        strokeWidth="1.2"
-      />
-    </g>
+  <SvgIcon style={{ color, fontSize }} width="17.08" height="17.08" viewBox="0 0 21.97 21.97">
+    <path
+      className="cls-add"
+      d="M30,41A11,11,0,1,1,41,30,11,11,0,0,1,30,41Zm0-21A10,10,0,1,0,40,30,10,10,0,0,0,30,20Zm5.62,9.24H30.75V24.38a.75.75,0,1,0-1.5,0v4.87H24.38a.75.75,0,1,0,0,1.5h4.87v4.87a.75.75,0,1,0,1.5,0V30.75h4.87a.75.75,0,1,0,0-1.5Z"
+      transform="translate(-19.01 -19.01)"
+    />
   </SvgIcon>
 );
 

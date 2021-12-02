@@ -23,7 +23,7 @@ const Item = (props) => {
       <div className="button-container">
         <div className="button">
           <a href={link} target="_blank" rel="noreferrer">
-            <PlusIcon fontSize={19} color="#e84a60" />
+            <PlusIcon fontSize={30} color="#e84a60" />
           </a>
         </div>
       </div>

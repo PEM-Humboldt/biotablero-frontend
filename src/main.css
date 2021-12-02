@@ -2873,12 +2873,9 @@ tspan, .vx-axis-label {
 }
 
 .portCard .button {
-  border-radius: 50%;
-  border: 1px solid #e84a5f;
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 37px;
   cursor: pointer;
 }
 
