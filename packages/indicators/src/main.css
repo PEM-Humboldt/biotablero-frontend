@@ -80,7 +80,7 @@
 }
 
 .card2 h3 {
-  padding: 25px 15px 10px 15px;
+  padding: 24px 15px 3px 15px;
   color: #f8f8f8;
   transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   border-bottom: 1px solid #e6e6e6;
@@ -103,12 +103,24 @@
 .card2 .text {
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
-  font-weight: 300;
+  font-weight: 500;
+}
+
+.closed-filters * {
+  color: #03344b;
+}
+
+.closed-filters h3 {
+  border-color: #03344b;
+}
+
+.closed-filters {
+  background-color: transparent;
 }
 
 .tagList {
-  margin: 5px 15px;
-  padding-bottom: 5px;
+  margin: 15px 0;
+  padding-bottom: 15px;
   border-bottom: 1px solid #e6e6e6;
 }
 
@@ -122,6 +134,7 @@
 
 .tagCat {
   color: #fff !important;
+  font-size: 1.15rem;
 }
 
 .tagCat > div {
@@ -129,9 +142,14 @@
   justify-content: space-between;
 }
 
-.tagOptions {
-  background-color: #fff;
-  padding: 0 5px;
+.tagOptions input[type="checkbox"] {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+
+.tagList .MuiAccordionDetails-root {
+  padding-bottom: 7px;
 }
 
 .selectedTags {
