@@ -178,12 +178,9 @@
 }
 
 .indicatorCard a {
-  border-radius: 50%;
-  border: 1px solid #e84a5f;
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 40px;
 }
 
 .indicatorCard h1 {
@@ -240,17 +237,18 @@
   fill: #e84a5f;
 }
 
+.linkURL:visited {
+  color: #e84a5f;
+}
+
 .links *:hover {
   background-color: #e6c6ca;
 }
 
 .expandIndicatorButton {
-  border-radius: 50%;
-  border: 1px solid #e84a5f;
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 40px;
   cursor: pointer;
 }
 

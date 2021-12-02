@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 
 import CardManager from './app/CardManager';
 import TagManager from './app/TagManager';
-import CloseIcon from './components/CloseIcon';
-import OpenIcon from './components/OpenIcon';
+import MinusIcon from './components/MinusIcon';
+import PlusIcon from './components/PlusIcon';
 import useUpdateResults from './hooks/useUpdateResults';
 import { getTags } from './utils/firebase';
 
@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <div className={`wrapperIndicators${openFilter ? '' : ' full-content'}`}>
-      <div className="leftnav-title">
+      <div className={`leftnav-title${openFilter ? '' : ' closed-filters'}`}>
         <div className="card2">
           <h3>
             <button
@@ -36,7 +36,11 @@ const App = () => {
               type="button"
               onClick={() => setOpenFilter(!openFilter)}
             >
-              {openFilter ? <CloseIcon color="#fff" /> : <OpenIcon color="#fff" />}
+              {openFilter ? (
+                <MinusIcon fontSize={30} color="#fff" />
+              ) : (
+                <PlusIcon fontSize={30} color="#fff" />
+              )}
             </button>
             <div className="text">Filtros de búsqueda</div>
           </h3>
