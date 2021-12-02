@@ -137,6 +137,10 @@
   font-size: 1.15rem;
 }
 
+.tagCat .MuiAccordionSummary-content svg {
+  font-size: 13px;
+}
+
 .tagCat > div {
   display: flex;
   justify-content: space-between;
