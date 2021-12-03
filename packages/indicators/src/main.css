@@ -192,11 +192,11 @@
 
 .indicatorCard:hover {
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 7px rgba(0, 0, 0, 0.22);
-  background-color: #fecea8;
+  background-color: #f1f1f1;
 }
 
 .expandedCard:hover {
-  background-color: #fff;
+  background-color: #f2f2f2;
 }
 
 .indicatorCard a {
@@ -264,7 +264,7 @@
 }
 
 .links *:hover {
-  background-color: #e6c6ca;
+  color: #03344b;
 }
 
 .expandIndicatorButton {
@@ -295,6 +295,10 @@
   .colbg {
     padding: 0 45px 0 15px;
     border-left: 1px solid rgba(238, 238, 237, 255);
+  }
+
+  .colsm {
+    min-width: 20%;
   }
 }
 
