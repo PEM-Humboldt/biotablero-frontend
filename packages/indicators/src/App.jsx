@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import CardManager from './app/CardManager';
-import DownloadIcon from './app/DownloadIcon';
 import TagManager from './app/TagManager';
-import CloseIcon from './components/CloseIcon';
-import OpenIcon from './components/OpenIcon';
+import MinusIcon from './components/MinusIcon';
+import PlusIcon from './components/PlusIcon';
 import useUpdateResults from './hooks/useUpdateResults';
 import { getTags } from './utils/firebase';
 
@@ -27,8 +26,8 @@ const App = () => {
   };
 
   return (
-    <div className="wrapperIndicators">
-      <div className="leftnav">
+    <div className={`wrapperIndicators${openFilter ? '' : ' full-content'}`}>
+      <div className={`leftnav-title${openFilter ? '' : ' closed-filters'}`}>
         <div className="card2">
           <h3>
             <button
@@ -37,7 +36,11 @@ const App = () => {
               type="button"
               onClick={() => setOpenFilter(!openFilter)}
             >
-              {openFilter ? <CloseIcon color="#fff" /> : <OpenIcon color="#fff" />}
+              {openFilter ? (
+                <MinusIcon fontSize={30} color="#fff" />
+              ) : (
+                <PlusIcon fontSize={30} color="#fff" />
+              )}
             </button>
             <div className="text">Filtros de búsqueda</div>
           </h3>
@@ -47,29 +50,19 @@ const App = () => {
           {!loadingTags && tags.size <= 0 && (
             <div style={{ color: '#fff', margin: '5px 15px' }}>No hay filtros disponibles</div>
           )}
-          {!loadingTags && tags.size > 0 && openFilter && (
-            <TagManager data={tags} filterData={filterData} />
-          )}
         </div>
       </div>
-      <div>
-        <div className="countD">
-          {loadingData && 'Cargando información...'}
-          {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
-          {!loadingData && cardsData.length > 0 && (
-            <>
-              {cardsData.length} indicadores
-              <button
-                className="downloadAll"
-                title="Descargar indicadores listados"
-                type="button"
-                onClick={() => {}}
-              >
-                <DownloadIcon color="#e84a5f" />
-              </button>
-            </>
-          )}
+      {!loadingTags && tags.size > 0 && (
+        <div className={`leftnav-filters${openFilter ? '' : ' hide'}`}>
+          <TagManager data={tags} filterData={filterData} />
         </div>
+      )}
+      <div className="countD">
+        {loadingData && 'Cargando información...'}
+        {!loadingData && cardsData.length <= 0 && 'No hay indicadores'}
+        {!loadingData && cardsData.length > 0 && <>{cardsData.length} indicadores</>}
+      </div>
+      <div className="masonry-cards">
         <CardManager cardsData={cardsData} />
       </div>
     </div>
