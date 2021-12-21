@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DotIcon from '@material-ui/icons/FiberManualRecord';
-import CloseIcon from '@material-ui/icons/HighlightOff';
+import CloseIcon from '../components/CloseIcon';
 
 const boxColors = [
   '#b1babc',

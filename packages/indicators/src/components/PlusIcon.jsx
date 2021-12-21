@@ -3,7 +3,7 @@ import React from 'react';
 
 import { SvgIcon } from '@material-ui/core';
 
-const PlusIcon = ({ color, fontSize }) => (
+const OpenIcon = ({ color, fontSize }) => (
   <SvgIcon style={{ color, fontSize }} width="17.08" height="17.08" viewBox="0 0 21.97 21.97">
     <path
       className="cls-add"
@@ -13,14 +13,14 @@ const PlusIcon = ({ color, fontSize }) => (
   </SvgIcon>
 );
 
-PlusIcon.propTypes = {
+OpenIcon.propTypes = {
   color: PropTypes.string,
   fontSize: PropTypes.number,
 };
 
-PlusIcon.defaultProps = {
+OpenIcon.defaultProps = {
   color: '',
-  fontSize: 19,
+  fontSize: 20,
 };
 
-export default PlusIcon;
+export default OpenIcon;

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import LinkIcon from './URLIcon';
-import OpenIcon from '../../components/OpenIcon';
+import PlusIcon from '../../components/PlusIcon';
 import ExpandedCard from './ExpandedCard';
 
 const Card = (props) => {
@@ -25,9 +25,17 @@ const Card = (props) => {
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">
-          <a className="linkURL" href={externalLink} title="Ir al enlace">
-            <LinkIcon fontSize={19} />
-          </a>
+          {externalLink && (
+            <a
+              className="linkURL"
+              href={externalLink}
+              title="Ir al enlace"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <LinkIcon fontSize={19} />
+            </a>
+          )}
           <div
             className="expandIndicatorButton"
             onClick={expandClick}
@@ -36,7 +44,7 @@ const Card = (props) => {
             title="Abrir indicador"
             tabIndex={0}
           >
-            <OpenIcon fontSize={19} color="#e84a60" />
+            <PlusIcon fontSize={30} color="#e84a60" />
           </div>
         </div>
       </div>

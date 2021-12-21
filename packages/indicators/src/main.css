@@ -8,18 +8,40 @@
   margin: 0;
   display: grid;
   grid-template-columns: 1fr 4fr;
-  gap: 5px 5px;
-  grid-template-areas: 'leftnav';
+  grid-template-rows: min-content auto;
+  gap: 0;
+  grid-template-areas:
+    'leftnav-title countD'
+    'leftnav-filters masonry-cards';
   background-color: #eeeeec;
   min-height: calc(100vh - 269px);
   overflow-y: scroll;
 }
 
-.leftnav {
-  grid-area: leftnav;
+.wrapperIndicators.full-content {
+  grid-template-areas:
+    'leftnav-title countD'
+    'masonry-cards masonry-cards';
+}
+
+.leftnav-title {
+  grid-area: leftnav-title;
+}
+
+.leftnav-filters {
+  grid-area: leftnav-filters;
+}
+
+.leftnav-filters.hide {
+  display: none;
+}
+
+.masonry-cards {
+  grid-area: masonry-cards;
 }
 
 .countD {
+  grid-area: countD;
   font-size: 18px;
   margin-left: 20px;
   margin-bottom: 10px;
@@ -52,12 +74,13 @@
   justify-content: space-between;
 }
 
-.card2 {
+.leftnav-title, .leftnav-filters {
   background-color: #03344b;
+  color: #fff;
 }
 
 .card2 h3 {
-  padding: 25px 15px 10px 15px;
+  padding: 24px 15px 3px 15px;
   color: #f8f8f8;
   transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   border-bottom: 1px solid #e6e6e6;
@@ -66,27 +89,38 @@
   flex-direction: row;
 }
 
-.card2 h4 {
-  padding-top: 5px;
+.tagList h4 {
   color: #f8f8f8;
   transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: row;
 }
 
-.card2 h4 svg {
+.tagList h4 svg {
   color: #f8f8f8;
 }
 
 .card2 .text {
   font-size: 18px;
   font-family: 'Roboto', sans-serif;
-  font-weight: 300;
+  font-weight: 500;
+}
+
+.closed-filters * {
+  color: #03344b;
+}
+
+.closed-filters h3 {
+  border-color: #03344b;
+}
+
+.closed-filters {
+  background-color: transparent;
 }
 
 .tagList {
-  margin: 5px 15px;
-  padding-bottom: 5px;
+  margin: 15px 0;
+  padding-bottom: 15px;
   border-bottom: 1px solid #e6e6e6;
 }
 
@@ -100,6 +134,11 @@
 
 .tagCat {
   color: #fff !important;
+  font-size: 1.15rem;
+}
+
+.tagCat .MuiAccordionSummary-content svg {
+  font-size: 13px;
 }
 
 .tagCat > div {
@@ -107,9 +146,14 @@
   justify-content: space-between;
 }
 
-.tagOptions {
-  background-color: #fff;
-  padding: 0 5px;
+.tagOptions input[type="checkbox"] {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+
+.tagList .MuiAccordionDetails-root {
+  padding-bottom: 7px;
 }
 
 .selectedTags {
@@ -148,20 +192,17 @@
 
 .indicatorCard:hover {
   box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 7px rgba(0, 0, 0, 0.22);
-  background-color: #fecea8;
+  background-color: #f1f1f1;
 }
 
 .expandedCard:hover {
-  background-color: #fff;
+  background-color: #f2f2f2;
 }
 
 .indicatorCard a {
-  border-radius: 50%;
-  border: 1px solid #e84a5f;
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 40px;
 }
 
 .indicatorCard h1 {
@@ -218,17 +259,18 @@
   fill: #e84a5f;
 }
 
+.linkURL:visited {
+  color: #e84a5f;
+}
+
 .links *:hover {
-  background-color: #e6c6ca;
+  color: #03344b;
 }
 
 .expandIndicatorButton {
-  border-radius: 50%;
-  border: 1px solid #e84a5f;
   height: 30px;
   width: 30px;
   text-align: center;
-  line-height: 40px;
   cursor: pointer;
 }
 
@@ -253,6 +295,10 @@
   .colbg {
     padding: 0 45px 0 15px;
     border-left: 1px solid rgba(238, 238, 237, 255);
+  }
+
+  .colsm {
+    min-width: 20%;
   }
 }
 
