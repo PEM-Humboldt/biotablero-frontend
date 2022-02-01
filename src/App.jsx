@@ -6,12 +6,16 @@ import Layout from 'app/Layout';
 import Uim from 'app/Uim';
 import Compensation from 'pages/Compensation';
 import Home from 'pages/Home';
-import Indicator from 'pages/Indicator';
 import Search from 'pages/Search';
 import CBMDashboard from 'pages/CBMDashboard';
+import Indicator from 'pages/Indicator';
+import Portfolio from 'pages/Portfolio';
+
+import isFlagEnabled from 'utils/isFlagEnabled';
 
 import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
+import 'indicators/dist/bundle.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -19,7 +23,16 @@ class App extends React.Component {
     this.state = {
       user: null,
       headerNames: {},
+      indicatorsFlag: false,
+      portfoliosFlag: false,
     };
+  }
+
+  componentDidMount() {
+    isFlagEnabled('indicatorsModule')
+      .then((value) => this.setState({ indicatorsFlag: value }));
+    isFlagEnabled('portfoliosModule')
+      .then((value) => this.setState({ portfoliosFlag: value }));
   }
 
   buildQuery = (queryString) => new URLSearchParams(queryString);
@@ -55,9 +68,10 @@ class App extends React.Component {
 
   loadIndicator = () => (
     this.loadComponent({
-      logoSet: 'default',
+      logoSet: null,
       name: 'Indicadores',
       component: (<Indicator />),
+      className: 'fullgrid',
     })
   );
 
@@ -80,6 +94,15 @@ class App extends React.Component {
       />
     );
   }
+
+  loadPortfolio = () => (
+    this.loadComponent({
+      logoSet: null,
+      name: 'Portafolios',
+      component: (<Portfolio />),
+      className: 'fullgrid',
+    })
+  );
 
   loadCBMDashboard = () => (
     this.loadComponent({
@@ -108,7 +131,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, indicatorsFlag, portfoliosFlag } = this.state;
     return (
       <AppContext.Provider
         value={{ user }}
@@ -117,8 +140,9 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={this.loadHome} />
+            <Route path="/Indicadores" render={indicatorsFlag ? this.loadIndicator : this.loadHome} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
+            <Route path="/Portafolios" render={portfoliosFlag ? this.loadPortfolio : this.loadHome} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
           </Switch>

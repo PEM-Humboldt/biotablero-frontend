@@ -3,12 +3,23 @@ import { Link } from 'react-router-dom';
 
 import AppContext from 'app/AppContext';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       openMenu: false,
+      showAlerts: false,
+      showPortfolios: false,
     };
+  }
+
+  componentDidMount() {
+    isFlagEnabled('portfoliosModule')
+      .then((value) => this.setState({ showPortfolios: value }));
+    isFlagEnabled('alertsModule')
+      .then((value) => this.setState({ showAlerts: value }));
   }
 
   changeMenuState = () => {
@@ -17,7 +28,7 @@ class Menu extends React.Component {
 
   render() {
     const { user } = this.context;
-    const { openMenu } = this.state;
+    const { openMenu, showPortfolios, showAlerts } = this.state;
     return (
       <div id="menuToggle">
         <input type="checkbox" checked={openMenu} onChange={this.changeMenuState} />
@@ -48,11 +59,20 @@ class Menu extends React.Component {
             </Link>
           )
             : '' }
-          <Link to="/Alertas" onClick={this.changeMenuState}>
-            <li>
-              Alertas
-            </li>
-          </Link>
+          {showPortfolios && (
+            <Link to="/Portafolios" onClick={this.changeMenuState}>
+              <li>
+                Portafolios
+              </li>
+            </Link>
+          )}
+          {showAlerts && (
+            <Link to="/Alertas" onClick={this.changeMenuState}>
+              <li>
+                Alertas
+              </li>
+            </Link>
+          )}
           <Link to="/Monitoreo" onClick={this.changeMenuState}>
             <li>
               Monitoreo comunitario

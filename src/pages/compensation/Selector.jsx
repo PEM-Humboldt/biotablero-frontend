@@ -113,7 +113,9 @@ class Selector extends React.Component {
     const { description, iconClass } = this.props;
     let { data } = this.props;
     data = data || [];
-    const { expanded, selected, subExpanded } = this.state;
+    const {
+      expanded, selected, subExpanded,
+    } = this.state;
     return (
       <div className="selector">
         <div className={iconClass} />
@@ -149,7 +151,9 @@ class Selector extends React.Component {
               >
                 {options.map((secondLevel) => {
                   const {
-                    id: subId, label: subLabel, disabled: subDisabled,
+                    id: subId,
+                    label: subLabel,
+                    disabled: subDisabled,
                   } = secondLevel;
                   const subOptions = secondLevel.options || secondLevel.projects || [];
                   return (

@@ -31,19 +31,18 @@ const Description = () => (
       <i>
         2
       </i>
-      {' Sube tu propio '}
+      {' Dibuja un '}
       <b>
         polígono
       </b>
-      {' (usuarios registrados)'}
     </p>
     <p>
       <i>
         3
       </i>
-      {' Dibuja tu propia '}
+      {' Sube tu propio '}
       <b>
-        línea o polígono
+        polígono
       </b>
       {' (usuarios registrados)'}
     </p>

@@ -401,7 +401,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with values of richness species gaps
    */
-   static requestGaps(areaType, areaId) {
+  static requestGaps(areaType, areaId) {
     return RestAPI.makeGetRequest(`richness/gaps?areaType=${areaType}&areaId=${areaId}`);
   }
 
@@ -413,8 +413,32 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with values of richness species concentration
    */
-   static requestConcentration(areaType, areaId) {
+  static requestConcentration(areaType, areaId) {
     return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get values of functional diversity in the dry forest in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of functional diversity in the dry forest
+   */
+  static requestDryForestValues(areaType, areaId) {
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/values?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get values of functional features in the dry forest in a given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with values of functional features in the dry forest
+   */
+  static requestDryForestFeatures(areaType, areaId) {
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /** ******************** */
@@ -463,6 +487,22 @@ class RestAPI {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
+      source,
+    };
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestCoveragesLayer(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/coverage/layer`, { cancelToken: source.token }),
       source,
     };
   }
@@ -598,7 +638,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestDPCLayer(areaType, areaId, paNumber) {
+  static requestDPCLayer(areaType, areaId, paNumber) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
@@ -616,7 +656,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestPAConnSELayer(areaType, areaId, seType) {
+  static requestPAConnSELayer(areaType, areaId, seType) {
     const source = CancelToken.source();
     switch (seType) {
       case 'dryForestPAConn':
@@ -661,7 +701,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestNOSLayer(areaType, areaId, group) {
+  static requestNOSLayer(areaType, areaId, group) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
@@ -686,6 +726,56 @@ class RestAPI {
   static requestNOSLayerThresholds(areaType, areaId, group) {
     return RestAPI.makeGetRequest(
       `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+    );
+  }
+
+  /**
+   * Request data available to custom geometry
+   *
+   * @param {Object} polygon polygon saved
+   *
+   * @return {Object} with data related to the polygon
+   */
+  static requestCustomPolygonData(polygon) {
+    /** TODO: implement all this endpoint and also the backend response
+     * to find information according to polygon coordinates
+     * */
+    return RestAPI.makePostRequest('polygon', {
+      latLngs: polygon.latLngs,
+    });
+  }
+
+  /**
+   * Get the layer of gaps section of richness
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestGapsLayer(areaType, areaId) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `richness/gaps/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the threshold values for the layer of gaps section of richness
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestGapsLayerThresholds(areaType, areaId) {
+    return RestAPI.makeGetRequest(
+      `richness/gaps/layer/thresholds?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 

@@ -21,7 +21,7 @@ class TabContainer extends React.Component {
     const { handlerSwitchLayer } = this.props;
     this.setState({ value });
     if (value === 0) {
-      handlerSwitchLayer('geofence');
+      handlerSwitchLayer('coverage');
     }
   };
 

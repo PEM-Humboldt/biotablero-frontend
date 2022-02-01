@@ -12,8 +12,7 @@
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-plotly.js": "^2.5.1",
-    "rollup-plugin-css-only": "^3.1.0"
+    "react-plotly.js": "^2.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
@@ -32,7 +31,8 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "parcel": "1.12.3",
     "prettier": "^2.2.1",
-    "rollup": "^2.39.0"
+    "rollup": "^2.39.0",
+    "rollup-plugin-css-only": "^3.1.0"
   },
   "scripts": {
     "dev": "parcel index.html",

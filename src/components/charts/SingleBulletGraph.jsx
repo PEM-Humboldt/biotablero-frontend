@@ -260,7 +260,13 @@ const SingleBulletGraph = (props) => {
 };
 
 SingleBulletGraph.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    ranges: PropTypes.object.isRequired,
+    markers: PropTypes.object.isRequired,
+    measures: PropTypes.object.isRequired,
+    title: PropTypes.string,
+  }).isRequired,
   height: PropTypes.number,
   colors: PropTypes.func.isRequired,
   onClickHandler: PropTypes.func,

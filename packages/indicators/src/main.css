@@ -1,0 +1,315 @@
+/* Indicadores */
+*:focus {
+  outline: none;
+}
+
+.wrapperIndicators {
+  box-sizing: border-box;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: min-content auto;
+  gap: 0;
+  grid-template-areas:
+    'leftnav-title countD'
+    'leftnav-filters masonry-cards';
+  background-color: #eeeeec;
+  min-height: calc(100vh - 269px);
+  overflow-y: scroll;
+}
+
+.wrapperIndicators.full-content {
+  grid-template-areas:
+    'leftnav-title countD'
+    'masonry-cards masonry-cards';
+}
+
+.leftnav-title {
+  grid-area: leftnav-title;
+}
+
+.leftnav-filters {
+  grid-area: leftnav-filters;
+}
+
+.leftnav-filters.hide {
+  display: none;
+}
+
+.masonry-cards {
+  grid-area: masonry-cards;
+}
+
+.countD {
+  grid-area: countD;
+  font-size: 18px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+  padding: 25px 0 10px 0;
+  border-bottom: 1px solid #e84a5f;
+  width: 290px;
+  max-width: 290px;
+  display: flex;
+  justify-content: space-between;
+  color: #03344b;
+}
+
+.countD svg {
+  color: #e84a5f;
+  font-size: 22px;
+}
+
+.downloadAll {
+  fill: #e84a5f;
+  border-color: transparent;
+  margin-top: -5px;
+  cursor: pointer;
+}
+
+.cardTitles {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #2a363b;
+  padding-bottom: 15px;
+  justify-content: space-between;
+}
+
+.leftnav-title, .leftnav-filters {
+  background-color: #03344b;
+  color: #fff;
+}
+
+.card2 h3 {
+  padding: 24px 15px 3px 15px;
+  color: #f8f8f8;
+  transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-bottom: 1px solid #e6e6e6;
+  gap: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.tagList h4 {
+  color: #f8f8f8;
+  transition: all 0.7s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: row;
+}
+
+.tagList h4 svg {
+  color: #f8f8f8;
+}
+
+.card2 .text {
+  font-size: 18px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.closed-filters * {
+  color: #03344b;
+}
+
+.closed-filters h3 {
+  border-color: #03344b;
+}
+
+.closed-filters {
+  background-color: transparent;
+}
+
+.tagList {
+  margin: 15px 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.tagBox {
+  margin: 5px 0 !important;
+}
+
+.tagBox > div:nth-child(1) svg {
+  color: #fff;
+}
+
+.tagCat {
+  color: #fff !important;
+  font-size: 1.15rem;
+}
+
+.tagCat .MuiAccordionSummary-content svg {
+  font-size: 13px;
+}
+
+.tagCat > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tagOptions input[type="checkbox"] {
+  margin-right: 5px;
+  margin-bottom: 5px;
+  vertical-align: middle;
+}
+
+.tagList .MuiAccordionDetails-root {
+  padding-bottom: 7px;
+}
+
+.selectedTags {
+  min-height: 20px;
+  margin: 5px 15px;
+  display: inline-block;
+}
+
+.selectedTags > div {
+  display: inline-block;
+  margin-right: 2px;
+  padding: 0 2px;
+  color: #fff;
+}
+
+.indicatorCard {
+  margin: 10px;
+  width: 300px;
+  min-height: 220px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 15px;
+}
+
+.indicatorCard.no-transition {
+  transition: none;
+}
+
+.expandedCard {
+  min-width: 300px;
+  width: calc(100% - 75px);
+  transition: none;
+}
+
+.indicatorCard:hover {
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.25), 0 5px 7px rgba(0, 0, 0, 0.22);
+  background-color: #f1f1f1;
+}
+
+.expandedCard:hover {
+  background-color: #f2f2f2;
+}
+
+.indicatorCard a {
+  height: 30px;
+  width: 30px;
+  text-align: center;
+}
+
+.indicatorCard h1 {
+  font-size: 24px;
+  text-align: left;
+  flex: 1;
+  margin-top: 0px;
+  color: #2a363b;
+  letter-spacing: 1px;
+}
+
+.indicatorCard h2 {
+  font-size: 20px;
+  color: #107e7c;
+  padding-top: 10px;
+  text-align: left;
+  font-style: normal;
+  font-family: 'Lato', sans-serif;
+  margin-bottom: 0;
+}
+
+.indicatorCard h3 {
+  text-align: left;
+  font-size: 14px;
+  color: #d49077;
+  font-family: 'Lato', sans-serif;
+  padding-left: 5px;
+  margin-top: 10px;
+}
+
+.indicatorCard h4 {
+  text-align: left;
+  font-size: 14px;
+  color: #707070;
+  font-weight: 400;
+  font-family: 'Lato', sans-serif;
+  padding: 0px 0px 0px 5px;
+}
+
+.expandedCard h4 {
+  white-space: pre-line;
+}
+
+.links {
+  border-left: 1px solid rgba(238, 238, 237, 255);
+  padding-left: 8px;
+  fill: #e84a5f;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.linkURL {
+  fill: #e84a5f;
+}
+
+.linkURL:visited {
+  color: #e84a5f;
+}
+
+.links *:hover {
+  color: #03344b;
+}
+
+.expandIndicatorButton {
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.openFilters,
+.clearFilters {
+  background-color: transparent;
+  border-color: transparent;
+  margin-top: -5px;
+  cursor: pointer;
+}
+
+.expandedCard h1 {
+  max-width: 500px;
+}
+
+@media (min-width: 1010px) {
+  .spliter {
+    display: inline-flex;
+    column-gap: 15px;
+  }
+
+  .colbg {
+    padding: 0 45px 0 15px;
+    border-left: 1px solid rgba(238, 238, 237, 255);
+  }
+
+  .colsm {
+    min-width: 20%;
+  }
+}
+
+@media (min-width: 1352px) {
+  .expandedCard {
+    width: 1020px;
+  }
+}
+
+@media (min-width: 1804px) {
+  .expandedCard {
+    width: 1380px;
+  }
+}

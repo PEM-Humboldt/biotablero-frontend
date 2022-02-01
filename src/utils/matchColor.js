@@ -128,6 +128,78 @@ const match = {
       'max',
       'min_threshold',
       'max_threshold',
+      'min_region',
+      'max_region',
+      'area',
+      'legend-from',
+      'legend-middle',
+      'legend-to',
+    ],
+  },
+  functionalDryForestValues: {
+    palette: 'functionalDryForestValues',
+    sort: [
+      'value',
+      'value_nal',
+    ],
+  },
+  functionalDFFeatureLA: {
+    palette: 'functionalDFFeatureLA',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
+  functionalDFFeatureLN: {
+    palette: 'functionalDFFeatureLN',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
+  functionalDFFeaturePH: {
+    palette: 'functionalDFFeaturePH',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
+  functionalDFFeatureSLA: {
+    palette: 'functionalDFFeatureSLA',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
+  functionalDFFeatureSSD: {
+    palette: 'functionalDFFeatureSSD',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
+      'area',
+    ],
+  },
+  functionalDFFeatureSM: {
+    palette: 'functionalDFFeatureSM',
+    // first values, then limits, then backgrounds
+    sort: [
+      'value',
+      'min',
+      'max',
       'area',
     ],
   },
@@ -216,6 +288,13 @@ const matchColor = (type, resetCache = false) => {
     case 'wetland':
     case 'richnessNos':
     case 'richnessGaps':
+    case 'functionalDryForestValues':
+    case 'functionalDFFeatureLA':
+    case 'functionalDFFeatureLN':
+    case 'functionalDFFeaturePH':
+    case 'functionalDFFeatureSLA':
+    case 'functionalDFFeatureSSD':
+    case 'functionalDFFeatureSM':
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx === -1) return null;

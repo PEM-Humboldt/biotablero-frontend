@@ -2,10 +2,10 @@ import AddIcon from '@material-ui/icons/Add';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import Accordion from 'pages/search/Accordion';
 import CurrentFootprint from 'pages/search/drawer/landscape/humanFootprint/CurrentFootprint';
 import PersistenceFooprint from 'pages/search/drawer/landscape/humanFootprint/PersistenceFootprint';
 import TimelineFootprint from 'pages/search/drawer/landscape/humanFootprint/TimelineFootprint';
-import Accordion from 'pages/search/drawer/Accordion';
 
 const HumanFootprint = (props) => {
   const {
