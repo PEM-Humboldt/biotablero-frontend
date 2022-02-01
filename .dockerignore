@@ -6,7 +6,18 @@ Dockerfile
 README.md
 .git
 
-# Artifacts that will be built during image creation.
-# This should contain all files created during `npm run build`.
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+.parcel-cache
+
+.github
 build
 node_modules
+
+packages/**/.cache
+packages/**/node_modules
+packages/**/dist
