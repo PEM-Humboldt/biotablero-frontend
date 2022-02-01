@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -7,8 +7,15 @@ import Accordion from 'pages/search/Accordion';
 import DrawPolygon from 'pages/search/selector/DrawPolygon';
 import SearchAreas from 'pages/search/selector/SearchAreas';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 const Selector = (props) => {
   const { areasData, description, handlers } = props;
+  const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
+
+  useEffect(() => {
+    isFlagEnabled('drawPolygon').then((value) => setDrawPolygonFlag(value));
+  }, []);
 
   const sections = [
     {
@@ -28,6 +35,7 @@ const Selector = (props) => {
         id: 'draw-polygon',
         name: 'Dibujar polígono',
         icon: EditIcon,
+        disabled: !drawPolygonFlag,
       },
       component: DrawPolygon,
     },
