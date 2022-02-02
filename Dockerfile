@@ -24,6 +24,6 @@ RUN yarn build
 FROM node:14.15 as release
 
 COPY --from=build /home/node/app/build ./build
-RUN yarn global add serve
+RUN yarn global add serve@~13.0.0
 EXPOSE 5000
-CMD [ "serve", "-s", "build" ]
+CMD [ "serve", "-p", "5000", "-s", "build" ]
