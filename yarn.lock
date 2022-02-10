@@ -3816,6 +3816,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/eslintrc@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@eslint/eslintrc@npm:0.3.0"
+  dependencies:
+    ajv: ^6.12.4
+    debug: ^4.1.1
+    espree: ^7.3.0
+    globals: ^12.1.0
+    ignore: ^4.0.6
+    import-fresh: ^3.2.1
+    js-yaml: ^3.13.1
+    lodash: ^4.17.20
+    minimatch: ^3.0.4
+    strip-json-comments: ^3.1.1
+  checksum: a8148d3868893c251c72b2674a3d57c04deda7afe8208a8f4306d129017f21bbe800a493dda9b46957d39325d28378bd48c0a10d25c89aa5516dc8691ef7ca95
+  languageName: node
+  linkType: hard
+
 "@eslint/eslintrc@npm:^0.4.0":
   version: 0.4.0
   resolution: "@eslint/eslintrc@npm:0.4.0"
@@ -4960,7 +4978,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/bar@npm:^0.69.0":
+"@nivo/bar@npm:~0.69.0":
   version: 0.69.1
   resolution: "@nivo/bar@npm:0.69.1"
   dependencies:
@@ -4983,7 +5001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/bullet@npm:^0.69.1":
+"@nivo/bullet@npm:~0.69.1":
   version: 0.69.1
   resolution: "@nivo/bullet@npm:0.69.1"
   dependencies:
@@ -5017,7 +5035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/core@npm:^0.69.0":
+"@nivo/core@npm:~0.69.0":
   version: 0.69.0
   resolution: "@nivo/core@npm:0.69.0"
   dependencies:
@@ -5054,7 +5072,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/line@npm:^0.69.0":
+"@nivo/line@npm:~0.69.0":
   version: 0.69.1
   resolution: "@nivo/line@npm:0.69.1"
   dependencies:
@@ -5075,7 +5093,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/pie@npm:^0.69.0":
+"@nivo/pie@npm:~0.69.0":
   version: 0.69.0
   resolution: "@nivo/pie@npm:0.69.0"
   dependencies:
@@ -5116,7 +5134,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/tooltip@npm:0.69.0, @nivo/tooltip@npm:^0.69.0":
+"@nivo/tooltip@npm:0.69.0, @nivo/tooltip@npm:~0.69.0":
   version: 0.69.0
   resolution: "@nivo/tooltip@npm:0.69.0"
   dependencies:
@@ -8563,12 +8581,12 @@ __metadata:
     "@material-ui/core": ^4.0.0
     "@material-ui/icons": ^4.9.1
     "@material-ui/lab": ^4.0.0-alpha.57
-    "@nivo/bar": ^0.69.0
-    "@nivo/bullet": ^0.69.1
-    "@nivo/core": ^0.69.0
-    "@nivo/line": ^0.69.0
-    "@nivo/pie": ^0.69.0
-    "@nivo/tooltip": ^0.69.0
+    "@nivo/bar": ~0.69.0
+    "@nivo/bullet": ~0.69.1
+    "@nivo/core": ~0.69.0
+    "@nivo/line": ~0.69.0
+    "@nivo/pie": ~0.69.0
+    "@nivo/tooltip": ~0.69.0
     "@vx/axis": 0.0.170
     "@vx/glyph": 0.0.170
     "@vx/grid": 0.0.170
@@ -8578,28 +8596,28 @@ __metadata:
     "@vx/tooltip": 0.0.165
     axios: 0.21.1
     cbm-dashboard: 1.0.0
-    chart.js: ^2.8.0
-    eslint: ^7.19.0
-    eslint-config-airbnb: ^18.2.1
-    eslint-plugin-import: ^2.22.1
-    eslint-plugin-jsx-a11y: ^6.4.1
-    eslint-plugin-react: ^7.22.0
-    eslint-plugin-react-hooks: ^1.7.0
-    husky: ^4.3.6
+    chart.js: ~2.8.0
+    eslint: ~7.19.0
+    eslint-config-airbnb: ~18.2.1
+    eslint-plugin-import: ~2.22.1
+    eslint-plugin-jsx-a11y: ~6.4.1
+    eslint-plugin-react: ~7.22.0
+    eslint-plugin-react-hooks: ~1.7.0
+    husky: ~4.3.6
     indicators: 1.0.0
     leaflet: 1.4.0
     leaflet-draw: ^1.0.4
-    lint-staged: ^10.5.3
+    lint-staged: ~10.5.3
     prop-types: 15.6.2
-    react: ^17.0.1
-    react-dom: ^17.0.1
-    react-json-to-csv: ^1.0.4
+    react: ~17.0.1
+    react-dom: ~17.0.1
+    react-json-to-csv: ~1.0.4
     react-leaflet: 2.7.0
     react-leaflet-draw: 0.19.0
     react-router-dom: 5.2.0
     react-scripts: 4.0.2
-    react-spring: ^9.1.2
-    styled-components: ^5.2.3
+    react-spring: ~9.1.2
+    styled-components: ~5.2.3
   languageName: unknown
   linkType: soft
 
@@ -9289,13 +9307,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chart.js@npm:^2.8.0":
-  version: 2.9.4
-  resolution: "chart.js@npm:2.9.4"
+"chart.js@npm:~2.8.0":
+  version: 2.8.0
+  resolution: "chart.js@npm:2.8.0"
   dependencies:
     chartjs-color: ^2.1.0
     moment: ^2.10.2
-  checksum: cbdc7abe2fa65e4838848e68b035ae6048ebcc512b9057d7cdb6d361e728400d39e3fde75e0b4da815ab43f7890c31787d8f80d4e6ab75a3e80fc75b47cd173c
+  checksum: 7c648de17d1dd90bf2cfaf88fdbc0aafd69da15b112caf93765f4ac7a6a357cd427b93a20808f5d4ed3d4106bfb6be59d1c1340c7e8695a1bb290e666c75eb1a
   languageName: node
   linkType: hard
 
@@ -12214,7 +12232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-airbnb@npm:^18.2.1, eslint-config-airbnb@npm:~18.2.1":
+"eslint-config-airbnb@npm:~18.2.1":
   version: 18.2.1
   resolution: "eslint-config-airbnb@npm:18.2.1"
   dependencies:
@@ -12334,7 +12352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsx-a11y@npm:^6.3.1, eslint-plugin-jsx-a11y@npm:^6.4.1, eslint-plugin-jsx-a11y@npm:~6.4.1":
+"eslint-plugin-jsx-a11y@npm:^6.3.1, eslint-plugin-jsx-a11y@npm:~6.4.1":
   version: 6.4.1
   resolution: "eslint-plugin-jsx-a11y@npm:6.4.1"
   dependencies:
@@ -12370,15 +12388,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^1.7.0":
-  version: 1.7.0
-  resolution: "eslint-plugin-react-hooks@npm:1.7.0"
-  peerDependencies:
-    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
-  checksum: ea16d0cf4aaa0a30db05860bd892f3432a4cc299983a5adece092c021c4ee359e7e7277ff1e7207d1f550fae5f08a8b3aa2698f36e82cdebb756a8a3e1c842eb
-  languageName: node
-  linkType: hard
-
 "eslint-plugin-react-hooks@npm:^4.2.0, eslint-plugin-react-hooks@npm:~4.2.0":
   version: 4.2.0
   resolution: "eslint-plugin-react-hooks@npm:4.2.0"
@@ -12388,7 +12397,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:^7.21.5, eslint-plugin-react@npm:^7.22.0, eslint-plugin-react@npm:~7.22.0":
+"eslint-plugin-react-hooks@npm:~1.7.0":
+  version: 1.7.0
+  resolution: "eslint-plugin-react-hooks@npm:1.7.0"
+  peerDependencies:
+    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+  checksum: ea16d0cf4aaa0a30db05860bd892f3432a4cc299983a5adece092c021c4ee359e7e7277ff1e7207d1f550fae5f08a8b3aa2698f36e82cdebb756a8a3e1c842eb
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-react@npm:^7.21.5, eslint-plugin-react@npm:~7.22.0":
   version: 7.22.0
   resolution: "eslint-plugin-react@npm:7.22.0"
   dependencies:
@@ -12479,7 +12497,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.11.0, eslint@npm:^7.19.0":
+"eslint@npm:^7.11.0":
   version: 7.21.0
   resolution: "eslint@npm:7.21.0"
   dependencies:
@@ -12570,6 +12588,53 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: cd738c70e284c7c4740e9184d17adb43ccc72bca543c5d0560d681ec667ad5c7382e819393369b82b4583ddef8afc8a23f92377813c0c9e00c69de4d99b68ab7
+  languageName: node
+  linkType: hard
+
+"eslint@npm:~7.19.0":
+  version: 7.19.0
+  resolution: "eslint@npm:7.19.0"
+  dependencies:
+    "@babel/code-frame": ^7.0.0
+    "@eslint/eslintrc": ^0.3.0
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.0.1
+    doctrine: ^3.0.0
+    enquirer: ^2.3.5
+    eslint-scope: ^5.1.1
+    eslint-utils: ^2.1.0
+    eslint-visitor-keys: ^2.0.0
+    espree: ^7.3.1
+    esquery: ^1.2.0
+    esutils: ^2.0.2
+    file-entry-cache: ^6.0.0
+    functional-red-black-tree: ^1.0.1
+    glob-parent: ^5.0.0
+    globals: ^12.1.0
+    ignore: ^4.0.6
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    js-yaml: ^3.13.1
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash: ^4.17.20
+    minimatch: ^3.0.4
+    natural-compare: ^1.4.0
+    optionator: ^0.9.1
+    progress: ^2.0.0
+    regexpp: ^3.1.0
+    semver: ^7.2.1
+    strip-ansi: ^6.0.0
+    strip-json-comments: ^3.1.0
+    table: ^6.0.4
+    text-table: ^0.2.0
+    v8-compile-cache: ^2.0.3
+  bin:
+    eslint: bin/eslint.js
+  checksum: 56f05e1e00d0fa6a2583485c270f828165ede5853d7b96ca6a092ab39c74362edaa9a213019aa8b89624ecc703f6d23c1c77bfe61fa74ba249edaea80f0e1619
   languageName: node
   linkType: hard
 
@@ -14980,7 +15045,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"husky@npm:^4.3.6":
+"husky@npm:~4.3.6":
   version: 4.3.8
   resolution: "husky@npm:4.3.8"
   dependencies:
@@ -17123,7 +17188,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:^10.5.3":
+"lint-staged@npm:~10.5.3":
   version: 10.5.4
   resolution: "lint-staged@npm:10.5.4"
   dependencies:
@@ -21661,19 +21726,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "react-dom@npm:17.0.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    scheduler: ^0.20.1
-  peerDependencies:
-    react: 17.0.1
-  checksum: df2af300dd4f49a5daaccc38f5a307def2a9ae2b7ebffa3dce8fb9986129057696b86a2c94e5ae36133057c69428c500e4ee3bf5884eb44e5632ace8b7ace41f
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:~17.0.1":
   version: 17.0.2
   resolution: "react-dom@npm:17.0.2"
@@ -21708,7 +21760,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-json-to-csv@npm:^1.0.4":
+"react-json-to-csv@npm:~1.0.4":
   version: 1.0.4
   resolution: "react-json-to-csv@npm:1.0.4"
   dependencies:
@@ -21925,7 +21977,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-spring@npm:9.1.2, react-spring@npm:^9.1.2":
+"react-spring@npm:9.1.2, react-spring@npm:~9.1.2":
   version: 9.1.2
   resolution: "react-spring@npm:9.1.2"
   dependencies:
@@ -21951,16 +22003,6 @@ fsevents@^1.2.7:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 0bcd8af483709832e318dcef84c26ebddeb866bf4f58010286367ef0c1e7c5106e00cfc65688b9102414cb3d572c63909c2eb7ea972b4420fc70a78c10b6e8ad
-  languageName: node
-  linkType: hard
-
-"react@npm:^17.0.1":
-  version: 17.0.1
-  resolution: "react@npm:17.0.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: 83b9df9529a2b489f00a4eaa608fc7d55518b258e046c100344ae068713e43ae64e477a140f87e38cfe75489bcfd26d27fce5818f89f4ec41bdbda7ead4bb426
   languageName: node
   linkType: hard
 
@@ -23058,16 +23100,6 @@ resolve@^0.6.1:
   dependencies:
     xmlchars: ^2.2.0
   checksum: 5636b55cf15f7cf0baa73f2797bf992bdcf75d1b39d82c0aa4608555c774368f6ac321cb641fd5f3d3ceb87805122cd47540da6a7b5960fe0dbdb8f8c263f000
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.20.1":
-  version: 0.20.1
-  resolution: "scheduler@npm:0.20.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: ace896fff8ccc516a4b5a249c712fc88d4e2456587d991acc220b54690362d6a2b9d426a7f030454cb439f6f5ff2706b13ee8c44ccb953884c4756304a2f8ad6
   languageName: node
   linkType: hard
 
@@ -24228,7 +24260,7 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^5.2.3":
+"styled-components@npm:~5.2.3":
   version: 5.2.3
   resolution: "styled-components@npm:5.2.3"
   dependencies:
