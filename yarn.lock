@@ -5696,7 +5696,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:~11.2.0":
+"@rollup/plugin-node-resolve@npm:~11.2.1":
   version: 11.2.1
   resolution: "@rollup/plugin-node-resolve@npm:11.2.1"
   dependencies:
@@ -8750,7 +8750,7 @@ __metadata:
     "@material-ui/icons": ^4.11.2
     "@rollup/plugin-babel": ~5.3.0
     "@rollup/plugin-commonjs": ~17.1.0
-    "@rollup/plugin-node-resolve": ~11.2.0
+    "@rollup/plugin-node-resolve": ~11.2.1
     babel-plugin-transform-runtime: ~6.23.0
     eslint: ~7.17.0
     eslint-config-airbnb: ~18.2.1
