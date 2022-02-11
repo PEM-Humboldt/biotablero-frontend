@@ -9,12 +9,12 @@ import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
 
 const getFeatureLabel = {
-  leaf_area: '<div>Área Foliar (mm<sup>2</sup>)</div>',
-  leaf_nitrogen: '<div>Nitrógeno foliar (%)</div>',
-  maximun_height: '<div>Altura Máxima (m)</div>',
-  specific_leaf_area: '<div>Área Foliar Específica (mg/mm<sup>2</sup>)</div>',
-  wood_density: '<div>Densidad de Madera (g/cm<sup>3</sup>)</div>',
-  seed_mass: '<div>Masa de Semilla (g)</div>',
+  leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
+  leaf_nitrogen: { __html: '<div>Nitrógeno foliar (%)</div>' },
+  maximun_height: { __html: '<div>Altura Máxima (m)</div>' },
+  specific_leaf_area: { __html: '<div>Área Foliar Específica (mg/mm<sup>2</sup>)</div>' },
+  wood_density: { __html: '<div>Densidad de Madera (g/cm<sup>3</sup>)</div>' },
+  seed_mass: { __html: '<div>Masa de Semilla (g)</div>' },
 };
 
 const getFeatureColors = {
@@ -244,9 +244,9 @@ class TropicalDryForest extends React.Component {
             <div key={bar.id}>
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
-              >
-                {getFeatureLabel[bar.id]}
-              </div>
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
+              />
               <div className="svgPointer">
                 <GraphLoader
                   message={messageFeatures}
