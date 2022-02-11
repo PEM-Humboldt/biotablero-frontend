@@ -8143,6 +8143,11 @@ __metadata:
     react-scripts: 4.0.2
     react-spring: ~9.1.2
     styled-components: ~5.2.3
+  dependenciesMeta:
+    "@react-spring/core":
+      built: false
+    parcel:
+      built: false
   languageName: unknown
   linkType: soft
 
