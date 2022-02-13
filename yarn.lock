@@ -8172,7 +8172,7 @@ __metadata:
     indicators: 1.0.0
     leaflet: 1.4.0
     leaflet-draw: ^1.0.4
-    lint-staged: ~10.5.3
+    lint-staged: ~10.5.4
     prop-types: 15.6.2
     react: ~17.0.1
     react-dom: ~17.0.1
@@ -16917,7 +16917,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"lint-staged@npm:~10.5.3":
+"lint-staged@npm:~10.5.4":
   version: 10.5.4
   resolution: "lint-staged@npm:10.5.4"
   dependencies:
