@@ -25,7 +25,7 @@
     "eslint-config-airbnb": "~18.2.1",
     "eslint-config-prettier": "~7.1.0",
     "eslint-plugin-prettier": "~3.3.1",
-    "parcel": "1.12.3",
+    "parcel": "1.12.4",
     "prettier": "~2.2.1",
     "rollup": "~2.39.0",
     "rollup-plugin-css-only": "~3.1.0"
