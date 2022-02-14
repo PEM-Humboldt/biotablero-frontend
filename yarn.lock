@@ -8438,7 +8438,7 @@ __metadata:
     react: ~17.0.2
     react-dom: ~17.0.2
     react-plotly.js: ~2.5.1
-    rollup: ~2.39.0
+    rollup: ~2.67.2
     rollup-plugin-css-only: ~3.1.0
   languageName: unknown
   linkType: soft
@@ -13975,7 +13975,7 @@ fsevents@^1.2.7:
     react: ~17.0.2
     react-dom: ~17.0.2
     react-masonry-component: ~6.3.0
-    rollup: ~2.59.0
+    rollup: ~2.67.2
     rollup-plugin-css-only: ~3.1.0
   languageName: unknown
   linkType: soft
@@ -21295,23 +21295,9 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"rollup@npm:~2.39.0":
-  version: 2.39.1
-  resolution: "rollup@npm:2.39.1"
-  dependencies:
-    fsevents: ~2.3.1
-  dependenciesMeta:
-    fsevents:
-      optional: true
-  bin:
-    rollup: dist/bin/rollup
-  checksum: e56da60242e3eaf6fe735f04943dca60974281b4a58996001fe34011ad8a16fca38076fea8c5e50b5728d62572082e9f952eb27fd10c71593cb99f0b3e2a4f26
-  languageName: node
-  linkType: hard
-
-"rollup@npm:~2.59.0":
-  version: 2.59.0
-  resolution: "rollup@npm:2.59.0"
+"rollup@npm:~2.67.2":
+  version: 2.67.2
+  resolution: "rollup@npm:2.67.2"
   dependencies:
     fsevents: ~2.3.2
   dependenciesMeta:
@@ -21319,7 +21305,7 @@ resolve@^0.6.1:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 9fbaa72b8ff840b366f4da3ba35379a3d115fd52e1dced1693995005a9ff7e1699829ff16d8eb65c0a9eff26b57b4914dca7511f22e4d900af8c757d7129124d
+  checksum: 9aca5251ba4b441064183cde2394b91567259002d68086bdd3906db66d55dd148ab27e57c51eb53830d7b9b813c2d4e834b7735d65e2a869780bc639d4a20c38
   languageName: node
   linkType: hard
 
