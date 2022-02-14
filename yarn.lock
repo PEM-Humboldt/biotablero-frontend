@@ -7321,12 +7321,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:~0.25.0":
-  version: 0.25.0
-  resolution: "axios@npm:0.25.0"
+"axios@npm:~0.26.0":
+  version: 0.26.0
+  resolution: "axios@npm:0.26.0"
   dependencies:
-    follow-redirects: ^1.14.7
-  checksum: 2a8a3787c05f2a0c9c3878f49782357e2a9f38945b93018fb0c4fd788171c43dceefbb577988628e09fea53952744d1ecebde234b561f1e703aa43e0a598a3ad
+    follow-redirects: ^1.14.8
+  checksum: d7a8b898f4157bedeb2e06c03b16133b91b354c041205bea732ce58b7a21f373d22057b0eea0d482838145ce6ff482b359750d9bcb8dd19d45e3928e3c65c280
   languageName: node
   linkType: hard
 
@@ -7812,7 +7812,7 @@ __metadata:
     "@vx/responsive": ~0.0.199
     "@vx/scale": ~0.0.199
     "@vx/tooltip": ~0.0.199
-    axios: ~0.25.0
+    axios: ~0.26.0
     cbm-dashboard: 1.0.0
     chart.js: ~3.7.1
     eslint: ~7.19.0
@@ -12453,7 +12453,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.7":
+"follow-redirects@npm:^1.14.8":
   version: 1.14.8
   resolution: "follow-redirects@npm:1.14.8"
   peerDependenciesMeta:
