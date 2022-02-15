@@ -244,6 +244,7 @@ class TropicalDryForest extends React.Component {
             <div key={bar.id}>
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
+                // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">
