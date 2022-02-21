@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import AddProjectIcon from '@material-ui/icons/Check';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import AddProjectIcon from '@mui/icons-material/Check';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 class NewBiomeForm extends Component {
   constructor(props) {

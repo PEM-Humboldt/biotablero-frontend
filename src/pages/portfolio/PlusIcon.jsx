@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 
 const PlusIcon = ({ color, fontSize }) => (
   <SvgIcon style={{ color, fontSize }} width="17.08" height="17.08" viewBox="0 0 21.97 21.97">

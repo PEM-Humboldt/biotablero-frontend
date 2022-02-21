@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from '@material-ui/core/Modal';
-import CloseIcon from '@material-ui/icons/Close';
+import Modal from '@mui/material/Modal';
+import CloseIcon from '@mui/icons-material/Close';
 
 import Content from 'pages/home/Content';
 import Information from 'pages/home/Information';

@@ -1,8 +1,8 @@
 import { PropTypes } from 'prop-types';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import AccountCircleOutlined from '@material-ui/icons/AccountCircleOutlined';
-import CloseIcon from '@material-ui/icons/Close';
-import Modal from '@material-ui/core/Modal';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import AccountCircleOutlined from '@mui/icons-material/AccountCircleOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import Modal from '@mui/material/Modal';
 import React, { Component } from 'react';
 
 import AppContext from 'app/AppContext';

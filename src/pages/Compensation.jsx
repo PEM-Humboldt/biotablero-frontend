@@ -1,6 +1,6 @@
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import L from 'leaflet';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 

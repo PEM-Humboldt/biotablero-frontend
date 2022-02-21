@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 
 const ConfirmationModal = ({
   open, onClose, message, onContinue, onCancel, styleCustom,

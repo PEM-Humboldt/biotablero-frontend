@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CloseIcon from '@material-ui/icons/Close';
-import AddProjectIcon from '@material-ui/icons/Check';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import CloseIcon from '@mui/icons-material/Close';
+import AddProjectIcon from '@mui/icons-material/Check';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 class NewProjectForm extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class NewProjectForm extends Component {
         options={regions}
         getOptionLabel={(option) => option.label}
         onChange={this.handleChangeRegion}
-        getOptionSelected={(option, value) => option.label === value.label}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
         renderInput={(params) => (
           <TextField
             InputProps={params.InputProps}
@@ -84,7 +84,7 @@ class NewProjectForm extends Component {
             }
           }
           onChange={this.handleChangeStatus}
-          getOptionSelected={(option, value) => option.label === value.label}
+          isOptionEqualToValue={(option, value) => option.label === value.label}
           renderInput={(params) => (
             <TextField
               InputProps={params.InputProps}

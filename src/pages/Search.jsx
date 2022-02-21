@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router-dom';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import L, { LatLngBounds } from 'leaflet';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 

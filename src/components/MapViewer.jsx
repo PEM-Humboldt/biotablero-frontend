@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Modal } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Modal } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   ImageOverlay,
   Map,
@@ -149,7 +149,6 @@ class MapViewer extends React.Component {
           container={this}
           style={{ position: 'absolute' }}
           BackdropProps={{ style: { position: 'absolute' } }}
-          disableBackdropClick={false}
         >
           <div className="generalAlarm">
             <h2>
