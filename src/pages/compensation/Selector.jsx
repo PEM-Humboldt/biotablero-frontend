@@ -197,7 +197,7 @@ Selector.propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
     disabled: PropTypes.bool,
-    expandIcon: PropTypes.Component,
+    expandIcon: PropTypes.node,
     detailId: PropTypes.string,
     options: PropTypes.array,
   })),
