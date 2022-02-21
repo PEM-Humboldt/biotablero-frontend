@@ -151,7 +151,6 @@ class CompensationFactor extends React.Component {
             />
             <InfoTooltip
               placement="left"
-              interactive
               title={BiomesText}
             >
               <h3>
@@ -173,7 +172,6 @@ class CompensationFactor extends React.Component {
             />
             <InfoTooltip
               placement="left"
-              interactive
               title={BioticRegionsText}
             >
               <h3>

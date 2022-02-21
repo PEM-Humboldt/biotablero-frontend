@@ -151,7 +151,6 @@ class StrategicEcosystems extends React.Component {
         <div className="graphcontainer pt5">
           <InfoTooltip
             placement="left"
-            interactive
             title={CoverageText}
           >
             <h4>
@@ -171,7 +170,6 @@ class StrategicEcosystems extends React.Component {
           </div>
           <InfoTooltip
             placement="left"
-            interactive
             title={PAText}
           >
             <h4>
@@ -196,7 +194,6 @@ class StrategicEcosystems extends React.Component {
           <div className="ecoest">
             <InfoTooltip
               placement="left"
-              interactive
               title={SEText}
             >
               <h4 className="minus20">
