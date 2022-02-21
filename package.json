@@ -9,9 +9,12 @@
     "lint": "eslint src --ext .js,.jsx"
   },
   "dependencies": {
-    "@material-ui/core": "^4.0.0",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.57",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.4.2",
+    "@mui/lab": "^5.0.0-alpha.69",
+    "@mui/material": "^5.4.2",
+    "@mui/styles": "^5.4.2",
     "@nivo/bar": "~0.69.1",
     "@nivo/bullet": "~0.69.1",
     "@nivo/core": "~0.69.0",
