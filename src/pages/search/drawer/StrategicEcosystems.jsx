@@ -27,7 +27,7 @@ import RestAPI from 'utils/restAPI';
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-class Overview extends React.Component {
+class StrategicEcosystems extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -213,14 +213,14 @@ class Overview extends React.Component {
   }
 }
 
-Overview.propTypes = {
+StrategicEcosystems.propTypes = {
   generalArea: PropTypes.number,
 };
 
-Overview.defaultProps = {
+StrategicEcosystems.defaultProps = {
   generalArea: 0,
 };
 
-export default Overview;
+export default StrategicEcosystems;
 
-Overview.contextType = SearchContext;
+StrategicEcosystems.contextType = SearchContext;
