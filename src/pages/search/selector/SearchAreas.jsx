@@ -26,6 +26,12 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
         InputLabelProps={{ shrink: true }}
       />
     )}
+    renderOption={(props, option) => (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <li {...props} key={option.id}>
+        {option.name}
+      </li>
+    )}
     autoHighlight
     ListboxProps={
       {
