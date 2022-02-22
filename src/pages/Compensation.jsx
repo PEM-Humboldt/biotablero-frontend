@@ -436,14 +436,16 @@ class Compensation extends Component {
           onClose={this.handleCloseModal('newProjectModal')}
           disableAutoFocus
         >
-          <NewProjectForm
-            regions={regionsList}
-            status={statusList}
-            handlers={[
-              this.setNewProject,
-              this.handleCloseModal('newProjectModal'),
-            ]}
-          />
+          <>
+            <NewProjectForm
+              regions={regionsList}
+              status={statusList}
+              handlers={[
+                this.setNewProject,
+                this.handleCloseModal('newProjectModal'),
+              ]}
+            />
+          </>
         </Modal>
         <Modal
           aria-labelledby="simple-modal-title"
