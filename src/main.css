@@ -1521,8 +1521,12 @@ overflow: auto;
   background-color: #000;
 }
 
-.MuiFormLabel-root.Mui-focused {
+.MuiFormLabel-root.Mui-focused, .tabs.Mui-selected {
 	color: #e84a5f !important;
+}
+
+.MuiTabs-indicator.css-1aquho2-MuiTabs-indicator {
+	background-color: #e84a5f !important;
 }
 
 .MuiAutocomplete-option[data-focus="true"] {

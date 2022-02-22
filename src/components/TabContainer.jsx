@@ -36,8 +36,6 @@ class TabContainer extends React.Component {
           <Tabs
             value={value}
             onChange={this.changeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
             centered
           >
             {titles.map(({
