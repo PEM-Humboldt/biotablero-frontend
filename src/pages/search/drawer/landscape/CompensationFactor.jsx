@@ -1,4 +1,4 @@
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 import React from 'react';
 
 import GraphLoader from 'components/charts/GraphLoader';
@@ -151,7 +151,6 @@ class CompensationFactor extends React.Component {
             />
             <InfoTooltip
               placement="left"
-              interactive
               title={BiomesText}
             >
               <h3>
@@ -173,7 +172,6 @@ class CompensationFactor extends React.Component {
             />
             <InfoTooltip
               placement="left"
-              interactive
               title={BioticRegionsText}
             >
               <h3>

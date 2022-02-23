@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import DownloadIcon from '@material-ui/icons/GetApp';
+import DownloadIcon from '@mui/icons-material/GetApp';
 import CsvDownload from 'react-json-to-csv';
 
 const DownloadCSV = (props) => {

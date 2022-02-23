@@ -1,6 +1,6 @@
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import L from 'leaflet';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
@@ -436,14 +436,16 @@ class Compensation extends Component {
           onClose={this.handleCloseModal('newProjectModal')}
           disableAutoFocus
         >
-          <NewProjectForm
-            regions={regionsList}
-            status={statusList}
-            handlers={[
-              this.setNewProject,
-              this.handleCloseModal('newProjectModal'),
-            ]}
-          />
+          <>
+            <NewProjectForm
+              regions={regionsList}
+              status={statusList}
+              handlers={[
+                this.setNewProject,
+                this.handleCloseModal('newProjectModal'),
+              ]}
+            />
+          </>
         </Modal>
         <Modal
           aria-labelledby="simple-modal-title"

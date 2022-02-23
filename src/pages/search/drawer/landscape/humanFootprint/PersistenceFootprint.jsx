@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
 import { persistenceHFText } from 'pages/search/drawer/landscape/InfoTexts';

@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import QueIcon from '@material-ui/icons/LiveHelp';
-import DondeIcon from '@material-ui/icons/Beenhere';
-import BackIcon from '@material-ui/icons/FirstPage';
+import withStyles from '@mui/styles/withStyles';
+import { Button } from '@mui/material';
+import QueIcon from '@mui/icons-material/LiveHelp';
+import DondeIcon from '@mui/icons-material/Beenhere';
+import BackIcon from '@mui/icons-material/FirstPage';
 import { ParentSize } from '@vx/responsive';
-import SaveIcon from '@material-ui/icons/Save';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import SaveIcon from '@mui/icons-material/Save';
+import DownloadIcon from '@mui/icons-material/GetApp';
 
 import RestAPI from 'utils/restAPI';
 

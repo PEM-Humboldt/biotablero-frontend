@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import BackIcon from '@material-ui/icons/FirstPage';
-import Ecosistemas from '@material-ui/icons/Nature';
-import Especies from '@material-ui/icons/FilterVintage';
-import Paisaje from '@material-ui/icons/FilterHdr';
+import withStyles from '@mui/styles/withStyles';
+import BackIcon from '@mui/icons-material/FirstPage';
+import Ecosistemas from '@mui/icons-material/Nature';
+import Especies from '@mui/icons-material/FilterVintage';
+import Paisaje from '@mui/icons-material/FilterHdr';
 
 import SearchContext from 'pages/search/SearchContext';
 import Landscape from 'pages/search/drawer/Landscape';

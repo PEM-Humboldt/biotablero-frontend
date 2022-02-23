@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 
 import Accordion from 'pages/search/Accordion';
 import DrawPolygon from 'pages/search/selector/DrawPolygon';

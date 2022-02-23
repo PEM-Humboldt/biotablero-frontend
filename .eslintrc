@@ -17,5 +17,8 @@
         "paths": ["src"]
       }
     }
+  },
+  "env": {
+    "browser": true
   }
 }

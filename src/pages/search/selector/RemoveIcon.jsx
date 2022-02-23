@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 
 const RemoveIcon = ({ color, fontSize }) => (
   <SvgIcon viewBox="16 16 22 26" style={{ color, fontSize }}>
