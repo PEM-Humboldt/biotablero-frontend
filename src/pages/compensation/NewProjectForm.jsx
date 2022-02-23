@@ -95,6 +95,12 @@ class NewProjectForm extends Component {
               size="small"
             />
           )}
+          renderOption={(props, option) => (
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            <li {...props} key={option.value}>
+              {option.label}
+            </li>
+          )}
         />
         { // TODO: Handle error for new project if the company doesn' have regions and status
           (statusSelected === 'newState') && (<br />) && (
