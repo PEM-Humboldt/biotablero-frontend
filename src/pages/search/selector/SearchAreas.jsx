@@ -28,7 +28,7 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
     )}
     renderOption={(props, option) => (
       // eslint-disable-next-line react/jsx-props-no-spreading
-      <li {...props} key={option.id}>
+      <li {...props} key={option.id || option.name}>
         {option.name}
       </li>
     )}
