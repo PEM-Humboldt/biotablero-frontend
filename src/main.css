@@ -1807,6 +1807,19 @@ div[class*="eaRHYv"] {
   max-width: 500px !important;
 }
 
+.tooltip-graph-container {
+	background-color: #333;
+	color: #ffffff;
+	padding: 5px 10px;
+	line-height: 1.5;
+	border-radius: 5px;
+	min-width: 60px;
+	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+  font-size: 12px;
+  white-space: nowrap;
+  position: absolute;
+}
+
 .graphcard {
   margin: 10px 0;
   border-radius: 5px;
