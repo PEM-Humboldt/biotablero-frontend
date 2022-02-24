@@ -55,7 +55,7 @@ const LargeBarStackGraph = (props) => {
      const getToolTip = (id, allData, color) => {
       if (allData[`${id}Percentage`]) {
         return (
-          <div>
+          <div className="tooltip-graph-container">
             <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
               {allData[`${id}Label`]}
             </strong>
@@ -68,7 +68,7 @@ const LargeBarStackGraph = (props) => {
         );
       }
       return (
-        <div>
+        <div className="tooltip-graph-container">
           <strong style={{ color: darkColors[color] ? '#ffffff' : color }}>
             {allData[`${id}Label`]}
           </strong>
@@ -117,14 +117,6 @@ const LargeBarStackGraph = (props) => {
         motionDamping={15}
         tooltip={({ id, data: allData, color }) => getToolTip(id, allData, color)}
         theme={{
-          tooltip: {
-            container: {
-              background: '#333',
-              whiteSpace: 'nowrap',
-              position: 'absolute',
-              fontSize: 12,
-            },
-          },
           axis: { legend: { text: { fontSize: '14' } } },
         }}
       />

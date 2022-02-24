@@ -50,16 +50,7 @@ const SmallBarStackGraph = (props) => {
   const getToolTip = (id, allData) => {
     if (id !== 'NA') {
       return (
-        <div style={{
-          backgroundColor: '#333',
-          color: '#ffffff',
-          padding: '5px 10px',
-          lineHeight: '1.5',
-          borderRadius: 5,
-          minWidth: 60,
-          boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
-        }}
-        >
+        <div className="tooltip-graph-container">
           <strong style={{ color: '#e84a5f' }}>
             {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
@@ -99,16 +90,6 @@ const SmallBarStackGraph = (props) => {
         motionStiffness={90}
         motionDamping={15}
         tooltip={({ id, data: allData }) => getToolTip(id, allData)}
-        theme={{
-          tooltip: {
-            container: {
-              padding: 0,
-              whiteSpace: 'nowrap',
-              position: 'absolute',
-              fontSize: 12,
-            },
-          },
-        }}
       />
     </div>
   );
