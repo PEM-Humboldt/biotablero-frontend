@@ -66,7 +66,7 @@ const Selector = (props) => {
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
         level="1"
-        handlerAccordionGeometry={onChange}
+        handleChange={onChange}
       />
     </div>
   );

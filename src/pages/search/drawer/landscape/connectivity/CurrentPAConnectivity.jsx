@@ -44,7 +44,10 @@ class CurrentPAConnectivity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('currentPAConn');
 
     RestAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res) => {

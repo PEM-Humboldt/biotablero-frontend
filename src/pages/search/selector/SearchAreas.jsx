@@ -80,7 +80,7 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
         classNameDefault="m0"
         classNameSelected="m0"
         level="2"
-        handlerAccordionGeometry={onGeofenceChange}
+        handleChange={onGeofenceChange}
       />
     </div>
   );

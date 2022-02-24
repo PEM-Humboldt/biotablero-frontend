@@ -32,7 +32,11 @@ class ForestLossPersistence extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('forestLP-2016-2019');
+
     RestAPI.requestEcoChangeLPCategories(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {

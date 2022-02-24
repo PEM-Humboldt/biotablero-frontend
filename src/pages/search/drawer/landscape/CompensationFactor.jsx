@@ -32,9 +32,12 @@ class CompensationFactor extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
 
     if (areaId !== 'ea') return;
+
+    switchLayer('fc');
 
     RestAPI.requestBiomes(areaId, geofenceId)
       .then((res) => {

@@ -73,7 +73,10 @@ class SpeciesRecordsGaps extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('speciesRecordsGaps');
 
     RestAPI.requestGaps(areaId, geofenceId)
       .then((res) => {

@@ -8,7 +8,7 @@ import CurrentSEPAConnectivity from 'pages/search/drawer/landscape/connectivity/
 
 const PAConnectivity = (props) => {
   const {
-    handlerAccordionGeometry,
+    handleAccordionChange,
     openTab,
   } = props;
 
@@ -44,7 +44,7 @@ const PAConnectivity = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlerAccordionGeometry={handlerAccordionGeometry}
+        handleChange={handleAccordionChange}
         level="2"
       />
     </div>
@@ -52,12 +52,12 @@ const PAConnectivity = (props) => {
 };
 
 PAConnectivity.propTypes = {
-  handlerAccordionGeometry: PropTypes.func,
+  handleAccordionChange: PropTypes.func,
   openTab: PropTypes.string,
 };
 
 PAConnectivity.defaultProps = {
-  handlerAccordionGeometry: () => {},
+  handleAccordionChange: () => {},
   openTab: '',
 };
 

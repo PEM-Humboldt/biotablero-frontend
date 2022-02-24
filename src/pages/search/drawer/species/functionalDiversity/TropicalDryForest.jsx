@@ -46,7 +46,10 @@ class TropicalDryForest extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('tropicalDryForest');
 
     RestAPI.requestDryForestValues(areaId, geofenceId)
       .then((res) => {

@@ -35,9 +35,6 @@ class Drawer extends React.Component {
       geofenceId,
     } = this.context;
 
-    const { handlerSwitchLayer } = this.props;
-    handlerSwitchLayer('coverage');
-
     const searchId = geofenceId;
 
     RestAPI.requestGeofenceDetails(areaId, searchId)
@@ -48,10 +45,7 @@ class Drawer extends React.Component {
   }
 
   render() {
-    const {
-      handlerBackButton,
-      handlerSwitchLayer,
-    } = this.props;
+    const { handlerBackButton } = this.props;
 
     const {
       geofenceArea,
@@ -81,7 +75,6 @@ class Drawer extends React.Component {
             { label: 'Paisaje', icon: (<Paisaje />) },
             { label: 'Especies', icon: (<Especies />) },
           ]}
-          handlerSwitchLayer={handlerSwitchLayer}
         >
           <div>
             <StrategicEcosystems
@@ -89,14 +82,10 @@ class Drawer extends React.Component {
             />
           </div>
           <div>
-            <Landscape
-              handlerSwitchLayer={handlerSwitchLayer}
-            />
+            <Landscape />
           </div>
           <div>
-            <Species
-              handlerSwitchLayer={handlerSwitchLayer}
-            />
+            <Species />
           </div>
         </TabContainer>
       </div>
@@ -106,12 +95,10 @@ class Drawer extends React.Component {
 
 Drawer.propTypes = {
   handlerBackButton: PropTypes.func,
-  handlerSwitchLayer: PropTypes.func,
 };
 
 Drawer.defaultProps = {
   handlerBackButton: () => {},
-  handlerSwitchLayer: () => {},
 };
 
 export default withStyles(styles)(Drawer);

@@ -68,7 +68,10 @@ class ForestIntegrity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('forestIntegrity');
 
     RestAPI.requestSCIHF(areaId, geofenceId)
       .then((res) => {

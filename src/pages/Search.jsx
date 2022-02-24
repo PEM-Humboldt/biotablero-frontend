@@ -1117,6 +1117,8 @@ class Search extends Component {
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
             handlerClickOnGraph: this.clickOnGraph,
+            switchLayer: this.switchLayer,
+            cancelActiveRequests: this.cancelActiveRequests,
           }}
         >
           <div className="appSearcher wrappergrid">
@@ -1152,7 +1154,7 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  handlerSwitchLayer={this.switchLayer}
+                  cancelActiveRequests={this.cancelActiveRequests}
                 />
               )}
             </div>
