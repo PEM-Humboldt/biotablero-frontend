@@ -82,7 +82,9 @@ class TimelineFootprint extends React.Component {
   componentDidMount() {
     this.mounted = true;
 
-    const { areaId, geofenceId } = this.context;
+    const { areaId, geofenceId, switchLayer } = this.context;
+    switchLayer('hfTimeline');
+
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),

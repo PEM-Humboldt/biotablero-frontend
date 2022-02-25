@@ -4,6 +4,7 @@ import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
+import SearchContext from 'pages/search/SearchContext';
 
 class TabContainer extends React.Component {
   constructor(props) {
@@ -18,11 +19,9 @@ class TabContainer extends React.Component {
    * Function to change visible content on tabs click
    */
   changeTab = (event, value) => {
-    const { handlerSwitchLayer } = this.props;
+    const { cancelActiveRequests } = this.context;
+    cancelActiveRequests();
     this.setState({ value });
-    if (value === 0) {
-      handlerSwitchLayer('coverage');
-    }
   };
 
   render() {
@@ -69,13 +68,13 @@ TabContainer.propTypes = {
   initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
   tabClasses: PropTypes.string,
-  handlerSwitchLayer: PropTypes.func,
 };
 
 TabContainer.defaultProps = {
   tabClasses: '',
   initialSelectedIndex: 1,
-  handlerSwitchLayer: () => {},
 };
 
 export default TabContainer;
+
+TabContainer.contextType = SearchContext;

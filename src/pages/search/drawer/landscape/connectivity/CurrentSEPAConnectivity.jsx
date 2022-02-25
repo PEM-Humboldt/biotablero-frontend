@@ -39,7 +39,10 @@ class CurrentSEPAConnectivity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('currentSEPAConn');
 
     RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Páramo')
       .then((res) => {

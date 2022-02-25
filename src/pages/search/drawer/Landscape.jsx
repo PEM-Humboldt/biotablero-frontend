@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import Accordion from 'pages/search/Accordion';
@@ -23,26 +22,23 @@ class Landscape extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { handlerSwitchLayer } = this.props;
-    const { visible, childMap } = this.state;
-    handlerSwitchLayer(childMap[visible]);
-  }
-
   /**
    * Handles requests to load a layer when there are changes in accordions
    * @param {String} level accordion level that's calling the function
    * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-  handlerAccordionGeometry = (level, tabLayerId) => {
-    const { handlerSwitchLayer } = this.props;
-    const { visible, childMap } = this.state;
-    if (tabLayerId === null) handlerSwitchLayer(null);
+  handleAccordionChange = (level, tabLayerId) => {
+    const { visible } = this.state;
+    const { switchLayer, cancelActiveRequests } = this.context;
+    cancelActiveRequests();
+
+    if (tabLayerId === null) {
+      switchLayer(null);
+    }
 
     switch (level) {
       case '1':
         this.setState({ visible: tabLayerId });
-        handlerSwitchLayer(childMap[tabLayerId]);
         break;
       case '2':
         this.setState((prev) => ({
@@ -51,7 +47,6 @@ class Landscape extends React.Component {
             [visible]: tabLayerId,
           },
         }));
-        handlerSwitchLayer(tabLayerId);
         break;
       default:
         break;
@@ -77,7 +72,7 @@ class Landscape extends React.Component {
         },
         component: HumanFootprint,
         componentProps: {
-          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.hf,
         },
       },
@@ -88,7 +83,7 @@ class Landscape extends React.Component {
         },
         component: Forest,
         componentProps: {
-          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.forest,
         },
       },
@@ -99,7 +94,7 @@ class Landscape extends React.Component {
         },
         component: PAConnectivity,
         componentProps: {
-          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.connectivity,
         },
       },
@@ -127,20 +122,12 @@ class Landscape extends React.Component {
         componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
-        handlerAccordionGeometry={this.handlerAccordionGeometry}
+        handleChange={this.handleAccordionChange}
         level="1"
       />
     );
   }
 }
-
-Landscape.propTypes = {
-  handlerSwitchLayer: PropTypes.func,
-};
-
-Landscape.defaultProps = {
-  handlerSwitchLayer: () => {},
-};
 
 export default Landscape;
 

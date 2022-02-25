@@ -24,7 +24,9 @@ class TimelinePAConnectivity extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId } = this.context;
+    const { areaId, geofenceId, switchLayer } = this.context;
+    switchLayer('timelinePAConn');
+
     Promise.all([
       RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot'),
       RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot_conn'),

@@ -8,7 +8,7 @@ import isFlagEnabled from 'utils/isFlagEnabled';
 
 const Richness = (props) => {
   const {
-    handlerAccordionGeometry,
+    handleAccordionChange,
     openTab,
   } = props;
 
@@ -44,7 +44,7 @@ const Richness = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlerAccordionGeometry={handlerAccordionGeometry}
+        handleChange={handleAccordionChange}
         level="2"
       />
     </div>
@@ -52,12 +52,12 @@ const Richness = (props) => {
 };
 
 Richness.propTypes = {
-  handlerAccordionGeometry: PropTypes.func,
+  handleAccordionChange: PropTypes.func,
   openTab: PropTypes.string,
 };
 
 Richness.defaultProps = {
-  handlerAccordionGeometry: () => {},
+  handleAccordionChange: () => {},
   openTab: '',
 };
 

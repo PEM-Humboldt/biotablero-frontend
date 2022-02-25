@@ -32,7 +32,11 @@ class PersistenceFootprint extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('hfPersistence');
+
     RestAPI.requestHFPersistence(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {

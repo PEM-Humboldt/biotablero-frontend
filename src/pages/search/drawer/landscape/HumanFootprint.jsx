@@ -9,7 +9,7 @@ import TimelineFootprint from 'pages/search/drawer/landscape/humanFootprint/Time
 
 const HumanFootprint = (props) => {
   const {
-    handlerAccordionGeometry,
+    handleAccordionChange,
     openTab,
   } = props;
 
@@ -54,7 +54,7 @@ const HumanFootprint = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlerAccordionGeometry={handlerAccordionGeometry}
+        handleChange={handleAccordionChange}
         level="2"
       />
     </div>
@@ -62,12 +62,12 @@ const HumanFootprint = (props) => {
 };
 
 HumanFootprint.propTypes = {
-  handlerAccordionGeometry: PropTypes.func,
+  handleAccordionChange: PropTypes.func,
   openTab: PropTypes.string,
 };
 
 HumanFootprint.defaultProps = {
-  handlerAccordionGeometry: () => {},
+  handleAccordionChange: () => {},
   openTab: '',
 };
 

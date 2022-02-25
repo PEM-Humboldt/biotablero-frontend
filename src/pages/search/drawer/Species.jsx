@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import Accordion from 'pages/search/Accordion';
@@ -23,7 +22,6 @@ class Species extends React.Component {
 
   componentDidMount() {
     const { areaId } = this.context;
-    const { visible, childMap } = this.state;
 
     let selected = [];
     switch (areaId) {
@@ -37,15 +35,10 @@ class Species extends React.Component {
     }
     this.setState({ availableComponents: selected });
 
-    if (selected.includes(visible)) {
-      const { handlerSwitchLayer } = this.props;
-      handlerSwitchLayer(childMap[visible]);
-    }
-
     isFlagEnabled('functionalDiversity')
-    .then((value) => {
-      this.setState({ functionalFlag: value });
-    });
+      .then((value) => {
+        this.setState({ functionalFlag: value });
+      });
   }
 
   /**
@@ -53,15 +46,17 @@ class Species extends React.Component {
    * @param {String} level accordion level that's calling the function
    * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-  handlerAccordionGeometry = (level, tabLayerId) => {
-    const { handlerSwitchLayer } = this.props;
-    const { visible, childMap } = this.state;
-    if (tabLayerId === null) handlerSwitchLayer(null);
+   handleAccordionChange = (level, tabLayerId) => {
+    const { visible } = this.state;
+    const { switchLayer, cancelActiveRequests } = this.context;
+    cancelActiveRequests();
+    if (tabLayerId === null) {
+      switchLayer(null);
+    }
 
     switch (level) {
       case '1':
         this.setState({ visible: tabLayerId });
-        handlerSwitchLayer(childMap[tabLayerId]);
         break;
       case '2':
         this.setState((prev) => ({
@@ -70,7 +65,6 @@ class Species extends React.Component {
             [visible]: tabLayerId,
           },
         }));
-        handlerSwitchLayer(tabLayerId);
         break;
       default:
         break;
@@ -91,7 +85,7 @@ class Species extends React.Component {
         },
         component: Richness,
         componentProps: {
-          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.richness,
         },
       },
@@ -103,7 +97,7 @@ class Species extends React.Component {
         },
         component: FunctionalDiversity,
         componentProps: {
-          handlerAccordionGeometry: this.handlerAccordionGeometry,
+          handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.functionalDiversity,
         },
       },
@@ -116,20 +110,12 @@ class Species extends React.Component {
         componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
-        handlerAccordionGeometry={this.handlerAccordionGeometry}
+        handleChange={this.handleAccordionChange}
         level="1"
       />
     );
   }
 }
-
-Species.propTypes = {
-  handlerSwitchLayer: PropTypes.func,
-};
-
-Species.defaultProps = {
-  handlerSwitchLayer: () => {},
-};
 
 export default Species;
 

@@ -88,7 +88,10 @@ class NumberOfSpecies extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('numberOfSpecies');
 
     Promise.all([
       RestAPI.requestNumberOfSpecies(areaId, geofenceId, 'all'),

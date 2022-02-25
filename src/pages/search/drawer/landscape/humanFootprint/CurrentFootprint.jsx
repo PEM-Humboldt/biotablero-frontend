@@ -28,7 +28,10 @@ class CurrentFootprint extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('hfCurrent');
 
     RestAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res) => {
