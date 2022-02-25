@@ -86,19 +86,19 @@ export default withTooltip(({
               left={margin.left + xScale(x(point))}
               top={yScale(y(point))}
               size={xScale(x(point)) + 20}
-              onMouseEnter={() => () => {
+              onMouseEnter={() => {
                 clearTimeout(tooltipTimeout);
                 showTooltip({
                   tooltipTop: margin.top + yScale(y(point)),
                   tooltipData: point,
                 });
               }}
-              onMouseLeave={() => () => {
+              onMouseLeave={() => {
                 tooltipTimeout = setTimeout(() => {
                   hideTooltip();
                 }, 500);
               }}
-              onClick={() => () => {
+              onClick={() => {
                 elementOnClick(name(point));
               }}
             />
@@ -150,6 +150,8 @@ export default withTooltip(({
             backgroundColor: 'rgba(0,0,0,0.9)',
             padding: 12,
             lineHeight: '1.5',
+            position: 'absolute',
+            fontSize: '14px',
           }}
         >
           <div style={{ color: checkColor(tooltipData) }}>
