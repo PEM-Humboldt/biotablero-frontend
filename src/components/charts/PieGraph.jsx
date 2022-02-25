@@ -36,6 +36,7 @@ class PieGraph extends React.Component {
           innerRadius={0.5}
           padAngle={0.7}
           cornerRadius={3}
+          activeOuterRadiusOffset={8}
           borderWidth={1}
           borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
           enableArcLinkLabels={false}

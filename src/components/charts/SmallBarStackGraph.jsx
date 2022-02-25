@@ -50,7 +50,7 @@ const SmallBarStackGraph = (props) => {
   const getToolTip = (id, allData) => {
     if (id !== 'NA') {
       return (
-        <div className="tooltip-graph-container">
+        <div className="tooltip-graph-container" style={{ position: 'absolute' }}>
           <strong style={{ color: '#e84a5f' }}>
             {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
