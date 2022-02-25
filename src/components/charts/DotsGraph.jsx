@@ -150,6 +150,7 @@ export default withTooltip(({
             backgroundColor: 'rgba(0,0,0,0.9)',
             padding: 12,
             lineHeight: '1.5',
+            position: 'absolute',
           }}
         >
           <div style={{ color: checkColor(tooltipData) }}>
