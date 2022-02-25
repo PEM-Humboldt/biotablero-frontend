@@ -5,14 +5,6 @@ import React from 'react';
 import formatNumber from 'utils/format';
 import { lightenColor, darkenColor } from 'utils/colorUtils';
 
-const theme = {
-  tooltip: {
-    background: '#333',
-    color: '#ffffff',
-    padding: '5px 8px',
-  },
-};
-
 class PieGraph extends React.Component {
   constructor() {
     super();
@@ -44,12 +36,13 @@ class PieGraph extends React.Component {
           innerRadius={0.5}
           padAngle={0.7}
           cornerRadius={3}
+          activeOuterRadiusOffset={8}
           borderWidth={1}
           borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
           enableArcLinkLabels={false}
           enableArcLabels={false}
           tooltip={({ datum: { label, value, color } }) => (
-            <div>
+            <div className="tooltip-graph-container">
               <strong style={{ color: lightenColor(color, 15) }}>
                 {`${label}:`}
               </strong>
@@ -59,7 +52,6 @@ class PieGraph extends React.Component {
               </div>
             </div>
           )}
-          theme={theme}
           onClick={({ id }) => {
             this.setState({ selectedId: id });
             onClickHandler(id);
