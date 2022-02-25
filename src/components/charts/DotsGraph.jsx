@@ -151,6 +151,7 @@ export default withTooltip(({
             padding: 12,
             lineHeight: '1.5',
             position: 'absolute',
+            fontSize: '14px',
           }}
         >
           <div style={{ color: checkColor(tooltipData) }}>
