@@ -51,7 +51,9 @@ class StrategicEcosystems extends React.Component {
       switchLayer,
     } = this.context;
 
-    switchLayer('coverage');
+    switchLayer('coverage-N');
+    switchLayer('coverage-S');
+    switchLayer('coverage-T');
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
