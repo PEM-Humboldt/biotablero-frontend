@@ -98,6 +98,7 @@ class Search extends Component {
       value.cancel();
       this.activeRequests.delete(key);
     });
+    this.shutOffLayer();
   }
 
   /**
@@ -514,7 +515,11 @@ class Search extends Component {
       selectedAreaId,
       selectedAreaTypeId,
     } = this.props;
-    const { layers } = this.state;
+    const {
+      layers,
+      rasterUrls,
+      /* activeLayer, */
+    } = this.state;
 
     this.setState({
       loadingLayer: true,
@@ -591,24 +596,42 @@ class Search extends Component {
         };
         break;
       case 'geofence':
+        /* console.log('GF 1'); */
         requestObj = RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
           selectedAreaId,
         );
+        /* console.log('GF 2'); */
         newActiveLayer = {
           id: 'geofence',
         };
+        /* console.log('GF 3'); */
         break;
-      case 'coverage':
-        requestObj = RestAPI.requestCoveragesLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        newActiveLayer = {
-          id: 'coverage',
-          name: 'Coberturas',
-        };
-        break;
+      /* case 'coverage':
+        console.log('1');
+        this.switchLayer('geofence', () => {
+          console.log('2');
+          this.setState({
+            loadingLayer: true,
+            layerError: false,
+          });
+
+          console.log('3');
+          isRaster = true;
+          requestObj = RestAPI.requestCoveragesLayer(
+            selectedAreaTypeId,
+            selectedAreaId,
+            'N',
+          );
+
+          this.setState({
+            activeLayer: {
+              id: 'coverage',
+              name: 'Coberturas',
+            },
+          });
+        });
+        break; */
       case 'forestIntegrity':
         this.switchLayer('geofence', () => {
           this.setState({
@@ -749,7 +772,6 @@ class Search extends Component {
             let group = 'total';
             const selected = layerType.match(/numberOfSpecies-(\w+)/);
             if (selected) [, group] = selected;
-
             isRaster = true;
             requestObj = RestAPI.requestNOSLayer(
               selectedAreaTypeId,
@@ -780,6 +802,33 @@ class Search extends Component {
               },
             };
           });
+        } else if (/coverage-*/.test(layerType)) {
+          this.switchLayer('geofence', () => {
+            this.setState({
+              loadingLayer: true,
+              layerError: false,
+            });
+
+            shutOtherLayers = false;
+
+            let type = null;
+            const selected = layerType.match(/coverage-(\w+)/);
+            if (selected) [, type] = selected;
+
+            isRaster = true;
+            requestObj = RestAPI.requestCoveragesLayer(
+              selectedAreaTypeId,
+              selectedAreaId,
+              type,
+            );
+
+            /* this.setState({
+              activeLayer: {
+                id: `coverage-${type}`,
+                name: 'Coberturas',
+              },
+            }); */
+          });
         }
         break;
     }
@@ -788,6 +837,9 @@ class Search extends Component {
 
     if (isRaster) {
       const geofenceLayer = layers.geofence;
+      /* console.log('geofenceLayer', layers); */
+      /* console.log('layers', layers); */
+      /* console.log('activeLayer', activeLayer); */
       let mapBounds = null;
       if (geofenceLayer) {
         mapBounds = geofenceLayer.layer.getBounds();
@@ -805,12 +857,25 @@ class Search extends Component {
       Promise.all(promises).then(([res, legendValues]) => {
         this.activeRequests.delete(layerType);
         if (res !== 'request canceled') {
-          const rasterUrls = [`data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`];
+          const currentRaster = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+          if (shutOtherLayers) {
+            rasterUrls.splice(0, rasterUrls.length);
+          }
+          rasterUrls.push(currentRaster);
+          /* console.log('rasterUrls', rasterUrls); */
           if (mapLegend) mapLegend.resolve(legendValues);
-          this.setState({
+          /* this.setState({
               mapBounds,
               rasterUrls,
               loadingLayer: false,
+          }); */
+          this.setState((prevState) => {
+            const newState = prevState;
+            newState.mapBounds = mapBounds;
+            newState.rasterUrls = rasterUrls;
+            newState.loadingLayer = false;
+            newState.layers.geofence.active = false;
+            return newState;
           });
         }
       }).catch(() => {
