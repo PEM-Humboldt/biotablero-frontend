@@ -506,6 +506,160 @@ class Search extends Component {
     }
   };
 
+  getShapeLayer = async (layerName, isActive = true, fitBounds = true) => {
+    const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { layers } = this.state;
+    let reqPromise = null;
+    const layerStyle = this.featureStyle({ type: layerName });
+
+    switch (layerName) {
+      case 'geofence':
+        reqPromise = RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (!reqPromise) return null;
+    if (layers[layerName]) return layers[layerName];
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerName, source);
+    try {
+      const res = await request;
+      this.activeRequests.delete(layerName);
+      if (res.features) {
+        if (res.features.length === 1 && !res.features[0].geometry) {
+          return null;
+        }
+        const layerObj = {
+          active: isActive,
+          layer: L.geoJSON(res, {
+            style: layerStyle,
+            onEachFeature: (feature, selectedLayer) => (
+              this.featureActions(selectedLayer, layerName)
+            ),
+            fitBounds,
+          }),
+        };
+        this.setState((prevState) => {
+          const newState = prevState;
+          newState.layers[layerName] = layerObj;
+          return newState;
+        });
+        return layerObj;
+      }
+      return null;
+    } catch {
+      this.activeRequests.delete(layerName);
+      this.reportDataError();
+      return null;
+    }
+  }
+
+  getRasterLayer = async (layerName) => {
+    const { selectedAreaId, selectedAreaTypeId } = this.props;
+    let reqPromise = null;
+
+    if (/coverage-*/.test(layerName)) {
+      let type = 'N';
+      const selected = layerName.match(/coverage-(\w+)/);
+      if (selected) [, type] = selected;
+
+      reqPromise = RestAPI.requestCoveragesLayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+        type,
+      );
+    }
+
+    if (!reqPromise) {
+      return null;
+    }
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerName, source);
+
+    try {
+      const res = await request;
+      this.activeRequests.delete(layerName);
+      if (res !== 'request canceled') {
+        return `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+      }
+      return null;
+    } catch {
+      this.activeRequests.delete(layerName);
+      this.reportDataError();
+      return null;
+    }
+  }
+
+  newSwitchLayer = (layerName) => {
+    this.setState({ loadingLayer: true, layerError: false });
+    this.shutOffLayer();
+
+    let baseLayerId = null;
+    const shapeLayerIds = [];
+    let rasterLayerIds = [];
+    const newActiveLayer = { id: layerName };
+
+    /**
+     * WIP
+     * I think we could handle 2 groups: shapeLayers and rasterLayers
+     * shapeLayers: shape layers that will be displayed
+     * rasterLayers: raster layers that will be displayed
+     *
+     * shapeLayers is const because it's not used right now, so this function only is working for
+     * raster layers
+     *
+     * Additionally there is 1 baseLayer to get data from it, for now it's always 'geofence'
+     *
+     * Things I haven't thought of:
+     * - how to handle map legends that require requests
+     * - new layers without modifying existing ones like protected areas in forest integrity
+     * - Order of the layers when there are shape and raster layers
+     */
+    switch (layerName) {
+      case 'coverages':
+        baseLayerId = 'geofence';
+        rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
+        newActiveLayer.name = 'Coberturas';
+        break;
+      default:
+        break;
+    }
+
+    if (shapeLayerIds.length <= 0 && rasterLayerIds.length <= 0) {
+      this.reportDataError();
+    }
+
+    if (rasterLayerIds.length > 0) {
+      Promise.all([
+        this.getShapeLayer(baseLayerId, false),
+        ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
+      ])
+      .then(([
+        baseLayer,
+        ...rasterLayers
+      ]) => {
+        if (baseLayer) {
+          this.setState({
+            mapBounds: baseLayer.layer.getBounds(),
+            rasterUrls: rasterLayers.filter((layer) => layer !== null),
+            activeLayer: newActiveLayer,
+            loadingLayer: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.reportDataError();
+      });
+    }
+  }
+
   /**
    * Switch layer based on graph showed
    *
@@ -745,6 +899,9 @@ class Search extends Component {
           };
         });
         break;
+      case 'coverages':
+        this.newSwitchLayer(layerType);
+        return;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -803,43 +960,12 @@ class Search extends Component {
               },
             };
           });
-        } else if (/coverage-*/.test(layerType)) {
-          this.switchLayer('geofence', () => {
-            console.log('INI switchLayer coverage', layerType);
-            this.setState({
-              loadingLayer: true,
-              layerError: false,
-            });
-
-            shutOtherLayers = false;
-
-            let type = 'N';
-            const selected = layerType.match(/coverage-(\w+)/);
-            if (selected) [, type] = selected;
-
-            isRaster = true;
-            requestObj = RestAPI.requestCoveragesLayer(
-              selectedAreaTypeId,
-              selectedAreaId,
-              type,
-            );
-
-            console.log('FIN switchLayer coverage', layerType);
-
-            /* this.setState({
-              activeLayer: {
-                id: `coverage-${type}`,
-                name: 'Coberturas',
-              },
-            }); */
-          });
         }
         break;
     }
 
     if (shutOtherLayers) this.shutOffLayer();
 
-    console.log('isRaster', isRaster);
     if (isRaster) {
       const geofenceLayer = layers.geofence;
       let mapBounds = null;
@@ -878,9 +1004,6 @@ class Search extends Component {
             newState.loadingLayer = false;
             newState.layers.geofence.active = false;
             return newState;
-          }, () => {
-            // eslint-disable-next-line react/destructuring-assignment
-            console.log(layerType, ' - RASTER this.state.loadingLayer - ', this.state.loadingLayer);
           });
         }
       }).catch(() => {
@@ -925,9 +1048,6 @@ class Search extends Component {
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
 
               return newState;
-            }, () => {
-              // eslint-disable-next-line react/destructuring-assignment
-              console.log(layerType, ' - SHAPE this.state.loadingLayer - ', this.state.loadingLayer);
             });
             callback();
           } else if (res !== 'request canceled') {
