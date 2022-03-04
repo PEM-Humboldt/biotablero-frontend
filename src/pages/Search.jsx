@@ -751,42 +751,14 @@ class Search extends Component {
         };
         break;
       case 'geofence':
-        /* console.log('GF 1'); */
         requestObj = RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
           selectedAreaId,
         );
-        /* console.log('GF 2'); */
         newActiveLayer = {
           id: 'geofence',
         };
-        /* console.log('GF 3'); */
         break;
-      /* case 'coverage':
-        console.log('1');
-        this.switchLayer('geofence', () => {
-          console.log('2');
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-          });
-
-          console.log('3');
-          isRaster = true;
-          requestObj = RestAPI.requestCoveragesLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-            'N',
-          );
-
-          this.setState({
-            activeLayer: {
-              id: 'coverage',
-              name: 'Coberturas',
-            },
-          });
-        });
-        break; */
       case 'forestIntegrity':
         this.switchLayer('geofence', () => {
           this.setState({
@@ -990,13 +962,7 @@ class Search extends Component {
             rasterUrls.splice(0, rasterUrls.length);
           }
           rasterUrls.push(currentRaster);
-          /* console.log('rasterUrls', rasterUrls); */
           if (mapLegend) mapLegend.resolve(legendValues);
-          /* this.setState({
-              mapBounds,
-              rasterUrls,
-              loadingLayer: false,
-          }); */
           this.setState((prevState) => {
             const newState = prevState;
             newState.mapBounds = mapBounds;
