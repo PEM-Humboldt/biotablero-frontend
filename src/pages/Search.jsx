@@ -73,6 +73,9 @@ class Search extends Component {
     if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
+/*     if (selectedAreaTypeId && selectedAreaId) {
+      this.switchLayer('geofence');
+    } */
     this.loadAreaList();
   }
 
@@ -98,7 +101,6 @@ class Search extends Component {
       value.cancel();
       this.activeRequests.delete(key);
     });
-    this.shutOffLayer();
   }
 
   /**
@@ -518,7 +520,6 @@ class Search extends Component {
     const {
       layers,
       rasterUrls,
-      /* activeLayer, */
     } = this.state;
 
     this.setState({
@@ -804,6 +805,7 @@ class Search extends Component {
           });
         } else if (/coverage-*/.test(layerType)) {
           this.switchLayer('geofence', () => {
+            console.log('INI switchLayer coverage', layerType);
             this.setState({
               loadingLayer: true,
               layerError: false,
@@ -811,7 +813,7 @@ class Search extends Component {
 
             shutOtherLayers = false;
 
-            let type = null;
+            let type = 'N';
             const selected = layerType.match(/coverage-(\w+)/);
             if (selected) [, type] = selected;
 
@@ -821,6 +823,8 @@ class Search extends Component {
               selectedAreaId,
               type,
             );
+
+            console.log('FIN switchLayer coverage', layerType);
 
             /* this.setState({
               activeLayer: {
@@ -835,11 +839,9 @@ class Search extends Component {
 
     if (shutOtherLayers) this.shutOffLayer();
 
+    console.log('isRaster', isRaster);
     if (isRaster) {
       const geofenceLayer = layers.geofence;
-      /* console.log('geofenceLayer', layers); */
-      /* console.log('layers', layers); */
-      /* console.log('activeLayer', activeLayer); */
       let mapBounds = null;
       if (geofenceLayer) {
         mapBounds = geofenceLayer.layer.getBounds();
@@ -876,6 +878,9 @@ class Search extends Component {
             newState.loadingLayer = false;
             newState.layers.geofence.active = false;
             return newState;
+          }, () => {
+            // eslint-disable-next-line react/destructuring-assignment
+            console.log(layerType, ' - RASTER this.state.loadingLayer - ', this.state.loadingLayer);
           });
         }
       }).catch(() => {
@@ -920,6 +925,9 @@ class Search extends Component {
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
 
               return newState;
+            }, () => {
+              // eslint-disable-next-line react/destructuring-assignment
+              console.log(layerType, ' - SHAPE this.state.loadingLayer - ', this.state.loadingLayer);
             });
             callback();
           } else if (res !== 'request canceled') {
@@ -1084,7 +1092,6 @@ class Search extends Component {
       'dryForestPAConn',
       'wetlandPAConn',
       'speciesRecordsGaps',
-      'coverage',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -1219,7 +1226,6 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  cancelActiveRequests={this.cancelActiveRequests}
                 />
               )}
             </div>
