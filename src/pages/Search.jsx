@@ -73,9 +73,6 @@ class Search extends Component {
     if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
-/*     if (selectedAreaTypeId && selectedAreaId) {
-      this.switchLayer('geofence');
-    } */
     this.loadAreaList();
   }
 
@@ -597,14 +594,14 @@ class Search extends Component {
     }
   }
 
-  sectionLayers = (layerName) => {
+  setSectionLayers = (sectionName) => {
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
     let baseLayerId = null;
     const shapeLayerIds = [];
     let rasterLayerIds = [];
-    const newActiveLayer = { id: layerName };
+    const newActiveLayer = { id: sectionName };
     let rastersOpacity = 1;
 
     /**
@@ -623,7 +620,7 @@ class Search extends Component {
      * - new layers without modifying existing ones like protected areas in forest integrity
      * - Order of the layers when there are shape and raster layers
      */
-    switch (layerName) {
+    switch (sectionName) {
       case 'coverages':
         baseLayerId = 'geofence';
         rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
@@ -876,7 +873,7 @@ class Search extends Component {
         });
         break;
       case 'coverages':
-        this.sectionLayers(layerType);
+        this.setSectionLayers(layerType);
         return;
       default:
         if (/SciHfPA-*/.test(layerType)) {
