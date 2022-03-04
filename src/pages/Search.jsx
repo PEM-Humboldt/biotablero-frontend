@@ -597,7 +597,7 @@ class Search extends Component {
     }
   }
 
-  newSwitchLayer = (layerName) => {
+  sectionLayers = (layerName) => {
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
@@ -605,6 +605,7 @@ class Search extends Component {
     const shapeLayerIds = [];
     let rasterLayerIds = [];
     const newActiveLayer = { id: layerName };
+    let rastersOpacity = 1;
 
     /**
      * WIP
@@ -627,6 +628,7 @@ class Search extends Component {
         baseLayerId = 'geofence';
         rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
         newActiveLayer.name = 'Coberturas';
+        rastersOpacity = 0.8;
         break;
       default:
         break;
@@ -648,7 +650,9 @@ class Search extends Component {
         if (baseLayer) {
           this.setState({
             mapBounds: baseLayer.layer.getBounds(),
-            rasterUrls: rasterLayers.filter((layer) => layer !== null),
+            rasterUrls: rasterLayers
+              .filter((layer) => layer !== null)
+              .map((layer) => ({ data: layer, opacity: rastersOpacity })),
             activeLayer: newActiveLayer,
             loadingLayer: false,
           });
@@ -872,7 +876,7 @@ class Search extends Component {
         });
         break;
       case 'coverages':
-        this.newSwitchLayer(layerType);
+        this.sectionLayers(layerType);
         return;
       default:
         if (/SciHfPA-*/.test(layerType)) {
@@ -961,7 +965,7 @@ class Search extends Component {
           if (shutOtherLayers) {
             rasterUrls.splice(0, rasterUrls.length);
           }
-          rasterUrls.push(currentRaster);
+          rasterUrls.push({ data: currentRaster, opacity: 1 });
           if (mapLegend) mapLegend.resolve(legendValues);
           this.setState((prevState) => {
             const newState = prevState;
