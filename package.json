@@ -1,6 +1,6 @@
 {
   "name": "biotablero",
-  "version": "1.9.0",
+  "version": "3.2.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -81,5 +81,6 @@
   "workspaces": [
     "packages/cbm-dashboard",
     "packages/indicators"
-  ]
+  ],
+  "packageManager": "yarn@3.2.0"
 }
