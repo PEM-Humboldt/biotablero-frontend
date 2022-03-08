@@ -2963,7 +2963,7 @@ tspan, .vx-axis-label {
 .portText1 {
 	display: grid;
 	color: #606060;
-	font-size: 1rem;
+	font-size: 0.8rem;
 	font-weight: 400;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 3rem;
