@@ -113,6 +113,7 @@ class Drawer extends React.Component {
       saveStrategies: false,
       savedStrategies: {},
       savedArea: 0,
+      downloadingStrategies: false,
     };
   }
 
@@ -512,10 +513,14 @@ class Drawer extends React.Component {
    * get the url to download the strategies saved in the current project
    */
   downloadPlan = () => {
+    this.setState({ downloadingStrategies: true });
     const { companyId, projectId } = this.props;
     RestAPI.downloadProjectStrategiesUrl(companyId, projectId)
       .then(({ url }) => {
         window.open(url, '_blank');
+      })
+      .finally(() => {
+        this.setState({ downloadingStrategies: false });
       });
   }
 
@@ -688,7 +693,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
-      allBiomes, savedStrategies, savedArea,
+      allBiomes, savedStrategies, savedArea, downloadingStrategies,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -784,9 +789,16 @@ class Drawer extends React.Component {
                     id="downloadStrategies"
                     type="button"
                     onClick={this.downloadPlan}
+                    disabled={downloadingStrategies}
                   >
-                    <DownloadIcon className="icondown" />
-                    Descargar plan
+                    {downloadingStrategies
+                      ? ('Generando archivo...')
+                      : (
+                        <>
+                          <DownloadIcon className="icondown" />
+                          Descargar plan
+                        </>
+                      )}
                   </Button>
                 )}
                 {tableError && (
