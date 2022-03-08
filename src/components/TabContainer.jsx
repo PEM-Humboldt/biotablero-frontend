@@ -19,8 +19,10 @@ class TabContainer extends React.Component {
    * Function to change visible content on tabs click
    */
   changeTab = (event, value) => {
-    const { cancelActiveRequests } = this.context;
-    cancelActiveRequests();
+    if (this.context) {
+      const { cancelActiveRequests } = this.context;
+      cancelActiveRequests();
+    }
     this.setState({ value });
   };
 
