@@ -511,9 +511,12 @@ class Drawer extends React.Component {
   /**
    * get the url to download the strategies saved in the current project
    */
-  downloadPlanUrl = () => {
+  downloadPlan = () => {
     const { companyId, projectId } = this.props;
-    return RestAPI.downloadProjectStrategiesUrl(companyId, projectId);
+    RestAPI.downloadProjectStrategiesUrl(companyId, projectId)
+      .then(({ url }) => {
+        window.open(url, '_blank');
+      });
   }
 
   renderSavedStrategies = () => {
@@ -780,8 +783,7 @@ class Drawer extends React.Component {
                     className="downgraph"
                     id="downloadStrategies"
                     type="button"
-                    href={this.downloadPlanUrl()}
-                    disabled
+                    onClick={this.downloadPlan}
                   >
                     <DownloadIcon className="icondown" />
                     Descargar plan
