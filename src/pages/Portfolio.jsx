@@ -1,5 +1,5 @@
 import React from 'react';
-import Item from './portfolio/Item';
+import Item from 'pages/portfolio/Item';
 
 const Portfolio = () => (
   <div className="wrapperPort">
