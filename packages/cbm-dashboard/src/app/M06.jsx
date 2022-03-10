@@ -74,6 +74,7 @@ const M06 = ({ asocId }) => {
             y: yArray,
             mode: 'markers',
             type: 'scatter',
+            name: 'Valores 1',
             marker: {
               color: 'rgb(224, 151, 226)',
               size: 12,
@@ -88,6 +89,7 @@ const M06 = ({ asocId }) => {
             y: y2,
             mode: 'markers',
             type: 'scatter',
+            name: 'Valores 2',
             marker: {
               color: 'rgb(142, 124, 195)',
               size: 12,
