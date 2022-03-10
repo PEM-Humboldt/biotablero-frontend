@@ -393,7 +393,8 @@ class Search extends Component {
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
-      break;
+        break;
+      // Current progress of the refactor
       case 'paramo':
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
@@ -738,6 +739,10 @@ class Search extends Component {
     let mapLegend = null;
 
     switch (layerType) {
+      case 'coverages':
+        this.setSectionLayers(layerType);
+        return;
+      // Current progress of the refactor
       case undefined:
       case null:
         this.cancelActiveRequests();
@@ -918,9 +923,6 @@ class Search extends Component {
           };
         });
         break;
-      case 'coverages':
-        this.setSectionLayers(layerType);
-        return;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
