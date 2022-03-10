@@ -48,6 +48,11 @@ const tooltipLabel = {
   X: 'Sin clasificar / Nubes',
 };
 
+const rasterOpacity = {
+  default: 0.7,
+  selected: 1,
+};
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -251,8 +256,8 @@ class Search extends Component {
   featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: (event) => this.highlightFeature(event, layerName),
-        mouseout: (event) => this.resetHighlight(event, layerName),
+        mouseover: (event) => this.highlightShapeFeature(event, layerName),
+        mouseout: (event) => this.resetShapeHighlight(event, layerName),
       },
     );
   }
@@ -263,7 +268,7 @@ class Search extends Component {
    * @param {Object} event event captured by interacting with the map
    * @param {String} layerName Layer name the event belongs to
    */
-  highlightFeature = (event, layerName) => {
+  highlightShapeFeature = (event, layerName) => {
     const feature = event.target;
     let changeStyle = true;
     const optionsTooltip = { sticky: true };
@@ -335,11 +340,46 @@ class Search extends Component {
    * @param {Object} event event captured by interacting with the map
    * @param {String} layerName Layer name the event belongs to
    */
-  resetHighlight = (event, layerName) => {
+  resetShapeHighlight = (event, layerName) => {
     const feature = event.target;
     const { layers } = this.state;
     layers[layerName].layer.resetStyle(feature);
     feature.closePopup();
+  }
+
+  /**
+   * Highlight specific raster on the map
+   *
+   * @param {String} layerName Raster layer name
+   */
+  highlightRaster = (layerName) => {
+    this.resetRasterHighlight();
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+      };
+      const selectedLayer = newState.rasterUrls.find((ras) => ras.id === layerName);
+      if (selectedLayer) {
+        selectedLayer.opacity = rasterOpacity.selected;
+      }
+      return newState;
+    });
+  }
+
+  /**
+   * Reset highlight of all rasters on the map
+   */
+  resetRasterHighlight = () => {
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+      };
+      newState.rasterUrls = prevState.rasterUrls.map((ras) => ({
+        ...ras,
+        opacity: rasterOpacity.default,
+      }));
+      return newState;
+    });
   }
 
   /**
@@ -351,6 +391,9 @@ class Search extends Component {
    */
   clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
     switch (chartType) {
+      case 'coverage':
+        this.highlightRaster(`${chartType}-${selectedKey}`);
+      break;
       case 'paramo':
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
@@ -584,7 +627,10 @@ class Search extends Component {
       const res = await request;
       this.activeRequests.delete(layerName);
       if (res !== 'request canceled') {
-        return `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+        return {
+          id: layerName,
+          data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
+        };
       }
       return null;
     } catch {
@@ -625,7 +671,7 @@ class Search extends Component {
         baseLayerId = 'geofence';
         rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
         newActiveLayer.name = 'Coberturas';
-        rastersOpacity = 0.8;
+        rastersOpacity = rasterOpacity.default;
         break;
       default:
         break;
@@ -649,7 +695,7 @@ class Search extends Component {
             mapBounds: baseLayer.layer.getBounds(),
             rasterUrls: rasterLayers
               .filter((layer) => layer !== null)
-              .map((layer) => ({ data: layer, opacity: rastersOpacity })),
+              .map((layer) => ({ id: layer.id, data: layer.data, opacity: rastersOpacity })),
             activeLayer: newActiveLayer,
             loadingLayer: false,
           });
