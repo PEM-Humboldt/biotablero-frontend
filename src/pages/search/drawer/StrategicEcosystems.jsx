@@ -133,6 +133,7 @@ class StrategicEcosystems extends React.Component {
       strategicEcosistems,
       SEArea,
     } = this.state;
+    const { handlerClickOnGraph } = this.context;
 
     return (
       <div className="graphcard">
@@ -164,12 +165,17 @@ class StrategicEcosystems extends React.Component {
             Natural, Secundaria y Transformada:
           </h6>
           <div className="graficaeco">
-            <GraphLoader
-              graphType="SmallBarStackGraph"
-              data={coverage}
-              units="ha"
-              colors={matchColor('coverage')}
-            />
+            <div className="svgPointer">
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={coverage}
+                units="ha"
+                colors={matchColor('coverage')}
+                onClickGraphHandler={(selected) => {
+                  handlerClickOnGraph({ chartType: 'coverage', selectedKey: selected });
+                }}
+              />
+            </div>
           </div>
           <InfoTooltip
             placement="left"

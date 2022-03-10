@@ -10,6 +10,7 @@ const SmallBarStackGraph = (props) => {
     height,
     colors,
     units,
+    onClickGraphHandler,
   } = props;
 
   /**
@@ -90,6 +91,7 @@ const SmallBarStackGraph = (props) => {
         motionStiffness={90}
         motionDamping={15}
         tooltip={({ id, data: allData }) => getToolTip(id, allData)}
+        onClick={({ id }) => onClickGraphHandler(id)}
       />
     </div>
   );
@@ -105,12 +107,14 @@ SmallBarStackGraph.propTypes = {
   height: PropTypes.number,
   colors: PropTypes.func,
   units: PropTypes.string,
+  onClickGraphHandler: PropTypes.func,
 };
 
 SmallBarStackGraph.defaultProps = {
   height: 30,
   colors: () => {},
   units: 'ha',
+  onClickGraphHandler: () => {},
 };
 
 export default SmallBarStackGraph;
