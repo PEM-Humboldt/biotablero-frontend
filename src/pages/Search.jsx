@@ -350,15 +350,15 @@ class Search extends Component {
   /**
    * Highlight specific raster on the map
    *
-   * @param {String} layerName Raster layer name
+   * @param {String} layerId Raster layer id
    */
-  highlightRaster = (layerName) => {
+  highlightRaster = (layerId) => {
     this.resetRasterHighlight();
     this.setState((prevState) => {
       const newState = {
         ...prevState,
       };
-      const selectedLayer = newState.rasterUrls.find((ras) => ras.id === layerName);
+      const selectedLayer = newState.rasterUrls.find((ras) => ras.id === layerId);
       if (selectedLayer) {
         selectedLayer.opacity = rasterOpacity.selected;
       }
