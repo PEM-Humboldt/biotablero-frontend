@@ -48,11 +48,6 @@ const tooltipLabel = {
   X: 'Sin clasificar / Nubes',
 };
 
-const rasterOpacity = {
-  default: 0.7,
-  selected: 1,
-};
-
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -360,7 +355,7 @@ class Search extends Component {
       };
       const selectedLayer = newState.rasterUrls.find((ras) => ras.id === layerId);
       if (selectedLayer) {
-        selectedLayer.opacity = rasterOpacity.selected;
+        selectedLayer.opacity = 1;
       }
       return newState;
     });
@@ -376,7 +371,7 @@ class Search extends Component {
       };
       newState.rasterUrls = prevState.rasterUrls.map((ras) => ({
         ...ras,
-        opacity: rasterOpacity.default,
+        opacity: newState.activeLayer.defaultOpacity,
       }));
       return newState;
     });
@@ -649,7 +644,7 @@ class Search extends Component {
     const shapeLayerIds = [];
     let rasterLayerIds = [];
     const newActiveLayer = { id: sectionName };
-    let rastersOpacity = 1;
+    newActiveLayer.defaultOpacity = 1;
 
     /**
      * WIP
@@ -672,7 +667,7 @@ class Search extends Component {
         baseLayerId = 'geofence';
         rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
         newActiveLayer.name = 'Coberturas';
-        rastersOpacity = rasterOpacity.default;
+        newActiveLayer.defaultOpacity = 0.7;
         break;
       default:
         break;
@@ -696,7 +691,12 @@ class Search extends Component {
             mapBounds: baseLayer.layer.getBounds(),
             rasterUrls: rasterLayers
               .filter((layer) => layer !== null)
-              .map((layer) => ({ id: layer.id, data: layer.data, opacity: rastersOpacity })),
+              .map((layer) => ({
+                  id: layer.id,
+                  data: layer.data,
+                  opacity: newActiveLayer.defaultOpacity,
+                }
+              )),
             activeLayer: newActiveLayer,
             loadingLayer: false,
           });
