@@ -643,8 +643,7 @@ class Search extends Component {
     let baseLayerId = null;
     const shapeLayerIds = [];
     let rasterLayerIds = [];
-    const newActiveLayer = { id: sectionName };
-    newActiveLayer.defaultOpacity = 1;
+    const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
 
     /**
      * WIP
