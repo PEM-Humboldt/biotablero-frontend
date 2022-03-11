@@ -251,8 +251,8 @@ class Search extends Component {
   featureActions = (layer, layerName) => {
     layer.on(
       {
-        mouseover: (event) => this.highlightFeature(event, layerName),
-        mouseout: (event) => this.resetHighlight(event, layerName),
+        mouseover: (event) => this.highlightShapeFeature(event, layerName),
+        mouseout: (event) => this.resetShapeHighlight(event, layerName),
       },
     );
   }
@@ -263,7 +263,7 @@ class Search extends Component {
    * @param {Object} event event captured by interacting with the map
    * @param {String} layerName Layer name the event belongs to
    */
-  highlightFeature = (event, layerName) => {
+  highlightShapeFeature = (event, layerName) => {
     const feature = event.target;
     let changeStyle = true;
     const optionsTooltip = { sticky: true };
@@ -335,11 +335,46 @@ class Search extends Component {
    * @param {Object} event event captured by interacting with the map
    * @param {String} layerName Layer name the event belongs to
    */
-  resetHighlight = (event, layerName) => {
+  resetShapeHighlight = (event, layerName) => {
     const feature = event.target;
     const { layers } = this.state;
     layers[layerName].layer.resetStyle(feature);
     feature.closePopup();
+  }
+
+  /**
+   * Highlight specific raster on the map
+   *
+   * @param {String} layerId Raster layer id
+   */
+  highlightRaster = (layerId) => {
+    this.resetRasterHighlight();
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+      };
+      const selectedLayer = newState.rasterUrls.find((ras) => ras.id === layerId);
+      if (selectedLayer) {
+        selectedLayer.opacity = 1;
+      }
+      return newState;
+    });
+  }
+
+  /**
+   * Reset highlight of all rasters on the map
+   */
+  resetRasterHighlight = () => {
+    this.setState((prevState) => {
+      const newState = {
+        ...prevState,
+      };
+      newState.rasterUrls = prevState.rasterUrls.map((ras) => ({
+        ...ras,
+        opacity: newState.activeLayer.defaultOpacity,
+      }));
+      return newState;
+    });
   }
 
   /**
@@ -351,6 +386,10 @@ class Search extends Component {
    */
   clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
     switch (chartType) {
+      case 'coverage':
+        this.highlightRaster(`${chartType}-${selectedKey}`);
+        break;
+      // Current progress of the refactor
       case 'paramo':
         this.shutOffLayer('wetland');
         this.shutOffLayer('dryForest');
@@ -503,6 +542,171 @@ class Search extends Component {
     }
   };
 
+  getShapeLayer = async (layerName, isActive = true, fitBounds = true) => {
+    const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { layers } = this.state;
+    let reqPromise = null;
+    const layerStyle = this.featureStyle({ type: layerName });
+
+    switch (layerName) {
+      case 'geofence':
+        reqPromise = RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        break;
+      default:
+        break;
+    }
+
+    if (!reqPromise) return null;
+    if (layers[layerName]) return layers[layerName];
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerName, source);
+    try {
+      const res = await request;
+      this.activeRequests.delete(layerName);
+      if (res.features) {
+        if (res.features.length === 1 && !res.features[0].geometry) {
+          return null;
+        }
+        const layerObj = {
+          active: isActive,
+          layer: L.geoJSON(res, {
+            style: layerStyle,
+            onEachFeature: (feature, selectedLayer) => (
+              this.featureActions(selectedLayer, layerName)
+            ),
+            fitBounds,
+          }),
+        };
+        this.setState((prevState) => {
+          const newState = prevState;
+          newState.layers[layerName] = layerObj;
+          return newState;
+        });
+        return layerObj;
+      }
+      return null;
+    } catch {
+      this.activeRequests.delete(layerName);
+      this.reportDataError();
+      return null;
+    }
+  }
+
+  getRasterLayer = async (layerName) => {
+    const { selectedAreaId, selectedAreaTypeId } = this.props;
+    let reqPromise = null;
+
+    if (/coverage-*/.test(layerName)) {
+      let type = 'N';
+      const selected = layerName.match(/coverage-(\w+)/);
+      if (selected) [, type] = selected;
+
+      reqPromise = RestAPI.requestCoveragesLayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+        type,
+      );
+    }
+
+    if (!reqPromise) {
+      return null;
+    }
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerName, source);
+
+    try {
+      const res = await request;
+      this.activeRequests.delete(layerName);
+      if (res !== 'request canceled') {
+        return {
+          id: layerName,
+          data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
+        };
+      }
+      return null;
+    } catch {
+      this.activeRequests.delete(layerName);
+      this.reportDataError();
+      return null;
+    }
+  }
+
+  setSectionLayers = (sectionName) => {
+    this.setState({ loadingLayer: true, layerError: false });
+    this.shutOffLayer();
+
+    let baseLayerId = null;
+    const shapeLayerIds = [];
+    let rasterLayerIds = [];
+    const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
+
+    /**
+     * WIP
+     * I think we could handle 2 groups: shapeLayers and rasterLayers
+     * shapeLayers: shape layers that will be displayed
+     * rasterLayers: raster layers that will be displayed
+     *
+     * shapeLayers is const because it's not used right now, so this function only is working for
+     * raster layers
+     *
+     * Additionally there is 1 baseLayer to get data from it, for now it's always 'geofence'
+     *
+     * Things I haven't thought of:
+     * - how to handle map legends that require requests
+     * - new layers without modifying existing ones like protected areas in forest integrity
+     * - Order of the layers when there are shape and raster layers
+     */
+    switch (sectionName) {
+      case 'coverages':
+        baseLayerId = 'geofence';
+        rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
+        newActiveLayer.name = 'Coberturas';
+        newActiveLayer.defaultOpacity = 0.7;
+        break;
+      default:
+        break;
+    }
+
+    if (shapeLayerIds.length <= 0 && rasterLayerIds.length <= 0) {
+      this.reportDataError();
+    }
+
+    if (rasterLayerIds.length > 0) {
+      Promise.all([
+        this.getShapeLayer(baseLayerId, false),
+        ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
+      ])
+      .then(([
+        baseLayer,
+        ...rasterLayers
+      ]) => {
+        if (baseLayer) {
+          this.setState({
+            mapBounds: baseLayer.layer.getBounds(),
+            rasterUrls: rasterLayers
+              .filter((layer) => layer !== null)
+              .map((layer) => ({
+                  id: layer.id,
+                  data: layer.data,
+                  opacity: newActiveLayer.defaultOpacity,
+                }
+              )),
+            activeLayer: newActiveLayer,
+            loadingLayer: false,
+          });
+        }
+      })
+      .catch(() => {
+        this.reportDataError();
+      });
+    }
+  }
+
   /**
    * Switch layer based on graph showed
    *
@@ -514,7 +718,10 @@ class Search extends Component {
       selectedAreaId,
       selectedAreaTypeId,
     } = this.props;
-    const { layers } = this.state;
+    const {
+      layers,
+      rasterUrls,
+    } = this.state;
 
     this.setState({
       loadingLayer: true,
@@ -531,6 +738,10 @@ class Search extends Component {
     let mapLegend = null;
 
     switch (layerType) {
+      case 'coverages':
+        this.setSectionLayers(layerType);
+        return;
+      // Current progress of the refactor
       case undefined:
       case null:
         this.cancelActiveRequests();
@@ -597,16 +808,6 @@ class Search extends Component {
         );
         newActiveLayer = {
           id: 'geofence',
-        };
-        break;
-      case 'coverage':
-        requestObj = RestAPI.requestCoveragesLayer(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        newActiveLayer = {
-          id: 'coverage',
-          name: 'Coberturas',
         };
         break;
       case 'forestIntegrity':
@@ -749,7 +950,6 @@ class Search extends Component {
             let group = 'total';
             const selected = layerType.match(/numberOfSpecies-(\w+)/);
             if (selected) [, group] = selected;
-
             isRaster = true;
             requestObj = RestAPI.requestNOSLayer(
               selectedAreaTypeId,
@@ -805,12 +1005,19 @@ class Search extends Component {
       Promise.all(promises).then(([res, legendValues]) => {
         this.activeRequests.delete(layerType);
         if (res !== 'request canceled') {
-          const rasterUrls = [`data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`];
+          const currentRaster = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
+          if (shutOtherLayers) {
+            rasterUrls.splice(0, rasterUrls.length);
+          }
+          rasterUrls.push({ data: currentRaster, opacity: 1 });
           if (mapLegend) mapLegend.resolve(legendValues);
-          this.setState({
-              mapBounds,
-              rasterUrls,
-              loadingLayer: false,
+          this.setState((prevState) => {
+            const newState = prevState;
+            newState.mapBounds = mapBounds;
+            newState.rasterUrls = rasterUrls;
+            newState.loadingLayer = false;
+            newState.layers.geofence.active = false;
+            return newState;
           });
         }
       }).catch(() => {
@@ -1019,7 +1226,6 @@ class Search extends Component {
       'dryForestPAConn',
       'wetlandPAConn',
       'speciesRecordsGaps',
-      'coverage',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
@@ -1154,7 +1360,6 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  cancelActiveRequests={this.cancelActiveRequests}
                 />
               )}
             </div>
