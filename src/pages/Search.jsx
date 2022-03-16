@@ -16,38 +16,6 @@ import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
 
-/**
- * Get the label tooltip on the map
- */
-// TODO: Centralize as it is used in more that one component
-const tooltipLabel = {
-  natural: 'Natural',
-  baja: 'Baja',
-  media: 'Media',
-  alta: 'Alta',
-  estable_natural: 'Estable Natural',
-  dinamica: 'Dinámica',
-  estable_alta: 'Estable Alta',
-  aTotal: 'Total',
-  paramo: 'Páramo',
-  wetland: 'Humedal',
-  dryForest: 'Bosque Seco Tropical',
-  perdida: 'Pérdida',
-  persistencia: 'Persistencia',
-  ganancia: 'Ganancia',
-  no_bosque: 'No bosque',
-  scialta: 'Alto',
-  scibaja_moderada: 'Bajo Moderado',
-  total: 'Total',
-  endemic: 'Endémicas',
-  invasive: 'Invasoras',
-  threatened: 'Amenazadas',
-  N: 'Natural',
-  S: 'Secundaria',
-  T: 'Transformada',
-  X: 'Sin clasificar / Nubes',
-};
-
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -264,6 +232,25 @@ class Search extends Component {
    * @param {String} layerName Layer name the event belongs to
    */
   highlightShapeFeature = (event, layerName) => {
+    const tooltipLabel = {
+      natural: 'Natural',
+      baja: 'Baja',
+      media: 'Media',
+      alta: 'Alta',
+      estable_natural: 'Estable Natural',
+      dinamica: 'Dinámica',
+      estable_alta: 'Estable Alta',
+      aTotal: 'Total',
+      paramo: 'Páramo',
+      wetland: 'Humedal',
+      dryForest: 'Bosque Seco Tropical',
+      perdida: 'Pérdida',
+      persistencia: 'Persistencia',
+      ganancia: 'Ganancia',
+      no_bosque: 'No bosque',
+      scialta: 'Alto',
+      scibaja_moderada: 'Bajo Moderado',
+    };
     const feature = event.target;
     let changeStyle = true;
     const optionsTooltip = { sticky: true };
@@ -307,12 +294,6 @@ class Search extends Component {
           `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-          optionsTooltip,
-        ).openTooltip();
-        break;
-      case 'coverage':
-        feature.bindTooltip(
-          `<b>${tooltipLabel[feature.feature.properties.key]}</b>`,
           optionsTooltip,
         ).openTooltip();
         break;
@@ -685,12 +666,18 @@ class Search extends Component {
       newActiveLayer.name = 'Coberturas';
       newActiveLayer.defaultOpacity = 0.7;
     } else if (/numberOfSpecies*/.test(sectionName)) {
+      const groupLabel = {
+        total: 'Total',
+        endemic: 'Endémicas',
+        invasive: 'Invasoras',
+        threatened: 'Amenazadas',
+      };
       baseLayerId = 'geofence';
       rasterLayerIds = [sectionName];
       let group = 'total';
       const selected = sectionName.match(/numberOfSpecies-(\w+)/);
       if (selected) [, group] = selected;
-      newActiveLayer.name = `Número de especies - ${tooltipLabel[group]}`;
+      newActiveLayer.name = `Número de especies - ${groupLabel[group]}`;
       newActiveLayer.defaultOpacity = 0.85;
       mapLegend = {
         promise: RestAPI.requestNOSLayerThresholds(
@@ -1183,7 +1170,6 @@ class Search extends Component {
       'paramoPAConn',
       'dryForestPAConn',
       'wetlandPAConn',
-      'speciesRecordsGaps',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
