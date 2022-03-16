@@ -678,15 +678,43 @@ class Search extends Component {
      * - new layers without modifying existing ones like protected areas in forest integrity
      * - Order of the layers when there are shape and raster layers
      */
-    switch (sectionName) {
-      case 'coverages':
-        baseLayerId = 'geofence';
-        rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
-        newActiveLayer.name = 'Coberturas';
-        newActiveLayer.defaultOpacity = 0.7;
-        break;
-      case 'speciesRecordsGaps':
-        baseLayerId = 'geofence';
+
+    if (sectionName === 'coverages') {
+      baseLayerId = 'geofence';
+      rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
+      newActiveLayer.name = 'Coberturas';
+      newActiveLayer.defaultOpacity = 0.7;
+    } else if (/numberOfSpecies*/.test(sectionName)) {
+      baseLayerId = 'geofence';
+      rasterLayerIds = [sectionName];
+      let group = 'total';
+      const selected = sectionName.match(/numberOfSpecies-(\w+)/);
+      if (selected) [, group] = selected;
+      newActiveLayer.name = `Número de especies - ${tooltipLabel[group]}`;
+      newActiveLayer.defaultOpacity = 0.85;
+      mapLegend = {
+        promise: RestAPI.requestNOSLayerThresholds(
+          selectedAreaTypeId,
+          selectedAreaId,
+          group,
+        ),
+        resolve: (res) => {
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            newState.activeLayer.legend = {
+              from: res.min.toString(),
+              to: res.max.toString(),
+              colors: [
+                matchColor('richnessNos')('legend-from'),
+                matchColor('richnessNos')('legend-to'),
+              ],
+            };
+            return newState;
+          });
+        },
+      };
+    } else if (sectionName === 'speciesRecordsGaps') {
+      baseLayerId = 'geofence';
         rasterLayerIds = ['speciesRecordsGaps'];
         newActiveLayer.name = 'Vacios en registros de especies';
         newActiveLayer.defaultOpacity = 0.75;
@@ -711,39 +739,6 @@ class Search extends Component {
             });
           },
         };
-        break;
-      default:
-        if (/numberOfSpecies*/.test(sectionName)) {
-          baseLayerId = 'geofence';
-          rasterLayerIds = [sectionName];
-          let group = 'total';
-          const selected = sectionName.match(/numberOfSpecies-(\w+)/);
-          if (selected) [, group] = selected;
-          newActiveLayer.name = `Número de especies - ${tooltipLabel[group]}`;
-          newActiveLayer.defaultOpacity = 0.85;
-          mapLegend = {
-            promise: RestAPI.requestNOSLayerThresholds(
-              selectedAreaTypeId,
-              selectedAreaId,
-              group,
-            ),
-            resolve: (res) => {
-              this.setState((prevState) => {
-                const newState = { ...prevState };
-                newState.activeLayer.legend = {
-                  from: res.min.toString(),
-                  to: res.max.toString(),
-                  colors: [
-                    matchColor('richnessNos')('legend-from'),
-                    matchColor('richnessNos')('legend-to'),
-                  ],
-                };
-                return newState;
-              });
-            },
-          };
-        }
-        break;
     }
 
     if (shapeLayerIds.length <= 0 && rasterLayerIds.length <= 0) {
