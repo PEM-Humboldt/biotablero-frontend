@@ -1,6 +1,6 @@
 import { withRouter } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import L, { LatLngBounds } from 'leaflet';
+import L from 'leaflet';
 import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
@@ -15,38 +15,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
-
-/**
- * Get the label tooltip on the map
- */
-// TODO: Centralize as it is used in more that one component
-const tooltipLabel = {
-  natural: 'Natural',
-  baja: 'Baja',
-  media: 'Media',
-  alta: 'Alta',
-  estable_natural: 'Estable Natural',
-  dinamica: 'Dinámica',
-  estable_alta: 'Estable Alta',
-  aTotal: 'Total',
-  paramo: 'Páramo',
-  wetland: 'Humedal',
-  dryForest: 'Bosque Seco Tropical',
-  perdida: 'Pérdida',
-  persistencia: 'Persistencia',
-  ganancia: 'Ganancia',
-  no_bosque: 'No bosque',
-  scialta: 'Alto',
-  scibaja_moderada: 'Bajo Moderado',
-  total: 'Total',
-  endemic: 'Endémicas',
-  invasive: 'Invasoras',
-  threatened: 'Amenazadas',
-  N: 'Natural',
-  S: 'Secundaria',
-  T: 'Transformada',
-  X: 'Sin clasificar / Nubes',
-};
 
 class Search extends Component {
   constructor(props) {
@@ -264,6 +232,25 @@ class Search extends Component {
    * @param {String} layerName Layer name the event belongs to
    */
   highlightShapeFeature = (event, layerName) => {
+    const tooltipLabel = {
+      natural: 'Natural',
+      baja: 'Baja',
+      media: 'Media',
+      alta: 'Alta',
+      estable_natural: 'Estable Natural',
+      dinamica: 'Dinámica',
+      estable_alta: 'Estable Alta',
+      aTotal: 'Total',
+      paramo: 'Páramo',
+      wetland: 'Humedal',
+      dryForest: 'Bosque Seco Tropical',
+      perdida: 'Pérdida',
+      persistencia: 'Persistencia',
+      ganancia: 'Ganancia',
+      no_bosque: 'No bosque',
+      scialta: 'Alto',
+      scibaja_moderada: 'Bajo Moderado',
+    };
     const feature = event.target;
     let changeStyle = true;
     const optionsTooltip = { sticky: true };
@@ -307,12 +294,6 @@ class Search extends Component {
           `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-          optionsTooltip,
-        ).openTooltip();
-        break;
-      case 'coverage':
-        feature.bindTooltip(
-          `<b>${tooltipLabel[feature.feature.properties.key]}</b>`,
           optionsTooltip,
         ).openTooltip();
         break;
@@ -388,6 +369,15 @@ class Search extends Component {
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
+        break;
+      case 'numberOfSpecies': {
+        const { activeLayer: { id: activeLayer } } = this.state;
+        if (chartSection !== 'inferred') {
+          this.switchLayer('geofence');
+        } else if (activeLayer !== `numberOfSpecies-${selectedKey}`) {
+          this.setSectionLayers(`numberOfSpecies-${selectedKey}`);
+        }
+      }
         break;
       // Current progress of the refactor
       case 'paramo':
@@ -480,15 +470,6 @@ class Search extends Component {
         this.shutOffLayer('wetlandPAConn');
         this.shutOffLayer('paramoPAConn');
         this.switchLayer('dryForestPAConn');
-        break;
-      case 'numberOfSpecies': {
-        const { activeLayer: { id: activeLayer } } = this.state;
-        if (chartSection !== 'inferred') {
-          this.switchLayer('geofence');
-        } else if (activeLayer !== selectedKey) {
-          this.switchLayer(`numberOfSpecies-${selectedKey}`);
-        }
-      }
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -610,6 +591,21 @@ class Search extends Component {
         selectedAreaId,
         type,
       );
+    } else if (/numberOfSpecies-*/.test(layerName)) {
+      let group = 'total';
+      const selected = layerName.match(/numberOfSpecies-(\w+)/);
+      if (selected) [, group] = selected;
+
+      reqPromise = RestAPI.requestNOSLayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+        group,
+      );
+    } else if (layerName === 'speciesRecordsGaps') {
+      reqPromise = RestAPI.requestGapsLayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+      );
     }
 
     if (!reqPromise) {
@@ -637,6 +633,7 @@ class Search extends Component {
   }
 
   setSectionLayers = (sectionName) => {
+    const { selectedAreaId, selectedAreaTypeId } = this.props;
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
@@ -644,6 +641,7 @@ class Search extends Component {
     const shapeLayerIds = [];
     let rasterLayerIds = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
+    let mapLegend = null;
 
     /**
      * WIP
@@ -661,15 +659,73 @@ class Search extends Component {
      * - new layers without modifying existing ones like protected areas in forest integrity
      * - Order of the layers when there are shape and raster layers
      */
-    switch (sectionName) {
-      case 'coverages':
-        baseLayerId = 'geofence';
-        rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
-        newActiveLayer.name = 'Coberturas';
-        newActiveLayer.defaultOpacity = 0.7;
-        break;
-      default:
-        break;
+
+    if (sectionName === 'coverages') {
+      baseLayerId = 'geofence';
+      rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
+      newActiveLayer.name = 'Coberturas';
+      newActiveLayer.defaultOpacity = 0.7;
+    } else if (/numberOfSpecies*/.test(sectionName)) {
+      const groupLabel = {
+        total: 'Total',
+        endemic: 'Endémicas',
+        invasive: 'Invasoras',
+        threatened: 'Amenazadas',
+      };
+      baseLayerId = 'geofence';
+      rasterLayerIds = [sectionName];
+      let group = 'total';
+      const selected = sectionName.match(/numberOfSpecies-(\w+)/);
+      if (selected) [, group] = selected;
+      newActiveLayer.name = `Número de especies - ${groupLabel[group]}`;
+      newActiveLayer.defaultOpacity = 0.85;
+      mapLegend = {
+        promise: RestAPI.requestNOSLayerThresholds(
+          selectedAreaTypeId,
+          selectedAreaId,
+          group,
+        ),
+        resolve: (res) => {
+          this.setState((prevState) => {
+            const newState = { ...prevState };
+            newState.activeLayer.legend = {
+              from: res.min.toString(),
+              to: res.max.toString(),
+              colors: [
+                matchColor('richnessNos')('legend-from'),
+                matchColor('richnessNos')('legend-to'),
+              ],
+            };
+            return newState;
+          });
+        },
+      };
+    } else if (sectionName === 'speciesRecordsGaps') {
+      baseLayerId = 'geofence';
+        rasterLayerIds = ['speciesRecordsGaps'];
+        newActiveLayer.name = 'Vacios en registros de especies';
+        newActiveLayer.defaultOpacity = 0.75;
+        mapLegend = {
+          promise: RestAPI.requestGapsLayerThresholds(
+            selectedAreaTypeId,
+            selectedAreaId,
+          ),
+          resolve: (res) => {
+            this.setState((prevState) => {
+              const newState = { ...prevState };
+              newState.activeLayer.legend = {
+                from: Math.round(res.min * 100).toString(),
+                to: Math.round(res.max * 100).toString(),
+                colors: [
+                  matchColor('richnessGaps')('legend-from'),
+                  matchColor('richnessGaps')('legend-middle'),
+                  matchColor('richnessGaps')('legend-to'),
+                ],
+              };
+              return newState;
+            });
+          },
+        };
     }
 
     if (shapeLayerIds.length <= 0 && rasterLayerIds.length <= 0) {
@@ -677,6 +733,13 @@ class Search extends Component {
     }
 
     if (rasterLayerIds.length > 0) {
+      if (mapLegend) {
+        mapLegend.promise.then((res) => mapLegend.resolve(res))
+        .catch(() => {
+          // TODO: Confirm with the thematic team the behavior when this endpoints fails
+        });
+      }
+
       Promise.all([
         this.getShapeLayer(baseLayerId, false),
         ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
@@ -691,11 +754,10 @@ class Search extends Component {
             rasterUrls: rasterLayers
               .filter((layer) => layer !== null)
               .map((layer) => ({
-                  id: layer.id,
-                  data: layer.data,
-                  opacity: newActiveLayer.defaultOpacity,
-                }
-              )),
+                id: layer.id,
+                data: layer.data,
+                opacity: newActiveLayer.defaultOpacity,
+              })),
             activeLayer: newActiveLayer,
             loadingLayer: false,
           });
@@ -718,10 +780,7 @@ class Search extends Component {
       selectedAreaId,
       selectedAreaTypeId,
     } = this.props;
-    const {
-      layers,
-      rasterUrls,
-    } = this.state;
+    const { layers } = this.state;
 
     this.setState({
       loadingLayer: true,
@@ -734,11 +793,10 @@ class Search extends Component {
     let fitBounds = true;
     let newActiveLayer = null;
     let layerKey = layerType;
-    let isRaster = false;
-    let mapLegend = null;
 
     switch (layerType) {
       case 'coverages':
+      case 'speciesRecordsGaps':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -885,43 +943,6 @@ class Search extends Component {
           name: 'Conectividad de áreas protegidas - Humedales',
         };
         break;
-      case 'speciesRecordsGaps':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-          });
-
-          isRaster = true;
-          requestObj = RestAPI.requestGapsLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          mapLegend = {
-            promise: RestAPI.requestGapsLayerThresholds(
-              selectedAreaTypeId,
-              selectedAreaId,
-            ),
-            resolve: (res) => {
-              this.setState({
-                activeLayer: {
-                  id: 'speciesRecordsGaps',
-                  name: 'Vacios en registros de especies',
-                  legend: {
-                    from: Math.round(res.min * 100).toString(),
-                    to: Math.round(res.max * 100).toString(),
-                    colors: [
-                      matchColor('richnessGaps')('legend-from'),
-                      matchColor('richnessGaps')('legend-middle'),
-                      matchColor('richnessGaps')('legend-to'),
-                    ],
-                  },
-                },
-              });
-            },
-          };
-        });
-        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -942,89 +963,13 @@ class Search extends Component {
             name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
           };
         } else if (/numberOfSpecies*/.test(layerType)) {
-          this.switchLayer('geofence', () => {
-            this.setState({
-              loadingLayer: true,
-              layerError: false,
-            });
-            let group = 'total';
-            const selected = layerType.match(/numberOfSpecies-(\w+)/);
-            if (selected) [, group] = selected;
-            isRaster = true;
-            requestObj = RestAPI.requestNOSLayer(
-              selectedAreaTypeId,
-              selectedAreaId,
-              group,
-            );
-            mapLegend = {
-              promise: RestAPI.requestNOSLayerThresholds(
-                selectedAreaTypeId,
-                selectedAreaId,
-                group,
-              ),
-              resolve: (res) => {
-                this.setState({
-                  activeLayer: {
-                    id: group,
-                    name: `Número de especies - ${tooltipLabel[group]}`,
-                    legend: {
-                      from: res.min.toString(),
-                      to: res.max.toString(),
-                      colors: [
-                        matchColor('richnessNos')('legend-from'),
-                        matchColor('richnessNos')('legend-to'),
-                      ],
-                    },
-                  },
-                });
-              },
-            };
-          });
+          this.setSectionLayers(layerType);
         }
         break;
     }
 
     if (shutOtherLayers) this.shutOffLayer();
-
-    if (isRaster) {
-      const geofenceLayer = layers.geofence;
-      let mapBounds = null;
-      if (geofenceLayer) {
-        mapBounds = geofenceLayer.layer.getBounds();
-      } else {
-        mapBounds = LatLngBounds(
-          [-78.9909352282, -4.29818694419], [-66.8763258531, 12.4373031682],
-        );
-      }
-
-      const { request, source } = requestObj;
-      this.activeRequests.set(layerType, source);
-
-      const promises = [request];
-      if (mapLegend) promises.push(mapLegend.promise);
-      Promise.all(promises).then(([res, legendValues]) => {
-        this.activeRequests.delete(layerType);
-        if (res !== 'request canceled') {
-          const currentRaster = `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`;
-          if (shutOtherLayers) {
-            rasterUrls.splice(0, rasterUrls.length);
-          }
-          rasterUrls.push({ data: currentRaster, opacity: 1 });
-          if (mapLegend) mapLegend.resolve(legendValues);
-          this.setState((prevState) => {
-            const newState = prevState;
-            newState.mapBounds = mapBounds;
-            newState.rasterUrls = rasterUrls;
-            newState.loadingLayer = false;
-            newState.layers.geofence.active = false;
-            return newState;
-          });
-        }
-      }).catch(() => {
-        this.activeRequests.delete(layerType);
-        this.reportDataError();
-      });
-    } else if (requestObj) {
+    if (requestObj) {
       if (layers[layerKey]) {
         this.setState((prevState) => {
           const newState = prevState;
@@ -1225,7 +1170,6 @@ class Search extends Component {
       'paramoPAConn',
       'dryForestPAConn',
       'wetlandPAConn',
-      'speciesRecordsGaps',
     ];
     this.setState((prevState) => {
       const newState = { ...prevState };
