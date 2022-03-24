@@ -732,14 +732,14 @@ class Search extends Component {
       this.reportDataError();
     }
 
-    if (rasterLayerIds.length > 0) {
-      if (mapLegend) {
-        mapLegend.promise.then((res) => mapLegend.resolve(res))
-        .catch(() => {
-          // TODO: Confirm with the thematic team the behavior when this endpoints fails
-        });
-      }
+    if (mapLegend) {
+      mapLegend.promise.then((res) => mapLegend.resolve(res))
+      .catch(() => {
+        // TODO: Confirm with the thematic team the behavior when this endpoints fails
+      });
+    }
 
+    if (rasterLayerIds.length > 0) {
       Promise.all([
         this.getShapeLayer(baseLayerId, false),
         ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
