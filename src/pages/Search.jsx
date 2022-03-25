@@ -523,6 +523,15 @@ class Search extends Component {
     }
   };
 
+  /**
+   * Returns a shape layer from the state. When the layer is not present in the state it's requested
+   * to the backend and stored in the state.
+   * @param {String} layerName name of the layer
+   * @param {Boolean} isActive wheter the layer stored in the stated should be activated
+   * @param {String} fitBounds if the map bounds should fit the layer loaded
+   *
+   * @returns {Object} Data of the layer with its id
+   */
   getShapeLayer = async (layerName, isActive = true, fitBounds = true) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     const { layers } = this.state;
@@ -577,6 +586,12 @@ class Search extends Component {
     }
   }
 
+  /**
+   * Request a raster layer from the backend
+   * @param {String} layerName name of the layer to request
+   *
+   * @returns {Object} Data of the layer with its id
+   */
   getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     let reqPromise = null;
@@ -632,6 +647,10 @@ class Search extends Component {
     }
   }
 
+  /**
+   * Config the desired and required layers to show in the map for the given section
+   * @param {String} sectionName section to identify desired layers
+   */
   setSectionLayers = (sectionName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     this.setState({ loadingLayer: true, layerError: false });
