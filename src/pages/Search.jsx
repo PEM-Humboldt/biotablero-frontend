@@ -770,8 +770,9 @@ class Search extends Component {
       });
     }
 
+    const loadingProm = [];
     if (rasterLayerIds.length > 0) {
-      Promise.all([
+      const rasterProm = Promise.all([
         this.getShapeLayer(baseLayerId, false),
         ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
       ])
@@ -790,25 +791,31 @@ class Search extends Component {
                 opacity: newActiveLayer.defaultOpacity,
               })),
             activeLayer: newActiveLayer,
-            loadingLayer: false,
           });
         }
       })
       .catch(() => {
         this.reportDataError();
       });
-    } else if (shapeLayerIds.length > 0) {
-      Promise.all(shapeLayerIds.map((id) => this.getShapeLayer(id)))
+      loadingProm.push(rasterProm);
+    }
+
+    if (shapeLayerIds.length > 0) {
+      const shapeProm = Promise.all(shapeLayerIds.map((id) => this.getShapeLayer(id)))
       .then(() => {
         this.setState({
           activeLayer: newActiveLayer,
-          loadingLayer: false,
         });
       })
       .catch(() => {
         this.reportDataError();
       });
+      loadingProm.push(shapeProm);
     }
+
+    Promise.all(loadingProm).then(() => {
+      this.setState({ loadingLayer: false });
+    });
   }
 
   /**
