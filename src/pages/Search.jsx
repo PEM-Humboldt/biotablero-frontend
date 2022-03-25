@@ -550,6 +550,11 @@ class Search extends Component {
           selectedAreaTypeId, selectedAreaId,
         );
         break;
+      case 'hfPersistence':
+        reqPromise = RestAPI.requestHFPersistenceGeometry(
+          selectedAreaTypeId, selectedAreaId,
+        );
+        break;
       default:
         break;
     }
@@ -590,6 +595,9 @@ class Search extends Component {
           return newState;
         });
         return layerObj;
+      }
+      if (res === 'request canceled') {
+        return 'canceled';
       }
       return null;
     } catch {
@@ -646,13 +654,13 @@ class Search extends Component {
     try {
       const res = await request;
       this.activeRequests.delete(layerName);
-      if (res !== 'request canceled') {
-        return {
-          id: layerName,
-          data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
-        };
+      if (res === 'request canceled') {
+        return 'canceled';
       }
-      return null;
+      return {
+        id: layerName,
+        data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
+      };
     } catch {
       this.activeRequests.delete(layerName);
       this.reportDataError();
@@ -696,6 +704,9 @@ class Search extends Component {
     } else if (sectionName === 'hfCurrent') {
       shapeLayerIds = ['hfCurrent'];
       newActiveLayer.name = 'HH promedio · 2018';
+    } else if (sectionName === 'hfPersistence') {
+      shapeLayerIds = ['hfPersistence'];
+      newActiveLayer.name = 'HH - Persistencia';
     } else if (/numberOfSpecies*/.test(sectionName)) {
       const groupLabel = {
         total: 'Total',
@@ -780,6 +791,9 @@ class Search extends Component {
         baseLayer,
         ...rasterLayers
       ]) => {
+        if (rasterLayers.includes('canceled')) {
+          return 'canceled';
+        }
         if (baseLayer) {
           this.setState({
             mapBounds: baseLayer.layer.getBounds(),
@@ -793,6 +807,7 @@ class Search extends Component {
             activeLayer: newActiveLayer,
           });
         }
+        return null;
       })
       .catch(() => {
         this.reportDataError();
@@ -802,10 +817,14 @@ class Search extends Component {
 
     if (shapeLayerIds.length > 0) {
       const shapeProm = Promise.all(shapeLayerIds.map((id) => this.getShapeLayer(id)))
-      .then(() => {
+      .then((shapeLayers) => {
+        if (shapeLayers.includes('canceled')) {
+          return 'canceled';
+        }
         this.setState({
           activeLayer: newActiveLayer,
         });
+        return null;
       })
       .catch(() => {
         this.reportDataError();
@@ -813,8 +832,10 @@ class Search extends Component {
       loadingProm.push(shapeProm);
     }
 
-    Promise.all(loadingProm).then(() => {
-      this.setState({ loadingLayer: false });
+    Promise.all(loadingProm).then((resolved) => {
+      if (!resolved.includes('canceled')) {
+        this.setState({ loadingLayer: false });
+      }
     });
   }
 
@@ -847,6 +868,7 @@ class Search extends Component {
       case 'coverages':
       case 'speciesRecordsGaps':
       case 'hfCurrent':
+      case 'hfPersistence':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -889,15 +911,6 @@ class Search extends Component {
         newActiveLayer = {
           id: 'hfPersistence',
           name: 'HH - Persistencia y Ecosistemas estratégicos (EE)',
-        };
-        break;
-      case 'hfPersistence':
-        requestObj = RestAPI.requestHFPersistenceGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        newActiveLayer = {
-          id: layerType,
-          name: 'HH - Persistencia',
         };
         break;
       case 'geofence':
