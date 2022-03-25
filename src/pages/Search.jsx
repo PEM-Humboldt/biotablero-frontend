@@ -545,12 +545,25 @@ class Search extends Component {
           selectedAreaId,
         );
         break;
+      case 'hfCurrent':
+        reqPromise = RestAPI.requestCurrentHFGeometry(
+          selectedAreaTypeId, selectedAreaId,
+        );
+        break;
       default:
         break;
     }
 
     if (!reqPromise) return null;
-    if (layers[layerName]) return layers[layerName];
+    if (layers[layerName]) {
+      this.setState((prevState) => {
+        const newState = prevState;
+        newState.layers[layerName].active = isActive;
+        newState.layers[layerName].layer.fitBounds = fitBounds;
+        return newState;
+      });
+      return layers[layerName];
+    }
 
     const { request, source } = reqPromise;
     this.activeRequests.set(layerName, source);
@@ -657,7 +670,7 @@ class Search extends Component {
     this.shutOffLayer();
 
     let baseLayerId = null;
-    const shapeLayerIds = [];
+    let shapeLayerIds = [];
     let rasterLayerIds = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
     let mapLegend = null;
@@ -668,13 +681,9 @@ class Search extends Component {
      * shapeLayers: shape layers that will be displayed
      * rasterLayers: raster layers that will be displayed
      *
-     * shapeLayers is const because it's not used right now, so this function only is working for
-     * raster layers
-     *
      * Additionally there is 1 baseLayer to get data from it, for now it's always 'geofence'
      *
      * Things I haven't thought of:
-     * - how to handle map legends that require requests
      * - new layers without modifying existing ones like protected areas in forest integrity
      * - Order of the layers when there are shape and raster layers
      */
@@ -684,6 +693,9 @@ class Search extends Component {
       rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
       newActiveLayer.name = 'Coberturas';
       newActiveLayer.defaultOpacity = 0.7;
+    } else if (sectionName === 'hfCurrent') {
+      shapeLayerIds = ['hfCurrent'];
+      newActiveLayer.name = 'HH promedio · 2018';
     } else if (/numberOfSpecies*/.test(sectionName)) {
       const groupLabel = {
         total: 'Total',
@@ -785,6 +797,17 @@ class Search extends Component {
       .catch(() => {
         this.reportDataError();
       });
+    } else if (shapeLayerIds.length > 0) {
+      Promise.all(shapeLayerIds.map((id) => this.getShapeLayer(id)))
+      .then(() => {
+        this.setState({
+          activeLayer: newActiveLayer,
+          loadingLayer: false,
+        });
+      })
+      .catch(() => {
+        this.reportDataError();
+      });
     }
   }
 
@@ -816,6 +839,7 @@ class Search extends Component {
     switch (layerType) {
       case 'coverages':
       case 'speciesRecordsGaps':
+      case 'hfCurrent':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -828,15 +852,6 @@ class Search extends Component {
         newActiveLayer = {
           id: layerType,
           name: 'FC - Biomas',
-        };
-        break;
-      case 'hfCurrent':
-        requestObj = RestAPI.requestCurrentHFGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        newActiveLayer = {
-          id: layerType,
-          name: 'HH promedio · 2018',
         };
         break;
       case 'paramo':
