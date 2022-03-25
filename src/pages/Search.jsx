@@ -166,6 +166,7 @@ class Search extends Component {
    * @param {String} type layer type
    * @param {String} color optional key value to select color in match color palette
    * @param {String} fKey property name to use as key in the feature
+   * @param {Boolean} compoundKey whether the key used to identify the color has a - in it
    *
    * @param {Object} feature target object
    */
@@ -707,6 +708,9 @@ class Search extends Component {
     } else if (sectionName === 'hfPersistence') {
       shapeLayerIds = ['hfPersistence'];
       newActiveLayer.name = 'HH - Persistencia';
+    } else if (sectionName === 'hfTimeline') {
+      shapeLayerIds = ['hfPersistence'];
+      newActiveLayer.name = 'HH - Persistencia y Ecosistemas estratégicos (EE)';
     } else if (/numberOfSpecies*/.test(sectionName)) {
       const groupLabel = {
         total: 'Total',
@@ -869,6 +873,7 @@ class Search extends Component {
       case 'speciesRecordsGaps':
       case 'hfCurrent':
       case 'hfPersistence':
+      case 'hfTimeline':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -902,17 +907,6 @@ class Search extends Component {
         };
         break;
       }
-      case 'hfTimeline':
-        requestObj = RestAPI.requestHFPersistenceGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        layerStyle = this.featureStyle({ type: 'hfPersistence' });
-        layerKey = 'hfPersistence';
-        newActiveLayer = {
-          id: 'hfPersistence',
-          name: 'HH - Persistencia y Ecosistemas estratégicos (EE)',
-        };
-        break;
       case 'geofence':
         requestObj = RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
