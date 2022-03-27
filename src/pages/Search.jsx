@@ -371,36 +371,19 @@ class Search extends Component {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
         break;
+      case 'hfTimeline':
+        this.setSectionLayers(`hfTimeline-${selectedKey}`);
+        break;
       case 'numberOfSpecies': {
         const { activeLayer: { id: activeLayer } } = this.state;
         if (chartSection !== 'inferred') {
-          this.switchLayer('geofence');
+          this.setSectionLayers('geofence');
         } else if (activeLayer !== `numberOfSpecies-${selectedKey}`) {
           this.setSectionLayers(`numberOfSpecies-${selectedKey}`);
         }
       }
         break;
       // Current progress of the refactor
-      case 'paramo':
-        this.shutOffLayer('wetland');
-        this.shutOffLayer('dryForest');
-        this.switchLayer('paramo');
-        break;
-      case 'wetland':
-        this.shutOffLayer('paramo');
-        this.shutOffLayer('dryForest');
-        this.switchLayer('wetland');
-        break;
-      case 'dryForest':
-        this.shutOffLayer('wetland');
-        this.shutOffLayer('paramo');
-        this.switchLayer('dryForest');
-        break;
-      case 'aTotal':
-        this.shutOffLayer('paramo');
-        this.shutOffLayer('wetland');
-        this.shutOffLayer('dryForest');
-        break;
       case 'forestLP': {
         const period = chartSection;
         const { layers } = this.state;
@@ -537,7 +520,7 @@ class Search extends Component {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     const { layers } = this.state;
     let reqPromise = null;
-    const layerStyle = this.featureStyle({ type: layerName });
+    let layerStyle = this.featureStyle({ type: layerName });
 
     switch (layerName) {
       case 'geofence':
@@ -556,6 +539,15 @@ class Search extends Component {
           selectedAreaTypeId, selectedAreaId,
         );
         break;
+      case 'paramo':
+      case 'dryForest':
+      case 'wetland': {
+        reqPromise = () => RestAPI.requestHFGeometryBySEInGeofence(
+          selectedAreaTypeId, selectedAreaId, layerName,
+        );
+        layerStyle = this.featureStyle({ type: layerName, color: layerName });
+        break;
+      }
       default:
         break;
     }
@@ -681,7 +673,7 @@ class Search extends Component {
     this.shutOffLayer();
 
     let baseLayerId = null;
-    let shapeLayerIds = [];
+    let shapeLayerOpts = [];
     let rasterLayerIds = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
     let mapLegend = null;
@@ -705,14 +697,33 @@ class Search extends Component {
       newActiveLayer.name = 'Coberturas';
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
-      shapeLayerIds = ['hfCurrent'];
+      shapeLayerOpts = [{ id: 'hfCurrent' }];
       newActiveLayer.name = 'HH promedio · 2018';
     } else if (sectionName === 'hfPersistence') {
-      shapeLayerIds = ['hfPersistence'];
+      shapeLayerOpts = [{ id: 'hfPersistence' }];
       newActiveLayer.name = 'HH - Persistencia';
-    } else if (sectionName === 'hfTimeline') {
-      shapeLayerIds = ['hfPersistence'];
+    } else if (sectionName === 'hfTimeline'
+      || sectionName === 'hfTimeline-aTotal') {
+      shapeLayerOpts = [{ id: 'hfPersistence' }];
       newActiveLayer.name = 'HH - Persistencia y Ecosistemas estratégicos (EE)';
+    } else if (sectionName === 'hfTimeline-paramo') {
+      shapeLayerOpts = [
+        { id: 'hfPersistence' },
+        { id: 'paramo', fitBounds: false },
+      ];
+      newActiveLayer.name = 'HH - Persistencia - Páramos';
+    } else if (sectionName === 'hfTimeline-dryForest') {
+      shapeLayerOpts = [
+        { id: 'hfPersistence' },
+        { id: 'dryForest', fitBounds: false },
+      ];
+      newActiveLayer.name = 'HH - Persistencia - Bosque Seco Tropical';
+    } else if (sectionName === 'hfTimeline-wetland') {
+      shapeLayerOpts = [
+        { id: 'hfPersistence' },
+        { id: 'wetland', fitBounds: false },
+      ];
+      newActiveLayer.name = 'HH - Persistencia - Humedales';
     } else if (/numberOfSpecies*/.test(sectionName)) {
       const groupLabel = {
         total: 'Total',
@@ -776,7 +787,7 @@ class Search extends Component {
         };
     }
 
-    if (shapeLayerIds.length <= 0 && rasterLayerIds.length <= 0) {
+    if (shapeLayerOpts.length <= 0 && rasterLayerIds.length <= 0) {
       this.reportDataError();
     }
 
@@ -821,8 +832,11 @@ class Search extends Component {
       loadingProm.push(rasterProm);
     }
 
-    if (shapeLayerIds.length > 0) {
-      const shapeProm = Promise.all(shapeLayerIds.map((id) => this.getShapeLayer(id)))
+    if (shapeLayerOpts.length > 0) {
+      const shapeProm = Promise.all(
+        shapeLayerOpts.map(({ id, isActive, fitBounds }) => (
+          this.getShapeLayer(id, isActive, fitBounds))),
+      )
       .then((shapeLayers) => {
         if (shapeLayers.includes('canceled')) {
           return 'canceled';
@@ -890,25 +904,6 @@ class Search extends Component {
           name: 'FC - Biomas',
         };
         break;
-      case 'paramo':
-      case 'dryForest':
-      case 'wetland': {
-        requestObj = RestAPI.requestHFGeometryBySEInGeofence(
-          selectedAreaTypeId, selectedAreaId, layerType,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, color: layerType });
-        fitBounds = false;
-        let name;
-        if (layerType === 'paramo') name = 'Páramos';
-        else if (layerType === 'dryForest') name = 'Bosque Seco Tropical';
-        else name = 'Humedales';
-        newActiveLayer = {
-          id: `${layerType}HH`,
-          name: `HH - Persistencia - ${name}`,
-        };
-        break;
-      }
       case 'geofence':
         requestObj = RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
