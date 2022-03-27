@@ -541,18 +541,18 @@ class Search extends Component {
 
     switch (layerName) {
       case 'geofence':
-        reqPromise = RestAPI.requestGeofenceGeometryByArea(
+        reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
           selectedAreaId,
         );
         break;
       case 'hfCurrent':
-        reqPromise = RestAPI.requestCurrentHFGeometry(
+        reqPromise = () => RestAPI.requestCurrentHFGeometry(
           selectedAreaTypeId, selectedAreaId,
         );
         break;
       case 'hfPersistence':
-        reqPromise = RestAPI.requestHFPersistenceGeometry(
+        reqPromise = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaTypeId, selectedAreaId,
         );
         break;
@@ -571,7 +571,7 @@ class Search extends Component {
       return layers[layerName];
     }
 
-    const { request, source } = reqPromise;
+    const { request, source } = reqPromise();
     this.activeRequests.set(layerName, source);
     try {
       const res = await request;
@@ -623,7 +623,7 @@ class Search extends Component {
       const selected = layerName.match(/coverage-(\w+)/);
       if (selected) [, type] = selected;
 
-      reqPromise = RestAPI.requestCoveragesLayer(
+      reqPromise = () => RestAPI.requestCoveragesLayer(
         selectedAreaTypeId,
         selectedAreaId,
         type,
@@ -633,13 +633,13 @@ class Search extends Component {
       const selected = layerName.match(/numberOfSpecies-(\w+)/);
       if (selected) [, group] = selected;
 
-      reqPromise = RestAPI.requestNOSLayer(
+      reqPromise = () => RestAPI.requestNOSLayer(
         selectedAreaTypeId,
         selectedAreaId,
         group,
       );
     } else if (layerName === 'speciesRecordsGaps') {
-      reqPromise = RestAPI.requestGapsLayer(
+      reqPromise = () => RestAPI.requestGapsLayer(
         selectedAreaTypeId,
         selectedAreaId,
       );
@@ -649,7 +649,9 @@ class Search extends Component {
       return null;
     }
 
-    const { request, source } = reqPromise;
+    // TODO Add logic to check is the layer exists in the current state to avoid a new request
+
+    const { request, source } = reqPromise();
     this.activeRequests.set(layerName, source);
 
     try {
