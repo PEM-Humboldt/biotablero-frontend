@@ -462,7 +462,8 @@ class Search extends Component {
 
         const selectedSubLayer = layers[activeLayer].layer;
         selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key || layer.feature.properties.id === selectedKey) {
+          if (layer.feature.properties.key === selectedKey
+            || layer.feature.properties.id === selectedKey) {
             layer.setStyle({
               weight: 1,
               fillOpacity: 1,
