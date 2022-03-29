@@ -496,15 +496,15 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} type coverage category
+   * @param {String} coverageType coverage category
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestCoveragesLayer(areaType, areaId, type) {
+  static requestCoveragesLayer(areaType, areaId, coverageType) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
-        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&type=${type}`,
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
         { cancelToken: source.token, responseType: 'arraybuffer' },
         true,
       ),
