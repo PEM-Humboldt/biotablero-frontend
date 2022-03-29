@@ -54,7 +54,7 @@ class RestAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
   static requestCoverage(areaType, areaId) {
-    return RestAPI.makeGetRequest(`coverage?areaType=${areaType}&areaId=${areaId}`);
+    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -504,7 +504,7 @@ class RestAPI {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
-        `coverage/layer?areaType=${areaType}&areaId=${areaId}&type=${type}`,
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&type=${type}`,
         { cancelToken: source.token, responseType: 'arraybuffer' },
         true,
       ),
