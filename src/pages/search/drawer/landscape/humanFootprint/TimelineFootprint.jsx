@@ -215,7 +215,7 @@ class TimelineFootprint extends React.Component {
             labelY="Indice promedio Huella Humana"
             onClickGraphHandler={(selection) => {
               this.setSelectedEcosystem(selection);
-              handlerClickOnGraph({ chartType: selection });
+              handlerClickOnGraph({ chartType: 'hfTimeline', selectedKey: selection });
             }}
           />
           {selectedEcosystem && (
