@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
 import DownloadCSV from 'components/DownloadCSV';
@@ -82,7 +82,9 @@ class TimelineFootprint extends React.Component {
   componentDidMount() {
     this.mounted = true;
 
-    const { areaId, geofenceId } = this.context;
+    const { areaId, geofenceId, switchLayer } = this.context;
+    switchLayer('hfTimeline');
+
     Promise.all([
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
       RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),

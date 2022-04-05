@@ -6,7 +6,7 @@ import TropicalDryForest from 'pages/search/drawer/species/functionalDiversity/T
 
 const FunctionalDiversity = (props) => {
   const {
-    handlerAccordionGeometry,
+    handleAccordionChange,
   } = props;
 
   const componentsArray = [
@@ -24,7 +24,7 @@ const FunctionalDiversity = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlerAccordionGeometry={handlerAccordionGeometry}
+        handleChange={handleAccordionChange}
         level="2"
       />
     </div>
@@ -32,11 +32,11 @@ const FunctionalDiversity = (props) => {
 };
 
 FunctionalDiversity.propTypes = {
-  handlerAccordionGeometry: PropTypes.func,
+  handleAccordionChange: PropTypes.func,
 };
 
 FunctionalDiversity.defaultProps = {
-  handlerAccordionGeometry: () => {},
+  handleAccordionChange: () => {},
 };
 
 export default FunctionalDiversity;

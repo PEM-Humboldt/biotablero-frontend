@@ -1,6 +1,6 @@
 import React from 'react';
 
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
@@ -46,7 +46,10 @@ class TropicalDryForest extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('tropicalDryForest');
 
     RestAPI.requestDryForestValues(areaId, geofenceId)
       .then((res) => {
@@ -244,6 +247,7 @@ class TropicalDryForest extends React.Component {
             <div key={bar.id}>
               <div
                 className={`nos-title${bar.id === selected ? ' selected' : ''}`}
+                // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">

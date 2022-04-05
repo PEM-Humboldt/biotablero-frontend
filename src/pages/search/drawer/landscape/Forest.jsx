@@ -7,7 +7,7 @@ import ForestLossPersistence from 'pages/search/drawer/landscape/forest/ForestLo
 
 const Forest = (props) => {
   const {
-    handlerAccordionGeometry,
+    handleAccordionChange,
     openTab,
   } = props;
 
@@ -36,7 +36,7 @@ const Forest = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handlerAccordionGeometry={handlerAccordionGeometry}
+        handleChange={handleAccordionChange}
         level="2"
       />
     </div>
@@ -44,12 +44,12 @@ const Forest = (props) => {
 };
 
 Forest.propTypes = {
-  handlerAccordionGeometry: PropTypes.func,
+  handleAccordionChange: PropTypes.func,
   openTab: PropTypes.string,
 };
 
 Forest.defaultProps = {
-  handlerAccordionGeometry: () => {},
+  handleAccordionChange: () => {},
   openTab: '',
 };
 

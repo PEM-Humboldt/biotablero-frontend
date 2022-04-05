@@ -1,9 +1,9 @@
 import React from 'react';
-import AccordionUI from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import AccordionUI from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import PropTypes from 'prop-types';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 class Accordion extends React.Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class Accordion extends React.Component {
       componentsArray,
       classNameSelected,
       classNameDefault,
-      handlerAccordionGeometry,
+      handleChange,
       level,
     } = this.props;
     const { expanded } = this.state;
@@ -58,7 +58,7 @@ class Accordion extends React.Component {
             onChange={() => {
               const expandedTab = expanded !== item.label.id ? item.label.id : null;
               this.setState({ expanded: expandedTab });
-              handlerAccordionGeometry(level, expandedTab);
+              handleChange(level, expandedTab);
             }}
             TransitionProps={{ unmountOnExit: true }}
             disabled={item.label.disabled}
@@ -97,14 +97,14 @@ Accordion.propTypes = {
   })).isRequired,
   classNameDefault: PropTypes.string,
   classNameSelected: PropTypes.string,
-  handlerAccordionGeometry: PropTypes.func,
+  handleChange: PropTypes.func,
   level: PropTypes.string,
 };
 
 Accordion.defaultProps = {
   classNameDefault: 'm0b',
   classNameSelected: 'm0b selector-expanded',
-  handlerAccordionGeometry: () => {},
+  handleChange: () => {},
   level: '1',
 };
 

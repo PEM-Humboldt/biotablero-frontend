@@ -90,7 +90,7 @@ class MultiSmallSingleBarGraph extends React.Component {
           motionStiffness={90}
           motionDamping={15}
           tooltip={({ id, data: allData, color }) => (
-            <div>
+            <div className="tooltip-graph-container" style={{ position: 'absolute' }}>
               <strong style={{ color }}>
                 {allData[`${id}Label`]}
               </strong>
@@ -102,14 +102,6 @@ class MultiSmallSingleBarGraph extends React.Component {
             </div>
           )}
           theme={{
-            tooltip: {
-              container: {
-                background: '#333',
-                whiteSpace: 'nowrap',
-                position: 'absolute',
-                fontSize: 12,
-              },
-            },
             axis:
               {
                 legend: { text: { fontSize: '14' } },

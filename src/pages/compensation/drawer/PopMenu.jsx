@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import AddIcon from '@material-ui/icons/AddLocation';
-import BackGraphIcon from '@material-ui/icons/Timeline';
+import AddIcon from '@mui/icons-material/AddLocation';
+import BackGraphIcon from '@mui/icons-material/Timeline';
 import PropTypes from 'prop-types';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 class PopMenu extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -92,7 +92,7 @@ class PopMenu extends Component {
           }
         }
         onChange={this.handleEAChange}
-        getOptionSelected={(option, value) => option.label === value.label}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
         renderInput={(params) => (
           <TextField
             InputProps={params.InputProps}
@@ -135,7 +135,7 @@ class PopMenu extends Component {
             }
           }
           onChange={this.handleSubBasinChange}
-          getOptionSelected={(option, value) => option.label === value.label}
+          isOptionEqualToValue={(option, value) => option.label === value.label}
           renderInput={(params) => (
             <TextField
               InputProps={params.InputProps}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 
 const EditIcon = ({ color, fontSize }) => (
   <SvgIcon viewBox="318 17.8 24.7 24.2" style={{ color, fontSize }}>

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 
 import Accordion from 'pages/search/Accordion';
 
@@ -25,6 +25,12 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
         variant="standard"
         InputLabelProps={{ shrink: true }}
       />
+    )}
+    renderOption={(props, option) => (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <li {...props} key={option.id || option.name}>
+        {option.name}
+      </li>
     )}
     autoHighlight
     ListboxProps={
@@ -74,7 +80,7 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
         classNameDefault="m0"
         classNameSelected="m0"
         level="2"
-        handlerAccordionGeometry={onGeofenceChange}
+        handleChange={onGeofenceChange}
       />
     </div>
   );

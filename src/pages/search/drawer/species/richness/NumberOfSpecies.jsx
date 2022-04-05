@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import { IconTooltip } from 'components/Tooltips';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -88,7 +88,10 @@ class NumberOfSpecies extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('numberOfSpecies');
 
     Promise.all([
       RestAPI.requestNumberOfSpecies(areaId, geofenceId, 'all'),

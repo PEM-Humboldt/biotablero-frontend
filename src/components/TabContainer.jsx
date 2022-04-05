@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
+import AppBar from '@mui/material/AppBar';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Typography from '@mui/material/Typography';
+import SearchContext from 'pages/search/SearchContext';
 
 class TabContainer extends React.Component {
   constructor(props) {
@@ -18,11 +19,11 @@ class TabContainer extends React.Component {
    * Function to change visible content on tabs click
    */
   changeTab = (event, value) => {
-    const { handlerSwitchLayer } = this.props;
-    this.setState({ value });
-    if (value === 0) {
-      handlerSwitchLayer('coverage');
+    if (this.context) {
+      const { cancelActiveRequests } = this.context;
+      cancelActiveRequests();
     }
+    this.setState({ value });
   };
 
   render() {
@@ -36,8 +37,7 @@ class TabContainer extends React.Component {
           <Tabs
             value={value}
             onChange={this.changeTab}
-            indicatorColor="secondary"
-            textColor="secondary"
+            className="DrawerTab"
             centered
           >
             {titles.map(({
@@ -71,13 +71,13 @@ TabContainer.propTypes = {
   initialSelectedIndex: PropTypes.number,
   titles: PropTypes.array.isRequired,
   tabClasses: PropTypes.string,
-  handlerSwitchLayer: PropTypes.func,
 };
 
 TabContainer.defaultProps = {
   tabClasses: '',
   initialSelectedIndex: 1,
-  handlerSwitchLayer: () => {},
 };
 
 export default TabContainer;
+
+TabContainer.contextType = SearchContext;

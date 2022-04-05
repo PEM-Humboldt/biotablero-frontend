@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import EditIcon from '@material-ui/icons/Edit';
+import EditIcon from '@mui/icons-material/Edit';
 
 import Accordion from 'pages/search/Accordion';
 import DrawPolygon from 'pages/search/selector/DrawPolygon';
@@ -66,7 +66,7 @@ const Selector = (props) => {
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
         level="1"
-        handlerAccordionGeometry={onChange}
+        handleChange={onChange}
       />
     </div>
   );

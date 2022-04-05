@@ -1,4 +1,4 @@
-import DownloadIcon from '@material-ui/icons/Save';
+import DownloadIcon from '@mui/icons-material/Save';
 import PropTypes from 'prop-types';
 import React from 'react';
 

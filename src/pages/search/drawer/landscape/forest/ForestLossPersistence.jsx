@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -32,7 +32,11 @@ class ForestLossPersistence extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('forestLP-2016-2019');
+
     RestAPI.requestEcoChangeLPCategories(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {

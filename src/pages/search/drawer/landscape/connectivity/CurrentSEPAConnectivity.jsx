@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
 import DownloadCSV from 'components/DownloadCSV';
@@ -39,7 +39,10 @@ class CurrentSEPAConnectivity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('currentSEPAConn');
 
     RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Páramo')
       .then((res) => {

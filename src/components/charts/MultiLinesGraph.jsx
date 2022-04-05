@@ -42,16 +42,7 @@ class MultiLinesGraph extends React.Component {
     const { labels } = this.state;
     const { units } = this.props;
     return (
-      <div style={{
-        backgroundColor: '#333',
-        fontSize: 12,
-        padding: '5px 10px',
-        lineHeight: '1.5',
-        borderRadius: 5,
-        minWidth: 60,
-        boxShadow: '0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12)',
-      }}
-      >
+      <div className="tooltip-graph-container">
         <div>
           <strong style={{ color: serieId === 'aTotal' ? '#ffffff' : serieColor }}>
             {`${labels[serieId]} en ${xFormatted}`}

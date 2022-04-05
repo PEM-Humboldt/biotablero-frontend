@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
 import { LegendColor } from 'components/CssLegends';
@@ -44,7 +44,10 @@ class CurrentPAConnectivity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('currentPAConn');
 
     RestAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res) => {

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { SvgIcon } from '@material-ui/core';
+import { SvgIcon } from '@mui/material';
 
 const PolygonIcon = ({ color, fontSize }) => (
   <SvgIcon viewBox="76 18 24 24" style={{ color, fontSize }}>

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Modal } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { Modal } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   ImageOverlay,
   Map,
@@ -117,14 +117,14 @@ class MapViewer extends React.Component {
     } = this.props;
     const { openErrorModal } = this.state;
     return (
-      <Map ref={this.mapRef} center={config.params.center} zoom={5} onClick={this.onMapClick}>
+      <Map id="map" ref={this.mapRef} center={config.params.center} zoom={5}>
         {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={loadingLayer}
           disableAutoFocus
-          container={this}
+          container={() => document.getElementById('map')}
           style={{ position: 'absolute' }}
           BackdropProps={{ style: { position: 'absolute' } }}
         >
@@ -146,10 +146,9 @@ class MapViewer extends React.Component {
           aria-describedby="simple-modal-description"
           open={layerError && openErrorModal}
           onClose={() => { this.setState({ openErrorModal: false }); }}
-          container={this}
+          container={() => document.getElementById('map')}
           style={{ position: 'absolute' }}
           BackdropProps={{ style: { position: 'absolute' } }}
-          disableBackdropClick={false}
         >
           <div className="generalAlarm">
             <h2>
@@ -181,22 +180,7 @@ class MapViewer extends React.Component {
           ))
         )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
-        {/** TODO: Mostrar bajo este formato raster this.CapaBiomasSogamoso de cada estrategia de
-          Compensaciones */}
-        {/* <WMSTileLayer
-          srs="EPSG:4326"
-          layers="Biotablero:strategy_sogamoso_111_1_c"
-          url="http://indicadores.humboldt.org.co/geoserver/Biotablero/wms?service=WMS&styles=raster_strategy"
-          opacity={1}
-          alt="Regiones"
-          styles="raster_strategy"
-          format="image/png"
-          transparent
-        /> */}
-        {/** TODO: La carga del WMSTileLayer depende del usuario activo,
-            se debe ajustar esta carga cuando se implementen los usuarios */}
         {userLogged && (
-          // TODO: Implementing WMSTileLayer load from Compensator
           <WMSTileLayer
             layers="Biotablero:Regiones_geb"
             format="image/png"

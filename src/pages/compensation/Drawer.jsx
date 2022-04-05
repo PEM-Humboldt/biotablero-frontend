@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import QueIcon from '@material-ui/icons/LiveHelp';
-import DondeIcon from '@material-ui/icons/Beenhere';
-import BackIcon from '@material-ui/icons/FirstPage';
+import withStyles from '@mui/styles/withStyles';
+import { Button } from '@mui/material';
+import QueIcon from '@mui/icons-material/LiveHelp';
+import DondeIcon from '@mui/icons-material/Beenhere';
+import BackIcon from '@mui/icons-material/FirstPage';
 import { ParentSize } from '@vx/responsive';
-import SaveIcon from '@material-ui/icons/Save';
-import DownloadIcon from '@material-ui/icons/GetApp';
+import SaveIcon from '@mui/icons-material/Save';
+import DownloadIcon from '@mui/icons-material/GetApp';
 
 import RestAPI from 'utils/restAPI';
 
@@ -113,6 +113,7 @@ class Drawer extends React.Component {
       saveStrategies: false,
       savedStrategies: {},
       savedArea: 0,
+      downloadingStrategies: false,
     };
   }
 
@@ -511,9 +512,16 @@ class Drawer extends React.Component {
   /**
    * get the url to download the strategies saved in the current project
    */
-  downloadPlanUrl = () => {
+  downloadPlan = () => {
+    this.setState({ downloadingStrategies: true });
     const { companyId, projectId } = this.props;
-    return RestAPI.downloadProjectStrategiesUrl(companyId, projectId);
+    RestAPI.downloadProjectStrategiesUrl(companyId, projectId)
+      .then(({ url }) => {
+        window.open(url, '_blank');
+      })
+      .finally(() => {
+        this.setState({ downloadingStrategies: false });
+      });
   }
 
   renderSavedStrategies = () => {
@@ -685,7 +693,7 @@ class Drawer extends React.Component {
     } = this.props;
     const {
       whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
-      allBiomes, savedStrategies, savedArea,
+      allBiomes, savedStrategies, savedArea, downloadingStrategies,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -780,11 +788,17 @@ class Drawer extends React.Component {
                     className="downgraph"
                     id="downloadStrategies"
                     type="button"
-                    href={this.downloadPlanUrl()}
-                    disabled
+                    onClick={this.downloadPlan}
+                    disabled={downloadingStrategies}
                   >
-                    <DownloadIcon className="icondown" />
-                    Descargar plan
+                    {downloadingStrategies
+                      ? ('Generando archivo...')
+                      : (
+                        <>
+                          <DownloadIcon className="icondown" />
+                          Descargar plan
+                        </>
+                      )}
                   </Button>
                 )}
                 {tableError && (

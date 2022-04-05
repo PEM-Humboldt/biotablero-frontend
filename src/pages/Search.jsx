@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router-dom';
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import L, { LatLngBounds } from 'leaflet';
-import Modal from '@material-ui/core/Modal';
+import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 
@@ -1117,6 +1117,8 @@ class Search extends Component {
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
             handlerClickOnGraph: this.clickOnGraph,
+            switchLayer: this.switchLayer,
+            cancelActiveRequests: this.cancelActiveRequests,
           }}
         >
           <div className="appSearcher wrappergrid">
@@ -1152,7 +1154,7 @@ class Search extends Component {
               { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
-                  handlerSwitchLayer={this.switchLayer}
+                  cancelActiveRequests={this.cancelActiveRequests}
                 />
               )}
             </div>

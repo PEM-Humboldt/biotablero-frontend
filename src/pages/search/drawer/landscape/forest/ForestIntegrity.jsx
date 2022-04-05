@@ -1,5 +1,5 @@
 import React from 'react';
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
 import { LegendColor, BorderLegendColor } from 'components/CssLegends';
@@ -68,7 +68,10 @@ class ForestIntegrity extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('forestIntegrity');
 
     RestAPI.requestSCIHF(areaId, geofenceId)
       .then((res) => {

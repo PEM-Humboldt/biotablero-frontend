@@ -1521,8 +1521,12 @@ overflow: auto;
   background-color: #000;
 }
 
-.MuiFormLabel-root.Mui-focused {
+.MuiFormLabel-root.Mui-focused, .tabs.Mui-selected {
 	color: #e84a5f !important;
+}
+
+.DrawerTab .MuiTabs-indicator {
+	background-color: #e84a5f !important;
 }
 
 .MuiAutocomplete-option[data-focus="true"] {
@@ -1801,6 +1805,18 @@ div[class*="eaRHYv"] {
 
 .informer header button{
   max-width: 500px !important;
+}
+
+.tooltip-graph-container {
+	background-color: #333;
+	color: #ffffff;
+	padding: 5px 10px;
+	line-height: 1.5;
+	border-radius: 5px;
+	min-width: 60px;
+	box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .graphcard {
@@ -2947,7 +2963,7 @@ tspan, .vx-axis-label {
 .portText1 {
 	display: grid;
 	color: #606060;
-	font-size: 1rem;
+	font-size: 0.8rem;
 	font-weight: 400;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 3rem;

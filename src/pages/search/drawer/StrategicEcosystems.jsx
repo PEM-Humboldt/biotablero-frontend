@@ -1,4 +1,4 @@
-import InfoIcon from '@material-ui/icons/Info';
+import InfoIcon from '@mui/icons-material/Info';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -27,7 +27,7 @@ import RestAPI from 'utils/restAPI';
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-class Overview extends React.Component {
+class StrategicEcosystems extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -48,7 +48,10 @@ class Overview extends React.Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
+
+    switchLayer('coverage');
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
@@ -151,7 +154,6 @@ class Overview extends React.Component {
         <div className="graphcontainer pt5">
           <InfoTooltip
             placement="left"
-            interactive
             title={CoverageText}
           >
             <h4>
@@ -171,7 +173,6 @@ class Overview extends React.Component {
           </div>
           <InfoTooltip
             placement="left"
-            interactive
             title={PAText}
           >
             <h4>
@@ -196,7 +197,6 @@ class Overview extends React.Component {
           <div className="ecoest">
             <InfoTooltip
               placement="left"
-              interactive
               title={SEText}
             >
               <h4 className="minus20">
@@ -213,14 +213,14 @@ class Overview extends React.Component {
   }
 }
 
-Overview.propTypes = {
+StrategicEcosystems.propTypes = {
   generalArea: PropTypes.number,
 };
 
-Overview.defaultProps = {
+StrategicEcosystems.defaultProps = {
   generalArea: 0,
 };
 
-export default Overview;
+export default StrategicEcosystems;
 
-Overview.contextType = SearchContext;
+StrategicEcosystems.contextType = SearchContext;
