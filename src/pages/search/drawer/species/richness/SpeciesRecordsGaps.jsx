@@ -16,8 +16,6 @@ const areaTypeName = (areaType) => {
   switch (areaType) {
     case 'states':
       return 'departamentos';
-    case 'pa':
-      return 'áreas de manejo especial';
     case 'ea':
       return 'jurisdicciones ambientales';
     case 'basinSubzones':

@@ -30,9 +30,6 @@ const getLabel = (key, area, region) => {
     case 'states':
       areaLbl = 'departamentos';
       break;
-    case 'pa':
-      areaLbl = 'áreas de manejo especial';
-      break;
     case 'ea':
       areaLbl = 'jurisdicciones ambientales';
       break;
