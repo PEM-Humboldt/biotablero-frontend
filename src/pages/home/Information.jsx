@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import AlertDescriptions from 'pages/home/information/Alerts';
 import CompensationDescriptions from 'pages/home/information/Compensations';
 import IndicatorDescriptions from 'pages/home/information/Indicators';
+import PortfolioDescriptions from 'pages/home/information/Portfolio';
 import SearchDescriptions from 'pages/home/information/Searches';
 import CbmdDescriptions from 'pages/home/information/Cbmd';
 
@@ -16,6 +17,7 @@ class Information extends React.Component {
     this.contentInfo = {
       search: SearchDescriptions,
       indicator: IndicatorDescriptions,
+      portfolio: PortfolioDescriptions,
       compensation: CompensationDescriptions,
       alert: AlertDescriptions,
       cbmdashboard: CbmdDescriptions,

@@ -929,8 +929,8 @@ class RestAPI {
   /**
    * Download the strategies saved in the given project
    */
-  static downloadProjectStrategiesUrl = (companyId, projectId) => (
-    `companies/${companyId}/projects/${projectId}/strategies/download`
+  static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.makeGetRequest(
+    `/companies/${companyId}/projects/${projectId}/strategies/download`,
   )
 
   /** ************** */
