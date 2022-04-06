@@ -83,14 +83,6 @@ class RestAPI {
   }
 
   /**
-   * Recover the national protected area by selected strategic ecosystems
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
-   */
-  static requestNationalPA(idGeofence) {
-    return RestAPI.makeGetRequest(`se/${idGeofence}/pa`);
-  }
-
-  /**
    * Recover the strategic ecosystems values by selected area
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
