@@ -36,6 +36,7 @@ class TabContainer extends React.Component {
           <Tabs
             value={value}
             onChange={this.changeTab}
+            className="DrawerTab"
             centered
           >
             {titles.map(({
