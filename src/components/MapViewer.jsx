@@ -174,8 +174,9 @@ class MapViewer extends React.Component {
           rasterLayers.map((ras, index) => (
             <ImageOverlay
               key={index}
-              url={ras}
+              url={ras.data}
               bounds={rasterBounds}
+              opacity={ras.opacity}
             />
           ))
         )}
@@ -205,7 +206,10 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
-  rasterLayers: PropTypes.arrayOf(PropTypes.string),
+  rasterLayers: PropTypes.arrayOf(PropTypes.shape({
+    data: PropTypes.string,
+    opacity: PropTypes.number,
+  })),
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
   loadPolygonInfo: PropTypes.func,

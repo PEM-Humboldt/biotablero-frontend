@@ -49,12 +49,12 @@ class RestAPI {
   }
 
   /**
-   * Recover coverage area by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the coverage
+   * Get coverage area by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestCoverage(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/coverage`);
+  static requestCoverage(areaType, areaId) {
+    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -496,13 +496,18 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestCoveragesLayer(areaType, areaId) {
+  static requestCoveragesLayer(areaType, areaId, coverageType) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/coverage/layer`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
       source,
     };
   }

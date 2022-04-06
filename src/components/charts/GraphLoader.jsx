@@ -72,6 +72,7 @@ const GraphLoader = (props) => {
           height={30}
           colors={colors}
           units={units}
+          onClickGraphHandler={onClickGraphHandler}
         />
       );
     case 'MultiSmallBarStackGraph':

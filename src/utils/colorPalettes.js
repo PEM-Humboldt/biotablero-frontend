@@ -39,10 +39,10 @@ export default {
     '#44857d',
     '#167070',
   ],
-  blue: [
+  coverage: [
+    '#26BAA4',
+    '#593E71',
     '#164f74',
-    '#60bbd4',
-    '#5aa394',
     '#b9c9cf',
   ],
   green: [

@@ -14,7 +14,7 @@ const match = {
     palette: 'bioticReg',
   },
   coverage: {
-    palette: 'blue',
+    palette: 'coverage',
     sort: ['N', 'S', 'T'],
   },
   pa: {
