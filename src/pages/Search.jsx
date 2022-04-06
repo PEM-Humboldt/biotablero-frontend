@@ -92,15 +92,13 @@ class Search extends Component {
   loadAreaList = () => {
     let tempAreaList;
     Promise.all([
-      RestAPI.getAllProtectedAreas(),
       RestAPI.getAllStates(),
       RestAPI.getAllEAs(),
       RestAPI.getAllSubzones(),
       RestAPI.getAllSEs(),
     ])
-      .then(([pa, states, ea, basinSubzones, se]) => {
+      .then(([states, ea, basinSubzones, se]) => {
         tempAreaList = [
-          { name: 'Areas de manejo especial', data: pa, id: 'pa' },
           { name: 'Departamentos', data: states, id: 'states' },
           { name: 'Jurisdicciones ambientales', data: ea, id: 'ea' },
           { name: 'Subzonas hidrográficas', data: basinSubzones, id: 'basinSubzones' },
@@ -119,8 +117,7 @@ class Search extends Component {
 
           const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
-            let field = 'id';
-            if (selectedAreaTypeId === 'pa') field = 'name';
+            const field = 'id';
             const inputId = inputArea.data.find((area) => area[field] === selectedAreaId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);

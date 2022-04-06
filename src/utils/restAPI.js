@@ -139,13 +139,6 @@ class RestAPI {
   }
 
   /**
-   * Recover a list with all protected areas available in the database
-   */
-  static getAllProtectedAreas() {
-    return RestAPI.makeGetRequest('pa/categories');
-  }
-
-  /**
    * Recover a list with all basin areas available in the database
    */
   static getAllBasinAreas() {
