@@ -606,10 +606,12 @@ class Search extends Component {
   /**
    * Request a raster layer from the backend
    * @param {String} layerName name of the layer to request
+   * @param {Boolean} isMultipleLayers indicate whether or not the layer is part of a set of
+   * simultaneous layers in order to avoid return conection error if one fails
    *
    * @returns {Object} Data of the layer with its id
    */
-  getRasterLayer = async (layerName) => {
+  getRasterLayer = async (layerName, isMultipleLayers = false) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     let reqPromise = null;
 
@@ -669,7 +671,9 @@ class Search extends Component {
       };
     } catch {
       this.activeRequests.delete(layerName);
-      this.reportDataError();
+      if (!isMultipleLayers) {
+        this.reportDataError();
+      }
       return null;
     }
   }
@@ -817,11 +821,12 @@ class Search extends Component {
       });
     }
 
+    const isMultipleLayers = rasterLayerIds.length > 1;
     const loadingProm = [];
     if (rasterLayerIds.length > 0) {
       const rasterProm = Promise.all([
         this.getShapeLayer(baseLayerId, false),
-        ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
+        ...rasterLayerIds.map((id) => this.getRasterLayer(id, isMultipleLayers)),
       ])
       .then(([
         baseLayer,
