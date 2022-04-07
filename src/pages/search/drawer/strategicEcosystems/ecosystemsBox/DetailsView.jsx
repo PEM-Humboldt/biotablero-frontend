@@ -7,6 +7,8 @@ import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 
+import { SEKey } from 'pages/search/utils/appropriate_keys';
+
 /**
  * Validate if data exist before rendering graph
  *
@@ -15,7 +17,7 @@ import RestAPI from 'utils/restAPI';
  *
  * @returns {string | boolean} validation of data availability and existence
  */
-const loadData = (data, colorFunc) => {
+const loadData = (data, colorFunc, handlerClickOnGraph, seType) => {
   if (data === null) {
     return (
       <b>
@@ -25,6 +27,23 @@ const loadData = (data, colorFunc) => {
     );
   }
   if (data.length <= 0) return (<b>No disponible</b>);
+  if (handlerClickOnGraph) {
+    return (
+      <GraphLoader
+        graphType="SmallBarStackGraph"
+        data={data}
+        units="ha"
+        colors={colorFunc}
+        onClickGraphHandler={(selected) => {
+          handlerClickOnGraph({
+            chartType: 'seCoverage',
+            chartSection: SEKey(seType),
+            selectedKey: selected,
+          });
+        }}
+      />
+    );
+  }
   return (
     <GraphLoader
       graphType="SmallBarStackGraph"
@@ -47,11 +66,13 @@ const loadData = (data, colorFunc) => {
 const showDetails = (
   coverage,
   protectedArea,
+  handlerClickOnGraph,
+  seType,
 ) => (
   <div>
     <h3>
       Distribución de coberturas:
-      {loadData(setCoverageValues(coverage), matchColor('coverage'))}
+      {loadData(setCoverageValues(coverage), matchColor('coverage'), handlerClickOnGraph, seType)}
     </h3>
     <h3>
       Distribución en áreas protegidas:
@@ -80,13 +101,14 @@ class DetailsView extends Component {
     const {
       areaId,
       geofenceId,
+      switchLayer,
     } = this.context;
 
-    const name = item.type || item.name;
+    const seType = item.type;
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, name)
+      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, seType)
         .then((res) => {
           if (this.mounted) {
             this.setState({ seCoverage: res });
@@ -94,13 +116,15 @@ class DetailsView extends Component {
         })
         .catch(() => {});
 
-      RestAPI.requestSEPAByGeofence(areaId, geofenceId, name)
+      RestAPI.requestSEPAByGeofence(areaId, geofenceId, seType)
         .then((res) => {
           if (this.mounted) {
             this.setState({ sePA: res });
           }
         })
         .catch(() => {});
+
+      switchLayer(`seCoverages-${SEKey(seType)}`);
     }
   }
 
@@ -117,11 +141,15 @@ class DetailsView extends Component {
       sePA,
       stopLoad,
     } = this.state;
+    const { item } = this.props;
+    const { handlerClickOnGraph } = this.context;
     if (!stopLoad) {
       return (
         showDetails(
           seCoverage,
           sePA,
+          handlerClickOnGraph,
+          item.type,
         )
       );
     }

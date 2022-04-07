@@ -1,6 +1,7 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import SearchContext from 'pages/search/SearchContext';
 
 import DetailsView from 'pages/search/drawer/strategicEcosystems/ecosystemsBox/DetailsView';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -11,112 +12,110 @@ class EcosystemsBox extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showGraphs: [],
       stopLoad: false,
+      activeSE: null,
     };
   }
 
   componentWillUnmount() {
-    this.setState({
-      stopLoad: true,
-    });
+    this.setState({ stopLoad: true });
   }
 
   /**
-   * Update state to handle hide graphs
+   * Set active strategic ecosystem graph
    *
+   * @param {String} selectedSE strategic ecosystem to be loaded
    */
-  switchGraphs = (toLoad) => {
-    const { showGraphs } = this.state;
-    const loaded = showGraphs;
-    const index = showGraphs.indexOf(toLoad);
-    if (index > -1) {
-      loaded.splice(index, 1);
-    } else {
-      loaded.push(toLoad);
-    }
-    this.setState((prevState) => ({
-      ...prevState,
-      showGraphs: !prevState.stopLoad ? loaded : false,
-    }));
+  switchActiveSE = (selectedSE) => {
+    const { switchLayer } = this.context;
+    this.setState((prevState) => {
+      const newState = prevState;
+      if (!prevState.activeSE || prevState.activeSE !== selectedSE) {
+        newState.activeSE = selectedSE;
+      } else {
+        newState.activeSE = null;
+        switchLayer('coverages');
+      }
+      return newState;
+    });
   }
 
   render() {
     const {
-      total,
-      listSE,
+      SETotalArea,
+      SEAreas,
     } = this.props;
-    const { showGraphs, stopLoad } = this.state;
-
+    const {
+      stopLoad,
+      activeSE,
+    } = this.state;
     return (
       <div
         className="ecosystems"
         role="presentation"
       >
-        {!stopLoad && total !== 0 && listSE.map((item) => {
-          const index = showGraphs.indexOf(item.type);
-          return (
-            <div className="mb10" key={item.type}>
-              <div className="singleeco">{item.type}</div>
-              <div className="singleeco2">
-                {`${formatNumber(item.area, 0)} ha`}
-              </div>
-              {(Number(item.area) !== 0) && (
-                <button
-                  className={`icongraph2 ${(index > -1) ? 'rotate-false' : 'rotate-true'}`}
-                  type="button"
-                  onClick={() => this.switchGraphs(item.type)}
-                  title="Ampliar información"
-                >
-                  <ExpandMoreIcon />
-                </button>
-              )}
-              {!stopLoad && (Number(item.area) !== 0) && (
-                <GraphLoader
-                  graphType="SmallBarStackGraph"
-                  data={[
-                    {
-                      key: item.type,
-                      area: Number(item.area),
-                      percentage: item.percentage,
-                      label: item.type,
-                    },
-                    {
-                      key: 'NA',
-                      area: (total - item.area),
-                      percentage: (total - item.area) / total,
-                    },
-                  ]}
-                  units="ha"
-                  colors={matchColor('se')}
-                />
-              )}
-              {!stopLoad && (index > -1) && (
-                <div className="graficaeco2">
-                  <DetailsView
-                    item={{
-                      ...item,
-                      percentage: item.percentage * 100,
-                    }}
-                  />
-                </div>
-              )}
+        {!stopLoad && SETotalArea !== 0 && SEAreas.map((item) => (
+          <div className="mb10" key={item.type}>
+            <div className="singleeco">{item.type}</div>
+            <div className="singleeco2">
+              {`${formatNumber(item.area, 0)} ha`}
             </div>
-          );
-        })}
+            {(Number(item.area) !== 0) && (
+              <button
+                className={`icongraph2 ${activeSE === item.type ? 'rotate-false' : 'rotate-true'}`}
+                type="button"
+                onClick={() => this.switchActiveSE(item.type)}
+                title="Ampliar información"
+              >
+                <ExpandMoreIcon />
+              </button>
+            )}
+            {!stopLoad && (Number(item.area) !== 0) && (
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={[
+                  {
+                    key: item.type,
+                    area: Number(item.area),
+                    percentage: item.percentage,
+                    label: item.type,
+                  },
+                  {
+                    key: 'NA',
+                    area: (SETotalArea - item.area),
+                    percentage: (SETotalArea - item.area) / SETotalArea,
+                  },
+                ]}
+                units="ha"
+                colors={matchColor('se')}
+              />
+            )}
+            {!stopLoad && activeSE === item.type && (
+              <div className="graficaeco2">
+                <DetailsView
+                  item={{
+                    ...item,
+                    percentage: item.percentage * 100,
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     );
   }
 }
 
 EcosystemsBox.propTypes = {
-  listSE: PropTypes.array,
-  total: PropTypes.number,
+  SEAreas: PropTypes.array,
+  SETotalArea: PropTypes.number,
 };
 
 EcosystemsBox.defaultProps = {
-  listSE: [],
-  total: 0,
+  SEAreas: [],
+  SETotalArea: 0,
 };
 
 export default EcosystemsBox;
+EcosystemsBox.contextType = SearchContext;
