@@ -713,7 +713,7 @@ class Search extends Component {
       if (selected) [, seType] = selected;
       baseLayerId = 'geofence';
       rasterLayerIds = [`seCoverage-${seType}-N`, `seCoverage-${seType}-S`, `seCoverage-${seType}-T`];
-      newActiveLayer.name = `Número de especies - ${SELabel(seType)}`;
+      newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
       shapeLayerOpts = [{ id: 'hfCurrent' }];
