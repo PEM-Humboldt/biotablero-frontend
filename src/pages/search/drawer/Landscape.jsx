@@ -109,9 +109,6 @@ class Landscape extends React.Component {
       case 'ea':
         selected = ['fc', 'hf', 'forest', 'connectivity'];
         break;
-      case 'pa':
-        selected = ['hf', 'forest'];
-        break;
       default:
         break;
     }

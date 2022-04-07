@@ -83,14 +83,6 @@ class RestAPI {
   }
 
   /**
-   * Recover the national protected area by selected strategic ecosystems
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
-   */
-  static requestNationalPA(idGeofence) {
-    return RestAPI.makeGetRequest(`se/${idGeofence}/pa`);
-  }
-
-  /**
    * Recover the strategic ecosystems values by selected area
    * @param {Number} idArea id area to request
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
@@ -136,13 +128,6 @@ class RestAPI {
    */
   static requestGeofenceDetails(idArea, idGeofence) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
-  }
-
-  /**
-   * Recover a list with all protected areas available in the database
-   */
-  static getAllProtectedAreas() {
-    return RestAPI.makeGetRequest('pa/categories');
   }
 
   /**
