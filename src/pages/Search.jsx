@@ -16,6 +16,8 @@ import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'components/MapViewer';
 
+import { SELabel } from 'pages/search/utils/appropriate_labels';
+
 class Search extends Component {
   constructor(props) {
     super(props);
@@ -368,6 +370,9 @@ class Search extends Component {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
         break;
+      case 'seCoverage':
+        this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
+        break;
       case 'hfTimeline':
         this.setSectionLayers(`hfTimeline-${selectedKey}`);
         break;
@@ -618,6 +623,14 @@ class Search extends Component {
         selectedAreaId,
         type,
       );
+    } else if (/seCoverage-*/.test(layerName)) {
+      const [, seType, coverageType] = layerName.match(/seCoverage-(\w+)-(\w+)/);
+      reqPromise = () => RestAPI.requestCoveragesSELayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+        coverageType,
+        SELabel(seType),
+      );
     } else if (/numberOfSpecies-*/.test(layerName)) {
       let group = 'total';
       const selected = layerName.match(/numberOfSpecies-(\w+)/);
@@ -693,6 +706,14 @@ class Search extends Component {
       baseLayerId = 'geofence';
       rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
       newActiveLayer.name = 'Coberturas';
+      newActiveLayer.defaultOpacity = 0.7;
+    } else if (/seCoverages*/.test(sectionName)) {
+      let seType = 'paramo';
+      const selected = sectionName.match(/seCoverages-(\w+)/);
+      if (selected) [, seType] = selected;
+      baseLayerId = 'geofence';
+      rasterLayerIds = [`seCoverage-${seType}-N`, `seCoverage-${seType}-S`, `seCoverage-${seType}-T`];
+      newActiveLayer.name = `Número de especies - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
       shapeLayerOpts = [{ id: 'hfCurrent' }];
@@ -1007,6 +1028,9 @@ class Search extends Component {
           };
         } else if (/numberOfSpecies*/.test(layerType)) {
           this.setSectionLayers(layerType);
+        } else if (/seCoverages*/.test(layerType)) {
+          this.setSectionLayers(layerType);
+          return;
         }
         break;
     }
