@@ -611,7 +611,7 @@ class Search extends Component {
    *
    * @returns {Object} Data of the layer with its id
    */
-  getRasterLayer = async (layerName, isMultipleLayers = false) => {
+  getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     let reqPromise = null;
 
@@ -669,9 +669,9 @@ class Search extends Component {
         id: layerName,
         data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
       };
-    } catch {
+    } catch (error) {
       this.activeRequests.delete(layerName);
-      if (!isMultipleLayers) {
+      if (error !== 404) {
         this.reportDataError();
       }
       return null;
@@ -821,12 +821,11 @@ class Search extends Component {
       });
     }
 
-    const isMultipleLayers = rasterLayerIds.length > 1;
     const loadingProm = [];
     if (rasterLayerIds.length > 0) {
       const rasterProm = Promise.all([
         this.getShapeLayer(baseLayerId, false),
-        ...rasterLayerIds.map((id) => this.getRasterLayer(id, isMultipleLayers)),
+        ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
       ])
       .then(([
         baseLayer,
@@ -834,6 +833,9 @@ class Search extends Component {
       ]) => {
         if (rasterLayers.includes('canceled')) {
           return 'canceled';
+        }
+        if (rasterLayers.every((e) => e === null)) {
+          this.reportDataError();
         }
         if (baseLayer) {
           this.setState({
