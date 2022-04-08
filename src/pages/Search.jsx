@@ -606,8 +606,6 @@ class Search extends Component {
   /**
    * Request a raster layer from the backend
    * @param {String} layerName name of the layer to request
-   * @param {Boolean} isMultipleLayers indicate whether or not the layer is part of a set of
-   * simultaneous layers in order to avoid return conection error if one fails
    *
    * @returns {Object} Data of the layer with its id
    */
