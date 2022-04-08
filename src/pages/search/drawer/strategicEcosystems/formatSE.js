@@ -3,7 +3,7 @@ export const setPAValues = (arrayIn) => {
 
   const array = [...arrayIn];
   let np = array.pop();
-  if (np.type !== 'No Protegida') {
+  if (np && np.type !== 'No Protegida') {
     array.push(np);
     np = null;
   }

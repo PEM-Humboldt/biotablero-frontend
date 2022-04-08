@@ -37,8 +37,8 @@ class StrategicEcosystems extends React.Component {
       coverage: [],
       protectedAreas: [],
       PAArea: 0,
-      strategicEcosistems: [],
-      SEArea: 0,
+      SEAreas: [],
+      SETotalArea: 0,
       loadingSE: true,
     };
   }
@@ -76,10 +76,11 @@ class StrategicEcosystems extends React.Component {
     RestAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          if (Array.isArray(res) && res[0]) {
-            const ecosystemsArea = Number(res[0].area).toFixed(0);
-            const allSE = res.slice(1);
-            this.setState({ strategicEcosistems: allSE, SEArea: ecosystemsArea });
+          if (Array.isArray(res)) {
+            const SETotal = res.find((obj) => obj.type === 'Total');
+            const SETotalArea = SETotal ? SETotal.area : 0;
+            const SEAreas = res.slice(1);
+            this.setState({ SEAreas, SETotalArea });
           }
         }
       })
@@ -95,6 +96,21 @@ class StrategicEcosystems extends React.Component {
     this.mounted = false;
   }
 
+  /**
+   * Transform data to fit in the graph structure
+   * @param {array} data data to be transformed
+   *
+   * @returns {array} data transformed
+   */
+   processData = (data) => {
+    const { generalArea } = this.props;
+    if (!data) return [];
+    return data.map((obj) => ({
+      ...obj,
+      percentage: obj.area / generalArea,
+    }));
+  };
+
   toggleInfo = () => {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
@@ -102,21 +118,20 @@ class StrategicEcosystems extends React.Component {
   };
 
   /**
-   * Returns the right component depending on the list of strategic ecosystems
-   * @param {Array} allSE data to validate component returned
-   * @param {Number} ecosystemsArea total strategic ecosystem area
+   * Returns the component EcosystemsBox that contains the list of strategic ecosystems
+   * @param {Array} SEAreas area of each strategic ecosystem
+   * @param {Number} SETotalArea total area of all strategic ecosystems
    *
-   * @returns {node} Component to be displayed
+   * @returns {node} Component to be rendered
    */
-  displaySE = (allSE, ecosystemsArea) => {
+  renderEcosystemsBox = (SEAreas, SETotalArea) => {
     const { loadingSE } = this.state;
     if (loadingSE) return ('Cargando...');
-    if (allSE.length <= 0) return ('Información no disponible');
-
+    if (SEAreas.length <= 0) return ('Información no disponible');
     return (
       <EcosystemsBox
-        total={Number(ecosystemsArea)}
-        listSE={allSE}
+        SETotalArea={Number(SETotalArea)}
+        SEAreas={this.processData(SEAreas)}
       />
     );
   };
@@ -130,11 +145,10 @@ class StrategicEcosystems extends React.Component {
       coverage,
       protectedAreas,
       PAArea,
-      strategicEcosistems,
-      SEArea,
+      SEAreas,
+      SETotalArea,
     } = this.state;
     const { handlerClickOnGraph } = this.context;
-
     return (
       <div className="graphcard">
         <h2>
@@ -207,11 +221,13 @@ class StrategicEcosystems extends React.Component {
             >
               <h4 className="minus20">
                 Ecosistemas estratégicos
-                <b>{`${formatNumber(SEArea, 0)} ha`}</b>
+                <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
               </h4>
             </InfoTooltip>
-            <h5 className="minusperc">{`${getPercentage(SEArea, generalArea)} %`}</h5>
-            {this.displaySE(strategicEcosistems, SEArea)}
+            <h5 className="minusperc">
+              {`${getPercentage(SETotalArea, generalArea)} %`}
+            </h5>
+            {this.renderEcosystemsBox(SEAreas, SETotalArea)}
           </div>
         </div>
       </div>

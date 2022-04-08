@@ -83,12 +83,12 @@ class RestAPI {
   }
 
   /**
-   * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   * Get the area distribution for each SE type and total SE area within a given area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestStrategicEcosystems(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  static requestStrategicEcosystems(areaType, areaId) {
+    return RestAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -102,13 +102,15 @@ class RestAPI {
   }
 
   /**
-   * Recover the coverage by selected strategic ecosystems and geofence
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
-   * @param {Number} seType type of strategic ecosystem to request
+   * Get the coverage area distribution by selected strategic ecosystem and geofence
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
    */
-  static requestSECoverageByGeofence(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/coverage`);
+  static requestSECoverageByGeofence(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(
+      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+    );
   }
 
   /**
@@ -490,6 +492,28 @@ class RestAPI {
     return {
       request: RestAPI.makeGetRequest(
         `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given strategic ecosystem and area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
         { cancelToken: source.token, responseType: 'arraybuffer' },
         true,
       ),
