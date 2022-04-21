@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SearchContext from 'pages/search/SearchContext';
 
-import DetailsView from 'pages/search/drawer/strategicEcosystems/ecosystemsBox/DetailsView';
+import EcosystemDetails from 'pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails';
 import GraphLoader from 'components/charts/GraphLoader';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
@@ -92,7 +92,7 @@ class EcosystemsBox extends Component {
             )}
             {!stopLoad && activeSE === item.type && (
               <div className="graficaeco2">
-                <DetailsView
+                <EcosystemDetails
                   item={{
                     ...item,
                     percentage: item.percentage * 100,
