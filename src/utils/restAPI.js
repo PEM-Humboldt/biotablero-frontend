@@ -58,12 +58,12 @@ class RestAPI {
   }
 
   /**
-   * Recover protected areas values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the protected areas
+   * Get the protected areas values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestProtectedAreas(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/pa`);
+  static requestProtectedAreas(areaType, areaId) {
+    return RestAPI.makeGetRequest(`/pa?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -114,13 +114,13 @@ class RestAPI {
   }
 
   /**
-   * Recover the protected area by selected strategic ecosystems and geofence
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
+   * Get the the protected area by selected strategic ecosystems and geofence
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSEPAByGeofence(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/pa`);
+  static requestSEPAByGeofence(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
   }
 
   /**
