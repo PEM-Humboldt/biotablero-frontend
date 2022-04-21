@@ -9,7 +9,7 @@ import Paisaje from '@mui/icons-material/FilterHdr';
 import SearchContext from 'pages/search/SearchContext';
 import Landscape from 'pages/search/drawer/Landscape';
 import Species from 'pages/search/drawer/Species';
-import StrategicEcosystems from 'pages/search/drawer/StrategicEcosystems';
+import Ecosystems from 'pages/search/drawer/Ecosystems';
 import formatNumber from 'utils/format';
 import RestAPI from 'utils/restAPI';
 import TabContainer from 'components/TabContainer';
@@ -77,7 +77,7 @@ class Drawer extends React.Component {
           ]}
         >
           <div>
-            <StrategicEcosystems
+            <Ecosystems
               generalArea={Number(geofenceArea)}
             />
           </div>
