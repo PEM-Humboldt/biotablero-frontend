@@ -128,7 +128,7 @@ class StrategicEcosystems extends React.Component {
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
     const { loadingSE } = this.state;
     if (loadingSE) return ('Cargando...');
-    if (SEAreas.length <= 0) return ('No hay información de áreas protegidas para el área de consulta');
+    if (SEAreas.length <= 0) return ('No hay información de áreas protegidas en el área de consulta');
     return (
       <EcosystemsBox
         SETotalArea={Number(SETotalArea)}
