@@ -76,11 +76,13 @@ class Drawer extends React.Component {
             { label: 'Especies', icon: (<Especies />) },
           ]}
         >
-          <div>
-            <Ecosystems
-              generalArea={Number(geofenceArea)}
-            />
-          </div>
+          {geofenceArea !== 0 && (
+            <div>
+              <Ecosystems
+                generalArea={Number(geofenceArea)}
+              />
+            </div>
+          )}
           <div>
             <Landscape />
           </div>
