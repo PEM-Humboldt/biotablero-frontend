@@ -15,8 +15,8 @@ class EcosystemDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      seCoverage: null,
-      sePA: null,
+      coverageData: null,
+      paData: null,
       stopLoad: false,
     };
   }
@@ -24,7 +24,7 @@ class EcosystemDetails extends Component {
   componentDidMount() {
     this.mounted = true;
     const {
-      item,
+      SEValues,
     } = this.props;
     const {
       areaId,
@@ -32,28 +32,28 @@ class EcosystemDetails extends Component {
       switchLayer,
     } = this.context;
 
-    const seType = item.type;
-    const seArea = item.area;
+    const SEType = SEValues.type;
+    const SEArea = SEValues.area;
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, seType)
+      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ seCoverage: transformCoverageValues(res) });
+            this.setState({ coverageData: transformCoverageValues(res) });
           }
         })
         .catch(() => {});
 
-      RestAPI.requestSEPAByGeofence(areaId, geofenceId, seType)
+      RestAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ sePA: transformPAValues(res, seArea) });
+            this.setState({ paData: transformPAValues(res, SEArea) });
           }
         })
         .catch(() => {});
 
-      switchLayer(`seCoverages-${SEKey(seType)}`);
+      switchLayer(`seCoverages-${SEKey(SEType)}`);
     }
   }
 
@@ -66,36 +66,36 @@ class EcosystemDetails extends Component {
 
   render() {
     const {
-      seCoverage,
-      sePA,
+      coverageData,
+      paData,
       stopLoad,
     } = this.state;
-    const { item } = this.props;
+    const { SEValues } = this.props;
     const { handlerClickOnGraph } = this.context;
     if (!stopLoad) {
       return (
         <div>
           <h3>
             Distribución de coberturas:
-            {!seCoverage && (
+            {!coverageData && (
               <b>
                 <br />
                 Cargando información...
               </b>
             )}
-            {seCoverage && seCoverage.length <= 0 && (
+            {coverageData && coverageData.length <= 0 && (
               <b>No hay información disponible de coberturas</b>
             )}
-            {(seCoverage && seCoverage.length > 0) && (
+            {(coverageData && coverageData.length > 0) && (
               <GraphLoader
                 graphType="SmallBarStackGraph"
-                data={seCoverage}
+                data={coverageData}
                 units="ha"
                 colors={matchColor('coverage')}
                 onClickGraphHandler={(selected) => {
                   handlerClickOnGraph({
                     chartType: 'seCoverage',
-                    chartSection: SEKey(item.type),
+                    chartSection: SEKey(SEValues.type),
                     selectedKey: selected,
                   });
                 }}
@@ -104,19 +104,19 @@ class EcosystemDetails extends Component {
           </h3>
           <h3>
             Distribución en áreas protegidas:
-            {!sePA && (
+            {!paData && (
               <b>
                 <br />
                 Cargando información...
               </b>
             )}
-            {sePA && sePA.length <= 0 && (
+            {paData && paData.length <= 0 && (
               <b>No hay información disponible de áreas protegidas</b>
             )}
-            {(sePA && sePA.length > 0) && (
+            {(paData && paData.length > 0) && (
               <GraphLoader
                 graphType="SmallBarStackGraph"
-                data={sePA}
+                data={paData}
                 units="ha"
                 colors={matchColor('pa')}
               />
@@ -130,7 +130,7 @@ class EcosystemDetails extends Component {
 }
 
 EcosystemDetails.propTypes = {
-  item: PropTypes.object.isRequired,
+  SEValues: PropTypes.object.isRequired,
 };
 
 export default EcosystemDetails;

@@ -27,9 +27,9 @@ export const transformPAValues = (rawData, totalArea) => {
   return data;
 };
 
-export const transformCoverageValues = (array) => {
-  if (!array) return [];
-  return array.map((item) => {
+export const transformCoverageValues = (rawData) => {
+  if (!rawData) return [];
+  return rawData.map((item) => {
     let label = '';
     switch (item.type) {
       case 'N':
@@ -51,4 +51,21 @@ export const transformCoverageValues = (array) => {
       label,
     };
   });
+};
+
+export const transformSEValues = (seRawData, SETotalArea) => {
+  if (!seRawData) return [];
+  return [
+    {
+      key: seRawData.type,
+      area: Number(seRawData.area),
+      percentage: seRawData.percentage,
+      label: seRawData.type,
+    },
+    {
+      key: 'NA',
+      area: (SETotalArea - seRawData.area),
+      percentage: (SETotalArea - seRawData.area) / SETotalArea,
+    },
+  ];
 };
