@@ -8,7 +8,11 @@ import {
   PAText,
   SEText,
 } from 'pages/search/drawer/strategicEcosystems/InfoTexts';
-import { setPAValues, setCoverageValues } from 'pages/search/drawer/strategicEcosystems/formatSE';
+import {
+  transformPAValues,
+  transformCoverageValues,
+  transformSEAreas,
+} from 'pages/search/utils/transformData';
 import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -35,8 +39,8 @@ class StrategicEcosystems extends React.Component {
     this.state = {
       showInfoGraph: false,
       coverage: [],
-      protectedAreas: [],
-      PAArea: 0,
+      PAAreas: [],
+      PATotalArea: 0,
       SEAreas: [],
       SETotalArea: 0,
       loadingSE: true,
@@ -50,13 +54,14 @@ class StrategicEcosystems extends React.Component {
       geofenceId,
       switchLayer,
     } = this.context;
+    const { generalArea } = this.props;
 
     switchLayer('coverages');
 
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({ coverage: setCoverageValues(res) });
+          this.setState({ coverage: transformCoverageValues(res) });
         }
       })
       .catch(() => {});
@@ -65,9 +70,9 @@ class StrategicEcosystems extends React.Component {
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res) && res[0]) {
-            const totalPA = Number(res[0].area).toFixed(0);
-            const allPA = setPAValues(res.slice(1));
-            this.setState({ protectedAreas: allPA, PAArea: totalPA });
+            const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
+            const PAAreas = transformPAValues(res, generalArea);
+            this.setState({ PAAreas, PATotalArea });
           }
         }
       })
@@ -96,21 +101,6 @@ class StrategicEcosystems extends React.Component {
     this.mounted = false;
   }
 
-  /**
-   * Transform data to fit in the graph structure
-   * @param {array} data data to be transformed
-   *
-   * @returns {array} data transformed
-   */
-   processData = (data) => {
-    const { generalArea } = this.props;
-    if (!data) return [];
-    return data.map((obj) => ({
-      ...obj,
-      percentage: obj.area / generalArea,
-    }));
-  };
-
   toggleInfo = () => {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
@@ -125,15 +115,19 @@ class StrategicEcosystems extends React.Component {
    * @returns {node} Component to be rendered
    */
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
+    const { generalArea } = this.props;
     const { loadingSE } = this.state;
     if (loadingSE) return ('Cargando...');
-    if (SEAreas.length <= 0) return ('Información no disponible');
-    return (
-      <EcosystemsBox
-        SETotalArea={Number(SETotalArea)}
-        SEAreas={this.processData(SEAreas)}
-      />
-    );
+    if (SEAreas.length <= 0) return ('No hay información de áreas protegidas en el área de consulta');
+    if (generalArea !== 0) {
+      return (
+        <EcosystemsBox
+          SETotalArea={Number(SETotalArea)}
+          SEAreas={transformSEAreas(SEAreas, generalArea)}
+        />
+      );
+    }
+    return null;
   };
 
   render() {
@@ -143,8 +137,8 @@ class StrategicEcosystems extends React.Component {
     const {
       showInfoGraph,
       coverage,
-      protectedAreas,
-      PAArea,
+      PAAreas,
+      PATotalArea,
       SEAreas,
       SETotalArea,
     } = this.state;
@@ -197,11 +191,11 @@ class StrategicEcosystems extends React.Component {
           >
             <h4>
               Áreas protegidas
-              <b>{`${formatNumber(PAArea, 0)} ha `}</b>
+              <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
             </h4>
           </InfoTooltip>
           <h5>
-            {`${getPercentage(PAArea, generalArea)} %`}
+            {`${getPercentage(PATotalArea, generalArea)} %`}
           </h5>
           <div className="graficaeco">
             <h6>
@@ -209,7 +203,7 @@ class StrategicEcosystems extends React.Component {
             </h6>
             <GraphLoader
               graphType="SmallBarStackGraph"
-              data={protectedAreas}
+              data={PAAreas}
               units="ha"
               colors={matchColor('pa')}
             />

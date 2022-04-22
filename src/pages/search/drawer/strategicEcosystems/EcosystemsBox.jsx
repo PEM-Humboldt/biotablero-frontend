@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import SearchContext from 'pages/search/SearchContext';
 
-import DetailsView from 'pages/search/drawer/strategicEcosystems/ecosystemsBox/DetailsView';
+import EcosystemDetails from 'pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails';
 import GraphLoader from 'components/charts/GraphLoader';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
+import { transformSEValues } from 'pages/search/utils/transformData';
 
 class EcosystemsBox extends Component {
   constructor(props) {
@@ -54,49 +55,34 @@ class EcosystemsBox extends Component {
         className="ecosystems"
         role="presentation"
       >
-        {!stopLoad && SETotalArea !== 0 && SEAreas.map((item) => (
-          <div className="mb10" key={item.type}>
-            <div className="singleeco">{item.type}</div>
+        {!stopLoad && SETotalArea !== 0 && SEAreas.map((SEValues) => (
+          <div className="mb10" key={SEValues.type}>
+            <div className="singleeco">{SEValues.type}</div>
             <div className="singleeco2">
-              {`${formatNumber(item.area, 0)} ha`}
+              {`${formatNumber(SEValues.area, 0)} ha`}
             </div>
-            {(Number(item.area) !== 0) && (
+            {(Number(SEValues.area) !== 0) && (
               <button
-                className={`icongraph2 ${activeSE === item.type ? 'rotate-false' : 'rotate-true'}`}
+                className={`icongraph2 ${activeSE === SEValues.type ? 'rotate-false' : 'rotate-true'}`}
                 type="button"
-                onClick={() => this.switchActiveSE(item.type)}
+                onClick={() => this.switchActiveSE(SEValues.type)}
                 title="Ampliar información"
               >
                 <ExpandMoreIcon />
               </button>
             )}
-            {!stopLoad && (Number(item.area) !== 0) && (
+            {!stopLoad && (Number(SEValues.area) !== 0) && (
               <GraphLoader
                 graphType="SmallBarStackGraph"
-                data={[
-                  {
-                    key: item.type,
-                    area: Number(item.area),
-                    percentage: item.percentage,
-                    label: item.type,
-                  },
-                  {
-                    key: 'NA',
-                    area: (SETotalArea - item.area),
-                    percentage: (SETotalArea - item.area) / SETotalArea,
-                  },
-                ]}
+                data={transformSEValues(SEValues, SETotalArea)}
                 units="ha"
                 colors={matchColor('se')}
               />
             )}
-            {!stopLoad && activeSE === item.type && (
+            {!stopLoad && activeSE === SEValues.type && (
               <div className="graficaeco2">
-                <DetailsView
-                  item={{
-                    ...item,
-                    percentage: item.percentage * 100,
-                  }}
+                <EcosystemDetails
+                  SEValues={SEValues}
                 />
               </div>
             )}
