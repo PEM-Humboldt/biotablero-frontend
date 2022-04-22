@@ -1,5 +1,5 @@
 export const transformPAValues = (rawData, totalArea) => {
-  if (!rawData) return [];
+  if (!rawData || rawData.length === 0) return [];
   let PATotalArea = 0;
   if (rawData.length > 0) {
     PATotalArea = rawData.map((i) => i.area).reduce((prev, next) => prev + next);

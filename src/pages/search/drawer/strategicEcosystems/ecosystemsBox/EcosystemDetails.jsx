@@ -111,7 +111,9 @@ class EcosystemDetails extends Component {
               </b>
             )}
             {paData && paData.length <= 0 && (
-              <b>No hay información disponible de áreas protegidas</b>
+              <div>
+                <b>Sin áreas protegidas</b>
+              </div>
             )}
             {(paData && paData.length > 0) && (
               <GraphLoader
