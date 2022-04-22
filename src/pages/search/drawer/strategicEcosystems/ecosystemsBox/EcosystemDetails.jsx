@@ -9,79 +9,6 @@ import RestAPI from 'utils/restAPI';
 
 import { SEKey } from 'pages/search/utils/appropriate_keys';
 
-/**
- * Validate if data exist before rendering graph
- *
- * @param {array} data information to load graphs
- * @param {function} colorFunc function to assign colors in a graph
- *
- * @returns {string | boolean} validation of data availability and existence
- */
-const loadData = (data, colorFunc, handlerClickOnGraph, seType) => {
-  if (data === null) {
-    return (
-      <b>
-        <br />
-        Cargando información...
-      </b>
-    );
-  }
-  if (data.length <= 0) return (<b>No hay información disponible</b>);
-  if (handlerClickOnGraph) {
-    return (
-      <GraphLoader
-        graphType="SmallBarStackGraph"
-        data={data}
-        units="ha"
-        colors={colorFunc}
-        onClickGraphHandler={(selected) => {
-          handlerClickOnGraph({
-            chartType: 'seCoverage',
-            chartSection: SEKey(seType),
-            selectedKey: selected,
-          });
-        }}
-      />
-    );
-  }
-  return (
-    <GraphLoader
-      graphType="SmallBarStackGraph"
-      data={data}
-      units="ha"
-      colors={colorFunc}
-    />
-  );
-};
-
-/**
- * Return details for each strategic ecosystem
- *
- * @param {number} npsp percentage in "national system of protected areas" or SINAP
- * @param {number} sep percentage in strategic ecosystems
- * @param {array} coverage data about coverages
- * @param {array} protectedArea data about protected areas
- * @returns {div} node for each strategic ecosystem
- */
-const showDetails = (
-  coverage,
-  protectedArea,
-  handlerClickOnGraph,
-  seType,
-  seArea,
-) => (
-  <div>
-    <h3>
-      Distribución de coberturas:
-      {loadData(transformCoverageValues(coverage), matchColor('coverage'), handlerClickOnGraph, seType)}
-    </h3>
-    <h3>
-      Distribución en áreas protegidas:
-      {loadData(transformPAValues(protectedArea, seArea), matchColor('pa'))}
-    </h3>
-  </div>
-);
-
 class EcosystemDetails extends Component {
   mounted = false;
 
@@ -106,13 +33,14 @@ class EcosystemDetails extends Component {
     } = this.context;
 
     const seType = item.type;
+    const seArea = item.area;
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
       RestAPI.requestSECoverageByGeofence(areaId, geofenceId, seType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ seCoverage: res });
+            this.setState({ seCoverage: transformCoverageValues(res) });
           }
         })
         .catch(() => {});
@@ -120,7 +48,7 @@ class EcosystemDetails extends Component {
       RestAPI.requestSEPAByGeofence(areaId, geofenceId, seType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ sePA: res });
+            this.setState({ sePA: transformPAValues(res, seArea) });
           }
         })
         .catch(() => {});
@@ -146,13 +74,55 @@ class EcosystemDetails extends Component {
     const { handlerClickOnGraph } = this.context;
     if (!stopLoad) {
       return (
-        showDetails(
-          seCoverage,
-          sePA,
-          handlerClickOnGraph,
-          item.type,
-          item.area,
-        )
+        <div>
+          <h3>
+            Distribución de coberturas:
+            {!seCoverage && (
+              <b>
+                <br />
+                Cargando información...
+              </b>
+            )}
+            {seCoverage && seCoverage.length <= 0 && (
+              <b>No hay información disponible de coberturas</b>
+            )}
+            {(seCoverage && seCoverage.length > 0) && (
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={seCoverage}
+                units="ha"
+                colors={matchColor('coverage')}
+                onClickGraphHandler={(selected) => {
+                  handlerClickOnGraph({
+                    chartType: 'seCoverage',
+                    chartSection: SEKey(item.type),
+                    selectedKey: selected,
+                  });
+                }}
+              />
+            )}
+          </h3>
+          <h3>
+            Distribución en áreas protegidas:
+            {!sePA && (
+              <b>
+                <br />
+                Cargando información...
+              </b>
+            )}
+            {sePA && sePA.length <= 0 && (
+              <b>No hay información disponible de áreas protegidas</b>
+            )}
+            {(sePA && sePA.length > 0) && (
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={sePA}
+                units="ha"
+                colors={matchColor('pa')}
+              />
+            )}
+          </h3>
+        </div>
       );
     }
     return null;
