@@ -69,3 +69,11 @@ export const transformSEValues = (seRawData, SETotalArea) => {
     },
   ];
 };
+
+export const transformSEAreas = (rawData, generalArea) => {
+    if (!rawData) return [];
+    return rawData.map((obj) => ({
+      ...obj,
+      percentage: obj.area / generalArea,
+    }));
+};

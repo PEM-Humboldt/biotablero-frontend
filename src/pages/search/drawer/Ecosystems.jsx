@@ -8,7 +8,11 @@ import {
   PAText,
   SEText,
 } from 'pages/search/drawer/strategicEcosystems/InfoTexts';
-import { transformPAValues, transformCoverageValues } from 'pages/search/utils/transformData';
+import {
+  transformPAValues,
+  transformCoverageValues,
+  transformSEAreas,
+} from 'pages/search/utils/transformData';
 import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
@@ -97,21 +101,6 @@ class StrategicEcosystems extends React.Component {
     this.mounted = false;
   }
 
-  /**
-   * Transform data to fit in the graph structure
-   * @param {array} data data to be transformed
-   *
-   * @returns {array} data transformed
-   */
-   processData = (data) => {
-    const { generalArea } = this.props;
-    if (!data) return [];
-    return data.map((obj) => ({
-      ...obj,
-      percentage: obj.area / generalArea,
-    }));
-  };
-
   toggleInfo = () => {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
@@ -126,15 +115,19 @@ class StrategicEcosystems extends React.Component {
    * @returns {node} Component to be rendered
    */
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
+    const { generalArea } = this.props;
     const { loadingSE } = this.state;
     if (loadingSE) return ('Cargando...');
     if (SEAreas.length <= 0) return ('No hay información de áreas protegidas en el área de consulta');
-    return (
-      <EcosystemsBox
-        SETotalArea={Number(SETotalArea)}
-        SEAreas={this.processData(SEAreas)}
-      />
-    );
+    if (generalArea !== 0) {
+      return (
+        <EcosystemsBox
+          SETotalArea={Number(SETotalArea)}
+          SEAreas={transformSEAreas(SEAreas, generalArea)}
+        />
+      );
+    }
+    return null;
   };
 
   render() {
