@@ -14,7 +14,6 @@ class EcosystemsBox extends Component {
     super(props);
     this.state = {
       stopLoad: false,
-      activeSE: null,
     };
   }
 
@@ -22,33 +21,15 @@ class EcosystemsBox extends Component {
     this.setState({ stopLoad: true });
   }
 
-  /**
-   * Set active strategic ecosystem graph
-   *
-   * @param {String} selectedSE strategic ecosystem to be loaded
-   */
-  switchActiveSE = (selectedSE) => {
-    const { switchLayer } = this.context;
-    this.setState((prevState) => {
-      const newState = prevState;
-      if (!prevState.activeSE || prevState.activeSE !== selectedSE) {
-        newState.activeSE = selectedSE;
-      } else {
-        newState.activeSE = null;
-        switchLayer('coverages');
-      }
-      return newState;
-    });
-  }
-
   render() {
     const {
       SETotalArea,
       SEAreas,
+      setActiveSE,
+      activeSE,
     } = this.props;
     const {
       stopLoad,
-      activeSE,
     } = this.state;
     return (
       <div
@@ -65,7 +46,7 @@ class EcosystemsBox extends Component {
               <button
                 className={`icongraph2 ${activeSE === SEValues.type ? 'rotate-false' : 'rotate-true'}`}
                 type="button"
-                onClick={() => this.switchActiveSE(SEValues.type)}
+                onClick={() => setActiveSE(SEValues.type)}
                 title="Ampliar información"
               >
                 <ExpandMoreIcon />
@@ -96,11 +77,15 @@ class EcosystemsBox extends Component {
 EcosystemsBox.propTypes = {
   SEAreas: PropTypes.array,
   SETotalArea: PropTypes.number,
+  activeSE: PropTypes.string,
+  setActiveSE: PropTypes.func,
 };
 
 EcosystemsBox.defaultProps = {
   SEAreas: [],
   SETotalArea: 0,
+  activeSE: null,
+  setActiveSE: () => {},
 };
 
 export default EcosystemsBox;

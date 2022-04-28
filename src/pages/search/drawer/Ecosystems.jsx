@@ -44,6 +44,7 @@ class StrategicEcosystems extends React.Component {
       SEAreas: [],
       SETotalArea: 0,
       loadingSE: true,
+      activeSE: null,
     };
   }
 
@@ -116,7 +117,7 @@ class StrategicEcosystems extends React.Component {
    */
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
     const { generalArea } = this.props;
-    const { loadingSE } = this.state;
+    const { loadingSE, activeSE } = this.state;
     if (loadingSE) return ('Cargando...');
     if (SEAreas.length <= 0) return ('No hay información de áreas protegidas en el área de consulta');
     if (generalArea !== 0) {
@@ -124,11 +125,32 @@ class StrategicEcosystems extends React.Component {
         <EcosystemsBox
           SETotalArea={Number(SETotalArea)}
           SEAreas={transformSEAreas(SEAreas, generalArea)}
+          activeSE={activeSE}
+          setActiveSE={this.switchActiveSE}
         />
       );
     }
     return null;
   };
+
+  /**
+   * Set active strategic ecosystem graph
+   *
+   * @param {String} se selected strategic ecosystem
+   */
+  switchActiveSE = (se) => {
+    const { switchLayer } = this.context;
+    this.setState((prevState) => {
+      const newState = prevState;
+      if (prevState.activeSE !== se && se !== null) {
+        newState.activeSE = se;
+      } else {
+        newState.activeSE = null;
+        switchLayer('coverages');
+      }
+      return newState;
+    });
+  }
 
   render() {
     const {
@@ -141,6 +163,7 @@ class StrategicEcosystems extends React.Component {
       PATotalArea,
       SEAreas,
       SETotalArea,
+      activeSE,
     } = this.state;
     const { handlerClickOnGraph } = this.context;
     return (
@@ -165,9 +188,19 @@ class StrategicEcosystems extends React.Component {
             placement="left"
             title={CoverageText}
           >
-            <h4>
-              Cobertura
-            </h4>
+            <button
+              onClick={() => {
+                if (activeSE !== null) {
+                  this.switchActiveSE(null);
+                }
+              }}
+              type="button"
+              className="tittlebtn"
+            >
+              <h4>
+                Cobertura
+              </h4>
+            </button>
           </InfoTooltip>
           <h6>
             Natural, Secundaria y Transformada:
