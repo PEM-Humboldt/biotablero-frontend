@@ -1598,7 +1598,7 @@ div[class*="eaRHYv"] {
 
 /*2do menu graficas*/
 
-.geobtn {
+.geobtn, .tittlebtn {
   border: none;
   background-color: transparent;
   color: #fff;
@@ -1614,6 +1614,10 @@ div[class*="eaRHYv"] {
 .geobtn:hover {
   color: #2a363b;
   border-bottom: 1px solid #2a363b;
+}
+
+.tittlebtn:hover {
+  border: none;
 }
 
 .tabs {

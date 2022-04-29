@@ -14,7 +14,7 @@ import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
-import MapViewer from 'components/MapViewer';
+import MapViewer from 'pages/search/MapViewer';
 
 import { SELabel } from 'pages/search/utils/appropriate_labels';
 
@@ -22,6 +22,8 @@ class Search extends Component {
   constructor(props) {
     super(props);
     this.activeRequests = new Map();
+    this.mapBounds = null;
+    this.geofenceBounds = null;
     this.state = {
       activeLayer: {},
       connError: false,
@@ -164,8 +166,6 @@ class Search extends Component {
    * Choose the right color for the section inside the map, according to matchColor function
    * @param {String} type layer type
    * @param {String} color optional key value to select color in match color palette
-   * @param {String} fKey property name to use as key in the feature
-   * @param {Boolean} compoundKey whether the key used to identify the color has a - in it
    *
    * @param {Object} feature target object
    */
@@ -173,19 +173,25 @@ class Search extends Component {
     const {
       type,
       color = null,
-      fKey = 'key',
-      compoundKey = false,
     } = objParams;
     if (feature.properties) {
-      let key = fKey;
-      if (compoundKey) {
-        const keys = fKey.split('-');
+      let key = null;
+      let ftype = type;
+
+      if (type === 'forestIntegrity') {
+        const keys = 'sci_cat-hf_pers'.split('-');
         key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
         key = key.slice(1);
+        ftype = 'SciHf';
+      } else if (/PAConn$/.test(type)) {
+        key = feature.properties.dpc_cat;
+        ftype = 'dpc';
+      } else if (type === 'fc') {
+        key = feature.properties.compensation_factor;
       } else {
-        key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+        key = feature.properties.key;
       }
-      const ftype = /PAConn$/.test(type) ? 'dpc' : type;
+
       if (!key) {
         return {
           color: matchColor(ftype)(color),
@@ -193,6 +199,7 @@ class Search extends Component {
           fillOpacity: 0,
         };
       }
+
       return {
         stroke: false,
         fillColor: matchColor(ftype)(key),
@@ -317,10 +324,18 @@ class Search extends Component {
    * @param {String} layerName Layer name the event belongs to
    */
   resetShapeHighlight = (event, layerName) => {
-    const feature = event.target;
-    const { layers } = this.state;
-    layers[layerName].layer.resetStyle(feature);
-    feature.closePopup();
+    const { target } = event;
+    switch (layerName) {
+      case 'paramo':
+      case 'dryForest':
+      case 'wetland':
+        target.setStyle(this.featureStyle({ type: layerName, color: layerName })(target.feature));
+        break;
+      default:
+        target.setStyle(this.featureStyle({ type: layerName })(target.feature));
+        break;
+    }
+    target.closePopup();
   }
 
   /**
@@ -462,17 +477,19 @@ class Search extends Component {
 
         if (!activeLayer || !layers[activeLayer]) return;
 
-        const selectedSubLayer = layers[activeLayer].layer;
-        selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.key === selectedKey
-            || layer.feature.properties.id === selectedKey) {
-            layer.setStyle({
-              weight: 1,
-              fillOpacity: 1,
-            });
-          } else {
-            selectedSubLayer.resetStyle(layer);
-          }
+        this.setState((prev) => {
+          const newState = prev;
+          newState.layers[activeLayer].layerStyle = (feature) => {
+            if (feature.properties.key === selectedKey
+              || feature.properties.id === selectedKey) {
+                return {
+                  weight: 1,
+                  fillOpacity: 1,
+                };
+              }
+            return this.featureStyle({ type: activeLayer })(feature);
+          };
+          return newState;
         });
       }
     }
@@ -494,7 +511,6 @@ class Search extends Component {
           newState.layers[layerKey].active = false;
         });
         newState.activeLayer = {};
-        newState.mapBounds = null;
         newState.rasterUrls = [];
         return newState;
       });
@@ -513,13 +529,22 @@ class Search extends Component {
   /**
    * Returns a shape layer from the state. When the layer is not present in the state it's requested
    * to the backend and stored in the state.
+   *
    * @param {String} layerName name of the layer
-   * @param {Boolean} isActive wheter the layer stored in the stated should be activated
-   * @param {String} fitBounds if the map bounds should fit the layer loaded
+   * @param {Object} options options object with the following availabel keys
+   * @param {Boolean} options.isActive wheter to activate this layer. Ignored if showInBackground
+   *  is true.
+   * @param {String} options.fitBounds if the map bounds should fit the layer loaded
+   * @param {Number} options.paneLevel pane level for the layer to be added to
    *
    * @returns {Object} Data of the layer with its id
    */
-  getShapeLayer = async (layerName, isActive = true, fitBounds = true) => {
+  getShapeLayer = async (layerName, options) => {
+    const {
+      isActive = true,
+      fitBounds = true,
+      paneLevel = 1,
+    } = options;
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     const { layers } = this.state;
     let reqPromise = null;
@@ -557,10 +582,18 @@ class Search extends Component {
 
     if (!reqPromise) return null;
     if (layers[layerName]) {
+      if (layerName === 'geofence') {
+        this.geofenceBounds = L.geoJSON(layers[layerName].json).getBounds();
+        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
+      } else if (fitBounds && isActive) {
+        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
+      }
       this.setState((prevState) => {
         const newState = prevState;
+        newState.layers[layerName].layerStyle = layerStyle;
         newState.layers[layerName].active = isActive;
-        newState.layers[layerName].layer.fitBounds = fitBounds;
+        newState.layers[layerName].fitBounds = fitBounds;
+        newState.layers[layerName].paneLevel = paneLevel;
         return newState;
       });
       return layers[layerName];
@@ -575,15 +608,21 @@ class Search extends Component {
         if (res.features.length === 1 && !res.features[0].geometry) {
           return null;
         }
+        if (layerName === 'geofence') {
+          this.geofenceBounds = L.geoJSON(res).getBounds();
+          this.mapBounds = L.geoJSON(res).getBounds();
+        } else if (fitBounds && isActive) {
+          this.mapBounds = L.geoJSON(res).getBounds();
+        }
         const layerObj = {
+          layerStyle,
+          onEachFeature: (feature, selectedLayer) => (
+            this.featureActions(selectedLayer, layerName)
+          ),
           active: isActive,
-          layer: L.geoJSON(res, {
-            style: layerStyle,
-            onEachFeature: (feature, selectedLayer) => (
-              this.featureActions(selectedLayer, layerName)
-            ),
-            fitBounds,
-          }),
+          json: res,
+          paneLevel,
+          id: layerName,
         };
         this.setState((prevState) => {
           const newState = prevState;
@@ -685,9 +724,8 @@ class Search extends Component {
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
-    let baseLayerId = null;
     let shapeLayerOpts = [];
-    let rasterLayerIds = [];
+    let rasterLayerOpts = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
     let mapLegend = null;
 
@@ -697,52 +735,58 @@ class Search extends Component {
      * shapeLayers: shape layers that will be displayed
      * rasterLayers: raster layers that will be displayed
      *
-     * Additionally there is 1 baseLayer to get data from it, for now it's always 'geofence'
-     *
      * Things I haven't thought of:
      * - new layers without modifying existing ones like protected areas in forest integrity
-     * - Order of the layers when there are shape and raster layers
      */
 
-    if (sectionName === 'coverages') {
-      baseLayerId = 'geofence';
-      rasterLayerIds = ['coverage-N', 'coverage-S', 'coverage-T'];
+    if (sectionName === 'geofence') {
+      shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
+    } else if (sectionName === 'coverages') {
+      rasterLayerOpts = [
+        { id: 'coverage-N', paneLevel: 1 },
+        { id: 'coverage-S', paneLevel: 1 },
+        { id: 'coverage-T', paneLevel: 1 },
+      ];
       newActiveLayer.name = 'Coberturas';
       newActiveLayer.defaultOpacity = 0.7;
     } else if (/seCoverages*/.test(sectionName)) {
       let seType = 'paramo';
       const selected = sectionName.match(/seCoverages-(\w+)/);
       if (selected) [, seType] = selected;
-      baseLayerId = 'geofence';
-      rasterLayerIds = [`seCoverage-${seType}-N`, `seCoverage-${seType}-S`, `seCoverage-${seType}-T`];
+      shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
+      rasterLayerOpts = [
+        { id: `seCoverage-${seType}-N`, paneLevel: 2 },
+        { id: `seCoverage-${seType}-S`, paneLevel: 2 },
+        { id: `seCoverage-${seType}-T`, paneLevel: 2 },
+      ];
       newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
-      shapeLayerOpts = [{ id: 'hfCurrent' }];
+      shapeLayerOpts = [{ id: 'hfCurrent', paneLevel: 1 }];
       newActiveLayer.name = 'HH promedio · 2018';
     } else if (sectionName === 'hfPersistence') {
-      shapeLayerOpts = [{ id: 'hfPersistence' }];
+      shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
       newActiveLayer.name = 'HH - Persistencia';
     } else if (sectionName === 'hfTimeline'
       || sectionName === 'hfTimeline-aTotal') {
-      shapeLayerOpts = [{ id: 'hfPersistence' }];
+      shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
       newActiveLayer.name = 'HH - Persistencia y Ecosistemas estratégicos (EE)';
     } else if (sectionName === 'hfTimeline-paramo') {
       shapeLayerOpts = [
-        { id: 'hfPersistence' },
-        { id: 'paramo', fitBounds: false },
+        { id: 'hfPersistence', paneLevel: 1 },
+        { id: 'paramo', fitBounds: false, paneLevel: 2 },
       ];
       newActiveLayer.name = 'HH - Persistencia - Páramos';
     } else if (sectionName === 'hfTimeline-dryForest') {
       shapeLayerOpts = [
-        { id: 'hfPersistence' },
-        { id: 'dryForest', fitBounds: false },
+        { id: 'hfPersistence', paneLevel: 1 },
+        { id: 'dryForest', fitBounds: false, paneLevel: 2 },
       ];
       newActiveLayer.name = 'HH - Persistencia - Bosque Seco Tropical';
     } else if (sectionName === 'hfTimeline-wetland') {
       shapeLayerOpts = [
-        { id: 'hfPersistence' },
-        { id: 'wetland', fitBounds: false },
+        { id: 'hfPersistence', paneLevel: 1 },
+        { id: 'wetland', fitBounds: false, paneLevel: 2 },
       ];
       newActiveLayer.name = 'HH - Persistencia - Humedales';
     } else if (/numberOfSpecies*/.test(sectionName)) {
@@ -752,8 +796,7 @@ class Search extends Component {
         invasive: 'Invasoras',
         threatened: 'Amenazadas',
       };
-      baseLayerId = 'geofence';
-      rasterLayerIds = [sectionName];
+      rasterLayerOpts = [{ id: sectionName, paneLevel: 1 }];
       let group = 'total';
       const selected = sectionName.match(/numberOfSpecies-(\w+)/);
       if (selected) [, group] = selected;
@@ -781,8 +824,7 @@ class Search extends Component {
         },
       };
     } else if (sectionName === 'speciesRecordsGaps') {
-      baseLayerId = 'geofence';
-        rasterLayerIds = ['speciesRecordsGaps'];
+        rasterLayerOpts = [{ id: 'speciesRecordsGaps', paneLevel: 1 }];
         newActiveLayer.name = 'Vacios en registros de especies';
         newActiveLayer.defaultOpacity = 0.75;
         mapLegend = {
@@ -808,7 +850,7 @@ class Search extends Component {
         };
     }
 
-    if (shapeLayerOpts.length <= 0 && rasterLayerIds.length <= 0) {
+    if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0) {
       this.reportDataError();
     }
 
@@ -820,31 +862,33 @@ class Search extends Component {
     }
 
     const loadingProm = [];
-    if (rasterLayerIds.length > 0) {
+    if (rasterLayerOpts.length > 0) {
       const rasterProm = Promise.all([
-        this.getShapeLayer(baseLayerId, false),
-        ...rasterLayerIds.map((id) => this.getRasterLayer(id)),
+        this.getShapeLayer('geofence', { isActive: false }),
+        ...rasterLayerOpts.map((info) => this.getRasterLayer(info.id)),
       ])
-      .then(([
-        baseLayer,
-        ...rasterLayers
-      ]) => {
+      .then(([, ...rasterLayers]) => {
         if (rasterLayers.includes('canceled')) {
           return 'canceled';
         }
         if (rasterLayers.every((e) => e === null)) {
           this.reportDataError();
         }
-        if (baseLayer) {
+        if (this.geofenceBounds !== null) {
           this.setState({
-            mapBounds: baseLayer.layer.getBounds(),
             rasterUrls: rasterLayers
-              .filter((layer) => layer !== null)
-              .map((layer) => ({
-                id: layer.id,
-                data: layer.data,
-                opacity: newActiveLayer.defaultOpacity,
-              })),
+            .map((layer, idx) => {
+              if (layer !== null) {
+                return {
+                  id: layer.id,
+                  data: layer.data,
+                  opacity: newActiveLayer.defaultOpacity,
+                  paneLevel: rasterLayerOpts[idx].paneLevel ?? 1,
+                };
+              }
+              return null;
+            })
+            .filter((layer) => layer !== null),
             activeLayer: newActiveLayer,
           });
         }
@@ -858,8 +902,15 @@ class Search extends Component {
 
     if (shapeLayerOpts.length > 0) {
       const shapeProm = Promise.all(
-        shapeLayerOpts.map(({ id, isActive, fitBounds }) => (
-          this.getShapeLayer(id, isActive, fitBounds))),
+        shapeLayerOpts.map((info) => {
+          const {
+            id,
+            isActive,
+            fitBounds,
+            paneLevel,
+          } = info;
+          return this.getShapeLayer(id, { isActive, fitBounds, paneLevel });
+        }),
       )
       .then((shapeLayers) => {
         if (shapeLayers.includes('canceled')) {
@@ -904,9 +955,9 @@ class Search extends Component {
     let requestObj = null;
     let shutOtherLayers = true;
     let layerStyle = this.featureStyle({ type: layerType });
-    let fitBounds = true;
     let newActiveLayer = null;
     let layerKey = layerType;
+    let paneLevel = 1;
 
     switch (layerType) {
       case 'coverages':
@@ -948,7 +999,6 @@ class Search extends Component {
             selectedAreaTypeId, selectedAreaId,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
           newActiveLayer = {
             id: layerType,
             name: 'Índice de condición estructural de bosques',
@@ -968,7 +1018,7 @@ class Search extends Component {
             selectedAreaId,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          layerStyle = this.featureStyle({ type: 'currentPAConn' });
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
@@ -982,11 +1032,11 @@ class Search extends Component {
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        fitBounds = false;
         newActiveLayer = {
           id: 'paramoPAConn',
           name: 'Conectividad de áreas protegidas - Páramo',
         };
+        paneLevel = 2;
         break;
       case 'dryForestPAConn':
         requestObj = RestAPI.requestPAConnSELayer(
@@ -994,11 +1044,11 @@ class Search extends Component {
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        fitBounds = false;
         newActiveLayer = {
           id: 'dryForestPAConn',
           name: 'Conectividad de áreas protegidas - Bosque Seco Tropical',
         };
+        paneLevel = 2;
         break;
       case 'wetlandPAConn':
         requestObj = RestAPI.requestPAConnSELayer(
@@ -1006,11 +1056,11 @@ class Search extends Component {
         );
         shutOtherLayers = false;
         layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        fitBounds = false;
         newActiveLayer = {
           id: 'wetlandPAConn',
           name: 'Conectividad de áreas protegidas - Humedales',
         };
+        paneLevel = 2;
         break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
@@ -1020,7 +1070,6 @@ class Search extends Component {
           );
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: 'border' });
-          fitBounds = false;
         } else if (/forestLP-*/.test(layerType)) {
           const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
           requestObj = RestAPI.requestEcoChangeLPGeometry(
@@ -1050,6 +1099,7 @@ class Search extends Component {
             newState.activeLayer = newActiveLayer;
           }
           newState.layers[layerKey].active = true;
+          newState.layers[layerKey].layerStyle = layerStyle;
           return newState;
         });
         callback();
@@ -1063,17 +1113,20 @@ class Search extends Component {
               this.reportDataError();
               return;
             }
+
+            this.mapBounds = L.geoJSON(res).getBounds();
+
             this.setState((prevState) => {
               const newState = prevState;
               newState.layers[layerKey] = {
                 active: true,
-                layer: L.geoJSON(res, {
-                  style: layerStyle,
-                  onEachFeature: (feature, selectedLayer) => (
-                    this.featureActions(selectedLayer, layerKey)
-                  ),
-                  fitBounds,
-                }),
+                layerStyle,
+                onEachFeature: (feature, selectedLayer) => (
+                  this.featureActions(selectedLayer, layerKey)
+                ),
+                json: res,
+                paneLevel,
+                id: layerKey,
               };
               newState.loadingLayer = false;
               if (newActiveLayer) newState.activeLayer = newActiveLayer;
@@ -1243,6 +1296,7 @@ class Search extends Component {
       'dryForestPAConn',
       'wetlandPAConn',
     ];
+    this.mapBounds = null;
     this.setState((prevState) => {
       const newState = { ...prevState };
 
@@ -1257,7 +1311,6 @@ class Search extends Component {
       newState.activeLayer = {};
       newState.loadingLayer = false;
       newState.layerError = false;
-      newState.mapBounds = null;
       newState.rasterUrls = [];
       return newState;
     }, () => {
@@ -1284,7 +1337,6 @@ class Search extends Component {
       layerError,
       areaList,
       activeLayer: { name: activeLayer, legend },
-      mapBounds,
       rasterUrls,
       drawPolygonEnabled,
     } = this.state;
@@ -1345,12 +1397,13 @@ class Search extends Component {
         >
           <div className="appSearcher wrappergrid">
             <MapViewer
-              layers={layers}
+              layers={Object.values(layers).filter((l) => l.active)}
               geoServerUrl={GeoServerAPI.getRequestURL()}
               loadingLayer={loadingLayer}
               layerError={layerError}
               rasterLayers={rasterUrls}
-              rasterBounds={mapBounds}
+              mapBounds={this.mapBounds}
+              rasterBounds={this.geofenceBounds}
               mapTitle={mapTitle}
               drawPolygonEnabled={drawPolygonEnabled}
               loadPolygonInfo={this.loadPolygonInfo}
