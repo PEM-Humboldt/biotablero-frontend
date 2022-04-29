@@ -12,7 +12,7 @@ import {
   GeoJSON,
 } from 'react-leaflet';
 
-import DrawControl from 'components/mapViewer/DrawControl';
+import DrawControl from 'pages/search/mapViewer/DrawControl';
 
 import 'leaflet/dist/leaflet.css';
 

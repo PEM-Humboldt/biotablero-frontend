@@ -14,7 +14,7 @@ import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import GradientLegend from 'components/GradientLegend';
-import MapViewer from 'components/MapViewer';
+import MapViewer from 'pages/search/MapViewer';
 
 import { SELabel } from 'pages/search/utils/appropriate_labels';
 
