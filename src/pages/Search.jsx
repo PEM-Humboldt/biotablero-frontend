@@ -1086,6 +1086,7 @@ class Search extends Component {
             newState.activeLayer = newActiveLayer;
           }
           newState.layers[layerKey].active = true;
+          newState.layers[layerKey].layerStyle = layerStyle;
           return newState;
         });
         callback();
