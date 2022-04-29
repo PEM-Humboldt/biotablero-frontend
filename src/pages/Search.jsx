@@ -166,8 +166,6 @@ class Search extends Component {
    * Choose the right color for the section inside the map, according to matchColor function
    * @param {String} type layer type
    * @param {String} color optional key value to select color in match color palette
-   * @param {String} fKey property name to use as key in the feature
-   * @param {Boolean} compoundKey whether the key used to identify the color has a - in it
    *
    * @param {Object} feature target object
    */
@@ -175,19 +173,25 @@ class Search extends Component {
     const {
       type,
       color = null,
-      fKey = 'key',
-      compoundKey = false,
     } = objParams;
     if (feature.properties) {
-      let key = fKey;
-      if (compoundKey) {
-        const keys = fKey.split('-');
+      let key = null;
+      let ftype = type;
+
+      if (type === 'forestIntegrity') {
+        const keys = 'sci_cat-hf_pers'.split('-');
         key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
         key = key.slice(1);
+        ftype = 'SciHf';
+      } else if (/PAConn$/.test(type)) {
+        key = feature.properties.dpc_cat;
+        ftype = 'dpc';
+      } else if (type === 'fc') {
+        key = feature.properties.compensation_factor;
       } else {
-        key = type === 'fc' ? feature.properties.compensation_factor : feature.properties[fKey];
+        key = feature.properties.key;
       }
-      const ftype = /PAConn$/.test(type) ? 'dpc' : type;
+
       if (!key) {
         return {
           color: matchColor(ftype)(color),
@@ -985,7 +989,6 @@ class Search extends Component {
             selectedAreaTypeId, selectedAreaId,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'SciHf', fKey: 'sci_cat-hf_pers', compoundKey: true });
           newActiveLayer = {
             id: layerType,
             name: 'Índice de condición estructural de bosques',
@@ -1005,7 +1008,7 @@ class Search extends Component {
             selectedAreaId,
           );
           shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentPAConn', fKey: 'dpc_cat' });
+          layerStyle = this.featureStyle({ type: 'currentPAConn' });
           layerKey = 'currentPAConn';
           newActiveLayer = {
             id: 'currentPAConn',
