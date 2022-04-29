@@ -325,7 +325,16 @@ class Search extends Component {
    */
   resetShapeHighlight = (event, layerName) => {
     const { target } = event;
-    target.setStyle(this.featureStyle({ type: layerName })(target.feature));
+    switch (layerName) {
+      case 'paramo':
+      case 'dryForest':
+      case 'wetland':
+        target.setStyle(this.featureStyle({ type: layerName, color: layerName })(target.feature));
+        break;
+      default:
+        target.setStyle(this.featureStyle({ type: layerName })(target.feature));
+        break;
+    }
     target.closePopup();
   }
 
@@ -948,6 +957,7 @@ class Search extends Component {
     let layerStyle = this.featureStyle({ type: layerType });
     let newActiveLayer = null;
     let layerKey = layerType;
+    let paneLevel = 1;
 
     switch (layerType) {
       case 'coverages':
@@ -1026,6 +1036,7 @@ class Search extends Component {
           id: 'paramoPAConn',
           name: 'Conectividad de áreas protegidas - Páramo',
         };
+        paneLevel = 2;
         break;
       case 'dryForestPAConn':
         requestObj = RestAPI.requestPAConnSELayer(
@@ -1037,6 +1048,7 @@ class Search extends Component {
           id: 'dryForestPAConn',
           name: 'Conectividad de áreas protegidas - Bosque Seco Tropical',
         };
+        paneLevel = 2;
         break;
       case 'wetlandPAConn':
         requestObj = RestAPI.requestPAConnSELayer(
@@ -1048,6 +1060,7 @@ class Search extends Component {
           id: 'wetlandPAConn',
           name: 'Conectividad de áreas protegidas - Humedales',
         };
+        paneLevel = 2;
         break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
@@ -1112,7 +1125,7 @@ class Search extends Component {
                   this.featureActions(selectedLayer, layerKey)
                 ),
                 json: res,
-                paneLevel: 1,
+                paneLevel,
                 id: layerKey,
               };
               newState.loadingLayer = false;
