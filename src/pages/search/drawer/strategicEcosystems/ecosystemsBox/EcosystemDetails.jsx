@@ -120,7 +120,7 @@ class EcosystemDetails extends Component {
                 graphType="SmallBarStackGraph"
                 data={paData}
                 units="ha"
-                colors={matchColor('pa')}
+                colors={matchColor('pa', true)}
               />
             )}
           </h3>

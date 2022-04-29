@@ -238,7 +238,7 @@ class StrategicEcosystems extends React.Component {
               graphType="SmallBarStackGraph"
               data={PAAreas}
               units="ha"
-              colors={matchColor('pa')}
+              colors={matchColor('pa', true)}
             />
           </div>
           <div className="ecoest">
