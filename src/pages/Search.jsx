@@ -527,6 +527,16 @@ class Search extends Component {
     }
   };
 
+  updateBounds = (bounds) => {
+    if (this.mapBounds === null) {
+      this.mapBounds = bounds;
+    } else if (bounds.contains(this.mapBounds)) {
+      this.mapBounds = bounds;
+    } else if (this.geofenceBounds !== null) {
+      this.mapBounds = this.geofenceBounds;
+    }
+  }
+
   /**
    * Returns a shape layer from the state. When the layer is not present in the state it's requested
    * to the backend and stored in the state.
@@ -585,9 +595,9 @@ class Search extends Component {
     if (layers[layerName]) {
       if (layerName === 'geofence') {
         this.geofenceBounds = L.geoJSON(layers[layerName].json).getBounds();
-        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
-      } else if (fitBounds && isActive) {
-        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
+      }
+      if (fitBounds) {
+        this.updateBounds(L.geoJSON(layers[layerName].json).getBounds());
       }
       this.setState((prevState) => {
         const newState = prevState;
@@ -611,9 +621,9 @@ class Search extends Component {
         }
         if (layerName === 'geofence') {
           this.geofenceBounds = L.geoJSON(res).getBounds();
-          this.mapBounds = L.geoJSON(res).getBounds();
-        } else if (fitBounds && isActive) {
-          this.mapBounds = L.geoJSON(res).getBounds();
+        }
+        if (fitBounds) {
+          this.updateBounds(L.geoJSON(res).getBounds());
         }
         const layerObj = {
           layerStyle,
@@ -1097,6 +1107,8 @@ class Search extends Component {
     if (shutOtherLayers) this.shutOffLayer();
     if (requestObj) {
       if (layers[layerKey]) {
+        this.updateBounds(L.geoJSON(layers[layerKey].json).getBounds());
+
         this.setState((prevState) => {
           const newState = prevState;
           newState.loadingLayer = false;
@@ -1119,7 +1131,7 @@ class Search extends Component {
               return;
             }
 
-            this.mapBounds = L.geoJSON(res).getBounds();
+            this.updateBounds(L.geoJSON(res).getBounds());
 
             this.setState((prevState) => {
               const newState = prevState;
