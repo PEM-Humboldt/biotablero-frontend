@@ -442,18 +442,19 @@ class Search extends Component {
         psKeys.forEach((key) => this.shutOffLayer(key));
         this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
 
-        const selectedSubLayer = layers[activeLayer].layer;
-        selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.sci_cat === sciCat
-            && layer.feature.properties.hf_pers === hfPers
-          ) {
-            layer.setStyle({
-              weight: 1,
-              fillOpacity: 1,
-            });
-          } else {
-            selectedSubLayer.resetStyle(layer);
-          }
+        this.setState((prev) => {
+          const newState = prev;
+          newState.layers[activeLayer].layerStyle = (feature) => {
+            if (feature.properties.sci_cat === sciCat
+              && feature.properties.hf_pers === hfPers) {
+                return {
+                  weight: 1,
+                  fillOpacity: 1,
+                };
+              }
+            return this.featureStyle({ type: activeLayer })(feature);
+          };
+          return newState;
         });
       }
         break;
@@ -958,6 +959,7 @@ class Search extends Component {
     let newActiveLayer = null;
     let layerKey = layerType;
     let paneLevel = 1;
+    let interaction = true;
 
     switch (layerType) {
       case 'coverages':
@@ -998,6 +1000,7 @@ class Search extends Component {
           requestObj = RestAPI.requestSCIHFGeometry(
             selectedAreaTypeId, selectedAreaId,
           );
+          paneLevel = 2;
           shutOtherLayers = false;
           newActiveLayer = {
             id: layerType,
@@ -1069,6 +1072,8 @@ class Search extends Component {
             selectedAreaTypeId, selectedAreaId, sci, hf,
           );
           shutOtherLayers = false;
+          paneLevel = 3;
+          interaction = false;
           layerStyle = this.featureStyle({ type: 'border' });
         } else if (/forestLP-*/.test(layerType)) {
           const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
@@ -1121,9 +1126,12 @@ class Search extends Component {
               newState.layers[layerKey] = {
                 active: true,
                 layerStyle,
-                onEachFeature: (feature, selectedLayer) => (
-                  this.featureActions(selectedLayer, layerKey)
-                ),
+                onEachFeature: (feature, selectedLayer) => {
+                  if (interaction) {
+                    return this.featureActions(selectedLayer, layerKey);
+                  }
+                  return null;
+                },
                 json: res,
                 paneLevel,
                 id: layerKey,
