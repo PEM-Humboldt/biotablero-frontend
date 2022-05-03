@@ -1669,7 +1669,9 @@ div[class*="eaRHYv"] {
 }
 
 .graphcontainer h4 {
-	display: table;
+	display: inline-block;
+	position: relative;
+	z-index: 1;
 	text-transform: uppercase;
 	font-size: 18px;
 	font-weight: 400;
@@ -1696,6 +1698,8 @@ div[class*="eaRHYv"] {
 	text-transform: none;
 	font-size: 15px;
 	display: table;
+	position: relative;
+	z-index: 2;
 }
 
 .graphcontainer h6 {
@@ -2972,6 +2976,19 @@ tspan, .vx-axis-label {
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 3rem;
 }
+
+.downSpecial {
+	vertical-align: top;
+	padding: 15px 0 0 5px;
+}
+.downSpecial2 {
+	vertical-align: top;
+	padding: 10px 7px 0 7px;
+	background-color: #fff;
+	border: 1px solid #e84a5f;
+	margin: -13px 0 0 5px;
+}
+
 
 @keyframes loadingA {
     0% {height: 15px;}
