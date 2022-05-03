@@ -53,12 +53,12 @@ class EcosystemsBox extends Component {
               </button>
             )}
             {!stopLoad && (Number(SEValues.area) !== 0) && (
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={transformSEValues(SEValues, SETotalArea)}
-                units="ha"
-                colors={matchColor('se')}
-              />
+            <GraphLoader
+              graphType="SmallBarStackGraph"
+              data={transformSEValues(SEValues, SETotalArea)}
+              units="ha"
+              colors={matchColor('se')}
+            />
             )}
             {!stopLoad && activeSE === SEValues.type && (
               <div className="graficaeco2">
