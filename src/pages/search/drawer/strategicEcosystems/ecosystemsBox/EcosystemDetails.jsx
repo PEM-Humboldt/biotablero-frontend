@@ -6,6 +6,7 @@ import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import DownloadCSV from 'components/DownloadCSV';
 
 import { SEKey } from 'pages/search/utils/appropriate_keys';
 
@@ -87,19 +88,25 @@ class EcosystemDetails extends Component {
               <b>No hay información disponible de coberturas</b>
             )}
             {(coverageData && coverageData.length > 0) && (
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={coverageData}
-                units="ha"
-                colors={matchColor('coverage')}
-                onClickGraphHandler={(selected) => {
+              <>
+                <GraphLoader
+                  graphType="SmallBarStackGraph"
+                  data={coverageData}
+                  units="ha"
+                  colors={matchColor('coverage')}
+                  onClickGraphHandler={(selected) => {
                   handlerClickOnGraph({
                     chartType: 'seCoverage',
                     chartSection: SEKey(SEValues.type),
                     selectedKey: selected,
                   });
                 }}
-              />
+                />
+                <DownloadCSV
+                  data={coverageData}
+                  filename="Distribucion_de_coberturas.csv"
+                />
+              </>
             )}
           </h3>
           <h3>
@@ -116,12 +123,18 @@ class EcosystemDetails extends Component {
               </div>
             )}
             {(paData && paData.length > 0) && (
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={paData}
-                units="ha"
-                colors={matchColor('pa', true)}
-              />
+              <>
+                <GraphLoader
+                  graphType="SmallBarStackGraph"
+                  data={paData}
+                  units="ha"
+                  colors={matchColor('pa', true)}
+                />
+                <DownloadCSV
+                  data={coverageData}
+                  filename="Distribucion_en_areas_protegidas.csv"
+                />
+              </>
             )}
           </h3>
         </div>

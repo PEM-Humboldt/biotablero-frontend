@@ -18,6 +18,7 @@ import SearchContext from 'pages/search/SearchContext';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { InfoTooltip, IconTooltip } from 'components/Tooltips';
+import DownloadCSV from 'components/DownloadCSV';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
@@ -202,6 +203,7 @@ class StrategicEcosystems extends React.Component {
               </h4>
             </button>
           </InfoTooltip>
+          <DownloadCSV data={coverage} filename="Cobertura.csv" />
           <h6>
             Natural, Secundaria y Transformada:
           </h6>
@@ -230,6 +232,7 @@ class StrategicEcosystems extends React.Component {
           <h5>
             {`${getPercentage(PATotalArea, generalArea)} %`}
           </h5>
+          <DownloadCSV data={PAAreas} filename="Areas_protegidas.csv" />
           <div className="graficaeco">
             <h6>
               Distribución por áreas protegidas:
@@ -254,6 +257,7 @@ class StrategicEcosystems extends React.Component {
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
+            <DownloadCSV data={SEAreas} filename="Porcentajes_Totales_EE_en_area_de_consulta.csv.csv" />
             {this.renderEcosystemsBox(SEAreas, SETotalArea)}
           </div>
         </div>
