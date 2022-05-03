@@ -87,19 +87,19 @@ class EcosystemDetails extends Component {
               <b>No hay información disponible de coberturas</b>
             )}
             {(coverageData && coverageData.length > 0) && (
-            <GraphLoader
-              graphType="SmallBarStackGraph"
-              data={coverageData}
-              units="ha"
-              colors={matchColor('coverage')}
-              onClickGraphHandler={(selected) => {
-                handlerClickOnGraph({
-                  chartType: 'seCoverage',
-                  chartSection: SEKey(SEValues.type),
-                  selectedKey: selected,
-                });
-              }}
-            />
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={coverageData}
+                units="ha"
+                colors={matchColor('coverage')}
+                onClickGraphHandler={(selected) => {
+                  handlerClickOnGraph({
+                    chartType: 'seCoverage',
+                    chartSection: SEKey(SEValues.type),
+                    selectedKey: selected,
+                  });
+                }}
+              />
             )}
           </h3>
           <h3>
@@ -116,12 +116,12 @@ class EcosystemDetails extends Component {
               </div>
             )}
             {(paData && paData.length > 0) && (
-            <GraphLoader
-              graphType="SmallBarStackGraph"
-              data={paData}
-              units="ha"
-              colors={matchColor('pa', true)}
-            />
+              <GraphLoader
+                graphType="SmallBarStackGraph"
+                data={paData}
+                units="ha"
+                colors={matchColor('pa', true)}
+              />
             )}
           </h3>
         </div>
