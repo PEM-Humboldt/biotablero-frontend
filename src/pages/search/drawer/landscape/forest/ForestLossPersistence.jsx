@@ -8,6 +8,7 @@ import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
+import DownloadCSV from 'components/DownloadCSV';
 
 const LATEST_PERIOD = '2016-2021';
 
@@ -84,7 +85,11 @@ class ForestLossPersistence extends React.Component {
       forestPersistenceValue,
       showInfoGraph,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -117,6 +122,11 @@ class ForestLossPersistence extends React.Component {
           <h6>
             Cobertura de bosque en el tiempo
           </h6>
+          <DownloadCSV
+            className="icondown"
+            data={forestLP}
+            filename={`bt_cf_forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          />
         </div>
         <div>
           <GraphLoader
