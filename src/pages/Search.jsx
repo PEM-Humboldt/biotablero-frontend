@@ -442,18 +442,19 @@ class Search extends Component {
         psKeys.forEach((key) => this.shutOffLayer(key));
         this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
 
-        const selectedSubLayer = layers[activeLayer].layer;
-        selectedSubLayer.eachLayer((layer) => {
-          if (layer.feature.properties.sci_cat === sciCat
-            && layer.feature.properties.hf_pers === hfPers
-          ) {
-            layer.setStyle({
-              weight: 1,
-              fillOpacity: 1,
-            });
-          } else {
-            selectedSubLayer.resetStyle(layer);
-          }
+        this.setState((prev) => {
+          const newState = prev;
+          newState.layers[activeLayer].layerStyle = (feature) => {
+            if (feature.properties.sci_cat === sciCat
+              && feature.properties.hf_pers === hfPers) {
+                return {
+                  weight: 1,
+                  fillOpacity: 1,
+                };
+              }
+            return this.featureStyle({ type: activeLayer })(feature);
+          };
+          return newState;
         });
       }
         break;
@@ -526,6 +527,16 @@ class Search extends Component {
     }
   };
 
+  updateBounds = (bounds) => {
+    if (this.mapBounds === null) {
+      this.mapBounds = bounds;
+    } else if (bounds.contains(this.mapBounds)) {
+      this.mapBounds = bounds;
+    } else if (this.geofenceBounds !== null) {
+      this.mapBounds = this.geofenceBounds;
+    }
+  }
+
   /**
    * Returns a shape layer from the state. When the layer is not present in the state it's requested
    * to the backend and stored in the state.
@@ -584,9 +595,9 @@ class Search extends Component {
     if (layers[layerName]) {
       if (layerName === 'geofence') {
         this.geofenceBounds = L.geoJSON(layers[layerName].json).getBounds();
-        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
-      } else if (fitBounds && isActive) {
-        this.mapBounds = L.geoJSON(layers[layerName].json).getBounds();
+      }
+      if (fitBounds) {
+        this.updateBounds(L.geoJSON(layers[layerName].json).getBounds());
       }
       this.setState((prevState) => {
         const newState = prevState;
@@ -610,9 +621,9 @@ class Search extends Component {
         }
         if (layerName === 'geofence') {
           this.geofenceBounds = L.geoJSON(res).getBounds();
-          this.mapBounds = L.geoJSON(res).getBounds();
-        } else if (fitBounds && isActive) {
-          this.mapBounds = L.geoJSON(res).getBounds();
+        }
+        if (fitBounds) {
+          this.updateBounds(L.geoJSON(res).getBounds());
         }
         const layerObj = {
           layerStyle,
@@ -958,6 +969,7 @@ class Search extends Component {
     let newActiveLayer = null;
     let layerKey = layerType;
     let paneLevel = 1;
+    let interaction = true;
 
     switch (layerType) {
       case 'coverages':
@@ -998,6 +1010,7 @@ class Search extends Component {
           requestObj = RestAPI.requestSCIHFGeometry(
             selectedAreaTypeId, selectedAreaId,
           );
+          paneLevel = 2;
           shutOtherLayers = false;
           newActiveLayer = {
             id: layerType,
@@ -1069,6 +1082,8 @@ class Search extends Component {
             selectedAreaTypeId, selectedAreaId, sci, hf,
           );
           shutOtherLayers = false;
+          paneLevel = 3;
+          interaction = false;
           layerStyle = this.featureStyle({ type: 'border' });
         } else if (/forestLP-*/.test(layerType)) {
           const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
@@ -1092,6 +1107,8 @@ class Search extends Component {
     if (shutOtherLayers) this.shutOffLayer();
     if (requestObj) {
       if (layers[layerKey]) {
+        this.updateBounds(L.geoJSON(layers[layerKey].json).getBounds());
+
         this.setState((prevState) => {
           const newState = prevState;
           newState.loadingLayer = false;
@@ -1114,16 +1131,19 @@ class Search extends Component {
               return;
             }
 
-            this.mapBounds = L.geoJSON(res).getBounds();
+            this.updateBounds(L.geoJSON(res).getBounds());
 
             this.setState((prevState) => {
               const newState = prevState;
               newState.layers[layerKey] = {
                 active: true,
                 layerStyle,
-                onEachFeature: (feature, selectedLayer) => (
-                  this.featureActions(selectedLayer, layerKey)
-                ),
+                onEachFeature: (feature, selectedLayer) => {
+                  if (interaction) {
+                    return this.featureActions(selectedLayer, layerKey);
+                  }
+                  return null;
+                },
                 json: res,
                 paneLevel,
                 id: layerKey,
