@@ -39,9 +39,9 @@ class ForestLossPersistence extends React.Component {
     } = this.context;
 
     const getPersistenceValue = (data) => {
-      const periodData = data ? data.filter((item) => item.id === LATEST_PERIOD)[0].data : null;
-      const persistenceData = periodData ? periodData.filter((item) => item.key === 'persistencia') : null;
-      return persistenceData[0] ? persistenceData[0].area : 0;
+      const periodData = data ? data.find((item) => item.id === LATEST_PERIOD).data : null;
+      const persistenceData = periodData ? periodData.find((item) => item.key === 'persistencia') : null;
+      return persistenceData ? persistenceData.area : 0;
     };
 
     switchLayer(`forestLP-${LATEST_PERIOD}`);
