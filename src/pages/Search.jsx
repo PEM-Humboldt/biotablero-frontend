@@ -271,10 +271,6 @@ class Search extends Component {
         break;
       case 'hfCurrent':
       case 'hfPersistence':
-      case 'forestLP-2016-2019':
-      case 'forestLP-2011-2015':
-      case 'forestLP-2006-2010':
-      case 'forestLP-2000-2005':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
@@ -400,37 +396,18 @@ class Search extends Component {
         }
       }
         break;
-      // Current progress of the refactor
       case 'forestLP': {
-        const period = chartSection;
-        const { layers } = this.state;
-
-        const psKeys = Object.keys(layers).filter((key) => /forestLP-*/.test(key));
-        psKeys.forEach((key) => this.shutOffLayer(key));
-
-        const highlightSelectedFeature = () => {
-          const { layers: updatedLayers, activeLayer: { id: activeLayer } } = this.state;
-
-          if (!activeLayer || !layers[activeLayer]) return;
-
-          const selectedSubLayer = updatedLayers[activeLayer].layer;
-          if (selectedKey) {
-            selectedSubLayer.eachLayer((layer) => {
-              if (layer.feature.properties.key === selectedKey) {
-                layer.setStyle({
-                  weight: 1,
-                  fillOpacity: 1,
-                });
-              } else {
-                selectedSubLayer.resetStyle(layer);
-              }
-            });
+        const { rasterUrls } = this.state;
+        if (rasterUrls[0] && rasterUrls[0].id) {
+          const [, yearIni, yearEnd] = rasterUrls[0].id.match(/forestLP-(\w+)-(\w+)-*/);
+          if (chartSection !== `${yearIni}-${yearEnd}`) {
+            this.setSectionLayers(`${chartType}-${chartSection}`);
           }
-        };
-
-        this.switchLayer(`forestLP-${period}`, highlightSelectedFeature);
+        }
+        this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
       }
-        break;
+      break;
+      // Current progress of the refactor
       case 'SciHf': {
         const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
         const hfPers = selectedKey.substring(selectedKey.indexOf('-') + 1, selectedKey.length);
@@ -670,6 +647,14 @@ class Search extends Component {
         coverageType,
         SELabel(seType),
       );
+    } else if (/forestLP-*/.test(layerName)) {
+      const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
+      reqPromise = () => RestAPI.requestForestLPLayer(
+        selectedAreaTypeId,
+        selectedAreaId,
+        `${yearIni}-${yearEnd}`,
+        category,
+      );
     } else if (/numberOfSpecies-*/.test(layerName)) {
       let group = 'total';
       const selected = layerName.match(/numberOfSpecies-(\w+)/);
@@ -760,6 +745,17 @@ class Search extends Component {
         { id: `seCoverage-${seType}-T`, paneLevel: 2 },
       ];
       newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
+      newActiveLayer.defaultOpacity = 0.7;
+    } else if (/forestLP*/.test(sectionName)) {
+      let period = '2016-2021';
+      const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
+      if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;
+      rasterLayerOpts = [
+        { id: `forestLP-${period}-perdida`, paneLevel: 2 },
+        { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
+        { id: `forestLP-${period}-no_bosque`, paneLevel: 2 },
+      ];
+      newActiveLayer.name = `Perdida y persistencia de bosque (${period})`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
       shapeLayerOpts = [{ id: 'hfCurrent', paneLevel: 1 }];
@@ -1070,19 +1066,12 @@ class Search extends Component {
           );
           shutOtherLayers = false;
           layerStyle = this.featureStyle({ type: 'border' });
-        } else if (/forestLP-*/.test(layerType)) {
-          const [, yearIni, yearEnd] = layerType.match(/forestLP-(\w+)-(\w+)/);
-          requestObj = RestAPI.requestEcoChangeLPGeometry(
-            selectedAreaTypeId, selectedAreaId, `${yearIni}-${yearEnd}`,
-          );
-          layerStyle = this.featureStyle({ type: 'forestLP' });
-          newActiveLayer = {
-            id: layerType,
-            name: `Pérdida y persistencia de bosque (${yearIni}-${yearEnd})`,
-          };
         } else if (/numberOfSpecies*/.test(layerType)) {
           this.setSectionLayers(layerType);
         } else if (/seCoverages*/.test(layerType)) {
+          this.setSectionLayers(layerType);
+          return;
+        } else if (/forestLP*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
         }
