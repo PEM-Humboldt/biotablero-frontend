@@ -6,6 +6,7 @@ import GraphLoader from 'components/charts/GraphLoader';
 import { LineLegend, LegendColor } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
+import DownloadCSV from 'components/DownloadCSV';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
@@ -63,6 +64,7 @@ class SpeciesRecordsGaps extends React.Component {
       bioticRegion: 'Región Biótica',
       concentrationFlag: false,
       showErrorMessage: false,
+      csvData: [],
     };
   }
 
@@ -84,11 +86,14 @@ class SpeciesRecordsGaps extends React.Component {
             || res[0].max > res[0].max_region
             );
           const { region, ...data } = this.transformData(res);
+          const dataArray = [];
+          dataArray.push(data);
           this.setState({
             gaps: data,
             messageGaps: null,
             bioticRegion: region,
             showErrorMessage,
+            csvData: dataArray,
           });
         }
       })
@@ -100,10 +105,13 @@ class SpeciesRecordsGaps extends React.Component {
       .then((res) => {
         if (this.mounted) {
           const { region, ...data } = this.transformData(res);
+          const dataArray = [];
+          dataArray.push(data);
           this.setState({
             concentration: data,
             messageConc: null,
             bioticRegion: region,
+            csvData: dataArray,
           });
         }
       })
@@ -169,9 +177,11 @@ class SpeciesRecordsGaps extends React.Component {
       bioticRegion,
       concentrationFlag,
       showErrorMessage,
+      csvData,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
+        <DownloadCSV className="downSpecial3" data={csvData} filename="Vacios_datos_especies.csv" />
         <h2>
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon
