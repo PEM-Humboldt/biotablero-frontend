@@ -10,6 +10,7 @@ import {
   ThickLineLegend,
 } from 'components/CssLegends';
 import Icon from 'components/CssIcons';
+import DownloadCSV from 'components/DownloadCSV';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
@@ -240,6 +241,7 @@ class NumberOfSpecies extends React.Component {
 
     return (
       <div className="graphcontainer pt6">
+        <DownloadCSV className="downSpecial3" data={data} filename="Numero_de_especies.csv" />
         <h2>
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon

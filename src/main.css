@@ -2989,6 +2989,11 @@ tspan, .vx-axis-label {
 	margin: -13px 0 0 5px;
 }
 
+.downSpecial3{
+	margin-left: 35px;
+	margin-top: -2px;
+	position: absolute;
+}
 
 @keyframes loadingA {
     0% {height: 15px;}
