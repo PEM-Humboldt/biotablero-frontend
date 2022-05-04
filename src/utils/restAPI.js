@@ -247,27 +247,15 @@ class RestAPI {
   }
 
   /**
-   * Get the forest loss and persistence data by categories in the given area.
+   * Get the forest loss and persistence data by periods and categories in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestEcoChangeLPCategories(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/lp/categories`);
-  }
-
-  /**
-   * Get the forest persistence value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Objects with value for the forest persistence
-   */
-  static requestEcoChangePersistenceValue(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/persistence`);
+  static requestForestLP(areaType, areaId) {
+    return RestAPI.makeGetRequest(`forest/lp?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -626,19 +614,24 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated to forest loss and persistence according to selected period
-   * and the given area.
+   * Get the layer associated to a category and period of forest loss and persistence
+   * in a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} period period
+   * @param {String} category forest loss and persistence category
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestEcoChangeLPGeometry(areaType, areaId, period) {
+  static requestForestLPLayer(areaType, areaId, period, category) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/layers/lp/period/${period}/categories/`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(
+        `forest/lp/layer?areaType=${areaType}&areaId=${areaId}&period=${period}&category=${category}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
       source,
     };
   }
