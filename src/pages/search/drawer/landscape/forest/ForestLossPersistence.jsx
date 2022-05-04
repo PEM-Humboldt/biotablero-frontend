@@ -7,6 +7,9 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
+
+const LATEST_PERIOD = '2016-2021';
 
 const getLabel = {
   persistencia: 'Persistencia',
@@ -35,9 +38,15 @@ class ForestLossPersistence extends React.Component {
       switchLayer,
     } = this.context;
 
-    switchLayer('forestLP-2016-2019');
+    const getPersistenceValue = (data) => {
+      const periodData = data ? data.filter((item) => item.id === LATEST_PERIOD)[0].data : null;
+      const persistenceData = periodData ? periodData.filter((item) => item.key === 'persistencia') : null;
+      return persistenceData[0] ? persistenceData[0].area : 0;
+    };
 
-    RestAPI.requestEcoChangeLPCategories(areaId, geofenceId)
+    switchLayer(`forestLP-${LATEST_PERIOD}`);
+
+    RestAPI.requestForestLP(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
@@ -49,15 +58,7 @@ class ForestLossPersistence extends React.Component {
               }
               )),
             })),
-          });
-        }
-      })
-      .catch(() => {});
-    RestAPI.requestEcoChangePersistenceValue(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            forestPersistenceValue: Number(res.area),
+            forestPersistenceValue: getPersistenceValue(res),
           });
         }
       })
@@ -109,7 +110,7 @@ class ForestLossPersistence extends React.Component {
             Cobertura actual
           </h6>
           <h5 style={{ backgroundColor: matchColor('forestLP')('persistencia') }}>
-            {forestPersistenceValue}
+            {`${formatNumber(forestPersistenceValue, 0)} ha `}
           </h5>
         </div>
         <div>
@@ -130,7 +131,7 @@ class ForestLossPersistence extends React.Component {
                 selectedKey: key,
               });
             }}
-            selectedIndexValue="2016-2019"
+            selectedIndexValue="2016-2021"
           />
         </div>
       </div>
