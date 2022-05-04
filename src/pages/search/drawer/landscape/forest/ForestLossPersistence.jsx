@@ -7,6 +7,10 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
+import DownloadCSV from 'components/DownloadCSV';
+
+const LATEST_PERIOD = '2016-2021';
 
 const getLabel = {
   persistencia: 'Persistencia',
@@ -35,9 +39,15 @@ class ForestLossPersistence extends React.Component {
       switchLayer,
     } = this.context;
 
-    switchLayer('forestLP-2016-2019');
+    const getPersistenceValue = (data) => {
+      const periodData = data ? data.find((item) => item.id === LATEST_PERIOD).data : null;
+      const persistenceData = periodData ? periodData.find((item) => item.key === 'persistencia') : null;
+      return persistenceData ? persistenceData.area : 0;
+    };
 
-    RestAPI.requestEcoChangeLPCategories(areaId, geofenceId)
+    switchLayer(`forestLP-${LATEST_PERIOD}`);
+
+    RestAPI.requestForestLP(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
@@ -49,15 +59,7 @@ class ForestLossPersistence extends React.Component {
               }
               )),
             })),
-          });
-        }
-      })
-      .catch(() => {});
-    RestAPI.requestEcoChangePersistenceValue(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            forestPersistenceValue: Number(res.area),
+            forestPersistenceValue: getPersistenceValue(res),
           });
         }
       })
@@ -83,7 +85,11 @@ class ForestLossPersistence extends React.Component {
       forestPersistenceValue,
       showInfoGraph,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -109,13 +115,18 @@ class ForestLossPersistence extends React.Component {
             Cobertura actual
           </h6>
           <h5 style={{ backgroundColor: matchColor('forestLP')('persistencia') }}>
-            {forestPersistenceValue}
+            {`${formatNumber(forestPersistenceValue, 0)} ha `}
           </h5>
         </div>
         <div>
           <h6>
             Cobertura de bosque en el tiempo
           </h6>
+          <DownloadCSV
+            className="icondown"
+            data={forestLP}
+            filename={`bt_cf_forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          />
         </div>
         <div>
           <GraphLoader
@@ -130,7 +141,7 @@ class ForestLossPersistence extends React.Component {
                 selectedKey: key,
               });
             }}
-            selectedIndexValue="2016-2019"
+            selectedIndexValue="2016-2021"
           />
         </div>
       </div>
