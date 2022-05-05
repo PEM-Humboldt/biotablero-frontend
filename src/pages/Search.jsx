@@ -818,14 +818,18 @@ class Search extends Component {
         resolve: (res) => {
           this.setState((prevState) => {
             const newState = { ...prevState };
-            newState.activeLayer.legend = {
-              from: res.min.toString(),
-              to: res.max.toString(),
-              colors: [
-                matchColor('richnessNos')('legend-from'),
-                matchColor('richnessNos')('legend-to'),
-              ],
-            };
+            if (!res.min || !res.max) {
+              newState.activeLayer.legend = 'failed-legend';
+            } else {
+              newState.activeLayer.legend = {
+                from: res.min.toString(),
+                to: res.max.toString(),
+                colors: [
+                  matchColor('richnessNos')('legend-from'),
+                  matchColor('richnessNos')('legend-to'),
+                ],
+              };
+            }
             return newState;
           });
         },
@@ -864,7 +868,12 @@ class Search extends Component {
     if (mapLegend) {
       mapLegend.promise.then((res) => mapLegend.resolve(res))
       .catch(() => {
-        // TODO: Confirm with the thematic team the behavior when this endpoints fails
+        this.setState((prev) => ({
+          activeLayer: {
+            ...prev.activeLayer,
+            legend: 'failed-legend',
+          },
+        }));
       });
     }
 
@@ -882,7 +891,7 @@ class Search extends Component {
           this.reportDataError();
         }
         if (this.geofenceBounds !== null) {
-          this.setState({
+          this.setState((prev) => ({
             rasterUrls: rasterLayers
             .map((layer, idx) => {
               if (layer !== null) {
@@ -896,8 +905,11 @@ class Search extends Component {
               return null;
             })
             .filter((layer) => layer !== null),
-            activeLayer: newActiveLayer,
-          });
+            activeLayer: {
+              ...prev.activeLayer,
+              ...newActiveLayer,
+            },
+          }));
         }
         return null;
       })
@@ -1355,20 +1367,33 @@ class Search extends Component {
       selectedAreaId,
     } = this.props;
 
-    const mapTitle = !activeLayer ? null : (
-      <>
-        <div className="mapsTitle">
-          <div className="title">{activeLayer}</div>
-          {legend && (
-            <GradientLegend
-              fromValue={legend.from}
-              toValue={legend.to}
-              colors={legend.colors}
-            />
-          )}
-        </div>
-      </>
-    );
+    let mapTitle = null;
+    if (activeLayer) {
+      let mapLegend = null;
+      if (legend === 'failed-legend') {
+        mapLegend = (
+          <div className="legendError">
+            Error obteniendo leyenda
+          </div>
+        );
+      } else if (legend) {
+        mapLegend = (
+          <GradientLegend
+            fromValue={legend.from}
+            toValue={legend.to}
+            colors={legend.colors}
+          />
+        );
+      }
+      mapTitle = (
+        <>
+          <div className="mapsTitle">
+            <div className="title">{activeLayer}</div>
+            {mapLegend}
+          </div>
+        </>
+      );
+    }
 
     return (
       <>
