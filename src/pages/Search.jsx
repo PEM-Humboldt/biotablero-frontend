@@ -846,15 +846,19 @@ class Search extends Component {
           resolve: (res) => {
             this.setState((prevState) => {
               const newState = { ...prevState };
-              newState.activeLayer.legend = {
-                from: Math.round(res.min * 100).toString(),
-                to: Math.round(res.max * 100).toString(),
-                colors: [
-                  matchColor('richnessGaps')('legend-from'),
-                  matchColor('richnessGaps')('legend-middle'),
-                  matchColor('richnessGaps')('legend-to'),
-                ],
-              };
+              if (!res.min || !res.max) {
+                newState.activeLayer.legend = 'failed-legend';
+              } else {
+                newState.activeLayer.legend = {
+                  from: Math.round(res.min * 100).toString(),
+                  to: Math.round(res.max * 100).toString(),
+                  colors: [
+                    matchColor('richnessGaps')('legend-from'),
+                    matchColor('richnessGaps')('legend-middle'),
+                    matchColor('richnessGaps')('legend-to'),
+                  ],
+                };
+              }
               return newState;
             });
           },
