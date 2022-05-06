@@ -156,12 +156,6 @@ class CurrentFootprint extends React.Component {
         <h6>
           Natural, Baja, Media y Alta
         </h6>
-        {(hfCurrent && hfCurrent.length > 0) && (
-          <DownloadCSV
-            data={hfCurrent}
-            filename={`bt_hf_current_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
@@ -193,6 +187,13 @@ class CurrentFootprint extends React.Component {
               onClick={() => this.toggleCons()}
             />
           </IconTooltip>
+          {(hfCurrent && hfCurrent.length > 0) && (
+            <DownloadCSV
+              className="downBtnSpecial"
+              data={hfCurrent}
+              filename={`bt_hf_current_${areaId}_${geofenceId}.csv`}
+            />
+          )}
         </h3>
         {showQuoteGraph && (
           <ShortInfo

@@ -1665,7 +1665,7 @@ div[class*="eaRHYv"] {
 
 .pt6 {
 	width: 98%;
-	padding: 15px 0 !important;
+	padding: 15px 0 0 !important;
 }
 
 .graphcontainer h4 {
@@ -1911,6 +1911,12 @@ div[class*="eaRHYv"] {
 .pt5 h3 svg,
 .pt6 h3 svg {
 	color: #bbbbbb;
+}
+
+.pt6 h2 svg:hover,
+.pt5 h3 svg:hover,
+.pt6 h3 svg:hover {
+	color: #e84a5f;
 }
 
 .pt6 .graphinfo {
@@ -2986,6 +2992,11 @@ tspan, .vx-axis-label {
 	font-weight: 400;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 3rem;
+}
+
+.downBtnSpecial {
+	display: inline-block;
+	vertical-align: top;
 }
 
 .downSpecial {

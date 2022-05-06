@@ -123,12 +123,6 @@ class PersistenceFootprint extends React.Component {
         <h6>
           Estable natural, Dinámica, Estable alta
         </h6>
-        {(hfPersistence && hfPersistence.length > 0) && (
-          <DownloadCSV
-            data={hfPersistence}
-            filename={`bt_hf_persistence_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
@@ -154,6 +148,13 @@ class PersistenceFootprint extends React.Component {
               onClick={() => this.toggleQuote()}
             />
           </IconTooltip>
+          {(hfPersistence && hfPersistence.length > 0) && (
+            <DownloadCSV
+              className="downBtnSpecial"
+              data={hfPersistence}
+              filename={`bt_hf_persistence_${areaId}_${geofenceId}.csv`}
+            />
+          )}
         </h3>
         {showQuoteGraph && (
           <ShortInfo
