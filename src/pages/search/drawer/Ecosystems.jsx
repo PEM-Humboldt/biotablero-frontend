@@ -1,4 +1,5 @@
 import InfoIcon from '@mui/icons-material/Info';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -39,6 +40,7 @@ class StrategicEcosystems extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
+      showQuoteGraph: false,
       coverage: [],
       PAAreas: [],
       PATotalArea: 0,
@@ -109,6 +111,18 @@ class StrategicEcosystems extends React.Component {
     }));
   };
 
+  toggleQuote = () => {
+    this.setState((prevState) => ({
+      showQuoteGraph: !prevState.showQuoteGraph,
+    }));
+  };
+
+/*   toggleMeta = () => {
+    this.setState((prevState) => ({
+      showInfoGraph: !prevState.showInfoGraph,
+    }));
+  }; */
+
   /**
    * Returns the component EcosystemsBox that contains the list of strategic ecosystems
    * @param {Array} SEAreas area of each strategic ecosystem
@@ -159,6 +173,7 @@ class StrategicEcosystems extends React.Component {
     } = this.props;
     const {
       showInfoGraph,
+      showQuoteGraph,
       coverage,
       PAAreas,
       PATotalArea,
@@ -170,7 +185,7 @@ class StrategicEcosystems extends React.Component {
     return (
       <div className="graphcard">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="¿Cómo interpretar las gráficas?">
             <InfoIcon
               className="graphinfo"
               onClick={() => this.toggleInfo()}
@@ -260,6 +275,21 @@ class StrategicEcosystems extends React.Component {
             </h5>
             {this.renderEcosystemsBox(SEAreas, SETotalArea)}
           </div>
+          <h3>
+            <IconTooltip title="Cómo citar">
+              <FormatQuoteIcon
+                className="graphinfo"
+                onClick={() => this.toggleQuote()}
+              />
+            </IconTooltip>
+          </h3>
+          {showQuoteGraph && (
+          <ShortInfo
+            description={sectionInfo}
+            className="graphinfo2"
+            collapseButton={false}
+          />
+          )}
         </div>
       </div>
     );
