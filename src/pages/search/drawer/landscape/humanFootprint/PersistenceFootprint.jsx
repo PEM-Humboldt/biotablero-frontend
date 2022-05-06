@@ -1,8 +1,10 @@
 import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 
 import SearchContext from 'pages/search/SearchContext';
-import { persistenceHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { persistenceHFText, persistenceHFQuote, persistenceHFMeta } from 'pages/search/drawer/landscape/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
@@ -23,6 +25,8 @@ class PersistenceFootprint extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: false,
+      showQuoteGraph: false,
+      showMetaGraph: false,
       hfPersistence: [],
     };
   }
@@ -58,11 +62,32 @@ class PersistenceFootprint extends React.Component {
   /**
    * Show or hide the detailed information on each graph
    */
-  toggleInfoGraph = () => {
-    this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
-    }));
-  };
+     toggleInfoGraph = () => {
+      this.setState((prevState) => ({
+        showInfoGraph: !prevState.showInfoGraph,
+        showQuoteGraph: false,
+        showMetaGraph: false,
+      }));
+    };
+
+    /**
+     * Show or hide the Quote information on each graph
+     */
+    toggleQuote = () => {
+      this.setState((prevState) => ({
+        showQuoteGraph: !prevState.showQuoteGraph,
+        showInfoGraph: false,
+        showMetaGraph: false,
+      }));
+    };
+
+    toggleMeta = () => {
+      this.setState((prevState) => ({
+        showMetaGraph: !prevState.showMetaGraph,
+        showQuoteGraph: false,
+        showInfoGraph: false,
+      }));
+    };
 
   render() {
     const {
@@ -70,7 +95,12 @@ class PersistenceFootprint extends React.Component {
       geofenceId,
       handlerClickOnGraph,
     } = this.context;
-    const { showInfoGraph, hfPersistence } = this.state;
+    const {
+      showInfoGraph,
+      showQuoteGraph,
+      showMetaGraph,
+      hfPersistence,
+    } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -111,6 +141,34 @@ class PersistenceFootprint extends React.Component {
             onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
+        <h3>
+          <IconTooltip title="Desarrollo y Metadatos">
+            <CollectionsBookmarkIcon
+              className="graphinfo3"
+              onClick={() => this.toggleMeta()}
+            />
+          </IconTooltip>
+          <IconTooltip title="Cómo citar">
+            <FormatQuoteIcon
+              className="graphinfo3"
+              onClick={() => this.toggleQuote()}
+            />
+          </IconTooltip>
+        </h3>
+        {showQuoteGraph && (
+          <ShortInfo
+            description={persistenceHFQuote}
+            className="graphinfo2"
+            collapseButton={false}
+          />
+        )}
+        {showMetaGraph && (
+        <ShortInfo
+          description={persistenceHFMeta}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+        )}
       </div>
     );
   }
