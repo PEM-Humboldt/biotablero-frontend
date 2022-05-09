@@ -1,19 +1,20 @@
-import InfoIcon from '@mui/icons-material/Info';
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import AnnouncementIcon from '@mui/icons-material/Announcement';
 import React from 'react';
+
+import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
 import {
- currentHFText, currentHFQuote, currentHFMeta, currentHFConsiderations,
+  currentHFText,
+  currentHFQuote,
+  currentHFMeta,
+  currentHFConsiderations,
 } from 'pages/search/drawer/landscape/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import DownloadCSV from 'components/DownloadCSV';
+import TextBoxes from 'components/TextBoxes';
 
 class CurrentFootprint extends React.Component {
   mounted = false;
@@ -22,9 +23,6 @@ class CurrentFootprint extends React.Component {
     super(props);
     this.state = {
       showInfoGraph: true,
-      showQuoteGraph: false,
-      showMetaGraph: false,
-      showConsGraph: false,
       hfCurrent: [],
       hfCurrentValue: '0',
       hfCurrentCategory: '',
@@ -75,46 +73,11 @@ class CurrentFootprint extends React.Component {
   toggleInfoGraph = () => {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
-      showQuoteGraph: false,
-      showMetaGraph: false,
-      showConsGraph: false,
-    }));
-  };
-
-  /**
-   * Show or hide the Quote information on each graph
-   */
-  toggleQuote = () => {
-    this.setState((prevState) => ({
-      showQuoteGraph: !prevState.showQuoteGraph,
-      showInfoGraph: false,
-      showConsGraph: false,
-      showMetaGraph: false,
-    }));
-  };
-
-  toggleMeta = () => {
-    this.setState((prevState) => ({
-      showMetaGraph: !prevState.showMetaGraph,
-      showInfoGraph: false,
-      showQuoteGraph: false,
-      showConsGraph: false,
-    }));
-  };
-
-  toggleCons = () => {
-    this.setState((prevState) => ({
-      showConsGraph: !prevState.showConsGraph,
-      showInfoGraph: false,
-      showQuoteGraph: false,
-      showMetaGraph: false,
     }));
   };
 
   render() {
     const {
-      areaId,
-      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -122,9 +85,6 @@ class CurrentFootprint extends React.Component {
       hfCurrentValue,
       hfCurrentCategory,
       showInfoGraph,
-      showQuoteGraph,
-      showMetaGraph,
-      showConsGraph,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -136,14 +96,12 @@ class CurrentFootprint extends React.Component {
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={currentHFText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={currentHFText}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h6>
@@ -168,54 +126,14 @@ class CurrentFootprint extends React.Component {
             onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
-        <h3>
-          <IconTooltip title="Metodología">
-            <CollectionsBookmarkIcon
-              className="graphinfo3"
-              onClick={() => this.toggleMeta()}
-            />
-          </IconTooltip>
-          <IconTooltip title="Autoría">
-            <FormatQuoteIcon
-              className="graphinfo3"
-              onClick={() => this.toggleQuote()}
-            />
-          </IconTooltip>
-          <IconTooltip title="Consideraciones">
-            <AnnouncementIcon
-              className="graphinfo3"
-              onClick={() => this.toggleCons()}
-            />
-          </IconTooltip>
-          {(hfCurrent && hfCurrent.length > 0) && (
-            <DownloadCSV
-              className="downBtnSpecial"
-              data={hfCurrent}
-              filename={`bt_hf_current_${areaId}_${geofenceId}.csv`}
-            />
-          )}
-        </h3>
-        {showQuoteGraph && (
-          <ShortInfo
-            description={currentHFQuote}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-        {showMetaGraph && (
-        <ShortInfo
-          description={currentHFMeta}
-          className="graphinfo2"
-          collapseButton={false}
+        <TextBoxes
+          consText={currentHFConsiderations}
+          metaText={currentHFMeta}
+          quoteText={currentHFQuote}
+          downloadData={hfCurrent}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
         />
-        )}
-        {showConsGraph && (
-        <ShortInfo
-          description={currentHFConsiderations}
-          className="graphinfo2"
-          collapseButton={false}
-        />
-        )}
       </div>
     );
   }
