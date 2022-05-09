@@ -3015,6 +3015,7 @@ tspan, .vx-axis-label {
 	vertical-align: top;
 	padding: 15px 0 0 5px;
 	color: #bbbbbb;
+  cursor: pointer;
 }
 
 .downSpecial2 {
@@ -3023,6 +3024,7 @@ tspan, .vx-axis-label {
 	background-color: #fff;
 	margin: -13px 0 0 5px;
 	color: #bbbbbb;
+  cursor: pointer;
 }
 
 .downSpecial3{
