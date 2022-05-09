@@ -49,7 +49,7 @@ class StrategicEcosystems extends React.Component {
     super(props);
     this.state = {
       showInfoMain: false,
-      infoShown: null,
+      infoShown: new Set(),
       coverage: [],
       PAAreas: [],
       PATotalArea: 0,
@@ -122,10 +122,13 @@ class StrategicEcosystems extends React.Component {
 
   toggleInfo = (value) => {
     this.setState((prev) => {
-      if (prev.infoShown === value) {
-        return { infoShown: null };
+      const newState = prev;
+      if (prev.infoShown.has(value)) {
+        newState.infoShown.delete(value);
+        return newState;
       }
-      return { infoShown: value };
+      newState.infoShown.add(value);
+      return newState;
     });
   }
 
@@ -225,7 +228,7 @@ class StrategicEcosystems extends React.Component {
               onClick={() => this.toggleInfo('coverage')}
             />
           </IconTooltip>
-          {infoShown === 'coverage' && (
+          {infoShown.has('coverage') && (
             <ShortInfo
               description={CoverageText}
               className="graphinfo3"
@@ -253,8 +256,8 @@ class StrategicEcosystems extends React.Component {
             quoteText={coverageQuote}
             metaText={coverageMeta}
             consText={coverageCons}
-            toggleInfo={this.toggleInfo}
-            isInfoOpen={infoShown !== null}
+            toggleInfo={() => this.toggleInfo('coverage')}
+            isInfoOpen={infoShown.has('coverage')}
           />
           <h4>
             Áreas protegidas
@@ -269,7 +272,7 @@ class StrategicEcosystems extends React.Component {
           <h5>
             {`${getPercentage(PATotalArea, generalArea)} %`}
           </h5>
-          {infoShown === 'pa' && (
+          {infoShown.has('pa') && (
             <ShortInfo
               description={PAText}
               className="graphinfo3"
@@ -292,8 +295,8 @@ class StrategicEcosystems extends React.Component {
             quoteText={PAQuote}
             metaText={PAMeta}
             consText={PACons}
-            toggleInfo={this.toggleInfo}
-            isInfoOpen={infoShown !== null}
+            toggleInfo={() => this.toggleInfo('pa')}
+            isInfoOpen={infoShown.has('pa')}
           />
           <div className="ecoest">
             <h4 className="minus20">
@@ -309,7 +312,7 @@ class StrategicEcosystems extends React.Component {
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
-            {infoShown === 'se' && (
+            {infoShown.has('se') && (
               <ShortInfo
                 description={SEText}
                 className="graphinfo3"
@@ -322,8 +325,8 @@ class StrategicEcosystems extends React.Component {
               quoteText={SEQuote}
               metaText={SEMeta}
               consText={SECons}
-              toggleInfo={this.toggleInfo}
-              isInfoOpen={infoShown !== null}
+              toggleInfo={() => this.toggleInfo('se')}
+              isInfoOpen={infoShown.has('se')}
             />
           </div>
         </div>

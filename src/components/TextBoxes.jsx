@@ -31,7 +31,9 @@ const TextBoxes = (props) => {
       setBoxShown(null);
     } else {
       setBoxShown(name);
-      toggleInfo(null);
+    }
+    if (isInfoOpen) {
+      toggleInfo();
     }
   };
 
