@@ -3,18 +3,20 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
-import {
-  currentHFText,
-  currentHFQuote,
-  currentHFMeta,
-  currentHFConsiderations,
-} from 'pages/search/drawer/landscape/InfoTexts';
+import { currentHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = currentHFTexts;
 
 class CurrentFootprint extends React.Component {
   mounted = false;
@@ -78,6 +80,8 @@ class CurrentFootprint extends React.Component {
 
   render() {
     const {
+      areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -98,7 +102,7 @@ class CurrentFootprint extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={currentHFText}
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -127,10 +131,11 @@ class CurrentFootprint extends React.Component {
           />
         </div>
         <TextBoxes
-          consText={currentHFConsiderations}
-          metaText={currentHFMeta}
-          quoteText={currentHFQuote}
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
           downloadData={hfCurrent}
+          downloadName={`hf_current_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

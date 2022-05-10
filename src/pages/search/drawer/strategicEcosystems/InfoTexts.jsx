@@ -20,7 +20,7 @@ export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
 </ul>
 `;
 
-export const coverageMeta = `La medición del porcentaje de coberturas natural, secundaria y transformada da cuenta del grado
+export const coverageMeto = `La medición del porcentaje de coberturas natural, secundaria y transformada da cuenta del grado
 de conservación o de transformación de los ecosistemas y es utilizado para medir el avance en el
 cumplimiento de metas de conservación globales.
 `;
@@ -55,7 +55,7 @@ del
 Registro Único Nacional de Áreas Protegidas de Colombia- RUNAP.
 </a>`;
 
-export const PAMeta = `El indicador: “Porcentaje de área representada en áreas protegidas” es utilizado para medir el
+export const PAMeto = `El indicador: “Porcentaje de área representada en áreas protegidas” es utilizado para medir el
 nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de
 biodiversidad (Sparks, 2011). Dependiendo del tipo de área protegida se puede desagregar la
 respuesta por autoridades nacionales, regionales y sociedad civil. Pese a que este indicador se
@@ -107,7 +107,7 @@ export const SEQuote = `Las cifras de ecosistemas estratégicos se obtuvieron de
 </ul>
 `;
 
-export const SEMeta = `Los Ecosistemas Estratégicos son aquellos destacados por su importancia biológica, por las
+export const SEMeto = `Los Ecosistemas Estratégicos son aquellos destacados por su importancia biológica, por las
 contribuciones que generan a las personas, o por su nivel de vulnerabilidad en el país.
 Se presenta en hectáreas la cantidad de Páramos, Bosque Seco Tropical y Humedales para el
 área consultada, y para cada tipo de ecosistema dentro del mismo límite, se presenta el

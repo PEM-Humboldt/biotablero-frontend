@@ -10,16 +10,16 @@ import TextBoxes from 'components/TextBoxes';
 import {
   sectionInfo,
   CoverageText,
-  coverageMeta,
+  coverageMeto,
   coverageCons,
   coverageQuote,
   PAText,
   PACons,
   PAQuote,
-  PAMeta,
+  PAMeto,
   SEText,
   SEQuote,
-  SEMeta,
+  SEMeto,
   SECons,
 } from 'pages/search/drawer/strategicEcosystems/InfoTexts';
 import {
@@ -177,9 +177,8 @@ class StrategicEcosystems extends React.Component {
   }
 
   render() {
-    const {
-      generalArea,
-    } = this.props;
+    const { generalArea } = this.props;
+    const { areaId, geofenceId } = this.context;
     const {
       showInfoMain,
       infoShown,
@@ -253,8 +252,9 @@ class StrategicEcosystems extends React.Component {
           </div>
           <TextBoxes
             downloadData={coverage}
+            downloadName={`Cobertura_${areaId}_${geofenceId}.csv`}
             quoteText={coverageQuote}
-            metaText={coverageMeta}
+            metoText={coverageMeto}
             consText={coverageCons}
             toggleInfo={() => this.toggleInfo('coverage')}
             isInfoOpen={infoShown.has('coverage')}
@@ -292,8 +292,9 @@ class StrategicEcosystems extends React.Component {
           </div>
           <TextBoxes
             downloadData={PAAreas}
+            downloadName={`Areas_protegidas_${areaId}_${geofenceId}.csv`}
             quoteText={PAQuote}
-            metaText={PAMeta}
+            metoText={PAMeto}
             consText={PACons}
             toggleInfo={() => this.toggleInfo('pa')}
             isInfoOpen={infoShown.has('pa')}
@@ -322,8 +323,9 @@ class StrategicEcosystems extends React.Component {
             {this.renderEcosystemsBox(SEAreas, SETotalArea)}
             <TextBoxes
               downloadData={SEAreas}
+              downloadName={`"Porcentajes_Totales_EE_${areaId}_${geofenceId}.csv`}
               quoteText={SEQuote}
-              metaText={SEMeta}
+              metoText={SEMeto}
               consText={SECons}
               toggleInfo={() => this.toggleInfo('se')}
               isInfoOpen={infoShown.has('se')}
