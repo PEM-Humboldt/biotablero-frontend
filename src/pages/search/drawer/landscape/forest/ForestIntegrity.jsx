@@ -184,6 +184,15 @@ class ForestIntegrity extends React.Component {
             ))}
           </div>
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={Object.values(SciHfCats)}
+          downloadName={`forest_integrity_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
         {selectedCategory && (
           <>
             <h6>
@@ -203,15 +212,6 @@ class ForestIntegrity extends React.Component {
             </div>
           </>
         )}
-        <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
-          downloadData={Object.values(SciHfCats)}
-          downloadName={`forest_integrity_${areaId}_${geofenceId}.csv`}
-          isInfoOpen={showInfoGraph}
-          toggleInfo={this.toggleInfoGraph}
-        />
       </div>
     );
   }
