@@ -165,6 +165,41 @@ class SpeciesRecordsGaps extends React.Component {
     }));
   };
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((item) => {
+      let obj = {};
+      Object.keys(item.markers).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.markers[element],
+        };
+      });
+      Object.keys(item.measures).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.measures[element],
+        };
+      });
+      result.push({
+        type: item.id,
+        value: obj.value,
+        lower_value: obj.min,
+        higher_value: obj.max,
+        lower_area_type: obj.min_threshold,
+        higher_area_type: obj.max_threshold,
+        lower_region: obj.min_region,
+        higher_region: obj.max_region,
+      });
+    });
+    return result;
+  };
+
   render() {
     const { areaId } = this.context;
     const {
@@ -181,7 +216,11 @@ class SpeciesRecordsGaps extends React.Component {
     } = this.state;
     return (
       <div className="graphcontainer pt6">
-        <DownloadCSV className="downSpecial3" data={csvData} filename="Vacios_datos_especies.csv" />
+        <DownloadCSV
+          className="downSpecial3"
+          data={this.processDownload(csvData)}
+          filename="Vacios_datos_especies.csv"
+        />
         <h2>
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon
