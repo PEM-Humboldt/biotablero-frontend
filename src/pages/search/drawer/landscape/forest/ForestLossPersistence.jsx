@@ -144,7 +144,7 @@ class ForestLossPersistence extends React.Component {
           <DownloadCSV
             className="icondown"
             data={this.processDownload(forestLP)}
-            filename={`bt_cf_forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+            filename={`bt_forest_loss_persistence_${areaId}_${geofenceId}.csv`}
           />
         </div>
         <div>

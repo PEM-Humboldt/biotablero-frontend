@@ -201,7 +201,10 @@ class SpeciesRecordsGaps extends React.Component {
   };
 
   render() {
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     const {
       showInfoGraph,
       messageGaps,
@@ -219,7 +222,7 @@ class SpeciesRecordsGaps extends React.Component {
         <DownloadCSV
           className="downSpecial3"
           data={this.processDownload(csvData)}
-          filename="Vacios_datos_especies.csv"
+          filename={`bt_rich_number_of_species_${areaId}_${geofenceId}.csv`}
         />
         <h2>
           <IconTooltip title="Acerca de esta sección">

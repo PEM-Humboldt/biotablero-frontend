@@ -244,6 +244,7 @@ class NumberOfSpecies extends React.Component {
   render() {
     const {
       areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -272,7 +273,7 @@ class NumberOfSpecies extends React.Component {
         <DownloadCSV
           className="downSpecial3"
           data={this.processDownload(data)}
-          filename="Numero_de_especies.csv"
+          filename={`bt_rich_number_of_species_${areaId}_${geofenceId}.csv`}
         />
         <h2>
           <IconTooltip title="Acerca de esta sección">
