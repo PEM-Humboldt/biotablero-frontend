@@ -6,11 +6,19 @@ import { LegendColor } from 'components/CssLegends';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import { CurrentPAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = CurrentPAConnTexts;
 
 const getLabel = {
   unprot: 'No protegida',
@@ -32,7 +40,7 @@ class CurrentPAConnectivity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       currentPAConnectivity: [],
       dpc: [],
       prot: 0,
@@ -111,23 +119,17 @@ class CurrentPAConnectivity extends React.Component {
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={CurrentPAConnText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={info}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h6>
             Conectividad áreas protegidas
           </h6>
-          <DownloadCSV
-            data={currentPAConnectivity}
-            filename={`bt_conn_current_${areaId}_${geofenceId}.csv`}
-          />
           <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -137,6 +139,15 @@ class CurrentPAConnectivity extends React.Component {
               units="ha"
               colors={matchColor('currentPAConn')}
               padding={0.25}
+            />
+            <TextBoxes
+              consText={cons}
+              metoText={meto}
+              quoteText={quote}
+              downloadData={currentPAConnectivity}
+              downloadName={`conn_current_${areaId}_${geofenceId}.csv`}
+              isInfoOpen={showInfoGraph}
+              toggleInfo={this.toggleInfoGraph}
             />
           </div>
           {currentPAConnectivity.length > 0 && (
