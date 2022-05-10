@@ -6,12 +6,19 @@ import GraphLoader from 'components/charts/GraphLoader';
 import { LineLegend, LegendColor } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
-import DownloadCSV from 'components/DownloadCSV';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
-import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
+import { SpeciesRecordsGapsTexts } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = SpeciesRecordsGapsTexts;
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -55,7 +62,7 @@ class SpeciesRecordsGaps extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       gaps: {},
       concentration: {},
       messageGaps: 'loading',
@@ -166,7 +173,7 @@ class SpeciesRecordsGaps extends React.Component {
   };
 
   render() {
-    const { areaId } = this.context;
+    const { areaId, geofenceId } = this.context;
     const {
       showInfoGraph,
       messageGaps,
@@ -181,7 +188,6 @@ class SpeciesRecordsGaps extends React.Component {
     } = this.state;
     return (
       <div className="graphcontainer pt6">
-        <DownloadCSV className="downSpecial3" data={csvData} filename="Vacios_datos_especies.csv" />
         <h2>
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon
@@ -193,7 +199,7 @@ class SpeciesRecordsGaps extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            description={SpeciesRecordsGapsText}
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -243,6 +249,15 @@ class SpeciesRecordsGaps extends React.Component {
 
           ))}
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={csvData}
+          downloadName={`vacios_registros_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
         {concentrationFlag && (
           <>
             <br />

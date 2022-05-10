@@ -10,12 +10,11 @@ import {
   ThickLineLegend,
 } from 'components/CssLegends';
 import Icon from 'components/CssIcons';
-import DownloadCSV from 'components/DownloadCSV';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
-import { NumberOfSpeciesText, NumberOfSpeciesTextHelper } from 'pages/search/drawer/species/richness/InfoTexts';
+import { NOSInferredTexts, NOSObservedTexts, NumberOfSpeciesTextHelper } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
@@ -24,6 +23,12 @@ import mappoint2 from 'images/mappoint2.png';
 import biomodeloslink from 'images/biomodeloslink.png';
 import biomodeloslink2 from 'images/biomodeloslink2.png';
 import fullview from 'images/fullview.png';
+import TextBoxes from 'components/TextBoxes';
+
+const NOSTexts = {
+  inferred: NOSInferredTexts,
+  observed: NOSObservedTexts,
+};
 
 const getLabel = (key, area, region) => {
   let areaLbl = 'cerca';
@@ -69,13 +74,14 @@ class NumberOfSpecies extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       data: [],
       allData: [],
       filter: 'all',
       message: 'loading',
       selected: 'total',
       bioticRegion: 'Región Biótica',
+      texts: NOSInferredTexts,
       maximumValues: [],
       showErrorMessage: false,
     };
@@ -177,6 +183,8 @@ class NumberOfSpecies extends React.Component {
           },
         })),
         filter: 'all',
+        texts: {},
+        showInfoGraph: false,
       });
       handlerClickOnGraph({
         chartType: 'numberOfSpecies',
@@ -204,7 +212,12 @@ class NumberOfSpecies extends React.Component {
           },
         };
       });
-      this.setState({ data: newData, filter: category });
+      this.setState({
+        data: newData,
+        filter: category,
+        texts: NOSTexts[category],
+        showInfoGraph: true,
+      });
       handlerClickOnGraph({
         chartType: 'numberOfSpecies',
         chartSection: category,
@@ -227,6 +240,7 @@ class NumberOfSpecies extends React.Component {
       filter,
       bioticRegion,
       showErrorMessage,
+      texts,
     } = this.state;
 
     let legends = ['inferred', 'min_inferred', 'max_inferred', 'region_inferred',
@@ -241,23 +255,22 @@ class NumberOfSpecies extends React.Component {
 
     return (
       <div className="graphcontainer pt6">
-        <DownloadCSV className="downSpecial3" data={data} filename="Numero_de_especies.csv" />
         <h2>
-          <IconTooltip title="Acerca de esta sección">
-            <InfoIcon
-              className="graphinfo"
-              onClick={() => this.toggleInfoGraph()}
-            />
-          </IconTooltip>
+          {Object.keys(texts).length > 0 && (
+            <IconTooltip title="Acerca de esta sección">
+              <InfoIcon
+                className="graphinfo"
+                onClick={() => this.toggleInfoGraph()}
+              />
+            </IconTooltip>
+          )}
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
-            description={NumberOfSpeciesText}
+            description={texts.info}
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
         {showErrorMessage && (
           <div className="disclaimer">
@@ -407,6 +420,14 @@ class NumberOfSpecies extends React.Component {
             );
           })}
         </div>
+        <TextBoxes
+          downloadData={data}
+          consText={texts.cons}
+          quoteText={texts.quote}
+          metoText={texts.meto}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
       </div>
     );
   }
