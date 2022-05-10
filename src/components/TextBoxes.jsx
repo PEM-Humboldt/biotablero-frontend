@@ -12,8 +12,9 @@ import { IconTooltip } from 'components/Tooltips';
 const TextBoxes = (props) => {
   const {
     downloadData,
+    downloadName,
     quoteText,
-    metaText,
+    metoText,
     consText,
     toggleInfo,
     isInfoOpen,
@@ -39,12 +40,12 @@ const TextBoxes = (props) => {
 
   return (
     <>
-      <h3>
-        {metaText !== '' && (
+      <h3 className="textBoxes">
+        {metoText !== '' && (
           <IconTooltip title="Metodología">
             <CollectionsBookmarkIcon
               className="graphinfo3"
-              onClick={() => clickOnBox('meta')}
+              onClick={() => clickOnBox('meto')}
             />
           </IconTooltip>
         )}
@@ -68,7 +69,7 @@ const TextBoxes = (props) => {
           <DownloadCSV
             className="downBtnSpecial"
             data={downloadData}
-            filename="Cobertura.csv"
+            filename={downloadName}
           />
         )}
       </h3>
@@ -79,9 +80,9 @@ const TextBoxes = (props) => {
           collapseButton={false}
         />
       )}
-      {boxShown === 'meta' && (
+      {boxShown === 'meto' && (
         <ShortInfo
-          description={metaText}
+          description={metoText}
           className="graphinfo2"
           collapseButton={false}
         />
@@ -99,8 +100,9 @@ const TextBoxes = (props) => {
 
 TextBoxes.propTypes = {
   downloadData: PropTypes.array,
+  downloadName: PropTypes.string,
   quoteText: PropTypes.string,
-  metaText: PropTypes.string,
+  metoText: PropTypes.string,
   consText: PropTypes.string,
   toggleInfo: PropTypes.func,
   isInfoOpen: PropTypes.bool,
@@ -108,8 +110,9 @@ TextBoxes.propTypes = {
 
 TextBoxes.defaultProps = {
   downloadData: [],
+  downloadName: 'datos.csv',
   quoteText: '',
-  metaText: '',
+  metoText: '',
   consText: '',
   toggleInfo: () => {},
   isInfoOpen: false,
