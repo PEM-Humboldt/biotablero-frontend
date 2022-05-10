@@ -65,8 +65,8 @@ export default {
   hfTimeline: [
     '#3d3c48',
     '#3d3c48',
-    '#f1bd7f',
-    '#da8634',
+    '#bba2ff',
+    '#916cf5',
     '#afcc83',
     '#628b41',
     '#95b4db',
@@ -83,9 +83,9 @@ export default {
     '#caaf71',
     '#e0526b',
   ],
-  paramo: ['#eaa04a'],
+  paramo: ['#b7a0f2'],
   dryForest: ['#8cb64c'],
-  wetland: ['#6794cb'],
+  wetland: ['#5594d9'],
   sePAConn: ['#120000'],
   forestLP: [
     '#92ab58',
