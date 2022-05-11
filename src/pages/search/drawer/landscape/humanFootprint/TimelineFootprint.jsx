@@ -145,7 +145,7 @@ class TimelineFootprint extends React.Component {
       case 'paramo': return 'Páramo';
       case 'wetland': return 'Humedal';
       case 'dryForest': return 'Bosque Seco Tropical';
-      default: return 'Área total';
+      default: return 'Área consulta';
     }
   };
 
@@ -159,7 +159,7 @@ class TimelineFootprint extends React.Component {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
-      label: this.getLabel(obj.key).substr(0, 11),
+      label: this.getLabel(obj.key).substr(0, 13),
     }));
   };
 
