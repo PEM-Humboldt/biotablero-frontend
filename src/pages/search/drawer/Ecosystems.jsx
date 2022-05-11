@@ -178,7 +178,6 @@ class StrategicEcosystems extends React.Component {
 
   render() {
     const { generalArea } = this.props;
-    const { areaId, geofenceId } = this.context;
     const {
       showInfoMain,
       infoShown,
@@ -189,7 +188,11 @@ class StrategicEcosystems extends React.Component {
       SETotalArea,
       activeSE,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcard">
         <h2>
@@ -252,7 +255,7 @@ class StrategicEcosystems extends React.Component {
           </div>
           <TextBoxes
             downloadData={coverage}
-            downloadName={`Cobertura_${areaId}_${geofenceId}.csv`}
+            downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
             quoteText={coverageQuote}
             metoText={coverageMeto}
             consText={coverageCons}
@@ -292,7 +295,7 @@ class StrategicEcosystems extends React.Component {
           </div>
           <TextBoxes
             downloadData={PAAreas}
-            downloadName={`Areas_protegidas_${areaId}_${geofenceId}.csv`}
+            downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
             quoteText={PAQuote}
             metoText={PAMeto}
             consText={PACons}
@@ -323,7 +326,7 @@ class StrategicEcosystems extends React.Component {
             {this.renderEcosystemsBox(SEAreas, SETotalArea)}
             <TextBoxes
               downloadData={SEAreas}
-              downloadName={`"Porcentajes_Totales_EE_${areaId}_${geofenceId}.csv`}
+              downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
               quoteText={SEQuote}
               metoText={SEMeto}
               consText={SECons}

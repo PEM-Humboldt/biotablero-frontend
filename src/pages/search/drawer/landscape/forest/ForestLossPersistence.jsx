@@ -87,6 +87,25 @@ class ForestLossPersistence extends React.Component {
     }));
   };
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((period) => (
+      period.data.forEach((obj) => {
+        result.push({
+          period: period.id,
+          category: obj.label,
+          area: obj.area,
+          percentage: obj.percentage,
+        });
+      })));
+    return result;
+  };
+
   render() {
     const {
       forestLP,
@@ -148,7 +167,7 @@ class ForestLossPersistence extends React.Component {
           consText={cons}
           metoText={meto}
           quoteText={quote}
-          downloadData={forestLP}
+          downloadData={this.processDownload(forestLP)}
           downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}

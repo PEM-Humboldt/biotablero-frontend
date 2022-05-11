@@ -172,8 +172,46 @@ class SpeciesRecordsGaps extends React.Component {
     }));
   };
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((item) => {
+      let obj = {};
+      Object.keys(item.markers).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.markers[element],
+        };
+      });
+      Object.keys(item.measures).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.measures[element],
+        };
+      });
+      result.push({
+        type: item.id,
+        value: obj.value,
+        lower_value: obj.min,
+        higher_value: obj.max,
+        lower_area_type: obj.min_threshold,
+        higher_area_type: obj.max_threshold,
+        lower_region: obj.min_region,
+        higher_region: obj.max_region,
+      });
+    });
+    return result;
+  };
+
   render() {
-    const { areaId, geofenceId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     const {
       showInfoGraph,
       messageGaps,
@@ -253,8 +291,8 @@ class SpeciesRecordsGaps extends React.Component {
           consText={cons}
           metoText={meto}
           quoteText={quote}
-          downloadData={csvData}
-          downloadName={`vacios_registros_${areaId}_${geofenceId}.csv`}
+          downloadData={this.processDownload(csvData)}
+          downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

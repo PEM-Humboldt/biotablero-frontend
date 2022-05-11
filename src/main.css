@@ -1227,6 +1227,12 @@ a#reset-filters {
   padding: 5px 12px;
 }
 
+.mapsTitle > .legendError {
+  background-color: #fff;
+  text-align: center;
+  color: #424242;
+}
+
 .gradientLegend {
   background-color: #fff;
   font-size: 9px;

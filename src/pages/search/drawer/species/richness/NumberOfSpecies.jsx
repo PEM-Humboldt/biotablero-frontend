@@ -226,9 +226,38 @@ class NumberOfSpecies extends React.Component {
     }
   }
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((item) => {
+      let obj = {
+        type: item.id,
+      };
+      Object.keys(item.markers).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.markers[element],
+        };
+      });
+      Object.keys(item.measures).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.measures[element],
+        };
+      });
+      result.push(obj);
+    });
+    return result;
+  };
+
   render() {
     const {
       areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -421,7 +450,8 @@ class NumberOfSpecies extends React.Component {
           })}
         </div>
         <TextBoxes
-          downloadData={data}
+          downloadData={this.processDownload(data)}
+          downloadName={`rich_number_of_species_${areaId}_${geofenceId}.csv`}
           consText={texts.cons}
           quoteText={texts.quote}
           metoText={texts.meto}
