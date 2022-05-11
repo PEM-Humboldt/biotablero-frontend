@@ -5,11 +5,19 @@ import GraphLoader from 'components/charts/GraphLoader';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentSEPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import { CurrentSEPAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = CurrentSEPAConnTexts;
 
 const getLabel = {
   unprot: 'No protegida',
@@ -23,7 +31,7 @@ class CurrentSEPAConnectivity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       currentPAConnParamo: [],
       currentPAConnDryForest: [],
       currentPAConnWetland: [],
@@ -137,21 +145,19 @@ class CurrentSEPAConnectivity extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={CurrentSEPAConnText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={info}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h3>Haz clic en la gráfica para seleccionar un EE</h3>
@@ -159,11 +165,11 @@ class CurrentSEPAConnectivity extends React.Component {
             Páramo
           </h6>
           {(currentPAConnParamo && currentPAConnParamo.length > 0) && (
-          <DownloadCSV
-            data={currentPAConnParamo}
-            filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
-          />
-        )}
+            <DownloadCSV
+              data={currentPAConnParamo}
+              filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
+            />
+          )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -196,11 +202,11 @@ class CurrentSEPAConnectivity extends React.Component {
             Bosque Seco Tropical
           </h6>
           {(currentPAConnDryForest && currentPAConnDryForest.length > 0) && (
-          <DownloadCSV
-            data={currentPAConnDryForest}
-            filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
-          />
-        )}
+            <DownloadCSV
+              data={currentPAConnDryForest}
+              filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
+            />
+          )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -233,11 +239,11 @@ class CurrentSEPAConnectivity extends React.Component {
             Humedal
           </h6>
           {(currentPAConnWetland && currentPAConnWetland.length > 0) && (
-          <DownloadCSV
-            data={currentPAConnWetland}
-            filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
-          />
-        )}
+            <DownloadCSV
+              data={currentPAConnWetland}
+              filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
+            />
+          )}
           <div className="svgPointer">
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -266,6 +272,13 @@ class CurrentSEPAConnectivity extends React.Component {
             </h5>
           </div>
           )}
+          <TextBoxes
+            consText={cons}
+            metoText={meto}
+            quoteText={quote}
+            isInfoOpen={showInfoGraph}
+            toggleInfo={this.toggleInfoGraph}
+          />
         </div>
       </div>
     );

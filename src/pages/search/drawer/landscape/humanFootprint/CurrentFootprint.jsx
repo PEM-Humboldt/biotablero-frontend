@@ -1,14 +1,22 @@
-import InfoIcon from '@mui/icons-material/Info';
 import React from 'react';
 
+import InfoIcon from '@mui/icons-material/Info';
+
 import SearchContext from 'pages/search/SearchContext';
-import { currentHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { currentHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import DownloadCSV from 'components/DownloadCSV';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = currentHFTexts;
 
 class CurrentFootprint extends React.Component {
   mounted = false;
@@ -16,7 +24,7 @@ class CurrentFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       hfCurrent: [],
       hfCurrentValue: '0',
       hfCurrentCategory: '',
@@ -85,21 +93,19 @@ class CurrentFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={currentHFText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={info}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h6>
@@ -112,12 +118,6 @@ class CurrentFootprint extends React.Component {
         <h6>
           Natural, Baja, Media y Alta
         </h6>
-        {(hfCurrent && hfCurrent.length > 0) && (
-          <DownloadCSV
-            data={hfCurrent}
-            filename={`bt_hf_current_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
@@ -130,6 +130,15 @@ class CurrentFootprint extends React.Component {
             onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={hfCurrent}
+          downloadName={`hf_current_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
       </div>
     );
   }

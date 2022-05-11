@@ -1,12 +1,26 @@
-import InfoIcon from '@mui/icons-material/Info';
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
+import InfoIcon from '@mui/icons-material/Info';
+
+import GraphLoader from 'components/charts/GraphLoader';
+import ShortInfo from 'components/ShortInfo';
+import { IconTooltip } from 'components/Tooltips';
+import TextBoxes from 'components/TextBoxes';
 import {
   sectionInfo,
   CoverageText,
+  coverageMeto,
+  coverageCons,
+  coverageQuote,
   PAText,
+  PACons,
+  PAQuote,
+  PAMeto,
   SEText,
+  SEQuote,
+  SEMeto,
+  SECons,
 } from 'pages/search/drawer/strategicEcosystems/InfoTexts';
 import {
   transformPAValues,
@@ -15,10 +29,6 @@ import {
 } from 'pages/search/utils/transformData';
 import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { InfoTooltip, IconTooltip } from 'components/Tooltips';
-import DownloadCSV from 'components/DownloadCSV';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
@@ -38,7 +48,8 @@ class StrategicEcosystems extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoMain: false,
+      infoShown: new Set(),
       coverage: [],
       PAAreas: [],
       PATotalArea: 0,
@@ -103,11 +114,23 @@ class StrategicEcosystems extends React.Component {
     this.mounted = false;
   }
 
-  toggleInfo = () => {
+  toggleInfoGeneral = () => {
     this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
+      showInfoMain: !prevState.showInfoMain,
     }));
-  };
+  }
+
+  toggleInfo = (value) => {
+    this.setState((prev) => {
+      const newState = prev;
+      if (prev.infoShown.has(value)) {
+        newState.infoShown.delete(value);
+        return newState;
+      }
+      newState.infoShown.add(value);
+      return newState;
+    });
+  }
 
   /**
    * Returns the component EcosystemsBox that contains the list of strategic ecosystems
@@ -154,11 +177,10 @@ class StrategicEcosystems extends React.Component {
   }
 
   render() {
+    const { generalArea } = this.props;
     const {
-      generalArea,
-    } = this.props;
-    const {
-      showInfoGraph,
+      showInfoMain,
+      infoShown,
       coverage,
       PAAreas,
       PATotalArea,
@@ -174,14 +196,14 @@ class StrategicEcosystems extends React.Component {
     return (
       <div className="graphcard">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="¿Cómo interpretar las gráficas?">
             <InfoIcon
               className="graphinfo"
-              onClick={() => this.toggleInfo()}
+              onClick={() => this.toggleInfoGeneral()}
             />
           </IconTooltip>
         </h2>
-        {showInfoGraph && (
+        {showInfoMain && (
           <ShortInfo
             description={sectionInfo}
             className="graphinfo2"
@@ -189,25 +211,32 @@ class StrategicEcosystems extends React.Component {
           />
         )}
         <div className="graphcontainer pt5">
-          <InfoTooltip
-            placement="left"
-            title={CoverageText}
-          >
-            <button
-              onClick={() => {
+          <button
+            onClick={() => {
                 if (activeSE !== null) {
                   this.switchActiveSE(null);
                 }
               }}
-              type="button"
-              className="tittlebtn"
-            >
-              <h4>
-                Cobertura
-              </h4>
-            </button>
-          </InfoTooltip>
-          <DownloadCSV className="downSpecial" data={coverage} filename={`bt_eco_coverages_${areaId}_${geofenceId}.csv`} />
+            type="button"
+            className="tittlebtn"
+          >
+            <h4>
+              Cobertura
+            </h4>
+          </button>
+          <IconTooltip title="Interpretación">
+            <InfoIcon
+              className="downSpecial"
+              onClick={() => this.toggleInfo('coverage')}
+            />
+          </IconTooltip>
+          {infoShown.has('coverage') && (
+            <ShortInfo
+              description={CoverageText}
+              className="graphinfo3"
+              collapseButton={false}
+            />
+          )}
           <h6>
             Natural, Secundaria y Transformada:
           </h6>
@@ -224,19 +253,35 @@ class StrategicEcosystems extends React.Component {
               />
             </div>
           </div>
-          <InfoTooltip
-            placement="left"
-            title={PAText}
-          >
-            <h4>
-              Áreas protegidas
-              <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
-            </h4>
-          </InfoTooltip>
-          <DownloadCSV className="downSpecial" data={PAAreas} filename={`bt_eco_protected_areas_${areaId}_${geofenceId}.csv`} />
+          <TextBoxes
+            downloadData={coverage}
+            downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
+            quoteText={coverageQuote}
+            metoText={coverageMeto}
+            consText={coverageCons}
+            toggleInfo={() => this.toggleInfo('coverage')}
+            isInfoOpen={infoShown.has('coverage')}
+          />
+          <h4>
+            Áreas protegidas
+            <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
+          </h4>
+          <IconTooltip title="Interpretación">
+            <InfoIcon
+              className="downSpecial"
+              onClick={() => this.toggleInfo('pa')}
+            />
+          </IconTooltip>
           <h5>
             {`${getPercentage(PATotalArea, generalArea)} %`}
           </h5>
+          {infoShown.has('pa') && (
+            <ShortInfo
+              description={PAText}
+              className="graphinfo3"
+              collapseButton={false}
+            />
+          )}
           <div className="graficaeco">
             <h6>
               Distribución por áreas protegidas:
@@ -248,21 +293,46 @@ class StrategicEcosystems extends React.Component {
               colors={matchColor('pa', true)}
             />
           </div>
+          <TextBoxes
+            downloadData={PAAreas}
+            downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
+            quoteText={PAQuote}
+            metoText={PAMeto}
+            consText={PACons}
+            toggleInfo={() => this.toggleInfo('pa')}
+            isInfoOpen={infoShown.has('pa')}
+          />
           <div className="ecoest">
-            <InfoTooltip
-              placement="left"
-              title={SEText}
-            >
-              <h4 className="minus20">
-                Ecosistemas estratégicos
-                <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
-              </h4>
-            </InfoTooltip>
-            <DownloadCSV className="downSpecial2" data={SEAreas} filename={`bt_eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`} />
+            <h4 className="minus20">
+              Ecosistemas estratégicos
+              <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
+            </h4>
+            <IconTooltip title="Interpretación">
+              <InfoIcon
+                className="downSpecial2"
+                onClick={() => this.toggleInfo('se')}
+              />
+            </IconTooltip>
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
+            {infoShown.has('se') && (
+              <ShortInfo
+                description={SEText}
+                className="graphinfo3"
+                collapseButton={false}
+              />
+            )}
             {this.renderEcosystemsBox(SEAreas, SETotalArea)}
+            <TextBoxes
+              downloadData={SEAreas}
+              downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
+              quoteText={SEQuote}
+              metoText={SEMeto}
+              consText={SECons}
+              toggleInfo={() => this.toggleInfo('se')}
+              isInfoOpen={infoShown.has('se')}
+            />
           </div>
         </div>
       </div>
