@@ -11,8 +11,6 @@ import CBMDashboard from 'pages/CBMDashboard';
 import Indicator from 'pages/Indicator';
 import Portfolio from 'pages/Portfolio';
 
-import isFlagEnabled from 'utils/isFlagEnabled';
-
 import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
 import 'indicators/dist/bundle.css';
@@ -23,16 +21,7 @@ class App extends React.Component {
     this.state = {
       user: null,
       headerNames: {},
-      indicatorsFlag: false,
-      portfoliosFlag: false,
     };
-  }
-
-  componentDidMount() {
-    isFlagEnabled('indicatorsModule')
-      .then((value) => this.setState({ indicatorsFlag: value }));
-    isFlagEnabled('portfoliosModule')
-      .then((value) => this.setState({ portfoliosFlag: value }));
   }
 
   buildQuery = (queryString) => new URLSearchParams(queryString);
@@ -131,7 +120,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user, indicatorsFlag, portfoliosFlag } = this.state;
+    const { user } = this.state;
     return (
       <AppContext.Provider
         value={{ user }}
@@ -140,9 +129,9 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" render={this.loadHome} />
             <Route path="/Consultas" render={this.loadSearch} />
-            <Route path="/Indicadores" render={indicatorsFlag ? this.loadIndicator : this.loadHome} />
+            <Route path="/Indicadores" render={this.loadIndicator} />
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
-            <Route path="/Portafolios" render={portfoliosFlag ? this.loadPortfolio : this.loadHome} />
+            <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
             <Route path="/Monitoreo" render={this.loadCBMDashboard} />
           </Switch>
