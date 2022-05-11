@@ -142,7 +142,7 @@ class CompensationFactor extends React.Component {
     }
     return (
       <div style={{ width: '100%' }}>
-        <div className="graphcardAcc pt6">
+        <div className="graphcardAcc pt6 ml10">
           <h2>
             Factor de Compensación
           </h2>
