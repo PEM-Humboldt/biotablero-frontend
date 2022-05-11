@@ -6,10 +6,18 @@ import GraphLoader from 'components/charts/GraphLoader';
 import { LineLegend, LegendColor } from 'components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
-import DownloadCSV from 'components/DownloadCSV';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
-import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
+import { SpeciesRecordsGapsTexts } from 'pages/search/drawer/species/richness/InfoTexts';
+
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = SpeciesRecordsGapsTexts;
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -53,7 +61,7 @@ class SpeciesRecordsGaps extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       gaps: {},
       concentration: {},
       messageGaps: 'loading',
@@ -212,13 +220,8 @@ class SpeciesRecordsGaps extends React.Component {
     } = this.state;
     return (
       <div className="graphcontainer pt6">
-        <DownloadCSV
-          className="downSpecial3"
-          data={this.processDownload(csvData)}
-          filename={`bt_rich_gaps_${areaId}_${geofenceId}.csv`}
-        />
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
               onClick={() => this.toggleInfoGraph()}
@@ -228,7 +231,7 @@ class SpeciesRecordsGaps extends React.Component {
         {(
           showInfoGraph && (
           <ShortInfo
-            description={SpeciesRecordsGapsText}
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -278,6 +281,15 @@ class SpeciesRecordsGaps extends React.Component {
 
           ))}
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={this.processDownload(csvData)}
+          downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
         <>
           <br />
           <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>

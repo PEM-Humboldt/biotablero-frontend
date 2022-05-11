@@ -2,15 +2,22 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
-import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import SearchContext from 'pages/search/SearchContext';
-import { timelineHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { timelineHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = timelineHFTexts;
 
 const changeValues = [
   {
@@ -73,7 +80,7 @@ class TimelineFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       hfTimeline: [],
       selectedEcosystem: null,
     };
@@ -177,7 +184,7 @@ class TimelineFootprint extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
               onClick={() => this.toggleInfoGraph()}
@@ -187,7 +194,7 @@ class TimelineFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description={timelineHFText}
+              description={info}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -196,12 +203,6 @@ class TimelineFootprint extends React.Component {
         <h6>
           Huella humana comparada con EE
         </h6>
-        {(hfTimeline && hfTimeline.length > 0) && (
-          <DownloadCSV
-            data={processDataCsv(hfTimeline)}
-            filename={`bt_hf_timeline_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <p>
           Haz clic en un ecosistema para ver su comportamiento
         </p>
@@ -228,6 +229,15 @@ class TimelineFootprint extends React.Component {
               </h5>
             </div>
           )}
+          <TextBoxes
+            consText={cons}
+            metoText={meto}
+            quoteText={quote}
+            downloadData={processDataCsv(hfTimeline)}
+            downloadName={`hf_timeline_${areaId}_${geofenceId}.csv`}
+            isInfoOpen={showInfoGraph}
+            toggleInfo={this.toggleInfoGraph}
+          />
         </div>
       </div>
     );

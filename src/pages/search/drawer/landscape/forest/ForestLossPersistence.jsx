@@ -8,7 +8,15 @@ import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
-import DownloadCSV from 'components/DownloadCSV';
+import { LPTexts } from 'pages/search/drawer/landscape/forest/InfoTexts';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = LPTexts;
 
 const LATEST_PERIOD = '2016-2021';
 
@@ -25,7 +33,7 @@ class ForestLossPersistence extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       forestLP: [],
       forestPersistenceValue: 0,
     };
@@ -112,22 +120,19 @@ class ForestLossPersistence extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
-              onClick={() => this.toggleInfoGraph()}
+              onClick={this.toggleInfoGraph}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
-            name="Perdida y persistencia"
-            description="Perdida y persistencia"
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
         <div>
           <h6>
@@ -141,11 +146,6 @@ class ForestLossPersistence extends React.Component {
           <h6>
             Cobertura de bosque en el tiempo
           </h6>
-          <DownloadCSV
-            className="icondown"
-            data={this.processDownload(forestLP)}
-            filename={`bt_forest_loss_persistence_${areaId}_${geofenceId}.csv`}
-          />
         </div>
         <div>
           <GraphLoader
@@ -163,6 +163,15 @@ class ForestLossPersistence extends React.Component {
             selectedIndexValue="2016-2021"
           />
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={this.processDownload(forestLP)}
+          downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
       </div>
     );
   }

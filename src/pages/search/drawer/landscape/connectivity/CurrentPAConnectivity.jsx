@@ -3,14 +3,28 @@ import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
 import { LegendColor } from 'components/CssLegends';
-import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentPAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import { CurrentPAConnTexts, DPCConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info: connInfo,
+  meto: connMeto,
+  cons: connCons,
+  quote: connQuote,
+} = CurrentPAConnTexts;
+
+const {
+  info: dpcInfo,
+  meto: dpcMeto,
+  cons: dpcCons,
+  quote: dpcQuote,
+} = DPCConnTexts;
 
 const getLabel = {
   unprot: 'No protegida',
@@ -32,7 +46,7 @@ class CurrentPAConnectivity extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      infoShown: new Set(['current']),
       currentPAConnectivity: [],
       dpc: [],
       prot: 0,
@@ -80,14 +94,17 @@ class CurrentPAConnectivity extends React.Component {
     this.mounted = false;
   }
 
-  /**
-   * Show or hide the detailed information on each graph
-   */
-  toggleInfoGraph = () => {
-    this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
-    }));
-  };
+  toggleInfo = (value) => {
+    this.setState((prev) => {
+      const newState = prev;
+      if (prev.infoShown.has(value)) {
+        newState.infoShown.delete(value);
+        return newState;
+      }
+      newState.infoShown.add(value);
+      return newState;
+    });
+  }
 
   render() {
     const {
@@ -99,35 +116,29 @@ class CurrentPAConnectivity extends React.Component {
       currentPAConnectivity,
       dpc,
       prot,
-      showInfoGraph,
+      infoShown,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
               className="graphinfo"
-              onClick={() => this.toggleInfoGraph()}
+              onClick={() => this.toggleInfo('current')}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={CurrentPAConnText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {infoShown.has('current') && (
+          <ShortInfo
+            description={connInfo}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h6>
             Conectividad áreas protegidas
           </h6>
-          <DownloadCSV
-            data={currentPAConnectivity}
-            filename={`bt_conn_current_${areaId}_${geofenceId}.csv`}
-          />
           <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
@@ -137,6 +148,15 @@ class CurrentPAConnectivity extends React.Component {
               units="ha"
               colors={matchColor('currentPAConn')}
               padding={0.25}
+            />
+            <TextBoxes
+              consText={connCons}
+              metoText={connMeto}
+              quoteText={connQuote}
+              downloadData={currentPAConnectivity}
+              downloadName={`conn_current_${areaId}_${geofenceId}.csv`}
+              toggleInfo={() => this.toggleInfo('current')}
+              isInfoOpen={infoShown.has('current')}
             />
           </div>
           {currentPAConnectivity.length > 0 && (
@@ -155,10 +175,19 @@ class CurrentPAConnectivity extends React.Component {
           <h6>
             Aporte de las áreas protegidas a la conectividad
           </h6>
-          <DownloadCSV
-            data={dpc}
-            filename={`bt_conn_dpc_${areaId}_${geofenceId}.csv`}
-          />
+          <IconTooltip title="Interpretación">
+            <InfoIcon
+              className="downSpecial"
+              onClick={() => this.toggleInfo('dpc')}
+            />
+          </IconTooltip>
+          {infoShown.has('dpc') && (
+            <ShortInfo
+              description={dpcInfo}
+              className="graphinfo2"
+              collapseButton={false}
+            />
+          )}
           <h3 className="innerInfoH3">
             Haz clic en un área protegida para visualizarla
           </h3>
@@ -182,6 +211,15 @@ class CurrentPAConnectivity extends React.Component {
               </LegendColor>
             ))}
           </div>
+          <TextBoxes
+            consText={dpcCons}
+            metoText={dpcMeto}
+            quoteText={dpcQuote}
+            downloadData={dpc}
+            downloadName={`conn_dpc_${areaId}_${geofenceId}.csv`}
+            isInfoOpen={infoShown.has('dpc')}
+            toggleInfo={() => this.toggleInfo('dpc')}
+          />
         </div>
       </div>
     );
