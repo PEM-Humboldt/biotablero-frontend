@@ -213,9 +213,38 @@ class NumberOfSpecies extends React.Component {
     }
   }
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((item) => {
+      let obj = {
+        type: item.id,
+      };
+      Object.keys(item.markers).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.markers[element],
+        };
+      });
+      Object.keys(item.measures).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.measures[element],
+        };
+      });
+      result.push(obj);
+    });
+    return result;
+  };
+
   render() {
     const {
       areaId,
+      geofenceId,
       handlerClickOnGraph,
     } = this.context;
     const {
@@ -241,7 +270,11 @@ class NumberOfSpecies extends React.Component {
 
     return (
       <div className="graphcontainer pt6">
-        <DownloadCSV className="downSpecial3" data={data} filename="Numero_de_especies.csv" />
+        <DownloadCSV
+          className="downSpecial3"
+          data={this.processDownload(data)}
+          filename={`bt_rich_number_of_species_${areaId}_${geofenceId}.csv`}
+        />
         <h2>
           <IconTooltip title="Acerca de esta sección">
             <InfoIcon

@@ -166,7 +166,11 @@ class StrategicEcosystems extends React.Component {
       SETotalArea,
       activeSE,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcard">
         <h2>
@@ -203,7 +207,7 @@ class StrategicEcosystems extends React.Component {
               </h4>
             </button>
           </InfoTooltip>
-          <DownloadCSV className="downSpecial" data={coverage} filename="Cobertura.csv" />
+          <DownloadCSV className="downSpecial" data={coverage} filename={`bt_eco_coverages_${areaId}_${geofenceId}.csv`} />
           <h6>
             Natural, Secundaria y Transformada:
           </h6>
@@ -229,7 +233,7 @@ class StrategicEcosystems extends React.Component {
               <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
             </h4>
           </InfoTooltip>
-          <DownloadCSV className="downSpecial" data={PAAreas} filename="Areas_protegidas.csv" />
+          <DownloadCSV className="downSpecial" data={PAAreas} filename={`bt_eco_protected_areas_${areaId}_${geofenceId}.csv`} />
           <h5>
             {`${getPercentage(PATotalArea, generalArea)} %`}
           </h5>
@@ -254,7 +258,7 @@ class StrategicEcosystems extends React.Component {
                 <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
               </h4>
             </InfoTooltip>
-            <DownloadCSV className="downSpecial2" data={SEAreas} filename="Porcentajes_Totales_EE_en_area_de_consulta.csv.csv" />
+            <DownloadCSV className="downSpecial2" data={SEAreas} filename={`bt_eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`} />
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
