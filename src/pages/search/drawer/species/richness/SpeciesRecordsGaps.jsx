@@ -222,7 +222,7 @@ class SpeciesRecordsGaps extends React.Component {
         <DownloadCSV
           className="downSpecial3"
           data={this.processDownload(csvData)}
-          filename={`bt_rich_number_of_species_${areaId}_${geofenceId}.csv`}
+          filename={`bt_rich_gaps_${areaId}_${geofenceId}.csv`}
         />
         <h2>
           <IconTooltip title="Acerca de esta sección">
