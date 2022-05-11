@@ -11,8 +11,6 @@ import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
 
-import isFlagEnabled from 'utils/isFlagEnabled';
-
 const areaTypeName = (areaType) => {
   switch (areaType) {
     case 'states':
@@ -62,7 +60,6 @@ class SpeciesRecordsGaps extends React.Component {
       messageConc: 'loading',
       selected: 'gaps',
       bioticRegion: 'Región Biótica',
-      concentrationFlag: false,
       showErrorMessage: false,
       csvData: [],
     };
@@ -118,9 +115,6 @@ class SpeciesRecordsGaps extends React.Component {
       .catch(() => {
         this.setState({ messageConc: 'no-data' });
       });
-
-    isFlagEnabled('speciesRecordsConcentrarion')
-      .then((value) => this.setState({ concentrationFlag: value }));
   }
 
   componentWillUnmount() {
@@ -213,7 +207,6 @@ class SpeciesRecordsGaps extends React.Component {
       concentration,
       selected,
       bioticRegion,
-      concentrationFlag,
       showErrorMessage,
       csvData,
     } = this.state;
@@ -285,49 +278,47 @@ class SpeciesRecordsGaps extends React.Component {
 
           ))}
         </div>
-        {concentrationFlag && (
-          <>
+        <>
+          <br />
+          <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>
+            Concentración de registros
             <br />
-            <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>
-              Concentración de registros
-              <br />
-              <b>5 km x 5 km</b>
-            </div>
-            <div className="svgPointer">
-              <GraphLoader
-                message={messageConc}
-                data={concentration}
-                graphType="singleBullet"
-                colors={matchColor('richnessGaps')}
-                onClickGraphHandler={() => { this.setState({ selected: 'concentration' }); }}
-                labelXLeft="Poco representado"
-                labelXRight="Bien representado"
-              />
-            </div>
-            <br />
-            <div className="richnessLegend">
-              <LegendColor
+            <b>5 km x 5 km</b>
+          </div>
+          <div className="svgPointer">
+            <GraphLoader
+              message={messageConc}
+              data={concentration}
+              graphType="singleBullet"
+              colors={matchColor('richnessGaps')}
+              onClickGraphHandler={() => { this.setState({ selected: 'concentration' }); }}
+              labelXLeft="Poco representado"
+              labelXRight="Bien representado"
+            />
+          </div>
+          <br />
+          <div className="richnessLegend">
+            <LegendColor
+              orientation="column"
+              color={matchColor('richnessGaps')('value')}
+              key="value"
+              marginLeft="2px"
+              marginRight="6px"
+            >
+              {getLabelConcentration('value', areaId)}
+            </LegendColor>
+            {concentration.measures && Object.keys(concentration.measures).map((key) => (
+              <LineLegend
                 orientation="column"
-                color={matchColor('richnessGaps')('value')}
-                key="value"
-                marginLeft="2px"
-                marginRight="6px"
+                color={matchColor('richnessGaps')(key)}
+                key={key}
               >
-                {getLabelConcentration('value', areaId)}
-              </LegendColor>
-              {concentration.measures && Object.keys(concentration.measures).map((key) => (
-                <LineLegend
-                  orientation="column"
-                  color={matchColor('richnessGaps')(key)}
-                  key={key}
-                >
-                  {getLabelConcentration(key, areaId)}
-                </LineLegend>
+                {getLabelConcentration(key, areaId)}
+              </LineLegend>
 
               ))}
-            </div>
-          </>
-        )}
+          </div>
+        </>
       </div>
     );
   }
