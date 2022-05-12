@@ -126,7 +126,7 @@ class SpeciesRecordsGaps extends React.Component {
         this.setState({ messageConc: 'no-data' });
       });
 
-      isFlagEnabled('speciesRecordsConcentrarion')
+    isFlagEnabled('speciesRecordsConcentrarion')
       .then((value) => this.setState({ concentrationFlag: value }));
   }
 
@@ -335,7 +335,7 @@ class SpeciesRecordsGaps extends React.Component {
                   {getLabelConcentration(key, areaId)}
                 </LineLegend>
 
-                ))}
+              ))}
             </div>
           </>
         )}
