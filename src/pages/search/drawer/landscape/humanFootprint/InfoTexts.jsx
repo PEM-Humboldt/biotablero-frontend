@@ -1,55 +1,185 @@
 const currentHFTexts = {};
 
-currentHFTexts.info = `El valor de la Huella Humana en el área de consulta se calcula a partir del valor promedio del IHEH. La gráfica muestra la proporción de área bajo las categorías Natural, Baja, Media y Alta del IHEH. Cada color representa una categoría y corresponde a los colores desplegados en el mapa.
-<br /><br />
-Una mayor proporción del IHEH media o alta representa áreas influenciadas en mayor medida por las actividades antrópicas, mientras que áreas con una mayor proporción de IHEH natural o baja mantienen condiciones de naturalidad importantes de conservar.`;
+currentHFTexts.info = `El Índice de Huella Espacial Humana -IHEH- cuantifica la magnitud de la
+influencia acumulada de las actividades antrópicas sobre los paisajes y ecosistemas. Varía de 0 a
+100 indicando en orden ascendente el grado de impacto humano. En la gráfica se muestra el porcetaje
+de área bajo las categorías Natural (IHEH de 0 - 15, verde), Bajo (IHEH = 15 - 40, amarillo), Medio
+(IHEH= 40 - 60, naranja) y Alto (IHEH > 60, rojo). Una mayor proporción del IHEH medio o alto en el
+área de consulta representa una mayor presión de actividades antrópicas, mientras una mayor
+proporción de IHEH natural o bajo representa áreas con condiciones naturales importantes de
+conservar.
+`;
 
-currentHFTexts.quote = `El trabajo del IHEH es liderado por <a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+currentHFTexts.meto = `El Índice de Huella Espacial Humana (IHEH) actual (
 <a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  Ver articulo.
+  Correa-Ayram et al. 2020
 </a>
-<br /><br />
-El mapa con el IHEH a una resolución de 300 metros se encuentra disponible en
-<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
-  Geonetwork IAvH.
-</a>`;
+) se generó a una resolución de 300 m para el año 2018 cuantificando la intensidad de las
+actividades antrópicas medida a través de: 1) tipo de uso, 2) densidad de población, 3) distancia a
+ríos, 4) distancia a asentamientos, 5) índice de fragmentación y 6) índice de biomasa relativo al
+potencial natural. El IHEH en el área consultada se calcula a partir de su valor promedio.
+`;
 
-currentHFTexts.meto = 'El Índice de Huella Espacial Humana (IHEH) cuantifica la magnitud de la influencia acumulada de las actividades antrópicas sobre los paisajes y ecosistemas; éste tiene un valor de 0 a 100 indicando en orden ascendente el grado de impacto humano. EL IHEH se clasifica en Natural (IHEH de 0 - 15), Bajo (IHEH = 15 - 40), Medio (IHEH= 40 - 60) y Alto (IHEH > 60). El IHEH se generó para Colombia a una resolución de 300 m y se calcula a partir de la intensidad del uso medida por: 1) tipo de uso, 2) densidad de población, 3) distancia a ríos, 4) distancia a asentamientos, 5) índice de fragmentación e 6) índice de biomasa relativo al potencial natural. Adicionalmente considera el tiempo de intervención medido en años';
-
-currentHFTexts.cons = `Al momento de interpretar los valores del IHEH se debe tener en cuenta que:
+currentHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
-    La falta de información detallada de actividades económicas, establecimiento de estructuras humanas como antenas, zonas de basuras, minería, suelo para agricultura, datos de caza, entre otros, pueden subestimar los valores del índice es regiones como la Orinoquía, Pacífico y Amazonas.
+    La falta de información detallada de actividades económicas, establecimiento de estructuras
+    humanas como antenas, zonas de basuras, minería, suelo para agricultura, datos de caza, entre
+    otros, pueden subestimar los valores del índice en regiones como la Orinoquía, Pacífico y
+    Amazonas.
   </li>
   <li>
-    El IHEH ahora se enfoca en ecosistemas terrestres, el componente sobre ecosistemas dulceacuícolas debe ser fortalecido.
+    Actualmente el Índice de Huella Espacial Humana (IHEH) se enfoca en ecosistemas terrestres, el
+    componente sobre ecosistemas dulceacuícolas debe ser fortalecido.
   </li>
-</ul>`;
+  <li>
+    El IHEH se construyó con información a 2018, es una muestra aproximada de este año y no da
+    cuenta del estado actual de la intensidad de las actividades antrópicas.
+  </li>
+  <li>
+    El IHEH fue construido a una resolución de 300 m, que resulta idónea para análisis regionales y
+    nacionales.
+  </li>
+</ul>
+`;
+
+currentHFTexts.quote = `El Índice de Huella Espacial Humana (IHEH) fue construido por
+<a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a>
+y colaboradores (
+<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
+  2020
+</a>
+) y puede descargarse desde el
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
+  Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-
+</a>
+.
+`;
 
 export { currentHFTexts };
 
 const persistenceHFTexts = {};
 
-persistenceHFTexts.info = `Los valores de persistencia del IHEH pueden guiar las estrategias de conservación de manera diferencial sobre el territorio. Estrategias con enfoque de preservación sobre lugares con categoría estable natural, ya que representan un bajo impacto humano a través del tiempo; de restauración sobre áreas con IHEH dinámica; o estrategias de uso sostenible sobre regiones en categoría estable alta, las cuales tradicionalmente han tenido una intensidad de transformación.
-<br /><br />
-La gráfica muestra la proporción de área bajo las categorías Estable Alta (color rojo en gráfica y mapa), Dinámica (color ocre) y Estable Natural (color verde). Cada color representa una categoría y corresponde a los colores desplegados en el mapa.`;
+persistenceHFTexts.info = `La persistencia del Índice de Huella Espacial Humana (IHEH) identifica
+las áreas donde el IHEH se ha mantenido en categoría estable alta (rojo), estable natural (verde),
+o dinámica (donde ha sufrido transiciones entre distintas categorías) (ocre). Los valores de
+persistencia del IHEH pueden guiar las estrategias de conservación de manera diferencial.
+Estrategias de preservación serían ideales sobre lugares con categoría estable natural ya que
+representan un bajo impacto humano a través del tiempo. La restauración es viable sobre áreas con
+IHEH dinámica, mientras que estrategias de uso sostenible son preferibles sobre regiones en
+categoría estable alta debido a que tradicionalmente han tenido una intensidad de transformación
+mayor.
+`;
 
-persistenceHFTexts.quote = `El trabajo del IHEH es liderado por <a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+persistenceHFTexts.meto = `La persistencia del Índice de Huella Espacial Humana (IHEH) se calculó
+para los años 1970, 1990, 2000, 2015 y 2018. Aquellas áreas que con valores en categoría alta del
+IHEH (> 60) durante el periodo de análisis fueron categorizadas como persistencia estable alta,
+mientras que aquellas con valores en categoría natural (0 - 15) se consideraron con persistencia
+estable natural. Las áreas que sufrieron transiciones entre otras categorías del IHEH se
+consideraron como de persistencia dinámica.`;
+
+persistenceHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en
+cuenta:
+<ul class="ul-padding-info-text">
+  <li>
+    Todas las consideraciones del Índice de Huella Espacial Humana (IHEH) actual.
+  </li>
+</ul>
+`;
+
+persistenceHFTexts.quote = `El Índice de Huella Espacial Humana (IHEH) fue construido por
+<a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a>
+y colaboradores (
 <a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  Ver articulo.
-</a>`;
-
-persistenceHFTexts.meto = 'El IHEH se calculó para los años 1970, 1990, 2000, 2015 y 2018. Se identifican los sitios en los que para todos los años el IHEH ha persistido en categoría alta o estable natural, y donde ha sido dinámico, con categorías alta, media y baja.';
+  2020
+</a>
+) y puede descargarse desde el
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
+  Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-
+</a>
+.
+`;
 
 export { persistenceHFTexts };
 
 const timelineHFTexts = {};
 
-timelineHFTexts.info = 'Con base en los valores promedio del IHEH para 1970, 1990, 2000, 2015 y 2018 se caracterizó la dinámica de la Huella Humana en los ecosistemas estratégicos y se compara con el valor del área consultada. Si la gráfica presenta las curvas para alguno de los ecosistemas estratégicos (líneas amarilla, azul o verde) por encima de la línea negra, se interpreta que para el área seleccionada la magnitud de la influencia acumulada de las actividades antrópicas ha sido mayor en un determinado ecosistema estratégico en comparación con otros ecosistemas presentes en el área consultada. Esto quiere decir que sobre los ecosistemas estratégicos se presentan más presiones que sobre otros ecosistemas en el área, lo que se puede interpretar como una mayor demanda de los servicios ecosistémicos que prestan y sobre los cuales se deben generar estrategias de uso sostenible si se quiere seguir aprovechando los beneficios derivados de su uso.';
+timelineHFTexts.info = `El Índice de Huella Espacial Humana (IHEH) histórico caracteriza la dinámica
+de la huella humana a través de los ecosistemas estratégicos (curvas violeta, azul o verde)
+comparándolos con el valor promedio del IHEH del área de consulta (línea negra). Si alguna de las
+curvas de los ecosistemas se encuentra por encima de la línea negra, se puede interpretar que este
+ecosistema presenta más presiones antrópicas que otros ecosistemas dentro de la misma área de
+consulta, así como una mayor demanda de los servicios ecosistémicos. Sobre estos ecosistemas se
+deberían generar estrategias de uso sostenible para continuar el aprovechamiento de los beneficios
+derivados de su uso.`;
 
-timelineHFTexts.quote = `El trabajo del IHEH es liderado por <a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a> y colaboradores en el Instituto Humboldt. Mayor información puede ser obtenida en: Ayram, C. et al. Spatiotemporal evaluation of the human footprint in Colombia: Four decades of anthropic impact in highly biodiverse ecosystems. Ecol. Indic. 117, 106630 (2020).
+timelineHFTexts.meto = `Se calculó el valor promedio del Índice de Huella Espacial Humana (IHEH)
+para 1970, 1990, 2000, 2015 y 2018 dentro del área consultada y la distribución de los ecosistemas
+de
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo
+</a>
+,
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales
+</a>
+.
+`;
+
+timelineHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en
+cuenta:
+<ul class="ul-padding-info-text">
+  <li>
+    Todas las consideraciones del Índice de Huella Espacial Humana (IHEH) actual.
+  </li>
+</ul>
+`;
+
+timelineHFTexts.quote = `El Índice de Huella Espacial Humana (IHEH) fue construido por
+<a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a>
+y colaboradores (
 <a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  Ver articulo.
-</a>`;
+  2020
+</a>
+). La distribución de los ecosistemas de
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo
+</a>
+,
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales
+</a>
+fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I.
+Humboldt-. El IHEH para cada año y las capas de los ecosistemas estratégicos pueden descargarse
+desde el
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
+  Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-
+</a>
+(
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  IHEH
+</a>
+, 
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo
+</a>
+,
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales
+</a>
+)
+`;
 
 export { timelineHFTexts };
