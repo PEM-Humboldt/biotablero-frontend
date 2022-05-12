@@ -117,7 +117,7 @@ class PersistenceFootprint extends React.Component {
           downloadData={hfPersistence}
           downloadName={`persistence_${areaId}_${geofenceId}.csv`}
           quoteText={quote}
-          metaText={meto}
+          metoText={meto}
           consText={cons}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
