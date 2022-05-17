@@ -50,6 +50,10 @@ class CurrentPAConnectivity extends React.Component {
       currentPAConnectivity: [],
       dpc: [],
       prot: 0,
+      messages: {
+        conn: 'loading',
+        dpc: 'loading',
+      },
     };
   }
 
@@ -68,26 +72,48 @@ class CurrentPAConnectivity extends React.Component {
         if (this.mounted) {
           const protConn = res.find((item) => item.key === 'prot_conn');
           const protUnconn = res.find((item) => item.key === 'prot_unconn');
-          this.setState({
+          this.setState((prev) => ({
             currentPAConnectivity: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
             prot: protConn && protUnconn ? (protConn.percentage + protUnconn.percentage) * 100 : 0,
-          });
+            messages: {
+              ...prev.messages,
+              conn: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            conn: 'no-data',
+          },
+        }));
+      });
 
     RestAPI.requestDPC(areaId, geofenceId, 5)
       .then((res) => {
         if (this.mounted) {
-          this.setState({
+          this.setState((prev) => ({
             dpc: res.reverse(),
-          });
+            messages: {
+              ...prev.messages,
+              dpc: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            dpc: 'no-data',
+          },
+        }));
+      });
   }
 
   componentWillUnmount() {
@@ -117,6 +143,7 @@ class CurrentPAConnectivity extends React.Component {
       dpc,
       prot,
       infoShown,
+      messages: { conn, dpc: dpcMess },
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -143,6 +170,7 @@ class CurrentPAConnectivity extends React.Component {
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnectivity}
+              message={conn}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas"
               units="ha"
@@ -195,6 +223,7 @@ class CurrentPAConnectivity extends React.Component {
             <GraphLoader
               graphType="MultiSmallSingleBarGraph"
               data={dpc}
+              message={dpcMess}
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
               labelX="dPC"
