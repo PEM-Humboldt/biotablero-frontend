@@ -186,8 +186,7 @@ class CompensationFactor extends React.Component {
           <div className="graphinfobox">
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className="graphinfo"
-                onClick={() => this.toggleInfo('cf')}
+                className={`graphinfo${infoShown.has('cf') ? ' activeBox' : ''}`}
               />
             </IconTooltip>
             {infoShown.has('cf') && (
@@ -222,7 +221,7 @@ class CompensationFactor extends React.Component {
           </h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('biomes') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('biomes')}
             />
           </IconTooltip>
@@ -257,7 +256,7 @@ class CompensationFactor extends React.Component {
           </h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('bioticReg') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('bioticReg')}
             />
           </IconTooltip>
