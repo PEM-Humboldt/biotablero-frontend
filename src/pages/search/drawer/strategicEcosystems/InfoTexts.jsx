@@ -2,13 +2,13 @@ export const sectionInfo = `En esta sección se presenta en hectáreas el tipo d
 <br /><br />
 Al interpretar estas cifras e indicadores se debe tener en cuenta que valores inferiores al 1% no son representados en las gráficas y que cualquier cálculo realizado a través de software SIG es una estimación del valor real y dependerá de los parámetros del sistema de proyección utilizado. El sistema de proyección utilizado para el cálculo de áreas en BioTablero es el Sistema MAGNA-SIRGAS con origen en Bogotá y adoptado para el país por el Instituto Geográfico Agustín Codazzi - IGAC.`;
 
-export const CoverageText = `La medición del porcentaje de cobertura natural (color azul), 
-secundaria (amarillo) y transformada (terracota) en el área consultada muestra el grado de 
-conservación o transformación de los ecosistemas, y permite medir el avance en el cumplimiento de 
-metas de conservación. Un mayor porcentaje de cobertura natural significa un mejor estado de los 
-ecosistemas, mientras un mayor porcentaje de cobertura transformada da a entender una mayor pérdida 
-de ecosistemas naturales. El porcentaje de cobertura secundaria puede mostrar procesos de 
-regeneración asistidos o naturales, y dar una referencia de la dinámica de rotación de los 
+export const CoverageText = `La medición del porcentaje de cobertura natural (color azul),
+secundaria (amarillo) y transformada (terracota) en el área consultada muestra el grado de
+conservación o transformación de los ecosistemas, y permite medir el avance en el cumplimiento de
+metas de conservación. Un mayor porcentaje de cobertura natural significa un mejor estado de los
+ecosistemas, mientras un mayor porcentaje de cobertura transformada da a entender una mayor pérdida
+de ecosistemas naturales. El porcentaje de cobertura secundaria puede mostrar procesos de
+regeneración asistidos o naturales, y dar una referencia de la dinámica de rotación de los
 cultivos en el área consultada.
 `;
 
@@ -16,7 +16,7 @@ export const coverageMeto = `Las cifras de cobertura se obtuvieron de la recateg
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Mapa de Cobertura de la Tierra 2018
 </a>
-. Siguiendo la 
+. Siguiendo la
 <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Leyenda Nacional de Coberturas de la Tierra
 </a>
@@ -29,19 +29,18 @@ quemadas, cuerpos de agua artificiales y estanques para acuicultura marina. Las 
 secundarias corresponden a la categoría vegetación secundaria o en transición.
 `;
 
-export const coverageCons = `Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener
-en cuenta lo siguiente:
+export const coverageCons = `Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
     El
     <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Mapa de Cobertura de la Tierra 2018
     </a>
-    se construyó a partir de imágenes satelitales del año 2018, es una muestra aproximada de este 
+    se construyó a partir de imágenes satelitales del año 2018, es una muestra aproximada de este
     año y no da cuenta del estado actual de los ecosistemas.
   </li>
   <li>
-    De acuerdo con la metodología Corine Land Cover la unidad mínima de mapeo corresponde a 25 ha, 
+    De acuerdo con la metodología Corine Land Cover la unidad mínima de mapeo corresponde a 25 ha,
     áreas de cobertura menores no se encuentran representadas.
   </li>
   <li>
@@ -62,12 +61,12 @@ en cuenta lo siguiente:
 export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
 <ul class="ul-padding-info-text">
   <li>
-    El 
+    El
     <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Mapa de Cobertura de la Tierra 2018
     </a>
-    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, 
-    el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales 
+    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM,
+    el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales
     de Colombia - PNN y puede descargarse desde el
     <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
@@ -104,8 +103,8 @@ la superposición entre la capa del
 y el área consultada.
 `;
 
-export const PACons = `Al interpretar las cifras e indicadores presentados con información de 
-oberturas se debe tener en cuenta:
+export const PACons = `Al interpretar las cifras e indicadores presentados con información de
+coberturas se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
     Este indicador debe complementarse con otros que den cuenta del estado -p. ej. el porcentaje de
@@ -120,7 +119,7 @@ oberturas se debe tener en cuenta:
     registro depende del reporte de las autoridades regionales y locales.
   </li>
   <li>
-    La capa del RUNAP utilizada para los cálculos fue consultada en marzo de 2022; modificaciones 
+    La capa del RUNAP utilizada para los cálculos fue consultada en marzo de 2022; modificaciones
     posteriores al RUNAP no se encuentran reflejadas.
   </li>
   <li>
@@ -171,7 +170,6 @@ y
 `;
 
 export const SECons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
-en cuenta lo siguiente:
 <ul class="ul-padding-info-text">
   <li>
     Las mismas consideraciones de los indicadores porcentaje de cobertura natural, secundaria y
@@ -190,8 +188,8 @@ export const SEQuote = `<ul class="ul-padding-info-text">
     <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Mapa de Cobertura de la Tierra 2018
     </a>
-    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, el 
-    Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de 
+    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, el
+    Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de
     Colombia - PNN y puede descargarse desde el
     <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
