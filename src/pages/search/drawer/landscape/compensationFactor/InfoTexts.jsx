@@ -46,7 +46,7 @@ cfTexts.quote = `El
 <a href="https://www.minambiente.gov.co/documento-entidad/manual-de-compensaciones-del-componente-biotico/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Manual de compensaciones del componente biótico
 </a>
-fue construido por elMinisterio de Ambiente y Desarrollo Sostenible y puede descargarse desde el
+fue construido por el Ministerio de Ambiente y Desarrollo Sostenible y puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
 </a>
