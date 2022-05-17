@@ -35,7 +35,7 @@ const changeValues = [
   },
   {
     axis: 'y',
-    value: 30,
+    value: 40,
     legend: 'Baja',
     lineStyle: { stroke: '#d5a529', strokeWidth: 1 },
     textStyle: {
