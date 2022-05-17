@@ -82,6 +82,7 @@ class TimelineFootprint extends React.Component {
     this.state = {
       showInfoGraph: true,
       hfTimeline: [],
+      message: 'loading',
       selectedEcosystem: null,
     };
   }
@@ -100,10 +101,15 @@ class TimelineFootprint extends React.Component {
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
-          this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+          this.setState({
+            hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]),
+            message: null,
+          });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -180,6 +186,7 @@ class TimelineFootprint extends React.Component {
       showInfoGraph,
       hfTimeline,
       selectedEcosystem,
+      message,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -211,6 +218,7 @@ class TimelineFootprint extends React.Component {
             graphType="MultiLinesGraph"
             colors={matchColor('hfTimeline')}
             data={hfTimeline}
+            message={message}
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"
