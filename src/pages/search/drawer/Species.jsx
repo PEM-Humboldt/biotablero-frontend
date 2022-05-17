@@ -46,7 +46,7 @@ class Species extends React.Component {
    * @param {String} level accordion level that's calling the function
    * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-   handleAccordionChange = (level, tabLayerId) => {
+  handleAccordionChange = (level, tabLayerId) => {
     const { visible } = this.state;
     const { switchLayer, cancelActiveRequests } = this.context;
     cancelActiveRequests();
