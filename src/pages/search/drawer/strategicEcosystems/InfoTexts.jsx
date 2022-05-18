@@ -142,9 +142,7 @@ biológica y sus contribuciones a las personas. Estos ecosistemas estratégicos 
 servicios ambientales esenciales para el desarrollo sostenible del país.
 `;
 
-export const SEMeto = `El tipo de cobertura y representación de áreas protegidas siguieron el mismo
-desarrollo de los indicadores porcentaje de cobertura natural, secundaria y transformada, y
-porcentaje de área representada en áreas protegidas para la distribución de los ecosistemas de
+export const SEMeto = `Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras e indicadores de las secciones COBERTURA y ÁREAS PROTEGIDAS, aplicados a la distribución de los ecosistemas
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Páramo,
 </a>
@@ -156,15 +154,9 @@ porcentaje de área representada en áreas protegidas para la distribución de l
 </a>
 `;
 
-export const SECons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
+export const SECons = `
 <ul class="ul-padding-info-text">
-  <li>
-    Las mismas consideraciones de los indicadores porcentaje de cobertura natural, secundaria y
-    transformada, y porcentaje de área representada en áreas protegidas.
-  </li>
-  <li>
-    La distribución de los ecosistemas estratégicos fue construida a una escala 1:100.000, que resulta
-    idónea para análisis regionales y nacionales.
+  <li>Las mismas consideraciones de las cifras e indicadores presentados en las secciones de COBERTURA Y ÁREAS PROTEGIDAS.
   </li>
 </ul>
 `;
