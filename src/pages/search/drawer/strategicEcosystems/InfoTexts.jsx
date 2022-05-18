@@ -95,8 +95,7 @@ Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras
 COBERTURA y AREAS PROTEGIAS, aplicados a la distribución de los ecosistemas de Páramo , Bosque Seco Tropical y Humedales .
 `;
 
-export const PACons = `Al interpretar las cifras e indicadores presentados con información de
-coberturas se debe tener en cuenta:
+export const PACons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
     Este indicador debe complementarse con otros que den cuenta del estado -p. ej. el porcentaje de
