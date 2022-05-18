@@ -46,11 +46,10 @@ cfTexts.quote = `El
 <a href="https://www.minambiente.gov.co/documento-entidad/manual-de-compensaciones-del-componente-biotico/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Manual de compensaciones del componente biótico
 </a>
-fue construido por elMinisterio de Ambiente y Desarrollo Sostenible y puede descargarse desde el
+fue construido por el Ministerio de Ambiente y Desarrollo Sostenible y puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
-.
 `;
 
 export { cfTexts };
@@ -72,9 +71,9 @@ BiomesText.meto = `Las cifras se calcularon con base en la delimitación por bio
 </a>
 puede ser descargado desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
-.`;
+`;
 
 BiomesText.cons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
@@ -109,9 +108,9 @@ Instituto de Investigaciones Ambientales del Pacifico -IIAP-, Parques Nacionales
 Instituto Geográfico Agustín CODAZZI -IGAC-, y el Ministerio de Ambiente y Desarrollo Sostenible y
 puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
-.`;
+`;
 
 export { BiomesText };
 
@@ -170,9 +169,8 @@ fueron construidas por el Instituto de Investigación de Recursos Biológicos Al
 </a>
 que puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
-.
 `;
 
 export { BioticRegionsText };
