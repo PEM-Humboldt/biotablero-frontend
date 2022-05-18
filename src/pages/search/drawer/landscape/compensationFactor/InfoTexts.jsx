@@ -93,14 +93,12 @@ BiomesText.cons = `Al interpretar las cifras e indicadores presentados se debe t
 
 BiomesText.quote = `Los biomas se encuentran incorporados dentro del
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Mapa de ecosistemas continentales, costeros y marinos de Colombia
-</a>
-, construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-, Instituto
-de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-, Instituto Amazónico de
-Investigaciones Científicas -SINCHI-, Instituto de Investigaciones Marinas y Costeras -INVEMAR-,
-Instituto de Investigaciones Ambientales del Pacifico -IIAP-, Parques Nacionales Naturales,
-Instituto Geográfico Agustín CODAZZI -IGAC-, y el Ministerio de Ambiente y Desarrollo Sostenible y
-puede descargarse desde el
+  Mapa de ecosistemas continentales, costeros y marinos de Colombia</a>, construido por el Instituto de Hidrología,
+  Meteorología y Estudios Ambientales -IDEAM-, Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-,
+  Instituto Amazónico de Investigaciones Científicas -SINCHI-, Instituto de Investigaciones Marinas y Costeras -INVEMAR-,
+  Instituto de Investigaciones Ambientales del Pacifico -IIAP-, Parques Nacionales Naturales,
+  Instituto Geográfico Agustín CODAZZI -IGAC-, y el Ministerio de Ambiente y Desarrollo Sostenible y
+  puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
