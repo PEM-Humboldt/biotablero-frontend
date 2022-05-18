@@ -187,6 +187,7 @@ class CompensationFactor extends React.Component {
             <IconTooltip title="Interpretación">
               <InfoIcon
                 className={`graphinfo${infoShown.has('cf') ? ' activeBox' : ''}`}
+                onClick={() => this.toggleInfo('cf')}
               />
             </IconTooltip>
             {infoShown.has('cf') && (
