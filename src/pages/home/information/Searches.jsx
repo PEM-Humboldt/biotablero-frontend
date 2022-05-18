@@ -52,22 +52,22 @@ const descriptions = {
         <b>
           mapas, cifras y gráficas
         </b>
-        {' que dan cuanta del estado de la biodiversidad en un área geográfica particular bajo tres temáticas:'}
+        {' que dan cuenta del estado de la biodiversidad en un área geográfica particular bajo tres temáticas'}
         <br />
         <b>
-          1) Paisajes:
+          1) Ecosistemas:
+        </b>
+        {' Cambio de cobertura en ecosistemas estratégicos, representatividad de ecosistemas en áreas protegidas.'}
+        <br />
+        <b>
+          2) Paisaje:
         </b>
         {' Acá encuentras información relacionada con ecosistemas equivalentes y factores de compensación, métricas de fragmentación y conectividad. '}
         <br />
         <b>
-          2) Especies:
+          3) Especies:
         </b>
-        {' Acá encuentras cifras sobre número de especies y registros, especies amenazadas, vacíos de información, cambio de hábitat en especies asociadas al bosque, diversidad alfa y beta, representatividad de especies en áreas protegidas.'}
-        <br />
-        <b>
-          3) Ecosistema:
-        </b>
-        {' Cambio de cobertura en ecosistemas estratégicos, representatividad de ecosistemas en áreas protegidas.'}
+        {' Acá encuentras cifras sobre número de especies (inferidas y observadas) y vacíos de información para todas las especies, especies amenazadas, endémicas e invasoras.'}
       </p>
     ),
   },
