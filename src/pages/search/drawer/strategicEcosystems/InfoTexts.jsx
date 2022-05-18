@@ -54,28 +54,22 @@ export const coverageCons = `Al interpretar las cifras e indicadores presentados
 </ul>
 `;
 
-export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
-<ul class="ul-padding-info-text">
-  <li>
-    El
-    <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Mapa de Cobertura de la Tierra 2018
-    </a>
-    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM,
-    el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales
-    de Colombia - PNN y puede descargarse desde el
-    <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
-    </a>
-  </li>
-  <li>
-    La
-    <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Leyenda Nacional de Coberturas de la Tierra
-    </a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
-  </li>
-</ul>
-`;
+export const coverageQuote = `El
+<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Mapa de Cobertura de la Tierra 2018
+</a>
+fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM,
+el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales
+de Colombia - PNN y puede descargarse desde el
+<a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
+</a>
+<br />
+<br />
+La
+<a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Leyenda Nacional de Coberturas de la Tierra
+</a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.`;
 
 export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad
 <a href="https://www.cambridge.org/core/journals/oryx/article/linked-indicator-sets-for-addressing-biodiversity-loss/1D2B4D07C757AD7D2BBB8E70B81E6E17" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
@@ -162,62 +156,58 @@ export const SECons = `
 </ul>
 `;
 
-export const SEQuote = `<ul class="ul-padding-info-text">
-  <li>
-    El
-    <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Mapa de Cobertura de la Tierra 2018
-    </a>
-    fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, el
-    Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de
-    Colombia - PNN y puede descargarse desde el
-    <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
-    </a>
-  </li>
-  <li>
-    La
-    <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Leyenda Nacional de Coberturas de la Tierra
-    </a>fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
-  </li>
-  <li>
-    El
-    <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Registro Único Nacional de Áreas Protegidas -RUNAP-
-    </a>
-    se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
-    <a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      RUNAP en Cifras.
-    </a>
-  </li>
-  <li>
-    La distribución de los ecosistemas de
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Páramo,
-    </a>
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Bosque Seco Tropical
-    </a>
-    y
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Humedales
-    </a>
-    fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
-    -I. Humboldt- y pueden descargarse desde su
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Repositorio Geográfico
-    </a>
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      (Páramo,
-    </a>
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Bosque Seco Tropical
-    </a>
-    y
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Humedales).
-    </a>
-  </li>
-</ul>
-`;
+export const SEQuote = `El
+<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Mapa de Cobertura de la Tierra 2018
+</a>
+fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, el
+Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de
+Colombia - PNN y puede descargarse desde el
+<a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
+</a>
+<br />
+<br />
+La
+<a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Leyenda Nacional de Coberturas de la Tierra
+</a>
+fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
+<br />
+<br />
+El
+<a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Registro Único Nacional de Áreas Protegidas -RUNAP-
+</a>
+se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
+<a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  RUNAP en Cifras.
+</a>
+<br />
+<br />
+La distribución de los ecosistemas de
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo,
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales
+</a>
+fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
+-I. Humboldt- y pueden descargarse desde su
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Repositorio Geográfico
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  (Páramo,
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales).
+</a>`;
