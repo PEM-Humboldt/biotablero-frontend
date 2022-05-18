@@ -58,9 +58,9 @@ export const coverageQuote = `El
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Mapa de Cobertura de la Tierra 2018
 </a>
-fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM,
-el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales
-de Colombia - PNN y puede descargarse desde el
+fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-,
+el Instituto Amazónico de Investigaciones Científicas -SINCHI-, y Parques Nacionales Naturales
+de Colombia -PNN- y puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
@@ -69,7 +69,7 @@ de Colombia - PNN y puede descargarse desde el
 La
 <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Leyenda Nacional de Coberturas de la Tierra
-</a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.`;
+</a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-.`;
 
 export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad
 <a href="https://www.cambridge.org/core/journals/oryx/article/linked-indicator-sets-for-addressing-biodiversity-loss/1D2B4D07C757AD7D2BBB8E70B81E6E17" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
