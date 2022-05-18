@@ -14,13 +14,11 @@ cultivos en el área consultada.
 
 export const coverageMeto = `Las cifras de cobertura se obtuvieron de la recategorización del
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Mapa de Cobertura de la Tierra 2018
-</a>
-. Siguiendo la
+  Mapa de Cobertura de la Tierra 2018.</a>
+  Siguiendo la
 <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Leyenda Nacional de Coberturas de la Tierra
-</a>
-, las coberturas naturales agrupan las categorías bosque denso, abierto, fragmentado, de galería y
+  Leyenda Nacional de Coberturas de la Tierra,
+</a>las coberturas naturales agrupan las categorías bosque denso, abierto, fragmentado, de galería y
 ripario,  herbazal, arbustal, zonas arenosas naturales, afloramientos rocosos, zonas glaciares y
 nivales, áreas húmedas continentales y costeras, ríos, lagunas, lagos y ciénagas naturales, y
 canales y lagunas costeras. Las coberturas transformadas agrupan las categorías territorios
@@ -34,9 +32,7 @@ export const coverageCons = `Al interpretar las cifras e indicadores presentados
   <li>
     El
     <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Mapa de Cobertura de la Tierra 2018
-    </a>
-    se construyó a partir de imágenes satelitales del año 2018, es una muestra aproximada de este
+      Mapa de Cobertura de la Tierra 2018</a> se construyó a partir de imágenes satelitales del año 2018, es una muestra aproximada de este
     año y no da cuenta del estado actual de los ecosistemas.
   </li>
   <li>
@@ -46,14 +42,11 @@ export const coverageCons = `Al interpretar las cifras e indicadores presentados
   <li>
     El
     <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Mapa de Cobertura de la Tierra 2018
-    </a>
-    fue convertido a formato raster a una resolución
+      Mapa de Cobertura de la Tierra 2018</a> fue convertido a formato raster a una resolución
     aproximada de 30 m y re proyectado al sistema de coordenadas
     <a href="https://epsg.io/4326" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      EPSG 4326
-    </a>
-    . Las cifras presentadas deben tomarse como valores aproximados y no absolutos.
+      EPSG 4326.
+    </a> Las cifras presentadas deben tomarse como valores aproximados y no absolutos.
   </li>
 </ul>
 `;
@@ -69,38 +62,37 @@ export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
     el Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales
     de Colombia - PNN y puede descargarse desde el
     <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
     </a>
-    .
   </li>
   <li>
     La
     <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Leyenda Nacional de Coberturas de la Tierra
-    </a>
-    fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
+    </a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
   </li>
 </ul>
 `;
 
-export const PAText = `Este indicador es utilizado para medir el nivel de implementación de las
-políticas o las acciones para prevenir o reducir la pérdida de biodiversidad (
+export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad (
 <a href="https://www.cambridge.org/core/journals/oryx/article/linked-indicator-sets-for-addressing-biodiversity-loss/1D2B4D07C757AD7D2BBB8E70B81E6E17" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Sparks, 2011
-</a>
-). El indicador se desagrega por los tipos de áreas protegidas incorporadas en el
+(Sparks, 2011).
+</a> El indicador se desagrega por los tipos de áreas protegidas incorporadas en el
 <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Registro Único Nacional de Áreas Protegidas -RUNAP-
 </a>
-para evaluar su implementación a nivel nacional, regional o de la sociedad civil.
+Un mayor porcentaje de áreas protegidas se interpreta como mayor cantidad de áreas protegidas establecidas.
 `;
 
 export const PAMeto = `El porcentaje de área representada en áreas protegidas se calculó a partir de
 la superposición entre la capa del
 <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Registro Único Nacional de Áreas Protegidas -RUNAP-
-</a>
-y el área consultada.
+</a> y el área consultada.
+
+
+Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras e  indicadores de las secciones
+COBERTURA y AREAS PROTEGIAS, aplicados a la distribución de los ecosistemas de Páramo , Bosque Seco Tropical y Humedales .
 `;
 
 export const PACons = `Al interpretar las cifras e indicadores presentados con información de
@@ -136,9 +128,8 @@ export const PAQuote = `El
 </a>
 se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
 <a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  RUNAP en Cifras
+  RUNAP en Cifras.
 </a>
-.
 `;
 
 export const SEText = `Se presenta el área de Páramo, Bosque Seco Tropical y Humedales para el área
@@ -148,25 +139,22 @@ su representación en áreas protegidas. El
   Primer Borrador del Marco Mundial de Biodiversidad post 2020
 </a>
 (Meta 3) plantea la conservación del 30 % de las zonas de particular importancia para la diversidad
-biológica y sus contribuciones a las personas. Estos ecosistemas estratégicos favorecen la oferta de
- bienes y servicios ambientales esenciales para el desarrollo sostenible del país.
+biológica y sus contribuciones a las personas. Estos ecosistemas estratégicos favorecen la oferta de bienes y
+servicios ambientales esenciales para el desarrollo sostenible del país.
 `;
 
 export const SEMeto = `El tipo de cobertura y representación de áreas protegidas siguieron el mismo
 desarrollo de los indicadores porcentaje de cobertura natural, secundaria y transformada, y
 porcentaje de área representada en áreas protegidas para la distribución de los ecosistemas de
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Páramo
+  Páramo,
 </a>
-,
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Bosque Seco Tropical
+  Bosque Seco Tropical</a> y
+
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales.
 </a>
-y
-<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Humedales
-</a>
-.
 `;
 
 export const SECons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
@@ -192,16 +180,14 @@ export const SEQuote = `<ul class="ul-padding-info-text">
     Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de
     Colombia - PNN y puede descargarse desde el
     <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-
+      Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
     </a>
-    .
   </li>
   <li>
     La
     <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Leyenda Nacional de Coberturas de la Tierra
-    </a>
-    fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
+    </a>fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
   </li>
   <li>
     El
@@ -210,41 +196,36 @@ export const SEQuote = `<ul class="ul-padding-info-text">
     </a>
     se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
     <a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      RUNAP en Cifras
+      RUNAP en Cifras.
     </a>
-    .
   </li>
   <li>
     La distribución de los ecosistemas de
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Páramo
+      Páramo,
     </a>
-    ,
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Bosque Seco Tropical
     </a>
     y
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Humedales
     </a>
     fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
     -I. Humboldt- y pueden descargarse desde su
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Repositorio Geográfico
+      (Repositorio Geográfico,
     </a>
-    (
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Páramo
+      Páramo,
     </a>
-    ,
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Bosque Seco Tropical
     </a>
     y
-    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Humedales
+    <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+      Humedales).
     </a>
-    ).
   </li>
 </ul>
 `;

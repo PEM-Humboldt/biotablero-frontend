@@ -1,10 +1,10 @@
 const CurrentPAConnTexts = {};
 
-CurrentPAConnTexts.info = `El índice de conectividad de áreas protegidas (
+CurrentPAConnTexts.info = `El índice de conectividad de áreas protegidas
 <a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  Saura et al 2017
+  (Saura et al 2017)
 </a>
-) indica el porcentaje de áreas protegidas que se encuentran conectadas. Se considera que el sistema
+indica el porcentaje de áreas protegidas que se encuentran conectadas. Se considera que el sistema
 de áreas protegidas está conectado si se encuentran a una distancia menor o igual a 10 km. Se
 presenta el porcentaje de área protegida, área protegida conectada (verde), área protegida no
 conectada (marrón), y área no protegida (gris) en la unidad consultada. Este indicador facilita la
@@ -141,9 +141,8 @@ DPCConnTexts.quote = `El
 </a>
 se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
 <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer">
-  RUNAP en Cifras
+  RUNAP en Cifras.
 </a>
-.
 <br /><br />
 El indicador de cambio en la probabilidad de conectividad fue propuesto por Saura y colaboradores (
 <a href="https://www.sciencedirect.com/science/article/abs/pii/S0169204607000709?via%3Dihub" target="_blank" rel="noopener noreferrer">
@@ -204,9 +203,8 @@ TimelinePAConnTexts.quote = `El
 </a>
 se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
 <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer">
-  RUNAP en Cifras
+  RUNAP en Cifras.
 </a>
-.
 <br /><br />
 Los indicadores de área protegida, protegida conectada y protegida no conectada fueron propuestos
 por Saura y colaboradores (
@@ -239,14 +237,13 @@ protegida no conectada, y área no protegida siguieron el mismo desarrollo de lo
 conectividad de áreas protegidas calculados en el área consultada, pero usando los límites de la
 distribución de los ecosistemas de
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Páramo
+  Páramo,
 </a>
-,
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Bosque Seco Tropical
+Bosque Seco Tropical
 </a>
 y
-<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Humedales
 </a>
 en el área consultada.
@@ -269,27 +266,24 @@ CurrentSEPAConnTexts.quote = `El
 </a>
 se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
 <a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer">
-  RUNAP en Cifras
+  RUNAP en Cifras.
 </a>
-.
 <br /><br />
 Los indicadores de área protegida, protegida conectada y protegida no conectada fueron propuestos
-por Saura y colaboradores (
+por Saura y colaboradores
 <a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2017
+  (2017).
 </a>
-).
 <br /><br />
 La distribución de los ecosistemas de
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Páramo
+  Páramo,
 </a>
-,
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Bosque Seco Tropical
 </a>
 y
-<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Humedales
 </a>
 fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
@@ -297,19 +291,16 @@ fue construida por el Instituto de Investigación de Recursos Biológicos Alexan
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Repositorio Geográfico
 </a>
-(
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Páramo
+  (Páramo,
 </a>
-,
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Bosque Seco Tropical
 </a>
 y
-<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Humedales
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales).
 </a>
-).
 `;
 
 export { CurrentSEPAConnTexts };
