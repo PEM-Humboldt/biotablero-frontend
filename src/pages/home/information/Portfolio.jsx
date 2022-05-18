@@ -27,12 +27,12 @@ const descriptions = {
     title: '¿Por qué son importantes los Portafolios?',
     description: (
       <p>
-        {'Los portafolios guían la gestión de la biodiversidad, indicando las áreas de mayor valor para la conservación señalando las '}
+        {'Los portafolios guían la gestión de la biodiversidad, indicando las áreas de mayor valor para la conservación con las '}
         <b>
-          soluciones más costo efectivas, guiando así la
-          toma de decisiones sobre qué y dónde conservar.
+          soluciones más costo efectivas sobre qué y dónde conservar.
         </b>
-        {' La implementación de todo un portafolio en corto tiempo es poco probable, nuevos contextos surgen y la información disponible para establecer prioridades de conservación se '}
+        <br />
+        {'La implementación de todo un portafolio en corto tiempo es poco probable, ya que nuevos contextos surgen y la información disponible para establecer prioridades de conservación se '}
         <b>
           actualiza constantemente
         </b>
