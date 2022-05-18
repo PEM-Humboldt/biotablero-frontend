@@ -14,7 +14,7 @@ de las especies categorizadas en peligro crítico de extinción (CR), en peligro
 Para las especies invasoras se construyeron 23 BioModelos de especies de plantas (Salgado-Negret et al. Sometido) usando registros de presencias y variables bioclimáticas para obtener mapas de su distribución potencial
 (<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/j.0906-7590.2008.5203.x" target="_blank" rel="noopener noreferrer">Phillips & Dudik 2008</a>).
 Las especies invasoras modeladas fueron priorizadas por su alto potencial de invasión en el país
-(<a href="http://www.humboldt.org.co/es/estado-de-los-recursos-naturales/item/1059-plantas-exoticas-invasion-en-colombia" target="_blank" rel="noopener noreferrer">(Cárdenas-López et al. 2010)</a>).
+(<a href="http://www.humboldt.org.co/es/estado-de-los-recursos-naturales/item/1059-plantas-exoticas-invasion-en-colombia" target="_blank" rel="noopener noreferrer">Cárdenas-López et al. 2010</a>).
 Las especies endémicas se identificaron considerando los listados nacionales de especies publicados a través del
 <a href="https://biodiversidad.co/" target="_blank" rel="noopener noreferrer">SiB Colombia</a>,
 y se espacializaron con los mapas disponibles en el portal de la
