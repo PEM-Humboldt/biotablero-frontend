@@ -28,32 +28,32 @@ class ForestIntegrity extends React.Component {
       SciHfCats: {
         'alta-estable_natural': {
           id: 'alta-estable_natural',
-          label: 'ICE Alto - HH Natural',
+          label: 'ICE Alto - IHEH Natural',
           value: 0,
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
-          label: 'ICE Alto - HH Dinámica',
+          label: 'ICE Alto - IHEH Dinámica',
           value: 0,
         },
         'alta-estable_alta': {
           id: 'alta-estable_alta',
-          label: 'ICE Alto - HH Alta',
+          label: 'ICE Alto - IHEH Alta',
           value: 0,
         },
         'baja_moderada-estable_natural': {
           id: 'baja_moderada-estable_natural',
-          label: 'ICE Bajo Moderado - HH Natural',
+          label: 'ICE Bajo Moderado - IHEH Natural',
           value: 0,
         },
         'baja_moderada-dinamica': {
           id: 'baja_moderada-dinamica',
-          label: 'ICE Bajo Moderado - HH Dinámica',
+          label: 'ICE Bajo Moderado - IHEH Dinámica',
           value: 0,
         },
         'baja_moderada-estable_alta': {
           id: 'baja_moderada-estable_alta',
-          label: 'ICE Bajo Moderado - HH Alta',
+          label: 'ICE Bajo Moderado - IHEH Alta',
           value: 0,
         },
       },

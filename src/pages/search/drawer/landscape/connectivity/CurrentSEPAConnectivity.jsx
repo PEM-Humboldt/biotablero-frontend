@@ -39,6 +39,11 @@ class CurrentSEPAConnectivity extends React.Component {
       protParamo: 0,
       protDryForest: 0,
       protWetland: 0,
+      messages: {
+        paramo: 'loading',
+        dryForest: 'loading',
+        wetland: 'loading',
+      },
     };
   }
 
@@ -61,16 +66,27 @@ class CurrentSEPAConnectivity extends React.Component {
           if (protConn && protUnconn) {
             protParamo = (protConn.percentage + protUnconn.percentage) * 100;
           }
-          this.setState({
+          this.setState((prev) => ({
             currentPAConnParamo: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
             protParamo,
-          });
+            messages: {
+              ...prev.messages,
+              paramo: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            paramo: 'no-data',
+          },
+        }));
+      });
 
       RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Bosque Seco Tropical')
       .then((res) => {
@@ -81,16 +97,27 @@ class CurrentSEPAConnectivity extends React.Component {
           if (protConn && protUnconn) {
             protDryForest = (protConn.percentage + protUnconn.percentage) * 100;
           }
-          this.setState({
+          this.setState((prev) => ({
             currentPAConnDryForest: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
             protDryForest,
-          });
+            messages: {
+              ...prev.messages,
+              dryForest: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            dryForest: 'no-data',
+          },
+        }));
+      });
 
       RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Humedal')
       .then((res) => {
@@ -101,16 +128,27 @@ class CurrentSEPAConnectivity extends React.Component {
           if (protConn && protUnconn) {
             protWetland = (protConn.percentage + protUnconn.percentage) * 100;
           }
-          this.setState({
+          this.setState((prev) => ({
             currentPAConnWetland: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
             protWetland,
-          });
+            messages: {
+              ...prev.messages,
+              wetland: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            wetland: 'no-data',
+          },
+        }));
+      });
   }
 
   componentWillUnmount() {
@@ -141,6 +179,7 @@ class CurrentSEPAConnectivity extends React.Component {
       protParamo,
       protDryForest,
       protWetland,
+      messages: { paramo, dryForest, wetland },
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -174,6 +213,7 @@ class CurrentSEPAConnectivity extends React.Component {
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnParamo}
+              message={paramo}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Páramo"
               units="ha"
@@ -211,6 +251,7 @@ class CurrentSEPAConnectivity extends React.Component {
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnDryForest}
+              message={dryForest}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Bosque Seco Tropical"
               units="ha"
@@ -248,6 +289,7 @@ class CurrentSEPAConnectivity extends React.Component {
             <GraphLoader
               graphType="LargeBarStackGraph"
               data={currentPAConnWetland}
+              message={wetland}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Humedal"
               units="ha"

@@ -122,17 +122,17 @@ export { LPTexts };
 const SCIHFTexts = {};
 
 SCIHFTexts.info = `El índice de Condición Estructural Forestal (ICE) mide la condición estructural
-de los bosques, y al combinarlo con información de de la persistencia de huella humana (HH) genera
+de los bosques, y al combinarlo con información de de la persistencia de huella humana (IHEH) genera
 el Índice de Integridad Estructural Forestal. De esta combinación resultan seis categorías para
 medir la integridad (ver leyenda en figura). Para cada categoría se muestra el porcentaje en el área
 consultada y su proporción de tipos de áreas protegidas. La categoría de integridad forestal y la
 presencia de áreas protegidas puede orientar acciones de gestión. Por ejemplo, en áreas de ICE Alto
-- HH Natural se pueden establecer incentivos comunitarios y gestión activa para mantener la
+- IHEH Natural se pueden establecer incentivos comunitarios y gestión activa para mantener la
 protección de los bosques, y en áreas fuera de áreas protegidas gestionar acuerdos de conservación
-para expandir su protección. En áreas de ICE Alto - HH Alta o Dinámica se debe trabajar para
+para expandir su protección. En áreas de ICE Alto - IHEH Alta o Dinámica se debe trabajar para
 disminuir de manera urgente las presiones que pueden estar afectando los bosques y gestionar
-acuerdos de conservación para garantizar y/o expandir su protección. En áreas de ICE Bajo y HH
-Natural se debe restaurar la estructura de los bosques, mientras en áreas de HH Alta o Dinámica se
+acuerdos de conservación para garantizar y/o expandir su protección. En áreas de ICE Bajo y IHEH
+Natural se debe restaurar la estructura de los bosques, mientras en áreas de IHEH Alta o Dinámica se
 deberían disminuir las presiones que puede estar afectando los bosques e implementar iniciativas de
 restauración mediante educación y ciencia ciudadana.`;
 
@@ -168,7 +168,7 @@ SCIHFTexts.cons = `Al interpretar los resultados de este indicador se debe tener
   </li>
   <li>
     El producto usado para definir la extensión de bosques es de carácter global y puede tener
-    imprecisiones en algunos lugares, se recomienda revisar esta información en conjunto con el 
+    imprecisiones en algunos lugares, se recomienda revisar esta información en conjunto con el
     indicador de pérdida y persistencia de bosque.
   </li>
 </ol>
@@ -177,11 +177,11 @@ SCIHFTexts.cons = `Al interpretar los resultados de este indicador se debe tener
 SCIHFTexts.quote = `El índice de Condición Estructural Forestal (ICE) fue construido por Hansen y
 colaboradores (
 <a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">
-  2019  
+  2019
 </a>
 ,
 <a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">
-  2020  
+  2020
 </a>
 ) y puede descargarse usando los links y métodos de descarga provistos en los artículos de
 referencia.
@@ -190,11 +190,11 @@ El Índice de Huella Espacial Humana (IHEH) fue construido por
 <a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a>
 y colaboradores (
 <a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2020  
+  2020
 </a>
 ) y puede descargarse desde el
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
-  Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-  
+  Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-
 </a>
 .
 <br /><br />

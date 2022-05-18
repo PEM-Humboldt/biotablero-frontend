@@ -25,6 +25,7 @@ class TimelinePAConnectivity extends React.Component {
     this.state = {
       showInfoGraph: true,
       timelinePAConnectivity: [],
+      message: 'loading',
     };
   }
 
@@ -39,7 +40,10 @@ class TimelinePAConnectivity extends React.Component {
     ])
       .then((res) => {
         if (this.mounted) {
-          this.setState({ timelinePAConnectivity: this.processData(res) });
+          this.setState({
+            timelinePAConnectivity: this.processData(res),
+            message: null,
+          });
         }
       });
   }
@@ -93,6 +97,7 @@ class TimelinePAConnectivity extends React.Component {
     const {
       showInfoGraph,
       timelinePAConnectivity,
+      message,
     } = this.state;
     const {
       areaId,
@@ -124,6 +129,7 @@ class TimelinePAConnectivity extends React.Component {
               graphType="MultiLinesGraph"
               colors={matchColor('timelinePAConn')}
               data={timelinePAConnectivity}
+              message={message}
               labelX="Año"
               labelY="Porcentaje"
               units="%"

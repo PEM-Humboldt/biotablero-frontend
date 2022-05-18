@@ -28,6 +28,7 @@ class CurrentFootprint extends React.Component {
       hfCurrent: [],
       hfCurrentValue: '0',
       hfCurrentCategory: '',
+      message: 'loading',
     };
   }
 
@@ -59,10 +60,13 @@ class CurrentFootprint extends React.Component {
               ...item,
               label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
             })),
+            message: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -89,6 +93,7 @@ class CurrentFootprint extends React.Component {
       hfCurrentValue,
       hfCurrentCategory,
       showInfoGraph,
+      message,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -122,6 +127,7 @@ class CurrentFootprint extends React.Component {
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={hfCurrent}
+            message={message}
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
