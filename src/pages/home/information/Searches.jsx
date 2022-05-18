@@ -9,7 +9,8 @@ const descriptions = {
         <b>
           visualizar información existente para unos límites geográficos predeterminados
         </b>
-        {'. Técnicamente es una sobreposición de información geográfica, en donde dada una entrada definida por el usuario, por ejemplo un departamento, una cuenca hidrográfica, una jurisdicción ambiental, se busca la información disponible en el Instituto Humboldt y se presenta una síntesis para las siguientes temáticas: '}
+        .
+        {'Técnicamente, es una sobreposición de información geográfica, en donde dada una entrada definida por el usuario, por ejemplo un departamento, una cuenca hidrográfica o una jurisdicción ambiental, se presenta una síntesis de cifras e indicadores para las siguientes temáticas: '}
         <b>
           ecología del paisaje, especies y ecosistemas
         </b>
@@ -21,11 +22,12 @@ const descriptions = {
     title: '¿Por qué este módulo?',
     description: (
       <p>
-        {'En Colombia se ha avanzado en la generación de información geográfica sobre temáticas ambientales, económicas y sociales, y en el desarrollo de mecanismos y plataformas para compartirla. El acceso abierto a datos geográficos es una tendencia global. Quien busca información geográfica sobre biodiversidad y ecosistemas puede encontrarla en varias fuentes, en portales nacionales como el SIB Colombia, el SIAC, y en los diferentes portales de datos de los institutos de Investigación o en portales globales como Biodiversity Dashboard o Global Forest Watch, entre otros. El módulo de consultas geográficas en el BioTablero es necesario porque '}
+        {'En Colombia se ha avanzado en la generación de información geográfica sobre temáticas ambientales, económicas y sociales, y en el desarrollo de mecanismos y plataformas para compartirla. El acceso abierto a datos geográficos es una tendencia global. Quien busca información geográfica sobre biodiversidad y ecosistemas puede encontrarla en varias fuentes, en portales nacionales como el SiB Colombia, el SIAC, y en los diferentes portales de datos de los institutos de Investigación o en portales globales como Biodiversity Dashboard o Global Forest Watch, entre otros. El módulo de consultas geográficas en BioTablero es necesario porque '}
         <b>
           permite al usuario tener una lectura rápida de la información más relevante
         </b>
-        {' para su área de interés bajo tres temáticas de biodiversidad: paisajes, especies y ecosistemas, simplificando la búsqueda y selección de información pertinente.'}
+        para su área de interés bajo tres temáticas de biodiversidad: paisajes, especies y
+        ecosistemas, simplificando la búsqueda y selección de información pertinente.
       </p>
     ),
   },
