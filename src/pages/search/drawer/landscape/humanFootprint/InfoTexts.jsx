@@ -77,11 +77,25 @@ mientras que aquellas con valores en categoría natural (0 - 15) se consideraron
 estable natural. Las áreas que sufrieron transiciones entre otras categorías del IHEH se
 consideraron como de persistencia dinámica.`;
 
-persistenceHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en
-cuenta:
+persistenceHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
-    Todas las consideraciones del Índice de Huella Espacial Humana (IHEH) actual.
+    La falta de información detallada de actividades económicas, establecimiento de estructuras
+    humanas como antenas, zonas de basuras, minería, suelo para agricultura, datos de caza, entre
+    otros, pueden subestimar los valores del índice en regiones como la Orinoquía, Pacífico y
+    Amazonas.
+  </li>
+  <li>
+    Actualmente el Índice de Huella Espacial Humana (IHEH) se enfoca en ecosistemas terrestres, el
+    componente sobre ecosistemas dulceacuícolas debe ser fortalecido.
+  </li>
+  <li>
+    El IHEH se construyó con información a 2018, es una muestra aproximada de este año y no da
+    cuenta del estado actual de la intensidad de las actividades antrópicas.
+  </li>
+  <li>
+    El IHEH fue construido a una resolución de 300 m, que resulta idónea para análisis regionales y
+    nacionales.
   </li>
 </ul>
 `;
@@ -125,11 +139,25 @@ de
 </a>
 `;
 
-timelineHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en
-cuenta:
+timelineHFTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
-    Todas las consideraciones del Índice de Huella Espacial Humana (IHEH) actual.
+    La falta de información detallada de actividades económicas, establecimiento de estructuras
+    humanas como antenas, zonas de basuras, minería, suelo para agricultura, datos de caza, entre
+    otros, pueden subestimar los valores del índice en regiones como la Orinoquía, Pacífico y
+    Amazonas.
+  </li>
+  <li>
+    Actualmente el Índice de Huella Espacial Humana (IHEH) se enfoca en ecosistemas terrestres, el
+    componente sobre ecosistemas dulceacuícolas debe ser fortalecido.
+  </li>
+  <li>
+    El IHEH se construyó con información a 2018, es una muestra aproximada de este año y no da
+    cuenta del estado actual de la intensidad de las actividades antrópicas.
+  </li>
+  <li>
+    El IHEH fue construido a una resolución de 300 m, que resulta idónea para análisis regionales y
+    nacionales.
   </li>
 </ul>
 `;
