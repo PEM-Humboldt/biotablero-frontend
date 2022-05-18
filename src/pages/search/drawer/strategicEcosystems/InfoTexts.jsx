@@ -74,7 +74,7 @@ export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
 </ul>
 `;
 
-export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad (
+export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad
 <a href="https://www.cambridge.org/core/journals/oryx/article/linked-indicator-sets-for-addressing-biodiversity-loss/1D2B4D07C757AD7D2BBB8E70B81E6E17" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
 (Sparks, 2011).
 </a> El indicador se desagrega por los tipos de áreas protegidas incorporadas en el
