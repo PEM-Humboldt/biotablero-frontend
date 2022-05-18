@@ -93,10 +93,8 @@ la superposición entre la capa del
   Registro Único Nacional de Áreas Protegidas -RUNAP-
 </a> y el área consultada.
 
-
 Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras e  indicadores de las secciones
-COBERTURA y AREAS PROTEGIAS, aplicados a la distribución de los ecosistemas de Páramo , Bosque Seco Tropical y Humedales .
-`;
+COBERTURA y AREAS PROTEGIAS, aplicados a la distribución de los ecosistemas de Páramo, Bosque Seco Tropical y Humedales.`;
 
 export const PACons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
