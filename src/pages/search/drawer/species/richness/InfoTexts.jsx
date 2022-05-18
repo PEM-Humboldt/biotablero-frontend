@@ -14,7 +14,7 @@ de las especies categorizadas en peligro crítico de extinción (CR), en peligro
 Para las especies invasoras se construyeron 23 BioModelos de especies de plantas (Salgado-Negret et al. Sometido) usando registros de presencias y variables bioclimáticas para obtener mapas de su distribución potencial
 (<a href="https://onlinelibrary.wiley.com/doi/full/10.1111/j.0906-7590.2008.5203.x" target="_blank" rel="noopener noreferrer">Phillips & Dudik 2008</a>).
 Las especies invasoras modeladas fueron priorizadas por su alto potencial de invasión en el país
-(<a href="http://www.humboldt.org.co/es/estado-de-los-recursos-naturales/item/1059-plantas-exoticas-invasion-en-colombia" target="_blank" rel="noopener noreferrer">(Cárdenas-López et al. 2010)</a>).
+(<a href="http://www.humboldt.org.co/es/estado-de-los-recursos-naturales/item/1059-plantas-exoticas-invasion-en-colombia" target="_blank" rel="noopener noreferrer">Cárdenas-López et al. 2010</a>).
 Las especies endémicas se identificaron considerando los listados nacionales de especies publicados a través del
 <a href="https://biodiversidad.co/" target="_blank" rel="noopener noreferrer">SiB Colombia</a>,
 y se espacializaron con los mapas disponibles en el portal de la
@@ -106,12 +106,12 @@ SpeciesRecordsGapsTexts.meto = `Los registros empleados para el cálculo del AVB
 y
 "<a href="https://www.gbif.org/es/country/CO/summary" target="_blank" rel="noopener noreferrer">the Global Biodiversity Information Facility -GBIF-</a>"
 - El índice integrado AVBCC se obtiene de promediar tres componentes: 1) concentración de los datos en el espacio geográfico (densidad de registros); 2) representatividad ambiental, siguiendo la metodología propuesta por
-<a href="https://doi.org/10.1111/ddi.13137" target="_blank" rel="noopener noreferrer">Aguiar et al. (2020)</a>,
+(<a href="https://doi.org/10.1111/ddi.13137" target="_blank" rel="noopener noreferrer">Aguiar et al. 2020</a>),
 la cual modela los registros de especies sobre variables bioclimáticas para identificar las regiones no estudiadas que son ambientalmente diferentes; y 3) complementariedad de la riqueza de especies, la cual calcula la presencia de especies según la densidad de registros en celdas de 1km<sup>2</sup>,
 y con base en estimaciones no paramétricas de
 <a href="https://doi.org/10.2307/2530802" target="_blank" rel="noopener noreferrer">Jackknife</a>
 de primer orden, se estima la riqueza esperada en cada celda, siendo el valor de complementariedad, la diferencia entre el valor estimado y el esperado. La ruta metodológica hace parte de la propuesta de
-<a href="https://doi.org/10.7809/b-e.00057" target="_blank" rel="noopener noreferrer">García Márquez et al. (2012)</a>
+(<a href="https://doi.org/10.7809/b-e.00057" target="_blank" rel="noopener noreferrer">García Márquez et al. 2012</a>)
 para la estimación de un índice espacial de los registros de especies, y cuenta con algunos ajustes para el país.`;
 
 SpeciesRecordsGapsTexts.quote = `El mapa de vacíos se encuentra disponible en el

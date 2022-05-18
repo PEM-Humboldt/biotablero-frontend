@@ -63,11 +63,9 @@ de la Universidad de Temple en Estados Unidos, contribuye a mejorar la cobertura
 <a href="https://www.globalforestwatch.org/map/?menu=eyJkYXRhc2V0Q2F0ZWdvcnkiOiJmb3Jlc3RDaGFuZ2UiLCJtZW51U2VjdGlvbiI6ImRhdGFzZXRzIn0%3D" target="_blank" rel="noopener noreferrer">
   cambio de bosque global
 </a>
-propuesto por Hansen y colaboradores (
-<a href="https://www.science.org/doi/abs/10.1126/science.1244693" target="_blank" rel="noopener noreferrer">
-  2013
-</a>
-), controlando la subestimación y sobrestimación de los bosques a nivel regional en el país.
+propuesto por Hansen y colaboradores
+(<a href="https://www.science.org/doi/abs/10.1126/science.1244693" target="_blank" rel="noopener noreferrer">2013</a>),
+controlando la subestimación y sobrestimación de los bosques a nivel regional en el país.
 `;
 
 LPTexts.cons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
@@ -108,10 +106,7 @@ y
 <a href="https://www.globalforestwatch.org/map/?menu=eyJkYXRhc2V0Q2F0ZWdvcnkiOiJmb3Jlc3RDaGFuZ2UiLCJtZW51U2VjdGlvbiI6ImRhdGFzZXRzIn0%3D" target="_blank" rel="noopener noreferrer">
   cambio de bosque global
 </a>
-<a href="https://www.science.org/doi/abs/10.1126/science.1244693" target="_blank" rel="noopener noreferrer">
-  (Hansen et al 2013
-</a>
-
+(<a href="https://www.science.org/doi/abs/10.1126/science.1244693" target="_blank" rel="noopener noreferrer">Hansen et al 2013</a>)
 `;
 
 export { LPTexts };

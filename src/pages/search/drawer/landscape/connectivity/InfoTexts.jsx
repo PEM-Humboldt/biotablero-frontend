@@ -84,11 +84,8 @@ CurrentPAConnTexts.quote = `El
   Registro Único Nacional de Áreas Protegidas -RUNAP-
 </a>
 se encuentra en cabeza de Parques Nacionales Naturales. Los indicadores de conectividad de áreas
-protegidas fueron propuestos por Saura y colaboradores (
-<a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2017
-</a>
-).
+protegidas fueron propuestos por Saura y colaboradores
+(<a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">2017</a>).
 `;
 
 export { CurrentPAConnTexts };
@@ -108,11 +105,9 @@ bajo, bajo, medio , alto, y muy alto (ver leyenda en figura).
 `;
 
 DPCConnTexts.meto = `El aporte individual de las áreas protegidas a la conectividad se
-calculó usando el índice de cambio en la probabilidad de conectividad (dPC) (
-<a href="https://www.sciencedirect.com/science/article/abs/pii/S0169204607000709?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  Saura et al 2007
-</a>
-). El dPC calcula el porcentaje de variación de la probabilidad de conectividad al remover
+calculó usando el índice de cambio en la probabilidad de conectividad (dPC)
+(<a href="https://www.sciencedirect.com/science/article/abs/pii/S0169204607000709?via%3Dihub" target="_blank" rel="noopener noreferrer">Saura et al 2007</a>).
+El dPC calcula el porcentaje de variación de la probabilidad de conectividad al remover
 sistemáticamente un área protegida específica en el área de consulta. Un área protegida de gran
 tamaño y más cercana a otra tendrá un mayor peso en la probabilidad de conectividad, y por lo tanto
 su eliminación tendrá un mayor valor dPC. El índice dPC se categorizó en cinco clases (muy bajo,
@@ -144,11 +139,8 @@ se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
   RUNAP en Cifras.
 </a>
 <br /><br />
-El indicador de cambio en la probabilidad de conectividad fue propuesto por Saura y colaboradores (
-<a href="https://www.sciencedirect.com/science/article/abs/pii/S0169204607000709?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2007
-</a>
-).
+El indicador de cambio en la probabilidad de conectividad fue propuesto por Saura y colaboradores
+(<a href="https://www.sciencedirect.com/science/article/abs/pii/S0169204607000709?via%3Dihub" target="_blank" rel="noopener noreferrer">2007</a>).
 `;
 
 export { DPCConnTexts };
@@ -207,11 +199,8 @@ se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
 </a>
 <br /><br />
 Los indicadores de área protegida, protegida conectada y protegida no conectada fueron propuestos
-por Saura y colaboradores (
-<a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2017
-</a>
-).
+por Saura y colaboradores
+(<a href="https://www.sciencedirect.com/science/article/pii/S1470160X1630752X?via%3Dihub" target="_blank" rel="noopener noreferrer">2017</a>).
 `;
 
 export { TimelinePAConnTexts };

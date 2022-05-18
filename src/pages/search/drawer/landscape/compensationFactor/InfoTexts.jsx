@@ -16,13 +16,9 @@ corresponden a la superposición entre biomas y
 </a>
 (Biomas-I. Humboldt) delimitadas en el
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Mapa de ecosistemas continentales, costeros y marinos de Colombia
-</a>
-. De acuerdo con el
-<a href="https://www.minambiente.gov.co/documento-entidad/manual-de-compensaciones-del-componente-biotico/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Manual de compensaciones del componente biótico
-</a>
-, el valor del factor de compensación resulta de la sumatoria de cuatro criterios de compensación:
+  Mapa de ecosistemas continentales, costeros y marinos de Colombia</a>.
+De acuerdo con el <a href="https://www.minambiente.gov.co/documento-entidad/manual-de-compensaciones-del-componente-biotico/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Manual de compensaciones del componente biótico</a>, el valor del factor de compensación resulta de la sumatoria de cuatro criterios de compensación:
 representatividad, rareza, remanencia y tasa de transformación.
 `;
 
@@ -63,10 +59,8 @@ consultada, se puede inferir que potencialmente tendrá una diversidad biológic
 
 BiomesText.meto = `Las cifras se calcularon con base en la delimitación por biomas del
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Mapa de ecosistemas continentales, costeros y marinos de Colombia
-</a>
-. El
-<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+Mapa de ecosistemas continentales, costeros y marinos de Colombia.</a>
+El <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Mapa de ecosistemas continentales, costeros y marinos de Colombia
 </a>
 puede ser descargado desde el
@@ -99,14 +93,12 @@ BiomesText.cons = `Al interpretar las cifras e indicadores presentados se debe t
 
 BiomesText.quote = `Los biomas se encuentran incorporados dentro del
 <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search#/metadata/0684d637-5b6a-40e8-80f4-bdf915b3e3da" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  Mapa de ecosistemas continentales, costeros y marinos de Colombia
-</a>
-, construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-, Instituto
-de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-, Instituto Amazónico de
-Investigaciones Científicas -SINCHI-, Instituto de Investigaciones Marinas y Costeras -INVEMAR-,
-Instituto de Investigaciones Ambientales del Pacifico -IIAP-, Parques Nacionales Naturales,
-Instituto Geográfico Agustín CODAZZI -IGAC-, y el Ministerio de Ambiente y Desarrollo Sostenible y
-puede descargarse desde el
+  Mapa de ecosistemas continentales, costeros y marinos de Colombia</a>, construido por el Instituto de Hidrología,
+  Meteorología y Estudios Ambientales -IDEAM-, Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-,
+  Instituto Amazónico de Investigaciones Científicas -SINCHI-, Instituto de Investigaciones Marinas y Costeras -INVEMAR-,
+  Instituto de Investigaciones Ambientales del Pacifico -IIAP-, Parques Nacionales Naturales,
+  Instituto Geográfico Agustín CODAZZI -IGAC-, y el Ministerio de Ambiente y Desarrollo Sostenible y
+  puede descargarse desde el
 <a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
   Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
 </a>
@@ -130,10 +122,8 @@ BioticRegionsText.meto = `Las
   regiones bióticas
 </a>
 fueron generadas a partir de los mapas de distribución de especies disponibles en
-<a href="http://biomodelos.humboldt.org.co/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-  BioModelos
-</a>
-, validación por expertos, y un ajuste con base en regionalizaciones biogeográficas de Colombia de
+<a href="http://biomodelos.humboldt.org.co/" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>BioModelos</a>,
+validación por expertos, y un ajuste con base en regionalizaciones biogeográficas de Colombia de
 referencia.`;
 
 BioticRegionsText.cons = `Al interpretar las cifras e indicadores presentados se debe tener en
