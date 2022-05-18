@@ -106,12 +106,12 @@ SpeciesRecordsGapsTexts.meto = `Los registros empleados para el cálculo del AVB
 y
 "<a href="https://www.gbif.org/es/country/CO/summary" target="_blank" rel="noopener noreferrer">the Global Biodiversity Information Facility -GBIF-</a>"
 - El índice integrado AVBCC se obtiene de promediar tres componentes: 1) concentración de los datos en el espacio geográfico (densidad de registros); 2) representatividad ambiental, siguiendo la metodología propuesta por
-<a href="https://doi.org/10.1111/ddi.13137" target="_blank" rel="noopener noreferrer">Aguiar et al. (2020)</a>,
+(<a href="https://doi.org/10.1111/ddi.13137" target="_blank" rel="noopener noreferrer">Aguiar et al. 2020</a>),
 la cual modela los registros de especies sobre variables bioclimáticas para identificar las regiones no estudiadas que son ambientalmente diferentes; y 3) complementariedad de la riqueza de especies, la cual calcula la presencia de especies según la densidad de registros en celdas de 1km<sup>2</sup>,
 y con base en estimaciones no paramétricas de
 <a href="https://doi.org/10.2307/2530802" target="_blank" rel="noopener noreferrer">Jackknife</a>
 de primer orden, se estima la riqueza esperada en cada celda, siendo el valor de complementariedad, la diferencia entre el valor estimado y el esperado. La ruta metodológica hace parte de la propuesta de
-<a href="https://doi.org/10.7809/b-e.00057" target="_blank" rel="noopener noreferrer">García Márquez et al. (2012)</a>
+(<a href="https://doi.org/10.7809/b-e.00057" target="_blank" rel="noopener noreferrer">García Márquez et al. 2012</a>)
 para la estimación de un índice espacial de los registros de especies, y cuenta con algunos ajustes para el país.`;
 
 SpeciesRecordsGapsTexts.quote = `El mapa de vacíos se encuentra disponible en el

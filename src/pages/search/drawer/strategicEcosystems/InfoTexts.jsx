@@ -206,10 +206,10 @@ export const SEQuote = `<ul class="ul-padding-info-text">
     fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
     -I. Humboldt- y pueden descargarse desde su
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      (Repositorio Geográfico,
+      Repositorio Geográfico
     </a>
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-      Páramo,
+      (Páramo,
     </a>
     <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
       Bosque Seco Tropical
