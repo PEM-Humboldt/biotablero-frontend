@@ -36,8 +36,11 @@ export const coverageCons = `Al interpretar las cifras e indicadores presentados
     año y no da cuenta del estado actual de los ecosistemas.
   </li>
   <li>
-    De acuerdo con la metodología Corine Land Cover la unidad mínima de mapeo corresponde a 25 ha,
-    áreas de cobertura menores no se encuentran representadas.
+    De acuerdo con la
+    <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer">
+      Leyenda Nacional de Coberturas de la Tierra
+    </a>
+    la unidad mínima de mapeo corresponde a 25 ha, áreas de cobertura menores no se encuentran representadas.
   </li>
   <li>
     El
