@@ -172,21 +172,16 @@ SCIHFTexts.cons = `Al interpretar los resultados de este indicador se debe tener
 
 SCIHFTexts.quote = `El índice de Condición Estructural Forestal (ICE) fue construido por Hansen y
 colaboradores
-(<a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">
-  2019
-</a>,
-<a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">
-  2020
-</a>)
+(<a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">2019</a>,
+<a href="https://www.nature.com/articles/s41597-019-0214-3" target="_blank" rel="noopener noreferrer">2020</a>)
 y puede descargarse usando los links y métodos de descarga provistos en los artículos de
 referencia.
 <br /><br />
 El Índice de Huella Espacial Humana (IHEH) fue construido por
 <a href="mailto:ccorrea@humboldt.org.co" target="_blank">Camilo Correa-Ayram</a>
 y colaboradores
-(<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">
-  2020
-</a>) y puede descargarse desde el
+(<a href="https://www.sciencedirect.com/science/article/abs/pii/S1470160X20305677?via%3Dihub" target="_blank" rel="noopener noreferrer">2020</a>)
+y puede descargarse desde el
 <a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/e29b399c-24ee-4c16-b19c-be2eb1ce0aae" target="_blank" rel="noopener noreferrer">
   Repositorio Geográfico del Instituto de Investigación de Recursos Biológicos Alexander von Humboldt -I. Humboldt-
 </a>
