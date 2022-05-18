@@ -10,6 +10,7 @@ import SearchContext from 'pages/search/SearchContext';
 import Selector from 'pages/search/Selector';
 import Description from 'pages/search/SelectorData';
 import formatNumber from 'utils/format';
+import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
@@ -818,7 +819,7 @@ class Search extends Component {
         resolve: (res) => {
           this.setState((prevState) => {
             const newState = { ...prevState };
-            if (!res.min || !res.max) {
+            if (isUndefinedOrNull(res.min) || isUndefinedOrNull(res.max)) {
               newState.activeLayer.legend = 'failed-legend';
             } else {
               newState.activeLayer.legend = {
