@@ -21,17 +21,21 @@ const TextBoxes = (props) => {
   } = props;
 
   const [boxShown, setBoxShown] = useState(null);
+  const [activeBox, setActiveBox] = useState(null);
   useEffect(() => {
     if (isInfoOpen) {
       setBoxShown(null);
+      setActiveBox(null);
     }
   }, [isInfoOpen]);
 
   const clickOnBox = (name) => {
     if (name === boxShown) {
       setBoxShown(null);
+      setActiveBox(null);
     } else {
       setBoxShown(name);
+      setActiveBox(name);
     }
     if (isInfoOpen) {
       toggleInfo();
@@ -44,7 +48,7 @@ const TextBoxes = (props) => {
         {metoText !== '' && (
           <IconTooltip title="Metodología">
             <CollectionsBookmarkIcon
-              className="graphinfo3"
+              className={`graphinfo3${activeBox === 'meto' ? ' activeBox' : ''}`}
               onClick={() => clickOnBox('meto')}
             />
           </IconTooltip>
@@ -52,7 +56,7 @@ const TextBoxes = (props) => {
         {consText !== '' && (
           <IconTooltip title="Consideraciones">
             <AnnouncementIcon
-              className="graphinfo3"
+              className={`graphinfo3${activeBox === 'cons' ? ' activeBox' : ''}`}
               onClick={() => clickOnBox('cons')}
             />
           </IconTooltip>
@@ -60,7 +64,7 @@ const TextBoxes = (props) => {
         {quoteText !== '' && (
           <IconTooltip title="Autoría">
             <FormatQuoteIcon
-              className="graphinfo3"
+              className={`graphinfo3${activeBox === 'quote' ? ' activeBox' : ''}`}
               onClick={() => clickOnBox('quote')}
             />
           </IconTooltip>

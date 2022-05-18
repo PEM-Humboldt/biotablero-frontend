@@ -150,7 +150,7 @@ class CurrentPAConnectivity extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${infoShown.has('current') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('current')}
             />
           </IconTooltip>
@@ -205,7 +205,7 @@ class CurrentPAConnectivity extends React.Component {
           </h6>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('dpc') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('dpc')}
             />
           </IconTooltip>

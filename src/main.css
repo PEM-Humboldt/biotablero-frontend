@@ -1956,6 +1956,13 @@ div[class*="eaRHYv"] {
 	cursor: pointer;
 }
 
+.graphinfo.activeBox,
+.graphinfo3.activeBox,
+.downSpecial.activeBox,
+.downSpecial2.activeBox {
+  color: #e84a5f;
+}
+
 .pt6 p {
 	margin: 5px 0 0 15px;
 }

@@ -229,19 +229,17 @@ class SpeciesRecordsGaps extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
             description={info}
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
         {showErrorMessage && (
           <div className="disclaimer">

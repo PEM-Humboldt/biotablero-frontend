@@ -267,7 +267,7 @@ class StrategicEcosystems extends React.Component {
           </button>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('coverage') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('coverage')}
             />
           </IconTooltip>
@@ -310,7 +310,7 @@ class StrategicEcosystems extends React.Component {
           </h4>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('pa') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('pa')}
             />
           </IconTooltip>
@@ -352,7 +352,7 @@ class StrategicEcosystems extends React.Component {
             </h4>
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className="downSpecial2"
+                className={`downSpecial2${infoShown.has('se') ? ' activeBox' : ''}`}
                 onClick={() => this.toggleInfo('se')}
               />
             </IconTooltip>

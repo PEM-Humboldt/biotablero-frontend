@@ -288,7 +288,7 @@ class NumberOfSpecies extends React.Component {
           {Object.keys(texts).length > 0 && (
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className="graphinfo"
+                className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
                 onClick={() => this.toggleInfoGraph()}
               />
             </IconTooltip>
