@@ -6,47 +6,54 @@ import { LegendColor, BorderLegendColor } from 'components/CssLegends';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { SCIHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { SCIHFTexts } from 'pages/search/drawer/landscape/forest/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import TextBoxes from 'components/TextBoxes';
 
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = SCIHFTexts;
 class ForestIntegrity extends React.Component {
   mounted = false;
 
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       SciHfCats: {
         'alta-estable_natural': {
           id: 'alta-estable_natural',
-          label: 'ICE Alto - HH Natural',
+          label: 'ICE Alto - IHEH Natural',
           value: 0,
         },
         'alta-dinamica': {
           id: 'alta-dinamica',
-          label: 'ICE Alto - HH Dinámica',
+          label: 'ICE Alto - IHEH Dinámica',
           value: 0,
         },
         'alta-estable_alta': {
           id: 'alta-estable_alta',
-          label: 'ICE Alto - HH Alta',
+          label: 'ICE Alto - IHEH Alta',
           value: 0,
         },
         'baja_moderada-estable_natural': {
           id: 'baja_moderada-estable_natural',
-          label: 'ICE Bajo Moderado - HH Natural',
+          label: 'ICE Bajo Moderado - IHEH Natural',
           value: 0,
         },
         'baja_moderada-dinamica': {
           id: 'baja_moderada-dinamica',
-          label: 'ICE Bajo Moderado - HH Dinámica',
+          label: 'ICE Bajo Moderado - IHEH Dinámica',
           value: 0,
         },
         'baja_moderada-estable_alta': {
           id: 'baja_moderada-estable_alta',
-          label: 'ICE Bajo Moderado - HH Alta',
+          label: 'ICE Bajo Moderado - IHEH Alta',
           value: 0,
         },
       },
@@ -135,26 +142,18 @@ class ForestIntegrity extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
-            description={SCIHFText}
+            description={info}
             className="graphinfo2"
             collapseButton={false}
-          />
-          )
-        )}
-        {!loading && (
-          <DownloadCSV
-            data={Object.values(SciHfCats)}
-            filename={`bt_forest_integrity_${areaId}_${geofenceId}.csv`}
           />
         )}
         <h3 className="inlineb">Haz clic en la gráfica para visualizar las áreas protegidas</h3>
@@ -185,6 +184,15 @@ class ForestIntegrity extends React.Component {
             ))}
           </div>
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={Object.values(SciHfCats)}
+          downloadName={`forest_integrity_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
         {selectedCategory && (
           <>
             <h6>

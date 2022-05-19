@@ -2,22 +2,29 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
-import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import SearchContext from 'pages/search/SearchContext';
-import { timelineHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { timelineHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = timelineHFTexts;
 
 const changeValues = [
   {
     axis: 'y',
     value: 15,
     legend: 'Natural',
-    lineStyle: { stroke: '#3fbf9f', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#3fbf9f',
       fontSize: 9,
@@ -28,9 +35,9 @@ const changeValues = [
   },
   {
     axis: 'y',
-    value: 30,
+    value: 40,
     legend: 'Baja',
-    lineStyle: { stroke: '#d5a529', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#d5a529',
       fontSize: 9,
@@ -43,7 +50,7 @@ const changeValues = [
     axis: 'y',
     value: 60,
     legend: 'Media',
-    lineStyle: { stroke: '#e66c29', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#e66c29',
       fontSize: 9,
@@ -56,7 +63,7 @@ const changeValues = [
     axis: 'y',
     value: 100,
     legend: 'Alta',
-    lineStyle: { stroke: '#cf324e', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#cf324e',
       fontSize: 9,
@@ -73,8 +80,9 @@ class TimelineFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       hfTimeline: [],
+      message: 'loading',
       selectedEcosystem: null,
     };
   }
@@ -93,10 +101,15 @@ class TimelineFootprint extends React.Component {
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
-          this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+          this.setState({
+            hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]),
+            message: null,
+          });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -145,7 +158,7 @@ class TimelineFootprint extends React.Component {
       case 'paramo': return 'Páramo';
       case 'wetland': return 'Humedal';
       case 'dryForest': return 'Bosque Seco Tropical';
-      default: return 'Área total';
+      default: return 'Área consulta';
     }
   };
 
@@ -159,7 +172,7 @@ class TimelineFootprint extends React.Component {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
-      label: this.getLabel(obj.key).substr(0, 11),
+      label: this.getLabel(obj.key).substr(0, 13),
     }));
   };
 
@@ -173,13 +186,14 @@ class TimelineFootprint extends React.Component {
       showInfoGraph,
       hfTimeline,
       selectedEcosystem,
+      message,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -187,7 +201,7 @@ class TimelineFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description={timelineHFText}
+              description={info}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -196,12 +210,6 @@ class TimelineFootprint extends React.Component {
         <h6>
           Huella humana comparada con EE
         </h6>
-        {(hfTimeline && hfTimeline.length > 0) && (
-          <DownloadCSV
-            data={processDataCsv(hfTimeline)}
-            filename={`bt_hf_timeline_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <p>
           Haz clic en un ecosistema para ver su comportamiento
         </p>
@@ -210,12 +218,13 @@ class TimelineFootprint extends React.Component {
             graphType="MultiLinesGraph"
             colors={matchColor('hfTimeline')}
             data={hfTimeline}
+            message={message}
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"
             onClickGraphHandler={(selection) => {
               this.setSelectedEcosystem(selection);
-              handlerClickOnGraph({ chartType: selection });
+              handlerClickOnGraph({ chartType: 'hfTimeline', selectedKey: selection });
             }}
           />
           {selectedEcosystem && (
@@ -228,6 +237,15 @@ class TimelineFootprint extends React.Component {
               </h5>
             </div>
           )}
+          <TextBoxes
+            consText={cons}
+            metoText={meto}
+            quoteText={quote}
+            downloadData={processDataCsv(hfTimeline)}
+            downloadName={`hf_timeline_${areaId}_${geofenceId}.csv`}
+            isInfoOpen={showInfoGraph}
+            toggleInfo={this.toggleInfoGraph}
+          />
         </div>
       </div>
     );

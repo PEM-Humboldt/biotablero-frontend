@@ -8,98 +8,33 @@ import {
   Map,
   TileLayer,
   WMSTileLayer,
+  Pane,
+  GeoJSON,
 } from 'react-leaflet';
 
-import DrawControl from 'components/mapViewer/DrawControl';
+import DrawControl from 'pages/search/mapViewer/DrawControl';
 
 import 'leaflet/dist/leaflet.css';
 
 const config = {};
 config.params = {
-  center: [5.2500, -74.9167], // Location: Mariquita-Tolima
+  colombia: [[-4.2316872, -82.1243666], [16.0571269, -66.85119073]],
 };
 
 class MapViewer extends React.Component {
-  /**
-   * Construct an object with just one value corresponding to a desired attribute
-   *
-   * @param {object} layers layers from props,
-   *  this param is to make the function callable from getDerivedStateFromProps
-   * @param {string} key attribute to choose,
-   *  see attributes of layers inner objects in Search and Compensation.
-   */
-  static infoFromLayers = (layers, key) => {
-    const responseObj = {};
-    Object.keys(layers).forEach((layerKey) => {
-      responseObj[layerKey] = layers[layerKey][key];
-    });
-
-    return responseObj;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
-      layers: {},
-      activeLayers: [],
-      update: false,
       openErrorModal: true,
     };
 
     this.mapRef = React.createRef();
   }
 
-  componentDidUpdate() {
-    const { layers, activeLayers, update } = this.state;
-    const { loadingLayer, rasterBounds } = this.props;
-    if (update) {
-      Object.keys(layers).forEach((layerName) => {
-        if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
-        else this.showLayer(layers[layerName], false);
-      });
-    }
-    const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
-    if (rasterBounds) {
-      this.mapRef.current.leafletElement.fitBounds(rasterBounds);
-    } else if (countActiveLayers === 0 && !loadingLayer) {
-      this.mapRef.current.leafletElement.setView(config.params.center, 5);
-    }
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
-    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
-    const { layers: oldLayers, activeLayers } = prevState;
-    if (newActiveLayers.join() === activeLayers.join()) {
-      return { update: false };
-    }
-
-    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
-    Object.keys(oldLayers).forEach((name) => {
-      if (layers[name] !== oldLayers[name]) {
-        oldLayers[name].remove();
-      }
-    });
-    return { layers, activeLayers: newActiveLayers, update: true };
-  }
-
-  /**
-   *  Defines what layer to show and actions derivate from the selection
-   *
-   * @param {Object} layer receives leaflet object and e.target as the layer
-   * @param {Boolean} state if it's false, then the layer should be hidden
-   */
-  showLayer = (layer, state) => {
-    let fitBounds = true;
-    if (layer.options.fitBounds === false) fitBounds = false;
-
-    if (state === false) {
-      this.mapRef.current.leafletElement.removeLayer(layer);
-    } else {
-      this.mapRef.current.leafletElement.addLayer(layer);
-      if (fitBounds) {
-        this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
-      }
+  componentDidUpdate(prevProps) {
+    const { mapBounds } = this.props;
+    if (prevProps.mapBounds !== mapBounds) {
+      this.mapRef.current.leafletElement.flyToBounds(mapBounds ?? config.params.colombia);
     }
   }
 
@@ -110,14 +45,24 @@ class MapViewer extends React.Component {
       loadingLayer,
       layerError,
       rasterLayers,
+      layers,
       rasterBounds,
       mapTitle,
       drawPolygonEnabled,
       loadPolygonInfo,
     } = this.props;
     const { openErrorModal } = this.state;
+
+    const paneLevels = Array.from(
+      new Set([...layers, ...rasterLayers].map((layer) => layer.paneLevel)),
+    );
+
     return (
-      <Map id="map" ref={this.mapRef} center={config.params.center} zoom={5}>
+      <Map
+        id="map"
+        ref={this.mapRef}
+        bounds={config.params.colombia}
+      >
         {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
@@ -170,15 +115,30 @@ class MapViewer extends React.Component {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
         />
-        {rasterLayers && rasterBounds && (
-          rasterLayers.map((ras, index) => (
-            <ImageOverlay
-              key={index}
-              url={ras}
-              bounds={rasterBounds}
-            />
-          ))
-        )}
+        {paneLevels.map((panelLevel, index) => (
+          <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
+            {layers
+              .filter((l) => l.paneLevel === panelLevel)
+              .map((layer) => (
+                <GeoJSON
+                  key={layer.id}
+                  data={layer.json}
+                  style={layer.layerStyle}
+                  onEachFeature={layer.onEachFeature}
+                />
+              ))}
+            {rasterLayers
+              .filter((l) => l.paneLevel === panelLevel)
+              .map((layer) => (
+                <ImageOverlay
+                  key={layer.id}
+                  url={layer.data}
+                  bounds={rasterBounds}
+                  opacity={layer.opacity}
+                />
+              ))}
+          </Pane>
+        ))}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {userLogged && (
           <WMSTileLayer
@@ -200,12 +160,13 @@ MapViewer.propTypes = {
   geoServerUrl: PropTypes.string.isRequired,
   userLogged: PropTypes.object,
   loadingLayer: PropTypes.bool,
-  // They're used in getDerivedStateFromProps but eslint won't realize
-  // eslint-disable-next-line react/no-unused-prop-types
-  layers: PropTypes.object.isRequired,
-  // eslint-disable-next-line react/no-unused-prop-types
+  layers: PropTypes.array,
   layerError: PropTypes.bool,
-  rasterLayers: PropTypes.arrayOf(PropTypes.string),
+  rasterLayers: PropTypes.arrayOf(PropTypes.shape({
+    data: PropTypes.string,
+    opacity: PropTypes.number,
+  })),
+  mapBounds: PropTypes.object,
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
   loadPolygonInfo: PropTypes.func,
@@ -217,6 +178,8 @@ MapViewer.defaultProps = {
   loadingLayer: false,
   layerError: false,
   rasterLayers: [],
+  layers: [],
+  mapBounds: null,
   rasterBounds: null,
   mapTitle: null,
   loadPolygonInfo: () => {},

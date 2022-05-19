@@ -8,16 +8,22 @@ import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
-import { SpeciesRecordsGapsText } from 'pages/search/drawer/species/richness/InfoTexts';
+import { SpeciesRecordsGapsTexts } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = SpeciesRecordsGapsTexts;
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
     case 'states':
       return 'departamentos';
-    case 'pa':
-      return 'áreas de manejo especial';
     case 'ea':
       return 'jurisdicciones ambientales';
     case 'basinSubzones':
@@ -56,7 +62,7 @@ class SpeciesRecordsGaps extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       gaps: {},
       concentration: {},
       messageGaps: 'loading',
@@ -65,6 +71,7 @@ class SpeciesRecordsGaps extends React.Component {
       bioticRegion: 'Región Biótica',
       concentrationFlag: false,
       showErrorMessage: false,
+      csvData: [],
     };
   }
 
@@ -86,11 +93,14 @@ class SpeciesRecordsGaps extends React.Component {
             || res[0].max > res[0].max_region
             );
           const { region, ...data } = this.transformData(res);
+          const dataArray = [];
+          dataArray.push(data);
           this.setState({
             gaps: data,
             messageGaps: null,
             bioticRegion: region,
             showErrorMessage,
+            csvData: dataArray,
           });
         }
       })
@@ -102,10 +112,13 @@ class SpeciesRecordsGaps extends React.Component {
       .then((res) => {
         if (this.mounted) {
           const { region, ...data } = this.transformData(res);
+          const dataArray = [];
+          dataArray.push(data);
           this.setState({
             concentration: data,
             messageConc: null,
             bioticRegion: region,
+            csvData: dataArray,
           });
         }
       })
@@ -159,8 +172,46 @@ class SpeciesRecordsGaps extends React.Component {
     }));
   };
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((item) => {
+      let obj = {};
+      Object.keys(item.markers).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.markers[element],
+        };
+      });
+      Object.keys(item.measures).forEach((element) => {
+        obj = {
+          ...obj,
+          [element]: item.measures[element],
+        };
+      });
+      result.push({
+        type: item.id,
+        value: obj.value,
+        lower_value: obj.min,
+        higher_value: obj.max,
+        lower_area_type: obj.min_threshold,
+        higher_area_type: obj.max_threshold,
+        lower_region: obj.min_region,
+        higher_region: obj.max_region,
+      });
+    });
+    return result;
+  };
+
   render() {
-    const { areaId } = this.context;
+    const {
+      areaId,
+      geofenceId,
+    } = this.context;
     const {
       showInfoGraph,
       messageGaps,
@@ -171,25 +222,24 @@ class SpeciesRecordsGaps extends React.Component {
       bioticRegion,
       concentrationFlag,
       showErrorMessage,
+      csvData,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
-            description={SpeciesRecordsGapsText}
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
         {showErrorMessage && (
           <div className="disclaimer">
@@ -235,6 +285,15 @@ class SpeciesRecordsGaps extends React.Component {
 
           ))}
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={this.processDownload(csvData)}
+          downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
         {concentrationFlag && (
           <>
             <br />

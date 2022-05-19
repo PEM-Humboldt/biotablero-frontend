@@ -8,12 +8,9 @@ import CssCarousel from 'pages/home/content/CssCarousel';
 import isFlagEnabled from 'utils/isFlagEnabled';
 
 const Content = ({ activeModule, setActiveModule }) => {
-  const [showPort, setShowPort] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
-    isFlagEnabled('portfoliosModule')
-      .then((value) => setShowPort(value));
     isFlagEnabled('alertsModule')
       .then((value) => setShowAlert(value));
   }, []);
@@ -46,10 +43,7 @@ const Content = ({ activeModule, setActiveModule }) => {
       localLink: '/GEB/Compensaciones',
       auth: true,
     },
-  ];
-
-  if (showPort) {
-    modules.push({
+    {
       focusCallback: () => setActiveModule('portfolio'),
       buttonStyles: `finder port ${(activeModule === 'portfolio') ? 'activeicon' : ''}`,
       idBtn: 'portbtn',
@@ -57,8 +51,9 @@ const Content = ({ activeModule, setActiveModule }) => {
       secondLineContent: 'Portafolios',
       localLink: '/Portafolios',
       auth: false,
-    });
-  }
+    },
+  ];
+
   if (showAlert) {
     modules.push({
       focusCallback: () => setActiveModule('alert'),

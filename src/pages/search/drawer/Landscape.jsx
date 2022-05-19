@@ -16,7 +16,7 @@ class Landscape extends React.Component {
       childMap: {
         fc: 'fc',
         hf: 'hfCurrent',
-        forest: 'forestIntegrity',
+        forest: 'forestLP-2016-2021',
         connectivity: 'currentPAConn',
       },
     };
@@ -108,9 +108,6 @@ class Landscape extends React.Component {
         break;
       case 'ea':
         selected = ['fc', 'hf', 'forest', 'connectivity'];
-        break;
-      case 'pa':
-        selected = ['hf', 'forest'];
         break;
       default:
         break;

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ResponsiveBar } from '@nivo/bar';
 
+import BarItem from 'components/charts/BarItem';
 import formatNumber from 'utils/format';
 
 const SmallBarStackGraph = (props) => {
@@ -10,6 +11,7 @@ const SmallBarStackGraph = (props) => {
     height,
     colors,
     units,
+    onClickGraphHandler,
   } = props;
 
   /**
@@ -45,12 +47,13 @@ const SmallBarStackGraph = (props) => {
    *
    * @param {string} id id for each bar
    * @param {Object} allData transformed data with all information needed
+   *
    * @returns {object} tooltip for component
    */
   const getToolTip = (id, allData) => {
     if (id !== 'NA') {
       return (
-        <div className="tooltip-graph-container" style={{ position: 'absolute' }}>
+        <div className="tooltip-graph-container">
           <strong style={{ color: '#e84a5f' }}>
             {(id !== 'undefined') ? allData[`${id}Label`] : ''}
           </strong>
@@ -89,7 +92,9 @@ const SmallBarStackGraph = (props) => {
         animate
         motionStiffness={90}
         motionDamping={15}
+        barComponent={BarItem}
         tooltip={({ id, data: allData }) => getToolTip(id, allData)}
+        onClick={({ id }) => onClickGraphHandler(id)}
       />
     </div>
   );
@@ -105,12 +110,14 @@ SmallBarStackGraph.propTypes = {
   height: PropTypes.number,
   colors: PropTypes.func,
   units: PropTypes.string,
+  onClickGraphHandler: PropTypes.func,
 };
 
 SmallBarStackGraph.defaultProps = {
   height: 30,
   colors: () => {},
   units: 'ha',
+  onClickGraphHandler: () => {},
 };
 
 export default SmallBarStackGraph;

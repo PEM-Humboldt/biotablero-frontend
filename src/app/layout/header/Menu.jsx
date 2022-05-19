@@ -11,13 +11,10 @@ class Menu extends React.Component {
     this.state = {
       openMenu: false,
       showAlerts: false,
-      showPortfolios: false,
     };
   }
 
   componentDidMount() {
-    isFlagEnabled('portfoliosModule')
-      .then((value) => this.setState({ showPortfolios: value }));
     isFlagEnabled('alertsModule')
       .then((value) => this.setState({ showAlerts: value }));
   }
@@ -28,7 +25,7 @@ class Menu extends React.Component {
 
   render() {
     const { user } = this.context;
-    const { openMenu, showPortfolios, showAlerts } = this.state;
+    const { openMenu, showAlerts } = this.state;
     return (
       <div id="menuToggle">
         <input type="checkbox" checked={openMenu} onChange={this.changeMenuState} />
@@ -59,13 +56,11 @@ class Menu extends React.Component {
             </Link>
           )
             : '' }
-          {showPortfolios && (
-            <Link to="/Portafolios" onClick={this.changeMenuState}>
-              <li>
-                Portafolios
-              </li>
-            </Link>
-          )}
+          <Link to="/Portafolios" onClick={this.changeMenuState}>
+            <li>
+              Portafolios
+            </li>
+          </Link>
           {showAlerts && (
             <Link to="/Alertas" onClick={this.changeMenuState}>
               <li>

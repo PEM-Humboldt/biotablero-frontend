@@ -14,11 +14,11 @@ const match = {
     palette: 'bioticReg',
   },
   coverage: {
-    palette: 'blue',
+    palette: 'coverage',
     sort: ['N', 'S', 'T'],
   },
   pa: {
-    palette: 'green',
+    palette: 'pa',
     sort: ['No Protegida'],
   },
   se: {
@@ -214,14 +214,11 @@ const match = {
 const cache = {
   biomas: { counter: 0 },
   bioticReg: { counter: 0 },
-  pa: { counter: 1 },
+  pa_counter: 1,
 };
 
 /**
  * returns the color determined for a given value.
- *
- * fc and coverage have unique colors for a given value.
- * pa has unique value for 'No protegida'.
  *
  * @param {string} type type of information to apply colors.
  * @param {boolean} resetCache whether to clean the cache before assigning colors. Applies to 'pa'
@@ -255,15 +252,13 @@ const matchColor = (type, resetCache = false) => {
       };
     case 'pa':
       if (resetCache) {
-        cache.pa = { counter: 1 };
+        cache.pa_counter = 1;
       }
       return (value) => {
         const idx = sort.indexOf(value);
         if (idx !== -1) return palette[idx];
-        if (cache.pa[value]) return cache.pa[value];
-        const { counter } = cache.pa;
-        cache.pa[value] = palette[counter];
-        cache.pa.counter = counter === palette.length - 1 ? sort.length : counter + 1;
+        const { pa_counter: counter } = cache;
+        cache.pa_counter = counter === palette.length - 1 ? 1 : counter + 1;
         return palette[counter];
       };
     case 'hfPersistence':

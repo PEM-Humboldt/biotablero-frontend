@@ -2,23 +2,30 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import GraphLoader from 'components/charts/GraphLoader';
-import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { TimelinePAConnText } from 'pages/search/drawer/landscape/InfoTexts';
+import { TimelinePAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
+import TextBoxes from 'components/TextBoxes';
 
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = TimelinePAConnTexts;
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
 
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       timelinePAConnectivity: [],
+      message: 'loading',
     };
   }
 
@@ -33,7 +40,10 @@ class TimelinePAConnectivity extends React.Component {
     ])
       .then((res) => {
         if (this.mounted) {
-          this.setState({ timelinePAConnectivity: this.processData(res) });
+          this.setState({
+            timelinePAConnectivity: this.processData(res),
+            message: null,
+          });
         }
       });
   }
@@ -87,6 +97,7 @@ class TimelinePAConnectivity extends React.Component {
     const {
       showInfoGraph,
       timelinePAConnectivity,
+      message,
     } = this.state;
     const {
       areaId,
@@ -95,41 +106,43 @@ class TimelinePAConnectivity extends React.Component {
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={TimelinePAConnText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={info}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <div>
           <h6>
             Conectividad áreas protegidas en el tiempo
           </h6>
-          {(timelinePAConnectivity && timelinePAConnectivity.length > 0) && (
-          <DownloadCSV
-            data={processDataCsv(timelinePAConnectivity)}
-            filename={`bt_conn_timeline_${areaId}_${geofenceId}.csv`}
-          />
-          )}
           <div>
             <GraphLoader
               graphType="MultiLinesGraph"
               colors={matchColor('timelinePAConn')}
               data={timelinePAConnectivity}
+              message={message}
               labelX="Año"
               labelY="Porcentaje"
               units="%"
               yMax={50}
+            />
+            <TextBoxes
+              consText={cons}
+              metoText={meto}
+              quoteText={quote}
+              downloadData={processDataCsv(timelinePAConnectivity)}
+              downloadName={`conn_timeline_${areaId}_${geofenceId}.csv`}
+              isInfoOpen={showInfoGraph}
+              toggleInfo={this.toggleInfoGraph}
             />
           </div>
         </div>

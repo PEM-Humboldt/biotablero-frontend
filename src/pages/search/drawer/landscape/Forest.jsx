@@ -14,10 +14,9 @@ const Forest = (props) => {
   const componentsArray = [
     {
       label: {
-        id: 'forestLP-2016-2019',
+        id: 'forestLP-2016-2021',
         name: 'Perdida y persistencia',
-        disabled: true,
-        collapsed: openTab !== 'forestLP-2016-2019',
+        collapsed: openTab !== 'forestLP-2016-2021',
       },
       component: ForestLossPersistence,
     },

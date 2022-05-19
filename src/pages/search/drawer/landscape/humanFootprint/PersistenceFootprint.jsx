@@ -2,13 +2,20 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
-import { persistenceHFText } from 'pages/search/drawer/landscape/InfoTexts';
+import { persistenceHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import DownloadCSV from 'components/DownloadCSV';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = persistenceHFTexts;
 
 const getLabel = {
   estable_natural: 'Estable Natural',
@@ -22,8 +29,9 @@ class PersistenceFootprint extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       hfPersistence: [],
+      message: 'loading',
     };
   }
 
@@ -45,10 +53,13 @@ class PersistenceFootprint extends React.Component {
               ...item,
               label: getLabel[item.key],
             })),
+            message: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -70,39 +81,36 @@ class PersistenceFootprint extends React.Component {
       geofenceId,
       handlerClickOnGraph,
     } = this.context;
-    const { showInfoGraph, hfPersistence } = this.state;
+    const {
+      showInfoGraph,
+      hfPersistence,
+      message,
+    } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
-            <ShortInfo
-              description={persistenceHFText}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )
+        {showInfoGraph && (
+          <ShortInfo
+            description={info}
+            className="graphinfo2"
+            collapseButton={false}
+          />
         )}
         <h6>
           Estable natural, Dinámica, Estable alta
         </h6>
-        {(hfPersistence && hfPersistence.length > 0) && (
-          <DownloadCSV
-            data={hfPersistence}
-            filename={`bt_hf_persistence_${areaId}_${geofenceId}.csv`}
-          />
-        )}
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={hfPersistence}
+            message={message}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
@@ -111,6 +119,15 @@ class PersistenceFootprint extends React.Component {
             onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
           />
         </div>
+        <TextBoxes
+          downloadData={hfPersistence}
+          downloadName={`persistence_${areaId}_${geofenceId}.csv`}
+          quoteText={quote}
+          metoText={meto}
+          consText={cons}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
       </div>
     );
   }

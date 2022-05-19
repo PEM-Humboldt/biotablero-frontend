@@ -7,6 +7,18 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import formatNumber from 'utils/format';
+import { LPTexts } from 'pages/search/drawer/landscape/forest/InfoTexts';
+import TextBoxes from 'components/TextBoxes';
+
+const {
+  info,
+  meto,
+  cons,
+  quote,
+} = LPTexts;
+
+const LATEST_PERIOD = '2016-2021';
 
 const getLabel = {
   persistencia: 'Persistencia',
@@ -21,8 +33,9 @@ class ForestLossPersistence extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       forestLP: [],
+      message: 'loading',
       forestPersistenceValue: 0,
     };
   }
@@ -35,9 +48,15 @@ class ForestLossPersistence extends React.Component {
       switchLayer,
     } = this.context;
 
-    switchLayer('forestLP-2016-2019');
+    const getPersistenceValue = (data) => {
+      const periodData = data ? data.find((item) => item.id === LATEST_PERIOD).data : null;
+      const persistenceData = periodData ? periodData.find((item) => item.key === 'persistencia') : null;
+      return persistenceData ? persistenceData.area : 0;
+    };
 
-    RestAPI.requestEcoChangeLPCategories(areaId, geofenceId)
+    switchLayer(`forestLP-${LATEST_PERIOD}`);
+
+    RestAPI.requestForestLP(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
@@ -49,19 +68,14 @@ class ForestLossPersistence extends React.Component {
               }
               )),
             })),
+            forestPersistenceValue: getPersistenceValue(res),
+            message: null,
           });
         }
       })
-      .catch(() => {});
-    RestAPI.requestEcoChangePersistenceValue(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            forestPersistenceValue: Number(res.area),
-          });
-        }
-      })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -77,39 +91,60 @@ class ForestLossPersistence extends React.Component {
     }));
   };
 
+  /**
+   * Process data to be downloaded as a csv file
+   *
+   * @param {Object} data data transformed passed to graph
+   */
+  processDownload = (data) => {
+    const result = [];
+    data.forEach((period) => (
+      period.data.forEach((obj) => {
+        result.push({
+          period: period.id,
+          category: obj.label,
+          area: obj.area,
+          percentage: obj.percentage,
+        });
+      })));
+    return result;
+  };
+
   render() {
     const {
       forestLP,
       forestPersistenceValue,
       showInfoGraph,
+      message,
     } = this.state;
-    const { handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcontainer pt6">
         <h2>
-          <IconTooltip title="Acerca de esta sección">
+          <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
-              onClick={() => this.toggleInfoGraph()}
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              onClick={this.toggleInfoGraph}
             />
           </IconTooltip>
         </h2>
-        {(
-          showInfoGraph && (
+        {showInfoGraph && (
           <ShortInfo
-            name="Perdida y persistencia"
-            description="Perdida y persistencia"
+            description={info}
             className="graphinfo2"
             collapseButton={false}
           />
-          )
         )}
         <div>
           <h6>
             Cobertura actual
           </h6>
           <h5 style={{ backgroundColor: matchColor('forestLP')('persistencia') }}>
-            {forestPersistenceValue}
+            {`${formatNumber(forestPersistenceValue, 0)} ha `}
           </h5>
         </div>
         <div>
@@ -121,6 +156,7 @@ class ForestLossPersistence extends React.Component {
           <GraphLoader
             graphType="MultiSmallBarStackGraph"
             data={forestLP}
+            message={message}
             units="ha"
             colors={matchColor('forestLP')}
             onClickGraphHandler={(period, key) => {
@@ -130,9 +166,18 @@ class ForestLossPersistence extends React.Component {
                 selectedKey: key,
               });
             }}
-            selectedIndexValue="2016-2019"
+            selectedIndexValue="2016-2021"
           />
         </div>
+        <TextBoxes
+          consText={cons}
+          metoText={meto}
+          quoteText={quote}
+          downloadData={this.processDownload(forestLP)}
+          downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={this.toggleInfoGraph}
+        />
       </div>
     );
   }

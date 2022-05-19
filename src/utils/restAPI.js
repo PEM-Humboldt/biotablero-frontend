@@ -49,21 +49,21 @@ class RestAPI {
   }
 
   /**
-   * Recover coverage area by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the coverage
+   * Get coverage area by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestCoverage(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/coverage`);
+  static requestCoverage(areaType, areaId) {
+    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
-   * Recover protected areas values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the protected areas
+   * Get the protected areas values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestProtectedAreas(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/pa`);
+  static requestProtectedAreas(areaType, areaId) {
+    return RestAPI.makeGetRequest(`/pa?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -83,20 +83,12 @@ class RestAPI {
   }
 
   /**
-   * Recover the national protected area by selected strategic ecosystems
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
+   * Get the area distribution for each SE type and total SE area within a given area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-  static requestNationalPA(idGeofence) {
-    return RestAPI.makeGetRequest(`se/${idGeofence}/pa`);
-  }
-
-  /**
-   * Recover the strategic ecosystems values by selected area
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request the strategic ecosystems
-   */
-  static requestStrategicEcosystems(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se`);
+  static requestStrategicEcosystems(areaType, areaId) {
+    return RestAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -110,23 +102,25 @@ class RestAPI {
   }
 
   /**
-   * Recover the coverage by selected strategic ecosystems and geofence
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
-   * @param {Number} seType type of strategic ecosystem to request
+   * Get the coverage area distribution by selected strategic ecosystem and geofence
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
    */
-  static requestSECoverageByGeofence(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/coverage`);
+  static requestSECoverageByGeofence(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(
+      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+    );
   }
 
   /**
-   * Recover the protected area by selected strategic ecosystems and geofence
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
+   * Get the the protected area by selected strategic ecosystems and geofence
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {Number} seType type of strategic ecosystem to request
    */
-  static requestSEPAByGeofence(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}/pa`);
+  static requestSEPAByGeofence(areaType, areaId, seType) {
+    return RestAPI.makeGetRequest(`/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
   }
 
   /**
@@ -136,13 +130,6 @@ class RestAPI {
    */
   static requestGeofenceDetails(idArea, idGeofence) {
     return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
-  }
-
-  /**
-   * Recover a list with all protected areas available in the database
-   */
-  static getAllProtectedAreas() {
-    return RestAPI.makeGetRequest('pa/categories');
   }
 
   /**
@@ -260,27 +247,15 @@ class RestAPI {
   }
 
   /**
-   * Get the forest loss and persistence data by categories in the given area.
+   * Get the forest loss and persistence data by periods and categories in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestEcoChangeLPCategories(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/lp/categories`);
-  }
-
-  /**
-   * Get the forest persistence value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Objects with value for the forest persistence
-   */
-  static requestEcoChangePersistenceValue(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/persistence`);
+  static requestForestLP(areaType, areaId) {
+    return RestAPI.makeGetRequest(`forest/lp?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -293,7 +268,7 @@ class RestAPI {
    * @return {Promise<Object>} Objects with value for the SCI and HF persistence
    */
   static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`sci/hf?areaType=${areaType}&areaId=${areaId}`);
+    return RestAPI.makeGetRequest(`forest/sci/hf?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -496,13 +471,40 @@ class RestAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-   static requestCoveragesLayer(areaType, areaId) {
+  static requestCoveragesLayer(areaType, areaId, coverageType) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/coverage/layer`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given strategic ecosystem and area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+   static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
+    const source = CancelToken.source();
+    return {
+      request: RestAPI.makeGetRequest(
+        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
       source,
     };
   }
@@ -587,7 +589,7 @@ class RestAPI {
   static requestSCIHFGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(`forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -606,25 +608,30 @@ class RestAPI {
   static requestSCIHFPAGeometry(areaType, areaId, sciCat, hfPers) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(`forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
 
   /**
-   * Get the geometry associated to forest loss and persistence according to selected period
-   * and the given area.
+   * Get the layer associated to a category and period of forest loss and persistence
+   * in a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} period period
+   * @param {String} category forest loss and persistence category
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestEcoChangeLPGeometry(areaType, areaId, period) {
+  static requestForestLPLayer(areaType, areaId, period, category) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/ecoChange/layers/lp/period/${period}/categories/`, { cancelToken: source.token }),
+      request: RestAPI.makeGetRequest(
+        `forest/lp/layer?areaType=${areaType}&areaId=${areaId}&period=${period}&category=${category}`,
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
+      ),
       source,
     };
   }
