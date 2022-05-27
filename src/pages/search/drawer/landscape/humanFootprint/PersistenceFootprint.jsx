@@ -31,6 +31,7 @@ class PersistenceFootprint extends React.Component {
     this.state = {
       showInfoGraph: true,
       hfPersistence: [],
+      message: 'loading',
     };
   }
 
@@ -52,10 +53,13 @@ class PersistenceFootprint extends React.Component {
               ...item,
               label: getLabel[item.key],
             })),
+            message: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -80,13 +84,14 @@ class PersistenceFootprint extends React.Component {
     const {
       showInfoGraph,
       hfPersistence,
+      message,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -105,6 +110,7 @@ class PersistenceFootprint extends React.Component {
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={hfPersistence}
+            message={message}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
@@ -117,7 +123,7 @@ class PersistenceFootprint extends React.Component {
           downloadData={hfPersistence}
           downloadName={`persistence_${areaId}_${geofenceId}.csv`}
           quoteText={quote}
-          metaText={meto}
+          metoText={meto}
           consText={cons}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}

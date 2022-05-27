@@ -55,8 +55,12 @@ class StrategicEcosystems extends React.Component {
       PATotalArea: 0,
       SEAreas: [],
       SETotalArea: 0,
-      loadingSE: true,
       activeSE: null,
+      messages: {
+        cov: 'loading',
+        pa: 'loading',
+        se: 'loading',
+      },
     };
   }
 
@@ -74,10 +78,23 @@ class StrategicEcosystems extends React.Component {
     RestAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({ coverage: transformCoverageValues(res) });
+          this.setState((prev) => ({
+            coverage: transformCoverageValues(res),
+            messages: {
+              ...prev.messages,
+              cov: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            cov: 'no-data',
+          },
+        }));
+      });
 
     RestAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
@@ -85,11 +102,25 @@ class StrategicEcosystems extends React.Component {
           if (Array.isArray(res) && res[0]) {
             const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
             const PAAreas = transformPAValues(res, generalArea);
-            this.setState({ PAAreas, PATotalArea });
+            this.setState((prev) => ({
+              PAAreas,
+              PATotalArea,
+              messages: {
+                ...prev.messages,
+                pa: null,
+              },
+            }));
           }
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            pa: 'no-data',
+          },
+        }));
+      });
 
     RestAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
@@ -98,15 +129,24 @@ class StrategicEcosystems extends React.Component {
             const SETotal = res.find((obj) => obj.type === 'Total');
             const SETotalArea = SETotal ? SETotal.area : 0;
             const SEAreas = res.slice(1);
-            this.setState({ SEAreas, SETotalArea });
+            this.setState((prev) => ({
+              SEAreas,
+              SETotalArea,
+              messages: {
+                ...prev.messages,
+                se: null,
+              },
+            }));
           }
         }
       })
-      .catch(() => {})
-      .finally(() => {
-        if (this.mounted) {
-          this.setState({ loadingSE: false });
-        }
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            se: 'no-data',
+          },
+        }));
       });
   }
 
@@ -141,9 +181,9 @@ class StrategicEcosystems extends React.Component {
    */
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
     const { generalArea } = this.props;
-    const { loadingSE, activeSE } = this.state;
-    if (loadingSE) return ('Cargando...');
-    if (SEAreas.length <= 0) return ('No hay información de áreas protegidas en el área de consulta');
+    const { activeSE, messages: { se } } = this.state;
+    if (se === 'loading') return ('Cargando...');
+    if (se === 'no-data') return ('No hay información de áreas protegidas en el área de consulta');
     if (generalArea !== 0) {
       return (
         <EcosystemsBox
@@ -187,6 +227,7 @@ class StrategicEcosystems extends React.Component {
       SEAreas,
       SETotalArea,
       activeSE,
+      messages: { cov, pa },
     } = this.state;
     const {
       areaId,
@@ -226,7 +267,7 @@ class StrategicEcosystems extends React.Component {
           </button>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('coverage') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('coverage')}
             />
           </IconTooltip>
@@ -245,6 +286,7 @@ class StrategicEcosystems extends React.Component {
               <GraphLoader
                 graphType="SmallBarStackGraph"
                 data={coverage}
+                message={cov}
                 units="ha"
                 colors={matchColor('coverage')}
                 onClickGraphHandler={(selected) => {
@@ -268,7 +310,7 @@ class StrategicEcosystems extends React.Component {
           </h4>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('pa') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('pa')}
             />
           </IconTooltip>
@@ -289,6 +331,7 @@ class StrategicEcosystems extends React.Component {
             <GraphLoader
               graphType="SmallBarStackGraph"
               data={PAAreas}
+              message={pa}
               units="ha"
               colors={matchColor('pa', true)}
             />
@@ -309,7 +352,7 @@ class StrategicEcosystems extends React.Component {
             </h4>
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className="downSpecial2"
+                className={`downSpecial2${infoShown.has('se') ? ' activeBox' : ''}`}
                 onClick={() => this.toggleInfo('se')}
               />
             </IconTooltip>

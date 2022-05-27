@@ -35,6 +35,7 @@ class ForestLossPersistence extends React.Component {
     this.state = {
       showInfoGraph: true,
       forestLP: [],
+      message: 'loading',
       forestPersistenceValue: 0,
     };
   }
@@ -68,10 +69,13 @@ class ForestLossPersistence extends React.Component {
               )),
             })),
             forestPersistenceValue: getPersistenceValue(res),
+            message: null,
           });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -111,6 +115,7 @@ class ForestLossPersistence extends React.Component {
       forestLP,
       forestPersistenceValue,
       showInfoGraph,
+      message,
     } = this.state;
     const {
       areaId,
@@ -122,7 +127,7 @@ class ForestLossPersistence extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={this.toggleInfoGraph}
             />
           </IconTooltip>
@@ -151,6 +156,7 @@ class ForestLossPersistence extends React.Component {
           <GraphLoader
             graphType="MultiSmallBarStackGraph"
             data={forestLP}
+            message={message}
             units="ha"
             colors={matchColor('forestLP')}
             onClickGraphHandler={(period, key) => {

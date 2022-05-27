@@ -48,7 +48,7 @@ const descriptions = {
     title: '¿Quién produce los indicadores de biodiversidad?',
     description: (
       <p>
-        {'Los principales productores de este tipo de información es la '}
+        {'Los principales productores de este tipo de información son la '}
         <b>
           comunidad científica
         </b>
@@ -56,7 +56,7 @@ const descriptions = {
         <b>
           batería mínima de Indicadores de Biodiversidad
         </b>
-        {' a nivel nacional es acordada por el SINA bajo el liderazgo del Ministerio de Medio Ambiente y Desarrollo Sostenible y otros indicadores de biodiversidad se encuentran en el '}
+        {' a nivel nacional es acordada por el SINA bajo el liderazgo del Ministerio de Medio Ambiente y Desarrollo Sostenible, y otros indicadores de biodiversidad se encuentran en el '}
         <b>
           Plan Estadístico Nacional
         </b>

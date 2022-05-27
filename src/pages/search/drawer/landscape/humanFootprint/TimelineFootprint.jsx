@@ -24,7 +24,7 @@ const changeValues = [
     axis: 'y',
     value: 15,
     legend: 'Natural',
-    lineStyle: { stroke: '#3fbf9f', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#3fbf9f',
       fontSize: 9,
@@ -35,9 +35,9 @@ const changeValues = [
   },
   {
     axis: 'y',
-    value: 30,
+    value: 40,
     legend: 'Baja',
-    lineStyle: { stroke: '#d5a529', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#d5a529',
       fontSize: 9,
@@ -50,7 +50,7 @@ const changeValues = [
     axis: 'y',
     value: 60,
     legend: 'Media',
-    lineStyle: { stroke: '#e66c29', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#e66c29',
       fontSize: 9,
@@ -63,7 +63,7 @@ const changeValues = [
     axis: 'y',
     value: 100,
     legend: 'Alta',
-    lineStyle: { stroke: '#cf324e', strokeWidth: 1 },
+    lineStyle: { stroke: '#909090', strokeWidth: 1 },
     textStyle: {
       fill: '#cf324e',
       fontSize: 9,
@@ -82,6 +82,7 @@ class TimelineFootprint extends React.Component {
     this.state = {
       showInfoGraph: true,
       hfTimeline: [],
+      message: 'loading',
       selectedEcosystem: null,
     };
   }
@@ -100,10 +101,15 @@ class TimelineFootprint extends React.Component {
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
-          this.setState({ hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]) });
+          this.setState({
+            hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]),
+            message: null,
+          });
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState({ message: 'no-data' });
+      });
   }
 
   componentWillUnmount() {
@@ -180,13 +186,14 @@ class TimelineFootprint extends React.Component {
       showInfoGraph,
       hfTimeline,
       selectedEcosystem,
+      message,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="graphinfo"
+              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -211,6 +218,7 @@ class TimelineFootprint extends React.Component {
             graphType="MultiLinesGraph"
             colors={matchColor('hfTimeline')}
             data={hfTimeline}
+            message={message}
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"

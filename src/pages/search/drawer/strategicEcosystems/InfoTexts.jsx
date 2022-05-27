@@ -2,126 +2,212 @@ export const sectionInfo = `En esta sección se presenta en hectáreas el tipo d
 <br /><br />
 Al interpretar estas cifras e indicadores se debe tener en cuenta que valores inferiores al 1% no son representados en las gráficas y que cualquier cálculo realizado a través de software SIG es una estimación del valor real y dependerá de los parámetros del sistema de proyección utilizado. El sistema de proyección utilizado para el cálculo de áreas en BioTablero es el Sistema MAGNA-SIRGAS con origen en Bogotá y adoptado para el país por el Instituto Geográfico Agustín Codazzi - IGAC.`;
 
-export const CoverageText = `Entre mayor sea el porcentaje de cobertura
-    natural se puede inferir un mejor estado de los ecosistemas presentes. Entre mayor sea el
-    porcentaje de cobertura transformada se puede inferir una mayor pérdida de ecosistemas
-    naturales. El porcentaje de cobertura secundaria pude dar cuenta de los procesos de
-    regeneración, activos o pasivos, y las dinámicas de los cultivos en el área consultada.
+export const CoverageText = `La medición del porcentaje de cobertura natural (color azul),
+secundaria (amarillo) y transformada (terracota) en el área consultada muestra el grado de
+conservación o transformación de los ecosistemas, y permite medir el avance en el cumplimiento de
+metas de conservación. Un mayor porcentaje de cobertura natural significa un mejor estado de los
+ecosistemas, mientras un mayor porcentaje de cobertura transformada da a entender una mayor pérdida
+de ecosistemas naturales. El porcentaje de cobertura secundaria puede mostrar procesos de
+regeneración asistidos o naturales, y dar una referencia de la dinámica de rotación de los
+cultivos en el área consultada.
 `;
 
-export const coverageQuote = `Las cifras de cobertura se obtuvieron de:
+export const coverageMeto = `Las cifras de cobertura se obtuvieron de la recategorización del
+<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Mapa de Cobertura de la Tierra 2018.</a>
+  Siguiendo la
+<a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Leyenda Nacional de Coberturas de la Tierra,
+</a>las coberturas naturales agrupan las categorías bosque denso, abierto, fragmentado, de galería y
+ripario,  herbazal, arbustal, zonas arenosas naturales, afloramientos rocosos, zonas glaciares y
+nivales, áreas húmedas continentales y costeras, ríos, lagunas, lagos y ciénagas naturales, y
+canales y lagunas costeras. Las coberturas transformadas agrupan las categorías territorios
+artificializados y agrícolas, plantaciones forestales, tierras desnudas y degradadas, zonas
+quemadas, cuerpos de agua artificiales y estanques para acuicultura marina. Las coberturas
+secundarias corresponden a la categoría vegetación secundaria o en transición.
+`;
+
+export const coverageCons = `Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
-    IDEAM. Mapa de Cobertura de la tierra periodo 2010 - 2012. (2012), categorizado por
-    coberturas natural, secundaria y transformada de acuerdo con: IDEAM. Leyenda Nacional de
-    Coberturas de la Tierra. Metodología CORINE Land Cover Adaptada para Colombia. Escala
-    1:100.000. (2010).
+    El
+    <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+      Mapa de Cobertura de la Tierra 2018</a> se construyó a partir de imágenes satelitales del año 2018, es una muestra aproximada de este
+    año y no da cuenta del estado actual de los ecosistemas.
+  </li>
+  <li>
+    De acuerdo con la
+    <a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer">
+      Leyenda Nacional de Coberturas de la Tierra
+    </a>
+    la unidad mínima de mapeo corresponde a 25 ha, áreas de cobertura menores no se encuentran representadas.
+  </li>
+  <li>
+    El
+    <a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+      Mapa de Cobertura de la Tierra 2018</a> fue convertido a formato raster a una resolución
+    aproximada de 30 m y re proyectado al sistema de coordenadas
+    <a href="https://epsg.io/4326" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+      EPSG 4326.
+    </a> Las cifras presentadas deben tomarse como valores aproximados y no absolutos.
   </li>
 </ul>
 `;
 
-export const coverageMeto = `La medición del porcentaje de coberturas natural, secundaria y transformada da cuenta del grado
-de conservación o de transformación de los ecosistemas y es utilizado para medir el avance en el
-cumplimiento de metas de conservación globales.
+export const coverageQuote = `El
+<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Mapa de Cobertura de la Tierra 2018
+</a>
+fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-,
+el Instituto Amazónico de Investigaciones Científicas -SINCHI-, y Parques Nacionales Naturales
+de Colombia -PNN- y puede descargarse desde el
+<a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
+</a>
+<br />
+<br />
+La
+<a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Leyenda Nacional de Coberturas de la Tierra
+</a> fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-.`;
+
+export const PAText = `El porcentaje de áreas protegidas es utilizado para medir el nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de biodiversidad
+<a href="https://www.cambridge.org/core/journals/oryx/article/linked-indicator-sets-for-addressing-biodiversity-loss/1D2B4D07C757AD7D2BBB8E70B81E6E17" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+(Sparks, 2011).
+</a> El indicador se desagrega por los tipos de áreas protegidas incorporadas en el
+<a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Registro Único Nacional de Áreas Protegidas -RUNAP-
+</a>
+Un mayor porcentaje de áreas protegidas se interpreta como mayor cantidad de áreas protegidas establecidas.
 `;
 
-export const coverageCons = `Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener
-en cuenta lo siguiente:
+export const PAMeto = `El porcentaje de área representada en áreas protegidas se calculó a partir de
+la superposición entre la capa del
+<a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Registro Único Nacional de Áreas Protegidas -RUNAP-
+</a> y el área consultada.
+
+Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras e  indicadores de las secciones
+COBERTURA y AREAS PROTEGIAS, aplicados a la distribución de los ecosistemas de Páramo, Bosque Seco Tropical y Humedales.`;
+
+export const PACons = `Al interpretar las cifras e indicadores presentados se debe tener en cuenta:
 <ul class="ul-padding-info-text">
   <li>
-    El Mapa de Cobertura de la tierra periodo 2010 - 2012 se construyó a partir de una
-    colección de imágenes satelitales durante este periodo de tiempo, por lo que representa la
-    cobertura de este periodo y no de un año particular. Esto significa que no da cuenta del
-    estado actual de transformación en este ecosistema, sino de una muestra aproximada al año
-    2012.
+    Este indicador debe complementarse con otros que den cuenta del estado -p. ej. el porcentaje de
+    cobertura natural- o las presiones sobre éstos -p. ej. Índice Espacial de Huella Humana o el
+    porcentaje de cobertura transformada-, para tener una mejor idea del estado de los ecosistemas
+    en el área consultada.
   </li>
   <li>
-    De acuerdo con la metodología Corine Land Cover, la unidad mínima de mapeo corresponde a
-    25ha, por lo que áreas de cobertura menores a esta extensión no se encuentran representadas
-    en este mapa.
-  </li>
-</ul>
-`;
-
-export const PAText = `En BioTablero presentamos como indicador de estado el porcentaje de cobertura natural como atributo de la
-    estructura, y el Índice Espacial de Huella Humana como un índice de presión. Se recomiendo
-    hacer la lectura de los tres indicadores para tener una mejor idea del estado de los ecosistemas
-    naturales en el área consultada.
-`;
-
-export const PAQuote = `Las cifras de porcentaje de área protegidas se obtuvieron a partir de la información espacial
-del
-<a href="https://runap.parquesnacionales.gov.co" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
-Registro Único Nacional de Áreas Protegidas de Colombia- RUNAP.
-</a>`;
-
-export const PAMeto = `El indicador: “Porcentaje de área representada en áreas protegidas” es utilizado para medir el
-nivel de implementación de las políticas o las acciones para prevenir o reducir la pérdida de
-biodiversidad (Sparks, 2011). Dependiendo del tipo de área protegida se puede desagregar la
-respuesta por autoridades nacionales, regionales y sociedad civil. Pese a que este indicador se
-ha utilizado también para inferir la condición de los ecosistemas, éste debería complementarse
-con indicadores que den cuenta del estado de los atributos del ecosistema: estructura,
-composición y función, o del nivel de presiones presentes en el ecosistema.
-`;
-
-export const PACons = `Al interpretar las cifras e indicadores presentados con información de porcentaje de áreas
-protegidas se debe tener en cuenta:
-<ul class="ul-padding-info-text">
-  <li>
-    Es probable que no todas las áreas de conservación a nivel regional y local se encuentren
-    inscritas en el RUNAP; la incorporación en este registro depende del reporte de las
-    autoridades regionales y locales. Así, es posible que existan áreas de conservación que no
-    se estén tomando en estos cálculos.
+    Es posible que existan áreas protegidas que no se estén teniendo en cuenta en estos cálculos, ya
+     que puede ocurrir que no todas las áreas de conservación a nivel regional y local se encuentren
+    inscritas en el Registro Único Nacional de Áreas Protegidas -RUNAP-; la incorporación en este
+    registro depende del reporte de las autoridades regionales y locales.
   </li>
   <li>
-    La información espacial del RUNAP utilizada para los cálculos presentados fue consultada en
-    enero de 2019, modificaciones posteriores al RUNAP no se encuentran reflejadas.
+    La capa del RUNAP utilizada para los cálculos fue consultada en marzo de 2022; modificaciones
+    posteriores al RUNAP no se encuentran reflejadas.
   </li>
   <li>
     Para evitar la sobreestimación del porcentaje de áreas protegidas, las superposiciones
-    espaciales entre distintas figuras de conservación presentes en la información espacial del
-    RUNAP fueron incluidas en el cálculo una sola vez.
-  </li>
-</ul>`;
-
-export const SEText = `Si para un ecosistema estratégico se tiene un porcentaje menor al 17% representado en áreas
-    protegidas, puede inferirse que para la unidad consultada hacen falta esfuerzos para la
-    conservación de ese ecosistema. El 17% es la cifra mínima recomendada de representatividad
-    de las áreas protegidas en ecosistemas terrestres y aguas continentales de acuerdo a las metas
-    Aichi del Convenio sobre la Diversidad Biológica. Sin embargo, se plantea incrementar este
-    porcentaje a 30% de acuerdo a las nuevas metas del Marco Global de Biodiversidad post 2020.
-`;
-
-export const SEQuote = `Las cifras de ecosistemas estratégicos se obtuvieron de:
-<ul class="ul-padding-info-text">
-  <li>
-    IAvH. Actualización de los límites cartográficos de los Complejos de Páramos de Colombia,
-    escala 1:100.000. Proyecto: Actualización del Atlas de Páramos de Colombia. (2012).
-  </li>
-  <li>
-    IAvH. Bosques secos tropicales de Colombia, escala 1:100.000. (2014).
-  </li>
-  <li>
-    IAvH. Mapa Identificación de humedales de Colombia, escala 1:100.000 (2015).
+    espaciales entre distintos tipos de áreas protegidas del RUNAP fueron incluidas en el cálculo
+    una sola vez.
   </li>
 </ul>
 `;
 
-export const SEMeto = `Los Ecosistemas Estratégicos son aquellos destacados por su importancia biológica, por las
-contribuciones que generan a las personas, o por su nivel de vulnerabilidad en el país.
-Se presenta en hectáreas la cantidad de Páramos, Bosque Seco Tropical y Humedales para el
-área consultada, y para cada tipo de ecosistema dentro del mismo límite, se presenta el
-porcentaje de coberturas natural, secundaria y transformada, y su representación en áreas
-protegidas.
+export const PAQuote = `El
+<a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Registro Único Nacional de Áreas Protegidas -RUNAP-
+</a>
+se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
+<a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  RUNAP en Cifras.
+</a>
 `;
 
-export const SECons = `Al interpretar las cifras e indicadores presentados con información de coberturas se deben tener
-en cuenta lo siguiente:
+export const SEText = `Se presenta el área de Páramo, Bosque Seco Tropical y Humedales para el área
+consultada, y para cada ecosistema su porcentaje de cobertura natural, secundaria y transformada, y
+su representación en áreas protegidas. El
+<a href="https://www.cbd.int/doc/c/0671/4456/ff4979877c8a9a910912689e/wg2020-03-03-es.pdf" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Primer Borrador del Marco Mundial de Biodiversidad post 2020
+</a>
+(Meta 3) plantea la conservación del 30 % de las zonas de particular importancia para la diversidad
+biológica y sus contribuciones a las personas. Estos ecosistemas estratégicos favorecen la oferta de bienes y
+servicios ambientales esenciales para el desarrollo sostenible del país.
+`;
+
+export const SEMeto = `Las cifras e indicadores presentados siguieron el mismo desarrollo de las cifras e indicadores de las secciones COBERTURA y ÁREAS PROTEGIDAS, aplicados a la distribución de los ecosistemas
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo,
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical</a> y
+
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales.
+</a>
+`;
+
+export const SECons = `
 <ul class="ul-padding-info-text">
-  <li>
-    El límite cartográfico de los ecosistemas estratégicos representa su distribución potencial,
-    y no actual, y están construido a una escala 1:100.000, lo que permite análisis regionales y
-    nacionales.
+  <li>Las mismas consideraciones de las cifras e indicadores presentados en las secciones de COBERTURA Y ÁREAS PROTEGIDAS.
   </li>
 </ul>
 `;
+
+export const SEQuote = `El
+<a href="http://geoservicios.ideam.gov.co/geonetwork/srv/spa/catalog.search;jsessionid=97B6F80606F3D7E735B92FA7456F174E#/metadata/285c4d0a-6924-42c6-b4d4-6aef2c1aceb5" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Mapa de Cobertura de la Tierra 2018
+</a>
+fue construido por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM, el
+Instituto Amazónico de Investigaciones Científicas - SINCHI, y Parques Nacionales Naturales de
+Colombia - PNN y puede descargarse desde el
+<a href="http://www.siac.gov.co/catalogo-de-mapas" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Catálogo de Mapas del Sistema de Información Ambiental de Colombia -SIAC-.
+</a>
+<br />
+<br />
+La
+<a href="http://documentacion.ideam.gov.co/cgi-bin/koha/opac-detail.pl?biblionumber=10707" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Leyenda Nacional de Coberturas de la Tierra
+</a>
+fue construida por el Instituto de Hidrología, Meteorología y Estudios Ambientales - IDEAM.
+<br />
+<br />
+El
+<a href="https://runap.parquesnacionales.gov.co/cifras" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Registro Único Nacional de Áreas Protegidas -RUNAP-
+</a>
+se encuentra en cabeza de Parques Nacionales Naturales y puede descargarse desde
+<a href="https://mapas.parquesnacionales.gov.co/services/pnn/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=pnn:runap2&maxFeatures=10000&outputFormat=SHAPE-ZIP" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  RUNAP en Cifras.
+</a>
+<br />
+<br />
+La distribución de los ecosistemas de
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Páramo,
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales
+</a>
+fue construida por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt
+-I. Humboldt- y pueden descargarse desde su
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Repositorio Geográfico
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/c9a5d546-33b5-41d6-a60e-57cfae1cff82" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  (Páramo,
+</a>
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/6ccd867c-5114-489f-9266-3e5cf657a375" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Bosque Seco Tropical
+</a>
+y
+<a href="http://geonetwork.humboldt.org.co/geonetwork/srv/spa/catalog.search#/metadata/d68f4329-0385-47a2-8319-8b56c772b4c0" target="_blank" rel="noopener noreferrer" style={{ color: '#51b4c1' }}>
+  Humedales).
+</a>`;

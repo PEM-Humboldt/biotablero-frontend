@@ -42,9 +42,14 @@ class CompensationFactor extends React.Component {
     super(props);
     this.state = {
       infoShown: new Set(['cf']),
-      biomes: null,
-      fc: null,
-      bioticUnits: null,
+      biomes: [],
+      fc: [],
+      bioticUnits: [],
+      messages: {
+        fc: 'loading',
+        biomes: 'loading',
+        bioticUnits: 'loading',
+      },
     };
   }
 
@@ -63,26 +68,65 @@ class CompensationFactor extends React.Component {
     RestAPI.requestBiomes(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({ biomes: this.processData(res) });
+          this.setState((prev) => ({
+            biomes: this.processData(res),
+            messages: {
+              ...prev.messages,
+              biomes: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            biomes: 'no-data',
+          },
+        }));
+      });
 
     RestAPI.requestCompensationFactor(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({ fc: this.processData(res) });
+          this.setState((prev) => ({
+            fc: this.processData(res),
+            messages: {
+              ...prev.messages,
+              fc: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            fc: 'no-data',
+          },
+        }));
+      });
 
     RestAPI.requestBioticUnits(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({ bioticUnits: this.processData(res) });
+          this.setState((prev) => ({
+            bioticUnits: this.processData(res),
+            messages: {
+              ...prev.messages,
+              bioticUnits: null,
+            },
+          }));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        this.setState((prev) => ({
+          messages: {
+            ...prev.messages,
+            bioticUnits: 'no-data',
+          },
+        }));
+      });
   }
 
   componentWillUnmount() {
@@ -122,24 +166,17 @@ class CompensationFactor extends React.Component {
       biomes,
       fc,
       bioticUnits,
+      messages: {
+        fc: fcMess,
+        biomes: biomesMess,
+        bioticunits: bioticUnitsMess,
+      },
     } = this.state;
     const {
       areaId,
       geofenceId,
     } = this.context;
 
-    if (!biomes || !bioticUnits || !fc) {
-      return (
-        <div className="graphcard" style={{ width: '100%' }}>
-          <h2>
-            Gráficas en construcción
-          </h2>
-          <p>
-            Pronto más información
-          </p>
-        </div>
-      );
-    }
     return (
       <div style={{ width: '100%' }}>
         <div className="graphcardAcc pt6 ml10">
@@ -149,7 +186,7 @@ class CompensationFactor extends React.Component {
           <div className="graphinfobox">
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className="graphinfo"
+                className={`graphinfo${infoShown.has('cf') ? ' activeBox' : ''}`}
                 onClick={() => this.toggleInfo('cf')}
               />
             </IconTooltip>
@@ -164,6 +201,7 @@ class CompensationFactor extends React.Component {
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={fc}
+            message={fcMess}
             labelX="Hectáreas"
             labelY="Factor de Compensación"
             units="ha"
@@ -184,7 +222,7 @@ class CompensationFactor extends React.Component {
           </h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('biomes') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('biomes')}
             />
           </IconTooltip>
@@ -198,6 +236,7 @@ class CompensationFactor extends React.Component {
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={biomes}
+            message={biomesMess}
             labelX="Hectáreas"
             labelY="Biomas"
             units="ha"
@@ -218,7 +257,7 @@ class CompensationFactor extends React.Component {
           </h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className="downSpecial"
+              className={`downSpecial${infoShown.has('bioticReg') ? ' activeBox' : ''}`}
               onClick={() => this.toggleInfo('bioticReg')}
             />
           </IconTooltip>
@@ -232,6 +271,7 @@ class CompensationFactor extends React.Component {
           <GraphLoader
             graphType="LargeBarStackGraph"
             data={bioticUnits}
+            message={bioticUnitsMess}
             labelX="Hectáreas"
             labelY="Regiones Bióticas"
             units="ha"
