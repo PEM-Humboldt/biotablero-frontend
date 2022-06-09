@@ -11,9 +11,9 @@
   "dependencies": {
     "@emotion/react": "~11.9.0",
     "@emotion/styled": "~11.8.1",
-    "@mui/icons-material": "~5.4.2",
-    "@mui/material": "~5.4.2",
-    "@mui/styles": "~5.4.2",
+    "@mui/icons-material": "~5.8.3",
+    "@mui/material": "~5.8.3",
+    "@mui/styles": "~5.8.3",
     "@nivo/bar": "~0.79.0",
     "@nivo/bullet": "~0.79.0",
     "@nivo/core": "~0.79.0",
