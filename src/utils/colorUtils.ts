@@ -4,7 +4,7 @@
  * @param {String} color Hex color
  * @param {Number} percent percentage value
  */
-const changeColor = (color: string, percent: number) => {
+const changeColor = (color: string, percent: number): string => {
   const num: number = parseInt(color.replace('#', ''), 16);
   const amt: number = Math.round(2.55 * percent);
   const R: number = (num >> 16) + amt;
