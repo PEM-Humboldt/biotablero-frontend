@@ -8371,19 +8371,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-includes@npm:^3.1.5":
-  version: 3.1.5
-  resolution: "array-includes@npm:3.1.5"
-  dependencies:
-    call-bind: ^1.0.2
-    define-properties: ^1.1.4
-    es-abstract: ^1.19.5
-    get-intrinsic: ^1.1.1
-    is-string: ^1.0.7
-  checksum: f6f24d834179604656b7bec3e047251d5cc87e9e87fab7c175c61af48e80e75acd296017abcde21fb52292ab6a2a449ab2ee37213ee48c8709f004d75983f9c5
-  languageName: node
-  linkType: hard
-
 "array-normalize@npm:^1.1.4":
   version: 1.1.4
   resolution: "array-normalize@npm:1.1.4"
@@ -8471,7 +8458,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.flatmap@npm:^1.3.0":
+"array.prototype.flatmap@npm:^1.2.4":
   version: 1.3.0
   resolution: "array.prototype.flatmap@npm:1.3.0"
   dependencies:
@@ -9180,7 +9167,7 @@ __metadata:
     eslint-config-airbnb: ~18.2.1
     eslint-plugin-import: ~2.26.0
     eslint-plugin-jsx-a11y: ~6.5.1
-    eslint-plugin-react: ~7.30.0
+    eslint-plugin-react: ~7.24.0
     eslint-plugin-react-hooks: ~1.7.0
     husky: ~4.3.8
     indicators: 1.0.0
@@ -12978,27 +12965,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:~7.30.0":
-  version: 7.30.0
-  resolution: "eslint-plugin-react@npm:7.30.0"
+"eslint-plugin-react@npm:~7.24.0":
+  version: 7.24.0
+  resolution: "eslint-plugin-react@npm:7.24.0"
   dependencies:
-    array-includes: ^3.1.5
-    array.prototype.flatmap: ^1.3.0
+    array-includes: ^3.1.3
+    array.prototype.flatmap: ^1.2.4
     doctrine: ^2.1.0
-    estraverse: ^5.3.0
+    has: ^1.0.3
     jsx-ast-utils: ^2.4.1 || ^3.0.0
-    minimatch: ^3.1.2
-    object.entries: ^1.1.5
-    object.fromentries: ^2.0.5
-    object.hasown: ^1.1.1
-    object.values: ^1.1.5
-    prop-types: ^15.8.1
+    minimatch: ^3.0.4
+    object.entries: ^1.1.4
+    object.fromentries: ^2.0.4
+    object.values: ^1.1.4
+    prop-types: ^15.7.2
     resolve: ^2.0.0-next.3
-    semver: ^6.3.0
-    string.prototype.matchall: ^4.0.7
+    string.prototype.matchall: ^4.0.5
   peerDependencies:
-    eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 729b7682a0fe6eab068171c159503ac57120ecc7b20067e76300b08879745c16a687e2033378ab45d9a3182da8844d06197a89081be83e1eb21fcceb76e79214
+    eslint: ^3 || ^4 || ^5 || ^6 || ^7
+  checksum: bf844f98d93f3617fbd03df4be4f4c9e8e49ea035678762b73a28df730e9518d5ac636293f6326b41b4a0678f9dfa059ce559f6652c7a2d914d477ec3a389619
   languageName: node
   linkType: hard
 
@@ -13274,13 +13259,6 @@ __metadata:
   version: 5.2.0
   resolution: "estraverse@npm:5.2.0"
   checksum: ec11b70d946bf5d7f76f91db38ef6f08109ac1b36cda293a26e678e58df4719f57f67b9ec87042afdd1f0267cee91865be3aa48d2161765a93defab5431be7b8
-  languageName: node
-  linkType: hard
-
-"estraverse@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "estraverse@npm:5.3.0"
-  checksum: 072780882dc8416ad144f8fe199628d2b3e7bbc9989d9ed43795d2c90309a2047e6bc5979d7e2322a341163d22cfad9e21f4110597fe487519697389497e4e2b
   languageName: node
   linkType: hard
 
@@ -19197,7 +19175,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"object.entries@npm:^1.1.5":
+"object.entries@npm:^1.1.4":
   version: 1.1.5
   resolution: "object.entries@npm:1.1.5"
   dependencies:
@@ -19220,7 +19198,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"object.fromentries@npm:^2.0.5":
+"object.fromentries@npm:^2.0.4":
   version: 2.0.5
   resolution: "object.fromentries@npm:2.0.5"
   dependencies:
@@ -19239,16 +19217,6 @@ fsevents@^1.2.7:
     define-properties: ^1.1.3
     es-abstract: ^1.18.0-next.2
   checksum: 6c1c0162a2bea912f092dbf48699998d6f4b788a9884ee99ba41ddf25c3f0924ec56c6a55738c4ae3bd91d1203813a9a8e18e6fff1f477e2626cdbcd1a5f3ca8
-  languageName: node
-  linkType: hard
-
-"object.hasown@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "object.hasown@npm:1.1.1"
-  dependencies:
-    define-properties: ^1.1.4
-    es-abstract: ^1.19.5
-  checksum: d8ed4907ce57f48b93e3b53c418fd6787bf226a51e8d698c91e39b78e80fe5b124cb6282f6a9d5be21cf9e2c7829ab10206dcc6112b7748860eefe641880c793
   languageName: node
   linkType: hard
 
@@ -19273,7 +19241,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"object.values@npm:^1.1.5":
+"object.values@npm:^1.1.4, object.values@npm:^1.1.5":
   version: 1.1.5
   resolution: "object.values@npm:1.1.5"
   dependencies:
@@ -24031,7 +23999,7 @@ resolve@^0.6.1:
   languageName: node
   linkType: hard
 
-"string.prototype.matchall@npm:^4.0.7":
+"string.prototype.matchall@npm:^4.0.5":
   version: 4.0.7
   resolution: "string.prototype.matchall@npm:4.0.7"
   dependencies:
