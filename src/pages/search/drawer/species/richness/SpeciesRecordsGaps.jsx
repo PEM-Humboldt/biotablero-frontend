@@ -8,17 +8,9 @@ import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
-import { SpeciesRecordsGapsTexts } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
 import TextBoxes from 'components/TextBoxes';
-
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = SpeciesRecordsGapsTexts;
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -72,6 +64,7 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag: false,
       showErrorMessage: false,
       csvData: [],
+      texts: {},
     };
   }
 
@@ -124,6 +117,17 @@ class SpeciesRecordsGaps extends React.Component {
       })
       .catch(() => {
         this.setState({ messageConc: 'no-data' });
+      });
+
+    RestAPI.requestSectionTexts('SpeciesRecordsGapsTexts')
+      .then((res) => {
+        if (this.mounted) {
+          this.setState({
+            texts: res,
+          });
+        }
+      })
+      .catch(() => {
       });
 
     isFlagEnabled('speciesRecordsConcentrarion')
@@ -223,6 +227,7 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag,
       showErrorMessage,
       csvData,
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -236,7 +241,7 @@ class SpeciesRecordsGaps extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -286,9 +291,9 @@ class SpeciesRecordsGaps extends React.Component {
           ))}
         </div>
         <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
+          consText={texts.cons}
+          metoText={texts.meto}
+          quoteText={texts.quote}
           downloadData={this.processDownload(csvData)}
           downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
