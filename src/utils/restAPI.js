@@ -416,6 +416,17 @@ class RestAPI {
     return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
   }
 
+  /**
+   * Get texts associated to one section
+   *
+   * @param {String} key section key
+   *
+   * @return {Promise<Object>} Object with texts
+   */
+   static requestSectionTexts(key) {
+    return RestAPI.makeGetRequest(`util/texts?key=${key}`);
+  }
+
   /** ******************** */
   /** MAPS - SEARCH MODULE */
   /** ******************** */
