@@ -13,6 +13,13 @@ Debe tener instalado [nodejs](https://nodejs.org/) v14.15+ y [yarn](https://yarn
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
+En caso de no tener la versión de nodejs requerida se puede activar a partir del archivo .nvmrc ejecutando el siguiente comando:
+
+```sh
+nvm use
+
+```
+
 ### 1.2. Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
