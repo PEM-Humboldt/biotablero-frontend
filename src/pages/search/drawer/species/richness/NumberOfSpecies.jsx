@@ -150,7 +150,7 @@ class NumberOfSpecies extends React.Component {
         this.setState({ message: 'no-data' });
       });
 
-      RestAPI.requestSectionTexts('NOSInferredTexts')
+      RestAPI.requestSectionTexts('nosInferred')
       .then((res) => {
         if (this.mounted) {
           NOSTexts.inferred = res;
@@ -163,7 +163,7 @@ class NumberOfSpecies extends React.Component {
         NOSTexts.inferred = {};
       });
 
-      RestAPI.requestSectionTexts('NOSObservedTexts')
+      RestAPI.requestSectionTexts('nosObserved')
       .then((res) => {
         if (this.mounted) {
           NOSTexts.observed = res;
@@ -173,7 +173,7 @@ class NumberOfSpecies extends React.Component {
         NOSTexts.observed = {};
       });
 
-      RestAPI.requestSectionTexts('NOSTexts')
+      RestAPI.requestSectionTexts('nos')
       .then((res) => {
         if (this.mounted) {
           NOSTexts.helper = res.helper;

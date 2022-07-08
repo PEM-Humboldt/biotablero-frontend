@@ -48,6 +48,10 @@ const getLabelConcentration = (key) => ({
 }[key]
 );
 
+const texts = {
+  gaps: {},
+};
+
 class SpeciesRecordsGaps extends React.Component {
   mounted = false;
 
@@ -64,7 +68,6 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag: false,
       showErrorMessage: false,
       csvData: [],
-      texts: {},
     };
   }
 
@@ -119,15 +122,14 @@ class SpeciesRecordsGaps extends React.Component {
         this.setState({ messageConc: 'no-data' });
       });
 
-    RestAPI.requestSectionTexts('SpeciesRecordsGapsTexts')
+    RestAPI.requestSectionTexts('gaps')
       .then((res) => {
         if (this.mounted) {
-          this.setState({
-            texts: res,
-          });
+          texts.gaps = res;
         }
       })
       .catch(() => {
+        texts.gaps = { };
       });
 
     isFlagEnabled('speciesRecordsConcentrarion')
@@ -227,7 +229,6 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag,
       showErrorMessage,
       csvData,
-      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -241,7 +242,7 @@ class SpeciesRecordsGaps extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.info}
+            description={texts.gaps.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -291,9 +292,9 @@ class SpeciesRecordsGaps extends React.Component {
           ))}
         </div>
         <TextBoxes
-          consText={texts.cons}
-          metoText={texts.meto}
-          quoteText={texts.quote}
+          consText={texts.gaps.cons}
+          metoText={texts.gaps.meto}
+          quoteText={texts.gaps.quote}
           downloadData={this.processDownload(csvData)}
           downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
