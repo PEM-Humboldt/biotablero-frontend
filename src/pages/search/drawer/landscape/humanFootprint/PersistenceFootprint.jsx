@@ -2,7 +2,6 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
-import { persistenceHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
@@ -10,12 +9,9 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = persistenceHFTexts;
+const texts = {
+  hfPersistence: {},
+};
 
 const getLabel = {
   estable_natural: 'Estable Natural',
@@ -60,6 +56,16 @@ class PersistenceFootprint extends React.Component {
       .catch(() => {
         this.setState({ message: 'no-data' });
       });
+
+    RestAPI.requestSectionTexts('hfPersistence')
+      .then((res) => {
+        if (this.mounted) {
+          texts.hfPersistence = res;
+        }
+      })
+      .catch(() => {
+        texts.hfPersistence = { };
+      });
   }
 
   componentWillUnmount() {
@@ -98,7 +104,7 @@ class PersistenceFootprint extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.hfPersistence.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -122,9 +128,9 @@ class PersistenceFootprint extends React.Component {
         <TextBoxes
           downloadData={hfPersistence}
           downloadName={`persistence_${areaId}_${geofenceId}.csv`}
-          quoteText={quote}
-          metoText={meto}
-          consText={cons}
+          quoteText={texts.hfPersistence.quote}
+          metoText={texts.hfPersistence.meto}
+          consText={texts.hfPersistence.cons}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

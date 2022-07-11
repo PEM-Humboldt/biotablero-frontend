@@ -5,19 +5,15 @@ import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import SearchContext from 'pages/search/SearchContext';
-import { timelineHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = timelineHFTexts;
+const texts = {
+  hfTimeline: {},
+};
 
 const changeValues = [
   {
@@ -110,6 +106,16 @@ class TimelineFootprint extends React.Component {
       .catch(() => {
         this.setState({ message: 'no-data' });
       });
+
+    RestAPI.requestSectionTexts('hfTimeline')
+      .then((res) => {
+        if (this.mounted) {
+          texts.hfTimeline = res;
+        }
+      })
+      .catch(() => {
+        texts.hfTimeline = { };
+      });
   }
 
   componentWillUnmount() {
@@ -201,7 +207,7 @@ class TimelineFootprint extends React.Component {
         {(
           showInfoGraph && (
             <ShortInfo
-              description={info}
+              description={texts.hfTimeline.info}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -238,9 +244,9 @@ class TimelineFootprint extends React.Component {
             </div>
           )}
           <TextBoxes
-            consText={cons}
-            metoText={meto}
-            quoteText={quote}
+            consText={texts.hfTimeline.cons}
+            metoText={texts.hfTimeline.meto}
+            quoteText={texts.hfTimeline.quote}
             downloadData={processDataCsv(hfTimeline)}
             downloadName={`hf_timeline_${areaId}_${geofenceId}.csv`}
             isInfoOpen={showInfoGraph}
