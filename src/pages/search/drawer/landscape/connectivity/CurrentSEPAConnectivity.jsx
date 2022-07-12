@@ -5,19 +5,15 @@ import GraphLoader from 'components/charts/GraphLoader';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentSEPAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = CurrentSEPAConnTexts;
+const texts = {
+  paConnSE: {},
+};
 
 const getLabel = {
   unprot: 'No protegida',
@@ -149,6 +145,16 @@ class CurrentSEPAConnectivity extends React.Component {
           },
         }));
       });
+
+      RestAPI.requestSectionTexts('paConnSE')
+      .then((res) => {
+        if (this.mounted) {
+          texts.paConnSE = res;
+        }
+      })
+      .catch(() => {
+        texts.paConnSE = {};
+      });
   }
 
   componentWillUnmount() {
@@ -193,7 +199,7 @@ class CurrentSEPAConnectivity extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.paConnSE.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -315,9 +321,9 @@ class CurrentSEPAConnectivity extends React.Component {
           </div>
           )}
           <TextBoxes
-            consText={cons}
-            metoText={meto}
-            quoteText={quote}
+            consText={texts.paConnSE.cons}
+            metoText={texts.paConnSE.meto}
+            quoteText={texts.paConnSE.quote}
             isInfoOpen={showInfoGraph}
             toggleInfo={this.toggleInfoGraph}
           />

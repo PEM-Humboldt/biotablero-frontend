@@ -4,19 +4,16 @@ import InfoIcon from '@mui/icons-material/Info';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { TimelinePAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = TimelinePAConnTexts;
+const texts = {
+  paConnTimeline: {},
+};
+
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
 
@@ -32,6 +29,7 @@ class TimelinePAConnectivity extends React.Component {
   componentDidMount() {
     this.mounted = true;
     const { areaId, geofenceId, switchLayer } = this.context;
+
     switchLayer('timelinePAConn');
 
     Promise.all([
@@ -45,6 +43,16 @@ class TimelinePAConnectivity extends React.Component {
             message: null,
           });
         }
+      });
+
+      RestAPI.requestSectionTexts('paConnTimeline')
+      .then((res) => {
+        if (this.mounted) {
+          texts.paConnTimeline = res;
+        }
+      })
+      .catch(() => {
+        texts.paConnTimeline = {};
       });
   }
 
@@ -115,7 +123,7 @@ class TimelinePAConnectivity extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.paConnTimeline.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -136,9 +144,9 @@ class TimelinePAConnectivity extends React.Component {
               yMax={50}
             />
             <TextBoxes
-              consText={cons}
-              metoText={meto}
-              quoteText={quote}
+              consText={texts.paConnTimeline.cons}
+              metoText={texts.paConnTimeline.meto}
+              quoteText={texts.paConnTimeline.quote}
               downloadData={processDataCsv(timelinePAConnectivity)}
               downloadName={`conn_timeline_${areaId}_${geofenceId}.csv`}
               isInfoOpen={showInfoGraph}
