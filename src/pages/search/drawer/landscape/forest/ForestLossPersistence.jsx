@@ -8,15 +8,11 @@ import { IconTooltip } from 'components/Tooltips';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
-import { LPTexts } from 'pages/search/drawer/landscape/forest/InfoTexts';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = LPTexts;
+const texts = {
+  forestLP: {},
+};
 
 const LATEST_PERIOD = '2016-2021';
 
@@ -76,6 +72,16 @@ class ForestLossPersistence extends React.Component {
       .catch(() => {
         this.setState({ message: 'no-data' });
       });
+
+    RestAPI.requestSectionTexts('forestLP')
+      .then((res) => {
+        if (this.mounted) {
+          texts.forestLP = res;
+        }
+      })
+      .catch(() => {
+        texts.forestLP = { };
+      });
   }
 
   componentWillUnmount() {
@@ -134,7 +140,7 @@ class ForestLossPersistence extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.forestLP.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -170,9 +176,9 @@ class ForestLossPersistence extends React.Component {
           />
         </div>
         <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
+          consText={texts.forestLP.cons}
+          metoText={texts.forestLP.meto}
+          quoteText={texts.forestLP.quote}
           downloadData={this.processDownload(forestLP)}
           downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}

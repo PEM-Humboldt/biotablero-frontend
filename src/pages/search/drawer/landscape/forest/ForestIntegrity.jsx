@@ -6,18 +6,15 @@ import { LegendColor, BorderLegendColor } from 'components/CssLegends';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { SCIHFTexts } from 'pages/search/drawer/landscape/forest/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = SCIHFTexts;
+const texts = {
+  forestSCIHF: {},
+};
+
 class ForestIntegrity extends React.Component {
   mounted = false;
 
@@ -111,6 +108,16 @@ class ForestIntegrity extends React.Component {
       .catch(() => {
         this.setState({ loading: 'no-data' });
       });
+
+    RestAPI.requestSectionTexts('forestSCIHF')
+      .then((res) => {
+        if (this.mounted) {
+          texts.forestSCIHF = res;
+        }
+      })
+      .catch(() => {
+        texts.forestSCIHF = { };
+      });
   }
 
   componentWillUnmount() {
@@ -151,7 +158,7 @@ class ForestIntegrity extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.forestSCIHF.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -185,9 +192,9 @@ class ForestIntegrity extends React.Component {
           </div>
         </div>
         <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
+          consText={texts.forestSCIHF.cons}
+          metoText={texts.forestSCIHF.meto}
+          quoteText={texts.forestSCIHF.quote}
           downloadData={Object.values(SciHfCats)}
           downloadName={`forest_integrity_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
