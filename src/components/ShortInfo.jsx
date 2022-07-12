@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import isUndefinedOrNull from 'utils/validations';
 
 class ShortInfo extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class ShortInfo extends React.Component {
         <div
           className={`${className}-${hideText}`}
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: `<p><b>${name}</b> ${description}</p>` }}
+          dangerouslySetInnerHTML={{ __html: `<p><b>${name}</b> ${isUndefinedOrNull(description) ? 'Cargando...' : description}</p>` }}
         />
         {collapseButton && (
           <button
