@@ -13,6 +13,13 @@ Debe tener instalado [nodejs](https://nodejs.org/) v14.15+ y [yarn](https://yarn
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
+En caso de no tener la versión de nodejs requerida se puede activar a partir del archivo .nvmrc ejecutando el siguiente comando:
+
+```sh
+nvm use
+
+```
+
 ### 1.2. Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
@@ -21,7 +28,7 @@ Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 ### 1.3. Construcción de dependencias:
 Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
 
-    yarn workspax ces foreach run build-pkg
+    yarn workspaces foreach run build-pkg
 
 ### 1.4. Configuración de variables de entorno:
 Crear una copia del archivo *.env* con el nombre *.env.local* actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
