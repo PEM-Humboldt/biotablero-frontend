@@ -11,11 +11,6 @@ import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  paConnCurrent: {},
-  paConnDPC: {},
-};
-
 const getLabel = {
   unprot: 'No protegida',
   prot_conn: 'Protegida conectada',
@@ -43,6 +38,10 @@ class CurrentPAConnectivity extends React.Component {
       messages: {
         conn: 'loading',
         dpc: 'loading',
+      },
+      texts: {
+        paConnCurrent: {},
+        paConnDPC: {},
       },
     };
   }
@@ -107,15 +106,19 @@ class CurrentPAConnectivity extends React.Component {
 
       ['paConnCurrent', 'paConnDPC'].forEach((item) => {
         RestAPI.requestSectionTexts(item)
-        .then((res) => {
-          if (this.mounted) {
-            texts[item] = res;
-          }
-        })
-        .catch(() => {
-          texts[item] = {};
+          .then((res) => {
+            if (this.mounted) {
+              this.setState((prevState) => ({
+                texts: { ...prevState.texts, [item]: res },
+              }));
+            }
+          })
+          .catch(() => {
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: {} },
+            }));
+          });
         });
-      });
   }
 
   componentWillUnmount() {
@@ -146,6 +149,7 @@ class CurrentPAConnectivity extends React.Component {
       prot,
       infoShown,
       messages: { conn, dpc: dpcMess },
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">

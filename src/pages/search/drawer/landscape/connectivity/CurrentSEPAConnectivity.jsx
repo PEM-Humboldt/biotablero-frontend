@@ -11,10 +11,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  paConnSE: {},
-};
-
 const getLabel = {
   unprot: 'No protegida',
   prot_conn: 'Protegida conectada',
@@ -40,6 +36,7 @@ class CurrentSEPAConnectivity extends React.Component {
         dryForest: 'loading',
         wetland: 'loading',
       },
+      texts: { paConnSE: {} },
     };
   }
 
@@ -146,14 +143,14 @@ class CurrentSEPAConnectivity extends React.Component {
         }));
       });
 
-      RestAPI.requestSectionTexts('paConnSE')
+    RestAPI.requestSectionTexts('paConnSE')
       .then((res) => {
         if (this.mounted) {
-          texts.paConnSE = res;
+          this.setState({ texts: { paConnSE: res } });
         }
       })
       .catch(() => {
-        texts.paConnSE = {};
+        this.setState({ texts: { paConnSE: {} } });
       });
   }
 
@@ -186,6 +183,7 @@ class CurrentSEPAConnectivity extends React.Component {
       protDryForest,
       protWetland,
       messages: { paramo, dryForest, wetland },
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">

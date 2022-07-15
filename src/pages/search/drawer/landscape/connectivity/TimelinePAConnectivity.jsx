@@ -10,10 +10,6 @@ import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  paConnTimeline: {},
-};
-
 class TimelinePAConnectivity extends React.Component {
   mounted = false;
 
@@ -23,6 +19,7 @@ class TimelinePAConnectivity extends React.Component {
       showInfoGraph: true,
       timelinePAConnectivity: [],
       message: 'loading',
+      texts: { paConnTimeline: {} },
     };
   }
 
@@ -45,14 +42,14 @@ class TimelinePAConnectivity extends React.Component {
         }
       });
 
-      RestAPI.requestSectionTexts('paConnTimeline')
+    RestAPI.requestSectionTexts('paConnTimeline')
       .then((res) => {
         if (this.mounted) {
-          texts.paConnTimeline = res;
+          this.setState({ texts: { paConnTimeline: res } });
         }
       })
       .catch(() => {
-        texts.paConnTimeline = {};
+        this.setState({ texts: { paConnTimeline: {} } });
       });
   }
 
@@ -106,6 +103,7 @@ class TimelinePAConnectivity extends React.Component {
       showInfoGraph,
       timelinePAConnectivity,
       message,
+      texts,
     } = this.state;
     const {
       areaId,
