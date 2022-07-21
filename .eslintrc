@@ -9,12 +9,14 @@
       "exceptions": ["item.component"]
     }],
     "template-curly-spacing" : "off",
-    "indent": "off"
+    "indent": "off",
+    "import/extensions": ["error", "never", {"json": "always" }]
   },
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src"]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   },

@@ -23,7 +23,7 @@ const changeColor = (color: string, percent: number): string => {
   ).toString(16).slice(1)}`;
 };
 
-const lightenColor = (color: string, percent: number) => changeColor(color, percent);
-const darkenColor = (color: string, percent: number) => changeColor(color, percent * -1);
+const lightenColor = (color: string, percent: number): string => changeColor(color, percent);
+const darkenColor = (color: string, percent: number): string => changeColor(color, percent * -1);
 
 export { lightenColor, darkenColor };
