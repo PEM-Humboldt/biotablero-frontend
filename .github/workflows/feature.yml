@@ -18,7 +18,3 @@ jobs:
         cache: yarn
     - run: yarn install
     - run: yarn workspaces foreach run build-pkg
-    - name: Run linter
-      run: yarn workspaces foreach run lint
-      env:
-        CI: true
