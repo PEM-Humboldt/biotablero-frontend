@@ -17,4 +17,7 @@ jobs:
         node-version-file: '.nvmrc'
         cache: yarn
     - run: yarn install
-    - run: yarn workspaces foreach run build-pkg
+    - name: Run prettier
+      run: yarn run check-format
+      env:
+        CI: true
