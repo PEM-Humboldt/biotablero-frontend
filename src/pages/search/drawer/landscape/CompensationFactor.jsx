@@ -4,36 +4,16 @@ import React from 'react';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import {
-  cfTexts,
-  BiomesText,
-  BioticRegionsText,
-} from 'pages/search/drawer/landscape/compensationFactor/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info: cFInfo,
-  meto: cfMeto,
-  quote: cfQuote,
-  cons: cfCons,
-} = cfTexts;
-
-const {
-  info: bInfo,
-  meto: bMeto,
-  quote: bQuote,
-  cons: bCons,
-} = BiomesText;
-
-const {
-  info: brInfo,
-  meto: brMeto,
-  quote: brQuote,
-  cons: brCons,
-} = BioticRegionsText;
+const texts = {
+  cf: {},
+  biomes: {},
+  bioticRegions: {},
+};
 
 class CompensationFactor extends React.Component {
   mounted = false;
@@ -127,6 +107,18 @@ class CompensationFactor extends React.Component {
           },
         }));
       });
+
+      ['cf', 'biomes', 'bioticRegions'].forEach((item) => {
+        RestAPI.requestSectionTexts(item)
+        .then((res) => {
+          if (this.mounted) {
+            texts[item] = res;
+          }
+        })
+        .catch(() => {
+          texts[item] = {};
+        });
+      });
   }
 
   componentWillUnmount() {
@@ -192,7 +184,7 @@ class CompensationFactor extends React.Component {
             </IconTooltip>
             {infoShown.has('cf') && (
               <ShortInfo
-                description={cFInfo}
+                description={texts.cf.info}
                 className="graphinfo2"
                 collapseButton={false}
               />
@@ -209,9 +201,9 @@ class CompensationFactor extends React.Component {
             padding={0.25}
           />
           <TextBoxes
-            consText={cfCons}
-            metoText={cfMeto}
-            quoteText={cfQuote}
+            consText={texts.cf.cons}
+            metoText={texts.cf.meto}
+            quoteText={texts.cf.quote}
             downloadData={fc}
             downloadName={`compensation_factor_${areaId}_${geofenceId}.csv`}
             isInfoOpen={infoShown.has('cf')}
@@ -228,7 +220,7 @@ class CompensationFactor extends React.Component {
           </IconTooltip>
           {infoShown.has('biomes') && (
             <ShortInfo
-              description={bInfo}
+              description={texts.biomes.info}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -244,9 +236,9 @@ class CompensationFactor extends React.Component {
             padding={0.3}
           />
           <TextBoxes
-            consText={bCons}
-            metoText={bMeto}
-            quoteText={bQuote}
+            consText={texts.biomes.cons}
+            metoText={texts.biomes.meto}
+            quoteText={texts.biomes.quote}
             downloadData={biomes}
             downloadName={`biomes_${areaId}_${geofenceId}.csv`}
             isInfoOpen={infoShown.has('biomes')}
@@ -263,7 +255,7 @@ class CompensationFactor extends React.Component {
           </IconTooltip>
           {infoShown.has('bioticReg') && (
             <ShortInfo
-              description={brInfo}
+              description={texts.bioticRegions.info}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -279,9 +271,9 @@ class CompensationFactor extends React.Component {
             padding={0.3}
           />
           <TextBoxes
-            consText={brCons}
-            metoText={brMeto}
-            quoteText={brQuote}
+            consText={texts.bioticRegions.cons}
+            metoText={texts.bioticRegions.meto}
+            quoteText={texts.bioticRegions.quote}
             downloadData={bioticUnits}
             downloadName={`biotic_units_${geofenceId}.csv`}
             isInfoOpen={infoShown.has('bioticReg')}

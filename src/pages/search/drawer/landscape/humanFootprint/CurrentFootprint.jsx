@@ -3,7 +3,6 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import SearchContext from 'pages/search/SearchContext';
-import { currentHFTexts } from 'pages/search/drawer/landscape/humanFootprint/InfoTexts';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
@@ -11,12 +10,9 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = currentHFTexts;
+const texts = {
+  hfCurrent: {},
+};
 
 class CurrentFootprint extends React.Component {
   mounted = false;
@@ -52,6 +48,7 @@ class CurrentFootprint extends React.Component {
         }
       })
       .catch(() => {});
+
     RestAPI.requestCurrentHFCategories(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
@@ -66,6 +63,16 @@ class CurrentFootprint extends React.Component {
       })
       .catch(() => {
         this.setState({ message: 'no-data' });
+      });
+
+    RestAPI.requestSectionTexts('hfCurrent')
+      .then((res) => {
+        if (this.mounted) {
+          texts.hfCurrent = res;
+        }
+      })
+      .catch(() => {
+        texts.hfCurrent = { };
       });
   }
 
@@ -107,7 +114,7 @@ class CurrentFootprint extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.hfCurrent.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -137,9 +144,9 @@ class CurrentFootprint extends React.Component {
           />
         </div>
         <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
+          consText={texts.hfCurrent.cons}
+          metoText={texts.hfCurrent.meto}
+          quoteText={texts.hfCurrent.quote}
           downloadData={hfCurrent}
           downloadName={`hf_current_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}

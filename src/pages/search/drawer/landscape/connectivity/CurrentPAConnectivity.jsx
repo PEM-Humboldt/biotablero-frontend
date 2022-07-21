@@ -5,26 +5,11 @@ import GraphLoader from 'components/charts/GraphLoader';
 import { LegendColor } from 'components/CssLegends';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentPAConnTexts, DPCConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
 import TextBoxes from 'components/TextBoxes';
-
-const {
-  info: connInfo,
-  meto: connMeto,
-  cons: connCons,
-  quote: connQuote,
-} = CurrentPAConnTexts;
-
-const {
-  info: dpcInfo,
-  meto: dpcMeto,
-  cons: dpcCons,
-  quote: dpcQuote,
-} = DPCConnTexts;
 
 const getLabel = {
   unprot: 'No protegida',
@@ -53,6 +38,10 @@ class CurrentPAConnectivity extends React.Component {
       messages: {
         conn: 'loading',
         dpc: 'loading',
+      },
+      texts: {
+        paConnCurrent: {},
+        paConnDPC: {},
       },
     };
   }
@@ -114,6 +103,22 @@ class CurrentPAConnectivity extends React.Component {
           },
         }));
       });
+
+      ['paConnCurrent', 'paConnDPC'].forEach((item) => {
+        RestAPI.requestSectionTexts(item)
+          .then((res) => {
+            if (this.mounted) {
+              this.setState((prevState) => ({
+                texts: { ...prevState.texts, [item]: res },
+              }));
+            }
+          })
+          .catch(() => {
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: {} },
+            }));
+          });
+        });
   }
 
   componentWillUnmount() {
@@ -144,6 +149,7 @@ class CurrentPAConnectivity extends React.Component {
       prot,
       infoShown,
       messages: { conn, dpc: dpcMess },
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -157,7 +163,7 @@ class CurrentPAConnectivity extends React.Component {
         </h2>
         {infoShown.has('current') && (
           <ShortInfo
-            description={connInfo}
+            description={texts.paConnCurrent.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -178,9 +184,9 @@ class CurrentPAConnectivity extends React.Component {
               padding={0.25}
             />
             <TextBoxes
-              consText={connCons}
-              metoText={connMeto}
-              quoteText={connQuote}
+              consText={texts.paConnCurrent.cons}
+              metoText={texts.paConnCurrent.meto}
+              quoteText={texts.paConnCurrent.quote}
               downloadData={currentPAConnectivity}
               downloadName={`conn_current_${areaId}_${geofenceId}.csv`}
               toggleInfo={() => this.toggleInfo('current')}
@@ -211,7 +217,7 @@ class CurrentPAConnectivity extends React.Component {
           </IconTooltip>
           {infoShown.has('dpc') && (
             <ShortInfo
-              description={dpcInfo}
+              description={texts.paConnDPC.info}
               className="graphinfo2"
               collapseButton={false}
             />
@@ -241,9 +247,9 @@ class CurrentPAConnectivity extends React.Component {
             ))}
           </div>
           <TextBoxes
-            consText={dpcCons}
-            metoText={dpcMeto}
-            quoteText={dpcQuote}
+            consText={texts.paConnDPC.cons}
+            metoText={texts.paConnDPC.meto}
+            quoteText={texts.paConnDPC.quote}
             downloadData={dpc}
             downloadName={`conn_dpc_${areaId}_${geofenceId}.csv`}
             isInfoOpen={infoShown.has('dpc')}

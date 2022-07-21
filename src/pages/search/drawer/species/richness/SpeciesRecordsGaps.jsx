@@ -8,17 +8,9 @@ import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
-import { SpeciesRecordsGapsTexts } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
 import TextBoxes from 'components/TextBoxes';
-
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = SpeciesRecordsGapsTexts;
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -55,6 +47,10 @@ const getLabelConcentration = (key) => ({
   value: 'Promedio de representación en el área de consulta',
 }[key]
 );
+
+const texts = {
+  gaps: {},
+};
 
 class SpeciesRecordsGaps extends React.Component {
   mounted = false;
@@ -124,6 +120,16 @@ class SpeciesRecordsGaps extends React.Component {
       })
       .catch(() => {
         this.setState({ messageConc: 'no-data' });
+      });
+
+    RestAPI.requestSectionTexts('gaps')
+      .then((res) => {
+        if (this.mounted) {
+          texts.gaps = res;
+        }
+      })
+      .catch(() => {
+        texts.gaps = { };
       });
 
     isFlagEnabled('speciesRecordsConcentrarion')
@@ -236,7 +242,7 @@ class SpeciesRecordsGaps extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.gaps.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -286,9 +292,9 @@ class SpeciesRecordsGaps extends React.Component {
           ))}
         </div>
         <TextBoxes
-          consText={cons}
-          metoText={meto}
-          quoteText={quote}
+          consText={texts.gaps.cons}
+          metoText={texts.gaps.meto}
+          quoteText={texts.gaps.quote}
           downloadData={this.processDownload(csvData)}
           downloadName={`rich_gaps_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}

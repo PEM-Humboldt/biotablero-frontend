@@ -14,7 +14,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
 import ShortInfo from 'components/ShortInfo';
-import { NOSInferredTexts, NOSObservedTexts, NumberOfSpeciesTextHelper } from 'pages/search/drawer/species/richness/InfoTexts';
 
 import biomodelos from 'images/biomodelos.png';
 import mappoint from 'images/mappoint.png';
@@ -26,8 +25,9 @@ import fullview from 'images/fullview.png';
 import TextBoxes from 'components/TextBoxes';
 
 const NOSTexts = {
-  inferred: NOSInferredTexts,
-  observed: NOSObservedTexts,
+  inferred: {},
+  observed: {},
+  helper: '',
 };
 
 const getLabel = (key, area, region) => {
@@ -81,7 +81,7 @@ class NumberOfSpecies extends React.Component {
       message: 'loading',
       selected: 'total',
       bioticRegion: 'Región Biótica',
-      texts: NOSInferredTexts,
+      texts: {},
       maximumValues: [],
       showErrorMessage: false,
     };
@@ -148,6 +148,39 @@ class NumberOfSpecies extends React.Component {
       })
       .catch(() => {
         this.setState({ message: 'no-data' });
+      });
+
+      RestAPI.requestSectionTexts('nosInferred')
+      .then((res) => {
+        if (this.mounted) {
+          NOSTexts.inferred = res;
+          this.setState({
+            texts: NOSTexts.inferred,
+          });
+        }
+      })
+      .catch(() => {
+        NOSTexts.inferred = {};
+      });
+
+      RestAPI.requestSectionTexts('nosObserved')
+      .then((res) => {
+        if (this.mounted) {
+          NOSTexts.observed = res;
+        }
+      })
+      .catch(() => {
+        NOSTexts.observed = {};
+      });
+
+      RestAPI.requestSectionTexts('nos')
+      .then((res) => {
+        if (this.mounted) {
+          NOSTexts.helper = res.helper;
+        }
+      })
+      .catch(() => {
+        NOSTexts.helper = '';
       });
   }
 
@@ -308,7 +341,7 @@ class NumberOfSpecies extends React.Component {
           </div>
         )}
         <h3>
-          {NumberOfSpeciesTextHelper}
+          {NOSTexts.helper}
         </h3>
         <div className="nos-title legend">
           <TextLegend

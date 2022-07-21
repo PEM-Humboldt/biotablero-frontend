@@ -8,21 +8,6 @@ import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
 import TextBoxes from 'components/TextBoxes';
 import {
-  sectionInfo,
-  CoverageText,
-  coverageMeto,
-  coverageCons,
-  coverageQuote,
-  PAText,
-  PACons,
-  PAQuote,
-  PAMeto,
-  SEText,
-  SEQuote,
-  SEMeto,
-  SECons,
-} from 'pages/search/drawer/strategicEcosystems/InfoTexts';
-import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
@@ -41,6 +26,13 @@ import RestAPI from 'utils/restAPI';
  * @returns {number} percentage associated to each part
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
+
+const texts = {
+  ecosystems: {},
+  coverage: {},
+  pa: {},
+  se: {},
+};
 
 class StrategicEcosystems extends React.Component {
   mounted = false;
@@ -148,6 +140,18 @@ class StrategicEcosystems extends React.Component {
           },
         }));
       });
+
+      ['ecosystems', 'coverage', 'pa', 'se'].forEach((item) => {
+        RestAPI.requestSectionTexts(item)
+        .then((res) => {
+          if (this.mounted) {
+            texts[item] = res;
+          }
+        })
+        .catch(() => {
+          texts[item] = {};
+        });
+      });
   }
 
   componentWillUnmount() {
@@ -246,7 +250,7 @@ class StrategicEcosystems extends React.Component {
         </h2>
         {showInfoMain && (
           <ShortInfo
-            description={sectionInfo}
+            description={texts.ecosystems.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -273,7 +277,7 @@ class StrategicEcosystems extends React.Component {
           </IconTooltip>
           {infoShown.has('coverage') && (
             <ShortInfo
-              description={CoverageText}
+              description={texts.coverage.info}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -298,9 +302,9 @@ class StrategicEcosystems extends React.Component {
           <TextBoxes
             downloadData={coverage}
             downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
-            quoteText={coverageQuote}
-            metoText={coverageMeto}
-            consText={coverageCons}
+            quoteText={texts.coverage.quote}
+            metoText={texts.coverage.meto}
+            consText={texts.coverage.cons}
             toggleInfo={() => this.toggleInfo('coverage')}
             isInfoOpen={infoShown.has('coverage')}
           />
@@ -319,7 +323,7 @@ class StrategicEcosystems extends React.Component {
           </h5>
           {infoShown.has('pa') && (
             <ShortInfo
-              description={PAText}
+              description={texts.pa.info}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -339,9 +343,9 @@ class StrategicEcosystems extends React.Component {
           <TextBoxes
             downloadData={PAAreas}
             downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
-            quoteText={PAQuote}
-            metoText={PAMeto}
-            consText={PACons}
+            quoteText={texts.pa.quote}
+            metoText={texts.pa.meto}
+            consText={texts.pa.cons}
             toggleInfo={() => this.toggleInfo('pa')}
             isInfoOpen={infoShown.has('pa')}
           />
@@ -361,7 +365,7 @@ class StrategicEcosystems extends React.Component {
             </h5>
             {infoShown.has('se') && (
               <ShortInfo
-                description={SEText}
+                description={texts.se.info}
                 className="graphinfo3"
                 collapseButton={false}
               />
@@ -370,9 +374,9 @@ class StrategicEcosystems extends React.Component {
             <TextBoxes
               downloadData={SEAreas}
               downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
-              quoteText={SEQuote}
-              metoText={SEMeto}
-              consText={SECons}
+              quoteText={texts.se.quote}
+              metoText={texts.se.meto}
+              consText={texts.se.cons}
               toggleInfo={() => this.toggleInfo('se')}
               isInfoOpen={infoShown.has('se')}
             />

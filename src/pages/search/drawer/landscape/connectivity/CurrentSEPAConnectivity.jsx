@@ -5,19 +5,11 @@ import GraphLoader from 'components/charts/GraphLoader';
 import DownloadCSV from 'components/DownloadCSV';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import { CurrentSEPAConnTexts } from 'pages/search/drawer/landscape/connectivity/InfoTexts';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
-
-const {
-  info,
-  meto,
-  cons,
-  quote,
-} = CurrentSEPAConnTexts;
 
 const getLabel = {
   unprot: 'No protegida',
@@ -44,6 +36,7 @@ class CurrentSEPAConnectivity extends React.Component {
         dryForest: 'loading',
         wetland: 'loading',
       },
+      texts: { paConnSE: {} },
     };
   }
 
@@ -149,6 +142,16 @@ class CurrentSEPAConnectivity extends React.Component {
           },
         }));
       });
+
+    RestAPI.requestSectionTexts('paConnSE')
+      .then((res) => {
+        if (this.mounted) {
+          this.setState({ texts: { paConnSE: res } });
+        }
+      })
+      .catch(() => {
+        this.setState({ texts: { paConnSE: {} } });
+      });
   }
 
   componentWillUnmount() {
@@ -180,6 +183,7 @@ class CurrentSEPAConnectivity extends React.Component {
       protDryForest,
       protWetland,
       messages: { paramo, dryForest, wetland },
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -193,7 +197,7 @@ class CurrentSEPAConnectivity extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={info}
+            description={texts.paConnSE.info}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -315,9 +319,9 @@ class CurrentSEPAConnectivity extends React.Component {
           </div>
           )}
           <TextBoxes
-            consText={cons}
-            metoText={meto}
-            quoteText={quote}
+            consText={texts.paConnSE.cons}
+            metoText={texts.paConnSE.meto}
+            quoteText={texts.paConnSE.quote}
             isInfoOpen={showInfoGraph}
             toggleInfo={this.toggleInfoGraph}
           />
