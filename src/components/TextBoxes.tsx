@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
-import ShortInfo from 'components/ShortInfo';
-import DownloadCSV from 'components/DownloadCSV';
-import { IconTooltip } from 'components/Tooltips';
+import ShortInfo from "components/ShortInfo";
+import DownloadCSV from "components/DownloadCSV";
+import { IconTooltip } from "components/Tooltips";
 
 interface props {
   downloadData: Array<unknown>;
@@ -18,7 +18,7 @@ interface props {
   isInfoOpen: boolean;
 }
 
-type boxValues = 'meto' | 'cons' | 'quote' | null;
+type boxValues = "meto" | "cons" | "quote" | null;
 
 const TextBoxes: React.FC<props> = (props) => {
   const {
@@ -56,27 +56,33 @@ const TextBoxes: React.FC<props> = (props) => {
   return (
     <>
       <h3 className="textBoxes">
-        {metoText !== '' && (
+        {metoText !== "" && (
           <IconTooltip title="Metodología">
             <CollectionsBookmarkIcon
-              className={`graphinfo3${activeBox === 'meto' ? ' activeBox' : ''}`}
-              onClick={() => clickOnBox('meto')}
+              className={`graphinfo3${
+                activeBox === "meto" ? " activeBox" : ""
+              }`}
+              onClick={() => clickOnBox("meto")}
             />
           </IconTooltip>
         )}
-        {consText !== '' && (
+        {consText !== "" && (
           <IconTooltip title="Consideraciones">
             <AnnouncementIcon
-              className={`graphinfo3${activeBox === 'cons' ? ' activeBox' : ''}`}
-              onClick={() => clickOnBox('cons')}
+              className={`graphinfo3${
+                activeBox === "cons" ? " activeBox" : ""
+              }`}
+              onClick={() => clickOnBox("cons")}
             />
           </IconTooltip>
         )}
-        {quoteText !== '' && (
+        {quoteText !== "" && (
           <IconTooltip title="Autoría">
             <FormatQuoteIcon
-              className={`graphinfo3${activeBox === 'quote' ? ' activeBox' : ''}`}
-              onClick={() => clickOnBox('quote')}
+              className={`graphinfo3${
+                activeBox === "quote" ? " activeBox" : ""
+              }`}
+              onClick={() => clickOnBox("quote")}
             />
           </IconTooltip>
         )}
@@ -88,21 +94,21 @@ const TextBoxes: React.FC<props> = (props) => {
           />
         )}
       </h3>
-      {boxShown === 'quote' && (
+      {boxShown === "quote" && (
         <ShortInfo
           description={quoteText}
           className="graphinfo2"
           collapseButton={false}
         />
       )}
-      {boxShown === 'meto' && (
+      {boxShown === "meto" && (
         <ShortInfo
           description={metoText}
           className="graphinfo2"
           collapseButton={false}
         />
       )}
-      {boxShown === 'cons' && (
+      {boxShown === "cons" && (
         <ShortInfo
           description={consText}
           className="graphinfo2"
