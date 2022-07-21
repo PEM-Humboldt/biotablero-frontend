@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
@@ -9,7 +8,19 @@ import ShortInfo from 'components/ShortInfo';
 import DownloadCSV from 'components/DownloadCSV';
 import { IconTooltip } from 'components/Tooltips';
 
-const TextBoxes = (props) => {
+interface props {
+  downloadData: Array<unknown>;
+  downloadName: string;
+  quoteText: string;
+  metoText: string;
+  consText: string;
+  toggleInfo: () => void;
+  isInfoOpen: boolean;
+}
+
+type boxValues = 'meto' | 'cons' | 'quote' | null;
+
+const TextBoxes: React.FC<props> = (props) => {
   const {
     downloadData,
     downloadName,
@@ -20,8 +31,8 @@ const TextBoxes = (props) => {
     isInfoOpen,
   } = props;
 
-  const [boxShown, setBoxShown] = useState(null);
-  const [activeBox, setActiveBox] = useState(null);
+  const [boxShown, setBoxShown] = useState<boxValues>(null);
+  const [activeBox, setActiveBox] = useState<boxValues>(null);
   useEffect(() => {
     if (isInfoOpen) {
       setBoxShown(null);
@@ -29,7 +40,7 @@ const TextBoxes = (props) => {
     }
   }, [isInfoOpen]);
 
-  const clickOnBox = (name) => {
+  const clickOnBox = (name: boxValues) => {
     if (name === boxShown) {
       setBoxShown(null);
       setActiveBox(null);
@@ -102,23 +113,4 @@ const TextBoxes = (props) => {
   );
 };
 
-TextBoxes.propTypes = {
-  downloadData: PropTypes.array,
-  downloadName: PropTypes.string,
-  quoteText: PropTypes.string,
-  metoText: PropTypes.string,
-  consText: PropTypes.string,
-  toggleInfo: PropTypes.func,
-  isInfoOpen: PropTypes.bool,
-};
-
-TextBoxes.defaultProps = {
-  downloadData: [],
-  downloadName: 'datos.csv',
-  quoteText: '',
-  metoText: '',
-  consText: '',
-  toggleInfo: () => {},
-  isInfoOpen: false,
-};
 export default TextBoxes;
