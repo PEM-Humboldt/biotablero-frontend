@@ -10,10 +10,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  hfCurrent: {},
-};
-
 class CurrentFootprint extends React.Component {
   mounted = false;
 
@@ -25,6 +21,9 @@ class CurrentFootprint extends React.Component {
       hfCurrentValue: '0',
       hfCurrentCategory: '',
       message: 'loading',
+      texts: {
+        hfCurrent: {},
+      },
     };
   }
 
@@ -68,11 +67,11 @@ class CurrentFootprint extends React.Component {
     RestAPI.requestSectionTexts('hfCurrent')
       .then((res) => {
         if (this.mounted) {
-          texts.hfCurrent = res;
+          this.setState({ texts: { hfCurrent: res } });
         }
       })
       .catch(() => {
-        texts.hfCurrent = { };
+        this.setState({ texts: { hfCurrent: {} } });
       });
   }
 
@@ -101,6 +100,7 @@ class CurrentFootprint extends React.Component {
       hfCurrentCategory,
       showInfoGraph,
       message,
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">

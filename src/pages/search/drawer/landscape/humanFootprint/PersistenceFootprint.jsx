@@ -9,10 +9,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  hfPersistence: {},
-};
-
 const getLabel = {
   estable_natural: 'Estable Natural',
   dinamica: 'Dinámica',
@@ -28,6 +24,9 @@ class PersistenceFootprint extends React.Component {
       showInfoGraph: true,
       hfPersistence: [],
       message: 'loading',
+      texts: {
+        hfPersistence: {},
+      },
     };
   }
 
@@ -60,11 +59,11 @@ class PersistenceFootprint extends React.Component {
     RestAPI.requestSectionTexts('hfPersistence')
       .then((res) => {
         if (this.mounted) {
-          texts.hfPersistence = res;
+          this.setState({ texts: { hfPersistence: res } });
         }
       })
       .catch(() => {
-        texts.hfPersistence = { };
+        this.setState({ texts: { hfPersistence: {} } });
       });
   }
 
@@ -91,6 +90,7 @@ class PersistenceFootprint extends React.Component {
       showInfoGraph,
       hfPersistence,
       message,
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">

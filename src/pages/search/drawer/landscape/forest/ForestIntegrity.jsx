@@ -11,10 +11,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  forestSCIHF: {},
-};
-
 class ForestIntegrity extends React.Component {
   mounted = false;
 
@@ -53,6 +49,9 @@ class ForestIntegrity extends React.Component {
           label: 'ICE Bajo Moderado - IHEH Alta',
           value: 0,
         },
+      },
+      texts: {
+        forestSCIHF: {},
       },
       ProtectedAreas: {
         'alta-estable_alta': [],
@@ -112,11 +111,11 @@ class ForestIntegrity extends React.Component {
     RestAPI.requestSectionTexts('forestSCIHF')
       .then((res) => {
         if (this.mounted) {
-          texts.forestSCIHF = res;
+          this.setState({ texts: { forestSCIHF: res } });
         }
       })
       .catch(() => {
-        texts.forestSCIHF = { };
+        this.setState({ texts: { forestSCIHF: {} } });
       });
   }
 
@@ -140,6 +139,7 @@ class ForestIntegrity extends React.Component {
       ProtectedAreas,
       selectedCategory,
       loading,
+      texts,
     } = this.state;
     const {
       areaId,
