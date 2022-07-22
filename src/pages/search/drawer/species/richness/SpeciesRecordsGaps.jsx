@@ -48,10 +48,6 @@ const getLabelConcentration = (key) => ({
 }[key]
 );
 
-const texts = {
-  gaps: {},
-};
-
 class SpeciesRecordsGaps extends React.Component {
   mounted = false;
 
@@ -68,6 +64,9 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag: false,
       showErrorMessage: false,
       csvData: [],
+      texts: {
+        gaps: {},
+      },
     };
   }
 
@@ -125,11 +124,11 @@ class SpeciesRecordsGaps extends React.Component {
     RestAPI.requestSectionTexts('gaps')
       .then((res) => {
         if (this.mounted) {
-          texts.gaps = res;
+          this.setState({ texts: { gaps: res } });
         }
       })
       .catch(() => {
-        texts.gaps = { };
+        this.setState({ texts: { gaps: {} } });
       });
 
     isFlagEnabled('speciesRecordsConcentrarion')
@@ -229,6 +228,7 @@ class SpeciesRecordsGaps extends React.Component {
       concentrationFlag,
       showErrorMessage,
       csvData,
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">
