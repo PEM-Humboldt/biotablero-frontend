@@ -10,10 +10,6 @@ import RestAPI from 'utils/restAPI';
 import formatNumber from 'utils/format';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  forestLP: {},
-};
-
 const LATEST_PERIOD = '2016-2021';
 
 const getLabel = {
@@ -33,6 +29,9 @@ class ForestLossPersistence extends React.Component {
       forestLP: [],
       message: 'loading',
       forestPersistenceValue: 0,
+      texts: {
+        forestLP: {},
+      },
     };
   }
 
@@ -76,11 +75,11 @@ class ForestLossPersistence extends React.Component {
     RestAPI.requestSectionTexts('forestLP')
       .then((res) => {
         if (this.mounted) {
-          texts.forestLP = res;
+          this.setState({ texts: { forestLP: res } });
         }
       })
       .catch(() => {
-        texts.forestLP = { };
+        this.setState({ texts: { forestLP: {} } });
       });
   }
 
@@ -122,6 +121,7 @@ class ForestLossPersistence extends React.Component {
       forestPersistenceValue,
       showInfoGraph,
       message,
+      texts,
     } = this.state;
     const {
       areaId,

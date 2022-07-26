@@ -27,13 +27,6 @@ import RestAPI from 'utils/restAPI';
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-const texts = {
-  ecosystems: {},
-  coverage: {},
-  pa: {},
-  se: {},
-};
-
 class StrategicEcosystems extends React.Component {
   mounted = false;
 
@@ -52,6 +45,12 @@ class StrategicEcosystems extends React.Component {
         cov: 'loading',
         pa: 'loading',
         se: 'loading',
+      },
+      texts: {
+        ecosystems: {},
+        coverage: {},
+        pa: {},
+        se: {},
       },
     };
   }
@@ -145,11 +144,15 @@ class StrategicEcosystems extends React.Component {
         RestAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
-            texts[item] = res;
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: res },
+            }));
           }
         })
         .catch(() => {
-          texts[item] = {};
+          this.setState((prevState) => ({
+            texts: { ...prevState.texts, [item]: {} },
+          }));
         });
       });
   }
@@ -232,6 +235,7 @@ class StrategicEcosystems extends React.Component {
       SETotalArea,
       activeSE,
       messages: { cov, pa },
+      texts,
     } = this.state;
     const {
       areaId,

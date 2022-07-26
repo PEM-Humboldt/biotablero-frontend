@@ -11,10 +11,6 @@ import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  hfTimeline: {},
-};
-
 const changeValues = [
   {
     axis: 'y',
@@ -80,6 +76,9 @@ class TimelineFootprint extends React.Component {
       hfTimeline: [],
       message: 'loading',
       selectedEcosystem: null,
+      texts: {
+        hfTimeline: {},
+      },
     };
   }
 
@@ -110,11 +109,11 @@ class TimelineFootprint extends React.Component {
     RestAPI.requestSectionTexts('hfTimeline')
       .then((res) => {
         if (this.mounted) {
-          texts.hfTimeline = res;
+          this.setState({ texts: { hfTimeline: res } });
         }
       })
       .catch(() => {
-        texts.hfTimeline = { };
+        this.setState({ texts: { hfTimeline: {} } });
       });
   }
 
@@ -193,6 +192,7 @@ class TimelineFootprint extends React.Component {
       hfTimeline,
       selectedEcosystem,
       message,
+      texts,
     } = this.state;
     return (
       <div className="graphcontainer pt6">

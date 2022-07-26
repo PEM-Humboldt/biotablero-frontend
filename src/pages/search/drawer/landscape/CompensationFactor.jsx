@@ -9,12 +9,6 @@ import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 
-const texts = {
-  cf: {},
-  biomes: {},
-  bioticRegions: {},
-};
-
 class CompensationFactor extends React.Component {
   mounted = false;
 
@@ -29,6 +23,11 @@ class CompensationFactor extends React.Component {
         fc: 'loading',
         biomes: 'loading',
         bioticUnits: 'loading',
+      },
+      texts: {
+        cf: {},
+        biomes: {},
+        bioticRegions: {},
       },
     };
   }
@@ -112,11 +111,15 @@ class CompensationFactor extends React.Component {
         RestAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
-            texts[item] = res;
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: res },
+            }));
           }
         })
         .catch(() => {
-          texts[item] = {};
+          this.setState((prevState) => ({
+            texts: { ...prevState.texts, [item]: {} },
+          }));
         });
       });
   }
@@ -163,6 +166,7 @@ class CompensationFactor extends React.Component {
         biomes: biomesMess,
         bioticunits: bioticUnitsMess,
       },
+      texts,
     } = this.state;
     const {
       areaId,
