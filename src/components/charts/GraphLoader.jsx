@@ -181,7 +181,7 @@ const GraphLoader = (props) => {
         />
       );
     default:
-      return '';
+      return <></>;
   }
 };
 

@@ -8,7 +8,7 @@ import ShortInfo from "components/ShortInfo";
 import DownloadCSV from "components/DownloadCSV";
 import { IconTooltip } from "components/Tooltips";
 
-interface props {
+interface TextBoxProps {
   downloadData: Array<unknown>;
   downloadName: string;
   quoteText: string;
@@ -20,7 +20,7 @@ interface props {
 
 type boxValues = "meto" | "cons" | "quote" | null;
 
-const TextBoxes: React.FC<props> = (props) => {
+const TextBoxes: React.FC<TextBoxProps> = (props) => {
   const {
     downloadData,
     downloadName,
