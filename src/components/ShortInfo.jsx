@@ -48,7 +48,7 @@ class ShortInfo extends React.Component {
 ShortInfo.propTypes = {
   name: PropTypes.string,
   className: PropTypes.string,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   tooltip: PropTypes.string,
   collapseButton: PropTypes.bool,
 };
@@ -56,6 +56,7 @@ ShortInfo.propTypes = {
 ShortInfo.defaultProps = {
   name: '',
   className: 'hidden',
+  description: '',
   tooltip: '',
   collapseButton: true,
 };
