@@ -1,7 +1,10 @@
 import axios, { CancelToken } from "axios";
 import { SCIHF } from "pages/search/types/forest";
-
+import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
+  /** ****** */
+  /** FOREST */
+  /** ****** */
   /**
    * Get the structural condition index with human footprint persistence categories in the given
    * area.
@@ -14,10 +17,25 @@ class SearchAPI {
   static requestSCIHF(
     areaType: string,
     areaId: string | number
-  ): Promise<SCIHF[]> {
+  ): Promise<Array<SCIHF>> {
     return SearchAPI.makeGetRequest(
       `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
     );
+  }
+
+  /** ************ */
+  /** CROSS MODULE */
+  /** ************ */
+
+  /**
+   * Get texts associated to one section
+   *
+   * @param {String} key section key
+   *
+   * @return {Promise<Object>} Object with texts
+   */
+  static requestSectionTexts(key: string): Promise<TextObject> {
+    return SearchAPI.makeGetRequest(`util/texts?key=${key}`);
   }
 
   /** ************** */
