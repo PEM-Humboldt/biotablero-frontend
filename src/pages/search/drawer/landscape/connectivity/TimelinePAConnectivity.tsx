@@ -10,7 +10,7 @@ import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
 import { AnyObject } from 'chart.js/types/basic';
-import { InfoTexts } from "pages/search/types/connectivity.types";
+import { InfoTexts } from "pages/search/types/texts.types";
 
 interface TimelinePAConnectivityState {
   showInfoGraph: boolean,
