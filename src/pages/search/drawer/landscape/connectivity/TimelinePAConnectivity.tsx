@@ -1,24 +1,23 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
-import matchColor from 'utils/matchColor';
-import processDataCsv from 'utils/processDataCsv';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
-import { AnyObject } from 'chart.js/types/basic';
+import GraphLoader from "components/charts/GraphLoader";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
+import SearchContext from "pages/search/SearchContext";
+import matchColor from "utils/matchColor";
+import processDataCsv from "utils/processDataCsv";
+import RestAPI from "utils/restAPI";
+import TextBoxes from "components/TextBoxes";
+import { AnyObject } from "chart.js/types/basic";
 import { InfoTexts } from "pages/search/types/texts.types";
 
 interface TimelinePAConnectivityState {
-  showInfoGraph: boolean,
-  timelinePAConnectivity: Array<unknown>,
-  message: string | null,
-  texts: { paConnTimeline: InfoTexts | any},
+  showInfoGraph: boolean;
+  timelinePAConnectivity: Array<unknown>;
+  message: string | null;
+  texts: { paConnTimeline: InfoTexts | any };
 }
-
 
 interface SearchContextValues {
   areaId: string;
@@ -26,41 +25,45 @@ interface SearchContextValues {
   switchLayer(layer: string): void;
 }
 
-class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityState> {
+class TimelinePAConnectivity extends React.Component<
+  any,
+  TimelinePAConnectivityState
+> {
   static contextType = SearchContext;
   mounted = false;
 
-  constructor(props:any) {
+  constructor(props: any) {
     super(props);
     this.state = {
       showInfoGraph: true,
       timelinePAConnectivity: [],
-      message: 'loading',
-      texts:{
-        paConnTimeline: {  meto: "", cons: "", quote: "", info: "" },
-    }
-  }}
+      message: "loading",
+      texts: {
+        paConnTimeline: { meto: "", cons: "", quote: "", info: "" },
+      },
+    };
+  }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this.context as SearchContextValues;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('timelinePAConn');
+    switchLayer("timelinePAConn");
 
     Promise.all([
-      RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot'),
-      RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, 'prot_conn'),
-    ])
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            timelinePAConnectivity: this.processData(res),
-            message: null,
-          });
-        }
-      });
+      RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
+      RestAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot_conn"),
+    ]).then((res) => {
+      if (this.mounted) {
+        this.setState({
+          timelinePAConnectivity: this.processData(res),
+          message: null,
+        });
+      }
+    });
 
-    RestAPI.requestSectionTexts('paConnTimeline')
+    RestAPI.requestSectionTexts("paConnTimeline")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { paConnTimeline: res } });
@@ -92,9 +95,12 @@ class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityS
    */
   getLabel = (key: string): string => {
     switch (key) {
-      case 'prot': return 'Protegida';
-      case 'prot_conn': return 'Protegida Conectada';
-      default: return '';
+      case "prot":
+        return "Protegida";
+      case "prot_conn":
+        return "Protegida Conectada";
+      default:
+        return "";
     }
   };
 
@@ -108,7 +114,7 @@ class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityS
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
-      data: obj.data.map((item: { y: number; }) => ({
+      data: obj.data.map((item: { y: number }) => ({
         ...item,
         y: item.y * 100,
       })),
@@ -117,22 +123,15 @@ class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityS
   };
 
   render() {
-    const {
-      showInfoGraph,
-      timelinePAConnectivity,
-      message,
-      texts,
-    } = this.state;
-    const {
-      areaId,
-      geofenceId,
-    } = this.context as SearchContextValues;
+    const { showInfoGraph, timelinePAConnectivity, message, texts } =
+      this.state;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     return (
       <div className="graphcontainer pt6">
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -145,13 +144,11 @@ class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityS
           />
         )}
         <div>
-          <h6>
-            Conectividad áreas protegidas en el tiempo
-          </h6>
+          <h6>Conectividad áreas protegidas en el tiempo</h6>
           <div>
             <GraphLoader
               graphType="MultiLinesGraph"
-              colors={matchColor('timelinePAConn')}
+              colors={matchColor("timelinePAConn")}
               data={timelinePAConnectivity}
               message={message}
               labelX="Año"
