@@ -218,6 +218,7 @@ GraphLoader.propTypes = {
   reverse: PropTypes.bool,
   labelXRight: PropTypes.string,
   labelXLeft: PropTypes.string,
+  message: PropTypes.string,
 };
 
 GraphLoader.defaultProps = {
