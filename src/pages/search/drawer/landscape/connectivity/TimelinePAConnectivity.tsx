@@ -9,23 +9,41 @@ import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
 import RestAPI from 'utils/restAPI';
 import TextBoxes from 'components/TextBoxes';
+import { AnyObject } from 'chart.js/types/basic';
+import { InfoTexts } from "pages/search/types/connectivity.types";
 
-class TimelinePAConnectivity extends React.Component {
+interface TimelinePAConnectivityState {
+  showInfoGraph: boolean,
+  timelinePAConnectivity: Array<unknown>,
+  message: string | null,
+  texts: { paConnTimeline: InfoTexts | any},
+}
+
+
+interface SearchContextValues {
+  areaId: string;
+  geofenceId: string | number;
+  switchLayer(layer: string): void;
+}
+
+class TimelinePAConnectivity extends React.Component<any,TimelinePAConnectivityState> {
+  static contextType = SearchContext;
   mounted = false;
 
-  constructor(props) {
+  constructor(props:any) {
     super(props);
     this.state = {
       showInfoGraph: true,
       timelinePAConnectivity: [],
       message: 'loading',
-      texts: { paConnTimeline: {} },
-    };
-  }
+      texts:{
+        paConnTimeline: {  meto: "", cons: "", quote: "", info: "" },
+    }
+  }}
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this.context;
+    const { areaId, geofenceId, switchLayer } = this.context as SearchContextValues;
 
     switchLayer('timelinePAConn');
 
@@ -72,7 +90,7 @@ class TimelinePAConnectivity extends React.Component {
    *
    * @returns {string} label to be used for tooltips and legends.
    */
-  getLabel = (key) => {
+  getLabel = (key: string): string => {
     switch (key) {
       case 'prot': return 'Protegida';
       case 'prot_conn': return 'Protegida Conectada';
@@ -86,11 +104,11 @@ class TimelinePAConnectivity extends React.Component {
    *
    * @returns {array} transformed array
    */
-  processData = (data) => {
+  processData = (data: Array<any>): Array<any> => {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
-      data: obj.data.map((item) => ({
+      data: obj.data.map((item: { y: number; }) => ({
         ...item,
         y: item.y * 100,
       })),
@@ -108,7 +126,7 @@ class TimelinePAConnectivity extends React.Component {
     const {
       areaId,
       geofenceId,
-    } = this.context;
+    } = this.context as SearchContextValues;
     return (
       <div className="graphcontainer pt6">
         <h2>
