@@ -1,4 +1,4 @@
-import axios, { CancelToken } from "axios";
+import axios from "axios";
 import { SCIHF } from "pages/search/types/forest";
 import { currentPAConn, DPC } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
@@ -56,7 +56,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number,
     paNumber: number
-  ) {
+  ): Promise<Array<DPC>> {
     return SearchAPI.makeGetRequest(
       `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
     );
