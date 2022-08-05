@@ -117,7 +117,6 @@ class SpeciesRecordsGaps extends React.Component {
           this.setState({
             concentration: data,
             messageConc: null,
-            bioticRegion: region,
             csvData: dataArray,
           });
         }
