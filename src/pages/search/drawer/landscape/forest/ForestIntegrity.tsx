@@ -52,7 +52,6 @@ interface FIState {
   ProtectedAreas: {
     [Property in SCIHFCats]: Array<PA>;
   };
-  isDataNull: boolean;
   selectedCategory: SCIHFCats | null;
   loading: string | null;
 }
@@ -109,7 +108,6 @@ class ForestIntegrity extends React.Component<any, FIState> {
         "baja_moderada-dinamica": [],
         "baja_moderada-estable_natural": [],
       },
-      isDataNull: false,
       selectedCategory: null,
       loading: "loading",
     };
@@ -191,7 +189,6 @@ class ForestIntegrity extends React.Component<any, FIState> {
       showInfoGraph,
       SciHfCats,
       ProtectedAreas,
-      isDataNull,
       selectedCategory,
       loading,
       texts,
