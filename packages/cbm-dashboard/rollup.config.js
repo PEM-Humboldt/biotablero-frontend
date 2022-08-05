@@ -2,6 +2,7 @@ import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import css from 'rollup-plugin-css-only';
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 
 export default {
   input: 'src/App.jsx',
@@ -14,6 +15,7 @@ export default {
     },
   ],
   plugins: [
+    nodePolyfills(),
     nodeResolve({ extensions: ['.jsx', '.js'] }),
     babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' }),
     commonjs(),

@@ -9,7 +9,7 @@ import DownloadCSV from "components/DownloadCSV";
 import { IconTooltip } from "components/Tooltips";
 
 interface TextBoxProps {
-  downloadData: Array<unknown>;
+  downloadData?: Array<unknown>;
   downloadName: string;
   quoteText: string;
   metoText: string;
@@ -86,7 +86,7 @@ const TextBoxes: React.FC<TextBoxProps> = (props) => {
             />
           </IconTooltip>
         )}
-        {downloadData.length !== 0 && (
+        {downloadData?.length !== 0 && (
           <DownloadCSV
             className="downBtnSpecial"
             data={downloadData}
