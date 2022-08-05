@@ -5,11 +5,18 @@ import GraphLoader from 'components/charts/GraphLoader';
 import { LegendColor } from 'components/CssLegends';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
+import SearchAPI from 'utils/searchAPI';
 import formatNumber from 'utils/format';
 import TextBoxes from 'components/TextBoxes';
+
+import { 
+  currentPAConn,
+  DPCKeys,
+  DPC,
+} from "pages/search/types/connectivity";
+import { TextObject } from "pages/search/types/texts";
 
 const getLabel = {
   unprot: 'No protegida',
@@ -25,23 +32,42 @@ const legendDPCCategories = {
   muy_alto: 'Muy Alto',
 };
 
-class CurrentPAConnectivity extends React.Component {
+interface currentPAConnExt extends currentPAConn {
+  label: string;
+};
+
+interface currentPAConnState {
+  infoShown: Set<string>;
+  currentPAConnData: Array<currentPAConnExt>;
+  dpcData: Array<DPC>;
+  prot: number;
+  messages: {
+    conn: string | null;
+    dpc: string | null;
+  };
+  texts: {
+    paConnCurrent: TextObject,
+    paConnDPC: TextObject,
+  },
+}
+
+class CurrentPAConnectivity extends React.Component<any, currentPAConnState> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       infoShown: new Set(['current']),
-      currentPAConnectivity: [],
-      dpc: [],
+      currentPAConnData: [],
+      dpcData: [],
       prot: 0,
       messages: {
         conn: 'loading',
         dpc: 'loading',
       },
       texts: {
-        paConnCurrent: {},
-        paConnDPC: {},
+        paConnCurrent: { info: "", cons: "", meto: "", quote: "" },
+        paConnDPC: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
@@ -52,17 +78,17 @@ class CurrentPAConnectivity extends React.Component {
       areaId,
       geofenceId,
       switchLayer,
-    } = this.context;
+    } = this.context as SearchContextValues;
 
     switchLayer('currentPAConn');
 
-    RestAPI.requestCurrentPAConnectivity(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestCurrentPAConnectivity(areaId, geofenceId)
+      .then((res: Array<currentPAConn>) => {
         if (this.mounted) {
           const protConn = res.find((item) => item.key === 'prot_conn');
           const protUnconn = res.find((item) => item.key === 'prot_unconn');
           this.setState((prev) => ({
-            currentPAConnectivity: res.map((item) => ({
+            currentPAConnData: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
             })),
@@ -83,11 +109,11 @@ class CurrentPAConnectivity extends React.Component {
         }));
       });
 
-    RestAPI.requestDPC(areaId, geofenceId, 5)
-      .then((res) => {
+      SearchAPI.requestDPC(areaId, geofenceId, 5)
+      .then((res: Array<DPC>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            dpc: res.reverse(),
+            dpcData: res.reverse(),
             messages: {
               ...prev.messages,
               dpc: null,
@@ -105,7 +131,7 @@ class CurrentPAConnectivity extends React.Component {
       });
 
       ['paConnCurrent', 'paConnDPC'].forEach((item) => {
-        RestAPI.requestSectionTexts(item)
+        SearchAPI.requestSectionTexts(item)
           .then((res) => {
             if (this.mounted) {
               this.setState((prevState) => ({
@@ -125,7 +151,7 @@ class CurrentPAConnectivity extends React.Component {
     this.mounted = false;
   }
 
-  toggleInfo = (value) => {
+  toggleInfo = (value: string) => {
     this.setState((prev) => {
       const newState = prev;
       if (prev.infoShown.has(value)) {
@@ -142,10 +168,10 @@ class CurrentPAConnectivity extends React.Component {
       areaId,
       geofenceId,
       handlerClickOnGraph,
-    } = this.context;
+    } = this.context as SearchContextValues;
     const {
-      currentPAConnectivity,
-      dpc,
+      currentPAConnData,
+      dpcData,
       prot,
       infoShown,
       messages: { conn, dpc: dpcMess },
@@ -175,7 +201,7 @@ class CurrentPAConnectivity extends React.Component {
           <div>
             <GraphLoader
               graphType="LargeBarStackGraph"
-              data={currentPAConnectivity}
+              data={currentPAConnData}
               message={conn}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas"
@@ -187,13 +213,13 @@ class CurrentPAConnectivity extends React.Component {
               consText={texts.paConnCurrent.cons}
               metoText={texts.paConnCurrent.meto}
               quoteText={texts.paConnCurrent.quote}
-              downloadData={currentPAConnectivity}
+              downloadData={currentPAConnData}
               downloadName={`conn_current_${areaId}_${geofenceId}.csv`}
               toggleInfo={() => this.toggleInfo('current')}
               isInfoOpen={infoShown.has('current')}
             />
           </div>
-          {currentPAConnectivity.length > 0 && (
+          {currentPAConnData.length > 0 && (
             <div>
               <h6 className="innerInfo">
                 Porcentaje de área protegida
@@ -228,7 +254,7 @@ class CurrentPAConnectivity extends React.Component {
           <div>
             <GraphLoader
               graphType="MultiSmallSingleBarGraph"
-              data={dpc}
+              data={dpcData}
               message={dpcMess}
               colors={matchColor('dpc')}
               onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
@@ -237,7 +263,7 @@ class CurrentPAConnectivity extends React.Component {
             />
           </div>
           <div className="dpcLegend">
-            {Object.keys(legendDPCCategories).map((cat) => (
+            {DPCKeys.map((cat) => (
               <LegendColor
                 color={matchColor('dpc')(cat)}
                 key={cat}
@@ -250,7 +276,7 @@ class CurrentPAConnectivity extends React.Component {
             consText={texts.paConnDPC.cons}
             metoText={texts.paConnDPC.meto}
             quoteText={texts.paConnDPC.quote}
-            downloadData={dpc}
+            downloadData={dpcData}
             downloadName={`conn_dpc_${areaId}_${geofenceId}.csv`}
             isInfoOpen={infoShown.has('dpc')}
             toggleInfo={() => this.toggleInfo('dpc')}
