@@ -189,6 +189,14 @@ class Search extends Component {
         ftype = 'dpc';
       } else if (type === 'fc') {
         key = feature.properties.compensation_factor;
+      } else if (type === 'national') {
+        return {
+          color: '#e84a5f',
+          weight: 0.5,
+          fillColor: '#ffd8e2',
+          opacity: 0.6,
+          fillOpacity: 0.4,
+        };
       } else {
         key = feature.properties.key;
       }
@@ -510,8 +518,14 @@ class Search extends Component {
       this.mapBounds = bounds;
     } else if (bounds.contains(this.mapBounds)) {
       this.mapBounds = bounds;
+    } else if (this.geofenceBounds === null) {
+      this.mapBounds = bounds;
     } else if (this.geofenceBounds !== null) {
-      this.mapBounds = this.geofenceBounds;
+      if (bounds.contains(this.geofenceBounds)) {
+        this.mapBounds = bounds;
+      } else {
+        this.mapBounds = this.geofenceBounds;
+      }
     }
   }
 
@@ -540,6 +554,12 @@ class Search extends Component {
     let layerStyle = this.featureStyle({ type: layerName });
 
     switch (layerName) {
+      case 'states':
+      case 'basinSubzones':
+      case 'ea':
+        reqPromise = () => RestAPI.requestNationalGeometryByArea(layerName);
+        layerStyle = this.featureStyle({ type: 'national' });
+        break;
       case 'geofence':
         reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
@@ -736,7 +756,12 @@ class Search extends Component {
      * - new layers without modifying existing ones like protected areas in forest integrity
      */
 
-    if (sectionName === 'geofence') {
+    if (/national-*/.test(sectionName)) {
+      let areaType = 'states';
+      const selected = sectionName.match(/national-(\w+)/);
+      if (selected) [, areaType] = selected;
+      shapeLayerOpts = [{ id: areaType, paneLevel: 1 }];
+    } else if (sectionName === 'geofence') {
       shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
     } else if (sectionName === 'coverages') {
       rasterLayerOpts = [
@@ -1180,7 +1205,6 @@ class Search extends Component {
    * @param {String} idLayer Layer ID
    */
   loadSecondLevelLayer = (idLayer) => {
-    const { layers } = this.state;
     this.cancelActiveRequests();
 
     this.setState((prevState) => {
@@ -1196,50 +1220,8 @@ class Search extends Component {
     if (!idLayer) {
       return;
     }
-
-    if (layers[idLayer]) {
-      this.setArea(idLayer);
-      this.setState((prevState) => {
-        const newState = { ...prevState };
-        newState.layers[idLayer].active = true;
-        return newState;
-      });
-    } else {
-      const { request, source } = RestAPI.requestNationalGeometryByArea(idLayer);
-      this.activeRequests.set(idLayer, source);
-      this.setArea(idLayer);
-
-      request
-        .then((res) => {
-          this.activeRequests.delete(idLayer);
-          if (!res || res === 'request canceled') return;
-          this.setState((prevState) => {
-            const newState = { ...prevState };
-            newState.layers[idLayer] = {
-              active: true,
-              layer: L.geoJSON(
-                res,
-                {
-                  style: {
-                    color: '#e84a5f',
-                    weight: 0.5,
-                    fillColor: '#ffd8e2',
-                    opacity: 0.6,
-                    fillOpacity: 0.4,
-                  },
-                  onEachFeature: (feature, layer) => (
-                    this.featureActions(layer, idLayer)
-                  ),
-                },
-              ),
-            };
-            return newState;
-          });
-        })
-        .catch(() => {
-          this.activeRequests.delete(idLayer);
-        });
-    }
+    this.setSectionLayers(`national-${idLayer}`);
+    this.setArea(idLayer);
   }
 
   /** ****************************** */
