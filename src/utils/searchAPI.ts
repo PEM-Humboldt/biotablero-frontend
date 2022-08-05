@@ -1,5 +1,6 @@
-import axios, { CancelToken } from "axios";
+import axios from "axios";
 import { SCIHF } from "pages/search/types/forest";
+import { currentPAConn, DPC } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
   /** ****** */
@@ -20,6 +21,44 @@ class SearchAPI {
   ): Promise<Array<SCIHF>> {
     return SearchAPI.makeGetRequest(
       `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /** ************ */
+  /** CONNECTIVITY */
+  /** ************ */
+  /**
+   * Get the area distribution for each category of protected area connectivity in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity
+   */
+  static requestCurrentPAConnectivity(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<currentPAConn>> {
+    return SearchAPI.makeGetRequest(
+      `connectivity/current?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get the values of connectivity for the protected areas with higher dPC value in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Array of objects with data of the protected areas
+   */
+  static requestDPC(
+    areaType: string,
+    areaId: string | number,
+    paNumber: number
+  ): Promise<Array<DPC>> {
+    return SearchAPI.makeGetRequest(
+      `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
     );
   }
 
