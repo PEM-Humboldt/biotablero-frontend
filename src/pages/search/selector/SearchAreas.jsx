@@ -46,7 +46,7 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
 
 AreaAutocomplete.propTypes = {
   options: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     name: PropTypes.string,
   })).isRequired,
   areaType: PropTypes.string.isRequired,
