@@ -35,11 +35,13 @@ class SearchAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity
    */
-   static requestCurrentPAConnectivity(
+  static requestCurrentPAConnectivity(
     areaType: string,
-    areaId: string | number,
-  ): Promise<Array<currentPAConn>>{
-    return SearchAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
+    areaId: string | number
+  ): Promise<Array<currentPAConn>> {
+    return SearchAPI.makeGetRequest(
+      `connectivity/current?areaType=${areaType}&areaId=${areaId}`
+    );
   }
 
   /**
@@ -53,9 +55,11 @@ class SearchAPI {
   static requestDPC(
     areaType: string,
     areaId: string | number,
-    paNumber: number,
+    paNumber: number
   ) {
-    return SearchAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
+    return SearchAPI.makeGetRequest(
+      `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
+    );
   }
 
   /** ************ */
