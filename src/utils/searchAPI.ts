@@ -77,7 +77,7 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {Object} Objecy with value and category for the current human footprint
+   * @return {Object} Object with value and category for the current human footprint
    */
   static requestCurrentHFValue(
     areaType: string,
