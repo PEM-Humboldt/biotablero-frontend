@@ -1,6 +1,11 @@
 import axios from "axios";
 import { SCIHF } from "pages/search/types/forest";
 import { currentPAConn, DPC } from "pages/search/types/connectivity";
+import {
+  currentHFValue,
+  currentHFCategories,
+  hfPersistence,
+} from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
   /** ****** */
@@ -60,6 +65,57 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(
       `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
     );
+  }
+
+  /** *************** */
+  /** HUMAN FOOTPRINT */
+  /** *************** */
+  /**
+  /**
+   * Get the current human footprint value in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Object} Object with value and category for the current human footprint
+   */
+  static requestCurrentHFValue(
+    areaType: string,
+    areaId: string | number
+  ): Promise<currentHFValue> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
+  }
+
+  /**
+   * Get the current human footprint data by categories in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the current human footprint
+   */
+  static requestCurrentHFCategories(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<currentHFCategories>> {
+    return SearchAPI.makeGetRequest(
+      `${areaType}/${areaId}/hf/current/categories`
+    );
+  }
+
+  /**
+   * Get the persistence of human footprint data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
+   */
+  static requestHFPersistence(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<hfPersistence>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
 
   /** ************ */

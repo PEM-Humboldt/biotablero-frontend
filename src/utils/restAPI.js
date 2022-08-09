@@ -175,42 +175,6 @@ class RestAPI {
   }
 
   /**
-   * Get the current human footprint value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Object} Objecy with value and category for the current human footprint
-   */
-  static requestCurrentHFValue(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
-  }
-
-  /**
-   * Get the current human footprint data by categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the current human footprint
-   */
-  static requestCurrentHFCategories(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
-  }
-
-  /**
-   * Get the persistence of human footprint data in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
-   */
-  static requestHFPersistence(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
-  }
-
-  /**
    * Get the human footprint timeline data in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
