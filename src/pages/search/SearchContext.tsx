@@ -1,6 +1,6 @@
 import React from "react";
 
-interface SearchContextValues {
+export interface SearchContextValues {
   areaId: string;
   geofenceId: string | number;
   switchLayer(layer: string): void;
