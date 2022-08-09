@@ -223,43 +223,6 @@ class RestAPI {
   }
 
   /**
-   * Get the structural condition index with human footprint persistence categories in the given
-   * area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Objects with value for the SCI and HF persistence
-   */
-  static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`forest/sci/hf?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the area distribution for each category of protected area connectivity in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity
-   */
-  static requestCurrentPAConnectivity(areaType, areaId) {
-    return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the values of connectivity for the protected areas with higher dPC value in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of the protected areas
-   */
-  static requestDPC(areaType, areaId, paNumber) {
-    return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
-  }
-
-  /**
     * Get the timeline for each category of protected area connectivity in a given area
     *
     * @param {String} areaType area type id, f.e. "ea", "states"
