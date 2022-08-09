@@ -1,7 +1,11 @@
 import axios from "axios";
 import { SCIHF } from "pages/search/types/forest";
 import { currentPAConn, DPC } from "pages/search/types/connectivity";
-import { currentHFValue, currentHFCategories, hfPersistence } from "pages/search/types/humanFootprint";
+import {
+  currentHFValue,
+  currentHFCategories,
+  hfPersistence,
+} from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
   /** ****** */
@@ -75,13 +79,11 @@ class SearchAPI {
    *
    * @return {Object} Objecy with value and category for the current human footprint
    */
-   static requestCurrentHFValue(
+  static requestCurrentHFValue(
     areaType: string,
-    areaId: string | number,
+    areaId: string | number
   ): Promise<currentHFValue> {
-    return SearchAPI.makeGetRequest(
-      `${areaType}/${areaId}/hf/current/value`
-    );
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
   }
 
   /**
@@ -94,9 +96,11 @@ class SearchAPI {
    */
   static requestCurrentHFCategories(
     areaType: string,
-    areaId: string | number,
+    areaId: string | number
   ): Promise<Array<currentHFCategories>> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
+    return SearchAPI.makeGetRequest(
+      `${areaType}/${areaId}/hf/current/categories`
+    );
   }
 
   /**
@@ -107,9 +111,9 @@ class SearchAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
    */
-   static requestHFPersistence(
+  static requestHFPersistence(
     areaType: string,
-    areaId: string | number,
+    areaId: string | number
   ): Promise<Array<hfPersistence>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
