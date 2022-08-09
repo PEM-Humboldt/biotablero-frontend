@@ -29,8 +29,12 @@ class Species extends React.Component {
           selected = ['richness', 'functionalDiversity'];
         }
         break;
-      case 'basinSubzones':
       case 'ea':
+        if (geofenceId !== 'CORALINA') {
+          selected = ['richness', 'functionalDiversity'];
+        }
+        break;
+        case 'basinSubzones':
         selected = ['richness', 'functionalDiversity'];
         break;
       default:
