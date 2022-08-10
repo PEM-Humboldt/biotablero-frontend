@@ -379,7 +379,7 @@ class NumberOfSpecies extends React.Component {
           </div>
         </div>
         <div>
-          {message === 'no-data' && (
+          {(message === 'no-data' || message === 'loading') && (
             <GraphLoader
               message={message}
               data={[]}

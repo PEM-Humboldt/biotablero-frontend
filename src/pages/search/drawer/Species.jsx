@@ -15,19 +15,26 @@ class Species extends React.Component {
         richness: 'numberOfSpecies',
         functionalDiversity: 'tropicalDryForest',
       },
-      availableComponents: ['richness', 'functionalDiversity'],
+      availableComponents: [],
       functionalFlag: false,
     };
   }
 
   componentDidMount() {
-    const { areaId } = this.context;
-
+    const { areaId, geofenceId } = this.context;
     let selected = [];
     switch (areaId) {
       case 'states':
-      case 'basinSubzones':
+        if (geofenceId !== '88') {
+          selected = ['richness', 'functionalDiversity'];
+        }
+        break;
       case 'ea':
+        if (geofenceId !== 'CORALINA') {
+          selected = ['richness', 'functionalDiversity'];
+        }
+        break;
+        case 'basinSubzones':
         selected = ['richness', 'functionalDiversity'];
         break;
       default:
