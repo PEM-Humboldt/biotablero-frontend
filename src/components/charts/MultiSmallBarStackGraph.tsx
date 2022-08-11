@@ -4,9 +4,9 @@ import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 
-// TODO: Maybe colors and onClickHandler types should be defined in types/
+// TODO: Maybe colors and onClickHandler types should be shared among various charts
 interface Props {
-  data: Array<Data>;
+  data: Array<MultiSmallBarStackGraphData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
@@ -14,7 +14,7 @@ interface Props {
   selectedIndexValue: string;
 }
 
-interface Data {
+export interface MultiSmallBarStackGraphData {
   id: string;
   data: Array<{
     area: number;
@@ -52,7 +52,7 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
      * @param {array} rawData raw data from RestAPI
      * @returns {array} transformed data ready to be used by graph component
      */
-    const transformData = (rawData: Array<Data>) => {
+    const transformData = (rawData: Array<MultiSmallBarStackGraphData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
           key: element.id,

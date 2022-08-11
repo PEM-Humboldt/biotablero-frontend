@@ -7,3 +7,19 @@ export interface SCIHF {
   pa: string;
   area: number;
 }
+
+export const ForestLPKeys = [
+  "persistencia",
+  "perdida",
+  "ganancia",
+  "no_bosque",
+] as const;
+
+export interface ForestLP {
+  id: string;
+  data: Array<{
+    area: number;
+    key: typeof ForestLPKeys[number];
+    percentage: number;
+  }>;
+}
