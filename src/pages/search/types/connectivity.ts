@@ -10,7 +10,10 @@ export const DPCKeys = [
   "bajo",
   "muy_bajo",
 ] as const;
-
+export const timelinePAConnKeys = [
+  "prot",
+  "prot_conn",
+] as const;
 export interface currentPAConn {
   key: typeof currentPAConnKeys[number];
   area: number;
@@ -23,4 +26,14 @@ export interface DPC {
   key: typeof DPCKeys[number];
   area: number;
   value: number;
+}
+
+interface timeLinePAConnValues {
+  x: string;
+  y: number;
+}
+
+export interface timelinePAConn {
+  key: typeof timelinePAConnKeys[number];
+  data: Array<timeLinePAConnValues>;
 }
