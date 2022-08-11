@@ -1,47 +1,60 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext from 'pages/search/SearchContext';
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import GraphLoader from "components/charts/GraphLoader";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
+import matchColor from "utils/matchColor";
+import SearchAPI from "utils/searchAPI";
+import TextBoxes from "components/TextBoxes";
+
+import { hfPersistence } from "pages/search/types/humanFootprint";
+import { TextObject } from "pages/search/types/texts";
 
 const getLabel = {
-  estable_natural: 'Estable Natural',
-  dinamica: 'Dinámica',
-  estable_alta: 'Estable Alta',
+  estable_natural: "Estable Natural",
+  dinamica: "Dinámica",
+  estable_alta: "Estable Alta",
 };
 
-class PersistenceFootprint extends React.Component {
+interface hfPersistenceExt extends hfPersistence {
+  label: string;
+}
+
+interface persistenceHFState {
+  showInfoGraph: boolean;
+  hfPersistence: Array<hfPersistenceExt>;
+  message: string | null;
+  texts: {
+    hfPersistence: TextObject;
+  };
+}
+
+class PersistenceFootprint extends React.Component<any, persistenceHFState> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       showInfoGraph: true,
       hfPersistence: [],
-      message: 'loading',
+      message: "loading",
       texts: {
-        hfPersistence: {},
+        hfPersistence: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('hfPersistence');
+    switchLayer("hfPersistence");
 
-    RestAPI.requestHFPersistence(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestHFPersistence(areaId, geofenceId)
+      .then((res: Array<hfPersistence>) => {
         if (this.mounted) {
           this.setState({
             hfPersistence: res.map((item) => ({
@@ -53,17 +66,19 @@ class PersistenceFootprint extends React.Component {
         }
       })
       .catch(() => {
-        this.setState({ message: 'no-data' });
+        this.setState({ message: "no-data" });
       });
 
-    RestAPI.requestSectionTexts('hfPersistence')
+    SearchAPI.requestSectionTexts("hfPersistence")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfPersistence: res } });
         }
       })
       .catch(() => {
-        this.setState({ texts: { hfPersistence: {} } });
+        this.setState({
+          texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
+        });
       });
   }
 
@@ -81,23 +96,15 @@ class PersistenceFootprint extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
-    const {
-      showInfoGraph,
-      hfPersistence,
-      message,
-      texts,
-    } = this.state;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
+    const { showInfoGraph, hfPersistence, message, texts } = this.state;
     return (
       <div className="graphcontainer pt6">
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -109,9 +116,7 @@ class PersistenceFootprint extends React.Component {
             collapseButton={false}
           />
         )}
-        <h6>
-          Estable natural, Dinámica, Estable alta
-        </h6>
+        <h6>Estable natural, Dinámica, Estable alta</h6>
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
@@ -120,9 +125,11 @@ class PersistenceFootprint extends React.Component {
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
-            colors={matchColor('hfPersistence')}
+            colors={matchColor("hfPersistence")}
             padding={0.25}
-            onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
+            onClickGraphHandler={(selected) =>
+              handlerClickOnGraph({ selectedKey: selected })
+            }
           />
         </div>
         <TextBoxes

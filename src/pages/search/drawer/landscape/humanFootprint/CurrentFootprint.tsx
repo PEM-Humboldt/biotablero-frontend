@@ -1,44 +1,62 @@
-import React from 'react';
+import React from "react";
 
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext from 'pages/search/SearchContext';
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import GraphLoader from "components/charts/GraphLoader";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
+import matchColor from "utils/matchColor";
+import SearchAPI from "utils/searchAPI";
+import TextBoxes from "components/TextBoxes";
 
-class CurrentFootprint extends React.Component {
+import {
+  currentHFValue,
+  currentHFCategories,
+} from "pages/search/types/humanFootprint";
+import { TextObject } from "pages/search/types/texts";
+
+interface currentHFCategoriesExt extends currentHFCategories {
+  label: string;
+}
+
+interface currentHFState {
+  showInfoGraph: boolean;
+  hfCurrent: Array<currentHFCategoriesExt>;
+  hfCurrentValue: string;
+  hfCurrentCategory: string;
+  message: string | null;
+  texts: {
+    hfCurrent: TextObject;
+  };
+}
+
+class CurrentFootprint extends React.Component<any, currentHFState> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       showInfoGraph: true,
       hfCurrent: [],
-      hfCurrentValue: '0',
-      hfCurrentCategory: '',
-      message: 'loading',
+      hfCurrentValue: "0",
+      hfCurrentCategory: "",
+      message: "loading",
       texts: {
-        hfCurrent: {},
+        hfCurrent: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('hfCurrent');
+    switchLayer("hfCurrent");
 
-    RestAPI.requestCurrentHFValue(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestCurrentHFValue(areaId, geofenceId)
+      .then((res: currentHFValue) => {
         if (this.mounted) {
           this.setState({
             hfCurrentValue: Number(res.value).toFixed(2),
@@ -48,8 +66,8 @@ class CurrentFootprint extends React.Component {
       })
       .catch(() => {});
 
-    RestAPI.requestCurrentHFCategories(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestCurrentHFCategories(areaId, geofenceId)
+      .then((res: Array<currentHFCategories>) => {
         if (this.mounted) {
           this.setState({
             hfCurrent: res.map((item) => ({
@@ -61,17 +79,19 @@ class CurrentFootprint extends React.Component {
         }
       })
       .catch(() => {
-        this.setState({ message: 'no-data' });
+        this.setState({ message: "no-data" });
       });
 
-    RestAPI.requestSectionTexts('hfCurrent')
+    SearchAPI.requestSectionTexts("hfCurrent")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfCurrent: res } });
         }
       })
       .catch(() => {
-        this.setState({ texts: { hfCurrent: {} } });
+        this.setState({
+          texts: { hfCurrent: { info: "", cons: "", meto: "", quote: "" } },
+        });
       });
   }
 
@@ -89,11 +109,8 @@ class CurrentFootprint extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       hfCurrent,
       hfCurrentValue,
@@ -107,7 +124,7 @@ class CurrentFootprint extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -120,16 +137,16 @@ class CurrentFootprint extends React.Component {
           />
         )}
         <div>
-          <h6>
-            Huella humana promedio · 2018
-          </h6>
-          <h5 style={{ backgroundColor: matchColor('hfCurrent')(hfCurrentCategory) }}>
+          <h6>Huella humana promedio · 2018</h6>
+          <h5
+            style={{
+              backgroundColor: matchColor("hfCurrent")(hfCurrentCategory),
+            }}
+          >
             {hfCurrentValue}
           </h5>
         </div>
-        <h6>
-          Natural, Baja, Media y Alta
-        </h6>
+        <h6>Natural, Baja, Media y Alta</h6>
         <div>
           <GraphLoader
             graphType="LargeBarStackGraph"
@@ -138,9 +155,11 @@ class CurrentFootprint extends React.Component {
             labelX="Hectáreas"
             labelY="Huella Humana Actual"
             units="ha"
-            colors={matchColor('hfCurrent')}
+            colors={matchColor("hfCurrent")}
             padding={0.25}
-            onClickGraphHandler={(selected) => handlerClickOnGraph({ selectedKey: selected })}
+            onClickGraphHandler={(selected) =>
+              handlerClickOnGraph({ selectedKey: selected })
+            }
           />
         </div>
         <TextBoxes
