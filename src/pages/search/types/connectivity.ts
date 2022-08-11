@@ -10,10 +10,7 @@ export const DPCKeys = [
   "bajo",
   "muy_bajo",
 ] as const;
-export const timelinePAConnKeys = [
-  "prot",
-  "prot_conn",
-] as const;
+export const timelinePAConnKeys = ["prot", "prot_conn"] as const;
 export interface currentPAConn {
   key: typeof currentPAConnKeys[number];
   area: number;

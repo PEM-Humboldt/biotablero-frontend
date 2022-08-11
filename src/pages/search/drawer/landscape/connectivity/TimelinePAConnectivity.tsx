@@ -29,7 +29,7 @@ interface timelinePAConnState {
     paConnTimeline: TextObject;
   };
 }
-class TimelinePAConnectivity extends React.Component<any,timelinePAConnState> {
+class TimelinePAConnectivity extends React.Component<any, timelinePAConnState> {
   static contextType = SearchContext;
   mounted = false;
 
@@ -41,8 +41,8 @@ class TimelinePAConnectivity extends React.Component<any,timelinePAConnState> {
       message: "loading",
       texts: {
         paConnTimeline: { info: "", cons: "", meto: "", quote: "" },
-     }
-    }
+      },
+    };
   }
 
   componentDidMount() {
@@ -55,33 +55,34 @@ class TimelinePAConnectivity extends React.Component<any,timelinePAConnState> {
     Promise.all([
       SearchAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
       SearchAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot_conn"),
-    ]).then((res) => {
-      if (this.mounted) {
-        this.setState(() => ({
-          timelinePAConnData: res.map((item) => ({
-            ...item,
-            label: getLabel[item.key],
-            data: item.data.map((i: { x:string, y:number }) => ({
-              ...i,
-              y: i.y * 100,
+    ])
+      .then((res) => {
+        if (this.mounted) {
+          this.setState(() => ({
+            timelinePAConnData: res.map((item) => ({
+              ...item,
+              label: getLabel[item.key],
+              data: item.data.map((i: { x: string; y: number }) => ({
+                ...i,
+                y: i.y * 100,
+              })),
             })),
-          })),
-          message: null,
-        }));
-      }
-      console.log(this.state);
-    })
-    .catch(() => {
-      this.setState({ message: "no-data" });
-    });
+            message: null,
+          }));
+        }
+        console.log(this.state);
+      })
+      .catch(() => {
+        this.setState({ message: "no-data" });
+      });
 
     SearchAPI.requestSectionTexts("paConnTimeline")
-    .then((res:TextObject) => {
-      if (this.mounted) {
-        this.setState({ texts: { paConnTimeline: res } });
-      }
-    })
-    .catch(() => {});
+      .then((res: TextObject) => {
+        if (this.mounted) {
+          this.setState({ texts: { paConnTimeline: res } });
+        }
+      })
+      .catch(() => {});
   }
 
   componentWillUnmount() {
@@ -115,8 +116,7 @@ class TimelinePAConnectivity extends React.Component<any,timelinePAConnState> {
   };
 
   render() {
-    const { showInfoGraph, timelinePAConnData, message, texts } =
-      this.state;
+    const { showInfoGraph, timelinePAConnData, message, texts } = this.state;
     const { areaId, geofenceId } = this.context as SearchContextValues;
     return (
       <div className="graphcontainer pt6">

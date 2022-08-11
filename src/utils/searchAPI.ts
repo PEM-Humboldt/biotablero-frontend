@@ -1,6 +1,10 @@
 import axios from "axios";
 import { SCIHF } from "pages/search/types/forest";
-import { currentPAConn, DPC, timelinePAConn } from "pages/search/types/connectivity";
+import {
+  currentPAConn,
+  DPC,
+  timelinePAConn,
+} from "pages/search/types/connectivity";
 import {
   currentHFValue,
   currentHFCategories,
@@ -69,17 +73,17 @@ class SearchAPI {
 
   /**
    *  Get the timeline for each category of protected area connectivity in a given area
-    *
-    * @param {String} areaType area type id, f.e. "ea", "states"
-    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-    * @param {String} category category of index, fe. "prot", "prot_conn"
-    *
-    * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
-    */
-   static requestTimelinePAConnectivity(
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} category category of index, fe. "prot", "prot_conn"
+   *
+   * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
+   */
+  static requestTimelinePAConnectivity(
     areaType: string,
     areaId: string | number,
-    category: string,
+    category: string
   ): Promise<timelinePAConn> {
     return SearchAPI.makeGetRequest(
       `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`
