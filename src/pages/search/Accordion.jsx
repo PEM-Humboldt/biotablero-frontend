@@ -16,16 +16,29 @@ class Accordion extends React.Component {
   componentDidMount() {
     const { componentsArray } = this.props;
     if (componentsArray.length > 0) {
-      let defaultTab = componentsArray.find(
-        (item) => !item.label.collapsed,
-      );
-      if (defaultTab) {
-        defaultTab = defaultTab.label.id;
-      } else {
-        defaultTab = null;
-      }
-      this.setState({ expanded: defaultTab });
+      this.setDefaultTab();
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { componentsArray: prevArray } = prevProps;
+    const { componentsArray } = this.props;
+    if (prevArray.length === 0 && componentsArray.length > 0) {
+      this.setDefaultTab();
+    }
+  }
+
+  setDefaultTab = () => {
+    const { componentsArray } = this.props;
+    let defaultTab = componentsArray.find(
+      (item) => !item.label.collapsed,
+    );
+    if (defaultTab) {
+      defaultTab = defaultTab.label.id;
+    } else {
+      defaultTab = null;
+    }
+    this.setState({ expanded: defaultTab });
   }
 
   render() {
