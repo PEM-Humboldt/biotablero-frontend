@@ -25,7 +25,7 @@ export interface DPC {
   value: number;
 }
 
-interface timeLinePAConnValues {
+export interface timeLinePAConnValues {
   x: string;
   y: number;
 }
