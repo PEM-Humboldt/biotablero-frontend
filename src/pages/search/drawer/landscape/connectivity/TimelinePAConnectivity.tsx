@@ -8,7 +8,10 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from "utils/matchColor";
 import processDataCsv from "utils/processDataCsv";
 import TextBoxes from "components/TextBoxes";
-import { timelinePAConn, timeLinePAConnValues } from "pages/search/types/connectivity";
+import {
+  timelinePAConn,
+  timeLinePAConnValues,
+} from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
 
@@ -61,7 +64,7 @@ class TimelinePAConnectivity extends React.Component<any, timelinePAConnState> {
             timelinePAConnData: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
-              data: item.data.map((i: timeLinePAConnValues ) => ({
+              data: item.data.map((i: timeLinePAConnValues) => ({
                 ...i,
                 y: i.y * 100,
               })),
