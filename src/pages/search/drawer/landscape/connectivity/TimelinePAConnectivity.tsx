@@ -7,9 +7,8 @@ import { IconTooltip } from "components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from "utils/matchColor";
 import processDataCsv from "utils/processDataCsv";
-import RestAPI from "utils/restAPI";
 import TextBoxes from "components/TextBoxes";
-import { timelinePAConn } from "pages/search/types/connectivity";
+import { timelinePAConn, timeLinePAConnValues } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
 
@@ -62,7 +61,7 @@ class TimelinePAConnectivity extends React.Component<any, timelinePAConnState> {
             timelinePAConnData: res.map((item) => ({
               ...item,
               label: getLabel[item.key],
-              data: item.data.map((i: { x: string; y: number }) => ({
+              data: item.data.map((i: timeLinePAConnValues ) => ({
                 ...i,
                 y: i.y * 100,
               })),
@@ -70,7 +69,6 @@ class TimelinePAConnectivity extends React.Component<any, timelinePAConnState> {
             message: null,
           }));
         }
-        console.log(this.state);
       })
       .catch(() => {
         this.setState({ message: "no-data" });
