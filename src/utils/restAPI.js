@@ -175,42 +175,6 @@ class RestAPI {
   }
 
   /**
-   * Get the current human footprint value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Object} Objecy with value and category for the current human footprint
-   */
-  static requestCurrentHFValue(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
-  }
-
-  /**
-   * Get the current human footprint data by categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the current human footprint
-   */
-  static requestCurrentHFCategories(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
-  }
-
-  /**
-   * Get the persistence of human footprint data in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
-   */
-  static requestHFPersistence(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
-  }
-
-  /**
    * Get the human footprint timeline data in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -256,56 +220,6 @@ class RestAPI {
    */
   static requestForestLP(areaType, areaId) {
     return RestAPI.makeGetRequest(`forest/lp?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the structural condition index with human footprint persistence categories in the given
-   * area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Objects with value for the SCI and HF persistence
-   */
-  static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`forest/sci/hf?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the area distribution for each category of protected area connectivity in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity
-   */
-  static requestCurrentPAConnectivity(areaType, areaId) {
-    return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the values of connectivity for the protected areas with higher dPC value in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of the protected areas
-   */
-  static requestDPC(areaType, areaId, paNumber) {
-    return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
-  }
-
-  /**
-    * Get the timeline for each category of protected area connectivity in a given area
-    *
-    * @param {String} areaType area type id, f.e. "ea", "states"
-    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-    * @param {String} category category of index, fe. "prot", "prot_conn"
-    *
-    * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
-    */
-  static requestTimelinePAConnectivity(areaType, areaId, category) {
-    return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
   }
 
   /**
