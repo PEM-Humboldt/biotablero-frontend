@@ -14,13 +14,9 @@ export const timelinePAConnKeys = ["prot", "prot_conn"] as const;
 export const currentSEPAConnKeys = [
   "prot_conn",
   "prot_unconn",
-  "unprot"
+  "unprot",
 ] as const;
-export const SEPAEcosystems = [
-  "paramo",
-  "wetland",
-  "dryForest",
-] as const;
+export const SEPAEcosystems = ["paramo", "wetland", "dryForest"] as const;
 
 export interface currentPAConn {
   key: typeof currentPAConnKeys[number];
@@ -51,5 +47,4 @@ export interface currentSEPAConn {
   percentage: number;
   label: string;
   key: typeof currentSEPAConnKeys[number];
-  
 }
