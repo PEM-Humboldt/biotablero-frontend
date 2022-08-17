@@ -72,7 +72,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this.context as SearchContextValues;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
     switchLayer("currentSEPAConn");
 
@@ -196,7 +197,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this.context as SearchContextValues;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
