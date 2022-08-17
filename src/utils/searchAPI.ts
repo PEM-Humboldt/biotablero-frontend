@@ -62,7 +62,7 @@ class SearchAPI {
    *
    * @return {Promise<Object>} Array of objects with data of current PA connectivity
    */
-   static requestCurrentSEPAConnectivity(
+  static requestCurrentSEPAConnectivity(
     areaType: string,
     areaId: string | number,
     seType: string | number
@@ -71,7 +71,6 @@ class SearchAPI {
       `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
   }
-
 
   /**
    * Get the values of connectivity for the protected areas with higher dPC value in a given area
