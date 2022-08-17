@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SCIHF } from "pages/search/types/forest";
+import { SCIHF, ForestLP } from "pages/search/types/forest";
 import {
   currentPAConn,
   DPC,
@@ -30,6 +30,23 @@ class SearchAPI {
   ): Promise<Array<SCIHF>> {
     return SearchAPI.makeGetRequest(
       `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get the forest loss and persistence data by periods and categories in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
+   */
+  static requestForestLP(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<ForestLP>> {
+    return SearchAPI.makeGetRequest(
+      `forest/lp?areaType=${areaType}&areaId=${areaId}`
     );
   }
 

@@ -1,57 +1,72 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext from 'pages/search/SearchContext';
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import formatNumber from 'utils/format';
-import TextBoxes from 'components/TextBoxes';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import GraphLoader from "components/charts/GraphLoader";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
+import matchColor from "utils/matchColor";
+import SearchAPI from "utils/searchAPI";
+import formatNumber from "utils/format";
+import TextBoxes from "components/TextBoxes";
 
-const LATEST_PERIOD = '2016-2021';
+import { MultiSmallBarStackGraphData } from "components/charts/MultiSmallBarStackGraph";
+import { TextObject } from "pages/search/types/texts";
+import { ForestLP } from "pages/search/types/forest";
+
+interface State {
+  showInfoGraph: boolean;
+  forestLP: Array<MultiSmallBarStackGraphData>;
+  message: string | null;
+  forestPersistenceValue: number;
+  texts: {
+    forestLP: TextObject;
+  };
+}
+
+const LATEST_PERIOD = "2016-2021";
 
 const getLabel = {
-  persistencia: 'Persistencia',
-  perdida: 'Pérdida',
-  ganancia: 'Ganancia',
-  no_bosque: 'No bosque',
+  persistencia: "Persistencia",
+  perdida: "Pérdida",
+  ganancia: "Ganancia",
+  no_bosque: "No bosque",
 };
 
-class ForestLossPersistence extends React.Component {
+class ForestLossPersistence extends React.Component<any, State> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state = {
       showInfoGraph: true,
       forestLP: [],
-      message: 'loading',
+      message: "loading",
       forestPersistenceValue: 0,
       texts: {
-        forestLP: {},
+        forestLP: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    const getPersistenceValue = (data) => {
-      const periodData = data ? data.find((item) => item.id === LATEST_PERIOD).data : null;
-      const persistenceData = periodData ? periodData.find((item) => item.key === 'persistencia') : null;
+    const getPersistenceValue = (rawData: Array<ForestLP>) => {
+      const periodData = rawData.find(
+        (item) => item.id === LATEST_PERIOD
+      )?.data;
+      const persistenceData = periodData
+        ? periodData.find((item) => item.key === "persistencia")
+        : null;
       return persistenceData ? persistenceData.area : 0;
     };
 
     switchLayer(`forestLP-${LATEST_PERIOD}`);
 
-    RestAPI.requestForestLP(areaId, geofenceId)
+    SearchAPI.requestForestLP(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
@@ -60,8 +75,7 @@ class ForestLossPersistence extends React.Component {
               data: item.data.map((element) => ({
                 ...element,
                 label: getLabel[element.key],
-              }
-              )),
+              })),
             })),
             forestPersistenceValue: getPersistenceValue(res),
             message: null,
@@ -69,18 +83,16 @@ class ForestLossPersistence extends React.Component {
         }
       })
       .catch(() => {
-        this.setState({ message: 'no-data' });
+        this.setState({ message: "no-data" });
       });
 
-    RestAPI.requestSectionTexts('forestLP')
+    SearchAPI.requestSectionTexts("forestLP")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { forestLP: res } });
         }
       })
-      .catch(() => {
-        this.setState({ texts: { forestLP: {} } });
-      });
+      .catch(() => {});
   }
 
   componentWillUnmount() {
@@ -99,11 +111,16 @@ class ForestLossPersistence extends React.Component {
   /**
    * Process data to be downloaded as a csv file
    *
-   * @param {Object} data data transformed passed to graph
+   * @param {Array<Object>} data graph data transformed to be downloaded as csv
    */
-  processDownload = (data) => {
-    const result = [];
-    data.forEach((period) => (
+  processDownload = (data: Array<MultiSmallBarStackGraphData>) => {
+    const result: Array<{
+      period: string;
+      category: string;
+      area: number;
+      percentage: number;
+    }> = [];
+    data.forEach((period) =>
       period.data.forEach((obj) => {
         result.push({
           period: period.id,
@@ -111,29 +128,22 @@ class ForestLossPersistence extends React.Component {
           area: obj.area,
           percentage: obj.percentage,
         });
-      })));
+      })
+    );
     return result;
   };
 
   render() {
-    const {
-      forestLP,
-      forestPersistenceValue,
-      showInfoGraph,
-      message,
-      texts,
-    } = this.state;
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
+    const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
+      this.state;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     return (
       <div className="graphcontainer pt6">
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={this.toggleInfoGraph}
             />
           </IconTooltip>
@@ -146,17 +156,15 @@ class ForestLossPersistence extends React.Component {
           />
         )}
         <div>
-          <h6>
-            Cobertura actual
-          </h6>
-          <h5 style={{ backgroundColor: matchColor('forestLP')('persistencia') }}>
+          <h6>Cobertura actual</h6>
+          <h5
+            style={{ backgroundColor: matchColor("forestLP")("persistencia") }}
+          >
             {`${formatNumber(forestPersistenceValue, 0)} ha `}
           </h5>
         </div>
         <div>
-          <h6>
-            Cobertura de bosque en el tiempo
-          </h6>
+          <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
           <GraphLoader
@@ -164,10 +172,10 @@ class ForestLossPersistence extends React.Component {
             data={forestLP}
             message={message}
             units="ha"
-            colors={matchColor('forestLP')}
+            colors={matchColor("forestLP")}
             onClickGraphHandler={(period, key) => {
               handlerClickOnGraph({
-                chartType: 'forestLP',
+                chartType: "forestLP",
                 chartSection: period,
                 selectedKey: key,
               });
