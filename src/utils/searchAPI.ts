@@ -1,10 +1,6 @@
 import axios from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
-import {
-  biomes,
-  cf,
-  bioticUnits,
-} from "pages/search/types/compensationFactor";
+import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
   currentSEPAConn,
@@ -141,7 +137,7 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-   static requestBiomes(
+  static requestBiomes(
     areaType: string,
     areaId: string | number
   ): Promise<Array<biomes>> {
