@@ -1,6 +1,11 @@
 import axios from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
 import {
+  biomes,
+  cf,
+  bioticUnits,
+} from "pages/search/types/compensationFactor";
+import {
   currentPAConn,
   currentSEPAConn,
   DPC,
@@ -126,6 +131,45 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(
       `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`
     );
+  }
+
+  /** ******************* */
+  /** COMPENSATION FACTOR */
+  /** ******************* */
+  /**
+   * Recover biomes located in the selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+   static requestBiomes(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<biomes>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
+  }
+
+  /**
+   * Recover biotic units by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestBioticUnits(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<bioticUnits>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
+  }
+
+  /**
+   * Recover compensation Factor values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestCompensationFactor(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<cf>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
   }
 
   /** *************** */
