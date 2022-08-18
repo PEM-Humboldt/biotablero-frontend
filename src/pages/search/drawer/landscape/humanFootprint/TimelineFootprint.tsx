@@ -4,12 +4,15 @@ import InfoIcon from '@mui/icons-material/Info';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import processDataCsv from 'utils/processDataCsv';
-import RestAPI from 'utils/restAPI';
+import SearchAPI from "utils/searchAPI";
 import TextBoxes from 'components/TextBoxes';
+
+import { hfTimeline, seDetails } from "pages/search/types/humanFootprint";
+import { TextObject } from "pages/search/types/texts";
 
 const changeValues = [
   {
@@ -66,10 +69,26 @@ const changeValues = [
   },
 ];
 
-class TimelineFootprint extends React.Component {
+interface Props { }
+
+interface timeLineFootPrintState {
+  showInfoGraph: boolean;
+  hfTimeline: Array<Array<hfTimelineExt>>;
+  message: string | null;
+  selectedEcosystem: seDetails | null;
+  texts: {
+    hfTimeline: TextObject,
+  },
+}
+
+interface hfTimelineExt extends hfTimeline{
+  label: string;
+}
+
+class TimelineFootprint extends React.Component<Props, timeLineFootPrintState> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,
@@ -77,7 +96,7 @@ class TimelineFootprint extends React.Component {
       message: 'loading',
       selectedEcosystem: null,
       texts: {
-        hfTimeline: {},
+        hfTimeline: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
@@ -85,14 +104,15 @@ class TimelineFootprint extends React.Component {
   componentDidMount() {
     this.mounted = true;
 
-    const { areaId, geofenceId, switchLayer } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
     switchLayer('hfTimeline');
 
     Promise.all([
-      RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
-      RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),
-      RestAPI.requestSEHFTimeline(areaId, geofenceId, 'Bosque Seco Tropical'),
-      RestAPI.requestTotalHFTimeline(areaId, geofenceId),
+      SearchAPI.requestSEHFTimeline(areaId, geofenceId, 'Páramo'),
+      SearchAPI.requestSEHFTimeline(areaId, geofenceId, 'Humedal'),
+      SearchAPI.requestSEHFTimeline(areaId, geofenceId, 'Bosque Seco Tropical'),
+      SearchAPI.requestTotalHFTimeline(areaId, geofenceId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
@@ -106,14 +126,14 @@ class TimelineFootprint extends React.Component {
         this.setState({ message: 'no-data' });
       });
 
-    RestAPI.requestSectionTexts('hfTimeline')
+      SearchAPI.requestSectionTexts('hfTimeline')
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfTimeline: res } });
         }
       })
       .catch(() => {
-        this.setState({ texts: { hfTimeline: {} } });
+        this.setState({ texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } } });
       });
   }
 
@@ -135,13 +155,11 @@ class TimelineFootprint extends React.Component {
    *
    * @param {string} seType type of strategic ecosystem to request
    */
-  setSelectedEcosystem = (seType) => {
-    const {
-      areaId,
-      geofenceId,
-    } = this.context;
+  setSelectedEcosystem = (seType: string) => {
+    const { areaId, geofenceId } = this
+    .context as SearchContextValues;
     if (seType !== 'aTotal') {
-      RestAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
+      SearchAPI.requestSEDetailInArea(areaId, geofenceId, this.getLabel(seType))
         .then((value) => {
           const res = { ...value, type: seType };
           this.setState({ selectedEcosystem: res });
@@ -158,7 +176,7 @@ class TimelineFootprint extends React.Component {
    * @returns {string} label to be used for tooltips, legends, etc.
    * Max. length = 16 characters
    */
-  getLabel = (type) => {
+  getLabel = (type: string) => {
     switch (type) {
       case 'paramo': return 'Páramo';
       case 'wetland': return 'Humedal';
@@ -173,7 +191,7 @@ class TimelineFootprint extends React.Component {
    *
    * @returns {array} data transformed
    */
-  processData = (data) => {
+  processData = (data: Array<hfTimeline>): Array<hfTimelineExt> => {
     if (!data) return [];
     return data.map((obj) => ({
       ...obj,
@@ -182,11 +200,8 @@ class TimelineFootprint extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       showInfoGraph,
       hfTimeline,
