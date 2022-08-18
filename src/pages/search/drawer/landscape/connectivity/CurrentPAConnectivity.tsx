@@ -32,6 +32,8 @@ interface currentPAConnExt extends currentPAConn {
   label: string;
 }
 
+interface Props {}
+
 interface currentPAConnState {
   infoShown: Set<string>;
   currentPAConnData: Array<currentPAConnExt>;
@@ -47,10 +49,10 @@ interface currentPAConnState {
   };
 }
 
-class CurrentPAConnectivity extends React.Component<any, currentPAConnState> {
+class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       infoShown: new Set(["current"]),

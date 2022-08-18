@@ -37,6 +37,8 @@ interface PA {
   percentage?: number;
 }
 
+interface Props {}
+
 interface FIState {
   showInfoGraph: boolean;
   SciHfCats: {
@@ -56,12 +58,12 @@ interface FIState {
   loading: string | null;
 }
 
-class ForestIntegrity extends React.Component<any, FIState> {
+class ForestIntegrity extends React.Component<Props, FIState> {
   static contextType = SearchContext;
 
   mounted = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,

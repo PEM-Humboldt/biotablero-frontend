@@ -55,12 +55,14 @@ class SearchAPI {
   }
 
   /**
-   * Get the area distribution for each category of protected area connectivity in a given area
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
    *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
    */
   static requestCurrentSEPAConnectivity(
     areaType: string,
