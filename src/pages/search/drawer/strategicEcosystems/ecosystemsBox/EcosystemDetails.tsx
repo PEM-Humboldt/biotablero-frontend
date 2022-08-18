@@ -1,18 +1,33 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 
-import { transformPAValues, transformCoverageValues } from 'pages/search/utils/transformData';
-import SearchContext from 'pages/search/SearchContext';
-import GraphLoader from 'components/charts/GraphLoader';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
+import {
+  transformPAValues,
+  transformCoverageValues,
+} from "pages/search/utils/transformData";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import GraphLoader from "components/charts/GraphLoader";
+import matchColor from "utils/matchColor";
+import RestAPI from "utils/restAPI";
 
-import { SEKey } from 'pages/search/utils/appropriate_keys';
+import { SEKey } from "pages/search/utils/appropriate_keys";
+import { CoverageData, PAData, SEValues } from "pages/search/types/ecosystems";
+import SearchAPI from "utils/searchAPI";
 
-class EcosystemDetails extends Component {
+interface State {
+  coverageData: Array<CoverageData> | null;
+  paData: Array<PAData> | null;
+  stopLoad: boolean;
+}
+
+interface Props {
+  SEValues: SEValues;
+}
+
+class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       coverageData: null,
@@ -23,21 +38,15 @@ class EcosystemDetails extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      SEValues,
-    } = this.props;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
-
+    const { SEValues } = this.props;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
     const SEType = SEValues.type;
     const SEArea = SEValues.area;
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      RestAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
+      SearchAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState({ coverageData: transformCoverageValues(res) });
@@ -45,7 +54,7 @@ class EcosystemDetails extends Component {
         })
         .catch(() => {});
 
-      RestAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
+      SearchAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState({ paData: transformPAValues(res, SEArea) });
@@ -65,13 +74,9 @@ class EcosystemDetails extends Component {
   }
 
   render() {
-    const {
-      coverageData,
-      paData,
-      stopLoad,
-    } = this.state;
+    const { coverageData, paData, stopLoad } = this.state;
     const { SEValues } = this.props;
-    const { handlerClickOnGraph } = this.context;
+    const { handlerClickOnGraph } = this.context as SearchContextValues;
     if (!stopLoad) {
       return (
         <div>
@@ -86,15 +91,15 @@ class EcosystemDetails extends Component {
             {coverageData && coverageData.length <= 0 && (
               <b>No hay información disponible de coberturas</b>
             )}
-            {(coverageData && coverageData.length > 0) && (
+            {coverageData && coverageData.length > 0 && (
               <GraphLoader
                 graphType="SmallBarStackGraph"
                 data={coverageData}
                 units="ha"
-                colors={matchColor('coverage')}
+                colors={matchColor("coverage")}
                 onClickGraphHandler={(selected) => {
                   handlerClickOnGraph({
-                    chartType: 'seCoverage',
+                    chartType: "seCoverage",
                     chartSection: SEKey(SEValues.type),
                     selectedKey: selected,
                   });
@@ -115,12 +120,12 @@ class EcosystemDetails extends Component {
                 <b>Sin áreas protegidas</b>
               </div>
             )}
-            {(paData && paData.length > 0) && (
+            {paData && paData.length > 0 && (
               <GraphLoader
                 graphType="SmallBarStackGraph"
                 data={paData}
                 units="ha"
-                colors={matchColor('pa', true)}
+                colors={matchColor("pa", true)}
               />
             )}
           </h3>
@@ -130,10 +135,6 @@ class EcosystemDetails extends Component {
     return null;
   }
 }
-
-EcosystemDetails.propTypes = {
-  SEValues: PropTypes.object.isRequired,
-};
 
 export default EcosystemDetails;
 EcosystemDetails.contextType = SearchContext;
