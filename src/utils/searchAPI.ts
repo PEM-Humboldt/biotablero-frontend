@@ -9,6 +9,8 @@ import {
   currentHFValue,
   currentHFCategories,
   hfPersistence,
+  hfTimeline,
+  seDetails
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
@@ -157,6 +159,53 @@ class SearchAPI {
   ): Promise<Array<hfPersistence>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
+
+  /**
+   * Get the human footprint timeline data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with human footprint timeline data in the given area
+   */
+   static requestTotalHFTimeline(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<hfTimeline>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+  }
+
+  /**
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
+   *
+   * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
+   * footprint timeline data
+   */
+  static requestSEHFTimeline(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<Array<hfTimeline>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}/hf/timeline`);
+  }
+
+  /**
+   * Recover the strategic ecosystems values in the area selected
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} seType strategic ecosystem type to request details
+   */
+     static requestSEDetailInArea(
+      areaType: string,
+      areaId: string | number,
+      seType: string
+      ): Promise<seDetails> {
+      return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
+    }
 
   /** ************ */
   /** CROSS MODULE */
