@@ -11,6 +11,7 @@ import {
   hfPersistence,
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
+import { CoverageData, PAData, SEValues } from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -156,6 +157,44 @@ class SearchAPI {
     areaId: string | number
   ): Promise<Array<hfPersistence>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
+  }
+
+  /** ************ */
+  /** ECOSYSTEMS   */
+  /** **************/
+  /**
+  /**
+   * Get the coverage area distribution by selected strategic ecosystem and geofence
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   */
+  static requestSECoverageByGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<Array<SEValues>> {
+    return SearchAPI.makeGetRequest(
+      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
+  }
+
+  /**
+   * Get the the protected area by selected strategic ecosystems and geofence
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} seType type of strategic ecosystem to request
+   */
+  static requestSEPAByGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<Array<PAData>> {
+    return SearchAPI.makeGetRequest(
+      `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
   }
 
   /** ************ */
