@@ -183,21 +183,6 @@ class CompensationFactor extends React.Component<
     });
   };
 
-  /**
-   * Transform data to fit in the graph structure
-   * @param {Array} data data to be transformed
-   *
-   * @returns {Array} data transformed
-   */
-  processData = (data: Array<cfExt>) => {
-    if (!data) return [];
-    return data.map((obj) => ({
-      key: `${obj.key}`,
-      area: typeof obj.area === "string" ? parseFloat(obj.area) : obj.area,
-      label: `${obj.key}`,
-    }));
-  };
-
   render() {
     const {
       infoShown,
