@@ -211,18 +211,6 @@ class RestAPI {
   }
 
   /**
-   * Get the forest loss and persistence data by periods and categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
-   */
-  static requestForestLP(areaType, areaId) {
-    return RestAPI.makeGetRequest(`forest/lp?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
    * Get the area distribution for each category of protected area connectivity for an specific
    * strategic ecosystem in a given area
    *
