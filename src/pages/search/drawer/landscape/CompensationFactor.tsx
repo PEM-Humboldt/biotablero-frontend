@@ -4,15 +4,49 @@ import React from 'react';
 import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
 
-class CompensationFactor extends React.Component {
+import matchColor from 'utils/matchColor';
+import SearchAPI from "utils/searchAPI";
+import TextBoxes from 'components/TextBoxes';
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
+import { TextObject } from "pages/search/types/texts";
+
+interface bioticUnitsExt extends bioticUnits { 
+  label: string;
+}
+
+interface biomesExt extends biomes { 
+  label: string;
+}
+
+interface cfExt extends cf { 
+  label: string;
+}
+
+interface Props {}
+
+interface compensationFactorState {
+  infoShown: Set<string>;
+  biomes: Array<biomesExt>,
+  fc: Array<cfExt>,
+  bioticUnits: Array<bioticUnitsExt>,
+  messages: {
+    fc: string | null;
+    biomes: string | null;
+    bioticUnits: string | null;
+  },
+  texts: {
+    cf: TextObject,
+    biomes: TextObject,
+    bioticRegions: TextObject,
+  },
+}
+
+class CompensationFactor extends React.Component<Props, compensationFactorState> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       infoShown: new Set(['cf']),
@@ -25,30 +59,30 @@ class CompensationFactor extends React.Component {
         bioticUnits: 'loading',
       },
       texts: {
-        cf: {},
-        biomes: {},
-        bioticRegions: {},
+        cf: { info: "", cons: "", meto: "", quote: "" },
+        biomes: { info: "", cons: "", meto: "", quote: "" },
+        bioticRegions: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
     if (areaId !== 'ea') return;
 
     switchLayer('fc');
 
-    RestAPI.requestBiomes(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestBiomes(areaId, geofenceId)
+      .then((res: Array<biomes>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            biomes: this.processData(res),
+            biomes: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               biomes: null,
@@ -65,11 +99,14 @@ class CompensationFactor extends React.Component {
         }));
       });
 
-    RestAPI.requestCompensationFactor(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestCompensationFactor(areaId, geofenceId)
+      .then((res: Array<cf>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            fc: this.processData(res),
+            fc: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               fc: null,
@@ -86,11 +123,14 @@ class CompensationFactor extends React.Component {
         }));
       });
 
-    RestAPI.requestBioticUnits(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestBioticUnits(areaId, geofenceId)
+      .then((res: Array<bioticUnits>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            bioticUnits: this.processData(res),
+            bioticUnits: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               bioticUnits: null,
@@ -108,7 +148,7 @@ class CompensationFactor extends React.Component {
       });
 
       ['cf', 'biomes', 'bioticRegions'].forEach((item) => {
-        RestAPI.requestSectionTexts(item)
+        SearchAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({
@@ -128,7 +168,7 @@ class CompensationFactor extends React.Component {
     this.mounted = false;
   }
 
-  toggleInfo = (value) => {
+  toggleInfo = (value: string) => {
     this.setState((prev) => {
       const newState = prev;
       if (prev.infoShown.has(value)) {
@@ -142,15 +182,15 @@ class CompensationFactor extends React.Component {
 
   /**
    * Transform data to fit in the graph structure
-   * @param {array} data data to be transformed
+   * @param {Array} data data to be transformed
    *
-   * @returns {array} data transformed
+   * @returns {Array} data transformed
    */
-  processData = (data) => {
+  processData = (data: Array<cfExt>) => {
     if (!data) return [];
     return data.map((obj) => ({
       key: `${obj.key}`,
-      area: parseFloat(obj.area),
+      area: typeof obj.area === 'string' ? parseFloat(obj.area) : obj.area,
       label: `${obj.key}`,
     }));
   };
@@ -164,14 +204,12 @@ class CompensationFactor extends React.Component {
       messages: {
         fc: fcMess,
         biomes: biomesMess,
-        bioticunits: bioticUnitsMess,
+        bioticUnits: bioticUnitsMess,
       },
       texts,
     } = this.state;
-    const {
-      areaId,
-      geofenceId,
-    } = this.context;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
 
     return (
       <div style={{ width: '100%' }}>
