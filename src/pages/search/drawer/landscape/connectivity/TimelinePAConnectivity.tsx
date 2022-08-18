@@ -23,7 +23,6 @@ const getLabel = {
 interface Props {}
 interface timelinePAConnExt extends timelinePAConn {
   label: string;
-
 }
 interface Props {}
 interface timelinePAConnState {
@@ -34,7 +33,10 @@ interface timelinePAConnState {
     paConnTimeline: TextObject;
   };
 }
-class TimelinePAConnectivity extends React.Component<Props, timelinePAConnState> {
+class TimelinePAConnectivity extends React.Component<
+  Props,
+  timelinePAConnState
+> {
   static contextType = SearchContext;
   mounted = false;
 
