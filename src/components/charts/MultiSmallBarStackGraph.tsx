@@ -4,7 +4,6 @@ import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 
-// TODO: Maybe colors and onClickHandler types should be shared among various charts
 interface Props {
   data: Array<MultiSmallBarStackGraphData>;
   height?: number;
