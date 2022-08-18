@@ -14,6 +14,7 @@ import { MultiSmallBarStackGraphData } from "components/charts/MultiSmallBarStac
 import { TextObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
 
+interface Props {}
 interface State {
   showInfoGraph: boolean;
   forestLP: Array<MultiSmallBarStackGraphData>;
@@ -33,10 +34,10 @@ const getLabel = {
   no_bosque: "No bosque",
 };
 
-class ForestLossPersistence extends React.Component<any, State> {
+class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,

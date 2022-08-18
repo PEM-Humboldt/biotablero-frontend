@@ -20,6 +20,7 @@ interface currentHFCategoriesExt extends currentHFCategories {
   label: string;
 }
 
+interface Props {}
 interface currentHFState {
   showInfoGraph: boolean;
   hfCurrent: Array<currentHFCategoriesExt>;
@@ -31,10 +32,10 @@ interface currentHFState {
   };
 }
 
-class CurrentFootprint extends React.Component<any, currentHFState> {
+class CurrentFootprint extends React.Component<Props, currentHFState> {
   mounted = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,

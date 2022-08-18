@@ -22,6 +22,7 @@ interface hfPersistenceExt extends hfPersistence {
   label: string;
 }
 
+interface Props {}
 interface persistenceHFState {
   showInfoGraph: boolean;
   hfPersistence: Array<hfPersistenceExt>;
@@ -31,10 +32,10 @@ interface persistenceHFState {
   };
 }
 
-class PersistenceFootprint extends React.Component<any, persistenceHFState> {
+class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   mounted = false;
 
-  constructor(props: any) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,
