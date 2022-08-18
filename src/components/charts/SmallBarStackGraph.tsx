@@ -1,16 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { ResponsiveBar } from '@nivo/bar';
+import React from "react";
+import PropTypes from "prop-types";
+import { ResponsiveBar } from "@nivo/bar";
 
-import BarItem from 'components/charts/BarItem';
-import formatNumber from 'utils/format';
+import BarItem from "components/charts/BarItem";
+import formatNumber from "utils/format";
 
-const SmallBarStackGraph = (props) => {
+interface Props {
+  data: Array<SmallBarStackGraphData>;
+  height?: number;
+  colors: (key: string) => string;
+  units?: string;
+  onClickGraphHandler: (key: string) => void;
+}
+
+export interface SmallBarStackGraphData {
+  area: number;
+  key: string;
+  percentage: number;
+  label: string;
+}
+
+interface State {
+  selectedIndexValue: string | number;
+}
+
+const SmallBarStackGraph = (props: Props) => {
   const {
     data,
-    height,
+    height = 30,
     colors,
-    units,
+    units = "ha",
     onClickGraphHandler,
   } = props;
 
@@ -20,16 +39,16 @@ const SmallBarStackGraph = (props) => {
    * @param {array} rawData raw data from RestAPI
    * @returns {array} transformed data ready to be used by graph component
    */
-  const transformData = (rawData) => {
-    const transformedData = {
-      key: 'key',
+  const transformData = (rawData: Array<SmallBarStackGraphData>) => {
+    const transformedData: Record<string, string | number> = {
+      key: "key",
     };
     rawData.forEach((item) => {
-      transformedData[String(item.key)] = Number(item.area || item.percentage);
-      transformedData[`${String(item.key)}Color`] = colors(item.key);
-      transformedData[`${String(item.key)}Label`] = item.label;
+      transformedData[item.key] = Number(item.area || item.percentage);
+      transformedData[`${item.key}Color`] = colors(item.key);
+      transformedData[`${item.key}Label`] = item.label;
       if (item.percentage) {
-        transformedData[`${String(item.key)}Percentage`] = Number(item.percentage);
+        transformedData[`${item.key}Percentage`] = Number(item.percentage);
       }
     });
     return [transformedData];
@@ -50,24 +69,25 @@ const SmallBarStackGraph = (props) => {
    *
    * @returns {object} tooltip for component
    */
-  const getToolTip = (id, allData) => {
-    if (id !== 'NA') {
+  const getToolTip = (
+    id: string | number,
+    allData: Record<string, string | number>
+  ) => {
+    if (id !== "NA") {
       return (
         <div className="tooltip-graph-container">
-          <strong style={{ color: '#e84a5f' }}>
-            {(id !== 'undefined') ? allData[`${id}Label`] : ''}
+          <strong style={{ color: "#e84a5f" }}>
+            {id !== "undefined" ? allData[`${id}Label`] : ""}
           </strong>
           <div>
             {`${formatNumber(allData[id], 0)} ${units}`}
             <br />
-            {`${formatNumber(allData[`${id}Percentage`] * 100, 0)}%`}
+            {`${formatNumber(Number(allData[`${id}Percentage`]) * 100, 0)}%`}
           </div>
         </div>
       );
     }
-    return (
-      <div style={{ display: 'none' }} />
-    );
+    return <div style={{ display: "none" }} />;
   };
 
   return (
@@ -84,40 +104,18 @@ const SmallBarStackGraph = (props) => {
           left: 5,
         }}
         padding={0.19}
-        borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
-        colors={({ id, data: allData }) => allData[`${id}Color`]}
+        borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+        colors={({ id, data: allData }) => String(allData[`${id}Color`])}
         enableGridY={false}
         axisLeft={null}
         enableLabel={false}
         animate
-        motionStiffness={90}
-        motionDamping={15}
         barComponent={BarItem}
         tooltip={({ id, data: allData }) => getToolTip(id, allData)}
-        onClick={({ id }) => onClickGraphHandler(id)}
+        onClick={({ id }) => onClickGraphHandler(String(id))}
       />
     </div>
   );
-};
-
-SmallBarStackGraph.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    key: PropTypes.string.isRequired,
-    area: PropTypes.number.isRequired,
-    percentage: PropTypes.number,
-    label: PropTypes.string,
-  })).isRequired,
-  height: PropTypes.number,
-  colors: PropTypes.func,
-  units: PropTypes.string,
-  onClickGraphHandler: PropTypes.func,
-};
-
-SmallBarStackGraph.defaultProps = {
-  height: 30,
-  colors: () => {},
-  units: 'ha',
-  onClickGraphHandler: () => {},
 };
 
 export default SmallBarStackGraph;
