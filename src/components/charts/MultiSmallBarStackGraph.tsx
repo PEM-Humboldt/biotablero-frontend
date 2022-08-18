@@ -58,8 +58,6 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
         };
         element.data.forEach((item) => {
           object[item.key] = item.area;
-          object[`${item.key}Color`] = colors(item.key);
-          object[`${item.key}DarkenColor`] = darkenColor(colors(item.key), 15);
           object[`${item.key}Label`] = item.label;
           object[`${item.key}Percentage`] = item.percentage;
         });
@@ -90,7 +88,7 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
           }}
           padding={0.35}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-          colors={({ id, indexValue, data: allData }) => {
+          colors={({ id, indexValue }) => {
             if (indexValue === selectedIndexValue) {
               return darkenColor(colors(String(id)), 15);
             }
