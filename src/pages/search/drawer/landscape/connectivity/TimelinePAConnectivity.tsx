@@ -20,7 +20,6 @@ const getLabel = {
   prot_conn: "Protegida conectada",
 };
 
-interface Props {}
 interface timelinePAConnExt extends timelinePAConn {
   label: string;
 }
