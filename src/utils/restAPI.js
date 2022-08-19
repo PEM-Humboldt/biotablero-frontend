@@ -22,33 +22,6 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover biomes located in the selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestBiomes(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/generalBiome`);
-  }
-
-  /**
-   * Recover biotic units by selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestBioticUnits(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/bioticUnit`);
-  }
-
-  /**
-   * Recover compensation Factor values by selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestCompensationFactor(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/compensationFactor`);
-  }
-
-  /**
    * Get coverage area by selected area
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24

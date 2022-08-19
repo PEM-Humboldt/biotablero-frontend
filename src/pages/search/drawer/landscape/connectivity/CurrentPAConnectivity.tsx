@@ -139,7 +139,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         })
         .catch(() => {
           this.setState((prevState) => ({
-            texts: { ...prevState.texts, [item]: {} },
+            texts: {
+              ...prevState.texts,
+              [item]: { info: "", cons: "", meto: "", quote: "" },
+            },
           }));
         });
     });
