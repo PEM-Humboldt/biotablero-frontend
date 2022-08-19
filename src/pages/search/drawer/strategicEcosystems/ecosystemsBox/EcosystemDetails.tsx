@@ -5,10 +5,9 @@ import {
   transformPAValues,
   transformCoverageValues,
 } from "pages/search/utils/transformData";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { SearchContextValues } from "pages/search/SearchContext";
 import GraphLoader from "components/charts/GraphLoader";
 import matchColor from "utils/matchColor";
-import RestAPI from "utils/restAPI";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
 import {
@@ -151,4 +150,3 @@ class EcosystemDetails extends React.Component<Props, State> {
 }
 
 export default EcosystemDetails;
-EcosystemDetails.contextType = SearchContext;
