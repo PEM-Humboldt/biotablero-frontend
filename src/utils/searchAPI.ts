@@ -2,6 +2,7 @@ import axios from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
 import {
   currentPAConn,
+  currentSEPAConn,
   DPC,
   timelinePAConn,
 } from "pages/search/types/connectivity";
@@ -67,6 +68,26 @@ class SearchAPI {
   ): Promise<Array<currentPAConn>> {
     return SearchAPI.makeGetRequest(
       `connectivity/current?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
+   */
+  static requestCurrentSEPAConnectivity(
+    areaType: string,
+    areaId: string | number,
+    seType: string | number
+  ): Promise<Array<currentSEPAConn>> {
+    return SearchAPI.makeGetRequest(
+      `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
   }
 
