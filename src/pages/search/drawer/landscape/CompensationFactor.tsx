@@ -161,7 +161,10 @@ class CompensationFactor extends React.Component<
         })
         .catch(() => {
           this.setState((prevState) => ({
-            texts: { ...prevState.texts, [item]: { info: "", cons: "", meto: "", quote: "" } },
+            texts: {
+              ...prevState.texts,
+              [item]: { info: "", cons: "", meto: "", quote: "" },
+            },
           }));
         });
     });
