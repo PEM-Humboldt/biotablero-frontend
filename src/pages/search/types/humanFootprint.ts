@@ -52,9 +52,3 @@ interface hfTimelineData {
   x: typeof timelineHFYears[number];
   y: number;
 }
-
-/* TODO: Move to proper typescript definitions file  */
-export interface seDetails {
-  national_percentage: number;
-	total_area: string;
-}
