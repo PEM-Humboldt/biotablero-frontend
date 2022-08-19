@@ -196,8 +196,7 @@ class CompensationFactor extends React.Component<
       },
       texts,
     } = this.state;
-    const { areaId, geofenceId } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
 
     return (
       <div style={{ width: "100%" }}>
