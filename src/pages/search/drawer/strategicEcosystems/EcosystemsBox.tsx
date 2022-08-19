@@ -1,7 +1,6 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import SearchContext from "pages/search/SearchContext";
 
 import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
 import GraphLoader from "components/charts/GraphLoader";
@@ -10,22 +9,22 @@ import matchColor from "utils/matchColor";
 import { transformSEValues } from "pages/search/utils/transformData";
 import { SEValues } from "pages/search/types/ecosystems";
 
-interface EcosystemsBoxProps {
+interface Props {
   SETotalArea: number;
   SEAreas: Array<SEValues>;
-  setActiveSE: (type: string) => {};
+  setActiveSE: (type: string) => void;
   activeSE: string;
 }
 
-interface ecosystemsBoxState {
+interface State {
   stopLoad: boolean;
 }
 
 class EcosystemsBox extends React.Component<
-  EcosystemsBoxProps,
-  ecosystemsBoxState
+  Props,
+  State
 > {
-  constructor(props: EcosystemsBoxProps) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       stopLoad: false,
@@ -81,4 +80,3 @@ class EcosystemsBox extends React.Component<
   }
 }
 export default EcosystemsBox;
-EcosystemsBox.contextType = SearchContext;
