@@ -72,7 +72,7 @@ const changeValues = [
 
 interface Props {}
 
-interface timeLineFootPrintState {
+interface State {
   showInfoGraph: boolean;
   hfTimeline: Array<hfTimelineExt>;
   message: string | null;
@@ -90,7 +90,7 @@ interface seDetailsExt extends seDetails {
   type: string;
 }
 
-class TimelineFootprint extends React.Component<Props, timeLineFootPrintState> {
+class TimelineFootprint extends React.Component<Props, State> {
   mounted = false;
 
   constructor(props: Props) {
