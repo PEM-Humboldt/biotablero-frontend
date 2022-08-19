@@ -20,10 +20,7 @@ interface State {
   stopLoad: boolean;
 }
 
-class EcosystemsBox extends React.Component<
-  Props,
-  State
-> {
+class EcosystemsBox extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
