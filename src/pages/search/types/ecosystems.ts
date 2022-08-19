@@ -9,6 +9,6 @@ export interface SEPAData {
   type: string;
 }
 
-export interface SEValues extends SEPAData {
+export interface EDValues extends SEPAData {
   percentage: number;
 }
