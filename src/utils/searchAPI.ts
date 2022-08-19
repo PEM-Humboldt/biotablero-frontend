@@ -11,7 +11,7 @@ import {
   hfPersistence,
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
-import { CoverageData, PAData, SEValues } from "pages/search/types/ecosystems";
+import { SECoverage, SEPAData } from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -159,10 +159,6 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
 
-  /** ************ */
-  /** ECOSYSTEMS   */
-  /** **************/
-  /**
   /**
    * Get the coverage area distribution by selected strategic ecosystem and geofence
    *
@@ -174,7 +170,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<Array<SEValues>> {
+  ): Promise<Array<SECoverage>> {
     return SearchAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
@@ -191,7 +187,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<Array<PAData>> {
+  ): Promise<Array<SEPAData>> {
     return SearchAPI.makeGetRequest(
       `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
