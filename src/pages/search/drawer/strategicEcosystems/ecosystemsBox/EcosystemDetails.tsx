@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React from "react";
 
 import {
   transformPAValues,
@@ -13,7 +12,7 @@ import { SEKey } from "pages/search/utils/appropriate_keys";
 import {
   coverageType,
   SECoverage,
-  SEValues,
+  EDValues,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
 
@@ -35,7 +34,7 @@ interface State {
 }
 
 interface Props {
-  SEValues: SEValues;
+  SEValues: EDValues;
 }
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;

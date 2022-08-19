@@ -1,17 +1,16 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
+import React from "react";
 
 import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
 import GraphLoader from "components/charts/GraphLoader";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import { transformSEValues } from "pages/search/utils/transformData";
-import { SEValues } from "pages/search/types/ecosystems";
+import { EDValues } from "pages/search/types/ecosystems";
 
 interface Props {
   SETotalArea: number;
-  SEAreas: Array<SEValues>;
+  SEAreas: Array<EDValues>;
   setActiveSE: (type: string) => void;
   activeSE: string;
 }
