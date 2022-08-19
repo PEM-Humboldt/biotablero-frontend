@@ -45,10 +45,8 @@ export interface hfPersistence {
 
 export interface hfTimeline {
   key: typeof timelineHFKeys[number];
-  data: Array<hfTimelineData>;
-}
-
-interface hfTimelineData {
-  x: typeof timelineHFYears[number];
-  y: number;
+  data: Array<{
+    x: typeof timelineHFYears[number];
+    y: number;
+  }>;
 }
