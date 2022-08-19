@@ -1,20 +1,15 @@
-/* eslint-disable react/prop-types */
-import {
-  createElement,
-  useCallback,
-  useMemo,
-  React,
-} from 'react';
+import { BarItem as OrigBar } from "@nivo/bar";
+import { createElement, useCallback, useMemo, MouseEvent } from "react";
 
-import { useTheme } from '@nivo/core';
-import { useTooltip } from '@nivo/tooltip';
-import { animated, to } from 'react-spring';
+import { useTheme } from "@nivo/core";
+import { useTooltip } from "@nivo/tooltip";
+import { animated, to } from "@react-spring/web";
 
 /**
  * Default Bar item from https://github.com/plouc/nivo/blob/v0.79.1/packages/bar/src/BarItem.tsx
  * We created this Item so we could be able to send anchor to showTooltipFromEvent (line 59).
  */
-const BarItem = ({
+const BarItem: typeof OrigBar = ({
   bar: { data, ...bar },
 
   style: {
@@ -52,32 +47,33 @@ const BarItem = ({
 
   const renderTooltip = useMemo(
     () => () => createElement(tooltip, { ...bar, ...data }),
-    [tooltip, bar, data],
+    [tooltip, bar, data]
   );
 
   const handleClick = useCallback(
-    (event) => {
+    (event: MouseEvent<SVGRectElement>) => {
       onClick?.({ color: bar.color, ...data }, event);
     },
-    [bar, data, onClick],
+    [bar, data, onClick]
   );
   const handleTooltip = useCallback(
-    (event) => showTooltipFromEvent(renderTooltip(), event, 'right'),
-    [showTooltipFromEvent, renderTooltip],
+    (event: MouseEvent<SVGRectElement>) =>
+      showTooltipFromEvent(renderTooltip(), event, "right"),
+    [showTooltipFromEvent, renderTooltip]
   );
   const handleMouseEnter = useCallback(
-    (event) => {
+    (event: MouseEvent<SVGRectElement>) => {
       onMouseEnter?.(data, event);
       showTooltipFromEvent(renderTooltip(), event);
     },
-    [data, onMouseEnter, showTooltipFromEvent, renderTooltip],
+    [data, onMouseEnter, showTooltipFromEvent, renderTooltip]
   );
   const handleMouseLeave = useCallback(
-    (event) => {
+    (event: MouseEvent<SVGRectElement>) => {
       onMouseLeave?.(data, event);
       hideTooltip();
     },
-    [data, hideTooltip, onMouseLeave],
+    [data, hideTooltip, onMouseLeave]
   );
 
   // extra handlers to allow keyboard navigation
@@ -119,7 +115,7 @@ const BarItem = ({
           fillOpacity={labelOpacity}
           style={{
             ...theme.labels.text,
-            pointerEvents: 'none',
+            pointerEvents: "none",
             fill: labelColor,
           }}
         >

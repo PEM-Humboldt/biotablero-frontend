@@ -1,33 +1,31 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
-
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 
 interface Props {
-  data: Array<MultiSmallBarStackGraphData>;
+  data: Array<MultiSmallSingleBarGraphData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
-  onClickHandler: (period: string, key: string) => void;
+  onClickHandler: (key: string) => void;
   selectedIndexValue: string;
+  labelX: string;
 }
 
-export interface MultiSmallBarStackGraphData {
+export interface MultiSmallSingleBarGraphData {
   id: string;
-  data: Array<{
-    area: number;
-    key: string;
-    percentage: number;
-    label: string;
-  }>;
+  name: string;
+  key: string;
+  value: number;
+  area: number;
 }
 
 interface State {
-  selectedIndexValue: string | number;
+  selectedIndexValue: string;
 }
 
-class MultiSmallBarStackGraph extends React.Component<Props, State> {
+class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -38,29 +36,27 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
   render() {
     const {
       data,
-      height = 250,
+      height = 30,
       colors,
       units = "ha",
       onClickHandler,
+      labelX,
     } = this.props;
     const { selectedIndexValue } = this.state;
 
-    /**
-     * Transform data structure to be passed to component as a prop
-     *
-     * @param {array} rawData raw data from RestAPI
-     * @returns {array} transformed data ready to be used by graph component
-     */
-    const transformData = (rawData: Array<MultiSmallBarStackGraphData>) => {
+    const transformData = (rawData: Array<MultiSmallSingleBarGraphData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
-          key: element.id,
+          id: String(element.id),
         };
-        element.data.forEach((item) => {
-          object[item.key] = item.area;
-          object[`${item.key}Label`] = item.label;
-          object[`${item.key}Percentage`] = item.percentage;
-        });
+        object[String(element.id)] = Number(element.value);
+        object[`${String(element.id)}Label`] = element.name;
+        object[`${String(element.id)}Color`] = colors(element.key);
+        object[`${String(element.id)}DarkenColor`] = darkenColor(
+          colors(element.key),
+          15
+        );
+        object[`${String(element.id)}Area`] = Number(element.area);
         return object;
       });
       return transformedData;
@@ -69,51 +65,45 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
     /**
      * Get keys to be passed to component as a prop
      *
-     * @returns {array} ids of each bar category
+     * @returns {array} ids of each bar category removing duplicates
      */
-    const keys = data[0] ? data[0].data.map((item) => String(item.key)) : [];
+    const keys = data ? [...new Set(data.map((item) => String(item.id)))] : [];
 
     return (
       <div style={{ height }}>
         <ResponsiveBar
           data={transformData(data)}
           keys={keys}
-          indexBy="key"
+          indexBy="id"
           layout="horizontal"
           margin={{
             top: 20,
             right: 15,
             bottom: 50,
-            left: 90,
+            left: 40,
           }}
           padding={0.35}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-          colors={({ id, indexValue }) => {
+          colors={({ id, indexValue, data: allData }) => {
             if (indexValue === selectedIndexValue) {
-              return darkenColor(colors(String(id)), 15);
+              return String(allData[`${id}DarkenColor`]);
             }
-            return colors(String(id));
+            return String(allData[`${id}Color`]);
           }}
           enableGridY={false}
           enableGridX
-          axisLeft={{
-            tickSize: 3,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: "Periodo",
-            legendPosition: "middle",
-            legendOffset: -80,
-          }}
+          axisLeft={null}
           axisBottom={{
             tickSize: 0,
             tickPadding: 0,
             tickRotation: 0,
-            format: ".2s",
-            legend: "Hectáreas",
+            format: ".2f",
+            legend: labelX,
             legendPosition: "start",
             legendOffset: 25,
           }}
-          enableLabel={false}
+          enableLabel
+          label={({ value }) => (value ? formatNumber(value, 2) : "")}
           animate
           tooltip={({ id, data: allData, color }) => (
             <div
@@ -122,7 +112,9 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
             >
               <strong style={{ color }}>{allData[`${id}Label`]}</strong>
               <div style={{ color: "#ffffff" }}>
-                {`${formatNumber(allData[id], 0)} ${units}`}
+                {formatNumber(allData[id], 2)}
+                <br />
+                {`${formatNumber(allData[`${id}Area`], 2)} ${units}`}
               </div>
             </div>
           )}
@@ -131,9 +123,9 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
               legend: { text: { fontSize: "14" } },
             },
           }}
-          onClick={({ id, indexValue }) => {
-            this.setState({ selectedIndexValue: indexValue });
-            onClickHandler(String(indexValue), String(id));
+          onClick={({ indexValue }) => {
+            this.setState({ selectedIndexValue: String(indexValue) });
+            onClickHandler(String(indexValue));
           }}
         />
       </div>
@@ -141,4 +133,4 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
   }
 }
 
-export default MultiSmallBarStackGraph;
+export default MultiSmallSingleBarGraph;

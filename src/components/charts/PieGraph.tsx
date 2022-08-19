@@ -1,13 +1,30 @@
-import { ResponsivePie } from '@nivo/pie';
-import PropTypes from 'prop-types';
-import React from 'react';
+import { ResponsivePie } from "@nivo/pie";
+import React from "react";
 
-import formatNumber from 'utils/format';
-import { lightenColor, darkenColor } from 'utils/colorUtils';
+import formatNumber from "utils/format";
+import { lightenColor, darkenColor } from "utils/colorUtils";
 
-class PieGraph extends React.Component {
-  constructor() {
-    super();
+interface Props {
+  data: Array<PieGraphData>;
+  height?: number;
+  colors: (key: string) => string;
+  units?: string;
+  onClickHandler: (section: string) => void;
+}
+
+export interface PieGraphData {
+  id: string;
+  label: string;
+  value: number;
+}
+
+interface State {
+  selectedId: string | null;
+}
+
+class PieGraph extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
     this.state = {
       selectedId: null,
     };
@@ -15,8 +32,8 @@ class PieGraph extends React.Component {
 
   render() {
     const {
-      height,
-      units,
+      height = 300,
+      units = "ha",
       onClickHandler,
       colors,
       data,
@@ -30,7 +47,7 @@ class PieGraph extends React.Component {
             if (selectedId === id) {
               return darkenColor(colors(id), 10);
             }
-            return colors(id);
+            return colors(String(id));
           }}
           margin={{ top: 30, bottom: 30 }}
           innerRadius={0.5}
@@ -38,7 +55,7 @@ class PieGraph extends React.Component {
           cornerRadius={3}
           activeOuterRadiusOffset={8}
           borderWidth={1}
-          borderColor={{ from: 'color', modifiers: [['darker', 0.5]] }}
+          borderColor={{ from: "color", modifiers: [["darker", 0.5]] }}
           enableArcLinkLabels={false}
           enableArcLabels={false}
           tooltip={({ datum: { label, value, color } }) => (
@@ -53,34 +70,13 @@ class PieGraph extends React.Component {
             </div>
           )}
           onClick={({ id }) => {
-            this.setState({ selectedId: id });
-            onClickHandler(id);
+            this.setState({ selectedId: String(id) });
+            onClickHandler(String(id));
           }}
         />
       </div>
     );
   }
 }
-
-PieGraph.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      value: PropTypes.number.isRequired,
-    }),
-  ).isRequired,
-  height: PropTypes.number,
-  units: PropTypes.string,
-  colors: PropTypes.func,
-  onClickHandler: PropTypes.func,
-};
-
-PieGraph.defaultProps = {
-  height: 300,
-  units: 'ha',
-  colors: () => {},
-  onClickHandler: () => {},
-};
 
 export default PieGraph;
