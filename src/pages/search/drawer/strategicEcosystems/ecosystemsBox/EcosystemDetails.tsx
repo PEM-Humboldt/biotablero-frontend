@@ -11,19 +11,33 @@ import matchColor from "utils/matchColor";
 import RestAPI from "utils/restAPI";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
-import { CoverageData, PAData, SEValues } from "pages/search/types/ecosystems";
+import { coverageType, SECoverage, SEValues } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
 
+const coverageLabels = [
+  "Natural",
+  "Secundaria",
+  "Transformada",
+] as const;
+export interface PAData {
+  area: number;
+  label: string;
+  key: string;
+  percentage: number;
+}
+interface CoverageValues extends SECoverage {
+  key: typeof coverageType[number]
+  label: typeof coverageLabels[number];
+}
 interface State {
-  coverageData: Array<CoverageData> | null;
+  coverageData: Array<CoverageValues> | null;
   paData: Array<PAData> | null;
   stopLoad: boolean;
 }
 
 interface Props {
-  SEValues: SEValues;
+  "SEValues": SEValues;
 }
-
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
 
