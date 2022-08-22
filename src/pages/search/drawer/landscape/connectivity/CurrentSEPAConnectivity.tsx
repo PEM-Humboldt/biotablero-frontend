@@ -1,26 +1,54 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from 'components/charts/GraphLoader';
-import DownloadCSV from 'components/DownloadCSV';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
-import formatNumber from 'utils/format';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
+import GraphLoader from "components/charts/GraphLoader";
+import DownloadCSV from "components/DownloadCSV";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import formatNumber from "utils/format";
+import matchColor from "utils/matchColor";
+import SearchAPI from "utils/searchAPI";
+import TextBoxes from "components/TextBoxes";
+
+import {
+  currentSEPAConn,
+  SEPAEcosystems,
+} from "pages/search/types/connectivity";
+import { TextObject } from "pages/search/types/texts";
 
 const getLabel = {
-  unprot: 'No protegida',
-  prot_conn: 'Protegida conectada',
-  prot_unconn: 'Protegida no conectada',
+  unprot: "No protegida",
+  prot_conn: "Protegida conectada",
+  prot_unconn: "Protegida no conectada",
 };
 
-class CurrentSEPAConnectivity extends React.Component {
+interface Props {}
+
+interface State {
+  showInfoGraph: boolean;
+  currentPAConnParamo: Array<currentSEPAConn>;
+  currentPAConnDryForest: Array<currentSEPAConn>;
+  currentPAConnWetland: Array<currentSEPAConn>;
+  selectedEcosystem: typeof SEPAEcosystems[number] | null;
+  protParamo: number;
+  protDryForest: number;
+  protWetland: number;
+  messages: {
+    paramo: string | null;
+    dryForest: string | null;
+    wetland: string | null;
+  };
+  texts: {
+    paConnSE: TextObject;
+  };
+}
+
+class CurrentSEPAConnectivity extends React.Component<Props, State> {
+  static contextType = SearchContext;
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,
@@ -32,30 +60,29 @@ class CurrentSEPAConnectivity extends React.Component {
       protDryForest: 0,
       protWetland: 0,
       messages: {
-        paramo: 'loading',
-        dryForest: 'loading',
-        wetland: 'loading',
+        paramo: "loading",
+        dryForest: "loading",
+        wetland: "loading",
       },
-      texts: { paConnSE: {} },
+      texts: {
+        paConnSE: { info: "", cons: "", meto: "", quote: "" },
+      },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('currentSEPAConn');
+    switchLayer("currentSEPAConn");
 
-    RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Páramo')
-      .then((res) => {
+    SearchAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
+      .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protParamo = 0;
-          const protConn = res.find((item) => item.key === 'prot_conn');
-          const protUnconn = res.find((item) => item.key === 'prot_unconn');
+          const protConn = res.find((item) => item.key === "prot_conn");
+          const protUnconn = res.find((item) => item.key === "prot_unconn");
           if (protConn && protUnconn) {
             protParamo = (protConn.percentage + protUnconn.percentage) * 100;
           }
@@ -76,17 +103,21 @@ class CurrentSEPAConnectivity extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            paramo: 'no-data',
+            paramo: "no-data",
           },
         }));
       });
 
-      RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Bosque Seco Tropical')
-      .then((res) => {
+    SearchAPI.requestCurrentSEPAConnectivity(
+      areaId,
+      geofenceId,
+      "Bosque Seco Tropical"
+    )
+      .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protDryForest = 0;
-          const protConn = res.find((item) => item.key === 'prot_conn');
-          const protUnconn = res.find((item) => item.key === 'prot_unconn');
+          const protConn = res.find((item) => item.key === "prot_conn");
+          const protUnconn = res.find((item) => item.key === "prot_unconn");
           if (protConn && protUnconn) {
             protDryForest = (protConn.percentage + protUnconn.percentage) * 100;
           }
@@ -107,17 +138,17 @@ class CurrentSEPAConnectivity extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            dryForest: 'no-data',
+            dryForest: "no-data",
           },
         }));
       });
 
-      RestAPI.requestCurrentPAConnectivityBySE(areaId, geofenceId, 'Humedal')
-      .then((res) => {
+    SearchAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Humedal")
+      .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protWetland = 0;
-          const protConn = res.find((item) => item.key === 'prot_conn');
-          const protUnconn = res.find((item) => item.key === 'prot_unconn');
+          const protConn = res.find((item) => item.key === "prot_conn");
+          const protUnconn = res.find((item) => item.key === "prot_unconn");
           if (protConn && protUnconn) {
             protWetland = (protConn.percentage + protUnconn.percentage) * 100;
           }
@@ -138,20 +169,18 @@ class CurrentSEPAConnectivity extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            wetland: 'no-data',
+            wetland: "no-data",
           },
         }));
       });
 
-    RestAPI.requestSectionTexts('paConnSE')
+    SearchAPI.requestSectionTexts("paConnSE")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { paConnSE: res } });
         }
       })
-      .catch(() => {
-        this.setState({ texts: { paConnSE: {} } });
-      });
+      .catch(() => {});
   }
 
   componentWillUnmount() {
@@ -168,11 +197,8 @@ class CurrentSEPAConnectivity extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -190,7 +216,7 @@ class CurrentSEPAConnectivity extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -204,10 +230,14 @@ class CurrentSEPAConnectivity extends React.Component {
         )}
         <div>
           <h3>Haz clic en la gráfica para seleccionar un EE</h3>
-          <h6 className={selectedEcosystem === 'paramo' ? 'h6Selected' : null}>
+          <h6
+            className={
+              selectedEcosystem === "paramo" ? "h6Selected" : undefined
+            }
+          >
             Páramo
           </h6>
-          {(currentPAConnParamo && currentPAConnParamo.length > 0) && (
+          {currentPAConnParamo && currentPAConnParamo.length > 0 && (
             <DownloadCSV
               data={currentPAConnParamo}
               filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
@@ -221,31 +251,35 @@ class CurrentSEPAConnectivity extends React.Component {
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Páramo"
               units="ha"
-              colors={matchColor('currentPAConn')}
+              colors={matchColor("currentPAConn")}
               padding={0.25}
               onClickGraphHandler={() => {
-                this.setState({ selectedEcosystem: 'paramo' });
-                handlerClickOnGraph({ chartType: 'paramoPAConn' });
+                this.setState({ selectedEcosystem: "paramo" });
+                handlerClickOnGraph({ chartType: "paramoPAConn" });
               }}
             />
           </div>
           {currentPAConnParamo.length > 0 && (
             <div>
-              <h6 className="innerInfo">
-                Porcentaje de área protegida
-              </h6>
+              <h6 className="innerInfo">Porcentaje de área protegida</h6>
               <h5
                 className="innerInfoH5"
-                style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}
+                style={{
+                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                }}
               >
                 {`${formatNumber(protParamo, 2)}%`}
               </h5>
             </div>
           )}
-          <h6 className={selectedEcosystem === 'dryForest' ? 'h6Selected' : null}>
+          <h6
+            className={
+              selectedEcosystem === "dryForest" ? "h6Selected" : undefined
+            }
+          >
             Bosque Seco Tropical
           </h6>
-          {(currentPAConnDryForest && currentPAConnDryForest.length > 0) && (
+          {currentPAConnDryForest && currentPAConnDryForest.length > 0 && (
             <DownloadCSV
               data={currentPAConnDryForest}
               filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
@@ -259,31 +293,35 @@ class CurrentSEPAConnectivity extends React.Component {
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Bosque Seco Tropical"
               units="ha"
-              colors={matchColor('currentPAConn')}
+              colors={matchColor("currentPAConn")}
               padding={0.25}
               onClickGraphHandler={() => {
-                this.setState({ selectedEcosystem: 'dryForest' });
-                handlerClickOnGraph({ chartType: 'dryForestPAConn' });
+                this.setState({ selectedEcosystem: "dryForest" });
+                handlerClickOnGraph({ chartType: "dryForestPAConn" });
               }}
             />
           </div>
           {currentPAConnDryForest.length > 0 && (
             <div>
-              <h6 className="innerInfo">
-                Porcentaje de área protegida
-              </h6>
+              <h6 className="innerInfo">Porcentaje de área protegida</h6>
               <h5
                 className="innerInfoH5"
-                style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}
+                style={{
+                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                }}
               >
                 {`${formatNumber(protDryForest, 2)}%`}
               </h5>
             </div>
           )}
-          <h6 className={selectedEcosystem === 'wetland' ? 'h6Selected' : null}>
+          <h6
+            className={
+              selectedEcosystem === "wetland" ? "h6Selected" : undefined
+            }
+          >
             Humedal
           </h6>
-          {(currentPAConnWetland && currentPAConnWetland.length > 0) && (
+          {currentPAConnWetland && currentPAConnWetland.length > 0 && (
             <DownloadCSV
               data={currentPAConnWetland}
               filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
@@ -297,26 +335,26 @@ class CurrentSEPAConnectivity extends React.Component {
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Humedal"
               units="ha"
-              colors={matchColor('currentPAConn')}
+              colors={matchColor("currentPAConn")}
               padding={0.25}
               onClickGraphHandler={() => {
-                this.setState({ selectedEcosystem: 'wetland' });
-                handlerClickOnGraph({ chartType: 'wetlandPAConn' });
+                this.setState({ selectedEcosystem: "wetland" });
+                handlerClickOnGraph({ chartType: "wetlandPAConn" });
               }}
             />
           </div>
           {currentPAConnWetland.length > 0 && (
-          <div>
-            <h6 className="innerInfo">
-              Porcentaje de área protegida
-            </h6>
-            <h5
-              className="innerInfoH5"
-              style={{ backgroundColor: matchColor('timelinePAConn')('prot') }}
-            >
-              {`${formatNumber(protWetland, 2)}%`}
-            </h5>
-          </div>
+            <div>
+              <h6 className="innerInfo">Porcentaje de área protegida</h6>
+              <h5
+                className="innerInfoH5"
+                style={{
+                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                }}
+              >
+                {`${formatNumber(protWetland, 2)}%`}
+              </h5>
+            </div>
           )}
           <TextBoxes
             consText={texts.paConnSE.cons}
@@ -324,6 +362,8 @@ class CurrentSEPAConnectivity extends React.Component {
             quoteText={texts.paConnSE.quote}
             isInfoOpen={showInfoGraph}
             toggleInfo={this.toggleInfoGraph}
+            downloadData={[]}
+            downloadName={""}
           />
         </div>
       </div>

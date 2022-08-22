@@ -18,6 +18,7 @@ import GradientLegend from 'components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
 import { SELabel } from 'pages/search/utils/appropriate_labels';
+import base64 from 'pages/search/utils/base64ArrayBuffer';
 
 class Search extends Component {
   constructor(props) {
@@ -721,7 +722,7 @@ class Search extends Component {
       }
       return {
         id: layerName,
-        data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
+        data: `data:${res.headers['content-type']};base64, ${base64(res.data)}`,
       };
     } catch (error) {
       this.activeRequests.delete(layerName);
