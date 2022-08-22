@@ -222,40 +222,6 @@ class SearchAPI {
   }
 
   /**
-   * Get the coverage area distribution by selected strategic ecosystem and geofence
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type
-   */
-  static requestSECoverageByGeofence(
-    areaType: string,
-    areaId: string | number,
-    seType: string
-  ): Promise<Array<SECoverage>> {
-    return SearchAPI.makeGetRequest(
-      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
-    );
-  }
-
-  /**
-   * Get the the protected area by selected strategic ecosystems and geofence
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} seType type of strategic ecosystem to request
-   */
-  static requestSEPAByGeofence(
-    areaType: string,
-    areaId: string | number,
-    seType: string
-  ): Promise<Array<SEPAData>> {
-    return SearchAPI.makeGetRequest(
-      `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
-    );
-  }
-
-  /**
    * Get the human footprint timeline data in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -305,6 +271,40 @@ class SearchAPI {
     seType: string
   ): Promise<seDetails> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
+  }
+
+  /**
+   * Get the coverage area distribution by selected strategic ecosystem and geofence
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   */
+  static requestSECoverageByGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<Array<SECoverage>> {
+    return SearchAPI.makeGetRequest(
+      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
+  }
+
+  /**
+   * Get the the protected area by selected strategic ecosystems and geofence
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} seType type of strategic ecosystem to request
+   */
+  static requestSEPAByGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<Array<SEPAData>> {
+    return SearchAPI.makeGetRequest(
+      `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
   }
 
   /** ************ */
