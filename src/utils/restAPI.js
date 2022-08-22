@@ -65,28 +65,6 @@ class RestAPI {
   }
 
   /**
-   * Get the coverage area distribution by selected strategic ecosystem and geofence
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type
-   */
-  static requestSECoverageByGeofence(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(
-      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
-    );
-  }
-
-  /**
-   * Get the the protected area by selected strategic ecosystems and geofence
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} seType type of strategic ecosystem to request
-   */
-  static requestSEPAByGeofence(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
-  }
-
-  /**
    * Recover details in the selected area
    * @param {Number} idArea id area to request, f.e. ea
    * @param {Number} idGeofence id geofence to request, f.e. idCAR
