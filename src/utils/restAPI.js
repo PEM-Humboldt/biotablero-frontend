@@ -65,16 +65,6 @@ class RestAPI {
   }
 
   /**
-   * Recover the strategic ecosystems values in the area selected
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
-   * @param {Number} seType strategic ecosystem type to request details
-   */
-  static requestSEDetailInArea(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}`);
-  }
-
-  /**
    * Get the coverage area distribution by selected strategic ecosystem and geofence
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
@@ -145,32 +135,6 @@ class RestAPI {
    */
   static getAllEAs() {
     return RestAPI.makeGetRequest('ea');
-  }
-
-  /**
-   * Get the human footprint timeline data in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with human footprint timeline data in the given area
-   */
-  static requestTotalHFTimeline(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
-  }
-
-  /**
-   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
-   *
-   * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
-   * footprint timeline data
-   */
-  static requestSEHFTimeline(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}/hf/timeline`);
   }
 
   /**

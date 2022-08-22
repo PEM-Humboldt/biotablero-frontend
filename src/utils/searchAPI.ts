@@ -11,7 +11,9 @@ import {
   currentHFValue,
   currentHFCategories,
   hfPersistence,
+  hfTimeline,
 } from "pages/search/types/humanFootprint";
+import { seDetails } from "pages/search/types/ecosystems";
 import { TextObject } from "pages/search/types/texts";
 class SearchAPI {
   /** ****** */
@@ -172,7 +174,6 @@ class SearchAPI {
   /** HUMAN FOOTPRINT */
   /** *************** */
   /**
-  /**
    * Get the current human footprint value in the given area.
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -217,6 +218,58 @@ class SearchAPI {
     areaId: string | number
   ): Promise<Array<hfPersistence>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
+  }
+
+  /**
+   * Get the human footprint timeline data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with human footprint timeline data in the given area
+   */
+  static requestTotalHFTimeline(
+    areaType: string,
+    areaId: string | number
+  ): Promise<hfTimeline> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+  }
+
+  /**
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
+   *
+   * @return {Promise<Object>} Object with human footprint timeline data in the given area
+   * and selected strategic ecosystem
+   */
+  static requestSEHFTimeline(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<hfTimeline> {
+    return SearchAPI.makeGetRequest(
+      `${areaType}/${areaId}/se/${seType}/hf/timeline`
+    );
+  }
+
+  /** ************ */
+  /** ECOSYSTEMS   */
+  /** **************/
+  /**
+   * Recover the strategic ecosystems values in the area selected
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} seType strategic ecosystem type to request details
+   */
+  static requestSEDetailInArea(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<seDetails> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
   }
 
   /** ************ */
