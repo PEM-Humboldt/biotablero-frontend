@@ -1,4 +1,4 @@
-import axios, { CancelToken } from "axios";
+import axios, { CancelToken } from 'axios';
 
 class RestAPI {
   /**
@@ -8,10 +8,13 @@ class RestAPI {
    * @param {String} password password in database
    */
   static requestUser(username, password) {
-    return RestAPI.makePostRequest("users/login", {
-      username: `${username}`,
-      password: `${password}`,
-    });
+    return RestAPI.makePostRequest(
+      'users/login',
+      {
+        username: `${username}`,
+        password: `${password}`,
+      },
+    );
   }
 
   /** ************* */
@@ -24,9 +27,7 @@ class RestAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
   static requestCoverage(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
-    );
+    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -60,19 +61,7 @@ class RestAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
   static requestStrategicEcosystems(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `ecosystems/se?areaType=${areaType}&areaId=${areaId}`
-    );
-  }
-
-  /**
-   * Recover the strategic ecosystems values in the area selected
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
-   * @param {Number} seType strategic ecosystem type to request details
-   */
-  static requestSEDetailInArea(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}`);
+    return RestAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -88,42 +77,42 @@ class RestAPI {
    * Recover a list with all basin areas available in the database
    */
   static getAllBasinAreas() {
-    return RestAPI.makeGetRequest("basinAreas");
+    return RestAPI.makeGetRequest('basinAreas');
   }
 
   /**
    * Recover a list with all basin zones available in the database
    */
   static getAllZones() {
-    return RestAPI.makeGetRequest("basinZones");
+    return RestAPI.makeGetRequest('basinZones');
   }
 
   /**
    * Recover a list with all basin subzones available in the database
    */
   static getAllSubzones() {
-    return RestAPI.makeGetRequest("basinSubzones");
+    return RestAPI.makeGetRequest('basinSubzones');
   }
 
   /**
    * Recover a list with all States available in the database
    */
   static getAllStates() {
-    return RestAPI.makeGetRequest("states");
+    return RestAPI.makeGetRequest('states');
   }
 
   /**
    * Recover a list with all Strategic Ecosystems availables in the database
    */
   static getAllSEs() {
-    return RestAPI.makeGetRequest("se/primary");
+    return RestAPI.makeGetRequest('se/primary');
   }
 
   /**
    * Recover a list with all Environmental Authorities availables in the database
    */
   static getAllEAs() {
-    return RestAPI.makeGetRequest("ea");
+    return RestAPI.makeGetRequest('ea');
   }
 
   /**
@@ -147,9 +136,7 @@ class RestAPI {
    */
   static requestNumberOfSpecies(areaType, areaId, group) {
     return RestAPI.makeGetRequest(
-      `richness/number-species?areaType=${areaType}&areaId=${areaId}${
-        group ? `&group=${group}` : ""
-      }`
+      `richness/number-species?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
     );
   }
 
@@ -165,9 +152,7 @@ class RestAPI {
    */
   static requestNSThresholds(areaType, areaId, group) {
     return RestAPI.makeGetRequest(
-      `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${
-        group ? `&group=${group}` : ""
-      }`
+      `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
     );
   }
 
@@ -182,9 +167,7 @@ class RestAPI {
    */
   static requestNSNationalMax(areaType, group) {
     return RestAPI.makeGetRequest(
-      `richness/number-species/nationalMax?areaType=${areaType}${
-        group ? `&group=${group}` : ""
-      }`
+      `richness/number-species/nationalMax?areaType=${areaType}${group ? `&group=${group}` : ''}`,
     );
   }
 
@@ -197,9 +180,7 @@ class RestAPI {
    * @return {Promise<Object>} Object with values of richness species gaps
    */
   static requestGaps(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `richness/gaps?areaType=${areaType}&areaId=${areaId}`
-    );
+    return RestAPI.makeGetRequest(`richness/gaps?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -211,9 +192,7 @@ class RestAPI {
    * @return {Promise<Object>} Object with values of richness species concentration
    */
   static requestConcentration(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `richness/concentration?areaType=${areaType}&areaId=${areaId}`
-    );
+    return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -225,9 +204,7 @@ class RestAPI {
    * @return {Promise<Object>} Object with values of functional diversity in the dry forest
    */
   static requestDryForestValues(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `functional-diversity/dry-forest/values?areaType=${areaType}&areaId=${areaId}`
-    );
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/values?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -239,9 +216,7 @@ class RestAPI {
    * @return {Promise<Array>} Array of objects with values of functional features in the dry forest
    */
   static requestDryForestFeatures(areaType, areaId) {
-    return RestAPI.makeGetRequest(
-      `functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`
-    );
+    return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -251,7 +226,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} Object with texts
    */
-  static requestSectionTexts(key) {
+   static requestSectionTexts(key) {
     return RestAPI.makeGetRequest(`util/texts?key=${key}`);
   }
 
@@ -268,9 +243,7 @@ class RestAPI {
   static requestBiomesbyEAGeometry(eaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, {
-        cancelToken: source.token,
-      }),
+      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
       source,
     };
   }
@@ -286,9 +259,7 @@ class RestAPI {
   static requestNationalGeometryByArea(areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaId}/layers/national`, {
-        cancelToken: source.token,
-      }),
+      request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
       source,
     };
   }
@@ -304,9 +275,7 @@ class RestAPI {
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, {
-        cancelToken: source.token,
-      }),
+      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -325,8 +294,8 @@ class RestAPI {
     return {
       request: RestAPI.makeGetRequest(
         `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
       ),
       source,
     };
@@ -342,13 +311,13 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
+   static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(
         `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
       ),
       source,
     };
@@ -365,10 +334,7 @@ class RestAPI {
   static requestCurrentHFGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(
-        `${areaType}/${areaId}/hf/layers/current/categories`,
-        { cancelToken: source.token }
-      ),
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`, { cancelToken: source.token }),
       source,
     };
   }
@@ -384,10 +350,7 @@ class RestAPI {
   static requestHFPersistenceGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(
-        `${areaType}/${areaId}/hf/layers/persistence`,
-        { cancelToken: source.token }
-      ),
+      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`, { cancelToken: source.token }),
       source,
     };
   }
@@ -405,33 +368,24 @@ class RestAPI {
   static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
     const source = CancelToken.source();
     switch (seType) {
-      case "dryForest":
+      case 'dryForest':
         return {
-          request: RestAPI.makeGetRequest(
-            `${areaType}/${areaId}/se/layers/Bosque Seco Tropical`,
-            { cancelToken: source.token }
-          ),
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`, { cancelToken: source.token }),
           source,
         };
-      case "paramo":
+      case 'paramo':
         return {
-          request: RestAPI.makeGetRequest(
-            `${areaType}/${areaId}/se/layers/Páramo`,
-            { cancelToken: source.token }
-          ),
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`, { cancelToken: source.token }),
           source,
         };
-      case "wetland":
+      case 'wetland':
         return {
-          request: RestAPI.makeGetRequest(
-            `${areaType}/${areaId}/se/layers/Humedal`,
-            { cancelToken: source.token }
-          ),
+          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`, { cancelToken: source.token }),
           source,
         };
       default:
         return {
-          request: Promise.reject(new Error("undefined option")),
+          request: Promise.reject(new Error('undefined option')),
           source,
         };
     }
@@ -449,10 +403,7 @@ class RestAPI {
   static requestSCIHFGeometry(areaType, areaId) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(
-        `forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`,
-        { cancelToken: source.token }
-      ),
+      request: RestAPI.makeGetRequest(`forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -471,10 +422,7 @@ class RestAPI {
   static requestSCIHFPAGeometry(areaType, areaId, sciCat, hfPers) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(
-        `forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`,
-        { cancelToken: source.token }
-      ),
+      request: RestAPI.makeGetRequest(`forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -495,8 +443,8 @@ class RestAPI {
     return {
       request: RestAPI.makeGetRequest(
         `forest/lp/layer?areaType=${areaType}&areaId=${areaId}&period=${period}&category=${category}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
       ),
       source,
     };
@@ -514,10 +462,7 @@ class RestAPI {
   static requestDPCLayer(areaType, areaId, paNumber) {
     const source = CancelToken.source();
     return {
-      request: RestAPI.makeGetRequest(
-        `connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`,
-        { cancelToken: source.token }
-      ),
+      request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
       source,
     };
   }
@@ -535,33 +480,33 @@ class RestAPI {
   static requestPAConnSELayer(areaType, areaId, seType) {
     const source = CancelToken.source();
     switch (seType) {
-      case "dryForestPAConn":
+      case 'dryForestPAConn':
         return {
           request: RestAPI.makeGetRequest(
             `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Bosque Seco Tropical`,
-            { cancelToken: source.token }
+            { cancelToken: source.token },
           ),
           source,
         };
-      case "paramoPAConn":
+      case 'paramoPAConn':
         return {
           request: RestAPI.makeGetRequest(
             `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Páramo`,
-            { cancelToken: source.token }
+            { cancelToken: source.token },
           ),
           source,
         };
-      case "wetlandPAConn":
+      case 'wetlandPAConn':
         return {
           request: RestAPI.makeGetRequest(
             `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Humedal`,
-            { cancelToken: source.token }
+            { cancelToken: source.token },
           ),
           source,
         };
       default:
         return {
-          request: Promise.reject(new Error("undefined option")),
+          request: Promise.reject(new Error('undefined option')),
           source,
         };
     }
@@ -582,8 +527,8 @@ class RestAPI {
     return {
       request: RestAPI.makeGetRequest(
         `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}&group=${group}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
       ),
       source,
     };
@@ -601,7 +546,7 @@ class RestAPI {
    */
   static requestNOSLayerThresholds(areaType, areaId, group) {
     return RestAPI.makeGetRequest(
-      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`
+      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`,
     );
   }
 
@@ -616,7 +561,7 @@ class RestAPI {
     /** TODO: implement all this endpoint and also the backend response
      * to find information according to polygon coordinates
      * */
-    return RestAPI.makePostRequest("polygon", {
+    return RestAPI.makePostRequest('polygon', {
       latLngs: polygon.latLngs,
     });
   }
@@ -634,8 +579,8 @@ class RestAPI {
     return {
       request: RestAPI.makeGetRequest(
         `richness/gaps/layer?areaType=${areaType}&areaId=${areaId}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        { cancelToken: source.token, responseType: 'arraybuffer' },
+        true,
       ),
       source,
     };
@@ -651,7 +596,7 @@ class RestAPI {
    */
   static requestGapsLayerThresholds(areaType, areaId) {
     return RestAPI.makeGetRequest(
-      `richness/gaps/layer/thresholds?areaType=${areaType}&areaId=${areaId}`
+      `richness/gaps/layer/thresholds?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -666,9 +611,7 @@ class RestAPI {
    * @param {String} projectId id project to request
    */
   static requestImpactedBiomes(companyId, projectId) {
-    return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/biomes`
-    );
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/biomes`);
   }
 
   /**
@@ -678,9 +621,7 @@ class RestAPI {
    * @param {String} projectId id project to request
    */
   static requestImpactedBiomesDecisionTree(companyId, projectId) {
-    return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/decisionTree`
-    );
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}/decisionTree`);
   }
 
   /**
@@ -691,7 +632,7 @@ class RestAPI {
    * @param {String} eaId environmental authority id
    */
   static requestAvailableStrategies(biomeId, subzoneId, eaId) {
-    return RestAPI.makePostRequest("strategies/biomeSubzoneEA", {
+    return RestAPI.makePostRequest('strategies/biomeSubzoneEA', {
       id_biome: biomeId,
       id_subzone: subzoneId,
       id_ea: eaId,
@@ -705,9 +646,7 @@ class RestAPI {
    * @param {String} projectId id project to request
    */
   static requestProjectByIdAndCompany(companyId, projectId) {
-    return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}`
-    );
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects/${projectId}`);
   }
 
   /**
@@ -715,16 +654,14 @@ class RestAPI {
    * @param {String} companyId id company to request
    */
   static requestProjectsAndRegionsByCompany(companyId) {
-    return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects?group_props=id_region,prj_status`
-    );
+    return RestAPI.makeGetRequest(`companies/${companyId}/projects?group_props=id_region,prj_status`);
   }
 
   /**
    * Recover all biomes available in the database
    */
   static getAllBiomes() {
-    return RestAPI.makeGetRequest("biomes");
+    return RestAPI.makeGetRequest('biomes');
   }
 
   /**
@@ -736,22 +673,20 @@ class RestAPI {
       id_company: companyId,
       id_region: `${regionId}`,
       prj_status: `${statusId}`,
-      details: "Project created by user",
+      details: 'Project created by user',
     };
-    return RestAPI.makePostRequest(
-      `companies/${companyId}/projects`,
-      requestBody
-    ).then((res) => ({
-      id_project: res.gid,
-      id_company: res.id_company,
-      region: res.id_region,
-      state: res.prj_status,
-      name: res.name,
-      type: "button",
-      project: res.name.toUpperCase(),
-      label: res.name,
-      area: 0,
-    }));
+    return RestAPI.makePostRequest(`companies/${companyId}/projects`, requestBody)
+      .then((res) => ({
+        id_project: res.gid,
+        id_company: res.id_company,
+        region: res.id_region,
+        state: res.prj_status,
+        name: res.name,
+        type: 'button',
+        project: res.name.toUpperCase(),
+        label: res.name,
+        area: 0,
+      }));
   }
 
   /**
@@ -771,10 +706,7 @@ class RestAPI {
       area_to_compensate_ha: biome.area_to_compensate_ha,
       area_impacted_pct: biome.area_impacted_pct,
     }));
-    return RestAPI.makePostRequest(
-      `companies/${companyId}/projects/${projectId}/biomes`,
-      cleanBiomes
-    );
+    return RestAPI.makePostRequest(`companies/${companyId}/projects/${projectId}/biomes`, cleanBiomes);
   }
 
   /**
@@ -784,11 +716,10 @@ class RestAPI {
    * @param {Number} projectId project id
    * @param {Object} strategy strategy to save information
    */
-  static createProjectStrategy = (companyId, projectId, strategy) =>
-    RestAPI.makePostRequest(
-      `companies/${companyId}/projects/${projectId}/strategies`,
-      strategy
-    );
+  static createProjectStrategy = (companyId, projectId, strategy) => RestAPI.makePostRequest(
+    `companies/${companyId}/projects/${projectId}/strategies`,
+    strategy,
+  )
 
   /**
    * Save many strategies as selected for the given project
@@ -797,12 +728,9 @@ class RestAPI {
    * @param {Number} projectId project id
    * @param {Object[]} strategies list of strategies to save
    */
-  static bulkSaveStrategies = (companyId, projectId, strategies) =>
-    Promise.all(
-      strategies.map((strategy) =>
-        RestAPI.createProjectStrategy(companyId, projectId, strategy)
-      )
-    );
+  static bulkSaveStrategies = (companyId, projectId, strategies) => Promise.all(
+    strategies.map((strategy) => RestAPI.createProjectStrategy(companyId, projectId, strategy)),
+  )
 
   /**
    * Request the selected strategies for the given project
@@ -810,18 +738,16 @@ class RestAPI {
    * @param {Numer} companyId company id
    * @param {Number} projectId project id
    */
-  static getSavedStrategies = (companyId, projectId) =>
-    RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/strategies`
-    );
+  static getSavedStrategies = (companyId, projectId) => RestAPI.makeGetRequest(
+    `companies/${companyId}/projects/${projectId}/strategies`,
+  )
 
   /**
    * Download the strategies saved in the given project
    */
-  static downloadProjectStrategiesUrl = (companyId, projectId) =>
-    RestAPI.makeGetRequest(
-      `/companies/${companyId}/projects/${projectId}/strategies/download`
-    );
+  static downloadProjectStrategiesUrl = (companyId, projectId) => RestAPI.makeGetRequest(
+    `/companies/${companyId}/projects/${projectId}/strategies/download`,
+  )
 
   /** ************** */
   /** BASE FUNCTIONS */
@@ -839,8 +765,7 @@ class RestAPI {
         Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
       },
     };
-    return axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
+    return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -849,12 +774,11 @@ class RestAPI {
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
-          return Promise.resolve("request canceled");
+          return Promise.resolve('request canceled');
         }
-        let message = "Bad GET response. Try later";
+        let message = 'Bad GET response. Try later';
         if (error.response) message = error.response.status;
-        if (error.request && error.request.statusText === "")
-          message = "no-data-available";
+        if (error.request && error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
   }
@@ -871,17 +795,12 @@ class RestAPI {
         Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
       },
     };
-    return axios
-      .post(
-        `${process.env.REACT_APP_BACKEND_URL}/${endpoint}`,
-        requestBody,
-        config
-      )
+    return axios.post(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
-        let message = "Bad POST response. Try later";
+        let message = 'Bad POST response. Try later';
         if (error.response) message = error.response.status;
-        if (error.request.statusText === "") message = "no-data-available";
+        if (error.request.statusText === '') message = 'no-data-available';
         return Promise.reject(message);
       });
   }
