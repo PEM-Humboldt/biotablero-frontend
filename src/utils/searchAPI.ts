@@ -1,7 +1,9 @@
 import axios from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
+import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
+  currentSEPAConn,
   DPC,
   timelinePAConn,
 } from "pages/search/types/connectivity";
@@ -9,7 +11,9 @@ import {
   currentHFValue,
   currentHFCategories,
   hfPersistence,
+  hfTimeline,
 } from "pages/search/types/humanFootprint";
+import { seDetails } from "pages/search/types/ecosystems";
 import { TextObject } from "pages/search/types/texts";
 import { SECoverage, SEPAData } from "pages/search/types/ecosystems";
 class SearchAPI {
@@ -72,6 +76,26 @@ class SearchAPI {
   }
 
   /**
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
+   */
+  static requestCurrentSEPAConnectivity(
+    areaType: string,
+    areaId: string | number,
+    seType: string | number
+  ): Promise<Array<currentSEPAConn>> {
+    return SearchAPI.makeGetRequest(
+      `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
+  }
+
+  /**
    * Get the values of connectivity for the protected areas with higher dPC value in a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -108,10 +132,48 @@ class SearchAPI {
     );
   }
 
+  /** ******************* */
+  /** COMPENSATION FACTOR */
+  /** ******************* */
+  /**
+   * Recover biomes located in the selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestBiomes(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<biomes>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
+  }
+
+  /**
+   * Recover biotic units by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestBioticUnits(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<bioticUnits>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
+  }
+
+  /**
+   * Recover compensation Factor values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestCompensationFactor(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<cf>> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
+  }
+
   /** *************** */
   /** HUMAN FOOTPRINT */
   /** *************** */
-  /**
   /**
    * Get the current human footprint value in the given area.
    *
@@ -191,6 +253,58 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(
       `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
+  }
+
+  /**
+   * Get the human footprint timeline data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with human footprint timeline data in the given area
+   */
+  static requestTotalHFTimeline(
+    areaType: string,
+    areaId: string | number
+  ): Promise<hfTimeline> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+  }
+
+  /**
+   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
+   *
+   * @return {Promise<Object>} Object with human footprint timeline data in the given area
+   * and selected strategic ecosystem
+   */
+  static requestSEHFTimeline(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<hfTimeline> {
+    return SearchAPI.makeGetRequest(
+      `${areaType}/${areaId}/se/${seType}/hf/timeline`
+    );
+  }
+
+  /** ************ */
+  /** ECOSYSTEMS   */
+  /** **************/
+  /**
+   * Recover the strategic ecosystems values in the area selected
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} seType strategic ecosystem type to request details
+   */
+  static requestSEDetailInArea(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ): Promise<seDetails> {
+    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
   }
 
   /** ************ */

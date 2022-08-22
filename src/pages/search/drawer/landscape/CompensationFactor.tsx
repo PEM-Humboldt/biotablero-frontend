@@ -1,54 +1,91 @@
-import InfoIcon from '@mui/icons-material/Info';
-import React from 'react';
+import InfoIcon from "@mui/icons-material/Info";
+import React from "react";
 
-import GraphLoader from 'components/charts/GraphLoader';
-import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import SearchContext from 'pages/search/SearchContext';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import TextBoxes from 'components/TextBoxes';
+import GraphLoader from "components/charts/GraphLoader";
+import ShortInfo from "components/ShortInfo";
+import { IconTooltip } from "components/Tooltips";
 
-class CompensationFactor extends React.Component {
+import matchColor from "utils/matchColor";
+import SearchAPI from "utils/searchAPI";
+import TextBoxes from "components/TextBoxes";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
+import { TextObject } from "pages/search/types/texts";
+
+interface bioticUnitsExt extends bioticUnits {
+  label: string;
+}
+
+interface biomesExt extends biomes {
+  label: string;
+}
+
+interface cfExt extends cf {
+  label: string;
+}
+
+interface Props {}
+
+interface compensationFactorState {
+  infoShown: Set<string>;
+  biomes: Array<biomesExt>;
+  fc: Array<cfExt>;
+  bioticUnits: Array<bioticUnitsExt>;
+  messages: {
+    fc: string | null;
+    biomes: string | null;
+    bioticUnits: string | null;
+  };
+  texts: {
+    cf: TextObject;
+    biomes: TextObject;
+    bioticRegions: TextObject;
+  };
+}
+
+class CompensationFactor extends React.Component<
+  Props,
+  compensationFactorState
+> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      infoShown: new Set(['cf']),
+      infoShown: new Set(["cf"]),
       biomes: [],
       fc: [],
       bioticUnits: [],
       messages: {
-        fc: 'loading',
-        biomes: 'loading',
-        bioticUnits: 'loading',
+        fc: "loading",
+        biomes: "loading",
+        bioticUnits: "loading",
       },
       texts: {
-        cf: {},
-        biomes: {},
-        bioticRegions: {},
+        cf: { info: "", cons: "", meto: "", quote: "" },
+        biomes: { info: "", cons: "", meto: "", quote: "" },
+        bioticRegions: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    if (areaId !== 'ea') return;
+    if (areaId !== "ea") return;
 
-    switchLayer('fc');
+    switchLayer("fc");
 
-    RestAPI.requestBiomes(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestBiomes(areaId, geofenceId)
+      .then((res: Array<biomes>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            biomes: this.processData(res),
+            biomes: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               biomes: null,
@@ -60,16 +97,19 @@ class CompensationFactor extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            biomes: 'no-data',
+            biomes: "no-data",
           },
         }));
       });
 
-    RestAPI.requestCompensationFactor(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestCompensationFactor(areaId, geofenceId)
+      .then((res: Array<cf>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            fc: this.processData(res),
+            fc: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               fc: null,
@@ -81,16 +121,19 @@ class CompensationFactor extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            fc: 'no-data',
+            fc: "no-data",
           },
         }));
       });
 
-    RestAPI.requestBioticUnits(areaId, geofenceId)
-      .then((res) => {
+    SearchAPI.requestBioticUnits(areaId, geofenceId)
+      .then((res: Array<bioticUnits>) => {
         if (this.mounted) {
           this.setState((prev) => ({
-            bioticUnits: this.processData(res),
+            bioticUnits: res.map((item) => ({
+              ...item,
+              label: `${item.key}`,
+            })),
             messages: {
               ...prev.messages,
               bioticUnits: null,
@@ -102,13 +145,13 @@ class CompensationFactor extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            bioticUnits: 'no-data',
+            bioticUnits: "no-data",
           },
         }));
       });
 
-      ['cf', 'biomes', 'bioticRegions'].forEach((item) => {
-        RestAPI.requestSectionTexts(item)
+    ["cf", "biomes", "bioticRegions"].forEach((item) => {
+      SearchAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({
@@ -118,17 +161,20 @@ class CompensationFactor extends React.Component {
         })
         .catch(() => {
           this.setState((prevState) => ({
-            texts: { ...prevState.texts, [item]: {} },
+            texts: {
+              ...prevState.texts,
+              [item]: { info: "", cons: "", meto: "", quote: "" },
+            },
           }));
         });
-      });
+    });
   }
 
   componentWillUnmount() {
     this.mounted = false;
   }
 
-  toggleInfo = (value) => {
+  toggleInfo = (value: string) => {
     this.setState((prev) => {
       const newState = prev;
       if (prev.infoShown.has(value)) {
@@ -138,21 +184,6 @@ class CompensationFactor extends React.Component {
       newState.infoShown.add(value);
       return newState;
     });
-  }
-
-  /**
-   * Transform data to fit in the graph structure
-   * @param {array} data data to be transformed
-   *
-   * @returns {array} data transformed
-   */
-  processData = (data) => {
-    if (!data) return [];
-    return data.map((obj) => ({
-      key: `${obj.key}`,
-      area: parseFloat(obj.area),
-      label: `${obj.key}`,
-    }));
   };
 
   render() {
@@ -164,29 +195,26 @@ class CompensationFactor extends React.Component {
       messages: {
         fc: fcMess,
         biomes: biomesMess,
-        bioticunits: bioticUnitsMess,
+        bioticUnits: bioticUnitsMess,
       },
       texts,
     } = this.state;
-    const {
-      areaId,
-      geofenceId,
-    } = this.context;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
 
     return (
-      <div style={{ width: '100%' }}>
+      <div style={{ width: "100%" }}>
         <div className="graphcardAcc pt6 ml10">
-          <h2>
-            Factor de Compensación
-          </h2>
+          <h2>Factor de Compensación</h2>
           <div className="graphinfobox">
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className={`graphinfo${infoShown.has('cf') ? ' activeBox' : ''}`}
-                onClick={() => this.toggleInfo('cf')}
+                className={`graphinfo${
+                  infoShown.has("cf") ? " activeBox" : ""
+                }`}
+                onClick={() => this.toggleInfo("cf")}
               />
             </IconTooltip>
-            {infoShown.has('cf') && (
+            {infoShown.has("cf") && (
               <ShortInfo
                 description={texts.cf.info}
                 className="graphinfo2"
@@ -201,7 +229,7 @@ class CompensationFactor extends React.Component {
             labelX="Hectáreas"
             labelY="Factor de Compensación"
             units="ha"
-            colors={matchColor('fc')}
+            colors={matchColor("fc")}
             padding={0.25}
           />
           <TextBoxes
@@ -210,19 +238,19 @@ class CompensationFactor extends React.Component {
             quoteText={texts.cf.quote}
             downloadData={fc}
             downloadName={`compensation_factor_${areaId}_${geofenceId}.csv`}
-            isInfoOpen={infoShown.has('cf')}
-            toggleInfo={() => this.toggleInfo('cf')}
+            isInfoOpen={infoShown.has("cf")}
+            toggleInfo={() => this.toggleInfo("cf")}
           />
-          <h3>
-            Biomas
-          </h3>
+          <h3>Biomas</h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`downSpecial${infoShown.has('biomes') ? ' activeBox' : ''}`}
-              onClick={() => this.toggleInfo('biomes')}
+              className={`downSpecial${
+                infoShown.has("biomes") ? " activeBox" : ""
+              }`}
+              onClick={() => this.toggleInfo("biomes")}
             />
           </IconTooltip>
-          {infoShown.has('biomes') && (
+          {infoShown.has("biomes") && (
             <ShortInfo
               description={texts.biomes.info}
               className="graphinfo3"
@@ -236,7 +264,7 @@ class CompensationFactor extends React.Component {
             labelX="Hectáreas"
             labelY="Biomas"
             units="ha"
-            colors={matchColor('biomas')}
+            colors={matchColor("biomas")}
             padding={0.3}
           />
           <TextBoxes
@@ -245,19 +273,19 @@ class CompensationFactor extends React.Component {
             quoteText={texts.biomes.quote}
             downloadData={biomes}
             downloadName={`biomes_${areaId}_${geofenceId}.csv`}
-            isInfoOpen={infoShown.has('biomes')}
-            toggleInfo={() => this.toggleInfo('biomes')}
+            isInfoOpen={infoShown.has("biomes")}
+            toggleInfo={() => this.toggleInfo("biomes")}
           />
-          <h3>
-            Regiones Bióticas
-          </h3>
+          <h3>Regiones Bióticas</h3>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`downSpecial${infoShown.has('bioticReg') ? ' activeBox' : ''}`}
-              onClick={() => this.toggleInfo('bioticReg')}
+              className={`downSpecial${
+                infoShown.has("bioticReg") ? " activeBox" : ""
+              }`}
+              onClick={() => this.toggleInfo("bioticReg")}
             />
           </IconTooltip>
-          {infoShown.has('bioticReg') && (
+          {infoShown.has("bioticReg") && (
             <ShortInfo
               description={texts.bioticRegions.info}
               className="graphinfo3"
@@ -271,7 +299,7 @@ class CompensationFactor extends React.Component {
             labelX="Hectáreas"
             labelY="Regiones Bióticas"
             units="ha"
-            colors={matchColor('bioticReg')}
+            colors={matchColor("bioticReg")}
             padding={0.3}
           />
           <TextBoxes
@@ -280,8 +308,8 @@ class CompensationFactor extends React.Component {
             quoteText={texts.bioticRegions.quote}
             downloadData={bioticUnits}
             downloadName={`biotic_units_${geofenceId}.csv`}
-            isInfoOpen={infoShown.has('bioticReg')}
-            toggleInfo={() => this.toggleInfo('bioticReg')}
+            isInfoOpen={infoShown.has("bioticReg")}
+            toggleInfo={() => this.toggleInfo("bioticReg")}
           />
         </div>
       </div>
