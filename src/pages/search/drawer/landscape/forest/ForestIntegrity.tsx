@@ -1,12 +1,15 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "components/charts/GraphLoader";
-import { LegendColor, BorderLegendColor } from "components/CssLegends";
-import DownloadCSV from "components/DownloadCSV";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
+import {
+  LegendColor,
+  BorderLegendColor,
+} from "pages/search/shared_components/CssLegends";
+import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
-import TextBoxes from "components/TextBoxes";
-import { IconTooltip } from "components/Tooltips";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";

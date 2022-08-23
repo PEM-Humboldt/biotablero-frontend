@@ -1,16 +1,16 @@
 import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { IconTooltip } from 'components/Tooltips';
-import GraphLoader from 'components/charts/GraphLoader';
-import { LineLegend, LegendColor } from 'components/CssLegends';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
+import { LineLegend, LegendColor } from 'pages/search/shared_components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
-import TextBoxes from 'components/TextBoxes';
+import TextBoxes from 'pages/search/shared_components/TextBoxes';
 
 const areaTypeName = (areaType) => {
   switch (areaType) {

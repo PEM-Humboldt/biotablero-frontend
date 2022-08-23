@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import SingleBulletGraph from 'components/charts/SingleBulletGraph';
-import LargeBarStackGraph from 'components/charts/LargeBarStackGraph';
-import MultiLinesGraph from 'components/charts/MultiLinesGraph';
-import MultiSmallBarStackGraph from 'components/charts/MultiSmallBarStackGraph';
-import MultiSmallSingleBarGraph from 'components/charts/MultiSmallSingleBarGraph';
-import PieGraph from 'components/charts/PieGraph';
-import SmallBarStackGraph from 'components/charts/SmallBarStackGraph';
+import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
+import LargeBarStackGraph from 'pages/search/shared_components/charts/LargeBarStackGraph';
+import MultiLinesGraph from 'pages/search/shared_components/charts/MultiLinesGraph';
+import MultiSmallBarStackGraph from 'pages/search/shared_components/charts/MultiSmallBarStackGraph';
+import MultiSmallSingleBarGraph from 'pages/search/shared_components/charts/MultiSmallSingleBarGraph';
+import PieGraph from 'pages/search/shared_components/charts/PieGraph';
+import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
 
 const GraphLoader = (props) => {
   const {

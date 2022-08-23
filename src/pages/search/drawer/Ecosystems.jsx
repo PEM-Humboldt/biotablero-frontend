@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import InfoIcon from '@mui/icons-material/Info';
 
-import GraphLoader from 'components/charts/GraphLoader';
+import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import TextBoxes from 'components/TextBoxes';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import TextBoxes from 'pages/search/shared_components/TextBoxes';
 import {
   transformPAValues,
   transformCoverageValues,

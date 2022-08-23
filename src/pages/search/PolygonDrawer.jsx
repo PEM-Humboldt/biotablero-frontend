@@ -21,7 +21,7 @@ const styles = () => ({
   },
 });
 
-class Drawer extends React.Component {
+class PolygonDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,7 +63,7 @@ class Drawer extends React.Component {
           </button>
           <div className="HAgen">
             <h4>
-              hectáreas totales
+              hectáreas totales !!!! :P
               <b>{`${formatNumber(geofenceArea, 0)} ha`}</b>
             </h4>
           </div>
@@ -95,14 +95,14 @@ class Drawer extends React.Component {
   }
 }
 
-Drawer.propTypes = {
+PolygonDrawer.propTypes = {
   handlerBackButton: PropTypes.func,
 };
 
-Drawer.defaultProps = {
+PolygonDrawer.defaultProps = {
   handlerBackButton: () => {},
 };
 
-export default withStyles(styles)(Drawer);
+export default withStyles(styles)(PolygonDrawer);
 
-Drawer.contextType = SearchContext;
+PolygonDrawer.contextType = SearchContext;

@@ -2,15 +2,15 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import GraphLoader from "components/charts/GraphLoader";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "components/Tooltips";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";
 import formatNumber from "utils/format";
-import TextBoxes from "components/TextBoxes";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import { MultiSmallBarStackGraphData } from "components/charts/MultiSmallBarStackGraph";
+import { MultiSmallBarStackGraphData } from "pages/search/shared_components/charts/MultiSmallBarStackGraph";
 import { TextObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
 

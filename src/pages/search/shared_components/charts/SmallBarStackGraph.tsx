@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ResponsiveBar } from "@nivo/bar";
 
-import BarItem from "components/charts/BarItem";
+import BarItem from "pages/search/shared_components/charts/BarItem";
 import formatNumber from "utils/format";
 
 interface Props {
