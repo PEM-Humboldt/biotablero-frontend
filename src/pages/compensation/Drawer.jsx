@@ -17,7 +17,7 @@ import PopMenu from 'pages/compensation/drawer/PopMenu';
 import StrategiesBox from 'pages/compensation/drawer/StrategiesBox';
 import TableStylized from 'pages/compensation/drawer/TableStylized';
 import ConfirmationModal from 'components/ConfirmationModal';
-import GraphLoader from 'components/charts/GraphLoader';
+import GraphLoader from 'pages/compensation/drawer/GraphLoader';
 import TabContainer from 'components/TabContainer';
 import AppContext from 'app/AppContext';
 
