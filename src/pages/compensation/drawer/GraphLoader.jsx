@@ -1,7 +1,6 @@
 import DownloadIcon from '@mui/icons-material/Save';
 import PropTypes from 'prop-types';
 
-import DotInfo from 'pages/compensation/drawer/graphLoader/DotInfo';
 import DotsGraph from 'pages/compensation/drawer/graphLoader/DotsGraph';
 
 const GraphLoader = (props) => {
@@ -75,14 +74,6 @@ const GraphLoader = (props) => {
             </div>
           )}
         </div>
-      );
-    case 'DotInfo':
-      return (
-        <DotInfo
-          data={data}
-          width={width}
-          height="100"
-        />
       );
       default:
         return <></>;
