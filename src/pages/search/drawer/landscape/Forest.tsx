@@ -3,7 +3,7 @@ import ForestIntegrity from "pages/search/drawer/landscape/forest/ForestIntegrit
 import ForestLossPersistence from "pages/search/drawer/landscape/forest/ForestLossPersistence";
 
 interface Props {
-  handleAccordionChange(level: string, tabLayerId: string): void;
+  handleAccordionChange: (level: string, tabLayerId: string) => void;
   openTab: string;
 }
 

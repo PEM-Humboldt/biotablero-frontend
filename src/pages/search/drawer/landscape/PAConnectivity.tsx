@@ -4,7 +4,7 @@ import TimelinePAConnectivity from "pages/search/drawer/landscape/connectivity/T
 import CurrentSEPAConnectivity from "pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivity";
 
 interface Props {
-  handleAccordionChange(level: string, tabLayerId: string): void;
+  handleAccordionChange: (level: string, tabLayerId: string) => void;
   openTab: string;
 }
 

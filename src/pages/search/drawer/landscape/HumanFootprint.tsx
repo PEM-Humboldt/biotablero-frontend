@@ -6,7 +6,7 @@ import PersistenceFooprint from "pages/search/drawer/landscape/humanFootprint/Pe
 import TimelineFootprint from "pages/search/drawer/landscape/humanFootprint/TimelineFootprint";
 
 interface Props {
-  handleAccordionChange(level: string, tabLayerId: string): void;
+  handleAccordionChange: (level: string, tabLayerId: string) => void;
   openTab: string;
 }
 
