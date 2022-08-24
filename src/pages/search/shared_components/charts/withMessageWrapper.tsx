@@ -1,7 +1,9 @@
 import React from "react";
 
+import { wrapperMessage } from "pages/search/types/charts";
+
 interface MessageProps {
-  message: string | null;
+  message: wrapperMessage;
 }
 
 const withMessageWrapper = <T,>(
