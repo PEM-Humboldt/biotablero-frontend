@@ -1,29 +1,21 @@
-import DownloadIcon from '@mui/icons-material/Save';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import SingleBulletGraph from 'components/charts/SingleBulletGraph';
-import DotInfo from 'components/charts/DotInfo';
-import DotsGraph from 'components/charts/DotsGraph';
-import LargeBarStackGraph from 'components/charts/LargeBarStackGraph';
-import MultiLinesGraph from 'components/charts/MultiLinesGraph';
-import MultiSmallBarStackGraph from 'components/charts/MultiSmallBarStackGraph';
-import MultiSmallSingleBarGraph from 'components/charts/MultiSmallSingleBarGraph';
-import PieGraph from 'components/charts/PieGraph';
-import SmallBarStackGraph from 'components/charts/SmallBarStackGraph';
+import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
+import LargeBarStackGraph from 'pages/search/shared_components/charts/LargeBarStackGraph';
+import MultiLinesGraph from 'pages/search/shared_components/charts/MultiLinesGraph';
+import MultiSmallBarStackGraph from 'pages/search/shared_components/charts/MultiSmallBarStackGraph';
+import MultiSmallSingleBarGraph from 'pages/search/shared_components/charts/MultiSmallSingleBarGraph';
+import PieGraph from 'pages/search/shared_components/charts/PieGraph';
+import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
 
 const GraphLoader = (props) => {
   const {
     graphType,
     data,
-    graphTitle,
     colors,
     labelX,
     labelY,
-    width,
-    elementOnClick,
-    activeBiome,
-    showOnlyTitle,
     units,
     padding,
     onClickGraphHandler,
@@ -120,54 +112,6 @@ const GraphLoader = (props) => {
           labelXLeft={labelXLeft}
         />
       );
-    case 'Dots':
-      return (
-        <div className="graphcard pb">
-          <h2>
-            <DownloadIcon className="icondown" />
-            Ecosistemas Equivalentes
-          </h2>
-          { !showOnlyTitle && (
-            <div>
-              <p className="legcomp">
-                Agrega uno o varios Biomas a tus opciones de compensación
-                <br />
-                FC
-                <b>
-                  Alto
-                </b>
-                <i>
-                  Medio
-                </i>
-                <em>
-                  Bajo
-                </em>
-                y cantidad de area afectada
-              </p>
-              <DotsGraph
-                activeBiome={activeBiome}
-                colors={colors}
-                dataJSON={data}
-                elementOnClick={elementOnClick}
-                graphTitle={graphTitle}
-                labelX={labelX}
-                labelY={labelY}
-                height="280"
-                units={units}
-                width={width}
-              />
-            </div>
-          )}
-        </div>
-      );
-    case 'DotInfo':
-      return (
-        <DotInfo
-          data={data}
-          width={width}
-          height="100"
-        />
-      );
     case 'MultiLinesGraph':
       return (
         <MultiLinesGraph
@@ -191,15 +135,10 @@ GraphLoader.propTypes = {
     PropTypes.object,
     PropTypes.array,
   ]).isRequired,
-  graphTitle: PropTypes.string,
-  activeBiome: PropTypes.string,
   labelX: PropTypes.string,
   labelY: PropTypes.string,
-  width: PropTypes.number,
-  showOnlyTitle: PropTypes.bool,
   units: PropTypes.string,
   yMax: PropTypes.number,
-  elementOnClick: PropTypes.func,
   // TODO: Remove array type once the charts in compensation are migrated
   colors: PropTypes.oneOfType([
     PropTypes.func,
@@ -213,7 +152,6 @@ GraphLoader.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  loading: PropTypes.string,
   selectedIndexValue: PropTypes.string,
   reverse: PropTypes.bool,
   labelXRight: PropTypes.string,

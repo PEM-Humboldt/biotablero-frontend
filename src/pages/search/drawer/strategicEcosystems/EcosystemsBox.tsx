@@ -2,7 +2,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
 import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
-import GraphLoader from "components/charts/GraphLoader";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import { transformSEValues } from "pages/search/utils/transformData";

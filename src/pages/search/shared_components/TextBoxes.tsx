@@ -5,8 +5,8 @@ import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import ShortInfo from "components/ShortInfo";
-import DownloadCSV from "components/DownloadCSV";
-import { IconTooltip } from "components/Tooltips";
+import DownloadCSV from "pages/search/shared_components/DownloadCSV";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 interface TextBoxProps {
   downloadData?: Array<unknown>;

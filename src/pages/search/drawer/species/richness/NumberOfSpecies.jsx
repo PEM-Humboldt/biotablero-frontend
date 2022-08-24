@@ -1,15 +1,15 @@
 import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { IconTooltip } from 'components/Tooltips';
-import GraphLoader from 'components/charts/GraphLoader';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import {
   LegendColor,
   LineLegend,
   TextLegend,
   ThickLineLegend,
-} from 'components/CssLegends';
-import Icon from 'components/CssIcons';
+} from 'pages/search/shared_components/CssLegends';
+import Icon from 'pages/search/shared_components/CssIcons';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchContext from 'pages/search/SearchContext';
@@ -22,7 +22,7 @@ import mappoint2 from 'images/mappoint2.png';
 import biomodeloslink from 'images/biomodeloslink.png';
 import biomodeloslink2 from 'images/biomodeloslink2.png';
 import fullview from 'images/fullview.png';
-import TextBoxes from 'components/TextBoxes';
+import TextBoxes from 'pages/search/shared_components/TextBoxes';
 
 const NOSTexts = {
   inferred: {},

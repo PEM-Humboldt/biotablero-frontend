@@ -5,7 +5,7 @@ import {
   transformPAValues,
   transformCoverageValues,
 } from "pages/search/utils/transformData";
-import GraphLoader from "components/charts/GraphLoader";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";

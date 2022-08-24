@@ -1,13 +1,13 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "components/charts/GraphLoader";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "components/Tooltips";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from "utils/matchColor";
 import processDataCsv from "utils/processDataCsv";
-import TextBoxes from "components/TextBoxes";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
 import {
   timelinePAConn,
   timeLinePAConnValues,

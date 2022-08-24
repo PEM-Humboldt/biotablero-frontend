@@ -14,7 +14,7 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import GradientLegend from 'components/GradientLegend';
+import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
 import { SELabel } from 'pages/search/utils/appropriate_labels';
@@ -124,7 +124,7 @@ class Search extends Component {
           const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             const field = 'id';
-            const inputId = inputArea.data.find((area) => area[field] === selectedAreaId);
+            const inputId = inputArea.data.find((area) => String(area[field]) === selectedAreaId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);
               this.setState(

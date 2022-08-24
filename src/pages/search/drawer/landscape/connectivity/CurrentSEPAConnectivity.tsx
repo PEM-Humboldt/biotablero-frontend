@@ -1,15 +1,15 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "components/charts/GraphLoader";
-import DownloadCSV from "components/DownloadCSV";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
+import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "components/Tooltips";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";
-import TextBoxes from "components/TextBoxes";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import {
   currentSEPAConn,

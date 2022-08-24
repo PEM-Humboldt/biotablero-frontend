@@ -1,13 +1,13 @@
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
-import GraphLoader from "components/charts/GraphLoader";
+import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "components/Tooltips";
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";
-import TextBoxes from "components/TextBoxes";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
 import { TextObject } from "pages/search/types/texts";

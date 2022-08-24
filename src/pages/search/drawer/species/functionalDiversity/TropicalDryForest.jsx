@@ -1,8 +1,8 @@
 import React from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
-import { IconTooltip } from 'components/Tooltips';
-import GraphLoader from 'components/charts/GraphLoader';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
