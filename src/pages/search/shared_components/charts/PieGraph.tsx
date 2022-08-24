@@ -3,6 +3,7 @@ import React from "react";
 
 import formatNumber from "utils/format";
 import { lightenColor, darkenColor } from "utils/colorUtils";
+import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
   data: Array<PieGraphData>;
@@ -32,7 +33,7 @@ class PieGraph extends React.Component<Props, State> {
 
   render() {
     const {
-      height = 300,
+      height = 450,
       units = "ha",
       onClickHandler,
       colors,
@@ -79,4 +80,4 @@ class PieGraph extends React.Component<Props, State> {
   }
 }
 
-export default PieGraph;
+export default withMessageWrapper<Props>(PieGraph);

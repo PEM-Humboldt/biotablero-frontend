@@ -17,6 +17,7 @@ import SearchAPI from "utils/searchAPI";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { TextObject } from "pages/search/types/texts";
+import PieGraph from "pages/search/shared_components/charts/PieGraph";
 
 type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
 /**
@@ -224,14 +225,13 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           Límite de áreas protegidas
         </BorderLegendColor>
         <div>
-          <GraphLoader
+          <PieGraph
             message={loading}
             data={Object.values(SciHfCats)}
-            graphType="pie"
             units="ha"
             colors={matchColor("SciHf")}
-            onClickGraphHandler={(sectionId) => {
-              this.setState({ selectedCategory: sectionId });
+            onClickHandler={(sectionId: string) => {
+              this.setState({ selectedCategory: sectionId as SCIHFCats });
               handlerClickOnGraph({
                 chartType: "SciHf",
                 selectedKey: sectionId,
