@@ -13,6 +13,8 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
+import MultiSmallSingleBarGraph from "pages/search/shared_components/charts/MultiSmallSingleBarGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
 const getLabel = {
   unprot: "No protegida",
@@ -40,8 +42,8 @@ interface currentPAConnState {
   dpcData: Array<DPC>;
   prot: number;
   messages: {
-    conn: string | null;
-    dpc: string | null;
+    conn: wrapperMessage;
+    dpc: wrapperMessage;
   };
   texts: {
     paConnCurrent: TextObject;
@@ -250,16 +252,16 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
             Haz clic en un área protegida para visualizarla
           </h3>
           <div>
-            <GraphLoader
-              graphType="MultiSmallSingleBarGraph"
+            <MultiSmallSingleBarGraph
               data={dpcData}
               message={dpcMess}
               colors={matchColor("dpc")}
-              onClickGraphHandler={(selected) =>
+              onClickHandler={(selected: string) =>
                 handlerClickOnGraph({ selectedKey: selected })
               }
               labelX="dPC"
               units="ha"
+              selectedIndexValue=""
             />
           </div>
           <div className="dpcLegend">

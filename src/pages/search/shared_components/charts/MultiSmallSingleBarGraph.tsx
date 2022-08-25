@@ -2,6 +2,7 @@ import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
+import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
   data: Array<MultiSmallSingleBarGraphData>;
@@ -133,4 +134,4 @@ class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   }
 }
 
-export default MultiSmallSingleBarGraph;
+export default withMessageWrapper<Props>(MultiSmallSingleBarGraph);
