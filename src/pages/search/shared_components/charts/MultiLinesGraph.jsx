@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { ResponsiveLine } from '@nivo/line';
 
 import formatNumber from 'utils/format';
+import withMessageWrapper from 'pages/search/shared_components/charts/withMessageWrapper';
 
 class MultiLinesGraph extends React.Component {
   constructor() {
@@ -246,4 +247,4 @@ MultiLinesGraph.defaultProps = {
   units: '',
 };
 
-export default MultiLinesGraph;
+export default withMessageWrapper(MultiLinesGraph);

@@ -14,6 +14,7 @@ import {
 } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
+import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
 
 const getLabel = {
   prot: "Protegida",
@@ -143,7 +144,7 @@ class TimelinePAConnectivity extends React.Component<
         <div>
           <h6>Conectividad áreas protegidas en el tiempo</h6>
           <div>
-            <GraphLoader
+            <MultiLinesGraph
               graphType="MultiLinesGraph"
               colors={matchColor("timelinePAConn")}
               data={timelinePAConnData}
