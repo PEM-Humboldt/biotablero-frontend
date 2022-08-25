@@ -4,13 +4,14 @@ import { ResponsiveBar } from "@nivo/bar";
 
 import BarItem from "pages/search/shared_components/charts/BarItem";
 import formatNumber from "utils/format";
+import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
   data: Array<SmallBarStackGraphData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
-  onClickGraphHandler: (key: string) => void;
+  onClickGraphHandler?: (key: string) => void;
 }
 
 export interface SmallBarStackGraphData {
@@ -112,10 +113,10 @@ const SmallBarStackGraph = (props: Props) => {
         animate
         barComponent={BarItem}
         tooltip={({ id, data: allData }) => getToolTip(id, allData)}
-        onClick={({ id }) => onClickGraphHandler(String(id))}
+        onClick={({ id }) => onClickGraphHandler?.(String(id))}
       />
     </div>
   );
 };
 
-export default SmallBarStackGraph;
+export default withMessageWrapper<Props>(SmallBarStackGraph);

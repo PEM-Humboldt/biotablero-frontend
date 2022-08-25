@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import InfoIcon from '@mui/icons-material/Info';
 
-import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import { IconTooltip } from 'pages/search/shared_components/Tooltips';
 import TextBoxes from 'pages/search/shared_components/TextBoxes';
@@ -17,6 +16,7 @@ import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
 
 /**
  * Calculate percentage for a given value according to total
@@ -291,10 +291,9 @@ class StrategicEcosystems extends React.Component {
           </h6>
           <div className="graficaeco">
             <div className="svgPointer">
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={coverage}
+              <SmallBarStackGraph
                 message={cov}
+                data={coverage}
                 units="ha"
                 colors={matchColor('coverage')}
                 onClickGraphHandler={(selected) => {
@@ -336,10 +335,9 @@ class StrategicEcosystems extends React.Component {
             <h6>
               Distribución por áreas protegidas:
             </h6>
-            <GraphLoader
-              graphType="SmallBarStackGraph"
-              data={PAAreas}
+            <SmallBarStackGraph
               message={pa}
+              data={PAAreas}
               units="ha"
               colors={matchColor('pa', true)}
             />

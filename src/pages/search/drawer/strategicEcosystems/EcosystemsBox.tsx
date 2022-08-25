@@ -2,11 +2,11 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
 import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import { transformSEValues } from "pages/search/utils/transformData";
 import { EDValues } from "pages/search/types/ecosystems";
+import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 
 interface Props {
   SETotalArea: number;
@@ -57,8 +57,9 @@ class EcosystemsBox extends React.Component<Props, State> {
                 </button>
               )}
               {!stopLoad && Number(SEValues.area) !== 0 && (
-                <GraphLoader
-                  graphType="SmallBarStackGraph"
+                <SmallBarStackGraph
+                  message={null}
+                  customMessage="Sin áreas protegidas"
                   data={transformSEValues(SEValues, SETotalArea)}
                   units="ha"
                   colors={matchColor("se")}

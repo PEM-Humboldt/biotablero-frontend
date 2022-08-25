@@ -1,7 +1,6 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import {
   LegendColor,
   BorderLegendColor,
@@ -18,6 +17,8 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { TextObject } from "pages/search/types/texts";
 import PieGraph from "pages/search/shared_components/charts/PieGraph";
+import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
 type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
 /**
@@ -38,7 +39,7 @@ interface PA {
   key: string;
   label: string;
   area: number;
-  percentage?: number;
+  percentage: number;
 }
 
 interface Props {}
@@ -59,7 +60,7 @@ interface FIState {
     [Property in SCIHFCats]: Array<PA>;
   };
   selectedCategory: SCIHFCats | null;
-  loading: string | null;
+  loading: wrapperMessage;
 }
 
 class ForestIntegrity extends React.Component<Props, FIState> {
@@ -144,12 +145,14 @@ class ForestIntegrity extends React.Component<Props, FIState> {
                     key: elem.pa,
                     label: elem.pa,
                     area: elem.area,
+                    percentage: 0,
                   });
                 } else {
                   PAs[idx].unshift({
                     key: elem.pa,
                     label: elem.pa,
                     area: elem.area,
+                    percentage: 0,
                   });
                 }
               });
@@ -267,9 +270,9 @@ class ForestIntegrity extends React.Component<Props, FIState> {
               filename={`bt_fi_areas_${selectedCategory}_${areaId}_${geofenceId}.csv`}
             />
             <div style={{ padding: "0 12px" }}>
-              <GraphLoader
+              <SmallBarStackGraph
+                message={loading}
                 data={ProtectedAreas[selectedCategory]}
-                graphType="SmallBarStackGraph"
                 units="ha"
                 colors={matchColor("pa", true)}
               />

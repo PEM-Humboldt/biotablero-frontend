@@ -1,1 +1,1 @@
-export type wrapperMessage = "loading" | "no-data" | null;
+export type wrapperMessage = "loading" | "no-data" | "custom" | null;
