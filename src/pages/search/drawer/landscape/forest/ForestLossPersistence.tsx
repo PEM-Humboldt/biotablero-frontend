@@ -10,15 +10,18 @@ import SearchAPI from "utils/searchAPI";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import { MultiSmallBarStackGraphData } from "pages/search/shared_components/charts/MultiSmallBarStackGraph";
+import MultiSmallBarStackGraph, {
+  MultiSmallBarStackGraphData,
+} from "pages/search/shared_components/charts/MultiSmallBarStackGraph";
 import { TextObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
+import { wrapperMessage } from "pages/search/types/charts";
 
 interface Props {}
 interface State {
   showInfoGraph: boolean;
   forestLP: Array<MultiSmallBarStackGraphData>;
-  message: string | null;
+  message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
     forestLP: TextObject;
@@ -168,13 +171,12 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
-          <GraphLoader
-            graphType="MultiSmallBarStackGraph"
+          <MultiSmallBarStackGraph
             data={forestLP}
             message={message}
             units="ha"
             colors={matchColor("forestLP")}
-            onClickGraphHandler={(period, key) => {
+            onClickHandler={(period, key) => {
               handlerClickOnGraph({
                 chartType: "forestLP",
                 chartSection: period,

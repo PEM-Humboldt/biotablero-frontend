@@ -261,7 +261,6 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               }
               labelX="dPC"
               units="ha"
-              selectedIndexValue=""
             />
           </div>
           <div className="dpcLegend">

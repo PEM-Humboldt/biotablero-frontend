@@ -10,7 +10,7 @@ interface Props {
   colors: (key: string) => string;
   units?: string;
   onClickHandler: (key: string) => void;
-  selectedIndexValue: string;
+  selectedIndexValue?: string;
   labelX: string;
 }
 
@@ -29,8 +29,9 @@ interface State {
 class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const { selectedIndexValue = "" } = props;
     this.state = {
-      selectedIndexValue: props.selectedIndexValue,
+      selectedIndexValue: selectedIndexValue,
     };
   }
 
