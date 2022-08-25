@@ -1,28 +1,24 @@
 import { ResponsiveBar } from "@nivo/bar";
 
 import formatNumber from "utils/format";
+import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
   data: Array<LargeBarStackGraphData>;
   height?: number;
-  colors: (key: string) => string;
+  colors: (key: string | number) => string;
   units?: string;
-  onClickGraphHandler: (key: string) => void;
-  selectedIndexValue: string;
+  onClickGraphHandler?: (key: string) => void;
   labelX?: string;
   labelY?: string;
   padding?: number;
 }
 
 export interface LargeBarStackGraphData {
-  key: string;
+  key: string | number;
   area: number;
-  percentage: number;
+  percentage?: number;
   label: string;
-}
-
-interface State {
-  selectedIndexValue: string;
 }
 
 const darkColors: { [key: string]: string } = {
@@ -111,7 +107,7 @@ const LargeBarStackGraph = (props: Props) => {
     <div style={{ height }}>
       <ResponsiveBar
         data={transformData(data, labelY)}
-        onClick={(category) => onClickGraphHandler(String(category.id))}
+        onClick={(category) => onClickGraphHandler?.(String(category.id))}
         keys={keys}
         indexBy="key"
         layout="horizontal"
@@ -152,4 +148,4 @@ const LargeBarStackGraph = (props: Props) => {
   );
 };
 
-export default LargeBarStackGraph;
+export default withMessageWrapper<Props>(LargeBarStackGraph);

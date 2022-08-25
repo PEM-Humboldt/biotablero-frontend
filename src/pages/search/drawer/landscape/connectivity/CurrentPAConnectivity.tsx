@@ -1,7 +1,6 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import { LegendColor } from "pages/search/shared_components/CssLegends";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
@@ -15,6 +14,7 @@ import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
 import MultiSmallSingleBarGraph from "pages/search/shared_components/charts/MultiSmallSingleBarGraph";
 import { wrapperMessage } from "pages/search/types/charts";
+import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 
 const getLabel = {
   unprot: "No protegida",
@@ -199,8 +199,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         <div>
           <h6>Conectividad áreas protegidas</h6>
           <div>
-            <GraphLoader
-              graphType="LargeBarStackGraph"
+            <LargeBarStackGraph
               data={currentPAConnData}
               message={conn}
               labelX="Hectáreas"

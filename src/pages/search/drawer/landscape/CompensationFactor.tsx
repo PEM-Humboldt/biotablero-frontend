@@ -1,7 +1,6 @@
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
@@ -11,9 +10,12 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
 import { TextObject } from "pages/search/types/texts";
+import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
-interface bioticUnitsExt extends bioticUnits {
+interface bioticUnitsExt extends Omit<bioticUnits, "area"> {
   label: string;
+  area: number;
 }
 
 interface biomesExt extends biomes {
@@ -32,9 +34,9 @@ interface compensationFactorState {
   fc: Array<cfExt>;
   bioticUnits: Array<bioticUnitsExt>;
   messages: {
-    fc: string | null;
-    biomes: string | null;
-    bioticUnits: string | null;
+    fc: wrapperMessage;
+    biomes: wrapperMessage;
+    bioticUnits: wrapperMessage;
   };
   texts: {
     cf: TextObject;
@@ -132,6 +134,7 @@ class CompensationFactor extends React.Component<
           this.setState((prev) => ({
             bioticUnits: res.map((item) => ({
               ...item,
+              area: Number(item.area),
               label: `${item.key}`,
             })),
             messages: {
@@ -222,8 +225,7 @@ class CompensationFactor extends React.Component<
               />
             )}
           </div>
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={fc}
             message={fcMess}
             labelX="Hectáreas"
@@ -257,8 +259,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={biomes}
             message={biomesMess}
             labelX="Hectáreas"
@@ -292,8 +293,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={bioticUnits}
             message={bioticUnitsMess}
             labelX="Hectáreas"
