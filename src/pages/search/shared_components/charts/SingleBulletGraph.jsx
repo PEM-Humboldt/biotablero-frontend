@@ -3,6 +3,7 @@ import React from 'react';
 import { ResponsiveBullet } from '@nivo/bullet';
 import { BasicTooltip, useTooltip } from '@nivo/tooltip';
 import { animated, to } from 'react-spring';
+import withMessageWrapper from 'pages/search/shared_components/charts/withMessageWrapper';
 
 /**
  * Get the key for a value inside an object
@@ -276,11 +277,11 @@ SingleBulletGraph.propTypes = {
 };
 
 SingleBulletGraph.defaultProps = {
-  height: 100,
+  height: 62,
   onClickHandler: () => {},
   reverse: false,
   labelXRight: null,
   labelXLeft: null,
 };
 
-export default SingleBulletGraph;
+export default withMessageWrapper(SingleBulletGraph);

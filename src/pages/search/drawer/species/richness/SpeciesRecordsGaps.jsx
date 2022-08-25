@@ -2,7 +2,6 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import { IconTooltip } from 'pages/search/shared_components/Tooltips';
-import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import { LineLegend, LegendColor } from 'pages/search/shared_components/CssLegends';
 import matchColor from 'utils/matchColor';
 import ShortInfo from 'components/ShortInfo';
@@ -11,6 +10,7 @@ import RestAPI from 'utils/restAPI';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
 import TextBoxes from 'pages/search/shared_components/TextBoxes';
+import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
 
 const areaTypeName = (areaType) => {
   switch (areaType) {
@@ -256,7 +256,7 @@ class SpeciesRecordsGaps extends React.Component {
           Vacios de datos
         </div>
         <div className="svgPointer">
-          <GraphLoader
+          <SingleBulletGraph
             message={messageGaps}
             data={gaps}
             graphType="singleBullet"
@@ -308,7 +308,7 @@ class SpeciesRecordsGaps extends React.Component {
               <b>5 km x 5 km</b>
             </div>
             <div className="svgPointer">
-              <GraphLoader
+              <SingleBulletGraph
                 message={messageConc}
                 data={concentration}
                 graphType="singleBullet"
