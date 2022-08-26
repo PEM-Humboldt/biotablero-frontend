@@ -434,7 +434,7 @@ class NumberOfSpecies extends React.Component {
                   data={bar}
                   graphType="singleBullet"
                   colors={matchColor('richnessNos')}
-                  onClickGraphHandler={() => {
+                  onClickHandler={() => {
                     this.setState({ selected: bar.id });
                     handlerClickOnGraph({
                       chartType: 'numberOfSpecies',

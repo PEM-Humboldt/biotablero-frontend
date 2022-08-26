@@ -256,7 +256,7 @@ class TropicalDryForest extends React.Component {
                   data={bar}
                   graphType="singleBullet"
                   colors={matchColor(getFeatureColors[bar.id])}
-                  onClickGraphHandler={() => {
+                  onClickHandler={() => {
                     this.setState({ selected: bar.id });
                   }}
                 />
