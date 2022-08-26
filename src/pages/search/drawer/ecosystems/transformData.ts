@@ -1,5 +1,10 @@
 import { SmallBarStackGraphData } from "pages/search/shared_components/charts/SmallBarStackGraph";
-import { SECoverage, SEPAData, coverageLabels, EDValues } from "pages/search/types/ecosystems";
+import {
+  SECoverage,
+  SEPAData,
+  coverageLabels,
+  EDValues,
+} from "pages/search/types/ecosystems";
 
 export interface SmallBarData {
   area: number;
@@ -8,11 +13,16 @@ export interface SmallBarData {
   label?: string | null;
 }
 
-export const transformPAValues = (rawData:Array<SEPAData>|null, totalArea:number) => {
+export const transformPAValues = (
+  rawData: Array<SEPAData> | null,
+  totalArea: number
+) => {
   if (!rawData || rawData.length === 0) return [];
   let PATotalArea = 0;
   if (rawData.length > 0) {
-    PATotalArea = rawData.map((i) => i.area).reduce((prev, next) => prev + next);
+    PATotalArea = rawData
+      .map((i) => i.area)
+      .reduce((prev, next) => prev + next);
   }
   const data = rawData
     .filter((item) => item.area > 0)
@@ -30,29 +40,29 @@ export const transformPAValues = (rawData:Array<SEPAData>|null, totalArea:number
   const noProtectedArea = totalArea > 0 ? totalArea - PATotalArea : 0;
   data.push({
     area: noProtectedArea,
-    label: 'No Protegida',
-    key: 'No Protegida',
+    label: "No Protegida",
+    key: "No Protegida",
     percentage: noProtectedArea / totalArea,
   });
   return data;
 };
 
-export const transformCoverageValues = (rawData:Array<SECoverage>) => {
+export const transformCoverageValues = (rawData: Array<SECoverage>) => {
   if (!rawData) return [];
   return rawData.map((item) => {
-    let label:coverageLabels = '';
+    let label: coverageLabels = "";
     switch (item.type) {
-      case 'N':
-        label = 'Natural';
+      case "N":
+        label = "Natural";
         break;
-      case 'S':
-        label = 'Secundaria';
+      case "S":
+        label = "Secundaria";
         break;
-      case 'T':
-        label = 'Transformada';
+      case "T":
+        label = "Transformada";
         break;
       default:
-        label = 'Sin clasificar / Nubes';
+        label = "Sin clasificar / Nubes";
     }
     return {
       ...item,
@@ -63,28 +73,33 @@ export const transformCoverageValues = (rawData:Array<SECoverage>) => {
   });
 };
 
-export const transformSEValues = (seRawData:EDValues, SETotalArea:number) => {
+export const transformSEValues = (seRawData: EDValues, SETotalArea: number) => {
   if (!seRawData) return [];
-  const transformedData: Array<SmallBarStackGraphData> = [{
-    key: seRawData.type,
-    area: Number(seRawData.area),
-    percentage: seRawData.percentage,
-    label: seRawData.type,
-  },
-  {
-    key: 'NA',
-    area: (SETotalArea - seRawData.area),
-    percentage: (SETotalArea - seRawData.area) / SETotalArea,
-    label: '',
-  }];
-  return transformedData ;
+  const transformedData: Array<SmallBarStackGraphData> = [
+    {
+      key: seRawData.type,
+      area: Number(seRawData.area),
+      percentage: seRawData.percentage,
+      label: seRawData.type,
+    },
+    {
+      key: "NA",
+      area: SETotalArea - seRawData.area,
+      percentage: (SETotalArea - seRawData.area) / SETotalArea,
+      label: "",
+    },
+  ];
+  return transformedData;
 };
 
-export const transformSEAreas = (rawData:Array<SEPAData>, generalArea:number) => {
-    if (!rawData) return [];
-    const transformedSEAData:Array<EDValues> = rawData.map((obj) => ({
-      ...obj,
-      percentage: obj.area / generalArea,
-    }));
-    return transformedSEAData;
+export const transformSEAreas = (
+  rawData: Array<SEPAData>,
+  generalArea: number
+) => {
+  if (!rawData) return [];
+  const transformedSEAData: Array<EDValues> = rawData.map((obj) => ({
+    ...obj,
+    percentage: obj.area / generalArea,
+  }));
+  return transformedSEAData;
 };

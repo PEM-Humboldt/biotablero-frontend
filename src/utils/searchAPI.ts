@@ -14,7 +14,12 @@ import {
   hfTimeline,
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
-import { SECoverage, SEPAData, seDetails, EDValues } from "pages/search/types/ecosystems";
+import {
+  SECoverage,
+  SEPAData,
+  seDetails,
+  EDValues,
+} from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -315,7 +320,9 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<SEPAData>> {
-    return SearchAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
+    return SearchAPI.makeGetRequest(
+      `ecosystems/se?areaType=${areaType}&areaId=${areaId}`
+    );
   }
 
   /**
@@ -323,11 +330,13 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-   static requestProtectedAreas(
+  static requestProtectedAreas(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<SEPAData>>{
-    return SearchAPI.makeGetRequest(`/pa?areaType=${areaType}&areaId=${areaId}`);
+  ): Promise<Array<SEPAData>> {
+    return SearchAPI.makeGetRequest(
+      `/pa?areaType=${areaType}&areaId=${areaId}`
+    );
   }
 
   /**
@@ -335,11 +344,13 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    */
-   static requestCoverage(
+  static requestCoverage(
     areaType: string,
     areaId: string | number
   ): Promise<Array<EDValues>> {
-    return SearchAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
+    return SearchAPI.makeGetRequest(
+      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
+    );
   }
 
   /** ************ */

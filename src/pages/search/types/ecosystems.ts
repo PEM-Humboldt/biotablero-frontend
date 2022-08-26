@@ -1,5 +1,10 @@
-export type coverageType = 'N' | 'S' | 'T' | 'X';
-export type coverageLabels = '' | 'Natural' | 'Secundaria' | 'Transformada' | 'Sin clasificar / Nubes' ;
+export type coverageType = "N" | "S" | "T" | "X";
+export type coverageLabels =
+  | ""
+  | "Natural"
+  | "Secundaria"
+  | "Transformada"
+  | "Sin clasificar / Nubes";
 export interface SECoverage {
   area: number;
   type: coverageType;
