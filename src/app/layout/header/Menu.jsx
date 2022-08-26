@@ -43,7 +43,7 @@ class Menu extends React.Component {
               Consultas
             </li>
           </Link>
-          <Link to="./Indicadores" onClick={this.changeMenuState}>
+          <Link to="/Indicadores" onClick={this.changeMenuState}>
             <li>
               Indicadores
             </li>
