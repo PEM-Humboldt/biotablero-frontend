@@ -38,7 +38,7 @@ class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   render() {
     const {
       data,
-      height = 30,
+      height = 250,
       colors,
       units = "ha",
       onClickHandler,
