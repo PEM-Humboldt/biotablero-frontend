@@ -1,10 +1,7 @@
 import React from "react";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import {
-  transformPAValues,
-  transformCoverageValues,
-} from "../transformData";
+import { transformPAValues, transformCoverageValues } from "../transformData";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
@@ -17,7 +14,6 @@ import {
 import SearchAPI from "utils/searchAPI";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
-
 
 export interface PAData {
   area: number;
