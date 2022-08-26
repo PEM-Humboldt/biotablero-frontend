@@ -1,6 +1,6 @@
 import axios from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
-import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
+import { cfData } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
   currentSEPAConn,
@@ -143,7 +143,7 @@ class SearchAPI {
   static requestBiomes(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<biomes>> {
+  ): Promise<Array<cfData>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
   }
 
@@ -155,7 +155,7 @@ class SearchAPI {
   static requestBioticUnits(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<bioticUnits>> {
+  ): Promise<Array<cfData>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
   }
 
@@ -167,7 +167,7 @@ class SearchAPI {
   static requestCompensationFactor(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<cf>> {
+  ): Promise<Array<cfData>> {
     return SearchAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
   }
 

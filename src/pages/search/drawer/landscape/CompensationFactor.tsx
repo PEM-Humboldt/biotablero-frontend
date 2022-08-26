@@ -8,21 +8,12 @@ import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
+import { cfData } from "pages/search/types/compensationFactor";
 import { TextObject } from "pages/search/types/texts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
-interface bioticUnitsExt extends Omit<bioticUnits, "area"> {
-  label: string;
-  area: number;
-}
-
-interface biomesExt extends biomes {
-  label: string;
-}
-
-interface cfExt extends cf {
+interface cfDataExt extends cfData {
   label: string;
 }
 
@@ -30,9 +21,9 @@ interface Props {}
 
 interface compensationFactorState {
   infoShown: Set<string>;
-  biomes: Array<biomesExt>;
-  fc: Array<cfExt>;
-  bioticUnits: Array<bioticUnitsExt>;
+  biomes: Array<cfDataExt>;
+  fc: Array<cfDataExt>;
+  bioticUnits: Array<cfDataExt>;
   messages: {
     fc: wrapperMessage;
     biomes: wrapperMessage;
@@ -81,7 +72,7 @@ class CompensationFactor extends React.Component<
     switchLayer("fc");
 
     SearchAPI.requestBiomes(areaId, geofenceId)
-      .then((res: Array<biomes>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             biomes: res.map((item) => ({
@@ -105,7 +96,7 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestCompensationFactor(areaId, geofenceId)
-      .then((res: Array<cf>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             fc: res.map((item) => ({
@@ -129,7 +120,7 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestBioticUnits(areaId, geofenceId)
-      .then((res: Array<bioticUnits>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             bioticUnits: res.map((item) => ({
