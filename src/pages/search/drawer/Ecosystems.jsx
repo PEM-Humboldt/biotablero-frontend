@@ -10,8 +10,8 @@ import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
-} from 'pages/search/utils/transformData';
-import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
+} from './ecosystems/transformData.js'
+import EcosystemsBox from 'pages/search/drawer/ecosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
