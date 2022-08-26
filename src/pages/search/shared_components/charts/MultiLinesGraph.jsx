@@ -220,7 +220,7 @@ MultiLinesGraph.propTypes = {
     type: PropTypes.string,
     legendPosition: PropTypes.string,
   })),
-  onClickGraphHandler: PropTypes.func.isRequired,
+  onClickGraphHandler: PropTypes.func,
   colors: PropTypes.func.isRequired,
   data: PropTypes.arrayOf(PropTypes.shape({
     key: PropTypes.string,
@@ -245,6 +245,7 @@ MultiLinesGraph.defaultProps = {
   yMax: 100,
   height: 490,
   units: '',
+  onClickGraphHandler: () => {},
 };
 
 export default withMessageWrapper(MultiLinesGraph);
