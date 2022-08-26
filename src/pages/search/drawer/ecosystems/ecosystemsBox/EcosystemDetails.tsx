@@ -4,7 +4,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import {
   transformPAValues,
   transformCoverageValues,
-} from "pages/search/utils/transformData";
+} from "../transformData";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
@@ -12,12 +12,13 @@ import {
   coverageType,
   SECoverage,
   EDValues,
+  coverageLabels,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
-const coverageLabels = ["Natural", "Secundaria", "Transformada"] as const;
+
 export interface PAData {
   area: number;
   label: string;
@@ -25,8 +26,8 @@ export interface PAData {
   percentage: number;
 }
 interface CoverageValues extends SECoverage {
-  key: typeof coverageType[number];
-  label: typeof coverageLabels[number];
+  key: coverageType;
+  label: coverageLabels;
 }
 interface State {
   coverageData: Array<CoverageValues>;

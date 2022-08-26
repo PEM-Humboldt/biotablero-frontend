@@ -1,10 +1,11 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
-import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
+import EcosystemDetails from "pages/search/drawer/ecosystems/ecosystemsBox/EcosystemDetails";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
-import { transformSEValues } from "pages/search/utils/transformData";
+
+import { transformSEValues } from "./transformData";
 import { EDValues } from "pages/search/types/ecosystems";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 
