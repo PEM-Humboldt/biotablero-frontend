@@ -66,6 +66,7 @@ export const transformSEValues = (seRawData, SETotalArea) => {
       key: 'NA',
       area: (SETotalArea - seRawData.area),
       percentage: (SETotalArea - seRawData.area) / SETotalArea,
+      label: '',
     },
   ];
 };

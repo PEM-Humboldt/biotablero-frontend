@@ -1,14 +1,4 @@
-export interface biomes {
-  key: string;
+export interface cfData {
+  key: string | number;
   area: number;
-}
-
-export interface cf {
-  key: number;
-  area: number;
-}
-
-export interface bioticUnits {
-  key: string;
-  area: string;
 }

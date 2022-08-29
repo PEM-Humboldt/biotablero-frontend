@@ -5,7 +5,6 @@ import {
   transformPAValues,
   transformCoverageValues,
 } from "pages/search/utils/transformData";
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
@@ -15,6 +14,8 @@ import {
   EDValues,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
+import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
 const coverageLabels = ["Natural", "Secundaria", "Transformada"] as const;
 export interface PAData {
@@ -28,9 +29,13 @@ interface CoverageValues extends SECoverage {
   label: typeof coverageLabels[number];
 }
 interface State {
-  coverageData: Array<CoverageValues> | null;
-  paData: Array<PAData> | null;
+  coverageData: Array<CoverageValues>;
+  paData: Array<PAData>;
   stopLoad: boolean;
+  messages: {
+    coverage: wrapperMessage;
+    pa: wrapperMessage;
+  };
 }
 
 interface Props {
@@ -42,9 +47,13 @@ class EcosystemDetails extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      coverageData: null,
-      paData: null,
+      coverageData: [],
+      paData: [],
       stopLoad: false,
+      messages: {
+        coverage: "loading",
+        pa: "loading",
+      },
     };
   }
 
@@ -61,18 +70,44 @@ class EcosystemDetails extends React.Component<Props, State> {
       SearchAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ coverageData: transformCoverageValues(res) });
+            this.setState((prev) => ({
+              coverageData: transformCoverageValues(res),
+              messages: {
+                ...prev.messages,
+                coverage: null,
+              },
+            }));
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          this.setState((prev) => ({
+            messages: {
+              ...prev.messages,
+              coverage: "custom",
+            },
+          }));
+        });
 
       SearchAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
-            this.setState({ paData: transformPAValues(res, SEArea) });
+            this.setState((prev) => ({
+              paData: transformPAValues(res, SEArea),
+              messages: {
+                ...prev.messages,
+                pa: null,
+              },
+            }));
           }
         })
-        .catch(() => {});
+        .catch(() => {
+          this.setState((prev) => ({
+            messages: {
+              ...prev.messages,
+              pa: "custom",
+            },
+          }));
+        });
 
       switchLayer(`seCoverages-${SEKey(SEType)}`);
     }
@@ -86,7 +121,7 @@ class EcosystemDetails extends React.Component<Props, State> {
   }
 
   render() {
-    const { coverageData, paData, stopLoad } = this.state;
+    const { coverageData, paData, stopLoad, messages } = this.state;
     const { SEValues } = this.props;
     const { handlerClickOnGraph } = this.context as SearchContextValues;
     if (!stopLoad) {
@@ -94,52 +129,30 @@ class EcosystemDetails extends React.Component<Props, State> {
         <div>
           <h3>
             Distribución de coberturas:
-            {!coverageData && (
-              <b>
-                <br />
-                Cargando información...
-              </b>
-            )}
-            {coverageData && coverageData.length <= 0 && (
-              <b>No hay información disponible de coberturas</b>
-            )}
-            {coverageData && coverageData.length > 0 && (
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={coverageData}
-                units="ha"
-                colors={matchColor("coverage")}
-                onClickGraphHandler={(selected) => {
-                  handlerClickOnGraph({
-                    chartType: "seCoverage",
-                    chartSection: SEKey(SEValues.type),
-                    selectedKey: selected,
-                  });
-                }}
-              />
-            )}
+            <SmallBarStackGraph
+              message={messages.coverage}
+              customMessage="No hay información disponible de coberturas"
+              data={coverageData}
+              units="ha"
+              colors={matchColor("coverage")}
+              onClickGraphHandler={(selected) => {
+                handlerClickOnGraph({
+                  chartType: "seCoverage",
+                  chartSection: SEKey(SEValues.type),
+                  selectedKey: selected,
+                });
+              }}
+            />
           </h3>
           <h3>
             Distribución en áreas protegidas:
-            {!paData && (
-              <b>
-                <br />
-                Cargando información...
-              </b>
-            )}
-            {paData && paData.length <= 0 && (
-              <div>
-                <b>Sin áreas protegidas</b>
-              </div>
-            )}
-            {paData && paData.length > 0 && (
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={paData}
-                units="ha"
-                colors={matchColor("pa", true)}
-              />
-            )}
+            <SmallBarStackGraph
+              message={messages.pa}
+              customMessage="Sin áreas protegidas"
+              data={paData}
+              units="ha"
+              colors={matchColor("pa", true)}
+            />
           </h3>
         </div>
       );

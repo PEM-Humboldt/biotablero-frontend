@@ -2,7 +2,6 @@ import React from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 
 import { IconTooltip } from 'pages/search/shared_components/Tooltips';
-import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import {
   LegendColor,
   LineLegend,
@@ -23,6 +22,7 @@ import biomodeloslink from 'images/biomodeloslink.png';
 import biomodeloslink2 from 'images/biomodeloslink2.png';
 import fullview from 'images/fullview.png';
 import TextBoxes from 'pages/search/shared_components/TextBoxes';
+import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
 
 const NOSTexts = {
   inferred: {},
@@ -380,7 +380,7 @@ class NumberOfSpecies extends React.Component {
         </div>
         <div>
           {(message === 'no-data' || message === 'loading') && (
-            <GraphLoader
+            <SingleBulletGraph
               message={message}
               data={[]}
               graphType="singleBullet"
@@ -429,12 +429,12 @@ class NumberOfSpecies extends React.Component {
                 </div>
               </div>
               <div className="svgPointer">
-                <GraphLoader
+                <SingleBulletGraph
                   message={message}
                   data={bar}
                   graphType="singleBullet"
                   colors={matchColor('richnessNos')}
-                  onClickGraphHandler={() => {
+                  onClickHandler={() => {
                     this.setState({ selected: bar.id });
                     handlerClickOnGraph({
                       chartType: 'numberOfSpecies',

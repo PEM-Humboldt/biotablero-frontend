@@ -1,7 +1,6 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
@@ -16,6 +15,8 @@ import {
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
 import { TextObject } from "pages/search/types/texts";
+import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
 const getLabel = {
   unprot: "No protegida",
@@ -35,9 +36,9 @@ interface State {
   protDryForest: number;
   protWetland: number;
   messages: {
-    paramo: string | null;
-    dryForest: string | null;
-    wetland: string | null;
+    paramo: wrapperMessage;
+    dryForest: wrapperMessage;
+    wetland: wrapperMessage;
   };
   texts: {
     paConnSE: TextObject;
@@ -244,8 +245,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <GraphLoader
-              graphType="LargeBarStackGraph"
+            <LargeBarStackGraph
               data={currentPAConnParamo}
               message={paramo}
               labelX="Hectáreas"
@@ -286,8 +286,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <GraphLoader
-              graphType="LargeBarStackGraph"
+            <LargeBarStackGraph
               data={currentPAConnDryForest}
               message={dryForest}
               labelX="Hectáreas"
@@ -328,8 +327,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <GraphLoader
-              graphType="LargeBarStackGraph"
+            <LargeBarStackGraph
               data={currentPAConnWetland}
               message={wetland}
               labelX="Hectáreas"

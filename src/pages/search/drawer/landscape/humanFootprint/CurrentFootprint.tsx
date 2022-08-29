@@ -3,7 +3,6 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "utils/matchColor";
@@ -15,6 +14,8 @@ import {
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
+import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
 interface currentHFCategoriesExt extends currentHFCategories {
   label: string;
@@ -26,7 +27,7 @@ interface currentHFState {
   hfCurrent: Array<currentHFCategoriesExt>;
   hfCurrentValue: string;
   hfCurrentCategory: string;
-  message: string | null;
+  message: wrapperMessage;
   texts: {
     hfCurrent: TextObject;
   };
@@ -149,8 +150,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         </div>
         <h6>Natural, Baja, Media y Alta</h6>
         <div>
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={hfCurrent}
             message={message}
             labelX="Hectáreas"

@@ -2,6 +2,7 @@ import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
+import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
   data: Array<MultiSmallSingleBarGraphData>;
@@ -9,7 +10,7 @@ interface Props {
   colors: (key: string) => string;
   units?: string;
   onClickHandler: (key: string) => void;
-  selectedIndexValue: string;
+  selectedIndexValue?: string;
   labelX: string;
 }
 
@@ -28,15 +29,16 @@ interface State {
 class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const { selectedIndexValue = "" } = props;
     this.state = {
-      selectedIndexValue: props.selectedIndexValue,
+      selectedIndexValue: selectedIndexValue,
     };
   }
 
   render() {
     const {
       data,
-      height = 30,
+      height = 250,
       colors,
       units = "ha",
       onClickHandler,
@@ -133,4 +135,4 @@ class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   }
 }
 
-export default MultiSmallSingleBarGraph;
+export default withMessageWrapper<Props>(MultiSmallSingleBarGraph);

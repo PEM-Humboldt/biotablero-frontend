@@ -1,7 +1,6 @@
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
@@ -9,18 +8,12 @@ import matchColor from "utils/matchColor";
 import SearchAPI from "utils/searchAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import { biomes, cf, bioticUnits } from "pages/search/types/compensationFactor";
+import { cfData } from "pages/search/types/compensationFactor";
 import { TextObject } from "pages/search/types/texts";
+import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import { wrapperMessage } from "pages/search/types/charts";
 
-interface bioticUnitsExt extends bioticUnits {
-  label: string;
-}
-
-interface biomesExt extends biomes {
-  label: string;
-}
-
-interface cfExt extends cf {
+interface cfDataExt extends cfData {
   label: string;
 }
 
@@ -28,13 +21,13 @@ interface Props {}
 
 interface compensationFactorState {
   infoShown: Set<string>;
-  biomes: Array<biomesExt>;
-  fc: Array<cfExt>;
-  bioticUnits: Array<bioticUnitsExt>;
+  biomes: Array<cfDataExt>;
+  fc: Array<cfDataExt>;
+  bioticUnits: Array<cfDataExt>;
   messages: {
-    fc: string | null;
-    biomes: string | null;
-    bioticUnits: string | null;
+    fc: wrapperMessage;
+    biomes: wrapperMessage;
+    bioticUnits: wrapperMessage;
   };
   texts: {
     cf: TextObject;
@@ -79,7 +72,7 @@ class CompensationFactor extends React.Component<
     switchLayer("fc");
 
     SearchAPI.requestBiomes(areaId, geofenceId)
-      .then((res: Array<biomes>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             biomes: res.map((item) => ({
@@ -103,7 +96,7 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestCompensationFactor(areaId, geofenceId)
-      .then((res: Array<cf>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             fc: res.map((item) => ({
@@ -127,11 +120,12 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestBioticUnits(areaId, geofenceId)
-      .then((res: Array<bioticUnits>) => {
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             bioticUnits: res.map((item) => ({
               ...item,
+              area: Number(item.area),
               label: `${item.key}`,
             })),
             messages: {
@@ -222,8 +216,7 @@ class CompensationFactor extends React.Component<
               />
             )}
           </div>
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={fc}
             message={fcMess}
             labelX="Hectáreas"
@@ -257,8 +250,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={biomes}
             message={biomesMess}
             labelX="Hectáreas"
@@ -292,8 +284,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <GraphLoader
-            graphType="LargeBarStackGraph"
+          <LargeBarStackGraph
             data={bioticUnits}
             message={bioticUnitsMess}
             labelX="Hectáreas"

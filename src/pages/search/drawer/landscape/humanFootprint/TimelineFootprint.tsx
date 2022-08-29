@@ -1,7 +1,6 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import GraphLoader from "pages/search/shared_components/charts/GraphLoader";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
@@ -14,6 +13,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { TextObject } from "pages/search/types/texts";
+import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
 
 const changeValues = [
   {
@@ -237,7 +237,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         <h6>Huella humana comparada con EE</h6>
         <p>Haz clic en un ecosistema para ver su comportamiento</p>
         <div>
-          <GraphLoader
+          <MultiLinesGraph
             graphType="MultiLinesGraph"
             colors={matchColor("hfTimeline")}
             data={hfTimeline}
@@ -245,7 +245,7 @@ class TimelineFootprint extends React.Component<Props, State> {
             markers={changeValues}
             labelX="Año"
             labelY="Indice promedio Huella Humana"
-            onClickGraphHandler={(selection) => {
+            onClickGraphHandler={(selection: string) => {
               this.setSelectedEcosystem(selection);
               handlerClickOnGraph({
                 chartType: "hfTimeline",

@@ -2,11 +2,11 @@ import React from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
 import { IconTooltip } from 'pages/search/shared_components/Tooltips';
-import GraphLoader from 'pages/search/shared_components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
+import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
 
 const getFeatureLabel = {
   leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
@@ -237,7 +237,7 @@ class TropicalDryForest extends React.Component {
           </h3>
           <br />
           {messageFeatures === 'no-data' && (
-            <GraphLoader
+            <SingleBulletGraph
               message={messageFeatures}
               data={[]}
               graphType="singleBullet"
@@ -251,12 +251,12 @@ class TropicalDryForest extends React.Component {
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">
-                <GraphLoader
+                <SingleBulletGraph
                   message={messageFeatures}
                   data={bar}
                   graphType="singleBullet"
                   colors={matchColor(getFeatureColors[bar.id])}
-                  onClickGraphHandler={() => {
+                  onClickHandler={() => {
                     this.setState({ selected: bar.id });
                   }}
                 />
