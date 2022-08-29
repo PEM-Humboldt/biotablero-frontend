@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import InfoIcon from "@mui/icons-material/Info";
+import InfoIcon from '@mui/icons-material/Info';
 
-import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import ShortInfo from 'components/ShortInfo';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import TextBoxes from 'pages/search/shared_components/TextBoxes';
 import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
-} from "./ecosystems/transformData";
-import EcosystemsBox from "pages/search/drawer/ecosystems/EcosystemsBox";
-import SearchContext from "pages/search/SearchContext";
-import formatNumber from "utils/format";
-import matchColor from "utils/matchColor";
+} from 'pages/search/drawer/ecosystems/transformData';
+import EcosystemsBox from 'pages/search/drawer/ecosystems/EcosystemsBox';
+import SearchContext from 'pages/search/SearchContext';
+import formatNumber from 'utils/format';
+import matchColor from 'utils/matchColor';
+import RestAPI from 'utils/restAPI';
 import SearchAPI from "utils/searchAPI";
-import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
-import RestAPI from "utils/restAPI.js";
+import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
 
 /**
  * Calculate percentage for a given value according to total
@@ -28,7 +28,7 @@ import RestAPI from "utils/restAPI.js";
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-class StrategicEcosystems extends React.Component {
+class Ecosystems extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -43,9 +43,9 @@ class StrategicEcosystems extends React.Component {
       SETotalArea: 0,
       activeSE: null,
       messages: {
-        cov: "loading",
-        pa: "loading",
-        se: "loading",
+        cov: 'loading',
+        pa: 'loading',
+        se: 'loading',
       },
       texts: {
         ecosystems: {},
@@ -58,10 +58,14 @@ class StrategicEcosystems extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      switchLayer,
+    } = this.context;
     const { generalArea } = this.props;
 
-    switchLayer("coverages");
+    switchLayer('coverages');
 
     SearchAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
@@ -79,7 +83,7 @@ class StrategicEcosystems extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            cov: "no-data",
+            cov: 'no-data',
           },
         }));
       });
@@ -88,9 +92,7 @@ class StrategicEcosystems extends React.Component {
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res) && res[0]) {
-            const PATotalArea = res
-              .map((i) => i.area)
-              .reduce((prev, next) => prev + next);
+            const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
             const PAAreas = transformPAValues(res, generalArea);
             this.setState((prev) => ({
               PAAreas,
@@ -107,7 +109,7 @@ class StrategicEcosystems extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            pa: "no-data",
+            pa: 'no-data',
           },
         }));
       });
@@ -116,7 +118,7 @@ class StrategicEcosystems extends React.Component {
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res)) {
-            const SETotal = res.find((obj) => obj.type === "Total");
+            const SETotal = res.find((obj) => obj.type === 'Total');
             const SETotalArea = SETotal ? SETotal.area : 0;
             const SEAreas = res.slice(1);
             this.setState((prev) => ({
@@ -134,13 +136,13 @@ class StrategicEcosystems extends React.Component {
         this.setState((prev) => ({
           messages: {
             ...prev.messages,
-            se: "no-data",
+            se: 'no-data',
           },
         }));
       });
 
-    ["ecosystems", "coverage", "pa", "se"].forEach((item) => {
-      RestAPI.requestSectionTexts(item)
+      ['ecosystems', 'coverage', 'pa', 'se'].forEach((item) => {
+        RestAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({
@@ -153,7 +155,7 @@ class StrategicEcosystems extends React.Component {
             texts: { ...prevState.texts, [item]: {} },
           }));
         });
-    });
+      });
   }
 
   componentWillUnmount() {
@@ -164,7 +166,7 @@ class StrategicEcosystems extends React.Component {
     this.setState((prevState) => ({
       showInfoMain: !prevState.showInfoMain,
     }));
-  };
+  }
 
   toggleInfo = (value) => {
     this.setState((prev) => {
@@ -176,7 +178,7 @@ class StrategicEcosystems extends React.Component {
       newState.infoShown.add(value);
       return newState;
     });
-  };
+  }
 
   /**
    * Returns the component EcosystemsBox that contains the list of strategic ecosystems
@@ -187,13 +189,9 @@ class StrategicEcosystems extends React.Component {
    */
   renderEcosystemsBox = (SEAreas, SETotalArea) => {
     const { generalArea } = this.props;
-    const {
-      activeSE,
-      messages: { se },
-    } = this.state;
-    if (se === "loading") return "Cargando...";
-    if (se === "no-data")
-      return "No hay información de áreas protegidas en el área de consulta";
+    const { activeSE, messages: { se } } = this.state;
+    if (se === 'loading') return ('Cargando...');
+    if (se === 'no-data') return ('No hay información de áreas protegidas en el área de consulta');
     if (generalArea !== 0) {
       return (
         <EcosystemsBox
@@ -220,11 +218,11 @@ class StrategicEcosystems extends React.Component {
         newState.activeSE = se;
       } else {
         newState.activeSE = null;
-        switchLayer("coverages");
+        switchLayer('coverages');
       }
       return newState;
     });
-  };
+  }
 
   render() {
     const { generalArea } = this.props;
@@ -240,7 +238,11 @@ class StrategicEcosystems extends React.Component {
       messages: { cov, pa },
       texts,
     } = this.state;
-    const { areaId, geofenceId, handlerClickOnGraph } = this.context;
+    const {
+      areaId,
+      geofenceId,
+      handlerClickOnGraph,
+    } = this.context;
     return (
       <div className="graphcard">
         <h2>
@@ -261,43 +263,42 @@ class StrategicEcosystems extends React.Component {
         <div className="graphcontainer pt5">
           <button
             onClick={() => {
-              if (activeSE !== null) {
-                this.switchActiveSE(null);
-              }
-            }}
+                if (activeSE !== null) {
+                  this.switchActiveSE(null);
+                }
+              }}
             type="button"
             className="tittlebtn"
           >
-            <h4>Cobertura</h4>
+            <h4>
+              Cobertura
+            </h4>
           </button>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`downSpecial${
-                infoShown.has("coverage") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("coverage")}
+              className={`downSpecial${infoShown.has('coverage') ? ' activeBox' : ''}`}
+              onClick={() => this.toggleInfo('coverage')}
             />
           </IconTooltip>
-          {infoShown.has("coverage") && (
+          {infoShown.has('coverage') && (
             <ShortInfo
               description={texts.coverage.info}
               className="graphinfo3"
               collapseButton={false}
             />
           )}
-          <h6>Natural, Secundaria y Transformada:</h6>
+          <h6>
+            Natural, Secundaria y Transformada:
+          </h6>
           <div className="graficaeco">
             <div className="svgPointer">
               <SmallBarStackGraph
                 message={cov}
                 data={coverage}
                 units="ha"
-                colors={matchColor("coverage")}
+                colors={matchColor('coverage')}
                 onClickGraphHandler={(selected) => {
-                  handlerClickOnGraph({
-                    chartType: "coverage",
-                    selectedKey: selected,
-                  });
+                  handlerClickOnGraph({ chartType: 'coverage', selectedKey: selected });
                 }}
               />
             </div>
@@ -308,8 +309,8 @@ class StrategicEcosystems extends React.Component {
             quoteText={texts.coverage.quote}
             metoText={texts.coverage.meto}
             consText={texts.coverage.cons}
-            toggleInfo={() => this.toggleInfo("coverage")}
-            isInfoOpen={infoShown.has("coverage")}
+            toggleInfo={() => this.toggleInfo('coverage')}
+            isInfoOpen={infoShown.has('coverage')}
           />
           <h4>
             Áreas protegidas
@@ -317,14 +318,14 @@ class StrategicEcosystems extends React.Component {
           </h4>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`downSpecial${
-                infoShown.has("pa") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("pa")}
+              className={`downSpecial${infoShown.has('pa') ? ' activeBox' : ''}`}
+              onClick={() => this.toggleInfo('pa')}
             />
           </IconTooltip>
-          <h5>{`${getPercentage(PATotalArea, generalArea)} %`}</h5>
-          {infoShown.has("pa") && (
+          <h5>
+            {`${getPercentage(PATotalArea, generalArea)} %`}
+          </h5>
+          {infoShown.has('pa') && (
             <ShortInfo
               description={texts.pa.info}
               className="graphinfo3"
@@ -332,12 +333,14 @@ class StrategicEcosystems extends React.Component {
             />
           )}
           <div className="graficaeco">
-            <h6>Distribución por áreas protegidas:</h6>
+            <h6>
+              Distribución por áreas protegidas:
+            </h6>
             <SmallBarStackGraph
               message={pa}
               data={PAAreas}
               units="ha"
-              colors={matchColor("pa", true)}
+              colors={matchColor('pa', true)}
             />
           </div>
           <TextBoxes
@@ -346,8 +349,8 @@ class StrategicEcosystems extends React.Component {
             quoteText={texts.pa.quote}
             metoText={texts.pa.meto}
             consText={texts.pa.cons}
-            toggleInfo={() => this.toggleInfo("pa")}
-            isInfoOpen={infoShown.has("pa")}
+            toggleInfo={() => this.toggleInfo('pa')}
+            isInfoOpen={infoShown.has('pa')}
           />
           <div className="ecoest">
             <h4 className="minus20">
@@ -356,16 +359,14 @@ class StrategicEcosystems extends React.Component {
             </h4>
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className={`downSpecial2${
-                  infoShown.has("se") ? " activeBox" : ""
-                }`}
-                onClick={() => this.toggleInfo("se")}
+                className={`downSpecial2${infoShown.has('se') ? ' activeBox' : ''}`}
+                onClick={() => this.toggleInfo('se')}
               />
             </IconTooltip>
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
-            {infoShown.has("se") && (
+            {infoShown.has('se') && (
               <ShortInfo
                 description={texts.se.info}
                 className="graphinfo3"
@@ -379,8 +380,8 @@ class StrategicEcosystems extends React.Component {
               quoteText={texts.se.quote}
               metoText={texts.se.meto}
               consText={texts.se.cons}
-              toggleInfo={() => this.toggleInfo("se")}
-              isInfoOpen={infoShown.has("se")}
+              toggleInfo={() => this.toggleInfo('se')}
+              isInfoOpen={infoShown.has('se')}
             />
           </div>
         </div>
@@ -389,14 +390,14 @@ class StrategicEcosystems extends React.Component {
   }
 }
 
-StrategicEcosystems.propTypes = {
+Ecosystems.propTypes = {
   generalArea: PropTypes.number,
 };
 
-StrategicEcosystems.defaultProps = {
+Ecosystems.defaultProps = {
   generalArea: 0,
 };
 
-export default StrategicEcosystems;
+export default Ecosystems;
 
-StrategicEcosystems.contextType = SearchContext;
+Ecosystems.contextType = SearchContext;
