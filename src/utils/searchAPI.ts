@@ -15,10 +15,9 @@ import {
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
 import {
-  SECoverage,
+  Coverage,
   SEPAData,
   seDetails,
-  EDValues,
 } from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
@@ -288,7 +287,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<Array<SECoverage>> {
+  ): Promise<Array<Coverage>> {
     return SearchAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
@@ -347,7 +346,7 @@ class SearchAPI {
   static requestCoverage(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<EDValues>> {
+  ): Promise<Array<Coverage>> {
     return SearchAPI.makeGetRequest(
       `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );
