@@ -5,13 +5,13 @@ import EcosystemDetails from "pages/search/drawer/ecosystems/ecosystemsBox/Ecosy
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 
-import { transformSEValues } from "./transformData";
-import { EDValues } from "pages/search/types/ecosystems";
+import { transformSEValues } from "pages/search/drawer/ecosystems/transformData";
+import { SEPADataExt } from "pages/search/types/ecosystems";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 
 interface Props {
   SETotalArea: number;
-  SEAreas: Array<EDValues>;
+  SEAreas: Array<SEPADataExt>;
   setActiveSE: (type: string) => void;
   activeSE: string;
 }

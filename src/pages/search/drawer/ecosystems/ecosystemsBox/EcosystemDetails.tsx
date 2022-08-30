@@ -1,14 +1,14 @@
 import React from "react";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import { transformPAValues, transformCoverageValues } from "../transformData";
+import { transformPAValues, transformCoverageValues } from "pages/search/drawer/ecosystems/transformData";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
 import {
   coverageType,
-  SECoverage,
-  EDValues,
+  Coverage,
+  SEPADataExt,
   coverageLabels,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
@@ -21,12 +21,12 @@ export interface PAData {
   key: string;
   percentage: number;
 }
-interface CoverageValues extends SECoverage {
+interface CoverageExt extends Coverage {
   key: coverageType;
   label: coverageLabels;
 }
 interface State {
-  coverageData: Array<CoverageValues>;
+  coverageData: Array<CoverageExt>;
   paData: Array<PAData>;
   stopLoad: boolean;
   messages: {
@@ -36,7 +36,7 @@ interface State {
 }
 
 interface Props {
-  SEValues: EDValues;
+  SEValues: SEPADataExt;
 }
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
