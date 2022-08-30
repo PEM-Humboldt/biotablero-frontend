@@ -1,20 +1,12 @@
-import { SmallBarStackGraphData } from "pages/search/shared_components/charts/SmallBarStackGraph";
 import {
-  SECoverage,
+  Coverage,
   SEPAData,
   coverageLabels,
-  EDValues,
+  SEPADataExt,
 } from "pages/search/types/ecosystems";
 
-export interface SmallBarData {
-  area: number;
-  key: string;
-  percentage: number;
-  label?: string | null;
-}
-
 export const transformPAValues = (
-  rawData: Array<SEPAData> | null,
+  rawData: Array<SEPAData>,
   totalArea: number
 ) => {
   if (!rawData || rawData.length === 0) return [];
@@ -47,7 +39,7 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (rawData: Array<SECoverage>) => {
+export const transformCoverageValues = (rawData: Array<Coverage>) => {
   if (!rawData) return [];
   return rawData.map((item) => {
     let label: coverageLabels = "";
@@ -73,9 +65,9 @@ export const transformCoverageValues = (rawData: Array<SECoverage>) => {
   });
 };
 
-export const transformSEValues = (seRawData: EDValues, SETotalArea: number) => {
+export const transformSEValues = (seRawData: SEPADataExt, SETotalArea: number) => {
   if (!seRawData) return [];
-  const transformedData: Array<SmallBarStackGraphData> = [
+  const transformedData = [
     {
       key: seRawData.type,
       area: Number(seRawData.area),
@@ -97,7 +89,7 @@ export const transformSEAreas = (
   generalArea: number
 ) => {
   if (!rawData) return [];
-  const transformedSEAData: Array<EDValues> = rawData.map((obj) => ({
+  const transformedSEAData: Array<SEPADataExt> = rawData.map((obj) => ({
     ...obj,
     percentage: obj.area / generalArea,
   }));
