@@ -190,7 +190,7 @@ class Search extends Component {
         ftype = 'dpc';
       } else if (type === 'fc') {
         key = feature.properties.compensation_factor;
-      } else if (type === 'national') {
+      } else if (type === 'states' || type === 'ea' || type === 'basinSubzones') {
         return {
           color: '#e84a5f',
           weight: 0.5,
@@ -295,10 +295,8 @@ class Search extends Component {
         break;
       case 'states':
       case 'ea':
-        feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
-        break;
       case 'basinSubzones':
-        feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
+        feature.bindTooltip(feature.feature.properties.geofence_name, optionsTooltip).openTooltip();
         break;
       case 'currentPAConn':
       case 'timelinePAConn':
@@ -559,7 +557,7 @@ class Search extends Component {
       case 'basinSubzones':
       case 'ea':
         reqPromise = () => RestAPI.requestNationalGeometryByArea(layerName);
-        layerStyle = this.featureStyle({ type: 'national' });
+        layerStyle = this.featureStyle({ type: layerName });
         break;
       case 'geofence':
         reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
