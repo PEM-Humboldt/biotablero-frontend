@@ -1,7 +1,10 @@
 import React from "react";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import { transformPAValues, transformCoverageValues } from "pages/search/drawer/ecosystems/transformData";
+import {
+  transformPAValues,
+  transformCoverageValues,
+} from "pages/search/drawer/ecosystems/transformData";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
