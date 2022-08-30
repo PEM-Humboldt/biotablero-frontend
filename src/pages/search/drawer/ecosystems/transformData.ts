@@ -65,7 +65,10 @@ export const transformCoverageValues = (rawData: Array<Coverage>) => {
   });
 };
 
-export const transformSEValues = (seRawData: SEPADataExt, SETotalArea: number) => {
+export const transformSEValues = (
+  seRawData: SEPADataExt,
+  SETotalArea: number
+) => {
   if (!seRawData) return [];
   const transformedData = [
     {

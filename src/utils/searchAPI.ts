@@ -14,11 +14,7 @@ import {
   hfTimeline,
 } from "pages/search/types/humanFootprint";
 import { TextObject } from "pages/search/types/texts";
-import {
-  Coverage,
-  SEPAData,
-  seDetails,
-} from "pages/search/types/ecosystems";
+import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
   /** FOREST */
