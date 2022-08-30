@@ -10,12 +10,13 @@ import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
-} from 'pages/search/utils/transformData';
-import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
+} from 'pages/search/drawer/ecosystems/transformData';
+import EcosystemsBox from 'pages/search/drawer/ecosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import SearchAPI from "utils/searchAPI";
 import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
 
 /**
@@ -27,7 +28,7 @@ import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarSt
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-class StrategicEcosystems extends React.Component {
+class Ecosystems extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -66,7 +67,7 @@ class StrategicEcosystems extends React.Component {
 
     switchLayer('coverages');
 
-    RestAPI.requestCoverage(areaId, geofenceId)
+    SearchAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -87,7 +88,7 @@ class StrategicEcosystems extends React.Component {
         }));
       });
 
-    RestAPI.requestProtectedAreas(areaId, geofenceId)
+    SearchAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res) && res[0]) {
@@ -113,7 +114,7 @@ class StrategicEcosystems extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(areaId, geofenceId)
+    SearchAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res)) {
@@ -389,14 +390,14 @@ class StrategicEcosystems extends React.Component {
   }
 }
 
-StrategicEcosystems.propTypes = {
+Ecosystems.propTypes = {
   generalArea: PropTypes.number,
 };
 
-StrategicEcosystems.defaultProps = {
+Ecosystems.defaultProps = {
   generalArea: 0,
 };
 
-export default StrategicEcosystems;
+export default Ecosystems;
 
-StrategicEcosystems.contextType = SearchContext;
+Ecosystems.contextType = SearchContext;

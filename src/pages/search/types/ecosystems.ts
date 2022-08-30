@@ -1,7 +1,13 @@
-export const coverageType = ["N", "S", "T", "X"] as const;
-export interface SECoverage {
+export type coverageType = "N" | "S" | "T" | "X";
+export type coverageLabels =
+  | ""
+  | "Natural"
+  | "Secundaria"
+  | "Transformada"
+  | "Sin clasificar / Nubes";
+export interface Coverage {
   area: number;
-  type: typeof coverageType[number];
+  type: coverageType;
   percentage: number;
 }
 export interface SEPAData {
@@ -9,7 +15,7 @@ export interface SEPAData {
   type: string;
 }
 
-export interface EDValues extends SEPAData {
+export interface SEPADataExt extends SEPAData {
   percentage: number;
 }
 export interface seDetails {

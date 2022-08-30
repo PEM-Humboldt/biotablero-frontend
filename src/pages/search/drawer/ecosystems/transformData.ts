@@ -1,8 +1,20 @@
-export const transformPAValues = (rawData, totalArea) => {
+import {
+  Coverage,
+  SEPAData,
+  coverageLabels,
+  SEPADataExt,
+} from "pages/search/types/ecosystems";
+
+export const transformPAValues = (
+  rawData: Array<SEPAData>,
+  totalArea: number
+) => {
   if (!rawData || rawData.length === 0) return [];
   let PATotalArea = 0;
   if (rawData.length > 0) {
-    PATotalArea = rawData.map((i) => i.area).reduce((prev, next) => prev + next);
+    PATotalArea = rawData
+      .map((i) => i.area)
+      .reduce((prev, next) => prev + next);
   }
   const data = rawData
     .filter((item) => item.area > 0)
@@ -20,29 +32,29 @@ export const transformPAValues = (rawData, totalArea) => {
   const noProtectedArea = totalArea > 0 ? totalArea - PATotalArea : 0;
   data.push({
     area: noProtectedArea,
-    label: 'No Protegida',
-    key: 'No Protegida',
+    label: "No Protegida",
+    key: "No Protegida",
     percentage: noProtectedArea / totalArea,
   });
   return data;
 };
 
-export const transformCoverageValues = (rawData) => {
+export const transformCoverageValues = (rawData: Array<Coverage>) => {
   if (!rawData) return [];
   return rawData.map((item) => {
-    let label = '';
+    let label: coverageLabels = "";
     switch (item.type) {
-      case 'N':
-        label = 'Natural';
+      case "N":
+        label = "Natural";
         break;
-      case 'S':
-        label = 'Secundaria';
+      case "S":
+        label = "Secundaria";
         break;
-      case 'T':
-        label = 'Transformada';
+      case "T":
+        label = "Transformada";
         break;
       default:
-        label = 'Sin clasificar / Nubes';
+        label = "Sin clasificar / Nubes";
     }
     return {
       ...item,
@@ -53,9 +65,12 @@ export const transformCoverageValues = (rawData) => {
   });
 };
 
-export const transformSEValues = (seRawData, SETotalArea) => {
+export const transformSEValues = (
+  seRawData: SEPADataExt,
+  SETotalArea: number
+) => {
   if (!seRawData) return [];
-  return [
+  const transformedData = [
     {
       key: seRawData.type,
       area: Number(seRawData.area),
@@ -63,18 +78,23 @@ export const transformSEValues = (seRawData, SETotalArea) => {
       label: seRawData.type,
     },
     {
-      key: 'NA',
-      area: (SETotalArea - seRawData.area),
+      key: "NA",
+      area: SETotalArea - seRawData.area,
       percentage: (SETotalArea - seRawData.area) / SETotalArea,
-      label: '',
+      label: "",
     },
   ];
+  return transformedData;
 };
 
-export const transformSEAreas = (rawData, generalArea) => {
-    if (!rawData) return [];
-    return rawData.map((obj) => ({
-      ...obj,
-      percentage: obj.area / generalArea,
-    }));
+export const transformSEAreas = (
+  rawData: Array<SEPAData>,
+  generalArea: number
+) => {
+  if (!rawData) return [];
+  const transformedSEAData: Array<SEPADataExt> = rawData.map((obj) => ({
+    ...obj,
+    percentage: obj.area / generalArea,
+  }));
+  return transformedSEAData;
 };

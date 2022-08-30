@@ -1,16 +1,17 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
-import EcosystemDetails from "pages/search/drawer/strategicEcosystems/ecosystemsBox/EcosystemDetails";
+import EcosystemDetails from "pages/search/drawer/ecosystems/ecosystemsBox/EcosystemDetails";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
-import { transformSEValues } from "pages/search/utils/transformData";
-import { EDValues } from "pages/search/types/ecosystems";
+
+import { transformSEValues } from "pages/search/drawer/ecosystems/transformData";
+import { SEPADataExt } from "pages/search/types/ecosystems";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 
 interface Props {
   SETotalArea: number;
-  SEAreas: Array<EDValues>;
+  SEAreas: Array<SEPADataExt>;
   setActiveSE: (type: string) => void;
   activeSE: string;
 }

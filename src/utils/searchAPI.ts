@@ -13,9 +13,8 @@ import {
   hfPersistence,
   hfTimeline,
 } from "pages/search/types/humanFootprint";
-import { seDetails } from "pages/search/types/ecosystems";
 import { TextObject } from "pages/search/types/texts";
-import { SECoverage, SEPAData } from "pages/search/types/ecosystems";
+import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -284,7 +283,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<Array<SECoverage>> {
+  ): Promise<Array<Coverage>> {
     return SearchAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
@@ -304,6 +303,48 @@ class SearchAPI {
   ): Promise<Array<SEPAData>> {
     return SearchAPI.makeGetRequest(
       `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+    );
+  }
+
+  /**
+   * Get the area distribution for each SE type and total SE area within a given area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestStrategicEcosystems(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<SEPAData>> {
+    return SearchAPI.makeGetRequest(
+      `ecosystems/se?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get the protected areas values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestProtectedAreas(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<SEPAData>> {
+    return SearchAPI.makeGetRequest(
+      `/pa?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get coverage area by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestCoverage(
+    areaType: string,
+    areaId: string | number
+  ): Promise<Array<Coverage>> {
+    return SearchAPI.makeGetRequest(
+      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );
   }
 

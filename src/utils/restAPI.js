@@ -22,24 +22,6 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Get coverage area by selected area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestCoverage(areaType, areaId) {
-    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the protected areas values by selected area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestProtectedAreas(areaType, areaId) {
-    return RestAPI.makeGetRequest(`/pa?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
    * Recover the national area by selected strategic ecosystems
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
@@ -53,15 +35,6 @@ class RestAPI {
    */
   static requestNationalCoverage(idGeofence) {
     return RestAPI.makeGetRequest(`se/${idGeofence}/coverage`);
-  }
-
-  /**
-   * Get the area distribution for each SE type and total SE area within a given area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestStrategicEcosystems(areaType, areaId) {
-    return RestAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**

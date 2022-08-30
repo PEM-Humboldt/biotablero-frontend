@@ -4,32 +4,32 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import {
   transformPAValues,
   transformCoverageValues,
-} from "pages/search/utils/transformData";
+} from "pages/search/drawer/ecosystems/transformData";
 import matchColor from "utils/matchColor";
 
 import { SEKey } from "pages/search/utils/appropriate_keys";
 import {
   coverageType,
-  SECoverage,
-  EDValues,
+  Coverage,
+  SEPADataExt,
+  coverageLabels,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
-const coverageLabels = ["Natural", "Secundaria", "Transformada"] as const;
 export interface PAData {
   area: number;
   label: string;
   key: string;
   percentage: number;
 }
-interface CoverageValues extends SECoverage {
-  key: typeof coverageType[number];
-  label: typeof coverageLabels[number];
+interface CoverageExt extends Coverage {
+  key: coverageType;
+  label: coverageLabels;
 }
 interface State {
-  coverageData: Array<CoverageValues>;
+  coverageData: Array<CoverageExt>;
   paData: Array<PAData>;
   stopLoad: boolean;
   messages: {
@@ -39,7 +39,7 @@ interface State {
 }
 
 interface Props {
-  SEValues: EDValues;
+  SEValues: SEPADataExt;
 }
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
