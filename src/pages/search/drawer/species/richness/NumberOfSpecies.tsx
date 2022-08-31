@@ -23,13 +23,10 @@ import fullview from "images/fullview.png";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SingleBulletGraph from "pages/search/shared_components/charts/SingleBulletGraph";
 import { wrapperMessage } from "pages/search/types/charts";
-import {
-  helperText,
-  textResponse,
-  textsObject,
-} from "pages/search/types/texts";
+import { helperText, textsObject } from "pages/search/types/texts";
 import { NOSGroups, NOSNational } from "pages/search/types/richness";
 import SearchAPI from "utils/searchAPI";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 const NOSTexts = {
   inferred: { info: "", cons: "", meto: "", quote: "" },
@@ -454,6 +451,9 @@ class NumberOfSpecies extends React.Component<Props, State> {
           </div>
         </div>
         <div>
+          {(message === "no-data" || message === "loading") && (
+            <DummyChart message={message} />
+          )}
           {data.map((bar) => (
             <div key={bar.id}>
               <div
@@ -573,6 +573,11 @@ class NumberOfSpecies extends React.Component<Props, State> {
     );
   }
 }
+
+/** Dummy chart to show loading or not data message */
+const DummyChart = withMessageWrapper<{}>(() => {
+  return <></>;
+});
 
 export default NumberOfSpecies;
 
