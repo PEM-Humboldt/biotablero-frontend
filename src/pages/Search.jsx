@@ -520,11 +520,7 @@ class Search extends Component {
     } else if (this.geofenceBounds === null) {
       this.mapBounds = bounds;
     } else if (this.geofenceBounds !== null) {
-      if (bounds.contains(this.geofenceBounds)) {
-        this.mapBounds = bounds;
-      } else {
-        this.mapBounds = this.geofenceBounds;
-      }
+      this.mapBounds = this.geofenceBounds;
     }
   }
 
@@ -759,7 +755,7 @@ class Search extends Component {
       let areaType = 'states';
       const selected = sectionName.match(/national-(\w+)/);
       if (selected) [, areaType] = selected;
-      shapeLayerOpts = [{ id: areaType, paneLevel: 1 }];
+      shapeLayerOpts = [{ id: areaType, paneLevel: 1, fitBounds: false }];
     } else if (sectionName === 'geofence') {
       shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
     } else if (sectionName === 'coverages') {
