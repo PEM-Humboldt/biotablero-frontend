@@ -11,7 +11,7 @@ import {
   timelinePAConn,
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
 import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
 
@@ -29,7 +29,7 @@ interface timelinePAConnState {
   timelinePAConnData: Array<timelinePAConnExt>;
   message: string | null;
   texts: {
-    paConnTimeline: TextObject;
+    paConnTimeline: textsObject;
   };
 }
 class TimelinePAConnectivity extends React.Component<
@@ -82,7 +82,7 @@ class TimelinePAConnectivity extends React.Component<
       });
 
     SearchAPI.requestSectionTexts("paConnTimeline")
-      .then((res: TextObject) => {
+      .then((res: textsObject) => {
         if (this.mounted) {
           this.setState({ texts: { paConnTimeline: res } });
         }

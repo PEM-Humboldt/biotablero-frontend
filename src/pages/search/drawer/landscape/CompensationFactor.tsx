@@ -9,7 +9,7 @@ import SearchAPI from "utils/searchAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -30,9 +30,9 @@ interface compensationFactorState {
     bioticUnits: wrapperMessage;
   };
   texts: {
-    cf: TextObject;
-    biomes: TextObject;
-    bioticRegions: TextObject;
+    cf: textsObject;
+    biomes: textsObject;
+    bioticRegions: textsObject;
   };
 }
 

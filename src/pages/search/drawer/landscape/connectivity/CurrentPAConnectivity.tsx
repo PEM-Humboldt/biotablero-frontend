@@ -11,7 +11,7 @@ import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import MultiSmallSingleBarGraph from "pages/search/shared_components/charts/MultiSmallSingleBarGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
@@ -46,8 +46,8 @@ interface currentPAConnState {
     dpc: wrapperMessage;
   };
   texts: {
-    paConnCurrent: TextObject;
-    paConnDPC: TextObject;
+    paConnCurrent: textsObject;
+    paConnDPC: textsObject;
   };
 }
 

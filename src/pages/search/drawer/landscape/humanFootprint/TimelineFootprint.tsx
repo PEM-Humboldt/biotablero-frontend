@@ -12,7 +12,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
 
 const changeValues = [
@@ -78,7 +78,7 @@ interface State {
   message: string | null;
   selectedEcosystem: seDetailsExt | null;
   texts: {
-    hfTimeline: TextObject;
+    hfTimeline: textsObject;
   };
 }
 

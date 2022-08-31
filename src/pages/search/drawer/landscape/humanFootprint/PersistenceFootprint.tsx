@@ -9,7 +9,7 @@ import SearchAPI from "utils/searchAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -29,7 +29,7 @@ interface persistenceHFState {
   hfPersistence: Array<hfPersistenceExt>;
   message: wrapperMessage;
   texts: {
-    hfPersistence: TextObject;
+    hfPersistence: textsObject;
   };
 }
 
