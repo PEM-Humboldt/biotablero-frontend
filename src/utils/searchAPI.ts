@@ -20,6 +20,8 @@ import {
 } from "pages/search/types/texts";
 import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
 import {
+  concentration,
+  gaps,
   NOSNational,
   NOSThresholds,
   numberOfSpecies,
@@ -421,6 +423,40 @@ class SearchAPI {
       `richness/number-species/nationalMax?areaType=${areaType}${
         group ? `&group=${group}` : ""
       }`
+    );
+  }
+
+  /**
+   * Get values for richness species gaps in the given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of richness species gaps
+   */
+  static requestGaps(
+    areaType: string,
+    areaId: number | string
+  ): Promise<Array<gaps>> {
+    return SearchAPI.makeGetRequest(
+      `richness/gaps?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get values for richness species concentration in the given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of richness species concentration
+   */
+  static requestConcentration(
+    areaType: string,
+    areaId: number | string
+  ): Promise<Array<concentration>> {
+    return SearchAPI.makeGetRequest(
+      `richness/concentration?areaType=${areaType}&areaId=${areaId}`
     );
   }
 

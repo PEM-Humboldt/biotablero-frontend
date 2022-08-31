@@ -1,92 +1,132 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import { IconTooltip } from 'pages/search/shared_components/Tooltips';
-import { LineLegend, LegendColor } from 'pages/search/shared_components/CssLegends';
-import matchColor from 'utils/matchColor';
-import ShortInfo from 'components/ShortInfo';
-import SearchContext from 'pages/search/SearchContext';
-import RestAPI from 'utils/restAPI';
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import {
+  LineLegend,
+  LegendColor,
+} from "pages/search/shared_components/CssLegends";
+import matchColor from "utils/matchColor";
+import ShortInfo from "components/ShortInfo";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import isFlagEnabled from 'utils/isFlagEnabled';
-import TextBoxes from 'pages/search/shared_components/TextBoxes';
-import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
+import isFlagEnabled from "utils/isFlagEnabled";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
+import SingleBulletGraph from "pages/search/shared_components/charts/SingleBulletGraph";
+import { wrapperMessage } from "pages/search/types/charts";
+import { textsObject } from "pages/search/types/texts";
+import SearchAPI from "utils/searchAPI";
+import {
+  concentration,
+  gapLimitKeys,
+  gaps,
+  gaps_limits,
+  isGaps,
+} from "pages/search/types/richness";
 
-const areaTypeName = (areaType) => {
+const areaTypeName = (areaType: string) => {
   switch (areaType) {
-    case 'states':
-      return 'departamentos';
-    case 'ea':
-      return 'jurisdicciones ambientales';
-    case 'basinSubzones':
-      return 'subzonas hidrográficas';
+    case "states":
+      return "departamentos";
+    case "ea":
+      return "jurisdicciones ambientales";
+    case "basinSubzones":
+      return "subzonas hidrográficas";
     default:
-      return 'cerca';
+      return "cerca";
   }
 };
 
-const getLabelGaps = (key, areaType, region) => (
-  {
-    value: 'Promedio de vacios en el área de consulta',
-    min: 'Menos vacíos en el área de consulta',
-    max: 'Más vacíos en el área de consulta',
+const getLabelGaps = (key: string, areaType: string, region: string = "") =>
+  ({
+    value: "Promedio de vacios en el área de consulta",
+    min: "Menos vacíos en el área de consulta",
+    max: "Más vacíos en el área de consulta",
     min_region: `Menos vacíos en la región ${region}`,
     max_region: `Más vacíos en la región ${region}`,
-    min_threshold: `Menos vacíos ${areaTypeName(areaType)} de la región ${region}`,
-    max_threshold: `Más vacíos ${areaTypeName(areaType)} de la región ${region}`,
-  }[key]
-);
+    min_threshold: `Menos vacíos ${areaTypeName(
+      areaType
+    )} de la región ${region}`,
+    max_threshold: `Más vacíos ${areaTypeName(
+      areaType
+    )} de la región ${region}`,
+  }[key]);
 
-const getLabelConcentration = (key) => ({
-  min: 'Mínimo del área de consulta',
-  max: 'Máximo del área de consulta',
-  min_region: 'Mínimo por región biótica',
-  max_region: 'Máximo por región biótica',
-  min_threshold: 'Mínimo nacional',
-  max_threshold: 'Máximo nacional',
-  value: 'Promedio de representación en el área de consulta',
-}[key]
-);
+const getLabelConcentration = (key: string) =>
+  ({
+    min: "Mínimo del área de consulta",
+    max: "Máximo del área de consulta",
+    min_region: "Mínimo por región biótica",
+    max_region: "Máximo por región biótica",
+    min_threshold: "Mínimo nacional",
+    max_threshold: "Máximo nacional",
+    value: "Promedio de representación en el área de consulta",
+  }[key]);
 
-class SpeciesRecordsGaps extends React.Component {
+interface Props {}
+
+interface State {
+  showInfoGraph: boolean;
+  gaps: GapsAndConcentration | null;
+  concentration: GapsAndConcentration | null;
+  messageGaps: wrapperMessage;
+  messageConc: wrapperMessage;
+  selected: "gaps" | "concentration";
+  bioticRegion: string;
+  concentrationFlag: boolean;
+  showErrorMessage: boolean;
+  csvData: Array<GapsAndConcentration>;
+  texts: {
+    gaps: textsObject;
+  };
+}
+
+interface GapsAndConcentration {
+  id: string;
+  ranges: {
+    area: number;
+  };
+  markers: {
+    value: number;
+  };
+  measures: gaps_limits;
+  title: string;
+}
+
+class SpeciesRecordsGaps extends React.Component<Props, State> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,
-      gaps: {},
-      concentration: {},
-      messageGaps: 'loading',
-      messageConc: 'loading',
-      selected: 'gaps',
-      bioticRegion: 'Región Biótica',
+      gaps: null,
+      concentration: null,
+      messageGaps: "loading",
+      messageConc: "loading",
+      selected: "gaps",
+      bioticRegion: "Región Biótica",
       concentrationFlag: false,
       showErrorMessage: false,
       csvData: [],
       texts: {
-        gaps: {},
+        gaps: { info: "", cons: "", meto: "", quote: "" },
       },
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('speciesRecordsGaps');
+    switchLayer("speciesRecordsGaps");
 
-    RestAPI.requestGaps(areaId, geofenceId)
+    SearchAPI.requestGaps(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          const showErrorMessage = (
-            res[0].min < res[0].min_region
-            || res[0].max > res[0].max_region
-            );
+          const showErrorMessage =
+            res[0].min < res[0].min_region || res[0].max > res[0].max_region;
           const { region, ...data } = this.transformData(res);
           const dataArray = [];
           dataArray.push(data);
@@ -100,10 +140,10 @@ class SpeciesRecordsGaps extends React.Component {
         }
       })
       .catch(() => {
-        this.setState({ messageGaps: 'no-data' });
+        this.setState({ messageGaps: "no-data" });
       });
 
-    RestAPI.requestConcentration(areaId, geofenceId)
+    SearchAPI.requestConcentration(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           const { region, ...data } = this.transformData(res);
@@ -112,26 +152,24 @@ class SpeciesRecordsGaps extends React.Component {
           this.setState({
             concentration: data,
             messageConc: null,
-            csvData: dataArray,
           });
         }
       })
       .catch(() => {
-        this.setState({ messageConc: 'no-data' });
+        this.setState({ messageConc: "no-data" });
       });
 
-    RestAPI.requestSectionTexts('gaps')
+    SearchAPI.requestSectionTexts("gaps")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { gaps: res } });
         }
       })
-      .catch(() => {
-        this.setState({ texts: { gaps: {} } });
-      });
+      .catch(() => {});
 
-    isFlagEnabled('speciesRecordsConcentrarion')
-      .then((value) => this.setState({ concentrationFlag: value }));
+    isFlagEnabled("speciesRecordsConcentrarion").then((value) =>
+      this.setState({ concentrationFlag: value })
+    );
   }
 
   componentWillUnmount() {
@@ -143,16 +181,14 @@ class SpeciesRecordsGaps extends React.Component {
    *
    * @param {Object} rawData raw data from RestAPI
    */
-  transformData = (rawData) => {
-    const {
-      id,
-      avg,
-      region_name: regionName,
-      ...limits
-    } = rawData[0];
-    Object.keys(limits).forEach((key) => {
-      Object.defineProperty(limits, key, { value: Math.round(limits[key] * 100) });
+  transformData = (rawData: Array<gaps> | Array<concentration>) => {
+    const { id, avg, ...limits } = rawData[0];
+    gapLimitKeys.forEach((key) => {
+      Object.defineProperty(limits, key, {
+        value: Math.round(limits[key] * 100),
+      });
     });
+    const regionName = isGaps(rawData[0]) ? rawData[0].region_name : "";
     return {
       region: regionName,
       id,
@@ -163,7 +199,7 @@ class SpeciesRecordsGaps extends React.Component {
         value: avg * 100,
       },
       measures: limits,
-      title: '',
+      title: "",
     };
   };
 
@@ -181,21 +217,14 @@ class SpeciesRecordsGaps extends React.Component {
    *
    * @param {Object} data data transformed passed to graph
    */
-  processDownload = (data) => {
-    const result = [];
+  processDownload = (data: Array<GapsAndConcentration>) => {
+    const result: Array<any> = [];
     data.forEach((item) => {
-      let obj = {};
-      Object.keys(item.markers).forEach((element) => {
-        obj = {
-          ...obj,
-          [element]: item.markers[element],
-        };
-      });
-      Object.keys(item.measures).forEach((element) => {
-        obj = {
-          ...obj,
-          [element]: item.measures[element],
-        };
+      const obj: any = {
+        value: item.markers.value,
+      };
+      gapLimitKeys.forEach((element) => {
+        obj[element] = item.measures[element];
       });
       result.push({
         type: item.id,
@@ -212,10 +241,7 @@ class SpeciesRecordsGaps extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-    } = this.context;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       showInfoGraph,
       messageGaps,
@@ -234,7 +260,7 @@ class SpeciesRecordsGaps extends React.Component {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -248,20 +274,22 @@ class SpeciesRecordsGaps extends React.Component {
         )}
         {showErrorMessage && (
           <div className="disclaimer">
-            Los vacíos en el área de consulta son mayores o menores que los de la región biótica
-            ya que sus límites intersectan dos o más regiones bióticas.
+            Los vacíos en el área de consulta son mayores o menores que los de
+            la región biótica ya que sus límites intersectan dos o más regiones
+            bióticas.
           </div>
         )}
-        <div className={`nos-title${selected === 'gaps' ? ' selected' : ''}`}>
+        <div className={`nos-title${selected === "gaps" ? " selected" : ""}`}>
           Vacios de datos
         </div>
         <div className="svgPointer">
           <SingleBulletGraph
             message={messageGaps}
             data={gaps}
-            graphType="singleBullet"
-            colors={matchColor('richnessGaps')}
-            onClickGraphHandler={() => { this.setState({ selected: 'gaps' }); }}
+            colors={matchColor("richnessGaps")}
+            onClickHandler={() => {
+              this.setState({ selected: "gaps" });
+            }}
             labelXLeft="Muchos datos"
             labelXRight="Pocos datos"
           />
@@ -271,24 +299,26 @@ class SpeciesRecordsGaps extends React.Component {
           {messageGaps === null && (
             <LegendColor
               orientation="column"
-              color={matchColor('richnessGaps')('value')}
+              color={matchColor("richnessGaps")("value")}
               key="value"
               marginLeft="2px"
               marginRight="6px"
             >
-              {getLabelGaps('value', areaId)}
+              {getLabelGaps("value", areaId)}
             </LegendColor>
           )}
-          {messageGaps === null && gaps.measures && Object.keys(gaps.measures).map((key) => (
-            <LineLegend
-              orientation="column"
-              color={matchColor('richnessGaps')(key)}
-              key={key}
-            >
-              {getLabelGaps(key, areaId, bioticRegion)}
-            </LineLegend>
-
-          ))}
+          {messageGaps === null &&
+            gaps !== null &&
+            gaps.measures &&
+            Object.keys(gaps.measures).map((key) => (
+              <LineLegend
+                orientation="column"
+                color={matchColor("richnessGaps")(key)}
+                key={key}
+              >
+                {getLabelGaps(key, areaId, bioticRegion)}
+              </LineLegend>
+            ))}
         </div>
         <TextBoxes
           consText={texts.gaps.cons}
@@ -302,7 +332,11 @@ class SpeciesRecordsGaps extends React.Component {
         {concentrationFlag && (
           <>
             <br />
-            <div className={`nos-title${selected === 'concentration' ? ' selected' : ''}`}>
+            <div
+              className={`nos-title${
+                selected === "concentration" ? " selected" : ""
+              }`}
+            >
               Concentración de registros
               <br />
               <b>5 km x 5 km</b>
@@ -311,9 +345,10 @@ class SpeciesRecordsGaps extends React.Component {
               <SingleBulletGraph
                 message={messageConc}
                 data={concentration}
-                graphType="singleBullet"
-                colors={matchColor('richnessGaps')}
-                onClickGraphHandler={() => { this.setState({ selected: 'concentration' }); }}
+                colors={matchColor("richnessGaps")}
+                onClickHandler={() => {
+                  this.setState({ selected: "concentration" });
+                }}
                 labelXLeft="Poco representado"
                 labelXRight="Bien representado"
               />
@@ -322,23 +357,24 @@ class SpeciesRecordsGaps extends React.Component {
             <div className="richnessLegend">
               <LegendColor
                 orientation="column"
-                color={matchColor('richnessGaps')('value')}
+                color={matchColor("richnessGaps")("value")}
                 key="value"
                 marginLeft="2px"
                 marginRight="6px"
               >
-                {getLabelConcentration('value', areaId)}
+                {getLabelConcentration("value")}
               </LegendColor>
-              {concentration.measures && Object.keys(concentration.measures).map((key) => (
-                <LineLegend
-                  orientation="column"
-                  color={matchColor('richnessGaps')(key)}
-                  key={key}
-                >
-                  {getLabelConcentration(key, areaId)}
-                </LineLegend>
-
-              ))}
+              {concentration !== null &&
+                concentration.measures &&
+                Object.keys(concentration.measures).map((key) => (
+                  <LineLegend
+                    orientation="column"
+                    color={matchColor("richnessGaps")(key)}
+                    key={key}
+                  >
+                    {getLabelConcentration(key)}
+                  </LineLegend>
+                ))}
             </div>
           </>
         )}
