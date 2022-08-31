@@ -1,87 +1,148 @@
-import React from 'react';
-import InfoIcon from '@mui/icons-material/Info';
+import React from "react";
+import InfoIcon from "@mui/icons-material/Info";
 
-import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
   LegendColor,
   LineLegend,
   TextLegend,
   ThickLineLegend,
-} from 'pages/search/shared_components/CssLegends';
-import Icon from 'pages/search/shared_components/CssIcons';
-import matchColor from 'utils/matchColor';
-import RestAPI from 'utils/restAPI';
-import SearchContext from 'pages/search/SearchContext';
-import ShortInfo from 'components/ShortInfo';
+} from "pages/search/shared_components/CssLegends";
+import Icon from "pages/search/shared_components/CssIcons";
+import matchColor from "utils/matchColor";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import ShortInfo from "components/ShortInfo";
 
-import biomodelos from 'images/biomodelos.png';
-import mappoint from 'images/mappoint.png';
-import biomodelos2 from 'images/biomodelos2.png';
-import mappoint2 from 'images/mappoint2.png';
-import biomodeloslink from 'images/biomodeloslink.png';
-import biomodeloslink2 from 'images/biomodeloslink2.png';
-import fullview from 'images/fullview.png';
-import TextBoxes from 'pages/search/shared_components/TextBoxes';
-import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
+import biomodelos from "images/biomodelos.png";
+import mappoint from "images/mappoint.png";
+import biomodelos2 from "images/biomodelos2.png";
+import mappoint2 from "images/mappoint2.png";
+import biomodeloslink from "images/biomodeloslink.png";
+import biomodeloslink2 from "images/biomodeloslink2.png";
+import fullview from "images/fullview.png";
+import TextBoxes from "pages/search/shared_components/TextBoxes";
+import SingleBulletGraph from "pages/search/shared_components/charts/SingleBulletGraph";
+import { wrapperMessage } from "pages/search/types/charts";
+import {
+  helperText,
+  textResponse,
+  textsObject,
+} from "pages/search/types/texts";
+import { NOSGroups, NOSNational } from "pages/search/types/richness";
+import SearchAPI from "utils/searchAPI";
 
 const NOSTexts = {
-  inferred: {},
-  observed: {},
-  helper: '',
+  inferred: { info: "", cons: "", meto: "", quote: "" },
+  observed: { info: "", cons: "", meto: "", quote: "" },
 };
 
-const getLabel = (key, area, region) => {
-  let areaLbl = 'cerca';
+const getLabel = (key: string, area: string = "", region: string = "") => {
+  let areaLbl = "cerca";
   switch (area) {
-    case 'states':
-      areaLbl = 'departamentos';
+    case "states":
+      areaLbl = "departamentos";
       break;
-    case 'ea':
-      areaLbl = 'jurisdicciones ambientales';
+    case "ea":
+      areaLbl = "jurisdicciones ambientales";
       break;
-    case 'basinSubzones':
-      areaLbl = 'subzonas hidrográficas';
+    case "basinSubzones":
+      areaLbl = "subzonas hidrográficas";
       break;
     default:
-    break;
+      break;
   }
 
   return {
-    total: 'TOTAL',
-    endemic: 'ENDÉMICAS',
-    invasive: 'INVASORAS',
-    threatened: 'AMENAZADAS',
-    inferred: 'Inferido (BioModelos)',
-    observed: 'Observado (visor I2D)',
+    total: "TOTAL",
+    endemic: "ENDÉMICAS",
+    invasive: "INVASORAS",
+    threatened: "AMENAZADAS",
+    inferred: "Inferido (BioModelos)",
+    observed: "Observado (visor I2D)",
     min_inferred: `Min. inferido ${areaLbl} de la región ${region}`,
     min_observed: `Min. observado ${areaLbl} de la región ${region}`,
     max_inferred: `Max. inferido ${areaLbl} de la región ${region}`,
     max_observed: `Max. observado ${areaLbl} de la región ${region}`,
     region_observed: `Observado región ${region}`,
     region_inferred: `Inferido región ${region}`,
-    area: `${areaLbl.replace(/^\w/, (l) => l.toUpperCase())} de la región ${region}`,
+    area: `${areaLbl.replace(/^\w/, (l) =>
+      l.toUpperCase()
+    )} de la región ${region}`,
     region: `Región ${region}`,
-    inferred2: 'Inferido en el área de consulta',
-    observed2: 'Observado en el área de consulta',
+    inferred2: "Inferido en el área de consulta",
+    observed2: "Observado en el área de consulta",
     national_inferred: `Max. inferido en ${areaLbl} a nivel nacional: `,
     national_observed: `Max. observado en ${areaLbl} a nivel nacional: `,
   }[key];
 };
 
-class NumberOfSpecies extends React.Component {
+interface Props {}
+
+interface State {
+  showInfoGraph: boolean;
+  data: Array<selectedData>;
+  allData: Array<completeData>;
+  filter: string;
+  message: wrapperMessage;
+  selected: string;
+  bioticRegion: string;
+  texts: textsObject;
+  helperText: helperText;
+  maximumValues: Array<NOSNational>;
+  showErrorMessage: boolean;
+}
+
+const allDataAreas = ["max", "max_inferred", "max_observed"] as const;
+const allDataRegions = ["max", "region_inferred", "region_observed"] as const;
+interface completeData {
+  id: NOSGroups;
+  ranges: {
+    area: {
+      [Property in typeof allDataAreas[number]]: number;
+    };
+    region: {
+      [Property in typeof allDataRegions[number]]: number;
+    };
+  };
+  markers: {
+    inferred: number;
+    observed: number;
+  };
+  measures: {
+    [key: string]: number;
+    region_inferred: number;
+    region_observed: number;
+  };
+  title: string;
+}
+
+interface selectedData extends Pick<completeData, "id" | "title"> {
+  ranges: {
+    area: number;
+    region: number;
+  };
+  markers: {
+    [key: string]: number;
+  };
+  measures: {
+    [key: string]: number;
+  };
+}
+class NumberOfSpecies extends React.Component<Props, State> {
   mounted = false;
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       showInfoGraph: true,
       data: [],
       allData: [],
-      filter: 'all',
-      message: 'loading',
-      selected: 'total',
-      bioticRegion: 'Región Biótica',
-      texts: {},
+      filter: "all",
+      message: "loading",
+      selected: "total",
+      bioticRegion: "Región Biótica",
+      texts: { info: "", cons: "", meto: "", quote: "" },
+      helperText: { helper: "" },
       maximumValues: [],
       showErrorMessage: false,
     };
@@ -89,37 +150,44 @@ class NumberOfSpecies extends React.Component {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaId,
-      geofenceId,
-      switchLayer,
-    } = this.context;
+    const { areaId, geofenceId, switchLayer } = this
+      .context as SearchContextValues;
 
-    switchLayer('numberOfSpecies-total');
+    switchLayer("numberOfSpecies-total");
 
     Promise.all([
-      RestAPI.requestNumberOfSpecies(areaId, geofenceId, 'all'),
-      RestAPI.requestNSThresholds(areaId, geofenceId, 'all'),
-      RestAPI.requestNSNationalMax(areaId, 'all'),
+      SearchAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
+      SearchAPI.requestNSThresholds(areaId, geofenceId, "all"),
+      SearchAPI.requestNSNationalMax(areaId, "all"),
     ])
       .then(([values, thresholds, nationalMax]) => {
-        const data = [];
-        let region = null;
+        const data: Array<completeData> = [];
+        let region: string = "Región Biótica";
         let showErrorMessage = false;
         values.forEach((groupVal) => {
-          if (!region) region = groupVal.region_name;
-          const { id, ...limits } = thresholds.find((e) => e.id === groupVal.id);
+          if (region === "Región Biótica") {
+            region = groupVal.region_name || "Región Biótica";
+          }
+          const {
+            id = "",
+            max_inferred = 0,
+            max_observed = 0,
+            ...mins
+          } = thresholds.find((e) => e.id === groupVal.id) || {};
           showErrorMessage = groupVal.inferred > groupVal.region_inferred;
           data.push({
             id: groupVal.id,
             ranges: {
               area: {
-                max: Math.max(limits.max_inferred, limits.max_observed),
-                max_inferred: limits.max_inferred,
-                max_observed: limits.max_observed,
+                max: Math.max(max_inferred, max_observed),
+                max_inferred: max_inferred,
+                max_observed: max_observed,
               },
               region: {
-                max: Math.max(groupVal.region_observed, groupVal.region_inferred),
+                max: Math.max(
+                  groupVal.region_observed,
+                  groupVal.region_inferred
+                ),
                 region_observed: groupVal.region_observed,
                 region_inferred: groupVal.region_inferred,
               },
@@ -129,59 +197,60 @@ class NumberOfSpecies extends React.Component {
               observed: groupVal.observed,
             },
             measures: {
-              ...limits,
+              ...mins,
+              max_inferred,
+              max_observed,
               region_inferred: groupVal.region_inferred,
               region_observed: groupVal.region_observed,
             },
-            title: '',
+            title: "",
           });
         });
-        this.setState({
-          allData: data,
-          maximumValues: nationalMax,
-          message: null,
-          bioticRegion: region,
-          showErrorMessage,
-        }, () => {
-          this.filter('inferred')();
-        });
+        this.setState(
+          {
+            allData: data,
+            maximumValues: nationalMax,
+            message: null,
+            bioticRegion: region,
+            showErrorMessage,
+          },
+          () => {
+            this.filter("inferred")();
+          }
+        );
       })
       .catch(() => {
-        this.setState({ message: 'no-data' });
+        this.setState({ message: "no-data" });
       });
 
-      RestAPI.requestSectionTexts('nosInferred')
+    SearchAPI.requestSectionTexts("nosInferred")
       .then((res) => {
         if (this.mounted) {
-          NOSTexts.inferred = res;
+          NOSTexts.inferred = res as textsObject;
           this.setState({
             texts: NOSTexts.inferred,
           });
         }
       })
-      .catch(() => {
-        NOSTexts.inferred = {};
-      });
+      .catch(() => {});
 
-      RestAPI.requestSectionTexts('nosObserved')
+    SearchAPI.requestSectionTexts("nosObserved")
       .then((res) => {
         if (this.mounted) {
           NOSTexts.observed = res;
         }
       })
-      .catch(() => {
-        NOSTexts.observed = {};
-      });
+      .catch(() => {});
 
-      RestAPI.requestSectionTexts('nos')
+    SearchAPI.requestHelperTexts("nos")
       .then((res) => {
         if (this.mounted) {
-          NOSTexts.helper = res.helper;
+          this.setState({
+            helperText: res,
+          });
         }
       })
-      .catch(() => {
-        NOSTexts.helper = '';
-      });
+      .catch(() => {});
   }
 
   componentWillUnmount() {
@@ -203,10 +272,10 @@ class NumberOfSpecies extends React.Component {
    * @param {String} category category to filter by
    * @returns void
    */
-  filter = (category) => () => {
+  filter = (category: "inferred" | "observed" | "all") => () => {
     const { allData, selected } = this.state;
-    const { handlerClickOnGraph } = this.context;
-    if (category === 'all') {
+    const { handlerClickOnGraph } = this.context as SearchContextValues;
+    if (category === "all") {
       this.setState({
         data: allData.map((group) => ({
           ...group,
@@ -215,21 +284,23 @@ class NumberOfSpecies extends React.Component {
             region: group.ranges.region.max,
           },
         })),
-        filter: 'all',
-        texts: {},
+        filter: "all",
+        texts: { info: "", cons: "", meto: "", quote: "" },
         showInfoGraph: false,
       });
       handlerClickOnGraph({
-        chartType: 'numberOfSpecies',
-        chartSection: 'all',
+        chartType: "numberOfSpecies",
+        chartSection: "all",
         selectedKey: selected,
       });
     } else {
       const newData = allData.map((group) => {
         const regex = new RegExp(`${category}$`);
-        const measureKeys = Object.keys(group.measures).filter((key) => regex.test(key));
-        const areaKey = Object.keys(group.ranges.area).filter((key) => regex.test(key));
-        const regionKey = Object.keys(group.ranges.region).filter((key) => regex.test(key));
+        const measureKeys = Object.keys(group.measures).filter((key) =>
+          regex.test(key)
+        );
+        const areaKey = allDataAreas.filter((key) => regex.test(key))[0];
+        const regionKey = allDataRegions.filter((key) => regex.test(key))[0];
         return {
           id: group.id,
           markers: {
@@ -237,12 +308,13 @@ class NumberOfSpecies extends React.Component {
           },
           measures: measureKeys.reduce(
             (result, key) => ({ ...result, [key]: group.measures[key] }),
-            {},
+            {}
           ),
           ranges: {
             area: group.ranges.area[areaKey],
             region: group.ranges.region[regionKey],
           },
+          title: group.title,
         };
       });
       this.setState({
@@ -252,20 +324,20 @@ class NumberOfSpecies extends React.Component {
         showInfoGraph: true,
       });
       handlerClickOnGraph({
-        chartType: 'numberOfSpecies',
+        chartType: "numberOfSpecies",
         chartSection: category,
         selectedKey: selected,
       });
     }
-  }
+  };
 
   /**
    * Process data to be downloaded as a csv file
    *
    * @param {Object} data data transformed passed to graph
    */
-  processDownload = (data) => {
-    const result = [];
+  processDownload = (data: Array<selectedData>): Array<any> => {
+    const result: Array<any> = [];
     data.forEach((item) => {
       let obj = {
         type: item.id,
@@ -288,11 +360,8 @@ class NumberOfSpecies extends React.Component {
   };
 
   render() {
-    const {
-      areaId,
-      geofenceId,
-      handlerClickOnGraph,
-    } = this.context;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       showInfoGraph,
       message,
@@ -303,12 +372,21 @@ class NumberOfSpecies extends React.Component {
       bioticRegion,
       showErrorMessage,
       texts,
+      helperText,
     } = this.state;
 
-    let legends = ['inferred', 'min_inferred', 'max_inferred', 'region_inferred',
-    'observed', 'min_observed', 'max_observed', 'region_observed'];
+    let legends = [
+      "inferred",
+      "min_inferred",
+      "max_inferred",
+      "region_inferred",
+      "observed",
+      "min_observed",
+      "max_observed",
+      "region_observed",
+    ];
 
-    if (filter !== 'all') {
+    if (filter !== "all") {
       legends = legends.filter((leg) => {
         const regex = new RegExp(`${filter}$`);
         return regex.test(leg);
@@ -321,7 +399,7 @@ class NumberOfSpecies extends React.Component {
           {Object.keys(texts).length > 0 && (
             <IconTooltip title="Interpretación">
               <InfoIcon
-                className={`graphinfo${showInfoGraph ? ' activeBox' : ''}`}
+                className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
                 onClick={() => this.toggleInfoGraph()}
               />
             </IconTooltip>
@@ -336,90 +414,89 @@ class NumberOfSpecies extends React.Component {
         )}
         {showErrorMessage && (
           <div className="disclaimer">
-            La riqueza inferida del área de consulta supera la de la región biótica en algunos
-            casos pues sus límites intersectan dos o más regiones bióticas.
+            La riqueza inferida del área de consulta supera la de la región
+            biótica en algunos casos pues sus límites intersectan dos o más
+            regiones bióticas.
           </div>
         )}
-        <h3>
-          {NOSTexts.helper}
-        </h3>
+        <h3>{helperText.helper}</h3>
         <div className="nos-title legend">
           <TextLegend
-            className={`${filter === 'inferred' ? 'filtered' : ''}`}
+            className={`${filter === "inferred" ? "filtered" : ""}`}
             orientation="row"
-            color={matchColor('richnessNos')('inferred')}
+            color={matchColor("richnessNos")("inferred")}
             image={biomodelos}
             hoverImage={biomodelos2}
-            onClick={this.filter('inferred')}
+            onClick={this.filter("inferred")}
           >
-            {getLabel('inferred', areaId)}
+            {getLabel("inferred", areaId)}
           </TextLegend>
           <TextLegend
-            className={`${filter === 'observed' ? 'filtered' : ''}`}
+            className={`${filter === "observed" ? "filtered" : ""}`}
             orientation="row"
-            color={matchColor('richnessNos')('observed')}
+            color={matchColor("richnessNos")("observed")}
             image={mappoint}
             hoverImage={mappoint2}
-            onClick={this.filter('observed')}
+            onClick={this.filter("observed")}
           >
-            {getLabel('observed', areaId)}
+            {getLabel("observed", areaId)}
           </TextLegend>
           <div
-            className={`fullview-container${filter === 'all' ? ' filtered' : ''}`}
-            onClick={this.filter('all')}
-            onKeyPress={this.filter('all')}
+            className={`fullview-container${
+              filter === "all" ? " filtered" : ""
+            }`}
+            onClick={this.filter("all")}
+            onKeyPress={this.filter("all")}
             role="button"
             tabIndex={0}
           >
-            <img
-              className="fullview"
-              src={fullview}
-              alt="Ver ambos"
-            />
+            <img className="fullview" src={fullview} alt="Ver ambos" />
           </div>
         </div>
         <div>
-          {(message === 'no-data' || message === 'loading') && (
-            <SingleBulletGraph
-              message={message}
-              data={[]}
-              graphType="singleBullet"
-            />
-          )}
           {data.map((bar) => (
             <div key={bar.id}>
               <div
-                className={`nos-title${bar.id === selected ? ' selected' : ''}`}
+                className={`nos-title${bar.id === selected ? " selected" : ""}`}
               >
-                <div>
-                  {getLabel(bar.id)}
-                </div>
+                <div>{getLabel(bar.id)}</div>
                 <div className="numberSP">
                   <div>
-                    {(filter === 'all' || filter === 'inferred') && (
+                    {(filter === "all" || filter === "inferred") && (
                       <>
-                        {getLabel('national_inferred', areaId)}
+                        {getLabel("national_inferred", areaId)}
                         <b>
-                          {maximumValues.find((e) => e.id === bar.id).max_inferred}
+                          {
+                            maximumValues.find((e) => e.id === bar.id)
+                              ?.max_inferred
+                          }
                         </b>
                       </>
                     )}
-                    {filter === 'all' && (
-                      <br />
-                    )}
-                    {(filter === 'all' || filter === 'observed') && (
+                    {filter === "all" && <br />}
+                    {(filter === "all" || filter === "observed") && (
                       <>
-                        {getLabel('national_observed', areaId)}
+                        {getLabel("national_observed", areaId)}
                         <b>
-                          {maximumValues.find((e) => e.id === bar.id).max_observed}
+                          {
+                            maximumValues.find((e) => e.id === bar.id)
+                              ?.max_observed
+                          }
                         </b>
                       </>
                     )}
                   </div>
-                  {(filter === 'inferred') && (
+                  {filter === "inferred" && (
                     <div>
-                      <a href="http://biomodelos.humboldt.org.co" target="_blank" rel="noopener noreferrer">
-                        <Icon image={biomodeloslink} hoverImage={biomodeloslink2} />
+                      <a
+                        href="http://biomodelos.humboldt.org.co"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Icon
+                          image={biomodeloslink}
+                          hoverImage={biomodeloslink2}
+                        />
                       </a>
                       {/* TODO:
                       Add I2D link when it's ready (import mappointlink and mappointlink2 images)
@@ -432,12 +509,11 @@ class NumberOfSpecies extends React.Component {
                 <SingleBulletGraph
                   message={message}
                   data={bar}
-                  graphType="singleBullet"
-                  colors={matchColor('richnessNos')}
+                  colors={matchColor("richnessNos")}
                   onClickHandler={() => {
                     this.setState({ selected: bar.id });
                     handlerClickOnGraph({
-                      chartType: 'numberOfSpecies',
+                      chartType: "numberOfSpecies",
                       chartSection: filter,
                       selectedKey: bar.id,
                     });
@@ -448,39 +524,41 @@ class NumberOfSpecies extends React.Component {
           ))}
         </div>
         <div className="richnessLegend">
-          {data[0] && Object.keys(data[0].ranges).map((key) => (
-            <ThickLineLegend
-              orientation="column"
-              color={matchColor('richnessNos')(key)}
-              key={key}
-            >
-              {getLabel(key, areaId, bioticRegion)}
-            </ThickLineLegend>
-          ))}
-          {data[0] && legends.map((key) => {
-            if (key === 'inferred' || key === 'observed') {
-              return (
-                <LegendColor
-                  orientation="column"
-                  color={matchColor('richnessNos')(key)}
-                  key={key}
-                  marginLeft="2px"
-                  marginRight="6px"
-                >
-                  {getLabel(`${key}2`, areaId, bioticRegion)}
-                </LegendColor>
-              );
-            }
-            return (
-              <LineLegend
+          {data[0] &&
+            Object.keys(data[0].ranges).map((key) => (
+              <ThickLineLegend
                 orientation="column"
-                color={matchColor('richnessNos')(key)}
+                color={matchColor("richnessNos")(key)}
                 key={key}
               >
                 {getLabel(key, areaId, bioticRegion)}
-              </LineLegend>
-            );
-          })}
+              </ThickLineLegend>
+            ))}
+          {data[0] &&
+            legends.map((key) => {
+              if (key === "inferred" || key === "observed") {
+                return (
+                  <LegendColor
+                    orientation="column"
+                    color={matchColor("richnessNos")(key)}
+                    key={key}
+                    marginLeft="2px"
+                    marginRight="6px"
+                  >
+                    {getLabel(`${key}2`, areaId, bioticRegion)}
+                  </LegendColor>
+                );
+              }
+              return (
+                <LineLegend
+                  orientation="column"
+                  color={matchColor("richnessNos")(key)}
+                  key={key}
+                >
+                  {getLabel(key, areaId, bioticRegion)}
+                </LineLegend>
+              );
+            })}
         </div>
         <TextBoxes
           downloadData={this.processDownload(data)}

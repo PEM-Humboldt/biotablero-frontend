@@ -13,8 +13,17 @@ import {
   hfPersistence,
   hfTimeline,
 } from "pages/search/types/humanFootprint";
-import { TextObject } from "pages/search/types/texts";
+import {
+  helperText,
+  textResponse,
+  textsObject,
+} from "pages/search/types/texts";
 import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
+import {
+  NOSNational,
+  NOSThresholds,
+  numberOfSpecies,
+} from "pages/search/types/richness";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -255,9 +264,9 @@ class SearchAPI {
     );
   }
 
-  /** ************ */
-  /** ECOSYSTEMS   */
-  /** **************/
+  /** ********** */
+  /** ECOSYSTEMS */
+  /** ************/
   /**
    * Recover the strategic ecosystems values in the area selected
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -348,6 +357,73 @@ class SearchAPI {
     );
   }
 
+  /** ******** */
+  /** RICHNESS */
+  /** ******** */
+
+  /**
+   * Get the number of species for the specified area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to filter results, f.e. "total", "endemic"
+   *
+   * @return {Promise<Object>} Array of objects with observed, inferred and region number of species
+   */
+  static requestNumberOfSpecies(
+    areaType: string,
+    areaId: number | string,
+    group: string
+  ): Promise<Array<numberOfSpecies>> {
+    return SearchAPI.makeGetRequest(
+      `richness/number-species?areaType=${areaType}&areaId=${areaId}${
+        group ? `&group=${group}` : ""
+      }`
+    );
+  }
+
+  /**
+   * Get the thresholds for the number of species in the same biotic unit as the specified area id
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to filter results, f.e. "total", "endemic"
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSThresholds(
+    areaType: string,
+    areaId: number | string,
+    group: string
+  ): Promise<Array<NOSThresholds>> {
+    return SearchAPI.makeGetRequest(
+      `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${
+        group ? `&group=${group}` : ""
+      }`
+    );
+  }
+
+  /**
+   * Get the national max values specified area type
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {String} group group to filter results, f.e. "total", "endemic"
+   *
+   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * inferred species
+   */
+  static requestNSNationalMax(
+    areaType: string,
+    group: string
+  ): Promise<Array<NOSNational>> {
+    return SearchAPI.makeGetRequest(
+      `richness/number-species/nationalMax?areaType=${areaType}${
+        group ? `&group=${group}` : ""
+      }`
+    );
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
@@ -359,8 +435,18 @@ class SearchAPI {
    *
    * @return {Promise<Object>} Object with texts
    */
-  static requestSectionTexts(key: string): Promise<TextObject> {
+  static requestTexts(key: string): Promise<textResponse> {
     return SearchAPI.makeGetRequest(`util/texts?key=${key}`);
+  }
+
+  /** Same as previous function, but spesifically for section texts */
+  static requestSectionTexts(key: string): Promise<textsObject> {
+    return SearchAPI.requestTexts(key) as Promise<textsObject>;
+  }
+
+  /** Same as previous function, but spesifically for helper texts */
+  static requestHelperTexts(key: string): Promise<helperText> {
+    return SearchAPI.requestTexts(key) as Promise<helperText>;
   }
 
   /** ************** */

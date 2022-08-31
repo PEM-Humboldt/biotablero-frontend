@@ -179,12 +179,12 @@ const NoTooltipRangeWrap = (
 
 interface BulletProps {
   data: BulletData;
-  height: number;
+  height?: number;
   colors: colorsFunction;
   onClickHandler: () => void;
   reverse?: boolean;
-  labelXRight: string;
-  labelXLeft: string;
+  labelXRight?: string;
+  labelXLeft?: string;
 }
 
 interface BulletData {
@@ -205,8 +205,8 @@ const SingleBulletGraph: React.FC<BulletProps> = (props) => {
     colors,
     onClickHandler,
     reverse = false,
-    labelXRight,
-    labelXLeft,
+    labelXRight = "",
+    labelXLeft = "",
   } = props;
   return (
     <div style={{ height }}>
