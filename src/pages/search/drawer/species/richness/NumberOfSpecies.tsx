@@ -452,7 +452,12 @@ class NumberOfSpecies extends React.Component<Props, State> {
         </div>
         <div>
           {(message === "no-data" || message === "loading") && (
-            <DummyChart message={message} />
+            <SingleBulletGraph
+              data={null}
+              message={message}
+              colors={matchColor("richnessNos")}
+              onClickHandler={() => {}}
+            />
           )}
           {data.map((bar) => (
             <div key={bar.id}>
@@ -573,11 +578,6 @@ class NumberOfSpecies extends React.Component<Props, State> {
     );
   }
 }
-
-/** Dummy chart to show loading or not data message */
-const DummyChart = withMessageWrapper<{}>(() => {
-  return <></>;
-});
 
 export default NumberOfSpecies;
 

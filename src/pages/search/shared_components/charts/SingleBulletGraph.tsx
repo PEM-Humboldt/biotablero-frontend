@@ -178,7 +178,7 @@ const NoTooltipRangeWrap = (
 };
 
 interface BulletProps {
-  data: BulletData;
+  data: BulletData | null;
   height?: number;
   colors: colorsFunction;
   onClickHandler: () => void;
@@ -208,6 +208,10 @@ const SingleBulletGraph: React.FC<BulletProps> = (props) => {
     labelXRight = "",
     labelXLeft = "",
   } = props;
+
+  if (data === null) {
+    return <></>;
+  }
   return (
     <div style={{ height }}>
       <ResponsiveBullet
