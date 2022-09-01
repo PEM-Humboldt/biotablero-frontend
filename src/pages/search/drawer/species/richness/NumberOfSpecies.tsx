@@ -203,21 +203,25 @@ class NumberOfSpecies extends React.Component<Props, State> {
             title: "",
           });
         });
-        this.setState(
-          {
-            allData: data,
-            maximumValues: nationalMax,
-            message: null,
-            bioticRegion: region,
-            showErrorMessage,
-          },
-          () => {
-            this.filter("inferred")();
-          }
-        );
+        if (this.mounted) {
+          this.setState(
+            {
+              allData: data,
+              maximumValues: nationalMax,
+              message: null,
+              bioticRegion: region,
+              showErrorMessage,
+            },
+            () => {
+              this.filter("inferred")();
+            }
+          );
+        }
       })
       .catch(() => {
-        this.setState({ message: "no-data" });
+        if (this.mounted) {
+          this.setState({ message: "no-data" });
+        }
       });
 
     SearchAPI.requestSectionTexts("nosInferred")
