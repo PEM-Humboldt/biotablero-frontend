@@ -147,10 +147,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
-
-    switchLayer("numberOfSpecies-total");
+    const { areaId, geofenceId } = this.context as SearchContextValues;
 
     Promise.all([
       SearchAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
