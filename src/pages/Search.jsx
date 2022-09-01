@@ -190,7 +190,7 @@ class Search extends Component {
         ftype = 'dpc';
       } else if (type === 'fc') {
         key = feature.properties.compensation_factor;
-      } else if (type === 'national') {
+      } else if (type === 'states' || type === 'ea' || type === 'basinSubzones') {
         return {
           color: '#e84a5f',
           weight: 0.5,
@@ -295,10 +295,8 @@ class Search extends Component {
         break;
       case 'states':
       case 'ea':
-        feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
-        break;
       case 'basinSubzones':
-        feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
+        feature.bindTooltip(feature.feature.properties.geofence_name, optionsTooltip).openTooltip();
         break;
       case 'currentPAConn':
       case 'timelinePAConn':
@@ -522,11 +520,7 @@ class Search extends Component {
     } else if (this.geofenceBounds === null) {
       this.mapBounds = bounds;
     } else if (this.geofenceBounds !== null) {
-      if (bounds.contains(this.geofenceBounds)) {
-        this.mapBounds = bounds;
-      } else {
-        this.mapBounds = this.geofenceBounds;
-      }
+      this.mapBounds = this.geofenceBounds;
     }
   }
 
@@ -559,7 +553,7 @@ class Search extends Component {
       case 'basinSubzones':
       case 'ea':
         reqPromise = () => RestAPI.requestNationalGeometryByArea(layerName);
-        layerStyle = this.featureStyle({ type: 'national' });
+        layerStyle = this.featureStyle({ type: layerName });
         break;
       case 'geofence':
         reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
@@ -761,7 +755,7 @@ class Search extends Component {
       let areaType = 'states';
       const selected = sectionName.match(/national-(\w+)/);
       if (selected) [, areaType] = selected;
-      shapeLayerOpts = [{ id: areaType, paneLevel: 1 }];
+      shapeLayerOpts = [{ id: areaType, paneLevel: 1, fitBounds: false }];
     } else if (sectionName === 'geofence') {
       shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
     } else if (sectionName === 'coverages') {
