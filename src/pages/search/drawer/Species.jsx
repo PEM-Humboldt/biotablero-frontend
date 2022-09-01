@@ -7,6 +7,8 @@ import SearchContext from 'pages/search/SearchContext';
 import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,8 +46,14 @@ class Species extends React.Component {
 
     isFlagEnabled('functionalDiversity')
       .then((value) => {
-        this.setState({ functionalFlag: value });
+        if(this.mounted) {
+          this.setState({ functionalFlag: value });
+        }
       });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -57,6 +65,7 @@ class Species extends React.Component {
     const { visible } = this.state;
     const { switchLayer, cancelActiveRequests } = this.context;
     cancelActiveRequests();
+
     if (tabLayerId === null) {
       switchLayer(null);
     }
