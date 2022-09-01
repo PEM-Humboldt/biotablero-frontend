@@ -475,12 +475,12 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(`util/texts?key=${key}`);
   }
 
-  /** Same as previous function, but spesifically for section texts */
+  /** Same as previous function, but specifically for section texts */
   static requestSectionTexts(key: string): Promise<textsObject> {
     return SearchAPI.requestTexts(key) as Promise<textsObject>;
   }
 
-  /** Same as previous function, but spesifically for helper texts */
+  /** Same as previous function, but specifically for helper texts */
   static requestHelperTexts(key: string): Promise<helperText> {
     return SearchAPI.requestTexts(key) as Promise<helperText>;
   }
