@@ -182,7 +182,15 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
    * @param {Object} rawData raw data from RestAPI
    */
   transformData = (rawData: Array<gaps> | Array<concentration>) => {
-    const { id, avg, ...limits } = rawData[0];
+    let region_name = "";
+    let limits: gaps_limits;
+    let id = "";
+    let avg = 0;
+    if (isGaps(rawData[0])) {
+      ({ id, avg, region_name, ...limits } = rawData[0]);
+    } else {
+      ({ id, avg, ...limits } = rawData[0]);
+    }
     gapLimitKeys.forEach((key) => {
       Object.defineProperty(limits, key, {
         value: Math.round(limits[key] * 100),
