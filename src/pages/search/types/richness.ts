@@ -1,5 +1,3 @@
-import { number } from "prop-types";
-
 export type NOSGroups = "total" | "endemic" | "invasive" | "threatened";
 
 export interface numberOfSpecies {
