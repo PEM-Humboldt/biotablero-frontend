@@ -196,9 +196,8 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         value: Math.round(limits[key] * 100),
       });
     });
-    const regionName = isGaps(rawData[0]) ? rawData[0].region_name : "";
     return {
-      region: regionName,
+      region: region_name,
       id,
       ranges: {
         area: Math.max(limits.max, limits.max_threshold, limits.max_region),
