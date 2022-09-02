@@ -1120,6 +1120,7 @@ class Search extends Component {
           layerStyle = this.featureStyle({ type: 'border' });
         } else if (/numberOfSpecies*/.test(layerType)) {
           this.setSectionLayers(layerType);
+          return;
         } else if (/seCoverages*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;

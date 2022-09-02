@@ -147,10 +147,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
-
-    switchLayer("numberOfSpecies-total");
+    const { areaId, geofenceId } = this.context as SearchContextValues;
 
     Promise.all([
       SearchAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
@@ -203,21 +200,25 @@ class NumberOfSpecies extends React.Component<Props, State> {
             title: "",
           });
         });
-        this.setState(
-          {
-            allData: data,
-            maximumValues: nationalMax,
-            message: null,
-            bioticRegion: region,
-            showErrorMessage,
-          },
-          () => {
-            this.filter("inferred")();
-          }
-        );
+        if (this.mounted) {
+          this.setState(
+            {
+              allData: data,
+              maximumValues: nationalMax,
+              message: null,
+              bioticRegion: region,
+              showErrorMessage,
+            },
+            () => {
+              this.filter("inferred")();
+            }
+          );
+        }
       })
       .catch(() => {
-        this.setState({ message: "no-data" });
+        if (this.mounted) {
+          this.setState({ message: "no-data" });
+        }
       });
 
     SearchAPI.requestSectionTexts("nosInferred")
