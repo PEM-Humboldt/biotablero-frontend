@@ -15,7 +15,7 @@ import SearchAPI from "utils/searchAPI";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import PieGraph from "pages/search/shared_components/charts/PieGraph";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -54,7 +54,7 @@ interface FIState {
     };
   };
   texts: {
-    forestSCIHF: TextObject;
+    forestSCIHF: textsObject;
   };
   ProtectedAreas: {
     [Property in SCIHFCats]: Array<PA>;

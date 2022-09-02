@@ -13,7 +13,7 @@ import {
   currentHFValue,
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -29,7 +29,7 @@ interface currentHFState {
   hfCurrentCategory: string;
   message: wrapperMessage;
   texts: {
-    hfCurrent: TextObject;
+    hfCurrent: textsObject;
   };
 }
 

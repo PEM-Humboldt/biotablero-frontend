@@ -14,7 +14,7 @@ import {
   currentSEPAConn,
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -41,7 +41,7 @@ interface State {
     wetland: wrapperMessage;
   };
   texts: {
-    paConnSE: TextObject;
+    paConnSE: textsObject;
   };
 }
 

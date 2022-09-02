@@ -1,10 +1,17 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import { ResponsiveBullet } from '@nivo/bullet';
-import { BasicTooltip, useTooltip } from '@nivo/tooltip';
-import { animated, to } from 'react-spring';
-import withMessageWrapper from 'pages/search/shared_components/charts/withMessageWrapper';
+import React from "react";
+import {
+  BulletMarkersItemProps,
+  BulletRectsItemProps,
+  ResponsiveBullet,
+} from "@nivo/bullet";
+import { BasicTooltip, useTooltip } from "@nivo/tooltip";
+import { animated, to } from "@react-spring/web";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
+type colorsFunction = (param: string) => string;
+interface itemsObject {
+  [key: string]: number;
+}
 /**
  * Get the key for a value inside an object
  *
@@ -13,11 +20,8 @@ import withMessageWrapper from 'pages/search/shared_components/charts/withMessag
  *
  * @returns {String} desired key
  */
-const findKey = (originalObject, value) => (
-  Object.keys(originalObject).find(
-    (key) => originalObject[key] === value,
-  )
-);
+const findKey = (originalObject: itemsObject, value: number) =>
+  Object.keys(originalObject).find((key) => originalObject[key] === value);
 
 /**
  * Define display element for a tooltip
@@ -27,16 +31,12 @@ const findKey = (originalObject, value) => (
  *
  * @returns Tooltip elemtent
  */
-const tooltip = (value, color) => {
+const tooltip = (value: number, color: string) => {
   const { showTooltipFromEvent } = useTooltip();
-  return (event) => {
+  return (event: React.MouseEvent<Element, MouseEvent>) => {
     showTooltipFromEvent(
-      <BasicTooltip
-        id={<strong>{value}</strong>}
-        enableChip
-        color={color}
-      />,
-      event,
+      <BasicTooltip id={<strong>{value}</strong>} enableChip color={color} />,
+      event
     );
   };
 };
@@ -50,7 +50,11 @@ const tooltip = (value, color) => {
  *
  * @returns Functional component for a measure in form of a line
  */
-const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
+const LineMeasureWrap = (
+  origMeasures: itemsObject,
+  colors: colorsFunction,
+  reverse: boolean
+) => {
   /**
    * Custom component to display bullet measures as lines (like markers)
    *
@@ -58,16 +62,13 @@ const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
    *
    * @returns React component
    */
-  const LineMeasure = (props) => {
+  const LineMeasure: React.FC<BulletRectsItemProps> = (props) => {
     const {
-      animatedProps: {
-        x,
-        width,
-      },
+      animatedProps: { x, width },
       data,
       onMouseLeave,
     } = props;
-    const measureKey = findKey(origMeasures, data.v1);
+    const measureKey = findKey(origMeasures, data.v1) || "";
     const xVal = to([x, width], (vx, vw) => {
       if (reverse) return vx;
       return vx + vw;
@@ -81,20 +82,14 @@ const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
         stroke={colors(measureKey)}
         strokeWidth={3}
         onMouseEnter={tooltip(data.v1, colors(measureKey))}
-        onMouseLeave={onMouseLeave}
+        onMouseLeave={(event: unknown) =>
+          onMouseLeave(
+            data,
+            event as React.MouseEvent<SVGRectElement, MouseEvent>
+          )
+        }
       />
     );
-  };
-
-  LineMeasure.propTypes = {
-    animatedProps: PropTypes.shape({
-      x: PropTypes.object.isRequired,
-      width: PropTypes.object.isRequired,
-    }).isRequired,
-    data: PropTypes.shape({
-      v1: PropTypes.number.isRequired,
-    }).isRequired,
-    onMouseLeave: PropTypes.func.isRequired,
   };
 
   return LineMeasure;
@@ -108,7 +103,7 @@ const LineMeasureWrap = (origMeasures, colors, reverse = false) => {
  *
  * @returns Functional component for a marker in form of a circle
  */
-const CircleMarkerWrap = (origMarkers, colors) => {
+const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
   /**
    * Custom component to display bullet markers as circles
    *
@@ -116,38 +111,24 @@ const CircleMarkerWrap = (origMarkers, colors) => {
    *
    * @returns React component
    */
-  const CircleMarker = (props) => {
-    const {
-      x,
-      y,
-      data,
-      value,
-      onMouseLeave,
-    } = props;
-    const markerKey = findKey(origMarkers, value);
+  const CircleMarker: React.FC<BulletMarkersItemProps> = (props) => {
+    const { x, y, data, onMouseLeave } = props;
+    const markerKey = findKey(origMarkers, data.value) || "";
 
     return (
       <g
         transform={`translate(${x},0)`}
-        onMouseEnter={tooltip(value, colors(markerKey))}
-        onMouseLeave={(event) => onMouseLeave(data, event)}
+        onMouseEnter={tooltip(data.value, colors(markerKey))}
+        onMouseLeave={(event: unknown) =>
+          onMouseLeave(
+            data,
+            event as React.MouseEvent<SVGLineElement, MouseEvent>
+          )
+        }
       >
-        <circle
-          cx={0}
-          cy={y}
-          r={6}
-          fill={colors(markerKey)}
-        />
+        <circle cx={0} cy={y} r={6} fill={colors(markerKey)} />
       </g>
     );
-  };
-
-  CircleMarker.propTypes = {
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    data: PropTypes.object.isRequired,
-    value: PropTypes.number.isRequired,
-    onMouseLeave: PropTypes.func.isRequired,
   };
 
   return CircleMarker;
@@ -161,7 +142,10 @@ const CircleMarkerWrap = (origMarkers, colors) => {
  *
  * @returns Functional component for a range without tooltip
  */
- const NoTooltipRangeWrap = (origRanges, colors) => {
+const NoTooltipRangeWrap = (
+  origRanges: itemsObject,
+  colors: colorsFunction
+) => {
   /**
    * Custom component to display bullet range without tooltip
    *
@@ -169,18 +153,13 @@ const CircleMarkerWrap = (origMarkers, colors) => {
    *
    * @returns React component
    */
-  const NoTooltipRange = (props) => {
+  const NoTooltipRange: React.FC<BulletRectsItemProps> = (props) => {
     const {
-      animatedProps: {
-        x,
-        y,
-        width,
-        height,
-      },
+      animatedProps: { x, y, width, height },
       data,
       onClick,
     } = props;
-    const rangeKey = findKey(origRanges, data.v1);
+    const rangeKey = findKey(origRanges, data.v1) || "";
 
     return (
       <animated.rect
@@ -190,49 +169,60 @@ const CircleMarkerWrap = (origMarkers, colors) => {
         width={to(width, (value) => Math.max(value, 0))}
         height={to(height, (value) => Math.max(value, 0))}
         fill={colors(rangeKey)}
-        onClick={onClick}
+        onClick={(event) => onClick(data, event)} //REVISAR
       />
     );
-  };
-
-  NoTooltipRange.propTypes = {
-    animatedProps: PropTypes.shape({
-      x: PropTypes.object.isRequired,
-      y: PropTypes.object.isRequired,
-      width: PropTypes.object.isRequired,
-      height: PropTypes.object.isRequired,
-    }).isRequired,
-    data: PropTypes.shape({
-      v1: PropTypes.number.isRequired,
-    }).isRequired,
-    onClick: PropTypes.func.isRequired,
   };
 
   return NoTooltipRange;
 };
 
+interface BulletProps {
+  data: BulletData | null;
+  height?: number;
+  colors: colorsFunction;
+  onClickHandler: () => void;
+  reverse?: boolean;
+  labelXRight?: string;
+  labelXLeft?: string;
+}
+
+interface BulletData {
+  id: string;
+  ranges: itemsObject;
+  markers: itemsObject;
+  measures: itemsObject;
+  title: string;
+}
+
 /**
  * Important: measures and markers are inverted with respect to nivo documentation
  */
-const SingleBulletGraph = (props) => {
+const SingleBulletGraph: React.FC<BulletProps> = (props) => {
   const {
-    height,
+    height = 62,
     data,
     colors,
     onClickHandler,
-    reverse,
-    labelXRight,
-    labelXLeft,
+    reverse = false,
+    labelXRight = "",
+    labelXLeft = "",
   } = props;
+
+  if (data === null) {
+    return <></>;
+  }
   return (
     <div style={{ height }}>
       <ResponsiveBullet
-        data={[{
-          ...data,
-          measures: Object.values(data.measures),
-          markers: Object.values(data.markers),
-          ranges: Object.values(data.ranges),
-        }]}
+        data={[
+          {
+            ...data,
+            measures: Object.values(data.measures),
+            markers: Object.values(data.markers),
+            ranges: Object.values(data.ranges),
+          },
+        ]}
         margin={{
           top: 5,
           right: 30,
@@ -260,28 +250,4 @@ const SingleBulletGraph = (props) => {
   );
 };
 
-SingleBulletGraph.propTypes = {
-  data: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    ranges: PropTypes.object.isRequired,
-    markers: PropTypes.object.isRequired,
-    measures: PropTypes.object.isRequired,
-    title: PropTypes.string,
-  }).isRequired,
-  height: PropTypes.number,
-  colors: PropTypes.func.isRequired,
-  onClickHandler: PropTypes.func,
-  reverse: PropTypes.bool,
-  labelXRight: PropTypes.string,
-  labelXLeft: PropTypes.string,
-};
-
-SingleBulletGraph.defaultProps = {
-  height: 62,
-  onClickHandler: () => {},
-  reverse: false,
-  labelXRight: null,
-  labelXLeft: null,
-};
-
-export default withMessageWrapper(SingleBulletGraph);
+export default withMessageWrapper<BulletProps>(SingleBulletGraph);

@@ -12,7 +12,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import MultiSmallBarStackGraph, {
   MultiSmallBarStackGraphData,
 } from "pages/search/shared_components/charts/MultiSmallBarStackGraph";
-import { TextObject } from "pages/search/types/texts";
+import { textsObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -23,7 +23,7 @@ interface State {
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
-    forestLP: TextObject;
+    forestLP: textsObject;
   };
 }
 
