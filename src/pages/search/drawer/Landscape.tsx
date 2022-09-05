@@ -71,7 +71,6 @@ class Landscape extends React.Component<Props, State> {
     }
   };
 
-
   componentDidMount() {
     const { areaId } = this.context as SearchContextLandScape;
     let visible = areaId === "ea" ? "fc" : "hf";
