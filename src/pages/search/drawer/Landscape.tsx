@@ -28,9 +28,8 @@ class Landscape extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { areaId } = this.context as SearchContextLandScape;
     this.state = {
-      visible: areaId === "ea" ? "fc" : "hf",
+      visible: "hf",
       childMap: {
         fc: "fc",
         hf: "hfCurrent",
@@ -45,7 +44,7 @@ class Landscape extends React.Component<Props, State> {
    * @param {String} level accordion level that's calling the function
    * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-  handleAccordionChange = (level: number, tabLayerId: string) => {
+  handleAccordionChange = (level: string, tabLayerId: string) => {
     const { visible } = this.state;
     const { switchLayer, cancelActiveRequests } = this
       .context as SearchContextLandScape;
@@ -56,10 +55,10 @@ class Landscape extends React.Component<Props, State> {
     }
 
     switch (level) {
-      case 1:
+      case "1":
         this.setState({ visible: tabLayerId });
         break;
-      case 2:
+      case "2":
         this.setState((prev) => ({
           childMap: {
             ...prev.childMap,
@@ -72,8 +71,17 @@ class Landscape extends React.Component<Props, State> {
     }
   };
 
+
+  componentDidMount() {
+    const { areaId } = this.context as SearchContextLandScape;
+    let visible = areaId === "ea" ? "fc" : "hf";
+    this.setState((prev) => ({
+      visible: visible,
+    }));
+  }
+
   render() {
-    const { areaId } = this.context as SearchContextValues;
+    const { areaId } = this.context as SearchContextLandScape;
     const { childMap } = this.state;
     const initialArray = [
       {
