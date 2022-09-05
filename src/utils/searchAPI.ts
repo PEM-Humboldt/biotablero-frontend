@@ -526,7 +526,10 @@ class SearchAPI {
    * @param {Number | String} idArea id area to request, f.e. ea
    * @param {Number | String} idGeofence id geofence to request, f.e. idCAR
    */
-   static requestGeofenceDetails(idArea: string | number, idGeofence: string | number) {
+  static requestGeofenceDetails(
+    idArea: string | number,
+    idGeofence: string | number
+  ) {
     return SearchAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 }

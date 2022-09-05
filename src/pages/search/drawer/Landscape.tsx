@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import Accordion from 'pages/search/Accordion';
-import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor';
-import Forest from 'pages/search/drawer/landscape/Forest';
-import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
-import PAConnectivity from 'pages/search/drawer/landscape/PAConnectivity';
-import SearchContext, { SearchContextValues } from 'pages/search/SearchContext';
+import Accordion from "pages/search/Accordion";
+import CompensationFactor from "pages/search/drawer/landscape/CompensationFactor";
+import Forest from "pages/search/drawer/landscape/Forest";
+import HumanFootprint from "pages/search/drawer/landscape/HumanFootprint";
+import PAConnectivity from "pages/search/drawer/landscape/PAConnectivity";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 interface SearchContextLandScape extends SearchContextValues {
   cancelActiveRequests(): void;
@@ -20,9 +20,8 @@ interface State {
     hf: string;
     forest: string;
     connectivity: string;
-  }
+  };
 }
-
 
 class Landscape extends React.Component<Props, State> {
   static contextType = SearchContext;
@@ -31,12 +30,12 @@ class Landscape extends React.Component<Props, State> {
     super(props);
     const { areaId } = this.context as SearchContextLandScape;
     this.state = {
-      visible: areaId === 'ea' ? 'fc' : 'hf',
+      visible: areaId === "ea" ? "fc" : "hf",
       childMap: {
-        fc: 'fc',
-        hf: 'hfCurrent',
-        forest: 'forestLP-2016-2021',
-        connectivity: 'currentPAConn',
+        fc: "fc",
+        hf: "hfCurrent",
+        forest: "forestLP-2016-2021",
+        connectivity: "currentPAConn",
       },
     };
   }
@@ -48,7 +47,8 @@ class Landscape extends React.Component<Props, State> {
    */
   handleAccordionChange = (level: number, tabLayerId: string) => {
     const { visible } = this.state;
-    const { switchLayer, cancelActiveRequests } = this.context as SearchContextLandScape;
+    const { switchLayer, cancelActiveRequests } = this
+      .context as SearchContextLandScape;
     cancelActiveRequests();
 
     if (tabLayerId === null) {
@@ -70,7 +70,7 @@ class Landscape extends React.Component<Props, State> {
       default:
         break;
     }
-  }
+  };
 
   render() {
     const { areaId } = this.context as SearchContextValues;
@@ -78,16 +78,16 @@ class Landscape extends React.Component<Props, State> {
     const initialArray = [
       {
         label: {
-          id: 'fc',
-          name: 'FC y Biomas',
-          collapsed: areaId !== 'ea',
+          id: "fc",
+          name: "FC y Biomas",
+          collapsed: areaId !== "ea",
         },
         component: CompensationFactor,
       },
       {
         label: {
-          id: 'hf',
-          name: 'Huella humana',
+          id: "hf",
+          name: "Huella humana",
         },
         component: HumanFootprint,
         componentProps: {
@@ -97,8 +97,8 @@ class Landscape extends React.Component<Props, State> {
       },
       {
         label: {
-          id: 'forest',
-          name: 'Bosques',
+          id: "forest",
+          name: "Bosques",
         },
         component: Forest,
         componentProps: {
@@ -108,8 +108,8 @@ class Landscape extends React.Component<Props, State> {
       },
       {
         label: {
-          id: 'connectivity',
-          name: 'Conectividad de Áreas Protegidas',
+          id: "connectivity",
+          name: "Conectividad de Áreas Protegidas",
         },
         component: PAConnectivity,
         componentProps: {
@@ -121,17 +121,19 @@ class Landscape extends React.Component<Props, State> {
 
     let selected: Array<string> = [];
     switch (areaId) {
-      case 'states':
-      case 'basinSubzones':
-        selected = ['hf', 'forest', 'connectivity'];
+      case "states":
+      case "basinSubzones":
+        selected = ["hf", "forest", "connectivity"];
         break;
-      case 'ea':
-        selected = ['fc', 'hf', 'forest', 'connectivity'];
+      case "ea":
+        selected = ["fc", "hf", "forest", "connectivity"];
         break;
       default:
         break;
     }
-    const componentsArray = initialArray.filter((f) => selected.includes(f.label.id));
+    const componentsArray = initialArray.filter((f) =>
+      selected.includes(f.label.id)
+    );
 
     return (
       <Accordion
