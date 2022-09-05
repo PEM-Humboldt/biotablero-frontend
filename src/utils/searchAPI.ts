@@ -520,6 +520,15 @@ class SearchAPI {
         return Promise.reject(message);
       });
   }
+
+  /**
+   * Recover details in the selected area
+   * @param {Number | String} idArea id area to request, f.e. ea
+   * @param {Number | String} idGeofence id geofence to request, f.e. idCAR
+   */
+   static requestGeofenceDetails(idArea: string | number, idGeofence: string | number) {
+    return SearchAPI.makeGetRequest(`${idArea}/${idGeofence}`);
+  }
 }
 
 export default SearchAPI;
