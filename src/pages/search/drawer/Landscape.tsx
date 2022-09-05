@@ -5,12 +5,31 @@ import CompensationFactor from 'pages/search/drawer/landscape/CompensationFactor
 import Forest from 'pages/search/drawer/landscape/Forest';
 import HumanFootprint from 'pages/search/drawer/landscape/HumanFootprint';
 import PAConnectivity from 'pages/search/drawer/landscape/PAConnectivity';
-import SearchContext from 'pages/search/SearchContext';
+import SearchContext, { SearchContextValues } from 'pages/search/SearchContext';
 
-class Landscape extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    const { areaId } = this.context;
+interface SearchContextLandScape extends SearchContextValues {
+  cancelActiveRequests(): void;
+}
+
+interface Props {}
+
+interface State {
+  visible: string;
+  childMap: {
+    fc: string;
+    hf: string;
+    forest: string;
+    connectivity: string;
+  }
+}
+
+
+class Landscape extends React.Component<Props, State> {
+  static contextType = SearchContext;
+
+  constructor(props: Props) {
+    super(props);
+    const { areaId } = this.context as SearchContextLandScape;
     this.state = {
       visible: areaId === 'ea' ? 'fc' : 'hf',
       childMap: {
@@ -27,20 +46,20 @@ class Landscape extends React.Component {
    * @param {String} level accordion level that's calling the function
    * @param {String} tabLayerId layer to be loaded (also tab expanded). null if collapsed
    */
-  handleAccordionChange = (level, tabLayerId) => {
+  handleAccordionChange = (level: number, tabLayerId: string) => {
     const { visible } = this.state;
-    const { switchLayer, cancelActiveRequests } = this.context;
+    const { switchLayer, cancelActiveRequests } = this.context as SearchContextLandScape;
     cancelActiveRequests();
 
     if (tabLayerId === null) {
-      switchLayer(null);
+      switchLayer("");
     }
 
     switch (level) {
-      case '1':
+      case 1:
         this.setState({ visible: tabLayerId });
         break;
-      case '2':
+      case 2:
         this.setState((prev) => ({
           childMap: {
             ...prev.childMap,
@@ -54,7 +73,7 @@ class Landscape extends React.Component {
   }
 
   render() {
-    const { areaId } = this.context;
+    const { areaId } = this.context as SearchContextValues;
     const { childMap } = this.state;
     const initialArray = [
       {
@@ -100,7 +119,7 @@ class Landscape extends React.Component {
       },
     ];
 
-    let selected = [];
+    let selected: Array<string> = [];
     switch (areaId) {
       case 'states':
       case 'basinSubzones':
