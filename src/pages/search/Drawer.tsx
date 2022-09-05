@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Requireable } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@mui/styles/withStyles';
 import BackIcon from '@mui/icons-material/FirstPage';
@@ -6,13 +6,21 @@ import Ecosistemas from '@mui/icons-material/Nature';
 import Especies from '@mui/icons-material/FilterVintage';
 import Paisaje from '@mui/icons-material/FilterHdr';
 
-import SearchContext from 'pages/search/SearchContext';
+import SearchContext, { SearchContextValues } from 'pages/search/SearchContext';
 import Landscape from 'pages/search/drawer/Landscape';
 import Species from 'pages/search/drawer/Species';
 import Ecosystems from 'pages/search/drawer/Ecosystems';
 import formatNumber from 'utils/format';
-import RestAPI from 'utils/restAPI';
+import searchAPI from 'utils/searchAPI';
 import TabContainer from 'pages/search/shared_components/TabContainer';
+
+interface Props {
+  handlerBackButton(): void;
+}
+
+interface State {
+  geofenceArea: number;
+}
 
 const styles = () => ({
   root: {
@@ -21,8 +29,17 @@ const styles = () => ({
   },
 });
 
-class Drawer extends React.Component {
-  constructor(props) {
+class Drawer extends React.Component<Props, State>{
+
+  static propTypes: {
+    handlerBackButton: Requireable<object>;
+  }
+
+  static defaultProps: {
+    handlerBackButton(): void;
+  }
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       geofenceArea: 0,
@@ -33,11 +50,11 @@ class Drawer extends React.Component {
     const {
       areaId,
       geofenceId,
-    } = this.context;
+    } = this.context as SearchContextValues;
 
     const searchId = geofenceId;
 
-    RestAPI.requestGeofenceDetails(areaId, searchId)
+    searchAPI.requestGeofenceDetails(areaId, searchId)
       .then((res) => {
         this.setState({ geofenceArea: Number(res.total_area) });
       })
