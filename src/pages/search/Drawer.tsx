@@ -1,5 +1,4 @@
 import React, { Requireable } from "react";
-import PropTypes from "prop-types";
 import withStyles from "@mui/styles/withStyles";
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
@@ -13,9 +12,10 @@ import Ecosystems from "pages/search/drawer/Ecosystems";
 import formatNumber from "utils/format";
 import searchAPI from "utils/searchAPI";
 import TabContainer from "pages/search/shared_components/TabContainer";
+import { drawerGF } from "pages/search/types/drawer";
 
 interface Props {
-  handlerBackButton(): void;
+  handlerBackButton: () => {};
 }
 
 interface State {
@@ -30,13 +30,6 @@ const styles = () => ({
 });
 
 class Drawer extends React.Component<Props, State> {
-  static propTypes: {
-    handlerBackButton: Requireable<object>;
-  };
-
-  static defaultProps: {
-    handlerBackButton(): void;
-  };
 
   constructor(props: Props) {
     super(props);
@@ -48,11 +41,9 @@ class Drawer extends React.Component<Props, State> {
   componentDidMount() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
 
-    const searchId = geofenceId;
-
     searchAPI
-      .requestGeofenceDetails(areaId, searchId)
-      .then((res) => {
+      .requestGeofenceDetails(areaId, geofenceId)
+      .then((res: drawerGF) => {
         this.setState({ geofenceArea: Number(res.total_area) });
       })
       .catch(() => {});
@@ -100,14 +91,6 @@ class Drawer extends React.Component<Props, State> {
     );
   }
 }
-
-Drawer.propTypes = {
-  handlerBackButton: PropTypes.func,
-};
-
-Drawer.defaultProps = {
-  handlerBackButton: () => {},
-};
 
 export default withStyles(styles)(Drawer);
 
