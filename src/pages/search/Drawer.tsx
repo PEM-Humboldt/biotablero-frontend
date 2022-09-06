@@ -1,4 +1,4 @@
-import React, { Requireable } from "react";
+import React from "react";
 import withStyles from "@mui/styles/withStyles";
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
