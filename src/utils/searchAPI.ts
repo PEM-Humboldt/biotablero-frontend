@@ -26,7 +26,7 @@ import {
   NOSThresholds,
   numberOfSpecies,
 } from "pages/search/types/richness";
-import { drawerGF } from "pages/search/types/drawer";
+import { geofenceDetails } from "pages/search/types/drawer";
 class SearchAPI {
   /** ****** */
   /** FOREST */
@@ -532,7 +532,7 @@ class SearchAPI {
   static requestGeofenceDetails(
     idArea: string | number,
     idGeofence: string | number
-  ): Promise<drawerGF> {
+  ): Promise<geofenceDetails> {
     return SearchAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 }

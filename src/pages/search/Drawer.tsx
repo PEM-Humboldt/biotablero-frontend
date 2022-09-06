@@ -12,7 +12,7 @@ import Ecosystems from "pages/search/drawer/Ecosystems";
 import formatNumber from "utils/format";
 import searchAPI from "utils/searchAPI";
 import TabContainer from "pages/search/shared_components/TabContainer";
-import { drawerGF } from "pages/search/types/drawer";
+import { geofenceDetails } from "pages/search/types/drawer";
 
 interface Props {
   handlerBackButton: () => {};
@@ -42,7 +42,7 @@ class Drawer extends React.Component<Props, State> {
 
     searchAPI
       .requestGeofenceDetails(areaId, geofenceId)
-      .then((res: drawerGF) => {
+      .then((res: geofenceDetails) => {
         this.setState({ geofenceArea: Number(res.total_area) });
       })
       .catch(() => {});

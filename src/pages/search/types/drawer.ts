@@ -1,3 +1,3 @@
-export interface drawerGF {
+export interface geofenceDetails {
   total_area: string;
 }
