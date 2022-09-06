@@ -1,3 +1,3 @@
 export interface drawerGF {
-    total_area: string;
+  total_area: string;
 }
