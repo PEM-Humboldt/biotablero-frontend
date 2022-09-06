@@ -7,10 +7,6 @@ import HumanFootprint from "pages/search/drawer/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/drawer/landscape/PAConnectivity";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-interface SearchContextLandScape extends SearchContextValues {
-  cancelActiveRequests(): void;
-}
-
 interface Props {}
 
 interface State {
@@ -47,7 +43,7 @@ class Landscape extends React.Component<Props, State> {
   handleAccordionChange = (level: string, tabLayerId: string) => {
     const { visible } = this.state;
     const { switchLayer, cancelActiveRequests } = this
-      .context as SearchContextLandScape;
+      .context as SearchContextValues;
     cancelActiveRequests();
 
     if (tabLayerId === null) {
@@ -72,7 +68,7 @@ class Landscape extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { areaId } = this.context as SearchContextLandScape;
+    const { areaId } = this.context as SearchContextValues;
     let visible = areaId === "ea" ? "fc" : "hf";
     this.setState((prev) => ({
       visible: visible,
@@ -80,7 +76,7 @@ class Landscape extends React.Component<Props, State> {
   }
 
   render() {
-    const { areaId } = this.context as SearchContextLandScape;
+    const { areaId } = this.context as SearchContextValues;
     const { childMap } = this.state;
     const initialArray = [
       {
