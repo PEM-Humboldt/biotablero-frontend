@@ -5,6 +5,7 @@ export interface SearchContextValues {
   geofenceId: string | number;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
+  cancelActiveRequests(): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -12,6 +13,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   geofenceId: "",
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
+  cancelActiveRequests: () => {},
 });
 
 export default SearchContext;
