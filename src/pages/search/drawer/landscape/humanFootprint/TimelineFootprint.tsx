@@ -14,8 +14,11 @@ import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { TextObject } from "pages/search/types/texts";
 import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
+import { wrapperMessage } from "pages/search/types/charts";
+import { DatumValue } from "@nivo/line";
+import { CartesianMarkerProps } from "@nivo/core";
 
-const changeValues = [
+const changeValues: Array<CartesianMarkerProps> = [
   {
     axis: "y",
     value: 15,
@@ -26,8 +29,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -39,8 +40,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -52,8 +51,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -65,9 +62,142 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
+];
+
+const dataMock = [
+  {
+    "key": "paramo",
+    "data": [
+      {
+        "x": "1970",
+        "y": 13.0266301199902,
+        "key": "paramo",
+      },
+      {
+        "x": "1990",
+        "y": 15.8923998054669,
+        "key": "paramo",
+      },
+      {
+        "x": "2000",
+        "y": 19.3378672984981,
+        "key": "paramo",
+      },
+      {
+        "x": "2015",
+        "y": 23.0074804830625,
+        "key": "paramo",
+      },
+      {
+        "x": "2018",
+        "y": 23.4133412384265,
+        "key": "paramo",
+      }
+    ],
+    "label": "Páramo",
+    "id": "paramo",
+    "color": "#bba2ff"
+  },
+  {
+    "key": "wetland",
+    "data": [
+      {
+        "x": "1970",
+        "y": 35.8267953418995,
+        "key": "wetland",
+      },
+      {
+        "x": "1990",
+        "y": 40.220059966881,
+        "key": "wetland",
+      },
+      {
+        "x": "2000",
+        "y": 42.4652046692811,
+        "key": "wetland",
+      },
+      {
+        "x": "2015",
+        "y": 43.7276521264575,
+        "key": "wetland",
+      },
+      {
+        "x": "2018",
+        "y": 44.3827462085131,
+        "key": "wetland",
+      }
+    ],
+    "label": "Humedal",
+    "id": "wetland",
+    "color": "#95b4db"
+  },
+  {
+    "key": "dryForest",
+    "data": [
+      {
+        "x": "1970",
+        "y": 52.2278092694628,
+        "key": "dryForest",
+      },
+      {
+        "x": "1990",
+        "y": 54.6841757981244,
+        "key": "dryForest",
+      },
+      {
+        "x": "2000",
+        "y": 55.8276304672073,
+        "key": "dryForest",
+      },
+      {
+        "x": "2015",
+        "y": 56.8961844866329,
+        "key": "dryForest",
+      },
+      {
+        "x": "2018",
+        "y": 57.432031522404,
+        "key": "dryForest",
+      }
+    ],
+    "label": "Bosque Seco T",
+    "id": "dryForest",
+    "color": "#afcc83"
+  },
+  {
+    "key": "aTotal",
+    "data": [
+      {
+        "x": "1970",
+        "y": 33.102116221481,
+        "key": "aTotal",
+      },
+      {
+        "x": "1990",
+        "y": 35.9939376304085,
+        "key": "aTotal",
+      },
+      {
+        "x": "2000",
+        "y": 37.7592021782625,
+        "key": "aTotal",
+      },
+      {
+        "x": "2015",
+        "y": 38.4246954598706,
+        "key": "aTotal",
+      },
+      {
+        "x": "2018",
+        "y": 38.8128220202167,
+        "key": "aTotal",
+      }
+    ],
+    "label": "Área consulta",
+    "id": "aTotal",
+    "color": "#3d3c48"
+  }
 ];
 
 interface Props {}
@@ -75,7 +205,7 @@ interface Props {}
 interface State {
   showInfoGraph: boolean;
   hfTimeline: Array<hfTimelineExt>;
-  message: string | null;
+  message: wrapperMessage;
   selectedEcosystem: seDetailsExt | null;
   texts: {
     hfTimeline: TextObject;
@@ -238,9 +368,8 @@ class TimelineFootprint extends React.Component<Props, State> {
         <p>Haz clic en un ecosistema para ver su comportamiento</p>
         <div>
           <MultiLinesGraph
-            graphType="MultiLinesGraph"
             colors={matchColor("hfTimeline")}
-            data={hfTimeline}
+            data={dataMock}
             message={message}
             markers={changeValues}
             labelX="Año"
@@ -252,6 +381,8 @@ class TimelineFootprint extends React.Component<Props, State> {
                 selectedKey: selection,
               });
             }}
+            yMax={100}
+            yMin={0}
           />
           {selectedEcosystem && (
             <div>
