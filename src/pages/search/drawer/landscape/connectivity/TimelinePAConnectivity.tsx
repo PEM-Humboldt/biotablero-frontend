@@ -14,6 +14,8 @@ import {
 import { TextObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
 import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
+import { wrapperMessage } from "pages/search/types/charts";
+import { colors } from "@mui/material";
 
 const getLabel = {
   prot: "Protegida",
@@ -27,7 +29,7 @@ interface Props {}
 interface timelinePAConnState {
   showInfoGraph: boolean;
   timelinePAConnData: Array<timelinePAConnExt>;
-  message: string | null;
+  message: wrapperMessage;
   texts: {
     paConnTimeline: TextObject;
   };
@@ -144,14 +146,14 @@ class TimelinePAConnectivity extends React.Component<
           <h6>Conectividad áreas protegidas en el tiempo</h6>
           <div>
             <MultiLinesGraph
-              graphType="MultiLinesGraph"
               colors={matchColor("timelinePAConn")}
               data={timelinePAConnData}
               message={message}
               labelX="Año"
               labelY="Porcentaje"
               units="%"
-              yMax={50}
+              yMin={0}
+              yMax={100}
             />
             <TextBoxes
               consText={texts.paConnTimeline.cons}
