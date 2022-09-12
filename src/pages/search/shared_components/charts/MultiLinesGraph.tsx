@@ -1,16 +1,16 @@
-import React from 'react';
-import { Datum, Point, ResponsiveLine } from '@nivo/line';
-import { CartesianMarkerProps, DatumValue } from '@nivo/core';
+import React from "react";
+import { Datum, Point, ResponsiveLine } from "@nivo/line";
+import { CartesianMarkerProps, DatumValue } from "@nivo/core";
 
-import formatNumber from 'utils/format';
-import withMessageWrapper from 'pages/search/shared_components/charts/withMessageWrapper';
+import formatNumber from "utils/format";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface MultiLinesGraphData {
   label: string;
   data: Array<{
-      y: number;
-      x: string;
-      key: string;
+    y: number;
+    x: string;
+    key: string;
   }>;
   key: string;
 }
@@ -33,7 +33,7 @@ interface Props {
   units?: string;
 }
 
-type LabelType = Record<string,string>
+type LabelType = Record<string, string>;
 
 interface State {
   data: Array<MultiLinesGraphDataExt>;
@@ -46,7 +46,7 @@ class MultiLinesGraph extends React.Component<Props, State> {
     this.state = {
       data: [],
       labels: {},
-      selectedId: '',
+      selectedId: "",
     };
   }
 
@@ -80,11 +80,13 @@ class MultiLinesGraph extends React.Component<Props, State> {
     return (
       <div className="tooltip-graph-container">
         <div>
-          <strong style={{ color: serieId === 'aTotal' ? '#ffffff' : serieColor }}>
+          <strong
+            style={{ color: serieId === "aTotal" ? "#ffffff" : serieColor }}
+          >
             {`${labels[serieId]} en ${xFormatted}`}
           </strong>
           <br />
-          <div style={{ color: '#ffffff' }}>
+          <div style={{ color: "#ffffff" }}>
             {`${formatNumber(yFormatted, 2)} ${units}`}
           </div>
         </div>
@@ -101,7 +103,8 @@ class MultiLinesGraph extends React.Component<Props, State> {
     const { data, colors } = this.props;
     const transformedData = data.map((obj) => {
       // "id" field is required for NIVO Line component
-      if (obj.key === selectedId) return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
+      if (obj.key === selectedId)
+        return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
       return { ...obj, id: obj.key, color: colors(obj.key) };
     });
     this.setState({ data: transformedData, selectedId: String(selectedId) });
@@ -112,22 +115,14 @@ class MultiLinesGraph extends React.Component<Props, State> {
    *
    * @param {object} point retrieve the datum selected in the graph
    */
-    selectLine = (id: string ) => {
+  selectLine = (id: string) => {
     const { onClickGraphHandler } = this.props;
     this.changeSelected(id);
     onClickGraphHandler?.(id);
   };
 
   render() {
-    const {
-      colors,
-      labelX,
-      labelY,
-      markers,
-      yMin,
-      yMax,
-      height,
-    } = this.props;
+    const { colors, labelX, labelY, markers, yMin, yMax, height } = this.props;
 
     const { data, labels, selectedId } = this.state;
 
@@ -137,9 +132,9 @@ class MultiLinesGraph extends React.Component<Props, State> {
       <div style={{ height }}>
         <ResponsiveLine
           data={data}
-          xScale={{ type: 'point' }}
+          xScale={{ type: "point" }}
           yScale={{
-            type: 'linear',
+            type: "linear",
             min: yMin,
             max: yMax,
             stacked: false,
@@ -161,7 +156,7 @@ class MultiLinesGraph extends React.Component<Props, State> {
             tickRotation: 0,
             legend: labelX,
             legendOffset: 36,
-            legendPosition: 'middle',
+            legendPosition: "middle",
           }}
           axisLeft={{
             tickSize: 5,
@@ -169,16 +164,16 @@ class MultiLinesGraph extends React.Component<Props, State> {
             tickRotation: 0,
             legend: labelY,
             legendOffset: -40,
-            legendPosition: 'middle',
+            legendPosition: "middle",
           }}
           enablePoints
           pointSize={10}
-          pointColor={{ theme: 'background' }}
+          pointColor={{ theme: "background" }}
           pointBorderWidth={2}
-          pointBorderColor={{ from: 'serieColor' }}
+          pointBorderColor={{ from: "serieColor" }}
           markers={markers}
           isInteractive
-          onClick={( point: Point, event: React.MouseEvent ) => {
+          onClick={(point: Point, event: React.MouseEvent) => {
             this.selectLine(String(point.serieId));
           }}
           tooltip={(point) => this.getToolTip(point.point)}
