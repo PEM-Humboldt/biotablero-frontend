@@ -35,6 +35,7 @@ export interface DPC {
 export interface timeLinePAConnValues {
   x: string;
   y: number;
+  key: string;
 }
 
 export interface timelinePAConn {
