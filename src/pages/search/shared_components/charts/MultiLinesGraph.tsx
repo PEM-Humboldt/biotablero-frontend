@@ -178,9 +178,6 @@ class MultiLinesGraph extends React.Component<Props, State> {
           tooltip={(point) => this.getToolTip(point.point)}
           crosshairType="cross"
           colors={(obj) => obj.color}
-          enablePointLabel={true}
-          pointLabel="y"
-          pointLabelYOffset={-12}
           areaBlendMode="multiply"
           useMesh={true}
           animate
