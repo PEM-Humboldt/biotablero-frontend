@@ -48,6 +48,5 @@ export interface hfTimeline {
   data: Array<{
     x: typeof timelineHFYears[number];
     y: number;
-    key: string;
   }>;
 }
