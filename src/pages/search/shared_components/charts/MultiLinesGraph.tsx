@@ -1,6 +1,6 @@
 import React from "react";
-import { Datum, Point, ResponsiveLine } from "@nivo/line";
-import { CartesianMarkerProps, DatumValue } from "@nivo/core";
+import { Point, ResponsiveLine } from "@nivo/line";
+import { CartesianMarkerProps } from "@nivo/core";
 
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
@@ -10,7 +10,6 @@ interface MultiLinesGraphData {
   data: Array<{
     y: number;
     x: string;
-    key: string;
   }>;
   key: string;
 }
@@ -122,9 +121,9 @@ class MultiLinesGraph extends React.Component<Props, State> {
   };
 
   render() {
-    const { colors, labelX, labelY, markers, yMin, yMax, height } = this.props;
+    const { labelX, labelY, markers, yMin, yMax, height = 490 } = this.props;
 
-    const { data, labels, selectedId } = this.state;
+    const { data } = this.state;
 
     if (!data) return null;
 
