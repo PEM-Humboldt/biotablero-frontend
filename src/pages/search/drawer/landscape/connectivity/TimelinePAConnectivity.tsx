@@ -149,11 +149,8 @@ class TimelinePAConnectivity extends React.Component<
               colors={matchColor("timelinePAConn")}
               data={timelinePAConnData}
               message={message}
-              labelX="Año"
-              labelY="Porcentaje"
               units="%"
-              yMin={0}
-              yMax={100}
+              yMax={50}
             />
             <TextBoxes
               consText={texts.paConnTimeline.cons}

@@ -236,8 +236,6 @@ class TimelineFootprint extends React.Component<Props, State> {
             data={hfTimeline}
             message={message}
             markers={changeValues}
-            labelX="Año"
-            labelY="Indice promedio Huella Humana"
             onClickGraphHandler={(selection: string) => {
               this.setSelectedEcosystem(selection);
               handlerClickOnGraph({
@@ -245,8 +243,6 @@ class TimelineFootprint extends React.Component<Props, State> {
                 selectedKey: selection,
               });
             }}
-            yMax={100}
-            yMin={0}
           />
           {selectedEcosystem && (
             <div>

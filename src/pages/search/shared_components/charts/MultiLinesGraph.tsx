@@ -23,11 +23,11 @@ interface Props {
   colors: (key: string | number) => string;
   data: Array<MultiLinesGraphData>;
   markers?: Array<CartesianMarkerProps>;
-  labelX: string;
-  labelY: string;
+  labelX?: string;
+  labelY?: string;
   onClickGraphHandler?: (id: string) => void;
-  yMin: number;
-  yMax: number;
+  yMin?: number;
+  yMax?: number;
   height?: number;
   units?: string;
 }
@@ -86,7 +86,7 @@ class MultiLinesGraph extends React.Component<Props, State> {
           </strong>
           <br />
           <div style={{ color: "#ffffff" }}>
-            {`${formatNumber(yFormatted, 2)} ${units}`}
+            {`${formatNumber(yFormatted, 2)}${units ? ` ${units}` : ""}`}
           </div>
         </div>
       </div>
@@ -121,9 +121,17 @@ class MultiLinesGraph extends React.Component<Props, State> {
   };
 
   render() {
-    const { labelX, labelY, markers, yMin, yMax, height = 490 } = this.props;
+    const {
+      labelX,
+      labelY,
+      markers,
+      colors,
+      yMin = 0,
+      yMax = 100,
+      height = 490,
+    } = this.props;
 
-    const { data } = this.state;
+    const { data, labels, selectedId } = this.state;
 
     if (!data) return null;
 
@@ -172,7 +180,7 @@ class MultiLinesGraph extends React.Component<Props, State> {
           pointBorderColor={{ from: "serieColor" }}
           markers={markers}
           isInteractive
-          onClick={(point: Point, event: React.MouseEvent) => {
+          onClick={(point) => {
             this.selectLine(String(point.serieId));
           }}
           tooltip={(point) => this.getToolTip(point.point)}
@@ -180,6 +188,43 @@ class MultiLinesGraph extends React.Component<Props, State> {
           colors={(obj) => obj.color}
           areaBlendMode="multiply"
           useMesh={true}
+          legends={[
+            {
+              anchor: "bottom-left",
+              data: Object.keys(labels).map((id) => {
+                const color =
+                  id === selectedId ? colors(`${id}Sel`) : colors(id);
+                return {
+                  id,
+                  label: labels[id],
+                  color,
+                };
+              }),
+              direction: "row",
+              justify: false,
+              translateX: -50,
+              translateY: 100,
+              itemsSpacing: 5,
+              itemDirection: "left-to-right",
+              itemWidth: 105,
+              itemHeight: 40,
+              itemOpacity: 0.75,
+              onClick: (datum) => {
+                this.selectLine(String(datum.id));
+              },
+              symbolSize: 12,
+              symbolShape: "circle",
+              symbolBorderColor: "rgba(0, 0, 0, .5)",
+              effects: [
+                {
+                  on: "hover",
+                  style: {
+                    itemBackground: "rgba(0, 0, 0, .03)",
+                  },
+                },
+              ],
+            },
+          ]}
           animate
         />
       </div>
