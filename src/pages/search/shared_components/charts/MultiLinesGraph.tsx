@@ -226,6 +226,7 @@ class MultiLinesGraph extends React.Component<Props, State> {
             },
           ]}
           animate
+          pointLabelYOffset={0}
         />
       </div>
     );
