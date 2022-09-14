@@ -28,15 +28,32 @@ const findKey = (originalObject: itemsObject, value: number) =>
  *
  * @param {any} value value to show in tooltip
  * @param {String} color color for he tooltip chip
+ * @param {String} label text to be shown at the tooltip
  *
  * @returns Tooltip elemtent
  */
-const tooltip = (value: number, color: string) => {
+const tooltip = (value: number, color: string, label?: string) => {
   const { showTooltipFromEvent } = useTooltip();
   return (event: React.MouseEvent<Element, MouseEvent>) => {
     showTooltipFromEvent(
-      <BasicTooltip id={<strong>{value}</strong>} enableChip color={color} />,
-      event
+      <BasicTooltip
+        id={
+          <div className="bulletTooltip">
+            {label ? (
+              <>
+                {label} <br />
+              </>
+            ) : (
+              <></>
+            )}
+            <strong>{value}</strong>
+          </div>
+        }
+        enableChip
+        color={color}
+      />,
+      event,
+      "right"
     );
   };
 };
@@ -53,7 +70,8 @@ const tooltip = (value: number, color: string) => {
 const LineMeasureWrap = (
   origMeasures: itemsObject,
   colors: colorsFunction,
-  reverse: boolean
+  reverse: boolean,
+  labels?: Record<string, string>
 ) => {
   /**
    * Custom component to display bullet measures as lines (like markers)
@@ -81,7 +99,11 @@ const LineMeasureWrap = (
         y2={20}
         stroke={colors(measureKey)}
         strokeWidth={3}
-        onMouseEnter={tooltip(data.v1, colors(measureKey))}
+        onMouseEnter={tooltip(
+          data.v1,
+          colors(measureKey),
+          labels?.[measureKey]
+        )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
@@ -103,7 +125,11 @@ const LineMeasureWrap = (
  *
  * @returns Functional component for a marker in form of a circle
  */
-const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
+const CircleMarkerWrap = (
+  origMarkers: itemsObject,
+  colors: colorsFunction,
+  labels?: Record<string, string>
+) => {
   /**
    * Custom component to display bullet markers as circles
    *
@@ -118,7 +144,11 @@ const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
     return (
       <g
         transform={`translate(${x},0)`}
-        onMouseEnter={tooltip(data.value, colors(markerKey))}
+        onMouseEnter={tooltip(
+          data.value,
+          colors(markerKey),
+          labels?.[markerKey]
+        )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
@@ -192,6 +222,10 @@ interface BulletData {
   ranges: itemsObject;
   markers: itemsObject;
   measures: itemsObject;
+  labels?: {
+    markers: Record<string, string>;
+    measures: Record<string, string>;
+  };
   title: string;
 }
 
@@ -234,8 +268,17 @@ const SingleBulletGraph: React.FC<BulletProps> = (props) => {
         titleOffsetX={0}
         titleOffsetY={-30}
         rangeComponent={NoTooltipRangeWrap(data.ranges, colors)}
-        measureComponent={LineMeasureWrap(data.measures, colors, reverse)}
-        markerComponent={CircleMarkerWrap(data.markers, colors)}
+        measureComponent={LineMeasureWrap(
+          data.measures,
+          colors,
+          reverse,
+          data.labels?.measures
+        )}
+        markerComponent={CircleMarkerWrap(
+          data.markers,
+          colors,
+          data.labels?.markers
+        )}
         isInteractive
         reverse={reverse}
         onRangeClick={onClickHandler}
