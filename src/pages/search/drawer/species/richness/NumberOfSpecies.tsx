@@ -26,7 +26,6 @@ import { wrapperMessage } from "pages/search/types/charts";
 import { helperText, textsObject } from "pages/search/types/texts";
 import { NOSGroups, NOSNational } from "pages/search/types/richness";
 import SearchAPI from "utils/searchAPI";
-import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 const NOSTexts = {
   inferred: { info: "", cons: "", meto: "", quote: "" },
@@ -49,28 +48,48 @@ const getLabel = (key: string, area: string = "", region: string = "") => {
       break;
   }
 
-  return {
-    total: "TOTAL",
-    endemic: "ENDÉMICAS",
-    invasive: "INVASORAS",
-    threatened: "AMENAZADAS",
-    inferred: "Inferido (BioModelos)",
-    observed: "Observado (visor I2D)",
-    min_inferred: `Min. inferido ${areaLbl} de la región ${region}`,
-    min_observed: `Min. observado ${areaLbl} de la región ${region}`,
-    max_inferred: `Max. inferido ${areaLbl} de la región ${region}`,
-    max_observed: `Max. observado ${areaLbl} de la región ${region}`,
-    region_observed: `Observado región ${region}`,
-    region_inferred: `Inferido región ${region}`,
-    area: `${areaLbl.replace(/^\w/, (l) =>
-      l.toUpperCase()
-    )} de la región ${region}`,
-    region: `Región ${region}`,
-    inferred2: "Inferido en el área de consulta",
-    observed2: "Observado en el área de consulta",
-    national_inferred: `Max. inferido en ${areaLbl} a nivel nacional: `,
-    national_observed: `Max. observado en ${areaLbl} a nivel nacional: `,
-  }[key];
+  switch (key) {
+    case "total":
+      return "TOTAL";
+    case "endemic":
+      return "ENDÉMICAS";
+    case "invasive":
+      return "INVASORAS";
+    case "threatened":
+      return "AMENAZADAS";
+    case "inferred":
+      return "Inferido (BioModelos)";
+    case "observed":
+      return "Observado (visor I2D)";
+    case "min_inferred":
+      return `Min. inferido ${areaLbl} de la región ${region}`;
+    case "min_observed":
+      return `Min. observado ${areaLbl} de la región ${region}`;
+    case "max_inferred":
+      return `Max. inferido ${areaLbl} de la región ${region}`;
+    case "max_observed":
+      return `Max. observado ${areaLbl} de la región ${region}`;
+    case "region_observed":
+      return `Observado región ${region}`;
+    case "region_inferred":
+      return `Inferido región ${region}`;
+    case "area":
+      return `${areaLbl.replace(/^\w/, (l) =>
+        l.toUpperCase()
+      )} de la región ${region}`;
+    case "region":
+      return `Región ${region}`;
+    case "inferred2":
+      return "Inferido en el área de consulta";
+    case "observed2":
+      return "Observado en el área de consulta";
+    case "national_inferred":
+      return `Max. inferido en ${areaLbl} a nivel nacional: `;
+    case "national_observed":
+      return `Max. observado en ${areaLbl} a nivel nacional: `;
+    default:
+      return "";
+  }
 };
 
 interface Props {}
@@ -110,10 +129,18 @@ interface completeData {
     region_inferred: number;
     region_observed: number;
   };
+  labels: {
+    measures: {
+      [key: string]: string;
+    };
+    markers: {
+      [key: string]: string;
+    };
+  };
   title: string;
 }
 
-interface selectedData extends Pick<completeData, "id" | "title"> {
+interface selectedData extends Pick<completeData, "id" | "title" | "labels"> {
   ranges: {
     area: number;
     region: number;
@@ -196,6 +223,27 @@ class NumberOfSpecies extends React.Component<Props, State> {
               max_observed,
               region_inferred: groupVal.region_inferred,
               region_observed: groupVal.region_observed,
+            },
+            labels: {
+              measures: {
+                ...[
+                  ...Object.keys(mins),
+                  "max_inferred",
+                  "max_observed",
+                  "region_inferred",
+                  "region_observed",
+                ].reduce(
+                  (result, key) => ({
+                    ...result,
+                    [key]: getLabel(key, areaId, region),
+                  }),
+                  {}
+                ),
+              },
+              markers: {
+                inferred: getLabel("inferred2"),
+                observed: getLabel("observed2"),
+              },
             },
             title: "",
           });
@@ -311,6 +359,18 @@ class NumberOfSpecies extends React.Component<Props, State> {
           ranges: {
             area: group.ranges.area[areaKey],
             region: group.ranges.region[regionKey],
+          },
+          labels: {
+            markers: {
+              [category]: group.labels.markers[category],
+            },
+            measures: measureKeys.reduce(
+              (result, key) => ({
+                ...result,
+                [key]: group.labels.measures[key],
+              }),
+              {}
+            ),
           },
           title: group.title,
         };
