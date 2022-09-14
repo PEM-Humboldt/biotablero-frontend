@@ -14,8 +14,10 @@ import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { textsObject } from "pages/search/types/texts";
 import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
+import { wrapperMessage } from "pages/search/types/charts";
+import { CartesianMarkerProps } from "@nivo/core";
 
-const changeValues = [
+const changeValues: Array<CartesianMarkerProps> = [
   {
     axis: "y",
     value: 15,
@@ -26,8 +28,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -39,8 +39,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -52,8 +50,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
   {
     axis: "y",
@@ -65,8 +61,6 @@ const changeValues = [
       fontSize: 9,
     },
     legendPosition: "bottom-right",
-    orient: "top",
-    tickRotation: -90,
   },
 ];
 
@@ -75,7 +69,7 @@ interface Props {}
 interface State {
   showInfoGraph: boolean;
   hfTimeline: Array<hfTimelineExt>;
-  message: string | null;
+  message: wrapperMessage;
   selectedEcosystem: seDetailsExt | null;
   texts: {
     hfTimeline: textsObject;
@@ -238,13 +232,10 @@ class TimelineFootprint extends React.Component<Props, State> {
         <p>Haz clic en un ecosistema para ver su comportamiento</p>
         <div>
           <MultiLinesGraph
-            graphType="MultiLinesGraph"
             colors={matchColor("hfTimeline")}
             data={hfTimeline}
             message={message}
             markers={changeValues}
-            labelX="Año"
-            labelY="Indice promedio Huella Humana"
             onClickGraphHandler={(selection: string) => {
               this.setSelectedEcosystem(selection);
               handlerClickOnGraph({
