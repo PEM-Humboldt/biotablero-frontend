@@ -14,8 +14,12 @@ interface MultiLinesGraphData {
   key: string;
 }
 
-interface MultiLinesGraphDataExt extends MultiLinesGraphData {
+interface MultiLinesGraphDataState {
   id: string;
+  data: Array<{
+    y: number;
+    x: string;
+  }>;
   color: string;
 }
 
@@ -32,11 +36,9 @@ interface Props {
   units?: string;
 }
 
-type LabelType = Record<string, string>;
-
 interface State {
-  data: Array<MultiLinesGraphDataExt>;
-  labels: LabelType;
+  data: Array<MultiLinesGraphDataState>;
+  labels: Record<string, string>;
   selectedId: string;
 }
 class MultiLinesGraph extends React.Component<Props, State> {
@@ -51,11 +53,10 @@ class MultiLinesGraph extends React.Component<Props, State> {
 
   componentDidMount() {
     const { data, colors } = this.props;
-    const labels: LabelType = {};
+    const labels: Record<string, string> = {};
     const newData = data.map((obj) => {
       labels[obj.key] = obj.label;
-      // "id" field is required for NIVO Line component
-      return { ...obj, id: obj.key, color: colors(obj.key) };
+      return { id: obj.key, data: obj.data, color: colors(obj.key) };
     });
     this.setState({
       data: newData,
@@ -154,9 +155,6 @@ class MultiLinesGraph extends React.Component<Props, State> {
             bottom: 100,
           }}
           curve="cardinal"
-          theme={{}}
-          axisTop={null}
-          axisRight={null}
           axisBottom={{
             tickSize: 5,
             tickPadding: 5,
