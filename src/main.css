@@ -1451,6 +1451,12 @@ overflow: auto;
 	padding: 6px 8px !important;
 }
 
+.bulletTooltip {
+  max-width: 230px;
+  white-space: normal;
+  line-height: 1;
+}
+
 .extraLegend {
 	font-size: 12px;
 	display: flex;

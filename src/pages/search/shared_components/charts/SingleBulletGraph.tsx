@@ -9,9 +9,6 @@ import { animated, to } from "@react-spring/web";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 type colorsFunction = (param: string) => string;
-interface itemsObject {
-  [key: string]: number;
-}
 /**
  * Get the key for a value inside an object
  *
@@ -20,7 +17,7 @@ interface itemsObject {
  *
  * @returns {String} desired key
  */
-const findKey = (originalObject: itemsObject, value: number) =>
+const findKey = (originalObject: Record<string, number>, value: number) =>
   Object.keys(originalObject).find((key) => originalObject[key] === value);
 
 /**
@@ -28,15 +25,32 @@ const findKey = (originalObject: itemsObject, value: number) =>
  *
  * @param {any} value value to show in tooltip
  * @param {String} color color for he tooltip chip
+ * @param {String} label text to be shown at the tooltip
  *
  * @returns Tooltip elemtent
  */
-const tooltip = (value: number, color: string) => {
+const tooltip = (value: number, color: string, label?: string) => {
   const { showTooltipFromEvent } = useTooltip();
   return (event: React.MouseEvent<Element, MouseEvent>) => {
     showTooltipFromEvent(
-      <BasicTooltip id={<strong>{value}</strong>} enableChip color={color} />,
-      event
+      <BasicTooltip
+        id={
+          <div className="bulletTooltip">
+            {label ? (
+              <>
+                {label} <br />
+              </>
+            ) : (
+              <></>
+            )}
+            <strong>{value}</strong>
+          </div>
+        }
+        enableChip
+        color={color}
+      />,
+      event,
+      "right"
     );
   };
 };
@@ -51,9 +65,10 @@ const tooltip = (value: number, color: string) => {
  * @returns Functional component for a measure in form of a line
  */
 const LineMeasureWrap = (
-  origMeasures: itemsObject,
+  origMeasures: Record<string, number>,
   colors: colorsFunction,
-  reverse: boolean
+  reverse: boolean,
+  labels?: Record<string, string>
 ) => {
   /**
    * Custom component to display bullet measures as lines (like markers)
@@ -81,7 +96,11 @@ const LineMeasureWrap = (
         y2={20}
         stroke={colors(measureKey)}
         strokeWidth={3}
-        onMouseEnter={tooltip(data.v1, colors(measureKey))}
+        onMouseEnter={tooltip(
+          data.v1,
+          colors(measureKey),
+          labels?.[measureKey]
+        )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
@@ -103,7 +122,11 @@ const LineMeasureWrap = (
  *
  * @returns Functional component for a marker in form of a circle
  */
-const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
+const CircleMarkerWrap = (
+  origMarkers: Record<string, number>,
+  colors: colorsFunction,
+  labels?: Record<string, string>
+) => {
   /**
    * Custom component to display bullet markers as circles
    *
@@ -118,7 +141,11 @@ const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
     return (
       <g
         transform={`translate(${x},0)`}
-        onMouseEnter={tooltip(data.value, colors(markerKey))}
+        onMouseEnter={tooltip(
+          data.value,
+          colors(markerKey),
+          labels?.[markerKey]
+        )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
@@ -143,7 +170,7 @@ const CircleMarkerWrap = (origMarkers: itemsObject, colors: colorsFunction) => {
  * @returns Functional component for a range without tooltip
  */
 const NoTooltipRangeWrap = (
-  origRanges: itemsObject,
+  origRanges: Record<string, number>,
   colors: colorsFunction
 ) => {
   /**
@@ -189,9 +216,13 @@ interface BulletProps {
 
 interface BulletData {
   id: string;
-  ranges: itemsObject;
-  markers: itemsObject;
-  measures: itemsObject;
+  ranges: Record<string, number>;
+  markers: Record<string, number>;
+  measures: Record<string, number>;
+  labels?: {
+    markers: Record<string, string>;
+    measures: Record<string, string>;
+  };
   title: string;
 }
 
@@ -234,8 +265,17 @@ const SingleBulletGraph: React.FC<BulletProps> = (props) => {
         titleOffsetX={0}
         titleOffsetY={-30}
         rangeComponent={NoTooltipRangeWrap(data.ranges, colors)}
-        measureComponent={LineMeasureWrap(data.measures, colors, reverse)}
-        markerComponent={CircleMarkerWrap(data.markers, colors)}
+        measureComponent={LineMeasureWrap(
+          data.measures,
+          colors,
+          reverse,
+          data.labels?.measures
+        )}
+        markerComponent={CircleMarkerWrap(
+          data.markers,
+          colors,
+          data.labels?.markers
+        )}
         isInteractive
         reverse={reverse}
         onRangeClick={onClickHandler}
