@@ -37,31 +37,56 @@ const areaTypeName = (areaType: string) => {
   }
 };
 
-const getLabelGaps = (key: string, areaType: string, region: string = "") =>
-  ({
-    value: "Promedio de vacios en el área de consulta",
-    min: "Menos vacíos en el área de consulta",
-    max: "Más vacíos en el área de consulta",
-    min_region: `Menos vacíos en la región ${region}`,
-    max_region: `Más vacíos en la región ${region}`,
-    min_threshold: `Menos vacíos ${areaTypeName(
-      areaType
-    )} de la región ${region}`,
-    max_threshold: `Más vacíos ${areaTypeName(
-      areaType
-    )} de la región ${region}`,
-  }[key]);
+const getLabelFunc = (section: string) => {
+  if (section === "gaps") return getLabelGaps;
+  else return getLabelConcentration;
+};
 
-const getLabelConcentration = (key: string) =>
-  ({
-    min: "Mínimo del área de consulta",
-    max: "Máximo del área de consulta",
-    min_region: "Mínimo por región biótica",
-    max_region: "Máximo por región biótica",
-    min_threshold: "Mínimo nacional",
-    max_threshold: "Máximo nacional",
-    value: "Promedio de representación en el área de consulta",
-  }[key]);
+const getLabelGaps = (
+  key: string,
+  areaType: string = "",
+  region: string = ""
+) => {
+  switch (key) {
+    case "value":
+      return "Promedio de vacios en el área de consulta";
+    case "min":
+      return "Menos vacíos en el área de consulta";
+    case "max":
+      return "Más vacíos en el área de consulta";
+    case "min_region":
+      return `Menos vacíos en la región ${region}`;
+    case "max_region":
+      return `Más vacíos en la región ${region}`;
+    case "min_threshold":
+      return `Menos vacíos ${areaTypeName(areaType)} de la región ${region}`;
+    case "max_threshold":
+      return `Más vacíos ${areaTypeName(areaType)} de la región ${region}`;
+    default:
+      return "";
+  }
+};
+
+const getLabelConcentration = (key: string) => {
+  switch (key) {
+    case "min":
+      return "Mínimo del área de consulta";
+    case "max":
+      return "Máximo del área de consulta";
+    case "min_region":
+      return "Mínimo por región biótica";
+    case "max_region":
+      return "Máximo por región biótica";
+    case "min_threshold":
+      return "Mínimo nacional";
+    case "max_threshold":
+      return "Máximo nacional";
+    case "value":
+      return "Promedio de representación en el área de consulta";
+    default:
+      return "";
+  }
+};
 
 interface Props {}
 
@@ -90,6 +115,14 @@ interface GapsAndConcentration {
     value: number;
   };
   measures: gaps_limits;
+  labels: {
+    measures: {
+      [key: string]: string;
+    };
+    markers: {
+      [key: string]: string;
+    };
+  };
   title: string;
 }
 
@@ -127,7 +160,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         if (this.mounted) {
           const showErrorMessage =
             res[0].min < res[0].min_region || res[0].max > res[0].max_region;
-          const { region, ...data } = this.transformData(res);
+          const { region, ...data } = this.transformData(res, "gaps");
           const dataArray = [];
           dataArray.push(data);
           this.setState({
@@ -146,7 +179,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
     SearchAPI.requestConcentration(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
-          const { region, ...data } = this.transformData(res);
+          const { region, ...data } = this.transformData(res, "concentration");
           const dataArray = [];
           dataArray.push(data);
           this.setState({
@@ -181,7 +214,11 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
    *
    * @param {Object} rawData raw data from RestAPI
    */
-  transformData = (rawData: Array<gaps> | Array<concentration>) => {
+  transformData = (
+    rawData: Array<gaps> | Array<concentration>,
+    section: string
+  ) => {
+    const { areaId } = this.context as SearchContextValues;
     let region_name = "";
     let limits: gaps_limits;
     let id = "";
@@ -206,6 +243,20 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         value: avg * 100,
       },
       measures: limits,
+      labels: {
+        measures: {
+          ...[...Object.keys(limits)].reduce(
+            (result, key) => ({
+              ...result,
+              [key]: getLabelFunc(section)(key, areaId, region_name),
+            }),
+            {}
+          ),
+        },
+        markers: {
+          value: getLabelFunc(section)("value"),
+        },
+      },
       title: "",
     };
   };
