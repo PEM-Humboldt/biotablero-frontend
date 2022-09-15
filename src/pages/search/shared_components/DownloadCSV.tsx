@@ -1,15 +1,19 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-
 import DownloadIcon from '@mui/icons-material/GetApp';
 import CsvDownload from 'react-json-to-csv';
 
-const DownloadCSV = (props) => {
+interface Props {
+  data?: Array<unknown>;
+  filename?: string;
+  buttonTitle?: string;
+  className?: string;
+}
+
+const DownloadCSV = (props: Props) => {
   const {
-    data,
-    filename,
-    buttonTitle,
-    className,
+    data = {},
+    filename = '',
+    buttonTitle = 'Descargar Datos',
+    className = '',
   } = props;
   return (
     <div className={`icondown-container ${className}`}>
@@ -28,20 +32,6 @@ const DownloadCSV = (props) => {
       </CsvDownload>
     </div>
   );
-};
-
-DownloadCSV.propTypes = {
-  data: PropTypes.array,
-  filename: PropTypes.string,
-  buttonTitle: PropTypes.string,
-  className: PropTypes.string,
-};
-
-DownloadCSV.defaultProps = {
-  data: {},
-  filename: '',
-  buttonTitle: 'Descargar Datos',
-  className: '',
 };
 
 export default DownloadCSV;
