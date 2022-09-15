@@ -224,9 +224,9 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         <h3 className="inlineb">
           Haz clic en la gráfica para visualizar las áreas protegidas
         </h3>
-        {/* <BorderLegendColor color={matchColor("border")()}>
+        <BorderLegendColor color={matchColor("border")()}>
           Límite de áreas protegidas
-        </BorderLegendColor> */}
+        </BorderLegendColor>
         <div>
           <PieGraph
             message={loading}
@@ -241,7 +241,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
               });
             }}
           />
-          {/* <div className="fiLegend">
+          <div className="fiLegend">
             {getSCIHFVals().map((cat) => (
               <LegendColor
                 color={matchColor("SciHf")(cat)}
@@ -251,7 +251,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
                 {SciHfCats[cat].label}
               </LegendColor>
             ))}
-          </div> */}
+          </div>
         </div>
         <TextBoxes
           consText={texts.forestSCIHF.cons}

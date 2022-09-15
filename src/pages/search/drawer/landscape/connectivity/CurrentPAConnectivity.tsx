@@ -263,11 +263,11 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
             />
           </div>
           <div className="dpcLegend">
-            {/* {DPCKeys.map((cat) => (
+            {DPCKeys.map((cat) => (
               <LegendColor color={matchColor("dpc")(cat)} key={cat}>
                 {legendDPCCategories[cat]}
               </LegendColor>
-            ))} */}
+            ))}
           </div>
           <TextBoxes
             consText={texts.paConnDPC.cons}
