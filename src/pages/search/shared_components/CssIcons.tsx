@@ -5,14 +5,14 @@ interface Props {
   hoverImage: string;
 }
 
-const Icon = styled.div`
-  background: ${(props: Props) => `url(${props.image}) no-repeat center center`};
+const Icon = styled.div<Props>`
+  background: ${(props) => `url(${props.image}) no-repeat center center`};
   width: 25px;
   height: 27px;
   display: inline-block;
 
   &:hover {
-    background: ${(props: Props) => `url(${props.hoverImage}) no-repeat center center`};
+    background: ${(props) => `url(${props.hoverImage}) no-repeat center center`};
     width: 25px;
     height: 27px;
   }
