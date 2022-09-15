@@ -5494,6 +5494,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-json-to-csv@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@types/react-json-to-csv@npm:1.0.0"
+  dependencies:
+    "@types/react": "*"
+  checksum: c6387437ca964d02a23a2b6d7d3d6d9dba35fa536e7bfc2946b38eeb379b31947680ea1ab46b0230f5a272c724e6475dcdbec2f46d3701a06bcb9f819d79568d
+  languageName: node
+  linkType: hard
+
 "@types/react-transition-group@npm:^4.2.0, @types/react-transition-group@npm:^4.4.5":
   version: 4.4.5
   resolution: "@types/react-transition-group@npm:4.4.5"
@@ -7264,6 +7273,7 @@ __metadata:
     "@types/node": ^17.0.41
     "@types/react": ^18.0.12
     "@types/react-dom": ^18.0.5
+    "@types/react-json-to-csv": ^1.0.0
     "@types/styled-components": ^5.1.26
     "@vx/axis": ~0.0.199
     "@vx/glyph": ~0.0.199
