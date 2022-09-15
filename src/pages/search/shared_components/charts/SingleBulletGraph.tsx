@@ -9,9 +9,6 @@ import { animated, to } from "@react-spring/web";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 type colorsFunction = (param: string) => string;
-interface itemsObject {
-  [key: string]: number;
-}
 /**
  * Get the key for a value inside an object
  *
@@ -20,7 +17,7 @@ interface itemsObject {
  *
  * @returns {String} desired key
  */
-const findKey = (originalObject: itemsObject, value: number) =>
+const findKey = (originalObject: Record<string, number>, value: number) =>
   Object.keys(originalObject).find((key) => originalObject[key] === value);
 
 /**
@@ -68,7 +65,7 @@ const tooltip = (value: number, color: string, label?: string) => {
  * @returns Functional component for a measure in form of a line
  */
 const LineMeasureWrap = (
-  origMeasures: itemsObject,
+  origMeasures: Record<string, number>,
   colors: colorsFunction,
   reverse: boolean,
   labels?: Record<string, string>
@@ -126,7 +123,7 @@ const LineMeasureWrap = (
  * @returns Functional component for a marker in form of a circle
  */
 const CircleMarkerWrap = (
-  origMarkers: itemsObject,
+  origMarkers: Record<string, number>,
   colors: colorsFunction,
   labels?: Record<string, string>
 ) => {
@@ -173,7 +170,7 @@ const CircleMarkerWrap = (
  * @returns Functional component for a range without tooltip
  */
 const NoTooltipRangeWrap = (
-  origRanges: itemsObject,
+  origRanges: Record<string, number>,
   colors: colorsFunction
 ) => {
   /**
@@ -219,9 +216,9 @@ interface BulletProps {
 
 interface BulletData {
   id: string;
-  ranges: itemsObject;
-  markers: itemsObject;
-  measures: itemsObject;
+  ranges: Record<string, number>;
+  markers: Record<string, number>;
+  measures: Record<string, number>;
   labels?: {
     markers: Record<string, string>;
     measures: Record<string, string>;
