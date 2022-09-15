@@ -1,57 +1,10 @@
 import styled from 'styled-components';
-/* import {} from 'styled-components/cssprop' */
 
-interface PropsLegend {
-  orientation: string;
+interface PropsLeg {
+  orientation?: string;
 }
 
-const Legend = styled.p`
-  display: ${(props: PropsLegend) => {
-    if (props.orientation === 'column') return 'block';
-    return 'inline-block';
-  }};
-  font-size: 12px;
-  color: #424242;
-  line-height: 1;
-  margin-right: 10px;
-`;
-
-interface PropsPointL extends PropsLegend {
-  marginRight: string;
-  marginLeft: string;
-}
-
-const PointLegend = styled(Legend)`
-  &:before {
-    display: inline-block;
-    content: "";
-    width: 12px;
-    height: 12px;
-    margin-right: ${(props: PropsPointL) => (props.marginRight ? props.marginRight : '5px')};
-    border-radius: 6px;
-    vertical-align: middle;
-    margin-left: ${(props: PropsPointL) => (props.marginLeft ? props.marginLeft : '0')};
-  }
-`;
-
-interface PropsLegendC extends PropsPointL {
-  color: string;
-}
-
-const LegendColor = styled(PointLegend)`
-  &:before {
-    background-color: ${(props: PropsLegendC) => props.color};
-  }
-`;
-
-interface PropsTest {
-  orientation: string;
-  marginRight: string;
-  marginLeft: string;
-  color: string;
-}
-
-const Test = styled.p<PropsTest>`
+const Legend = styled.p<PropsLeg>`
   display: ${(props) => {
     if (props.orientation === 'column') return 'block';
     return 'inline-block';
@@ -60,7 +13,14 @@ const Test = styled.p<PropsTest>`
   color: #424242;
   line-height: 1;
   margin-right: 10px;
+`;
 
+interface PropsPointLeg {
+  marginRight?: string;
+  marginLeft?: string;
+}
+
+const PointLegend = styled(Legend)<PropsPointLeg>`
   &:before {
     display: inline-block;
     content: "";
@@ -70,29 +30,38 @@ const Test = styled.p<PropsTest>`
     border-radius: 6px;
     vertical-align: middle;
     margin-left: ${(props) => (props.marginLeft ? props.marginLeft : '0')};
+  }
+`;
+
+interface PropsLegColor {
+  color: string;
+}
+
+const LegendColor = styled(PointLegend)<PropsLegColor>`
+  &:before {
     background-color: ${(props) => props.color};
   }
 `;
 
-interface PropsBorderLegendC {
+interface PropsBorderLegColor {
   color: string;
 }
 
-const BorderLegendColor = styled(PointLegend)`
+const BorderLegendColor = styled(PointLegend)<PropsBorderLegColor>`
   &:before {
     color: #ffffff;
-    border: 2px solid ${(props: PropsBorderLegendC) => props.color};
+    border: 2px solid ${(props) => props.color};
     width: 7px;
     height: 7px;
     border-radius: 0;
   }
 `;
 
-interface PropsLineL {
+interface PropsLineLeg {
   color: string;
 }
 
-const LineLegend = styled(Legend)`
+const LineLegend = styled(Legend)<PropsLineLeg>`
   &:before {
     display: inline-block;
     content: "";
@@ -100,37 +69,37 @@ const LineLegend = styled(Legend)`
     height: 3px;
     margin-right: 5px;
     margin-bottom: 4px;
-    border-bottom: 3px solid ${(props: PropsLineL) => props.color};
+    border-bottom: 3px solid ${(props) => props.color};
     vertical-align: middle;
   }
 `;
 
-interface PropsThickLineL {
+interface PropsThickLineLeg {
   color: string;
 }
 
-const ThickLineLegend = styled(LineLegend)`
+const ThickLineLegend = styled(LineLegend)<PropsThickLineLeg>`
   &:before {
-    border-bottom: 8px solid ${(props: PropsThickLineL) => props.color};
+    border-bottom: 8px solid ${(props) => props.color};
     height: 0px;
   }
 `;
 
-interface PropsTextL {
+interface PropsTextLeg {
   color: string;
   image: string;
   hoverImage: string;
 }
 
-const TextLegend = styled(Legend)`
+const TextLegend = styled(Legend)<PropsTextLeg>`
   margin-right: 1px;
   padding-bottom: 3px;
-  color: ${(props: PropsTextL) => props.color};
+  color: ${(props) => props.color};
 
   &:before {
     display: inline-block;
     content: "";
-    background: ${(props: PropsTextL) => (props.image ? `url(${props.image}) no-repeat center` : '')};
+    background: ${(props) => (props.image ? `url(${props.image}) no-repeat center` : '')};
     background-size: 15px;
     width: 15px;
     height: 26px;
@@ -143,7 +112,7 @@ const TextLegend = styled(Legend)`
   }
 
   &:hover:before {
-    background: ${(props: PropsTextL) => (props.hoverImage ? `url(${props.hoverImage}) no-repeat center` : '')};
+    background: ${(props) => (props.hoverImage ? `url(${props.hoverImage}) no-repeat center` : '')};
     background-size: 15px;
     width: 15px;
     height: 26px;
@@ -160,5 +129,4 @@ export {
   LineLegend,
   ThickLineLegend,
   TextLegend,
-  Test,
 };
