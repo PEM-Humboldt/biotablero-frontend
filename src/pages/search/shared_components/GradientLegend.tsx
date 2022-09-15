@@ -1,19 +1,25 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-
 import styled from 'styled-components';
 
-const Gradient = styled.div`
+interface PropsGradient {
+  colors: Array<string>;
+}
+
+const Gradient = styled.div<PropsGradient>`
   height: 12px;
   width: 95%;
   margin: 0 auto;
   background: linear-gradient(
     0.25turn,
-    ${({ colors }) => colors.join() }
+    ${(props) => props.colors.join() }
   );
 `;
 
-const GradientLegend = (props) => {
+interface PropsGradientLeg extends PropsGradient {
+  fromValue: string;
+  toValue: string;
+}
+
+const GradientLegend = (props: PropsGradientLeg) => {
   const {
     fromValue,
     toValue,
@@ -28,12 +34,6 @@ const GradientLegend = (props) => {
       </div>
     </div>
   );
-};
-
-GradientLegend.propTypes = {
-  fromValue: PropTypes.string.isRequired,
-  toValue: PropTypes.string.isRequired,
-  colors: PropTypes.array.isRequired,
 };
 
 export default GradientLegend;
