@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 interface Props {
   image: string;
@@ -12,7 +12,8 @@ const Icon = styled.div<Props>`
   display: inline-block;
 
   &:hover {
-    background: ${(props) => `url(${props.hoverImage}) no-repeat center center`};
+    background: ${(props) =>
+      `url(${props.hoverImage}) no-repeat center center`};
     width: 25px;
     height: 27px;
   }

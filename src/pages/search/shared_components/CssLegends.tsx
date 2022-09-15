@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 interface PropsLeg {
   orientation?: string;
@@ -6,8 +6,8 @@ interface PropsLeg {
 
 const Legend = styled.p<PropsLeg>`
   display: ${(props) => {
-    if (props.orientation === 'column') return 'block';
-    return 'inline-block';
+    if (props.orientation === "column") return "block";
+    return "inline-block";
   }};
   font-size: 12px;
   color: #424242;
@@ -26,10 +26,10 @@ const PointLegend = styled(Legend)<PropsPointLeg>`
     content: "";
     width: 12px;
     height: 12px;
-    margin-right: ${(props) => (props.marginRight ? props.marginRight : '5px')};
+    margin-right: ${(props) => (props.marginRight ? props.marginRight : "5px")};
     border-radius: 6px;
     vertical-align: middle;
-    margin-left: ${(props) => (props.marginLeft ? props.marginLeft : '0')};
+    margin-left: ${(props) => (props.marginLeft ? props.marginLeft : "0")};
   }
 `;
 
@@ -99,7 +99,8 @@ const TextLegend = styled(Legend)<PropsTextLeg>`
   &:before {
     display: inline-block;
     content: "";
-    background: ${(props) => (props.image ? `url(${props.image}) no-repeat center` : '')};
+    background: ${(props) =>
+      props.image ? `url(${props.image}) no-repeat center` : ""};
     background-size: 15px;
     width: 15px;
     height: 26px;
@@ -112,7 +113,8 @@ const TextLegend = styled(Legend)<PropsTextLeg>`
   }
 
   &:hover:before {
-    background: ${(props) => (props.hoverImage ? `url(${props.hoverImage}) no-repeat center` : '')};
+    background: ${(props) =>
+      props.hoverImage ? `url(${props.hoverImage}) no-repeat center` : ""};
     background-size: 15px;
     width: 15px;
     height: 26px;
