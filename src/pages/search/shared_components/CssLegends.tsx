@@ -87,8 +87,8 @@ const ThickLineLegend = styled(LineLegend)<PropsThickLineLeg>`
 
 interface PropsTextLeg {
   color: string;
-  image: string;
-  hoverImage: string;
+  image?: string;
+  hoverImage?: string;
 }
 
 const TextLegend = styled(Legend)<PropsTextLeg>`
