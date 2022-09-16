@@ -98,7 +98,10 @@ LPTexts.quote = `
 <a href="mailto:jeronimo.rodriguez@temple.edu" target="_blank">Jerónimo Rodriguez</a>
 y
 <a href=mailto:victorhugo@temple.edu" target="_blank">Víctor Gutierrez</a>
-de la Universidad de Temple en Estados Unidos desarrollaron el método y las capas de bosque homologadas entre los productos de
+de la Universidad de Temple en Estados Unidos desarrollaron el
+<a href="https://github.com/Cumaribo/Forest_homologation.git" target="_blank"  rel="noopener noreferrer">
+  método y las capas de bosque homologadas
+</a> entre los productos de
 <a href="http://www.ideam.gov.co/web/ecosistemas/superficie-cubierta-por-bosque-natural?p_p_id=110_INSTANCE_dqBGlv6hKQrD&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-2&p_p_col_pos=1&p_p_col_count=2&_110_INSTANCE_dqBGlv6hKQrD_struts_action=%2Fdocument_library_display%2Fview_file_entry&_110_INSTANCE_dqBGlv6hKQrD_fileEntryId=91399289" target="_blank" rel="noopener noreferrer">
   monitoreo de la superficie cubierta por bosque natural del Instituto de Hidrología, Meteorología y Estudios Ambientales -IDEAM-,
 </a>
