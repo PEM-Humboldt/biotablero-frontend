@@ -1225,6 +1225,7 @@ class Search extends Component {
   /** ****************************** */
   secondLevelChange = (id, expanded) => {
     this.loadSecondLevelLayer(id, expanded);
+    this.setState({ loadingLayer: false });
   }
 
   /**
