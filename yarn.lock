@@ -5316,6 +5316,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/geojson@npm:*":
+  version: 7946.0.10
+  resolution: "@types/geojson@npm:7946.0.10"
+  checksum: 12c407c2dc93ecb26c08af533ee732f1506a9b29456616ba7ba1d525df96206c28ddf44a528f6a5415d7d22893e9d967420940a9c095ee5e539c1eba5fefc1f4
+  languageName: node
+  linkType: hard
+
 "@types/graceful-fs@npm:^4.1.2":
   version: 4.1.5
   resolution: "@types/graceful-fs@npm:4.1.5"
@@ -5387,6 +5394,15 @@ __metadata:
   version: 0.0.29
   resolution: "@types/json5@npm:0.0.29"
   checksum: e60b153664572116dfea673c5bda7778dbff150498f44f998e34b5886d8afc47f16799280e4b6e241c0472aef1bc36add771c569c68fc5125fc2ae519a3eb9ac
+  languageName: node
+  linkType: hard
+
+"@types/leaflet@npm:*":
+  version: 1.8.0
+  resolution: "@types/leaflet@npm:1.8.0"
+  dependencies:
+    "@types/geojson": "*"
+  checksum: a0190d48dfd49c7526a38c94490d9acdcb09de8b0338ebae8b33374b24f474330be82733007ab1c39008a61c4712b743ccf230909f203f0f35c9986b3a583ab6
   languageName: node
   linkType: hard
 
@@ -5500,6 +5516,16 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: c6387437ca964d02a23a2b6d7d3d6d9dba35fa536e7bfc2946b38eeb379b31947680ea1ab46b0230f5a272c724e6475dcdbec2f46d3701a06bcb9f819d79568d
+  languageName: node
+  linkType: hard
+
+"@types/react-leaflet@npm:^2.8.2":
+  version: 2.8.2
+  resolution: "@types/react-leaflet@npm:2.8.2"
+  dependencies:
+    "@types/leaflet": "*"
+    "@types/react": "*"
+  checksum: e972d779f0d084bb76f2be126d755d800ceaf12bca95e8b392c859b5aea6f3fdf098cde42ff3078cf64cffe218a28c99c40210928fb264839a34ac19a3175b9e
   languageName: node
   linkType: hard
 
@@ -7274,6 +7300,7 @@ __metadata:
     "@types/react": ^18.0.12
     "@types/react-dom": ^18.0.5
     "@types/react-json-to-csv": ^1.0.0
+    "@types/react-leaflet": ^2.8.2
     "@types/styled-components": ^5.1.26
     "@vx/axis": ~0.0.199
     "@vx/glyph": ~0.0.199

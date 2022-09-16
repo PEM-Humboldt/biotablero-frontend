@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React from "react";
 
-import { Modal } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Modal } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   ImageOverlay,
   Map,
@@ -10,31 +9,86 @@ import {
   WMSTileLayer,
   Pane,
   GeoJSON,
-} from 'react-leaflet';
+} from "react-leaflet";
 
-import DrawControl from 'pages/search/mapViewer/DrawControl';
+import DrawControl from "pages/search/mapViewer/DrawControl";
 
-import 'leaflet/dist/leaflet.css';
+import "leaflet/dist/leaflet.css";
+import {
+  LatLngBoundsExpression,
+  LatLngBoundsLiteral,
+  Layer,
+  PathOptions,
+} from "leaflet";
 
-const config = {};
-config.params = {
-  colombia: [[-4.2316872, -82.1243666], [16.0571269, -66.85119073]],
+interface Props {
+  drawPolygonEnabled: boolean;
+  geoServerUrl: string;
+  loadingLayer: boolean;
+  layerError: boolean;
+  mapTitle: string;
+  mapBounds: LatLngBoundsExpression;
+  rasterBounds: LatLngBoundsExpression;
+  loadPolygonInfo: () => void;
+  layers: Array<{
+    paneLevel: number;
+    id: string;
+    json: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[];
+    layerStyle?: PathOptions;
+    onEachFeature: (
+      feature: GeoJSON.Feature<GeoJSON.GeometryObject, any>,
+      selectedLayer: Layer
+    ) => void;
+  }>;
+  rasterLayers: Array<{
+    paneLevel: number;
+    id: string;
+    data: string;
+    opacity: number;
+  }>;
+  userLogged?: {
+    id: number;
+    username: string;
+    name: string;
+    company: {
+      id: number;
+    };
+  };
+}
+
+interface State {
+  openErrorModal: boolean;
+}
+
+const colombiaBounds: LatLngBoundsLiteral = [
+  [-4.2316872, -82.1243666],
+  [16.0571269, -66.85119073],
+];
+
+const config = {
+  params: {
+    colombia: colombiaBounds,
+  },
 };
 
-class MapViewer extends React.Component {
-  constructor(props) {
+class MapViewer extends React.Component<Props, State> {
+  mapRef;
+
+  constructor(props: Props) {
     super(props);
     this.state = {
       openErrorModal: true,
     };
 
-    this.mapRef = React.createRef();
+    this.mapRef = React.createRef<Map>();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { mapBounds } = this.props;
     if (prevProps.mapBounds !== mapBounds) {
-      this.mapRef.current.leafletElement.flyToBounds(mapBounds ?? config.params.colombia);
+      this.mapRef.current?.leafletElement.flyToBounds(
+        mapBounds ?? config.params.colombia
+      );
     }
   }
 
@@ -54,24 +108,20 @@ class MapViewer extends React.Component {
     const { openErrorModal } = this.state;
 
     const paneLevels = Array.from(
-      new Set([...layers, ...rasterLayers].map((layer) => layer.paneLevel)),
+      new Set([...layers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
 
     return (
-      <Map
-        id="map"
-        ref={this.mapRef}
-        bounds={config.params.colombia}
-      >
+      <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
         {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={loadingLayer}
           disableAutoFocus
-          container={() => document.getElementById('map')}
-          style={{ position: 'absolute' }}
-          BackdropProps={{ style: { position: 'absolute' } }}
+          container={() => document.getElementById("map")}
+          style={{ position: "absolute" }}
+          BackdropProps={{ style: { position: "absolute" } }}
         >
           <div className="generalAlarm">
             <h2>
@@ -90,10 +140,12 @@ class MapViewer extends React.Component {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={layerError && openErrorModal}
-          onClose={() => { this.setState({ openErrorModal: false }); }}
-          container={() => document.getElementById('map')}
-          style={{ position: 'absolute' }}
-          BackdropProps={{ style: { position: 'absolute' } }}
+          onClose={() => {
+            this.setState({ openErrorModal: false });
+          }}
+          container={() => document.getElementById("map")}
+          style={{ position: "absolute" }}
+          BackdropProps={{ style: { position: "absolute" } }}
         >
           <div className="generalAlarm">
             <h2>
@@ -102,18 +154,22 @@ class MapViewer extends React.Component {
             <button
               type="button"
               className="closebtn"
-              style={{ position: 'absolute' }}
-              onClick={() => { this.setState({ openErrorModal: false }); }}
+              style={{ position: "absolute" }}
+              onClick={() => {
+                this.setState({ openErrorModal: false });
+              }}
               title="Cerrar"
             >
               <CloseIcon />
             </button>
           </div>
         </Modal>
-        { drawPolygonEnabled && (<DrawControl loadPolygonInfo={loadPolygonInfo} />)}
+        {drawPolygonEnabled && (
+          <DrawControl loadPolygonInfo={loadPolygonInfo} />
+        )}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {paneLevels.map((panelLevel, index) => (
           <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
@@ -154,35 +210,5 @@ class MapViewer extends React.Component {
     );
   }
 }
-
-MapViewer.propTypes = {
-  drawPolygonEnabled: PropTypes.bool,
-  geoServerUrl: PropTypes.string.isRequired,
-  userLogged: PropTypes.object,
-  loadingLayer: PropTypes.bool,
-  layers: PropTypes.array,
-  layerError: PropTypes.bool,
-  rasterLayers: PropTypes.arrayOf(PropTypes.shape({
-    data: PropTypes.string,
-    opacity: PropTypes.number,
-  })),
-  mapBounds: PropTypes.object,
-  rasterBounds: PropTypes.object,
-  mapTitle: PropTypes.object,
-  loadPolygonInfo: PropTypes.func,
-};
-
-MapViewer.defaultProps = {
-  userLogged: null,
-  drawPolygonEnabled: false,
-  loadingLayer: false,
-  layerError: false,
-  rasterLayers: [],
-  layers: [],
-  mapBounds: null,
-  rasterBounds: null,
-  mapTitle: null,
-  loadPolygonInfo: () => {},
-};
 
 export default MapViewer;
