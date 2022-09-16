@@ -17,7 +17,6 @@ import "leaflet/dist/leaflet.css";
 import {
   LatLngBoundsExpression,
   LatLngBoundsLiteral,
-  LatLngTuple,
   Layer,
   PathOptions,
 } from "leaflet";
