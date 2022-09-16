@@ -1214,6 +1214,7 @@ class Search extends Component {
     });
 
     if (!idLayer) {
+      this.setState({ loadingLayer: false });
       return;
     }
     this.setSectionLayers(`national-${idLayer}`);
@@ -1225,7 +1226,6 @@ class Search extends Component {
   /** ****************************** */
   secondLevelChange = (id, expanded) => {
     this.loadSecondLevelLayer(id, expanded);
-    this.setState({ loadingLayer: false });
   }
 
   /**
