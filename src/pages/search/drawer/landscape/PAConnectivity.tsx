@@ -2,7 +2,7 @@ import Accordion from "pages/search/Accordion";
 import CurrentPAConnectivity from "pages/search/drawer/landscape/connectivity/CurrentPAConnectivity";
 import TimelinePAConnectivity from "pages/search/drawer/landscape/connectivity/TimelinePAConnectivity";
 import CurrentSEPAConnectivity from "pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivity";
-import { accordionComponent, componentProps } from 'pages/search/types/ui';
+import { accordionComponent, componentProps } from "pages/search/types/ui";
 
 const PAConnectivity: React.FC<componentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
@@ -39,7 +39,7 @@ const PAConnectivity: React.FC<componentProps> = (props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handleChange={(handleAccordionChange? handleAccordionChange : ()=>{})}
+        handleChange={handleAccordionChange ? handleAccordionChange : () => {}}
         level="2"
       />
     </div>

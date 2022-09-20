@@ -6,7 +6,7 @@ import Forest from "pages/search/drawer/landscape/Forest";
 import HumanFootprint from "pages/search/drawer/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/drawer/landscape/PAConnectivity";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import { accordionComponent } from 'pages/search/types/ui';
+import { accordionComponent } from "pages/search/types/ui";
 
 interface Props {}
 
