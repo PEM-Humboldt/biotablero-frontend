@@ -1,13 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { ReactElement } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
-import SearchContext from 'pages/search/SearchContext';
+import SearchContext, { SearchContextValues } from 'pages/search/SearchContext';
 
-class TabContainer extends React.Component {
-  constructor(props) {
+interface Titles{
+  label: string;
+  icon?: string | ReactElement;
+  disabled?: boolean;
+  selected?: string;
+}
+
+interface Props {
+  children: Array<React.ReactNode>;
+  titles: Array<Titles>;
+  tabClasses?: string;
+  initialSelectedIndex: number;
+}
+
+interface State {
+  value: number;
+}
+
+class TabContainer extends React.Component<Props, State> {
+  constructor(props: Props) {
     const { initialSelectedIndex } = props;
     super(props);
     this.state = {
@@ -18,9 +35,9 @@ class TabContainer extends React.Component {
   /**
    * Function to change visible content on tabs click
    */
-  changeTab = (event, value) => {
+  changeTab = (event: React.SyntheticEvent, value: number) => {
     if (this.context) {
-      const { cancelActiveRequests } = this.context;
+      const { cancelActiveRequests } = this.context as SearchContextValues;
       cancelActiveRequests();
     }
     this.setState({ value });
@@ -28,7 +45,7 @@ class TabContainer extends React.Component {
 
   render() {
     const {
-      children, titles, tabClasses,
+      children, titles, tabClasses = '', initialSelectedIndex = 1
     } = this.props;
     const { value } = this.state;
     return (
@@ -41,7 +58,7 @@ class TabContainer extends React.Component {
             centered
           >
             {titles.map(({
-              label, icon, disabled, selected,
+              label, icon, disabled
             }, i) => (
               <Tab
                 className={`tabs ${tabClasses}`}
@@ -49,7 +66,6 @@ class TabContainer extends React.Component {
                 icon={icon}
                 key={i}
                 disabled={disabled}
-                selected={selected}
               />
             ))}
           </Tabs>
@@ -65,18 +81,6 @@ class TabContainer extends React.Component {
     );
   }
 }
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-  initialSelectedIndex: PropTypes.number,
-  titles: PropTypes.array.isRequired,
-  tabClasses: PropTypes.string,
-};
-
-TabContainer.defaultProps = {
-  tabClasses: '',
-  initialSelectedIndex: 1,
-};
 
 export default TabContainer;
 
