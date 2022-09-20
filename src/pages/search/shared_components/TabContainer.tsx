@@ -1,11 +1,11 @@
-import React, { ReactElement } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
-import SearchContext, { SearchContextValues } from 'pages/search/SearchContext';
+import React, { ReactElement } from "react";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-interface Titles{
+interface Titles {
   label: string;
   icon?: string | ReactElement;
   disabled?: boolean;
@@ -45,7 +45,10 @@ class TabContainer extends React.Component<Props, State> {
 
   render() {
     const {
-      children, titles, tabClasses = '', initialSelectedIndex = 1
+      children,
+      titles,
+      tabClasses = "",
+      initialSelectedIndex = 1,
     } = this.props;
     const { value } = this.state;
     return (
@@ -57,9 +60,7 @@ class TabContainer extends React.Component<Props, State> {
             className="DrawerTab"
             centered
           >
-            {titles.map(({
-              label, icon, disabled
-            }, i) => (
+            {titles.map(({ label, icon, disabled }, i) => (
               <Tab
                 className={`tabs ${tabClasses}`}
                 label={label}
@@ -70,13 +71,14 @@ class TabContainer extends React.Component<Props, State> {
             ))}
           </Tabs>
         </AppBar>
-        {children.map((child, i) => (
-          value === i && (
-            <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
-              {child}
-            </Typography>
-          )
-        ))}
+        {children.map(
+          (child, i) =>
+            value === i && (
+              <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
+                {child}
+              </Typography>
+            )
+        )}
       </div>
     );
   }
