@@ -1,16 +1,12 @@
 import Accordion from "pages/search/Accordion";
 import ForestIntegrity from "pages/search/drawer/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/drawer/landscape/forest/ForestLossPersistence";
+import { accordionComponent, componentProps } from 'pages/search/types/ui';
 
-interface Props {
-  handleAccordionChange: (level: string, tabLayerId: string) => void;
-  openTab: string;
-}
-
-const Forest = (props: Props) => {
+const Forest: React.FC<componentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
-  const componentsArray = [
+  const componentsArray: Array<accordionComponent> = [
     {
       label: {
         id: "forestLP-2016-2021",
@@ -34,7 +30,7 @@ const Forest = (props: Props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handleChange={handleAccordionChange}
+        handleChange={(handleAccordionChange? handleAccordionChange : ()=>{})}
         level="2"
       />
     </div>

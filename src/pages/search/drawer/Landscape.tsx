@@ -6,6 +6,7 @@ import Forest from "pages/search/drawer/landscape/Forest";
 import HumanFootprint from "pages/search/drawer/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/drawer/landscape/PAConnectivity";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { accordionComponent } from 'pages/search/types/ui';
 
 interface Props {}
 
@@ -78,7 +79,7 @@ class Landscape extends React.Component<Props, State> {
   render() {
     const { areaId } = this.context as SearchContextValues;
     const { childMap } = this.state;
-    const initialArray = [
+    const initialArray: Array<accordionComponent> = [
       {
         label: {
           id: "fc",
