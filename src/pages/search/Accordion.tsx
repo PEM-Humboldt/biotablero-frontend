@@ -2,11 +2,23 @@ import React from 'react';
 import AccordionUI from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import PropTypes from 'prop-types';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { accordionComponent } from 'pages/search/types/ui';
 
-class Accordion extends React.Component {
-  constructor(props) {
+interface Props{
+  componentsArray: Array<accordionComponent>;
+  classNameSelected: string;
+  classNameDefault: string;
+  handleChange: (level: string, tabLayerId: string, expandedTab?: string) => void;
+  level: string;
+}
+
+interface State {
+  expanded: string | null;
+}
+
+class Accordion extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       expanded: null,
@@ -20,7 +32,7 @@ class Accordion extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { componentsArray: prevArray } = prevProps;
     const { componentsArray } = this.props;
     if (prevArray.length === 0 && componentsArray.length > 0) {
@@ -29,25 +41,26 @@ class Accordion extends React.Component {
   }
 
   setDefaultTab = () => {
+    let defaultTabId: string;
     const { componentsArray } = this.props;
     let defaultTab = componentsArray.find(
       (item) => !item.label.collapsed,
     );
     if (defaultTab) {
-      defaultTab = defaultTab.label.id;
+      defaultTabId = defaultTab.label.id;
     } else {
-      defaultTab = null;
+      defaultTabId = '';
     }
-    this.setState({ expanded: defaultTab });
+    this.setState({ expanded: defaultTabId });
   }
 
   render() {
     const {
       componentsArray,
-      classNameSelected,
-      classNameDefault,
+      classNameSelected = 'm0b selector-expanded',
+      classNameDefault = 'm0b',
       handleChange,
-      level,
+      level = '1',
     } = this.props;
     const { expanded } = this.state;
     return (
@@ -69,7 +82,7 @@ class Accordion extends React.Component {
             id={item.label.id}
             key={item.label.id}
             onChange={() => {
-              const expandedTab = expanded !== item.label.id ? item.label.id : null;
+              const expandedTab = expanded !== item.label.id ? item.label.id : "";
               this.setState({ expanded: expandedTab });
               handleChange(level, expandedTab);
             }}
@@ -92,33 +105,5 @@ class Accordion extends React.Component {
     );
   }
 }
-
-Accordion.propTypes = {
-  componentsArray: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.object,
-      ]),
-      disabled: PropTypes.bool,
-      collapsed: PropTypes.bool,
-      icon: PropTypes.elementType,
-    }),
-    component: PropTypes.elementType,
-    componentProps: PropTypes.object,
-  })).isRequired,
-  classNameDefault: PropTypes.string,
-  classNameSelected: PropTypes.string,
-  handleChange: PropTypes.func,
-  level: PropTypes.string,
-};
-
-Accordion.defaultProps = {
-  classNameDefault: 'm0b',
-  classNameSelected: 'm0b selector-expanded',
-  handleChange: () => {},
-  level: '1',
-};
 
 export default Accordion;
