@@ -1,5 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
 import { ResponsiveBar } from "@nivo/bar";
 
 import BarItem from "pages/search/shared_components/charts/BarItem";
