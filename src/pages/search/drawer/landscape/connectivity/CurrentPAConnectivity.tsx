@@ -14,7 +14,7 @@ import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import MultiSmallSingleBarGraph from "pages/search/shared_components/charts/MultiSmallSingleBarGraph";
 import { wrapperMessage } from "pages/search/types/charts";
-import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 
 const getLabel = {
   unprot: "No protegida",
@@ -199,7 +199,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         <div>
           <h6>Conectividad áreas protegidas</h6>
           <div>
-            <LargeBarStackGraph
+            <LargeStackedBar
               data={currentPAConnData}
               message={conn}
               labelX="Hectáreas"

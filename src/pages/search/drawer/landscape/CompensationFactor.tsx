@@ -10,7 +10,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
-import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 interface cfDataExt extends cfData {
@@ -216,7 +216,7 @@ class CompensationFactor extends React.Component<
               />
             )}
           </div>
-          <LargeBarStackGraph
+          <LargeStackedBar
             data={fc}
             message={fcMess}
             labelX="Hectáreas"
@@ -250,7 +250,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <LargeBarStackGraph
+          <LargeStackedBar
             data={biomes}
             message={biomesMess}
             labelX="Hectáreas"
@@ -284,7 +284,7 @@ class CompensationFactor extends React.Component<
               collapseButton={false}
             />
           )}
-          <LargeBarStackGraph
+          <LargeStackedBar
             data={bioticUnits}
             message={bioticUnitsMess}
             labelX="Hectáreas"
