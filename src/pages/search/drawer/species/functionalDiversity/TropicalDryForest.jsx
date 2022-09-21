@@ -6,7 +6,7 @@ import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
-import SingleBulletGraph from 'pages/search/shared_components/charts/SingleBulletGraph';
+import SingleBullet from 'pages/search/shared_components/charts/SingleBullet';
 
 const getFeatureLabel = {
   leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
@@ -237,7 +237,7 @@ class TropicalDryForest extends React.Component {
           </h3>
           <br />
           {messageFeatures === 'no-data' && (
-            <SingleBulletGraph
+            <SingleBullet
               message={messageFeatures}
               data={[]}
               graphType="singleBullet"
@@ -251,7 +251,7 @@ class TropicalDryForest extends React.Component {
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">
-                <SingleBulletGraph
+                <SingleBullet
                   message={messageFeatures}
                   data={bar}
                   graphType="singleBullet"
