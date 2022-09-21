@@ -6,7 +6,7 @@ import formatNumber from "utils/format";
 import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
-  data: Array<MultiSmallBarStackGraphData>;
+  data: Array<MultiSmallStackedBarData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
@@ -14,7 +14,7 @@ interface Props {
   selectedIndexValue: string;
 }
 
-export interface MultiSmallBarStackGraphData {
+export interface MultiSmallStackedBarData {
   id: string;
   data: Array<{
     area: number;
@@ -28,7 +28,7 @@ interface State {
   selectedIndexValue: string | number;
 }
 
-class MultiSmallBarStackGraph extends React.Component<Props, State> {
+class MultiSmallStackedBar extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -52,7 +52,7 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
      * @param {array} rawData raw data from RestAPI
      * @returns {array} transformed data ready to be used by graph component
      */
-    const transformData = (rawData: Array<MultiSmallBarStackGraphData>) => {
+    const transformData = (rawData: Array<MultiSmallStackedBarData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
           key: element.id,
@@ -142,4 +142,4 @@ class MultiSmallBarStackGraph extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(MultiSmallBarStackGraph);
+export default withMessageWrapper<Props>(MultiSmallStackedBar);
