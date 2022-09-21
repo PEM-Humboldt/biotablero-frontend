@@ -16,7 +16,7 @@ import SearchAPI from "utils/searchAPI";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import PieGraph from "pages/search/shared_components/charts/PieGraph";
+import Pie from "pages/search/shared_components/charts/Pie";
 import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -228,7 +228,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           Límite de áreas protegidas
         </BorderLegendColor>
         <div>
-          <PieGraph
+          <Pie
             message={loading}
             data={Object.values(SciHfCats)}
             units="ha"
