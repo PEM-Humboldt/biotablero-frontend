@@ -2,7 +2,7 @@ import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
-import withMessageWrapper from "./withMessageWrapper";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
   data: Array<SingleSmallBarsData>;
