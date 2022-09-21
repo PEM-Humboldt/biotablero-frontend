@@ -13,7 +13,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { textsObject } from "pages/search/types/texts";
-import MultiLinesGraph from "pages/search/shared_components/charts/MultiLinesGraph";
+import StackedLines from "pages/search/shared_components/charts/StackedLines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
 
@@ -179,7 +179,7 @@ class TimelineFootprint extends React.Component<Props, State> {
    * @returns {string} label to be used for tooltips, legends, etc.
    * Max. length = 16 characters
    */
-  getLabel = (type: string) => {
+  getLabel = (type: string): string => {
     switch (type) {
       case "paramo":
         return "Páramo";
@@ -231,7 +231,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         <h6>Huella humana comparada con EE</h6>
         <p>Haz clic en un ecosistema para ver su comportamiento</p>
         <div>
-          <MultiLinesGraph
+          <StackedLines
             colors={matchColor("hfTimeline")}
             data={hfTimeline}
             message={message}
