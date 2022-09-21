@@ -5,7 +5,7 @@ import { CartesianMarkerProps } from "@nivo/core";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
-interface MultiLinesGraphData {
+interface StackedLinesData {
   label: string;
   data: Array<{
     y: number;
@@ -14,7 +14,7 @@ interface MultiLinesGraphData {
   key: string;
 }
 
-interface MultiLinesGraphDataState {
+interface StackedLinesDataState {
   id: string;
   data: Array<{
     y: number;
@@ -25,7 +25,7 @@ interface MultiLinesGraphDataState {
 
 interface Props {
   colors: (key: string | number) => string;
-  data: Array<MultiLinesGraphData>;
+  data: Array<StackedLinesData>;
   markers?: Array<CartesianMarkerProps>;
   labelX?: string;
   labelY?: string;
@@ -37,11 +37,11 @@ interface Props {
 }
 
 interface State {
-  data: Array<MultiLinesGraphDataState>;
+  data: Array<StackedLinesDataState>;
   labels: Record<string, string>;
   selectedId: string;
 }
-class MultiLinesGraph extends React.Component<Props, State> {
+class StackedLines extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -231,4 +231,4 @@ class MultiLinesGraph extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(MultiLinesGraph);
+export default withMessageWrapper<Props>(StackedLines);
