@@ -17,7 +17,7 @@ import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import SearchAPI from "utils/searchAPI";
-import SmallBarStackGraph from 'pages/search/shared_components/charts/SmallBarStackGraph';
+import SmallStackedBar from 'pages/search/shared_components/charts/SmallStackedBar';
 
 /**
  * Calculate percentage for a given value according to total
@@ -292,7 +292,7 @@ class Ecosystems extends React.Component {
           </h6>
           <div className="graficaeco">
             <div className="svgPointer">
-              <SmallBarStackGraph
+              <SmallStackedBar
                 message={cov}
                 data={coverage}
                 units="ha"
@@ -336,7 +336,7 @@ class Ecosystems extends React.Component {
             <h6>
               Distribución por áreas protegidas:
             </h6>
-            <SmallBarStackGraph
+            <SmallStackedBar
               message={pa}
               data={PAAreas}
               units="ha"

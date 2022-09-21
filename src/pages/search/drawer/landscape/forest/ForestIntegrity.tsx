@@ -17,7 +17,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import Pie from "pages/search/shared_components/charts/Pie";
-import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
+import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
@@ -270,7 +270,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
               filename={`bt_fi_areas_${selectedCategory}_${areaId}_${geofenceId}.csv`}
             />
             <div style={{ padding: "0 12px" }}>
-              <SmallBarStackGraph
+              <SmallStackedBar
                 message={loading}
                 data={ProtectedAreas[selectedCategory]}
                 units="ha"
