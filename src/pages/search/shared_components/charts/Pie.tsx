@@ -3,7 +3,7 @@ import React from "react";
 
 import formatNumber from "utils/format";
 import { lightenColor, darkenColor } from "utils/colorUtils";
-import withMessageWrapper from "./withMessageWrapper";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
   data: Array<PieData>;
