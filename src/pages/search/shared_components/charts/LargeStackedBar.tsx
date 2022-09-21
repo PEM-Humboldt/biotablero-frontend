@@ -46,10 +46,7 @@ const LargeStackedBar = (props: Props) => {
    * @param {String} key id for data of each bar o serie
    * @returns {array} transformed data ready to be used by graph component
    */
-  const transformData = (
-    rawData: Array<LargeStackedBarData>,
-    key: string
-  ) => {
+  const transformData = (rawData: Array<LargeStackedBarData>, key: string) => {
     const transformedData: Record<string, string | number> = {
       key,
     };
