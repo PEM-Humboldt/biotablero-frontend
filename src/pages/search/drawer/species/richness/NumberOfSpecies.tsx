@@ -21,7 +21,7 @@ import biomodeloslink from "images/biomodeloslink.png";
 import biomodeloslink2 from "images/biomodeloslink2.png";
 import fullview from "images/fullview.png";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
-import SingleBullet from "pages/search/shared_components/charts/SingleBullet";
+import Bullet from "pages/search/shared_components/charts/Bullet";
 import { wrapperMessage } from "pages/search/types/charts";
 import { helperText, textsObject } from "pages/search/types/texts";
 import { NOSGroups, NOSNational } from "pages/search/types/richness";
@@ -513,7 +513,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
         </div>
         <div>
           {(message === "no-data" || message === "loading") && (
-            <SingleBullet
+            <Bullet
               data={null}
               message={message}
               colors={matchColor("richnessNos")}
@@ -572,7 +572,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                 </div>
               </div>
               <div className="svgPointer">
-                <SingleBullet
+                <Bullet
                   message={message}
                   data={bar}
                   colors={matchColor("richnessNos")}

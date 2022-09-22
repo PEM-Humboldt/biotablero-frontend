@@ -12,7 +12,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
-import SingleBullet from "pages/search/shared_components/charts/SingleBullet";
+import Bullet from "pages/search/shared_components/charts/Bullet";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
@@ -341,7 +341,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
           Vacios de datos
         </div>
         <div className="svgPointer">
-          <SingleBullet
+          <Bullet
             message={messageGaps}
             data={gaps}
             colors={matchColor("richnessGaps")}
@@ -400,7 +400,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
               <b>5 km x 5 km</b>
             </div>
             <div className="svgPointer">
-              <SingleBullet
+              <Bullet
                 message={messageConc}
                 data={concentration}
                 colors={matchColor("richnessGaps")}

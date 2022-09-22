@@ -6,7 +6,7 @@ import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
-import SingleBullet from 'pages/search/shared_components/charts/SingleBullet';
+import Bullet from 'pages/search/shared_components/charts/Bullet';
 
 const getFeatureLabel = {
   leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
@@ -237,10 +237,10 @@ class TropicalDryForest extends React.Component {
           </h3>
           <br />
           {messageFeatures === 'no-data' && (
-            <SingleBullet
+            <Bullet
               message={messageFeatures}
               data={[]}
-              graphType="singleBullet"
+              graphType="Bullet"
             />
           )}
           {features.map((bar) => (
@@ -251,10 +251,10 @@ class TropicalDryForest extends React.Component {
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">
-                <SingleBullet
+                <Bullet
                   message={messageFeatures}
                   data={bar}
-                  graphType="singleBullet"
+                  graphType="Bullet"
                   colors={matchColor(getFeatureColors[bar.id])}
                   onClickHandler={() => {
                     this.setState({ selected: bar.id });
