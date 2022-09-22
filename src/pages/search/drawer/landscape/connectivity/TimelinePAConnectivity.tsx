@@ -13,7 +13,7 @@ import {
 } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import SearchAPI from "utils/searchAPI";
-import StackedLines from "pages/search/shared_components/charts/StackedLines";
+import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 
 const getLabel = {
@@ -144,7 +144,7 @@ class TimelinePAConnectivity extends React.Component<
         <div>
           <h6>Conectividad áreas protegidas en el tiempo</h6>
           <div>
-            <StackedLines
+            <Lines
               colors={matchColor("timelinePAConn")}
               data={timelinePAConnData}
               message={message}
