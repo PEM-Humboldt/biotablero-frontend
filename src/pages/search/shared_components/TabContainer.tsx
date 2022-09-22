@@ -7,9 +7,8 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 interface Titles {
   label: string;
-  icon?: string | ReactElement;
+  icon: ReactElement;
   disabled?: boolean;
-  selected?: string;
 }
 
 interface Props {
@@ -20,7 +19,7 @@ interface Props {
 }
 
 interface State {
-  value: number;
+  selectedIndex: number;
 }
 
 class TabContainer extends React.Component<Props, State> {
@@ -28,19 +27,19 @@ class TabContainer extends React.Component<Props, State> {
     const { initialSelectedIndex } = props;
     super(props);
     this.state = {
-      value: initialSelectedIndex,
+      selectedIndex: initialSelectedIndex,
     };
   }
 
   /**
    * Function to change visible content on tabs click
    */
-  changeTab = (event: React.SyntheticEvent, value: number) => {
+  changeTab = (event: React.SyntheticEvent, selectedIndex: number) => {
     if (this.context) {
       const { cancelActiveRequests } = this.context as SearchContextValues;
       cancelActiveRequests();
     }
-    this.setState({ value });
+    this.setState({ selectedIndex });
   };
 
   render() {
@@ -48,14 +47,13 @@ class TabContainer extends React.Component<Props, State> {
       children,
       titles,
       tabClasses = "",
-      initialSelectedIndex = 1,
     } = this.props;
-    const { value } = this.state;
+    const { selectedIndex } = this.state;
     return (
       <div>
         <AppBar position="static" color="default">
           <Tabs
-            value={value}
+            value={selectedIndex}
             onChange={this.changeTab}
             className="DrawerTab"
             centered
@@ -73,7 +71,7 @@ class TabContainer extends React.Component<Props, State> {
         </AppBar>
         {children.map(
           (child, i) =>
-            value === i && (
+          selectedIndex === i && (
               <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
                 {child}
               </Typography>
