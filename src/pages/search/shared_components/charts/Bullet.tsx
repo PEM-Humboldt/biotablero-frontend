@@ -229,7 +229,7 @@ interface BulletData {
 /**
  * Important: measures and markers are inverted with respect to nivo documentation
  */
-const SingleBullet: React.FC<BulletProps> = (props) => {
+const Bullet: React.FC<BulletProps> = (props) => {
   const {
     height = 62,
     data,
@@ -290,4 +290,4 @@ const SingleBullet: React.FC<BulletProps> = (props) => {
   );
 };
 
-export default withMessageWrapper<BulletProps>(SingleBullet);
+export default withMessageWrapper<BulletProps>(Bullet);
