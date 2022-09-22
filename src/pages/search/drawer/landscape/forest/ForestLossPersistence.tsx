@@ -9,9 +9,9 @@ import SearchAPI from "utils/searchAPI";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import MultiSmallStackedBar, {
-  MultiSmallStackedBarData,
-} from "pages/search/shared_components/charts/MultiSmallStackedBar";
+import SmallStackedBars, {
+  SmallStackedBarsData,
+} from "pages/search/shared_components/charts/SmallStackedBars";
 import { textsObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -19,7 +19,7 @@ import { wrapperMessage } from "pages/search/types/charts";
 interface Props {}
 interface State {
   showInfoGraph: boolean;
-  forestLP: Array<MultiSmallStackedBarData>;
+  forestLP: Array<SmallStackedBarsData>;
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
@@ -116,7 +116,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
    *
    * @param {Array<Object>} data graph data transformed to be downloaded as csv
    */
-  processDownload = (data: Array<MultiSmallStackedBarData>) => {
+  processDownload = (data: Array<SmallStackedBarsData>) => {
     const result: Array<{
       period: string;
       category: string;
@@ -170,7 +170,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
-          <MultiSmallStackedBar
+          <SmallStackedBars
             data={forestLP}
             message={message}
             units="ha"
