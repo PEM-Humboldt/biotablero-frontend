@@ -43,11 +43,7 @@ class TabContainer extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      children,
-      titles,
-      tabClasses = "",
-    } = this.props;
+    const { children, titles, tabClasses = "" } = this.props;
     const { selectedIndex } = this.state;
     return (
       <div>
@@ -71,7 +67,7 @@ class TabContainer extends React.Component<Props, State> {
         </AppBar>
         {children.map(
           (child, i) =>
-          selectedIndex === i && (
+            selectedIndex === i && (
               <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
                 {child}
               </Typography>
