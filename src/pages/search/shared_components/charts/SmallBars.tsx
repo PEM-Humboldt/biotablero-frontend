@@ -2,10 +2,10 @@ import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
-import withMessageWrapper from "./withMessageWrapper";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
-  data: Array<MultiSmallSingleBarGraphData>;
+  data: Array<SmallBarsData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
@@ -14,7 +14,7 @@ interface Props {
   labelX: string;
 }
 
-export interface MultiSmallSingleBarGraphData {
+export interface SmallBarsData {
   id: string;
   name: string;
   key: string;
@@ -26,7 +26,7 @@ interface State {
   selectedIndexValue: string;
 }
 
-class MultiSmallSingleBarGraph extends React.Component<Props, State> {
+class SmallBars extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { selectedIndexValue = "" } = props;
@@ -46,7 +46,7 @@ class MultiSmallSingleBarGraph extends React.Component<Props, State> {
     } = this.props;
     const { selectedIndexValue } = this.state;
 
-    const transformData = (rawData: Array<MultiSmallSingleBarGraphData>) => {
+    const transformData = (rawData: Array<SmallBarsData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
           id: String(element.id),
@@ -135,4 +135,4 @@ class MultiSmallSingleBarGraph extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(MultiSmallSingleBarGraph);
+export default withMessageWrapper<Props>(SmallBars);

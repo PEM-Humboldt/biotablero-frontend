@@ -15,7 +15,7 @@ import {
   coverageLabels,
 } from "pages/search/types/ecosystems";
 import SearchAPI from "utils/searchAPI";
-import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
+import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 export interface PAData {
@@ -129,7 +129,7 @@ class EcosystemDetails extends React.Component<Props, State> {
         <div>
           <h3>
             Distribución de coberturas:
-            <SmallBarStackGraph
+            <SmallStackedBar
               message={messages.coverage}
               customMessage="No hay información disponible de coberturas"
               data={coverageData}
@@ -146,7 +146,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           </h3>
           <h3>
             Distribución en áreas protegidas:
-            <SmallBarStackGraph
+            <SmallStackedBar
               message={messages.pa}
               customMessage="Sin áreas protegidas"
               data={paData}

@@ -3,17 +3,17 @@ import React from "react";
 
 import formatNumber from "utils/format";
 import { lightenColor, darkenColor } from "utils/colorUtils";
-import withMessageWrapper from "./withMessageWrapper";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
-  data: Array<PieGraphData>;
+  data: Array<PieData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
   onClickHandler: (section: string) => void;
 }
 
-export interface PieGraphData {
+export interface PieData {
   id: string;
   label: string;
   value: number;
@@ -23,7 +23,7 @@ interface State {
   selectedId: string | null;
 }
 
-class PieGraph extends React.Component<Props, State> {
+class Pie extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -80,4 +80,4 @@ class PieGraph extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(PieGraph);
+export default withMessageWrapper<Props>(Pie);

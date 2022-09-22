@@ -15,7 +15,7 @@ import {
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 const getLabel = {
@@ -245,7 +245,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <LargeBarStackGraph
+            <LargeStackedBar
               data={currentPAConnParamo}
               message={paramo}
               labelX="Hectáreas"
@@ -286,7 +286,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <LargeBarStackGraph
+            <LargeStackedBar
               data={currentPAConnDryForest}
               message={dryForest}
               labelX="Hectáreas"
@@ -327,7 +327,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             />
           )}
           <div className="svgPointer">
-            <LargeBarStackGraph
+            <LargeStackedBar
               data={currentPAConnWetland}
               message={wetland}
               labelX="Hectáreas"

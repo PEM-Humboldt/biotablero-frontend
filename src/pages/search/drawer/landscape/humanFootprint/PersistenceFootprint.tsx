@@ -10,7 +10,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 const getLabel = {
@@ -120,7 +120,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         )}
         <h6>Estable natural, Dinámica, Estable alta</h6>
         <div>
-          <LargeBarStackGraph
+          <LargeStackedBar
             data={hfPersistence}
             message={message}
             labelX="Hectáreas"

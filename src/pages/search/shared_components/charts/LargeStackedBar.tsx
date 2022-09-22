@@ -1,10 +1,10 @@
 import { ResponsiveBar } from "@nivo/bar";
 
 import formatNumber from "utils/format";
-import withMessageWrapper from "./withMessageWrapper";
+import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
-  data: Array<LargeBarStackGraphData>;
+  data: Array<LargeStackedBarData>;
   height?: number;
   colors: (key: string | number) => string;
   units?: string;
@@ -14,7 +14,7 @@ interface Props {
   padding?: number;
 }
 
-export interface LargeBarStackGraphData {
+export interface LargeStackedBarData {
   key: string | number;
   area: number;
   percentage?: number;
@@ -27,7 +27,7 @@ const darkColors: { [key: string]: string } = {
   "#902130": "#902130",
 };
 
-const LargeBarStackGraph = (props: Props) => {
+const LargeStackedBar = (props: Props) => {
   const {
     data,
     labelX = "",
@@ -46,10 +46,7 @@ const LargeBarStackGraph = (props: Props) => {
    * @param {String} key id for data of each bar o serie
    * @returns {array} transformed data ready to be used by graph component
    */
-  const transformData = (
-    rawData: Array<LargeBarStackGraphData>,
-    key: string
-  ) => {
+  const transformData = (rawData: Array<LargeStackedBarData>, key: string) => {
     const transformedData: Record<string, string | number> = {
       key,
     };
@@ -148,4 +145,4 @@ const LargeBarStackGraph = (props: Props) => {
   );
 };
 
-export default withMessageWrapper<Props>(LargeBarStackGraph);
+export default withMessageWrapper<Props>(LargeStackedBar);

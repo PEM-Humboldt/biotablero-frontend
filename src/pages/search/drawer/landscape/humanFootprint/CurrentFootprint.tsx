@@ -14,7 +14,7 @@ import {
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeBarStackGraph from "pages/search/shared_components/charts/LargeBarStackGraph";
+import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
 interface currentHFCategoriesExt extends currentHFCategories {
@@ -150,7 +150,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         </div>
         <h6>Natural, Baja, Media y Alta</h6>
         <div>
-          <LargeBarStackGraph
+          <LargeStackedBar
             data={hfCurrent}
             message={message}
             labelX="Hectáreas"

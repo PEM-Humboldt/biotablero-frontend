@@ -7,7 +7,7 @@ import matchColor from "utils/matchColor";
 
 import { transformSEValues } from "pages/search/drawer/ecosystems/transformData";
 import { SEPADataExt } from "pages/search/types/ecosystems";
-import SmallBarStackGraph from "pages/search/shared_components/charts/SmallBarStackGraph";
+import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 
 interface Props {
   SETotalArea: number;
@@ -58,7 +58,7 @@ class EcosystemsBox extends React.Component<Props, State> {
                 </button>
               )}
               {!stopLoad && Number(SEValues.area) !== 0 && (
-                <SmallBarStackGraph
+                <SmallStackedBar
                   message={null}
                   customMessage="Sin áreas protegidas"
                   data={transformSEValues(SEValues, SETotalArea)}

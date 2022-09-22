@@ -1,5 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
 import { ResponsiveBar } from "@nivo/bar";
 
 import BarItem from "pages/search/shared_components/charts/BarItem";
@@ -7,14 +5,14 @@ import formatNumber from "utils/format";
 import withMessageWrapper from "./withMessageWrapper";
 
 interface Props {
-  data: Array<SmallBarStackGraphData>;
+  data: Array<SmallStackedBarData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
   onClickGraphHandler?: (key: string) => void;
 }
 
-export interface SmallBarStackGraphData {
+export interface SmallStackedBarData {
   area: number;
   key: string;
   percentage: number;
@@ -25,7 +23,7 @@ interface State {
   selectedIndexValue: string | number;
 }
 
-const SmallBarStackGraph = (props: Props) => {
+const SmallStackedBar = (props: Props) => {
   const {
     data,
     height = 30,
@@ -40,7 +38,7 @@ const SmallBarStackGraph = (props: Props) => {
    * @param {array} rawData raw data from RestAPI
    * @returns {array} transformed data ready to be used by graph component
    */
-  const transformData = (rawData: Array<SmallBarStackGraphData>) => {
+  const transformData = (rawData: Array<SmallStackedBarData>) => {
     const transformedData: Record<string, string | number> = {
       key: "key",
     };
@@ -119,4 +117,4 @@ const SmallBarStackGraph = (props: Props) => {
   );
 };
 
-export default withMessageWrapper<Props>(SmallBarStackGraph);
+export default withMessageWrapper<Props>(SmallStackedBar);
