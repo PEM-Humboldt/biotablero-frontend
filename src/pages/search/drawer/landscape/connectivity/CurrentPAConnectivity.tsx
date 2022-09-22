@@ -12,7 +12,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SingleSmallBars from "pages/search/shared_components/charts/SingleSmallBars";
+import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 
@@ -251,7 +251,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
             Haz clic en un área protegida para visualizarla
           </h3>
           <div>
-            <SingleSmallBars
+            <SmallBars
               data={dpcData}
               message={dpcMess}
               colors={matchColor("dpc")}
