@@ -4,16 +4,12 @@ import Accordion from "pages/search/Accordion";
 import CurrentFootprint from "pages/search/drawer/landscape/humanFootprint/CurrentFootprint";
 import PersistenceFooprint from "pages/search/drawer/landscape/humanFootprint/PersistenceFootprint";
 import TimelineFootprint from "pages/search/drawer/landscape/humanFootprint/TimelineFootprint";
+import { accordionComponent, componentProps } from "pages/search/types/ui";
 
-interface Props {
-  handleAccordionChange: (level: string, tabLayerId: string) => void;
-  openTab: string;
-}
-
-const HumanFootprint = (props: Props) => {
+const HumanFootprint: React.FC<componentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
-  const componentsArray = [
+  const componentsArray: Array<accordionComponent> = [
     {
       label: {
         id: "hfCurrent",
@@ -57,7 +53,7 @@ const HumanFootprint = (props: Props) => {
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
-        handleChange={handleAccordionChange}
+        handleChange={handleAccordionChange ? handleAccordionChange : () => {}}
         level="2"
       />
     </div>
