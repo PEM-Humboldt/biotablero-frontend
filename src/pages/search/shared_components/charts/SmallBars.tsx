@@ -5,7 +5,7 @@ import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
-  data: Array<SingleSmallBarsData>;
+  data: Array<SmallBarsData>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
@@ -14,7 +14,7 @@ interface Props {
   labelX: string;
 }
 
-export interface SingleSmallBarsData {
+export interface SmallBarsData {
   id: string;
   name: string;
   key: string;
@@ -26,7 +26,7 @@ interface State {
   selectedIndexValue: string;
 }
 
-class SingleSmallBars extends React.Component<Props, State> {
+class SmallBars extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const { selectedIndexValue = "" } = props;
@@ -46,7 +46,7 @@ class SingleSmallBars extends React.Component<Props, State> {
     } = this.props;
     const { selectedIndexValue } = this.state;
 
-    const transformData = (rawData: Array<SingleSmallBarsData>) => {
+    const transformData = (rawData: Array<SmallBarsData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
           id: String(element.id),
@@ -135,4 +135,4 @@ class SingleSmallBars extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(SingleSmallBars);
+export default withMessageWrapper<Props>(SmallBars);
