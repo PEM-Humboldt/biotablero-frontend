@@ -26,6 +26,10 @@ import {
   NOSThresholds,
   numberOfSpecies,
 } from "pages/search/types/richness";
+import {
+  portfoliosByTarget,
+  target
+} from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/drawer";
 class SearchAPI {
   /** ****** */
@@ -460,6 +464,47 @@ class SearchAPI {
       `richness/concentration?areaType=${areaType}&areaId=${areaId}`
     );
   }
+
+  /** ********** */
+  /** PORTFOLIOS */
+  /** ********** */
+
+  /**
+   * Get all portfolios for a specific target within a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} targetId target id to get results
+   *
+   * @return {Promise<Object>} Object with portfolios data
+   */
+   static PortfoliosByTarget(
+    areaType: string,
+    areaId: number | string,
+    targetId: number
+  ): Promise<portfoliosByTarget> {
+    return SearchAPI.makeGetRequest(
+      `portfolios-ca/targets/${targetId}/values?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get list of targets with portfolios values within a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Array of objects with targets list
+   */
+   static TargetsList(
+    areaType: string,
+    areaId: number | string,
+  ): Promise<Array<target>> {
+    return SearchAPI.makeGetRequest(
+      `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
 
   /** ************ */
   /** CROSS MODULE */
