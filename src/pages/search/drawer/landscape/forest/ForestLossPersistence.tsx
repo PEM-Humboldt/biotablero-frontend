@@ -15,7 +15,7 @@ import SmallStackedBars, {
 import { textsObject } from "pages/search/types/texts";
 import { ForestLP } from "pages/search/types/forest";
 import { wrapperMessage } from "pages/search/types/charts";
-import { ForestLossPersistenceController } from "./controller/ForestLossPersistenceController";
+import { ForestLossPersistenceController } from "./ForestLossPersistenceController";
 
 interface Props {}
 interface State {
@@ -39,9 +39,11 @@ const getLabel = {
 
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
+  flpController;
 
   constructor(props: Props) {
     super(props);
+    this.flpController = new ForestLossPersistenceController();
     this.state = {
       showInfoGraph: true,
       forestLP: [],
@@ -58,8 +60,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
 
-    let flpController = new ForestLossPersistenceController();
-
     switchLayer(`forestLP-${LATEST_PERIOD}`);
 
     SearchAPI.requestForestLP(areaId, geofenceId)
@@ -73,7 +73,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 label: getLabel[element.key],
               })),
             })),
-            forestPersistenceValue: flpController.getPersistenceValue(
+            forestPersistenceValue: this.flpController.getPersistenceValue(
               res,
               LATEST_PERIOD
             ),
@@ -113,8 +113,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
    * @param {Array<Object>} data graph data transformed to be downloaded as csv
    */
   processDownload = (data: Array<SmallStackedBarsData>) => {
-    let flpController = new ForestLossPersistenceController();
-    return flpController.getDownloadData(data);
+    return this.flpController.getDownloadData(data);
   }
 
   render() {
