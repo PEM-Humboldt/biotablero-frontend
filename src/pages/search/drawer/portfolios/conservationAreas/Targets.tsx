@@ -2,10 +2,7 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import {
-  LineLegend,
-  LegendColor,
-} from "pages/search/shared_components/CssLegends";
+import { LegendColor } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
@@ -147,7 +144,7 @@ class Targets extends React.Component<Props, State> {
             WCNC
           </LegendColor>
 
-          <LegendColor color="#123465" orientation="column" key="wcelsanc">
+          <LegendColor color="#123465" orientation="column" key="elsa">
             ELSA
           </LegendColor>
 
