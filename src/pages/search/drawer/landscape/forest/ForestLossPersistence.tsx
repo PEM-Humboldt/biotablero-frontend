@@ -114,14 +114,14 @@ class ForestLossPersistence extends React.Component<Props, State> {
    */
   processDownload = (data: Array<SmallStackedBarsData>) => {
     return this.flpController.getDownloadData(data);
-  }
+  };
 
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
     const { areaId, geofenceId, handlerClickOnGraph } = this
       .context as SearchContextValues;
-    const downloadData = this.processDownload(forestLP)
+    const downloadData = this.processDownload(forestLP);
 
     return (
       <div className="graphcontainer pt6">

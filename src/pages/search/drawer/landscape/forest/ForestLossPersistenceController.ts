@@ -20,7 +20,7 @@ export class ForestLossPersistenceController {
     return persistenceData ? persistenceData.area : 0;
   }
 
- /**
+  /**
    * Returns data transformed to be downloaded in the csv file
    *
    * @param {SmallStackedBarsData[]} data array of data for nivo bar graph of forest loss persistence
@@ -46,5 +46,4 @@ export class ForestLossPersistenceController {
     );
     return result;
   }
-
 }
