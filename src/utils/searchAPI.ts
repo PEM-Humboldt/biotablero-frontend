@@ -26,10 +26,7 @@ import {
   NOSThresholds,
   numberOfSpecies,
 } from "pages/search/types/richness";
-import {
-  portfoliosByTarget,
-  target
-} from "pages/search/types/portfolios";
+import { portfoliosByTarget, target } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/drawer";
 class SearchAPI {
   /** ****** */
@@ -478,7 +475,7 @@ class SearchAPI {
    *
    * @return {Promise<Object>} Object with portfolios data
    */
-   static PortfoliosByTarget(
+  static PortfoliosByTarget(
     areaType: string,
     areaId: number | string,
     targetId: number
@@ -496,15 +493,14 @@ class SearchAPI {
    *
    * @return {Promise<Object>} Array of objects with targets list
    */
-   static TargetsList(
+  static TargetsList(
     areaType: string,
-    areaId: number | string,
+    areaId: number | string
   ): Promise<Array<target>> {
     return SearchAPI.makeGetRequest(
       `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`
     );
   }
-
 
   /** ************ */
   /** CROSS MODULE */

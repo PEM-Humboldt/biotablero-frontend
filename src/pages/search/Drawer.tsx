@@ -4,7 +4,7 @@ import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Especies from "@mui/icons-material/FilterVintage";
 import Paisaje from "@mui/icons-material/FilterHdr";
-import Portafolios from '@mui/icons-material/EmojiNature';
+import Portafolios from "@mui/icons-material/EmojiNature";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import Landscape from "pages/search/drawer/Landscape";
