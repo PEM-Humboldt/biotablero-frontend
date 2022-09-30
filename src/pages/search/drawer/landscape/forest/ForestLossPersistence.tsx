@@ -13,9 +13,8 @@ import SmallStackedBars, {
   SmallStackedBarsData,
 } from "pages/search/shared_components/charts/SmallStackedBars";
 import { textsObject } from "pages/search/types/texts";
-import { ForestLP } from "pages/search/types/forest";
 import { wrapperMessage } from "pages/search/types/charts";
-import { ForestLossPersistenceController } from "./ForestLossPersistenceController";
+import { ForestLossPersistenceController } from "pages/search/drawer/landscape/forest/ForestLossPersistenceController";
 
 interface Props {}
 interface State {
@@ -107,21 +106,11 @@ class ForestLossPersistence extends React.Component<Props, State> {
     }));
   };
 
-  /**
-   * Process data to be downloaded as a csv file
-   *
-   * @param {Array<Object>} data graph data transformed to be downloaded as csv
-   */
-  processDownload = (data: Array<SmallStackedBarsData>) => {
-    return this.flpController.getDownloadData(data);
-  };
-
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
     const { areaId, geofenceId, handlerClickOnGraph } = this
       .context as SearchContextValues;
-    const downloadData = this.processDownload(forestLP);
 
     return (
       <div className="graphcontainer pt6">
@@ -171,7 +160,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           consText={texts.forestLP.cons}
           metoText={texts.forestLP.meto}
           quoteText={texts.forestLP.quote}
-          downloadData={downloadData}
+          downloadData={this.flpController.getDownloadData(forestLP)}
           downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
