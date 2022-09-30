@@ -23,9 +23,9 @@ export class ForestLossPersistenceController {
   /**
    * Returns data transformed to be downloaded in the csv file
    *
-   * @param {SmallStackedBarsData[]} data array of data for nivo bar graph of forest loss persistence
+   * @param {SmallStackedBarsData[]} data data array for SmallStackedBars graph in forest loss persistence tab
    *
-   * @returns {Object} persistenceData graph data transformed to be downloaded in a csv file
+   * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
    */
   getDownloadData(data: Array<SmallStackedBarsData>) {
     const result: Array<{
