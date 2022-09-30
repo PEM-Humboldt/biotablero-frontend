@@ -10,6 +10,7 @@ const ConservationAreas: React.FC<componentProps> = (props) => {
       label: {
         id: "targets",
         name: "Portafolios por temáticas",
+        collapsed: openTab !== "targets",
       },
       component: Targets,
     },
