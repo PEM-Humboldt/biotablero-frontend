@@ -9,7 +9,9 @@ interface Props {}
 
 interface State {
   visible: string;
-  childMap: {};
+  childMap: {
+    conservationAreas: string;
+  };
 }
 
 class Portfolios extends React.Component<Props, State> {
@@ -18,8 +20,10 @@ class Portfolios extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      visible: "portfolio-ca",
-      childMap: {},
+      visible: "conservationAreas",
+      childMap: {
+        conservationAreas: "conservationAreas",
+      },
     };
   }
 
@@ -55,24 +59,19 @@ class Portfolios extends React.Component<Props, State> {
     }
   };
 
-  componentDidMount() {
-    const { areaId } = this.context as SearchContextValues;
-    let visible = "portfolio-ca";
-    this.setState((prev) => ({
-      visible: visible,
-    }));
-  }
-
   render() {
-    const { areaId } = this.context as SearchContextValues;
     const { childMap } = this.state;
     const initialArray: Array<accordionComponent> = [
       {
         label: {
-          id: "portfolio-ca",
+          id: "conservationAreas",
           name: "Portafolios de áreas de conservación",
         },
         component: ConservationAreas,
+        componentProps: {
+          handleAccordionChange: this.handleAccordionChange,
+          openTab: childMap.conservationAreas,
+        },
       },
     ];
 
