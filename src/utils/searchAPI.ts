@@ -76,7 +76,7 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity
+   * @return {Promise<Array>} Array of objects with data of current PA connectivity
    */
   static requestCurrentPAConnectivity(
     areaType: string,
@@ -95,7 +95,7 @@ class SearchAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} seType strategic ecosystem type
    *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
+   * @return {Promise<Array>} Array of objects with data of current PA connectivity by SE
    */
   static requestCurrentSEPAConnectivity(
     areaType: string,
@@ -113,7 +113,7 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {Promise<Object>} Array of objects with data of the protected areas
+   * @return {Promise<Array>} Array of objects with data of the protected areas
    */
   static requestDPC(
     areaType: string,
@@ -372,7 +372,7 @@ class SearchAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} group group to filter results, f.e. "total", "endemic"
    *
-   * @return {Promise<Object>} Array of objects with observed, inferred and region number of species
+   * @return {Promise<Array>} Array of objects with observed, inferred and region number of species
    */
   static requestNumberOfSpecies(
     areaType: string,
@@ -393,7 +393,7 @@ class SearchAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} group group to filter results, f.e. "total", "endemic"
    *
-   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * @return {Promise<Array>} Array of objects with minimum and maximun number of observed and
    * inferred species
    */
   static requestNSThresholds(
@@ -414,7 +414,7 @@ class SearchAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {String} group group to filter results, f.e. "total", "endemic"
    *
-   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
+   * @return {Promise<Array>} Array of objects with minimum and maximun number of observed and
    * inferred species
    */
   static requestNSNationalMax(
@@ -471,11 +471,11 @@ class SearchAPI {
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} targetId target id to get results
+   * @param {Number} targetId target id to get results
    *
    * @return {Promise<Object>} Object with portfolios data
    */
-  static PortfoliosByTarget(
+  static requestPortfoliosByTarget(
     areaType: string,
     areaId: number | string,
     targetId: number
@@ -489,11 +489,11 @@ class SearchAPI {
    * Get list of targets with portfolios values within a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {Promise<Object>} Array of objects with targets list
+   * @return {Promise<Array>} Array of objects with targets list
    */
-  static TargetsList(
+  static requestTargetsList(
     areaType: string,
     areaId: number | string
   ): Promise<Array<target>> {
