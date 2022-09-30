@@ -22,7 +22,7 @@ class Portfolios extends React.Component<Props, State> {
     this.state = {
       visible: "conservationAreas",
       childMap: {
-        conservationAreas: "conservationAreas",
+        conservationAreas: "targets",
       },
     };
   }
