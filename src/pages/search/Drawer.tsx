@@ -4,11 +4,13 @@ import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Especies from "@mui/icons-material/FilterVintage";
 import Paisaje from "@mui/icons-material/FilterHdr";
+import Portafolios from "@mui/icons-material/EmojiNature";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import Landscape from "pages/search/drawer/Landscape";
 import Species from "pages/search/drawer/Species";
 import Ecosystems from "pages/search/drawer/Ecosystems";
+import Portfolios from "pages/search/drawer/Portfolios";
 import formatNumber from "utils/format";
 import searchAPI from "utils/searchAPI";
 import TabContainer from "pages/search/shared_components/TabContainer";
@@ -72,6 +74,7 @@ class Drawer extends React.Component<Props, State> {
             { label: "Ecosistemas", icon: <Ecosistemas /> },
             { label: "Paisaje", icon: <Paisaje /> },
             { label: "Especies", icon: <Especies /> },
+            { label: "Portafolios", icon: <Portafolios /> },
           ]}
         >
           {geofenceArea !== 0 && (
@@ -84,6 +87,9 @@ class Drawer extends React.Component<Props, State> {
           </div>
           <div>
             <Species />
+          </div>
+          <div>
+            <Portfolios />
           </div>
         </TabContainer>
       </div>
