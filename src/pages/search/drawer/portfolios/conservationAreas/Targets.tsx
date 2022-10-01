@@ -9,7 +9,6 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 
 import { portfoliosByTarget, target } from "pages/search/types/portfolios";
-
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
@@ -17,15 +16,17 @@ import SearchAPI from "utils/searchAPI";
 
 interface Props {}
 
+interface tagetsData {
+  [targetId: number]: portfoliosByTarget;
+}
+
 interface State {
   showInfoGraph: boolean;
   loading: wrapperMessage;
-  selected: string;
-  showErrorMessage: boolean;
   texts: textsObject;
-  targetsList?: Array<target>;
-  targetData?: portfoliosByTarget;
-  messageConc?: string | null;
+  targetsList: Array<target>;
+  targetsData: Array<tagetsData>;
+  csvData: Array<object>;
 }
 
 class Targets extends React.Component<Props, State> {
@@ -35,31 +36,49 @@ class Targets extends React.Component<Props, State> {
     super(props);
     this.state = {
       showInfoGraph: true,
-      selected: "",
-      showErrorMessage: false,
-      loading: null,
+      loading: "loading",
+      targetsList: [],
+      targetsData: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
+      csvData: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
+
+    const dummyData = {
+      texts: {
+        info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        cons: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        meto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+      },
+      csvData: [{ id: 1, name: "hola" }],
+    };
+
+    this.setState({ texts: dummyData.texts, csvData: dummyData.csvData });
+
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
 
     switchLayer("");
 
-    SearchAPI.TargetsList(areaId, geofenceId)
+    SearchAPI.requestTargetsList(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState({
             targetsList: res,
-            messageConc: null,
+            loading: null,
+          });
+
+          res.forEach((element) => {
+            this.getPortfolioData(element.id);
           });
         }
       })
       .catch(() => {
-        this.setState({ messageConc: "no-data" });
+        this.setState({ loading: "no-data" });
       });
   }
 
@@ -84,23 +103,23 @@ class Targets extends React.Component<Props, State> {
   getPortfolioData = (targetId: number) => {
     const { areaId, geofenceId } = this.context as SearchContextValues;
 
-    SearchAPI.PortfoliosByTarget(areaId, geofenceId, targetId)
+    SearchAPI.requestPortfoliosByTarget(areaId, geofenceId, targetId)
       .then((res) => {
         if (this.mounted) {
-          this.setState({
-            targetData: res,
-            messageConc: null,
-          });
+          this.setState((prevState) => ({
+            targetsData: [...prevState.targetsData, { [targetId]: res }],
+          }));
         }
       })
       .catch(() => {
-        this.setState({ messageConc: "no-data" });
+        this.setState({ loading: "no-data" });
       });
   };
 
   render() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
-    const { showInfoGraph, loading, texts } = this.state;
+    const { showInfoGraph, loading, texts, csvData } = this.state;
+
     const chartData = [
       {
         id: "12",
@@ -140,21 +159,21 @@ class Targets extends React.Component<Props, State> {
         </div>
 
         <div className="fiLegend">
-          <LegendColor color="#123465" orientation="column" key="wcnc">
+          <LegendColor color="#e25648" orientation="column" key="wcnc">
             WCNC
           </LegendColor>
 
-          <LegendColor color="#123465" orientation="column" key="elsa">
+          <LegendColor color="#ee8531" orientation="column" key="elsa">
             ELSA
           </LegendColor>
 
-          <LegendColor color="#123465" orientation="column" key="eca">
+          <LegendColor color="#fdc031" orientation="column" key="eca">
             Especies, Carbono, Agua
           </LegendColor>
         </div>
 
         <TextBoxes
-          downloadData={[]}
+          downloadData={csvData}
           downloadName={`portfolios_by_target_${areaId}_${geofenceId}.csv`}
           consText={texts.cons}
           quoteText={texts.quote}
