@@ -12,7 +12,7 @@ export interface componentProps {
 export interface accordionComponent {
   label: {
     id: string;
-    name: string | React.ReactNode;
+    name: React.ReactNode;
     icon?: string;
     disabled?: boolean;
     collapsed?: boolean;
