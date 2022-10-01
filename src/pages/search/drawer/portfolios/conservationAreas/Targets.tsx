@@ -69,7 +69,7 @@ class Targets extends React.Component<Props, State> {
         if (this.mounted) {
           this.setState({
             targetsList: res,
-            loading: null,
+            loading: null, //Ajustar el manejo de este mensaje cuando el gráfico este finalizado
           });
 
           res.forEach((element) => {
