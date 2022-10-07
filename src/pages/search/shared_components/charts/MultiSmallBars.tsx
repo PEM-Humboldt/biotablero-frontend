@@ -17,6 +17,7 @@ interface Props {
   axisLeftLegend?: string;
   axisBottomLegend?: string;
   innerPadding?: number;
+  marginLeft?: number;
 }
 
 export interface MultiSmallBarsData {
@@ -52,6 +53,7 @@ class MultiSmallBars extends React.Component<Props, State> {
       units = "ha",
       toolTipValue,
       innerPadding = 0,
+      marginLeft = 90,
       onClickHandler,
     } = this.props;
     const { selectedIndexValue } = this.state;
@@ -96,7 +98,7 @@ class MultiSmallBars extends React.Component<Props, State> {
             top: 20,
             right: 15,
             bottom: 50,
-            left: 90,
+            left: marginLeft,
           }}
           innerPadding={innerPadding}
           padding={0.35}

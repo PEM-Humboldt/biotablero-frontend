@@ -145,11 +145,12 @@ class Targets extends React.Component<Props, State> {
             colors={matchColor("caTargets")}
             units="%"
             onClickHandler={() => {}}
-            height={300}
+            height={500}
             selectedIndexValue="WCMC"
             groupMode="grouped"
             toolTipValue="percentage"
             innerPadding={0.5}
+            marginLeft={145}
           />
         </div>
 
