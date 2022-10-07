@@ -8,9 +8,9 @@ import matchColor from "utils/matchColor";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import SmallStackedBars, {
-  SmallStackedBarsData,
-} from "pages/search/shared_components/charts/SmallStackedBars";
+import MultiSmallBars, {
+  MultiSmallBarsData,
+} from "pages/search/shared_components/charts/MultiSmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/drawer/landscape/forest/ForestLossPersistenceController";
@@ -18,7 +18,7 @@ import { ForestLossPersistenceController } from "pages/search/drawer/landscape/f
 interface Props {}
 interface State {
   showInfoGraph: boolean;
-  forestLP: Array<SmallStackedBarsData>;
+  forestLP: Array<MultiSmallBarsData>;
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
@@ -126,7 +126,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
-          <SmallStackedBars
+          <MultiSmallBars
             data={forestLP}
             message={message}
             units="ha"
@@ -139,6 +139,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
               });
             }}
             selectedIndexValue="2016-2021"
+            axisLeftLegend="Periodo"
+            axisBottomLegend="Hectáreas"
           />
         </div>
         <TextBoxes

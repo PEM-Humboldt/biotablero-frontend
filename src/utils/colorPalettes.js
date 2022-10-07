@@ -146,6 +146,13 @@ export default {
     '#eba62a',
     '#ec5e41',
   ],
+  caTargets: [
+    '#e25648',
+    '#ee8531',
+    '#fdc031',
+    '#b572ad',
+    '#59c9eb'
+  ],
   functionalDryForestValues: [
     '#b74777',
     '#fba76d',

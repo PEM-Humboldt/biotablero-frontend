@@ -6,7 +6,10 @@ import { LegendColor } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import SmallBars from "pages/search/shared_components/charts/SmallBars";
+import MultiSmallBars, {
+  MultiSmallBarsData,
+} from "pages/search/shared_components/charts/MultiSmallBars";
+import { TargetsController } from "pages/search/drawer/portfolios/conservationAreas/TargetsController";
 
 import { portfoliosByTarget, target } from "pages/search/types/portfolios";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
@@ -16,24 +19,22 @@ import SearchAPI from "utils/searchAPI";
 
 interface Props {}
 
-interface tagetsData {
-  [targetId: number]: portfoliosByTarget;
-}
-
 interface State {
   showInfoGraph: boolean;
   loading: wrapperMessage;
   texts: textsObject;
   targetsList: Array<target>;
-  targetsData: Array<tagetsData>;
+  targetsData: Array<portfoliosByTarget>;
   csvData: Array<object>;
 }
 
 class Targets extends React.Component<Props, State> {
   mounted = false;
+  targetsController;
 
   constructor(props: Props) {
     super(props);
+    this.targetsController = new TargetsController();
     this.state = {
       showInfoGraph: true,
       loading: "loading",
@@ -107,7 +108,7 @@ class Targets extends React.Component<Props, State> {
       .then((res) => {
         if (this.mounted) {
           this.setState((prevState) => ({
-            targetsData: [...prevState.targetsData, { [targetId]: res }],
+            targetsData: [...prevState.targetsData, res],
           }));
         }
       })
@@ -118,17 +119,7 @@ class Targets extends React.Component<Props, State> {
 
   render() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
-    const { showInfoGraph, loading, texts, csvData } = this.state;
-
-    const chartData = [
-      {
-        id: "12",
-        name: "1234",
-        key: "2",
-        value: 12.5,
-        area: 40.5,
-      },
-    ];
+    const { showInfoGraph, loading, texts, targetsData, csvData } = this.state;
 
     return (
       <div className="graphcontainer pt6">
@@ -148,13 +139,18 @@ class Targets extends React.Component<Props, State> {
           />
         )}
         <div>
-          <SmallBars
-            data={chartData}
+          <MultiSmallBars
+            data={this.targetsController.getGraphData(targetsData)}
             message={loading}
-            colors={matchColor("dpc")}
-            labelX="dPC"
-            units="ha"
+            colors={matchColor("caTargets")}
+            units="%"
             onClickHandler={() => {}}
+            height={500}
+            selectedIndexValue="WCMC"
+            groupMode="grouped"
+            toolTipValue="percentage"
+            innerPadding={0.5}
+            marginLeft={145}
           />
         </div>
 

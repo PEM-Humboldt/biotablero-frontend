@@ -6,15 +6,21 @@ import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {
-  data: Array<SmallStackedBarsData>;
+  data: Array<MultiSmallBarsData>;
   height?: number;
   colors: (key: string) => string;
+  groupMode?: "grouped" | "stacked";
   units?: string;
   onClickHandler: (period: string, key: string) => void;
   selectedIndexValue: string;
+  toolTipValue?: string;
+  axisLeftLegend?: string;
+  axisBottomLegend?: string;
+  innerPadding?: number;
+  marginLeft?: number;
 }
 
-export interface SmallStackedBarsData {
+export interface MultiSmallBarsData {
   id: string;
   data: Array<{
     area: number;
@@ -28,7 +34,7 @@ interface State {
   selectedIndexValue: string | number;
 }
 
-class SmallStackedBars extends React.Component<Props, State> {
+class MultiSmallBars extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -41,7 +47,13 @@ class SmallStackedBars extends React.Component<Props, State> {
       data,
       height = 250,
       colors,
+      axisLeftLegend = "",
+      axisBottomLegend = "",
+      groupMode = "stacked",
       units = "ha",
+      toolTipValue,
+      innerPadding = 0,
+      marginLeft = 90,
       onClickHandler,
     } = this.props;
     const { selectedIndexValue } = this.state;
@@ -52,7 +64,7 @@ class SmallStackedBars extends React.Component<Props, State> {
      * @param {array} rawData raw data from RestAPI
      * @returns {array} transformed data ready to be used by graph component
      */
-    const transformData = (rawData: Array<SmallStackedBarsData>) => {
+    const transformData = (rawData: Array<MultiSmallBarsData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
           key: element.id,
@@ -81,12 +93,14 @@ class SmallStackedBars extends React.Component<Props, State> {
           keys={keys}
           indexBy="key"
           layout="horizontal"
+          groupMode={groupMode}
           margin={{
             top: 20,
             right: 15,
             bottom: 50,
-            left: 90,
+            left: marginLeft,
           }}
+          innerPadding={innerPadding}
           padding={0.35}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
           colors={({ id, indexValue }) => {
@@ -101,7 +115,7 @@ class SmallStackedBars extends React.Component<Props, State> {
             tickSize: 3,
             tickPadding: 5,
             tickRotation: 0,
-            legend: "Periodo",
+            legend: `${axisLeftLegend}`,
             legendPosition: "middle",
             legendOffset: -80,
           }}
@@ -110,7 +124,7 @@ class SmallStackedBars extends React.Component<Props, State> {
             tickPadding: 0,
             tickRotation: 0,
             format: ".2s",
-            legend: "Hectáreas",
+            legend: `${axisBottomLegend}`,
             legendPosition: "start",
             legendOffset: 25,
           }}
@@ -123,7 +137,12 @@ class SmallStackedBars extends React.Component<Props, State> {
             >
               <strong style={{ color }}>{allData[`${id}Label`]}</strong>
               <div style={{ color: "#ffffff" }}>
-                {`${formatNumber(allData[id], 0)} ${units}`}
+                {`${formatNumber(
+                  toolTipValue === "percentage"
+                    ? allData[`${id}Percentage`]
+                    : allData[id],
+                  0
+                )} ${units}`}
               </div>
             </div>
           )}
@@ -142,4 +161,4 @@ class SmallStackedBars extends React.Component<Props, State> {
   }
 }
 
-export default withMessageWrapper<Props>(SmallStackedBars);
+export default withMessageWrapper<Props>(MultiSmallBars);

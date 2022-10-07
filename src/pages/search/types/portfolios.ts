@@ -1,4 +1,4 @@
-interface portfolioData {
+export interface portfolioData {
   id: number;
   name: string;
   short_name: string;
