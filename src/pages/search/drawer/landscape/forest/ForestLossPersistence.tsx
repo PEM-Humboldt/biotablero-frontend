@@ -52,27 +52,30 @@ class ForestLossPersistence extends React.Component<Props, State> {
       .context as SearchContextValues;
 
     switchLayer(`forestLP-${LATEST_PERIOD}`);
-    
-    this.flpController.getForestLPData(areaId, geofenceId, LATEST_PERIOD)
-    .then((data) => {
-      if (this.mounted) {
-        this.setState({
-          forestLP: data.forestLP,
-          forestPersistenceValue: data.forestPersistenceValue,
-          message: null,
-        })
-    }})
-    .catch(() => {
-      this.setState({ message: "no-data" });
-    });
 
-    this.flpController.getForestLPTexts("forestLP")
-    .then((res) => {
-      if (this.mounted) {
+    this.flpController
+      .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
+      .then((data) => {
+        if (this.mounted) {
+          this.setState({
+            forestLP: data.forestLP,
+            forestPersistenceValue: data.forestPersistenceValue,
+            message: null,
+          });
+        }
+      })
+      .catch(() => {
+        this.setState({ message: "no-data" });
+      });
+
+    this.flpController
+      .getForestLPTexts("forestLP")
+      .then((res) => {
+        if (this.mounted) {
           this.setState({ texts: { forestLP: res } });
         }
       })
-    .catch(() => {});
+      .catch(() => {});
   }
 
   componentWillUnmount() {

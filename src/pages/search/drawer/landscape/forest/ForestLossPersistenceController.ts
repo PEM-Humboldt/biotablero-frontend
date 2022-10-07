@@ -12,7 +12,7 @@ const getLabel = {
 interface ForestLPData {
   forestLP: Array<SmallStackedBarsData>;
   forestPersistenceValue: number;
-};
+}
 
 export class ForestLossPersistenceController {
   constructor() {}
@@ -26,10 +26,13 @@ export class ForestLossPersistenceController {
    *
    * @returns {Object} Object with forest LP data and persistence value
    */
-  getForestLPData = (areaType: string, areaId: string | number, latestPeriod: string): Promise<ForestLPData>  =>
+  getForestLPData = (
+    areaType: string,
+    areaId: string | number,
+    latestPeriod: string
+  ): Promise<ForestLPData> =>
     SearchAPI.requestForestLP(areaType, areaId)
       .then((data) => {
-
         const forestLP = data.map((item) => ({
           ...item,
           data: item.data.map((element) => ({
@@ -42,7 +45,9 @@ export class ForestLossPersistenceController {
         const persistenceData = periodData
           ? periodData.find((item) => item.key === "persistencia")
           : null;
-        const forestPersistenceValue = persistenceData ? persistenceData.area : 0
+        const forestPersistenceValue = persistenceData
+          ? persistenceData.area
+          : 0;
 
         return {
           forestLP,
@@ -50,7 +55,7 @@ export class ForestLossPersistenceController {
         };
       })
       .catch(() => {
-        throw new Error('Error getting data');
+        throw new Error("Error getting data");
       });
 
   /**
@@ -60,12 +65,12 @@ export class ForestLossPersistenceController {
    *
    * @returns {Object} texts of forestLP section
    */
-  getForestLPTexts = (sectionName: string): Promise<textsObject>  =>
+  getForestLPTexts = (sectionName: string): Promise<textsObject> =>
     SearchAPI.requestSectionTexts(sectionName)
-    .then((res) => res)
-    .catch(() => {
-      throw new Error('Error getting data');
-    });
+      .then((res) => res)
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
 
   /**
    * Returns data transformed to be downloaded in the csv file
