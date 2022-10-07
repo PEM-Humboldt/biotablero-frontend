@@ -136,6 +136,10 @@ const match = {
       'legend-to',
     ],
   },
+  caTargets: {
+    palette: "caTargets",
+    sort: ["WCMC", "ELSA", "WEPLAN", "Especies, Carbono y Agua", "ACC"],
+  },
   functionalDryForestValues: {
     palette: 'functionalDryForestValues',
     sort: [
@@ -272,6 +276,7 @@ const matchColor = (type, resetCache = false) => {
     case 'currentPAConn':
     case 'dpc':
     case 'timelinePAConn':
+    case 'caTargets':
     case 'se':
       return (value) => {
         const idx = sort.indexOf(value);
