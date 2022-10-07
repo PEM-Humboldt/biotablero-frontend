@@ -1,4 +1,4 @@
-import { SmallStackedBarsData } from "pages/search/shared_components/charts/SmallStackedBars";
+import { MultiSmallBarsData } from "pages/search/shared_components/charts/MultiSmallBars";
 import { ForestLP } from "pages/search/types/forest";
 
 export class ForestLossPersistenceController {
@@ -27,7 +27,7 @@ export class ForestLossPersistenceController {
    *
    * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
    */
-  getDownloadData(data: Array<SmallStackedBarsData>) {
+  getDownloadData(data: Array<MultiSmallBarsData>) {
     const result: Array<{
       period: string;
       category: string;
