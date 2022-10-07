@@ -5,7 +5,6 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
@@ -28,13 +27,6 @@ interface State {
 }
 
 const LATEST_PERIOD = "2016-2021";
-
-const getLabel = {
-  persistencia: "Persistencia",
-  perdida: "Pérdida",
-  ganancia: "Ganancia",
-  no_bosque: "No bosque",
-};
 
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
@@ -61,21 +53,13 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     switchLayer(`forestLP-${LATEST_PERIOD}`);
 
-    SearchAPI.requestForestLP(areaId, geofenceId)
-      .then((res) => {
+    this.flpController
+      .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
+      .then((data) => {
         if (this.mounted) {
           this.setState({
-            forestLP: res.map((item) => ({
-              ...item,
-              data: item.data.map((element) => ({
-                ...element,
-                label: getLabel[element.key],
-              })),
-            })),
-            forestPersistenceValue: this.flpController.getPersistenceValue(
-              res,
-              LATEST_PERIOD
-            ),
+            forestLP: data.forestLP,
+            forestPersistenceValue: data.forestPersistenceValue,
             message: null,
           });
         }
@@ -84,7 +68,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
         this.setState({ message: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("forestLP")
+    this.flpController
+      .getForestLPTexts("forestLP")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { forestLP: res } });

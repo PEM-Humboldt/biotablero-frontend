@@ -1,24 +1,76 @@
 import { MultiSmallBarsData } from "pages/search/shared_components/charts/MultiSmallBars";
-import { ForestLP } from "pages/search/types/forest";
+import SearchAPI from "utils/searchAPI";
+import { textsObject } from "pages/search/types/texts";
+
+const getLabel = {
+  persistencia: "Persistencia",
+  perdida: "Pérdida",
+  ganancia: "Ganancia",
+  no_bosque: "No bosque",
+};
+
+interface ForestLPData {
+  forestLP: Array<MultiSmallBarsData>;
+  forestPersistenceValue: number;
+}
 
 export class ForestLossPersistenceController {
   constructor() {}
 
   /**
-   * Returns a persistence value from data and latest period
+   * Returns forest LP data and persistence value in a given area
    *
-   * @param {ForestLP[]} data array of the response data for forest loss persistence
+   * @param {String} areaType area type
+   * @param {String | Number} areaId area id
    * @param {String} latestPeriod string with range of years for latest period
    *
-   * @returns {Number} persistenceData forest persistence value
+   * @returns {Object} Object with forest LP data and persistence value
    */
-  getPersistenceValue(data: Array<ForestLP>, latestPeriod: string): number {
-    const periodData = data.find((item) => item.id === latestPeriod)?.data;
-    const persistenceData = periodData
-      ? periodData.find((item) => item.key === "persistencia")
-      : null;
-    return persistenceData ? persistenceData.area : 0;
-  }
+  getForestLPData = (
+    areaType: string,
+    areaId: string | number,
+    latestPeriod: string
+  ): Promise<ForestLPData> =>
+    SearchAPI.requestForestLP(areaType, areaId)
+      .then((data) => {
+        const forestLP = data.map((item) => ({
+          ...item,
+          data: item.data.map((element) => ({
+            ...element,
+            label: getLabel[element.key],
+          })),
+        }));
+
+        const periodData = data.find((item) => item.id === latestPeriod)?.data;
+        const persistenceData = periodData
+          ? periodData.find((item) => item.key === "persistencia")
+          : null;
+        const forestPersistenceValue = persistenceData
+          ? persistenceData.area
+          : 0;
+
+        return {
+          forestLP,
+          forestPersistenceValue,
+        };
+      })
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
+
+  /**
+   * Returns texts of the forestLP section
+   *
+   * @param {String} sectionName section name
+   *
+   * @returns {Object} texts of forestLP section
+   */
+  getForestLPTexts = (sectionName: string): Promise<textsObject> =>
+    SearchAPI.requestSectionTexts(sectionName)
+      .then((res) => res)
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
 
   /**
    * Returns data transformed to be downloaded in the csv file
