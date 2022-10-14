@@ -8,17 +8,16 @@ import matchColor from "utils/matchColor";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import MultiSmallBars, {
-  MultiSmallBarsData,
-} from "pages/search/shared_components/charts/MultiSmallBars";
+import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/drawer/landscape/forest/ForestLossPersistenceController";
+import { ForestLP } from "pages/search/types/forest";
 
 interface Props {}
 interface State {
   showInfoGraph: boolean;
-  forestLP: Array<MultiSmallBarsData>;
+  forestLP: Array<ForestLP>;
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
@@ -97,6 +96,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const { areaId, geofenceId, handlerClickOnGraph } = this
       .context as SearchContextValues;
 
+    const dataLP = this.flpController.getGraphData(forestLP);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -126,10 +127,37 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
-          <MultiSmallBars
-            data={forestLP}
+          <SmallBars
+            data={dataLP.transformedData}
+            keys={dataLP.keys}
+            selectedIndexValue="2016-2021"
             message={message}
-            units="ha"
+            height={250}
+            padding={0.35}
+            margin={{
+              top: 20,
+              right: 15,
+              bottom: 50,
+              left: 90,
+            }}
+            axisBottom={{
+              tickSize: 0,
+              tickPadding: 0,
+              tickRotation: 0,
+              format: ".2s",
+              legend: "Hectáreas",
+              legendPosition: "start",
+              legendOffset: 25,
+            }}
+            axisLeft={{
+              tickSize: 3,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: "Periodo",
+              legendPosition: "middle",
+              legendOffset: -80,
+            }}
+            enableGridX={true}
             colors={matchColor("forestLP")}
             onClickHandler={(period, key) => {
               handlerClickOnGraph({
@@ -138,9 +166,17 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 selectedKey: key,
               });
             }}
-            selectedIndexValue="2016-2021"
-            axisLeftLegend="Periodo"
-            axisBottomLegend="Hectáreas"
+            tooltip={({ id, data: allData, color }) => (
+              <div
+                className="tooltip-graph-container"
+                style={{ position: "absolute" }}
+              >
+                <strong style={{ color }}>{allData[`${id}Label`]}</strong>
+                <div style={{ color: "#ffffff" }}>
+                  {`${formatNumber(allData[id], 0)} ha`}
+                </div>
+              </div>
+            )}
           />
         </div>
         <TextBoxes

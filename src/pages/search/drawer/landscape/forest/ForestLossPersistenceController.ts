@@ -1,6 +1,6 @@
-import { MultiSmallBarsData } from "pages/search/shared_components/charts/MultiSmallBars";
 import SearchAPI from "utils/searchAPI";
 import { textsObject } from "pages/search/types/texts";
+import { ForestLP } from "pages/search/types/forest";
 
 const getLabel = {
   persistencia: "Persistencia",
@@ -10,7 +10,7 @@ const getLabel = {
 };
 
 interface ForestLPData {
-  forestLP: Array<MultiSmallBarsData>;
+  forestLP: Array<ForestLP>;
   forestPersistenceValue: number;
 }
 
@@ -26,6 +26,7 @@ export class ForestLossPersistenceController {
    *
    * @returns {Object} Object with forest LP data and persistence value
    */
+
   getForestLPData = (
     areaType: string,
     areaId: string | number,
@@ -73,13 +74,40 @@ export class ForestLossPersistenceController {
       });
 
   /**
+   * Transform data structure to be passed to component as a prop
+   *
+   * @param {Array<portfoliosByTarget>} rawData raw data from RestAPI
+   *
+   * @returns {Array<BarsData>} transformed data ready to be used by graph component
+   */
+
+  getGraphData(rawData: Array<ForestLP>) {
+    const transformedData = rawData.map((element) => {
+      const object: Record<string, string | number> = {};
+      element.data.map((item) => {
+        object["id"] = String(element.id);
+        object[String(item.key)] = item.area;
+        object[`${String(item.key)}Label`] = item.label;
+        object[`${String(item.key)}Color`] = "#646458";
+        object[`${String(item.key)}Percentage`] = item.percentage;
+      });
+      return object;
+    });
+    const keys = rawData[0]
+      ? rawData[0].data.map((item: { key: string }) => String(item.key))
+      : [];
+
+    return { transformedData, keys };
+  }
+
+  /**
    * Returns data transformed to be downloaded in the csv file
    *
-   * @param {SmallStackedBarsData[]} data data array for SmallStackedBars graph in forest loss persistence tab
+   * @param {BarsData[]} data data array for SmallStackedBars graph in forest loss persistence tab
    *
    * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
    */
-  getDownloadData(data: Array<MultiSmallBarsData>) {
+  getDownloadData(data: Array<ForestLP>) {
     const result: Array<{
       period: string;
       category: string;

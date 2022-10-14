@@ -21,5 +21,11 @@ export interface ForestLP {
     area: number;
     key: typeof ForestLPKeys[number];
     percentage: number;
+    label: string;
   }>;
+}
+
+export interface ForestLPData {
+  forestLP: Array<ForestLP>;
+  forestPersistenceValue: number;
 }
