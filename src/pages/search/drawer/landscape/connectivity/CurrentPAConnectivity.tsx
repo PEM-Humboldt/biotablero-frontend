@@ -15,6 +15,7 @@ import { textsObject } from "pages/search/types/texts";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import { CurrentPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentPAConnectivityController";
 
 const getLabel = {
   unprot: "No protegida",
@@ -53,9 +54,11 @@ interface currentPAConnState {
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
+  CPAController;
 
   constructor(props: Props) {
     super(props);
+    this.CPAController = new CurrentPAConnectivityController();
     this.state = {
       infoShown: new Set(["current"]),
       currentPAConnData: [],
@@ -177,6 +180,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
+
+    const dpcGraphData = this.CPAController.getGraphData(dpcData);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -252,14 +258,45 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           </h3>
           <div>
             <SmallBars
-              data={dpcData}
+              data={dpcGraphData.transformedData}
+              keys={dpcGraphData.keys}
               message={dpcMess}
+              height={250}
+              margin={{
+                top: 20,
+                right: 15,
+                bottom: 50,
+                left: 40,
+              }}
+              padding={0.35}
+              axisBottom={{
+                tickSize: 0,
+                tickPadding: 0,
+                tickRotation: 0,
+                format: ".2f",
+                legend: "dPC",
+                legendPosition: "start",
+                legendOffset: 25,
+              }}
+              enableLabel={true}
+              enableGridX={true}
               colors={matchColor("dpc")}
-              onClickHandler={(selected: string) =>
+              onClickHandler={(selected) =>
                 handlerClickOnGraph({ selectedKey: selected })
               }
-              labelX="dPC"
-              units="ha"
+              tooltip={({ id, data: allData, color }) => (
+                <div
+                  className="tooltip-graph-container"
+                  style={{ position: "absolute" }}
+                >
+                  <strong style={{ color }}>{allData[`${id}Label`]}</strong>
+                  <div style={{ color: "#ffffff" }}>
+                    {formatNumber(allData[id], 2)}
+                    <br />
+                    {`${formatNumber(allData[`${id}Area`], 2)} ha`}
+                  </div>
+                </div>
+              )}
             />
           </div>
           <div className="dpcLegend">
