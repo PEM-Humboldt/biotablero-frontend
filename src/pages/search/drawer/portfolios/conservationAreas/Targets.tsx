@@ -6,10 +6,9 @@ import { LegendColor } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import MultiSmallBars, {
-  MultiSmallBarsData,
-} from "pages/search/shared_components/charts/MultiSmallBars";
+import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { TargetsController } from "pages/search/drawer/portfolios/conservationAreas/TargetsController";
+import formatNumber from "utils/format";
 
 import { portfoliosByTarget, target } from "pages/search/types/portfolios";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
@@ -121,6 +120,8 @@ class Targets extends React.Component<Props, State> {
     const { areaId, geofenceId } = this.context as SearchContextValues;
     const { showInfoGraph, loading, texts, targetsData, csvData } = this.state;
 
+    const data = this.targetsController.getGraphData(targetsData);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -139,18 +140,39 @@ class Targets extends React.Component<Props, State> {
           />
         )}
         <div>
-          <MultiSmallBars
-            data={this.targetsController.getGraphData(targetsData)}
-            message={loading}
-            colors={matchColor("caTargets")}
-            units="%"
-            onClickHandler={() => {}}
-            height={500}
+          <SmallBars
+            data={data.transformedData}
+            keys={data.keys}
             selectedIndexValue="WCMC"
+            message={loading}
             groupMode="grouped"
-            toolTipValue="percentage"
+            height={500}
+            margin={{
+              top: 20,
+              right: 15,
+              bottom: 50,
+              left: 150,
+            }}
             innerPadding={0.5}
-            marginLeft={145}
+            axisLeft={{
+              tickSize: 3,
+              tickPadding: 5,
+              tickRotation: 0,
+              legendOffset: -80,
+            }}
+            colors={matchColor("caTargets")}
+            onClickHandler={() => {}}
+            tooltip={({ id, data: allData, color }) => (
+              <div
+                className="tooltip-graph-container"
+                style={{ position: "absolute" }}
+              >
+                <strong style={{ color }}>{allData[`${id}Label`]}</strong>
+                <div style={{ color: "#ffffff" }}>
+                  {`${formatNumber(allData[`${id}Percentage`], 0)} %`}
+                </div>
+              </div>
+            )}
           />
         </div>
 

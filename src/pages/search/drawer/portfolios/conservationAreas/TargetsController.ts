@@ -1,4 +1,3 @@
-import { MultiSmallBarsData } from "pages/search/shared_components/charts/MultiSmallBars";
 import {
   portfoliosByTarget,
   portfolioData,
@@ -12,35 +11,24 @@ export class TargetsController {
    *
    * @param {Array<portfoliosByTarget>} rawData raw data from RestAPI
    *
-   * @returns {Array<MultiSmallBarsData>} transformed data ready to be used by graph component
+   * @returns {Array<BarsData>} transformed data ready to be used by graph component
    */
   getGraphData(rawData: Array<portfoliosByTarget>) {
-    const transformedData: Array<MultiSmallBarsData> = rawData.map(
-      (element) => {
-        const objectData: Array<{
-          area: number;
-          key: string;
-          percentage: number;
-          label: string;
-        }> = [];
-        element.portfolios_data.forEach((item: portfolioData) => {
-          const info = {
-            key: item.short_name,
-            area: item.value,
-            label: item.name,
-            percentage: (item.value / element.target_national) * 100,
-          };
-          objectData.push(info);
-        });
+    const transformedData = rawData.map((element) => {
+      const object: Record<string, string | number> = {};
+      element.portfolios_data.map((item: portfolioData) => {
+        object["id"] = String(element.target_name);
+        object[String(item.short_name)] = item.value;
+        object[`${String(item.short_name)}Label`] = item.name;
+        object[`${String(item.short_name)}Percentage`] =
+          (item.value / element.target_national) * 100;
+      });
+      return object;
+    });
+    const keys = rawData[0]
+      ? rawData[0].portfolios_data.map((item) => String(item.short_name))
+      : [];
 
-        const object = {
-          id: element.target_name,
-          data: objectData,
-        };
-        return object;
-      }
-    );
-
-    return transformedData;
+    return { transformedData, keys };
   }
 }
