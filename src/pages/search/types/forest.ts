@@ -21,5 +21,6 @@ export interface ForestLP {
     area: number;
     key: typeof ForestLPKeys[number];
     percentage: number;
+    label: string;
   }>;
 }
