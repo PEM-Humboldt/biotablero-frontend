@@ -1,6 +1,10 @@
-import { MultiSmallBarsData } from "pages/search/shared_components/charts/MultiSmallBars";
+import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
+import {
+  ForestLP,
+} from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
+import formatNumber from "utils/format";
 
 const getLabel = {
   persistencia: "Persistencia",
@@ -10,7 +14,7 @@ const getLabel = {
 };
 
 interface ForestLPData {
-  forestLP: Array<MultiSmallBarsData>;
+  forestLP: Array<ForestLP>;
   forestPersistenceValue: number;
 }
 
@@ -59,6 +63,46 @@ export class ForestLossPersistenceController {
       });
 
   /**
+   * Transform data structure to be passed to component as a prop
+   *
+   * @param {Array<ForestLP>} rawData raw data from RestAPI
+   *
+   * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
+   */
+   getGraphData(rawData: Array<ForestLP>) {
+    const tooltips: Array<{group: string, category: string, tooltipContent:  Array<string>}> = [];
+    const transformedData: Array<SmallBarsData>  = rawData.map(
+      (element) => {
+        const objectData: Array<{
+          category: string;
+          value: number;
+        }> = [];
+        element.data.forEach((item) => {
+          const info = {
+            category: item.key,
+            value: item.area
+          };
+          objectData.push(info);
+
+          tooltips.push({ group: element.id, category: item.key, tooltipContent: [item.label, `${formatNumber(item.area, 2)} ha`]}); 
+        });
+
+        const object = {
+          group: element.id,
+          data: objectData,
+        };
+        return object;
+      }
+    );
+    
+    const keys = rawData[0]
+    ? rawData[0].data.map((item: { key: string }) => String(item.key))
+    : [];
+
+    return {transformedData, keys, tooltips };
+  }
+
+  /**
    * Returns texts of the forestLP section
    *
    * @param {String} sectionName section name
@@ -79,7 +123,7 @@ export class ForestLossPersistenceController {
    *
    * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
    */
-  getDownloadData(data: Array<MultiSmallBarsData>) {
+  getDownloadData(data: Array<ForestLP>) {
     const result: Array<{
       period: string;
       category: string;
