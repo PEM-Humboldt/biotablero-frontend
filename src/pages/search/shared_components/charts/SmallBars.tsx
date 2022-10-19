@@ -6,24 +6,39 @@ import withMessageWrapper from "pages/search/shared_components/charts/withMessag
 
 interface Props {
   data: Array<SmallBarsData>;
+  keys: Array<string>;
+  tooltips: Array<{
+    group: string;
+    category: string;
+    tooltipContent: Array<string>;
+  }>;
   height?: number;
   colors: (key: string) => string;
   units?: string;
-  onClickHandler: (key: string) => void;
+  onClickHandler: (group: string, category: string) => void;
   selectedIndexValue?: string;
-  labelX: string;
+  groupMode?: "grouped" | "stacked";
+  axisLeftLegend?: string;
+  axisBottomLegend?: string;
+  innerPadding?: number;
+  marginLeft?: number;
+  axisXenable?: boolean;
+  axisYenable?: boolean;
+  axisXLegend?: string;
+  axisYLegend?: string;
+  axisXFormat?: string;
+  enableAxisX?: boolean;
+  enableAxisY?: boolean;
+  enableLabel?: boolean;
 }
 
 export interface SmallBarsData {
-  id: string;
-  name: string;
-  key: string;
-  value: number;
-  area: number;
+  group: string;
+  data: Array<{ category: string; value: number | string }>;
 }
 
 interface State {
-  selectedIndexValue: string;
+  selectedIndexValue: string | number;
 }
 
 class SmallBars extends React.Component<Props, State> {
@@ -38,96 +53,124 @@ class SmallBars extends React.Component<Props, State> {
   render() {
     const {
       data,
+      keys,
+      tooltips,
       height = 250,
       colors,
-      units = "ha",
       onClickHandler,
-      labelX,
+      groupMode = "stacked",
+      marginLeft = 90,
+      axisXenable = false,
+      axisYenable = false,
+      axisYLegend = "",
+      axisXLegend = "",
+      axisXFormat = ".2f",
+      enableLabel = false,
     } = this.props;
     const { selectedIndexValue } = this.state;
 
     const transformData = (rawData: Array<SmallBarsData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
-          id: String(element.id),
+          group: element.group,
         };
-        object[String(element.id)] = Number(element.value);
-        object[`${String(element.id)}Label`] = element.name;
-        object[`${String(element.id)}Color`] = colors(element.key);
-        object[`${String(element.id)}DarkenColor`] = darkenColor(
-          colors(element.key),
-          15
-        );
-        object[`${String(element.id)}Area`] = Number(element.area);
+        element.data.forEach((item) => {
+          object[item.category] = item.value;
+        });
         return object;
       });
       return transformedData;
     };
-
-    /**
-     * Get keys to be passed to component as a prop
-     *
-     * @returns {array} ids of each bar category removing duplicates
-     */
-    const keys = data ? [...new Set(data.map((item) => String(item.id)))] : [];
 
     return (
       <div style={{ height }}>
         <ResponsiveBar
           data={transformData(data)}
           keys={keys}
-          indexBy="id"
+          indexBy="group"
           layout="horizontal"
+          groupMode={groupMode}
           margin={{
             top: 20,
             right: 15,
             bottom: 50,
-            left: 40,
+            left: marginLeft,
           }}
           padding={0.35}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-          colors={({ id, indexValue, data: allData }) => {
-            if (indexValue === selectedIndexValue) {
-              return String(allData[`${id}DarkenColor`]);
-            }
-            return String(allData[`${id}Color`]);
-          }}
           enableGridY={false}
           enableGridX
-          axisLeft={null}
-          axisBottom={{
-            tickSize: 0,
-            tickPadding: 0,
-            tickRotation: 0,
-            format: ".2f",
-            legend: labelX,
-            legendPosition: "start",
-            legendOffset: 25,
+          axisLeft={
+            axisYenable
+              ? {
+                  tickSize: 3,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                  legend: `${axisYLegend}`,
+                  legendPosition: "middle",
+                  legendOffset: -80,
+                }
+              : null
+          }
+          axisBottom={
+            axisXenable
+              ? {
+                  tickSize: 0,
+                  tickPadding: 0,
+                  tickRotation: 0,
+                  format: `${axisXFormat}`,
+                  legend: `${axisXLegend}`,
+                  legendPosition: "start",
+                  legendOffset: 25,
+                }
+              : null
+          }
+          enableLabel={enableLabel}
+          colors={({ id, indexValue, data: allData }) => {
+            if (indexValue === selectedIndexValue) {
+              return darkenColor(colors(String(id)), 15);
+            }
+            return colors(String(id));
           }}
-          enableLabel
           label={({ value }) => (value ? formatNumber(value, 2) : "")}
           animate
-          tooltip={({ id, data: allData, color }) => (
-            <div
-              className="tooltip-graph-container"
-              style={{ position: "absolute" }}
-            >
-              <strong style={{ color }}>{allData[`${id}Label`]}</strong>
-              <div style={{ color: "#ffffff" }}>
-                {formatNumber(allData[id], 2)}
-                <br />
-                {`${formatNumber(allData[`${id}Area`], 2)} ${units}`}
-              </div>
-            </div>
-          )}
           theme={{
             axis: {
               legend: { text: { fontSize: "14" } },
             },
           }}
-          onClick={({ indexValue }) => {
-            this.setState({ selectedIndexValue: String(indexValue) });
-            onClickHandler(String(indexValue));
+          tooltip={({ id, indexValue, color }) => {
+            const currentVal = tooltips.find(
+              (e) => e.category == id && e.group === indexValue
+            );
+            const tooltipRows = currentVal
+              ? currentVal.tooltipContent.slice(1)
+              : [];
+
+            return (
+              <div
+                className="tooltip-graph-container"
+                style={{ position: "absolute" }}
+              >
+                <strong style={{ color }}>
+                  {currentVal ? currentVal.tooltipContent[0] : ""}
+                </strong>
+                <div style={{ color: "#ffffff" }}>
+                  {tooltipRows.map((rowValue, i) => {
+                    return (
+                      <span key={i}>
+                        {rowValue}
+                        <br />
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }}
+          onClick={({ id, indexValue }) => {
+            this.setState({ selectedIndexValue: indexValue });
+            onClickHandler(String(indexValue), String(id));
           }}
         />
       </div>
