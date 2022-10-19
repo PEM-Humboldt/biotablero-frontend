@@ -27,8 +27,6 @@ interface Props {
   axisXLegend?: string;
   axisYLegend?: string;
   axisXFormat?: string;
-  enableAxisX?: boolean;
-  enableAxisY?: boolean;
   enableLabel?: boolean;
 }
 
