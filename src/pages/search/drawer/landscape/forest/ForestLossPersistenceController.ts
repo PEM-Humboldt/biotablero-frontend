@@ -1,8 +1,6 @@
 import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
-import {
-  ForestLP,
-} from "pages/search/types/forest";
+import { ForestLP } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 
@@ -69,37 +67,43 @@ export class ForestLossPersistenceController {
    *
    * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
    */
-   getGraphData(rawData: Array<ForestLP>) {
-    const tooltips: Array<{group: string, category: string, tooltipContent:  Array<string>}> = [];
-    const transformedData: Array<SmallBarsData>  = rawData.map(
-      (element) => {
-        const objectData: Array<{
-          category: string;
-          value: number;
-        }> = [];
-        element.data.forEach((item) => {
-          const info = {
-            category: item.key,
-            value: item.area
-          };
-          objectData.push(info);
-
-          tooltips.push({ group: element.id, category: item.key, tooltipContent: [item.label, `${formatNumber(item.area, 2)} ha`]}); 
-        });
-
-        const object = {
-          group: element.id,
-          data: objectData,
+  getGraphData(rawData: Array<ForestLP>) {
+    const tooltips: Array<{
+      group: string;
+      category: string;
+      tooltipContent: Array<string>;
+    }> = [];
+    const transformedData: Array<SmallBarsData> = rawData.map((element) => {
+      const objectData: Array<{
+        category: string;
+        value: number;
+      }> = [];
+      element.data.forEach((item) => {
+        const info = {
+          category: item.key,
+          value: item.area,
         };
-        return object;
-      }
-    );
-    
-    const keys = rawData[0]
-    ? rawData[0].data.map((item: { key: string }) => String(item.key))
-    : [];
+        objectData.push(info);
 
-    return {transformedData, keys, tooltips };
+        tooltips.push({
+          group: element.id,
+          category: item.key,
+          tooltipContent: [item.label, `${formatNumber(item.area, 2)} ha`],
+        });
+      });
+
+      const object = {
+        group: element.id,
+        data: objectData,
+      };
+      return object;
+    });
+
+    const keys = rawData[0]
+      ? rawData[0].data.map((item: { key: string }) => String(item.key))
+      : [];
+
+    return { transformedData, keys, tooltips };
   }
 
   /**
