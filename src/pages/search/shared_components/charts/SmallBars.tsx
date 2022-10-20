@@ -16,11 +16,6 @@ interface Props {
   groupMode?: "grouped" | "stacked";
   maxValue?: number | "auto";
   marginLeft?: number;
-  axisXenable?: boolean;
-  axisYenable?: boolean;
-  axisXLegend?: string;
-  axisYLegend?: string;
-  axisXFormat?: string;
   enableLabel?: boolean;
   axisY?: {
     enabled?: boolean;
@@ -67,17 +62,11 @@ class SmallBars extends React.Component<Props, State> {
       groupMode = "stacked",
       maxValue = "auto",
       marginLeft = 90,
-      axisY = {
-        enabled: false,
-        legend: "",
-      },
-      axisX = {
-        enabled: false,
-        legend: "",
-        format: ".2f",
-      },
       enableLabel = false,
     } = this.props;
+    let { axisY, axisX } = this.props;
+    axisY = { ...{enabled: false, legend: ""}, ...axisY};
+    axisX = { ...{ enabled: false, legend: "", format: ".2f" }, ...axisX };
     const { selectedIndexValue } = this.state;
 
     const transformData = (rawData: Array<SmallBarsData>) => {
@@ -113,7 +102,7 @@ class SmallBars extends React.Component<Props, State> {
           enableGridY={false}
           enableGridX
           axisLeft={
-            axisY && axisY.enabled
+            axisY.enabled
               ? {
                   tickSize: 3,
                   tickPadding: 5,
@@ -125,7 +114,7 @@ class SmallBars extends React.Component<Props, State> {
               : null
           }
           axisBottom={
-            axisX && axisX.enabled
+            axisX.enabled
               ? {
                   tickSize: 0,
                   tickPadding: 0,
@@ -139,7 +128,7 @@ class SmallBars extends React.Component<Props, State> {
           }
           enableLabel={enableLabel}
           label={({ value }) => (value ? formatNumber(value, 2) : "")}
-          colors={({ id, indexValue, data: allData }) => {
+          colors={({ id, indexValue }) => {
             if (indexValue === selectedIndexValue) {
               return darkenColor(colors(String(id)), 15);
             }

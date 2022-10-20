@@ -147,7 +147,6 @@ class Targets extends React.Component<Props, State> {
             colors={matchColor("caTargets")}
             axisY={{
               enabled: true,
-              legend: "",
             }}
             onClickHandler={() => {}}
             height={500}
