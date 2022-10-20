@@ -5,12 +5,33 @@ import {
 import {
   portfoliosByTarget,
   portfolioData,
+  target,
 } from "pages/search/types/portfolios";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
+import SearchAPI from "utils/searchAPI";
 
 export class TargetsController {
   constructor() {}
+
+  /**
+   * Get the portfolios data for all the targets
+   *
+   * @param areaType area type
+   * @param areaId area id
+   * @returns Array of promises to be resolved with data for each target
+   */
+  async getData(areaType: string, areaId: string | number) {
+    const targets = await SearchAPI.requestTargetsList(areaType, areaId);
+    return targets.map((target) =>
+      SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
+        (res) => {
+          // Here would go the necessary transformations
+          return res;
+        }
+      )
+    );
+  }
 
   /**
    * Transform data structure to be passed to component as a prop

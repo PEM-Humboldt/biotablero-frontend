@@ -21,7 +21,6 @@ interface State {
   showInfoGraph: boolean;
   loading: wrapperMessage;
   texts: textsObject;
-  targetsList: Array<target>;
   targetsData: Array<portfoliosByTarget>;
   csvData: Array<object>;
 }
@@ -36,7 +35,6 @@ class Targets extends React.Component<Props, State> {
     this.state = {
       showInfoGraph: true,
       loading: "loading",
-      targetsList: [],
       targetsData: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
       csvData: [],
@@ -63,16 +61,24 @@ class Targets extends React.Component<Props, State> {
 
     switchLayer("");
 
-    SearchAPI.requestTargetsList(areaId, geofenceId)
-      .then((res) => {
+    this.targetsController
+      .getData(areaId, geofenceId)
+      .then((targetsData) => {
+        const data: Array<{ idx: number; target: portfoliosByTarget }> = [];
         if (this.mounted) {
-          this.setState({
-            targetsList: res,
-            loading: null, //Ajustar el manejo de este mensaje cuando el gráfico este finalizado
-          });
-
-          res.forEach((element) => {
-            this.getPortfolioData(element.id);
+          targetsData.forEach((targetProm, idx) => {
+            targetProm.then((target) => {
+              data.push({ idx, target });
+              data.sort((a, b) => {
+                if (a.idx < b.idx) return 1;
+                if (a.idx > b.idx) return -1;
+                return 0;
+              });
+              this.setState({
+                targetsData: data.map((d) => d.target),
+                loading: null,
+              });
+            });
           });
         }
       })
@@ -92,27 +98,6 @@ class Targets extends React.Component<Props, State> {
     this.setState((prevState) => ({
       showInfoGraph: !prevState.showInfoGraph,
     }));
-  };
-
-  /**
-   * Get data about selected target
-   *
-   * @param {number} targetId portfolio target id
-   */
-  getPortfolioData = (targetId: number) => {
-    const { areaId, geofenceId } = this.context as SearchContextValues;
-
-    SearchAPI.requestPortfoliosByTarget(areaId, geofenceId, targetId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState((prevState) => ({
-            targetsData: [...prevState.targetsData, res],
-          }));
-        }
-      })
-      .catch(() => {
-        this.setState({ loading: "no-data" });
-      });
   };
 
   render() {
