@@ -5,7 +5,6 @@ import {
 import {
   portfoliosByTarget,
   portfolioData,
-  target,
 } from "pages/search/types/portfolios";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
@@ -13,6 +12,15 @@ import SearchAPI from "utils/searchAPI";
 
 export class TargetsController {
   constructor() {}
+
+  /**
+   * Get all available portfolios
+   *
+   * @returns List of portfolios
+   */
+  getPortolfiosList() {
+    return SearchAPI.requestPortfoliosList();
+  }
 
   /**
    * Get the portfolios data for all the targets

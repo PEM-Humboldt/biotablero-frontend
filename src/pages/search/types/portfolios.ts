@@ -14,7 +14,7 @@ export interface portfoliosByTarget {
   portfolios_data: Array<portfolioData>;
 }
 
-export interface target {
+export interface targetOrPortfolio {
   id: number;
   name: string;
 }

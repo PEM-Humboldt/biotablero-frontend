@@ -9,11 +9,13 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { TargetsController } from "pages/search/drawer/portfolios/conservationAreas/TargetsController";
 
-import { portfoliosByTarget, target } from "pages/search/types/portfolios";
+import {
+  portfoliosByTarget,
+  targetOrPortfolio,
+} from "pages/search/types/portfolios";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
-import SearchAPI from "utils/searchAPI";
 
 interface Props {}
 
@@ -22,6 +24,7 @@ interface State {
   loading: wrapperMessage;
   texts: textsObject;
   targetsData: Array<portfoliosByTarget>;
+  availablePortfolios: Array<targetOrPortfolio>;
   csvData: Array<object>;
 }
 
@@ -36,6 +39,7 @@ class Targets extends React.Component<Props, State> {
       showInfoGraph: true,
       loading: "loading",
       targetsData: [],
+      availablePortfolios: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
       csvData: [],
     };
@@ -85,6 +89,17 @@ class Targets extends React.Component<Props, State> {
       .catch(() => {
         this.setState({ loading: "no-data" });
       });
+
+    this.targetsController
+      .getPortolfiosList()
+      .then((list) => {
+        if (this.mounted) {
+          this.setState({ availablePortfolios: list });
+        }
+      })
+      .catch(() => {
+        this.setState({ loading: "no-data" });
+      });
   }
 
   componentWillUnmount() {
@@ -102,7 +117,14 @@ class Targets extends React.Component<Props, State> {
 
   render() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
-    const { showInfoGraph, loading, texts, targetsData, csvData } = this.state;
+    const {
+      showInfoGraph,
+      loading,
+      texts,
+      targetsData,
+      csvData,
+      availablePortfolios,
+    } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
 
@@ -143,17 +165,15 @@ class Targets extends React.Component<Props, State> {
         </div>
 
         <div className="fiLegend">
-          <LegendColor color="#e25648" orientation="column" key="wcnc">
-            WCNC
-          </LegendColor>
-
-          <LegendColor color="#ee8531" orientation="column" key="elsa">
-            ELSA
-          </LegendColor>
-
-          <LegendColor color="#fdc031" orientation="column" key="eca">
-            Especies, Carbono, Agua
-          </LegendColor>
+          {availablePortfolios.map((portfolio) => (
+            <LegendColor
+              color="#e25648"
+              orientation="column"
+              key={portfolio.id}
+            >
+              {portfolio.name}
+            </LegendColor>
+          ))}
         </div>
 
         <TextBoxes
