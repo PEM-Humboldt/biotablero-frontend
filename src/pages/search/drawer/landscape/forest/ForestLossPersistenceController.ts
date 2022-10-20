@@ -3,7 +3,7 @@ import {
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
-import { ForestLP } from "pages/search/types/forest";
+import { ForestLPExt } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
@@ -16,7 +16,7 @@ const getLabel = {
 };
 
 interface ForestLPData {
-  forestLP: Array<ForestLP>;
+  forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
 }
 
@@ -67,11 +67,11 @@ export class ForestLossPersistenceController {
   /**
    * Transform data structure to be passed to component as a prop
    *
-   * @param {Array<ForestLP>} rawData raw data from RestAPI
+   * @param {Array<ForestLPExt>} rawData raw data from RestAPI
    *
    * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
    */
-  getGraphData(rawData: Array<ForestLP>) {
+  getGraphData(rawData: Array<ForestLPExt>) {
     const tooltips: Array<SmallBarTooltip> = [];
     const categories: Set<string> = new Set();
     const transformedData: Array<SmallBarsData> = rawData.map((period) => {
@@ -124,11 +124,11 @@ export class ForestLossPersistenceController {
   /**
    * Returns data transformed to be downloaded in the csv file
    *
-   * @param {SmallStackedBarsData[]} data data array for SmallStackedBars graph in forest loss persistence tab
+   * @param {ForestLPExt[]} data data array for SmallStackedBars graph in forest loss persistence tab
    *
    * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
    */
-  getDownloadData(data: Array<ForestLP>) {
+  getDownloadData(data: Array<ForestLPExt>) {
     const result: Array<{
       period: string;
       category: string;

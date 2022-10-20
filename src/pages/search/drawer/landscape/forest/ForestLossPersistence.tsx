@@ -8,7 +8,7 @@ import matchColor from "utils/matchColor";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import { ForestLP } from "pages/search/types/forest";
+import { ForestLPExt } from "pages/search/types/forest";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -17,7 +17,7 @@ import { ForestLossPersistenceController } from "pages/search/drawer/landscape/f
 interface Props {}
 interface State {
   showInfoGraph: boolean;
-  forestLP: Array<ForestLP>;
+  forestLP: Array<ForestLPExt>;
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
