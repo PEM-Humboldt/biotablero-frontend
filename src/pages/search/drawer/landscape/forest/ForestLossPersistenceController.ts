@@ -1,4 +1,7 @@
-import { SmallBarsData, SmallBarsDataDetails } from "pages/search/shared_components/charts/SmallBars";
+import {
+  SmallBarsData,
+  SmallBarsDataDetails,
+} from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
 import { ForestLP } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
@@ -83,11 +86,14 @@ export class ForestLossPersistenceController {
         tooltips.push({
           group: period.id,
           category: category.key,
-          tooltipContent: [category.label, `${formatNumber(category.area, 2)} ha`],
+          tooltipContent: [
+            category.label,
+            `${formatNumber(category.area, 2)} ha`,
+          ],
         });
 
-        if(!categories.has(category.key)) {
-          categories.add(category.key)
+        if (!categories.has(category.key)) {
+          categories.add(category.key);
         }
       });
 

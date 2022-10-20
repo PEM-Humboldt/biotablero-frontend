@@ -37,8 +37,8 @@ export class CurrentPAConnectivityController {
         ],
       });
 
-      if(!categories.has(pa.key)) {
-        categories.add(pa.key)
+      if (!categories.has(pa.key)) {
+        categories.add(pa.key);
       }
 
       return object;

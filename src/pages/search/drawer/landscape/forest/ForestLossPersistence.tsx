@@ -134,7 +134,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             message={message}
             axisY={{
               enabled: true,
-              legend: "Periodo"
+              legend: "Periodo",
             }}
             axisX={{
               enabled: true,

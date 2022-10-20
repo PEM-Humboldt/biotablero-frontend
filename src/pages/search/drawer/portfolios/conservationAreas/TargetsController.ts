@@ -1,4 +1,7 @@
-import { SmallBarsData, SmallBarsDataDetails } from "pages/search/shared_components/charts/SmallBars";
+import {
+  SmallBarsData,
+  SmallBarsDataDetails,
+} from "pages/search/shared_components/charts/SmallBars";
 import {
   portfoliosByTarget,
   portfolioData,
@@ -39,8 +42,8 @@ export class TargetsController {
           ],
         });
 
-        if(!portfolios.has(portfolio.short_name)) {
-          portfolios.add(portfolio.short_name)
+        if (!portfolios.has(portfolio.short_name)) {
+          portfolios.add(portfolio.short_name);
         }
       });
 

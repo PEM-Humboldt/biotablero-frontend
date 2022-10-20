@@ -34,7 +34,7 @@ interface Props {
 }
 
 export interface SmallBarsDataDetails {
-  category: string; 
+  category: string;
   value: number | string;
 }
 
@@ -68,12 +68,12 @@ class SmallBars extends React.Component<Props, State> {
       maxValue = "auto",
       marginLeft = 90,
       axisY = {
-        enabled : false,
-        legend : '',
+        enabled: false,
+        legend: "",
       },
       axisX = {
-        enabled : false,
-        legend : "",
+        enabled: false,
+        legend: "",
         format: ".2f",
       },
       enableLabel = false,
