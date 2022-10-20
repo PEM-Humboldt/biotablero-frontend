@@ -1,6 +1,7 @@
 import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
+import { SmallBarTooltip } from "pages/search/types/charts";
 
 export class CurrentPAConnectivityController {
   constructor() {}
@@ -13,39 +14,36 @@ export class CurrentPAConnectivityController {
    * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
    */
   getGraphData(rawData: Array<DPC>) {
-    const tooltips: Array<{
-      group: string;
-      category: string;
-      tooltipContent: Array<string>;
-    }> = [];
-    const transformedData: Array<SmallBarsData> = rawData.map((element) => {
+    const tooltips: Array<SmallBarTooltip> = [];
+    const categories: Set<string> = new Set();
+    const transformedData: Array<SmallBarsData> = rawData.map((pa) => {
       const object = {
-        group: element.id,
+        group: pa.id,
         data: [
           {
-            category: element.key,
-            value: element.value,
+            category: pa.key,
+            value: pa.value,
           },
         ],
       };
 
       tooltips.push({
-        group: element.id,
-        category: element.key,
+        group: pa.id,
+        category: pa.key,
         tooltipContent: [
-          element.name,
-          `${formatNumber(element.value, 2)}`,
-          `${formatNumber(element.area, 2)} ha`,
+          pa.name,
+          `${formatNumber(pa.value, 2)}`,
+          `${formatNumber(pa.area, 2)} ha`,
         ],
       });
+
+      if(!categories.has(pa.key)) {
+        categories.add(pa.key)
+      }
 
       return object;
     });
 
-    const keys = rawData
-      ? [...new Set(rawData.map((item) => String(item.key)))]
-      : [];
-
-    return { transformedData, keys, tooltips };
+    return { transformedData, keys: Array.from(categories), tooltips };
   }
 }

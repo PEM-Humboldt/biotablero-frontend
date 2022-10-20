@@ -1,8 +1,9 @@
-import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
+import { SmallBarsData, SmallBarsDataDetails } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
 import { ForestLP } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
+import { SmallBarTooltip } from "pages/search/types/charts";
 
 const getLabel = {
   persistencia: "Persistencia",
@@ -68,42 +69,36 @@ export class ForestLossPersistenceController {
    * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
    */
   getGraphData(rawData: Array<ForestLP>) {
-    const tooltips: Array<{
-      group: string;
-      category: string;
-      tooltipContent: Array<string>;
-    }> = [];
-    const transformedData: Array<SmallBarsData> = rawData.map((element) => {
-      const objectData: Array<{
-        category: string;
-        value: number;
-      }> = [];
-      element.data.forEach((item) => {
+    const tooltips: Array<SmallBarTooltip> = [];
+    const categories: Set<string> = new Set();
+    const transformedData: Array<SmallBarsData> = rawData.map((period) => {
+      const objectData: Array<SmallBarsDataDetails> = [];
+      period.data.forEach((category) => {
         const info = {
-          category: item.key,
-          value: item.area,
+          category: category.key,
+          value: category.area,
         };
         objectData.push(info);
 
         tooltips.push({
-          group: element.id,
-          category: item.key,
-          tooltipContent: [item.label, `${formatNumber(item.area, 2)} ha`],
+          group: period.id,
+          category: category.key,
+          tooltipContent: [category.label, `${formatNumber(category.area, 2)} ha`],
         });
+
+        if(!categories.has(category.key)) {
+          categories.add(category.key)
+        }
       });
 
       const object = {
-        group: element.id,
+        group: period.id,
         data: objectData,
       };
       return object;
     });
 
-    const keys = rawData[0]
-      ? rawData[0].data.map((item: { key: string }) => String(item.key))
-      : [];
-
-    return { transformedData, keys, tooltips };
+    return { transformedData, keys: Array.from(categories), tooltips };
   }
 
   /**
