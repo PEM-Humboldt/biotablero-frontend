@@ -68,23 +68,18 @@ class Targets extends React.Component<Props, State> {
     this.targetsController
       .getData(areaId, geofenceId)
       .then((targetsData) => {
-        const data: Array<{ idx: number; target: portfoliosByTarget }> = [];
-        if (this.mounted) {
-          targetsData.forEach((targetProm, idx) => {
-            targetProm.then((target) => {
-              data.push({ idx, target });
-              data.sort((a, b) => {
-                if (a.idx < b.idx) return 1;
-                if (a.idx > b.idx) return -1;
-                return 0;
-              });
+        const data: Array<portfoliosByTarget> = [];
+        targetsData.forEach((targetProm, idx) => {
+          targetProm.then((target) => {
+            if (this.mounted) {
+              data[targetsData.length - idx - 1] = target;
               this.setState({
-                targetsData: data.map((d) => d.target),
+                targetsData: data.filter((p) => p !== undefined),
                 loading: null,
               });
-            });
+            }
           });
-        }
+        });
       })
       .catch(() => {
         this.setState({ loading: "no-data" });
