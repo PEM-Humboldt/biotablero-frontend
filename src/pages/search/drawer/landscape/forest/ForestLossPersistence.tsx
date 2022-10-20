@@ -8,9 +8,8 @@ import matchColor from "utils/matchColor";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
-import MultiSmallBars, {
-  MultiSmallBarsData,
-} from "pages/search/shared_components/charts/MultiSmallBars";
+import { ForestLPExt } from "pages/search/types/forest";
+import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/drawer/landscape/forest/ForestLossPersistenceController";
@@ -18,7 +17,7 @@ import { ForestLossPersistenceController } from "pages/search/drawer/landscape/f
 interface Props {}
 interface State {
   showInfoGraph: boolean;
-  forestLP: Array<MultiSmallBarsData>;
+  forestLP: Array<ForestLPExt>;
   message: wrapperMessage;
   forestPersistenceValue: number;
   texts: {
@@ -97,6 +96,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const { areaId, geofenceId, handlerClickOnGraph } = this
       .context as SearchContextValues;
 
+    const graphData = this.flpController.getGraphData(forestLP);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -126,10 +127,20 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
         <div>
-          <MultiSmallBars
-            data={forestLP}
+          <SmallBars
+            data={graphData.transformedData}
+            keys={graphData.keys}
+            tooltips={graphData.tooltips}
             message={message}
-            units="ha"
+            axisY={{
+              enabled: true,
+              legend: "Periodo",
+            }}
+            axisX={{
+              enabled: true,
+              legend: "Hectáreas",
+              format: ".2s",
+            }}
             colors={matchColor("forestLP")}
             onClickHandler={(period, key) => {
               handlerClickOnGraph({
@@ -139,8 +150,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
               });
             }}
             selectedIndexValue="2016-2021"
-            axisLeftLegend="Periodo"
-            axisBottomLegend="Hectáreas"
           />
         </div>
         <TextBoxes

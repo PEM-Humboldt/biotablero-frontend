@@ -23,3 +23,13 @@ export interface ForestLP {
     percentage: number;
   }>;
 }
+
+export interface ForestLPExt {
+  id: string;
+  data: Array<{
+    area: number;
+    key: typeof ForestLPKeys[number];
+    percentage: number;
+    label: string;
+  }>;
+}

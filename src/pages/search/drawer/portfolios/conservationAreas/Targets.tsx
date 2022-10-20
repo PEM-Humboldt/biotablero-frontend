@@ -6,9 +6,7 @@ import { LegendColor } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import MultiSmallBars, {
-  MultiSmallBarsData,
-} from "pages/search/shared_components/charts/MultiSmallBars";
+import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { TargetsController } from "pages/search/drawer/portfolios/conservationAreas/TargetsController";
 
 import { portfoliosByTarget, target } from "pages/search/types/portfolios";
@@ -121,6 +119,8 @@ class Targets extends React.Component<Props, State> {
     const { areaId, geofenceId } = this.context as SearchContextValues;
     const { showInfoGraph, loading, texts, targetsData, csvData } = this.state;
 
+    const graphData = this.targetsController.getGraphData(targetsData);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -139,17 +139,20 @@ class Targets extends React.Component<Props, State> {
           />
         )}
         <div>
-          <MultiSmallBars
-            data={this.targetsController.getGraphData(targetsData)}
+          <SmallBars
+            data={graphData.transformedData}
+            keys={graphData.keys}
+            tooltips={graphData.tooltips}
             message={loading}
             colors={matchColor("caTargets")}
-            units="%"
+            axisY={{
+              enabled: true,
+            }}
             onClickHandler={() => {}}
             height={500}
             selectedIndexValue="WCMC"
             groupMode="grouped"
-            toolTipValue="percentage"
-            innerPadding={0.5}
+            maxValue={100}
             marginLeft={145}
           />
         </div>

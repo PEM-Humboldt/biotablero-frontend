@@ -15,6 +15,7 @@ import { textsObject } from "pages/search/types/texts";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import { CurrentPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentPAConnectivityController";
 
 const getLabel = {
   unprot: "No protegida",
@@ -53,9 +54,11 @@ interface currentPAConnState {
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
+  CPACController;
 
   constructor(props: Props) {
     super(props);
+    this.CPACController = new CurrentPAConnectivityController();
     this.state = {
       infoShown: new Set(["current"]),
       currentPAConnData: [],
@@ -177,6 +180,8 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
+    const graphData = this.CPACController.getGraphData(dpcData);
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -252,14 +257,21 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           </h3>
           <div>
             <SmallBars
-              data={dpcData}
+              data={graphData.transformedData}
+              keys={graphData.keys}
+              tooltips={graphData.tooltips}
               message={dpcMess}
               colors={matchColor("dpc")}
               onClickHandler={(selected: string) =>
                 handlerClickOnGraph({ selectedKey: selected })
               }
-              labelX="dPC"
-              units="ha"
+              axisX={{
+                enabled: true,
+                legend: "dPC",
+                format: ".2f",
+              }}
+              enableLabel={true}
+              marginLeft={40}
             />
           </div>
           <div className="dpcLegend">
