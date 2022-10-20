@@ -65,7 +65,7 @@ class SmallBars extends React.Component<Props, State> {
       enableLabel = false,
     } = this.props;
     let { axisY, axisX } = this.props;
-    axisY = { ...{enabled: false, legend: ""}, ...axisY};
+    axisY = { ...{ enabled: false, legend: "" }, ...axisY };
     axisX = { ...{ enabled: false, legend: "", format: ".2f" }, ...axisX };
     const { selectedIndexValue } = this.state;
 
