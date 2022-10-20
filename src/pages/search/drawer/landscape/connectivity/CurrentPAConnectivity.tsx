@@ -265,8 +265,11 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               onClickHandler={(selected: string) =>
                 handlerClickOnGraph({ selectedKey: selected })
               }
-              axisXenable={true}
-              axisXLegend="dPC"
+              axisX={{
+                enabled: true,
+                legend: "dPC",
+                format: ".2f",
+              }}
               enableLabel={true}
               marginLeft={40}
             />

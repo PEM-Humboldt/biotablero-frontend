@@ -24,6 +24,15 @@ interface Props {
   axisYLegend?: string;
   axisXFormat?: string;
   enableLabel?: boolean;
+  axisY?: {
+    enabled?: boolean;
+    legend?: string;
+  };
+  axisX?: {
+    enabled?: boolean;
+    legend?: string;
+    format?: string;
+  };
 }
 
 export interface SmallBarsData {
@@ -54,11 +63,15 @@ class SmallBars extends React.Component<Props, State> {
       onClickHandler,
       groupMode = "stacked",
       marginLeft = 90,
-      axisXenable = false,
-      axisYenable = false,
-      axisYLegend = "",
-      axisXLegend = "",
-      axisXFormat = ".2f",
+      axisY = {
+        enabled : false,
+        legend : '',
+      },
+      axisX = {
+        enabled : false,
+        legend : "",
+        format: ".2f",
+      },
       enableLabel = false,
     } = this.props;
     const { selectedIndexValue } = this.state;
@@ -75,6 +88,8 @@ class SmallBars extends React.Component<Props, State> {
       });
       return transformedData;
     };
+
+    console.log('axisY', axisY);
 
     return (
       <div style={{ height }}>
@@ -95,25 +110,25 @@ class SmallBars extends React.Component<Props, State> {
           enableGridY={false}
           enableGridX
           axisLeft={
-            axisYenable
+            axisY && axisY.enabled
               ? {
                   tickSize: 3,
                   tickPadding: 5,
                   tickRotation: 0,
-                  legend: `${axisYLegend}`,
+                  legend: `${axisY.legend}`,
                   legendPosition: "middle",
                   legendOffset: -80,
                 }
               : null
           }
           axisBottom={
-            axisXenable
+            axisX && axisX.enabled
               ? {
                   tickSize: 0,
                   tickPadding: 0,
                   tickRotation: 0,
-                  format: `${axisXFormat}`,
-                  legend: `${axisXLegend}`,
+                  format: `${axisX.format}`,
+                  legend: `${axisX.legend}`,
                   legendPosition: "start",
                   legendOffset: 25,
                 }

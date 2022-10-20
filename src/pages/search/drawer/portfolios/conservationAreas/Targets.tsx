@@ -145,7 +145,10 @@ class Targets extends React.Component<Props, State> {
             tooltips={graphData.tooltips}
             message={loading}
             colors={matchColor("caTargets")}
-            axisYenable={true}
+            axisY={{
+              enabled: true,
+              legend: '',
+            }}
             onClickHandler={() => {}}
             height={500}
             selectedIndexValue="WCMC"

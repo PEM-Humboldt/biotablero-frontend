@@ -132,11 +132,15 @@ class ForestLossPersistence extends React.Component<Props, State> {
             keys={graphData.keys}
             tooltips={graphData.tooltips}
             message={message}
-            axisXenable={true}
-            axisYenable={true}
-            axisXLegend="Hectáreas"
-            axisYLegend="Periodo"
-            axisXFormat=".2s"
+            axisY={{
+              enabled: true,
+              legend: "Periodo"
+            }}
+            axisX={{
+              enabled: true,
+              legend: "Hectáreas",
+              format: ".2s",
+            }}
             colors={matchColor("forestLP")}
             onClickHandler={(period, key) => {
               handlerClickOnGraph({
