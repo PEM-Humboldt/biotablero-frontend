@@ -150,7 +150,6 @@ class Targets extends React.Component<Props, State> {
             height={500}
             selectedIndexValue="WCMC"
             groupMode="grouped"
-            innerPadding={0.5}
             marginLeft={145}
           />
         </div>

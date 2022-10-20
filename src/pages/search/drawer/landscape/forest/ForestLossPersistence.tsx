@@ -146,8 +146,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
               });
             }}
             selectedIndexValue="2016-2021"
-            axisLeftLegend="Periodo"
-            axisBottomLegend="Hectáreas"
           />
         </div>
         <TextBoxes

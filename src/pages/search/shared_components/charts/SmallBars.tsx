@@ -14,13 +14,9 @@ interface Props {
   }>;
   height?: number;
   colors: (key: string) => string;
-  units?: string;
   onClickHandler: (group: string, category: string) => void;
   selectedIndexValue?: string;
   groupMode?: "grouped" | "stacked";
-  axisLeftLegend?: string;
-  axisBottomLegend?: string;
-  innerPadding?: number;
   marginLeft?: number;
   axisXenable?: boolean;
   axisYenable?: boolean;
