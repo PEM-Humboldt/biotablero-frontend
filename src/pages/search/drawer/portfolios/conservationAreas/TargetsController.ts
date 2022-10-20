@@ -18,6 +18,7 @@ export class TargetsController {
    */
   getGraphData(rawData: Array<portfoliosByTarget>) {
     const tooltips: Array<SmallBarTooltip> = [];
+    const portfolios: Set<string> = new Set();
     const transformedData: Array<SmallBarsData> = rawData.map((target) => {
       const objectData: Array<SmallBarsDataDetails> = [];
       target.portfolios_data.forEach((portfolio: portfolioData) => {
@@ -37,6 +38,10 @@ export class TargetsController {
             `${formatNumber(portfolio.value, 2)} c`,
           ],
         });
+
+        if(!portfolios.has(portfolio.short_name)) {
+          portfolios.add(portfolio.short_name)
+        }
       });
 
       const object = {
@@ -46,10 +51,6 @@ export class TargetsController {
       return object;
     });
 
-    const keys = rawData[0]
-      ? rawData[0].portfolios_data.map((item) => String(item.short_name))
-      : [];
-
-    return { transformedData, keys, tooltips };
+    return { transformedData, keys: Array.from(portfolios), tooltips };
   }
 }
