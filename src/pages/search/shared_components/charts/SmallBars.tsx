@@ -3,15 +3,12 @@ import { ResponsiveBar } from "@nivo/bar";
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
+import { SmallBarTooltip } from "pages/search/types/charts";
 
 interface Props {
   data: Array<SmallBarsData>;
   keys: Array<string>;
-  tooltips: Array<{
-    group: string;
-    category: string;
-    tooltipContent: Array<string>;
-  }>;
+  tooltips: Array<SmallBarTooltip>;
   height?: number;
   colors: (key: string) => string;
   onClickHandler: (group: string, category: string) => void;
@@ -35,9 +32,14 @@ interface Props {
   };
 }
 
+export interface SmallBarsDataDetails {
+  category: string; 
+  value: number | string;
+}
+
 export interface SmallBarsData {
   group: string;
-  data: Array<{ category: string; value: number | string }>;
+  data: Array<SmallBarsDataDetails>;
 }
 
 interface State {
@@ -88,8 +90,6 @@ class SmallBars extends React.Component<Props, State> {
       });
       return transformedData;
     };
-
-    console.log('axisY', axisY);
 
     return (
       <div style={{ height }}>
@@ -167,10 +167,10 @@ class SmallBars extends React.Component<Props, State> {
                 <div style={{ color: "#ffffff" }}>
                   {tooltipRows.map((rowValue, i) => {
                     return (
-                      <span key={i}>
+                      <div key={rowValue}>
                         {rowValue}
                         <br />
-                      </span>
+                      </div>
                     );
                   })}
                 </div>
