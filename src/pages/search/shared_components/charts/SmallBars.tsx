@@ -135,13 +135,13 @@ class SmallBars extends React.Component<Props, State> {
               : null
           }
           enableLabel={enableLabel}
+          label={({ value }) => (value ? formatNumber(value, 2) : "")}
           colors={({ id, indexValue, data: allData }) => {
             if (indexValue === selectedIndexValue) {
               return darkenColor(colors(String(id)), 15);
             }
             return colors(String(id));
           }}
-          label={({ value }) => (value ? formatNumber(value, 2) : "")}
           animate
           theme={{
             axis: {
