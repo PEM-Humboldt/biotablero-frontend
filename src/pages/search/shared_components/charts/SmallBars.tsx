@@ -15,7 +15,12 @@ interface Props {
   selectedIndexValue?: string;
   groupMode?: "grouped" | "stacked";
   maxValue?: number | "auto";
-  marginLeft?: number;
+  margin?: {
+    top?: number;
+    right?: number;
+    bottom?: number;
+    left?: number;
+  };
   enableLabel?: boolean;
   axisY?: {
     enabled?: boolean;
@@ -61,10 +66,10 @@ class SmallBars extends React.Component<Props, State> {
       onClickHandler,
       groupMode = "stacked",
       maxValue = "auto",
-      marginLeft = 90,
       enableLabel = false,
     } = this.props;
-    let { axisY, axisX } = this.props;
+    let { margin, axisY, axisX } = this.props;
+    margin = { ...{ top: 20, right: 15, bottom: 0, left: 90 }, ...margin };
     axisY = { ...{ enabled: false, legend: "" }, ...axisY };
     axisX = { ...{ enabled: false, legend: "", format: ".2f" }, ...axisX };
     const { selectedIndexValue } = this.state;
@@ -91,12 +96,7 @@ class SmallBars extends React.Component<Props, State> {
           layout="horizontal"
           groupMode={groupMode}
           maxValue={maxValue}
-          margin={{
-            top: 20,
-            right: 15,
-            bottom: 50,
-            left: marginLeft,
-          }}
+          margin={margin}
           padding={0.35}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
           enableGridY={false}

@@ -159,13 +159,14 @@ class Targets extends React.Component<Props, State> {
           selectedIndexValue="WCMC"
           groupMode="grouped"
           maxValue={100}
-          marginLeft={145}
+          margin={{ bottom: 5, left: 145 }}
         />
 
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
               <FormControlLabel
+                key={portfolio.id}
                 label={
                   <SquareFilledLegend
                     color={matchColor("caTargets")(portfolio.name)}

@@ -271,7 +271,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
                 format: ".2f",
               }}
               enableLabel={true}
-              marginLeft={40}
+              margin={{ left: 40 }}
             />
           </div>
           <div className="dpcLegend">
