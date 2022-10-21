@@ -1,7 +1,7 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import { LegendColor } from "pages/search/shared_components/CssLegends";
+import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
@@ -271,14 +271,14 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
                 format: ".2f",
               }}
               enableLabel={true}
-              marginLeft={40}
+              margin={{ left: 40 }}
             />
           </div>
           <div className="dpcLegend">
             {DPCKeys.map((cat) => (
-              <LegendColor color={matchColor("dpc")(cat)} key={cat}>
+              <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
                 {legendDPCCategories[cat]}
-              </LegendColor>
+              </PointFilledLegend>
             ))}
           </div>
           <TextBoxes

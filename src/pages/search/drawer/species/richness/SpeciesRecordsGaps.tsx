@@ -4,7 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
   LineLegend,
-  LegendColor,
+  PointFilledLegend,
 } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
@@ -355,7 +355,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         <br />
         <div className="richnessLegend">
           {messageGaps === null && (
-            <LegendColor
+            <PointFilledLegend
               orientation="column"
               color={matchColor("richnessGaps")("value")}
               key="value"
@@ -363,7 +363,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
               marginRight="6px"
             >
               {getLabelGaps("value", areaId)}
-            </LegendColor>
+            </PointFilledLegend>
           )}
           {messageGaps === null &&
             gaps !== null &&
@@ -413,7 +413,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
             </div>
             <br />
             <div className="richnessLegend">
-              <LegendColor
+              <PointFilledLegend
                 orientation="column"
                 color={matchColor("richnessGaps")("value")}
                 key="value"
@@ -421,7 +421,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
                 marginRight="6px"
               >
                 {getLabelConcentration("value")}
-              </LegendColor>
+              </PointFilledLegend>
               {concentration !== null &&
                 concentration.measures &&
                 Object.keys(concentration.measures).map((key) => (

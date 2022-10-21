@@ -3,7 +3,7 @@ import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
-  LegendColor,
+  PointFilledLegend,
   LineLegend,
   TextLegend,
   ThickLineLegend,
@@ -604,7 +604,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
             legends.map((key) => {
               if (key === "inferred" || key === "observed") {
                 return (
-                  <LegendColor
+                  <PointFilledLegend
                     orientation="column"
                     color={matchColor("richnessNos")(key)}
                     key={key}
@@ -612,7 +612,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                     marginRight="6px"
                   >
                     {getLabel(`${key}2`, areaId, bioticRegion)}
-                  </LegendColor>
+                  </PointFilledLegend>
                 );
               }
               return (

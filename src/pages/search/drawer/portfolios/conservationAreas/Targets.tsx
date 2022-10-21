@@ -2,18 +2,21 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import { LegendColor } from "pages/search/shared_components/CssLegends";
+import { SquareFilledLegend } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { TargetsController } from "pages/search/drawer/portfolios/conservationAreas/TargetsController";
 
-import { portfoliosByTarget, target } from "pages/search/types/portfolios";
+import {
+  portfoliosByTarget,
+  targetOrPortfolio,
+} from "pages/search/types/portfolios";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
-import SearchAPI from "utils/searchAPI";
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 interface Props {}
 
@@ -21,8 +24,8 @@ interface State {
   showInfoGraph: boolean;
   loading: wrapperMessage;
   texts: textsObject;
-  targetsList: Array<target>;
   targetsData: Array<portfoliosByTarget>;
+  availablePortfolios: Array<targetOrPortfolio>;
   csvData: Array<object>;
 }
 
@@ -36,8 +39,8 @@ class Targets extends React.Component<Props, State> {
     this.state = {
       showInfoGraph: true,
       loading: "loading",
-      targetsList: [],
       targetsData: [],
+      availablePortfolios: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
       csvData: [],
     };
@@ -63,17 +66,31 @@ class Targets extends React.Component<Props, State> {
 
     switchLayer("");
 
-    SearchAPI.requestTargetsList(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            targetsList: res,
-            loading: null, //Ajustar el manejo de este mensaje cuando el gráfico este finalizado
+    this.targetsController
+      .getData(areaId, geofenceId)
+      .then((targetsData) => {
+        const data: Array<portfoliosByTarget> = [];
+        targetsData.forEach((targetProm, idx) => {
+          targetProm.then((target) => {
+            if (this.mounted) {
+              data[targetsData.length - idx - 1] = target;
+              this.setState({
+                targetsData: data.filter((p) => p !== undefined),
+                loading: null,
+              });
+            }
           });
+        });
+      })
+      .catch(() => {
+        this.setState({ loading: "no-data" });
+      });
 
-          res.forEach((element) => {
-            this.getPortfolioData(element.id);
-          });
+    this.targetsController
+      .getPortolfiosList()
+      .then((list) => {
+        if (this.mounted) {
+          this.setState({ availablePortfolios: list });
         }
       })
       .catch(() => {
@@ -94,30 +111,20 @@ class Targets extends React.Component<Props, State> {
     }));
   };
 
-  /**
-   * Get data about selected target
-   *
-   * @param {number} targetId portfolio target id
-   */
-  getPortfolioData = (targetId: number) => {
-    const { areaId, geofenceId } = this.context as SearchContextValues;
-
-    SearchAPI.requestPortfoliosByTarget(areaId, geofenceId, targetId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState((prevState) => ({
-            targetsData: [...prevState.targetsData, res],
-          }));
-        }
-      })
-      .catch(() => {
-        this.setState({ loading: "no-data" });
-      });
+  clickOnLegend = () => {
+    // TODO: hide / show portfolio layer
   };
 
   render() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
-    const { showInfoGraph, loading, texts, targetsData, csvData } = this.state;
+    const {
+      showInfoGraph,
+      loading,
+      texts,
+      targetsData,
+      csvData,
+      availablePortfolios,
+    } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
 
@@ -138,37 +145,47 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
-        <div>
-          <SmallBars
-            data={graphData.transformedData}
-            keys={graphData.keys}
-            tooltips={graphData.tooltips}
-            message={loading}
-            colors={matchColor("caTargets")}
-            axisY={{
-              enabled: true,
-            }}
-            onClickHandler={() => {}}
-            height={500}
-            selectedIndexValue="WCMC"
-            groupMode="grouped"
-            maxValue={100}
-            marginLeft={145}
-          />
-        </div>
+        <SmallBars
+          data={graphData.transformedData}
+          keys={graphData.keys}
+          tooltips={graphData.tooltips}
+          message={loading}
+          colors={matchColor("caTargets")}
+          axisY={{
+            enabled: true,
+          }}
+          onClickHandler={() => {}}
+          height={450}
+          selectedIndexValue="WCMC"
+          groupMode="grouped"
+          maxValue={100}
+          margin={{ bottom: 5, left: 145 }}
+        />
 
-        <div className="fiLegend">
-          <LegendColor color="#e25648" orientation="column" key="wcnc">
-            WCNC
-          </LegendColor>
-
-          <LegendColor color="#ee8531" orientation="column" key="elsa">
-            ELSA
-          </LegendColor>
-
-          <LegendColor color="#fdc031" orientation="column" key="eca">
-            Especies, Carbono, Agua
-          </LegendColor>
+        <div className="targetsLegend">
+          <FormGroup>
+            {availablePortfolios.map((portfolio) => (
+              <FormControlLabel
+                key={portfolio.id}
+                label={
+                  <SquareFilledLegend
+                    color={matchColor("caTargets")(portfolio.name)}
+                    orientation="column"
+                    key={portfolio.id}
+                  >
+                    {portfolio.name}
+                  </SquareFilledLegend>
+                }
+                control={
+                  <Checkbox
+                    sx={{ padding: 0 }}
+                    onChange={this.clickOnLegend}
+                    name={portfolio.name}
+                  />
+                }
+              />
+            ))}
+          </FormGroup>
         </div>
 
         <TextBoxes

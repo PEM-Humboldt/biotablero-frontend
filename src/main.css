@@ -2113,6 +2113,15 @@ div[class*="eaRHYv"] {
 	margin-right: 10px;
 }
 
+.targetsLegend {
+  margin: 10px 0 10px 25px;
+}
+
+.targetsLegend p {
+  margin: 0;
+  margin-left: 5px;
+}
+
 .innerInfo {
 	text-transform: none !important;
 	border: none !important;

@@ -26,7 +26,10 @@ import {
   NOSThresholds,
   numberOfSpecies,
 } from "pages/search/types/richness";
-import { portfoliosByTarget, target } from "pages/search/types/portfolios";
+import {
+  portfoliosByTarget,
+  targetOrPortfolio,
+} from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/drawer";
 class SearchAPI {
   /** ****** */
@@ -496,10 +499,19 @@ class SearchAPI {
   static requestTargetsList(
     areaType: string,
     areaId: number | string
-  ): Promise<Array<target>> {
+  ): Promise<Array<targetOrPortfolio>> {
     return SearchAPI.makeGetRequest(
       `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`
     );
+  }
+
+  /**
+   * Get list of portfolios
+   *
+   * @return {Promise<Array>} Array of objects with targets list
+   */
+  static requestPortfoliosList(): Promise<Array<targetOrPortfolio>> {
+    return SearchAPI.makeGetRequest(`portfolios-ca/portfolios/list`);
   }
 
   /** ************ */

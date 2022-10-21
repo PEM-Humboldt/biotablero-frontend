@@ -33,21 +33,28 @@ const PointLegend = styled(Legend)<PropsPointLeg>`
   }
 `;
 
-interface PropsLegColor {
+interface PropsFilledLeg {
   color: string;
 }
 
-const LegendColor = styled(PointLegend)<PropsLegColor>`
+const PointFilledLegend = styled(PointLegend)<PropsFilledLeg>`
   &:before {
     background-color: ${(props) => props.color};
   }
 `;
 
-interface PropsBorderLegColor {
+const SquareFilledLegend = styled(PointLegend)<PropsFilledLeg>`
+  &:before {
+    background-color: ${(props) => props.color};
+    border-radius: 0;
+  }
+`;
+
+interface PropsSquareBorderLeg {
   color: string;
 }
 
-const BorderLegendColor = styled(PointLegend)<PropsBorderLegColor>`
+const SquareBorderLegend = styled(PointLegend)<PropsSquareBorderLeg>`
   &:before {
     color: #ffffff;
     border: 2px solid ${(props) => props.color};
@@ -126,8 +133,9 @@ const TextLegend = styled(Legend)<PropsTextLeg>`
 `;
 
 export {
-  LegendColor,
-  BorderLegendColor,
+  PointFilledLegend,
+  SquareFilledLegend,
+  SquareBorderLegend,
   LineLegend,
   ThickLineLegend,
   TextLegend,

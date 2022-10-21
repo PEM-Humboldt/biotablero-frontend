@@ -2,8 +2,8 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  LegendColor,
-  BorderLegendColor,
+  PointFilledLegend,
+  SquareBorderLegend,
 } from "pages/search/shared_components/CssLegends";
 import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
@@ -224,9 +224,9 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         <h3 className="inlineb">
           Haz clic en la gráfica para visualizar las áreas protegidas
         </h3>
-        <BorderLegendColor color={matchColor("border")()}>
+        <SquareBorderLegend color={matchColor("border")()}>
           Límite de áreas protegidas
-        </BorderLegendColor>
+        </SquareBorderLegend>
         <div>
           <Pie
             message={loading}
@@ -243,13 +243,13 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           />
           <div className="fiLegend">
             {getSCIHFVals().map((cat) => (
-              <LegendColor
+              <PointFilledLegend
                 color={matchColor("SciHf")(cat)}
                 orientation="column"
                 key={cat}
               >
                 {SciHfCats[cat].label}
-              </LegendColor>
+              </PointFilledLegend>
             ))}
           </div>
         </div>
