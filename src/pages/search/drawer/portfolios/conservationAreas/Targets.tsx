@@ -2,7 +2,7 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import { LegendColor } from "pages/search/shared_components/CssLegends";
+import { SquareFilledLegend } from "pages/search/shared_components/CssLegends";
 import matchColor from "utils/matchColor";
 import ShortInfo from "components/ShortInfo";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
@@ -161,13 +161,13 @@ class Targets extends React.Component<Props, State> {
 
         <div className="fiLegend">
           {availablePortfolios.map((portfolio) => (
-            <LegendColor
-              color="#e25648"
+            <SquareFilledLegend
+              color={matchColor("caTargets")(portfolio.name)}
               orientation="column"
               key={portfolio.id}
             >
               {portfolio.name}
-            </LegendColor>
+            </SquareFilledLegend>
           ))}
         </div>
 
