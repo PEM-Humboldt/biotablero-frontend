@@ -16,6 +16,7 @@ import {
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
+import { Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 
 interface Props {}
 
@@ -110,6 +111,10 @@ class Targets extends React.Component<Props, State> {
     }));
   };
 
+  clickOnLegend = () => {
+    // TODO: hide / show portfolio layer
+  };
+
   render() {
     const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
@@ -140,35 +145,46 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
-        <div>
-          <SmallBars
-            data={graphData.transformedData}
-            keys={graphData.keys}
-            tooltips={graphData.tooltips}
-            message={loading}
-            colors={matchColor("caTargets")}
-            axisY={{
-              enabled: true,
-            }}
-            onClickHandler={() => {}}
-            height={500}
-            selectedIndexValue="WCMC"
-            groupMode="grouped"
-            maxValue={100}
-            marginLeft={145}
-          />
-        </div>
+        <SmallBars
+          data={graphData.transformedData}
+          keys={graphData.keys}
+          tooltips={graphData.tooltips}
+          message={loading}
+          colors={matchColor("caTargets")}
+          axisY={{
+            enabled: true,
+          }}
+          onClickHandler={() => {}}
+          height={450}
+          selectedIndexValue="WCMC"
+          groupMode="grouped"
+          maxValue={100}
+          marginLeft={145}
+        />
 
-        <div className="fiLegend">
-          {availablePortfolios.map((portfolio) => (
-            <SquareFilledLegend
-              color={matchColor("caTargets")(portfolio.name)}
-              orientation="column"
-              key={portfolio.id}
-            >
-              {portfolio.name}
-            </SquareFilledLegend>
-          ))}
+        <div className="targetsLegend">
+          <FormGroup>
+            {availablePortfolios.map((portfolio) => (
+              <FormControlLabel
+                label={
+                  <SquareFilledLegend
+                    color={matchColor("caTargets")(portfolio.name)}
+                    orientation="column"
+                    key={portfolio.id}
+                  >
+                    {portfolio.name}
+                  </SquareFilledLegend>
+                }
+                control={
+                  <Checkbox
+                    sx={{ padding: 0 }}
+                    onChange={this.clickOnLegend}
+                    name={portfolio.name}
+                  />
+                }
+              />
+            ))}
+          </FormGroup>
         </div>
 
         <TextBoxes
