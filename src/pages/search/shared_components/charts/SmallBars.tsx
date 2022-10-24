@@ -1,5 +1,7 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
+import { AxisTickProps } from "@nivo/axes";
+
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
@@ -30,6 +32,11 @@ interface Props {
     enabled?: boolean;
     legend?: string;
     format?: string;
+  };
+  alternateAxisY?: {
+    values: Record<string, string>;
+    tickWidth?: number;
+    tickHeight?: number;
   };
 }
 
@@ -67,6 +74,7 @@ class SmallBars extends React.Component<Props, State> {
       groupMode = "stacked",
       maxValue = "auto",
       enableLabel = false,
+      alternateAxisY = { values: {} },
     } = this.props;
     let { margin, axisY, axisX } = this.props;
     margin = { ...{ top: 20, right: 15, bottom: 0, left: 90 }, ...margin };
@@ -126,6 +134,15 @@ class SmallBars extends React.Component<Props, State> {
                 }
               : null
           }
+          axisRight={
+            alternateAxisY && {
+              renderTick: CustomTickWrapper(
+                alternateAxisY.values,
+                alternateAxisY.tickWidth,
+                alternateAxisY.tickHeight
+              ),
+            }
+          }
           enableLabel={enableLabel}
           label={({ value }) => (value ? formatNumber(value, 2) : "")}
           colors={({ id, indexValue }) => {
@@ -180,3 +197,35 @@ class SmallBars extends React.Component<Props, State> {
 }
 
 export default withMessageWrapper<Props>(SmallBars);
+
+const CustomTickWrapper = (
+  refValues: Record<string, string>,
+  tickWidth: number = 150,
+  tickHeight: number = 30
+) => {
+  return (tick: AxisTickProps<string>) => {
+    // console.log(tick);
+    return (
+      <g transform={`translate(${tick.x},${tick.y})`}>
+        {/* Opción 1*/}
+        <foreignObject x={tick.x} y={-14} width={tickWidth} height={tickHeight}>
+          {/* Opción 2*/}
+          {/*<foreignObject x={tick.x - 100} y={-14} width={tickWidth} height={tickHeight}>*/}
+          <div
+            style={{
+              color: "#000",
+              fontSize: 11,
+              whiteSpace: "pre",
+              lineHeight: "normal",
+              backgroundColor: "#fff",
+              borderLeft: "1px solid black",
+              paddingLeft: 3,
+            }}
+          >
+            {refValues[tick.value]}
+          </div>
+        </foreignObject>
+      </g>
+    );
+  };
+};
