@@ -74,10 +74,30 @@ class Targets extends React.Component<Props, State> {
           targetProm.then((target) => {
             if (this.mounted) {
               data[targetsData.length - idx - 1] = target;
-              this.setState({
-                targetsData: data.filter((p) => p !== undefined),
-                loading: null,
-              });
+              this.setState(
+                {
+                  targetsData: data.filter((p) => p !== undefined),
+                  loading: null,
+                },
+                () => {
+                  if (data.length > 0) {
+                    if (idx === 0) {
+                      const portfoliosIds = new Set();
+                      const targetPortfolios = target.portfolios_data;
+                      targetPortfolios.forEach((portfolio) => {
+                        portfoliosIds.add(portfolio.id);
+                      });
+                      if (portfoliosIds.size > 0) {
+                        switchLayer(
+                          ["portfoliosCA", [...portfoliosIds].join("-")].join(
+                            "-"
+                          )
+                        );
+                      }
+                    }
+                  }
+                }
+              );
             }
           });
         });

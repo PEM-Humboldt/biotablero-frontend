@@ -14,6 +14,7 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import SearchAPI from 'utils/searchAPI';
 import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
@@ -697,6 +698,14 @@ class Search extends Component {
         selectedAreaTypeId,
         selectedAreaId,
       );
+    } else if (/portfoliosCA-*/.test(layerName)) {
+      const [, portfolioId] = layerName.match(/portfoliosCA-(\w+)/);
+      reqPromise = () =>
+        SearchAPI.requestPortfoliosCALayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          portfolioId
+        );
     }
 
     if (!reqPromise) {
@@ -884,7 +893,17 @@ class Search extends Component {
             });
           },
         };
-    }
+      } else if (/portfoliosCA*/.test(sectionName)) {
+        const selectedPorfolios = sectionName.match(/\d+/g);
+        if (selectedPorfolios !== null) {
+          selectedPorfolios.forEach((portfolioId) => {
+            rasterLayerOpts.push({ id: `portfoliosCA-${portfolioId}`, paneLevel: 1 });
+          });
+        }
+  
+        newActiveLayer.name = "Portafolios";
+        newActiveLayer.defaultOpacity = 0.7;
+      }
 
     if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0) {
       this.reportDataError();
@@ -1125,6 +1144,9 @@ class Search extends Component {
           this.setSectionLayers(layerType);
           return;
         } else if (/forestLP*/.test(layerType)) {
+          this.setSectionLayers(layerType);
+          return;
+        } else if (/portfoliosCA*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
         }

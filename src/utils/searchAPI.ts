@@ -514,6 +514,30 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(`portfolios-ca/portfolios/list`);
   }
 
+  /**
+   * Get the layer associated to a portfolio id in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} portfolioId portfolio id to get layer
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+
+  static requestPortfoliosCALayer(
+    areaType: string,
+    areaId: string,
+    portfolioId: number
+  ): { request: Promise<Object> } {
+    return {
+      request: SearchAPI.makeGetRequest(
+        `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
+        { responseType: "arraybuffer" },
+        true
+      ),
+    };
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
