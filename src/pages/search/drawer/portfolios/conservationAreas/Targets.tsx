@@ -87,9 +87,13 @@ class Targets extends React.Component<Props, State> {
                       targetPortfolios.forEach((portfolio) => {
                         portfoliosIds.add(portfolio.id);
                       });
-                      switchLayer(
-                        ["portfoliosCA", [...portfoliosIds].join("-")].join("-")
-                      );
+                      if (portfoliosIds.size > 0) {
+                        switchLayer(
+                          ["portfoliosCA", [...portfoliosIds].join("-")].join(
+                            "-"
+                          )
+                        );
+                      }
                     }
                   }
                 }

@@ -897,7 +897,7 @@ class Search extends Component {
         const selectedPorfolios = sectionName.match(/\d+/g);
         if (selectedPorfolios !== null) {
           selectedPorfolios.forEach((portfolioId) => {
-            rasterLayerOpts.push({ id: `portfoliosCA-${portfolioId}` });
+            rasterLayerOpts.push({ id: `portfoliosCA-${portfolioId}`, paneLevel: 1 });
           });
         }
   

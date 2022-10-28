@@ -528,7 +528,7 @@ class SearchAPI {
     areaType: string,
     areaId: string,
     portfolioId: number
-  ) {
+  ): { request: Promise<Object> } {
     return {
       request: SearchAPI.makeGetRequest(
         `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
