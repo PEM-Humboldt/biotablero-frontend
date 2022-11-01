@@ -699,7 +699,8 @@ class Search extends Component {
         selectedAreaId,
       );
     } else if (/portfoliosCA-*/.test(layerName)) {
-      const [, portfolioId] = layerName.match(/portfoliosCA-(\w+)/);
+      const portfolioId = layerName.match(/\d+/);
+
       reqPromise = () =>
         SearchAPI.requestPortfoliosCALayer(
           selectedAreaTypeId,
