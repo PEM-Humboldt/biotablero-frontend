@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
 import { cfData } from "pages/search/types/compensationFactor";
 import {
@@ -528,13 +528,15 @@ class SearchAPI {
     areaType: string,
     areaId: string,
     portfolioId: number
-  ): { request: Promise<Object> } {
+  ): { request: Promise<Object>; source: CancelTokenSource } {
+    const source = axios.CancelToken.source();
     return {
       request: SearchAPI.makeGetRequest(
         `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
-        { responseType: "arraybuffer" },
+        { cancelToken: source.token, responseType: "arraybuffer" },
         true
       ),
+      source,
     };
   }
 
