@@ -118,6 +118,12 @@ class SmallBars extends React.Component<Props, State> {
                   legend: `${axisY.legend}`,
                   legendPosition: "middle",
                   legendOffset: -80,
+                  renderTick: CustomTickWrapper(
+                    null,
+                    alternateAxisY.tickWidth,
+                    alternateAxisY.tickHeight,
+                    "left"
+                  ),
                 }
               : null
           }
@@ -139,7 +145,8 @@ class SmallBars extends React.Component<Props, State> {
               renderTick: CustomTickWrapper(
                 alternateAxisY.values,
                 alternateAxisY.tickWidth,
-                alternateAxisY.tickHeight
+                alternateAxisY.tickHeight,
+                "right"
               ),
             }
           }
@@ -199,30 +206,26 @@ class SmallBars extends React.Component<Props, State> {
 export default withMessageWrapper<Props>(SmallBars);
 
 const CustomTickWrapper = (
-  refValues: Record<string, string>,
-  tickWidth: number = 150,
-  tickHeight: number = 30
+  refValues: Record<string, string> | null = null,
+  tickWidth: number = 90,
+  tickHeight: number = 30,
+  side: string = "left"
 ) => {
   return (tick: AxisTickProps<string>) => {
-    // console.log(tick);
     return (
       <g transform={`translate(${tick.x},${tick.y})`}>
-        {/* Opción 1*/}
-        <foreignObject x={tick.x} y={-14} width={tickWidth} height={tickHeight}>
-          {/* Opción 2*/}
-          {/*<foreignObject x={tick.x - 100} y={-14} width={tickWidth} height={tickHeight}>*/}
+        <foreignObject
+          x={side === "left" ? -100 : tick.x}
+          y={-14}
+          width={tickWidth}
+          height={tickHeight}
+        >
           <div
-            style={{
-              color: "#000",
-              fontSize: 11,
-              whiteSpace: "pre",
-              lineHeight: "normal",
-              backgroundColor: "#fff",
-              borderLeft: "1px solid black",
-              paddingLeft: 3,
-            }}
+            className={
+              side === "left" ? "customTickBarLeft" : "customTickBarRight"
+            }
           >
-            {refValues[tick.value]}
+            {refValues ? refValues[tick.value] : tick.value}
           </div>
         </foreignObject>
       </g>

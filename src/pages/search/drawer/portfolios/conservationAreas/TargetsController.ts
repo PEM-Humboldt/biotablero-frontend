@@ -84,7 +84,7 @@ export class TargetsController {
 
       alternateAxisYValues[
         target.target_name
-      ] = `100% de la meta\n${target.target_national} ${target.target_units}`;
+      ] = `${target.target_national} ${target.target_units}`;
 
       return object;
     });

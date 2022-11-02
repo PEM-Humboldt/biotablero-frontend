@@ -165,6 +165,7 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
+        <div className="rightTitle">100 % de la meta</div>
         <SmallBars
           data={graphData.transformedData}
           keys={graphData.keys}
@@ -180,10 +181,7 @@ class Targets extends React.Component<Props, State> {
           selectedIndexValue="WCMC"
           groupMode="grouped"
           maxValue={100}
-          //Opción 1
-          margin={{ bottom: 5, left: 145, right: 150 }}
-          //Opción 2
-          // margin={{ bottom: 5, left: 145 }}
+          margin={{ bottom: 5, left: 95, right: 95 }}
         />
 
         <div className="targetsLegend">
