@@ -1,5 +1,7 @@
 import React from "react";
 import { ResponsiveBar } from "@nivo/bar";
+import { AxisTickProps } from "@nivo/axes";
+
 import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
@@ -30,6 +32,11 @@ interface Props {
     enabled?: boolean;
     legend?: string;
     format?: string;
+  };
+  alternateAxisY?: {
+    values: Record<string, string>;
+    tickWidth?: number;
+    tickHeight?: number;
   };
 }
 
@@ -67,6 +74,7 @@ class SmallBars extends React.Component<Props, State> {
       groupMode = "stacked",
       maxValue = "auto",
       enableLabel = false,
+      alternateAxisY = { values: {} },
     } = this.props;
     let { margin, axisY, axisX } = this.props;
     margin = { ...{ top: 20, right: 15, bottom: 0, left: 90 }, ...margin };
@@ -110,6 +118,12 @@ class SmallBars extends React.Component<Props, State> {
                   legend: `${axisY.legend}`,
                   legendPosition: "middle",
                   legendOffset: -80,
+                  renderTick: CustomTickWrapper(
+                    null,
+                    alternateAxisY.tickWidth,
+                    alternateAxisY.tickHeight,
+                    "left"
+                  ),
                 }
               : null
           }
@@ -125,6 +139,16 @@ class SmallBars extends React.Component<Props, State> {
                   legendOffset: 25,
                 }
               : null
+          }
+          axisRight={
+            alternateAxisY && {
+              renderTick: CustomTickWrapper(
+                alternateAxisY.values,
+                alternateAxisY.tickWidth,
+                alternateAxisY.tickHeight,
+                "right"
+              ),
+            }
           }
           enableLabel={enableLabel}
           label={({ value }) => (value ? formatNumber(value, 2) : "")}
@@ -180,3 +204,31 @@ class SmallBars extends React.Component<Props, State> {
 }
 
 export default withMessageWrapper<Props>(SmallBars);
+
+const CustomTickWrapper = (
+  refValues: Record<string, string> | null = null,
+  tickWidth: number = 90,
+  tickHeight: number = 30,
+  side: string = "left"
+) => {
+  return (tick: AxisTickProps<string>) => {
+    return (
+      <g transform={`translate(${tick.x},${tick.y})`}>
+        <foreignObject
+          x={side === "left" ? -100 : tick.x}
+          y={-14}
+          width={tickWidth}
+          height={tickHeight}
+        >
+          <div
+            className={
+              side === "left" ? "customTickBarLeft" : "customTickBarRight"
+            }
+          >
+            {refValues ? refValues[tick.value] : tick.value}
+          </div>
+        </foreignObject>
+      </g>
+    );
+  };
+};

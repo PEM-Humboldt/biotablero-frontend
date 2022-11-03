@@ -165,10 +165,12 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
+        <div className="rightTitle">100 % de la meta</div>
         <SmallBars
           data={graphData.transformedData}
           keys={graphData.keys}
           tooltips={graphData.tooltips}
+          alternateAxisY={{ values: graphData.alternateAxisYValues }}
           message={loading}
           colors={matchColor("caTargets")}
           axisY={{
@@ -179,7 +181,7 @@ class Targets extends React.Component<Props, State> {
           selectedIndexValue="WCMC"
           groupMode="grouped"
           maxValue={100}
-          margin={{ bottom: 5, left: 145 }}
+          margin={{ bottom: 5, left: 95, right: 95 }}
         />
 
         <div className="targetsLegend">

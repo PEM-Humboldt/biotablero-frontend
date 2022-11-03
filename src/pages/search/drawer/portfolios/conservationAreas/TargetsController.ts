@@ -51,6 +51,7 @@ export class TargetsController {
   getGraphData(rawData: Array<portfoliosByTarget>) {
     const tooltips: Array<SmallBarTooltip> = [];
     const portfolios: Set<string> = new Set();
+    const alternateAxisYValues: Record<string, string> = {};
     const transformedData: Array<SmallBarsData> = rawData.map((target) => {
       const objectData: Array<SmallBarsDataDetails> = [];
       target.portfolios_data.forEach((portfolio: portfolioData) => {
@@ -80,9 +81,19 @@ export class TargetsController {
         group: target.target_name,
         data: objectData,
       };
+
+      alternateAxisYValues[
+        target.target_name
+      ] = `${target.target_national} ${target.target_units}`;
+
       return object;
     });
 
-    return { transformedData, keys: Array.from(portfolios), tooltips };
+    return {
+      transformedData,
+      keys: Array.from(portfolios),
+      tooltips,
+      alternateAxisYValues,
+    };
   }
 }
