@@ -416,6 +416,9 @@ class Search extends Component {
         this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
       }
       break;
+      case 'portfoliosCA':
+        this.setSectionLayers(`portfoliosCA-${selectedKey}`);
+        break;
       // Current progress of the refactor
       case 'SciHf': {
         const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
@@ -895,15 +898,15 @@ class Search extends Component {
           },
         };
       } else if (/portfoliosCA*/.test(sectionName)) {
+        // TODO: Add target name or id to this logic
+        newActiveLayer.name = 'Portafolios por temáticas';
+        newActiveLayer.defaultOpacity = 0.7;
         const selectedPorfolios = sectionName.match(/\d+/g);
         if (selectedPorfolios !== null) {
           selectedPorfolios.forEach((portfolioId) => {
             rasterLayerOpts.push({ id: `portfoliosCA-${portfolioId}`, paneLevel: 1 });
           });
         }
-  
-        newActiveLayer.name = "Portafolios";
-        newActiveLayer.defaultOpacity = 0.7;
       }
 
     if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0) {
