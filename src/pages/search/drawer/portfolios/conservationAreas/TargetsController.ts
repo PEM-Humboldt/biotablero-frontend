@@ -37,11 +37,11 @@ export class TargetsController {
     return targets.map((target) =>
       SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
         (res) => {
-          const portfolioIds = new Set();
+          const ids = new Set();
           res.portfolios_data.forEach((portfolio) => {
-            portfolioIds.add(portfolio.id);
+            ids.add(portfolio.id);
           });
-          this.portfoliosIds.set(target.name, portfolioIds);
+          this.portfoliosIds.set(target.name, ids);
           return res;
         }
       )
