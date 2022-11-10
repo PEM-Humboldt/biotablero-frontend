@@ -6,6 +6,7 @@ import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 import { SmallBarTooltip } from "pages/search/types/charts";
+import { Tick } from "pages/search/shared_components/CssTicks";
 
 interface Props {
   data: Array<SmallBarsData>;
@@ -211,17 +212,9 @@ const CustomTickWrapper = (
   tickWidth: number = 90,
   tickHeight: number = 30,
   side: string = "left",
-  selected: string | number = ""
+  selected: string | number = "",
 ) => {
   return (tick: AxisTickProps<string>) => {
-    let className = "customTickBarLeft";
-    if (side === "left") {
-      if (selected === tick.value) {
-        className = "customTickBarLeft selected";
-      }
-    } else if (side === "right") {
-      className = "customTickBarRight";
-    }
     return (
       <g transform={`translate(${tick.x},${tick.y})`}>
         <foreignObject
@@ -230,9 +223,12 @@ const CustomTickWrapper = (
           width={tickWidth}
           height={tickHeight}
         >
-          <div className={className}>
+          <Tick
+            side={side}
+            selected={selected === tick.value}
+          >
             {refValues ? refValues[tick.value] : tick.value}
-          </div>
+          </Tick>
         </foreignObject>
       </g>
     );

@@ -234,7 +234,13 @@ class Targets extends React.Component<Props, State> {
                         portfolio.id
                       )
                     }
-                    defaultChecked={true}
+                    // TODO: Uncheck the checkbox by default when portfolio is not in target
+                    defaultChecked={
+                      !this.targetsController.isPortfolioInTarget(
+                        selectedTarget,
+                        portfolio.id
+                      )
+                    }
                   />
                 }
               />
