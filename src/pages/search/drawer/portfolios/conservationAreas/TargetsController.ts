@@ -11,7 +11,10 @@ import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
 
 export class TargetsController {
-  constructor() {}
+  portfoliosIds;
+  constructor() {
+    this.portfoliosIds = new Map();
+  }
 
   /**
    * Get all available portfolios
@@ -34,11 +37,43 @@ export class TargetsController {
     return targets.map((target) =>
       SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
         (res) => {
-          // Here would go the necessary transformations
+          const ids = new Set();
+          res.portfolios_data.forEach((portfolio) => {
+            ids.add(portfolio.id);
+          });
+          this.portfoliosIds.set(target.name, ids);
           return res;
         }
       )
     );
+  }
+
+  /**
+   * Get list of available portfolios ids for a given target
+   *
+   * @param {String} targetName target name
+   *
+   * @returns {Set<number> | undefined} list of available portfolios ids
+   */
+  getPortfoliosIdsByTarget(targetName: string) {
+    return this.portfoliosIds.get(targetName);
+  }
+
+  /**
+   * Returns whether a portfolio is into a target
+   *
+   * @param {String} targetName target name
+   * @param {Number} portfolioId portfolio id
+   *
+   * @returns {Boolean} whether a portfolio is into a target
+   */
+  isPortfolioInTarget(targetName: string, portfolioId: number) {
+    const portfolioIds = this.getPortfoliosIdsByTarget(targetName);
+    if (!portfolioIds) return false;
+    if (portfolioIds.has(portfolioId)) {
+      return true;
+    }
+    return false;
   }
 
   /**

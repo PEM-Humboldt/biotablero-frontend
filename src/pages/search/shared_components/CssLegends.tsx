@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 interface PropsLeg {
   orientation?: string;
+  disabled?: boolean;
 }
 
 const Legend = styled.p<PropsLeg>`
@@ -11,6 +12,7 @@ const Legend = styled.p<PropsLeg>`
   }};
   font-size: 12px;
   color: #424242;
+  opacity: ${(props) => (props.disabled ? 0.4 : 1)};
   line-height: 1;
   margin-right: 10px;
 `;

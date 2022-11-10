@@ -27,6 +27,7 @@ interface State {
   targetsData: Array<portfoliosByTarget>;
   availablePortfolios: Array<targetOrPortfolio>;
   csvData: Array<object>;
+  selectedTarget: string;
 }
 
 class Targets extends React.Component<Props, State> {
@@ -43,6 +44,7 @@ class Targets extends React.Component<Props, State> {
       availablePortfolios: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
       csvData: [],
+      selectedTarget: "",
     };
   }
 
@@ -64,8 +66,6 @@ class Targets extends React.Component<Props, State> {
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
 
-    switchLayer("");
-
     this.targetsController
       .getData(areaId, geofenceId)
       .then((targetsData) => {
@@ -82,11 +82,10 @@ class Targets extends React.Component<Props, State> {
                 () => {
                   if (data.length > 0) {
                     if (idx === 0) {
-                      const portfoliosIds = new Set();
-                      const targetPortfolios = target.portfolios_data;
-                      targetPortfolios.forEach((portfolio) => {
-                        portfoliosIds.add(portfolio.id);
-                      });
+                      const portfoliosIds =
+                        this.targetsController.getPortfoliosIdsByTarget(
+                          target.target_name
+                        );
                       if (portfoliosIds.size > 0) {
                         switchLayer(
                           ["portfoliosCA", [...portfoliosIds].join("-")].join(
@@ -94,6 +93,7 @@ class Targets extends React.Component<Props, State> {
                           )
                         );
                       }
+                      this.setState({ selectedTarget: target.target_name });
                     }
                   }
                 }
@@ -136,7 +136,8 @@ class Targets extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId } = this.context as SearchContextValues;
+    const { areaId, geofenceId, handlerClickOnGraph } = this
+      .context as SearchContextValues;
     const {
       showInfoGraph,
       loading,
@@ -144,6 +145,7 @@ class Targets extends React.Component<Props, State> {
       targetsData,
       csvData,
       availablePortfolios,
+      selectedTarget,
     } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
@@ -166,24 +168,36 @@ class Targets extends React.Component<Props, State> {
           />
         )}
         <div className="rightTitle">100 % de la meta</div>
-        <SmallBars
-          data={graphData.transformedData}
-          keys={graphData.keys}
-          tooltips={graphData.tooltips}
-          alternateAxisY={{ values: graphData.alternateAxisYValues }}
-          message={loading}
-          colors={matchColor("caTargets")}
-          axisY={{
-            enabled: true,
-          }}
-          onClickHandler={() => {}}
-          height={450}
-          selectedIndexValue="WCMC"
-          groupMode="grouped"
-          maxValue={100}
-          margin={{ bottom: 5, left: 95, right: 95 }}
-        />
-
+        <div className="svgPointer">
+          {selectedTarget && (
+            <SmallBars
+              data={graphData.transformedData}
+              keys={graphData.keys}
+              tooltips={graphData.tooltips}
+              alternateAxisY={{ values: graphData.alternateAxisYValues }}
+              message={loading}
+              colors={matchColor("caTargets")}
+              axisY={{
+                enabled: true,
+              }}
+              onClickHandler={(selected) => {
+                this.setState({ selectedTarget: selected });
+                const portfoliosIds = Array.from(
+                  this.targetsController.getPortfoliosIdsByTarget(selected)
+                );
+                handlerClickOnGraph({
+                  chartType: "portfoliosCA",
+                  selectedKey: portfoliosIds,
+                });
+              }}
+              height={450}
+              selectedIndexValue={selectedTarget}
+              groupMode="grouped"
+              maxValue={100}
+              margin={{ bottom: 5, left: 95, right: 95 }}
+            />
+          )}
+        </div>
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
@@ -194,15 +208,39 @@ class Targets extends React.Component<Props, State> {
                     color={matchColor("caTargets")(portfolio.name)}
                     orientation="column"
                     key={portfolio.id}
+                    disabled={
+                      !this.targetsController.isPortfolioInTarget(
+                        selectedTarget,
+                        portfolio.id
+                      )
+                    }
                   >
                     {portfolio.name}
                   </SquareFilledLegend>
                 }
                 control={
                   <Checkbox
-                    sx={{ padding: 0 }}
+                    sx={{
+                      padding: 0,
+                      "&.Mui-disabled": {
+                        opacity: 0.4,
+                      },
+                    }}
                     onChange={this.clickOnLegend}
                     name={portfolio.name}
+                    disabled={
+                      !this.targetsController.isPortfolioInTarget(
+                        selectedTarget,
+                        portfolio.id
+                      )
+                    }
+                    // TODO: Uncheck the checkbox by default when portfolio is not in target
+                    defaultChecked={
+                      !this.targetsController.isPortfolioInTarget(
+                        selectedTarget,
+                        portfolio.id
+                      )
+                    }
                   />
                 }
               />

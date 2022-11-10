@@ -6,6 +6,7 @@ import { darkenColor } from "utils/colorUtils";
 import formatNumber from "utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 import { SmallBarTooltip } from "pages/search/types/charts";
+import { Tick } from "pages/search/shared_components/CssTicks";
 
 interface Props {
   data: Array<SmallBarsData>;
@@ -122,7 +123,8 @@ class SmallBars extends React.Component<Props, State> {
                     null,
                     alternateAxisY.tickWidth,
                     alternateAxisY.tickHeight,
-                    "left"
+                    "left",
+                    selectedIndexValue
                   ),
                 }
               : null
@@ -209,7 +211,8 @@ const CustomTickWrapper = (
   refValues: Record<string, string> | null = null,
   tickWidth: number = 90,
   tickHeight: number = 30,
-  side: string = "left"
+  side: string = "left",
+  selected: string | number = ""
 ) => {
   return (tick: AxisTickProps<string>) => {
     return (
@@ -220,13 +223,9 @@ const CustomTickWrapper = (
           width={tickWidth}
           height={tickHeight}
         >
-          <div
-            className={
-              side === "left" ? "customTickBarLeft" : "customTickBarRight"
-            }
-          >
+          <Tick side={side} selected={selected === tick.value}>
             {refValues ? refValues[tick.value] : tick.value}
-          </div>
+          </Tick>
         </foreignObject>
       </g>
     );
