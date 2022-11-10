@@ -212,7 +212,7 @@ const CustomTickWrapper = (
   tickWidth: number = 90,
   tickHeight: number = 30,
   side: string = "left",
-  selected: string | number = "",
+  selected: string | number = ""
 ) => {
   return (tick: AxisTickProps<string>) => {
     return (
@@ -223,10 +223,7 @@ const CustomTickWrapper = (
           width={tickWidth}
           height={tickHeight}
         >
-          <Tick
-            side={side}
-            selected={selected === tick.value}
-          >
+          <Tick side={side} selected={selected === tick.value}>
             {refValues ? refValues[tick.value] : tick.value}
           </Tick>
         </foreignObject>
