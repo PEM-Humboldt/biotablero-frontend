@@ -66,8 +66,8 @@ class Species extends React.Component {
     const { switchLayer, cancelActiveRequests } = this.context;
     cancelActiveRequests();
 
-    if (tabLayerId === null) {
-      switchLayer(null);
+    if (tabLayerId === "") {
+      switchLayer("");
     }
 
     switch (level) {

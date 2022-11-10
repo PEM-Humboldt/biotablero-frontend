@@ -38,7 +38,7 @@ class Portfolios extends React.Component<Props, State> {
       .context as SearchContextValues;
     cancelActiveRequests();
 
-    if (tabLayerId === null) {
+    if (tabLayerId === "") {
       switchLayer("");
     }
 
