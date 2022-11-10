@@ -2616,6 +2616,10 @@ tspan, .vx-axis-label {
 	padding-bottom: 5px;
 }
 
+.customTickBarLeft.selected {
+  color: #ec432e;
+}
+
 .rightTitle {
 	text-align: right;
 	font-size: 11px;

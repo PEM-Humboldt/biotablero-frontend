@@ -122,7 +122,8 @@ class SmallBars extends React.Component<Props, State> {
                     null,
                     alternateAxisY.tickWidth,
                     alternateAxisY.tickHeight,
-                    "left"
+                    "left",
+                    selectedIndexValue
                   ),
                 }
               : null
@@ -209,9 +210,18 @@ const CustomTickWrapper = (
   refValues: Record<string, string> | null = null,
   tickWidth: number = 90,
   tickHeight: number = 30,
-  side: string = "left"
+  side: string = "left",
+  selected: string | number = ""
 ) => {
   return (tick: AxisTickProps<string>) => {
+    let className = "customTickBarLeft";
+    if (side === "left") {
+      if (selected === tick.value) {
+        className = "customTickBarLeft selected";
+      }
+    } else if (side === "right") {
+      className = "customTickBarRight";
+    }
     return (
       <g transform={`translate(${tick.x},${tick.y})`}>
         <foreignObject
@@ -220,11 +230,7 @@ const CustomTickWrapper = (
           width={tickWidth}
           height={tickHeight}
         >
-          <div
-            className={
-              side === "left" ? "customTickBarLeft" : "customTickBarRight"
-            }
-          >
+          <div className={className}>
             {refValues ? refValues[tick.value] : tick.value}
           </div>
         </foreignObject>

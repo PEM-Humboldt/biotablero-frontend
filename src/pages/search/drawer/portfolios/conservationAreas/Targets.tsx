@@ -169,32 +169,34 @@ class Targets extends React.Component<Props, State> {
         )}
         <div className="rightTitle">100 % de la meta</div>
         <div className="svgPointer">
-          <SmallBars
-            data={graphData.transformedData}
-            keys={graphData.keys}
-            tooltips={graphData.tooltips}
-            alternateAxisY={{ values: graphData.alternateAxisYValues }}
-            message={loading}
-            colors={matchColor("caTargets")}
-            axisY={{
-              enabled: true,
-            }}
-            onClickHandler={(selected) => {
-              this.setState({ selectedTarget: selected });
-              const portfoliosIds = Array.from(
-                this.targetsController.getPortfoliosIdsByTarget(selected)
-              );
-              handlerClickOnGraph({
-                chartType: "portfoliosCA",
-                selectedKey: portfoliosIds,
-              });
-            }}
-            height={450}
-            selectedIndexValue="WCMC"
-            groupMode="grouped"
-            maxValue={100}
-            margin={{ bottom: 5, left: 95, right: 95 }}
-          />
+          {selectedTarget && (
+            <SmallBars
+              data={graphData.transformedData}
+              keys={graphData.keys}
+              tooltips={graphData.tooltips}
+              alternateAxisY={{ values: graphData.alternateAxisYValues }}
+              message={loading}
+              colors={matchColor("caTargets")}
+              axisY={{
+                enabled: true,
+              }}
+              onClickHandler={(selected) => {
+                this.setState({ selectedTarget: selected });
+                const portfoliosIds = Array.from(
+                  this.targetsController.getPortfoliosIdsByTarget(selected)
+                );
+                handlerClickOnGraph({
+                  chartType: "portfoliosCA",
+                  selectedKey: portfoliosIds,
+                });
+              }}
+              height={450}
+              selectedIndexValue={selectedTarget}
+              groupMode="grouped"
+              maxValue={100}
+              margin={{ bottom: 5, left: 95, right: 95 }}
+            />
+          )}
         </div>
         <div className="targetsLegend">
           <FormGroup>
@@ -206,13 +208,24 @@ class Targets extends React.Component<Props, State> {
                     color={matchColor("caTargets")(portfolio.name)}
                     orientation="column"
                     key={portfolio.id}
+                    disabled={
+                      !this.targetsController.isPortfolioInTarget(
+                        selectedTarget,
+                        portfolio.id
+                      )
+                    }
                   >
                     {portfolio.name}
                   </SquareFilledLegend>
                 }
                 control={
                   <Checkbox
-                    sx={{ padding: 0 }}
+                    sx={{
+                      padding: 0,
+                      "&.Mui-disabled": {
+                        opacity: 0.4,
+                      },
+                    }}
                     onChange={this.clickOnLegend}
                     name={portfolio.name}
                     disabled={
@@ -221,6 +234,7 @@ class Targets extends React.Component<Props, State> {
                         portfolio.id
                       )
                     }
+                    defaultChecked={true}
                   />
                 }
               />
