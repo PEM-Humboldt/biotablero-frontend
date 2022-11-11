@@ -131,17 +131,28 @@ class Targets extends React.Component<Props, State> {
   };
 
   clickOnLegend = (idPortfolio: number, checked: boolean) => {
-    this.setState(({ selectedPortfolios }) => {
-      if (!checked) {
-        selectedPortfolios.delete(idPortfolio);
+    const { handlerClickOnGraph } = this.context as SearchContextValues;
+    this.setState(
+      ({ selectedPortfolios }) => {
+        if (!checked) {
+          selectedPortfolios.delete(idPortfolio);
+          return {
+            selectedPortfolios,
+          };
+        }
         return {
-          selectedPortfolios: selectedPortfolios,
+          selectedPortfolios: selectedPortfolios.add(idPortfolio),
         };
+      },
+      () => {
+        const { selectedPortfolios } = this.state;
+        handlerClickOnGraph({
+          chartType: "portfoliosCA",
+          chartSection: "legend",
+          selectedKey: Array.from(selectedPortfolios),
+        });
       }
-      return {
-        selectedPortfolios: selectedPortfolios.add(idPortfolio),
-      };
-    });
+    );
   };
 
   render() {
