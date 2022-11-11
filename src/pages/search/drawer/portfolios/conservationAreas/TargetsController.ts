@@ -11,7 +11,7 @@ import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
 
 export class TargetsController {
-  portfoliosIds;
+  portfoliosIds: Map<String, Set<number>>;
   constructor() {
     this.portfoliosIds = new Map();
   }
@@ -37,7 +37,7 @@ export class TargetsController {
     return targets.map((target) =>
       SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
         (res) => {
-          const ids = new Set();
+          const ids = new Set<number>();
           res.portfolios_data.forEach((portfolio) => {
             ids.add(portfolio.id);
           });
@@ -56,7 +56,7 @@ export class TargetsController {
    * @returns {Set<number> | undefined} list of available portfolios ids
    */
   getPortfoliosIdsByTarget(targetName: string) {
-    return this.portfoliosIds.get(targetName);
+    return new Set(this.portfoliosIds.get(targetName));
   }
 
   /**
