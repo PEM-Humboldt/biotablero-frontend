@@ -417,7 +417,26 @@ class Search extends Component {
       }
       break;
       case 'portfoliosCA':
-        this.setSectionLayers(`portfoliosCA-${selectedKey}`);
+        const { activeLayer } = this.state;
+        if (chartSection === "legend" && /portfoliosCA*/.test(activeLayer.id)) {
+          const selectedPortfolios = selectedKey;
+          this.setState(({ rasterUrls }) => ({
+            rasterUrls: rasterUrls.map(url => {
+              if (!selectedPortfolios.some(portfolioId => `portfoliosCA-${portfolioId}` === url.id)) {
+                return {
+                  ...url,
+                  opacity: 0
+                };
+              }
+              return {
+                ...url,
+                opacity: 0.7,
+              };
+            })
+          }))
+        } else {
+          this.setSectionLayers(`portfoliosCA-${selectedKey}`);
+        }
         break;
       // Current progress of the refactor
       case 'SciHf': {

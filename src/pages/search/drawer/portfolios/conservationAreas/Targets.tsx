@@ -28,6 +28,7 @@ interface State {
   availablePortfolios: Array<targetOrPortfolio>;
   csvData: Array<object>;
   selectedTarget: string;
+  selectedPortfolios: Set<number>;
 }
 
 class Targets extends React.Component<Props, State> {
@@ -45,6 +46,7 @@ class Targets extends React.Component<Props, State> {
       texts: { info: "", cons: "", meto: "", quote: "" },
       csvData: [],
       selectedTarget: "",
+      selectedPortfolios: new Set(),
     };
   }
 
@@ -80,21 +82,18 @@ class Targets extends React.Component<Props, State> {
                   loading: null,
                 },
                 () => {
-                  if (data.length > 0) {
-                    if (idx === 0) {
-                      const portfoliosIds =
-                        this.targetsController.getPortfoliosIdsByTarget(
-                          target.target_name
-                        );
-                      if (portfoliosIds.size > 0) {
-                        switchLayer(
-                          ["portfoliosCA", [...portfoliosIds].join("-")].join(
-                            "-"
-                          )
-                        );
-                      }
-                      this.setState({ selectedTarget: target.target_name });
+                  if (data.length > 0 && idx === 0) {
+                    const portfoliosIds =
+                      this.targetsController.getPortfoliosIdsByTarget(
+                        target.target_name
+                      );
+                    if (portfoliosIds && portfoliosIds.size > 0) {
+                      switchLayer(
+                        ["portfoliosCA", [...portfoliosIds].join("-")].join("-")
+                      );
+                      this.setState({ selectedPortfolios: portfoliosIds });
                     }
+                    this.setState({ selectedTarget: target.target_name });
                   }
                 }
               );
@@ -131,8 +130,29 @@ class Targets extends React.Component<Props, State> {
     }));
   };
 
-  clickOnLegend = () => {
-    // TODO: hide / show portfolio layer
+  clickOnLegend = (idPortfolio: number, checked: boolean) => {
+    const { handlerClickOnGraph } = this.context as SearchContextValues;
+    this.setState(
+      ({ selectedPortfolios }) => {
+        if (!checked) {
+          selectedPortfolios.delete(idPortfolio);
+          return {
+            selectedPortfolios,
+          };
+        }
+        return {
+          selectedPortfolios: selectedPortfolios.add(idPortfolio),
+        };
+      },
+      () => {
+        const { selectedPortfolios } = this.state;
+        handlerClickOnGraph({
+          chartType: "portfoliosCA",
+          chartSection: "legend",
+          selectedKey: Array.from(selectedPortfolios),
+        });
+      }
+    );
   };
 
   render() {
@@ -146,6 +166,7 @@ class Targets extends React.Component<Props, State> {
       csvData,
       availablePortfolios,
       selectedTarget,
+      selectedPortfolios,
     } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
@@ -181,13 +202,15 @@ class Targets extends React.Component<Props, State> {
                 enabled: true,
               }}
               onClickHandler={(selected) => {
-                this.setState({ selectedTarget: selected });
-                const portfoliosIds = Array.from(
-                  this.targetsController.getPortfoliosIdsByTarget(selected)
-                );
+                const portfoliosIds =
+                  this.targetsController.getPortfoliosIdsByTarget(selected);
+                this.setState({
+                  selectedTarget: selected,
+                  selectedPortfolios: portfoliosIds,
+                });
                 handlerClickOnGraph({
                   chartType: "portfoliosCA",
-                  selectedKey: portfoliosIds,
+                  selectedKey: Array.from(portfoliosIds),
                 });
               }}
               height={450}
@@ -226,7 +249,9 @@ class Targets extends React.Component<Props, State> {
                         opacity: 0.4,
                       },
                     }}
-                    onChange={this.clickOnLegend}
+                    onChange={(event, checked) =>
+                      this.clickOnLegend(portfolio.id, checked)
+                    }
                     name={portfolio.name}
                     disabled={
                       !this.targetsController.isPortfolioInTarget(
@@ -234,13 +259,7 @@ class Targets extends React.Component<Props, State> {
                         portfolio.id
                       )
                     }
-                    // TODO: Uncheck the checkbox by default when portfolio is not in target
-                    defaultChecked={
-                      !this.targetsController.isPortfolioInTarget(
-                        selectedTarget,
-                        portfolio.id
-                      )
-                    }
+                    checked={selectedPortfolios.has(portfolio.id)}
                   />
                 }
               />
