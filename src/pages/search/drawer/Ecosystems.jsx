@@ -62,100 +62,103 @@ class Ecosystems extends React.Component {
       areaId,
       geofenceId,
       switchLayer,
+      searchType
     } = this.context;
     const { generalArea } = this.props;
-
-    switchLayer('coverages');
-
-    SearchAPI.requestCoverage(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState((prev) => ({
-            coverage: transformCoverageValues(res),
-            messages: {
-              ...prev.messages,
-              cov: null,
-            },
-          }));
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            cov: 'no-data',
-          },
-        }));
-      });
-
-    SearchAPI.requestProtectedAreas(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          if (Array.isArray(res) && res[0]) {
-            const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
-            const PAAreas = transformPAValues(res, generalArea);
-            this.setState((prev) => ({
-              PAAreas,
-              PATotalArea,
-              messages: {
-                ...prev.messages,
-                pa: null,
-              },
-            }));
-          }
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            pa: 'no-data',
-          },
-        }));
-      });
-
-    SearchAPI.requestStrategicEcosystems(areaId, geofenceId)
-      .then((res) => {
-        if (this.mounted) {
-          if (Array.isArray(res)) {
-            const SETotal = res.find((obj) => obj.type === 'Total');
-            const SETotalArea = SETotal ? SETotal.area : 0;
-            const SEAreas = res.slice(1);
-            this.setState((prev) => ({
-              SEAreas,
-              SETotalArea,
-              messages: {
-                ...prev.messages,
-                se: null,
-              },
-            }));
-          }
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            se: 'no-data',
-          },
-        }));
-      });
-
-      ['ecosystems', 'coverage', 'pa', 'se'].forEach((item) => {
-        RestAPI.requestSectionTexts(item)
+    
+    if(searchType!=="polygon"){
+      switchLayer('coverages');
+      
+      SearchAPI.requestCoverage(areaId, geofenceId)
         .then((res) => {
           if (this.mounted) {
-            this.setState((prevState) => ({
-              texts: { ...prevState.texts, [item]: res },
+            this.setState((prev) => ({
+              coverage: transformCoverageValues(res),
+              messages: {
+                ...prev.messages,
+                cov: null,
+              },
             }));
           }
         })
         .catch(() => {
-          this.setState((prevState) => ({
-            texts: { ...prevState.texts, [item]: {} },
+          this.setState((prev) => ({
+            messages: {
+              ...prev.messages,
+              cov: 'no-data',
+            },
           }));
         });
-      });
+
+      SearchAPI.requestProtectedAreas(areaId, geofenceId)
+        .then((res) => {
+          if (this.mounted) {
+            if (Array.isArray(res) && res[0]) {
+              const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
+              const PAAreas = transformPAValues(res, generalArea);
+              this.setState((prev) => ({
+                PAAreas,
+                PATotalArea,
+                messages: {
+                  ...prev.messages,
+                  pa: null,
+                },
+              }));
+            }
+          }
+        })
+        .catch(() => {
+          this.setState((prev) => ({
+            messages: {
+              ...prev.messages,
+              pa: 'no-data',
+            },
+          }));
+        });
+
+      SearchAPI.requestStrategicEcosystems(areaId, geofenceId)
+        .then((res) => {
+          if (this.mounted) {
+            if (Array.isArray(res)) {
+              const SETotal = res.find((obj) => obj.type === 'Total');
+              const SETotalArea = SETotal ? SETotal.area : 0;
+              const SEAreas = res.slice(1);
+              this.setState((prev) => ({
+                SEAreas,
+                SETotalArea,
+                messages: {
+                  ...prev.messages,
+                  se: null,
+                },
+              }));
+            }
+          }
+        })
+        .catch(() => {
+          this.setState((prev) => ({
+            messages: {
+              ...prev.messages,
+              se: 'no-data',
+            },
+          }));
+        });
+
+        ['ecosystems', 'coverage', 'pa', 'se'].forEach((item) => {
+          RestAPI.requestSectionTexts(item)
+          .then((res) => {
+            if (this.mounted) {
+              this.setState((prevState) => ({
+                texts: { ...prevState.texts, [item]: res },
+              }));
+            }
+          })
+          .catch(() => {
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: {} },
+            }));
+          });
+        });
+    }
   }
 
   componentWillUnmount() {
@@ -242,151 +245,161 @@ class Ecosystems extends React.Component {
       areaId,
       geofenceId,
       handlerClickOnGraph,
+      searchType
     } = this.context;
-    return (
-      <div className="graphcard">
-        <h2>
-          <IconTooltip title="¿Cómo interpretar las gráficas?">
-            <InfoIcon
-              className="graphinfo"
-              onClick={() => this.toggleInfoGeneral()}
-            />
-          </IconTooltip>
-        </h2>
-        {showInfoMain && (
-          <ShortInfo
-            description={texts.ecosystems.info}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-        <div className="graphcontainer pt5">
-          <button
-            onClick={() => {
-                if (activeSE !== null) {
-                  this.switchActiveSE(null);
-                }
-              }}
-            type="button"
-            className="tittlebtn"
-          >
-            <h4>
-              Cobertura
-            </h4>
-          </button>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`downSpecial${infoShown.has('coverage') ? ' activeBox' : ''}`}
-              onClick={() => this.toggleInfo('coverage')}
-            />
-          </IconTooltip>
-          {infoShown.has('coverage') && (
-            <ShortInfo
-              description={texts.coverage.info}
-              className="graphinfo3"
-              collapseButton={false}
-            />
-          )}
-          <h6>
-            Natural, Secundaria y Transformada:
-          </h6>
-          <div className="graficaeco">
-            <div className="svgPointer">
-              <SmallStackedBar
-                message={cov}
-                data={coverage}
-                units="ha"
-                colors={matchColor('coverage')}
-                onClickGraphHandler={(selected) => {
-                  handlerClickOnGraph({ chartType: 'coverage', selectedKey: selected });
-                }}
-              />
-            </div>
+    if(searchType==="polygon"){
+      return (
+        <div className="graphcard">
+            <h2>Gráficas en construcción</h2>
+            <p>Pronto más información</p>
           </div>
-          <TextBoxes
-            downloadData={coverage}
-            downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
-            quoteText={texts.coverage.quote}
-            metoText={texts.coverage.meto}
-            consText={texts.coverage.cons}
-            toggleInfo={() => this.toggleInfo('coverage')}
-            isInfoOpen={infoShown.has('coverage')}
-          />
-          <h4>
-            Áreas protegidas
-            <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
-          </h4>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`downSpecial${infoShown.has('pa') ? ' activeBox' : ''}`}
-              onClick={() => this.toggleInfo('pa')}
-            />
-          </IconTooltip>
-          <h5>
-            {`${getPercentage(PATotalArea, generalArea)} %`}
-          </h5>
-          {infoShown.has('pa') && (
-            <ShortInfo
-              description={texts.pa.info}
-              className="graphinfo3"
-              collapseButton={false}
-            />
-          )}
-          <div className="graficaeco">
-            <h6>
-              Distribución por áreas protegidas:
-            </h6>
-            <SmallStackedBar
-              message={pa}
-              data={PAAreas}
-              units="ha"
-              colors={matchColor('pa', true)}
-            />
-          </div>
-          <TextBoxes
-            downloadData={PAAreas}
-            downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
-            quoteText={texts.pa.quote}
-            metoText={texts.pa.meto}
-            consText={texts.pa.cons}
-            toggleInfo={() => this.toggleInfo('pa')}
-            isInfoOpen={infoShown.has('pa')}
-          />
-          <div className="ecoest">
-            <h4 className="minus20">
-              Ecosistemas estratégicos
-              <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
-            </h4>
-            <IconTooltip title="Interpretación">
+      );
+    }else{
+      return (
+        <div className="graphcard">
+          <h2>
+            <IconTooltip title="¿Cómo interpretar las gráficas?">
               <InfoIcon
-                className={`downSpecial2${infoShown.has('se') ? ' activeBox' : ''}`}
-                onClick={() => this.toggleInfo('se')}
+                className="graphinfo"
+                onClick={() => this.toggleInfoGeneral()}
               />
             </IconTooltip>
-            <h5 className="minusperc">
-              {`${getPercentage(SETotalArea, generalArea)} %`}
-            </h5>
-            {infoShown.has('se') && (
+          </h2>
+          {showInfoMain && (
+            <ShortInfo
+              description={texts.ecosystems.info}
+              className="graphinfo2"
+              collapseButton={false}
+            />
+          )}
+          <div className="graphcontainer pt5">
+            <button
+              onClick={() => {
+                  if (activeSE !== null) {
+                    this.switchActiveSE(null);
+                  }
+                }}
+              type="button"
+              className="tittlebtn"
+            >
+              <h4>
+                Cobertura
+              </h4>
+            </button>
+            <IconTooltip title="Interpretación">
+              <InfoIcon
+                className={`downSpecial${infoShown.has('coverage') ? ' activeBox' : ''}`}
+                onClick={() => this.toggleInfo('coverage')}
+              />
+            </IconTooltip>
+            {infoShown.has('coverage') && (
               <ShortInfo
-                description={texts.se.info}
+                description={texts.coverage.info}
                 className="graphinfo3"
                 collapseButton={false}
               />
             )}
-            {this.renderEcosystemsBox(SEAreas, SETotalArea)}
+            <h6>
+              Natural, Secundaria y Transformada:
+            </h6>
+            <div className="graficaeco">
+              <div className="svgPointer">
+                <SmallStackedBar
+                  message={cov}
+                  data={coverage}
+                  units="ha"
+                  colors={matchColor('coverage')}
+                  onClickGraphHandler={(selected) => {
+                    handlerClickOnGraph({ chartType: 'coverage', selectedKey: selected });
+                  }}
+                />
+              </div>
+            </div>
             <TextBoxes
-              downloadData={SEAreas}
-              downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
-              quoteText={texts.se.quote}
-              metoText={texts.se.meto}
-              consText={texts.se.cons}
-              toggleInfo={() => this.toggleInfo('se')}
-              isInfoOpen={infoShown.has('se')}
+              downloadData={coverage}
+              downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
+              quoteText={texts.coverage.quote}
+              metoText={texts.coverage.meto}
+              consText={texts.coverage.cons}
+              toggleInfo={() => this.toggleInfo('coverage')}
+              isInfoOpen={infoShown.has('coverage')}
             />
+            <h4>
+              Áreas protegidas
+              <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
+            </h4>
+            <IconTooltip title="Interpretación">
+              <InfoIcon
+                className={`downSpecial${infoShown.has('pa') ? ' activeBox' : ''}`}
+                onClick={() => this.toggleInfo('pa')}
+              />
+            </IconTooltip>
+            <h5>
+              {`${getPercentage(PATotalArea, generalArea)} %`}
+            </h5>
+            {infoShown.has('pa') && (
+              <ShortInfo
+                description={texts.pa.info}
+                className="graphinfo3"
+                collapseButton={false}
+              />
+            )}
+            <div className="graficaeco">
+              <h6>
+                Distribución por áreas protegidas:
+              </h6>
+              <SmallStackedBar
+                message={pa}
+                data={PAAreas}
+                units="ha"
+                colors={matchColor('pa', true)}
+              />
+            </div>
+            <TextBoxes
+              downloadData={PAAreas}
+              downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
+              quoteText={texts.pa.quote}
+              metoText={texts.pa.meto}
+              consText={texts.pa.cons}
+              toggleInfo={() => this.toggleInfo('pa')}
+              isInfoOpen={infoShown.has('pa')}
+            />
+            <div className="ecoest">
+              <h4 className="minus20">
+                Ecosistemas estratégicos
+                <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
+              </h4>
+              <IconTooltip title="Interpretación">
+                <InfoIcon
+                  className={`downSpecial2${infoShown.has('se') ? ' activeBox' : ''}`}
+                  onClick={() => this.toggleInfo('se')}
+                />
+              </IconTooltip>
+              <h5 className="minusperc">
+                {`${getPercentage(SETotalArea, generalArea)} %`}
+              </h5>
+              {infoShown.has('se') && (
+                <ShortInfo
+                  description={texts.se.info}
+                  className="graphinfo3"
+                  collapseButton={false}
+                />
+              )}
+              {this.renderEcosystemsBox(SEAreas, SETotalArea)}
+              <TextBoxes
+                downloadData={SEAreas}
+                downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
+                quoteText={texts.se.quote}
+                metoText={texts.se.meto}
+                consText={texts.se.cons}
+                toggleInfo={() => this.toggleInfo('se')}
+                isInfoOpen={infoShown.has('se')}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
 }
 
