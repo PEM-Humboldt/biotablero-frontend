@@ -40,20 +40,29 @@ class Drawer extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId } = this.context as SearchContextValues;
+    const { areaId, geofenceId, searchType } = this
+      .context as SearchContextValues;
 
-    searchAPI
-      .requestGeofenceDetails(areaId, geofenceId)
-      .then((res: geofenceDetails) => {
-        this.setState({ geofenceArea: Number(res.total_area) });
-      })
-      .catch(() => {});
+    if (searchType === "polygon") {
+      this.setState({ geofenceArea: Math.random() * 100 });
+    } else {
+      searchAPI
+        .requestGeofenceDetails(areaId, geofenceId)
+        .then((res: geofenceDetails) => {
+          this.setState({ geofenceArea: Number(res.total_area) });
+        })
+        .catch(() => {});
+    }
   }
 
   render() {
     const { handlerBackButton } = this.props;
 
     const { geofenceArea } = this.state;
+    const { searchType } = this.context as SearchContextValues;
+
+    let initialSelectedIndex = 0;
+    if (searchType === "polygon") initialSelectedIndex = 1;
 
     return (
       <div className="informer">
@@ -69,7 +78,7 @@ class Drawer extends React.Component<Props, State> {
           </div>
         </div>
         <TabContainer
-          initialSelectedIndex={0}
+          initialSelectedIndex={initialSelectedIndex}
           titles={[
             { label: "Ecosistemas", icon: <Ecosistemas /> },
             { label: "Paisaje", icon: <Paisaje /> },
@@ -77,7 +86,7 @@ class Drawer extends React.Component<Props, State> {
             { label: "Portafolios", icon: <Portafolios /> },
           ]}
         >
-          {geofenceArea !== 0 && (
+          {(geofenceArea !== 0 || searchType === "polygon") && (
             <div>
               <Ecosystems generalArea={Number(geofenceArea)} />
             </div>

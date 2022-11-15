@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { Done } from '@mui/icons-material';
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import SearchContext from 'pages/search/SearchContext';
 
 class DrawControl extends React.Component {
   constructor(props) {
@@ -66,8 +67,10 @@ class DrawControl extends React.Component {
    */
   confirmPolygon = () => {
     const { polygon } = this.state;
-    const { loadPolygonInfo } = this.props;
+    const { loadPolygonInfo, setSearchType, setHeaderNames } = this.props;
     loadPolygonInfo(polygon);
+    setSearchType("polygon");
+    setHeaderNames("Polígono", "Área Consultada");
     this.setState({
       editEnabled: false,
       createEnabled: true,
@@ -243,3 +246,5 @@ DrawControl.defaultProps = {
 };
 
 export default DrawControl;
+
+DrawControl.contextType = SearchContext;

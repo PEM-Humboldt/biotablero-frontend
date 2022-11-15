@@ -1362,6 +1362,8 @@ class Search extends Component {
       newState.loadingLayer = false;
       newState.layerError = false;
       newState.rasterUrls = [];
+      newState.searchType = "selection";
+      newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -1379,6 +1381,15 @@ class Search extends Component {
     this.setState({ [state]: false });
   };
 
+  /**
+   * Set search type value
+   *
+   * @param {String} state state value to set the search type
+   */
+  setSearchType(searchType) {
+    this.setState({ searchType: searchType });
+  };
+
   render() {
     const {
       loadingLayer,
@@ -1389,11 +1400,13 @@ class Search extends Component {
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
       drawPolygonEnabled,
+      searchType
     } = this.state;
 
     const {
       selectedAreaTypeId,
       selectedAreaId,
+      setHeaderNames
     } = this.props;
 
     let mapTitle = null;
@@ -1453,6 +1466,7 @@ class Search extends Component {
           value={{
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
+            searchType: this.state.searchType,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
@@ -1470,9 +1484,11 @@ class Search extends Component {
               mapTitle={mapTitle}
               drawPolygonEnabled={drawPolygonEnabled}
               loadPolygonInfo={this.loadPolygonInfo}
+              setSearchType={this.setSearchType.bind(this)}
+              setHeaderNames={setHeaderNames}
             />
             <div className="contentView">
-              { (!selectedAreaTypeId || !selectedAreaId) && (
+            { ((!selectedAreaTypeId || !selectedAreaId) && searchType!=="polygon") && (
                 <Selector
                   handlers={{
                     areaListChange: () => {
@@ -1489,7 +1505,7 @@ class Search extends Component {
                   areasData={areaList}
                 />
               )}
-              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
+              { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="polygon") && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
                 />

@@ -54,6 +54,8 @@ interface Props {
       id: number;
     };
   };
+  setSearchType: () => void;
+  setHeaderNames: () => void;
 }
 
 interface State {
@@ -104,6 +106,8 @@ class MapViewer extends React.Component<Props, State> {
       mapTitle,
       drawPolygonEnabled,
       loadPolygonInfo,
+      setSearchType,
+      setHeaderNames,
     } = this.props;
     const { openErrorModal } = this.state;
 
@@ -165,7 +169,11 @@ class MapViewer extends React.Component<Props, State> {
           </div>
         </Modal>
         {drawPolygonEnabled && (
-          <DrawControl loadPolygonInfo={loadPolygonInfo} />
+          <DrawControl
+            loadPolygonInfo={loadPolygonInfo}
+            setSearchType={setSearchType}
+            setHeaderNames={setHeaderNames}
+          />
         )}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
