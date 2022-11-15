@@ -47,34 +47,60 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
+    const { areaId, geofenceId, searchType, switchLayer } = this
       .context as SearchContextValues;
 
-    switchLayer(`forestLP-${LATEST_PERIOD}`);
+    if (searchType === "polygon") {
+      this.flpController
+        .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
+        .then((data) => {
+          if (this.mounted) {
+            this.setState({
+              forestLP: data.forestLP,
+              forestPersistenceValue: data.forestPersistenceValue,
+              message: null,
+            });
+          }
+        })
+        .catch(() => {
+          this.setState({ message: "no-data" });
+        });
 
-    this.flpController
-      .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
-      .then((data) => {
-        if (this.mounted) {
-          this.setState({
-            forestLP: data.forestLP,
-            forestPersistenceValue: data.forestPersistenceValue,
-            message: null,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({ message: "no-data" });
-      });
+      this.flpController
+        .getForestLPTexts("forestLP")
+        .then((res) => {
+          if (this.mounted) {
+            this.setState({ texts: { forestLP: res } });
+          }
+        })
+        .catch(() => {});
+    } else {
+      switchLayer(`forestLP-${LATEST_PERIOD}`);
 
-    this.flpController
-      .getForestLPTexts("forestLP")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { forestLP: res } });
-        }
-      })
-      .catch(() => {});
+      this.flpController
+        .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
+        .then((data) => {
+          if (this.mounted) {
+            this.setState({
+              forestLP: data.forestLP,
+              forestPersistenceValue: data.forestPersistenceValue,
+              message: null,
+            });
+          }
+        })
+        .catch(() => {
+          this.setState({ message: "no-data" });
+        });
+
+      this.flpController
+        .getForestLPTexts("forestLP")
+        .then((res) => {
+          if (this.mounted) {
+            this.setState({ texts: { forestLP: res } });
+          }
+        })
+        .catch(() => {});
+    }
   }
 
   componentWillUnmount() {
