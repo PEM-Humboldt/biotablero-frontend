@@ -26,7 +26,6 @@ interface State {
   texts: textsObject;
   targetsData: Array<portfoliosByTarget>;
   availablePortfolios: Array<targetOrPortfolio>;
-  csvData: Array<object>;
   selectedTarget: string;
   selectedPortfolios: Set<number>;
 }
@@ -44,7 +43,6 @@ class Targets extends React.Component<Props, State> {
       targetsData: [],
       availablePortfolios: [],
       texts: { info: "", cons: "", meto: "", quote: "" },
-      csvData: [],
       selectedTarget: "",
       selectedPortfolios: new Set(),
     };
@@ -60,10 +58,9 @@ class Targets extends React.Component<Props, State> {
         meto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
         quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
       },
-      csvData: [{ id: 1, name: "hola" }],
     };
 
-    this.setState({ texts: dummyData.texts, csvData: dummyData.csvData });
+    this.setState({ texts: dummyData.texts });
 
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
@@ -163,7 +160,6 @@ class Targets extends React.Component<Props, State> {
       loading,
       texts,
       targetsData,
-      csvData,
       availablePortfolios,
       selectedTarget,
       selectedPortfolios,
@@ -268,7 +264,7 @@ class Targets extends React.Component<Props, State> {
         </div>
 
         <TextBoxes
-          downloadData={csvData}
+          downloadData={this.targetsController.getDownloadData(targetsData)}
           downloadName={`portfolios_by_target_${areaId}_${geofenceId}.csv`}
           consText={texts.cons}
           quoteText={texts.quote}
