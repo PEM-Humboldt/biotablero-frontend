@@ -131,4 +131,40 @@ export class TargetsController {
       alternateAxisYValues,
     };
   }
+
+  /**
+   * Returns data transformed to be downloaded in the csv file
+   *
+   * @param {portfoliosByTarget[]} data data array for SmallBars graph in portfolios by targets tab
+   *
+   * @returns {Object[]} portfolios by targets graph data transformed to be downloaded in a csv file
+   */
+  getDownloadData = (data: Array<portfoliosByTarget>) => {
+    const result: Array<{
+      target_name: string;
+      target_national: number;
+      target_units_short: string;
+      target_units: string;
+      portfolio_name: string;
+      portfolio_short_name: string;
+      portfolio_value: number;
+      portfolio_percentage: number;
+    }> = [];
+    data.forEach((target: portfoliosByTarget) =>
+      target.portfolios_data.forEach((portfolio) => {
+        result.push({
+          target_name: target.target_name,
+          target_national: target.target_national,
+          target_units_short: target.target_units_short,
+          target_units: target.target_units,
+          portfolio_name: portfolio.name,
+          portfolio_short_name: portfolio.short_name,
+          portfolio_value: portfolio.value,
+          portfolio_percentage:
+            (portfolio.value / target.target_national) * 100,
+        });
+      })
+    );
+    return result;
+  };
 }
