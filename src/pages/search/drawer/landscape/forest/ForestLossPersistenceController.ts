@@ -7,6 +7,7 @@ import { ForestLPExt } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
+import { Polygon } from "pages/search/types/drawer";
 
 const getLabel = {
   persistencia: "Persistencia",
@@ -35,9 +36,15 @@ export class ForestLossPersistenceController {
   getForestLPData = (
     areaType: string,
     areaId: string | number,
-    latestPeriod: string
-  ): Promise<ForestLPData> =>
-    SearchAPI.requestForestLP(areaType, areaId)
+    latestPeriod: string,
+    searchType: "definedArea" | "drawPolygon",
+    polygonRequest: {}
+  ): Promise<ForestLPData> => {
+    if (searchType === "drawPolygon") {
+      areaType = "states";
+      areaId = 63;
+    }
+    return SearchAPI.requestForestLP(areaType, areaId)
       .then((data) => {
         const forestLP = data.map((item) => ({
           ...item,
@@ -63,6 +70,7 @@ export class ForestLossPersistenceController {
       .catch(() => {
         throw new Error("Error getting data");
       });
+  };
 
   /**
    * Transform data structure to be passed to component as a prop

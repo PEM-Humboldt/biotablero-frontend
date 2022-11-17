@@ -31,7 +31,7 @@ const Forest: React.FC<componentProps> = (props) => {
 
   let selected: Array<string> = [];
 
-  if (searchType !== "polygon") {
+  if (searchType !== "drawPolygon") {
     selected = ["forestLP-2016-2021", "forestIntegrity"];
   } else {
     selected = ["forestLP-2016-2021"];

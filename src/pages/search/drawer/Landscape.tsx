@@ -125,7 +125,7 @@ class Landscape extends React.Component<Props, State> {
 
     let selected: Array<string> = [];
 
-    if (searchType === "polygon") {
+    if (searchType === "drawPolygon") {
       selected = ["forest"];
     } else {
       switch (areaId) {
