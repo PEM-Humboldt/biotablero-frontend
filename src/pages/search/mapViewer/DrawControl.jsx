@@ -67,10 +67,8 @@ class DrawControl extends React.Component {
    */
   confirmPolygon = () => {
     const { polygon } = this.state;
-    const { loadPolygonInfo, setSearchType, setHeaderNames } = this.props;
+    const { loadPolygonInfo } = this.props;
     loadPolygonInfo(polygon);
-    setSearchType("polygon");
-    setHeaderNames("Polígono", "Área Consultada");
     this.setState({
       editEnabled: false,
       createEnabled: true,

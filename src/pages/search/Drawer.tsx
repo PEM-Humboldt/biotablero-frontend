@@ -43,7 +43,7 @@ class Drawer extends React.Component<Props, State> {
     const { areaId, geofenceId, searchType } = this
       .context as SearchContextValues;
 
-    if (searchType === "polygon") {
+    if (searchType === "drawPolygon") {
       this.setState({ geofenceArea: Math.random() * 100 });
     } else {
       searchAPI
@@ -62,7 +62,7 @@ class Drawer extends React.Component<Props, State> {
     const { searchType } = this.context as SearchContextValues;
 
     let initialSelectedIndex = 0;
-    if (searchType === "polygon") initialSelectedIndex = 1;
+    if (searchType === "drawPolygon") initialSelectedIndex = 1;
 
     return (
       <div className="informer">
@@ -86,7 +86,7 @@ class Drawer extends React.Component<Props, State> {
             { label: "Portafolios", icon: <Portafolios /> },
           ]}
         >
-          {(geofenceArea !== 0 || searchType === "polygon") && (
+          {(geofenceArea !== 0 || searchType === "drawPolygon") && (
             <div>
               <Ecosystems generalArea={Number(geofenceArea)} />
             </div>
