@@ -65,7 +65,7 @@ class Portfolios extends React.Component<Props, State> {
     let initialArray: Array<accordionComponent> = [];
     const { searchType } = this.context as SearchContextValues;
 
-    if (searchType !== "polygon") {
+    if (searchType !== "drawPolygon") {
       initialArray = [
         {
           label: {

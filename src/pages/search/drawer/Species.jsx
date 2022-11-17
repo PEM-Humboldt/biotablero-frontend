@@ -23,29 +23,25 @@ class Species extends React.Component {
   }
 
   componentDidMount() {
-    const { areaId, geofenceId, searchType } = this.context;
+    const { areaId, geofenceId } = this.context;
     let selected = [];
-
-    if(searchType!=="selected"){
-      switch (areaId) {
-        case 'states':
-          if (geofenceId !== '88') {
-            selected = ['richness', 'functionalDiversity'];
-          }
-          break;
-        case 'ea':
-          if (geofenceId !== 'CORALINA') {
-            selected = ['richness', 'functionalDiversity'];
-          }
-          break;
-          case 'basinSubzones':
+    switch (areaId) {
+      case 'states':
+        if (geofenceId !== '88') {
           selected = ['richness', 'functionalDiversity'];
-          break;
-        default:
-          break;
-      }
+        }
+        break;
+      case 'ea':
+        if (geofenceId !== 'CORALINA') {
+          selected = ['richness', 'functionalDiversity'];
+        }
+        break;
+      case 'basinSubzones':
+        selected = ['richness', 'functionalDiversity'];
+        break;
+      default:
+        break;
     }
-
     this.setState({ availableComponents: selected });
 
     isFlagEnabled('functionalDiversity')
