@@ -63,27 +63,41 @@ class Portfolios extends React.Component<Props, State> {
     const { childMap } = this.state;
 
     let initialArray: Array<accordionComponent> = [];
-    const { searchType } = this.context as SearchContextValues;
+    const { areaId } = this.context as SearchContextValues;
 
-    if (searchType !== "drawPolygon") {
-      initialArray = [
-        {
-          label: {
-            id: "conservationAreas",
-            name: "Portafolios de áreas de conservación",
-          },
-          component: ConservationAreas,
-          componentProps: {
-            handleAccordionChange: this.handleAccordionChange,
-            openTab: childMap.conservationAreas,
-          },
+    initialArray = [
+      {
+        label: {
+          id: "conservationAreas",
+          name: "Portafolios de áreas de conservación",
         },
-      ];
+        component: ConservationAreas,
+        componentProps: {
+          handleAccordionChange: this.handleAccordionChange,
+          openTab: childMap.conservationAreas,
+        },
+      },
+    ];
+
+    let selected: Array<string> = [];
+
+    switch (areaId) {
+      case "states":
+      case "basinSubzones":
+      case "ea":
+        selected = ["conservationAreas"];
+        break;
+      default:
+        break;
     }
+
+    const componentsArray = initialArray.filter((f) =>
+      selected.includes(f.label.id)
+    );
 
     return (
       <Accordion
-        componentsArray={initialArray}
+        componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
         handleChange={this.handleAccordionChange}

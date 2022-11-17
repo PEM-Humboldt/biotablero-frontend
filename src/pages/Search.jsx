@@ -1324,6 +1324,8 @@ class Search extends Component {
           layer: L.polygon(polygon.latLngs, { fitBounds: true }),
         },
       },
+      selectedAreaTypeId: null,
+      selectedAreaId: null,
       searchType: "drawPolygon",
       polygonRequest: polygon,
     }));

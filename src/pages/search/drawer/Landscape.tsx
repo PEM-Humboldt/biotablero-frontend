@@ -77,7 +77,7 @@ class Landscape extends React.Component<Props, State> {
   }
 
   render() {
-    const { areaId, searchType } = this.context as SearchContextValues;
+    const { areaId } = this.context as SearchContextValues;
     const { childMap } = this.state;
     const initialArray: Array<accordionComponent> = [
       {
@@ -125,20 +125,17 @@ class Landscape extends React.Component<Props, State> {
 
     let selected: Array<string> = [];
 
-    if (searchType === "drawPolygon") {
-      selected = ["forest"];
-    } else {
-      switch (areaId) {
-        case "states":
-        case "basinSubzones":
-          selected = ["hf", "forest", "connectivity"];
-          break;
-        case "ea":
-          selected = ["fc", "hf", "forest", "connectivity"];
-          break;
-        default:
-          break;
-      }
+    switch (areaId) {
+      case "states":
+      case "basinSubzones":
+        selected = ["hf", "forest", "connectivity"];
+        break;
+      case "ea":
+        selected = ["fc", "hf", "forest", "connectivity"];
+        break;
+      default:
+        selected = ["forest"];
+        break;
     }
 
     const componentsArray = initialArray.filter((f) =>
