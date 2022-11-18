@@ -722,12 +722,11 @@ class Search extends Component {
         selectedAreaId,
       );
     } else if (/portfoliosCA*/.test(layerName)) {
-      const [,targetName,portfolioId] = layerName.split("|", 3);
+      const [,,portfolioId] = layerName.split("|", 3);
       reqPromise = () =>
         SearchAPI.requestPortfoliosCALayer(
           selectedAreaTypeId,
           selectedAreaId,
-          targetName,
           portfolioId
         );
     }

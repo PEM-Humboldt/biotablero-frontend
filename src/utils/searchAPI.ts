@@ -527,13 +527,12 @@ class SearchAPI {
   static requestPortfoliosCALayer(
     areaType: string,
     areaId: string,
-    targetName: string,
     portfolioId: number
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
     return {
       request: SearchAPI.makeGetRequest(
-        `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&targetName=${targetName}&portfolioId=${portfolioId}`,
+        `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
         { cancelToken: source.token, responseType: "arraybuffer" },
         true
       ),
