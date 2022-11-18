@@ -86,7 +86,10 @@ class Targets extends React.Component<Props, State> {
                       );
                     if (portfoliosIds && portfoliosIds.size > 0) {
                       switchLayer(
-                        ["portfoliosCA", [...portfoliosIds].join("-")].join("-")
+                        [
+                          `portfoliosCA|${target.target_name}`,
+                          [...portfoliosIds].join(","),
+                        ].join("|")
                       );
                       this.setState({ selectedPortfolios: portfoliosIds });
                     }
@@ -142,11 +145,12 @@ class Targets extends React.Component<Props, State> {
         };
       },
       () => {
-        const { selectedPortfolios } = this.state;
+        const { selectedPortfolios, selectedTarget } = this.state;
         handlerClickOnGraph({
           chartType: "portfoliosCA",
-          chartSection: "legend",
+          chartSection: selectedTarget,
           selectedKey: Array.from(selectedPortfolios),
+          isOutOfGraph: true,
         });
       }
     );
@@ -206,6 +210,7 @@ class Targets extends React.Component<Props, State> {
                 });
                 handlerClickOnGraph({
                   chartType: "portfoliosCA",
+                  chartSection: selected,
                   selectedKey: Array.from(portfoliosIds),
                 });
               }}

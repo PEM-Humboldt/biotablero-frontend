@@ -385,7 +385,7 @@ class Search extends Component {
    * @param {String} chartSection in case chartType groups multiple charts
    * @param {String} selectedKey selected key id on the graph
    */
-  clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
+  clickOnGraph = ({ chartType, chartSection, selectedKey, isOutOfGraph = false }) => {
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
@@ -418,24 +418,24 @@ class Search extends Component {
       break;
       case 'portfoliosCA':
         const { activeLayer } = this.state;
-        if (chartSection === "legend" && /portfoliosCA*/.test(activeLayer.id)) {
+        if (isOutOfGraph && /portfoliosCA*/.test(activeLayer.id)) {
           const selectedPortfolios = selectedKey;
           this.setState(({ rasterUrls }) => ({
             rasterUrls: rasterUrls.map(url => {
-              if (!selectedPortfolios.some(portfolioId => `portfoliosCA-${portfolioId}` === url.id)) {
+              if (selectedPortfolios.some(portfolioId => `portfoliosCA|${chartSection}|${portfolioId}` === url.id)) {
                 return {
                   ...url,
-                  opacity: 0
+                  opacity: 0.7,
                 };
               }
               return {
                 ...url,
-                opacity: 0.7,
+                opacity: 0,
               };
             })
           }))
         } else {
-          this.setSectionLayers(`portfoliosCA-${selectedKey}`);
+          this.setSectionLayers(`portfoliosCA|${chartSection}|${selectedKey}`);
         }
         break;
       // Current progress of the refactor
@@ -720,13 +720,13 @@ class Search extends Component {
         selectedAreaTypeId,
         selectedAreaId,
       );
-    } else if (/portfoliosCA-*/.test(layerName)) {
-      const portfolioId = layerName.match(/\d+/);
-
+    } else if (/portfoliosCA*/.test(layerName)) {
+      const [,targetName,portfolioId] = layerName.split("|", 3);
       reqPromise = () =>
         SearchAPI.requestPortfoliosCALayer(
           selectedAreaTypeId,
           selectedAreaId,
+          targetName,
           portfolioId
         );
     }
@@ -917,13 +917,12 @@ class Search extends Component {
           },
         };
       } else if (/portfoliosCA*/.test(sectionName)) {
-        // TODO: Add target name or id to this logic
-        newActiveLayer.name = 'Portafolios por temáticas';
+        const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
+        newActiveLayer.name = `Portafolios para la temática ${targetName}`;
         newActiveLayer.defaultOpacity = 0.7;
-        const selectedPorfolios = sectionName.match(/\d+/g);
         if (selectedPorfolios !== null) {
-          selectedPorfolios.forEach((portfolioId) => {
-            rasterLayerOpts.push({ id: `portfoliosCA-${portfolioId}`, paneLevel: 1 });
+          selectedPorfolios.split(',').forEach((portfolioId) => {
+            rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 1 });
           });
         }
       }
