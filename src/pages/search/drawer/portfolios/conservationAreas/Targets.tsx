@@ -150,7 +150,7 @@ class Targets extends React.Component<Props, State> {
           chartType: "portfoliosCA",
           chartSection: selectedTarget,
           selectedKey: Array.from(selectedPortfolios),
-          isOutOfGraph: true,
+          source: 'legend',
         });
       }
     );

@@ -384,8 +384,9 @@ class Search extends Component {
    * @param {String} chartType id of chart emitting the event
    * @param {String} chartSection in case chartType groups multiple charts
    * @param {String} selectedKey selected key id on the graph
+   * @param {String} source source of the clic event
    */
-  clickOnGraph = ({ chartType, chartSection, selectedKey, isOutOfGraph = false }) => {
+  clickOnGraph = ({ chartType, chartSection, selectedKey, source = 'graph' }) => {
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
@@ -418,7 +419,7 @@ class Search extends Component {
       break;
       case 'portfoliosCA':
         const { activeLayer } = this.state;
-        if (isOutOfGraph && /portfoliosCA*/.test(activeLayer.id)) {
+        if (source === 'legend' && /portfoliosCA*/.test(activeLayer.id)) {
           const selectedPortfolios = selectedKey;
           this.setState(({ rasterUrls }) => ({
             rasterUrls: rasterUrls.map(url => {
