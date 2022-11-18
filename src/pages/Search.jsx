@@ -918,7 +918,7 @@ class Search extends Component {
         };
       } else if (/portfoliosCA*/.test(sectionName)) {
         const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
-        newActiveLayer.name = `Portafolios para la temática ${targetName}`;
+        newActiveLayer.name = `Portafolios ${targetName}`;
         newActiveLayer.defaultOpacity = 0.7;
         if (selectedPorfolios !== null) {
           selectedPorfolios.split(',').forEach((portfolioId) => {
