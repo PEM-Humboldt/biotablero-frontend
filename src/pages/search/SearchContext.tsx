@@ -5,7 +5,7 @@ export interface SearchContextValues {
   areaId: string;
   geofenceId: string | number;
   searchType: "definedArea" | "drawPolygon";
-  polygonRequest: {};
+  polygonRequest: Polygon | null;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
@@ -15,7 +15,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   areaId: "",
   geofenceId: "",
   searchType: "definedArea",
-  polygonRequest: {} as Polygon,
+  polygonRequest: null,
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},

@@ -41,7 +41,7 @@ class Search extends Component {
       mapBounds: null,
       rasterUrls: [],
       searchType: "definedArea",
-      polygonRequest: {},
+      polygonRequest: null,
     };
   }
 
@@ -1324,8 +1324,8 @@ class Search extends Component {
           layer: L.polygon(polygon.latLngs, { fitBounds: true }),
         },
       },
-      selectedAreaTypeId: null,
-      selectedAreaId: null,
+      selectedAreaTypeId: "",
+      selectedAreaId: "",
       searchType: "drawPolygon",
       polygonRequest: polygon,
     }));
@@ -1371,7 +1371,7 @@ class Search extends Component {
       newState.layerError = false;
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
-      newState.polygonRequest = {};
+      newState.polygonRequest = null;
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
