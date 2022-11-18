@@ -18,7 +18,7 @@ const Tick = styled.div<PropsTick>`
   padding-top: ${(props) => (props.side === "left" ? "5px" : "0px")};
   padding-left: ${(props) => (props.side === "left" ? "0px" : "3px")};
   padding-bottom: ${(props) => (props.side === "left" ? "5px" : "0px")};
-  font-weight: ${(props) => (props.selected ? "800" : "400")};
+  font-weight: ${(props) => (props.selected ? "600" : "400")};
 `;
 
 export { Tick };
