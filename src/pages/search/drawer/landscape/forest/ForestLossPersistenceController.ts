@@ -42,7 +42,6 @@ export class ForestLossPersistenceController {
     searchType: "definedArea" | "drawPolygon",
     polygonRequest: Polygon | null
   ): Promise<ForestLPData> => {
-    console.log(areaType);
     if (searchType === "drawPolygon") {
       areaType = "states";
       areaId = 63;
