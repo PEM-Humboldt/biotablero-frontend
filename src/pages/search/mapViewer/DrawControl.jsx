@@ -5,6 +5,7 @@ import L from 'leaflet';
 import { Done } from '@mui/icons-material';
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
+import SearchContext from 'pages/search/SearchContext';
 
 class DrawControl extends React.Component {
   constructor(props) {
@@ -243,3 +244,5 @@ DrawControl.defaultProps = {
 };
 
 export default DrawControl;
+
+DrawControl.contextType = SearchContext;

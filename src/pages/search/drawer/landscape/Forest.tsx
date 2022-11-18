@@ -1,12 +1,16 @@
+import React, { useContext } from "react";
 import Accordion from "pages/search/Accordion";
 import ForestIntegrity from "pages/search/drawer/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/drawer/landscape/forest/ForestLossPersistence";
+import SearchContext from "pages/search/SearchContext";
 import { accordionComponent, componentProps } from "pages/search/types/ui";
 
 const Forest: React.FC<componentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
-  const componentsArray: Array<accordionComponent> = [
+  const { searchType } = useContext(SearchContext);
+
+  const initialArray: Array<accordionComponent> = [
     {
       label: {
         id: "forestLP-2016-2021",
@@ -24,6 +28,18 @@ const Forest: React.FC<componentProps> = (props) => {
       component: ForestIntegrity,
     },
   ];
+
+  let selected: Array<string> = [];
+
+  if (searchType !== "drawPolygon") {
+    selected = ["forestLP-2016-2021", "forestIntegrity"];
+  } else {
+    selected = ["forestLP-2016-2021"];
+  }
+
+  const componentsArray = initialArray.filter((f) =>
+    selected.includes(f.label.id)
+  );
   return (
     <div style={{ width: "100%" }}>
       <Accordion

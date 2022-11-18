@@ -40,6 +40,8 @@ class Search extends Component {
       drawPolygonEnabled: false,
       mapBounds: null,
       rasterUrls: [],
+      searchType: "definedArea",
+      polygonRequest: null,
     };
   }
 
@@ -1310,6 +1312,7 @@ class Search extends Component {
    * @param {Object} polygon polygon to be searched
    */
   loadPolygonInfo = (polygon) => {
+    const { setHeaderNames } = this.props;
     RestAPI.requestCustomPolygonData(polygon).catch(() => {});
     this.setState((prev) => ({
       drawPolygonEnabled: false,
@@ -1320,7 +1323,12 @@ class Search extends Component {
           layer: L.polygon(polygon.latLngs, { fitBounds: true }),
         },
       },
+      selectedAreaTypeId: null,
+      selectedAreaId: null,
+      searchType: "drawPolygon",
+      polygonRequest: polygon,
     }));
+    setHeaderNames("Polígono", "Área Consultada");
   }
 
   /** ************************************* */
@@ -1361,6 +1369,9 @@ class Search extends Component {
       newState.loadingLayer = false;
       newState.layerError = false;
       newState.rasterUrls = [];
+      newState.searchType = "definedArea";
+      newState.polygonRequest = null;
+      newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
@@ -1388,11 +1399,12 @@ class Search extends Component {
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
       drawPolygonEnabled,
+      searchType
     } = this.state;
 
     const {
       selectedAreaTypeId,
-      selectedAreaId,
+      selectedAreaId
     } = this.props;
 
     let mapTitle = null;
@@ -1452,6 +1464,8 @@ class Search extends Component {
           value={{
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
+            searchType: this.state.searchType,
+            polygonRequest: this.state.polygonRequest,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
@@ -1471,7 +1485,7 @@ class Search extends Component {
               loadPolygonInfo={this.loadPolygonInfo}
             />
             <div className="contentView">
-              { (!selectedAreaTypeId || !selectedAreaId) && (
+            { ((!selectedAreaTypeId || !selectedAreaId) && searchType!=="drawPolygon") && (
                 <Selector
                   handlers={{
                     areaListChange: () => {
@@ -1488,7 +1502,7 @@ class Search extends Component {
                   areasData={areaList}
                 />
               )}
-              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
+              { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="drawPolygon") && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
                 />

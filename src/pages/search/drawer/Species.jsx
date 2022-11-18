@@ -36,7 +36,7 @@ class Species extends React.Component {
           selected = ['richness', 'functionalDiversity'];
         }
         break;
-        case 'basinSubzones':
+      case 'basinSubzones':
         selected = ['richness', 'functionalDiversity'];
         break;
       default:

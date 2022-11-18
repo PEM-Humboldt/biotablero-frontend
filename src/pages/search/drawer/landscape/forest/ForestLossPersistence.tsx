@@ -47,13 +47,19 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
+    const { areaId, geofenceId, searchType, polygonRequest, switchLayer } = this
       .context as SearchContextValues;
 
     switchLayer(`forestLP-${LATEST_PERIOD}`);
 
     this.flpController
-      .getForestLPData(areaId, geofenceId, LATEST_PERIOD)
+      .getForestLPData(
+        areaId,
+        geofenceId,
+        LATEST_PERIOD,
+        searchType,
+        polygonRequest
+      )
       .then((data) => {
         if (this.mounted) {
           this.setState({

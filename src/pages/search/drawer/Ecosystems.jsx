@@ -62,8 +62,13 @@ class Ecosystems extends React.Component {
       areaId,
       geofenceId,
       switchLayer,
+      searchType,
     } = this.context;
     const { generalArea } = this.props;
+
+    if (searchType === "drawPolygon") {
+      return false;
+    }
 
     switchLayer('coverages');
 
@@ -242,7 +247,16 @@ class Ecosystems extends React.Component {
       areaId,
       geofenceId,
       handlerClickOnGraph,
+      searchType,
     } = this.context;
+    if (searchType === "drawPolygon") {
+      return (
+        <div className="graphcard">
+          <h2>Gráficas en construcción</h2>
+           <p>Pronto más información</p>
+        </div>
+      );
+    }
     return (
       <div className="graphcard">
         <h2>

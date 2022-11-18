@@ -124,6 +124,7 @@ class Landscape extends React.Component<Props, State> {
     ];
 
     let selected: Array<string> = [];
+
     switch (areaId) {
       case "states":
       case "basinSubzones":
@@ -133,8 +134,10 @@ class Landscape extends React.Component<Props, State> {
         selected = ["fc", "hf", "forest", "connectivity"];
         break;
       default:
+        selected = ["forest"];
         break;
     }
+
     const componentsArray = initialArray.filter((f) =>
       selected.includes(f.label.id)
     );

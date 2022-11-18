@@ -61,7 +61,11 @@ class Portfolios extends React.Component<Props, State> {
 
   render() {
     const { childMap } = this.state;
-    const initialArray: Array<accordionComponent> = [
+
+    let initialArray: Array<accordionComponent> = [];
+    const { areaId } = this.context as SearchContextValues;
+
+    initialArray = [
       {
         label: {
           id: "conservationAreas",
@@ -75,7 +79,21 @@ class Portfolios extends React.Component<Props, State> {
       },
     ];
 
-    const componentsArray = initialArray;
+    let selected: Array<string> = [];
+
+    switch (areaId) {
+      case "states":
+      case "basinSubzones":
+      case "ea":
+        selected = ["conservationAreas"];
+        break;
+      default:
+        break;
+    }
+
+    const componentsArray = initialArray.filter((f) =>
+      selected.includes(f.label.id)
+    );
 
     return (
       <Accordion
