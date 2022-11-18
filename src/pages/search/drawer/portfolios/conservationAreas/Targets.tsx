@@ -85,12 +85,8 @@ class Targets extends React.Component<Props, State> {
                         target.target_name
                       );
                     if (portfoliosIds && portfoliosIds.size > 0) {
-                      switchLayer(
-                        [
-                          `portfoliosCA|${target.target_name}`,
-                          [...portfoliosIds].join(","),
-                        ].join("|")
-                      );
+                      const pIds= [...portfoliosIds].join(",");
+                      switchLayer(`portfoliosCA|${target.target_name}|${pIds}`);
                       this.setState({ selectedPortfolios: portfoliosIds });
                     }
                     this.setState({ selectedTarget: target.target_name });
