@@ -30,8 +30,8 @@ export class ForestLossPersistenceController {
    * @param {String} areaType area type
    * @param {String | Number} areaId area id
    * @param {String} latestPeriod string with range of years for latest period
-   * @param {String} searchType string to identifyy the type of search
-   * @param {Object | null} polygonRequest object with range of years for latest period
+   * @param {String} searchType string to identify the type of search
+   * @param {Object | null} polygonRequest object with the coordinates array
    *
    * @returns {Object} Object with forest LP data and persistence value
    */
