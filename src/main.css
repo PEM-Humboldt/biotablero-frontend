@@ -2122,6 +2122,16 @@ div[class*="eaRHYv"] {
   margin-left: 5px;
 }
 
+.targetsLegendInfoButton{
+	color: #bbbbbb;
+	text-align: left;
+	padding-left: 0px !important;
+}
+
+.targetsLegendInfoButton svg{
+	font-size: 12px;
+}
+
 .innerInfo {
 	text-transform: none !important;
 	border: none !important;
