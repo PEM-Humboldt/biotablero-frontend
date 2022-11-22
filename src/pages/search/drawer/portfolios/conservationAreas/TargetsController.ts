@@ -9,6 +9,7 @@ import {
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
+import { textsObject } from "pages/search/types/texts";
 
 export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
@@ -167,4 +168,54 @@ export class TargetsController {
     );
     return result;
   };
+
+  /**
+   * Get portfolios texts
+   *
+   * @returns Array of portfolios description texts
+   */
+  getPortfoliosTexts() {
+    const portfoliosTexts: Array<{ [key: string]: string }> = [
+      { WCMC: "Información WCMC" },
+      { ELSA: "Información ELSA" },
+      { WEPLAN: "Información WEPLAN" },
+      { "Especies, Carbono y Agua": "Información Especies, Carbono y Agua" },
+      { ACC: "Información ACC" },
+    ];
+    return portfoliosTexts;
+  }
+
+  /**
+   * Get targets texts
+   *
+   * @returns Array of targets components texts
+   */
+  getTargetsInfoTexts() {
+    const dummyTexts = [
+      {
+        info: "información ejemplo 1",
+        cons: "consideraciones ejemplo 1",
+        meto: "metodología ejemplo 1",
+        quote: "autoria ejemplo 1",
+      },
+      {
+        info: "información ejemplo 2",
+        cons: "consideraciones ejemplo 2",
+        meto: "metodología ejemplo 2",
+        quote: "autoria ejemplo 2",
+      },
+    ];
+
+    const targetsTexts: Array<{ [key: string]: textsObject }> = [
+      { Especies: dummyTexts[0] },
+      { Ecosistemas: dummyTexts[1] },
+      { "Servicios Ecosistémicos": dummyTexts[0] },
+      { Conectividad: dummyTexts[1] },
+      { "Cambio Climático": dummyTexts[0] },
+      { Deforestación: dummyTexts[1] },
+      { Restauración: dummyTexts[0] },
+      { "Aguas - Rios": dummyTexts[1] },
+    ];
+    return targetsTexts;
+  }
 }

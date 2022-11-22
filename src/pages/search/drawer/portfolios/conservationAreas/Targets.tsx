@@ -28,6 +28,11 @@ interface State {
   availablePortfolios: Array<targetOrPortfolio>;
   selectedTarget: string;
   selectedPortfolios: Set<number>;
+  showInfoPortfolios: boolean;
+  portfoliosInfoTexts: Array<{ [key: string]: string }>;
+  targetsTexts: Array<{ [key: string]: textsObject }>;
+  portfoliosDescription: string;
+  currentPortfolioInfo: string;
 }
 
 class Targets extends React.Component<Props, State> {
@@ -45,22 +50,16 @@ class Targets extends React.Component<Props, State> {
       texts: { info: "", cons: "", meto: "", quote: "" },
       selectedTarget: "",
       selectedPortfolios: new Set(),
+      showInfoPortfolios: false,
+      portfoliosInfoTexts: [],
+      targetsTexts: [],
+      portfoliosDescription: "",
+      currentPortfolioInfo: "",
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-
-    const dummyData = {
-      texts: {
-        info: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        cons: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        meto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-        quote: "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-      },
-    };
-
-    this.setState({ texts: dummyData.texts });
 
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
@@ -114,6 +113,14 @@ class Targets extends React.Component<Props, State> {
       .catch(() => {
         this.setState({ loading: "no-data" });
       });
+
+    this.setState({
+      portfoliosInfoTexts: this.targetsController.getPortfoliosTexts(),
+    });
+
+    this.setState({
+      targetsTexts: this.targetsController.getTargetsInfoTexts(),
+    });
   }
 
   componentWillUnmount() {
@@ -155,6 +162,44 @@ class Targets extends React.Component<Props, State> {
     );
   };
 
+  /**
+   * Set information texts for each target
+   */
+  setGraphTexts = (targetName: string) => {
+    const { targetsTexts } = this.state;
+    const targetTexts = targetsTexts.find(
+      (targetInfo) => Object.keys(targetInfo)[0] === targetName
+    );
+    if (targetTexts) {
+      this.setState({ texts: targetTexts[targetName] });
+    }
+  };
+
+  /**
+   * Set information text for each portfolio
+   */
+  setInfoPortfolios = (portfolioName: string) => {
+    const { portfoliosInfoTexts, currentPortfolioInfo } = this.state;
+    const portfolioInfo = portfoliosInfoTexts.find(
+      (portfolio) => Object.keys(portfolio)[0] === portfolioName
+    );
+
+    if (portfolioInfo) {
+      this.setState({ portfoliosDescription: portfolioInfo[portfolioName] });
+    }
+
+    if (portfolioName === currentPortfolioInfo) {
+      this.setState((prevState) => ({
+        showInfoPortfolios: !prevState.showInfoPortfolios,
+      }));
+    } else {
+      this.setState({
+        currentPortfolioInfo: portfolioName,
+        showInfoPortfolios: true,
+      });
+    }
+  };
+
   render() {
     const { areaId, geofenceId, handlerClickOnGraph } = this
       .context as SearchContextValues;
@@ -166,9 +211,15 @@ class Targets extends React.Component<Props, State> {
       availablePortfolios,
       selectedTarget,
       selectedPortfolios,
+      showInfoPortfolios,
+      portfoliosDescription,
     } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
+
+    if (texts.info === "" && selectedTarget) {
+      this.setGraphTexts(selectedTarget);
+    }
 
     return (
       <div className="graphcontainer pt6">
@@ -212,6 +263,7 @@ class Targets extends React.Component<Props, State> {
                   chartSection: selected,
                   selectedKey: Array.from(portfoliosIds),
                 });
+                this.setGraphTexts(selected);
               }}
               height={450}
               selectedIndexValue={selectedTarget}
@@ -224,48 +276,75 @@ class Targets extends React.Component<Props, State> {
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
-              <FormControlLabel
-                key={portfolio.id}
-                label={
-                  <SquareFilledLegend
-                    color={matchColor("caTargets")(portfolio.name)}
-                    orientation="column"
-                    key={portfolio.id}
-                    disabled={
-                      !this.targetsController.isPortfolioInTarget(
-                        selectedTarget,
-                        portfolio.id
-                      )
-                    }
-                  >
-                    {portfolio.name}
-                  </SquareFilledLegend>
-                }
-                control={
-                  <Checkbox
-                    sx={{
-                      padding: 0,
-                      "&.Mui-disabled": {
-                        opacity: 0.4,
-                      },
-                    }}
-                    onChange={(event, checked) =>
-                      this.clickOnLegend(portfolio.id, checked)
-                    }
-                    name={portfolio.name}
-                    disabled={
-                      !this.targetsController.isPortfolioInTarget(
-                        selectedTarget,
-                        portfolio.id
-                      )
-                    }
-                    checked={selectedPortfolios.has(portfolio.id)}
+              <div style={{ display: "inline-flex" }}>
+                <FormControlLabel
+                  key={portfolio.id}
+                  label={
+                    <SquareFilledLegend
+                      color={matchColor("caTargets")(portfolio.name)}
+                      orientation="column"
+                      key={portfolio.id}
+                      disabled={
+                        !this.targetsController.isPortfolioInTarget(
+                          selectedTarget,
+                          portfolio.id
+                        )
+                      }
+                    >
+                      {portfolio.name}
+                    </SquareFilledLegend>
+                  }
+                  control={
+                    <Checkbox
+                      sx={{
+                        padding: 0,
+                        "&.Mui-disabled": {
+                          opacity: 0.4,
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 18,
+                        },
+                      }}
+                      onChange={(event, checked) =>
+                        this.clickOnLegend(portfolio.id, checked)
+                      }
+                      name={portfolio.name}
+                      disabled={
+                        !this.targetsController.isPortfolioInTarget(
+                          selectedTarget,
+                          portfolio.id
+                        )
+                      }
+                      checked={selectedPortfolios.has(portfolio.id)}
+                    />
+                  }
+                  sx={{
+                    margin: 0,
+                  }}
+                />
+                <IconTooltip
+                  title="Interpretación"
+                  className="targetsLegendInfoButton"
+                  key={`info${portfolio.name}`}
+                >
+                  <InfoIcon
+                    className={`graphinfo ? " activeBox" : ""}`}
+                    sx={{ fontSize: 16 }}
+                    onClick={() => this.setInfoPortfolios(portfolio.name)}
                   />
-                }
-              />
+                </IconTooltip>
+              </div>
             ))}
           </FormGroup>
         </div>
+
+        {showInfoPortfolios && (
+          <ShortInfo
+            description={portfoliosDescription}
+            className="graphinfo2"
+            collapseButton={false}
+          />
+        )}
 
         <TextBoxes
           downloadData={this.targetsController.getDownloadData(targetsData)}
