@@ -13,8 +13,12 @@ import { textsObject } from "pages/search/types/texts";
 
 export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
+  targetsTexts: Array<{ name: string; texts: textsObject }>;
+  portfoliosTexts: Array<{ name: string; description: string }>;
   constructor() {
     this.portfoliosIds = new Map();
+    this.targetsTexts = [];
+    this.portfoliosTexts = [];
   }
 
   /**
@@ -175,14 +179,17 @@ export class TargetsController {
    * @returns Array of portfolios description texts
    */
   getPortfoliosTexts() {
-    const portfoliosTexts: Array<{ [key: string]: string }> = [
-      { WCMC: "Información WCMC" },
-      { ELSA: "Información ELSA" },
-      { WEPLAN: "Información WEPLAN" },
-      { "Especies, Carbono y Agua": "Información Especies, Carbono y Agua" },
-      { ACC: "Información ACC" },
+    const portfoliosTexts: Array<{ name: string; description: string }> = [
+      { name: "WCMC", description: "Información WCMC" },
+      { name: "ELSA", description: "Información ELSA" },
+      { name: "WEPLAN", description: "Información WEPLAN" },
+      {
+        name: "Especies, Carbono y Agua",
+        description: "Información Especies, Carbono y Agua",
+      },
+      { name: "ACC", description: "Información ACC" },
     ];
-    return portfoliosTexts;
+    this.portfoliosTexts = portfoliosTexts;
   }
 
   /**
@@ -193,29 +200,61 @@ export class TargetsController {
   getTargetsInfoTexts() {
     const dummyTexts = [
       {
-        info: "información ejemplo 1",
-        cons: "consideraciones ejemplo 1",
-        meto: "metodología ejemplo 1",
-        quote: "autoria ejemplo 1",
+        info: "Información ejemplo 1",
+        cons: "Consideraciones ejemplo 1",
+        meto: "Metodología ejemplo 1",
+        quote: "Autoria ejemplo 1",
       },
       {
-        info: "información ejemplo 2",
-        cons: "consideraciones ejemplo 2",
-        meto: "metodología ejemplo 2",
-        quote: "autoria ejemplo 2",
+        info: "Información ejemplo 2",
+        cons: "Consideraciones ejemplo 2",
+        meto: "Metodología ejemplo 2",
+        quote: "Autoria ejemplo 2",
       },
     ];
 
-    const targetsTexts: Array<{ [key: string]: textsObject }> = [
-      { Especies: dummyTexts[0] },
-      { Ecosistemas: dummyTexts[1] },
-      { "Servicios Ecosistémicos": dummyTexts[0] },
-      { Conectividad: dummyTexts[1] },
-      { "Cambio Climático": dummyTexts[0] },
-      { Deforestación: dummyTexts[1] },
-      { Restauración: dummyTexts[0] },
-      { "Aguas - Rios": dummyTexts[1] },
+    const targetsTexts: Array<{ name: string; texts: textsObject }> = [
+      { name: "Especies", texts: dummyTexts[0] },
+      { name: "Ecosistemas", texts: dummyTexts[1] },
+      { name: "Servicios Ecosistémicos", texts: dummyTexts[0] },
+      { name: "Conectividad", texts: dummyTexts[1] },
+      { name: "Cambio Climático", texts: dummyTexts[0] },
+      { name: "Deforestación", texts: dummyTexts[1] },
+      { name: "Restauración", texts: dummyTexts[0] },
+      { name: "Aguas - Rios", texts: dummyTexts[1] },
     ];
-    return targetsTexts;
+    this.targetsTexts = targetsTexts;
+  }
+
+  /**
+   * Get texts of a selected target
+   *
+   * @param {String} targetName target name
+   *
+   * @returns {Object | undefined} information texts of a target
+   */
+  getTargetsInfoText(targetName: string) {
+    let targetTexts;
+    const target = this.targetsTexts.find(
+      (targetText) => targetName === targetText.name
+    );
+    if (target) targetTexts = target.texts;
+    return targetTexts;
+  }
+
+  /**
+   * Get description of a selected portfolio
+   *
+   * @param {String} portfolioName portfolio name
+   *
+   * @returns {String | undefined} description of a portfolio
+   */
+  getPortfolioDescription(portfolioName: string) {
+    let portfolioDescription;
+    const portfolio = this.portfoliosTexts.find(
+      (targetText) => portfolioName === targetText.name
+    );
+    if (portfolio) portfolioDescription = portfolio.description;
+    return portfolioDescription;
   }
 }

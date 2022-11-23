@@ -28,11 +28,8 @@ interface State {
   availablePortfolios: Array<targetOrPortfolio>;
   selectedTarget: string;
   selectedPortfolios: Set<number>;
-  showInfoPortfolios: boolean;
-  portfoliosInfoTexts: Array<{ [key: string]: string }>;
-  targetsTexts: Array<{ [key: string]: textsObject }>;
   portfoliosDescription: string;
-  currentPortfolioInfo: string;
+  shownPortfolio: string | null;
 }
 
 class Targets extends React.Component<Props, State> {
@@ -50,11 +47,8 @@ class Targets extends React.Component<Props, State> {
       texts: { info: "", cons: "", meto: "", quote: "" },
       selectedTarget: "",
       selectedPortfolios: new Set(),
-      showInfoPortfolios: false,
-      portfoliosInfoTexts: [],
-      targetsTexts: [],
       portfoliosDescription: "",
-      currentPortfolioInfo: "",
+      shownPortfolio: "",
     };
   }
 
@@ -92,6 +86,7 @@ class Targets extends React.Component<Props, State> {
                       this.setState({ selectedPortfolios: portfoliosIds });
                     }
                     this.setState({ selectedTarget: target.target_name });
+                    this.setGraphTexts(target.target_name);
                   }
                 }
               );
@@ -114,13 +109,8 @@ class Targets extends React.Component<Props, State> {
         this.setState({ loading: "no-data" });
       });
 
-    this.setState({
-      portfoliosInfoTexts: this.targetsController.getPortfoliosTexts(),
-    });
-
-    this.setState({
-      targetsTexts: this.targetsController.getTargetsInfoTexts(),
-    });
+    this.targetsController.getPortfoliosTexts();
+    this.targetsController.getTargetsInfoTexts();
   }
 
   componentWillUnmount() {
@@ -163,40 +153,28 @@ class Targets extends React.Component<Props, State> {
   };
 
   /**
-   * Set information texts for each target
+   * Set information texts for a selected target
    */
   setGraphTexts = (targetName: string) => {
-    const { targetsTexts } = this.state;
-    const targetTexts = targetsTexts.find(
-      (targetInfo) => Object.keys(targetInfo)[0] === targetName
-    );
-    if (targetTexts) {
-      this.setState({ texts: targetTexts[targetName] });
-    }
+    const targetTexts = this.targetsController.getTargetsInfoText(targetName);
+    if (targetTexts) this.setState({ texts: targetTexts });
   };
 
   /**
-   * Set information text for each portfolio
+   * Set information text for a selected portfolio
    */
   setInfoPortfolios = (portfolioName: string) => {
-    const { portfoliosInfoTexts, currentPortfolioInfo } = this.state;
-    const portfolioInfo = portfoliosInfoTexts.find(
-      (portfolio) => Object.keys(portfolio)[0] === portfolioName
-    );
+    const { shownPortfolio } = this.state;
+    const portfolioDescription =
+      this.targetsController.getPortfolioDescription(portfolioName);
 
-    if (portfolioInfo) {
-      this.setState({ portfoliosDescription: portfolioInfo[portfolioName] });
-    }
+    if (portfolioDescription)
+      this.setState({ portfoliosDescription: portfolioDescription });
 
-    if (portfolioName === currentPortfolioInfo) {
-      this.setState((prevState) => ({
-        showInfoPortfolios: !prevState.showInfoPortfolios,
-      }));
+    if (portfolioName === shownPortfolio) {
+      this.setState({ shownPortfolio: null });
     } else {
-      this.setState({
-        currentPortfolioInfo: portfolioName,
-        showInfoPortfolios: true,
-      });
+      this.setState({ shownPortfolio: portfolioName });
     }
   };
 
@@ -211,15 +189,11 @@ class Targets extends React.Component<Props, State> {
       availablePortfolios,
       selectedTarget,
       selectedPortfolios,
-      showInfoPortfolios,
       portfoliosDescription,
+      shownPortfolio,
     } = this.state;
 
     const graphData = this.targetsController.getGraphData(targetsData);
-
-    if (texts.info === "" && selectedTarget) {
-      this.setGraphTexts(selectedTarget);
-    }
 
     return (
       <div className="graphcontainer pt6">
@@ -338,7 +312,7 @@ class Targets extends React.Component<Props, State> {
           </FormGroup>
         </div>
 
-        {showInfoPortfolios && (
+        {shownPortfolio && (
           <ShortInfo
             description={portfoliosDescription}
             className="graphinfo2"
