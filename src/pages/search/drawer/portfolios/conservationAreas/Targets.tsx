@@ -200,7 +200,7 @@ class Targets extends React.Component<Props, State> {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo ? " activeBox" : ""}`}
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
               onClick={() => this.toggleInfoGraph()}
             />
           </IconTooltip>
@@ -250,7 +250,7 @@ class Targets extends React.Component<Props, State> {
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
-              <div style={{ display: "inline-flex" }}>
+              <div style={{ display: "inline-flex" }} key={portfolio.name}>
                 <FormControlLabel
                   key={portfolio.id}
                   label={
@@ -297,12 +297,15 @@ class Targets extends React.Component<Props, State> {
                   }}
                 />
                 <IconTooltip
-                  title="Interpretación"
+                  title="Este portafolio"
                   className="targetsLegendInfoButton"
                   key={`info${portfolio.name}`}
                 >
                   <InfoIcon
-                    className={`graphinfo ? " activeBox" : ""}`}
+                    className={`graphinfo${
+                      shownPortfolio === portfolio.name ? " activeBox" : ""
+                    }`}
+                    key={`infoIcon${portfolio.name}`}
                     sx={{ fontSize: 16 }}
                     onClick={() => this.setInfoPortfolios(portfolio.name)}
                   />
