@@ -31,7 +31,7 @@ export class ForestLossPersistenceController {
    * @param {String | Number} areaId area id
    * @param {String} latestPeriod string with range of years for latest period
    * @param {String} searchType string to identify the type of search
-   * @param {Object | null} polygonRequest object with the coordinates array
+   * @param {Array | null} polygon Coordinates of polygon
    *
    * @returns {Object} Object with forest LP data and persistence value
    */
@@ -40,7 +40,7 @@ export class ForestLossPersistenceController {
     areaId: string | number,
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
-    polygonRequest: Polygon | null
+    polygon: Polygon | null
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
       areaType = "states";
