@@ -178,7 +178,7 @@ export class TargetsController {
    *
    * @returns Array of portfolios description texts
    */
-  getPortfoliosTexts() {
+  loadPortfoliosTexts() {
     const portfoliosTexts: Array<{ name: string; description: string }> = [
       { name: "WCMC", description: "Información WCMC" },
       { name: "ELSA", description: "Información ELSA" },
@@ -197,7 +197,7 @@ export class TargetsController {
    *
    * @returns Array of targets components texts
    */
-  getTargetsInfoTexts() {
+  loadTargetsTexts() {
     const dummyTexts = [
       {
         info: "Información ejemplo 1",
@@ -233,7 +233,7 @@ export class TargetsController {
    *
    * @returns {Object | undefined} information texts of a target
    */
-  getTargetsInfoText(targetName: string) {
+  getTargetText(targetName: string) {
     let targetTexts;
     const target = this.targetsTexts.find(
       (targetText) => targetName === targetText.name

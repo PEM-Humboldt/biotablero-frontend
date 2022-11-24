@@ -28,7 +28,7 @@ interface State {
   availablePortfolios: Array<targetOrPortfolio>;
   selectedTarget: string;
   selectedPortfolios: Set<number>;
-  portfoliosDescription: string;
+  portfolioDescription: string;
   shownPortfolio: string | null;
 }
 
@@ -47,8 +47,8 @@ class Targets extends React.Component<Props, State> {
       texts: { info: "", cons: "", meto: "", quote: "" },
       selectedTarget: "",
       selectedPortfolios: new Set(),
-      portfoliosDescription: "",
-      shownPortfolio: "",
+      portfolioDescription: "",
+      shownPortfolio: null,
     };
   }
 
@@ -57,6 +57,9 @@ class Targets extends React.Component<Props, State> {
 
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
+
+    this.targetsController.loadPortfoliosTexts();
+    this.targetsController.loadTargetsTexts();
 
     this.targetsController
       .getData(areaId, geofenceId)
@@ -108,9 +111,6 @@ class Targets extends React.Component<Props, State> {
       .catch(() => {
         this.setState({ loading: "no-data" });
       });
-
-    this.targetsController.getPortfoliosTexts();
-    this.targetsController.getTargetsInfoTexts();
   }
 
   componentWillUnmount() {
@@ -156,7 +156,7 @@ class Targets extends React.Component<Props, State> {
    * Set information texts for a selected target
    */
   setGraphTexts = (targetName: string) => {
-    const targetTexts = this.targetsController.getTargetsInfoText(targetName);
+    const targetTexts = this.targetsController.getTargetText(targetName);
     if (targetTexts) this.setState({ texts: targetTexts });
   };
 
@@ -169,7 +169,7 @@ class Targets extends React.Component<Props, State> {
       this.targetsController.getPortfolioDescription(portfolioName);
 
     if (portfolioDescription)
-      this.setState({ portfoliosDescription: portfolioDescription });
+      this.setState({ portfolioDescription: portfolioDescription });
 
     if (portfolioName === shownPortfolio) {
       this.setState({ shownPortfolio: null });
@@ -189,7 +189,7 @@ class Targets extends React.Component<Props, State> {
       availablePortfolios,
       selectedTarget,
       selectedPortfolios,
-      portfoliosDescription,
+      portfolioDescription,
       shownPortfolio,
     } = this.state;
 
@@ -317,7 +317,7 @@ class Targets extends React.Component<Props, State> {
 
         {shownPortfolio && (
           <ShortInfo
-            description={portfoliosDescription}
+            description={portfolioDescription}
             className="graphinfo2"
             collapseButton={false}
           />
