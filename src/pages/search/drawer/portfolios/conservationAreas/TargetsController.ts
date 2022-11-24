@@ -9,11 +9,16 @@ import {
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
+import { textsObject } from "pages/search/types/texts";
 
 export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
+  targetsTexts: Array<{ name: string; texts: textsObject }>;
+  portfoliosTexts: Array<{ name: string; description: string }>;
   constructor() {
     this.portfoliosIds = new Map();
+    this.targetsTexts = [];
+    this.portfoliosTexts = [];
   }
 
   /**
@@ -167,4 +172,89 @@ export class TargetsController {
     );
     return result;
   };
+
+  /**
+   * Get portfolios texts
+   *
+   * @returns Array of portfolios description texts
+   */
+  loadPortfoliosTexts() {
+    const portfoliosTexts: Array<{ name: string; description: string }> = [
+      { name: "WCMC", description: "Información WCMC" },
+      { name: "ELSA", description: "Información ELSA" },
+      { name: "WEPLAN", description: "Información WEPLAN" },
+      {
+        name: "Especies, Carbono y Agua",
+        description: "Información Especies, Carbono y Agua",
+      },
+      { name: "ACC", description: "Información ACC" },
+    ];
+    this.portfoliosTexts = portfoliosTexts;
+  }
+
+  /**
+   * Get targets texts
+   *
+   * @returns Array of targets components texts
+   */
+  loadTargetsTexts() {
+    const dummyTexts = [
+      {
+        info: "Información ejemplo 1",
+        cons: "Consideraciones ejemplo 1",
+        meto: "Metodología ejemplo 1",
+        quote: "Autoria ejemplo 1",
+      },
+      {
+        info: "Información ejemplo 2",
+        cons: "Consideraciones ejemplo 2",
+        meto: "Metodología ejemplo 2",
+        quote: "Autoria ejemplo 2",
+      },
+    ];
+
+    const targetsTexts: Array<{ name: string; texts: textsObject }> = [
+      { name: "Especies", texts: dummyTexts[0] },
+      { name: "Ecosistemas", texts: dummyTexts[1] },
+      { name: "Servicios Ecosistémicos", texts: dummyTexts[0] },
+      { name: "Conectividad", texts: dummyTexts[1] },
+      { name: "Cambio Climático", texts: dummyTexts[0] },
+      { name: "Deforestación", texts: dummyTexts[1] },
+      { name: "Restauración", texts: dummyTexts[0] },
+      { name: "Aguas - Rios", texts: dummyTexts[1] },
+    ];
+    this.targetsTexts = targetsTexts;
+  }
+
+  /**
+   * Get texts of a selected target
+   *
+   * @param {String} targetName target name
+   *
+   * @returns {Object | undefined} information texts of a target
+   */
+  getTargetText(targetName: string) {
+    let targetTexts;
+    const target = this.targetsTexts.find(
+      (targetText) => targetName === targetText.name
+    );
+    if (target) targetTexts = target.texts;
+    return targetTexts;
+  }
+
+  /**
+   * Get description of a selected portfolio
+   *
+   * @param {String} portfolioName portfolio name
+   *
+   * @returns {String | undefined} description of a portfolio
+   */
+  getPortfolioDescription(portfolioName: string) {
+    let portfolioDescription;
+    const portfolio = this.portfoliosTexts.find(
+      (targetText) => portfolioName === targetText.name
+    );
+    if (portfolio) portfolioDescription = portfolio.description;
+    return portfolioDescription;
+  }
 }
