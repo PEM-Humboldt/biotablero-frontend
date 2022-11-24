@@ -36,12 +36,11 @@ class Search extends Component {
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
-      localPolygon: {},
-      drawPolygonEnabled: false,
       mapBounds: null,
       rasterUrls: [],
       searchType: "definedArea",
-      polygonRequest: null,
+      polygon: null,
+      drawPolygonEnabled: false,
     };
   }
 
@@ -1314,19 +1313,16 @@ class Search extends Component {
   loadPolygonInfo = (polygon) => {
     const { setHeaderNames } = this.props;
     RestAPI.requestCustomPolygonData(polygon).catch(() => {});
-    this.setState((prev) => ({
+    this.setState(() => ({
       drawPolygonEnabled: false,
-      layers: {
-        ...prev.layers,
-        polygon: {
-          active: true,
-          layer: L.polygon(polygon.latLngs, { fitBounds: true }),
-        },
+      polygon: {
+        coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
       },
       selectedAreaTypeId: null,
       selectedAreaId: null,
       searchType: "drawPolygon",
-      polygonRequest: polygon,
+      layerError: false,
+      loadingLayer: false,
     }));
     setHeaderNames("Polígono", "Área Consultada");
   }
@@ -1370,7 +1366,7 @@ class Search extends Component {
       newState.layerError = false;
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
-      newState.polygonRequest = null;
+      newState.polygon = null;
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
@@ -1398,6 +1394,7 @@ class Search extends Component {
       areaList,
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
+      polygon,
       drawPolygonEnabled,
       searchType
     } = this.state;
@@ -1464,8 +1461,8 @@ class Search extends Component {
           value={{
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
-            searchType: this.state.searchType,
-            polygonRequest: this.state.polygonRequest,
+            searchType: searchType,
+            polygon: polygon,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
@@ -1481,6 +1478,7 @@ class Search extends Component {
               mapBounds={this.mapBounds}
               rasterBounds={this.geofenceBounds}
               mapTitle={mapTitle}
+              polygon={polygon}
               drawPolygonEnabled={drawPolygonEnabled}
               loadPolygonInfo={this.loadPolygonInfo}
             />

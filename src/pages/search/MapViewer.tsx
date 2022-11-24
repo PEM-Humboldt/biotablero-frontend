@@ -9,6 +9,7 @@ import {
   WMSTileLayer,
   Pane,
   GeoJSON,
+  Polygon,
 } from "react-leaflet";
 
 import DrawControl from "pages/search/mapViewer/DrawControl";
@@ -19,6 +20,7 @@ import {
   LatLngBoundsLiteral,
   Layer,
   PathOptions,
+  LatLngExpression,
 } from "leaflet";
 
 interface Props {
@@ -29,6 +31,9 @@ interface Props {
   mapTitle: string;
   mapBounds: LatLngBoundsExpression;
   rasterBounds: LatLngBoundsExpression;
+  polygon: {
+    coordinates: LatLngExpression[][];
+  };
   loadPolygonInfo: () => void;
   layers: Array<{
     paneLevel: number;
@@ -102,6 +107,7 @@ class MapViewer extends React.Component<Props, State> {
       layers,
       rasterBounds,
       mapTitle,
+      polygon,
       drawPolygonEnabled,
       loadPolygonInfo,
     } = this.props;
@@ -195,6 +201,9 @@ class MapViewer extends React.Component<Props, State> {
               ))}
           </Pane>
         ))}
+        {polygon && polygon.coordinates && (
+          <Polygon color={"#2a363b"} positions={polygon.coordinates} />
+        )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {userLogged && (
           <WMSTileLayer
