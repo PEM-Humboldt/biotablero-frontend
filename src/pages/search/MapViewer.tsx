@@ -20,8 +20,8 @@ import {
   LatLngBoundsLiteral,
   Layer,
   PathOptions,
-  LatLngExpression,
 } from "leaflet";
+import { Polygon as PolygonType } from "pages/search/types/drawer";
 
 interface Props {
   drawPolygonEnabled: boolean;
@@ -31,9 +31,7 @@ interface Props {
   mapTitle: string;
   mapBounds: LatLngBoundsExpression;
   rasterBounds: LatLngBoundsExpression;
-  polygon: {
-    coordinates: LatLngExpression[][];
-  };
+  polygon: PolygonType;
   loadPolygonInfo: () => void;
   layers: Array<{
     paneLevel: number;
