@@ -5,5 +5,5 @@ export interface geofenceDetails {
 }
 
 export interface Polygon {
-  copordinates: LatLngExpression[];
+  coordinates: LatLngExpression[];
 }
