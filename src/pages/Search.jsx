@@ -820,7 +820,7 @@ class Search extends Component {
         { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
         { id: `forestLP-${period}-no_bosque`, paneLevel: 2 },
       ];
-      newActiveLayer.name = `Perdida y persistencia de bosque (${period})`;
+      newActiveLayer.name = `Pérdida y persistencia de bosque (${period})`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
       shapeLayerOpts = [{ id: 'hfCurrent', paneLevel: 1 }];

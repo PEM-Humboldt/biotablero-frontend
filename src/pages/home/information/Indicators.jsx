@@ -68,7 +68,7 @@ const descriptions = {
     title: '¿Qué encuentras en este módulo?',
     description: (
       <p>
-        {'Esta sitio contiene un tablero de control de indicadores de Biodiversidad para Colombia. Acá podrás '}
+        {'Este sitio contiene un tablero de control de indicadores de Biodiversidad para Colombia. Acá podrás '}
         <b>
           buscar indicadores
         </b>
