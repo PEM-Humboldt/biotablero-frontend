@@ -14,7 +14,7 @@ const Forest: React.FC<componentProps> = (props) => {
     {
       label: {
         id: "forestLP-2016-2021",
-        name: "Perdida y persistencia",
+        name: "Pérdida y persistencia",
         collapsed: openTab !== "forestLP-2016-2021",
       },
       component: ForestLossPersistence,
