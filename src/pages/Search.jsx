@@ -559,7 +559,8 @@ class Search extends Component {
    *  is true.
    * @param {String} options.fitBounds if the map bounds should fit the layer loaded
    * @param {Number} options.paneLevel pane level for the layer to be added to
-   *
+   * @param {String} options.styleName style name to specify layer format
+   * 
    * @returns {Object} Data of the layer with its id
    */
   getShapeLayer = async (layerName, options) => {
@@ -567,6 +568,7 @@ class Search extends Component {
       isActive = true,
       fitBounds = true,
       paneLevel = 1,
+      styleName = ""
     } = options;
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     const { layers } = this.state;
@@ -585,6 +587,9 @@ class Search extends Component {
           selectedAreaTypeId,
           selectedAreaId,
         );
+        if (styleName === "border") {
+          layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
+        }
         break;
       case 'hfCurrent':
         reqPromise = () => RestAPI.requestCurrentHFGeometry(
@@ -608,7 +613,6 @@ class Search extends Component {
       default:
         break;
     }
-
     if (!reqPromise) return null;
     if (layers[layerName]) {
       if (layerName === 'geofence') {
@@ -623,6 +627,13 @@ class Search extends Component {
         newState.layers[layerName].active = isActive;
         newState.layers[layerName].fitBounds = fitBounds;
         newState.layers[layerName].paneLevel = paneLevel;
+        if (styleName === "border") {
+          newState.layers[layerName].onEachFeature = () => {};
+        } else {
+          newState.layers[layerName].onEachFeature = (feature, selectedLayer) => {
+            this.featureActions(selectedLayer, layerName)
+          }
+        }
         return newState;
       });
       return layers[layerName];
@@ -643,11 +654,17 @@ class Search extends Component {
         if (fitBounds) {
           this.updateBounds(L.geoJSON(res).getBounds());
         }
+
+        let onEachFeature = (feature, selectedLayer) => {
+          this.featureActions(selectedLayer, layerName)
+        }
+        if (styleName === "border") {
+          onEachFeature = () => {};
+        }
+
         const layerObj = {
           layerStyle,
-          onEachFeature: (feature, selectedLayer) => (
-            this.featureActions(selectedLayer, layerName)
-          ),
+          onEachFeature: onEachFeature,
           active: isActive,
           json: res,
           paneLevel,
@@ -918,12 +935,13 @@ class Search extends Component {
           },
         };
       } else if (/portfoliosCA*/.test(sectionName)) {
+        shapeLayerOpts = [{ id: "geofence", paneLevel: 1, styleName: "border" }];
         const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
         newActiveLayer.name = `Portafolios ${targetName}`;
         newActiveLayer.defaultOpacity = 0.7;
         if (selectedPorfolios !== null) {
           selectedPorfolios.split(',').forEach((portfolioId) => {
-            rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 1 });
+            rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 2 });
           });
         }
       }
@@ -994,8 +1012,9 @@ class Search extends Component {
             isActive,
             fitBounds,
             paneLevel,
+            styleName
           } = info;
-          return this.getShapeLayer(id, { isActive, fitBounds, paneLevel });
+          return this.getShapeLayer(id, { isActive, fitBounds, paneLevel, styleName });
         }),
       )
       .then((shapeLayers) => {
