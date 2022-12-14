@@ -265,9 +265,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               onClickHandler={(selected: string) =>
                 handlerClickOnGraph({ selectedKey: selected })
               }
-              margin={{ 
-                bottom: 50, 
-                left: 40 
+              margin={{
+                bottom: 50,
+                left: 40,
               }}
               axisX={{
                 enabled: true,
