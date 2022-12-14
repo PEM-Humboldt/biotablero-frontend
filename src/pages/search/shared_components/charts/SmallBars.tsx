@@ -78,7 +78,7 @@ class SmallBars extends React.Component<Props, State> {
       maxValue = "auto",
       enableLabel = false,
       alternateAxisY = { values: {} },
-      gridXValues,
+      gridXValues = undefined,
     } = this.props;
     let { margin, axisY, axisX } = this.props;
     margin = { ...{ top: 20, right: 15, bottom: 0, left: 90 }, ...margin };
@@ -88,6 +88,8 @@ class SmallBars extends React.Component<Props, State> {
       ...axisX,
     };
     const { selectedIndexValue } = this.state;
+
+    console.log('gridXValues',gridXValues);
 
     const transformData = (rawData: Array<SmallBarsData>) => {
       const transformedData = rawData.map((element) => {
