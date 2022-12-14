@@ -33,7 +33,9 @@ interface Props {
     enabled?: boolean;
     legend?: string;
     format?: string;
+    tickValues?: number;
   };
+  gridXValues?: number;
   alternateAxisY?: {
     values: Record<string, string>;
     tickWidth?: number;
@@ -76,11 +78,15 @@ class SmallBars extends React.Component<Props, State> {
       maxValue = "auto",
       enableLabel = false,
       alternateAxisY = { values: {} },
+      gridXValues,
     } = this.props;
     let { margin, axisY, axisX } = this.props;
     margin = { ...{ top: 20, right: 15, bottom: 0, left: 90 }, ...margin };
     axisY = { ...{ enabled: false, legend: "" }, ...axisY };
-    axisX = { ...{ enabled: false, legend: "", format: ".2f" }, ...axisX };
+    axisX = {
+      ...{ enabled: false, legend: "", format: ".2f", tickValues: undefined },
+      ...axisX,
+    };
     const { selectedIndexValue } = this.state;
 
     const transformData = (rawData: Array<SmallBarsData>) => {
@@ -110,6 +116,7 @@ class SmallBars extends React.Component<Props, State> {
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
           enableGridY={false}
           enableGridX
+          gridXValues={gridXValues}
           axisLeft={
             axisY.enabled
               ? {
@@ -135,6 +142,7 @@ class SmallBars extends React.Component<Props, State> {
                   tickSize: 0,
                   tickPadding: 0,
                   tickRotation: 0,
+                  tickValues: axisX.tickValues,
                   format: `${axisX.format}`,
                   legend: `${axisX.legend}`,
                   legendPosition: "start",
