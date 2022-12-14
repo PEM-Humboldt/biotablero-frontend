@@ -2608,8 +2608,9 @@ tspan, .vx-axis-label {
 	font-size: 11px;
 	color: #424242;
 	font-weight: 700;
-	padding-right: 8px;
+	padding-right: 70px;
 	margin-bottom: -20px;
+	text-transform: uppercase;
 }
 
 .newProjectTitle {

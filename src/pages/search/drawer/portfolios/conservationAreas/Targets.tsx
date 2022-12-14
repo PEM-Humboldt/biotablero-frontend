@@ -212,7 +212,7 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
-        <div className="rightTitle">100 % de la meta</div>
+        <div className="rightTitle">Meta</div>
         <div className="svgPointer">
           {selectedTarget && (
             <SmallBars
@@ -225,6 +225,17 @@ class Targets extends React.Component<Props, State> {
               axisY={{
                 enabled: true,
               }}
+              margin={{
+                bottom: 30,
+                left: 95,
+                right: 95,
+              }}
+              axisX={{
+                enabled: true,
+                format: "=-.0~p",
+                tickValues: 4,
+              }}
+              gridXValues={4}
               onClickHandler={(selected) => {
                 const portfoliosIds =
                   this.targetsController.getPortfoliosIdsByTarget(selected);
@@ -239,11 +250,10 @@ class Targets extends React.Component<Props, State> {
                 });
                 this.setGraphTexts(selected);
               }}
-              height={450}
+              height={500}
               selectedIndexValue={selectedTarget}
               groupMode="grouped"
-              maxValue={100}
-              margin={{ bottom: 5, left: 95, right: 95 }}
+              maxValue={1}
             />
           )}
         </div>

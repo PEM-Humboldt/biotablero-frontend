@@ -95,7 +95,7 @@ export class TargetsController {
     const transformedData: Array<SmallBarsData> = rawData.map((target) => {
       const objectData: Array<SmallBarsDataDetails> = [];
       target.portfolios_data.forEach((portfolio: portfolioData) => {
-        const percentage = (portfolio.value / target.target_national) * 100;
+        const percentage = portfolio.value / target.target_national;
         const info = {
           category: portfolio.short_name,
           value: percentage,
@@ -107,7 +107,7 @@ export class TargetsController {
           category: portfolio.short_name,
           tooltipContent: [
             portfolio.name,
-            `${formatNumber(percentage, 2)} %`,
+            `${formatNumber(percentage * 100, 2)} %`,
             `${formatNumber(portfolio.value, 2)} c`,
           ],
         });
