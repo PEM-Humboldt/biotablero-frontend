@@ -134,6 +134,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
             keys={graphData.keys}
             tooltips={graphData.tooltips}
             message={message}
+            margin={{
+              bottom: 50,
+            }}
             axisY={{
               enabled: true,
               legend: "Periodo",
