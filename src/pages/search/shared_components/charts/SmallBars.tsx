@@ -89,8 +89,6 @@ class SmallBars extends React.Component<Props, State> {
     };
     const { selectedIndexValue } = this.state;
 
-    console.log('gridXValues',gridXValues);
-
     const transformData = (rawData: Array<SmallBarsData>) => {
       const transformedData = rawData.map((element) => {
         const object: Record<string, string | number> = {
