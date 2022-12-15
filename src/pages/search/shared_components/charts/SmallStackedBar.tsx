@@ -10,6 +10,7 @@ interface Props {
   colors: (key: string) => string;
   units?: string;
   onClickGraphHandler?: (key: string) => void;
+  scaleType?: "linear" | "symlog";
 }
 
 export interface SmallStackedBarData {
@@ -19,10 +20,6 @@ export interface SmallStackedBarData {
   label: string;
 }
 
-interface State {
-  selectedIndexValue: string | number;
-}
-
 const SmallStackedBar = (props: Props) => {
   const {
     data,
@@ -30,6 +27,7 @@ const SmallStackedBar = (props: Props) => {
     colors,
     units = "ha",
     onClickGraphHandler,
+    scaleType = "linear",
   } = props;
 
   /**
@@ -90,30 +88,39 @@ const SmallStackedBar = (props: Props) => {
   };
 
   return (
-    <div style={{ height }}>
-      <ResponsiveBar
-        data={transformData(data)}
-        keys={keys}
-        indexBy="key"
-        layout="horizontal"
-        margin={{
-          top: 0,
-          right: 5,
-          bottom: 0,
-          left: 5,
-        }}
-        padding={0.19}
-        borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
-        colors={({ id, data: allData }) => String(allData[`${id}Color`])}
-        enableGridY={false}
-        axisLeft={null}
-        enableLabel={false}
-        animate
-        barComponent={BarItem}
-        tooltip={({ id, data: allData }) => getToolTip(id, allData)}
-        onClick={({ id }) => onClickGraphHandler?.(String(id))}
-      />
-    </div>
+    <>
+      <div style={{ height }}>
+        <ResponsiveBar
+          data={transformData(data)}
+          keys={keys}
+          indexBy="key"
+          layout="horizontal"
+          margin={{
+            top: 0,
+            right: 5,
+            bottom: 0,
+            left: 5,
+          }}
+          padding={0.19}
+          borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+          colors={({ id, data: allData }) => String(allData[`${id}Color`])}
+          enableGridY={false}
+          axisLeft={null}
+          enableLabel={false}
+          animate
+          barComponent={BarItem}
+          tooltip={({ id, data: allData }) => getToolTip(id, allData)}
+          onClick={({ id }) => onClickGraphHandler?.(String(id))}
+          valueScale={{ type: scaleType }}
+        />
+      </div>
+      {scaleType === "symlog" && (
+        <div className="divergentDataBar">
+          *El porcentaje resultante es tan bajo (poner cursor sobre la barra)
+          que se usa escala logarítmica
+        </div>
+      )}
+    </>
   );
 };
 
