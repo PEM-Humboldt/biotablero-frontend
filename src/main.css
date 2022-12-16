@@ -2613,6 +2613,12 @@ tspan, .vx-axis-label {
 	text-transform: uppercase;
 }
 
+.divergentDataBar {
+	font-size: 13px;
+	margin-left: 10px;
+	color: #cf5a16;
+}
+
 .newProjectTitle {
 	display: -webkit-flex;
 	display: -moz-flex;

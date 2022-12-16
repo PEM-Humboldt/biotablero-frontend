@@ -39,6 +39,7 @@ class Ecosystems extends React.Component {
       coverage: [],
       PAAreas: [],
       PATotalArea: 0,
+      PADivergentData: false,
       SEAreas: [],
       SETotalArea: 0,
       activeSE: null,
@@ -99,9 +100,17 @@ class Ecosystems extends React.Component {
           if (Array.isArray(res) && res[0]) {
             const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
             const PAAreas = transformPAValues(res, generalArea);
+            const noProtectedArea = PAAreas.find(item => item.key === 'No Protegida');
+
+            let PADivergentData = false;
+            if(noProtectedArea && noProtectedArea.percentage && noProtectedArea.percentage >= 0.97) {
+              PADivergentData = true;
+            }
+
             this.setState((prev) => ({
               PAAreas,
               PATotalArea,
+              PADivergentData,
               messages: {
                 ...prev.messages,
                 pa: null,
@@ -237,6 +246,7 @@ class Ecosystems extends React.Component {
       coverage,
       PAAreas,
       PATotalArea,
+      PADivergentData,
       SEAreas,
       SETotalArea,
       activeSE,
@@ -355,6 +365,7 @@ class Ecosystems extends React.Component {
               data={PAAreas}
               units="ha"
               colors={matchColor('pa', true)}
+              scaleType={PADivergentData ? "symlog" : "linear"}
             />
           </div>
           <TextBoxes

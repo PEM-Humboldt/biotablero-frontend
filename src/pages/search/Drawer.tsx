@@ -73,7 +73,7 @@ class Drawer extends React.Component<Props, State> {
           <div className="HAgen">
             <h4>
               hectáreas totales
-              <b>{`${formatNumber(geofenceArea, 0)} ha`}</b>
+              <b>{`${formatNumber(geofenceArea, 0)}`}</b>
             </h4>
           </div>
         </div>
