@@ -56,8 +56,7 @@ class biabAPI {
   static makePostRequest(endpoint: string, requestBody: {}) {
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        /* "Access-Control-Allow-Origin" : "*", */
+        'Content-Type': 'application/x-www-form-urlencoded'
       },
     };
     return axios
