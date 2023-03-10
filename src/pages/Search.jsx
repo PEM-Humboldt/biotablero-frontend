@@ -1327,6 +1327,7 @@ class Search extends Component {
 
   toMultipolygonWKT = (polygon) => {
     if(polygon && polygon.coordinates) {
+      polygon.coordinates.push(polygon.coordinates[0]);
       return "MULTIPOLYGON (((" + polygon.coordinates.map((coord) => coord.join(" ")).join(",") + ")))";
     } else {
       return null;
