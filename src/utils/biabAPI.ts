@@ -9,7 +9,7 @@ class biabAPI {
     const requestBody = {
       dir_wkt_polygon:
         "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
-      wk_polygon: polygonWKT,
+      wkt_polygon: polygonWKT,
       epsg_polygon: 3395,
       dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
       resolution: 1000,
@@ -56,7 +56,7 @@ class biabAPI {
   static makePostRequest(endpoint: string, requestBody: {}) {
     const config = {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
     };
     return axios
