@@ -1,25 +1,25 @@
 import axios from "axios";
 
 class biabAPI {
-
   static requestListTest(): Promise<Array<String>> {
     return biabAPI.makeGetRequest(`script/list`);
   }
 
-  static requestRunScriptTest(): Promise<{}> {
-
-    const testPolygon = "MULTIPOLYGON (((3.995780512963038 -75.58593750000001, 3.7765593098768635 -70.57617187500001, 8.407168163601076 -73.91601562500001)))";
-
+  static requestRunScriptTest(polygonWKT: String): Promise<{}> {
     const requestBody = {
-      dir_wkt_polygon: "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
-      wk_polygon: testPolygon,
+      dir_wkt_polygon:
+        "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
+      wk_polygon: polygonWKT,
       epsg_polygon: 3395,
-      dir_colection: '/scripts/perdidaPersistencia/input/ppCollection',
+      dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
       resolution: 1000,
-      folder_output: 'p_p_studyarea_1000m2',
+      folder_output: "p_p_studyarea_1000m2",
     };
 
-    return biabAPI.makePostRequest('script/perdidaPersistencia%3E01_pp.R/run',requestBody);
+    return biabAPI.makePostRequest(
+      "script/perdidaPersistencia%3E01_pp.R/run",
+      requestBody
+    );
   }
 
   /** ************** */
@@ -55,17 +55,22 @@ class biabAPI {
    */
   static makePostRequest(endpoint: string, requestBody: {}) {
     const config = {
-      headers: { 
+      headers: {
         "Content-Type": "application/json",
         /* "Access-Control-Allow-Origin" : "*", */
       },
     };
-    return axios.post(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`, requestBody, config)
+    return axios
+      .post(
+        `${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`,
+        requestBody,
+        config
+      )
       .then((res) => res.data)
       .catch((error) => {
-        let message = 'Bad POST response. Try later';
+        let message = "Bad POST response. Try later";
         if (error.response) message = error.response.status;
-        if (error.request.statusText === '') message = 'no-data-available';
+        if (error.request.statusText === "") message = "no-data-available";
         return Promise.reject(message);
       });
   }

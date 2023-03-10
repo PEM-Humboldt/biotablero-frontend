@@ -1325,17 +1325,27 @@ class Search extends Component {
     }
   }
 
+  toMultipolygonWKT = (polygon) => {
+    if(polygon && polygon.coordinates) {
+      return "MULTIPOLYGON (((" + polygon.coordinates.map((coord) => coord.join(" ")).join(",") + ")))";
+    } else {
+      return null;
+    }
+  }
+
   /* TODO: Delete after testing connection to biab backend*/
-  testEndpointsBIAB = () => {
+  testEndpointsBIAB = (polygon) => {
 
     //GET
     biabAPI.requestListTest()
       .then((res) => { console.log(res) });
 
     //POST
-    biabAPI.requestRunScriptTest()
+    const polygonWKT = this.toMultipolygonWKT(polygon);
+    if(polygonWKT) {
+      biabAPI.requestRunScriptTest(polygonWKT)
       .then((res) => { console.log(res) });
-
+    }
   }
 
   /**
@@ -1356,9 +1366,11 @@ class Search extends Component {
       searchType: "drawPolygon",
       layerError: false,
       loadingLayer: false,
-    }));
+    }), () => {
+      const { polygon } = this.state;
+      this.testEndpointsBIAB(polygon);
+    });
     setHeaderNames("Polígono", "Área Consultada");
-    this.testEndpointsBIAB();
   }
 
   /** ************************************* */
