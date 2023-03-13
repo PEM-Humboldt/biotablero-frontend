@@ -14,6 +14,7 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import biabAPI from 'utils/biabAPI';
 import SearchAPI from 'utils/searchAPI';
 import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
@@ -1324,6 +1325,30 @@ class Search extends Component {
     }
   }
 
+  toMultipolygonWKT = (polygon) => {
+    if(polygon && polygon.coordinates) {
+      polygon.coordinates.push(polygon.coordinates[0]);
+      return "MULTIPOLYGON (((" + polygon.coordinates.map((coord) => coord.join(" ")).join(",") + ")))";
+    } else {
+      return null;
+    }
+  }
+
+  /* TODO: Delete after testing connection to biab backend*/
+  testEndpointsBIAB = (polygon) => {
+
+    //GET
+    biabAPI.requestListTest()
+      .then((res) => { console.log(res) });
+
+    //POST
+    const polygonWKT = this.toMultipolygonWKT(polygon);
+    if(polygonWKT) {
+      biabAPI.requestRunScriptTest(polygonWKT)
+      .then((res) => { console.log(res) });
+    }
+  }
+
   /**
    * Loads polygon information
    *
@@ -1342,7 +1367,10 @@ class Search extends Component {
       searchType: "drawPolygon",
       layerError: false,
       loadingLayer: false,
-    }));
+    }), () => {
+      const { polygon } = this.state;
+      this.testEndpointsBIAB(polygon);
+    });
     setHeaderNames("Polígono", "Área Consultada");
   }
 
