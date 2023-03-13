@@ -10,7 +10,7 @@ class biabAPI {
       dir_wkt_polygon:
         "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
       wkt_polygon: polygonWKT,
-      epsg_polygon: 3395,
+      epsg_polygon: 4326,
       dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
       resolution: 1000,
       folder_output: "p_p_studyarea_1000m2",
