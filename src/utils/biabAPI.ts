@@ -1,15 +1,26 @@
 import axios from "axios";
+import { toMultipolygonWKT } from "utils/transformations";
+import { Polygon } from "pages/search/types/drawer";
 
 class biabAPI {
-  static requestListTest(): Promise<Array<String>> {
-    return biabAPI.makeGetRequest(`script/list`);
-  }
-
-  static requestRunScriptTest(polygonWKT: String): Promise<{}> {
+  /**
+   * Get the forest loss and persistence data by periods and categories in the given polygon.
+   *
+   * @param {Polygon} polygon selected polygon
+   *
+   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
+   */
+  static requestForestLPData(polygon: Polygon | null): Promise<{
+    logs: string;
+    files: {
+      table_pp: string;
+    };
+  }> {
+    const wkt = toMultipolygonWKT(polygon);
     const requestBody = {
       dir_wkt_polygon:
         "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
-      wkt_polygon: polygonWKT,
+      wkt_polygon: wkt,
       epsg_polygon: 4326,
       dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
       resolution: 1000,
