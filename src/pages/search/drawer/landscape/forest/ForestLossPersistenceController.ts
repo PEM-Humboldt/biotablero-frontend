@@ -10,13 +10,6 @@ import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { Polygon } from "pages/search/types/drawer";
 
-interface labelForestLP {
-  persistencia: string;
-  perdida: string;
-  ganancia: string;
-  no_bosque: string;
-}
-
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
