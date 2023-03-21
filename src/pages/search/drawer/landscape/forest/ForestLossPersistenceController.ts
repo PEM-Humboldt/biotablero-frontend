@@ -63,7 +63,7 @@ export class ForestLossPersistenceController {
         .requestForestLPData(polygon)
         .then((data) => {
           const periods = ["2000-2005", "2006-2010", "2011-2015", "2016-2021"];
-          const rawData = eval(data.files.table_pp);
+          const rawData = JSON.parse(data.files.table_pp);
           const forestLP: Array<ForestLPExt> = periods.map((period) => ({
             id: period,
             data: rawData
