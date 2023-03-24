@@ -1482,6 +1482,29 @@ class Search extends Component {
 
     return (
       <>
+        <Modal
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+          open={connErrors.defAreas && connErrors.polygon}
+          onClose={this.handleCloseModal('connError')}
+          disableAutoFocus
+        >
+          <div className="generalAlarm">
+            <h2>
+              <b>Sin conexión al servidor</b>
+              <br />
+              Intenta de nuevo en unos minutos.
+            </h2>
+            <button
+              type="button"
+              className="closebtn"
+              onClick={this.handleCloseModal('connError')}
+              title="Cerrar"
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </Modal>
         <SearchContext.Provider
           value={{
             areaId: selectedAreaTypeId,
