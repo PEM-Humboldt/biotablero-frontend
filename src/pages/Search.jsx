@@ -30,7 +30,10 @@ class Search extends Component {
     this.geofenceBounds = null;
     this.state = {
       activeLayer: {},
-      connError: false,
+      connErrors: {
+        defAreas: false,
+        polygon: false,
+      },
       layerError: false,
       areaList: [],
       layers: {},
@@ -51,6 +54,7 @@ class Search extends Component {
       history.replace(history.location.pathname);
     }
     this.loadAreaList();
+    this.checkPolygonConn();
   }
 
   componentDidUpdate() {
@@ -145,16 +149,39 @@ class Search extends Component {
           }
         });
       })
-      .catch(() => this.reportConnError());
+      .catch(() => this.reportConnErrorDefAreas());
   }
 
   /**
-   * Report a connection error from one of the child components
+   * Report a connection error from backend associated to defined areas
    */
-  reportConnError = () => {
-    this.setState({
-      connError: true,
-    });
+  reportConnErrorDefAreas = () => {
+    this.setState(prevState => ({
+      connErrors: {
+        ...prevState.connErrors,
+        defAreas: true,
+      }
+    }));
+  }
+
+  /**
+   * Get the current list of scripts at BIAB backend. It is used to check connection to backend.
+   */
+  checkPolygonConn = () => {
+    biabAPI.requestScriptList()
+      .catch(() => this.reportConnErrorPolygon());
+  }
+
+  /**
+   * Report a connection error from backend associated to draw polygon
+   */
+  reportConnErrorPolygon = () => {
+    this.setState(prevState => ({
+      connErrors: {
+        ...prevState.connErrors,
+        polygon: true,
+      }
+    }));
   }
 
   /**
@@ -1409,7 +1436,7 @@ class Search extends Component {
     const {
       loadingLayer,
       layers,
-      connError,
+      connErrors,
       layerError,
       areaList,
       activeLayer: { name: activeLayer, legend },
@@ -1457,7 +1484,7 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={connError}
+          open={connErrors.defAreas && connErrors.polygon}
           onClose={this.handleCloseModal('connError')}
           disableAutoFocus
         >
@@ -1518,6 +1545,7 @@ class Search extends Component {
                   }}
                   description={Description()}
                   areasData={areaList}
+                  connErrors={connErrors}
                 />
               )}
               { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="drawPolygon") && (
