@@ -9,6 +9,8 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: biotablero-frontend
+  REACT_APP_ENVIRONMENT: develop
+  REACT_APP_BACKEND_BIAB_URL: ${{ env.BACKEND_BIAB_URL }}
 
 jobs:
   build-and-deploy:
