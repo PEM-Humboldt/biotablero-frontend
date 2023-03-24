@@ -29,6 +29,8 @@ jobs:
 
       - name: install & build
         run: |
+          yarn workspaces foreach install
+          yarn workspaces foreach run build-pkg
           yarn install
           yarn run build
 
