@@ -1,0 +1,42 @@
+name: CD for develop
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: biotablero-frontend
+  REACT_APP_ENVIRONMENT: develop
+  REACT_APP_BACKEND_BIAB_URL: ${{ vars.BACKEND_BIAB_URL }}
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: develop
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: install & build
+        run: |
+          yarn workspaces foreach install
+          yarn workspaces foreach run build-pkg
+          yarn install
+          yarn run build
+
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
