@@ -4,6 +4,13 @@ import { Polygon } from "pages/search/types/drawer";
 
 class biabAPI {
   /**
+   * Get the list of current scripts.
+   */
+  static requestScriptList(): Promise<Array<String>> {
+    return biabAPI.makeGetRequest(`script/list`);
+  }
+
+  /**
    * Get the forest loss and persistence data by periods and categories in the given polygon.
    *
    * @param {Polygon} polygon selected polygon
