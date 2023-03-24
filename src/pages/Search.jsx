@@ -169,7 +169,6 @@ class Search extends Component {
    */
   checkPolygonConn = () => {
     biabAPI.requestScriptList()
-      .then(() => {})
       .catch(() => this.reportConnErrorPolygon());
   }
 
