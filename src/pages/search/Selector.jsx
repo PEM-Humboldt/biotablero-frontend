@@ -8,9 +8,10 @@ import DrawPolygon from 'pages/search/selector/DrawPolygon';
 import SearchAreas from 'pages/search/selector/SearchAreas';
 
 import isFlagEnabled from 'utils/isFlagEnabled';
+import connErrorMessage from 'pages/search/selector/errorMessages';
 
 const Selector = (props) => {
-  const { areasData, description, handlers } = props;
+  const { areasData, description, handlers, connErrors } = props;
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
 
   useEffect(() => {
@@ -23,7 +24,7 @@ const Selector = (props) => {
         id: 'panel1-Geocerca',
         name: 'Área de consulta',
       },
-      component: SearchAreas,
+      component: !connErrors.defAreas ? SearchAreas : connErrorMessage,
       componentProps: {
         areaList: areasData,
         onChange: handlers.areaTypeChange,
@@ -37,7 +38,7 @@ const Selector = (props) => {
         icon: EditIcon,
         disabled: !drawPolygonFlag,
       },
-      component: DrawPolygon,
+      component: !connErrors.polygon ? DrawPolygon : connErrorMessage,
     },
     {
       label: {
@@ -85,10 +86,12 @@ Selector.propTypes = {
     polygonChange: PropTypes.func.isRequired,
   }).isRequired,
   description: PropTypes.object,
+  connError: PropTypes.bool,
 };
 
 Selector.defaultProps = {
   description: {},
+  connError: false,
 };
 
 export default Selector;
