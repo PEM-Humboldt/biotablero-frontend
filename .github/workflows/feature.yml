@@ -6,7 +6,7 @@ on:
       - feature/*
 
 jobs:
-  dev:
+  feature:
     runs-on: ubuntu-latest
 
     steps:
