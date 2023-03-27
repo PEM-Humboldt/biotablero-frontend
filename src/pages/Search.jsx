@@ -44,6 +44,8 @@ class Search extends Component {
       rasterUrls: [],
       searchType: "definedArea",
       polygon: null,
+      polygonBounds: null,
+      polygonFolder: "",
       drawPolygonEnabled: false,
     };
   }
@@ -599,7 +601,7 @@ class Search extends Component {
       styleName = ""
     } = options;
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { layers } = this.state;
+    const { layers, searchType } = this.state;
     let reqPromise = null;
     let layerStyle = this.featureStyle({ type: layerName });
 
@@ -611,12 +613,14 @@ class Search extends Component {
         layerStyle = this.featureStyle({ type: layerName });
         break;
       case 'geofence':
-        reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
-          selectedAreaTypeId,
-          selectedAreaId,
-        );
-        if (styleName === "border") {
-          layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
+        if(searchType === "definedArea"){
+          reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
+            selectedAreaTypeId,
+            selectedAreaId,
+          );
+          if (styleName === "border") {
+            layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
+          }
         }
         break;
       case 'hfCurrent':
@@ -724,6 +728,7 @@ class Search extends Component {
    */
   getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { searchType, polygonFolder } = this.state;
     let reqPromise = null;
 
     if (/coverage-*/.test(layerName)) {
@@ -746,12 +751,16 @@ class Search extends Component {
       );
     } else if (/forestLP-*/.test(layerName)) {
       const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
-      reqPromise = () => RestAPI.requestForestLPLayer(
-        selectedAreaTypeId,
-        selectedAreaId,
-        `${yearIni}-${yearEnd}`,
-        category,
-      );
+      if(searchType === "drawPolygon"){
+        reqPromise = () => biabAPI.requestForestLPLayer(layerName, polygonFolder);
+      }else{
+        reqPromise = () => RestAPI.requestForestLPLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          `${yearIni}-${yearEnd}`,
+          category,
+        );
+      }
     } else if (/numberOfSpecies-*/.test(layerName)) {
       let group = 'total';
       const selected = layerName.match(/numberOfSpecies-(\w+)/);
@@ -811,6 +820,7 @@ class Search extends Component {
    */
   setSectionLayers = (sectionName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { searchType, polygonBounds } = this.state;
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
@@ -1003,6 +1013,10 @@ class Search extends Component {
         if (rasterLayers.every((e) => e === null)) {
           this.reportDataError();
         }
+        if (searchType === "drawPolygon") {
+          this.geofenceBounds = polygonBounds;
+        }
+
         if (this.geofenceBounds !== null) {
           this.setState((prev) => ({
             rasterUrls: rasterLayers
@@ -1359,19 +1373,22 @@ class Search extends Component {
    */
   loadPolygonInfo = (polygon) => {
     const { setHeaderNames } = this.props;
-    RestAPI.requestCustomPolygonData(polygon).catch(() => {});
+    const polygonBounds = L.polyline(polygon.latLngs).getBounds();
     this.setState(() => ({
       drawPolygonEnabled: false,
       polygon: {
         coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
       },
+      polygonFolder: Math.random().toString(32).slice(2),
+      polygonBounds: polygonBounds,
       selectedAreaTypeId: null,
       selectedAreaId: null,
       searchType: "drawPolygon",
       layerError: false,
-      loadingLayer: false,
+      loadingLayer: true,
     }));
     setHeaderNames("Polígono", "Área Consultada");
+    this.updateBounds(polygonBounds);
   }
 
   /** ************************************* */
@@ -1442,6 +1459,7 @@ class Search extends Component {
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
       polygon,
+      polygonFolder,
       drawPolygonEnabled,
       searchType
     } = this.state;
@@ -1510,6 +1528,7 @@ class Search extends Component {
             geofenceId: selectedAreaId,
             searchType: searchType,
             polygon: polygon,
+            polygonFolder: polygonFolder,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
