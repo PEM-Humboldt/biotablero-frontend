@@ -56,11 +56,12 @@ export class ForestLossPersistenceController {
     areaId: string | number,
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
-    polygon: Polygon | null
+    polygon: Polygon | null,
+    polygonFolder: string,
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
       return biabAPI
-        .requestForestLPData(polygon)
+        .requestForestLPData(polygon, polygonFolder)
         .then((data) => {
           const periods = ["2000-2005", "2006-2010", "2011-2015", "2016-2021"];
           const rawData = JSON.parse(data.files.table_pp);
@@ -94,9 +95,8 @@ export class ForestLossPersistenceController {
         .catch(() => {
           throw new Error("Error getting data");
         });
-    }
-
-    return SearchAPI.requestForestLP(areaType, areaId)
+    }else{
+      return SearchAPI.requestForestLP(areaType, areaId)
       .then((data) => {
         const forestLP = data.map((item) => ({
           ...item,
@@ -122,6 +122,7 @@ export class ForestLossPersistenceController {
       .catch(() => {
         throw new Error("Error getting data");
       });
+    }
   };
 
   /**
