@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { CancelTokenSource } from "axios";
 import { toMultipolygonWKT } from "utils/transformations";
 import { Polygon } from "pages/search/types/drawer";
 
@@ -17,7 +17,7 @@ class biabAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestForestLPData(polygon: Polygon | null): Promise<{
+  static requestForestLPData(polygon: Polygon | null, polygonFolder: string): Promise<{
     logs: string;
     files: {
       table_pp: string;
@@ -31,13 +31,37 @@ class biabAPI {
       epsg_polygon: 4326,
       dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
       resolution: 1000,
-      folder_output: "p_p_studyarea_1000m2",
+      folder_output: polygonFolder,
     };
 
     return biabAPI.makePostRequest(
       "script/perdidaPersistencia%3E01_pp.R/run",
       requestBody
     );
+  }
+
+  /**
+   * Get the layer associated to a polygon query for Forest LP
+   *
+   * @param {String} layer layer file name to get
+   * @param {String} polygonFolder result folder name
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+
+  static requestForestLPLayer(
+    layer: string,
+    polygonFolder: string,
+  ): { request: Promise<Object>; source: CancelTokenSource } {
+    const source = axios.CancelToken.source();
+    return {
+      request: biabAPI.makeGetRequest(
+        `output/${polygonFolder}/${layer}.png`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
   }
 
   /** ************** */
@@ -48,11 +72,21 @@ class biabAPI {
    * Request an endpoint through a GET request
    *
    * @param {String} endpoint endpoint to attach to url
+   * @param {Array} options config params to the request
+   * @param {Boolean} completeRes define if get all the response or only data part
    */
-  static makeGetRequest(endpoint: string) {
+  static makeGetRequest(endpoint: string, options = {}, completeRes = false) {
+    const config = {
+      ...options
+    };
     return axios
-      .get(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`)
-      .then((res) => res.data)
+      .get(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`, config)
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
       .catch((error) => {
         if (axios.isCancel(error)) {
           return Promise.resolve("request canceled");
