@@ -57,7 +57,7 @@ export class ForestLossPersistenceController {
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
     polygon: Polygon | null,
-    polygonFolder: string,
+    polygonFolder: string
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
       return biabAPI
@@ -95,33 +95,35 @@ export class ForestLossPersistenceController {
         .catch(() => {
           throw new Error("Error getting data");
         });
-    }else{
+    } else {
       return SearchAPI.requestForestLP(areaType, areaId)
-      .then((data) => {
-        const forestLP = data.map((item) => ({
-          ...item,
-          data: item.data.map((element) => ({
-            ...element,
-            label: ForestLossPersistenceController.getLabel(element.key),
-          })),
-        }));
+        .then((data) => {
+          const forestLP = data.map((item) => ({
+            ...item,
+            data: item.data.map((element) => ({
+              ...element,
+              label: ForestLossPersistenceController.getLabel(element.key),
+            })),
+          }));
 
-        const periodData = data.find((item) => item.id === latestPeriod)?.data;
-        const persistenceData = periodData
-          ? periodData.find((item) => item.key === "persistencia")
-          : null;
-        const forestPersistenceValue = persistenceData
-          ? persistenceData.area
-          : 0;
+          const periodData = data.find(
+            (item) => item.id === latestPeriod
+          )?.data;
+          const persistenceData = periodData
+            ? periodData.find((item) => item.key === "persistencia")
+            : null;
+          const forestPersistenceValue = persistenceData
+            ? persistenceData.area
+            : 0;
 
-        return {
-          forestLP,
-          forestPersistenceValue,
-        };
-      })
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
+          return {
+            forestLP,
+            forestPersistenceValue,
+          };
+        })
+        .catch(() => {
+          throw new Error("Error getting data");
+        });
     }
   };
 

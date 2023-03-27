@@ -47,15 +47,28 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, searchType, polygon, polygonFolder, switchLayer } = this
-      .context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      searchType,
+      polygon,
+      polygonFolder,
+      switchLayer,
+    } = this.context as SearchContextValues;
 
-    if (searchType === "definedArea"){
+    if (searchType === "definedArea") {
       switchLayer(`forestLP-${LATEST_PERIOD}`);
     }
 
     this.flpController
-      .getForestLPData(areaId, geofenceId, LATEST_PERIOD, searchType, polygon, polygonFolder)
+      .getForestLPData(
+        areaId,
+        geofenceId,
+        LATEST_PERIOD,
+        searchType,
+        polygon,
+        polygonFolder
+      )
       .then((data) => {
         if (this.mounted) {
           this.setState({
@@ -64,7 +77,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             message: null,
           });
         }
-        if(searchType === "drawPolygon") {
+        if (searchType === "drawPolygon") {
           switchLayer(`forestLP-${LATEST_PERIOD}`);
         }
       })

@@ -17,7 +17,10 @@ class biabAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestForestLPData(polygon: Polygon | null, polygonFolder: string): Promise<{
+  static requestForestLPData(
+    polygon: Polygon | null,
+    polygonFolder: string
+  ): Promise<{
     logs: string;
     files: {
       table_pp: string;
@@ -51,7 +54,7 @@ class biabAPI {
 
   static requestForestLPLayer(
     layer: string,
-    polygonFolder: string,
+    polygonFolder: string
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
     polygonFolder = "png_layers";
@@ -78,7 +81,7 @@ class biabAPI {
    */
   static makeGetRequest(endpoint: string, options = {}, completeRes = false) {
     const config = {
-      ...options
+      ...options,
     };
     return axios
       .get(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`, config)
