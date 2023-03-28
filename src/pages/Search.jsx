@@ -613,14 +613,12 @@ class Search extends Component {
         layerStyle = this.featureStyle({ type: layerName });
         break;
       case 'geofence':
-        if(searchType === "definedArea"){
-          reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          if (styleName === "border") {
-            layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
-          }
+        reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
+          selectedAreaTypeId,
+          selectedAreaId,
+        );
+        if (styleName === "border") {
+          layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
         }
         break;
       case 'hfCurrent':
@@ -751,9 +749,9 @@ class Search extends Component {
       );
     } else if (/forestLP-*/.test(layerName)) {
       const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
-      if(searchType === "drawPolygon"){
+      if (searchType === "drawPolygon") {
         reqPromise = () => biabAPI.requestForestLPLayer(layerName, polygonFolder);
-      }else{
+      } else {
         reqPromise = () => RestAPI.requestForestLPLayer(
           selectedAreaTypeId,
           selectedAreaId,
@@ -1003,7 +1001,7 @@ class Search extends Component {
     const loadingProm = [];
     if (rasterLayerOpts.length > 0) {
       const rasterProm = Promise.all([
-        this.getShapeLayer('geofence', { isActive: false }),
+        searchType==="definedArea" ? this.getShapeLayer('geofence', { isActive: false }) : Promise.resolve(null),
         ...rasterLayerOpts.map((info) => this.getRasterLayer(info.id)),
       ])
       .then(([, ...rasterLayers]) => {
