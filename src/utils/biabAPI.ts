@@ -57,6 +57,7 @@ class biabAPI {
     polygonFolder: string
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
+    // TODO Remove the following line once LP script generates the layers in png format
     polygonFolder = "png_layers";
     return {
       request: biabAPI.makeGetRequest(
