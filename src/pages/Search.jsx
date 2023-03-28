@@ -601,7 +601,7 @@ class Search extends Component {
       styleName = ""
     } = options;
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { layers, searchType } = this.state;
+    const { layers } = this.state;
     let reqPromise = null;
     let layerStyle = this.featureStyle({ type: layerName });
 
