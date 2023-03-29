@@ -4,7 +4,7 @@ import {
 } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
 import biabAPI from "utils/biabAPI";
-import { ForestLPExt } from "pages/search/types/forest";
+import { ForestLPExt, ForestLPRawDataPolygon } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
@@ -14,6 +14,22 @@ interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
 }
+
+/* interface ForestLPRawDataPolygon {
+  layer: string;
+  value: number;
+  key: typeof ForestLPKeys[number];
+  period: string;
+  area: number;
+  percentage: number;
+}
+
+const ForestLPKeys = [
+  "persistencia",
+  "perdida",
+  "ganancia",
+  "no_bosque",
+] as const; */
 
 export class ForestLossPersistenceController {
   constructor() {}
@@ -63,33 +79,31 @@ export class ForestLossPersistenceController {
       return biabAPI
         .requestForestLPData(polygon, polygonFolder)
         .then((data) => {
-          const periods = ["2000-2005", "2006-2010", "2011-2015", "2016-2021"];
-          const rawData = JSON.parse(data.files.table_pp);
+          const rawData: Array<ForestLPRawDataPolygon> = JSON.parse(
+            data.files.table_pp
+          );
+          const periods: Array<string> = [
+            ...new Set(rawData.map((item: { period: string }) => item.period)),
+          ];
           const forestLP: Array<ForestLPExt> = periods.map((period) => ({
             id: period,
             data: rawData
               .filter((d: { period: string }) => d.period === period)
-              .map(
-                (o: {
-                  area: number;
-                  key: string;
-                  percentage: number;
-                  label: string;
-                }) => ({
-                  area: o.area,
-                  key: o.key,
-                  percentage: o.percentage,
-                  label: ForestLossPersistenceController.getLabel(o.key),
-                })
-              ),
+              .map((o) => ({
+                area: o.area,
+                key: o.key,
+                percentage: o.percentage,
+                label: ForestLossPersistenceController.getLabel(o.key),
+              })),
           }));
-          const periodData = rawData.find(
-            (item: { period: string; key: string }) =>
-              item.period === latestPeriod && item.key === "persistencia"
-          ).area;
+          const forestPersistenceValue =
+            rawData.find(
+              ({ period, key }) =>
+                period === latestPeriod && key === "persistencia"
+            )?.area ?? 0;
           return {
             forestLP,
-            forestPersistenceValue: periodData ? periodData : 0,
+            forestPersistenceValue,
           };
         })
         .catch(() => {
@@ -106,15 +120,11 @@ export class ForestLossPersistenceController {
             })),
           }));
 
-          const periodData = data.find(
-            (item) => item.id === latestPeriod
-          )?.data;
-          const persistenceData = periodData
-            ? periodData.find((item) => item.key === "persistencia")
-            : null;
-          const forestPersistenceValue = persistenceData
-            ? persistenceData.area
-            : 0;
+          const periodData = data.find(({ id }) => id === latestPeriod)?.data;
+          const persistenceData = periodData?.find(
+            ({ key }) => key === "persistencia"
+          );
+          const forestPersistenceValue = persistenceData?.area ?? 0;
 
           return {
             forestLP,
