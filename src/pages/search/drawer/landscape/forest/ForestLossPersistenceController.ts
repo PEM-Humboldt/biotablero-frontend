@@ -15,22 +15,6 @@ interface ForestLPData {
   forestPersistenceValue: number;
 }
 
-/* interface ForestLPRawDataPolygon {
-  layer: string;
-  value: number;
-  key: typeof ForestLPKeys[number];
-  period: string;
-  area: number;
-  percentage: number;
-}
-
-const ForestLPKeys = [
-  "persistencia",
-  "perdida",
-  "ganancia",
-  "no_bosque",
-] as const; */
-
 export class ForestLossPersistenceController {
   constructor() {}
 
