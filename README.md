@@ -9,7 +9,7 @@ Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humbol
 
 ### 1.1. Prerequisitos
 
-Debe tener instalado [nodejs](https://nodejs.org/) v14.15+ y [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto.
+Debe tener instalado [nodejs](https://nodejs.org/) v18.15+ y [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto.
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 

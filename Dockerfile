@@ -1,5 +1,5 @@
 # Build stage
-FROM node:14.15 as build
+FROM node:18.15 as build
 LABEL maintainer="dlopez@humboldt.org.co"
 USER node
 
@@ -21,7 +21,7 @@ RUN yarn install
 RUN yarn build
 
 # Release stage
-FROM node:14.15 as release
+FROM node:18.15 as release
 
 COPY --from=build /home/node/app/build ./build
 RUN yarn global add serve@~13.0.0

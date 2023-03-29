@@ -9607,12 +9607,12 @@ __metadata:
   linkType: hard
 
 "deasync@npm:^0.1.14":
-  version: 0.1.27
-  resolution: "deasync@npm:0.1.27"
+  version: 0.1.28
+  resolution: "deasync@npm:0.1.28"
   dependencies:
     bindings: ^1.5.0
     node-addon-api: ^1.7.1
-  checksum: 2a3629f36e2e9d9a26622c68dbaf96a9034805ed4cedc7d0b73ea05121113be257f118a13353606a859f625123d32f695702cb6db8bbfe661869ef884f7e5ec9
+  checksum: e0c1ef427875c897e0d903a08410df1d0a3dfd0d2a0a1e43fb6c2824dfbc504b810bd08a0d30653117259316e1aa65409c96dbed40101c934f75bac7499e1265
   languageName: node
   linkType: hard
 
