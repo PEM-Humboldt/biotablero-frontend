@@ -45,6 +45,7 @@ class Search extends Component {
       searchType: "definedArea",
       polygon: null,
       drawPolygonEnabled: false,
+      openErrorModal: false,
     };
   }
 
@@ -149,19 +150,7 @@ class Search extends Component {
           }
         });
       })
-      .catch(() => this.reportConnErrorDefAreas());
-  }
-
-  /**
-   * Report a connection error from backend associated to defined areas
-   */
-  reportConnErrorDefAreas = () => {
-    this.setState(prevState => ({
-      connErrors: {
-        ...prevState.connErrors,
-        defAreas: true,
-      }
-    }));
+      .catch(() => this.reportConnError('defAreas'));
   }
 
   /**
@@ -169,20 +158,26 @@ class Search extends Component {
    */
   checkPolygonConn = () => {
     biabAPI.requestScriptList()
-      .catch(() => this.reportConnErrorPolygon());
+      .catch(() => this.reportConnError('polygon'));
   }
 
   /**
-   * Report a connection error from backend associated to draw polygon
+   * Report a connection error from a given backend and validate whether display the modal
+   * @param {string} errorType - The type of connection error
    */
-  reportConnErrorPolygon = () => {
-    this.setState(prevState => ({
-      connErrors: {
+  reportConnError = (errorType) => {
+    this.setState(prevState => {
+      const connErrors = {
         ...prevState.connErrors,
-        polygon: true,
-      }
-    }));
-  }
+        [errorType]: true,
+      };
+      const openErrorModal = Object.values(connErrors).every(error => error === true);
+      return {
+        connErrors,
+        openErrorModal,
+      };
+    });
+  };
 
   /**
    * Report dataset error from one of the child components
@@ -1424,12 +1419,11 @@ class Search extends Component {
   }
 
   /**
-   * Close a given modal
+   * Close the modal of connection error to any of the backends
    *
-   * @param {String} state state value that controls the modal you want to close
    */
-  handleCloseModal = (state) => () => {
-    this.setState({ [state]: false });
+  handleCloseModal = () => {
+    this.setState({ openErrorModal: false });
   };
 
   render() {
@@ -1443,7 +1437,8 @@ class Search extends Component {
       rasterUrls,
       polygon,
       drawPolygonEnabled,
-      searchType
+      searchType,
+      openErrorModal
     } = this.state;
 
     const {
@@ -1484,8 +1479,8 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={connErrors.defAreas && connErrors.polygon}
-          onClose={this.handleCloseModal('connError')}
+          open={connErrors.defAreas && connErrors.polygon && openErrorModal}
+          onClose={this.handleCloseModal}
           disableAutoFocus
         >
           <div className="generalAlarm">
@@ -1497,7 +1492,7 @@ class Search extends Component {
             <button
               type="button"
               className="closebtn"
-              onClick={this.handleCloseModal('connError')}
+              onClick={this.handleCloseModal}
               title="Cerrar"
             >
               <CloseIcon />
