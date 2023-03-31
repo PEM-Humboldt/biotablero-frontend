@@ -30,9 +30,9 @@ class Search extends Component {
     this.geofenceBounds = null;
     this.state = {
       activeLayer: {},
-      connErrors: {
-        defAreas: false,
-        polygon: false,
+      messages: {
+        defAreas: "loading",
+        polygon: "loading",
       },
       layerError: false,
       areaList: [],
@@ -127,6 +127,7 @@ class Search extends Component {
             history,
             setHeaderNames,
           } = this.props;
+
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
           const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
@@ -149,6 +150,7 @@ class Search extends Component {
             history.replace(history.location.pathname);
           }
         });
+        this.reportNoMessage('defAreas');
       })
       .catch(() => this.reportConnError('defAreas'));
   }
@@ -158,22 +160,36 @@ class Search extends Component {
    */
   checkPolygonConn = () => {
     biabAPI.requestScriptList()
+      .then(() => this.reportNoMessage('polygon'))
       .catch(() => this.reportConnError('polygon'));
   }
 
   /**
-   * Report a connection error from a given backend and validate whether display the modal
-   * @param {string} errorType - The type of connection error
+   * Report a null message from a given backend in order to render the proper component
+   * @param {string} type - The type of message
    */
-  reportConnError = (errorType) => {
+  reportNoMessage = (type) => {
+    this.setState(prevState => ({
+      messages: {
+        ...prevState.messages,
+        [type]: null,
+      }
+    }));
+  };
+
+  /**
+   * Report a connection error message from a given backend and validate whether display the modal
+   * @param {string} type - The type of message
+   */
+  reportConnError = (type) => {
     this.setState(prevState => {
-      const connErrors = {
-        ...prevState.connErrors,
-        [errorType]: true,
-      };
-      const openErrorModal = Object.values(connErrors).every(error => error === true);
+      const messages = {
+        ...prevState.messages,
+        [type]: 'conn-error',
+      }
+      const openErrorModal = Object.values(messages).every(msg => msg === 'conn-error');
       return {
-        connErrors,
+        messages,
         openErrorModal,
       };
     });
@@ -1430,7 +1446,7 @@ class Search extends Component {
     const {
       loadingLayer,
       layers,
-      connErrors,
+      messages,
       layerError,
       areaList,
       activeLayer: { name: activeLayer, legend },
@@ -1479,7 +1495,7 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={connErrors.defAreas && connErrors.polygon && openErrorModal}
+          open={messages.defAreas === 'conn-error' && messages.polygon === 'conn-error' && openErrorModal}
           onClose={this.handleCloseModal}
           disableAutoFocus
         >
@@ -1540,7 +1556,7 @@ class Search extends Component {
                   }}
                   description={Description()}
                   areasData={areaList}
-                  connErrors={connErrors}
+                  messages={messages}
                 />
               )}
               { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="drawPolygon") && (
