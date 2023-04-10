@@ -33,3 +33,12 @@ export interface ForestLPExt {
     label: string;
   }>;
 }
+
+export interface ForestLPRawDataPolygon {
+  layer: string;
+  value: number;
+  key: typeof ForestLPKeys[number];
+  period: string;
+  area: number;
+  percentage: number;
+}
