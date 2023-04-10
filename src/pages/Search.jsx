@@ -1495,7 +1495,7 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={messages.defAreas === 'conn-error' && messages.polygon === 'conn-error' && openErrorModal}
+          open={openErrorModal}
           onClose={this.handleCloseModal}
           disableAutoFocus
         >
