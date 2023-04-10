@@ -30,9 +30,9 @@ class Search extends Component {
     this.geofenceBounds = null;
     this.state = {
       activeLayer: {},
-      connErrors: {
-        defAreas: false,
-        polygon: false,
+      messages: {
+        defAreas: "loading",
+        polygon: "loading",
       },
       layerError: false,
       areaList: [],
@@ -47,6 +47,7 @@ class Search extends Component {
       polygonBounds: null,
       polygonFolder: "",
       drawPolygonEnabled: false,
+      openErrorModal: false,
     };
   }
 
@@ -128,6 +129,7 @@ class Search extends Component {
             history,
             setHeaderNames,
           } = this.props;
+
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
           const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
@@ -150,20 +152,9 @@ class Search extends Component {
             history.replace(history.location.pathname);
           }
         });
+        this.reportNoMessage('defAreas');
       })
-      .catch(() => this.reportConnErrorDefAreas());
-  }
-
-  /**
-   * Report a connection error from backend associated to defined areas
-   */
-  reportConnErrorDefAreas = () => {
-    this.setState(prevState => ({
-      connErrors: {
-        ...prevState.connErrors,
-        defAreas: true,
-      }
-    }));
+      .catch(() => this.reportConnError('defAreas'));
   }
 
   /**
@@ -171,20 +162,40 @@ class Search extends Component {
    */
   checkPolygonConn = () => {
     biabAPI.requestScriptList()
-      .catch(() => this.reportConnErrorPolygon());
+      .then(() => this.reportNoMessage('polygon'))
+      .catch(() => this.reportConnError('polygon'));
   }
 
   /**
-   * Report a connection error from backend associated to draw polygon
+   * Report a null message from a given backend in order to render the proper component
+   * @param {string} type - The type of message
    */
-  reportConnErrorPolygon = () => {
+  reportNoMessage = (type) => {
     this.setState(prevState => ({
-      connErrors: {
-        ...prevState.connErrors,
-        polygon: true,
+      messages: {
+        ...prevState.messages,
+        [type]: null,
       }
     }));
-  }
+  };
+
+  /**
+   * Report a connection error message from a given backend and validate whether display the modal
+   * @param {string} type - The type of message
+   */
+  reportConnError = (type) => {
+    this.setState(prevState => {
+      const messages = {
+        ...prevState.messages,
+        [type]: 'conn-error',
+      }
+      const openErrorModal = Object.values(messages).every(msg => msg === 'conn-error');
+      return {
+        messages,
+        openErrorModal,
+      };
+    });
+  };
 
   /**
    * Report dataset error from one of the child components
@@ -1439,19 +1450,18 @@ class Search extends Component {
   }
 
   /**
-   * Close a given modal
+   * Close the modal of connection error to any of the backends
    *
-   * @param {String} state state value that controls the modal you want to close
    */
-  handleCloseModal = (state) => () => {
-    this.setState({ [state]: false });
+  handleCloseModal = () => {
+    this.setState({ openErrorModal: false });
   };
 
   render() {
     const {
       loadingLayer,
       layers,
-      connErrors,
+      messages,
       layerError,
       areaList,
       activeLayer: { name: activeLayer, legend },
@@ -1459,7 +1469,8 @@ class Search extends Component {
       polygon,
       polygonFolder,
       drawPolygonEnabled,
-      searchType
+      searchType,
+      openErrorModal
     } = this.state;
 
     const {
@@ -1500,8 +1511,8 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={connErrors.defAreas && connErrors.polygon}
-          onClose={this.handleCloseModal('connError')}
+          open={openErrorModal}
+          onClose={this.handleCloseModal}
           disableAutoFocus
         >
           <div className="generalAlarm">
@@ -1513,7 +1524,7 @@ class Search extends Component {
             <button
               type="button"
               className="closebtn"
-              onClick={this.handleCloseModal('connError')}
+              onClick={this.handleCloseModal}
               title="Cerrar"
             >
               <CloseIcon />
@@ -1562,7 +1573,7 @@ class Search extends Component {
                   }}
                   description={Description()}
                   areasData={areaList}
-                  connErrors={connErrors}
+                  messages={messages}
                 />
               )}
               { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="drawPolygon") && (
