@@ -28,17 +28,15 @@ class biabAPI {
   }> {
     const wkt = toMultipolygonWKT(polygon);
     const requestBody = {
-      dir_wkt_polygon:
-        "/scripts/perdidaPersistencia/input/wkt_polygon_test.txt",
       wkt_polygon: wkt,
       epsg_polygon: 4326,
-      dir_colection: "/scripts/perdidaPersistencia/input/ppCollection",
-      resolution: 1000,
+      dir_colection: "/scripts/lossPersistence/input/ppCollection",
+      resolution: 300,
       folder_output: polygonFolder,
     };
 
     return biabAPI.makePostRequest(
-      "script/perdidaPersistencia%3E01_pp.R/run",
+      "script/lossPersistence%3E01_pp.R/run",
       requestBody
     );
   }
@@ -57,8 +55,6 @@ class biabAPI {
     polygonFolder: string
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
-    // TODO Remove the following line once LP script generates the layers in png format
-    polygonFolder = "png_layers";
     return {
       request: biabAPI.makeGetRequest(
         `output/${polygonFolder}/${layer}.png`,
