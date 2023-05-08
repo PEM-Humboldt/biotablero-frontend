@@ -20,6 +20,7 @@ interface State {
   forestLP: Array<ForestLPExt>;
   message: wrapperMessage;
   forestPersistenceValue: number;
+  forestLPArea?: number;
   texts: {
     forestLP: textsObject;
   };
@@ -39,6 +40,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       forestLP: [],
       message: "loading",
       forestPersistenceValue: 0,
+      forestLPArea: 0,
       texts: {
         forestLP: { info: "", cons: "", meto: "", quote: "" },
       },
@@ -53,6 +55,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       searchType,
       polygon,
       polygonFolder,
+      setPolygonArea,
       switchLayer,
     } = this.context as SearchContextValues;
 
@@ -74,11 +77,13 @@ class ForestLossPersistence extends React.Component<Props, State> {
           this.setState({
             forestLP: data.forestLP,
             forestPersistenceValue: data.forestPersistenceValue,
+            forestLPArea: data.forestLPArea,
             message: null,
           });
         }
         if (searchType === "drawPolygon") {
           switchLayer(`forestLP-${LATEST_PERIOD}`);
+          setPolygonArea(this.state.forestLPArea);
         }
       })
       .catch(() => {

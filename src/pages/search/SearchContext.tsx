@@ -7,6 +7,8 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   polygon: Polygon | null;
   polygonFolder: string;
+  polygonArea: number;
+  setPolygonArea(value?: number): void;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
@@ -18,6 +20,8 @@ const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
   polygon: null,
   polygonFolder: "",
+  polygonArea: 0,
+  setPolygonArea: () => {},
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},

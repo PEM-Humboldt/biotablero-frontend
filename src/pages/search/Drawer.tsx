@@ -43,9 +43,7 @@ class Drawer extends React.Component<Props, State> {
     const { areaId, geofenceId, searchType } = this
       .context as SearchContextValues;
 
-    if (searchType === "drawPolygon") {
-      this.setState({ geofenceArea: Math.random() * 100 });
-    } else {
+    if (searchType !== "drawPolygon") {
       searchAPI
         .requestGeofenceDetails(areaId, geofenceId)
         .then((res: geofenceDetails) => {
@@ -59,7 +57,14 @@ class Drawer extends React.Component<Props, State> {
     const { handlerBackButton } = this.props;
 
     const { geofenceArea } = this.state;
-    const { searchType } = this.context as SearchContextValues;
+    const { searchType, polygonArea } = this.context as SearchContextValues;
+
+    let queryArea;
+    if (searchType === "drawPolygon") {
+      queryArea = polygonArea;
+    } else {
+      queryArea = geofenceArea;
+    }
 
     let initialSelectedIndex = 0;
     if (searchType === "drawPolygon") initialSelectedIndex = 1;
@@ -73,7 +78,7 @@ class Drawer extends React.Component<Props, State> {
           <div className="HAgen">
             <h4>
               hectáreas totales
-              <b>{`${formatNumber(geofenceArea, 0)}`}</b>
+              <b>{`${formatNumber(queryArea, 0)}`}</b>
             </h4>
           </div>
         </div>
