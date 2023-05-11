@@ -8,7 +8,7 @@ export interface SearchContextValues {
   polygon: Polygon | null;
   polygonFolder: string;
   polygonArea: number;
-  setPolygonArea(value?: number): void;
+  setPolygonArea(value: number): void;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;

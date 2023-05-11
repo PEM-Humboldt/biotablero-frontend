@@ -45,7 +45,6 @@ class Search extends Component {
       searchType: "definedArea",
       polygon: null,
       polygonArea: 0,
-      setPolygonArea: this.setPolygonArea,
       polygonBounds: null,
       polygonFolder: "",
       drawPolygonEnabled: false,
@@ -1442,6 +1441,7 @@ class Search extends Component {
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
       newState.polygon = null;
+      newState.polygonArea = 0;
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
@@ -1480,7 +1480,6 @@ class Search extends Component {
       polygon,
       polygonFolder,
       polygonArea,
-      setPolygonArea,
       drawPolygonEnabled,
       searchType,
       openErrorModal
@@ -1552,7 +1551,7 @@ class Search extends Component {
             polygon: polygon,
             polygonFolder: polygonFolder,
             polygonArea: polygonArea,
-            setPolygonArea: setPolygonArea,
+            setPolygonArea: this.setPolygonArea,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
