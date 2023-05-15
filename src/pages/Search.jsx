@@ -44,6 +44,7 @@ class Search extends Component {
       rasterUrls: [],
       searchType: "definedArea",
       polygon: null,
+      polygonArea: 0,
       polygonBounds: null,
       polygonFolder: "",
       drawPolygonEnabled: false,
@@ -1440,6 +1441,7 @@ class Search extends Component {
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
       newState.polygon = null;
+      newState.polygonArea = 0;
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
@@ -1457,6 +1459,15 @@ class Search extends Component {
     this.setState({ openErrorModal: false });
   };
 
+  /**
+   * Set the area value of polygon
+   *
+   */
+  setPolygonArea = (polygonArea) => {
+    this.setState({ polygonArea: polygonArea });
+  }
+
+
   render() {
     const {
       loadingLayer,
@@ -1468,6 +1479,7 @@ class Search extends Component {
       rasterUrls,
       polygon,
       polygonFolder,
+      polygonArea,
       drawPolygonEnabled,
       searchType,
       openErrorModal
@@ -1538,6 +1550,8 @@ class Search extends Component {
             searchType: searchType,
             polygon: polygon,
             polygonFolder: polygonFolder,
+            polygonArea: polygonArea,
+            setPolygonArea: this.setPolygonArea,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,

@@ -13,6 +13,7 @@ import { Polygon } from "pages/search/types/drawer";
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
+  forestLPArea?: number;
 }
 
 export class ForestLossPersistenceController {
@@ -85,9 +86,13 @@ export class ForestLossPersistenceController {
               ({ period, key }) =>
                 period === latestPeriod && key === "persistencia"
             )?.area ?? 0;
+          const forestLPArea = rawData
+            .filter((d: { period: string }) => d.period === periods[0])
+            .reduce((totalArea, periodData) => totalArea + periodData.area, 0);
           return {
             forestLP,
             forestPersistenceValue,
+            forestLPArea,
           };
         })
         .catch(() => {

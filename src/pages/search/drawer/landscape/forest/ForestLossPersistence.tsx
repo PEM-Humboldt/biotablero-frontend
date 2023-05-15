@@ -53,6 +53,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       searchType,
       polygon,
       polygonFolder,
+      setPolygonArea,
       switchLayer,
     } = this.context as SearchContextValues;
 
@@ -79,6 +80,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         }
         if (searchType === "drawPolygon") {
           switchLayer(`forestLP-${LATEST_PERIOD}`);
+          setPolygonArea(data.forestLPArea ?? 0);
         }
       })
       .catch(() => {
