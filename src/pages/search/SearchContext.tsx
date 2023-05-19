@@ -9,6 +9,7 @@ export interface SearchContextValues {
   polygonFolder: string;
   polygonArea: number;
   setPolygonArea(value: number): void;
+  setLoadingLayer(value: boolean): void;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
@@ -22,6 +23,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   polygonFolder: "",
   polygonArea: 0,
   setPolygonArea: () => {},
+  setLoadingLayer: () => {},
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},

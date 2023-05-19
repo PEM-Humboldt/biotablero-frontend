@@ -54,6 +54,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       polygon,
       polygonFolder,
       setPolygonArea,
+      setLoadingLayer,
       switchLayer,
     } = this.context as SearchContextValues;
 
@@ -85,6 +86,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({ message: "no-data" });
+        setLoadingLayer(false);
       });
 
     this.flpController

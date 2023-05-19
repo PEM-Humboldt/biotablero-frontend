@@ -1467,6 +1467,10 @@ class Search extends Component {
     this.setState({ polygonArea: polygonArea });
   }
 
+  setLoadingLayer = (loadingLayer) => {
+    this.setState({ loadingLayer: loadingLayer });
+  }
+
 
   render() {
     const {
@@ -1552,6 +1556,7 @@ class Search extends Component {
             polygonFolder: polygonFolder,
             polygonArea: polygonArea,
             setPolygonArea: this.setPolygonArea,
+            setLoadingLayer: this.setLoadingLayer,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
