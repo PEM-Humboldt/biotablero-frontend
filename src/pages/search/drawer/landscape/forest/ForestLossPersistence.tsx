@@ -85,6 +85,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({ message: "no-data" });
+        switchLayer("polygonFail");
       });
 
     this.flpController

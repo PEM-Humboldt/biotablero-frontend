@@ -1221,6 +1221,9 @@ class Search extends Component {
         };
         paneLevel = 2;
         break;
+      case 'polygonFail':
+        this.setState({ loadingLayer: false });
+        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
