@@ -57,7 +57,9 @@ class Drawer extends React.Component<Props, State> {
     const { handlerBackButton } = this.props;
 
     const { geofenceArea } = this.state;
-    const { searchType, polygonArea } = this.context as SearchContextValues;
+    const { searchType, polygon } = this.context as SearchContextValues;
+
+    const polygonArea = polygon?.area || 0;
 
     let queryArea;
     if (searchType === "drawPolygon") {

@@ -44,9 +44,6 @@ class Search extends Component {
       rasterUrls: [],
       searchType: "definedArea",
       polygon: null,
-      polygonArea: 0,
-      polygonBounds: null,
-      polygonFolder: "",
       drawPolygonEnabled: false,
       openErrorModal: false,
     };
@@ -738,7 +735,7 @@ class Search extends Component {
    */
   getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { searchType, polygonFolder } = this.state;
+    const { searchType, polygon: { folder: polygonFolder} } = this.state;
     let reqPromise = null;
 
     if (/coverage-*/.test(layerName)) {
@@ -830,12 +827,13 @@ class Search extends Component {
    */
   setSectionLayers = (sectionName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { searchType, polygonBounds } = this.state;
+    const { searchType, polygon: { bounds: polygonBounds }, rasterUrls } = this.state;
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
     let shapeLayerOpts = [];
     let rasterLayerOpts = [];
+    let polygonLayerOpts = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
     let mapLegend = null;
 
@@ -982,19 +980,21 @@ class Search extends Component {
             });
           },
         };
-      } else if (/portfoliosCA*/.test(sectionName)) {
-        shapeLayerOpts = [{ id: "geofence", paneLevel: 1, styleName: "border" }];
-        const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
-        newActiveLayer.name = `Portafolios ${targetName}`;
-        newActiveLayer.defaultOpacity = 0.7;
-        if (selectedPorfolios !== null) {
-          selectedPorfolios.split(',').forEach((portfolioId) => {
-            rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 2 });
-          });
-        }
+    } else if (/portfoliosCA*/.test(sectionName)) {
+      shapeLayerOpts = [{ id: "geofence", paneLevel: 1, styleName: "border" }];
+      const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
+      newActiveLayer.name = `Portafolios ${targetName}`;
+      newActiveLayer.defaultOpacity = 0.7;
+      if (selectedPorfolios !== null) {
+        selectedPorfolios.split(',').forEach((portfolioId) => {
+          rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 2 });
+        });
       }
+    } else if(sectionName === 'drawPolygon') {
+      polygonLayerOpts=[{id:'drawnPolygon', fill: rasterUrls.length === 0}];
+    }
 
-    if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0) {
+    if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0 && polygonLayerOpts.length <= 0) {
       this.reportDataError();
     }
 
@@ -1084,6 +1084,16 @@ class Search extends Component {
       loadingProm.push(shapeProm);
     }
 
+    if(polygonLayerOpts.length > 0) {
+      const activePolygon = polygonLayerOpts.find(polygon => polygon.id === 'drawnPolygon');
+      this.setState(prevState => ({
+        polygon: {
+          ...prevState.polygon,
+          fill: activePolygon?.fill ?? false
+        }
+      }));
+    }
+
     Promise.all(loadingProm).then((resolved) => {
       if (!resolved.includes('canceled')) {
         this.setState({ loadingLayer: false });
@@ -1123,6 +1133,7 @@ class Search extends Component {
       case 'hfCurrent':
       case 'hfPersistence':
       case 'hfTimeline':
+      case 'drawPolygon':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -1388,9 +1399,12 @@ class Search extends Component {
       drawPolygonEnabled: false,
       polygon: {
         coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
+        bounds: polygonBounds,
+        folder: Math.random().toString(32).slice(2),
+        area: 0,
+        color: matchColor('polygon')(),
+        fill: false,
       },
-      polygonFolder: Math.random().toString(32).slice(2),
-      polygonBounds: polygonBounds,
       selectedAreaTypeId: null,
       selectedAreaId: null,
       searchType: "drawPolygon",
@@ -1441,7 +1455,7 @@ class Search extends Component {
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
       newState.polygon = null;
-      newState.polygonArea = 0;
+      /* newState.polygonArea = 0; */
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
@@ -1464,7 +1478,12 @@ class Search extends Component {
    *
    */
   setPolygonArea = (polygonArea) => {
-    this.setState({ polygonArea: polygonArea });
+    this.setState(prevState => ({
+      polygon: {
+        ...prevState.polygon,
+        area: polygonArea
+      }
+    }));
   }
 
 
@@ -1478,8 +1497,6 @@ class Search extends Component {
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
       polygon,
-      polygonFolder,
-      polygonArea,
       drawPolygonEnabled,
       searchType,
       openErrorModal
@@ -1549,8 +1566,6 @@ class Search extends Component {
             geofenceId: selectedAreaId,
             searchType: searchType,
             polygon: polygon,
-            polygonFolder: polygonFolder,
-            polygonArea: polygonArea,
             setPolygonArea: this.setPolygonArea,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,

@@ -57,12 +57,11 @@ export class ForestLossPersistenceController {
     areaId: string | number,
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
-    polygon: Polygon | null,
-    polygonFolder: string
+    polygon: Polygon | null
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
       return biabAPI
-        .requestForestLPData(polygon, polygonFolder)
+        .requestForestLPData(polygon)
         .then((data) => {
           const rawData: Array<ForestLPRawDataPolygon> = JSON.parse(
             data.files.table_pp

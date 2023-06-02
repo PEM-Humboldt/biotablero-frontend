@@ -1,4 +1,4 @@
-import { LatLngExpression } from "leaflet";
+import { LatLngExpression, LatLngBounds } from "leaflet";
 
 export interface geofenceDetails {
   total_area: string;
@@ -6,4 +6,9 @@ export interface geofenceDetails {
 
 export interface Polygon {
   coordinates: LatLngExpression[];
+  bounds: LatLngBounds;
+  folder: string;
+  area: number;
+  color: string;
+  fill: boolean;
 }
