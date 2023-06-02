@@ -6,6 +6,7 @@ import { Done } from '@mui/icons-material';
 import { FeatureGroup } from 'react-leaflet';
 import { EditControl } from 'react-leaflet-draw';
 import SearchContext from 'pages/search/SearchContext';
+import matchColor from 'utils/matchColor';
 
 class DrawControl extends React.Component {
   constructor(props) {
@@ -186,7 +187,8 @@ class DrawControl extends React.Component {
                   message: '<strong>No se permite polígonos con intersecciones<strong>',
                 },
                 shapeOptions: {
-                  color: '#2a363b',
+                  color: matchColor('polygon')(),
+                  opacity: 0.8,
                   clickable: true,
                 },
               }),
