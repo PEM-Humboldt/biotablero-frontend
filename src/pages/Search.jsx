@@ -1455,7 +1455,6 @@ class Search extends Component {
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
       newState.polygon = null;
-      /* newState.polygonArea = 0; */
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
