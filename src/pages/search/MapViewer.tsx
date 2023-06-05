@@ -200,7 +200,12 @@ class MapViewer extends React.Component<Props, State> {
           </Pane>
         ))}
         {polygon && polygon.coordinates && (
-          <Polygon color={"#2a363b"} positions={polygon.coordinates} />
+          <Polygon
+            positions={polygon.coordinates}
+            color={polygon.color}
+            opacity={0.8}
+            fill={polygon.fill}
+          />
         )}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {userLogged && (

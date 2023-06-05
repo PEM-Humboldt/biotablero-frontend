@@ -17,10 +17,7 @@ class biabAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestForestLPData(
-    polygon: Polygon | null,
-    polygonFolder: string
-  ): Promise<{
+  static requestForestLPData(polygon: Polygon | null): Promise<{
     logs: string;
     files: {
       table_pp: string;
@@ -32,7 +29,7 @@ class biabAPI {
       epsg_polygon: 4326,
       dir_colection: "/scripts/lossPersistence/input/ppCollection",
       resolution: 300,
-      folder_output: polygonFolder,
+      folder_output: polygon?.folder,
     };
 
     return biabAPI.makePostRequest(

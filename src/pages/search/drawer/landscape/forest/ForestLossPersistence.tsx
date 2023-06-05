@@ -52,7 +52,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
       geofenceId,
       searchType,
       polygon,
-      polygonFolder,
       setPolygonArea,
       switchLayer,
     } = this.context as SearchContextValues;
@@ -62,14 +61,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     }
 
     this.flpController
-      .getForestLPData(
-        areaId,
-        geofenceId,
-        LATEST_PERIOD,
-        searchType,
-        polygon,
-        polygonFolder
-      )
+      .getForestLPData(areaId, geofenceId, LATEST_PERIOD, searchType, polygon)
       .then((data) => {
         if (this.mounted) {
           this.setState({
@@ -85,6 +77,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch(() => {
         this.setState({ message: "no-data" });
+        switchLayer(`drawPolygon`);
       });
 
     this.flpController
