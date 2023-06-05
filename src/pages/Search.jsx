@@ -43,7 +43,7 @@ class Search extends Component {
       mapBounds: null,
       rasterUrls: [],
       searchType: "definedArea",
-      polygon: null,
+      polygon: {},
       drawPolygonEnabled: false,
       openErrorModal: false,
     };
