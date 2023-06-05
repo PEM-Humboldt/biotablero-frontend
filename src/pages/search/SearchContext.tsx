@@ -7,7 +7,7 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   polygon: Polygon | null;
   setPolygonArea(value: number): void;
-  switchLayer(layer: string | undefined | null): void;
+  switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
 }
