@@ -10,6 +10,7 @@ import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
 import { textsObject } from "pages/search/types/texts";
+import { info } from "console";
 
 export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
@@ -179,16 +180,17 @@ export class TargetsController {
    * @returns Array of portfolios description texts
    */
   loadPortfoliosTexts() {
-    const portfoliosTexts: Array<{ name: string; description: string }> = [
-      { name: "WCMC", description: "Información WCMC" },
-      { name: "ELSA", description: "Información ELSA" },
-      { name: "WEPLAN", description: "Información WEPLAN" },
-      {
-        name: "Especies, Carbono y Agua",
-        description: "Información Especies, Carbono y Agua",
-      },
-      { name: "ACC", description: "Información ACC" },
-    ];
+    let portfoliosTexts: Array<{ name: string; description: string }> = [];
+    
+    ["portfoliosBSERN", "portfoliosELSA", "portfoliosRWFC", "portfoliosBCAN", "portfoliosACCBA"].forEach((item) => {
+      SearchAPI.requestSectionTexts(item)
+        .then((res) => {
+          portfoliosTexts.push( { name: item, description: res.info },)
+        })
+        .catch(() => {
+          throw new Error("Error getting data");
+        });
+      })
     this.portfoliosTexts = portfoliosTexts;
   }
 
@@ -198,31 +200,16 @@ export class TargetsController {
    * @returns Array of targets components texts
    */
   loadTargetsTexts() {
-    const dummyTexts = [
-      {
-        info: "Información ejemplo 1",
-        cons: "Consideraciones ejemplo 1",
-        meto: "Metodología ejemplo 1",
-        quote: "Autoria ejemplo 1",
-      },
-      {
-        info: "Información ejemplo 2",
-        cons: "Consideraciones ejemplo 2",
-        meto: "Metodología ejemplo 2",
-        quote: "Autoria ejemplo 2",
-      },
-    ];
-
-    const targetsTexts: Array<{ name: string; texts: textsObject }> = [
-      { name: "Especies", texts: dummyTexts[0] },
-      { name: "Ecosistemas", texts: dummyTexts[1] },
-      { name: "Servicios Ecosistémicos", texts: dummyTexts[0] },
-      { name: "Conectividad", texts: dummyTexts[1] },
-      { name: "Cambio Climático", texts: dummyTexts[0] },
-      { name: "Deforestación", texts: dummyTexts[1] },
-      { name: "Restauración", texts: dummyTexts[0] },
-      { name: "Aguas - Rios", texts: dummyTexts[1] },
-    ];
+    let targetsTexts: Array<{ name: string; texts: textsObject }> = [];
+    ["targetEcosystems", "targetConectivity", "targetWaterStorage", "targetCarbonStorage", "targetAvoidedDeforestation", "targetRestoration"].forEach((item) => {
+      SearchAPI.requestSectionTexts(item)
+      .then((res) => {
+        targetsTexts.push( { name: item, texts: { info: res.info, cons: res.cons, meto: res.meto, quote: res.quote } },)
+      })
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
+    })
     this.targetsTexts = targetsTexts;
   }
 
