@@ -16,7 +16,7 @@ export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
   targets: Array<targetOrPortfolio>;
   targetsTexts: Array<{ textKey: string; texts: textsObject }>;
-  portfoliosTexts: Array<{ name: string; description: string }>;
+  portfoliosTexts: Array<{ textKey: string; description: string }>;
   constructor() {
     this.portfoliosIds = new Map();
     this.targetsTexts = [];
@@ -183,7 +183,7 @@ export class TargetsController {
    * @returns Array of portfolios description texts
    */
   loadPortfoliosTexts() {
-    let portfoliosTexts: Array<{ name: string; description: string }> = [];
+    let portfoliosTexts: Array<{ textKey: string; description: string }> = [];
 
     [
       "portfoliosBSERN",
@@ -194,7 +194,7 @@ export class TargetsController {
     ].forEach((item) => {
       SearchAPI.requestSectionTexts(item)
         .then((res) => {
-          portfoliosTexts.push({ name: item, description: res.info });
+          portfoliosTexts.push({ textKey: item, description: res.info });
         })
         .catch(() => {
           throw new Error("Error getting data");
@@ -258,14 +258,15 @@ export class TargetsController {
   /**
    * Get description of a selected portfolio
    *
-   * @param {String} portfolioName portfolio name
+   * @param {String} portfolioTextKey text key to find portfolio texts
    *
    * @returns {String | undefined} description of a portfolio
    */
-  getPortfolioDescription(portfolioName: string) {
+  getPortfolioDescription(portfolioTextKey: string) {
+    console.log(this.portfoliosTexts);
     let portfolioDescription;
     const portfolio = this.portfoliosTexts.find(
-      (targetText) => portfolioName === targetText.name
+      (targetText) => portfolioTextKey === targetText.textKey
     );
     if (portfolio) portfolioDescription = portfolio.description;
     return portfolioDescription;

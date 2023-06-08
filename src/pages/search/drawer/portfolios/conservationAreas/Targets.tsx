@@ -307,7 +307,7 @@ class Targets extends React.Component<Props, State> {
                   }}
                 />
                 <IconTooltip
-                  title="Este portafolio"
+                  title={`Información sobre ${portfolio.name}`}
                   className="targetsLegendInfoButton"
                   key={`info${portfolio.name}`}
                 >
@@ -317,7 +317,7 @@ class Targets extends React.Component<Props, State> {
                     }`}
                     key={`infoIcon${portfolio.name}`}
                     sx={{ fontSize: 16 }}
-                    onClick={() => this.setInfoPortfolios(portfolio.name)}
+                    onClick={() => this.setInfoPortfolios(portfolio.textKey)}
                   />
                 </IconTooltip>
               </div>
