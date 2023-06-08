@@ -5,21 +5,23 @@ import {
 import {
   portfoliosByTarget,
   portfolioData,
+  targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
 import SearchAPI from "utils/searchAPI";
 import { textsObject } from "pages/search/types/texts";
-import { info } from "console";
 
 export class TargetsController {
   portfoliosIds: Map<String, Set<number>>;
-  targetsTexts: Array<{ name: string; texts: textsObject }>;
+  targets: Array<targetOrPortfolio>;
+  targetsTexts: Array<{ textKey: string; texts: textsObject }>;
   portfoliosTexts: Array<{ name: string; description: string }>;
   constructor() {
     this.portfoliosIds = new Map();
     this.targetsTexts = [];
     this.portfoliosTexts = [];
+    this.targets = [];
   }
 
   /**
@@ -40,6 +42,7 @@ export class TargetsController {
    */
   async getData(areaType: string, areaId: string | number) {
     const targets = await SearchAPI.requestTargetsList(areaType, areaId);
+    this.targets = targets;
     return targets.map((target) =>
       SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
         (res) => {
@@ -181,16 +184,22 @@ export class TargetsController {
    */
   loadPortfoliosTexts() {
     let portfoliosTexts: Array<{ name: string; description: string }> = [];
-    
-    ["portfoliosBSERN", "portfoliosELSA", "portfoliosRWFC", "portfoliosBCAN", "portfoliosACCBA"].forEach((item) => {
+
+    [
+      "portfoliosBSERN",
+      "portfoliosELSA",
+      "portfoliosRWFC",
+      "portfoliosBCAN",
+      "portfoliosACCBA",
+    ].forEach((item) => {
       SearchAPI.requestSectionTexts(item)
         .then((res) => {
-          portfoliosTexts.push( { name: item, description: res.info },)
+          portfoliosTexts.push({ name: item, description: res.info });
         })
         .catch(() => {
           throw new Error("Error getting data");
         });
-      })
+    });
     this.portfoliosTexts = portfoliosTexts;
   }
 
@@ -200,16 +209,31 @@ export class TargetsController {
    * @returns Array of targets components texts
    */
   loadTargetsTexts() {
-    let targetsTexts: Array<{ name: string; texts: textsObject }> = [];
-    ["targetEcosystems", "targetConectivity", "targetWaterStorage", "targetCarbonStorage", "targetAvoidedDeforestation", "targetRestoration"].forEach((item) => {
+    let targetsTexts: Array<{ textKey: string; texts: textsObject }> = [];
+    [
+      "targetEcosystems",
+      "targetConectivity",
+      "targetWaterStorage",
+      "targetCarbonStorage",
+      "targetAvoidedDeforestation",
+      "targetRestoration",
+    ].forEach((item) => {
       SearchAPI.requestSectionTexts(item)
-      .then((res) => {
-        targetsTexts.push( { name: item, texts: { info: res.info, cons: res.cons, meto: res.meto, quote: res.quote } },)
-      })
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
-    })
+        .then((res) => {
+          targetsTexts.push({
+            textKey: item,
+            texts: {
+              info: res.info,
+              cons: res.cons,
+              meto: res.meto,
+              quote: res.quote,
+            },
+          });
+        })
+        .catch(() => {
+          throw new Error("Error getting data");
+        });
+    });
     this.targetsTexts = targetsTexts;
   }
 
@@ -221,9 +245,11 @@ export class TargetsController {
    * @returns {Object | undefined} information texts of a target
    */
   getTargetText(targetName: string) {
+    const targetTextKey =
+      this.targets.find((obj) => obj.name === targetName)?.textKey ?? "";
     let targetTexts;
     const target = this.targetsTexts.find(
-      (targetText) => targetName === targetText.name
+      (targetText) => targetTextKey === targetText.textKey
     );
     if (target) targetTexts = target.texts;
     return targetTexts;

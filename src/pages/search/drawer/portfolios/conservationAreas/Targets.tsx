@@ -89,7 +89,7 @@ class Targets extends React.Component<Props, State> {
                       this.setState({ selectedPortfolios: portfoliosIds });
                     }
                     this.setState({ selectedTarget: target.target_name });
-                    this.setGraphTexts(target.target_name);
+                    this.setTargetTexts(target.target_name);
                   }
                 }
               );
@@ -155,7 +155,7 @@ class Targets extends React.Component<Props, State> {
   /**
    * Set information texts for a selected target
    */
-  setGraphTexts = (targetName: string) => {
+  setTargetTexts = (targetName: string) => {
     const targetTexts = this.targetsController.getTargetText(targetName);
     if (targetTexts) this.setState({ texts: targetTexts });
   };
@@ -248,7 +248,7 @@ class Targets extends React.Component<Props, State> {
                   chartSection: selected,
                   selectedKey: Array.from(portfoliosIds),
                 });
-                this.setGraphTexts(selected);
+                this.setTargetTexts(selected);
               }}
               height={500}
               selectedIndexValue={selectedTarget}
