@@ -207,7 +207,7 @@ class Targets extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.info}
+            description={`<p>${texts.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -327,7 +327,7 @@ class Targets extends React.Component<Props, State> {
 
         {shownPortfolio && (
           <ShortInfo
-            description={portfolioDescription}
+            description={`<p>${portfolioDescription}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

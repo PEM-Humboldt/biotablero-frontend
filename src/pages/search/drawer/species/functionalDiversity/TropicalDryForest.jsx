@@ -32,7 +32,7 @@ class TropicalDryForest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       values: {},
       features: [],
       messageValues: 'loading',
@@ -144,8 +144,7 @@ class TropicalDryForest extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            name="Plantas del bosque seco"
-            description="Plantas del bosque seco"
+            description={`<p>Plantas del bosque seco</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

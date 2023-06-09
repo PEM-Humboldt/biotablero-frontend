@@ -465,7 +465,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.info}
+            description={`<p>${texts.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

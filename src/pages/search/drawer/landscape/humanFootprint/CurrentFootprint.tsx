@@ -133,7 +133,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.hfCurrent.info}
+            description={`<p>${texts.hfCurrent.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

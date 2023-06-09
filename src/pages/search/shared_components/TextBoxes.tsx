@@ -96,21 +96,21 @@ const TextBoxes: React.FC<TextBoxProps> = (props) => {
       </h3>
       {boxShown === "quote" && (
         <ShortInfo
-          description={quoteText}
+          description={`<p>${quoteText}</p>`}
           className="graphinfo2"
           collapseButton={false}
         />
       )}
       {boxShown === "meto" && (
         <ShortInfo
-          description={metoText}
+          description={`<p>${metoText}</p>`}
           className="graphinfo2"
           collapseButton={false}
         />
       )}
       {boxShown === "cons" && (
         <ShortInfo
-          description={consText}
+          description={`<p>${consText}</p>`}
           className="graphinfo2"
           collapseButton={false}
         />

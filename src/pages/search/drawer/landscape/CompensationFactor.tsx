@@ -210,7 +210,7 @@ class CompensationFactor extends React.Component<
             </IconTooltip>
             {infoShown.has("cf") && (
               <ShortInfo
-                description={texts.cf.info}
+                description={`<p>${texts.cf.info}</p>`}
                 className="graphinfo2"
                 collapseButton={false}
               />
@@ -245,7 +245,7 @@ class CompensationFactor extends React.Component<
           </IconTooltip>
           {infoShown.has("biomes") && (
             <ShortInfo
-              description={texts.biomes.info}
+              description={`<p>${texts.biomes.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -279,7 +279,7 @@ class CompensationFactor extends React.Component<
           </IconTooltip>
           {infoShown.has("bioticReg") && (
             <ShortInfo
-              description={texts.bioticRegions.info}
+              description={`<p>${texts.bioticRegions.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />

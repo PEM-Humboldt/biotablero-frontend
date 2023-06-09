@@ -263,7 +263,6 @@ export class TargetsController {
    * @returns {String | undefined} description of a portfolio
    */
   getPortfolioDescription(portfolioTextKey: string) {
-    console.log(this.portfoliosTexts);
     let portfolioDescription;
     const portfolio = this.portfoliosTexts.find(
       (targetText) => portfolioTextKey === targetText.textKey

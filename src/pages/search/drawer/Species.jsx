@@ -23,6 +23,7 @@ class Species extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const { areaId, geofenceId } = this.context;
     let selected = [];
     switch (areaId) {

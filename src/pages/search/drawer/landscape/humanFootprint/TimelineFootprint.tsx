@@ -223,7 +223,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.hfTimeline.info}
+            description={`<p>${texts.hfTimeline.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
