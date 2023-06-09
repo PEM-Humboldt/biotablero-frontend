@@ -227,7 +227,7 @@ class Targets extends React.Component<Props, State> {
               }}
               margin={{
                 bottom: 30,
-                left: 95,
+                left: 105,
                 right: 95,
               }}
               axisX={{
