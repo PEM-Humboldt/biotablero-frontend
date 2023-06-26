@@ -263,7 +263,7 @@ class Ecosystems extends React.Component {
       return (
         <div className="graphcard">
           <h2>Gráficas en construcción</h2>
-           <p>Pronto más información</p>
+          <p>Pronto más información</p>
         </div>
       );
     }
@@ -279,7 +279,7 @@ class Ecosystems extends React.Component {
         </h2>
         {showInfoMain && (
           <ShortInfo
-            description={texts.ecosystems.info}
+            description={`<p>${texts.ecosystems.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -306,7 +306,7 @@ class Ecosystems extends React.Component {
           </IconTooltip>
           {infoShown.has('coverage') && (
             <ShortInfo
-              description={texts.coverage.info}
+              description={`<p>${texts.coverage.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -351,7 +351,7 @@ class Ecosystems extends React.Component {
           </h5>
           {infoShown.has('pa') && (
             <ShortInfo
-              description={texts.pa.info}
+              description={`<p>${texts.pa.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -393,7 +393,7 @@ class Ecosystems extends React.Component {
             </h5>
             {infoShown.has('se') && (
               <ShortInfo
-                description={texts.se.info}
+                description={`<p>${texts.se.info}</p>`}
                 className="graphinfo3"
                 collapseButton={false}
               />

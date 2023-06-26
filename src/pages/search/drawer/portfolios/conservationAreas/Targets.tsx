@@ -89,7 +89,7 @@ class Targets extends React.Component<Props, State> {
                       this.setState({ selectedPortfolios: portfoliosIds });
                     }
                     this.setState({ selectedTarget: target.target_name });
-                    this.setGraphTexts(target.target_name);
+                    this.setTargetTexts(target.target_name);
                   }
                 }
               );
@@ -155,7 +155,7 @@ class Targets extends React.Component<Props, State> {
   /**
    * Set information texts for a selected target
    */
-  setGraphTexts = (targetName: string) => {
+  setTargetTexts = (targetName: string) => {
     const targetTexts = this.targetsController.getTargetText(targetName);
     if (targetTexts) this.setState({ texts: targetTexts });
   };
@@ -163,18 +163,18 @@ class Targets extends React.Component<Props, State> {
   /**
    * Set information text for a selected portfolio
    */
-  setInfoPortfolios = (portfolioName: string) => {
+  setInfoPortfolios = (portfolioTextKey: string) => {
     const { shownPortfolio } = this.state;
     const portfolioDescription =
-      this.targetsController.getPortfolioDescription(portfolioName);
+      this.targetsController.getPortfolioDescription(portfolioTextKey);
 
     if (portfolioDescription)
       this.setState({ portfolioDescription: portfolioDescription });
 
-    if (portfolioName === shownPortfolio) {
+    if (portfolioTextKey === shownPortfolio) {
       this.setState({ shownPortfolio: null });
     } else {
-      this.setState({ shownPortfolio: portfolioName });
+      this.setState({ shownPortfolio: portfolioTextKey });
     }
   };
 
@@ -207,7 +207,7 @@ class Targets extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.info}
+            description={`<p>${texts.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -227,7 +227,7 @@ class Targets extends React.Component<Props, State> {
               }}
               margin={{
                 bottom: 30,
-                left: 95,
+                left: 105,
                 right: 95,
               }}
               axisX={{
@@ -248,7 +248,7 @@ class Targets extends React.Component<Props, State> {
                   chartSection: selected,
                   selectedKey: Array.from(portfoliosIds),
                 });
-                this.setGraphTexts(selected);
+                this.setTargetTexts(selected);
               }}
               height={500}
               selectedIndexValue={selectedTarget}
@@ -307,17 +307,17 @@ class Targets extends React.Component<Props, State> {
                   }}
                 />
                 <IconTooltip
-                  title="Este portafolio"
+                  title={`Información sobre ${portfolio.name}`}
                   className="targetsLegendInfoButton"
-                  key={`info${portfolio.name}`}
+                  key={`info${portfolio.textKey}`}
                 >
                   <InfoIcon
                     className={`graphinfo${
-                      shownPortfolio === portfolio.name ? " activeBox" : ""
+                      shownPortfolio === portfolio.textKey ? " activeBox" : ""
                     }`}
-                    key={`infoIcon${portfolio.name}`}
+                    key={`infoIcon${portfolio.textKey}`}
                     sx={{ fontSize: 16 }}
-                    onClick={() => this.setInfoPortfolios(portfolio.name)}
+                    onClick={() => this.setInfoPortfolios(portfolio.textKey)}
                   />
                 </IconTooltip>
               </div>
@@ -327,7 +327,7 @@ class Targets extends React.Component<Props, State> {
 
         {shownPortfolio && (
           <ShortInfo
-            description={portfolioDescription}
+            description={`<p>${portfolioDescription}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

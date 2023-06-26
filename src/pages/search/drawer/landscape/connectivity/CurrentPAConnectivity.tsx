@@ -196,7 +196,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         </h2>
         {infoShown.has("current") && (
           <ShortInfo
-            description={texts.paConnCurrent.info}
+            description={`<p>${texts.paConnCurrent.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -247,7 +247,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           </IconTooltip>
           {infoShown.has("dpc") && (
             <ShortInfo
-              description={texts.paConnDPC.info}
+              description={`<p>${texts.paConnDPC.info}</p>`}
               className="graphinfo2"
               collapseButton={false}
             />

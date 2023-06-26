@@ -123,7 +123,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.forestLP.info}
+            description={`<p>${texts.forestLP.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

@@ -8,6 +8,7 @@ export interface portfolioData {
 export interface portfoliosByTarget {
   target_id: number;
   target_name: string;
+  target_text_key: string;
   target_national: number;
   target_units_short: string;
   target_units: string;
@@ -17,4 +18,5 @@ export interface portfoliosByTarget {
 export interface targetOrPortfolio {
   id: number;
   name: string;
+  textKey: string;
 }

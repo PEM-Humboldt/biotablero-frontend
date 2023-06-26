@@ -49,8 +49,7 @@ class Home extends React.Component {
         </Modal>
         <div className="wrapper">
           <ShortInfo
-            name="BioTablero"
-            description="reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional."
+            description="<p><b>BioTablero</b> reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional.</p>"
             tooltip="¿Qué es BioTablero?"
             className="hidden"
           />

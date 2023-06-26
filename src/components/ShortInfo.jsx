@@ -22,14 +22,14 @@ class ShortInfo extends React.Component {
   render() {
     const { hide_text: hideText } = this.state;
     const {
-      name, description, tooltip, collapseButton, className,
+      description, tooltip, collapseButton, className,
     } = this.props;
     return (
       <div>
         <div
           className={`${className}-${hideText}`}
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: `<p><b>${name}</b> ${isUndefinedOrNull(description) ? 'Cargando...' : description}</p>` }}
+          dangerouslySetInnerHTML={{ __html: `${isUndefinedOrNull(description) ? 'Cargando...' : description}` }}
         />
         {collapseButton && (
           <button
@@ -46,7 +46,6 @@ class ShortInfo extends React.Component {
 }
 
 ShortInfo.propTypes = {
-  name: PropTypes.string,
   className: PropTypes.string,
   description: PropTypes.string,
   tooltip: PropTypes.string,
@@ -54,7 +53,6 @@ ShortInfo.propTypes = {
 };
 
 ShortInfo.defaultProps = {
-  name: '',
   className: 'hidden',
   description: '',
   tooltip: '',

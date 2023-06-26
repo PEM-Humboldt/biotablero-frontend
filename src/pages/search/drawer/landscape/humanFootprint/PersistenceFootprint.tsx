@@ -113,7 +113,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.hfPersistence.info}
+            description={`<p>${texts.hfPersistence.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />

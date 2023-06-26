@@ -138,7 +138,7 @@ const match = {
   },
   caTargets: {
     palette: "caTargets",
-    sort: ["WCMC", "ELSA", "WEPLAN", "Especies, Carbono y Agua", "ACC"],
+    sort: ["Biod · SS.EE. · Riesgo", "ELSA", "Rest · WePlan", "Biod · Carbono · Agua", "ACC · Biod. Acuática"],
   },
   functionalDryForestValues: {
     palette: "functionalDryForestValues",

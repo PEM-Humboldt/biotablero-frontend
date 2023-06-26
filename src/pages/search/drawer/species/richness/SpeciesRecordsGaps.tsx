@@ -325,7 +325,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={texts.gaps.info}
+            description={`<p>${texts.gaps.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
