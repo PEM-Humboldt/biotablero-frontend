@@ -12,7 +12,6 @@ env:
   REACT_APP_BACKEND_BIAB_URL: ${{ vars.BACKEND_BIAB_URL }}
   REACT_APP_BACKEND_URL: ${{ vars.BACKEND_URL }}
   REACT_APP_BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
-  REACT_APP_ENVIRONMENT: ${{ vars.APP_ENVIRONMENT }}
 
 jobs:
   build-and-deploy:
