@@ -10,6 +10,8 @@ env:
   AZURE_WEBAPP_NAME: biotablero-frontend
   REACT_APP_ENVIRONMENT: develop
   REACT_APP_BACKEND_BIAB_URL: ${{ vars.BACKEND_BIAB_URL }}
+  REACT_APP_BACKEND_URL: ${{ vars.BACKEND_URL }}
+  REACT_APP_BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
 
 jobs:
   build-and-deploy:
