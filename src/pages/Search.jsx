@@ -4,6 +4,7 @@ import L from 'leaflet';
 import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ReactGA from "react-ga4";
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
@@ -59,12 +60,14 @@ class Search extends Component {
   }
 
   componentDidUpdate() {
-    const { history } = this.props;
+    const { history, location } = this.props;
     history.listen((location, action) => {
       if (location.search === '' && (action === 'PUSH' || action === 'POP')) {
         this.handlerBackButton();
       }
     });
+
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
   }
 
   componentWillUnmount() {
