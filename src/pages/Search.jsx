@@ -827,7 +827,7 @@ class Search extends Component {
    */
   setSectionLayers = (sectionName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { searchType, polygon: { bounds: polygonBounds } = {}, rasterUrls } = this.state;
+    const { searchType, polygon: { bounds: polygonBounds }, rasterUrls } = this.state;
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
@@ -1023,7 +1023,7 @@ class Search extends Component {
         if (rasterLayers.every((e) => e === null)) {
           this.reportDataError();
         }
-        if (searchType === "drawPolygon" && polygonBounds) {
+        if (searchType === "drawPolygon") {
           this.geofenceBounds = polygonBounds;
         }
 
@@ -1454,7 +1454,7 @@ class Search extends Component {
       newState.layerError = false;
       newState.rasterUrls = [];
       newState.searchType = "definedArea";
-      newState.polygon = null;
+      newState.polygon = {};
       newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
