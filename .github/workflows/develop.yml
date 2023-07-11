@@ -12,6 +12,7 @@ env:
   REACT_APP_BACKEND_BIAB_URL: ${{ vars.BACKEND_BIAB_URL }}
   REACT_APP_BACKEND_URL: ${{ vars.BACKEND_URL }}
   REACT_APP_BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
+  REACT_APP_GA_TRACKING_ID: ${{ vars.GA_TRACKING_ID }}
 
 jobs:
   build-and-deploy:
