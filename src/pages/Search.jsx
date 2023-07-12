@@ -60,14 +60,13 @@ class Search extends Component {
   }
 
   componentDidUpdate() {
-    const { history, location } = this.props;
+    const { history } = this.props;
     history.listen((location, action) => {
       if (location.search === '' && (action === 'PUSH' || action === 'POP')) {
         this.handlerBackButton();
       }
     });
 
-    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
   }
 
   componentWillUnmount() {
@@ -1372,11 +1371,12 @@ class Search extends Component {
       this.setState(
         { selectedArea: nameToOn },
         () => {
-          const { history } = this.props;
+          const { history, location } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
           if (selectedAreaType && selectedArea) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
             setHeaderNames(selectedAreaType.name, selectedArea.name);
+            ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
           }
         },
       );
