@@ -4,6 +4,7 @@ import L from 'leaflet';
 import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ReactGA from "react-ga4";
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
@@ -65,6 +66,7 @@ class Search extends Component {
         this.handlerBackButton();
       }
     });
+
   }
 
   componentWillUnmount() {
@@ -1369,11 +1371,12 @@ class Search extends Component {
       this.setState(
         { selectedArea: nameToOn },
         () => {
-          const { history } = this.props;
+          const { history, location } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
           if (selectedAreaType && selectedArea) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
             setHeaderNames(selectedAreaType.name, selectedArea.name);
+            ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
           }
         },
       );
