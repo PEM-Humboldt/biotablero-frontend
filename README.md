@@ -12,6 +12,7 @@ Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humbol
 Debe tener instalado [nodejs](https://nodejs.org/) v18.15+ y [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto.
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
+* Para tener un mejor performance es perferible correr en sistema linux.
 
 En caso de no tener la versión de nodejs requerida se puede activar a partir del archivo .nvmrc ejecutando el siguiente comando:
 
@@ -32,7 +33,7 @@ Algunas dependencias del proyecto son paquetes incluídos en este mismo reposito
 
 ### 1.4. Configuración de variables de entorno:
 Crear una copia del archivo *.env* con el nombre *.env.local* actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
-
+* No olvide pedirle al admin los valores de las variables de entorno.
 ```sh
 REACT_APP_BACKEND_URL=''
 REACT_APP_GEOSERVER_URL=''
