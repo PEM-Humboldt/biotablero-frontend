@@ -212,51 +212,7 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
-        <div className="rightTitle">Meta</div>
-        <div className="svgPointer">
-          {selectedTarget && (
-            <SmallBars
-              data={graphData.transformedData}
-              keys={graphData.keys}
-              tooltips={graphData.tooltips}
-              alternateAxisY={{ values: graphData.alternateAxisYValues }}
-              message={loading}
-              colors={matchColor("caTargets")}
-              axisY={{
-                enabled: true,
-              }}
-              margin={{
-                bottom: 30,
-                left: 105,
-                right: 95,
-              }}
-              axisX={{
-                enabled: true,
-                format: "=-.0~p",
-                tickValues: 4,
-              }}
-              gridXValues={4}
-              onClickHandler={(selected) => {
-                const portfoliosIds =
-                  this.targetsController.getPortfoliosIdsByTarget(selected);
-                this.setState({
-                  selectedTarget: selected,
-                  selectedPortfolios: portfoliosIds,
-                });
-                handlerClickOnGraph({
-                  chartType: "portfoliosCA",
-                  chartSection: selected,
-                  selectedKey: Array.from(portfoliosIds),
-                });
-                this.setTargetTexts(selected);
-              }}
-              height={500}
-              selectedIndexValue={selectedTarget}
-              groupMode="grouped"
-              maxValue={1}
-            />
-          )}
-        </div>
+
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
@@ -323,6 +279,51 @@ class Targets extends React.Component<Props, State> {
               </div>
             ))}
           </FormGroup>
+        </div>
+        <div className="rightTitle">Meta</div>
+        <div className="svgPointer">
+          {selectedTarget && (
+            <SmallBars
+              data={graphData.transformedData}
+              keys={graphData.keys}
+              tooltips={graphData.tooltips}
+              alternateAxisY={{ values: graphData.alternateAxisYValues }}
+              message={loading}
+              colors={matchColor("caTargets")}
+              axisY={{
+                enabled: true,
+              }}
+              margin={{
+                bottom: 30,
+                left: 105,
+                right: 95,
+              }}
+              axisX={{
+                enabled: true,
+                format: "=-.0~p",
+                tickValues: 4,
+              }}
+              gridXValues={4}
+              onClickHandler={(selected) => {
+                const portfoliosIds =
+                  this.targetsController.getPortfoliosIdsByTarget(selected);
+                this.setState({
+                  selectedTarget: selected,
+                  selectedPortfolios: portfoliosIds,
+                });
+                handlerClickOnGraph({
+                  chartType: "portfoliosCA",
+                  chartSection: selected,
+                  selectedKey: Array.from(portfoliosIds),
+                });
+                this.setTargetTexts(selected);
+              }}
+              height={500}
+              selectedIndexValue={selectedTarget}
+              groupMode="grouped"
+              maxValue={1}
+            />
+          )}
         </div>
 
         {shownPortfolio && (
