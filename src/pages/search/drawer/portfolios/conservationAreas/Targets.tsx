@@ -212,7 +212,7 @@ class Targets extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
-        
+
         <div className="targetsLegend">
           <FormGroup>
             {availablePortfolios.map((portfolio) => (
