@@ -21,6 +21,7 @@ class biabAPI {
     logs: string;
     files: {
       table_pp: string;
+      dir_png: string;
     };
   }> {
     const wkt = toMultipolygonWKT(polygon);
@@ -31,7 +32,7 @@ class biabAPI {
       resolution: 300,
       time_period: "P1Y",
       time_start: "NA",
-      time_end: "NA"
+      time_end: "NA",
     };
 
     return biabAPI.makePostRequest(
@@ -56,7 +57,7 @@ class biabAPI {
     const source = axios.CancelToken.source();
     return {
       request: biabAPI.makeGetRequest(
-        `output/${polygonFolder}/${layer}.png`,
+        `${polygonFolder.slice(1)}/${layer}.png`,
         { cancelToken: source.token, responseType: "arraybuffer" },
         true
       ),
