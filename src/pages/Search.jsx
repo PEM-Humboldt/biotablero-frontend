@@ -1403,7 +1403,6 @@ class Search extends Component {
       polygon: {
         coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
         bounds: polygonBounds,
-        folder: Math.random().toString(32).slice(2),
         area: 0,
         color: matchColor('polygon')(),
         fill: false,
