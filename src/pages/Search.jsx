@@ -1403,7 +1403,6 @@ class Search extends Component {
       polygon: {
         coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
         bounds: polygonBounds,
-        folder: Math.random().toString(32).slice(2),
         area: 0,
         color: matchColor('polygon')(),
         fill: false,
@@ -1476,14 +1475,15 @@ class Search extends Component {
   };
 
   /**
-   * Set the area value of polygon
+   * Set the area value and the layers folder of polygon
    *
    */
-  setPolygonArea = (polygonArea) => {
+  setPolygonValues = (polygonArea, layersFolder) => {
     this.setState(prevState => ({
       polygon: {
         ...prevState.polygon,
-        area: polygonArea
+        area: polygonArea,
+        folder: layersFolder
       }
     }));
   }
@@ -1568,7 +1568,7 @@ class Search extends Component {
             geofenceId: selectedAreaId,
             searchType: searchType,
             polygon: polygon,
-            setPolygonArea: this.setPolygonArea,
+            setPolygonValues: this.setPolygonValues,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,

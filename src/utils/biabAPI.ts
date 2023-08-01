@@ -21,19 +21,22 @@ class biabAPI {
     logs: string;
     files: {
       table_pp: string;
+      dir_png: string;
     };
   }> {
     const wkt = toMultipolygonWKT(polygon);
     const requestBody = {
-      wkt_polygon: wkt,
-      epsg_polygon: 4326,
-      dir_colection: "/scripts/lossPersistence/input/ppCollection",
+      WKT_area: wkt,
+      collection_path: "/scripts/lossPersistence/input/Colombia_pp_collection",
+      epsg: 4326,
       resolution: 300,
-      folder_output: polygon?.folder,
+      time_period: "P1Y",
+      time_start: "NA",
+      time_end: "NA",
     };
 
     return biabAPI.makePostRequest(
-      "script/lossPersistence%3E01_pp.R/run",
+      "script/lossPersistence%3Epp.R/run",
       requestBody
     );
   }
@@ -54,7 +57,7 @@ class biabAPI {
     const source = axios.CancelToken.source();
     return {
       request: biabAPI.makeGetRequest(
-        `output/${polygonFolder}/${layer}.png`,
+        `${polygonFolder.slice(1)}/${layer}.png`,
         { cancelToken: source.token, responseType: "arraybuffer" },
         true
       ),

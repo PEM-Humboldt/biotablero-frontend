@@ -14,6 +14,7 @@ interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
   forestLPArea?: number;
+  layersFolder?: string;
 }
 
 export class ForestLossPersistenceController {
@@ -88,10 +89,13 @@ export class ForestLossPersistenceController {
           const forestLPArea = rawData
             .filter((d: { period: string }) => d.period === periods[0])
             .reduce((totalArea, periodData) => totalArea + periodData.area, 0);
+          const layersFolder = data.files?.dir_png ?? "";
+
           return {
             forestLP,
             forestPersistenceValue,
             forestLPArea,
+            layersFolder,
           };
         })
         .catch(() => {
