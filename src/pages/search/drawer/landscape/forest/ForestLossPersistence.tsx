@@ -71,7 +71,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           });
         }
         if (searchType === "drawPolygon") {
-          setPolygonValues(data.forestLPArea ?? 0, data.layersFolder);
+          setPolygonValues(data.forestLPArea ?? 0, data.layersFolder ?? "");
           switchLayer(`forestLP-${LATEST_PERIOD}`);
         }
       })
