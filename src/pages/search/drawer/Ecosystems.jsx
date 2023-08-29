@@ -380,7 +380,7 @@ class Ecosystems extends React.Component {
           <div className="ecoest">
             <h4 className="minus20">
               Ecosistemas estratégicos
-              <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
+              <b>{`${formatNumber(SETotalArea, 0)} ha` }</b>
             </h4>
             <IconTooltip title="Interpretación">
               <InfoIcon
@@ -389,7 +389,12 @@ class Ecosystems extends React.Component {
               />
             </IconTooltip>
             <h5 className="minusperc">
-              {`${getPercentage(SETotalArea, generalArea)} %`}
+            {`${getPercentage(SETotalArea, generalArea)} %`}
+            </h5>
+            <h5 className="minusperc">
+            {getPercentage(SETotalArea, generalArea) > 100 ? ` La superposición de ecosistemas estratégicos puede resultar en que su valor total exceda el área de consulta, al contar múltiples veces zonas donde coexisten.` : `` }
+              
+
             </h5>
             {infoShown.has('se') && (
               <ShortInfo
