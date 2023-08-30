@@ -54,7 +54,6 @@ const Footer = (
 
   return(
   <footer>
-    {/* <Button onClick={() => abrirCerrrarModal()}>Abrir Modal</Button> */}
     <Modal
     open={modal}
     onClose={abrirCerrrarModal}
