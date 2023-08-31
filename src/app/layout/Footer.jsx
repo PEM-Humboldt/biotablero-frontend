@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import logohumboldt from 'images/logohumboldt.png';
 import logoSiac from 'images/logosiac.png';
@@ -7,24 +7,7 @@ import temple from 'images/temple.png';
 import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
 import umed from 'images/umed.png';
-import {Modal, Button, Box} from '@mui/material';
-import {makeStyles} from '@mui/styles';
-
-const estilo = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '1px solid #000',
-  boxShadow: 24,
-  p: 4,
-}
-const boton = {
-  color: "red",
-  fontWeight: "600"
-}
+import { Tooltip } from '@mui/material';
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -45,28 +28,8 @@ const Footer = (
     logosId,
   },
 ) => {
-
-  const [modal, setModal]=useState(false);
-
-  const abrirCerrrarModal = () => {
-    setModal(!modal);
-  }
-
   return(
   <footer>
-    <Modal
-    open={modal}
-    onClose={abrirCerrrarModal}
-    >
-      <Box sx={estilo}>
-      <div align="center">
-        <h2 color='#e84a5f'>Citación copiada al portapapeles</h2>
-      </div>
-      <div align="right">
-        <Button onClick={() => abrirCerrrarModal()}> <p style={boton}>Aceptar</p> </Button>
-      </div>
-      </Box>
-    </Modal>
     {
     (logosId && logoSet[logosId]) ? (
       <div className="footerflex">
@@ -112,9 +75,13 @@ const Footer = (
           <a  href="#" onClick={() => {
             navigator.clipboard.writeText
               ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
-              abrirCerrrarModal();
           }}>
-             Cítese
+            <div>
+
+            <Tooltip title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'>
+             <div>Cítese</div>
+            </Tooltip>
+            </div>
           </a>
         </h3> 
       </div> ) : ("")
