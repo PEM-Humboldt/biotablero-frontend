@@ -2922,6 +2922,12 @@ tspan, .vx-axis-label {
 	padding-top: 3px;
 }
 
+.warningNote {
+	color: #e84a5f !important;
+	font-size: 10px !important;
+	padding-left: 10px !important;
+}
+
 /* Begin - Animate the loading */
 .load-wrapp {
     width: 100px;

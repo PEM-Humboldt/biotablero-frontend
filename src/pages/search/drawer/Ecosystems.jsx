@@ -19,11 +19,11 @@ import RestAPI from 'utils/restAPI';
 import SearchAPI from "utils/searchAPI";
 import SmallStackedBar from 'pages/search/shared_components/charts/SmallStackedBar';
 
-const styles = {
-  color: "#e84a5f",
-  fontSize:"10px",
-  paddingLeft: "10px"
-}
+// const styles = {
+//   color: "#e84a5f",
+//   fontSize:"10px",
+//   paddingLeft: "10px"
+// }
 /**
  * Calculate percentage for a given value according to total
  *
@@ -396,11 +396,9 @@ class Ecosystems extends React.Component {
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
-
-            <h3 className="minusperc" style={styles}>
+            <h3 className="minusperc warningNote">
               {getPercentage(SETotalArea, generalArea) > 100 ? 'La superposición de ecosistemas estratégicos puede resultar en que su valor total exceda el área de consulta, al contar múltiples veces zonas donde coexisten.' : '' }
             </h3>
-
             {infoShown.has('se') && (
               <ShortInfo
                 description={`<p>${texts.se.info}</p>`}
