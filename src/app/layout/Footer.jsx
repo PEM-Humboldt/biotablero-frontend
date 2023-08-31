@@ -7,7 +7,18 @@ import temple from 'images/temple.png';
 import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
 import umed from 'images/umed.png';
-import { Tooltip } from '@mui/material';
+import { Button, Tooltip, TooltipProps, tooltipClasses, styled } from '@mui/material';
+
+const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}));
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -62,30 +73,25 @@ const Footer = (
           Alexander von Humboldt
         </b>
       </a>
-      <h3>
-        <a href="mailto:mlondono@humboldt.org.co">
-          Contacto
-        </a>
-      </h3>
-    </div>
-    {
-      (logosId && logoSet[logosId]) ? (
-        <div className="footersm"> 
-        <h3 style={{position: "absolute", top: "1181px", right: "100px"}}> 
-          <a  href="#" onClick={() => {
+      <div className="footersm" position="relative" style={{width: "130px"}}>
+        <h3>
+          <a href="#" onClick={() => {
             navigator.clipboard.writeText
               ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
-          }}>
-            <div>
-
-            <Tooltip title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'>
-             <div>Cítese</div>
-            </Tooltip>
-            </div>
+            }}>
+            <LightTooltip title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'>
+              <span>Cítese</span>
+            </LightTooltip>
           </a>
-        </h3> 
-      </div> ) : ("")
-    }
+        </h3>
+      
+        <h3>
+          <a href="mailto:mlondono@humboldt.org.co">
+            Contacto
+          </a>
+        </h3>
+      </div>
+    </div>
   </footer>
   );
 };
