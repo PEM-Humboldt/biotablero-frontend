@@ -17,8 +17,13 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     color: 'rgba(0, 0, 0, 0.87)',
     boxShadow: theme.shadows[1],
     fontSize: 11,
+    borderRadius: 0
   },
 }));
+
+const quoteStyle = {
+  width: "130px"
+}
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -73,7 +78,7 @@ const Footer = (
           Alexander von Humboldt
         </b>
       </a>
-      <div className="footersm" position="relative" style={{width: "130px"}}>
+      <div className="footersm" position="relative" style={quoteStyle}>
         <h3>
           <a href="#" onClick={() => {
             navigator.clipboard.writeText
