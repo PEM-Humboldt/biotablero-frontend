@@ -7,9 +7,9 @@ import temple from 'images/temple.png';
 import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
 import umed from 'images/umed.png';
-import { Button, Tooltip, TooltipProps, tooltipClasses, styled } from '@mui/material';
+import { Tooltip, tooltipClasses, styled } from '@mui/material';
 
-const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+const LightTooltip = styled(({ className, ...props }) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
@@ -20,10 +20,6 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     borderRadius: 0
   },
 }));
-
-const quoteStyle = {
-  width: "130px"
-}
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -43,8 +39,7 @@ const Footer = (
   {
     logosId,
   },
-) => {
-  return(
+) => (
   <footer>
     {
     (logosId && logoSet[logosId]) ? (
@@ -78,16 +73,16 @@ const Footer = (
           Alexander von Humboldt
         </b>
       </a>
-      <div className="footersm" position="relative" style={quoteStyle}>
+      <div className="footersm quoteStyle" position="relative">
         <h3>
-          <a href="#" onClick={() => {
-            navigator.clipboard.writeText
-              ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
+          <button className="footerTooltip" onClick={() => {
+              navigator.clipboard.writeText
+                ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
             }}>
             <LightTooltip title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'>
               <span>Cítese</span>
             </LightTooltip>
-          </a>
+          </button>
         </h3>
       
         <h3>
@@ -99,7 +94,6 @@ const Footer = (
     </div>
   </footer>
   );
-};
 
 Footer.propTypes = {
   logosId: PropTypes.string,
