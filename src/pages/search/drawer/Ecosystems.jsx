@@ -19,11 +19,6 @@ import RestAPI from 'utils/restAPI';
 import SearchAPI from "utils/searchAPI";
 import SmallStackedBar from 'pages/search/shared_components/charts/SmallStackedBar';
 
-// const styles = {
-//   color: "#e84a5f",
-//   fontSize:"10px",
-//   paddingLeft: "10px"
-// }
 /**
  * Calculate percentage for a given value according to total
  *
