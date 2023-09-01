@@ -7,19 +7,6 @@ import temple from 'images/temple.png';
 import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
 import umed from 'images/umed.png';
-import { Tooltip, tooltipClasses, styled } from '@mui/material';
-
-const LightTooltip = styled(({ className, ...props }) => (
-  <Tooltip {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
-    boxShadow: theme.shadows[1],
-    fontSize: 11,
-    borderRadius: 0
-  },
-}));
 
 const logosData = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
@@ -75,16 +62,13 @@ const Footer = (
       </a>
       <div className="footersm quoteStyle" position="relative">
         <h3>
-          <button className="footerTooltip" onClick={() => {
+          <button title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"' className="footerTooltip" onClick={() => {
               navigator.clipboard.writeText
                 ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
             }}>
-            <LightTooltip title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'>
-              <span>Cítese</span>
-            </LightTooltip>
+            <span>Cítese</span>
           </button>
         </h3>
-      
         <h3>
           <a href="mailto:mlondono@humboldt.org.co">
             Contacto
