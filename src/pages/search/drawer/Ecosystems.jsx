@@ -391,6 +391,9 @@ class Ecosystems extends React.Component {
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
+            <h3 className="warningNote">
+              {getPercentage(SETotalArea, generalArea) > 100 ? 'La superposición de ecosistemas estratégicos puede resultar en que su valor total exceda el área de consulta, al contar múltiples veces zonas donde coexisten.' : '' }
+            </h3>
             {infoShown.has('se') && (
               <ShortInfo
                 description={`<p>${texts.se.info}</p>`}
