@@ -60,11 +60,23 @@ const Footer = (
           Alexander von Humboldt
         </b>
       </a>
-      <h3>
-        <a href="mailto:mlondono@humboldt.org.co">
-          Contacto
-        </a>
-      </h3>
+      <div className="footersm quoteStyle">
+        <h3>
+          <button 
+            title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"' 
+            className="footerTooltip" 
+            onClick={() => {
+              navigator.clipboard.writeText("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
+            }}>
+              Cítese
+          </button>
+        </h3>
+        <h3>
+          <a href="mailto:mlondono@humboldt.org.co">
+            Contacto
+          </a>
+        </h3>
+      </div>
     </div>
   </footer>
 );

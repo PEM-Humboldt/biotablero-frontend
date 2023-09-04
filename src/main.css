@@ -927,6 +927,17 @@ footer h3 a, .footersm h3 a {
 	font-size: 15px;
 }
 
+.footerTooltip {
+	border: none; 
+	background: none; 
+	color: #e84a5f; 
+	font-family: 'Lato', sans-serif;
+	font-size: 15px;
+}
+
+.quoteStyle {
+	width: 130px;
+}
 
 /* isotope */
 
