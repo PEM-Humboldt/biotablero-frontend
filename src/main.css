@@ -2923,9 +2923,9 @@ tspan, .vx-axis-label {
 }
 
 h3.warningNote {
-	color: #e84a5f !important;
-	font-size: 10px !important;
-	padding-left: 10px !important;
+	color: #e84a5f;
+	font-size: 10px;
+	padding-left: 10px;
 }
 
 /* Begin - Animate the loading */
