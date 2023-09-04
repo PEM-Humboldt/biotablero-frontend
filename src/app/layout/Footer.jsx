@@ -66,8 +66,7 @@ const Footer = (
             title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"' 
             className="footerTooltip" 
             onClick={() => {
-              navigator.clipboard.writeText
-                ("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
+              navigator.clipboard.writeText("Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org");
             }}>
               Cítese
           </button>
@@ -80,7 +79,7 @@ const Footer = (
       </div>
     </div>
   </footer>
-  );
+);
 
 Footer.propTypes = {
   logosId: PropTypes.string,
