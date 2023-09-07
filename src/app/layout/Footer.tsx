@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import logohumboldt from 'images/logohumboldt.png';
 import logoSiac from 'images/logosiac.png';
 import nasa from 'images/nasa.png';
@@ -8,7 +7,39 @@ import geobon from 'images/geobonlogo.png';
 import usaid from 'images/usaidlogo.png';
 import umed from 'images/umed.png';
 
-const logosData = {
+interface ImgLogos {
+  nasa: {
+    img: string;
+    url: string;
+  };
+  temple: {
+    img: string;
+    url: string;
+  };
+siac: {
+    img: string;
+    url: string;
+  };
+geobon: {
+    img: string;
+    url: string;
+  };
+usaid: {
+    img: string;
+    url: string;
+  };
+umed: {
+    img: string;
+    url: string;
+  };
+}
+
+interface NameLogo{
+  default: string[];
+  monitoreo: string[];
+} 
+
+const logosData: ImgLogos = {
   nasa: { img: nasa, url: 'https://www.nasa.gov/' },
   temple: { img: temple, url: 'https://www.temple.edu/' },
   siac: { img: logoSiac, url: 'http://www.siac.gov.co/siac.html' },
@@ -17,19 +48,23 @@ const logosData = {
   umed: { img: umed, url: 'https://udemedellin.edu.co/' },
 };
 
-const logoSet = {
+const logoSet: NameLogo = {
   default: ['nasa', 'temple', 'siac'],
   monitoreo: ['usaid', 'geobon', 'umed', 'temple'],
 };
 
-const Footer = (
+interface Logo {
+  logosId: string
+} 
+
+const Footer: React.FC<Logo> = (
   {
     logosId,
   },
 ) => (
   <footer>
     {
-    (logosId && logoSet[logosId]) ? (
+    (logosId && logoSet[logosId as keyof typeof logoSet]) ? (
       <div className="footerflex">
         <div>
           <a href="http://www.humboldt.org.co/es/">
@@ -40,11 +75,11 @@ const Footer = (
           <h4>
             Colaboradores
           </h4>
-          {logoSet[logosId].map((name) => {
-            if (!logosData[name]) return null;
+          {logoSet[logosId as keyof typeof logoSet].map((name) => {
+            if (!logosData[name as keyof typeof logosData]) return null;
             return (
-              <a href={logosData[name].url} target="_blank" rel="noopener noreferrer" key={name}>
-                <img src={logosData[name].img} alt="" />
+              <a href={logosData[name as keyof typeof logosData].url} target="_blank" rel="noopener noreferrer" key={name}>
+                <img src={logosData[name as keyof typeof logosData].img} alt="" />
               </a>
             );
           })}
@@ -52,7 +87,7 @@ const Footer = (
       </div>
     ) : ('')
     }
-    <div className="footersm" position="relative">
+    <div className="footersm" style={{position:"relative"}}>
       <a href="http://www.humboldt.org.co/es/">
         Instituto de Investigación de Recursos Biológicos
         <br />
@@ -80,13 +115,5 @@ const Footer = (
     </div>
   </footer>
 );
-
-Footer.propTypes = {
-  logosId: PropTypes.string,
-};
-
-Footer.defaultProps = {
-  logosId: null,
-};
 
 export default Footer;
