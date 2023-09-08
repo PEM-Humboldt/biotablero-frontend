@@ -32,7 +32,7 @@ const logoSet: LogosConfig = {
 };
 
 interface FooterProps {
-  logosId: "default" | "monitoreo" | null;
+  logosId: keyof LogosConfig | null;
 }
 
 const Footer: React.FC<FooterProps> = ({ logosId }) => (
