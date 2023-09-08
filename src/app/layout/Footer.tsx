@@ -7,39 +7,17 @@ import geobon from "images/geobonlogo.png";
 import usaid from "images/usaidlogo.png";
 import umed from "images/umed.png";
 
-interface ImgLogos {
-  nasa: {
-    img: string;
-    url: string;
-  };
-  temple: {
-    img: string;
-    url: string;
-  };
-  siac: {
-    img: string;
-    url: string;
-  };
-  geobon: {
-    img: string;
-    url: string;
-  };
-  usaid: {
-    img: string;
-    url: string;
-  };
-  umed: {
-    img: string;
-    url: string;
-  };
+type KEYS = "nasa" | "temple" | "siac" | "geobon" | "geobon" | "usaid" | "umed";
+type LogosImg = {
+  [key in KEYS]: {img: string; url: string;};
 }
 
-interface NameLogo {
-  default: string[];
-  monitoreo: string[];
+interface LogosConfig {
+  default: Array<KEYS>;
+  monitoreo: Array<KEYS>;
 }
 
-const logosData: ImgLogos = {
+const logosData: LogosImg = {
   nasa: { img: nasa, url: "https://www.nasa.gov/" },
   temple: { img: temple, url: "https://www.temple.edu/" },
   siac: { img: logoSiac, url: "http://www.siac.gov.co/siac.html" },
@@ -48,18 +26,18 @@ const logosData: ImgLogos = {
   umed: { img: umed, url: "https://udemedellin.edu.co/" },
 };
 
-const logoSet: NameLogo = {
+const logoSet: LogosConfig = {
   default: ["nasa", "temple", "siac"],
   monitoreo: ["usaid", "geobon", "umed", "temple"],
 };
 
-interface Logo {
-  logosId: string;
+interface FooterProps {
+  logosId: "default" | "monitoreo" | null;
 }
 
-const Footer: React.FC<Logo> = ({ logosId }) => (
+const Footer: React.FC<FooterProps> = ({ logosId }) => (
   <footer>
-    {logosId && logoSet[logosId as keyof typeof logoSet] ? (
+    {logosId && logoSet[logosId] ? (
       <div className="footerflex">
         <div>
           <a href="http://www.humboldt.org.co/es/">
@@ -68,17 +46,16 @@ const Footer: React.FC<Logo> = ({ logosId }) => (
         </div>
         <div className="colaboradores">
           <h4>Colaboradores</h4>
-          {logoSet[logosId as keyof typeof logoSet].map((name) => {
-            if (!logosData[name as keyof typeof logosData]) return null;
+          {logoSet[logosId].map((name) => {
             return (
               <a
-                href={logosData[name as keyof typeof logosData].url}
+                href={logosData[name].url}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={name}
               >
                 <img
-                  src={logosData[name as keyof typeof logosData].img}
+                  src={logosData[name].img}
                   alt=""
                 />
               </a>
