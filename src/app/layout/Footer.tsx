@@ -9,8 +9,8 @@ import umed from "images/umed.png";
 
 type KEYS = "nasa" | "temple" | "siac" | "geobon" | "geobon" | "usaid" | "umed";
 type LogosImg = {
-  [key in KEYS]: {img: string; url: string;};
-}
+  [key in KEYS]: { img: string; url: string };
+};
 
 interface LogosConfig {
   default: Array<KEYS>;
@@ -54,10 +54,7 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
                 rel="noopener noreferrer"
                 key={name}
               >
-                <img
-                  src={logosData[name].img}
-                  alt=""
-                />
+                <img src={logosData[name].img} alt="" />
               </a>
             );
           })}
