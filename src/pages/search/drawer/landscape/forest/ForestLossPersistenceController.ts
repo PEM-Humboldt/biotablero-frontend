@@ -154,6 +154,7 @@ export class ForestLossPersistenceController {
           tooltipContent: [
             category.label,
             `${formatNumber(category.area, 2)} ha`,
+            `${formatNumber(category.percentage * 100, 3)} %`,
           ],
         });
 

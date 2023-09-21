@@ -39,6 +39,8 @@ class Pie extends React.Component<Props, State> {
       colors,
       data,
     } = this.props;
+
+    const suma = data.reduce((ant, act) => ant + act.value, 0);
     const { selectedId } = this.state;
     return (
       <div style={{ height }}>
@@ -67,6 +69,8 @@ class Pie extends React.Component<Props, State> {
               <div>
                 {formatNumber(value, 2)}
                 {` ${units}`}
+                <br />
+                {`${formatNumber((value * 100) / suma, 2)}%`}
               </div>
             </div>
           )}
