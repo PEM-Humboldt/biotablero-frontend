@@ -51,6 +51,7 @@ interface FIState {
       id: SCIHFCats;
       label: string;
       value: number;
+      per: number;
     };
   };
   texts: {
@@ -77,31 +78,37 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           id: "alta-estable_natural",
           label: "ICE Alto - IHEH Natural",
           value: 0,
+          per: 0,
         },
         "alta-dinamica": {
           id: "alta-dinamica",
           label: "ICE Alto - IHEH Dinámica",
           value: 0,
+          per: 0,
         },
         "alta-estable_alta": {
           id: "alta-estable_alta",
           label: "ICE Alto - IHEH Alta",
           value: 0,
+          per: 0,
         },
         "baja_moderada-estable_natural": {
           id: "baja_moderada-estable_natural",
           label: "ICE Bajo Moderado - IHEH Natural",
           value: 0,
+          per: 0,
         },
         "baja_moderada-dinamica": {
           id: "baja_moderada-dinamica",
           label: "ICE Bajo Moderado - IHEH Dinámica",
           value: 0,
+          per: 0,
         },
         "baja_moderada-estable_alta": {
           id: "baja_moderada-estable_alta",
           label: "ICE Bajo Moderado - IHEH Alta",
           value: 0,
+          per: 0,
         },
       },
       texts: {
@@ -156,7 +163,17 @@ class ForestIntegrity extends React.Component<Props, FIState> {
                   });
                 }
               });
+              const addTotalArea =
+                cats["alta-dinamica"].value +
+                cats["alta-estable_alta"].value +
+                cats["alta-estable_natural"].value +
+                cats["baja_moderada-dinamica"].value +
+                cats["baja_moderada-estable_alta"].value +
+                cats["baja_moderada-estable_natural"].value;
+
               getSCIHFVals().forEach((sciHfCat) => {
+                cats[sciHfCat].per =
+                  (cats[sciHfCat].value * 100) / addTotalArea;
                 PAs[sciHfCat] = PAs[sciHfCat].map((areas) => ({
                   ...areas,
                   percentage: areas.area / cats[sciHfCat].value,
