@@ -17,7 +17,7 @@ export interface PieData {
   id: string;
   label: string;
   value: number;
-  per: number;
+  percentage: number;
 }
 
 interface State {
@@ -70,7 +70,7 @@ class Pie extends React.Component<Props, State> {
                 {formatNumber(value, 2)}
                 {` ${units}`}
                 <br />
-                {`${formatNumber(data.per, 2)}%`}
+                {`${formatNumber(data.percentage, 2)}%`}
               </div>
             </div>
           )}
