@@ -72,7 +72,7 @@ class CompensationFactor extends React.Component<
     switchLayer("fc");
 
     SearchAPI.requestBiomes(areaId, geofenceId)
-      .then((res: Array<cfData>) => {        
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             biomes: res.map((item) => ({
@@ -96,7 +96,7 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestCompensationFactor(areaId, geofenceId)
-      .then((res: Array<cfData>) => {        
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             fc: res.map((item) => ({
@@ -120,7 +120,7 @@ class CompensationFactor extends React.Component<
       });
 
     SearchAPI.requestBioticUnits(areaId, geofenceId)
-      .then((res: Array<cfData>) => {        
+      .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
             bioticUnits: res.map((item) => ({
