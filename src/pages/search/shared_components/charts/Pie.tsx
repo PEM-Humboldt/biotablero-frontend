@@ -17,6 +17,7 @@ export interface PieData {
   id: string;
   label: string;
   value: number;
+  percentage: number;
 }
 
 interface State {
@@ -39,6 +40,7 @@ class Pie extends React.Component<Props, State> {
       colors,
       data,
     } = this.props;
+
     const { selectedId } = this.state;
     return (
       <div style={{ height }}>
@@ -59,7 +61,7 @@ class Pie extends React.Component<Props, State> {
           borderColor={{ from: "color", modifiers: [["darker", 0.5]] }}
           enableArcLinkLabels={false}
           enableArcLabels={false}
-          tooltip={({ datum: { label, value, color } }) => (
+          tooltip={({ datum: { label, value, color, data } }) => (
             <div className="tooltip-graph-container">
               <strong style={{ color: lightenColor(color, 15) }}>
                 {`${label}:`}
@@ -67,6 +69,8 @@ class Pie extends React.Component<Props, State> {
               <div>
                 {formatNumber(value, 2)}
                 {` ${units}`}
+                <br />
+                {`${formatNumber(data.percentage, 2)}%`}
               </div>
             </div>
           )}
