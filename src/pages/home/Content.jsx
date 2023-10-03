@@ -65,6 +65,8 @@ const Content = ({ activeModule, setActiveModule }) => {
       auth: false,
     });
   }
+
+  if (showAlert) {
   modules.push({
     focusCallback: () => setActiveModule('cbmdashboard'),
     buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,
@@ -74,6 +76,7 @@ const Content = ({ activeModule, setActiveModule }) => {
     localLink: '/Monitoreo',
     auth: false,
   });
+  }
 
   return (
     <AppContext.Consumer>

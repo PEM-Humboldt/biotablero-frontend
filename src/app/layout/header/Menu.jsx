@@ -68,11 +68,13 @@ class Menu extends React.Component {
               </li>
             </Link>
           )}
+          {showAlerts && (
           <Link to="/Monitoreo" onClick={this.changeMenuState}>
             <li>
               Monitoreo comunitario
             </li>
           </Link>
+          )}
         </ul>
       </div>
     );
