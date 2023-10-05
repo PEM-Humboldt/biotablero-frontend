@@ -133,7 +133,7 @@ class App extends React.Component {
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
-            <Route path="/Monitoreo" render={this.loadHome} />
+            <Route path="/Monitoreo" render={process.env.REACT_APP_ENVIRONMENT === "develop" ? this.loadCBMDashboard : this.loadHome} />
           </Switch>
         </main>
       </AppContext.Provider>

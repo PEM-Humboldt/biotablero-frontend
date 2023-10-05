@@ -11,12 +11,16 @@ class Menu extends React.Component {
     this.state = {
       openMenu: false,
       showAlerts: false,
+      showCBMDashboard: false
     };
   }
 
   componentDidMount() {
     isFlagEnabled('alertsModule')
       .then((value) => this.setState({ showAlerts: value }));
+    
+      isFlagEnabled('CBMModule')
+      .then((value) => this.setState({ showCBMDashboard: value }));
   }
 
   changeMenuState = () => {
@@ -25,7 +29,7 @@ class Menu extends React.Component {
 
   render() {
     const { user } = this.context;
-    const { openMenu, showAlerts } = this.state;
+    const { openMenu, showAlerts, showCBMDashboard } = this.state;
     return (
       <div id="menuToggle">
         <input type="checkbox" checked={openMenu} onChange={this.changeMenuState} />
@@ -68,7 +72,7 @@ class Menu extends React.Component {
               </li>
             </Link>
           )}
-          {showAlerts && (
+          {showCBMDashboard && (
           <Link to="/Monitoreo" onClick={this.changeMenuState}>
             <li>
               Monitoreo comunitario
