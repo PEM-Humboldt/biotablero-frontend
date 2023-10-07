@@ -15,16 +15,22 @@ import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
 import 'indicators/dist/bundle.css';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: null,
       headerNames: {},
+      showCBMDashboard: false
     };
   }
 
   buildQuery = (queryString) => new URLSearchParams(queryString);
+
+  setShowCBMDashboard = isFlagEnabled('CBMModule')
+                          .then((value) => this.setState({ showCBMDashboard: value }))
 
   setUser = (user) => this.setState({ user });
 
@@ -94,7 +100,7 @@ class App extends React.Component {
   );
 
   loadCBMDashboard = () => (
-    this.loadComponent({
+      this.loadComponent({
       logoSet: 'monitoreo',
       name: 'Monitoreo comunitario',
       component: (<CBMDashboard />),
@@ -120,7 +126,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, showCBMDashboard } = this.state;
     return (
       <AppContext.Provider
         value={{ user }}
@@ -133,7 +139,7 @@ class App extends React.Component {
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
-            <Route path="/Monitoreo" render={process.env.REACT_APP_ENVIRONMENT === "develop" ? this.loadCBMDashboard : this.loadHome} />
+            <Route path="/Monitoreo" render={showCBMDashboard ? this.loadCBMDashboard: this.loadHome} />
           </Switch>
         </main>
       </AppContext.Provider>

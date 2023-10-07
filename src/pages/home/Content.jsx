@@ -14,11 +14,9 @@ const Content = ({ activeModule, setActiveModule }) => {
   useEffect(() => {
     isFlagEnabled('alertsModule')
       .then((value) => setShowAlert(value));
-  }, []);
 
-  useEffect(() => {
     isFlagEnabled('CBMModule')
-      .then((value) => setshowCBMDashboard(value));
+      .then((value) => setshowCBMDashboard(value));  
   }, []);
 
   const modules = [
@@ -60,7 +58,7 @@ const Content = ({ activeModule, setActiveModule }) => {
     },
   ];
 
-  if (showAlert) {
+  if (!showAlert) {
     modules.push({
       focusCallback: () => setActiveModule('alert'),
       buttonStyles: `finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`,
@@ -72,7 +70,7 @@ const Content = ({ activeModule, setActiveModule }) => {
     });
   }
 
-  if (showCBMDashboard) {
+  if (!showCBMDashboard) {
     modules.push({
       focusCallback: () => setActiveModule('cbmdashboard'),
       buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,

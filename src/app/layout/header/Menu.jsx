@@ -18,8 +18,8 @@ class Menu extends React.Component {
   componentDidMount() {
     isFlagEnabled('alertsModule')
       .then((value) => this.setState({ showAlerts: value }));
-    
-      isFlagEnabled('CBMModule')
+
+    isFlagEnabled('CBMModule')
       .then((value) => this.setState({ showCBMDashboard: value }));
   }
 
@@ -65,19 +65,19 @@ class Menu extends React.Component {
               Portafolios
             </li>
           </Link>
-          {showAlerts && (
+          {!showAlerts && (
             <Link to="/Alertas" onClick={this.changeMenuState}>
               <li>
                 Alertas
               </li>
             </Link>
           )}
-          {showCBMDashboard && (
-          <Link to="/Monitoreo" onClick={this.changeMenuState}>
-            <li>
-              Monitoreo comunitario
-            </li>
-          </Link>
+          {!showCBMDashboard && (
+            <Link to="/Monitoreo" onClick={this.changeMenuState}>
+              <li>
+                Monitoreo comunitario
+              </li>
+            </Link>
           )}
         </ul>
       </div>
