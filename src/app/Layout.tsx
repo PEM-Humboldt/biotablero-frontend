@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-import Footer from 'app/layout/Footer';
-import Header from 'app/layout/Header';
+import Footer from "app/layout/Footer";
+import Header from "app/layout/Header";
 
 interface Names {
   parent: string | null;
@@ -10,7 +10,7 @@ interface Names {
 }
 
 interface LayoutProps {
-  children: any | null,
+  children: any | null;
   moduleName: string;
   footerLogos: any;
   headerNames: Names;
@@ -27,15 +27,10 @@ const Layout: React.FunctionComponent<LayoutProps> = ({
   className,
 }) => (
   <div className={className}>
-    <Header
-      activeModule={moduleName}
-      headerNames={headerNames}
-      uim={uim}
-    />
+    <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
     {children}
     <Footer logosId={footerLogos} />
   </div>
 );
-
 
 export default Layout;
