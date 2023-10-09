@@ -4,7 +4,21 @@ import PropTypes from 'prop-types';
 import Footer from 'app/layout/Footer';
 import Header from 'app/layout/Header';
 
-const Layout = ({
+interface Names {
+  parent: string | null;
+  child: string | null;
+}
+
+interface LayoutProps {
+  children: any | null,
+  moduleName: string;
+  footerLogos: any;
+  headerNames: Names;
+  uim: React.ReactNode | null;
+  className: string;
+}
+
+const Layout: React.FunctionComponent<LayoutProps> = ({
   children,
   moduleName,
   footerLogos,
@@ -23,22 +37,5 @@ const Layout = ({
   </div>
 );
 
-Layout.propTypes = {
-  children: PropTypes.any,
-  moduleName: PropTypes.string,
-  footerLogos: PropTypes.string,
-  headerNames: PropTypes.object,
-  uim: PropTypes.node,
-  className: PropTypes.string,
-};
-
-Layout.defaultProps = {
-  children: null,
-  moduleName: '',
-  footerLogos: null,
-  headerNames: {},
-  uim: null,
-  className: '',
-};
 
 export default Layout;

@@ -4,8 +4,19 @@ import PropTypes from 'prop-types';
 import Menu from 'app/layout/header/Menu';
 import Title from 'app/layout/header/Title';
 
-const Header = ({
-  activeModule,
+interface Names {
+  parent: string | null;
+  child: string | null;
+}
+
+interface HeaderProps {
+  activeModule: string;
+  headerNames: Names;
+  uim: React.ReactNode | null;
+}
+
+const Header: React.FunctionComponent<HeaderProps> = ({
+  activeModule = '',
   headerNames: { parent, child },
   uim,
 }) => (
@@ -39,19 +50,5 @@ const Header = ({
   </header>
 );
 
-Header.propTypes = {
-  activeModule: PropTypes.string,
-  headerNames: PropTypes.shape({
-    parent: PropTypes.string,
-    child: PropTypes.string,
-  }),
-  uim: PropTypes.node,
-};
-
-Header.defaultProps = {
-  activeModule: '',
-  headerNames: { parent: null, child: null },
-  uim: null,
-};
 
 export default Header;
