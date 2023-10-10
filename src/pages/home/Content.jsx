@@ -57,7 +57,7 @@ const Content = ({ activeModule, setActiveModule }) => {
       auth: false,
     },
   ];
-console.log("SHOW_ALERT - SHOW_CBM",showAlert, showCBMDashboard);
+
   if (showAlert) {
     modules.push({
       focusCallback: () => setActiveModule('alert'),
