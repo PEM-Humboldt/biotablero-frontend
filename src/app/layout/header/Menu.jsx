@@ -65,14 +65,14 @@ class Menu extends React.Component {
               Portafolios
             </li>
           </Link>
-          {!showAlerts && (
+          {showAlerts && (
             <Link to="/Alertas" onClick={this.changeMenuState}>
               <li>
                 Alertas
               </li>
             </Link>
           )}
-          {!showCBMDashboard && (
+          {showCBMDashboard && (
             <Link to="/Monitoreo" onClick={this.changeMenuState}>
               <li>
                 Monitoreo comunitario

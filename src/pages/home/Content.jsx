@@ -57,8 +57,8 @@ const Content = ({ activeModule, setActiveModule }) => {
       auth: false,
     },
   ];
-
-  if (!showAlert) {
+console.log("SHOW_ALERT - SHOW_CBM",showAlert, showCBMDashboard);
+  if (showAlert) {
     modules.push({
       focusCallback: () => setActiveModule('alert'),
       buttonStyles: `finder ale ${(activeModule === 'alert') ? 'activeicon' : ''}`,
@@ -70,7 +70,7 @@ const Content = ({ activeModule, setActiveModule }) => {
     });
   }
 
-  if (!showCBMDashboard) {
+  if (showCBMDashboard) {
     modules.push({
       focusCallback: () => setActiveModule('cbmdashboard'),
       buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,

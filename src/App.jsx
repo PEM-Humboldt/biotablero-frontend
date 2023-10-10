@@ -27,10 +27,13 @@ class App extends React.Component {
     };
   }
 
+  componentDidMount() {
+    isFlagEnabled('CBMModule')
+      .then((value) => this.setState({ showCBMDashboard: value }))
+  }
+
   buildQuery = (queryString) => new URLSearchParams(queryString);
 
-  setShowCBMDashboard = isFlagEnabled('CBMModule')
-                          .then((value) => this.setState({ showCBMDashboard: value }))
 
   setUser = (user) => this.setState({ user });
 
@@ -100,7 +103,7 @@ class App extends React.Component {
   );
 
   loadCBMDashboard = () => (
-      this.loadComponent({
+    this.loadComponent({
       logoSet: 'monitoreo',
       name: 'Monitoreo comunitario',
       component: (<CBMDashboard />),
@@ -139,7 +142,7 @@ class App extends React.Component {
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
-            <Route path="/Monitoreo" render={showCBMDashboard ? this.loadCBMDashboard: this.loadHome} />
+            <Route path="/Monitoreo" render={showCBMDashboard ? this.loadCBMDashboard : this.loadHome} />
           </Switch>
         </main>
       </AppContext.Provider>
