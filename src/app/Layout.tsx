@@ -16,7 +16,7 @@ interface Names {
 }
 
 interface LayoutProps {
-  children: ReactElement;
+  children: React.ReactNode;
   moduleName: string;
   footerLogos: keyof LogosConfig | null;
   headerNames: Names;
