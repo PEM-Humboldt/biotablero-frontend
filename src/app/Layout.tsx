@@ -3,7 +3,7 @@ import React, { ReactElement } from "react";
 import Footer from "app/layout/Footer";
 import Header from "app/layout/Header";
 
-import {LogosConfig} from "../../src/types/layoutTypes"
+import { LogosConfig } from "../../src/types/layoutTypes";
 
 interface Names {
   parent?: string;
