@@ -15,16 +15,25 @@ import 'main.css';
 import 'cbm-dashboard/dist/bundle.css';
 import 'indicators/dist/bundle.css';
 
+import isFlagEnabled from 'utils/isFlagEnabled';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: null,
       headerNames: {},
+      showCBMDashboard: false
     };
   }
 
+  componentDidMount() {
+    isFlagEnabled('CBMModule')
+      .then((value) => this.setState({ showCBMDashboard: value }))
+  }
+
   buildQuery = (queryString) => new URLSearchParams(queryString);
+
 
   setUser = (user) => this.setState({ user });
 
@@ -120,7 +129,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
+    const { user, showCBMDashboard } = this.state;
     return (
       <AppContext.Provider
         value={{ user }}
@@ -133,7 +142,7 @@ class App extends React.Component {
             <Route path="/GEB/Compensaciones" component={this.loadCompensator} />
             <Route path="/Portafolios" render={this.loadPortfolio} />
             <Route path="/Alertas" render={this.loadHome} />
-            <Route path="/Monitoreo" render={this.loadCBMDashboard} />
+            <Route path="/Monitoreo" render={showCBMDashboard ? this.loadCBMDashboard : this.loadHome} />
           </Switch>
         </main>
       </AppContext.Provider>

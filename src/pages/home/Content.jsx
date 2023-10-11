@@ -9,10 +9,14 @@ import isFlagEnabled from 'utils/isFlagEnabled';
 
 const Content = ({ activeModule, setActiveModule }) => {
   const [showAlert, setShowAlert] = useState(false);
+  const [showCBMDashboard, setshowCBMDashboard] = useState(false);
 
   useEffect(() => {
     isFlagEnabled('alertsModule')
       .then((value) => setShowAlert(value));
+
+    isFlagEnabled('CBMModule')
+      .then((value) => setshowCBMDashboard(value));  
   }, []);
 
   const modules = [
@@ -65,15 +69,18 @@ const Content = ({ activeModule, setActiveModule }) => {
       auth: false,
     });
   }
-  modules.push({
-    focusCallback: () => setActiveModule('cbmdashboard'),
-    buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,
-    idBtn: 'monbtn',
-    firstLineContent: 'Monitoreo',
-    secondLineContent: 'comunitario',
-    localLink: '/Monitoreo',
-    auth: false,
-  });
+
+  if (showCBMDashboard) {
+    modules.push({
+      focusCallback: () => setActiveModule('cbmdashboard'),
+      buttonStyles: `finder mon ${(activeModule === 'cbmdashboard') ? 'activeicon' : ''}`,
+      idBtn: 'monbtn',
+      firstLineContent: 'Monitoreo',
+      secondLineContent: 'comunitario',
+      localLink: '/Monitoreo',
+      auth: false,
+    });
+  }
 
   return (
     <AppContext.Consumer>
