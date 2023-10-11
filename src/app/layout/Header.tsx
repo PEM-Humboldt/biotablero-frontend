@@ -1,22 +1,21 @@
 import React from "react";
-import PropTypes from "prop-types";
 
 import Menu from "app/layout/header/Menu";
 import Title from "app/layout/header/Title";
 
 interface Names {
-  parent: string | null;
-  child: string | null;
+  parent?: string;
+  child?: string;
 }
 
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
-  uim: React.ReactNode | null;
+  uim: React.ReactNode;
 }
 
 const Header: React.FunctionComponent<HeaderProps> = ({
-  activeModule = "",
+  activeModule,
   headerNames: { parent, child },
   uim,
 }) => (

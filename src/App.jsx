@@ -37,6 +37,7 @@ class App extends React.Component {
   loadHome = ({ location }) => (
     this.loadComponent({
       logoSet: 'default',
+      name:'',
       component: (<Home referrer={location.referrer} />),
     })
   );

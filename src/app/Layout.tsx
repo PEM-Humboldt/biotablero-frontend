@@ -1,20 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { ReactElement } from "react";
 
 import Footer from "app/layout/Footer";
 import Header from "app/layout/Header";
 
+type KEYS = "nasa" | "temple" | "siac" | "geobon" | "geobon" | "usaid" | "umed";
+
+interface LogosConfig {
+  default: Array<KEYS>;
+  monitoreo: Array<KEYS>;
+}
+
 interface Names {
-  parent: string | null;
-  child: string | null;
+  parent?: string;
+  child?: string;
 }
 
 interface LayoutProps {
-  children: any | null;
+  children: ReactElement;
   moduleName: string;
-  footerLogos: any;
+  footerLogos: keyof LogosConfig | null;
   headerNames: Names;
-  uim: React.ReactNode | null;
+  uim: React.ReactNode;
   className: string;
 }
 
