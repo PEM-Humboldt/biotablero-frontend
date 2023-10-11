@@ -7,15 +7,11 @@ import geobon from "images/geobonlogo.png";
 import usaid from "images/usaidlogo.png";
 import umed from "images/umed.png";
 
-type KEYS = "nasa" | "temple" | "siac" | "geobon" | "geobon" | "usaid" | "umed";
+import { KEYS, LogosConfig } from "../../../src/types/layoutTypes"
+
 type LogosImg = {
   [key in KEYS]: { img: string; url: string };
 };
-
-interface LogosConfig {
-  default: Array<KEYS>;
-  monitoreo: Array<KEYS>;
-}
 
 const logosData: LogosImg = {
   nasa: { img: nasa, url: "https://www.nasa.gov/" },

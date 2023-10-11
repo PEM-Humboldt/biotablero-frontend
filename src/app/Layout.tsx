@@ -3,12 +3,7 @@ import React, { ReactElement } from "react";
 import Footer from "app/layout/Footer";
 import Header from "app/layout/Header";
 
-type KEYS = "nasa" | "temple" | "siac" | "geobon" | "geobon" | "usaid" | "umed";
-
-interface LogosConfig {
-  default: Array<KEYS>;
-  monitoreo: Array<KEYS>;
-}
+import {LogosConfig} from "../../src/types/layoutTypes"
 
 interface Names {
   parent?: string;
