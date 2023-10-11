@@ -7,7 +7,7 @@ import geobon from "images/geobonlogo.png";
 import usaid from "images/usaidlogo.png";
 import umed from "images/umed.png";
 
-import { KEYS, LogosConfig } from "../../../src/types/layoutTypes";
+import { KEYS, LogosConfig } from "types/layoutTypes";
 
 type LogosImg = {
   [key in KEYS]: { img: string; url: string };
