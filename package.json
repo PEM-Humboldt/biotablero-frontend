@@ -21,6 +21,7 @@
     "@nivo/line": "~0.79.1",
     "@nivo/pie": "~0.79.1",
     "@nivo/tooltip": "~0.79.0",
+    "@types/react-router-dom": "^5.3.3",
     "@vx/axis": "~0.0.199",
     "@vx/glyph": "~0.0.199",
     "@vx/grid": "~0.0.199",

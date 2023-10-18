@@ -1,13 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-// import PropTypes from 'prop-types';
 
 interface Props {
   title: string;
   subTitle: string;
 }
 
-const Title: React.FunctionComponent<Props> = ({ title, subTitle }: Props) => (
+const Title: React.FunctionComponent<Props> = ({ title, subTitle }) => (
   <div className={subTitle ? 'interna' : 'cabezoteRight'}>
     <h3>
       <Link to="/">
@@ -23,15 +22,5 @@ const Title: React.FunctionComponent<Props> = ({ title, subTitle }: Props) => (
     )}
   </div>
 );
-
-// Title.propTypes = {
-//   title: PropTypes.string,
-//   subTitle: PropTypes.string,
-// };
-
-// Title.defaultProps = {
-//   title: '',
-//   subTitle: '',
-// };
 
 export default Title;
