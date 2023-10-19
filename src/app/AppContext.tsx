@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
 export interface AppContextValue {
-    user: null
-  }
+  user: null;
+}
 
 const AppContext = React.createContext<AppContextValue>({
-  user: null
+  user: null,
 });
 
 export default AppContext;
