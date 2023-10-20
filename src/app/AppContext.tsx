@@ -1,7 +1,16 @@
 import React from "react";
 
+interface userValues {
+  id?: number;
+  username: string;
+  name?: string;
+  company?: {
+    id: number;
+  };
+}
+
 export interface AppContextValue {
-  user: null;
+  user: userValues | null;
 }
 
 const AppContext = React.createContext<AppContextValue>({
