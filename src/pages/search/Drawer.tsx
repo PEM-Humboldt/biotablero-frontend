@@ -95,9 +95,9 @@ class Drawer extends React.Component<Props, State> {
         <TabContainer
           initialSelectedIndex={initialSelectedIndex}
           titles={[
-            { label: "Ecosistemas", icon: <Ecosistemas />, showTab: true },
-            { label: "Paisaje", icon: <Paisaje />, showTab: true },
-            { label: "Especies", icon: <Especies />, showTab: true },
+            { label: "Ecosistemas", icon: <Ecosistemas /> },
+            { label: "Paisaje", icon: <Paisaje /> },
+            { label: "Especies", icon: <Especies /> },
             {
               label: "Portafolios",
               icon: <Portafolios />,

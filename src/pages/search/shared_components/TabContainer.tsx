@@ -9,7 +9,7 @@ interface Titles {
   label: string;
   icon: ReactElement;
   disabled?: boolean;
-  showTab: boolean;
+  showTab?: boolean;
 }
 
 interface Props {
@@ -57,7 +57,7 @@ class TabContainer extends React.Component<Props, State> {
             centered
           >
             {titles.map(
-              ({ label, icon, disabled, showTab }, i) =>
+              ({ label, icon, disabled, showTab = true }, i) =>
                 showTab && (
                   <Tab
                     className={`tabs ${tabClasses}`}
