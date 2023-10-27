@@ -9,6 +9,7 @@ interface Titles {
   label: string;
   icon: ReactElement;
   disabled?: boolean;
+  showTab?: boolean;
 }
 
 interface Props {
@@ -45,6 +46,7 @@ class TabContainer extends React.Component<Props, State> {
   render() {
     const { children, titles, tabClasses = "" } = this.props;
     const { selectedIndex } = this.state;
+
     return (
       <div>
         <AppBar position="static" color="default">
@@ -54,15 +56,18 @@ class TabContainer extends React.Component<Props, State> {
             className="DrawerTab"
             centered
           >
-            {titles.map(({ label, icon, disabled }, i) => (
-              <Tab
-                className={`tabs ${tabClasses}`}
-                label={label}
-                icon={icon}
-                key={i}
-                disabled={disabled}
-              />
-            ))}
+            {titles.map(
+              ({ label, icon, disabled, showTab = true }, i) =>
+                showTab && (
+                  <Tab
+                    className={`tabs ${tabClasses}`}
+                    label={label}
+                    icon={icon}
+                    key={i}
+                    disabled={disabled}
+                  />
+                )
+            )}
           </Tabs>
         </AppBar>
         {children.map(

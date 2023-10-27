@@ -16,12 +16,15 @@ import searchAPI from "utils/searchAPI";
 import TabContainer from "pages/search/shared_components/TabContainer";
 import { geofenceDetails } from "pages/search/types/drawer";
 
+import isFlagEnabled from "utils/isFlagEnabled";
+
 interface Props {
   handlerBackButton: () => {};
 }
 
 interface State {
   geofenceArea: number;
+  showPortfolios: boolean;
 }
 
 const styles = () => ({
@@ -36,12 +39,17 @@ class Drawer extends React.Component<Props, State> {
     super(props);
     this.state = {
       geofenceArea: 0,
+      showPortfolios: false,
     };
   }
 
   componentDidMount() {
     const { areaId, geofenceId, searchType } = this
       .context as SearchContextValues;
+
+    isFlagEnabled("portfolios").then((value) =>
+      this.setState({ showPortfolios: value })
+    );
 
     if (searchType !== "drawPolygon") {
       searchAPI
@@ -90,7 +98,11 @@ class Drawer extends React.Component<Props, State> {
             { label: "Ecosistemas", icon: <Ecosistemas /> },
             { label: "Paisaje", icon: <Paisaje /> },
             { label: "Especies", icon: <Especies /> },
-            { label: "Portafolios", icon: <Portafolios /> },
+            {
+              label: "Portafolios",
+              icon: <Portafolios />,
+              showTab: this.state.showPortfolios,
+            },
           ]}
         >
           {(geofenceArea !== 0 || searchType === "drawPolygon") && (
