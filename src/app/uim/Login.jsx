@@ -1,28 +1,41 @@
 import { PropTypes } from 'prop-types';
-import React, { Component, useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 import RestAPI from 'utils/restAPI';
 
-const Login = ({ setUser }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+const sessionValues = {
+  username: "",
+  password: "",
+}
 
-  const inputName = React.createRef();
-  const inputPassword = React.createRef();
+const Login = ({ setUser }) => {
+  const [userValues, setUserValues] = useState( sessionValues )
+
+  const inputName = useRef(null);
+  const inputPassword = useRef(null);
 
 
   const validateForm = () => {
-    return username.length > 0 && password.length > 0;
+    // return userValues.username.length > 0 && userValues.password.length > 0;
+    return inputName.current.value.length > 0 && inputPassword.current.value.length > 0;
   };
 
-  const handleChange = (event) => (
-    {
-      [event.target.id]: `${event.target.value}`,
-    }
-  );
+  const handleChange = (event) => {
+    // console.log(inputName.current);
+    // console.log(inputName.current.value);
+    // console.log(inputName.current.id);
+    setUserValues({
+        // ...userValues,
+        // [event.target.id]: `${event.target.value}`,
+        [inputName.current.id]: inputName.current.value,
+        [inputPassword.current.id]: inputPassword.current.value,
+      })
+      // console.log(event.target.id, event.target.value);
+  };
 
   return (
     <div className="login">
+      {console.log(userValues)}
       <form onSubmit={(event) => event.preventDefault()}>
         <input
           className="loginInput"
