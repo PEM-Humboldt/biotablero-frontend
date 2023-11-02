@@ -1,23 +1,24 @@
-// import { PropTypes } from 'prop-types';
 import React, { useState } from "react";
 
 import RestAPI from "utils/restAPI";
 
-interface StateLoginValues {
+interface defaultStateValues {
   username: string;
   password: string;
 }
 
-const sessionValues: StateLoginValues = {
+interface LoginProps {
+  setUser: (res: Response) => React.ReactNode;
+}
+
+const sessionValues: defaultStateValues = {
   username: "",
   password: "",
 };
 
-interface LoginProps {
-  setUser: (res: Response) => React.ReactNode;
-}
 const Login: React.FC<LoginProps> = ({ setUser }) => {
-  const [userValues, setUserValues] = useState<StateLoginValues>(sessionValues);
+  const [userValues, setUserValues] =
+    useState<defaultStateValues>(sessionValues);
 
   const validateForm = () => {
     return userValues.username.length > 0 && userValues.password.length > 0;
