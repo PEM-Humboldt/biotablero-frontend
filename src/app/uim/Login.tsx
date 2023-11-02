@@ -8,7 +8,7 @@ interface StateLoginValues {
 }
 
 interface LoginProps {
-  setUser: (res: Response | null) => React.ReactNode;
+  setUser: ( res: Response ) => React.ReactNode;
 }
 
 const defaultStateValues: StateLoginValues = {
