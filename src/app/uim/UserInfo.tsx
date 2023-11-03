@@ -1,15 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-import AppContext from 'app/AppContext';
+import AppContext  from 'app/AppContext';
 
-const UserInfo = ({ logoutHandler }) => (
+interface LogoutHandlerProps {
+  logoutHandler: () => void;
+}
+
+const UserInfo:React.FC<LogoutHandlerProps> = ({ logoutHandler }) => (
   <AppContext.Consumer>
-    {({ user }) => (
+    {({user}) => (
       <div className="user_info">
         <b>Usuario</b>
         <br />
-        {user.name}
+        {user?.name}
         <button
           className="logoutbtn"
           title="Salir"
@@ -22,13 +25,5 @@ const UserInfo = ({ logoutHandler }) => (
     )}
   </AppContext.Consumer>
 );
-
-UserInfo.propTypes = {
-  logoutHandler: PropTypes.func,
-};
-
-UserInfo.defaultProps = {
-  logoutHandler: () => {},
-};
 
 export default UserInfo;
