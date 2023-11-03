@@ -11,20 +11,20 @@ import ConfirmationModal from "components/ConfirmationModal";
 
 import { UimProps } from "types/uimTypes";
 
-interface defaultModalValues {
+interface LogModalsTypes {
   loginModal: boolean;
   logoutModal: boolean;
   userModal: boolean;
 }
 
-const logModals: defaultModalValues = {
+const defaultModalsValues: LogModalsTypes = {
   loginModal: false,
   logoutModal: false,
   userModal: false,
 };
 
 const Uim: React.FC<UimProps> = ({ setUser }) => {
-  const [modals, setModals] = useState<defaultModalValues>(logModals);
+  const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
 
   /**
    * Meant to be used by onClick handlers. Set the state for the corresponding
@@ -34,9 +34,20 @@ const Uim: React.FC<UimProps> = ({ setUser }) => {
    *
    * @returns {function}
    */
-
   const showModal = (modal: string) => () => {
-    setModals({ ...modals, [modal]: true });
+    switch (modal) {
+      case "loginModal":
+        setModals({ [modal]: true, logoutModal: false, userModal: false });
+        break;
+      case "logoutModal":
+        setModals({ loginModal: false, [modal]: true, userModal: false });
+        break;
+      case "userModal":
+        setModals({ loginModal: false, logoutModal: false, [modal]: true });
+        break;
+      default:
+        break;
+    }
   };
 
   /**
@@ -56,6 +67,7 @@ const Uim: React.FC<UimProps> = ({ setUser }) => {
   const whichModal = user
     ? { modal: "userModal", state: modals.userModal }
     : { modal: "loginModal", state: modals.loginModal };
+  console.log(modals);
 
   return (
     <div className="loginBtnCont">
