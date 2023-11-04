@@ -35,19 +35,7 @@ const Uim: React.FC<UimProps> = ({ setUser }) => {
    * @returns {function}
    */
   const showModal = (modal: string) => () => {
-    switch (modal) {
-      case "loginModal":
-        setModals({ [modal]: true, logoutModal: false, userModal: false });
-        break;
-      case "logoutModal":
-        setModals({ loginModal: false, [modal]: true, userModal: false });
-        break;
-      case "userModal":
-        setModals({ loginModal: false, logoutModal: false, [modal]: true });
-        break;
-      default:
-        break;
-    }
+    setModals({ ...defaultModalsValues, [modal]: true });
   };
 
   /**
@@ -67,7 +55,6 @@ const Uim: React.FC<UimProps> = ({ setUser }) => {
   const whichModal = user
     ? { modal: "userModal", state: modals.userModal }
     : { modal: "loginModal", state: modals.loginModal };
-  console.log(modals);
 
   return (
     <div className="loginBtnCont">
