@@ -1,14 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import AppContext  from 'app/AppContext';
+import AppContext from "app/AppContext";
 
 interface LogoutHandlerProps {
   logoutHandler: () => void;
 }
-
-const UserInfo:React.FC<LogoutHandlerProps> = ({ logoutHandler }) => (
+const UserInfo: React.FC<LogoutHandlerProps> = ({ logoutHandler }) => (
   <AppContext.Consumer>
-    {({user}) => (
+    {({ user }) => (
       <div className="user_info">
         <b>Usuario</b>
         <br />
