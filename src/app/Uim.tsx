@@ -2,14 +2,17 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, ReactNode } from "react";
 
 import AppContext, { AppContextValue } from "app/AppContext";
 import Login from "app/uim/Login";
 import UserInfo from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
 
-import { UimProps } from "types/uimTypes";
+//import { UimProps } from "types/uimTypes";
+interface UimProps {
+  setUser: (res: null | Response  ) => React.ReactNode | void;
+}
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -22,6 +25,8 @@ const defaultModalsValues: LogModalsTypes = {
   logoutModal: false,
   userModal: false,
 };
+
+
 
 const Uim: React.FC<UimProps> = ({ setUser }) => {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
