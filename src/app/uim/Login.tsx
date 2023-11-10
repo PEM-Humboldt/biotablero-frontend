@@ -2,9 +2,8 @@ import React, { useState } from "react";
 
 import RestAPI from "utils/restAPI";
 
-//import { UimProps } from "types/uimTypes";
 interface LoginProps {
-  setUser: (res: Response ) => React.ReactNode | void;
+  setUser: (res: Response) => React.ReactNode | void;
 }
 
 interface StateLoginValues {
@@ -56,7 +55,7 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
           type="submit"
           onClick={() => {
             RestAPI.requestUser(userValues.username, userValues.password).then(
-              (res) => setUser(res)
+              (res: Response) => setUser(res)
             );
           }}
         >
