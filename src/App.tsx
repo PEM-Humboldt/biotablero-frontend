@@ -19,15 +19,17 @@ import isFlagEnabled from "utils/isFlagEnabled";
 
 import { LogosConfig } from "types/layoutTypes";
 
+import { UserTypes } from "types/loginUimProps";
+
 interface LoadComponentTypes {
   logoSet: keyof LogosConfig | null;
   name: string;
   component: React.ReactNode;
-  className: string;
+  className?: string;
 }
 
 const App: React.FunctionComponent = () => {
-  const [user, setUser] = useState<null>(null);
+  const [user, setUser] = useState<UserTypes | null>(null);
   const [headerNames, setHeaderNames] = useState<object>({});
   const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
@@ -39,7 +41,7 @@ const App: React.FunctionComponent = () => {
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
-  const setUserFunc = (user: null | Response | any): void => setUser(user);
+  const setUserFunc = (user: UserTypes | null) => setUser(user);
 
   const setHeaderNamesFunc = (parent: string, child: string) => {
     setHeaderNames({
@@ -52,7 +54,6 @@ const App: React.FunctionComponent = () => {
       logoSet: "default",
       name: "",
       component: <Home referrer={location.pathname} />,
-      className: "fullgrid",
     });
 
   const loadSearch = () => {

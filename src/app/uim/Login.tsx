@@ -2,9 +2,7 @@ import React, { useState } from "react";
 
 import RestAPI from "utils/restAPI";
 
-interface LoginProps {
-  setUser: (res: Response) => React.ReactNode | void
-}
+import { loginUimProps } from "types/loginUimProps";
 
 interface StateLoginValues {
   username: string;
@@ -16,7 +14,7 @@ const defaultStateValues: StateLoginValues = {
   password: "",
 };
 
-const Login: React.FC<LoginProps> = ({ setUser }) => {
+const Login: React.FC<loginUimProps> = ({ setUser }) => {
   const [userValues, setUserValues] =
     useState<StateLoginValues>(defaultStateValues);
 
@@ -55,7 +53,7 @@ const Login: React.FC<LoginProps> = ({ setUser }) => {
           type="submit"
           onClick={() => {
             RestAPI.requestUser(userValues.username, userValues.password).then(
-              (res: Response) => setUser(res)
+              (res) => setUser(res)
             );
           }}
         >
