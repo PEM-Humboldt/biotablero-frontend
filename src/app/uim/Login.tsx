@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import RestAPI from "utils/restAPI";
 
 interface LoginProps {
-  setUser: (res: Response) => React.ReactNode | void;
+  setUser: (res: Response) => React.ReactNode | void
 }
 
 interface StateLoginValues {
