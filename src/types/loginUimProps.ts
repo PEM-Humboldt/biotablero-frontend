@@ -1,4 +1,4 @@
-export interface CompanyTypes {
+interface CompanyTypes {
   id: number;
 }
 
