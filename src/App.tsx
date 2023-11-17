@@ -41,8 +41,6 @@ const App: React.FunctionComponent = () => {
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
-  const setUserFunc = (user: UserTypes | null) => setUser(user);
-
   const setHeaderNamesFunc = (parent: string, child: string) => {
     setHeaderNames({
       headerNames: { parent, child },
@@ -126,7 +124,7 @@ const App: React.FunctionComponent = () => {
         moduleName={name}
         footerLogos={logoSet}
         headerNames={headerNames}
-        uim={<Uim setUser={setUserFunc} />}
+        uim={<Uim setUser={setUser} />}
         className={className}
       >
         {component}
