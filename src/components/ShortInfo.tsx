@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 // import PropTypes from 'prop-types';
-import isUndefinedOrNull from 'utils/validations';
+import isUndefinedOrNull from "utils/validations";
 
 interface ShortInfoTypes {
   className: string;
@@ -9,10 +9,14 @@ interface ShortInfoTypes {
   collapseButton: boolean;
 }
 
-const ShortInfo: React.FC<ShortInfoTypes> = ({description, tooltip, collapseButton=true, className}) => {
-
+const ShortInfo: React.FC<ShortInfoTypes> = ({
+  description,
+  tooltip,
+  collapseButton = true,
+  className,
+}) => {
   const [rotate_button, setRotate_button] = useState(true);
-  const [hide_text, setHide_text] =useState(true);
+  const [hide_text, setHide_text] = useState(true);
 
   const handleClick = () => {
     setRotate_button(!rotate_button);
@@ -24,7 +28,11 @@ const ShortInfo: React.FC<ShortInfoTypes> = ({description, tooltip, collapseButt
       <div
         className={`${className}-${hide_text}`}
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: `${isUndefinedOrNull(description) ? 'Cargando...' : description}` }}
+        dangerouslySetInnerHTML={{
+          __html: `${
+            isUndefinedOrNull(description) ? "Cargando..." : description
+          }`,
+        }}
       />
       {collapseButton && (
         <button
