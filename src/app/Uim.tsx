@@ -9,7 +9,7 @@ import Login from "app/uim/Login";
 import UserInfo from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
 
-import { UimProps } from "types/uimTypes";
+import { loginUimProps } from "types/loginUimProps";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -23,7 +23,7 @@ const defaultModalsValues: LogModalsTypes = {
   userModal: false,
 };
 
-const Uim: React.FC<UimProps> = ({ setUser }) => {
+const Uim: React.FC<loginUimProps> = ({ setUser }) => {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
 
   /**

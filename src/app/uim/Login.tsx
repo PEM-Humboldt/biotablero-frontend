@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import RestAPI from "utils/restAPI";
 
-import { UimProps } from "types/uimTypes";
+import { loginUimProps } from "types/loginUimProps";
 
 interface StateLoginValues {
   username: string;
@@ -14,7 +14,7 @@ const defaultStateValues: StateLoginValues = {
   password: "",
 };
 
-const Login: React.FC<UimProps> = ({ setUser }) => {
+const Login: React.FC<loginUimProps> = ({ setUser }) => {
   const [userValues, setUserValues] =
     useState<StateLoginValues>(defaultStateValues);
 
