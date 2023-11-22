@@ -11,12 +11,12 @@ interface ConfirmationModalTypes {
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalTypes> = ({
-  open,
+  open = false,
   onClose,
   message,
   onContinue,
   onCancel,
-  styleCustom,
+  styleCustom = null,
 }) => (
   <Modal
     aria-labelledby="simple-modal-title"
