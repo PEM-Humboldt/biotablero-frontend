@@ -4,7 +4,7 @@
 
 /* eslint-env browser */
 import styled from 'styled-components';
-import React from 'react';
+import React, { JSXElementConstructor, ReactFragment } from 'react';
 import PropTypes from 'prop-types';
 
 const Relative = styled.div`
@@ -26,7 +26,7 @@ const Container = styled.div`
   max-width: 1310px;
 `;
 
-function getPrevElement(list) {
+function getPrevElement(list) {//list
   const sibling = list[0].previousElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -36,7 +36,7 @@ function getPrevElement(list) {
   return sibling;
 }
 
-function getNextElement(list) {
+function getNextElement(list) {//list
   const sibling = list[list.length - 1].nextElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -46,7 +46,7 @@ function getNextElement(list) {
   return null;
 }
 
-function usePosition(ref, moreThan4) {
+function usePosition(ref, moreThan4) {//ref, moreThan4
   const [prevElement, setPrevElement] = React.useState(null);
   const [nextElement, setNextElement] = React.useState(null);
 
@@ -57,11 +57,11 @@ function usePosition(ref, moreThan4) {
       const rect = element.getBoundingClientRect();
 
       const visibleElements = Array.from(element.children).filter((child) => {
-        const childRect = child.getBoundingClientRect();
+        const childRect = child.getBoundingClientRect(); //child
 
         return childRect.left >= rect.left && childRect.right <= rect.right;
       });
-
+//getNextElement(visibleElements)
       if (visibleElements.length > 0) {
         setPrevElement(getPrevElement(visibleElements));
         setNextElement(getNextElement(visibleElements));
@@ -76,7 +76,7 @@ function usePosition(ref, moreThan4) {
       element.removeEventListener('scroll', update, { passive: true });
     };
   }, [ref, moreThan4]);
-
+//element
   const scrollToElement = React.useCallback(
     (element) => {
       const currentNode = ref.current;
@@ -136,7 +136,7 @@ const CarouselContainer = styled(Relative)`
   border: none;
   padding: 0;
 `;
-
+//hasItemsOnLeft
  const LeftCarouselButton = styled(CarouselButton)`
   left: 0;
   transform: translate(0%, -50%);
@@ -169,7 +169,7 @@ const CarouselContainer = styled(Relative)`
   }
 `;
 
-const ArrowLeft = ({ size, color }) => (
+const ArrowLeft = ({ size, color }) => (//size,color
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -195,7 +195,7 @@ ArrowLeft.defaultProps = {
   color: '#ffffff',
 };
 
-const ArrowRight = ({ size, color }) => (
+const ArrowRight = ({ size, color }) => (//size,color
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -220,9 +220,12 @@ ArrowRight.defaultProps = {
   size: 30,
   color: '#ffffff',
 };
-
-function Carousel({ children }) {
+/** 
+ * Componente Intermedio 
+ **/
+function Carousel({ children }) { //children
   const ref = React.useRef();
+console.log("children",children);
 
   const {
     hasItemsOnLeft,
@@ -233,20 +236,20 @@ function Carousel({ children }) {
 
   return (
     <CarouselContainer role="region" aria-label="Colors carousel">
-      <CarouselContainerInner ref={ref}>
+      <CarouselContainerInner ref={ref}>, {/*ref=*/}
         {React.Children.map(children, (child, index) => (
           <CarouselItem key={index}>{child}</CarouselItem>
         ))}
       </CarouselContainerInner>
       <LeftCarouselButton
-        hasItemsOnLeft={hasItemsOnLeft}
+        hasItemsOnLeft={hasItemsOnLeft} //hasItemsOnLeft=
         onClick={scrollLeft}
         aria-label="Previous slide"
       >
         <ArrowLeft />
       </LeftCarouselButton>
       <RightCarouselButton
-        hasItemsOnRight={hasItemsOnRight}
+        hasItemsOnRight={hasItemsOnRight} //hasItemsOnRight={
         onClick={scrollRight}
         aria-label="Next slide"
       >
@@ -260,7 +263,34 @@ Carousel.propTypes = {
   children: PropTypes.array.isRequired,
 };
 
-function CssCarousel({ itemsArray }) {
+/** 
+ * Componente central
+**/
+// interface MenuButtonTypes {
+//   buttonStyles: string;
+//   idBtn: string;
+//   focusCallback: () => void;
+//   firstLineContent: string;
+//   secondLineContent: string;
+//   externalLink: string;
+//   localLink: string;
+// }
+
+// $$typeof: Symbol(react.element)
+// key: "geobtn"
+// props: {buttonStyles: 'finder geo activeicon', idBtn: 'geobtn', firstLineContent: 'consultas', secondLineContent: 'geográficas', focusCallback: ƒ, …}
+// ref: null
+// type: ƒ MenuButton(_ref)
+
+// interface PropMenu {
+// key: string;
+// props: MenuButtonTypes;
+// ref: null;
+// type: React.ReactElement;
+// }
+
+const CssCarousel = ( {itemsArray} ) => {
+  console.log("itemsArray", itemsArray);
   return (
     <HorizontalCenter>
       <Container>
