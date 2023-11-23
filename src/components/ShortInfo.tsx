@@ -9,8 +9,8 @@ interface ShortInfoTypes {
 }
 
 const ShortInfo: React.FC<ShortInfoTypes> = ({
-  description,
-  tooltip,
+  description = "",
+  tooltip = "",
   collapseButton = true,
   className = "hidden",
 }) => {
