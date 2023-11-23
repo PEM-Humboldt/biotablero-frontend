@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import isUndefinedOrNull from "utils/validations";
 
 interface ShortInfoTypes {
-  className: string;
-  description: string;
+  className?: string;
+  description?: string;
   tooltip?: string;
-  collapseButton: boolean;
+  collapseButton?: boolean;
 }
 
 const ShortInfo: React.FC<ShortInfoTypes> = ({
