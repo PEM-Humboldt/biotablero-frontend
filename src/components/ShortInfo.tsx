@@ -26,7 +26,6 @@ const ShortInfo: React.FC<ShortInfoTypes> = ({
     <div>
       <div
         className={`${className}-${hide_text}`}
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: `${
             isUndefinedOrNull(description) ? "Cargando..." : description
