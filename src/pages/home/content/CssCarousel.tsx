@@ -4,7 +4,7 @@
 
 /* eslint-env browser */
 import styled from 'styled-components';
-import React, { JSXElementConstructor, ReactFragment } from 'react';
+import React, { HtmlHTMLAttributes, JSXElementConstructor, ReactFragment } from 'react';
 import PropTypes from 'prop-types';
 
 const Relative = styled.div`
@@ -26,17 +26,17 @@ const Container = styled.div`
   max-width: 1310px;
 `;
 
-function getPrevElement(list) {//list
+function getPrevElement(list: Array<Element>): HTMLElement | null {
   const sibling = list[0].previousElementSibling;
-
+  
   if (sibling instanceof HTMLElement) {
     return sibling;
   }
 
-  return sibling;
+  return null;
 }
 
-function getNextElement(list) {//list
+function getNextElement(list: Array<Element>): HTMLElement | null {
   const sibling = list[list.length - 1].nextElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -46,9 +46,12 @@ function getNextElement(list) {//list
   return null;
 }
 
-function usePosition(ref, moreThan4) {//ref, moreThan4
-  const [prevElement, setPrevElement] = React.useState(null);
-  const [nextElement, setNextElement] = React.useState(null);
+interface RefType {
+  current: HTMLElement;
+}
+function usePosition(ref:RefType, moreThan4: boolean) {
+  const [prevElement, setPrevElement] = React.useState<HTMLElement | null >(null);
+  const [nextElement, setNextElement] = React.useState<HTMLElement | null>(null);
 
   React.useEffect(() => {
     const element = ref.current;
@@ -56,13 +59,14 @@ function usePosition(ref, moreThan4) {//ref, moreThan4
     const update = () => {
       const rect = element.getBoundingClientRect();
 
-      const visibleElements = Array.from(element.children).filter((child) => {
-        const childRect = child.getBoundingClientRect(); //child
+      const visibleElements: Array<Element> = Array.from(element.children).filter((child) => {
+        const childRect = child.getBoundingClientRect();
 
         return childRect.left >= rect.left && childRect.right <= rect.right;
       });
-//getNextElement(visibleElements)
+
       if (visibleElements.length > 0) {
+
         setPrevElement(getPrevElement(visibleElements));
         setNextElement(getNextElement(visibleElements));
       }
@@ -70,20 +74,19 @@ function usePosition(ref, moreThan4) {//ref, moreThan4
 
     update();
 
-    element.addEventListener('scroll', update, { passive: true });
+    element.addEventListener<"scroll">('scroll', update, { passive: true });
 
     return () => {
-      element.removeEventListener('scroll', update, { passive: true });
+      element.removeEventListener('scroll', update);
     };
   }, [ref, moreThan4]);
-//element
-  const scrollToElement = React.useCallback(
-    (element) => {
-      const currentNode = ref.current;
+
+  const scrollToElement = React.useCallback((element: HTMLElement | null): void => {
+    const currentNode = ref.current;
 
       if (!currentNode || !element) return;
 
-      const newScrollPosition = element.offsetLeft
+      const newScrollPosition = element.offsetLeft 
         + element.getBoundingClientRect().width / 2
         - currentNode.getBoundingClientRect().width / 2;
 
@@ -141,7 +144,7 @@ const CarouselContainer = styled(Relative)`
   left: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden')};
+  visibility: ${ ({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden') };
 `;
 
  const RightCarouselButton = styled(CarouselButton)`
@@ -168,8 +171,11 @@ const CarouselContainer = styled(Relative)`
     scroll-snap-align: center;
   }
 `;
-
-const ArrowLeft = ({ size, color }) => (//size,color
+interface ArrowTypes {
+  size?: number | undefined;
+  color?: string | undefined;
+}
+const ArrowLeft = ({ size=30, color='#ffffff' }: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -185,17 +191,17 @@ const ArrowLeft = ({ size, color }) => (//size,color
   </svg>
 );
 
-ArrowLeft.propTypes = {
-  size: PropTypes.number,
-  color: PropTypes.string,
-};
+// ArrowLeft.propTypes = {
+//   size: PropTypes.number,
+//   color: PropTypes.string,
+// };
 
-ArrowLeft.defaultProps = {
-  size: 30,
-  color: '#ffffff',
-};
+// ArrowLeft.defaultProps = {
+//   size: 30,
+//   color: '#ffffff',
+// };
 
-const ArrowRight = ({ size, color }) => (//size,color
+const ArrowRight = ({ size=30, color = '#ffffff' }: ArrowTypes): JSX.Element => (//size,color
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -211,21 +217,21 @@ const ArrowRight = ({ size, color }) => (//size,color
   </svg>
 );
 
-ArrowRight.propTypes = {
-  size: PropTypes.number,
-  color: PropTypes.string,
-};
+// ArrowRight.propTypes = {
+//   size: PropTypes.number,
+//   color: PropTypes.string,
+// };
 
-ArrowRight.defaultProps = {
-  size: 30,
-  color: '#ffffff',
-};
+// ArrowRight.defaultProps = {
+//   size: 30,
+//   color: '#ffffff',
+// };
 /** 
  * Componente Intermedio 
  **/
 function Carousel({ children }) { //children
   const ref = React.useRef();
-console.log("children",children);
+// console.log("children",children);
 
   const {
     hasItemsOnLeft,
@@ -290,7 +296,7 @@ Carousel.propTypes = {
 // }
 
 const CssCarousel = ( {itemsArray} ) => {
-  console.log("itemsArray", itemsArray);
+  // console.log("itemsArray", itemsArray);
   return (
     <HorizontalCenter>
       <Container>
