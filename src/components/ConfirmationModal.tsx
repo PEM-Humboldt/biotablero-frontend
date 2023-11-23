@@ -12,14 +12,12 @@ interface ConfirmationModalTypes {
 
 const ConfirmationModal: React.FC<ConfirmationModalTypes> = ({
   open = false,
-  onClose=()=>{},
+  onClose = () => {},
   message,
   onContinue,
   onCancel,
   styleCustom = null,
 }) => (
-  console.log("que es",()=>{}),
-  
   <Modal
     aria-labelledby="simple-modal-title"
     aria-describedby="simple-modal-description"
