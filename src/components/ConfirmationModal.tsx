@@ -2,22 +2,24 @@ import React from "react";
 import Modal from "@mui/material/Modal";
 
 interface ConfirmationModalTypes {
-  open: boolean;
-  onClose: () => void;
+  open?: boolean;
+  onClose?: () => void;
   message: string;
-  styleCustom: string | null;
+  styleCustom?: string | null;
   onContinue: () => void;
   onCancel: () => void;
 }
 
 const ConfirmationModal: React.FC<ConfirmationModalTypes> = ({
   open = false,
-  onClose,
+  onClose=()=>{},
   message,
   onContinue,
   onCancel,
   styleCustom = null,
 }) => (
+  console.log("que es",()=>{}),
+  
   <Modal
     aria-labelledby="simple-modal-title"
     aria-describedby="simple-modal-description"
