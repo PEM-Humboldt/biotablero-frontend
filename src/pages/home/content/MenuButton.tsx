@@ -2,23 +2,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 interface MenuButtonTypes {
-  buttonStyles: string;
-  idBtn: string;
-  focusCallback: () => void;
-  firstLineContent: string;
-  secondLineContent: string;
-  externalLink: string;
+  buttonStyles?: string;
+  idBtn?: string;
+  focusCallback?: () => void;
+  firstLineContent?: string;
+  secondLineContent?: string;
+  externalLink?: string;
   localLink: string;
 }
 
 const MenuButton: React.FC<MenuButtonTypes> = ({
-  buttonStyles,
-  idBtn,
-  focusCallback,
-  firstLineContent,
-  secondLineContent,
-  externalLink,
-  localLink,
+  buttonStyles = "",
+  idBtn = "",
+  focusCallback = () => {},
+  firstLineContent = "",
+  secondLineContent = "",
+  externalLink = "",
+  localLink = "",
 }) => {
   const content = (
     <button
