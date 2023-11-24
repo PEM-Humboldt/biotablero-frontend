@@ -4,8 +4,21 @@
 
 /* eslint-env browser */
 import styled from 'styled-components';
-import React, { HtmlHTMLAttributes, JSXElementConstructor, ReactFragment } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+//import PropTypes from 'prop-types';
+
+interface LeftCarouselButtonTypes {
+  hasItemsOnLeft: boolean;
+}
+
+interface RightCarouselButtonTypes {
+  hasItemsOnRight: boolean;
+}
+
+interface ArrowTypes {
+  size?: number | undefined;
+  color?: string | undefined;
+}
 
 const Relative = styled.div`
   position: relative;
@@ -139,15 +152,15 @@ const CarouselContainer = styled(Relative)`
   border: none;
   padding: 0;
 `;
-//hasItemsOnLeft
- const LeftCarouselButton = styled(CarouselButton)`
+
+ const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
   left: 0;
   transform: translate(0%, -50%);
 
   visibility: ${ ({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden') };
 `;
 
- const RightCarouselButton = styled(CarouselButton)`
+ const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
   right: 0;
   transform: translate(0%, -50%);
 
@@ -171,10 +184,7 @@ const CarouselContainer = styled(Relative)`
     scroll-snap-align: center;
   }
 `;
-interface ArrowTypes {
-  size?: number | undefined;
-  color?: string | undefined;
-}
+
 const ArrowLeft = ({ size=30, color='#ffffff' }: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -226,12 +236,27 @@ const ArrowRight = ({ size=30, color = '#ffffff' }: ArrowTypes): JSX.Element => 
 //   size: 30,
 //   color: '#ffffff',
 // };
-/** 
- * Componente Intermedio 
- **/
-function Carousel({ children }) { //children
-  const ref = React.useRef();
-// console.log("children",children);
+
+interface MenuButtonTypes {
+  buttonStyles: string;
+  idBtn: string;
+  focusCallback: () => void;
+  firstLineContent: string;
+  secondLineContent: string;
+  externalLink: string;
+  localLink: string;
+}
+
+interface PropMenu {
+  $$typeof: Symbol;
+  key: string;
+  props: MenuButtonTypes;
+  ref: null;
+  type: React.ReactElement;
+}[]
+
+const Carousel: React.FC<any> = ({ children }) => {
+  const ref = React.useRef(children);
 
   const {
     hasItemsOnLeft,
@@ -242,20 +267,21 @@ function Carousel({ children }) { //children
 
   return (
     <CarouselContainer role="region" aria-label="Colors carousel">
-      <CarouselContainerInner ref={ref}>, {/*ref=*/}
+      <CarouselContainerInner ref={ref}>
         {React.Children.map(children, (child, index) => (
+          
           <CarouselItem key={index}>{child}</CarouselItem>
         ))}
       </CarouselContainerInner>
       <LeftCarouselButton
-        hasItemsOnLeft={hasItemsOnLeft} //hasItemsOnLeft=
+        hasItemsOnLeft={hasItemsOnLeft}
         onClick={scrollLeft}
         aria-label="Previous slide"
       >
         <ArrowLeft />
       </LeftCarouselButton>
       <RightCarouselButton
-        hasItemsOnRight={hasItemsOnRight} //hasItemsOnRight={
+        hasItemsOnRight={hasItemsOnRight}
         onClick={scrollRight}
         aria-label="Next slide"
       >
@@ -265,38 +291,11 @@ function Carousel({ children }) { //children
   );
 }
 
-Carousel.propTypes = {
-  children: PropTypes.array.isRequired,
-};
+// Carousel.propTypes = {
+//   children: PropTypes.array.isRequired,
+// };
 
-/** 
- * Componente central
-**/
-// interface MenuButtonTypes {
-//   buttonStyles: string;
-//   idBtn: string;
-//   focusCallback: () => void;
-//   firstLineContent: string;
-//   secondLineContent: string;
-//   externalLink: string;
-//   localLink: string;
-// }
-
-// $$typeof: Symbol(react.element)
-// key: "geobtn"
-// props: {buttonStyles: 'finder geo activeicon', idBtn: 'geobtn', firstLineContent: 'consultas', secondLineContent: 'geográficas', focusCallback: ƒ, …}
-// ref: null
-// type: ƒ MenuButton(_ref)
-
-// interface PropMenu {
-// key: string;
-// props: MenuButtonTypes;
-// ref: null;
-// type: React.ReactElement;
-// }
-
-const CssCarousel = ( {itemsArray} ) => {
-  // console.log("itemsArray", itemsArray);
+const CssCarousel = ( {itemsArray = []}) => {
   return (
     <HorizontalCenter>
       <Container>
@@ -306,12 +305,12 @@ const CssCarousel = ( {itemsArray} ) => {
   );
 }
 
-CssCarousel.propTypes = {
-  itemsArray: PropTypes.array,
-};
+// CssCarousel.propTypes = {
+//   itemsArray: PropTypes.array,
+// };
 
-CssCarousel.defaultProps = {
-  itemsArray: [],
-};
+// CssCarousel.defaultProps = {
+//   itemsArray: [],
+// };
 
 export default CssCarousel;
