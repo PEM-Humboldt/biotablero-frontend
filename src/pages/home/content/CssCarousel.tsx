@@ -60,7 +60,7 @@ function getNextElement(list: Array<Element>): HTMLElement | null {
 }
 
 interface RefType {
-  current: HTMLElement;
+  current: HTMLDivElement;
 }
 function usePosition(ref:RefType, moreThan4: boolean) {
   const [prevElement, setPrevElement] = React.useState<HTMLElement | null >(null);
@@ -247,17 +247,16 @@ interface MenuButtonTypes {
   localLink: string;
 }
 
-interface PropMenu {
-  $$typeof: Symbol;
-  key: string;
-  props: MenuButtonTypes;
-  ref: null;
-  type: React.ReactElement;
-}[]
+// interface PropsCssCarousel {
+//   itemsArray: Array<React.Component>
+// }[]
 
-const Carousel: React.FC<any> = ({ children }) => {
-  const ref = React.useRef(children);
+type PropsCarousel= {
+  children: JSX.Element | JSX.Element[] | (() => JSX.Element)
+}
 
+const Carousel: React.FC<any> = ({ children } ) => {
+  const ref = React.useRef(children)
   const {
     hasItemsOnLeft,
     hasItemsOnRight,
@@ -269,7 +268,7 @@ const Carousel: React.FC<any> = ({ children }) => {
     <CarouselContainer role="region" aria-label="Colors carousel">
       <CarouselContainerInner ref={ref}>
         {React.Children.map(children, (child, index) => (
-          
+
           <CarouselItem key={index}>{child}</CarouselItem>
         ))}
       </CarouselContainerInner>
@@ -295,7 +294,10 @@ const Carousel: React.FC<any> = ({ children }) => {
 //   children: PropTypes.array.isRequired,
 // };
 
-const CssCarousel = ( {itemsArray = []}) => {
+type PropsCssCarousel = {
+  itemsArray: Array<React.ComponentType<MenuButtonTypes>>
+}
+const CssCarousel: React.FC<PropsCssCarousel> = ( {itemsArray }) => {
   return (
     <HorizontalCenter>
       <Container>
