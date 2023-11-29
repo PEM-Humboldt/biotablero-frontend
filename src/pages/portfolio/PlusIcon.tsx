@@ -1,4 +1,3 @@
-// import PropTypes from 'prop-types';
 import React from "react";
 
 import { SvgIcon } from "@mui/material";
@@ -22,15 +21,5 @@ const PlusIcon: React.FC<PlusIconTypes> = ({ color = "", fontSize = 19 }) => (
     />
   </SvgIcon>
 );
-
-// PlusIcon.propTypes = {
-//   color: PropTypes.string,
-//   fontSize: PropTypes.number,
-// };
-
-// PlusIcon.defaultProps = {
-//   color: '',
-//   fontSize: 19,
-// };
 
 export default PlusIcon;

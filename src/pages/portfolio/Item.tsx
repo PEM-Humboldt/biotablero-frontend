@@ -1,5 +1,4 @@
 import React from "react";
-// import PropTypes from 'prop-types';
 import PlusIcon from "pages/portfolio/PlusIcon";
 
 interface ItemTypes {
@@ -26,12 +25,5 @@ const Item: React.FC<ItemTypes> = (props) => {
     </div>
   );
 };
-
-// Item.propTypes = {
-//   title: PropTypes.string.isRequired,
-//   year: PropTypes.string.isRequired,
-//   description: PropTypes.string.isRequired,
-//   link: PropTypes.string.isRequired,
-// };
 
 export default Item;
