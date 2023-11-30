@@ -8,24 +8,16 @@ import PortfolioDescriptions from 'pages/home/information/Portfolio';
 import SearchDescriptions from 'pages/home/information/Searches';
 import CbmdDescriptions from 'pages/home/information/Cbmd';
 
+import { BasicTitleTypes } from "types/informationTypes";
+
 interface InformationTypes {
   activeModule: string;
 }
 
-const Information: React.FC<InformationTypes> = ({ activeModule="" }) => {
+const Information: React.FC<InformationTypes> = ({activeModule})  => {
   const [activeItem, setActiveItem] = useState<string>('queEs');
-  
-  interface descriptionsTypes {
-    title: string;
-    description: JSX.Element;
-  }
-  interface BasicTitleTypes {
-    queEs:  descriptionsTypes;
-    porque:  descriptionsTypes;
-    quienProduce:  descriptionsTypes;
-    queEncuentras:  descriptionsTypes;
-  }
-  interface ContentinfoTypes {
+
+  interface ContentInfoTypes {
     search:  BasicTitleTypes;
     indicator:  BasicTitleTypes;
     portfolio:  BasicTitleTypes;
@@ -34,7 +26,7 @@ const Information: React.FC<InformationTypes> = ({ activeModule="" }) => {
     cbmdashboard:  BasicTitleTypes;
   }
 
-  const contentInfo: ContentinfoTypes = {
+  const contentInfo: any = {
     search: SearchDescriptions,
     indicator: IndicatorDescriptions,
     portfolio: PortfolioDescriptions,
@@ -43,7 +35,7 @@ const Information: React.FC<InformationTypes> = ({ activeModule="" }) => {
     cbmdashboard: CbmdDescriptions,
   };
 
-  const { title, description } = contentInfo[activeModule as keyof typeof contentInfo] ? contentInfo[activeModule][activeItem] : { title: '', description: '' };
+  const { title, description } = contentInfo[activeModule] ? contentInfo[activeModule][activeItem] : { title: '', description: '' };
 
   return (
     <div className="menuline">
