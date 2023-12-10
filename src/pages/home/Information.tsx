@@ -16,16 +16,12 @@ interface InformationTypes {
 const Information: React.FC<InformationTypes> = ({ activeModule }) => {
   const [activeItem, setActiveItem] = useState<string>("queEs");
 
-  interface ContentInfoTypes {
-    search: BasicTitleTypes;
-    indicator: BasicTitleTypes;
-    portfolio: BasicTitleTypes;
-    compensation: BasicTitleTypes;
-    alert: BasicTitleTypes;
-    cbmdashboard: BasicTitleTypes;
-  }
+  type Keys = "queEs" | "porque" | "quienProduce" | "queEncuentras";
 
-  const contentInfo: any = {
+  interface ContentInfoTypes {
+    [key: string]: BasicTitleTypes;
+  }
+  const contentInfo: ContentInfoTypes = {
     search: SearchDescriptions,
     indicator: IndicatorDescriptions,
     portfolio: PortfolioDescriptions,
@@ -35,7 +31,7 @@ const Information: React.FC<InformationTypes> = ({ activeModule }) => {
   };
 
   const { title, description } = contentInfo[activeModule]
-    ? contentInfo[activeModule][activeItem]
+    ? contentInfo[activeModule][activeItem as Keys]
     : { title: "", description: "" };
 
   return (
