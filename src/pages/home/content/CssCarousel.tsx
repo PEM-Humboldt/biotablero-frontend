@@ -3,9 +3,8 @@
  */
 
 /* eslint-env browser */
-import styled from 'styled-components';
-import React from 'react';
-//import PropTypes from 'prop-types';
+import styled from "styled-components";
+import React from "react";
 
 interface LeftCarouselButtonTypes {
   hasItemsOnLeft: boolean;
@@ -18,6 +17,14 @@ interface RightCarouselButtonTypes {
 interface ArrowTypes {
   size?: number | undefined;
   color?: string | undefined;
+}
+
+interface MenubuttonProps {
+  children: Array<React.ReactNode> & HTMLDivElement;
+}
+
+interface MenubuttonChildProps {
+  itemsArray: Array<React.ReactNode> & HTMLDivElement;
 }
 
 const Relative = styled.div`
@@ -41,7 +48,7 @@ const Container = styled.div`
 
 function getPrevElement(list: Array<Element>): HTMLElement | null {
   const sibling = list[0].previousElementSibling;
-  
+
   if (sibling instanceof HTMLElement) {
     return sibling;
   }
@@ -62,9 +69,13 @@ function getNextElement(list: Array<Element>): HTMLElement | null {
 interface RefType {
   current: HTMLDivElement;
 }
-function usePosition(ref:RefType, moreThan4: boolean) {
-  const [prevElement, setPrevElement] = React.useState<HTMLElement | null >(null);
-  const [nextElement, setNextElement] = React.useState<HTMLElement | null>(null);
+function usePosition(ref: RefType, moreThan4: boolean) {
+  const [prevElement, setPrevElement] = React.useState<HTMLElement | null>(
+    null
+  );
+  const [nextElement, setNextElement] = React.useState<HTMLElement | null>(
+    null
+  );
 
   React.useEffect(() => {
     const element = ref.current;
@@ -72,14 +83,15 @@ function usePosition(ref:RefType, moreThan4: boolean) {
     const update = () => {
       const rect = element.getBoundingClientRect();
 
-      const visibleElements: Array<Element> = Array.from(element.children).filter((child) => {
+      const visibleElements: Array<Element> = Array.from(
+        element.children
+      ).filter((child) => {
         const childRect = child.getBoundingClientRect();
 
         return childRect.left >= rect.left && childRect.right <= rect.right;
       });
 
       if (visibleElements.length > 0) {
-
         setPrevElement(getPrevElement(visibleElements));
         setNextElement(getNextElement(visibleElements));
       }
@@ -87,39 +99,41 @@ function usePosition(ref:RefType, moreThan4: boolean) {
 
     update();
 
-    element.addEventListener<"scroll">('scroll', update, { passive: true });
+    element.addEventListener<"scroll">("scroll", update, { passive: true });
 
     return () => {
-      element.removeEventListener('scroll', update);
+      element.removeEventListener("scroll", update);
     };
   }, [ref, moreThan4]);
 
-  const scrollToElement = React.useCallback((element: HTMLElement | null): void => {
-    const currentNode = ref.current;
+  const scrollToElement = React.useCallback(
+    (element: HTMLElement | null): void => {
+      const currentNode = ref.current;
 
       if (!currentNode || !element) return;
 
-      const newScrollPosition = element.offsetLeft 
-        + element.getBoundingClientRect().width / 2
-        - currentNode.getBoundingClientRect().width / 2;
+      const newScrollPosition =
+        element.offsetLeft +
+        element.getBoundingClientRect().width / 2 -
+        currentNode.getBoundingClientRect().width / 2;
 
       currentNode.scroll({
         left: newScrollPosition,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     },
-    [ref],
+    [ref]
   );
 
-  const scrollRight = React.useCallback(() => scrollToElement(nextElement), [
-    scrollToElement,
-    nextElement,
-  ]);
+  const scrollRight = React.useCallback(
+    () => scrollToElement(nextElement),
+    [scrollToElement, nextElement]
+  );
 
-  const scrollLeft = React.useCallback(() => scrollToElement(prevElement), [
-    scrollToElement,
-    prevElement,
-  ]);
+  const scrollLeft = React.useCallback(
+    () => scrollToElement(prevElement),
+    [scrollToElement, prevElement]
+  );
 
   return {
     hasItemsOnLeft: prevElement !== null,
@@ -134,11 +148,11 @@ const CarouselContainer = styled(Relative)`
   padding: 0 40px;
 `;
 
- const CarouselItem = styled.div`
+const CarouselItem = styled.div`
   flex: 0 0 auto;
 `;
 
- const CarouselButton = styled.button`
+const CarouselButton = styled.button`
   position: absolute;
 
   cursor: pointer;
@@ -153,21 +167,21 @@ const CarouselContainer = styled(Relative)`
   padding: 0;
 `;
 
- const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
+const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
   left: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${ ({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden') };
+  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? "all" : "hidden")};
 `;
 
- const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
+const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
   right: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? 'all' : 'hidden')};
+  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? "all" : "hidden")};
 `;
 
- const CarouselContainerInner = styled(Flex)`
+const CarouselContainerInner = styled(Flex)`
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
@@ -185,7 +199,10 @@ const CarouselContainer = styled(Relative)`
   }
 `;
 
-const ArrowLeft = ({ size=30, color='#ffffff' }: ArrowTypes): JSX.Element => (
+const ArrowLeft = ({
+  size = 30,
+  color = "#ffffff",
+}: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -201,17 +218,10 @@ const ArrowLeft = ({ size=30, color='#ffffff' }: ArrowTypes): JSX.Element => (
   </svg>
 );
 
-// ArrowLeft.propTypes = {
-//   size: PropTypes.number,
-//   color: PropTypes.string,
-// };
-
-// ArrowLeft.defaultProps = {
-//   size: 30,
-//   color: '#ffffff',
-// };
-
-const ArrowRight = ({ size=30, color = '#ffffff' }: ArrowTypes): JSX.Element => (//size,color
+const ArrowRight = ({
+  size = 30,
+  color = "#ffffff",
+}: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -227,48 +237,15 @@ const ArrowRight = ({ size=30, color = '#ffffff' }: ArrowTypes): JSX.Element => 
   </svg>
 );
 
-// ArrowRight.propTypes = {
-//   size: PropTypes.number,
-//   color: PropTypes.string,
-// };
-
-// ArrowRight.defaultProps = {
-//   size: 30,
-//   color: '#ffffff',
-// };
-
-interface MenuButtonTypes {
-  buttonStyles: string;
-  idBtn: string;
-  focusCallback: () => void;
-  firstLineContent: string;
-  secondLineContent: string;
-  externalLink: string;
-  localLink: string;
-}
-
-// interface PropsCssCarousel {
-//   itemsArray: Array<React.Component>
-// }[]
-
-type PropsCarousel= {
-  children: JSX.Element | JSX.Element[] | (() => JSX.Element)
-}
-
-const Carousel: React.FC<any> = ({ children } ) => {
-  const ref = React.useRef(children)
-  const {
-    hasItemsOnLeft,
-    hasItemsOnRight,
-    scrollRight,
-    scrollLeft,
-  } = usePosition(ref, children.length > 4);
+const Carousel: React.FC<MenubuttonProps> = ({ children }) => {
+  const ref = React.useRef(children);
+  const { hasItemsOnLeft, hasItemsOnRight, scrollRight, scrollLeft } =
+    usePosition(ref, children.length > 4);
 
   return (
     <CarouselContainer role="region" aria-label="Colors carousel">
       <CarouselContainerInner ref={ref}>
         {React.Children.map(children, (child, index) => (
-
           <CarouselItem key={index}>{child}</CarouselItem>
         ))}
       </CarouselContainerInner>
@@ -288,16 +265,9 @@ const Carousel: React.FC<any> = ({ children } ) => {
       </RightCarouselButton>
     </CarouselContainer>
   );
-}
+};
 
-// Carousel.propTypes = {
-//   children: PropTypes.array.isRequired,
-// };
-
-type PropsCssCarousel = {
-  itemsArray: Array<React.ComponentType<MenuButtonTypes>>
-}
-const CssCarousel: React.FC<PropsCssCarousel> = ( {itemsArray }) => {
+const CssCarousel: React.FC<MenubuttonChildProps> = ({ itemsArray }) => {
   return (
     <HorizontalCenter>
       <Container>
@@ -305,14 +275,6 @@ const CssCarousel: React.FC<PropsCssCarousel> = ( {itemsArray }) => {
       </Container>
     </HorizontalCenter>
   );
-}
-
-// CssCarousel.propTypes = {
-//   itemsArray: PropTypes.array,
-// };
-
-// CssCarousel.defaultProps = {
-//   itemsArray: [],
-// };
+};
 
 export default CssCarousel;
