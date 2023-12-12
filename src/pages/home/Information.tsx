@@ -13,14 +13,15 @@ interface InformationTypes {
   activeModule: string;
 }
 
+type Keys = "queEs" | "porque" | "quienProduce" | "queEncuentras";
+
+interface ContentInfoTypes {
+  [key: string]: BasicTitleTypes;
+}
+
 const Information: React.FC<InformationTypes> = ({ activeModule }) => {
   const [activeItem, setActiveItem] = useState<string>("queEs");
 
-  type Keys = "queEs" | "porque" | "quienProduce" | "queEncuentras";
-
-  interface ContentInfoTypes {
-    [key: string]: BasicTitleTypes;
-  }
   const contentInfo: ContentInfoTypes = {
     search: SearchDescriptions,
     indicator: IndicatorDescriptions,
