@@ -2,7 +2,6 @@
  * Taken from css-tricks: https://css-tricks.com/a-super-flexible-css-carousel-enhanced-with-javascript-navigation/
  */
 
-/* eslint-env browser */
 import styled from "styled-components";
 import React from "react";
 
@@ -17,6 +16,10 @@ interface RightCarouselButtonTypes {
 interface ArrowTypes {
   size?: number | undefined;
   color?: string | undefined;
+}
+
+interface RefType {
+  current: HTMLDivElement;
 }
 
 interface MenubuttonProps {
@@ -66,9 +69,6 @@ function getNextElement(list: Array<Element>): HTMLElement | null {
   return null;
 }
 
-interface RefType {
-  current: HTMLDivElement;
-}
 function usePosition(ref: RefType, moreThan4: boolean) {
   const [prevElement, setPrevElement] = React.useState<HTMLElement | null>(
     null
