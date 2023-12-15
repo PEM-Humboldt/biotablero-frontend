@@ -49,7 +49,7 @@ const Container = styled.div`
   max-width: 1310px;
 `;
 
-function getPrevElement(list: Array<Element>): HTMLElement | null {
+const getPrevElement = (list: Array<Element>): HTMLElement | null => {
   const sibling = list[0].previousElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -57,9 +57,9 @@ function getPrevElement(list: Array<Element>): HTMLElement | null {
   }
 
   return null;
-}
+};
 
-function getNextElement(list: Array<Element>): HTMLElement | null {
+const getNextElement = (list: Array<Element>): HTMLElement | null => {
   const sibling = list[list.length - 1].nextElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -67,9 +67,9 @@ function getNextElement(list: Array<Element>): HTMLElement | null {
   }
 
   return null;
-}
+};
 
-function usePosition(ref: RefType, moreThan4: boolean) {
+const usePosition = (ref: RefType, moreThan4: boolean) => {
   const [prevElement, setPrevElement] = React.useState<HTMLElement | null>(
     null
   );
@@ -141,7 +141,7 @@ function usePosition(ref: RefType, moreThan4: boolean) {
     scrollRight,
     scrollLeft,
   };
-}
+};
 
 const CarouselContainer = styled(Relative)`
   overflow: hidden;
