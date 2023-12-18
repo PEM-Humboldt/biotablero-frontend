@@ -2,33 +2,10 @@
  * Taken from css-tricks: https://css-tricks.com/a-super-flexible-css-carousel-enhanced-with-javascript-navigation/
  */
 
-import styled from "styled-components";
-import React from "react";
-
-interface LeftCarouselButtonTypes {
-  hasItemsOnLeft: boolean;
-}
-
-interface RightCarouselButtonTypes {
-  hasItemsOnRight: boolean;
-}
-
-interface ArrowTypes {
-  size?: number | undefined;
-  color?: string | undefined;
-}
-
-interface RefType {
-  current: HTMLDivElement;
-}
-
-interface MenubuttonProps {
-  children: Array<React.ReactNode> & HTMLDivElement;
-}
-
-interface MenubuttonChildProps {
-  itemsArray: Array<React.ReactNode> & HTMLDivElement;
-}
+/* eslint-env browser */
+import styled from 'styled-components';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 const Relative = styled.div`
   position: relative;
@@ -49,17 +26,17 @@ const Container = styled.div`
   max-width: 1310px;
 `;
 
-const getPrevElement = (list: Array<Element>): HTMLElement | null => {
+function getPrevElement(list) {
   const sibling = list[0].previousElementSibling;
 
   if (sibling instanceof HTMLElement) {
     return sibling;
   }
 
-  return null;
-};
+  return sibling;
+}
 
-const getNextElement = (list: Array<Element>): HTMLElement | null => {
+function getNextElement(list) {
   const sibling = list[list.length - 1].nextElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -67,15 +44,11 @@ const getNextElement = (list: Array<Element>): HTMLElement | null => {
   }
 
   return null;
-};
+}
 
-const usePosition = (ref: RefType, moreThan4: boolean) => {
-  const [prevElement, setPrevElement] = React.useState<HTMLElement | null>(
-    null
-  );
-  const [nextElement, setNextElement] = React.useState<HTMLElement | null>(
-    null
-  );
+function usePosition(ref, moreThan4) {
+  const [prevElement, setPrevElement] = React.useState(null);
+  const [nextElement, setNextElement] = React.useState(null);
 
   React.useEffect(() => {
     const element = ref.current;
@@ -83,9 +56,7 @@ const usePosition = (ref: RefType, moreThan4: boolean) => {
     const update = () => {
       const rect = element.getBoundingClientRect();
 
-      const visibleElements: Array<Element> = Array.from(
-        element.children
-      ).filter((child) => {
+      const visibleElements = Array.from(element.children).filter((child) => {
         const childRect = child.getBoundingClientRect();
 
         return childRect.left >= rect.left && childRect.right <= rect.right;
@@ -99,41 +70,40 @@ const usePosition = (ref: RefType, moreThan4: boolean) => {
 
     update();
 
-    element.addEventListener<"scroll">("scroll", update, { passive: true });
+    element.addEventListener('scroll', update, { passive: true });
 
     return () => {
-      element.removeEventListener("scroll", update);
+      element.removeEventListener('scroll', update, { passive: true });
     };
   }, [ref, moreThan4]);
 
   const scrollToElement = React.useCallback(
-    (element: HTMLElement | null): void => {
+    (element) => {
       const currentNode = ref.current;
 
       if (!currentNode || !element) return;
 
-      const newScrollPosition =
-        element.offsetLeft +
-        element.getBoundingClientRect().width / 2 -
-        currentNode.getBoundingClientRect().width / 2;
+      const newScrollPosition = element.offsetLeft
+        + element.getBoundingClientRect().width / 2
+        - currentNode.getBoundingClientRect().width / 2;
 
       currentNode.scroll({
         left: newScrollPosition,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     },
-    [ref]
+    [ref],
   );
 
-  const scrollRight = React.useCallback(
-    () => scrollToElement(nextElement),
-    [scrollToElement, nextElement]
-  );
+  const scrollRight = React.useCallback(() => scrollToElement(nextElement), [
+    scrollToElement,
+    nextElement,
+  ]);
 
-  const scrollLeft = React.useCallback(
-    () => scrollToElement(prevElement),
-    [scrollToElement, prevElement]
-  );
+  const scrollLeft = React.useCallback(() => scrollToElement(prevElement), [
+    scrollToElement,
+    prevElement,
+  ]);
 
   return {
     hasItemsOnLeft: prevElement !== null,
@@ -141,18 +111,18 @@ const usePosition = (ref: RefType, moreThan4: boolean) => {
     scrollRight,
     scrollLeft,
   };
-};
+}
 
 const CarouselContainer = styled(Relative)`
   overflow: hidden;
   padding: 0 40px;
 `;
 
-const CarouselItem = styled.div`
+ const CarouselItem = styled.div`
   flex: 0 0 auto;
 `;
 
-const CarouselButton = styled.button`
+ const CarouselButton = styled.button`
   position: absolute;
 
   cursor: pointer;
@@ -167,21 +137,21 @@ const CarouselButton = styled.button`
   padding: 0;
 `;
 
-const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
+ const LeftCarouselButton = styled(CarouselButton)`
   left: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? "all" : "hidden")};
+  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden')};
 `;
 
-const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
+ const RightCarouselButton = styled(CarouselButton)`
   right: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? "all" : "hidden")};
+  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? 'all' : 'hidden')};
 `;
 
-const CarouselContainerInner = styled(Flex)`
+ const CarouselContainerInner = styled(Flex)`
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
@@ -199,10 +169,7 @@ const CarouselContainerInner = styled(Flex)`
   }
 `;
 
-const ArrowLeft = ({
-  size = 30,
-  color = "#ffffff",
-}: ArrowTypes): JSX.Element => (
+const ArrowLeft = ({ size, color }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -218,10 +185,17 @@ const ArrowLeft = ({
   </svg>
 );
 
-const ArrowRight = ({
-  size = 30,
-  color = "#ffffff",
-}: ArrowTypes): JSX.Element => (
+ArrowLeft.propTypes = {
+  size: PropTypes.number,
+  color: PropTypes.string,
+};
+
+ArrowLeft.defaultProps = {
+  size: 30,
+  color: '#ffffff',
+};
+
+const ArrowRight = ({ size, color }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -237,10 +211,25 @@ const ArrowRight = ({
   </svg>
 );
 
-const Carousel: React.FC<MenubuttonProps> = ({ children }) => {
-  const ref = React.useRef(children);
-  const { hasItemsOnLeft, hasItemsOnRight, scrollRight, scrollLeft } =
-    usePosition(ref, children.length > 4);
+ArrowRight.propTypes = {
+  size: PropTypes.number,
+  color: PropTypes.string,
+};
+
+ArrowRight.defaultProps = {
+  size: 30,
+  color: '#ffffff',
+};
+
+function Carousel({ children }) {
+  const ref = React.useRef();
+
+  const {
+    hasItemsOnLeft,
+    hasItemsOnRight,
+    scrollRight,
+    scrollLeft,
+  } = usePosition(ref, children.length > 4);
 
   return (
     <CarouselContainer role="region" aria-label="Colors carousel">
@@ -265,9 +254,13 @@ const Carousel: React.FC<MenubuttonProps> = ({ children }) => {
       </RightCarouselButton>
     </CarouselContainer>
   );
+}
+
+Carousel.propTypes = {
+  children: PropTypes.array.isRequired,
 };
 
-const CssCarousel: React.FC<MenubuttonChildProps> = ({ itemsArray }) => {
+function CssCarousel({ itemsArray }) {
   return (
     <HorizontalCenter>
       <Container>
@@ -275,6 +268,14 @@ const CssCarousel: React.FC<MenubuttonChildProps> = ({ itemsArray }) => {
       </Container>
     </HorizontalCenter>
   );
+}
+
+CssCarousel.propTypes = {
+  itemsArray: PropTypes.array,
+};
+
+CssCarousel.defaultProps = {
+  itemsArray: [],
 };
 
 export default CssCarousel;
