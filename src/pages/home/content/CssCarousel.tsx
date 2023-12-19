@@ -1,11 +1,33 @@
 /**
  * Taken from css-tricks: https://css-tricks.com/a-super-flexible-css-carousel-enhanced-with-javascript-navigation/
  */
+import styled from "styled-components";
+import React from "react";
 
-/* eslint-env browser */
-import styled from 'styled-components';
-import React from 'react';
-import PropTypes from 'prop-types';
+interface LeftCarouselButtonTypes {
+  hasItemsOnLeft: boolean;
+}
+
+interface RightCarouselButtonTypes {
+  hasItemsOnRight: boolean;
+}
+
+interface ArrowTypes {
+  size?: number | undefined;
+  color?: string | undefined;
+}
+
+interface RefType {
+  current: HTMLDivElement | null;
+}
+
+interface MenubuttonProps {
+  children: Array<React.ReactNode>;
+}
+
+interface MenubuttonChildProps {
+  itemsArray: Array<React.ReactNode>;
+}
 
 const Relative = styled.div`
   position: relative;
@@ -26,17 +48,17 @@ const Container = styled.div`
   max-width: 1310px;
 `;
 
-function getPrevElement(list) {
+const getPrevElement = (list: Array<Element>): HTMLElement | null => {
   const sibling = list[0].previousElementSibling;
 
   if (sibling instanceof HTMLElement) {
     return sibling;
   }
 
-  return sibling;
-}
+  return null;
+};
 
-function getNextElement(list) {
+const getNextElement = (list: Array<Element>): HTMLElement | null => {
   const sibling = list[list.length - 1].nextElementSibling;
 
   if (sibling instanceof HTMLElement) {
@@ -44,66 +66,75 @@ function getNextElement(list) {
   }
 
   return null;
-}
+};
 
-function usePosition(ref, moreThan4) {
-  const [prevElement, setPrevElement] = React.useState(null);
-  const [nextElement, setNextElement] = React.useState(null);
+const usePosition = (ref: RefType, moreThan4: boolean) => {
+  const [prevElement, setPrevElement] = React.useState<HTMLElement | null>(
+    null
+  );
+  const [nextElement, setNextElement] = React.useState<HTMLElement | null>(
+    null
+  );
 
   React.useEffect(() => {
     const element = ref.current;
 
-    const update = () => {
-      const rect = element.getBoundingClientRect();
+    if (element !== null) {
+      const update = () => {
+        const rect = element.getBoundingClientRect();
 
-      const visibleElements = Array.from(element.children).filter((child) => {
-        const childRect = child.getBoundingClientRect();
+        const visibleElements: Array<Element> = Array.from(
+          element.children
+        ).filter((child) => {
+          const childRect = child.getBoundingClientRect();
 
-        return childRect.left >= rect.left && childRect.right <= rect.right;
-      });
+          return childRect.left >= rect.left && childRect.right <= rect.right;
+        });
 
-      if (visibleElements.length > 0) {
-        setPrevElement(getPrevElement(visibleElements));
-        setNextElement(getNextElement(visibleElements));
-      }
-    };
+        if (visibleElements.length > 0) {
+          setPrevElement(getPrevElement(visibleElements));
+          setNextElement(getNextElement(visibleElements));
+        }
+      };
 
-    update();
+      update();
 
-    element.addEventListener('scroll', update, { passive: true });
+      element.addEventListener<"scroll">("scroll", update, { passive: true });
 
-    return () => {
-      element.removeEventListener('scroll', update, { passive: true });
-    };
+      return () => {
+        element.removeEventListener("scroll", update);
+      };
+    }
   }, [ref, moreThan4]);
 
   const scrollToElement = React.useCallback(
-    (element) => {
+    (element: HTMLElement | null): void => {
       const currentNode = ref.current;
 
       if (!currentNode || !element) return;
 
-      const newScrollPosition = element.offsetLeft
-        + element.getBoundingClientRect().width / 2
-        - currentNode.getBoundingClientRect().width / 2;
+      const newScrollPosition =
+        element.offsetLeft +
+        element.getBoundingClientRect().width / 2 -
+        currentNode.getBoundingClientRect().width / 2;
 
       currentNode.scroll({
         left: newScrollPosition,
-        behavior: 'smooth',
+        behavior: "smooth",
       });
     },
-    [ref],
+    [ref]
   );
 
-  const scrollRight = React.useCallback(() => scrollToElement(nextElement), [
-    scrollToElement,
-    nextElement,
-  ]);
+  const scrollRight = React.useCallback(
+    () => scrollToElement(nextElement),
+    [scrollToElement, nextElement]
+  );
 
-  const scrollLeft = React.useCallback(() => scrollToElement(prevElement), [
-    scrollToElement,
-    prevElement,
-  ]);
+  const scrollLeft = React.useCallback(
+    () => scrollToElement(prevElement),
+    [scrollToElement, prevElement]
+  );
 
   return {
     hasItemsOnLeft: prevElement !== null,
@@ -111,18 +142,18 @@ function usePosition(ref, moreThan4) {
     scrollRight,
     scrollLeft,
   };
-}
+};
 
 const CarouselContainer = styled(Relative)`
   overflow: hidden;
   padding: 0 40px;
 `;
 
- const CarouselItem = styled.div`
+const CarouselItem = styled.div`
   flex: 0 0 auto;
 `;
 
- const CarouselButton = styled.button`
+const CarouselButton = styled.button`
   position: absolute;
 
   cursor: pointer;
@@ -137,21 +168,21 @@ const CarouselContainer = styled(Relative)`
   padding: 0;
 `;
 
- const LeftCarouselButton = styled(CarouselButton)`
+const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
   left: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? 'all' : 'hidden')};
+  visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? "all" : "hidden")};
 `;
 
- const RightCarouselButton = styled(CarouselButton)`
+const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
   right: 0;
   transform: translate(0%, -50%);
 
-  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? 'all' : 'hidden')};
+  visibility: ${({ hasItemsOnRight }) => (hasItemsOnRight ? "all" : "hidden")};
 `;
 
- const CarouselContainerInner = styled(Flex)`
+const CarouselContainerInner = styled(Flex)`
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
@@ -169,7 +200,10 @@ const CarouselContainer = styled(Relative)`
   }
 `;
 
-const ArrowLeft = ({ size, color }) => (
+const ArrowLeft = ({
+  size = 30,
+  color = "#ffffff",
+}: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -185,17 +219,10 @@ const ArrowLeft = ({ size, color }) => (
   </svg>
 );
 
-ArrowLeft.propTypes = {
-  size: PropTypes.number,
-  color: PropTypes.string,
-};
-
-ArrowLeft.defaultProps = {
-  size: 30,
-  color: '#ffffff',
-};
-
-const ArrowRight = ({ size, color }) => (
+const ArrowRight = ({
+  size = 30,
+  color = "#ffffff",
+}: ArrowTypes): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size}
@@ -211,25 +238,11 @@ const ArrowRight = ({ size, color }) => (
   </svg>
 );
 
-ArrowRight.propTypes = {
-  size: PropTypes.number,
-  color: PropTypes.string,
-};
+const Carousel: React.FC<MenubuttonProps> = ({ children }) => {
+  const ref = React.useRef<HTMLDivElement | null>(null);
 
-ArrowRight.defaultProps = {
-  size: 30,
-  color: '#ffffff',
-};
-
-function Carousel({ children }) {
-  const ref = React.useRef();
-
-  const {
-    hasItemsOnLeft,
-    hasItemsOnRight,
-    scrollRight,
-    scrollLeft,
-  } = usePosition(ref, children.length > 4);
+  const { hasItemsOnLeft, hasItemsOnRight, scrollRight, scrollLeft } =
+    usePosition(ref, children.length > 4);
 
   return (
     <CarouselContainer role="region" aria-label="Colors carousel">
@@ -254,13 +267,9 @@ function Carousel({ children }) {
       </RightCarouselButton>
     </CarouselContainer>
   );
-}
-
-Carousel.propTypes = {
-  children: PropTypes.array.isRequired,
 };
 
-function CssCarousel({ itemsArray }) {
+const CssCarousel: React.FC<MenubuttonChildProps> = ({ itemsArray }) => {
   return (
     <HorizontalCenter>
       <Container>
@@ -268,14 +277,6 @@ function CssCarousel({ itemsArray }) {
       </Container>
     </HorizontalCenter>
   );
-}
-
-CssCarousel.propTypes = {
-  itemsArray: PropTypes.array,
-};
-
-CssCarousel.defaultProps = {
-  itemsArray: [],
 };
 
 export default CssCarousel;
