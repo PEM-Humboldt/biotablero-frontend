@@ -85,8 +85,8 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, labelX, labelY
         enableGridY={true}
         nodeSize={{
             key: 'data.x',
-            values: [0, 30],
-            sizes: [9, 32]
+            values: [0, 100],
+            sizes: [6, 30]
         }}
         tooltip={({ node }) => 
             <div style={
