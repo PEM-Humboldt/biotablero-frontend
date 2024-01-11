@@ -17,6 +17,7 @@ export default withTooltip(({
   width, height, colors, dataJSON: points, activeBiome, labelX, labelY, elementOnClick,
   hideTooltip, showTooltip, tooltipOpen, tooltipData, tooltipTop, units,
 }) => {
+  //console.log("ELEMENT:",elementOnClick);
   const margin = {
     top: 20, bottom: 60, left: 80, right: 40,
   };
