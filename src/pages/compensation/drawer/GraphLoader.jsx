@@ -79,6 +79,7 @@ const GraphLoader = (props) => {
                 data={dataBarChartFromBackend}
                 dataJSON={data}
                 height="280"
+                width={width}
                 labelX={labelX}
                 labelY={labelY}
                 colors={colors}

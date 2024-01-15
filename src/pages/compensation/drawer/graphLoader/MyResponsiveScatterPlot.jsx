@@ -5,8 +5,9 @@ let bioma = []
 let id
 let color
 //let yScale
-export const MyResponsiveScatterPlot = ({ data, dataJSON, height, labelX, labelY, colors, elementOnClick  }) => (
-    console.log("dataJSON name:", dataJSON[0].name),
+let getColor, getSize
+export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX, labelY, colors, elementOnClick  }) => (
+    console.log("colores", width),
     datos = dataJSON.map( (eje)=>{
         if(eje.fc > 6.5 && eje.affected_percentage > 12){
             id = "Alto"
@@ -31,12 +32,23 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, labelX, labelY
         return biomas.name
         }
     ),
-    // yScale = scaleLinear({
-    //     domain: [4, 10],
-    //     range: [height - 85, 0],
-    //     clamp: true,
-    //   }),
-    //console.log("nuevos datos:",datos),
+    getColor = (serieId) => {
+        const colores = {
+            Alto: colors[2],
+            Medio:colors[0],
+            Bajo: colors[1],
+        }
+        return colores[serieId]
+    },
+    getSize = (serieId, x) => {
+        console.log("los datos",dataJSON);
+        const sizes = {
+            Alto: x === 100 ? 30 : x,
+            Medio: x +4,
+            Bajo: x +4 ,
+        }
+        return sizes[serieId]
+    },
     <ResponsiveScatterPlot
         data={datos}
         onClick={ (node)=> {
@@ -67,27 +79,30 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, labelX, labelY
                     "strokeWidth": 0.2
                 }
             },
+            "annotations": {
+
+                "outline": {
+                    "stroke": "#000000",
+                    "strokeWidth": 6,
+                    "outlineWidth": 0,
+                    "outlineColor": "#ffffff",
+                    "outlineOpacity": 0
+                },
+            }
         }}
-        colors={
-            color = dataJSON.map( (eje)=>{
-                    if(eje.fc > 6.5 && eje.affected_percentage > 12){
-                        return colors[2]
-                    } else if(eje.fc < 6.5 && eje.affected_percentage < 12){
-                        return colors[1]
-                    } else {
-                        return colors[0]
-                    }
-                }
-            )
-        }
+        colors={(obj) => getColor(obj.serieId)}
         blendMode="multiply"
         enableGridX={true}
         enableGridY={true}
-        nodeSize={{
+        nodeSize={ (obj)=> {
+            //console.log("obj",obj);
+            return getSize(obj.serieId, obj.xValue)}
+        /*     {
             key: 'data.x',
             values: [0, 100],
             sizes: [6, 30]
-        }}
+        } */
+        }
         tooltip={({ node }) => 
             <div style={
                 {
@@ -127,12 +142,24 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, labelX, labelY
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            tickValues: 15,
+            //tickValues: 15,
             legend: labelY,
             legendPosition: 'middle',
             legendOffset: -60
         }}
         useMesh={false}
+        annotations={[{
+            type: 'circle',
+            match: { 
+              index: "40"
+            },
+            noteX: 50,
+            noteY: 50,
+            offset: 3,
+            noteTextOffset: -3,
+            noteWidth: 10,
+            note: 'an annotation'
+          }]}
         legends={[
             /* {
                 anchor: 'bottom-right',
