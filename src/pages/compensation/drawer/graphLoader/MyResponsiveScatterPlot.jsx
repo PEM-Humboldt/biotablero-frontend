@@ -1,13 +1,17 @@
 import { ResponsiveScatterPlot } from '@nivo/scatterplot'
+import { patternDotsDef, patternSquaresDef } from '@nivo/core'
 
 let datos = []
 let bioma = []
 let id
 let color
-//let yScale
 let getColor, getSize
-export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX, labelY, colors, elementOnClick  }) => (
-    console.log("colores", width),
+let saludo
+let colores
+let nodoEsp
+let nodoUnico
+export const MyResponsiveScatterPlot = ({ data, activeBiome,dataJSON, height, width, labelX, labelY, colors, elementOnClick  }) => (
+    //console.log("activeBiome", activeBiome),
     datos = dataJSON.map( (eje)=>{
         if(eje.fc > 6.5 && eje.affected_percentage > 12){
             id = "Alto"
@@ -32,16 +36,47 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX,
         return biomas.name
         }
     ),
-    getColor = (serieId) => {
-        const colores = {
-            Alto: colors[2],
-            Medio:colors[0],
-            Bajo: colors[1],
-        }
-        return colores[serieId]
+    getColor = (serieId, changeColor=undefined, nodo) => {
+        console.log("SALUDO",nodo);
+        switch(changeColor){
+                case "Alto":
+                    colores = {
+                        Alto: changeColor ? "#b23537" : colors[2],
+                        Medio: colors[0],
+                        Bajo: colors[1],
+                    }
+                    /* nodoUnico={
+                        nodo: "#0000ff"
+                    } */ 
+                    return (colores[serieId]/* , nodoUnico[nodo] */);
+                case "Medio":
+                    colores = {
+                        Alto: colors[2],
+                        Medio:changeColor ? "#a38230" : colors[0],
+                        Bajo: colors[1],
+                    }
+                    return colores[serieId];
+                case "Bajo":
+                    colores = {
+                        Alto: colors[2],
+                        Medio: colors[0],
+                        Bajo: changeColor ? "#2c636b" : colors[1],
+                        }
+                        return colores[serieId];
+                default:
+                    colores = {
+                        Alto: colors[2],
+                        Medio: colors[0],
+                        Bajo: colors[1],
+                        }
+                    return colores[serieId];
+            }
+            console.log("desde el if del color" );
+            //return colores[serieId]
+        
     },
     getSize = (serieId, x) => {
-        console.log("los datos",dataJSON);
+        //console.log("los datos",dataJSON);
         const sizes = {
             Alto: x === 100 ? 30 : x,
             Medio: x +4,
@@ -51,9 +86,31 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX,
     },
     <ResponsiveScatterPlot
         data={datos}
+        keys={['Alto', 'Medio', 'Bajo']}
+        defs={[
+            patternSquaresDef('squares-pattern', {
+                "size": 4,
+                "padding": 4,
+                "stagger": false,
+                "background": "#ffffff",
+                "color": "#000000"
+              })
+        ]}
+        fill={[
+            
+            { match: '*', id: 'squares' },
+        ]}
         onClick={ (node)=> {
             elementOnClick(node.data.bioma);
-        }
+            console.log("ON_CLICK_NODE:", node.data.bioma);
+            console.log("activeBiome", activeBiome),
+            console.log("NODOS", node),
+            console.log("dataJSON: ", dataJSON),
+            
+            
+            saludo = node.serieId
+            nodoEsp = node.id
+            }
         }
         margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
         xScale={{ type: 'linear', min: 0, max: 'auto' }}
@@ -90,18 +147,15 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX,
                 },
             }
         }}
-        colors={(obj) => getColor(obj.serieId)}
+        colors={(obj) => {
+            //console.log("OBJ",obj)
+            console.log("nosoEsp",nodoEsp);
+            return getColor(obj.serieId, saludo, nodoEsp)}}
         blendMode="multiply"
         enableGridX={true}
         enableGridY={true}
         nodeSize={ (obj)=> {
-            //console.log("obj",obj);
             return getSize(obj.serieId, obj.xValue)}
-        /*     {
-            key: 'data.x',
-            values: [0, 100],
-            sizes: [6, 30]
-        } */
         }
         tooltip={({ node }) => 
             <div style={
@@ -114,10 +168,6 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX,
                     fontSize: '14px',
                 }
             }>
-                {/* <strong> */}
-                    {/* {node.id} {node.serieId} */}
-                {/* </strong> */}
-                
                 {`Afectación: ${node.formattedX} %`}
                 <br />
                 {`FC: ${node.formattedY}`}
@@ -142,46 +192,10 @@ export const MyResponsiveScatterPlot = ({ data, dataJSON, height, width, labelX,
             tickSize: 5,
             tickPadding: 5,
             tickRotation: 0,
-            //tickValues: 15,
             legend: labelY,
             legendPosition: 'middle',
             legendOffset: -60
         }}
         useMesh={false}
-        annotations={[{
-            type: 'circle',
-            match: { 
-              index: "40"
-            },
-            noteX: 50,
-            noteY: 50,
-            offset: 3,
-            noteTextOffset: -3,
-            noteWidth: 10,
-            note: 'an annotation'
-          }]}
-        legends={[
-            /* {
-                anchor: 'bottom-right',
-                direction: 'column',
-                justify: false,
-                translateX: 130,
-                translateY: 0,
-                itemWidth: 100,
-                itemHeight: 12,
-                itemsSpacing: 5,
-                itemDirection: 'left-to-right',
-                symbolSize: 12,
-                symbolShape: 'circle',
-                effects: [
-                    {
-                        on: 'hover',
-                        style: {
-                            itemOpacity: 1
-                        }
-                    }
-                ]
-            } */
-        ]}
     />
 )

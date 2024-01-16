@@ -77,6 +77,7 @@ const GraphLoader = (props) => {
               <div style={{height:"280px"}}>
               <MyResponsiveScatterPlot
                 data={dataBarChartFromBackend}
+                activeBiome={activeBiome}
                 dataJSON={data}
                 height="280"
                 width={width}
