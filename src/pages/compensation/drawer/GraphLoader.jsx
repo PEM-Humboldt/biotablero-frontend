@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 import DotsGraph from 'pages/compensation/drawer/graphLoader/DotsGraph';
 
-import { MyResponsiveScatterPlot } from './graphLoader/MyResponsiveScatterPlot';
-import { dataBarChartFromBackend } from './graphLoader/dataScatter';
+import { DotsScatterPlot } from './graphLoader/DotsScatterPlot';
+
 
 const GraphLoader = (props) => {
   const {
@@ -75,12 +75,9 @@ const GraphLoader = (props) => {
                 width={width}
               />
               <div style={{height:"280px"}}>
-              <MyResponsiveScatterPlot
-                data={dataBarChartFromBackend}
+              <DotsScatterPlot
                 activeBiome={activeBiome}
                 dataJSON={data}
-                height="280"
-                width={width}
                 labelX={labelX}
                 labelY={labelY}
                 colors={colors}
