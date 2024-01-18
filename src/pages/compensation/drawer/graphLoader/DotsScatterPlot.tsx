@@ -222,7 +222,7 @@ interface ScatterProps {
 let dataList = []
 let id:string, 
 getColor:(serieId: string | number)=> any,
-getSize:(serieId: string | number, x: number , biome: any) => any, 
+getSize:(serieId: string | number, x: number , biome: string) => any, 
 colorsObj, sizes, dataBioma:string
 
 export const DotsScatterPlot: React.FC<ScatterProps> = ({
@@ -232,6 +232,8 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     labelY, 
     colors, 
     elementOnClick  }) => (
+        console.log(dataJSON),
+        
     dataList = dataJSON.map( (axis: any)=>{
         if(axis.fc > 6.5 && axis.affected_percentage > 12){
             id = "Alto"
@@ -286,8 +288,8 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     },
     <ResponsiveScatterPlot
         data={dataList}
-        onClick={ (node: any)=> {
-            elementOnClick(node.data.biome);
+        onClick={ (node)=> {
+            elementOnClick(String(node.data.biome));
             }
         }
         margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
@@ -322,7 +324,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         enableGridX={true}
         enableGridY={true}
         nodeSize={ (obj)=> {
-            return getSize(obj.serieId, obj.xValue, obj.data.biome)}
+            return getSize(obj.serieId, obj.xValue, String(obj.data.biome))}
         }
         tooltip={({ node }: ScatterPlotTooltipProps<ScatterPlotDatum>) => {
             return <div style={{   
