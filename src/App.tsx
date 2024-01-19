@@ -28,9 +28,17 @@ interface LoadComponentTypes {
   className?: string;
 }
 
+interface Names {
+  parent?: string;
+  child?: string;
+}
+
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<UserTypes | null>(null);
-  const [headerNames, setHeaderNames] = useState<object>({});
+  const [headerNames, setHeaderNames] = useState<Names>({
+    parent: "",
+    child: "",
+  });
   const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
   const location = useLocation();
@@ -40,12 +48,6 @@ const App: React.FunctionComponent = () => {
   }, []);
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
-
-  const setHeaderNamesFunc = (parent: string, child: string) => {
-    setHeaderNames({
-      headerNames: { parent, child },
-    });
-  };
 
   const loadHome = () =>
     loadComponent({
@@ -63,7 +65,7 @@ const App: React.FunctionComponent = () => {
         <Search
           selectedAreaTypeId={query.get("area_type")}
           selectedAreaId={query.get("area_id")}
-          setHeaderNames={setHeaderNamesFunc}
+          setHeaderNames={setHeaderNames}
         />
       ),
       className: "fullgrid",
@@ -83,7 +85,12 @@ const App: React.FunctionComponent = () => {
       return loadComponent({
         logoSet: null,
         name: "Compensación ambiental",
-        component: <Compensation setHeaderNames={setHeaderNamesFunc} />,
+        component: (
+          <Compensation
+            setHeaderNames={setHeaderNames}
+            headerNames={headerNames}
+          />
+        ),
         className: "fullgrid",
       });
     }
