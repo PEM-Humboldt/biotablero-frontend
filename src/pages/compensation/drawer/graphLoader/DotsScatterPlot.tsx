@@ -99,12 +99,12 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   getSize = (serieId, xValue, biome) => {
     dataBiome = biome;
     let x = parseFloat(xValue);
-    if (biome === activeBiome) {
+    /* if (biome === activeBiome) {
       if (x >= 80) {
         return x - 50;
       }
       return x + 20;
-    }
+    } */
     sizes = {
       High: x >= 80 ? 30 : x + 4,
       Medium: x + 4,
@@ -150,9 +150,12 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       enableGridX={true}
       enableGridY={true}
       nodeSize={(obj) => {
+        //console.log("Z:",obj.data);
+        
         return getSize(
           obj.serieId,
-          String(obj.formattedX),
+          String(obj.data.z),
+          //String(obj.formattedX),
           String(obj.data.biome)
         );
       }}
