@@ -29,7 +29,7 @@
     "@vx/responsive": "~0.0.199",
     "@vx/scale": "~0.0.199",
     "@vx/tooltip": "~0.0.199",
-    "axios": "~0.27.2",
+    "axios": "~1.6.5",
     "cbm-dashboard": "1.0.0",
     "chart.js": "~3.8.0",
     "indicators": "1.0.0",
