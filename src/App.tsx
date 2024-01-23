@@ -42,9 +42,9 @@ const App: React.FunctionComponent = () => {
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
   const setHeaderNamesFunc = (parent: string, child: string) => {
-    /* setHeaderNames({
+    setHeaderNames({
       headerNames: { parent, child },
-    }); */
+    });
   };
 
   const loadHome = () =>
