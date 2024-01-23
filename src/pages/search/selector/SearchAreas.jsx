@@ -12,6 +12,7 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
     options={options}
     getOptionLabel={(option) => option.name}
     onChange={(event, values) => {
+      console.log("EVENTOS",event);
       onChange(areaType, values);
     }}
     style={{ width: '100%' }}
@@ -70,6 +71,7 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
   }));
 
   const onGeofenceChange = (level, tabId) => {
+    console.log("level:", level,"tabId:", tabId );
     onChange(tabId);
   };
 

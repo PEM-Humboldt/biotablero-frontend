@@ -219,10 +219,12 @@ class Search extends Component {
       type,
       color = null,
     } = objParams;
-    if (feature.properties) {
+
+    if (!feature.properties) {
+      console.log("feature.properties",feature.properties);
       let key = null;
       let ftype = type;
-
+      console.log("type:", type);
       if (type === 'forestIntegrity') {
         const keys = 'sci_cat-hf_pers'.split('-');
         key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
@@ -241,17 +243,30 @@ class Search extends Component {
           opacity: 0.6,
           fillOpacity: 0.4,
         };
-      } else {
+      } else if(type !== 'states'){
+        return {
+          color: '#e84a5f',
+          weight: 0.5,
+          fillColor: '#000000',
+          opacity: 0.6,
+          fillOpacity: 0.4,
+        };
+      }
+      else {
+        console.log("key",key);
         key = feature.properties.key;
       }
 
       if (!key) {
+      console.log("vamos al return0")
+
         return {
           color: matchColor(ftype)(color),
           weight: 1,
           fillOpacity: 0,
         };
       }
+      console.log("vamos al return1")
 
       return {
         stroke: false,
@@ -260,6 +275,7 @@ class Search extends Component {
       };
     }
 
+    console.log("vamos al return2")
     return {
       stroke: false,
       fillColor: matchColor(type)(color),

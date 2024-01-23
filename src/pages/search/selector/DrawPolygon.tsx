@@ -133,7 +133,11 @@ const DrawPolygon = () => {
           classNameDefault="m0"
           classNameSelected="m0"
           level="2"
-          handleChange={() => {}}
+          //handleChange={()=>{}}
+          handleChange={(level, tabId) => {
+            console.log("level:", level, "tabId", tabId);
+            
+          }}
         />
       </div>
     </div>
