@@ -58,10 +58,8 @@ class Compensation extends Component {
   }
 
   componentWillUnmount() {
-    const { setHeaderNames, headerNames } = this.props;
-    if(headerNames.parent != "" && headerNames.child != ""){
-      setHeaderNames({ parent: "", child: "" });
-    } 
+    const { setHeaderNames } = this.props;
+    setHeaderNames({ parent: "", child: "" });
   }
 
   loadProjectsList = () => {

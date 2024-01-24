@@ -142,7 +142,7 @@ class Search extends Component {
                 { selectedArea: inputId },
                 () => {
                   const { selectedAreaType, selectedArea } = this.state;
-                  setHeaderNames(selectedAreaType.name, selectedArea.name);
+                  setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
                 },
               );
             } else {
@@ -1413,7 +1413,7 @@ class Search extends Component {
       layerError: false,
       loadingLayer: true,
     }));
-    setHeaderNames("Polígono", "Área Consultada");
+    setHeaderNames({ parent: "Polígono", child: "Área Consultada"});
     this.updateBounds(polygonBounds);
   }
 
