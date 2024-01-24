@@ -33,18 +33,6 @@ interface DataListTypes {
   data: Array<DataTypes>;
 }
 
-let dataList: Array<DataListTypes> = [];
-let colorsObj;
-let id: string;
-let sizes;
-let dataBiome: string;
-let getColor: (serieId: string) => string;
-let getSize: (
-  serieId: string | number,
-  xValue: string,
-  biome: string
-) => number;
-
 export const DotsScatterPlot: React.FC<ScatterProps> = ({
   activeBiome,
   dataJSON,
@@ -53,15 +41,26 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   colors,
   elementOnClick,
 }) => {
-  dataList = dataJSON.map((axis) => {
+  let colorsObj;
+  let id: string;
+  let sizes;
+  let dataBiome: string;
+  let getColor: (serieId: string) => string;
+  let getSize: (
+    serieId: string | number,
+    xValue: string,
+    biome: string
+  ) => number;
+
+  const dataList = dataJSON.map((affectValue) => {
     if (
-      parseFloat(axis.fc) > 6.5 &&
-      parseFloat(axis.affected_percentage) > 12
+      parseFloat(affectValue.fc) > 6.5 &&
+      parseFloat(affectValue.affected_percentage) > 12
     ) {
       id = "High";
     } else if (
-      parseFloat(axis.fc) < 6.5 &&
-      parseFloat(axis.affected_percentage) < 12
+      parseFloat(affectValue.fc) < 6.5 &&
+      parseFloat(affectValue.affected_percentage) < 12
     ) {
       id = "Low";
     } else {
@@ -71,10 +70,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       id: id,
       data: [
         {
-          x: axis.affected_percentage,
-          y: axis.fc,
-          z: axis.affected_natural === "" ? "0" : axis.affected_natural,
-          biome: axis.name,
+          x: affectValue.affected_percentage,
+          y: affectValue.fc,
+          z: affectValue.affected_natural === "" ? "0" : affectValue.affected_natural,
+          biome: affectValue.name,
         },
       ],
     };
@@ -144,12 +143,11 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       enableGridX={true}
       enableGridY={true}
       nodeSize={(obj) => {
-        //console.log("Z:",obj.data);
 
         return getSize(
           obj.serieId,
           String(obj.formattedX),
-          String(obj.data.biome)
+          String(obj.data.biome),
         );
       }}
       tooltip={({ node }) => {
@@ -164,11 +162,11 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
               fontSize: "14px",
             }}
           >
-            {`Afectación: ${node.formattedX} %`}
+            <strong>Afectación:</strong>{`${node.formattedX} %`}
             <br />
-            {`FC: ${node.formattedY}`}
+            <strong>FC:</strong>{`${node.formattedY}`}
             <br />
-            {`Natural: ${node.data.z}`}
+            <strong>Natural:</strong>{`${node.data.z}`}
           </div>
         );
       }}
