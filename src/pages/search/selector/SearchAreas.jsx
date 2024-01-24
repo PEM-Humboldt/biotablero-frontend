@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
-import Accordion from 'pages/search/Accordion';
+import Accordion from "pages/search/Accordion";
 
 const AreaAutocomplete = ({ options, areaType, onChange }) => (
   <Autocomplete
@@ -12,10 +12,9 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
     options={options}
     getOptionLabel={(option) => option.name}
     onChange={(event, values) => {
-      console.log("EVENTOS",event);
       onChange(areaType, values);
     }}
-    style={{ width: '100%' }}
+    style={{ width: "100%" }}
     renderInput={(params) => (
       <TextField
         InputProps={params.InputProps}
@@ -34,22 +33,22 @@ const AreaAutocomplete = ({ options, areaType, onChange }) => (
       </li>
     )}
     autoHighlight
-    ListboxProps={
-      {
-        style: {
-          maxHeight: '100px',
-          border: '0px',
-        },
-      }
-    }
+    ListboxProps={{
+      style: {
+        maxHeight: "100px",
+        border: "0px",
+      },
+    }}
   />
 );
 
 AreaAutocomplete.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    name: PropTypes.string,
-  })).isRequired,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      name: PropTypes.string,
+    })
+  ).isRequired,
   areaType: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };
@@ -59,7 +58,7 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
     label: {
       id: geofence.id,
       name: geofence.name,
-      disabled: (geofence.id === 'se'),
+      disabled: geofence.id === "se",
       collapsed: true,
     },
     component: AreaAutocomplete,
@@ -71,12 +70,11 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
   }));
 
   const onGeofenceChange = (level, tabId) => {
-    console.log("level:", level,"tabId:", tabId );
     onChange(tabId);
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: "100%" }}>
       <Accordion
         componentsArray={areaTypes}
         classNameDefault="m0"
@@ -89,11 +87,13 @@ const SearchAreas = ({ areaList, onChange, onSelection }) => {
 };
 
 SearchAreas.propTypes = {
-  areaList: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    data: PropTypes.array,
-  })).isRequired,
+  areaList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      data: PropTypes.array,
+    })
+  ).isRequired,
   onChange: PropTypes.func.isRequired,
   onSelection: PropTypes.func.isRequired,
 };

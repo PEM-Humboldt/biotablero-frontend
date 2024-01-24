@@ -49,12 +49,8 @@ class Accordion extends React.Component<Props, State> {
     const { componentsArray } = this.props;
     let defaultTab = componentsArray.find((item) => !item.label.collapsed);
     if (defaultTab) {
-      console.log("paso_1", defaultTab);
-      
       defaultTabId = defaultTab.label.id;
     } else {
-      console.log("paso_2");
-
       defaultTabId = "";
     }
     this.setState({ expanded: defaultTabId });
@@ -78,8 +74,6 @@ class Accordion extends React.Component<Props, State> {
           </div>
         )}
         {componentsArray.map((item) => (
-          //console.log("ITEM",item),
-          
           <AccordionUI
             className={
               expanded !== item.label.id ? classNameDefault : classNameSelected
@@ -88,13 +82,9 @@ class Accordion extends React.Component<Props, State> {
             id={item.label.id}
             key={item.label.id}
             onChange={() => {
-              console.log("CAMBIANDO...");
-              
               const expandedTab =
                 expanded !== item.label.id ? item.label.id : "";
               this.setState({ expanded: expandedTab });
-              console.log("level",level,"expandedTab:", expandedTab);
-              
               handleChange(level, expandedTab);
             }}
             TransitionProps={{ unmountOnExit: true }}
