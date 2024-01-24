@@ -17,7 +17,7 @@ import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
-import { LogosConfig } from "types/layoutTypes";
+import { LogosConfig, Names } from "types/layoutTypes";
 
 import { UserTypes } from "types/loginUimProps";
 
@@ -26,11 +26,6 @@ interface LoadComponentTypes {
   name: string;
   component: React.ReactNode;
   className?: string;
-}
-
-interface Names {
-  parent?: string;
-  child?: string;
 }
 
 const App: React.FunctionComponent = () => {
@@ -45,7 +40,8 @@ const App: React.FunctionComponent = () => {
 
   useEffect(() => {
     isFlagEnabled("CBMModule").then((value) => setShowCBMDashboard(value));
-  }, []);
+    setHeaderNames(headerNames);
+  }, [setHeaderNames, headerNames]);
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
@@ -85,12 +81,7 @@ const App: React.FunctionComponent = () => {
       return loadComponent({
         logoSet: null,
         name: "Compensación ambiental",
-        component: (
-          <Compensation
-            setHeaderNames={setHeaderNames}
-            headerNames={headerNames}
-          />
-        ),
+        component: <Compensation setHeaderNames={setHeaderNames} />,
         className: "fullgrid",
       });
     }
