@@ -1,4 +1,5 @@
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
+import { useEffect, useState } from "react";
 
 interface DataJsonTypes {
   affected_natural: string;
@@ -33,6 +34,7 @@ interface DataListTypes {
   data: Array<DataTypes>;
 }
 
+
 export const DotsScatterPlot: React.FC<ScatterProps> = ({
   activeBiome,
   dataJSON,
@@ -41,6 +43,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   colors,
   elementOnClick,
 }) => {
+
   let colorsObj;
   let id: string;
   let sizes;
@@ -52,7 +55,8 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     biome: string
   ) => number;
 
-  const dataList = dataJSON.map((affectValue) => {
+  const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
+
     if (
       parseFloat(affectValue.fc) > 6.5 &&
       parseFloat(affectValue.affected_percentage) > 12
@@ -72,7 +76,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         {
           x: affectValue.affected_percentage,
           y: affectValue.fc,
-          z: affectValue.affected_natural === "" ? "0" : affectValue.affected_natural,
+          z:
+            affectValue.affected_natural === ""
+              ? "0"
+              : affectValue.affected_natural,
           biome: affectValue.name,
         },
       ],
@@ -82,10 +89,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     if (dataBiome === activeBiome && serieId === "High") {
       return colors[4];
     }
-    if (dataBiome === activeBiome && serieId === "Medium") {
+    if (dataBiome === activeBiome && serieId === "Medium"){
       return colors[5];
     }
-    if (dataBiome === activeBiome && serieId === "Low") {
+    if (dataBiome === activeBiome && serieId === "Low"){
       return colors[6];
     }
     colorsObj = {
@@ -95,16 +102,18 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     };
     return colorsObj[serieId] ?? colors[3];
   };
+
   getSize = (serieId, xValue, biome) => {
     dataBiome = biome;
     let x = parseFloat(xValue);
     sizes = {
-      High: x >= 80 ? 30 : x + 4,
-      Medium: x === 0 ? 15 : x >= 80 ? 30 : x + 4,
-      Low: x === 0 ? 15 : x + 4,
+      High: x >= 80 ? x - 30 : x + 4,
+      Medium: x >= 80 ? 30 : x + 4,
+      Low: x + 4,
     };
     return sizes[serieId] ?? 30;
   };
+
   return (
     <ResponsiveScatterPlot
       data={dataList}
@@ -128,6 +137,12 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
               fill: "#ea495f",
             },
           },
+          ticks: {
+            line: {
+              stroke: "#ce2222",
+              strokeWidth: 0.3,
+            },
+          },
         },
         grid: {
           line: {
@@ -142,12 +157,12 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       blendMode="multiply"
       enableGridX={true}
       enableGridY={true}
+      nodeId={(datum) => datum.data.biome}
       nodeSize={(obj) => {
-
         return getSize(
           obj.serieId,
           String(obj.formattedX),
-          String(obj.data.biome),
+          String(obj.data.biome)
         );
       }}
       tooltip={({ node }) => {
@@ -162,11 +177,14 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
               fontSize: "14px",
             }}
           >
-            <strong>Afectación:</strong>{`${node.formattedX} %`}
+            <strong>Afectación:</strong>
+            {`${node.formattedX} %`}
             <br />
-            <strong>FC:</strong>{`${node.formattedY}`}
+            <strong>FC:</strong>
+            {`${node.formattedY}`}
             <br />
-            <strong>Natural:</strong>{`${node.data.z}`}
+            <strong>Natural:</strong>
+            {`${node.data.z}`}
           </div>
         );
       }}
@@ -181,7 +199,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         legendOffset: 46,
       }}
       axisLeft={{
-        tickSize: 5,
+        tickSize: 8,
         tickPadding: 5,
         tickRotation: 0,
         legend: labelY,
