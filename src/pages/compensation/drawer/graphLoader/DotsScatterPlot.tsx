@@ -1,5 +1,5 @@
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface DataJsonTypes {
   affected_natural: string;
@@ -14,7 +14,6 @@ interface DataJsonTypes {
 }
 
 interface ScatterProps {
-  activeBiome: string;
   dataJSON: Array<DataJsonTypes>;
   labelX: string;
   labelY: string;
@@ -34,9 +33,7 @@ interface DataListTypes {
   data: Array<DataTypes>;
 }
 
-
 export const DotsScatterPlot: React.FC<ScatterProps> = ({
-  activeBiome,
   dataJSON,
   labelX,
   labelY,
@@ -47,16 +44,16 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   let colorsObj;
   let id: string;
   let sizes;
-  let dataBiome: string;
+  let biomeComparator: string;
   let getColor: (serieId: string) => string;
   let getSize: (
     serieId: string | number,
-    xValue: string,
-    biome: string
+    xValue: string
   ) => number;
 
-  const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
+  const [dataBiome, setDataBiome] = useState("");
 
+  const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
     if (
       parseFloat(affectValue.fc) > 6.5 &&
       parseFloat(affectValue.affected_percentage) > 12
@@ -86,13 +83,13 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     };
   });
   getColor = (serieId) => {
-    if (dataBiome === activeBiome && serieId === "High") {
+    if (dataBiome === biomeComparator && serieId === "High") {
       return colors[4];
     }
-    if (dataBiome === activeBiome && serieId === "Medium"){
+    if (dataBiome === biomeComparator && serieId === "Medium"){
       return colors[5];
     }
-    if (dataBiome === activeBiome && serieId === "Low"){
+    if (dataBiome === biomeComparator && serieId === "Low"){
       return colors[6];
     }
     colorsObj = {
@@ -103,8 +100,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     return colorsObj[serieId] ?? colors[3];
   };
 
-  getSize = (serieId, xValue, biome) => {
-    dataBiome = biome;
+  getSize = (serieId, xValue) => {
     let x = parseFloat(xValue);
     sizes = {
       High: x >= 80 ? x - 30 : x + 4,
@@ -118,6 +114,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     <ResponsiveScatterPlot
       data={dataList}
       onClick={(node) => {
+        setDataBiome(node.data.biome)
         elementOnClick(String(node.data.biome));
       }}
       margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
@@ -157,12 +154,11 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       blendMode="multiply"
       enableGridX={true}
       enableGridY={true}
-      nodeId={(datum) => datum.data.biome}
       nodeSize={(obj) => {
+        biomeComparator = obj.data.biome;
         return getSize(
           obj.serieId,
           String(obj.formattedX),
-          String(obj.data.biome)
         );
       }}
       tooltip={({ node }) => {
