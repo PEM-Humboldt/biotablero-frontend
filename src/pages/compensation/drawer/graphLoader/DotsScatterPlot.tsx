@@ -40,8 +40,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   colors,
   elementOnClick,
 }) => {
-
-  const floats = dataJSON.map(x => parseFloat(x.affected_percentage))
+  const floats = dataJSON.map((x) => parseFloat(x.affected_percentage));
   let colorsObj;
   let id: string;
   let sizes;
@@ -82,10 +81,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     if (dataBiome === biomeComparator && serieId === "High") {
       return colors[4];
     }
-    if (dataBiome === biomeComparator && serieId === "Medium"){
+    if (dataBiome === biomeComparator && serieId === "Medium") {
       return colors[5];
     }
-    if (dataBiome === biomeComparator && serieId === "Low"){
+    if (dataBiome === biomeComparator && serieId === "Low") {
       return colors[6];
     }
     colorsObj = {
@@ -95,10 +94,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     };
     return colorsObj[serieId] ?? colors[3];
   };
- /*
- * Previously, to accommodate the sizes, a d3 scale was used, please consult xScale:
- * https://github.com/PEM-Humboldt/biotablero-frontend/blob/34052510ee224c03439edd4a8b531e4929246272/src/pages/compensation/drawer/graphLoader/DotsGraph.jsx#L28 
- */
+  /*
+   * Previously, to accommodate the sizes, a d3 scale was used, please consult xScale:
+   * https://github.com/PEM-Humboldt/biotablero-frontend/blob/34052510ee224c03439edd4a8b531e4929246272/src/pages/compensation/drawer/graphLoader/DotsGraph.jsx#L28
+   */
   const getSize = (serieId: string | number, xValue: string): number => {
     let x = parseFloat(xValue);
     sizes = {
@@ -113,11 +112,15 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     <ResponsiveScatterPlot
       data={dataList}
       onClick={(node) => {
-        setDataBiome(node.data.biome)
+        setDataBiome(node.data.biome);
         elementOnClick(String(node.data.biome));
       }}
       margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
-      xScale={{ type: "linear", min: -0.7, max: Math.ceil(Math.max(...floats))+ 1 }}
+      xScale={{
+        type: "linear",
+        min: -0.7,
+        max: Math.ceil(Math.max(...floats)) + 1,
+      }}
       xFormat=">-.2f"
       yScale={{ type: "linear", min: 4, max: 10 }}
       yFormat=">-.2f"
@@ -155,10 +158,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       enableGridY={true}
       nodeSize={(obj) => {
         biomeComparator = obj.data.biome;
-        return getSize(
-          obj.serieId,
-          String(obj.formattedX),
-        );
+        return getSize(obj.serieId, String(obj.formattedX));
       }}
       tooltip={({ node }) => {
         return (
