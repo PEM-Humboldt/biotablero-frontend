@@ -41,16 +41,11 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   elementOnClick,
 }) => {
 
-  let floats = dataJSON.map(x => parseFloat(x.affected_percentage))
+  const floats = dataJSON.map(x => parseFloat(x.affected_percentage))
   let colorsObj;
   let id: string;
   let sizes;
   let biomeComparator: string;
-  let getColor: (serieId: string) => string;
-  let getSize: (
-    serieId: string | number,
-    xValue: string
-  ) => number;
 
   const [dataBiome, setDataBiome] = useState("");
 
@@ -83,7 +78,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       ],
     };
   });
-  getColor = (serieId) => {
+  const getColor = (serieId: string): string => {
     if (dataBiome === biomeComparator && serieId === "High") {
       return colors[4];
     }
@@ -100,8 +95,11 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
     };
     return colorsObj[serieId] ?? colors[3];
   };
-
-  getSize = (serieId, xValue) => {
+ /*
+ * Previously, to accommodate the sizes, a d3 scale was used, please consult xScale:
+ * https://github.com/PEM-Humboldt/biotablero-frontend/blob/34052510ee224c03439edd4a8b531e4929246272/src/pages/compensation/drawer/graphLoader/DotsGraph.jsx#L28 
+ */
+  const getSize = (serieId: string | number, xValue: string): number => {
     let x = parseFloat(xValue);
     sizes = {
       High: x >= 80 ? x - 30 : x + 4,
@@ -119,7 +117,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         elementOnClick(String(node.data.biome));
       }}
       margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
-      xScale={{ type: "linear", min: -0.7, max: Math.ceil(Math.max(...floats.map(x=>x)))+ 3 }}
+      xScale={{ type: "linear", min: -0.7, max: Math.ceil(Math.max(...floats))+ 1 }}
       xFormat=">-.2f"
       yScale={{ type: "linear", min: 4, max: 10 }}
       yFormat=">-.2f"
