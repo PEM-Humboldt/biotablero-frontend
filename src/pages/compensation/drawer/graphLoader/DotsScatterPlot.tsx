@@ -41,6 +41,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   elementOnClick,
 }) => {
 
+  let floats = dataJSON.map(x => parseFloat(x.affected_percentage))
   let colorsObj;
   let id: string;
   let sizes;
@@ -118,7 +119,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         elementOnClick(String(node.data.biome));
       }}
       margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
-      xScale={{ type: "linear", min: 0, max: "auto" }}
+      xScale={{ type: "linear", min: -0.7, max: Math.ceil(Math.max(...floats.map(x=>x)))+ 3 }}
       xFormat=">-.2f"
       yScale={{ type: "linear", min: 4, max: 10 }}
       yFormat=">-.2f"
