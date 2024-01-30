@@ -136,7 +136,7 @@ const App: React.FunctionComponent = () => {
           <Route exact path="/" render={loadHome} />
           <Route path="/Consultas" render={loadSearch} />
           <Route path="/Indicadores" render={loadIndicator} />
-          <Route path="/GEB/Compensaciones" component={loadCompensator} />
+          <Route path="/GEB/Compensaciones" render={loadCompensator} />
           <Route path="/Portafolios" render={loadPortfolio} />
           <Route path="/Alertas" render={loadHome} />
           <Route
