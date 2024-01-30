@@ -40,8 +40,7 @@ const App: React.FunctionComponent = () => {
 
   useEffect(() => {
     isFlagEnabled("CBMModule").then((value) => setShowCBMDashboard(value));
-    setHeaderNames(headerNames);
-  }, [setHeaderNames, headerNames]);
+  }, []);
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
