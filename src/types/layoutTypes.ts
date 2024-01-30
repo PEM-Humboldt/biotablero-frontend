@@ -13,6 +13,6 @@ export interface LogosConfig {
 }
 
 export interface Names {
-  parent?: string;
-  child?: string;
+  parent: string;
+  child: string;
 }
