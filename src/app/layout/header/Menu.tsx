@@ -11,13 +11,19 @@ const Menu: React.FunctionComponent = () => {
   const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
   useEffect(() => {
-    isFlagEnabled("alertsModule").then((value: boolean) =>
-      setShowAlerts(value)
-    );
+    let isMounted = true;
 
-    isFlagEnabled("CBMModule").then((value: boolean) =>
-      setShowCBMDashboard(value)
-    );
+    isFlagEnabled("alertsModule").then((value: boolean) => {
+      if (isMounted) setShowAlerts(value);
+    });
+
+    isFlagEnabled("CBMModule").then((value: boolean) => {
+      if (isMounted) setShowCBMDashboard(value);
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const changeMenuState = () => {
