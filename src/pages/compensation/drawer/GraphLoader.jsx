@@ -55,6 +55,7 @@ const GraphLoader = (props) => {
               </p>
               <div style={{ height: "280px" }}>
                 <DotsScatterPlot
+                  activeBiome={activeBiome}
                   dataJSON={data}
                   labelX={labelX}
                   labelY={labelY}
