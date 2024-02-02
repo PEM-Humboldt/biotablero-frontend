@@ -71,7 +71,7 @@ class Search extends Component {
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames(null, null);
+    setHeaderNames({ parent: "", child: "" });
   }
 
   /**
@@ -142,7 +142,7 @@ class Search extends Component {
                 { selectedArea: inputId },
                 () => {
                   const { selectedAreaType, selectedArea } = this.state;
-                  setHeaderNames(selectedAreaType.name, selectedArea.name);
+                  setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
                 },
               );
             } else {
@@ -1375,7 +1375,7 @@ class Search extends Component {
           const { selectedAreaType, selectedArea } = this.state;
           if (selectedAreaType && selectedArea) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
-            setHeaderNames(selectedAreaType.name, selectedArea.name);
+            setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
             ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
           }
         },
@@ -1413,7 +1413,7 @@ class Search extends Component {
       layerError: false,
       loadingLayer: true,
     }));
-    setHeaderNames("Polígono", "Área Consultada");
+    setHeaderNames({ parent: "Polígono", child: "Área Consultada"});
     this.updateBounds(polygonBounds);
   }
 
@@ -1462,7 +1462,7 @@ class Search extends Component {
     }, () => {
       const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
-      setHeaderNames(null, null);
+      setHeaderNames({ parent: "", child: "" });
     });
   }
 

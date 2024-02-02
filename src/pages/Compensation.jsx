@@ -62,7 +62,7 @@ class Compensation extends Component {
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames(null, null);
+    setHeaderNames({ parent: "", child: "" });
   }
 
   loadProjectsList = () => {
@@ -164,7 +164,7 @@ class Compensation extends Component {
           currentCompany,
           currentProject: { id_region: idRegion, label, prj_status: prjStatus },
         } = this.state;
-        setHeaderNames(`${currentCompany} ${idRegion}`, `${prjStatus} ${label}`);
+        setHeaderNames({ parent: `${currentCompany} ${idRegion}`, child: `${prjStatus} ${label}` });
       });
     });
   }
@@ -308,7 +308,7 @@ class Compensation extends Component {
       biomesImpacted: [],
     }, () => {
       const { setHeaderNames } = this.props;
-      setHeaderNames(null, null);
+      setHeaderNames({ parent: "", child: "" });
     });
     this.loadProjectsList();
   }

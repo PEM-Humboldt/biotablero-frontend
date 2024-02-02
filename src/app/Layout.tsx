@@ -1,12 +1,7 @@
 import Footer from "app/layout/Footer";
 import Header from "app/layout/Header";
 
-import { LogosConfig } from "types/layoutTypes";
-
-interface Names {
-  parent?: string;
-  child?: string;
-}
+import { LogosConfig, Names } from "types/layoutTypes";
 
 interface LayoutProps {
   children: React.ReactNode;
