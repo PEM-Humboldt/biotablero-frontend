@@ -31,7 +31,6 @@ interface NodeType {
   z: string;
   biome: string;
   color: string;
-  selectedColor: string;
 }
 
 interface DataListTypes {
@@ -51,11 +50,9 @@ const getNode = (selectedBiome: string) => {
         cx={node.x}
         cy={node.y}
         r={node.size / 2}
-        fill={
-          selectedBiome === node.data.biome
-            ? node.data.color
-            : node.data.selectedColor
-        }
+        fill={node.data.color}
+        stroke={selectedBiome === node.data.biome ? "#2a363b" : undefined}
+        strokeWidth={2}
         onClick={(event) => (onClick ? onClick(node, event) : null)}
       />
     );
@@ -74,37 +71,19 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   const floats = dataJSON.map((x) => parseFloat(x.affected_percentage));
   let sizes;
 
-  const getColors = (category: string): Array<string> => {
-    const selectedColorsObj = {
-      High: colors[2],
-      Medium: colors[0],
-      Low: colors[1],
-    };
-    const colorsObj = {
-      High: colors[4],
-      Medium: colors[5],
-      Low: colors[6],
-    };
-    return [
-      colorsObj[category as Category],
-      selectedColorsObj[category as Category],
-    ];
-  };
-
   const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
-    let category = "Medium";
+    let color = colors[0];
     if (
       parseFloat(affectValue.fc) > 6.5 &&
       parseFloat(affectValue.affected_percentage) > 12
     ) {
-      category = "High";
+      color = colors[2];
     } else if (
       parseFloat(affectValue.fc) < 6.5 &&
       parseFloat(affectValue.affected_percentage) < 12
     ) {
-      category = "Low";
+      color = colors[1];
     }
-    const [color, selectedColor] = getColors(category);
     return {
       id: affectValue.name,
       data: [
@@ -117,7 +96,6 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
               : affectValue.affected_natural,
           biome: affectValue.name,
           color,
-          selectedColor,
         },
       ],
     };

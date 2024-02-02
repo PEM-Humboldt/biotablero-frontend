@@ -23,9 +23,6 @@ class Compensation extends Component {
         { low: '#51b4c1' },
         { high: '#ea495f' },
         { selected: '#2a363b' },
-        {darkHigh: '#b23537'},
-        {darkMedium: '#a38230'},
-        {darkLow: '#2c636b'}
       ],
       biomesImpacted: [],
       currentCompany: null,
