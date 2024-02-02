@@ -3581,7 +3581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nivo/scales@npm:0.84.0":
+"@nivo/scales@npm:0.84.0, @nivo/scales@npm:^0.84.0":
   version: 0.84.0
   resolution: "@nivo/scales@npm:0.84.0"
   dependencies:
@@ -7484,6 +7484,7 @@ __metadata:
     "@nivo/core": ~0.79.0
     "@nivo/line": ~0.79.1
     "@nivo/pie": ~0.79.1
+    "@nivo/scales": ^0.84.0
     "@nivo/scatterplot": ^0.84.0
     "@nivo/tooltip": ~0.79.0
     "@types/node": ^17.0.41

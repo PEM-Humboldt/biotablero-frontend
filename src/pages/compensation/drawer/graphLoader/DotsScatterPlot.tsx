@@ -1,3 +1,4 @@
+import { createSymlogScale } from "@nivo/scales";
 import {
   ResponsiveScatterPlot,
   ScatterPlotNode,
@@ -68,8 +69,9 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   colors,
   elementOnClick,
 }) => {
-  const floats = dataJSON.map((x) => parseFloat(x.affected_percentage));
-  let sizes;
+  const affectedPercentages = dataJSON.map((x) =>
+    parseFloat(x.affected_percentage)
+  );
 
   const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
     let color = colors[0];
@@ -105,14 +107,18 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
    * Previously, to accommodate the sizes, a d3 scale was used, please consult xScale:
    * https://github.com/PEM-Humboldt/biotablero-frontend/blob/34052510ee224c03439edd4a8b531e4929246272/src/pages/compensation/drawer/graphLoader/DotsGraph.jsx#L28
    */
-  const getSize = (serieId: string | number, xValue: string): number => {
-    let x = parseFloat(xValue);
-    sizes = {
-      High: x >= 80 ? x - 30 : x + 4,
-      Medium: x >= 80 ? 30 : x + 4,
-      Low: x + 4,
-    };
-    return sizes[serieId] ?? 30;
+  const getSize = (xValue: string): number => {
+    const scale = createSymlogScale(
+      { type: "symlog" },
+      {
+        all: affectedPercentages,
+        min: 1,
+        max: Math.max(...affectedPercentages),
+      },
+      28,
+      "x"
+    );
+    return scale(parseFloat(xValue) + 2);
   };
 
   return (
@@ -126,7 +132,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
       xScale={{
         type: "linear",
         min: -0.7,
-        max: Math.ceil(Math.max(...floats)) + 1,
+        max: Math.ceil(Math.max(...affectedPercentages)) + 1,
       }}
       xFormat=">-.2f"
       yScale={{ type: "linear", min: 4, max: 10 }}
@@ -153,16 +159,14 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         grid: {
           line: {
             stroke: "#dbbcc0",
-            strokeWidth: 0.2,
+            strokeWidth: 0.1,
           },
         },
       }}
       blendMode="multiply"
       enableGridX={true}
       enableGridY={true}
-      nodeSize={(obj) => {
-        return getSize(obj.serieId, String(obj.formattedX));
-      }}
+      nodeSize={(obj) => getSize(String(obj.formattedX))}
       tooltip={({ node }) => {
         return (
           <div
