@@ -1,5 +1,8 @@
-import { ResponsiveScatterPlot } from "@nivo/scatterplot";
-import { useState } from "react";
+import {
+  ResponsiveScatterPlot,
+  ScatterPlotNode,
+  ScatterPlotNodeProps,
+} from "@nivo/scatterplot";
 
 interface DataJsonTypes {
   affected_natural: string;
@@ -14,6 +17,7 @@ interface DataJsonTypes {
 }
 
 interface ScatterProps {
+  activeBiome: string;
   dataJSON: Array<DataJsonTypes>;
   labelX: string;
   labelY: string;
@@ -21,19 +25,46 @@ interface ScatterProps {
   elementOnClick: (key: string) => void;
 }
 
-interface DataTypes {
+interface NodeType {
   x: string;
   y: string;
   z: string;
   biome: string;
+  color: string;
+  selectedColor: string;
 }
 
 interface DataListTypes {
   id: string;
-  data: Array<DataTypes>;
+  data: Array<NodeType>;
 }
 
+type Category = "High" | "Medium" | "Low";
+
+const getNode = (selectedBiome: string) => {
+  const Node: ScatterPlotNode<NodeType> = ({
+    node,
+    onClick,
+  }: ScatterPlotNodeProps<NodeType>) => {
+    return (
+      <circle
+        cx={node.x}
+        cy={node.y}
+        r={node.size / 2}
+        fill={
+          selectedBiome === node.data.biome
+            ? node.data.color
+            : node.data.selectedColor
+        }
+        onClick={(event) => (onClick ? onClick(node, event) : null)}
+      />
+    );
+  };
+  return Node;
+};
+
 export const DotsScatterPlot: React.FC<ScatterProps> = ({
+  activeBiome,
   dataJSON,
   labelX,
   labelY,
@@ -41,29 +72,41 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   elementOnClick,
 }) => {
   const floats = dataJSON.map((x) => parseFloat(x.affected_percentage));
-  let colorsObj;
-  let id: string;
   let sizes;
-  let biomeComparator: string;
 
-  const [dataBiome, setDataBiome] = useState("");
+  const getColors = (category: string): Array<string> => {
+    const selectedColorsObj = {
+      High: colors[2],
+      Medium: colors[0],
+      Low: colors[1],
+    };
+    const colorsObj = {
+      High: colors[4],
+      Medium: colors[5],
+      Low: colors[6],
+    };
+    return [
+      colorsObj[category as Category],
+      selectedColorsObj[category as Category],
+    ];
+  };
 
   const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
+    let category = "Medium";
     if (
       parseFloat(affectValue.fc) > 6.5 &&
       parseFloat(affectValue.affected_percentage) > 12
     ) {
-      id = "High";
+      category = "High";
     } else if (
       parseFloat(affectValue.fc) < 6.5 &&
       parseFloat(affectValue.affected_percentage) < 12
     ) {
-      id = "Low";
-    } else {
-      id = "Medium";
+      category = "Low";
     }
+    const [color, selectedColor] = getColors(category);
     return {
-      id: id,
+      id: affectValue.name,
       data: [
         {
           x: affectValue.affected_percentage,
@@ -73,27 +116,13 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
               ? "0"
               : affectValue.affected_natural,
           biome: affectValue.name,
+          color,
+          selectedColor,
         },
       ],
     };
   });
-  const getColor = (serieId: string): string => {
-    if (dataBiome === biomeComparator && serieId === "High") {
-      return colors[4];
-    }
-    if (dataBiome === biomeComparator && serieId === "Medium") {
-      return colors[5];
-    }
-    if (dataBiome === biomeComparator && serieId === "Low") {
-      return colors[6];
-    }
-    colorsObj = {
-      High: colors[2],
-      Medium: colors[0],
-      Low: colors[1],
-    };
-    return colorsObj[serieId] ?? colors[3];
-  };
+
   /*
    * Previously, to accommodate the sizes, a d3 scale was used, please consult xScale:
    * https://github.com/PEM-Humboldt/biotablero-frontend/blob/34052510ee224c03439edd4a8b531e4929246272/src/pages/compensation/drawer/graphLoader/DotsGraph.jsx#L28
@@ -111,8 +140,8 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   return (
     <ResponsiveScatterPlot
       data={dataList}
+      nodeComponent={getNode(activeBiome)}
       onClick={(node) => {
-        setDataBiome(node.data.biome);
         elementOnClick(String(node.data.biome));
       }}
       margin={{ top: 20, right: 40, bottom: 60, left: 80 }}
@@ -150,14 +179,10 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
           },
         },
       }}
-      colors={(obj) => {
-        return getColor(String(obj.serieId));
-      }}
       blendMode="multiply"
       enableGridX={true}
       enableGridY={true}
       nodeSize={(obj) => {
-        biomeComparator = obj.data.biome;
         return getSize(obj.serieId, String(obj.formattedX));
       }}
       tooltip={({ node }) => {
