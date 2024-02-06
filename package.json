@@ -42,7 +42,7 @@
     "react-scripts": "~5.0.1",
     "react-spring": "~9.4.5",
     "serve": "^14.2.0",
-    "styled-components": "~5.3.5"
+    "styled-components": "~5.3.11"
   },
   "dependenciesMeta": {
     "@react-spring/core": {
@@ -59,7 +59,7 @@
     "@types/react-json-to-csv": "^1.0.0",
     "@types/react-leaflet": "^2.8.2",
     "@types/react-router-dom": "^5.3.3",
-    "@types/styled-components": "^5.1.26",
+    "@types/styled-components": "^5.1.34",
     "typescript": "~4.7.3",
     "yarn-audit-fix": "~9.3.1"
   },

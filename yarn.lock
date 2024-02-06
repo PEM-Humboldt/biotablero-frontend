@@ -6286,14 +6286,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/styled-components@npm:^5.1.26":
-  version: 5.1.26
-  resolution: "@types/styled-components@npm:5.1.26"
+"@types/styled-components@npm:^5.1.34":
+  version: 5.1.34
+  resolution: "@types/styled-components@npm:5.1.34"
   dependencies:
     "@types/hoist-non-react-statics": "*"
     "@types/react": "*"
     csstype: ^3.0.2
-  checksum: 84f53b3101739b20d1731554fb7735bc2f3f5d050a8b392e9845403c8c8bbd729737d033978649f9195a97b557875b010d46e35a4538564a2d0dbcce661dbf76
+  checksum: 7868066a15afe42d8b353953fc196a7f11a9918b1c980f51d21bb9b49e309c7fe2d730be2d3dc48e92ab4de20f44a3c9dfe6cc98b6ea4dd02655e6f8128171b6
   languageName: node
   linkType: hard
 
@@ -7881,7 +7881,7 @@ __metadata:
     react-scripts: ~5.0.1
     react-spring: ~9.4.5
     serve: ^14.2.0
-    styled-components: ~5.3.5
+    styled-components: ~5.3.11
     typescript: ~4.7.3
     yarn-audit-fix: ~9.3.1
   dependenciesMeta:
@@ -21716,9 +21716,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:~5.3.5":
-  version: 5.3.5
-  resolution: "styled-components@npm:5.3.5"
+"styled-components@npm:~5.3.11":
+  version: 5.3.11
+  resolution: "styled-components@npm:5.3.11"
   dependencies:
     "@babel/helper-module-imports": ^7.0.0
     "@babel/traverse": ^7.4.5
@@ -21734,7 +21734,7 @@ __metadata:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
-  checksum: 05a664dfe423c2906959a0f3f47f9b1ad630e493eb2e06deea0dc0906af33ba5ca17277b98948a6c9642e73894d6533391aebf45576489f5afe920c974e9f8eb
+  checksum: 10edd4dae3b0231ec02d86bdd09c88e894eedfa7e9d4f8e562b09fb69c67a27d586cbcf35c785002d59b3bf11e6c0940b0efce40d13ae9ed148b26b1dc8f3284
   languageName: node
   linkType: hard
 

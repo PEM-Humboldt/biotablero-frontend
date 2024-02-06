@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled, { StyledComponent } from "styled-components";
 
 interface PropsLeg {
   orientation?: string;
   disabled?: boolean;
 }
 
-const Legend = styled.p<PropsLeg>`
+const Legend: StyledComponent<any, any, {}> = styled.p<PropsLeg>`
   display: ${(props) => {
     if (props.orientation === "column") return "block";
     return "inline-block";
@@ -22,7 +22,9 @@ interface PropsPointLeg {
   marginLeft?: string;
 }
 
-const PointLegend = styled(Legend)<PropsPointLeg>`
+const PointLegend: StyledComponent<any, any, {}> = styled(
+  Legend
+)<PropsPointLeg>`
   &:before {
     display: inline-block;
     content: "";
@@ -39,13 +41,17 @@ interface PropsFilledLeg {
   color: string;
 }
 
-const PointFilledLegend = styled(PointLegend)<PropsFilledLeg>`
+const PointFilledLegend: StyledComponent<any, any, {}> = styled(
+  PointLegend
+)<PropsFilledLeg>`
   &:before {
     background-color: ${(props) => props.color};
   }
 `;
 
-const SquareFilledLegend = styled(PointLegend)<PropsFilledLeg>`
+const SquareFilledLegend: StyledComponent<any, any, {}> = styled(
+  PointLegend
+)<PropsFilledLeg>`
   &:before {
     background-color: ${(props) => props.color};
     border-radius: 0;
@@ -56,7 +62,9 @@ interface PropsSquareBorderLeg {
   color: string;
 }
 
-const SquareBorderLegend = styled(PointLegend)<PropsSquareBorderLeg>`
+const SquareBorderLegend: StyledComponent<any, any, {}> = styled(
+  PointLegend
+)<PropsSquareBorderLeg>`
   &:before {
     color: #ffffff;
     border: 2px solid ${(props) => props.color};
@@ -70,7 +78,7 @@ interface PropsLineLeg {
   color: string;
 }
 
-const LineLegend = styled(Legend)<PropsLineLeg>`
+const LineLegend: StyledComponent<any, any, {}> = styled(Legend)<PropsLineLeg>`
   &:before {
     display: inline-block;
     content: "";

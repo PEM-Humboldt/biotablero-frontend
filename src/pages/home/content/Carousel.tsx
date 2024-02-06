@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { StyledComponent } from "styled-components";
 import React from "react";
 import { ArrowLeft, ArrowRight } from "pages/home/content/Arrows";
 
@@ -22,7 +22,7 @@ const Relative = styled.div`
   position: relative;
 `;
 
-const CarouselContainer = styled(Relative)`
+const CarouselContainer: StyledComponent<any, any, {}> = styled(Relative)`
   overflow: hidden;
   padding: 0 40px;
 `;
@@ -31,11 +31,11 @@ const Flex = styled.div`
   display: flex;
 `;
 
-const CarouselItem = styled.div`
+const CarouselItem: StyledComponent<any, any, {}> = styled.div`
   flex: 0 0 auto;
 `;
 
-const CarouselContainerInner = styled(Flex)`
+const CarouselContainerInner: StyledComponent<any, any, {}> = styled(Flex)`
   overflow-x: scroll;
   scroll-snap-type: x mandatory;
   -ms-overflow-style: none;
@@ -68,14 +68,18 @@ const CarouselButton = styled.button`
   padding: 0;
 `;
 
-const LeftCarouselButton = styled(CarouselButton)<LeftCarouselButtonTypes>`
+const LeftCarouselButton: StyledComponent<any, any, {}> = styled(
+  CarouselButton
+)<LeftCarouselButtonTypes>`
   left: 0;
   transform: translate(0%, -50%);
 
   visibility: ${({ hasItemsOnLeft }) => (hasItemsOnLeft ? "all" : "hidden")};
 `;
 
-const RightCarouselButton = styled(CarouselButton)<RightCarouselButtonTypes>`
+const RightCarouselButton: StyledComponent<any, any, {}> = styled(
+  CarouselButton
+)<RightCarouselButtonTypes>`
   right: 0;
   transform: translate(0%, -50%);
 
