@@ -3,7 +3,6 @@ import { createSymlogScale } from "@nivo/scales";
 import {
   ResponsiveScatterPlot,
   ScatterPlotNode,
-  //ScatterPlotNodeData,
   ScatterPlotNodeProps,
 } from "@nivo/scatterplot";
 
