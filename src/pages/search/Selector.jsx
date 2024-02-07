@@ -55,7 +55,6 @@ const Selector = (props) => {
 
   const onChange = (level, tabId) => {
     handlers.areaListChange();
-
     if (tabId === "draw-polygon") {
       handlers.polygonChange();
     }
