@@ -17,7 +17,7 @@ import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
-import { LogosConfig } from "types/layoutTypes";
+import { LogosConfig, Names } from "types/layoutTypes";
 
 import { UserTypes } from "types/loginUimProps";
 
@@ -30,7 +30,10 @@ interface LoadComponentTypes {
 
 const App: React.FunctionComponent = () => {
   const [user, setUser] = useState<UserTypes | null>(null);
-  const [headerNames, setHeaderNames] = useState<object>({});
+  const [headerNames, setHeaderNames] = useState<Names>({
+    parent: "",
+    child: "",
+  });
   const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
   const location = useLocation();
@@ -40,12 +43,6 @@ const App: React.FunctionComponent = () => {
   }, []);
 
   const buildQuery = (queryString: string) => new URLSearchParams(queryString);
-
-  const setHeaderNamesFunc = (parent: string, child: string) => {
-    setHeaderNames({
-      headerNames: { parent, child },
-    });
-  };
 
   const loadHome = () =>
     loadComponent({
@@ -63,7 +60,7 @@ const App: React.FunctionComponent = () => {
         <Search
           selectedAreaTypeId={query.get("area_type")}
           selectedAreaId={query.get("area_id")}
-          setHeaderNames={setHeaderNamesFunc}
+          setHeaderNames={setHeaderNames}
         />
       ),
       className: "fullgrid",
@@ -83,7 +80,7 @@ const App: React.FunctionComponent = () => {
       return loadComponent({
         logoSet: null,
         name: "Compensación ambiental",
-        component: <Compensation setHeaderNames={setHeaderNamesFunc} />,
+        component: <Compensation setHeaderNames={setHeaderNames} />,
         className: "fullgrid",
       });
     }
@@ -139,7 +136,7 @@ const App: React.FunctionComponent = () => {
           <Route exact path="/" render={loadHome} />
           <Route path="/Consultas" render={loadSearch} />
           <Route path="/Indicadores" render={loadIndicator} />
-          <Route path="/GEB/Compensaciones" component={loadCompensator} />
+          <Route path="/GEB/Compensaciones" render={loadCompensator} />
           <Route path="/Portafolios" render={loadPortfolio} />
           <Route path="/Alertas" render={loadHome} />
           <Route

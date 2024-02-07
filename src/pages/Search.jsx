@@ -70,7 +70,7 @@ class Search extends Component {
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames(null, null);
+    setHeaderNames({ parent: "", child: "" });
   }
 
   /**
@@ -154,15 +154,14 @@ class Search extends Component {
                 this.setArea(selectedAreaTypeId);
                 this.setState({ selectedArea: inputId }, () => {
                   const { selectedAreaType, selectedArea } = this.state;
-                  setHeaderNames(selectedAreaType.name, selectedArea.name);
-                });
-              } else {
-                history.replace(history.location.pathname);
-              }
+                  setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
+                },
+              );
             } else {
               history.replace(history.location.pathname);
             }
           }
+        }
         );
         this.reportNoMessage("defAreas");
       })
@@ -1485,23 +1484,18 @@ class Search extends Component {
     const { setHeaderNames } = this.props;
     const { layers } = this.state;
     if (nameToOn) {
-      this.setState({ selectedArea: nameToOn }, () => {
-        const { history, location } = this.props;
-        const { selectedAreaType, selectedArea } = this.state;
-        if (selectedAreaType && selectedArea) {
-          history.push(
-            `?area_type=${selectedAreaType.id}&area_id=${
-              selectedArea.id || selectedArea.name
-            }`
-          );
-          setHeaderNames(selectedAreaType.name, selectedArea.name);
-          ReactGA.send({
-            hitType: "pageview",
-            page: location.pathname + location.search,
-            title: "Consultas",
-          });
-        }
-      });
+      this.setState(
+        { selectedArea: nameToOn },
+        () => {
+          const { history, location } = this.props;
+          const { selectedAreaType, selectedArea } = this.state;
+          if (selectedAreaType && selectedArea) {
+            history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
+            setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
+            ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
+          }
+        },
+      );
     }
     if (nameToOff && layers[nameToOff]) {
       this.setState((prevState) => {
@@ -1535,7 +1529,7 @@ class Search extends Component {
       layerError: false,
       loadingLayer: true,
     }));
-    setHeaderNames("Polígono", "Área Consultada");
+    setHeaderNames({ parent: "Polígono", child: "Área Consultada"});
     this.updateBounds(polygonBounds);
   };
 
@@ -1569,29 +1563,26 @@ class Search extends Component {
         const psKeys = Object.keys(newState.layers).filter((key) =>
           /SciHfPA-*/.test(key)
         );
-        unsetLayers = unsetLayers.concat(psKeys);
-
-        unsetLayers.forEach((layer) => {
-          if (newState.layers[layer]) delete newState.layers[layer];
-        });
-        newState.selectedAreaType = null;
-        newState.selectedArea = null;
-        newState.activeLayer = {};
-        newState.loadingLayer = false;
-        newState.layerError = false;
-        newState.rasterUrls = [];
-        newState.searchType = "definedArea";
-        newState.polygon = {};
-        newState.drawPolygonEnabled = false;
-        return newState;
-      },
-      () => {
-        const { history, setHeaderNames } = this.props;
-        history.replace(history.location.pathname);
-        setHeaderNames(null, null);
-      }
-    );
-  };
+      unsetLayers = unsetLayers.concat(psKeys);
+      unsetLayers.forEach((layer) => {
+        if (newState.layers[layer]) delete newState.layers[layer];
+      });
+      newState.selectedAreaType = null;
+      newState.selectedArea = null;
+      newState.activeLayer = {};
+      newState.loadingLayer = false;
+      newState.layerError = false;
+      newState.rasterUrls = [];
+      newState.searchType = "definedArea";
+      newState.polygon = {};
+      newState.drawPolygonEnabled= false;
+      return newState;
+    }, () => {
+      const { history, setHeaderNames } = this.props;
+      history.replace(history.location.pathname);
+      setHeaderNames({ parent: "", child: "" });
+    });
+  }
 
   /**
    * Close the modal of connection error to any of the backends
