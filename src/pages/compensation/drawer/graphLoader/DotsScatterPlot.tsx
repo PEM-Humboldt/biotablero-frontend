@@ -1,7 +1,9 @@
 import { createSymlogScale } from "@nivo/scales";
+
 import {
   ResponsiveScatterPlot,
   ScatterPlotNode,
+  //ScatterPlotNodeData,
   ScatterPlotNodeProps,
 } from "@nivo/scatterplot";
 
@@ -39,12 +41,13 @@ interface DataListTypes {
   data: Array<NodeType>;
 }
 
-type Category = "High" | "Medium" | "Low";
-
 const getNode = (selectedBiome: string) => {
   const Node: ScatterPlotNode<NodeType> = ({
     node,
     onClick,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseMove,
   }: ScatterPlotNodeProps<NodeType>) => {
     return (
       <circle
@@ -54,7 +57,10 @@ const getNode = (selectedBiome: string) => {
         fill={node.data.color}
         stroke={selectedBiome === node.data.biome ? "#2a363b" : undefined}
         strokeWidth={2}
-        onClick={(event) => (onClick ? onClick(node, event) : null)}
+        onClick={(event) => onClick?.(node, event)}
+        onMouseEnter={(event) => onMouseEnter?.(node, event)}
+        onMouseMove={(event) => onMouseMove?.(node, event)}
+        onMouseLeave={(event) => onMouseLeave?.(node, event)}
       />
     );
   };
@@ -171,7 +177,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         return (
           <div
             style={{
-              color: node.color,
+              color: node.data.color,
               backgroundColor: "rgba(0,0,0,0.9)",
               position: "relative",
               padding: "12px",
