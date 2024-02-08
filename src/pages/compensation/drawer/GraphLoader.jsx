@@ -1,7 +1,7 @@
-import DownloadIcon from '@mui/icons-material/Save';
-import PropTypes from 'prop-types';
+import DownloadIcon from "@mui/icons-material/Save";
+import PropTypes from "prop-types";
 
-import DotsGraph from 'pages/compensation/drawer/graphLoader/DotsGraph';
+import { DotsScatterPlot } from "./graphLoader/DotsScatterPlot";
 
 const GraphLoader = (props) => {
   const {
@@ -21,71 +21,60 @@ const GraphLoader = (props) => {
 
   let errorMessage = null;
   // TODO: don't relay on data being null for a loading state
-  if (data === null || message === 'loading') {
-    errorMessage = 'Cargando información...';
-  } else if (!data || data.length <= 0 || Object.keys(data).length === 0 || message === 'no-data') {
-    errorMessage = 'Información no disponible';
+  if (data === null || message === "loading") {
+    errorMessage = "Cargando información...";
+  } else if (
+    !data ||
+    data.length <= 0 ||
+    Object.keys(data).length === 0 ||
+    message === "no-data"
+  ) {
+    errorMessage = "Información no disponible";
   }
   if (errorMessage) {
-    return (
-      <div className="errorData">
-        {errorMessage}
-      </div>
-    );
+    return <div className="errorData">{errorMessage}</div>;
   }
 
   switch (graphType) {
-    case 'Dots':
+    case "Dots":
       return (
         <div className="graphcard pb">
           <h2>
             <DownloadIcon className="icondown" />
             Ecosistemas Equivalentes
           </h2>
-          { !showOnlyTitle && (
+          {!showOnlyTitle && (
             <div>
               <p className="legcomp">
                 Agrega uno o varios Biomas a tus opciones de compensación
                 <br />
                 FC
-                <b>
-                  Alto
-                </b>
-                <i>
-                  Medio
-                </i>
-                <em>
-                  Bajo
-                </em>
-                y cantidad de area afectada
+                <b>Alto</b>
+                <i>Medio</i>
+                <em>Bajo</em>y cantidad de area afectada
               </p>
-              <DotsGraph
-                activeBiome={activeBiome}
-                colors={colors}
-                dataJSON={data}
-                elementOnClick={elementOnClick}
-                graphTitle={graphTitle}
-                labelX={labelX}
-                labelY={labelY}
-                height="280"
-                units={units}
-                width={width}
-              />
+              <div style={{ height: "280px" }}>
+                <DotsScatterPlot
+                  activeBiome={activeBiome}
+                  dataJSON={data}
+                  labelX={labelX}
+                  labelY={labelY}
+                  colors={colors}
+                  elementOnClick={elementOnClick}
+                />
+              </div>
             </div>
           )}
         </div>
       );
-      default:
-        return <></>;
+    default:
+      return <></>;
   }
 };
 
 GraphLoader.propTypes = {
   graphType: PropTypes.string.isRequired,
-  data: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.array,
-  ]).isRequired,
+  data: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
   graphTitle: PropTypes.string,
   activeBiome: PropTypes.string,
   labelX: PropTypes.string,
@@ -99,12 +88,12 @@ GraphLoader.propTypes = {
 };
 
 GraphLoader.defaultProps = {
-  graphTitle: '',
-  activeBiome: '',
-  labelX: '',
-  labelY: '',
+  graphTitle: "",
+  activeBiome: "",
+  labelX: "",
+  labelY: "",
   showOnlyTitle: false,
-  units: '',
+  units: "",
   elementOnClick: () => {},
   colors: [],
   message: null,
