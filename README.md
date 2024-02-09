@@ -85,8 +85,9 @@ Descargar el repositorio en el servidor donde se desplegará el servicio.
 Tenga en cuenta la configuración de [las variables de entorno](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used): se deberá crear una copia del archivo _.env_ con el nombre _.env.production.local_, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
 
 Ejecutar la siguiente instrucción para construir la imagen:
-
-    docker build -t biotablero-front:<version> .
+```sh
+docker build -t biotablero-front:<version> .
+```
 
 Es recomendable usar como versión de la imagen el valor del release actual en [GitHub](https://github.com/PEM-Humboldt/biotablero/releases).
 

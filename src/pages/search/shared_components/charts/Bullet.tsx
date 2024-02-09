@@ -6,6 +6,7 @@ import {
 } from "@nivo/bullet";
 import { BasicTooltip, useTooltip } from "@nivo/tooltip";
 import { animated, to } from "@react-spring/web";
+
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 type colorsFunction = (param: string) => string;
@@ -196,7 +197,7 @@ const NoTooltipRangeWrap = (
         width={to(width, (value) => Math.max(value, 0))}
         height={to(height, (value) => Math.max(value, 0))}
         fill={colors(rangeKey)}
-        onClick={(event) => onClick(data, event)} //REVISAR
+        onClick={(event) => onClick(data, event)}
       />
     );
   };
