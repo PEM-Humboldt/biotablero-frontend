@@ -8,30 +8,36 @@ Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humbol
 
 ### 1.1. Prerequisitos
 
-Debe tener instalado [nodejs](https://nodejs.org/) v18.15+ y [yarn](https://yarnpkg.com/) en su equipo local para la instalación de paquetes y ejecución del proyecto.
+Debe tener instalado [nodejs](https://nodejs.org/) v18.15+
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
-- Para tener un mejor performance es perferible correr en sistema linux.
-
-En caso de no tener la versión de nodejs requerida se puede activar a partir del archivo .nvmrc ejecutando el siguiente comando:
+#### NVM
+En caso usar nvm, puede activar la version necesaria con el siguiente comando:
 
 ```sh
 nvm use
 
 ```
+Si no tiene la versión correcta instalada, el comando le indicará como instalarla antes de poder usarla.
 
-### 1.2. Instalación de paquetes:
+Active pnpm como el manejador de paquetes:
+```sh
+corepack enable
+```
 
+### 1.2. Construcción de dependencias:
+Algunas dependencias del proyecto son paquetes incluidos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
+```sh
+pnpm -r install
+pnpm -r build-pkg
+```
+
+### 1.3. Instalación de paquetes:
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
-
-    yarn install
-
-### 1.3. Construcción de dependencias:
-
-Algunas dependencias del proyecto son paquetes incluídos en este mismo repositorio, para "_compilar_" dichas dependencias ejecute:
-
-    yarn workspaces foreach run build-pkg
+```sh
+pnpm install
+```
 
 ### 1.4. Configuración de variables de entorno:
 
@@ -58,8 +64,9 @@ REACT_APP_GA_TRACKING_ID=''
 ### 1.5. Ejecución:
 
 Por último, ejecute la siguiente instrucción:
-
-    yarn start
+```sh
+pnpm start-dev
+```
 
 La instrucción iniciará el proyecto en su entorno local y se abrirá en el navegador.
 
