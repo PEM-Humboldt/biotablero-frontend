@@ -1600,6 +1600,7 @@ class Search extends Component {
                     geofenceChange: this.innerElementChange,
                     polygonChange: () => {
                       this.setState({ drawPolygonEnabled: true });
+                      this.shutOffLayer()
                     },
                   }}
                   description={Description()}
