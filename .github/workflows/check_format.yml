@@ -7,7 +7,7 @@ on:
       - release/*
 
 jobs:
-  Check format:
+  check-format:
     runs-on: ubuntu-latest
 
     steps:
