@@ -33,7 +33,6 @@
     "indicators": "workspace:1.0.0",
     "leaflet": "1.4.0",
     "leaflet-draw": "^1.0.4",
-    "prettier": "^2.7.1",
     "prop-types": "15.8.1",
     "react": "~17.0.2",
     "react-dom": "~17.0.2",
@@ -67,6 +66,7 @@
     "@types/react-leaflet": "^2.8.2",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.34",
+    "prettier": "^2.7.1",
     "typescript": "~4.7.3"
   },
   "browserslist": [
