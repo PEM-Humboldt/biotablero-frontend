@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - release/*
+      - feature/*
   workflow_dispatch:
 
 jobs:
