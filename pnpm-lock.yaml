@@ -88,9 +88,6 @@ importers:
       leaflet-draw:
         specifier: ^1.0.4
         version: 1.0.4
-      prettier:
-        specifier: ^2.7.1
-        version: 2.8.8
       prop-types:
         specifier: 15.8.1
         version: 15.8.1
@@ -152,6 +149,9 @@ importers:
       '@types/styled-components':
         specifier: ^5.1.34
         version: 5.1.34
+      prettier:
+        specifier: 2.7.1
+        version: 2.7.1
       typescript:
         specifier: ~4.7.3
         version: 4.7.4
@@ -14787,11 +14787,11 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier@2.8.8:
-    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
+  /prettier@2.7.1:
+    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
     engines: {node: '>=10.13.0'}
     hasBin: true
-    dev: false
+    dev: true
 
   /pretty-bytes@5.6.0:
     resolution: {integrity: sha512-FFw039TmrBqFK8ma/7OL3sDz/VytdtJr044/QUJtH0wK9lb9jLq9tJyIxUwtQJHwar2BqtiA4iCWSwo9JLkzFg==}
