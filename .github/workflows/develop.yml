@@ -12,3 +12,6 @@ jobs:
     uses: ./.github/workflows/deploy_dev_stg.yml
     with:
       app_env: develop
+    secrets:
+      BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
+      AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
