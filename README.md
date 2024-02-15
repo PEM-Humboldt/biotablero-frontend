@@ -94,16 +94,18 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 ### 2.2. Despliegue del servicio
 
 Una vez esté creada la imagen, se despliega de la siguiente manera:
-
-    docker run -it -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
+```sh
+docker run -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
+```
 
 ## 3. Utilitarios
 
 ### Desarrollo en dependencias
 
 Para trabajar en una dependencia en específico y observar los cambios en estas, ejecute:
-
-    yarn workspace <nombre_paquete> run build-dev
+```sh
+pnpm --filter ./packages/<nombre_paquete> build-dev
+```
 
 Tenga en cuenta las siguientes cosas:
 
@@ -113,15 +115,16 @@ Tenga en cuenta las siguientes cosas:
 ### Verificar reglas de estilo
 
 Ejecutar la siguiente linea para verificar los estilos del proyecto:
-
-    yarn run lint
+```sh
+pnpm check-format
+```
 
 Para verificar los estilos de las dependencias propias ejecute:
-
-    yarn workspaces foreach run lint
+```sh
+pnpm -r lint
+```
 
 ---
 
-_Ingeniería de Datos y Desarrollo
-Programa de Evaluación y Monitoreo de la Biodiversidad
-Instituto Humboldt Colombia_
+# Autores
+*Gerencia de Información Científica, Instituto Humboldt, Colombia*
