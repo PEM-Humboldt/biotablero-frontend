@@ -1,11 +1,11 @@
-import styled from "styled-components";
+import styled, { StyledComponent } from "styled-components";
 
 interface PropsTick {
   side?: string;
   selected?: boolean;
 }
 
-const Tick = styled.div<PropsTick>`
+const Tick: StyledComponent<any, any, {}> = styled.div<PropsTick>`
   font-family: sans-serif;
   white-space: initial;
   overflow: hidden;

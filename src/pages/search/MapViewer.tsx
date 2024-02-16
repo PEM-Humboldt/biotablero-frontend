@@ -16,12 +16,14 @@ import DrawControl from "pages/search/mapViewer/DrawControl";
 
 import "leaflet/dist/leaflet.css";
 import {
+  GeoJSONOptions,
   LatLngBoundsExpression,
   LatLngBoundsLiteral,
-  Layer,
   PathOptions,
 } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/drawer";
+
+import * as geojson from "geojson";
 
 interface Props {
   drawPolygonEnabled: boolean;
@@ -36,12 +38,9 @@ interface Props {
   layers: Array<{
     paneLevel: number;
     id: string;
-    json: GeoJSON.GeoJsonObject | GeoJSON.GeoJsonObject[];
+    json: geojson.GeoJsonObject | geojson.GeoJsonObject[];
     layerStyle?: PathOptions;
-    onEachFeature: (
-      feature: GeoJSON.Feature<GeoJSON.GeometryObject, any>,
-      selectedLayer: Layer
-    ) => void;
+    onEachFeature: GeoJSONOptions["onEachFeature"];
   }>;
   rasterLayers: Array<{
     paneLevel: number;

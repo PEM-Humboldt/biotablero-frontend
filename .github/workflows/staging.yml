@@ -1,16 +1,16 @@
-name: Deploy develop
+name: Deploy staging
 
 on:
   push:
     branches:
-      - develop
+      - release/*
   workflow_dispatch:
 
 jobs:
   call-deploy:
     uses: ./.github/workflows/deploy_dev_stg.yml
     with:
-      app_env: develop
+      app_env: staging
     secrets:
       BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
       AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}

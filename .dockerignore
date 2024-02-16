@@ -3,7 +3,7 @@
 Dockerfile
 .dockerignore
 .gitignore
-README.md
+*.md
 .git
 
 .yarn/*
