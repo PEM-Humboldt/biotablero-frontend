@@ -16,7 +16,7 @@ type LogosImg = {
 const logosData: LogosImg = {
   nasa: { img: nasa, url: "https://www.nasa.gov/" },
   temple: { img: temple, url: "https://www.temple.edu/" },
-  siac: { img: logoSiac, url: "http://www.siac.gov.co/siac.html" },
+  siac: { img: logoSiac, url: "http://www.siac.gov.co/" },
   geobon: { img: geobon, url: "https://geobon.org/" },
   usaid: { img: usaid, url: "https://www.usaid.gov/" },
   umed: { img: umed, url: "https://udemedellin.edu.co/" },
