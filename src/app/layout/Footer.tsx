@@ -80,7 +80,7 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
           </button>
         </h3>
         <h3>
-          <a href="mailto:mlondono@humboldt.org.co">Contacto</a>
+          <a href="mailto:biotablero@humboldt.org.co">Contacto</a>
         </h3>
       </div>
     </div>
