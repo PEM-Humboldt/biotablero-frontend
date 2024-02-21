@@ -7,6 +7,8 @@ import SearchContext from 'pages/search/SearchContext';
 import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
+  mounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,6 +23,7 @@ class Species extends React.Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
     const { areaId, geofenceId } = this.context;
     let selected = [];
     switch (areaId) {
@@ -34,7 +37,7 @@ class Species extends React.Component {
           selected = ['richness', 'functionalDiversity'];
         }
         break;
-        case 'basinSubzones':
+      case 'basinSubzones':
         selected = ['richness', 'functionalDiversity'];
         break;
       default:
@@ -44,8 +47,14 @@ class Species extends React.Component {
 
     isFlagEnabled('functionalDiversity')
       .then((value) => {
-        this.setState({ functionalFlag: value });
+        if(this.mounted) {
+          this.setState({ functionalFlag: value });
+        }
       });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   /**
@@ -57,8 +66,9 @@ class Species extends React.Component {
     const { visible } = this.state;
     const { switchLayer, cancelActiveRequests } = this.context;
     cancelActiveRequests();
-    if (tabLayerId === null) {
-      switchLayer(null);
+
+    if (tabLayerId === "") {
+      switchLayer("");
     }
 
     switch (level) {

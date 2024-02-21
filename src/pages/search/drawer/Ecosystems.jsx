@@ -3,35 +3,21 @@ import PropTypes from 'prop-types';
 
 import InfoIcon from '@mui/icons-material/Info';
 
-import GraphLoader from 'components/charts/GraphLoader';
 import ShortInfo from 'components/ShortInfo';
-import { IconTooltip } from 'components/Tooltips';
-import TextBoxes from 'components/TextBoxes';
-import {
-  sectionInfo,
-  CoverageText,
-  coverageMeto,
-  coverageCons,
-  coverageQuote,
-  PAText,
-  PACons,
-  PAQuote,
-  PAMeto,
-  SEText,
-  SEQuote,
-  SEMeto,
-  SECons,
-} from 'pages/search/drawer/strategicEcosystems/InfoTexts';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
+import TextBoxes from 'pages/search/shared_components/TextBoxes';
 import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
-} from 'pages/search/utils/transformData';
-import EcosystemsBox from 'pages/search/drawer/strategicEcosystems/EcosystemsBox';
+} from 'pages/search/drawer/ecosystems/transformData';
+import EcosystemsBox from 'pages/search/drawer/ecosystems/EcosystemsBox';
 import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
+import SearchAPI from "utils/searchAPI";
+import SmallStackedBar from 'pages/search/shared_components/charts/SmallStackedBar';
 
 /**
  * Calculate percentage for a given value according to total
@@ -42,7 +28,7 @@ import RestAPI from 'utils/restAPI';
  */
 const getPercentage = (part, total) => ((part * 100) / total).toFixed(2);
 
-class StrategicEcosystems extends React.Component {
+class Ecosystems extends React.Component {
   mounted = false;
 
   constructor(props) {
@@ -53,6 +39,7 @@ class StrategicEcosystems extends React.Component {
       coverage: [],
       PAAreas: [],
       PATotalArea: 0,
+      PADivergentData: false,
       SEAreas: [],
       SETotalArea: 0,
       activeSE: null,
@@ -60,6 +47,12 @@ class StrategicEcosystems extends React.Component {
         cov: 'loading',
         pa: 'loading',
         se: 'loading',
+      },
+      texts: {
+        ecosystems: {},
+        coverage: {},
+        pa: {},
+        se: {},
       },
     };
   }
@@ -70,12 +63,17 @@ class StrategicEcosystems extends React.Component {
       areaId,
       geofenceId,
       switchLayer,
+      searchType,
     } = this.context;
     const { generalArea } = this.props;
 
+    if (searchType === "drawPolygon") {
+      return false;
+    }
+
     switchLayer('coverages');
 
-    RestAPI.requestCoverage(areaId, geofenceId)
+    SearchAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -96,15 +94,23 @@ class StrategicEcosystems extends React.Component {
         }));
       });
 
-    RestAPI.requestProtectedAreas(areaId, geofenceId)
+    SearchAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res) && res[0]) {
             const PATotalArea = res.map((i) => i.area).reduce((prev, next) => prev + next);
             const PAAreas = transformPAValues(res, generalArea);
+            const noProtectedArea = PAAreas.find(item => item.key === 'No Protegida');
+
+            let PADivergentData = false;
+            if(noProtectedArea && noProtectedArea.percentage && noProtectedArea.percentage >= 0.97) {
+              PADivergentData = true;
+            }
+
             this.setState((prev) => ({
               PAAreas,
               PATotalArea,
+              PADivergentData,
               messages: {
                 ...prev.messages,
                 pa: null,
@@ -122,7 +128,7 @@ class StrategicEcosystems extends React.Component {
         }));
       });
 
-    RestAPI.requestStrategicEcosystems(areaId, geofenceId)
+    SearchAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res)) {
@@ -147,6 +153,22 @@ class StrategicEcosystems extends React.Component {
             se: 'no-data',
           },
         }));
+      });
+
+      ['ecosystems', 'coverage', 'pa', 'se'].forEach((item) => {
+        RestAPI.requestSectionTexts(item)
+        .then((res) => {
+          if (this.mounted) {
+            this.setState((prevState) => ({
+              texts: { ...prevState.texts, [item]: res },
+            }));
+          }
+        })
+        .catch(() => {
+          this.setState((prevState) => ({
+            texts: { ...prevState.texts, [item]: {} },
+          }));
+        });
       });
   }
 
@@ -224,16 +246,27 @@ class StrategicEcosystems extends React.Component {
       coverage,
       PAAreas,
       PATotalArea,
+      PADivergentData,
       SEAreas,
       SETotalArea,
       activeSE,
       messages: { cov, pa },
+      texts,
     } = this.state;
     const {
       areaId,
       geofenceId,
       handlerClickOnGraph,
+      searchType,
     } = this.context;
+    if (searchType === "drawPolygon") {
+      return (
+        <div className="graphcard">
+          <h2>Gráficas en construcción</h2>
+          <p>Pronto más información</p>
+        </div>
+      );
+    }
     return (
       <div className="graphcard">
         <h2>
@@ -246,7 +279,7 @@ class StrategicEcosystems extends React.Component {
         </h2>
         {showInfoMain && (
           <ShortInfo
-            description={sectionInfo}
+            description={`<p>${texts.ecosystems.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -273,7 +306,7 @@ class StrategicEcosystems extends React.Component {
           </IconTooltip>
           {infoShown.has('coverage') && (
             <ShortInfo
-              description={CoverageText}
+              description={`<p>${texts.coverage.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -283,10 +316,9 @@ class StrategicEcosystems extends React.Component {
           </h6>
           <div className="graficaeco">
             <div className="svgPointer">
-              <GraphLoader
-                graphType="SmallBarStackGraph"
-                data={coverage}
+              <SmallStackedBar
                 message={cov}
+                data={coverage}
                 units="ha"
                 colors={matchColor('coverage')}
                 onClickGraphHandler={(selected) => {
@@ -298,9 +330,9 @@ class StrategicEcosystems extends React.Component {
           <TextBoxes
             downloadData={coverage}
             downloadName={`eco_coverages_${areaId}_${geofenceId}.csv`}
-            quoteText={coverageQuote}
-            metoText={coverageMeto}
-            consText={coverageCons}
+            quoteText={texts.coverage.quote}
+            metoText={texts.coverage.meto}
+            consText={texts.coverage.cons}
             toggleInfo={() => this.toggleInfo('coverage')}
             isInfoOpen={infoShown.has('coverage')}
           />
@@ -319,7 +351,7 @@ class StrategicEcosystems extends React.Component {
           </h5>
           {infoShown.has('pa') && (
             <ShortInfo
-              description={PAText}
+              description={`<p>${texts.pa.info}</p>`}
               className="graphinfo3"
               collapseButton={false}
             />
@@ -328,20 +360,20 @@ class StrategicEcosystems extends React.Component {
             <h6>
               Distribución por áreas protegidas:
             </h6>
-            <GraphLoader
-              graphType="SmallBarStackGraph"
-              data={PAAreas}
+            <SmallStackedBar
               message={pa}
+              data={PAAreas}
               units="ha"
               colors={matchColor('pa', true)}
+              scaleType={PADivergentData ? "symlog" : "linear"}
             />
           </div>
           <TextBoxes
             downloadData={PAAreas}
             downloadName={`eco_protected_areas_${areaId}_${geofenceId}.csv`}
-            quoteText={PAQuote}
-            metoText={PAMeto}
-            consText={PACons}
+            quoteText={texts.pa.quote}
+            metoText={texts.pa.meto}
+            consText={texts.pa.cons}
             toggleInfo={() => this.toggleInfo('pa')}
             isInfoOpen={infoShown.has('pa')}
           />
@@ -359,9 +391,12 @@ class StrategicEcosystems extends React.Component {
             <h5 className="minusperc">
               {`${getPercentage(SETotalArea, generalArea)} %`}
             </h5>
+            <h3 className="warningNote">
+              {getPercentage(SETotalArea, generalArea) > 100 ? 'La superposición de ecosistemas estratégicos puede resultar en que su valor total exceda el área de consulta, al contar múltiples veces zonas donde coexisten.' : '' }
+            </h3>
             {infoShown.has('se') && (
               <ShortInfo
-                description={SEText}
+                description={`<p>${texts.se.info}</p>`}
                 className="graphinfo3"
                 collapseButton={false}
               />
@@ -370,9 +405,9 @@ class StrategicEcosystems extends React.Component {
             <TextBoxes
               downloadData={SEAreas}
               downloadName={`eco_strategic_ecosystems_${areaId}_${geofenceId}.csv`}
-              quoteText={SEQuote}
-              metoText={SEMeto}
-              consText={SECons}
+              quoteText={texts.se.quote}
+              metoText={texts.se.meto}
+              consText={texts.se.cons}
               toggleInfo={() => this.toggleInfo('se')}
               isInfoOpen={infoShown.has('se')}
             />
@@ -383,14 +418,14 @@ class StrategicEcosystems extends React.Component {
   }
 }
 
-StrategicEcosystems.propTypes = {
+Ecosystems.propTypes = {
   generalArea: PropTypes.number,
 };
 
-StrategicEcosystems.defaultProps = {
+Ecosystems.defaultProps = {
   generalArea: 0,
 };
 
-export default StrategicEcosystems;
+export default Ecosystems;
 
-StrategicEcosystems.contextType = SearchContext;
+Ecosystems.contextType = SearchContext;

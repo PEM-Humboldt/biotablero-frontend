@@ -17,8 +17,8 @@ import PopMenu from 'pages/compensation/drawer/PopMenu';
 import StrategiesBox from 'pages/compensation/drawer/StrategiesBox';
 import TableStylized from 'pages/compensation/drawer/TableStylized';
 import ConfirmationModal from 'components/ConfirmationModal';
-import GraphLoader from 'components/charts/GraphLoader';
-import TabContainer from 'components/TabContainer';
+import GraphLoader from 'pages/compensation/drawer/GraphLoader';
+import TabContainer from 'pages/compensation/drawer/TabContainer';
 import AppContext from 'app/AppContext';
 
 const styles = () => ({
@@ -144,9 +144,9 @@ class Drawer extends React.Component {
             const key = `${strategy.id_biome}-${strategy.id_subzone}-${strategy.id_ea}`;
             if (!savedStrategies[key]) {
               savedStrategies[key] = {
-                biome: { name: strategy.biome.name, id: strategy.id_biome },
-                subBasin: { name: strategy.szh.name_subzone, id: strategy.id_subzone },
-                ea: { name: strategy.ea.name, id: strategy.ea.id_ea },
+                biome: { name: strategy.biome.name, id: strategy.biome.id_biome },
+                subBasin: { name: strategy.szh.geofence_name, id: strategy.szh.geofence_id },
+                ea: { name: strategy.ea.geofence_name, id: strategy.ea.geofence_id },
                 strategies: [],
                 area: 0,
               };

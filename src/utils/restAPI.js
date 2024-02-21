@@ -22,51 +22,6 @@ class RestAPI {
   /** ************* */
 
   /**
-   * Recover biomes located in the selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestBiomes(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/generalBiome`);
-  }
-
-  /**
-   * Recover biotic units by selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestBioticUnits(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/bioticUnit`);
-  }
-
-  /**
-   * Recover compensation Factor values by selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestCompensationFactor(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/compensationFactor`);
-  }
-
-  /**
-   * Get coverage area by selected area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestCoverage(areaType, areaId) {
-    return RestAPI.makeGetRequest(`ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the protected areas values by selected area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestProtectedAreas(areaType, areaId) {
-    return RestAPI.makeGetRequest(`/pa?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
    * Recover the national area by selected strategic ecosystems
    * @param {Number} idGeofence id geofence to request the strategic ecosystems
    */
@@ -80,56 +35,6 @@ class RestAPI {
    */
   static requestNationalCoverage(idGeofence) {
     return RestAPI.makeGetRequest(`se/${idGeofence}/coverage`);
-  }
-
-  /**
-   * Get the area distribution for each SE type and total SE area within a given area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestStrategicEcosystems(areaType, areaId) {
-    return RestAPI.makeGetRequest(`ecosystems/se?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Recover the strategic ecosystems values in the area selected
-   * @param {Number} idArea id area to request
-   * @param {Number} idGeofence id geofence to request
-   * @param {Number} seType strategic ecosystem type to request details
-   */
-  static requestSEDetailInArea(idArea, idGeofence, seType) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}/se/${seType}`);
-  }
-
-  /**
-   * Get the coverage area distribution by selected strategic ecosystem and geofence
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type
-   */
-  static requestSECoverageByGeofence(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(
-      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
-    );
-  }
-
-  /**
-   * Get the the protected area by selected strategic ecosystems and geofence
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} seType type of strategic ecosystem to request
-   */
-  static requestSEPAByGeofence(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
-  }
-
-  /**
-   * Recover details in the selected area
-   * @param {Number} idArea id area to request, f.e. ea
-   * @param {Number} idGeofence id geofence to request, f.e. idCAR
-   */
-  static requestGeofenceDetails(idArea, idGeofence) {
-    return RestAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 
   /**
@@ -175,68 +80,6 @@ class RestAPI {
   }
 
   /**
-   * Get the current human footprint value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Object} Objecy with value and category for the current human footprint
-   */
-  static requestCurrentHFValue(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
-  }
-
-  /**
-   * Get the current human footprint data by categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the current human footprint
-   */
-  static requestCurrentHFCategories(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/categories`);
-  }
-
-  /**
-   * Get the persistence of human footprint data in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
-   */
-  static requestHFPersistence(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
-  }
-
-  /**
-   * Get the human footprint timeline data in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with human footprint timeline data in the given area
-   */
-  static requestTotalHFTimeline(areaType, areaId) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
-  }
-
-  /**
-   * Get the human footprint timeline data for a specific strategic ecosystem in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type, f.e. "Páramo"
-   *
-   * @return {Promise<Array>} Array of objects separated by strategic ecosystem with human
-   * footprint timeline data
-   */
-  static requestSEHFTimeline(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}/hf/timeline`);
-  }
-
-  /**
    * Request area information for biomes by subzones
    *
    * @param {String} eaId EA id to request
@@ -244,152 +87,6 @@ class RestAPI {
    */
   static requestBiomeBySZH(eaId, biomeName) {
     return RestAPI.makeGetRequest(`ea/${eaId}/biome/${biomeName}/subzone`);
-  }
-
-  /**
-   * Get the forest loss and persistence data by periods and categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
-   */
-  static requestForestLP(areaType, areaId) {
-    return RestAPI.makeGetRequest(`forest/lp?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the structural condition index with human footprint persistence categories in the given
-   * area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Objects with value for the SCI and HF persistence
-   */
-  static requestSCIHF(areaType, areaId) {
-    return RestAPI.makeGetRequest(`forest/sci/hf?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the area distribution for each category of protected area connectivity in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity
-   */
-  static requestCurrentPAConnectivity(areaType, areaId) {
-    return RestAPI.makeGetRequest(`connectivity/current?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get the values of connectivity for the protected areas with higher dPC value in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Array of objects with data of the protected areas
-   */
-  static requestDPC(areaType, areaId, paNumber) {
-    return RestAPI.makeGetRequest(`connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`);
-  }
-
-  /**
-    * Get the timeline for each category of protected area connectivity in a given area
-    *
-    * @param {String} areaType area type id, f.e. "ea", "states"
-    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-    * @param {String} category category of index, fe. "prot", "prot_conn"
-    *
-    * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
-    */
-  static requestTimelinePAConnectivity(areaType, areaId, category) {
-    return RestAPI.makeGetRequest(`connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`);
-  }
-
-  /**
-   * Get the area distribution for each category of protected area connectivity for an specific
-   * strategic ecosystem in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type
-   *
-   * @return {Promise<Object>} Array of objects with data of current PA connectivity by SE
-   */
-  static requestCurrentPAConnectivityBySE(areaType, areaId, seType) {
-    return RestAPI.makeGetRequest(`connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`);
-  }
-
-  /**
-   * Get the number of species for the specified area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} group group to filter results
-   *
-   * @return {Promise<Object>} Array of objects with observed, inferred and region number of species
-   */
-  static requestNumberOfSpecies(areaType, areaId, group) {
-    return RestAPI.makeGetRequest(
-      `richness/number-species?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
-    );
-  }
-
-  /**
-   * Get the thresholds for the number of species in the same biotic unit as the specified area id
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} group group to filter results
-   *
-   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
-   * inferred species
-   */
-  static requestNSThresholds(areaType, areaId, group) {
-    return RestAPI.makeGetRequest(
-      `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${group ? `&group=${group}` : ''}`,
-    );
-  }
-
-  /**
-   * Get the national max values specified area type
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {String} group group to filter results
-   *
-   * @return {Promise<Object>} Array of objects with minimum and maximun number of observed and
-   * inferred species
-   */
-  static requestNSNationalMax(areaType, group) {
-    return RestAPI.makeGetRequest(
-      `richness/number-species/nationalMax?areaType=${areaType}${group ? `&group=${group}` : ''}`,
-    );
-  }
-
-  /**
-   * Get values for richness species gaps in the given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Object with values of richness species gaps
-   */
-  static requestGaps(areaType, areaId) {
-    return RestAPI.makeGetRequest(`richness/gaps?areaType=${areaType}&areaId=${areaId}`);
-  }
-
-  /**
-   * Get values for richness species concentration in the given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Object with values of richness species concentration
-   */
-  static requestConcentration(areaType, areaId) {
-    return RestAPI.makeGetRequest(`richness/concentration?areaType=${areaType}&areaId=${areaId}`);
   }
 
   /**
@@ -414,6 +111,17 @@ class RestAPI {
    */
   static requestDryForestFeatures(areaType, areaId) {
     return RestAPI.makeGetRequest(`functional-diversity/dry-forest/features?areaType=${areaType}&areaId=${areaId}`);
+  }
+
+  /**
+   * Get texts associated to one section
+   *
+   * @param {String} key section key
+   *
+   * @return {Promise<Object>} Object with texts
+   */
+   static requestSectionTexts(key) {
+    return RestAPI.makeGetRequest(`util/texts?key=${key}`);
   }
 
   /** ******************** */

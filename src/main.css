@@ -19,6 +19,8 @@ body {
 	height: 100%;
 }
 
+iframe#webpack-dev-server-client-overlay{display:none!important}
+
 .sr-only {
     display: none;
 }
@@ -922,11 +924,26 @@ footer h4 {
 	vertical-align: top;
 }
 
+.footersm h3 button{
+	cursor: pointer;
+}
+
 footer h3 a, .footersm h3 a {
 	color: #e84a5f;
 	font-size: 15px;
 }
 
+.footerTooltip {
+	border: none;
+	background: none;
+	color: #e84a5f;
+	font-family: 'Lato', sans-serif;
+	font-size: 15px;
+}
+
+.quoteStyle {
+	width: 130px;
+}
 
 /* isotope */
 
@@ -1451,6 +1468,12 @@ overflow: auto;
 	padding: 6px 8px !important;
 }
 
+.bulletTooltip {
+  max-width: 230px;
+  white-space: normal;
+  line-height: 1;
+}
+
 .extraLegend {
 	font-size: 12px;
 	display: flex;
@@ -1631,7 +1654,7 @@ div[class*="eaRHYv"] {
 }
 
 .tabs {
-  width: 33.33% !important;
+  width: 25% !important;
   vertical-align: top !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -2107,6 +2130,25 @@ div[class*="eaRHYv"] {
 	margin-right: 10px;
 }
 
+.targetsLegend {
+  margin: 10px 0 10px 25px;
+}
+
+.targetsLegend p {
+  margin: 0;
+  margin-left: 5px;
+}
+
+.targetsLegendInfoButton{
+	color: #bbbbbb;
+	text-align: left;
+	padding-left: 0px !important;
+}
+
+.targetsLegendInfoButton svg{
+	font-size: 12px;
+}
+
 .innerInfo {
 	text-transform: none !important;
 	border: none !important;
@@ -2578,6 +2620,22 @@ tspan, .vx-axis-label {
 	cursor: pointer;
 }
 
+.rightTitle {
+	text-align: right;
+	font-size: 11px;
+	color: #424242;
+	font-weight: 700;
+	padding-right: 70px;
+	margin-bottom: -20px;
+	text-transform: uppercase;
+}
+
+.divergentDataBar {
+	font-size: 13px;
+	margin-left: 10px;
+	color: #cf5a16;
+}
+
 .newProjectTitle {
 	display: -webkit-flex;
 	display: -moz-flex;
@@ -2881,6 +2939,12 @@ tspan, .vx-axis-label {
 	padding-top: 3px;
 }
 
+h3.warningNote {
+	color: #e84a5f;
+	font-size: 10px;
+	padding-left: 10px;
+}
+
 /* Begin - Animate the loading */
 .load-wrapp {
     width: 100px;
@@ -3051,7 +3115,7 @@ tspan, .vx-axis-label {
 
 .downSpecial2 {
 	vertical-align: top;
-	padding: 12px 7px 0 7px;
+	padding: 2px 7px 0 7px;
 	background-color: #fff;
 	margin: -13px 0 0 5px;
 	color: #bbbbbb;

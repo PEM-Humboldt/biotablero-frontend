@@ -1,12 +1,12 @@
 import React from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
-import { IconTooltip } from 'components/Tooltips';
-import GraphLoader from 'components/charts/GraphLoader';
+import { IconTooltip } from 'pages/search/shared_components/Tooltips';
 import ShortInfo from 'components/ShortInfo';
 import SearchContext from 'pages/search/SearchContext';
 import RestAPI from 'utils/restAPI';
 import matchColor from 'utils/matchColor';
+import Bullet from 'pages/search/shared_components/charts/Bullet';
 
 const getFeatureLabel = {
   leaf_area: { __html: '<div>Área Foliar (mm<sup>2</sup>)</div>' },
@@ -32,7 +32,7 @@ class TropicalDryForest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showInfoGraph: false,
+      showInfoGraph: true,
       values: {},
       features: [],
       messageValues: 'loading',
@@ -144,8 +144,7 @@ class TropicalDryForest extends React.Component {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            name="Plantas del bosque seco"
-            description="Plantas del bosque seco"
+            description={`<p>Plantas del bosque seco</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
@@ -237,10 +236,10 @@ class TropicalDryForest extends React.Component {
           </h3>
           <br />
           {messageFeatures === 'no-data' && (
-            <GraphLoader
+            <Bullet
               message={messageFeatures}
               data={[]}
-              graphType="singleBullet"
+              graphType="Bullet"
             />
           )}
           {features.map((bar) => (
@@ -251,12 +250,12 @@ class TropicalDryForest extends React.Component {
                 dangerouslySetInnerHTML={getFeatureLabel[bar.id]}
               />
               <div className="svgPointer">
-                <GraphLoader
+                <Bullet
                   message={messageFeatures}
                   data={bar}
-                  graphType="singleBullet"
+                  graphType="Bullet"
                   colors={matchColor(getFeatureColors[bar.id])}
-                  onClickGraphHandler={() => {
+                  onClickHandler={() => {
                     this.setState({ selected: bar.id });
                   }}
                 />

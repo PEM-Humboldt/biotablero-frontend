@@ -4,6 +4,7 @@ import L from 'leaflet';
 import Modal from '@mui/material/Modal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import ReactGA from "react-ga4";
 
 import Drawer from 'pages/search/Drawer';
 import SearchContext from 'pages/search/SearchContext';
@@ -14,10 +15,13 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import GradientLegend from 'components/GradientLegend';
+import biabAPI from 'utils/biabAPI';
+import SearchAPI from 'utils/searchAPI';
+import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
 import { SELabel } from 'pages/search/utils/appropriate_labels';
+import base64 from 'pages/search/utils/base64ArrayBuffer';
 
 class Search extends Component {
   constructor(props) {
@@ -27,17 +31,22 @@ class Search extends Component {
     this.geofenceBounds = null;
     this.state = {
       activeLayer: {},
-      connError: false,
+      messages: {
+        defAreas: "loading",
+        polygon: "loading",
+      },
       layerError: false,
       areaList: [],
       layers: {},
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
-      localPolygon: {},
-      drawPolygonEnabled: false,
       mapBounds: null,
       rasterUrls: [],
+      searchType: "definedArea",
+      polygon: {},
+      drawPolygonEnabled: false,
+      openErrorModal: false,
     };
   }
 
@@ -47,6 +56,7 @@ class Search extends Component {
       history.replace(history.location.pathname);
     }
     this.loadAreaList();
+    this.checkPolygonConn();
   }
 
   componentDidUpdate() {
@@ -56,11 +66,12 @@ class Search extends Component {
         this.handlerBackButton();
       }
     });
+
   }
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames(null, null);
+    setHeaderNames({ parent: "", child: "" });
   }
 
   /**
@@ -118,19 +129,20 @@ class Search extends Component {
             history,
             setHeaderNames,
           } = this.props;
+
           if (!selectedAreaTypeId || !selectedAreaId) return;
 
           const inputArea = tempAreaList.find((area) => area.id === selectedAreaTypeId);
           if (inputArea && inputArea.data && inputArea.data.length > 0) {
             const field = 'id';
-            const inputId = inputArea.data.find((area) => area[field] === selectedAreaId);
+            const inputId = inputArea.data.find((area) => String(area[field]) === selectedAreaId);
             if (inputId) {
               this.setArea(selectedAreaTypeId);
               this.setState(
                 { selectedArea: inputId },
                 () => {
                   const { selectedAreaType, selectedArea } = this.state;
-                  setHeaderNames(selectedAreaType.name, selectedArea.name);
+                  setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
                 },
               );
             } else {
@@ -140,18 +152,50 @@ class Search extends Component {
             history.replace(history.location.pathname);
           }
         });
+        this.reportNoMessage('defAreas');
       })
-      .catch(() => this.reportConnError());
+      .catch(() => this.reportConnError('defAreas'));
   }
 
   /**
-   * Report a connection error from one of the child components
+   * Get the current list of scripts at BIAB backend. It is used to check connection to backend.
    */
-  reportConnError = () => {
-    this.setState({
-      connError: true,
-    });
+  checkPolygonConn = () => {
+    biabAPI.requestScriptList()
+      .then(() => this.reportNoMessage('polygon'))
+      .catch(() => this.reportConnError('polygon'));
   }
+
+  /**
+   * Report a null message from a given backend in order to render the proper component
+   * @param {string} type - The type of message
+   */
+  reportNoMessage = (type) => {
+    this.setState(prevState => ({
+      messages: {
+        ...prevState.messages,
+        [type]: null,
+      }
+    }));
+  };
+
+  /**
+   * Report a connection error message from a given backend and validate whether display the modal
+   * @param {string} type - The type of message
+   */
+  reportConnError = (type) => {
+    this.setState(prevState => {
+      const messages = {
+        ...prevState.messages,
+        [type]: 'conn-error',
+      }
+      const openErrorModal = Object.values(messages).every(msg => msg === 'conn-error');
+      return {
+        messages,
+        openErrorModal,
+      };
+    });
+  };
 
   /**
    * Report dataset error from one of the child components
@@ -189,7 +233,7 @@ class Search extends Component {
         ftype = 'dpc';
       } else if (type === 'fc') {
         key = feature.properties.compensation_factor;
-      } else if (type === 'national') {
+      } else if (type === 'states' || type === 'ea' || type === 'basinSubzones') {
         return {
           color: '#e84a5f',
           weight: 0.5,
@@ -294,10 +338,8 @@ class Search extends Component {
         break;
       case 'states':
       case 'ea':
-        feature.bindTooltip(feature.feature.properties.name, optionsTooltip).openTooltip();
-        break;
       case 'basinSubzones':
-        feature.bindTooltip(feature.feature.properties.name_subzone, optionsTooltip).openTooltip();
+        feature.bindTooltip(feature.feature.properties.geofence_name, optionsTooltip).openTooltip();
         break;
       case 'currentPAConn':
       case 'timelinePAConn':
@@ -384,8 +426,9 @@ class Search extends Component {
    * @param {String} chartType id of chart emitting the event
    * @param {String} chartSection in case chartType groups multiple charts
    * @param {String} selectedKey selected key id on the graph
+   * @param {String} source source of the clic event
    */
-  clickOnGraph = ({ chartType, chartSection, selectedKey }) => {
+  clickOnGraph = ({ chartType, chartSection, selectedKey, source = 'graph' }) => {
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
@@ -416,6 +459,28 @@ class Search extends Component {
         this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
       }
       break;
+      case 'portfoliosCA':
+        const { activeLayer } = this.state;
+        if (source === 'legend' && /portfoliosCA*/.test(activeLayer.id)) {
+          const selectedPortfolios = selectedKey;
+          this.setState(({ rasterUrls }) => ({
+            rasterUrls: rasterUrls.map(url => {
+              if (selectedPortfolios.some(portfolioId => `portfoliosCA|${chartSection}|${portfolioId}` === url.id)) {
+                return {
+                  ...url,
+                  opacity: 0.7,
+                };
+              }
+              return {
+                ...url,
+                opacity: 0,
+              };
+            })
+          }))
+        } else {
+          this.setSectionLayers(`portfoliosCA|${chartSection}|${selectedKey}`);
+        }
+        break;
       // Current progress of the refactor
       case 'SciHf': {
         const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
@@ -521,11 +586,7 @@ class Search extends Component {
     } else if (this.geofenceBounds === null) {
       this.mapBounds = bounds;
     } else if (this.geofenceBounds !== null) {
-      if (bounds.contains(this.geofenceBounds)) {
-        this.mapBounds = bounds;
-      } else {
-        this.mapBounds = this.geofenceBounds;
-      }
+      this.mapBounds = this.geofenceBounds;
     }
   }
 
@@ -539,7 +600,8 @@ class Search extends Component {
    *  is true.
    * @param {String} options.fitBounds if the map bounds should fit the layer loaded
    * @param {Number} options.paneLevel pane level for the layer to be added to
-   *
+   * @param {String} options.styleName style name to specify layer format
+   * 
    * @returns {Object} Data of the layer with its id
    */
   getShapeLayer = async (layerName, options) => {
@@ -547,6 +609,7 @@ class Search extends Component {
       isActive = true,
       fitBounds = true,
       paneLevel = 1,
+      styleName = ""
     } = options;
     const { selectedAreaId, selectedAreaTypeId } = this.props;
     const { layers } = this.state;
@@ -558,13 +621,16 @@ class Search extends Component {
       case 'basinSubzones':
       case 'ea':
         reqPromise = () => RestAPI.requestNationalGeometryByArea(layerName);
-        layerStyle = this.featureStyle({ type: 'national' });
+        layerStyle = this.featureStyle({ type: layerName });
         break;
       case 'geofence':
         reqPromise = () => RestAPI.requestGeofenceGeometryByArea(
           selectedAreaTypeId,
           selectedAreaId,
         );
+        if (styleName === "border") {
+          layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
+        }
         break;
       case 'hfCurrent':
         reqPromise = () => RestAPI.requestCurrentHFGeometry(
@@ -588,7 +654,6 @@ class Search extends Component {
       default:
         break;
     }
-
     if (!reqPromise) return null;
     if (layers[layerName]) {
       if (layerName === 'geofence') {
@@ -603,6 +668,13 @@ class Search extends Component {
         newState.layers[layerName].active = isActive;
         newState.layers[layerName].fitBounds = fitBounds;
         newState.layers[layerName].paneLevel = paneLevel;
+        if (styleName === "border") {
+          newState.layers[layerName].onEachFeature = () => {};
+        } else {
+          newState.layers[layerName].onEachFeature = (feature, selectedLayer) => {
+            this.featureActions(selectedLayer, layerName)
+          }
+        }
         return newState;
       });
       return layers[layerName];
@@ -623,11 +695,17 @@ class Search extends Component {
         if (fitBounds) {
           this.updateBounds(L.geoJSON(res).getBounds());
         }
+
+        let onEachFeature = (feature, selectedLayer) => {
+          this.featureActions(selectedLayer, layerName)
+        }
+        if (styleName === "border") {
+          onEachFeature = () => {};
+        }
+
         const layerObj = {
           layerStyle,
-          onEachFeature: (feature, selectedLayer) => (
-            this.featureActions(selectedLayer, layerName)
-          ),
+          onEachFeature: onEachFeature,
           active: isActive,
           json: res,
           paneLevel,
@@ -659,6 +737,7 @@ class Search extends Component {
    */
   getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { searchType, polygon: { folder: polygonFolder} } = this.state;
     let reqPromise = null;
 
     if (/coverage-*/.test(layerName)) {
@@ -681,12 +760,16 @@ class Search extends Component {
       );
     } else if (/forestLP-*/.test(layerName)) {
       const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
-      reqPromise = () => RestAPI.requestForestLPLayer(
-        selectedAreaTypeId,
-        selectedAreaId,
-        `${yearIni}-${yearEnd}`,
-        category,
-      );
+      if (searchType === "drawPolygon") {
+        reqPromise = () => biabAPI.requestForestLPLayer(layerName, polygonFolder);
+      } else {
+        reqPromise = () => RestAPI.requestForestLPLayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          `${yearIni}-${yearEnd}`,
+          category,
+        );
+      }
     } else if (/numberOfSpecies-*/.test(layerName)) {
       let group = 'total';
       const selected = layerName.match(/numberOfSpecies-(\w+)/);
@@ -702,6 +785,14 @@ class Search extends Component {
         selectedAreaTypeId,
         selectedAreaId,
       );
+    } else if (/portfoliosCA*/.test(layerName)) {
+      const [,,portfolioId] = layerName.split("|", 3);
+      reqPromise = () =>
+        SearchAPI.requestPortfoliosCALayer(
+          selectedAreaTypeId,
+          selectedAreaId,
+          portfolioId
+        );
     }
 
     if (!reqPromise) {
@@ -721,7 +812,7 @@ class Search extends Component {
       }
       return {
         id: layerName,
-        data: `data:${res.headers['content-type']};base64, ${Buffer.from(res.data, 'binary').toString('base64')}`,
+        data: `data:${res.headers['content-type']};base64, ${base64(res.data)}`,
       };
     } catch (error) {
       this.activeRequests.delete(layerName);
@@ -738,11 +829,13 @@ class Search extends Component {
    */
   setSectionLayers = (sectionName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
+    const { searchType, polygon: { bounds: polygonBounds }, rasterUrls } = this.state;
     this.setState({ loadingLayer: true, layerError: false });
     this.shutOffLayer();
 
     let shapeLayerOpts = [];
     let rasterLayerOpts = [];
+    let polygonLayerOpts = [];
     const newActiveLayer = { id: sectionName, defaultOpacity: 1 };
     let mapLegend = null;
 
@@ -760,7 +853,7 @@ class Search extends Component {
       let areaType = 'states';
       const selected = sectionName.match(/national-(\w+)/);
       if (selected) [, areaType] = selected;
-      shapeLayerOpts = [{ id: areaType, paneLevel: 1 }];
+      shapeLayerOpts = [{ id: areaType, paneLevel: 1, fitBounds: false }];
     } else if (sectionName === 'geofence') {
       shapeLayerOpts = [{ id: 'geofence', paneLevel: 1 }];
     } else if (sectionName === 'coverages') {
@@ -792,7 +885,7 @@ class Search extends Component {
         { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
         { id: `forestLP-${period}-no_bosque`, paneLevel: 2 },
       ];
-      newActiveLayer.name = `Perdida y persistencia de bosque (${period})`;
+      newActiveLayer.name = `Pérdida y persistencia de bosque (${period})`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
       shapeLayerOpts = [{ id: 'hfCurrent', paneLevel: 1 }];
@@ -889,9 +982,21 @@ class Search extends Component {
             });
           },
         };
+    } else if (/portfoliosCA*/.test(sectionName)) {
+      shapeLayerOpts = [{ id: "geofence", paneLevel: 1, styleName: "border" }];
+      const [,targetName,selectedPorfolios] = sectionName.split("|", 3);
+      newActiveLayer.name = `Portafolios ${targetName}`;
+      newActiveLayer.defaultOpacity = 0.7;
+      if (selectedPorfolios !== null) {
+        selectedPorfolios.split(',').forEach((portfolioId) => {
+          rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 2 });
+        });
+      }
+    } else if(sectionName === 'drawPolygon') {
+      polygonLayerOpts=[{id:'drawnPolygon', fill: rasterUrls.length === 0}];
     }
 
-    if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0) {
+    if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0 && polygonLayerOpts.length <= 0) {
       this.reportDataError();
     }
 
@@ -910,7 +1015,7 @@ class Search extends Component {
     const loadingProm = [];
     if (rasterLayerOpts.length > 0) {
       const rasterProm = Promise.all([
-        this.getShapeLayer('geofence', { isActive: false }),
+        searchType==="definedArea" ? this.getShapeLayer('geofence', { isActive: false }) : Promise.resolve(null),
         ...rasterLayerOpts.map((info) => this.getRasterLayer(info.id)),
       ])
       .then(([, ...rasterLayers]) => {
@@ -920,6 +1025,10 @@ class Search extends Component {
         if (rasterLayers.every((e) => e === null)) {
           this.reportDataError();
         }
+        if (searchType === "drawPolygon") {
+          this.geofenceBounds = polygonBounds;
+        }
+
         if (this.geofenceBounds !== null) {
           this.setState((prev) => ({
             rasterUrls: rasterLayers
@@ -957,8 +1066,9 @@ class Search extends Component {
             isActive,
             fitBounds,
             paneLevel,
+            styleName
           } = info;
-          return this.getShapeLayer(id, { isActive, fitBounds, paneLevel });
+          return this.getShapeLayer(id, { isActive, fitBounds, paneLevel, styleName });
         }),
       )
       .then((shapeLayers) => {
@@ -974,6 +1084,16 @@ class Search extends Component {
         this.reportDataError();
       });
       loadingProm.push(shapeProm);
+    }
+
+    if(polygonLayerOpts.length > 0) {
+      const activePolygon = polygonLayerOpts.find(polygon => polygon.id === 'drawnPolygon');
+      this.setState(prevState => ({
+        polygon: {
+          ...prevState.polygon,
+          fill: activePolygon?.fill ?? false
+        }
+      }));
     }
 
     Promise.all(loadingProm).then((resolved) => {
@@ -1015,6 +1135,7 @@ class Search extends Component {
       case 'hfCurrent':
       case 'hfPersistence':
       case 'hfTimeline':
+      case 'drawPolygon':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor
@@ -1125,10 +1246,14 @@ class Search extends Component {
           layerStyle = this.featureStyle({ type: 'border' });
         } else if (/numberOfSpecies*/.test(layerType)) {
           this.setSectionLayers(layerType);
+          return;
         } else if (/seCoverages*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
         } else if (/forestLP*/.test(layerType)) {
+          this.setSectionLayers(layerType);
+          return;
+        } else if (/portfoliosCA*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
         }
@@ -1218,6 +1343,7 @@ class Search extends Component {
     });
 
     if (!idLayer) {
+      this.setState({ loadingLayer: false });
       return;
     }
     this.setSectionLayers(`national-${idLayer}`);
@@ -1245,11 +1371,12 @@ class Search extends Component {
       this.setState(
         { selectedArea: nameToOn },
         () => {
-          const { history } = this.props;
+          const { history, location } = this.props;
           const { selectedAreaType, selectedArea } = this.state;
           if (selectedAreaType && selectedArea) {
             history.push(`?area_type=${selectedAreaType.id}&area_id=${selectedArea.id || selectedArea.name}`);
-            setHeaderNames(selectedAreaType.name, selectedArea.name);
+            setHeaderNames({ parent: selectedAreaType.name, child: selectedArea.name });
+            ReactGA.send({ hitType: "pageview", page: location.pathname + location.search, title: "Consultas" });
           }
         },
       );
@@ -1269,17 +1396,25 @@ class Search extends Component {
    * @param {Object} polygon polygon to be searched
    */
   loadPolygonInfo = (polygon) => {
-    RestAPI.requestCustomPolygonData(polygon).catch(() => {});
-    this.setState((prev) => ({
+    const { setHeaderNames } = this.props;
+    const polygonBounds = L.polyline(polygon.latLngs).getBounds();
+    this.setState(() => ({
       drawPolygonEnabled: false,
-      layers: {
-        ...prev.layers,
-        polygon: {
-          active: true,
-          layer: L.polygon(polygon.latLngs, { fitBounds: true }),
-        },
+      polygon: {
+        coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
+        bounds: polygonBounds,
+        area: 0,
+        color: matchColor('polygon')(),
+        fill: false,
       },
+      selectedAreaTypeId: null,
+      selectedAreaId: null,
+      searchType: "drawPolygon",
+      layerError: false,
+      loadingLayer: true,
     }));
+    setHeaderNames({ parent: "Polígono", child: "Área Consultada"});
+    this.updateBounds(polygonBounds);
   }
 
   /** ************************************* */
@@ -1320,38 +1455,58 @@ class Search extends Component {
       newState.loadingLayer = false;
       newState.layerError = false;
       newState.rasterUrls = [];
+      newState.searchType = "definedArea";
+      newState.polygon = {};
+      newState.drawPolygonEnabled= false;
       return newState;
     }, () => {
       const { history, setHeaderNames } = this.props;
       history.replace(history.location.pathname);
-      setHeaderNames(null, null);
+      setHeaderNames({ parent: "", child: "" });
     });
   }
 
   /**
-   * Close a given modal
+   * Close the modal of connection error to any of the backends
    *
-   * @param {String} state state value that controls the modal you want to close
    */
-  handleCloseModal = (state) => () => {
-    this.setState({ [state]: false });
+  handleCloseModal = () => {
+    this.setState({ openErrorModal: false });
   };
+
+  /**
+   * Set the area value and the layers folder of polygon
+   *
+   */
+  setPolygonValues = (polygonArea, layersFolder) => {
+    this.setState(prevState => ({
+      polygon: {
+        ...prevState.polygon,
+        area: polygonArea,
+        folder: layersFolder
+      }
+    }));
+  }
+
 
   render() {
     const {
       loadingLayer,
       layers,
-      connError,
+      messages,
       layerError,
       areaList,
       activeLayer: { name: activeLayer, legend },
       rasterUrls,
+      polygon,
       drawPolygonEnabled,
+      searchType,
+      openErrorModal
     } = this.state;
 
     const {
       selectedAreaTypeId,
-      selectedAreaId,
+      selectedAreaId
     } = this.props;
 
     let mapTitle = null;
@@ -1387,8 +1542,8 @@ class Search extends Component {
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
-          open={connError}
-          onClose={this.handleCloseModal('connError')}
+          open={openErrorModal}
+          onClose={this.handleCloseModal}
           disableAutoFocus
         >
           <div className="generalAlarm">
@@ -1400,7 +1555,7 @@ class Search extends Component {
             <button
               type="button"
               className="closebtn"
-              onClick={this.handleCloseModal('connError')}
+              onClick={this.handleCloseModal}
               title="Cerrar"
             >
               <CloseIcon />
@@ -1411,6 +1566,9 @@ class Search extends Component {
           value={{
             areaId: selectedAreaTypeId,
             geofenceId: selectedAreaId,
+            searchType: searchType,
+            polygon: polygon,
+            setPolygonValues: this.setPolygonValues,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
@@ -1426,11 +1584,12 @@ class Search extends Component {
               mapBounds={this.mapBounds}
               rasterBounds={this.geofenceBounds}
               mapTitle={mapTitle}
+              polygon={polygon}
               drawPolygonEnabled={drawPolygonEnabled}
               loadPolygonInfo={this.loadPolygonInfo}
             />
             <div className="contentView">
-              { (!selectedAreaTypeId || !selectedAreaId) && (
+            { ((!selectedAreaTypeId || !selectedAreaId) && searchType!=="drawPolygon") && (
                 <Selector
                   handlers={{
                     areaListChange: () => {
@@ -1441,13 +1600,15 @@ class Search extends Component {
                     geofenceChange: this.innerElementChange,
                     polygonChange: () => {
                       this.setState({ drawPolygonEnabled: true });
+                      this.shutOffLayer()
                     },
                   }}
                   description={Description()}
                   areasData={areaList}
+                  messages={messages}
                 />
               )}
-              { selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se') && (
+              { ((selectedAreaTypeId && selectedAreaId && (selectedAreaTypeId !== 'se')) || searchType==="drawPolygon") && (
                 <Drawer
                   handlerBackButton={this.handlerBackButton}
                 />
