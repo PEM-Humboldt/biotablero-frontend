@@ -13,28 +13,35 @@ Debe tener instalado [nodejs](https://nodejs.org/) v18.15+
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 
 #### NVM
+
 En caso usar nvm, puede activar la version necesaria con el siguiente comando:
 
 ```sh
 nvm use
 
 ```
+
 Si no tiene la versión correcta instalada, el comando le indicará como instalarla antes de poder usarla.
 
 Active pnpm como el manejador de paquetes:
+
 ```sh
 corepack enable
 ```
 
 ### 1.2. Construcción de dependencias:
-Algunas dependencias del proyecto son paquetes incluidos en este mismo repositorio, para "*compilar*" dichas dependencias ejecute:
+
+Algunas dependencias del proyecto son paquetes incluidos en este mismo repositorio, para "_compilar_" dichas dependencias ejecute:
+
 ```sh
 pnpm -r install
 pnpm -r build-pkg
 ```
 
 ### 1.3. Instalación de paquetes:
+
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
+
 ```sh
 pnpm install
 ```
@@ -64,6 +71,7 @@ REACT_APP_GA_TRACKING_ID=''
 ### 1.5. Ejecución:
 
 Por último, ejecute la siguiente instrucción:
+
 ```sh
 pnpm start-dev
 ```
@@ -85,6 +93,7 @@ Descargar el repositorio en el servidor donde se desplegará el servicio.
 Tenga en cuenta la configuración de [las variables de entorno](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used): se deberá crear una copia del archivo _.env_ con el nombre _.env.production.local_, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
 
 Ejecutar la siguiente instrucción para construir la imagen:
+
 ```sh
 docker build -t biotablero-front:<version> .
 ```
@@ -94,6 +103,7 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 ### 2.2. Despliegue del servicio
 
 Una vez esté creada la imagen, se despliega de la siguiente manera:
+
 ```sh
 docker run -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
 ```
@@ -103,6 +113,7 @@ docker run -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front
 ### Desarrollo en dependencias
 
 Para trabajar en una dependencia en específico y observar los cambios en estas, ejecute:
+
 ```sh
 pnpm --filter ./packages/<nombre_paquete> build-dev
 ```
@@ -115,11 +126,13 @@ Tenga en cuenta las siguientes cosas:
 ### Verificar reglas de estilo
 
 Ejecutar la siguiente linea para verificar los estilos del proyecto:
+
 ```sh
 pnpm check-format
 ```
 
 Para verificar los estilos de las dependencias propias ejecute:
+
 ```sh
 pnpm -r lint
 ```
@@ -127,4 +140,9 @@ pnpm -r lint
 ---
 
 # Autores
-*Gerencia de Información Científica, Instituto Humboldt, Colombia*
+
+Gerencia de Información Científica - Dirección de conocimiento - Instituto de Investigación de Recursos Biológicos Alexander von Humboldt - Colombia
+
+- **Erika Suárez** - [Erikasv](https://github.com/erikasv)
+- **Camilo Zapata** - [cazapatamar](https://github.com/cazapatamar)
+- **Manuel Galvez** - [ManuelStardust](https://github.com/ManuelStardust)
