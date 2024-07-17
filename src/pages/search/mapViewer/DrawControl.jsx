@@ -25,6 +25,11 @@ class DrawControl extends React.Component {
    * @param {Object} e LeafletDraw event
    */
   onCreated = (e) => {
+    var bounds = e.layer.getBounds();
+    var bbox = [bounds.getSouthWest().lng, bounds.getSouthWest().lat, bounds.getNorthEast().lng, bounds.getNorthEast().lat];
+    var geojson = e.layer.toGeoJSON();
+    geojson.geometry.bbox = bbox;
+    console.log(geojson);
     this.setState({
       polygon: { latLngs: e.layer.getLatLngs()[0] },
       createEnabled: false,
