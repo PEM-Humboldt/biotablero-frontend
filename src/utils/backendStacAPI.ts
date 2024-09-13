@@ -1,13 +1,13 @@
-import axios, { CancelTokenSource } from "axios";
-import { toMultipolygonWKT } from "utils/transformations";
-import { Polygon } from "pages/search/types/drawer";
+import axios, { AxiosRequestConfig } from "axios";
+import { polygonFeature } from "pages/search/types/drawer";
+import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 
-class biabAPI {
+class backendStacAPI {
   /**
    * Get the list of current scripts.
    */
-  static requestScriptList(): Promise<Array<String>> {
-    return biabAPI.makeGetRequest(`script/list`);
+  static requestTestBackend(): Promise<Array<String>> {
+    return backendStacAPI.makeGetRequest(`docs`);
   }
 
   /**
@@ -17,51 +17,45 @@ class biabAPI {
    *
    * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
    */
-  static requestForestLPData(polygon: Polygon | null): Promise<{
-    logs: string;
-    files: {
-      table_pp: string;
-      dir_png: string;
-    };
-  }> {
-    const wkt = toMultipolygonWKT(polygon);
+  static requestForestLPData(
+    polygon: polygonFeature | null
+  ): Promise<Array<ForestLPRawDataPolygon>> {
     const requestBody = {
-      WKT_area: wkt,
-      collection_path: "/scripts/lossPersistence/input/Colombia_pp_collection",
-      epsg: 4326,
-      resolution: 300,
-      time_period: "P1Y",
-      time_start: "NA",
-      time_end: "NA",
+      polygon: polygon,
     };
 
-    return biabAPI.makePostRequest(
-      "script/lossPersistence%3Epp.R/run",
-      requestBody
+    return backendStacAPI.makePostRequest(
+      "metrics/LossPersistence/values",
+      requestBody,
+      { responseType: "json" },
+      false
     );
   }
 
   /**
    * Get the layer associated to a polygon query for Forest LP
    *
-   * @param {String} layer layer file name to get
-   * @param {String} polygonFolder result folder name
+   * @param {String} period item id to get
+   * @param {Polygon} polygon selected polygon in GEOJson format
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
 
   static requestForestLPLayer(
-    layer: string,
-    polygonFolder: string
-  ): { request: Promise<Object>; source: CancelTokenSource } {
-    const source = axios.CancelToken.source();
+    period: string,
+    polygon: polygonFeature | null
+  ): Promise<Object> | any {
+    const requestBody = {
+      polygon: polygon,
+    };
+
     return {
-      request: biabAPI.makeGetRequest(
-        `${polygonFolder.slice(1)}/${layer}.png`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
+      request: backendStacAPI.makePostRequest(
+        `metrics/LossPersistence/layer?item_id=${period}`,
+        requestBody,
+        { responseType: "arraybuffer" },
         true
       ),
-      source,
     };
   }
 
@@ -81,7 +75,7 @@ class biabAPI {
       ...options,
     };
     return axios
-      .get(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`, config)
+      .get(`${process.env.REACT_APP_BACKEND_STAC_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -105,20 +99,33 @@ class biabAPI {
    *
    * @param {String} endpoint endpoint to attach to url
    * @param {Object} requestBody JSON object with the request body
+   * @param {Array} options config params to the request
+   * @param {Boolean} completeRes define if get all the response or only data part
    */
-  static makePostRequest(endpoint: string, requestBody: {}) {
-    const config = {
+  static makePostRequest(
+    endpoint: string,
+    requestBody: {},
+    options = {},
+    completeRes = false
+  ) {
+    const config: AxiosRequestConfig = {
       headers: {
         "Content-Type": "application/json",
       },
+      ...options,
     };
     return axios
       .post(
-        `${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`,
+        `${process.env.REACT_APP_BACKEND_STAC_URL}/${endpoint}`,
         requestBody,
         config
       )
-      .then((res) => res.data)
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
       .catch((error) => {
         let message = "Bad POST response. Try later";
         if (error.response) message = error.response.status;
@@ -128,4 +135,4 @@ class biabAPI {
   }
 }
 
-export default biabAPI;
+export default backendStacAPI;
