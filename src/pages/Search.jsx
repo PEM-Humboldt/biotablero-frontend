@@ -55,7 +55,7 @@ class Search extends Component {
     if (!selectedAreaTypeId || !selectedAreaId) {
       history.replace(history.location.pathname);
     }
-    //this.loadAreaList();
+    this.loadAreaList();
     this.checkPolygonConn();
   }
 
