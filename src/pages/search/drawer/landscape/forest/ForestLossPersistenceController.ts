@@ -3,18 +3,22 @@ import {
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
 import SearchAPI from "utils/searchAPI";
-import biabAPI from "utils/biabAPI";
-import { ForestLPExt, ForestLPRawDataPolygon } from "pages/search/types/forest";
+import BackendStacAPI from "utils/backendStacAPI";
+import {
+  ForestLPExt,
+  ForestLPRawDataPolygon,
+  ForestLPKeys,
+  ForestLPValues,
+} from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import { Polygon } from "pages/search/types/drawer";
+import { polygonFeature } from "pages/search/types/drawer";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
   forestLPArea?: number;
-  layersFolder?: string;
 }
 
 export class ForestLossPersistenceController {
@@ -58,44 +62,52 @@ export class ForestLossPersistenceController {
     areaId: string | number,
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
-    polygon: Polygon | null
+    polygon: polygonFeature | null
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
-      return biabAPI
-        .requestForestLPData(polygon)
-        .then((data) => {
-          const rawData: Array<ForestLPRawDataPolygon> = JSON.parse(
-            data.files.table_pp
-          );
+      return BackendStacAPI.requestForestLPData(polygon)
+        .then((data: ForestLPRawDataPolygon[]) => {
+          const rawData: Array<ForestLPRawDataPolygon> = data;
           const periods: Array<string> = [
-            ...new Set(rawData.map((item: { period: string }) => item.period)),
+            ...new Set(
+              rawData.map((item: { periodo: string }) => {
+                return item.periodo;
+              })
+            ),
           ];
+          const forestLPArea =
+            Object.values(rawData[0])
+              .filter((value) => typeof value === "number")
+              .reduce((acc, value) => acc + value, 0) ?? 0;
           const forestLP: Array<ForestLPExt> = periods.map((period) => ({
             id: period,
             data: rawData
-              .filter((d: { period: string }) => d.period === period)
-              .map((o) => ({
-                area: o.area,
-                key: o.key,
-                percentage: o.percentage,
-                label: ForestLossPersistenceController.getLabel(o.key),
-              })),
+              .filter((d) => d.periodo === period)
+              .reduce((acc, o) => {
+                ForestLPKeys.forEach((itemKey) => {
+                  if (o[itemKey]) {
+                    acc.push({
+                      area: o[itemKey],
+                      key: itemKey,
+                      percentage: (o[itemKey] / forestLPArea) * 100,
+                      label: ForestLossPersistenceController.getLabel(itemKey),
+                    });
+                  }
+                });
+                return acc;
+              }, [] as Array<ForestLPValues>),
           }));
-          const forestPersistenceValue =
-            rawData.find(
-              ({ period, key }) =>
-                period === latestPeriod && key === "persistencia"
-            )?.area ?? 0;
-          const forestLPArea = rawData
-            .filter((d: { period: string }) => d.period === periods[0])
-            .reduce((totalArea, periodData) => totalArea + periodData.area, 0);
-          const layersFolder = data.files?.dir_png ?? "";
+
+          let forestPersistenceValue =
+            forestLP
+              .find((item) => item.id === "2016-2021")
+              ?.data.find((category) => category.key === "persistencia")
+              ?.area ?? 0;
 
           return {
             forestLP,
             forestPersistenceValue,
             forestLPArea,
-            layersFolder,
           };
         })
         .catch(() => {

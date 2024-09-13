@@ -61,7 +61,13 @@ class ForestLossPersistence extends React.Component<Props, State> {
     }
 
     this.flpController
-      .getForestLPData(areaId, geofenceId, LATEST_PERIOD, searchType, polygon)
+      .getForestLPData(
+        areaId,
+        geofenceId,
+        LATEST_PERIOD,
+        searchType,
+        polygon?.geojson ?? null
+      )
       .then((data) => {
         if (this.mounted) {
           this.setState({
@@ -71,7 +77,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           });
         }
         if (searchType === "drawPolygon") {
-          setPolygonValues(data.forestLPArea ?? 0, data.layersFolder ?? "");
+          setPolygonValues(data.forestLPArea ?? 0);
           switchLayer(`forestLP-${LATEST_PERIOD}`);
         }
       })
