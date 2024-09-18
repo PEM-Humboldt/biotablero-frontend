@@ -16,7 +16,7 @@ import SearchContext from 'pages/search/SearchContext';
 import formatNumber from 'utils/format';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from 'pages/search/shared_components/charts/SmallStackedBar';
 
 /**
@@ -73,7 +73,7 @@ class Ecosystems extends React.Component {
 
     switchLayer('coverages');
 
-    SearchAPI.requestCoverage(areaId, geofenceId)
+    BackendAPI.requestCoverage(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -94,7 +94,7 @@ class Ecosystems extends React.Component {
         }));
       });
 
-    SearchAPI.requestProtectedAreas(areaId, geofenceId)
+    BackendAPI.requestProtectedAreas(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res) && res[0]) {
@@ -128,7 +128,7 @@ class Ecosystems extends React.Component {
         }));
       });
 
-    SearchAPI.requestStrategicEcosystems(areaId, geofenceId)
+    BackendAPI.requestStrategicEcosystems(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           if (Array.isArray(res)) {

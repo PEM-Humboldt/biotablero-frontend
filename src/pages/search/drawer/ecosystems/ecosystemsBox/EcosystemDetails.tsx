@@ -14,7 +14,7 @@ import {
   SEPADataExt,
   coverageLabels,
 } from "pages/search/types/ecosystems";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -67,7 +67,7 @@ class EcosystemDetails extends React.Component<Props, State> {
     const { stopLoad } = this.state;
 
     if (!stopLoad) {
-      SearchAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
+      BackendAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState((prev) => ({
@@ -88,7 +88,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           }));
         });
 
-      SearchAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
+      BackendAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState((prev) => ({

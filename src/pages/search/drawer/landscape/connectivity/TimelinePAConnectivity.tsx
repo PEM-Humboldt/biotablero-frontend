@@ -12,7 +12,7 @@ import {
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 
@@ -60,8 +60,8 @@ class TimelinePAConnectivity extends React.Component<
     switchLayer("timelinePAConn");
 
     Promise.all([
-      SearchAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
-      SearchAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot_conn"),
+      BackendAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
+      BackendAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot_conn"),
     ])
       .then((res) => {
         if (this.mounted) {
@@ -82,7 +82,7 @@ class TimelinePAConnectivity extends React.Component<
         this.setState({ message: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("paConnTimeline")
+    BackendAPI.requestSectionTexts("paConnTimeline")
       .then((res: textsObject) => {
         if (this.mounted) {
           this.setState({ texts: { paConnTimeline: res } });

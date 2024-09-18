@@ -31,7 +31,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/drawer";
-class SearchAPI {
+class BackendAPI {
   /** ****** */
   /** FOREST */
   /** ****** */
@@ -48,7 +48,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<SCIHF>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -65,7 +65,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<ForestLP>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `forest/lp?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -85,7 +85,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<currentPAConn>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `connectivity/current?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -105,7 +105,7 @@ class SearchAPI {
     areaId: string | number,
     seType: string | number
   ): Promise<Array<currentSEPAConn>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
   }
@@ -123,7 +123,7 @@ class SearchAPI {
     areaId: string | number,
     paNumber: number
   ): Promise<Array<DPC>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
     );
   }
@@ -142,7 +142,7 @@ class SearchAPI {
     areaId: string | number,
     category: string
   ): Promise<timelinePAConn> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`
     );
   }
@@ -159,7 +159,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<cfData>> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
   }
 
   /**
@@ -171,7 +171,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<cfData>> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
   }
 
   /**
@@ -183,7 +183,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<cfData>> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
   }
 
   /** *************** */
@@ -201,7 +201,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<currentHFValue> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
   }
 
   /**
@@ -216,7 +216,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<currentHFCategories>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `${areaType}/${areaId}/hf/current/categories`
     );
   }
@@ -233,7 +233,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<hfPersistence>> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
 
   /**
@@ -248,7 +248,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<hfTimeline> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
   }
 
   /**
@@ -266,7 +266,7 @@ class SearchAPI {
     areaId: string | number,
     seType: string
   ): Promise<hfTimeline> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `${areaType}/${areaId}/se/${seType}/hf/timeline`
     );
   }
@@ -285,7 +285,7 @@ class SearchAPI {
     areaId: string | number,
     seType: string
   ): Promise<seDetails> {
-    return SearchAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
   }
 
   /**
@@ -300,7 +300,7 @@ class SearchAPI {
     areaId: string | number,
     seType: string
   ): Promise<Array<Coverage>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
   }
@@ -317,7 +317,7 @@ class SearchAPI {
     areaId: string | number,
     seType: string
   ): Promise<Array<SEPAData>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
   }
@@ -331,7 +331,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<SEPAData>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `ecosystems/se?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -345,7 +345,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<SEPAData>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `/pa?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -359,7 +359,7 @@ class SearchAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<Coverage>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -382,7 +382,7 @@ class SearchAPI {
     areaId: number | string,
     group: string
   ): Promise<Array<numberOfSpecies>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `richness/number-species?areaType=${areaType}&areaId=${areaId}${
         group ? `&group=${group}` : ""
       }`
@@ -404,7 +404,7 @@ class SearchAPI {
     areaId: number | string,
     group: string
   ): Promise<Array<NOSThresholds>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${
         group ? `&group=${group}` : ""
       }`
@@ -424,7 +424,7 @@ class SearchAPI {
     areaType: string,
     group: string
   ): Promise<Array<NOSNational>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `richness/number-species/nationalMax?areaType=${areaType}${
         group ? `&group=${group}` : ""
       }`
@@ -443,7 +443,7 @@ class SearchAPI {
     areaType: string,
     areaId: number | string
   ): Promise<Array<gaps>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `richness/gaps?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -460,7 +460,7 @@ class SearchAPI {
     areaType: string,
     areaId: number | string
   ): Promise<Array<concentration>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `richness/concentration?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -483,7 +483,7 @@ class SearchAPI {
     areaId: number | string,
     targetId: number
   ): Promise<portfoliosByTarget> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `portfolios-ca/targets/${targetId}/values?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -500,7 +500,7 @@ class SearchAPI {
     areaType: string,
     areaId: number | string
   ): Promise<Array<targetOrPortfolio>> {
-    return SearchAPI.makeGetRequest(
+    return BackendAPI.makeGetRequest(
       `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`
     );
   }
@@ -511,7 +511,7 @@ class SearchAPI {
    * @return {Promise<Array>} Array of objects with targets list
    */
   static requestPortfoliosList(): Promise<Array<targetOrPortfolio>> {
-    return SearchAPI.makeGetRequest(`portfolios-ca/portfolios/list`);
+    return BackendAPI.makeGetRequest(`portfolios-ca/portfolios/list`);
   }
 
   /**
@@ -531,7 +531,7 @@ class SearchAPI {
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
     return {
-      request: SearchAPI.makeGetRequest(
+      request: BackendAPI.makeGetRequest(
         `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
         { cancelToken: source.token, responseType: "arraybuffer" },
         true
@@ -552,17 +552,17 @@ class SearchAPI {
    * @return {Promise<Object>} Object with texts
    */
   static requestTexts(key: string): Promise<textResponse> {
-    return SearchAPI.makeGetRequest(`util/texts?key=${key}`);
+    return BackendAPI.makeGetRequest(`util/texts?key=${key}`);
   }
 
   /** Same as previous function, but specifically for section texts */
   static requestSectionTexts(key: string): Promise<textsObject> {
-    return SearchAPI.requestTexts(key) as Promise<textsObject>;
+    return BackendAPI.requestTexts(key) as Promise<textsObject>;
   }
 
   /** Same as previous function, but specifically for helper texts */
   static requestHelperTexts(key: string): Promise<helperText> {
-    return SearchAPI.requestTexts(key) as Promise<helperText>;
+    return BackendAPI.requestTexts(key) as Promise<helperText>;
   }
 
   /** ************** */
@@ -612,8 +612,8 @@ class SearchAPI {
     idArea: string | number,
     idGeofence: string | number
   ): Promise<geofenceDetails> {
-    return SearchAPI.makeGetRequest(`${idArea}/${idGeofence}`);
+    return BackendAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 }
 
-export default SearchAPI;
+export default BackendAPI;

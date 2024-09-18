@@ -25,7 +25,7 @@ import Bullet from "pages/search/shared_components/charts/Bullet";
 import { wrapperMessage } from "pages/search/types/charts";
 import { helperText, textsObject } from "pages/search/types/texts";
 import { NOSGroups, NOSNational } from "pages/search/types/richness";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 
 const NOSTexts = {
   inferred: { info: "", cons: "", meto: "", quote: "" },
@@ -177,9 +177,9 @@ class NumberOfSpecies extends React.Component<Props, State> {
     const { areaId, geofenceId } = this.context as SearchContextValues;
 
     Promise.all([
-      SearchAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
-      SearchAPI.requestNSThresholds(areaId, geofenceId, "all"),
-      SearchAPI.requestNSNationalMax(areaId, "all"),
+      BackendAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
+      BackendAPI.requestNSThresholds(areaId, geofenceId, "all"),
+      BackendAPI.requestNSNationalMax(areaId, "all"),
     ])
       .then(([values, thresholds, nationalMax]) => {
         const data: Array<completeData> = [];
@@ -269,7 +269,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
         }
       });
 
-    SearchAPI.requestSectionTexts("nosInferred")
+    BackendAPI.requestSectionTexts("nosInferred")
       .then((res) => {
         if (this.mounted) {
           NOSTexts.inferred = res as textsObject;
@@ -280,7 +280,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
       })
       .catch(() => {});
 
-    SearchAPI.requestSectionTexts("nosObserved")
+    BackendAPI.requestSectionTexts("nosObserved")
       .then((res) => {
         if (this.mounted) {
           NOSTexts.observed = res;
@@ -288,7 +288,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
       })
       .catch(() => {});
 
-    SearchAPI.requestHelperTexts("nos")
+    BackendAPI.requestHelperTexts("nos")
       .then((res) => {
         if (this.mounted) {
           this.setState({

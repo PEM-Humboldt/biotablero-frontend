@@ -12,7 +12,7 @@ import Species from "pages/search/drawer/Species";
 import Ecosystems from "pages/search/drawer/Ecosystems";
 import Portfolios from "pages/search/drawer/Portfolios";
 import formatNumber from "utils/format";
-import searchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TabContainer from "pages/search/shared_components/TabContainer";
 import { geofenceDetails } from "pages/search/types/drawer";
 
@@ -52,7 +52,7 @@ class Drawer extends React.Component<Props, State> {
     );
 
     if (searchType !== "drawPolygon") {
-      searchAPI
+      BackendAPI
         .requestGeofenceDetails(areaId, geofenceId)
         .then((res: geofenceDetails) => {
           this.setState({ geofenceArea: Number(res.total_area) });

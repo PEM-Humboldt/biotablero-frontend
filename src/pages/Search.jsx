@@ -16,7 +16,7 @@ import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
 import BackendStacAPI from 'utils/backendStacAPI';
-import SearchAPI from 'utils/searchAPI';
+import BackendAPI from 'utils/backendAPI';
 import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
@@ -793,7 +793,7 @@ class Search extends Component {
     } else if (/portfoliosCA*/.test(layerName)) {
       const [,,portfolioId] = layerName.split("|", 3);
       reqPromise = () =>
-        SearchAPI.requestPortfoliosCALayer(
+        BackendAPI.requestPortfoliosCALayer(
           selectedAreaTypeId,
           selectedAreaId,
           portfolioId

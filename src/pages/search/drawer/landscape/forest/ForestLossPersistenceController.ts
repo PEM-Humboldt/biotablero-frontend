@@ -2,7 +2,7 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import BackendStacAPI from "utils/backendStacAPI";
 import {
   ForestLPExt,
@@ -114,7 +114,7 @@ export class ForestLossPersistenceController {
           throw new Error("Error getting data");
         });
     } else {
-      return SearchAPI.requestForestLP(areaType, areaId)
+      return BackendAPI.requestForestLP(areaType, areaId)
         .then((data) => {
           const forestLP = data.map((item) => ({
             ...item,
@@ -193,7 +193,7 @@ export class ForestLossPersistenceController {
    * @returns {Object} texts of forestLP section
    */
   getForestLPTexts = (sectionName: string): Promise<textsObject> =>
-    SearchAPI.requestSectionTexts(sectionName)
+    BackendAPI.requestSectionTexts(sectionName)
       .then((res) => res)
       .catch(() => {
         throw new Error("Error getting data");

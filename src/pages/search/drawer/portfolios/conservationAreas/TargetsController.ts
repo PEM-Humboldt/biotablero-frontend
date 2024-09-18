@@ -9,7 +9,7 @@ import {
 } from "pages/search/types/portfolios";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import formatNumber from "utils/format";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import { textsObject } from "pages/search/types/texts";
 
 export class TargetsController {
@@ -30,7 +30,7 @@ export class TargetsController {
    * @returns List of portfolios
    */
   getPortolfiosList() {
-    return SearchAPI.requestPortfoliosList();
+    return BackendAPI.requestPortfoliosList();
   }
 
   /**
@@ -41,10 +41,10 @@ export class TargetsController {
    * @returns Array of promises to be resolved with data for each target
    */
   async getData(areaType: string, areaId: string | number) {
-    const targets = await SearchAPI.requestTargetsList(areaType, areaId);
+    const targets = await BackendAPI.requestTargetsList(areaType, areaId);
     this.targets = targets;
     return targets.map((target) =>
-      SearchAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
+      BackendAPI.requestPortfoliosByTarget(areaType, areaId, target.id).then(
         (res) => {
           const ids = new Set<number>();
           res.portfolios_data.forEach((portfolio) => {
@@ -192,7 +192,7 @@ export class TargetsController {
       "portfoliosBCAN",
       "portfoliosACCBA",
     ].forEach((item) => {
-      SearchAPI.requestSectionTexts(item)
+      BackendAPI.requestSectionTexts(item)
         .then((res) => {
           portfoliosTexts.push({ textKey: item, description: res.info });
         })
@@ -218,7 +218,7 @@ export class TargetsController {
       "targetAvoidedDeforestation",
       "targetRestoration",
     ].forEach((item) => {
-      SearchAPI.requestSectionTexts(item)
+      BackendAPI.requestSectionTexts(item)
         .then((res) => {
           targetsTexts.push({
             textKey: item,
