@@ -110,7 +110,11 @@ class TimelineFootprint extends React.Component<Props, State> {
     Promise.all([
       BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
       BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Humedal"),
-      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Bosque Seco Tropical"),
+      BackendAPI.requestSEHFTimeline(
+        areaId,
+        geofenceId,
+        "Bosque Seco Tropical"
+      ),
       BackendAPI.requestTotalHFTimeline(areaId, geofenceId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
