@@ -75,7 +75,7 @@ class backendStacAPI {
       ...options,
     };
     return axios
-      .get(`${process.env.REACT_APP_BACKEND_STAC_URL}/${endpoint}`, config)
+      .get(`${process.env.REACT_APP_SEARCH_BACKEND_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -116,7 +116,7 @@ class backendStacAPI {
     };
     return axios
       .post(
-        `${process.env.REACT_APP_BACKEND_STAC_URL}/${endpoint}`,
+        `${process.env.REACT_APP_SEARCH_BACKEND_URL}/${endpoint}`,
         requestBody,
         config
       )
