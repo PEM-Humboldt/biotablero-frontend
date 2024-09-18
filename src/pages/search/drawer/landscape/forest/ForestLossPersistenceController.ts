@@ -3,7 +3,7 @@ import {
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
 import BackendAPI from "utils/backendAPI";
-import BackendStacAPI from "utils/backendStacAPI";
+import SearchAPI from "utils/searchAPI";
 import {
   ForestLPExt,
   ForestLPRawDataPolygon,
@@ -65,7 +65,7 @@ export class ForestLossPersistenceController {
     polygon: polygonFeature | null
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
-      return BackendStacAPI.requestForestLPData(polygon)
+      return SearchAPI.requestForestLPData(polygon)
         .then((data: ForestLPRawDataPolygon[]) => {
           const rawData: Array<ForestLPRawDataPolygon> = data;
           const periods: Array<string> = [

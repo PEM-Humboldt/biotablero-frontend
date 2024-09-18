@@ -15,7 +15,7 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import BackendStacAPI from 'utils/backendStacAPI';
+import SearchAPI from 'utils/searchAPI';
 import BackendAPI from 'utils/backendAPI';
 import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
@@ -161,7 +161,7 @@ class Search extends Component {
    * Get the current list of scripts at BIAB backend. It is used to check connection to backend.
    */
   checkPolygonConn = () => {
-    BackendStacAPI.requestTestBackend()
+    SearchAPI.requestTestBackend()
       .then(() => this.reportNoMessage('polygon'))
       .catch(() => this.reportConnError('polygon'));
   }
@@ -766,7 +766,7 @@ class Search extends Component {
     } else if (/forestLP-*/.test(layerName)) {
       const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
       if (searchType === "drawPolygon") {
-        reqPromise = () => BackendStacAPI.requestForestLPLayer(`${yearIni}-${yearEnd}`, polygon.geojson);
+        reqPromise = () => SearchAPI.requestForestLPLayer(`${yearIni}-${yearEnd}`, polygon.geojson);
       } else {
         reqPromise = () => RestAPI.requestForestLPLayer(
           selectedAreaTypeId,

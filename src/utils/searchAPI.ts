@@ -2,12 +2,12 @@ import axios, { AxiosRequestConfig } from "axios";
 import { polygonFeature } from "pages/search/types/drawer";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 
-class backendStacAPI {
+class SearchAPI {
   /**
    * Get the list of current scripts.
    */
   static requestTestBackend(): Promise<Array<String>> {
-    return backendStacAPI.makeGetRequest(`docs`);
+    return SearchAPI.makeGetRequest(`docs`);
   }
 
   /**
@@ -24,7 +24,7 @@ class backendStacAPI {
       polygon: polygon,
     };
 
-    return backendStacAPI.makePostRequest(
+    return SearchAPI.makePostRequest(
       "metrics/LossPersistence/values",
       requestBody,
       { responseType: "json" },
@@ -50,7 +50,7 @@ class backendStacAPI {
     };
 
     return {
-      request: backendStacAPI.makePostRequest(
+      request: SearchAPI.makePostRequest(
         `metrics/LossPersistence/layer?item_id=${period}`,
         requestBody,
         { responseType: "arraybuffer" },
@@ -135,4 +135,4 @@ class backendStacAPI {
   }
 }
 
-export default backendStacAPI;
+export default SearchAPI;
