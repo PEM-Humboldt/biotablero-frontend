@@ -52,8 +52,7 @@ class Drawer extends React.Component<Props, State> {
     );
 
     if (searchType !== "drawPolygon") {
-      BackendAPI
-        .requestGeofenceDetails(areaId, geofenceId)
+      BackendAPI.requestGeofenceDetails(areaId, geofenceId)
         .then((res: geofenceDetails) => {
           this.setState({ geofenceArea: Number(res.total_area) });
         })

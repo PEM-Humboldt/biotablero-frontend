@@ -183,7 +183,9 @@ class BackendAPI {
     areaType: string,
     areaId: string | number
   ): Promise<Array<cfData>> {
-    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/compensationFactor`);
+    return BackendAPI.makeGetRequest(
+      `${areaType}/${areaId}/compensationFactor`
+    );
   }
 
   /** *************** */
