@@ -8,7 +8,6 @@ import {
   ForestLPExt,
   ForestLPRawDataPolygon,
   ForestLPKeys,
-  ForestLPValues,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
@@ -37,8 +36,6 @@ export class ForestLossPersistenceController {
         return "Persistencia";
       case "perdida":
         return "Pérdida";
-      case "ganancia":
-        return "Ganancia";
       case "no_bosque":
         return "No bosque";
       default:
@@ -68,41 +65,28 @@ export class ForestLossPersistenceController {
       return SearchAPI.requestForestLPData(polygon)
         .then((data: ForestLPRawDataPolygon[]) => {
           const rawData: Array<ForestLPRawDataPolygon> = data;
-          const periods: Array<string> = [
-            ...new Set(
-              rawData.map((item: { periodo: string }) => {
-                return item.periodo;
-              })
-            ),
-          ];
-          const forestLPArea =
-            Object.values(rawData[0])
-              .filter((value) => typeof value === "number")
-              .reduce((acc, value) => acc + value, 0) ?? 0;
-          const forestLP: Array<ForestLPExt> = periods.map((period) => ({
-            id: period,
-            data: rawData
-              .filter((d) => d.periodo === period)
-              .reduce((acc, o) => {
-                ForestLPKeys.forEach((itemKey) => {
-                  if (o[itemKey]) {
-                    acc.push({
-                      area: o[itemKey],
-                      key: itemKey,
-                      percentage: (o[itemKey] / forestLPArea) * 100,
-                      label: ForestLossPersistenceController.getLabel(itemKey),
-                    });
-                  }
-                });
-                return acc;
-              }, [] as Array<ForestLPValues>),
+          const {
+            perdida = 0,
+            persistencia = 0,
+            no_bosque = 0,
+          } = rawData[0] || {};
+          const forestLPArea = perdida + persistencia + no_bosque;
+          const forestLP = rawData.map((item) => ({
+            id: item.periodo,
+            data: ForestLPKeys.map((category) => ({
+              area: item[category],
+              key: category,
+              percentage: (item[category] / forestLPArea) * 100,
+              label: ForestLossPersistenceController.getLabel(category),
+            })),
           }));
 
-          let forestPersistenceValue =
-            forestLP
-              .find((item) => item.id === "2016-2021")
-              ?.data.find((category) => category.key === "persistencia")
-              ?.area ?? 0;
+          const latestPeriodData = rawData.find(
+            (item) => item.periodo === latestPeriod
+          );
+          const forestPersistenceValue = latestPeriodData
+            ? latestPeriodData.persistencia
+            : rawData[rawData.length - 1].persistencia;
 
           return {
             forestLP,

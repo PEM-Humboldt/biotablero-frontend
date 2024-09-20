@@ -452,15 +452,15 @@ class Search extends Component {
       case 'forestLP': {
         const { rasterUrls } = this.state;
         if (rasterUrls[0] && rasterUrls[0].id) {
-          const [, yearIni, yearEnd] = rasterUrls[0].id.match(/forestLP-(\w+)-(\w+)-*/);
-          if (chartSection !== `${yearIni}-${yearEnd}`) {
+          if (searchType === "drawPolygon") {
             this.setSectionLayers(`${chartType}-${chartSection}`);
+          } else {
+            const [, yearIni, yearEnd] = rasterUrls[0].id.match(/forestLP-(\w+)-(\w+)-*/);
+            if (chartSection !== `${yearIni}-${yearEnd}`) {
+              this.setSectionLayers(`${chartType}-${chartSection}`);
+            }
+            this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
           }
-        }
-        if( searchType === "drawPolygon" ){
-          this.highlightRaster(chartSection);
-        }else{
-          this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
         }
       }
       break;
@@ -764,10 +764,11 @@ class Search extends Component {
         SELabel(seType),
       );
     } else if (/forestLP-*/.test(layerName)) {
-      const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
       if (searchType === "drawPolygon") {
-        reqPromise = () => SearchAPI.requestForestLPLayer(`${yearIni}-${yearEnd}`, polygon.geojson);
+        const itemId = layerName.split(/-(.+)/)[1];
+        reqPromise = () => SearchAPI.requestForestLPLayer(itemId, polygon.geojson);
       } else {
+        const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
         reqPromise = () => RestAPI.requestForestLPLayer(
           selectedAreaTypeId,
           selectedAreaId,
@@ -883,11 +884,12 @@ class Search extends Component {
       newActiveLayer.defaultOpacity = 0.7;
     } else if (/forestLP*/.test(sectionName)) {
       let period = '2016-2021';
-      const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
-      if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;
-      if(searchType === "drawPolygon") {
-        rasterLayerOpts.push({ id: `forestLP-${period}-perdida`, paneLevel: 2 });
-      }else{
+      if (searchType === "drawPolygon") {
+        period = sectionName.split(/-(.+)/)[1];
+        rasterLayerOpts.push({ id: `forestLP-${period}`, paneLevel: 2 });
+      } else {
+        const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
+        if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;  
         rasterLayerOpts = [
           { id: `forestLP-${period}-perdida`, paneLevel: 2 },
           { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
