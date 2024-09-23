@@ -15,8 +15,8 @@ import isUndefinedOrNull from 'utils/validations';
 import GeoServerAPI from 'utils/geoServerAPI';
 import matchColor from 'utils/matchColor';
 import RestAPI from 'utils/restAPI';
-import biabAPI from 'utils/biabAPI';
 import SearchAPI from 'utils/searchAPI';
+import BackendAPI from 'utils/backendAPI';
 import GradientLegend from 'pages/search/shared_components/GradientLegend';
 import MapViewer from 'pages/search/MapViewer';
 
@@ -161,7 +161,7 @@ class Search extends Component {
    * Get the current list of scripts at BIAB backend. It is used to check connection to backend.
    */
   checkPolygonConn = () => {
-    biabAPI.requestScriptList()
+    SearchAPI.requestTestBackend()
       .then(() => this.reportNoMessage('polygon'))
       .catch(() => this.reportConnError('polygon'));
   }
@@ -429,6 +429,7 @@ class Search extends Component {
    * @param {String} source source of the clic event
    */
   clickOnGraph = ({ chartType, chartSection, selectedKey, source = 'graph' }) => {
+    const { searchType } = this.state;
     switch (chartType) {
       case 'coverage':
         this.highlightRaster(`${chartType}-${selectedKey}`);
@@ -451,12 +452,16 @@ class Search extends Component {
       case 'forestLP': {
         const { rasterUrls } = this.state;
         if (rasterUrls[0] && rasterUrls[0].id) {
-          const [, yearIni, yearEnd] = rasterUrls[0].id.match(/forestLP-(\w+)-(\w+)-*/);
-          if (chartSection !== `${yearIni}-${yearEnd}`) {
+          if (searchType === "drawPolygon") {
             this.setSectionLayers(`${chartType}-${chartSection}`);
+          } else {
+            const [, yearIni, yearEnd] = rasterUrls[0].id.match(/forestLP-(\w+)-(\w+)-*/);
+            if (chartSection !== `${yearIni}-${yearEnd}`) {
+              this.setSectionLayers(`${chartType}-${chartSection}`);
+            }
+            this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
           }
         }
-        this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
       }
       break;
       case 'portfoliosCA':
@@ -737,7 +742,7 @@ class Search extends Component {
    */
   getRasterLayer = async (layerName) => {
     const { selectedAreaId, selectedAreaTypeId } = this.props;
-    const { searchType, polygon: { folder: polygonFolder} } = this.state;
+    const { searchType, polygon: polygon } = this.state;
     let reqPromise = null;
 
     if (/coverage-*/.test(layerName)) {
@@ -759,10 +764,11 @@ class Search extends Component {
         SELabel(seType),
       );
     } else if (/forestLP-*/.test(layerName)) {
-      const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
       if (searchType === "drawPolygon") {
-        reqPromise = () => biabAPI.requestForestLPLayer(layerName, polygonFolder);
+        const itemId = layerName.split(/-(.+)/)[1];
+        reqPromise = () => SearchAPI.requestForestLPLayer(itemId, polygon.geojson);
       } else {
+        const [, yearIni, yearEnd, category] = layerName.match(/forestLP-(\w+)-(\w+)-(\w+)/);
         reqPromise = () => RestAPI.requestForestLPLayer(
           selectedAreaTypeId,
           selectedAreaId,
@@ -788,7 +794,7 @@ class Search extends Component {
     } else if (/portfoliosCA*/.test(layerName)) {
       const [,,portfolioId] = layerName.split("|", 3);
       reqPromise = () =>
-        SearchAPI.requestPortfoliosCALayer(
+        BackendAPI.requestPortfoliosCALayer(
           selectedAreaTypeId,
           selectedAreaId,
           portfolioId
@@ -878,13 +884,18 @@ class Search extends Component {
       newActiveLayer.defaultOpacity = 0.7;
     } else if (/forestLP*/.test(sectionName)) {
       let period = '2016-2021';
-      const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
-      if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;
-      rasterLayerOpts = [
-        { id: `forestLP-${period}-perdida`, paneLevel: 2 },
-        { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
-        { id: `forestLP-${period}-no_bosque`, paneLevel: 2 },
-      ];
+      if (searchType === "drawPolygon") {
+        period = sectionName.split(/-(.+)/)[1];
+        rasterLayerOpts.push({ id: `forestLP-${period}`, paneLevel: 2 });
+      } else {
+        const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
+        if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;  
+        rasterLayerOpts = [
+          { id: `forestLP-${period}-perdida`, paneLevel: 2 },
+          { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
+          { id: `forestLP-${period}-no_bosque`, paneLevel: 2 },
+        ];
+      }
       newActiveLayer.name = `Pérdida y persistencia de bosque (${period})`;
       newActiveLayer.defaultOpacity = 0.7;
     } else if (sectionName === 'hfCurrent') {
@@ -1397,15 +1408,20 @@ class Search extends Component {
    */
   loadPolygonInfo = (polygon) => {
     const { setHeaderNames } = this.props;
-    const polygonBounds = L.polyline(polygon.latLngs).getBounds();
+    const polygonBounds = L.polygon(polygon.getLatLngs()[0]).getBounds();
+    const bbox = [polygonBounds.getSouthWest().lng, polygonBounds.getSouthWest().lat, polygonBounds.getNorthEast().lng, polygonBounds.getNorthEast().lat];
+    const geojson = polygon.toGeoJSON();
+    geojson.geometry.bbox = bbox;
+
     this.setState(() => ({
       drawPolygonEnabled: false,
       polygon: {
-        coordinates: polygon.latLngs.map(coord => [coord.lat, coord.lng]),
+        coordinates: polygon.getLatLngs()[0].map(coord => [coord.lat, coord.lng]),
         bounds: polygonBounds,
         area: 0,
         color: matchColor('polygon')(),
         fill: false,
+        geojson: geojson
       },
       selectedAreaTypeId: null,
       selectedAreaId: null,
@@ -1475,15 +1491,14 @@ class Search extends Component {
   };
 
   /**
-   * Set the area value and the layers folder of polygon
+   * Set the area value of polygon
    *
    */
-  setPolygonValues = (polygonArea, layersFolder) => {
+  setPolygonValues = (polygonArea) => {
     this.setState(prevState => ({
       polygon: {
         ...prevState.polygon,
         area: polygonArea,
-        folder: layersFolder
       }
     }));
   }

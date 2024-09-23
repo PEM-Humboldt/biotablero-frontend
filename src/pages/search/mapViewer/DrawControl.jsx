@@ -26,7 +26,7 @@ class DrawControl extends React.Component {
    */
   onCreated = (e) => {
     this.setState({
-      polygon: { latLngs: e.layer.getLatLngs()[0] },
+      polygon: e.layer,
       createEnabled: false,
       editEnabled: true,
     });
@@ -40,9 +40,8 @@ class DrawControl extends React.Component {
   onEdited = (e) => {
     const editedLayers = e.layers.getLayers();
     if (editedLayers.length > 0) {
-      const polygonLatlngs = editedLayers[0].getLatLngs()[0];
       this.setState({
-        polygon: { latLngs: polygonLatlngs },
+        polygon: editedLayers[0],
         createEnabled: false,
         editEnabled: true,
       });

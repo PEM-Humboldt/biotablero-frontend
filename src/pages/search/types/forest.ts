@@ -1,12 +1,7 @@
 export const SCICats = ["alta", "baja_moderada"] as const;
 export const HFCats = ["estable_natural", "dinamica", "estable_alta"] as const;
 
-export const ForestLPKeys = [
-  "persistencia",
-  "perdida",
-  "ganancia",
-  "no_bosque",
-] as const;
+export const ForestLPKeys = ["persistencia", "perdida", "no_bosque"] as const;
 
 export interface SCIHF {
   hf_pers: typeof HFCats[number];
@@ -35,10 +30,8 @@ export interface ForestLPExt {
 }
 
 export interface ForestLPRawDataPolygon {
-  layer: string;
-  value: number;
-  key: typeof ForestLPKeys[number];
-  period: string;
-  area: number;
-  percentage: number;
+  periodo: string;
+  perdida: number;
+  persistencia: number;
+  no_bosque: number;
 }

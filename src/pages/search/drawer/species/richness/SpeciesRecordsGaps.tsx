@@ -15,7 +15,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import Bullet from "pages/search/shared_components/charts/Bullet";
 import { wrapperMessage } from "pages/search/types/charts";
 import { textsObject } from "pages/search/types/texts";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import {
   concentration,
   gapLimitKeys,
@@ -155,7 +155,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
 
     switchLayer("speciesRecordsGaps");
 
-    SearchAPI.requestGaps(areaId, geofenceId)
+    BackendAPI.requestGaps(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           const showErrorMessage =
@@ -176,7 +176,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         this.setState({ messageGaps: "no-data" });
       });
 
-    SearchAPI.requestConcentration(areaId, geofenceId)
+    BackendAPI.requestConcentration(areaId, geofenceId)
       .then((res) => {
         if (this.mounted) {
           const { region, ...data } = this.transformData(res, "concentration");
@@ -192,7 +192,7 @@ class SpeciesRecordsGaps extends React.Component<Props, State> {
         this.setState({ messageConc: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("gaps")
+    BackendAPI.requestSectionTexts("gaps")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { gaps: res } });

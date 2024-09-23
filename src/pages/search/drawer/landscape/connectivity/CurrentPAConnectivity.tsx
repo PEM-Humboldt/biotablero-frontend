@@ -6,7 +6,7 @@ import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
@@ -82,7 +82,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
     switchLayer("currentPAConn");
 
-    SearchAPI.requestCurrentPAConnectivity(areaId, geofenceId)
+    BackendAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res: Array<currentPAConn>) => {
         if (this.mounted) {
           const protConn = res.find((item) => item.key === "prot_conn");
@@ -112,7 +112,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         }));
       });
 
-    SearchAPI.requestDPC(areaId, geofenceId, 5)
+    BackendAPI.requestDPC(areaId, geofenceId, 5)
       .then((res: Array<DPC>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -134,7 +134,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       });
 
     ["paConnCurrent", "paConnDPC"].forEach((item) => {
-      SearchAPI.requestSectionTexts(item)
+      BackendAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({

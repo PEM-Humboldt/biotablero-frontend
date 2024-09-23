@@ -11,7 +11,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
@@ -134,7 +134,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
     switchLayer("forestIntegrity");
 
-    SearchAPI.requestSCIHF(areaId, geofenceId)
+    BackendAPI.requestSCIHF(areaId, geofenceId)
       .then((res: Array<SCIHF>) => {
         if (this.mounted) {
           if (res.length <= 0) {
@@ -188,7 +188,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         this.setState({ loading: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("forestSCIHF")
+    BackendAPI.requestSectionTexts("forestSCIHF")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { forestSCIHF: res } });

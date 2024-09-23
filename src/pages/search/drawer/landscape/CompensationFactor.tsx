@@ -5,7 +5,7 @@ import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
@@ -71,7 +71,7 @@ class CompensationFactor extends React.Component<
 
     switchLayer("fc");
 
-    SearchAPI.requestBiomes(areaId, geofenceId)
+    BackendAPI.requestBiomes(areaId, geofenceId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -95,7 +95,7 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    SearchAPI.requestCompensationFactor(areaId, geofenceId)
+    BackendAPI.requestCompensationFactor(areaId, geofenceId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -119,7 +119,7 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    SearchAPI.requestBioticUnits(areaId, geofenceId)
+    BackendAPI.requestBioticUnits(areaId, geofenceId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -145,7 +145,7 @@ class CompensationFactor extends React.Component<
       });
 
     ["cf", "biomes", "bioticRegions"].forEach((item) => {
-      SearchAPI.requestSectionTexts(item)
+      BackendAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({

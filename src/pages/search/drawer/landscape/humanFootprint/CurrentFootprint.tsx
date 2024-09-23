@@ -6,7 +6,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import {
@@ -57,7 +57,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
     switchLayer("hfCurrent");
 
-    SearchAPI.requestCurrentHFValue(areaId, geofenceId)
+    BackendAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res: currentHFValue) => {
         if (this.mounted) {
           this.setState({
@@ -68,7 +68,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       })
       .catch(() => {});
 
-    SearchAPI.requestCurrentHFCategories(areaId, geofenceId)
+    BackendAPI.requestCurrentHFCategories(areaId, geofenceId)
       .then((res: Array<currentHFCategories>) => {
         if (this.mounted) {
           this.setState({
@@ -84,7 +84,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         this.setState({ message: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("hfCurrent")
+    BackendAPI.requestSectionTexts("hfCurrent")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfCurrent: res } });

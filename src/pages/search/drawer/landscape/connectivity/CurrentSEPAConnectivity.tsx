@@ -7,7 +7,7 @@ import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import {
@@ -78,7 +78,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
     switchLayer("currentSEPAConn");
 
-    SearchAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
+    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protParamo = 0;
@@ -109,7 +109,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    SearchAPI.requestCurrentSEPAConnectivity(
+    BackendAPI.requestCurrentSEPAConnectivity(
       areaId,
       geofenceId,
       "Bosque Seco Tropical"
@@ -144,7 +144,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    SearchAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Humedal")
+    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Humedal")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protWetland = 0;
@@ -175,7 +175,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    SearchAPI.requestSectionTexts("paConnSE")
+    BackendAPI.requestSectionTexts("paConnSE")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { paConnSE: res } });

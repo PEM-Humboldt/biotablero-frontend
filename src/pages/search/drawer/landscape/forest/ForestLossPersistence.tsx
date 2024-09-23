@@ -61,7 +61,13 @@ class ForestLossPersistence extends React.Component<Props, State> {
     }
 
     this.flpController
-      .getForestLPData(areaId, geofenceId, LATEST_PERIOD, searchType, polygon)
+      .getForestLPData(
+        areaId,
+        geofenceId,
+        LATEST_PERIOD,
+        searchType,
+        polygon?.geojson ?? null
+      )
       .then((data) => {
         if (this.mounted) {
           this.setState({
@@ -71,8 +77,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
           });
         }
         if (searchType === "drawPolygon") {
-          setPolygonValues(data.forestLPArea ?? 0, data.layersFolder ?? "");
-          switchLayer(`forestLP-${LATEST_PERIOD}`);
+          const latestId = data.forestLP[data.forestLP.length - 1].id;
+          setPolygonValues(data.forestLPArea ?? 0);
+          switchLayer(`forestLP-${latestId}`);
         }
       })
       .catch(() => {
@@ -106,10 +113,15 @@ class ForestLossPersistence extends React.Component<Props, State> {
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
-    const { areaId, geofenceId, handlerClickOnGraph } = this
+    const { areaId, geofenceId, searchType, handlerClickOnGraph } = this
       .context as SearchContextValues;
 
     const graphData = this.flpController.getGraphData(forestLP);
+
+    const selectedIndex =
+      searchType === "drawPolygon" && forestLP.length > 0
+        ? forestLP[forestLP.length - 1].id
+        : LATEST_PERIOD;
 
     return (
       <div className="graphcontainer pt6">
@@ -165,7 +177,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 selectedKey: key,
               });
             }}
-            selectedIndexValue="2016-2021"
+            selectedIndexValue={selectedIndex}
           />
         </div>
         <TextBoxes

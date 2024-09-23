@@ -7,7 +7,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import processDataCsv from "utils/processDataCsv";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
@@ -108,10 +108,14 @@ class TimelineFootprint extends React.Component<Props, State> {
     switchLayer("hfTimeline");
 
     Promise.all([
-      SearchAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
-      SearchAPI.requestSEHFTimeline(areaId, geofenceId, "Humedal"),
-      SearchAPI.requestSEHFTimeline(areaId, geofenceId, "Bosque Seco Tropical"),
-      SearchAPI.requestTotalHFTimeline(areaId, geofenceId),
+      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
+      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Humedal"),
+      BackendAPI.requestSEHFTimeline(
+        areaId,
+        geofenceId,
+        "Bosque Seco Tropical"
+      ),
+      BackendAPI.requestTotalHFTimeline(areaId, geofenceId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
@@ -125,7 +129,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         this.setState({ message: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("hfTimeline")
+    BackendAPI.requestSectionTexts("hfTimeline")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfTimeline: res } });
@@ -159,7 +163,7 @@ class TimelineFootprint extends React.Component<Props, State> {
   setSelectedEcosystem = (seType: string) => {
     const { areaId, geofenceId } = this.context as SearchContextValues;
     if (seType !== "aTotal") {
-      SearchAPI.requestSEDetailInArea(
+      BackendAPI.requestSEDetailInArea(
         areaId,
         geofenceId,
         this.getLabel(seType)

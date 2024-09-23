@@ -5,7 +5,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "utils/matchColor";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
@@ -55,7 +55,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
 
     switchLayer("hfPersistence");
 
-    SearchAPI.requestHFPersistence(areaId, geofenceId)
+    BackendAPI.requestHFPersistence(areaId, geofenceId)
       .then((res: Array<hfPersistence>) => {
         if (this.mounted) {
           this.setState({
@@ -71,7 +71,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         this.setState({ message: "no-data" });
       });
 
-    SearchAPI.requestSectionTexts("hfPersistence")
+    BackendAPI.requestSectionTexts("hfPersistence")
       .then((res) => {
         if (this.mounted) {
           this.setState({ texts: { hfPersistence: res } });

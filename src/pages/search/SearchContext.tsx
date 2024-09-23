@@ -6,7 +6,7 @@ export interface SearchContextValues {
   geofenceId: string | number;
   searchType: "definedArea" | "drawPolygon";
   polygon: Polygon | null;
-  setPolygonValues(areaValue: number, folder: string): void;
+  setPolygonValues(areaValue: number): void;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;

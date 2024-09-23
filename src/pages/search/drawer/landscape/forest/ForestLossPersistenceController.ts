@@ -2,19 +2,22 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
+import BackendAPI from "utils/backendAPI";
 import SearchAPI from "utils/searchAPI";
-import biabAPI from "utils/biabAPI";
-import { ForestLPExt, ForestLPRawDataPolygon } from "pages/search/types/forest";
+import {
+  ForestLPExt,
+  ForestLPRawDataPolygon,
+  ForestLPKeys,
+} from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import { Polygon } from "pages/search/types/drawer";
+import { polygonFeature } from "pages/search/types/drawer";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
   forestLPArea?: number;
-  layersFolder?: string;
 }
 
 export class ForestLossPersistenceController {
@@ -33,8 +36,6 @@ export class ForestLossPersistenceController {
         return "Persistencia";
       case "perdida":
         return "Pérdida";
-      case "ganancia":
-        return "Ganancia";
       case "no_bosque":
         return "No bosque";
       default:
@@ -58,51 +59,46 @@ export class ForestLossPersistenceController {
     areaId: string | number,
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
-    polygon: Polygon | null
+    polygon: polygonFeature | null
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
-      return biabAPI
-        .requestForestLPData(polygon)
-        .then((data) => {
-          const rawData: Array<ForestLPRawDataPolygon> = JSON.parse(
-            data.files.table_pp
-          );
-          const periods: Array<string> = [
-            ...new Set(rawData.map((item: { period: string }) => item.period)),
-          ];
-          const forestLP: Array<ForestLPExt> = periods.map((period) => ({
-            id: period,
-            data: rawData
-              .filter((d: { period: string }) => d.period === period)
-              .map((o) => ({
-                area: o.area,
-                key: o.key,
-                percentage: o.percentage,
-                label: ForestLossPersistenceController.getLabel(o.key),
-              })),
+      return SearchAPI.requestForestLPData(polygon)
+        .then((data: ForestLPRawDataPolygon[]) => {
+          const rawData: Array<ForestLPRawDataPolygon> = data;
+          const {
+            perdida = 0,
+            persistencia = 0,
+            no_bosque = 0,
+          } = rawData[0] || {};
+          const forestLPArea = perdida + persistencia + no_bosque;
+          const forestLP = rawData.map((item) => ({
+            id: item.periodo,
+            data: ForestLPKeys.map((category) => ({
+              area: item[category],
+              key: category,
+              percentage: (item[category] / forestLPArea) * 100,
+              label: ForestLossPersistenceController.getLabel(category),
+            })),
           }));
-          const forestPersistenceValue =
-            rawData.find(
-              ({ period, key }) =>
-                period === latestPeriod && key === "persistencia"
-            )?.area ?? 0;
-          const forestLPArea = rawData
-            .filter((d: { period: string }) => d.period === periods[0])
-            .reduce((totalArea, periodData) => totalArea + periodData.area, 0);
-          const layersFolder = data.files?.dir_png ?? "";
+
+          const latestPeriodData = rawData.find(
+            (item) => item.periodo === latestPeriod
+          );
+          const forestPersistenceValue = latestPeriodData
+            ? latestPeriodData.persistencia
+            : rawData[rawData.length - 1].persistencia;
 
           return {
             forestLP,
             forestPersistenceValue,
             forestLPArea,
-            layersFolder,
           };
         })
         .catch(() => {
           throw new Error("Error getting data");
         });
     } else {
-      return SearchAPI.requestForestLP(areaType, areaId)
+      return BackendAPI.requestForestLP(areaType, areaId)
         .then((data) => {
           const forestLP = data.map((item) => ({
             ...item,
@@ -181,7 +177,7 @@ export class ForestLossPersistenceController {
    * @returns {Object} texts of forestLP section
    */
   getForestLPTexts = (sectionName: string): Promise<textsObject> =>
-    SearchAPI.requestSectionTexts(sectionName)
+    BackendAPI.requestSectionTexts(sectionName)
       .then((res) => res)
       .catch(() => {
         throw new Error("Error getting data");
