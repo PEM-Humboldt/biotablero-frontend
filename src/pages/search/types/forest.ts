@@ -10,12 +10,6 @@ export interface SCIHF {
   area: number;
 }
 
-export interface ForestLPValues {
-  area: number;
-  key: typeof ForestLPKeys[number];
-  percentage: number;
-  label: string;
-}
 export interface ForestLP {
   id: string;
   data: Array<{
@@ -27,13 +21,17 @@ export interface ForestLP {
 
 export interface ForestLPExt {
   id: string;
-  data: Array<ForestLPValues>;
+  data: Array<{
+    area: number;
+    key: typeof ForestLPKeys[number];
+    percentage: number;
+    label: string;
+  }>;
 }
 
 export interface ForestLPRawDataPolygon {
   periodo: string;
   perdida: number;
   persistencia: number;
-  ganancia: number;
   no_bosque: number;
 }
