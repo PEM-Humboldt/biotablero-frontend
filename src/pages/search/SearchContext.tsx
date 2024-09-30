@@ -1,7 +1,7 @@
 import React from "react";
 import { Polygon } from "pages/search/types/drawer";
 
-interface rasterLayer {
+export interface rasterLayer {
   paneLevel: number;
   id: string;
   data: string;

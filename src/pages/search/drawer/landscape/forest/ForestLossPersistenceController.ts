@@ -14,7 +14,8 @@ import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/drawer";
 import RestAPI from "utils/restAPI";
-import base64 from 'pages/search/utils/base64ArrayBuffer';
+import base64 from "pages/search/utils/base64ArrayBuffer";
+import { rasterLayer } from "pages/search/SearchContext";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -25,13 +26,17 @@ interface ForestLPData {
 export class ForestLossPersistenceController {
   areaType: string | null = null;
   areaId: string | null = null;
-  polygon: Object | null = null;
+  polygon: polygonFeature | null = null;
 
   constructor() {}
 
   setArea(areaType: string, areaId: string) {
     this.areaType = areaType;
     this.areaId = areaId;
+  }
+
+  setPolygon(polygon: polygonFeature) {
+    this.polygon = polygon;
   }
 
   /**
@@ -223,30 +228,54 @@ export class ForestLossPersistenceController {
     return result;
   }
 
-  async getLayers(period: string) {
+  async getLayers(period: string): Promise<Array<rasterLayer>> {
     // Asumir que Search cargó la shape de la geocerca en el contexto
     // TODO: Resolver cómo cancelar la petición en caso de que sea necesario
-    try {
-      const res = await Promise.all(
-        ForestLPKeys.map((category) =>
-          RestAPI.requestForestLPLayer(
-            this.areaType ?? "",
-            this.areaId ?? "",
-            period,
-            category
-          ).request
-        )
-      );
-      // Manejo de errores / mostrar modal o mno
-      return ForestLPKeys.map((category, idx) => ({
-        id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(res[idx].data)}`,
-        selected: false,
-        paneLevel: 2,
-      }));
-    } catch (error) {
-      // TODO: handle error
-      throw(error)
+    if (this.areaType && this.areaId) {
+      try {
+        const res = await Promise.all(
+          ForestLPKeys.map(
+            (category) =>
+              RestAPI.requestForestLPLayer(
+                this.areaType ?? "",
+                this.areaId ?? "",
+                period,
+                category
+              ).request
+          )
+        );
+        // Manejo de errores / mostrar modal o mno
+        return ForestLPKeys.map((category, idx) => ({
+          id: category,
+          data: `data:${res[idx].headers["content-type"]};base64, ${base64(
+            res[idx].data
+          )}`,
+          selected: false,
+          paneLevel: 2,
+        }));
+      } catch (error) {
+        // TODO: handle error
+        throw error;
+      }
+    } else if (this.polygon) {
+      try {
+        const res = await SearchAPI.requestForestLPLayer(period, this.polygon)
+          .request;
+        return [
+          {
+            id: period,
+            data: `data:${res.headers["content-type"]};base64, ${base64(
+              res.data
+            )}`,
+            selected: false,
+            paneLevel: 2,
+          },
+        ];
+      } catch (error) {
+        // TODO: handle error
+        throw error;
+      }
     }
+    throw Error("Polygon and area undefined");
   }
 }

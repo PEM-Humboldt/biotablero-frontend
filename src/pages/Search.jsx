@@ -1405,6 +1405,7 @@ class Search extends Component {
       layerError: false,
       loadingLayer: true,
     }));
+    this.geofenceBounds = polygonBounds;
     setHeaderNames({ parent: "Polígono", child: "Área Consultada"});
     this.updateBounds(polygonBounds);
   }

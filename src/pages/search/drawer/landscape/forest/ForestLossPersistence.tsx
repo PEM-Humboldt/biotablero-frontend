@@ -57,8 +57,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     if (searchType === "definedArea") {
       this.flpController.setArea(areaId, geofenceId.toString());
-      this.switchLayer(this.currentPeriod);
+    } else if(polygon && polygon.geojson){
+      this.flpController.setPolygon(polygon.geojson);
     }
+    this.switchLayer(this.currentPeriod);
 
     this.flpController
       .getForestLPData(
@@ -77,9 +79,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           });
         }
         if (searchType === "drawPolygon") {
-          const latestId = data.forestLP[data.forestLP.length - 1].id;
           setPolygonValues(data.forestLPArea ?? 0);
-          switchLayer(`forestLP-${latestId}`);
         }
       })
       .catch(() => {
@@ -183,7 +183,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 }))
               } else {
                 this.currentPeriod = period;
-                this.switchLayer(period, category);
+                this.switchLayer(period);
               }
             }}
             selectedIndexValue={selectedIndex}
@@ -202,7 +202,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     );
   }
 
-  switchLayer = (period: string, category: string | null = null) => {
+  switchLayer = (period: string) => {
     const { setRasterLayers, setLoadingLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
