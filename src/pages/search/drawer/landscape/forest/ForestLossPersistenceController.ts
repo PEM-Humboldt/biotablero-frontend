@@ -241,7 +241,7 @@ export class ForestLossPersistenceController {
       return ForestLPKeys.map((category, idx) => ({
         id: category,
         data: `data:${res[idx].headers["content-type"]};base64, ${base64(res[idx].data)}`,
-        opacity: 0.7,
+        selected: false,
         paneLevel: 2,
       }));
     } catch (error) {

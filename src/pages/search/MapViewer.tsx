@@ -48,6 +48,7 @@ interface Props {
     id: string;
     data: string;
     opacity: number;
+    selected?: boolean;
   }>;
   userLogged?: {
     id: number;
@@ -115,13 +116,8 @@ class MapViewer extends React.Component<Props, State> {
     const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
 
     const paneLevels = Array.from(
-      new Set(
-        [...layers, ...totalRasterLayers].map(
-          (layer) => layer.paneLevel
-        )
-      )
+      new Set([...layers, ...totalRasterLayers].map((layer) => layer.paneLevel))
     );
-
 
     return (
       <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
@@ -197,14 +193,18 @@ class MapViewer extends React.Component<Props, State> {
               ))}
             {totalRasterLayers
               .filter((l) => l.paneLevel === panelLevel)
-              .map((layer) => (
-                <ImageOverlay
-                  key={layer.id}
-                  url={layer.data}
-                  bounds={rasterBounds}
-                  opacity={layer.opacity}
-                />
-              ))}
+              .map((layer) => {
+                let opacity = layer.selected ? 1 : 0.7;
+                if (layer.opacity) opacity = layer.opacity;
+                return (
+                  <ImageOverlay
+                    key={layer.id}
+                    url={layer.data}
+                    bounds={rasterBounds}
+                    opacity={opacity}
+                  />
+                );
+              })}
           </Pane>
         ))}
         {polygon && polygon.coordinates && (

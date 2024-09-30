@@ -25,11 +25,10 @@ interface State {
   };
 }
 
-const LATEST_PERIOD = "2016-2021";
-
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
   flpController;
+  currentPeriod = "2016-2021";
 
   constructor(props: Props) {
     super(props);
@@ -52,31 +51,20 @@ class ForestLossPersistence extends React.Component<Props, State> {
       geofenceId,
       searchType,
       polygon,
-      setRasterLayers,
-      setLoadingLayer,
       setPolygonValues,
       switchLayer,
     } = this.context as SearchContextValues;
 
     if (searchType === "definedArea") {
       this.flpController.setArea(areaId, geofenceId.toString());
-      setLoadingLayer(true, false);
-      this.flpController
-        .getLayers(LATEST_PERIOD)
-        .then((layers) => {
-          setRasterLayers(layers);
-          setLoadingLayer(false, false);
-        })
-        .catch(() => {
-          setLoadingLayer(false, true);
-        });
+      this.switchLayer(this.currentPeriod);
     }
 
     this.flpController
       .getForestLPData(
         areaId,
         geofenceId,
-        LATEST_PERIOD,
+        this.currentPeriod,
         searchType,
         polygon?.geojson ?? null
       )
@@ -127,7 +115,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
-    const { areaId, geofenceId, searchType, handlerClickOnGraph } = this
+    const { areaId, geofenceId, searchType, rasterLayers,setRasterLayers } = this
       .context as SearchContextValues;
 
     const graphData = this.flpController.getGraphData(forestLP);
@@ -135,7 +123,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const selectedIndex =
       searchType === "drawPolygon" && forestLP.length > 0
         ? forestLP[forestLP.length - 1].id
-        : LATEST_PERIOD;
+        : this.currentPeriod;
 
     return (
       <div className="graphcontainer pt6">
@@ -184,12 +172,19 @@ class ForestLossPersistence extends React.Component<Props, State> {
               format: ".2s",
             }}
             colors={matchColor("forestLP")}
-            onClickHandler={(period, key) => {
-              handlerClickOnGraph({
-                chartType: "forestLP",
-                chartSection: period,
-                selectedKey: key,
-              });
+            onClickHandler={(period, category) => {
+              if (period === this.currentPeriod) {
+                setRasterLayers(rasterLayers.map((layer) => {
+                  if (layer.id === category) {
+                    return {...layer, selected: true}
+                  } else {
+                    return {...layer, selected: false}
+                  }
+                }))
+              } else {
+                this.currentPeriod = period;
+                this.switchLayer(period, category);
+              }
             }}
             selectedIndexValue={selectedIndex}
           />
@@ -206,6 +201,21 @@ class ForestLossPersistence extends React.Component<Props, State> {
       </div>
     );
   }
+
+  switchLayer = (period: string, category: string | null = null) => {
+    const { setRasterLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
+    setLoadingLayer(true, false);
+    this.flpController
+      .getLayers(period)
+      .then((layers) => {
+        setRasterLayers(layers);
+        setLoadingLayer(false, false);
+      })
+      .catch(() => {
+        setLoadingLayer(false, true);
+      });
+  };
 }
 
 export default ForestLossPersistence;

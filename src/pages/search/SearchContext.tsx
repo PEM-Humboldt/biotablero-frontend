@@ -5,7 +5,8 @@ interface rasterLayer {
   paneLevel: number;
   id: string;
   data: string;
-  opacity: number;
+  opacity?: number;
+  selected?: boolean;
 }
 export interface SearchContextValues {
   areaId: string;
