@@ -38,6 +38,9 @@ class Search extends Component {
       layerError: false,
       areaList: [],
       layers: {},
+      /** */
+      rasterLayers:[],
+      /** */
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
@@ -73,6 +76,26 @@ class Search extends Component {
     const { setHeaderNames } = this.props;
     setHeaderNames({ parent: "", child: "" });
   }
+
+  /** Migracion del 30 de sept*/
+  setRasterLayers = (layers) => {
+    this.setState({ rasterLayers: layers });
+  }
+
+  /**
+   * Control modal for switch layers
+   *
+   * @param {boolean} loading
+   * @param {boolean} error
+   */
+  setLoadingLayer =  (loading, error) => {
+    this.shutOffLayer(); // Borrar cuando todos los componentes manejen las capas directamente
+    this.setState({
+      loadingLayer: loading,
+      layerError: error,
+    });
+  }
+  /** */
 
   /**
    * Send the cancel signal to all active requests and remove them from the map
@@ -606,7 +629,7 @@ class Search extends Component {
    * @param {String} options.fitBounds if the map bounds should fit the layer loaded
    * @param {Number} options.paneLevel pane level for the layer to be added to
    * @param {String} options.styleName style name to specify layer format
-   * 
+   *
    * @returns {Object} Data of the layer with its id
    */
   getShapeLayer = async (layerName, options) => {
@@ -889,7 +912,7 @@ class Search extends Component {
         rasterLayerOpts.push({ id: `forestLP-${period}`, paneLevel: 2 });
       } else {
         const [, yearIniSel, yearEndSel] = sectionName.match(/forestLP-(\w+)-(\w+)/);
-        if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;  
+        if (yearIniSel && yearEndSel) period = `${yearIniSel}-${yearEndSel}`;
         rasterLayerOpts = [
           { id: `forestLP-${period}-perdida`, paneLevel: 2 },
           { id: `forestLP-${period}-persistencia`, paneLevel: 2 },
@@ -1261,9 +1284,6 @@ class Search extends Component {
         } else if (/seCoverages*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
-        } else if (/forestLP*/.test(layerType)) {
-          this.setSectionLayers(layerType);
-          return;
         } else if (/portfoliosCA*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
@@ -1516,7 +1536,9 @@ class Search extends Component {
       polygon,
       drawPolygonEnabled,
       searchType,
-      openErrorModal
+      openErrorModal,
+      /** */
+      rasterLayers,
     } = this.state;
 
     const {
@@ -1583,6 +1605,9 @@ class Search extends Component {
             geofenceId: selectedAreaId,
             searchType: searchType,
             polygon: polygon,
+            rasterLayers: rasterLayers,
+            setRasterLayers: this.setRasterLayers,
+            setLoadingLayer: this.setLoadingLayer,
             setPolygonValues: this.setPolygonValues,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,

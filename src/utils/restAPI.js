@@ -330,7 +330,7 @@ class RestAPI {
    * @param {String} period period
    * @param {String} category forest loss and persistence category
    *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @return {Object<any>} layer object to be loaded in the map
    */
   static requestForestLPLayer(areaType, areaId, period, category) {
     const source = CancelToken.source();

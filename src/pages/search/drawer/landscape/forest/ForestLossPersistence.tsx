@@ -52,12 +52,24 @@ class ForestLossPersistence extends React.Component<Props, State> {
       geofenceId,
       searchType,
       polygon,
+      setRasterLayers,
+      setLoadingLayer,
       setPolygonValues,
       switchLayer,
     } = this.context as SearchContextValues;
 
     if (searchType === "definedArea") {
-      switchLayer(`forestLP-${LATEST_PERIOD}`);
+      this.flpController.setArea(areaId, geofenceId.toString());
+      setLoadingLayer(true, false);
+      this.flpController
+        .getLayers(LATEST_PERIOD)
+        .then((layers) => {
+          setRasterLayers(layers);
+          setLoadingLayer(false, false);
+        })
+        .catch(() => {
+          setLoadingLayer(false, true);
+        });
     }
 
     this.flpController
@@ -98,7 +110,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
+    const { setRasterLayers } = this.context as SearchContextValues;
     this.mounted = false;
+    setRasterLayers([]);
   }
 
   /**

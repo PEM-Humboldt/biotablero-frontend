@@ -13,6 +13,8 @@ import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/drawer";
+import RestAPI from "utils/restAPI";
+import base64 from 'pages/search/utils/base64ArrayBuffer';
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -21,7 +23,16 @@ interface ForestLPData {
 }
 
 export class ForestLossPersistenceController {
+  areaType: string | null = null;
+  areaId: string | null = null;
+  polygon: Object | null = null;
+
   constructor() {}
+
+  setArea(areaType: string, areaId: string) {
+    this.areaType = areaType;
+    this.areaId = areaId;
+  }
 
   /**
    * Defines the label for a given data
@@ -55,8 +66,10 @@ export class ForestLossPersistenceController {
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (
+    /** TODO: tomar estos parámetros de los atributos de la clase*/
     areaType: string,
     areaId: string | number,
+    /** */
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
     polygon: polygonFeature | null
@@ -208,5 +221,32 @@ export class ForestLossPersistenceController {
       })
     );
     return result;
+  }
+
+  async getLayers(period: string) {
+    // Asumir que Search cargó la shape de la geocerca en el contexto
+    // TODO: Resolver cómo cancelar la petición en caso de que sea necesario
+    try {
+      const res = await Promise.all(
+        ForestLPKeys.map((category) =>
+          RestAPI.requestForestLPLayer(
+            this.areaType ?? "",
+            this.areaId ?? "",
+            period,
+            category
+          ).request
+        )
+      );
+      // Manejo de errores / mostrar modal o mno
+      return ForestLPKeys.map((category, idx) => ({
+        id: category,
+        data: `data:${res[idx].headers["content-type"]};base64, ${base64(res[idx].data)}`,
+        opacity: 0.7,
+        paneLevel: 2,
+      }));
+    } catch (error) {
+      // TODO: handle error
+      throw(error)
+    }
   }
 }

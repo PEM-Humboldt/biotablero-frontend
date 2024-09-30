@@ -22,6 +22,7 @@ import {
   PathOptions,
 } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/drawer";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 import * as geojson from "geojson";
 
@@ -100,7 +101,7 @@ class MapViewer extends React.Component<Props, State> {
       userLogged,
       loadingLayer,
       layerError,
-      rasterLayers,
+      rasterLayers: searchRasterLayers,
       layers,
       rasterBounds,
       mapTitle,
@@ -108,11 +109,19 @@ class MapViewer extends React.Component<Props, State> {
       drawPolygonEnabled,
       loadPolygonInfo,
     } = this.props;
+    const { rasterLayers } = this.context as SearchContextValues;
     const { openErrorModal } = this.state;
 
+    const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
+
     const paneLevels = Array.from(
-      new Set([...layers, ...rasterLayers].map((layer) => layer.paneLevel))
+      new Set(
+        [...layers, ...totalRasterLayers].map(
+          (layer) => layer.paneLevel
+        )
+      )
     );
+
 
     return (
       <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
@@ -186,7 +195,7 @@ class MapViewer extends React.Component<Props, State> {
                   onEachFeature={layer.onEachFeature}
                 />
               ))}
-            {rasterLayers
+            {totalRasterLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => (
                 <ImageOverlay
@@ -223,3 +232,5 @@ class MapViewer extends React.Component<Props, State> {
 }
 
 export default MapViewer;
+
+MapViewer.contextType = SearchContext;
