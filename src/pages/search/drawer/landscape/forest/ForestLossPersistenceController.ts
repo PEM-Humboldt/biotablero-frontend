@@ -262,23 +262,21 @@ export class ForestLossPersistenceController {
       }
     } else if (this.polygon) {
       try {
-          // Realizar consultas en paralelo para cada categoría basada en el polígono
           const res = await Promise.all(
               ForestLPKeys.map((_, idx) =>
                   SearchAPI.requestForestLPLayer(
                       period,
-                      idx, // Usar el índice como categoría numérica
+                      idx,
                       this.polygon
                   ).request
               )
           );
   
-          // Mapear las respuestas a capas raster
           return res.flatMap((response, idx) => {
-              const images = response.data.images; // Obtener las imágenes de la respuesta
+              const images = response.data.images;
               return Object.entries(images).map(([imageKey, base64Data]) => ({
-                  id: `${ForestLPKeys[idx]}-${imageKey}`, // ID único por categoría e imagen
-                  data: `data:image/png;base64,${base64Data}`, // Usar el Base64 recibido
+                  id: `${ForestLPKeys[idx]}-${imageKey}`,
+                  data: `data:image/png;base64,${base64Data}`,
                   selected: false,
                   paneLevel: 2,
               }));
