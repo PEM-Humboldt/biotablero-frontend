@@ -37,23 +37,22 @@ class SearchAPI {
    *
    * @param {String} period item id to get
    * @param {Polygon} polygon selected polygon in GEOJson format
-   *
+   * @param {String}category; 
    * @return {Promise<Object>} layer object to be loaded in the map
    */
 
   static requestForestLPLayer(
     period: string,
+    category: number,
     polygon: polygonFeature | null
-  ): Promise<Object> | any {
-    const requestBody = {
-      polygon: polygon,
-    };
-
+  ): { request: Promise<any> } {
+    const requestBody = { polygon };
+  
     return {
       request: SearchAPI.makePostRequest(
-        `metrics/LossPersistence/layer?item_id=${period}`,
+        `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
         requestBody,
-        { responseType: "arraybuffer" },
+        { responseType: "json" }, // Asegúrate de que el tipo de respuesta sea JSON
         true
       ),
     };

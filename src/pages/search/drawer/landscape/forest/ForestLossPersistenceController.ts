@@ -8,6 +8,7 @@ import {
   ForestLPExt,
   ForestLPRawDataPolygon,
   ForestLPKeys,
+  ForestLayerResponse,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
@@ -16,6 +17,8 @@ import { polygonFeature } from "pages/search/types/drawer";
 import RestAPI from "utils/restAPI";
 import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/SearchContext";
+
+
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -259,23 +262,34 @@ export class ForestLossPersistenceController {
       }
     } else if (this.polygon) {
       try {
-        const res = await SearchAPI.requestForestLPLayer(period, this.polygon)
-          .request;
-        return [
-          {
-            id: period,
-            data: `data:${res.headers["content-type"]};base64, ${base64(
-              res.data
-            )}`,
-            selected: false,
-            paneLevel: 2,
-          },
-        ];
+          // Realizar consultas en paralelo para cada categoría basada en el polígono
+          const res = await Promise.all(
+              ForestLPKeys.map((_, idx) =>
+                  SearchAPI.requestForestLPLayer(
+                      period,
+                      idx, // Usar el índice como categoría numérica
+                      this.polygon
+                  ).request
+              )
+          );
+  
+          // Mapear las respuestas a capas raster
+          return res.flatMap((response, idx) => {
+              const images = response.data.images; // Obtener las imágenes de la respuesta
+              return Object.entries(images).map(([imageKey, base64Data]) => ({
+                  id: `${ForestLPKeys[idx]}-${imageKey}`, // ID único por categoría e imagen
+                  data: `data:image/png;base64,${base64Data}`, // Usar el Base64 recibido
+                  selected: false,
+                  paneLevel: 2,
+              }));
+          });
       } catch (error) {
-        // TODO: handle error
-        throw error;
+          console.error("Error al cargar la capa basada en polígono:", error);
+          throw new Error("Failed to load polygon-based layer");
       }
-    }
-    throw Error("Polygon and area undefined");
+  }
+  throw Error("Polygon and area undefined");
   }
 }
+  
+
