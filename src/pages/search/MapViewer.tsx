@@ -22,6 +22,7 @@ import {
   PathOptions,
 } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/drawer";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 import * as geojson from "geojson";
 
@@ -47,6 +48,7 @@ interface Props {
     id: string;
     data: string;
     opacity: number;
+    selected?: boolean;
   }>;
   userLogged?: {
     id: number;
@@ -100,7 +102,7 @@ class MapViewer extends React.Component<Props, State> {
       userLogged,
       loadingLayer,
       layerError,
-      rasterLayers,
+      rasterLayers: searchRasterLayers,
       layers,
       rasterBounds,
       mapTitle,
@@ -108,10 +110,13 @@ class MapViewer extends React.Component<Props, State> {
       drawPolygonEnabled,
       loadPolygonInfo,
     } = this.props;
+    const { rasterLayers } = this.context as SearchContextValues;
     const { openErrorModal } = this.state;
 
+    const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
+
     const paneLevels = Array.from(
-      new Set([...layers, ...rasterLayers].map((layer) => layer.paneLevel))
+      new Set([...layers, ...totalRasterLayers].map((layer) => layer.paneLevel))
     );
 
     return (
@@ -186,16 +191,20 @@ class MapViewer extends React.Component<Props, State> {
                   onEachFeature={layer.onEachFeature}
                 />
               ))}
-            {rasterLayers
+            {totalRasterLayers
               .filter((l) => l.paneLevel === panelLevel)
-              .map((layer) => (
-                <ImageOverlay
-                  key={layer.id}
-                  url={layer.data}
-                  bounds={rasterBounds}
-                  opacity={layer.opacity}
-                />
-              ))}
+              .map((layer) => {
+                let opacity = layer.selected ? 1 : 0.7;
+                if (layer.opacity) opacity = layer.opacity;
+                return (
+                  <ImageOverlay
+                    key={layer.id}
+                    url={layer.data}
+                    bounds={rasterBounds}
+                    opacity={opacity}
+                  />
+                );
+              })}
           </Pane>
         ))}
         {polygon && polygon.coordinates && (
@@ -223,3 +232,5 @@ class MapViewer extends React.Component<Props, State> {
 }
 
 export default MapViewer;
+
+MapViewer.contextType = SearchContext;

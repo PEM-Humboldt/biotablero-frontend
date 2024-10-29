@@ -8,11 +8,17 @@ import {
   ForestLPExt,
   ForestLPRawDataPolygon,
   ForestLPKeys,
+  ForestLayerResponse,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/drawer";
+import RestAPI from "utils/restAPI";
+import base64 from "pages/search/utils/base64ArrayBuffer";
+import { rasterLayer } from "pages/search/SearchContext";
+
+
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -21,7 +27,20 @@ interface ForestLPData {
 }
 
 export class ForestLossPersistenceController {
+  areaType: string | null = null;
+  areaId: string | null = null;
+  polygon: polygonFeature | null = null;
+
   constructor() {}
+
+  setArea(areaType: string, areaId: string) {
+    this.areaType = areaType;
+    this.areaId = areaId;
+  }
+
+  setPolygon(polygon: polygonFeature) {
+    this.polygon = polygon;
+  }
 
   /**
    * Defines the label for a given data
@@ -55,6 +74,7 @@ export class ForestLossPersistenceController {
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (
+    // TODO: take these parameters from the class attributes*
     areaType: string,
     areaId: string | number,
     latestPeriod: string,
@@ -209,4 +229,64 @@ export class ForestLossPersistenceController {
     );
     return result;
   }
+
+  async getLayers(period: string): Promise<Array<rasterLayer>> {
+    // Assume that Search loaded the geofence shape in the context
+    // TODO: Figure out how to cancel the request if necessary
+    if (this.areaType && this.areaId) {
+      try {
+        const res = await Promise.all(
+          ForestLPKeys.map(
+            (category) =>
+              RestAPI.requestForestLPLayer(
+                this.areaType ?? "",
+                this.areaId ?? "",
+                period,
+                category
+              ).request
+          )
+        );
+        // Manejo de errores / mostrar modal o mno
+        return ForestLPKeys.map((category, idx) => ({
+          id: category,
+          data: `data:${res[idx].headers["content-type"]};base64, ${base64(
+            res[idx].data
+          )}`,
+          selected: false,
+          paneLevel: 2,
+        }));
+      } catch (error) {
+        // TODO: handle error
+        throw error;
+      }
+    } else if (this.polygon) {
+      try {
+          const res = await Promise.all(
+              ForestLPKeys.map((_, idx) =>
+                  SearchAPI.requestForestLPLayer(
+                      period,
+                      idx,
+                      this.polygon
+                  ).request
+              )
+          );
+  
+          return res.flatMap((response, idx) => {
+              const images = response.data.images;
+              return Object.entries(images).map(([imageKey, base64Data]) => ({
+                  id: `${ForestLPKeys[idx]}-${imageKey}`,
+                  data: `data:image/png;base64,${base64Data}`,
+                  selected: false,
+                  paneLevel: 2,
+              }));
+          });
+      } catch (error) {
+          console.error("Error al cargar la capa basada en polígono:", error);
+          throw new Error("Failed to load polygon-based layer");
+      }
+  }
+  throw Error("Polygon and area undefined");
+  }
 }
+  
+
