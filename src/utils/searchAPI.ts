@@ -37,6 +37,7 @@ class SearchAPI {
    *
    * @param {String} period item id to get
    * @param {Polygon} polygon selected polygon in GEOJson format
+   * 
    * @param {String}category; 
    * @return {Promise<Object>} layer object to be loaded in the map
    */
@@ -52,7 +53,7 @@ class SearchAPI {
       request: SearchAPI.makePostRequest(
         `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
         requestBody,
-        { responseType: "json" }, // Asegúrate de que el tipo de respuesta sea JSON
+        { responseType: "json" },
         true
       ),
     };

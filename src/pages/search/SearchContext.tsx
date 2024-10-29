@@ -31,7 +31,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   rasterLayers: [],
   setRasterLayers: () => {},
   setLoadingLayer: () => {},
-  // Candidatos a ser borrados
+  //TODO: "Delete when migration of switch layer is finished"
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},

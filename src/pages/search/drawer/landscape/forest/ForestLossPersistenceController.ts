@@ -232,8 +232,8 @@ export class ForestLossPersistenceController {
   }
 
   async getLayers(period: string): Promise<Array<rasterLayer>> {
-    // Asumir que Search cargó la shape de la geocerca en el contexto
-    // TODO: Resolver cómo cancelar la petición en caso de que sea necesario
+    // Assume that Search loaded the geofence shape in the context
+    // TODO: Figure out how to cancel the request if necessary
     if (this.areaType && this.areaId) {
       try {
         const res = await Promise.all(

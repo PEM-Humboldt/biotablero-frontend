@@ -38,9 +38,7 @@ class Search extends Component {
       layerError: false,
       areaList: [],
       layers: {},
-      /** */
       rasterLayers:[],
-      /** */
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
@@ -77,7 +75,6 @@ class Search extends Component {
     setHeaderNames({ parent: "", child: "" });
   }
 
-  /** Migracion del 30 de sept*/
   setRasterLayers = (layers) => {
     this.setState({ rasterLayers: layers });
   }
@@ -88,6 +85,7 @@ class Search extends Component {
    * @param {boolean} loading
    * @param {boolean} error
    */
+  // TODO: "Clear when all components handle layers directly"
   setLoadingLayer =  (loading, error) => {
     this.shutOffLayer(); // Borrar cuando todos los componentes manejen las capas directamente
     this.setState({
@@ -95,7 +93,6 @@ class Search extends Component {
       layerError: error,
     });
   }
-  /** */
 
   /**
    * Send the cancel signal to all active requests and remove them from the map
@@ -1494,7 +1491,6 @@ class Search extends Component {
       drawPolygonEnabled,
       searchType,
       openErrorModal,
-      /** */
       rasterLayers,
     } = this.state;
 
