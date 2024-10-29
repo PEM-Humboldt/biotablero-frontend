@@ -37,8 +37,7 @@ class SearchAPI {
    *
    * @param {String} period item id to get
    * @param {Polygon} polygon selected polygon in GEOJson format
-   * 
-   * @param {String}category; 
+   * @param {String} category; 
    * @return {Promise<Object>} layer object to be loaded in the map
    */
 

@@ -74,10 +74,9 @@ export class ForestLossPersistenceController {
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (
-    /** TODO: tomar estos parámetros de los atributos de la clase*/
+    // TODO: take these parameters from the class attributes*
     areaType: string,
     areaId: string | number,
-    /** */
     latestPeriod: string,
     searchType: "definedArea" | "drawPolygon",
     polygon: polygonFeature | null
