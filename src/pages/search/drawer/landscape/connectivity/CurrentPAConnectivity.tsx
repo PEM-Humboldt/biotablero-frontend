@@ -15,7 +15,7 @@ import { textsObject } from "pages/search/types/texts";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
-import { CurrentPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentPAConnectivityController";
+import { PAConnectivityController } from "pages/search/drawer/landscape/connectivity/PAConnectivityController";
 
 const getLabel = {
   unprot: "No protegida",
@@ -54,11 +54,11 @@ interface currentPAConnState {
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
-  CPACController;
+  PACController;
 
   constructor(props: Props) {
     super(props);
-    this.CPACController = new CurrentPAConnectivityController();
+    this.PACController = new PAConnectivityController();
     this.state = {
       infoShown: new Set(["current"]),
       currentPAConnData: [],
@@ -180,7 +180,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
-    const graphData = this.CPACController.getGraphData(dpcData);
+    const graphData = this.PACController.getGraphData(dpcData);
 
     return (
       <div className="graphcontainer pt6">

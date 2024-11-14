@@ -3,7 +3,7 @@ import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 
-export class CurrentPAConnectivityController {
+export class PAConnectivityController {
   constructor() {}
 
   /**
