@@ -37,7 +37,7 @@ class Search extends Component {
       },
       layerError: false,
       areaList: [],
-      layers: {},
+      layers: [],
       rasterLayers:[],
       loadingLayer: false,
       selectedAreaType: null,
@@ -77,6 +77,95 @@ class Search extends Component {
 
   setRasterLayers = (layers) => {
     this.setState({ rasterLayers: layers });
+  }
+  
+  /**
+   * Add a shape layer to the state
+   *
+   * @param {object} shapeLayer Layer object to add
+   */
+  setShapeLayers = (shapeLayer) => {
+    this.setGeofenceLayer(false);
+    shapeLayer.layerStyle = this.featureStyle({ type: shapeLayer.id });
+    shapeLayer.onEachFeature = (feature, selectedLayer) => {
+      return this.featureActions(selectedLayer, shapeLayer.id);
+    }
+    
+    this.setState(prevState => ({
+      layers: {
+        ...prevState.layers,
+        [shapeLayer.id]: shapeLayer
+      }
+    }));
+
+    this.updateBounds(L.geoJSON(shapeLayer.json).getBounds());
+  }
+
+  /**
+   * Get the geofence layer and add to the layers in the state
+   *
+   * @param {boolean} fitBounds Update the bounds according to the geofence
+   */
+  
+  setGeofenceLayer = (fitBounds = true) => {
+    const {
+      selectedAreaId,
+      selectedAreaTypeId,
+    } = this.props;
+    
+    const reqPromise = RestAPI.requestGeofenceGeometryByArea(
+      selectedAreaTypeId,
+      selectedAreaId,
+    );
+    
+    const { request } = reqPromise;
+
+    request.then((res) => {
+      if (res.features) {
+        if (res.features.length === 1 && !res.features[0].geometry) {
+          return null;
+        }
+
+        if (fitBounds) {
+          this.updateBounds(L.geoJSON(res).getBounds());
+        }
+
+        const layerName = "geofence";
+        const layerStyle = this.featureStyle({ type: layerName })
+        
+        const layerObj = {
+          id: layerName,
+          paneLevel: 0,
+          json: res,
+          onEachFeature: () => {},
+          active: true,
+          layerStyle,
+        };
+        
+        this.setState(prevState => ({
+          layers: {
+            ...prevState.layers,
+            [layerName]: layerObj
+          }
+        }));
+          }
+      if (res === 'request canceled') {
+        return 'canceled';
+      }
+      return null;
+    });
+      
+  }
+
+  /**
+   * Set the active layer in the state
+   *
+   * @param {object} newActiveLayer Id and name of the current active layer
+   */
+  setActiveLayer = (newActiveLayer) => {
+    this.setState({
+      activeLayer: newActiveLayer,
+    });
   }
 
   /**
