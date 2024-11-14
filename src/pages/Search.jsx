@@ -1649,11 +1649,14 @@ class Search extends Component {
             polygon: polygon,
             rasterLayers: rasterLayers,
             setRasterLayers: this.setRasterLayers,
+            setShapeLayers: this.setShapeLayers,
+            setActiveLayer: this.setActiveLayer,
             setLoadingLayer: this.setLoadingLayer,
             setPolygonValues: this.setPolygonValues,
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
+            shutOffLayer: this.shutOffLayer,
           }}
         >
           <div className="appSearcher wrappergrid">
