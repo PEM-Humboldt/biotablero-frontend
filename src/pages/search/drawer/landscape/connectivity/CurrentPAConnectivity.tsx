@@ -171,7 +171,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
+    const { areaId, geofenceId } = this
       .context as SearchContextValues;
     const {
       currentPAConnData,
@@ -264,7 +264,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               message={dpcMess}
               colors={matchColor("dpc")}
               onClickHandler={(selected: string) =>
-                handlerClickOnGraph({ selectedKey: selected })
+                this.clickOnGraph(selected)
               }
               margin={{
                 bottom: 50,
@@ -313,6 +313,13 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       .catch(() => {
         setLoadingLayer(false, true);
       });
+  };
+  
+  clickOnGraph = (feature: string) => {
+    const { highlightFeature } = this
+    .context as SearchContextValues;
+    
+    highlightFeature(feature);
   }
 }
 

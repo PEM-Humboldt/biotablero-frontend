@@ -167,6 +167,31 @@ class Search extends Component {
       activeLayer: newActiveLayer,
     });
   }
+  
+  /**
+   * Highlight an specific feature of the current active layer
+   *
+   * @param {object} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey) => {
+    const { layers, activeLayer: { id: activeLayer } } = this.state;
+        if (!activeLayer || !layers[activeLayer]) return;
+
+        this.setState((prev) => {
+          const newState = prev;
+          newState.layers[activeLayer].layerStyle = (feature) => {
+            if (feature.properties.key === selectedKey
+              || feature.properties.id === selectedKey) {
+                return {
+                  weight: 1,
+                  fillOpacity: 1,
+                };
+              }
+            return this.featureStyle({ type: activeLayer })(feature);
+          };
+          return newState;
+        });    
+  }
 
   /**
    * Control modal for switch layers
@@ -1657,6 +1682,7 @@ class Search extends Component {
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
             shutOffLayer: this.shutOffLayer,
+            highlightFeature: this.highlightFeature,
           }}
         >
           <div className="appSearcher wrappergrid">

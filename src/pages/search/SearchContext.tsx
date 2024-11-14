@@ -23,6 +23,7 @@ export interface SearchContextValues {
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
   shutOffLayer(layer: string): void;
+  highlightFeature(feature: string): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -41,6 +42,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},
   shutOffLayer: () => {},
+  highlightFeature: () => {},
 });
 
 export default SearchContext;
