@@ -80,8 +80,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
 
-    switchLayer("currentPAConn");
-
+    this.PACController.setArea(areaId, geofenceId.toString());
+    this.switchLayer();
+  
     BackendAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res: Array<currentPAConn>) => {
         if (this.mounted) {
@@ -180,7 +181,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
-    const graphData = this.PACController.getGraphData(dpcData);
+    const graphData = this.PACController.getCPAGraphData(dpcData);
 
     return (
       <div className="graphcontainer pt6">
@@ -296,6 +297,22 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         </div>
       </div>
     );
+  }
+  
+  switchLayer = () => {
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
+    setLoadingLayer(true, false);
+    const layerName = "currentPAConn";
+    const newActiveLayer = { id: layerName, name: "Conectividad de áreas protegidas" };
+    this.PACController.getLayers(layerName)
+      .then((layer) => {
+        setShapeLayers(layer);
+        setLoadingLayer(false, false);
+      })
+      .catch(() => {
+        setLoadingLayer(false, true);
+      });
   }
 }
 
