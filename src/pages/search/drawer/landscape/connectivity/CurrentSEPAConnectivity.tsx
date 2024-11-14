@@ -14,6 +14,7 @@ import {
   currentSEPAConn,
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
+import { PAConnectivityController } from "pages/search/drawer/landscape/connectivity/PAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -48,9 +49,11 @@ interface State {
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
+  PACController;
 
   constructor(props: Props) {
     super(props);
+    this.PACController = new PAConnectivityController();
     this.state = {
       showInfoGraph: true,
       currentPAConnParamo: [],
@@ -75,8 +78,11 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     this.mounted = true;
     const { areaId, geofenceId, switchLayer } = this
       .context as SearchContextValues;
+      
+    this.PACController.setArea(areaId, geofenceId.toString());
+    this.switchLayer();
 
-    switchLayer("currentSEPAConn");
+      //switchLayer("currentSEPAConn");
 
     BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
@@ -255,7 +261,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "paramo" });
-                handlerClickOnGraph({ chartType: "paramoPAConn" });
+                this.clickOnGraph("paramoPAConn");
+
               }}
             />
           </div>
@@ -296,7 +303,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "dryForest" });
-                handlerClickOnGraph({ chartType: "dryForestPAConn" });
+                this.clickOnGraph("dryForestPAConn");
               }}
             />
           </div>
@@ -337,7 +344,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "wetland" });
-                handlerClickOnGraph({ chartType: "wetlandPAConn" });
+                this.clickOnGraph("wetlandPAConn");
+
               }}
             />
           </div>
@@ -367,6 +375,63 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       </div>
     );
   }
+  
+switchLayer = () => {
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
+    setLoadingLayer(true, false);
+    const layerName = "currentSEPAConn";
+    const newActiveLayer = { id: layerName, name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)" };
+    this.PACController.getLayers(layerName)
+      .then((layer) => {
+        setShapeLayers(layer);
+        setLoadingLayer(false, false);
+      })
+      .catch(() => {
+        setLoadingLayer(false, true);
+      });
+  };
+  
+  
+  clickOnGraph = (layerType: string) => {
+    const { setShapeLayers, setLoadingLayer, setActiveLayer, shutOffLayer } = this
+    .context as SearchContextValues;
+
+    let layerId: string = "";
+    let layerName: string = "";
+    
+    switch (layerType){
+      case 'paramoPAConn':
+        layerId = 'paramoPAConn';
+        layerName = 'Conectividadde áreas protegidas - Páramo';
+        shutOffLayer('dryForestPAConn');
+        shutOffLayer('wetlandPAConn');
+        break;
+      case 'dryForestPAConn':
+        layerId = 'dryForestPAConn';
+        layerName = 'Conectividad de áreas protegidas - Bosque Seco Tropical';
+        shutOffLayer('paramoPAConn');
+        shutOffLayer('wetlandPAConn');
+        break;
+      case 'wetlandPAConn':
+        layerId = 'wetlandPAConn';
+        layerName = 'Conectividad de áreas protegidas - Humedales';
+        shutOffLayer('paramoPAConn');
+        shutOffLayer('dryForestPAConn');
+        break;
+    }
+    
+    this.PACController.getLayers(layerType)
+    .then((layer) => {
+      setShapeLayers(layer);
+      setLoadingLayer(false, false);
+    })
+    .catch(() => {
+      setLoadingLayer(false, true);
+    });
+
+  }
+
 }
 
 export default CurrentSEPAConnectivity;
