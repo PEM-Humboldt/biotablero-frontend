@@ -353,7 +353,7 @@ class RestAPI {
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
-  static requestDPCLayer(areaType, areaId, paNumber) {
+  static requestDPCLayer(areaType, areaId, paNumber = undefined) {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
