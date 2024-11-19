@@ -76,13 +76,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
-      
+    const { areaId, geofenceId } = this.context as SearchContextValues;
+
     this.PACController.setArea(areaId, geofenceId.toString());
     this.switchLayer();
-
-      //switchLayer("currentSEPAConn");
 
     BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
@@ -192,6 +189,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
+    const { cancelActiveRequests, setShapeLayers } = this
+      .context as SearchContextValues;
+    cancelActiveRequests();
+    setShapeLayers();
   }
 
   /**
@@ -262,7 +263,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "paramo" });
                 this.clickOnGraph("paramoPAConn");
-
               }}
             />
           </div>
@@ -345,7 +345,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "wetland" });
                 this.clickOnGraph("wetlandPAConn");
-
               }}
             />
           </div>
@@ -375,63 +374,69 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       </div>
     );
   }
-  
-switchLayer = () => {
-    const { setShapeLayers, setLoadingLayer } = this
+
+  switchLayer = () => {
+    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
     const layerName = "currentSEPAConn";
-    const newActiveLayer = { id: layerName, name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)" };
+    const newActiveLayer = {
+      id: layerName,
+      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+    };
     this.PACController.getLayers(layerName)
-      .then((layer) => {
-        setShapeLayers(layer);
-        setLoadingLayer(false, false);
+      .then(({ layerData, source }) => {
+        if (this.mounted) {
+          setShapeLayers(layerData, source);
+          setActiveLayer(newActiveLayer);
+          setLoadingLayer(false, false);
+        }
       })
       .catch(() => {
         setLoadingLayer(false, true);
       });
   };
-  
-  
+
   clickOnGraph = (layerType: string) => {
-    const { setShapeLayers, setLoadingLayer, setActiveLayer, shutOffLayer } = this
-    .context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setActiveLayer, shutOffLayer } =
+      this.context as SearchContextValues;
 
     let layerId: string = "";
     let layerName: string = "";
-    
-    switch (layerType){
-      case 'paramoPAConn':
-        layerId = 'paramoPAConn';
-        layerName = 'Conectividadde áreas protegidas - Páramo';
-        shutOffLayer('dryForestPAConn');
-        shutOffLayer('wetlandPAConn');
+
+    switch (layerType) {
+      case "paramoPAConn":
+        layerId = "paramoPAConn";
+        layerName = "Conectividad de áreas protegidas - Páramo";
+        shutOffLayer("dryForestPAConn");
+        shutOffLayer("wetlandPAConn");
         break;
-      case 'dryForestPAConn':
-        layerId = 'dryForestPAConn';
-        layerName = 'Conectividad de áreas protegidas - Bosque Seco Tropical';
-        shutOffLayer('paramoPAConn');
-        shutOffLayer('wetlandPAConn');
+      case "dryForestPAConn":
+        layerId = "dryForestPAConn";
+        layerName = "Conectividad de áreas protegidas - Bosque Seco Tropical";
+        shutOffLayer("paramoPAConn");
+        shutOffLayer("wetlandPAConn");
         break;
-      case 'wetlandPAConn':
-        layerId = 'wetlandPAConn';
-        layerName = 'Conectividad de áreas protegidas - Humedales';
-        shutOffLayer('paramoPAConn');
-        shutOffLayer('dryForestPAConn');
+      case "wetlandPAConn":
+        layerId = "wetlandPAConn";
+        layerName = "Conectividad de áreas protegidas - Humedales";
+        shutOffLayer("paramoPAConn");
+        shutOffLayer("dryForestPAConn");
         break;
     }
-    
+
+    const newActiveLayer = { id: layerId, name: layerName };
+
     this.PACController.getLayers(layerType)
-    .then((layer) => {
-      setShapeLayers(layer);
-      setLoadingLayer(false, false);
-    })
-    .catch(() => {
-      setLoadingLayer(false, true);
-    });
-
-  }
-
+      .then(({ layerData, source }) => {
+        setShapeLayers(layerData, source);
+        setActiveLayer(newActiveLayer);
+        setLoadingLayer(false, false, false);
+      })
+      .catch(() => {
+        setLoadingLayer(false, true);
+      });
+  };
 }
 
 export default CurrentSEPAConnectivity;
