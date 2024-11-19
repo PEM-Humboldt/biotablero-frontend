@@ -5,6 +5,7 @@ import { SmallBarTooltip } from "pages/search/types/charts";
 import RestAPI from "utils/restAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
+import * as L from "leaflet";
 
 interface RestAPIObject {
   request: Promise<Object>;
@@ -84,6 +85,7 @@ export class PAConnectivityController {
     let paneLevel: number | null = null;
     let request;
     let source;
+    let onEachFeature;
 
     switch (layerId) {
       case "currentPAConn":
@@ -96,6 +98,14 @@ export class PAConnectivityController {
           )) as RestAPIObject;
           request = await reqPromise.request;
           source = reqPromise.source;
+
+          onEachFeature = (
+            feature: GeoJSON.Feature,
+            selectedLayer: L.Layer
+          ) => {
+            return this.featureActions(selectedLayer);
+          };
+
           paneLevel = 1;
         }
         break;
@@ -118,8 +128,40 @@ export class PAConnectivityController {
       paneLevel: paneLevel,
       json: request,
       active: true,
+      onEachFeature: onEachFeature,
     };
 
     return { layerData, source };
   }
+
+  featureActions = (layer: L.Layer) => {
+    layer.on({
+      mouseover: (event) => this.highlightShapeFeature(event),
+      mouseout: (event) => this.resetShapeHighlight(event),
+    });
+  };
+
+  highlightShapeFeature = (event: L.LeafletMouseEvent) => {
+    const feature = event.target;
+    const optionsTooltip = { sticky: true };
+
+    feature
+      .bindTooltip(
+        `<b>${feature.feature.properties.name}:</b>
+              <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
+              <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+        optionsTooltip
+      )
+      .openTooltip();
+
+    feature.setStyle({
+      fillOpacity: 1,
+    });
+  };
+
+  resetShapeHighlight = (event: L.LeafletMouseEvent) => {
+    const feature = event.target;
+    feature.setStyle({ fillOpacity: 0.6 });
+    feature.closePopup();
+  };
 }

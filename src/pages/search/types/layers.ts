@@ -3,4 +3,5 @@ export interface shapeLayer {
   paneLevel: number | null;
   json: Object | undefined;
   active: boolean;
+  onEachFeature?: Function;
 }
