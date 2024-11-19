@@ -1,7 +1,7 @@
 import React from "react";
 import { Polygon } from "pages/search/types/drawer";
 import { shapeLayer } from "./types/layers";
-import { CancelTokenSource } from 'axios';
+import { CancelTokenSource } from "axios";
 
 export interface rasterLayer {
   paneLevel: number;
@@ -18,7 +18,11 @@ export interface SearchContextValues {
   rasterLayers: Array<rasterLayer>;
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layer?: shapeLayer, source?: CancelTokenSource): void;
-  setLoadingLayer(loading: boolean, error: boolean, shutOtheLayers?: boolean): void;
+  setLoadingLayer(
+    loading: boolean,
+    error: boolean,
+    shutOtheLayers?: boolean
+  ): void;
   setPolygonValues(areaValue: number): void;
   switchLayer(layer: string): void;
   setActiveLayer(layer: { id: string; name: string }): void;
