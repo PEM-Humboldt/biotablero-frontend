@@ -59,6 +59,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   constructor(props: Props) {
     super(props);
     this.PACController = new PAConnectivityController();
+    this.mounted = false;
     this.state = {
       infoShown: new Set(["current"]),
       currentPAConnData: [],
@@ -82,7 +83,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
     this.PACController.setArea(areaId, geofenceId.toString());
     this.switchLayer();
-  
+
     BackendAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res: Array<currentPAConn>) => {
         if (this.mounted) {
@@ -156,6 +157,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
   componentWillUnmount() {
     this.mounted = false;
+    const { cancelActiveRequests, setShapeLayers } = this
+      .context as SearchContextValues;
+    cancelActiveRequests();
+    setShapeLayers();
   }
 
   toggleInfo = (value: string) => {
@@ -171,8 +176,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaId, geofenceId } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       currentPAConnData,
       dpcData,
@@ -263,9 +267,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               tooltips={graphData.tooltips}
               message={dpcMess}
               colors={matchColor("dpc")}
-              onClickHandler={(selected: string) =>
-                this.clickOnGraph(selected)
-              }
+              onClickHandler={(selected: string) => this.clickOnGraph(selected)}
               margin={{
                 bottom: 50,
                 left: 40,
@@ -298,29 +300,34 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       </div>
     );
   }
-  
+
   switchLayer = () => {
-    const { setShapeLayers, setLoadingLayer } = this
+    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
     const layerName = "currentPAConn";
-    const newActiveLayer = { id: layerName, name: "Conectividad de áreas protegidas" };
+    const newActiveLayer = {
+      id: layerName,
+      name: "Conectividad de áreas protegidas",
+    };
     this.PACController.getLayers(layerName)
-      .then((layer) => {
-        setShapeLayers(layer);
-        setLoadingLayer(false, false);
+      .then(({ layerData, source }) => {
+        if (this.mounted) {
+          setShapeLayers(layerData, source);
+          setActiveLayer(newActiveLayer);
+          setLoadingLayer(false, false, false);
+        }
       })
       .catch(() => {
         setLoadingLayer(false, true);
       });
   };
-  
+
   clickOnGraph = (feature: string) => {
-    const { highlightFeature } = this
-    .context as SearchContextValues;
-    
+    const { highlightFeature } = this.context as SearchContextValues;
+
     highlightFeature(feature);
-  }
+  };
 }
 
 export default CurrentPAConnectivity;
