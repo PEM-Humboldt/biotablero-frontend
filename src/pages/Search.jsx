@@ -83,22 +83,32 @@ class Search extends Component {
    * Add a shape layer to the state
    *
    * @param {object} shapeLayer Layer object to add
+   * @param {object} source Cancel toker source
    */
-  setShapeLayers = (shapeLayer) => {
-    this.setGeofenceLayer(false);
-    shapeLayer.layerStyle = this.featureStyle({ type: shapeLayer.id });
-    shapeLayer.onEachFeature = (feature, selectedLayer) => {
-      return this.featureActions(selectedLayer, shapeLayer.id);
-    }
+  setShapeLayers = (shapeLayer, source) => {
     
-    this.setState(prevState => ({
-      layers: {
-        ...prevState.layers,
-        [shapeLayer.id]: shapeLayer
-      }
-    }));
-
-    this.updateBounds(L.geoJSON(shapeLayer.json).getBounds());
+    if (shapeLayer && Object.keys(shapeLayer).length > 0) {
+      const layerName = shapeLayer.id;
+      
+      this.setGeofenceLayer(false).then(() => {
+        shapeLayer.layerStyle = this.featureStyle({ type: shapeLayer.id });
+        shapeLayer.onEachFeature = (feature, selectedLayer) => {
+          return this.featureActions(selectedLayer, shapeLayer.id);
+        }
+        this.setState(prevState => ({
+          layers: {
+            ...prevState.layers,
+            [shapeLayer.id]: shapeLayer
+          }
+        }));
+        
+        this.activeRequests.set(layerName, source);
+          
+        this.updateBounds(L.geoJSON(shapeLayer.json).getBounds());
+      });
+    } else {
+      this.setState({ layers: [] });
+    }
   }
 
   /**
@@ -108,53 +118,58 @@ class Search extends Component {
    */
   
   setGeofenceLayer = (fitBounds = true) => {
+    
     const {
       selectedAreaId,
       selectedAreaTypeId,
     } = this.props;
-    
-    const reqPromise = RestAPI.requestGeofenceGeometryByArea(
-      selectedAreaTypeId,
-      selectedAreaId,
-    );
-    
-    const { request } = reqPromise;
 
-    request.then((res) => {
-      if (res.features) {
-        if (res.features.length === 1 && !res.features[0].geometry) {
-          return null;
-        }
-
-        if (fitBounds) {
-          this.updateBounds(L.geoJSON(res).getBounds());
-        }
-
-        const layerName = "geofence";
-        const layerStyle = this.featureStyle({ type: layerName })
-        
-        const layerObj = {
-          id: layerName,
-          paneLevel: 0,
-          json: res,
-          onEachFeature: () => {},
-          active: true,
-          layerStyle,
-        };
-        
-        this.setState(prevState => ({
-          layers: {
-            ...prevState.layers,
-            [layerName]: layerObj
+    return new Promise((resolve) => {
+      const reqPromise = RestAPI.requestGeofenceGeometryByArea(
+        selectedAreaTypeId,
+        selectedAreaId,
+      );
+  
+      const { request, source } = reqPromise;
+      request.then((res) => {
+        if (res.features) {
+          if (res.features.length === 1 && !res.features[0].geometry) {
+            return null;
           }
-        }));
+  
+          if (fitBounds) {
+            this.updateBounds(L.geoJSON(res).getBounds());
           }
-      if (res === 'request canceled') {
-        return 'canceled';
-      }
-      return null;
+  
+          const layerName = "geofence";
+          const layerStyle = this.featureStyle({ type: layerName })
+          
+          this.activeRequests.set(layerName, source);
+          
+          const layerObj = {
+            id: layerName,
+            paneLevel: 1,
+            json: res,
+            onEachFeature: () => {},
+            active: true,
+            layerStyle,
+          };
+          
+          this.setState(prevState => ({
+            layers: {
+              ...prevState.layers,
+              [layerName]: layerObj
+            }
+          }));
+            }
+        if (res === 'request canceled') {
+          return 'canceled';
+        }else{
+          resolve();
+        }
+      });
     });
-      
+    
   }
 
   /**
@@ -200,8 +215,8 @@ class Search extends Component {
    * @param {boolean} error
    */
   // TODO: "Clear when all components handle layers directly"
-  setLoadingLayer =  (loading, error) => {
-    //this.shutOffLayer(); //temporaly skip
+  setLoadingLayer =  (loading, error, shutOtherLayers = true) => {
+    if (shutOtherLayers) this.shutOffLayer();
     this.setState({
       loadingLayer: loading,
       layerError: error,
@@ -349,6 +364,7 @@ class Search extends Component {
    * @param {Object} feature target object
    */
   featureStyle = (objParams) => (feature) => {
+    
     const {
       type,
       color = null,
@@ -1607,7 +1623,7 @@ class Search extends Component {
       openErrorModal,
       rasterLayers,
     } = this.state;
-
+    
     const {
       selectedAreaTypeId,
       selectedAreaId
