@@ -2,12 +2,13 @@ import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import RestAPI from 'utils/restAPI';
-import { CancelTokenSource } from 'axios';
+import RestAPI from "utils/restAPI";
+import { shapeLayer } from "pages/search/types/layers";
+import { CancelTokenSource } from "axios";
 
-interface resRestAPI {
-    request: Promise<Object>;
-    source: CancelTokenSource;
+interface RestAPIObject {
+  request: Promise<Object>;
+  source: CancelTokenSource;
 }
 
 export class PAConnectivityController {
@@ -15,7 +16,7 @@ export class PAConnectivityController {
   areaId: string | null = null;
 
   constructor() {}
-  
+
   setArea(areaType: string, areaId: string) {
     this.areaType = areaType;
     this.areaId = areaId;
@@ -61,67 +62,64 @@ export class PAConnectivityController {
 
     return { transformedData, keys: Array.from(categories), tooltips };
   }
-  
-  
+
   /**
    * Get shape layers in GeoJSON format for a connectivity component
    *
    * @param {string} layerId Id for the layer to get
    *
-   * @returns {Promise<Object>} Data of the layer with its id
+   * @returns { shapeLayer } layerData
+   * @returns { CancelTokenSource } source
    */
 
-  async getLayers(layerId: string): Promise<Object>{
+  async getLayers(
+    layerId: string
+  ): Promise<{ layerData: shapeLayer; source: CancelTokenSource | undefined }> {
+    let layerData: shapeLayer = {
+      id: "",
+      paneLevel: null,
+      json: undefined,
+      active: false,
+    };
+    let paneLevel: number | null = null;
+    let request;
+    let source;
 
-    let layerData: Object | Promise<Object> = {};
-    
-    switch(layerId){
-      case 'currentPAConn':
-      case 'timelinePAConn':
-      case 'currentSEPAConn':
+    switch (layerId) {
+      case "currentPAConn":
+      case "timelinePAConn":
+      case "currentSEPAConn":
         if (this.areaType && this.areaId) {
-          try {
-            const res = await RestAPI.requestDPCLayer(
-              this.areaType ?? "",
-              this.areaId ?? ""
-            ) as resRestAPI;
-            const geojson = await res.request;
-            
-            layerData = {
-                id: layerId,
-                paneLevel: 1,
-                json: geojson,
-                onEachFeature: undefined,
-                active: true
-              };
-          } catch (error) {
-            // TODO: handle error
-            throw error;
-          }
-        }      
-        break;
-        
-        case 'paramoPAConn':
-        case 'wetlandPAConn':  
-        case 'dryForestPAConn':
-          const res = await RestAPI.requestPAConnSELayer(
+          const reqPromise = (await RestAPI.requestDPCLayer(
             this.areaType ?? "",
-            this.areaId ?? "",
-            layerId ?? "",
-          ) as resRestAPI;
-          const geojson = await res.request;
-
-          layerData = {
-            id: layerId,
-            paneLevel: 2,
-            json: geojson,
-            onEachFeature: undefined,
-            active: true
-          };
-          break;
-          
+            this.areaId ?? ""
+          )) as RestAPIObject;
+          request = await reqPromise.request;
+          source = reqPromise.source;
+          paneLevel = 1;
+        }
+        break;
+      case "paramoPAConn":
+      case "wetlandPAConn":
+      case "dryForestPAConn":
+        const reqPromise = (await RestAPI.requestPAConnSELayer(
+          this.areaType ?? "",
+          this.areaId ?? "",
+          layerId ?? ""
+        )) as RestAPIObject;
+        paneLevel = 2;
+        request = await reqPromise.request;
+        source = reqPromise.source;
+        break;
     }
-    
-    return layerData;
+
+    layerData = {
+      id: layerId,
+      paneLevel: paneLevel,
+      json: request,
+      active: true,
+    };
+
+    return { layerData, source };
   }
 }
