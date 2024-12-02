@@ -28,7 +28,7 @@ interface State {
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
   flpController;
-  currentPeriod = "2016-2021";
+  currentPeriod = "2000-2005";
 
   constructor(props: Props) {
     super(props);
