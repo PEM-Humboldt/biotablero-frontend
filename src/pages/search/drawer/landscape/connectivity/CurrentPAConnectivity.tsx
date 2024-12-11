@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component, createRef } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
@@ -16,6 +16,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { PAConnectivityController } from "pages/search/drawer/landscape/connectivity/PAConnectivityController";
+import { shapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -50,6 +51,8 @@ interface currentPAConnState {
     paConnCurrent: textsObject;
     paConnDPC: textsObject;
   };
+  layers: Array<shapeLayer>;
+  activeLayer: string;
 }
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
@@ -73,14 +76,14 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         paConnCurrent: { info: "", cons: "", meto: "", quote: "" },
         paConnDPC: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
+      activeLayer: "",
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
-
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     this.PACController.setArea(areaId, geofenceId.toString());
     this.switchLayer();
 
@@ -157,10 +160,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { cancelActiveRequests, setShapeLayers } = this
+    const { setShapeLayers, setLoadingLayer } = this
       .context as SearchContextValues;
-    cancelActiveRequests();
-    setShapeLayers();
+    this.PACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   toggleInfo = (value: string) => {
@@ -267,7 +270,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               tooltips={graphData.tooltips}
               message={dpcMess}
               colors={matchColor("dpc")}
-              onClickHandler={(selected: string) => this.clickOnGraph(selected)}
+              onClickHandler={(selected: string) =>
+                this.highlightFeature(selected)
+              }
               margin={{
                 bottom: 50,
                 left: 40,
@@ -301,32 +306,68 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
     );
   }
 
-  switchLayer = () => {
+  switchLayer = async () => {
     const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
+
     const layerName = "currentPAConn";
     const newActiveLayer = {
       id: layerName,
       name: "Conectividad de áreas protegidas",
     };
-    this.PACController.getLayers(layerName)
-      .then(({ layerData, source }) => {
-        if (this.mounted) {
-          setShapeLayers(layerData, source);
-          setActiveLayer(newActiveLayer);
-          setLoadingLayer(false, false, false);
-        }
-      })
-      .catch(() => {
-        setLoadingLayer(false, true);
-      });
+
+    Promise.all([
+      this.PACController.getGeofenceLayer(true),
+      this.PACController.getLayers(layerName),
+    ]).then(([geofenceLayer, currentPAConn]) => {
+      if (this.mounted) {
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, geofenceLayer, currentPAConn],
+          }),
+          () => setLoadingLayer(false, false, false)
+        );
+        setShapeLayers(this.state.layers);
+        setActiveLayer(newActiveLayer);
+      }
+    });
   };
 
-  clickOnGraph = (feature: string) => {
-    const { highlightFeature } = this.context as SearchContextValues;
+  /**
+   * Highlight an specific feature of the current active layer
+   *
+   * @param {object} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
 
-    highlightFeature(feature);
+    this.setState(
+      (prevState) => {
+        const newLayers = [...prevState.layers];
+        const activeLayer = newLayers.find(
+          (layer) => layer.id === "currentPAConn"
+        );
+
+        if (activeLayer) {
+          activeLayer.layerStyle = (feature: { properties: any }) => {
+            if (
+              feature.properties.key === selectedKey ||
+              feature.properties.id === selectedKey
+            ) {
+              return {
+                weight: 1,
+                fillOpacity: 1,
+              };
+            }
+            return this.PACController.featureStyle("dpc")(feature);
+          };
+        }
+
+        return { layers: newLayers };
+      },
+      () => setShapeLayers(this.state.layers)
+    );
   };
 }
 

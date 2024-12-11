@@ -44,6 +44,7 @@ interface State {
   texts: {
     paConnSE: textsObject;
   };
+  layers: Array<any>;
 }
 
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
@@ -71,6 +72,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       texts: {
         paConnSE: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
@@ -189,10 +191,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { cancelActiveRequests, setShapeLayers } = this
+    const { setShapeLayers, setLoadingLayer } = this
       .context as SearchContextValues;
-    cancelActiveRequests();
-    setShapeLayers();
+    this.PACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -205,8 +207,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -375,67 +376,89 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     );
   }
 
-  switchLayer = () => {
+  switchLayer = async () => {
     const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
+
     const layerName = "currentSEPAConn";
     const newActiveLayer = {
       id: layerName,
       name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
     };
-    this.PACController.getLayers(layerName)
-      .then(({ layerData, source }) => {
-        if (this.mounted) {
-          setShapeLayers(layerData, source);
-          setActiveLayer(newActiveLayer);
-          setLoadingLayer(false, false);
-        }
-      })
-      .catch(() => {
-        setLoadingLayer(false, true);
-      });
+    Promise.all([
+      this.PACController.getGeofenceLayer(true),
+      this.PACController.getLayers(layerName),
+    ]).then(([geofenceLayer, currentPAConn]) => {
+      if (this.mounted) {
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, geofenceLayer, currentPAConn],
+          }),
+          () => setLoadingLayer(false, false, false)
+        );
+        setShapeLayers(this.state.layers);
+        setActiveLayer(newActiveLayer);
+      }
+    });
   };
 
-  clickOnGraph = (layerType: string) => {
-    const { setShapeLayers, setLoadingLayer, setActiveLayer, shutOffLayer } =
-      this.context as SearchContextValues;
+  clickOnGraph = async (layerType: string) => {
+    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
+      .context as SearchContextValues;
 
     let layerId: string = "";
     let layerName: string = "";
+
+    setLoadingLayer(true, false, false);
 
     switch (layerType) {
       case "paramoPAConn":
         layerId = "paramoPAConn";
         layerName = "Conectividad de áreas protegidas - Páramo";
-        shutOffLayer("dryForestPAConn");
-        shutOffLayer("wetlandPAConn");
+        this.shutOffLayer("dryForestPAConn");
+        this.shutOffLayer("wetlandPAConn");
         break;
       case "dryForestPAConn":
         layerId = "dryForestPAConn";
         layerName = "Conectividad de áreas protegidas - Bosque Seco Tropical";
-        shutOffLayer("paramoPAConn");
-        shutOffLayer("wetlandPAConn");
+        this.shutOffLayer("paramoPAConn");
+        this.shutOffLayer("wetlandPAConn");
         break;
       case "wetlandPAConn":
         layerId = "wetlandPAConn";
         layerName = "Conectividad de áreas protegidas - Humedales";
-        shutOffLayer("paramoPAConn");
-        shutOffLayer("dryForestPAConn");
+        this.shutOffLayer("paramoPAConn");
+        this.shutOffLayer("dryForestPAConn");
         break;
     }
 
     const newActiveLayer = { id: layerId, name: layerName };
 
-    this.PACController.getLayers(layerType)
-      .then(({ layerData, source }) => {
-        setShapeLayers(layerData, source);
-        setActiveLayer(newActiveLayer);
-        setLoadingLayer(false, false, false);
-      })
-      .catch(() => {
-        setLoadingLayer(false, true);
-      });
+    const layer = await this.PACController.getLayers(layerType);
+    if (this.mounted) {
+      this.setState(
+        (prevState) => ({
+          layers: [...prevState.layers, layer],
+        }),
+        () => setLoadingLayer(false, false, false)
+      );
+      setShapeLayers(this.state.layers);
+      setActiveLayer(newActiveLayer);
+    }
+  };
+
+  shutOffLayer = (id: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+
+    this.setState(
+      (prevState) => ({
+        layers: prevState.layers.map((layer) =>
+          layer.id === id ? { ...layer, active: false } : layer
+        ),
+      }),
+      () => setShapeLayers(this.state.layers)
+    );
   };
 }
 

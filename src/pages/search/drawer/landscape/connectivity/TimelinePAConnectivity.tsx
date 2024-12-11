@@ -34,6 +34,7 @@ interface timelinePAConnState {
   texts: {
     paConnTimeline: textsObject;
   };
+  layers: Array<any>;
 }
 class TimelinePAConnectivity extends React.Component<
   Props,
@@ -53,13 +54,13 @@ class TimelinePAConnectivity extends React.Component<
       texts: {
         paConnTimeline: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
 
     this.PACController.setArea(areaId, geofenceId.toString());
     this.switchLayer();
@@ -98,10 +99,10 @@ class TimelinePAConnectivity extends React.Component<
 
   componentWillUnmount() {
     this.mounted = false;
-    const { cancelActiveRequests, setShapeLayers } = this
+    const { setShapeLayers, setLoadingLayer } = this
       .context as SearchContextValues;
-    cancelActiveRequests();
-    setShapeLayers();
+    this.PACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -175,26 +176,32 @@ class TimelinePAConnectivity extends React.Component<
     );
   }
 
-  switchLayer = () => {
+  switchLayer = async () => {
     const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
     setLoadingLayer(true, false);
+
     const layerName = "timelinePAConn";
     const newActiveLayer = {
       id: layerName,
       name: "Conectividad de áreas protegidas",
     };
-    this.PACController.getLayers(layerName)
-      .then(({ layerData, source }) => {
-        if (this.mounted) {
-          setShapeLayers(layerData, source);
-          setActiveLayer(newActiveLayer);
-          setLoadingLayer(false, false);
-        }
-      })
-      .catch(() => {
-        setLoadingLayer(false, true);
-      });
+
+    Promise.all([
+      this.PACController.getGeofenceLayer(true),
+      this.PACController.getLayers(layerName),
+    ]).then(([geofenceLayer, currentPAConn]) => {
+      if (this.mounted) {
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, geofenceLayer, currentPAConn],
+          }),
+          () => setLoadingLayer(false, false, false)
+        );
+        setShapeLayers(this.state.layers);
+        setActiveLayer(newActiveLayer);
+      }
+    });
   };
 }
 
