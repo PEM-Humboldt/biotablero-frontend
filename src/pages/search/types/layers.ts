@@ -4,4 +4,5 @@ export interface shapeLayer {
   json: Object | undefined;
   active: boolean;
   onEachFeature?: Function;
+  layerStyle?: Object;
 }
