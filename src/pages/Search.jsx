@@ -82,91 +82,10 @@ class Search extends Component {
   /**
    * Add a shape layer to the state
    *
-   * @param {object} shapeLayer Layer object to add
-   * @param {object} source Cancel toker source
+   * @param {array} layers Layer object to add
    */
-  setShapeLayers = (shapeLayer, source) => {
-    
-    if (shapeLayer && Object.keys(shapeLayer).length > 0) {
-      const layerName = shapeLayer.id;
-      
-      this.setGeofenceLayer(false).then(() => {
-        shapeLayer.layerStyle = this.featureStyle({ type: shapeLayer.id });
-        this.setState(prevState => ({
-          layers: {
-            ...prevState.layers,
-            [shapeLayer.id]: shapeLayer
-          }
-        }));
-        
-        this.activeRequests.set(layerName, source);
-          
-        this.updateBounds(L.geoJSON(shapeLayer.json).getBounds());
-      });
-    } else {
-      this.setState({ layers: [] });
-    }
-  }
-
-  /**
-   * Get the geofence layer and add to the layers in the state
-   *
-   * @param {boolean} fitBounds Update the bounds according to the geofence
-   */
-  
-  setGeofenceLayer = (fitBounds = true) => {
-    
-    const {
-      selectedAreaId,
-      selectedAreaTypeId,
-    } = this.props;
-
-    return new Promise((resolve) => {
-      const reqPromise = RestAPI.requestGeofenceGeometryByArea(
-        selectedAreaTypeId,
-        selectedAreaId,
-      );
-  
-      const { request, source } = reqPromise;
-      request.then((res) => {
-        if (res.features) {
-          if (res.features.length === 1 && !res.features[0].geometry) {
-            return null;
-          }
-  
-          if (fitBounds) {
-            this.updateBounds(L.geoJSON(res).getBounds());
-          }
-  
-          const layerName = "geofence";
-          const layerStyle = this.featureStyle({ type: layerName })
-          
-          this.activeRequests.set(layerName, source);
-          
-          const layerObj = {
-            id: layerName,
-            paneLevel: 1,
-            json: res,
-            onEachFeature: () => {},
-            active: true,
-            layerStyle,
-          };
-          
-          this.setState(prevState => ({
-            layers: {
-              ...prevState.layers,
-              [layerName]: layerObj
-            }
-          }));
-            }
-        if (res === 'request canceled') {
-          return 'canceled';
-        }else{
-          resolve();
-        }
-      });
-    });
-    
+  setShapeLayers = (layers) => {
+      this.setState({ layers: layers });
   }
 
   /**
@@ -180,31 +99,6 @@ class Search extends Component {
     });
   }
   
-  /**
-   * Highlight an specific feature of the current active layer
-   *
-   * @param {object} selectedKey Id of the feature
-   */
-  highlightFeature = (selectedKey) => {
-    const { layers, activeLayer: { id: activeLayer } } = this.state;
-        if (!activeLayer || !layers[activeLayer]) return;
-
-        this.setState((prev) => {
-          const newState = prev;
-          newState.layers[activeLayer].layerStyle = (feature) => {
-            if (feature.properties.key === selectedKey
-              || feature.properties.id === selectedKey) {
-                return {
-                  weight: 1,
-                  fillOpacity: 1,
-                };
-              }
-            return this.featureStyle({ type: activeLayer })(feature);
-          };
-          return newState;
-        });    
-  }
-
   /**
    * Control modal for switch layers
    *
@@ -1612,8 +1506,6 @@ class Search extends Component {
             handlerClickOnGraph: this.clickOnGraph,
             switchLayer: this.switchLayer,
             cancelActiveRequests: this.cancelActiveRequests,
-            shutOffLayer: this.shutOffLayer,
-            highlightFeature: this.highlightFeature,
           }}
         >
           <div className="appSearcher wrappergrid">
