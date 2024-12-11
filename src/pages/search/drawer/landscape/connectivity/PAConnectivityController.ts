@@ -3,7 +3,10 @@ import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import RestAPI from "utils/restAPI";
-import { shapeLayer } from "pages/search/types/layers";
+import {
+  shapeLayer,
+  connectivityFeaturePropierties,
+} from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import matchColor from "utils/matchColor";
 import * as L from "leaflet";
@@ -13,12 +16,6 @@ interface RestAPIObject {
   source: CancelTokenSource | undefined;
 }
 
-interface featurePropierties {
-  [x: string]: any;
-  dpc_cat: any;
-  compensation_factor: any;
-  key: any;
-}
 export class PAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
@@ -219,8 +216,11 @@ export class PAConnectivityController {
    * @param {Object} feature target object
    */
   featureStyle =
-    (type: string) => (feature: { properties: featurePropierties }) => {
+    (type: string) =>
+    (feature: { properties: connectivityFeaturePropierties }) => {
       let fillcolor;
+
+      console.log(feature.properties);
 
       if (type === "dpc") {
         const key = feature.properties.dpc_cat;

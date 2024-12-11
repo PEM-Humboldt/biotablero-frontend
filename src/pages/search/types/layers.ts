@@ -6,3 +6,11 @@ export interface shapeLayer {
   onEachFeature?: Function;
   layerStyle?: Object;
 }
+
+export interface connectivityFeaturePropierties {
+  area: number;
+  dpc_cat: string;
+  id: string;
+  name: string;
+  value: number;
+}

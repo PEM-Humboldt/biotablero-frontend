@@ -16,7 +16,10 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { PAConnectivityController } from "pages/search/drawer/landscape/connectivity/PAConnectivityController";
-import { shapeLayer } from "pages/search/types/layers";
+import {
+  shapeLayer,
+  connectivityFeaturePropierties,
+} from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -350,11 +353,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         );
 
         if (activeLayer) {
-          activeLayer.layerStyle = (feature: { properties: any }) => {
-            if (
-              feature.properties.key === selectedKey ||
-              feature.properties.id === selectedKey
-            ) {
+          activeLayer.layerStyle = (feature: {
+            properties: connectivityFeaturePropierties;
+          }) => {
+            if (feature.properties.id === selectedKey) {
               return {
                 weight: 1,
                 fillOpacity: 1,
