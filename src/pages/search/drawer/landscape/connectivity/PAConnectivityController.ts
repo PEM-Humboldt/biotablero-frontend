@@ -5,16 +5,24 @@ import { SmallBarTooltip } from "pages/search/types/charts";
 import RestAPI from "utils/restAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
+import matchColor from "utils/matchColor";
 import * as L from "leaflet";
 
 interface RestAPIObject {
-  request: Promise<Object>;
-  source: CancelTokenSource;
+  request: Promise<Object> | undefined;
+  source: CancelTokenSource | undefined;
 }
 
+interface featurePropierties {
+  [x: string]: any;
+  dpc_cat: any;
+  compensation_factor: any;
+  key: any;
+}
 export class PAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
+  activeRequests: Map<any, any> = new Map();
 
   constructor() {}
 
@@ -73,9 +81,7 @@ export class PAConnectivityController {
    * @returns { CancelTokenSource } source
    */
 
-  async getLayers(
-    layerId: string
-  ): Promise<{ layerData: shapeLayer; source: CancelTokenSource | undefined }> {
+  getLayers = async (layerId: string): Promise<shapeLayer> => {
     let layerData: shapeLayer = {
       id: "",
       paneLevel: null,
@@ -83,21 +89,22 @@ export class PAConnectivityController {
       active: false,
     };
     let paneLevel: number | null = null;
-    let request;
-    let source;
+    let layerStyle;
     let onEachFeature;
+    let reqPromise: RestAPIObject = {
+      request: undefined,
+      source: undefined,
+    };
 
     switch (layerId) {
       case "currentPAConn":
       case "timelinePAConn":
       case "currentSEPAConn":
         if (this.areaType && this.areaId) {
-          const reqPromise = (await RestAPI.requestDPCLayer(
+          reqPromise = (await RestAPI.requestDPCLayer(
             this.areaType ?? "",
             this.areaId ?? ""
           )) as RestAPIObject;
-          request = await reqPromise.request;
-          source = reqPromise.source;
 
           onEachFeature = (
             feature: GeoJSON.Feature,
@@ -107,32 +114,71 @@ export class PAConnectivityController {
           };
 
           paneLevel = 1;
+          layerStyle = this.featureStyle("dpc");
         }
         break;
       case "paramoPAConn":
       case "wetlandPAConn":
       case "dryForestPAConn":
-        const reqPromise = (await RestAPI.requestPAConnSELayer(
+        reqPromise = (await RestAPI.requestPAConnSELayer(
           this.areaType ?? "",
           this.areaId ?? "",
           layerId ?? ""
         )) as RestAPIObject;
         paneLevel = 2;
-        request = await reqPromise.request;
-        source = reqPromise.source;
+        layerStyle = this.featureStyle(layerId);
         break;
     }
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerId, source);
+    const res = await request;
+    this.activeRequests.delete(layerId);
 
     layerData = {
       id: layerId,
       paneLevel: paneLevel,
-      json: request,
+      json: res,
       active: true,
       onEachFeature: onEachFeature,
+      layerStyle: layerStyle,
     };
 
-    return { layerData, source };
-  }
+    return layerData;
+  };
+
+  getGeofenceLayer = async (fitBounds: boolean = true): Promise<shapeLayer> => {
+    let layerData: shapeLayer = {
+      id: "",
+      paneLevel: null,
+      json: undefined,
+      active: false,
+    };
+
+    const layerName = "geofence";
+
+    const reqPromise = (await RestAPI.requestGeofenceGeometryByArea(
+      this.areaType ?? "",
+      this.areaId ?? ""
+    )) as RestAPIObject;
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerName, source);
+    const res = await request;
+    this.activeRequests.delete(layerName);
+
+    const layerStyle = this.featureStyle(layerName);
+
+    layerData = {
+      id: layerName,
+      paneLevel: 1,
+      json: res,
+      active: true,
+      layerStyle: layerStyle,
+    };
+
+    return layerData;
+  };
 
   featureActions = (layer: L.Layer) => {
     layer.on({
@@ -163,5 +209,42 @@ export class PAConnectivityController {
     const feature = event.target;
     feature.setStyle({ fillOpacity: 0.6 });
     feature.closePopup();
+  };
+
+  /**
+   * Choose the right color for the section inside the map, according to matchColor function
+   * @param {String} type layer type
+   * @param {String} color optional key value to select color in match color palette
+   *
+   * @param {Object} feature target object
+   */
+  featureStyle =
+    (type: string) => (feature: { properties: featurePropierties }) => {
+      let fillcolor;
+
+      if (type === "dpc") {
+        const key = feature.properties.dpc_cat;
+        fillcolor = matchColor("dpc")(key);
+      } else if (type === "geofence") {
+        fillcolor = matchColor(type)();
+      } else {
+        fillcolor = matchColor(type)(type);
+      }
+
+      return {
+        stroke: false,
+        fillColor: fillcolor,
+        fillOpacity: 0.6,
+      };
+    };
+
+  /**
+   * Send the cancel signal to all active requests and remove them from the map
+   */
+  cancelActiveRequests = () => {
+    this.activeRequests.forEach((value, key) => {
+      value.cancel();
+      this.activeRequests.delete(key);
+    });
   };
 }
