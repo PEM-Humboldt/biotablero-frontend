@@ -17,7 +17,7 @@ export interface SearchContextValues {
   polygon: Polygon | null;
   rasterLayers: Array<rasterLayer>;
   setRasterLayers(layers: Array<rasterLayer>): void;
-  setShapeLayers(layer?: shapeLayer, source?: CancelTokenSource): void;
+  setShapeLayers(layers: Array<shapeLayer>): void;
   setLoadingLayer(
     loading: boolean,
     error: boolean,
@@ -28,8 +28,6 @@ export interface SearchContextValues {
   setActiveLayer(layer: { id: string; name: string }): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
-  shutOffLayer(layer: string): void;
-  highlightFeature(feature: string): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -47,8 +45,6 @@ const SearchContext = React.createContext<SearchContextValues>({
   setActiveLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},
-  shutOffLayer: () => {},
-  highlightFeature: () => {},
 });
 
 export default SearchContext;
