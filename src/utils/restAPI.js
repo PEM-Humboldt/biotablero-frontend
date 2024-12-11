@@ -161,8 +161,8 @@ class RestAPI {
   /**
    * Request a specific geofence geometry identified by area and geofence
    *
-   * @param {String} areaId area id to request
-   * @param {String} geofenceId geofence id to request
+   * @param {String | null} areaId area id to request
+   * @param {String | null} geofenceId geofence id to request
    *
    * @return {Promise<Object>} layer object to be loaded in the map
    */
