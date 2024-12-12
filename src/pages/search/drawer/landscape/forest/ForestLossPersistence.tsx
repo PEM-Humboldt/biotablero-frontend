@@ -57,7 +57,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     if (searchType === "definedArea") {
       this.flpController.setArea(areaId, geofenceId.toString());
-    } else if(polygon && polygon.geojson){
+    } else if (polygon && polygon.geojson) {
       this.flpController.setPolygon(polygon.geojson);
     }
     this.switchLayer(this.currentPeriod);
@@ -115,8 +115,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
-    const { areaId, geofenceId, searchType, rasterLayers,setRasterLayers } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId, searchType, rasterLayers, setRasterLayers } =
+      this.context as SearchContextValues;
 
     const graphData = this.flpController.getGraphData(forestLP);
 
@@ -174,13 +174,15 @@ class ForestLossPersistence extends React.Component<Props, State> {
             colors={matchColor("forestLP")}
             onClickHandler={(period, category) => {
               if (period === this.currentPeriod) {
-                setRasterLayers(rasterLayers.map((layer) => {
-                  if (layer.id === category) {
-                    return {...layer, selected: true}
-                  } else {
-                    return {...layer, selected: false}
-                  }
-                }))
+                setRasterLayers(
+                  rasterLayers.map((layer) => {
+                    if (layer.id === category) {
+                      return { ...layer, selected: true };
+                    } else {
+                      return { ...layer, selected: false };
+                    }
+                  })
+                );
               } else {
                 this.currentPeriod = period;
                 this.switchLayer(period);
