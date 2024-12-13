@@ -8,7 +8,7 @@ Este proyecto ha sido desarrollado por el [Instituto Humboldt](http://www.humbol
 
 ### 1.1. Prerequisitos
 
-Debe tener instalado [nodejs](https://nodejs.org/) v18.15+
+Debe tener instalado [nodejs](https://nodejs.org/) v22.12+
 
 Clone el proyecto en su equipo e ingrese por línea de comandos al directorio del proyecto.
 

@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18.15-slim as build
+FROM node:22.12-slim as build
 RUN corepack enable
 
 ENV NPM_CONFIG_LOGLEVEL warn
@@ -14,7 +14,7 @@ RUN pnpm install
 RUN pnpm build
 
 # Release stage
-FROM node:18.15-slim as release
+FROM node:22.12-slim as release
 
 COPY --from=build /app/build ./build
 RUN npm install -g serve@~13.0.0
