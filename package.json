@@ -30,7 +30,6 @@
     "axios": "~1.6.5",
     "cbm-dashboard": "workspace:1.0.0",
     "chart.js": "~3.8.0",
-    "deasync": "0.1.30",
     "indicators": "workspace:1.0.0",
     "leaflet": "1.4.0",
     "leaflet-draw": "^1.0.4",
