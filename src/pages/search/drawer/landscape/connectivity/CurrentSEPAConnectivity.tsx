@@ -395,7 +395,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           (prevState) => ({
             layers: [...prevState.layers, geofenceLayer, currentPAConn],
           }),
-          () => setLoadingLayer(false, false, false)
+          () => setLoadingLayer(false, false)
         );
         setShapeLayers(this.state.layers);
         setActiveLayer(newActiveLayer);
@@ -410,7 +410,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     let layerId: string = "";
     let layerName: string = "";
 
-    setLoadingLayer(true, false, false);
+    setLoadingLayer(true, false);
 
     switch (layerType) {
       case "paramoPAConn":
@@ -441,7 +441,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         (prevState) => ({
           layers: [...prevState.layers, layer],
         }),
-        () => setLoadingLayer(false, false, false)
+        () => setLoadingLayer(false, false)
       );
       setShapeLayers(this.state.layers);
       setActiveLayer(newActiveLayer);

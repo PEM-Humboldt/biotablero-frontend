@@ -196,7 +196,7 @@ class TimelinePAConnectivity extends React.Component<
           (prevState) => ({
             layers: [...prevState.layers, geofenceLayer, currentPAConn],
           }),
-          () => setLoadingLayer(false, false, false)
+          () => setLoadingLayer(false, false)
         );
         setShapeLayers(this.state.layers);
         setActiveLayer(newActiveLayer);

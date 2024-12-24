@@ -220,8 +220,6 @@ export class PAConnectivityController {
     (feature: { properties: connectivityFeaturePropierties }) => {
       let fillcolor;
 
-      console.log(feature.properties);
-
       if (type === "dpc") {
         const key = feature.properties.dpc_cat;
         fillcolor = matchColor("dpc")(key);
