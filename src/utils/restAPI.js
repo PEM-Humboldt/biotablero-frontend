@@ -1,4 +1,5 @@
 import axios, { CancelToken } from 'axios';
+import { RestAPIObject } from "pages/search/types/api";
 
 class RestAPI {
   /**
@@ -161,10 +162,10 @@ class RestAPI {
   /**
    * Request a specific geofence geometry identified by area and geofence
    *
-   * @param {String | null} areaId area id to request
-   * @param {String | null} geofenceId geofence id to request
+   * @param {String} areaId area id to request
+   * @param {String} geofenceId geofence id to request
    *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @return {RestAPIObject} layer object to be loaded in the map
    */
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
     const source = CancelToken.source();
@@ -351,7 +352,7 @@ class RestAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {Number} paNumber number of protected areas to request, f.e. 5
    *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @return {RestAPIObject} layer object to be loaded in the map
    */
   static requestDPCLayer(areaType, areaId, paNumber = undefined) {
     const source = CancelToken.source();
