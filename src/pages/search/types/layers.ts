@@ -1,9 +1,12 @@
+import * as geojson from "geojson";
+import { GeoJSONOptions } from "leaflet";
+
 export interface shapeLayer {
   id: string;
-  paneLevel: number | null;
-  json: Object | undefined;
-  active: boolean;
-  onEachFeature?: Function;
+  paneLevel: number;
+  json: geojson.GeoJsonObject | Array<geojson.GeoJsonObject>;
+  active?: boolean;
+  onEachFeature?: GeoJSONOptions["onEachFeature"];
   layerStyle?: Object;
 }
 
