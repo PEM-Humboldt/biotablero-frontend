@@ -39,6 +39,7 @@ class Search extends Component {
       areaList: [],
       layers: [],
       rasterLayers:[],
+      shapeLayers: [],
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
@@ -79,13 +80,8 @@ class Search extends Component {
     this.setState({ rasterLayers: layers });
   }
   
-  /**
-   * Add a shape layer to the state
-   *
-   * @param {array} layers Layer object to add
-   */
   setShapeLayers = (layers) => {
-      this.setState({ layers: layers });
+      this.setState({ shapeLayers: layers });
   }
 
   /**
@@ -106,8 +102,8 @@ class Search extends Component {
    * @param {boolean} error
    */
   // TODO: "Clear when all components handle layers directly"
-  setLoadingLayer =  (loading, error, shutOtherLayers = true) => {
-    if (shutOtherLayers) this.shutOffLayer();
+  setLoadingLayer =  (loading, error) => {
+    this.shutOffLayer();
     this.setState({
       loadingLayer: loading,
       layerError: error,
@@ -1431,6 +1427,7 @@ class Search extends Component {
       searchType,
       openErrorModal,
       rasterLayers,
+      shapeLayers,
     } = this.state;
     
     const {
@@ -1498,6 +1495,7 @@ class Search extends Component {
             searchType: searchType,
             polygon: polygon,
             rasterLayers: rasterLayers,
+            shapeLayers: shapeLayers,
             setRasterLayers: this.setRasterLayers,
             setShapeLayers: this.setShapeLayers,
             setActiveLayer: this.setActiveLayer,
