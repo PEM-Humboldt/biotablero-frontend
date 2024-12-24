@@ -1,7 +1,6 @@
 import React from "react";
 import { Polygon } from "pages/search/types/drawer";
-import { shapeLayer } from "./types/layers";
-import { CancelTokenSource } from "axios";
+import { shapeLayer } from "pages/search/types/layers";
 
 export interface rasterLayer {
   paneLevel: number;
@@ -16,13 +15,10 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   polygon: Polygon | null;
   rasterLayers: Array<rasterLayer>;
+  shapeLayers: Array<shapeLayer>;
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layers: Array<shapeLayer>): void;
-  setLoadingLayer(
-    loading: boolean,
-    error: boolean,
-    shutOtheLayers?: boolean
-  ): void;
+  setLoadingLayer(loading: boolean, error: boolean): void;
   setPolygonValues(areaValue: number): void;
   switchLayer(layer: string): void;
   setActiveLayer(layer: { id: string; name: string }): void;
@@ -37,6 +33,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   polygon: null,
   setPolygonValues: () => {},
   rasterLayers: [],
+  shapeLayers: [],
   setRasterLayers: () => {},
   setShapeLayers: () => {},
   setLoadingLayer: () => {},
