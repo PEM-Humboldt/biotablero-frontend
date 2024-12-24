@@ -32,7 +32,7 @@ class SearchAPI {
     );
   }
 
-/**
+  /**
    * Get the layer associated to a polygon query for Forest LP
    *
    * @param {String} period item id to get
@@ -47,7 +47,7 @@ class SearchAPI {
     polygon: polygonFeature | null
   ): { request: Promise<any> } {
     const requestBody = { polygon };
-  
+
     return {
       request: SearchAPI.makePostRequest(
         `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
