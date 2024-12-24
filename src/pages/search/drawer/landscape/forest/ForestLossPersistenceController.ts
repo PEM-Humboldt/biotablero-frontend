@@ -18,6 +18,8 @@ import RestAPI from "utils/restAPI";
 import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/SearchContext";
 
+
+
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
   forestPersistenceValue: number;
@@ -259,27 +261,32 @@ export class ForestLossPersistenceController {
       }
     } else if (this.polygon) {
       try {
-        const res = await Promise.all(
-          ForestLPKeys.map(
-            (_, idx) =>
-              SearchAPI.requestForestLPLayer(period, idx, this.polygon).request
-          )
-        );
-
-        return res.flatMap((response, idx) => {
-          const images = response.data.images;
-          return Object.entries(images).map(([imageKey, base64Data]) => ({
-            id: `${ForestLPKeys[idx]}-${imageKey}`,
-            data: `data:image/png;base64,${base64Data}`,
-            selected: false,
-            paneLevel: 2,
-          }));
-        });
+          const res = await Promise.all(
+              ForestLPKeys.map((_, idx) =>
+                  SearchAPI.requestForestLPLayer(
+                      period,
+                      idx,
+                      this.polygon
+                  ).request
+              )
+          );
+  
+          return res.flatMap((response, idx) => {
+              const images = response.data.images;
+              return Object.entries(images).map(([imageKey, base64Data]) => ({
+                  id: `${ForestLPKeys[idx]}-${imageKey}`,
+                  data: `data:image/png;base64,${base64Data}`,
+                  selected: false,
+                  paneLevel: 2,
+              }));
+          });
       } catch (error) {
-        console.error("Error al cargar la capa basada en polígono:", error);
-        throw new Error("Failed to load polygon-based layer");
+          console.error("Error al cargar la capa basada en polígono:", error);
+          throw new Error("Failed to load polygon-based layer");
       }
-    }
-    throw Error("Polygon and area undefined");
+  }
+  throw Error("Polygon and area undefined");
   }
 }
+  
+
