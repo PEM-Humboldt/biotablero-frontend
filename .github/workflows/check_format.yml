@@ -1,9 +1,11 @@
 name: Check format
 
 on:
+  pull_request:
+    branches:
+      - develop
   push:
     branches:
-      - feature/*
       - release/*
 
 jobs:
