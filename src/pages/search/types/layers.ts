@@ -1,5 +1,5 @@
 import * as geojson from "geojson";
-import { GeoJSONOptions } from "leaflet";
+import { GeoJSONOptions, PathOptions } from "leaflet";
 
 export interface shapeLayer {
   id: string;
@@ -7,7 +7,7 @@ export interface shapeLayer {
   json: geojson.GeoJsonObject | Array<geojson.GeoJsonObject>;
   active?: boolean;
   onEachFeature?: GeoJSONOptions["onEachFeature"];
-  layerStyle?: Object;
+  layerStyle?: PathOptions;
 }
 
 export interface connectivityFeaturePropierties {
