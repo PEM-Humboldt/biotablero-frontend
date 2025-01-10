@@ -14,7 +14,7 @@ import {
   currentSEPAConn,
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
-import { PAConnectivityController } from "pages/search/drawer/landscape/connectivity/PAConnectivityController";
+import { CurrentSEPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -50,11 +50,11 @@ interface State {
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
-  PACController;
+  CurrentSEPACController;
 
   constructor(props: Props) {
     super(props);
-    this.PACController = new PAConnectivityController();
+    this.CurrentSEPACController = new CurrentSEPAConnectivityController();
     this.state = {
       showInfoGraph: true,
       currentPAConnParamo: [],
@@ -78,10 +78,15 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId } = this.context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
 
-    this.PACController.setArea(areaId, geofenceId.toString());
-    this.switchLayer();
+    this.CurrentSEPACController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
@@ -187,13 +192,35 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }
       })
       .catch(() => {});
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "CurrentSEPAConn",
+      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+    };
+
+    Promise.all([
+      this.CurrentSEPACController.getGeofence(),
+      this.CurrentSEPACController.getLayer(),
+    ])
+      .then(([geofenceLayer, CurrentSEPAConn]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, CurrentSEPAConn] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
-      .context as SearchContextValues;
-    this.PACController.cancelActiveRequests();
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.CurrentSEPACController.cancelActiveRequests();
     setShapeLayers([]);
   }
 
@@ -263,7 +290,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "paramo" });
-                this.clickOnGraph("paramoPAConn");
               }}
             />
           </div>
@@ -304,7 +330,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "dryForest" });
-                this.clickOnGraph("dryForestPAConn");
               }}
             />
           </div>
@@ -345,7 +370,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "wetland" });
-                this.clickOnGraph("wetlandPAConn");
               }}
             />
           </div>
@@ -375,91 +399,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       </div>
     );
   }
-
-  switchLayer = async () => {
-    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
-      .context as SearchContextValues;
-    setLoadingLayer(true, false);
-
-    const layerName = "currentSEPAConn";
-    const newActiveLayer = {
-      id: layerName,
-      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
-    };
-    Promise.all([
-      this.PACController.getGeofenceLayer(true),
-      this.PACController.getLayers(layerName),
-    ]).then(([geofenceLayer, currentPAConn]) => {
-      if (this.mounted) {
-        this.setState(
-          (prevState) => ({
-            layers: [...prevState.layers, geofenceLayer, currentPAConn],
-          }),
-          () => setLoadingLayer(false, false)
-        );
-        setShapeLayers(this.state.layers);
-        setActiveLayer(newActiveLayer);
-      }
-    });
-  };
-
-  clickOnGraph = async (layerType: string) => {
-    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
-      .context as SearchContextValues;
-
-    let layerId: string = "";
-    let layerName: string = "";
-
-    setLoadingLayer(true, false);
-
-    switch (layerType) {
-      case "paramoPAConn":
-        layerId = "paramoPAConn";
-        layerName = "Conectividad de áreas protegidas - Páramo";
-        this.shutOffLayer("dryForestPAConn");
-        this.shutOffLayer("wetlandPAConn");
-        break;
-      case "dryForestPAConn":
-        layerId = "dryForestPAConn";
-        layerName = "Conectividad de áreas protegidas - Bosque Seco Tropical";
-        this.shutOffLayer("paramoPAConn");
-        this.shutOffLayer("wetlandPAConn");
-        break;
-      case "wetlandPAConn":
-        layerId = "wetlandPAConn";
-        layerName = "Conectividad de áreas protegidas - Humedales";
-        this.shutOffLayer("paramoPAConn");
-        this.shutOffLayer("dryForestPAConn");
-        break;
-    }
-
-    const newActiveLayer = { id: layerId, name: layerName };
-
-    const layer = await this.PACController.getLayers(layerType);
-    if (this.mounted) {
-      this.setState(
-        (prevState) => ({
-          layers: [...prevState.layers, layer],
-        }),
-        () => setLoadingLayer(false, false)
-      );
-      setShapeLayers(this.state.layers);
-      setActiveLayer(newActiveLayer);
-    }
-  };
-
-  shutOffLayer = (id: string) => {
-    const { setShapeLayers } = this.context as SearchContextValues;
-
-    this.setState(
-      (prevState) => ({
-        layers: prevState.layers.map((layer) =>
-          layer.id === id ? { ...layer, active: false } : layer
-        ),
-      }),
-      () => setShapeLayers(this.state.layers)
-    );
-  };
 }
 
 export default CurrentSEPAConnectivity;
