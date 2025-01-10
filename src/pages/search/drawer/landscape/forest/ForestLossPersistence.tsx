@@ -211,8 +211,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
     this.flpController
       .getLayers(period)
       .then((layers) => {
-        setRasterLayers(layers);
-        setLoadingLayer(false, false);
+        if (this.mounted) {
+          setRasterLayers(layers);
+          setLoadingLayer(false, false);
+        }
       })
       .catch(() => {
         setLoadingLayer(false, true);
