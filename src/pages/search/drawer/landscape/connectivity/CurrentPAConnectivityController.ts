@@ -10,7 +10,6 @@ import {
 } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { RestAPIObject } from "pages/search/types/api";
-import { PathOptions } from "leaflet";
 
 export class CurrentPAConnectivityController {
   areaType: string | null = null;

@@ -1,4 +1,3 @@
-import React, { Component, createRef } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
@@ -52,7 +51,6 @@ interface currentPAConnState {
     paConnDPC: textsObject;
   };
   layers: Array<shapeLayer>;
-  activeLayer: string;
 }
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
@@ -77,7 +75,6 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         paConnDPC: { info: "", cons: "", meto: "", quote: "" },
       },
       layers: [],
-      activeLayer: "",
     };
   }
 

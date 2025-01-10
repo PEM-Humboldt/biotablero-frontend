@@ -1,5 +1,5 @@
 import * as geojson from "geojson";
-import { GeoJSONOptions, PathOptions, StyleFunction } from "leaflet";
+import { GeoJSONOptions, StyleFunction } from "leaflet";
 
 export interface shapeLayer {
   id: string;
