@@ -10,6 +10,7 @@ import {
 } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { RestAPIObject } from "pages/search/types/api";
+import { PathOptions } from "leaflet";
 
 export class CurrentPAConnectivityController {
   areaType: string | null = null;
@@ -70,7 +71,7 @@ export class CurrentPAConnectivityController {
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
 
-  getLayers = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<shapeLayer> => {
     const layerId = "currentPAConn";
 
     const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
@@ -85,11 +86,11 @@ export class CurrentPAConnectivityController {
       return this.featureActions(selectedLayer);
     };
 
-    const layerStyle = (feature: {
+    const layerStyle = (feature?: {
       properties: connectivityFeaturePropierties;
     }) => ({
       stroke: false,
-      fillColor: matchColor("dpc")(feature.properties.dpc_cat),
+      fillColor: matchColor("dpc")(feature?.properties.dpc_cat),
       fillOpacity: 0.6,
     });
 
@@ -122,11 +123,11 @@ export class CurrentPAConnectivityController {
       this.areaId ?? ""
     );
 
-    const layerStyle = {
+    const layerStyle = () => ({
       stroke: false,
       fillColor: matchColor(layerId)(),
       fillOpacity: 0.6,
-    };
+    });
 
     const { request, source } = reqPromise;
     this.activeRequests.set(layerId, source);
