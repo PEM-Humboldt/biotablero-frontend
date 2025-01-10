@@ -7,7 +7,7 @@ class SearchAPI {
    * Get the list of current scripts.
    */
   static requestTestBackend(): Promise<Array<String>> {
-    return SearchAPI.makeGetRequest(`docs`);
+    return SearchAPI.makeGetRequest(`redoc`);
   }
 
   /**
