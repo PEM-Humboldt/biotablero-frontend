@@ -1,3 +1,4 @@
+import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
