@@ -15,7 +15,7 @@ export interface SearchContextValues {
   polygon: Polygon | null;
   rasterLayers: Array<rasterLayer>;
   setRasterLayers(layers: Array<rasterLayer>): void;
-  setLoadingLayer(loading:boolean, error:boolean): void;
+  setLoadingLayer(loading: boolean, error: boolean): void;
   setPolygonValues(areaValue: number): void;
   switchLayer(layer: string): void;
   handlerClickOnGraph({}): void;
@@ -31,7 +31,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   rasterLayers: [],
   setRasterLayers: () => {},
   setLoadingLayer: () => {},
-  //TODO: "Delete when migration of switch layer is finished"
+  //TODO: "Delete when migration of switch layer is finished" (all 3)
   switchLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},
