@@ -78,20 +78,12 @@ export class CurrentPAConnectivityController {
       this.areaId ?? ""
     );
 
-    const onEachFeature = (
-      feature: GeoJSON.Feature,
-      selectedLayer: L.Layer
-    ) => {
-      return this.featureActions(selectedLayer);
+    const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
+      layer.on({
+        mouseover: (event) => this.highlightShapeFeature(event),
+        mouseout: (event) => this.resetShapeHighlight(event),
+      });
     };
-
-    const layerStyle = (feature?: {
-      properties: connectivityFeaturePropierties;
-    }) => ({
-      stroke: false,
-      fillColor: matchColor("dpc")(feature?.properties.dpc_cat),
-      fillOpacity: 0.6,
-    });
 
     const { request, source } = reqPromise;
     this.activeRequests.set(layerId, source);
@@ -103,7 +95,7 @@ export class CurrentPAConnectivityController {
       paneLevel: 1,
       json: res,
       onEachFeature: onEachFeature,
-      layerStyle: layerStyle,
+      layerStyle: this.setLayerStyle(),
     };
 
     return layerData;
@@ -141,18 +133,6 @@ export class CurrentPAConnectivityController {
     };
 
     return layerData;
-  };
-  /**
-   * Manage the feature style according to mouse events
-   *
-   * @param {L.Layer} layer objet
-   *
-   */
-  featureActions = (layer: L.Layer) => {
-    layer.on({
-      mouseover: (event) => this.highlightShapeFeature(event),
-      mouseout: (event) => this.resetShapeHighlight(event),
-    });
   };
 
   /**
@@ -192,26 +172,19 @@ export class CurrentPAConnectivityController {
   };
 
   /**
-   * Apply an specificHighlight an specific feature of the Currenta PA layer
+   * Set the features style, applying an specific Highlight if neccesary
    *
-   * @param {Array<shapeLayer>} layers Component layers array
-   * @param {string} selectedKey Id of the feature
+   * @param {string} selectedKey Id of the feature to highlight.
+   *
+   * @returns {Function} function receiving a geoJsonFeature as required by leaflet
    */
-  highlightStyle = (layers: Array<shapeLayer>, selectedKey: string) => {
-    return layers.map((layer) => {
-      if (layer.id === "currentPAConn") {
-        return {
-          ...layer,
-          layerStyle: (feature: {
-            properties: connectivityFeaturePropierties;
-          }) => ({
-            fillOpacity: feature.properties.id === selectedKey ? 1 : 0.6,
-          }),
-        };
-      }
-      return layer;
+  setLayerStyle =
+    (selectedKey = "") =>
+    (feature?: { properties: connectivityFeaturePropierties }) => ({
+      stroke: false,
+      fillColor: matchColor("dpc")(feature?.properties.dpc_cat),
+      fillOpacity: feature?.properties.id === selectedKey ? 1 : 0.6,
     });
-  };
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

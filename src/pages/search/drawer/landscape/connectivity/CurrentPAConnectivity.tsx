@@ -340,16 +340,14 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
    */
   highlightFeature = (selectedKey: string) => {
     const { setShapeLayers } = this.context as SearchContextValues;
-
-    this.setState(
-      (prevState) => ({
-        layers: this.CPACController.highlightStyle(
-          prevState.layers,
-          selectedKey
-        ),
-      }),
-      () => setShapeLayers(this.state.layers)
-    );
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "currentPAConn") {
+        layer.layerStyle = this.CPACController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
   };
 }
 
