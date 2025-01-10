@@ -3,6 +3,7 @@ import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import RestAPI from "utils/restAPI";
+import BackendAPI from "utils/backendAPI";
 import {
   shapeLayer,
   connectivityFeaturePropierties,
@@ -72,7 +73,7 @@ export class CurrentPAConnectivityController {
   getLayers = async (): Promise<shapeLayer> => {
     const layerId = "currentPAConn";
 
-    const reqPromise: RestAPIObject = RestAPI.requestDPCLayer(
+    const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
       this.areaId ?? ""
     );
@@ -113,7 +114,6 @@ export class CurrentPAConnectivityController {
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
-
   getGeofence = async (): Promise<shapeLayer> => {
     const layerId = "geofence";
 
@@ -168,8 +168,8 @@ export class CurrentPAConnectivityController {
     feature
       .bindTooltip(
         `<b>${feature.feature.properties.name}:</b>
-                <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
-                <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+          <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
+          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
         optionsTooltip
       )
       .openTooltip();
