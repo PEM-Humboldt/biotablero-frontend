@@ -566,6 +566,31 @@ class BackendAPI {
     };
   }
 
+  /**
+   * Get the layer of a strategic ecosystem in a given area.
+   * Data obtained from connectivity service
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {RestAPIObject} layer object to be loaded in the map
+   */
+  static requestPAConnSELayer(
+    areaType: string,
+    areaId: string,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
