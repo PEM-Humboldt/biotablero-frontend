@@ -37,7 +37,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   setRasterLayers: () => {},
   setShapeLayers: () => {},
   setLoadingLayer: () => {},
-  //TODO: "Delete when migration of switch layer is finished"
+  //TODO: "Delete when migration of switch layer is finished" (all 3)
   switchLayer: () => {},
   setActiveLayer: () => {},
   handlerClickOnGraph: () => {},
