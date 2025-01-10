@@ -262,7 +262,7 @@ export class ForestLossPersistenceController {
         const res = await Promise.all(
           ForestLPKeys.map(
             (_, idx) =>
-              SearchAPI.requestForestLPLayer(period, idx, this.polygon).request
+              SearchAPI.requestForestLPLayer(period, idx, this.polygon!).request
           )
         );
 

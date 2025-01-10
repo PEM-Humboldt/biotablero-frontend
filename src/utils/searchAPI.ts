@@ -44,7 +44,7 @@ class SearchAPI {
   static requestForestLPLayer(
     period: string,
     category: number,
-    polygon: polygonFeature | null
+    polygon: polygonFeature
   ): { request: Promise<any> } {
     const requestBody = { polygon };
 
