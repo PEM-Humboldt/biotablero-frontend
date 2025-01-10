@@ -15,15 +15,10 @@ import {
 import DrawControl from "pages/search/mapViewer/DrawControl";
 
 import "leaflet/dist/leaflet.css";
-import {
-  LatLngBoundsExpression,
-  LatLngBoundsLiteral,
-  PathOptions,
-} from "leaflet";
+import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/drawer";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import * as geojson from "geojson";
 import { shapeLayer } from "pages/search/types/layers";
 
 interface Props {
