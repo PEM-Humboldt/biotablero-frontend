@@ -8,7 +8,7 @@ import {
   ForestLPExt,
   ForestLPRawDataPolygon,
   ForestLPKeys,
-  ForestLayerResponse,
+  ForestLPCategories,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
@@ -261,8 +261,12 @@ export class ForestLossPersistenceController {
       try {
         const res = await Promise.all(
           ForestLPKeys.map(
-            (_, idx) =>
-              SearchAPI.requestForestLPLayer(period, idx, this.polygon!).request
+            (category) =>
+              SearchAPI.requestForestLPLayer(
+                period,
+                ForestLPCategories[category],
+                this.polygon!
+              ).request
           )
         );
 
