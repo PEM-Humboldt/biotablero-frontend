@@ -37,7 +37,7 @@ class Search extends Component {
       },
       layerError: false,
       areaList: [],
-      layers: [],
+      layers: {},
       rasterLayers:[],
       shapeLayers: [],
       loadingLayer: false,
