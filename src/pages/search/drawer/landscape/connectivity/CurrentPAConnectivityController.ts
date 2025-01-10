@@ -70,7 +70,6 @@ export class CurrentPAConnectivityController {
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
-
   getLayer = async (): Promise<shapeLayer> => {
     const layerId = "currentPAConn";
 
