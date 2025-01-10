@@ -171,7 +171,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
     Promise.all([
       this.CPACController.getGeofence(),
-      this.CPACController.getLayers(),
+      this.CPACController.getLayer(),
     ])
       .then(([geofenceLayer, currentPAConn]) => {
         if (this.mounted) {
