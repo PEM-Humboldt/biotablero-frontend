@@ -429,19 +429,23 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
     if (!this.state.layers.find((layer) => layer.id === layerId)) {
       setLoadingLayer(true, false);
-      const SELayer = await this.CurrentSEPACController.getSELayer(
-        layerId,
-        layerName
-      );
+      try {
+        const SELayer = await this.CurrentSEPACController.getSELayer(
+          layerId,
+          layerName
+        );
 
-      this.setState(
-        (prevState) => ({
-          layers: [...prevState.layers, SELayer],
-        }),
-        () => {
-          setLoadingLayer(false, false);
-        }
-      );
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, SELayer],
+          }),
+          () => {
+            setLoadingLayer(false, false);
+          }
+        );
+      } catch (error) {
+        setLoadingLayer(false, true);
+      }
     }
 
     const activeLayers = this.state.layers.filter((layer) =>
