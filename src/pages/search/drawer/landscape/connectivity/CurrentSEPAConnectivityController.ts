@@ -26,7 +26,7 @@ export class CurrentSEPAConnectivityController {
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getLayer = async (): Promise<shapeLayer> => {
-    const layerId = "CurrentSEPAConn";
+    const layerId = "currentSEPAConn";
 
     const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
@@ -83,6 +83,37 @@ export class CurrentSEPAConnectivityController {
     const layerData = {
       id: layerId,
       paneLevel: 1,
+      json: res,
+      layerStyle: layerStyle,
+    };
+
+    return layerData;
+  };
+
+  getSELayer = async (
+    layerId: string,
+    layerName: string
+  ): Promise<shapeLayer> => {
+    const reqPromise: RestAPIObject = BackendAPI.requestPAConnSELayer(
+      this.areaType ?? "",
+      this.areaId ?? "",
+      layerName
+    );
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerId, source);
+    const res = await request;
+    this.activeRequests.delete(layerId);
+
+    const layerStyle = () => ({
+      stroke: false,
+      fillColor: matchColor(layerId)(),
+      fillOpacity: 0.6,
+    });
+
+    const layerData = {
+      id: layerId,
+      paneLevel: 2,
       json: res,
       layerStyle: layerStyle,
     };
