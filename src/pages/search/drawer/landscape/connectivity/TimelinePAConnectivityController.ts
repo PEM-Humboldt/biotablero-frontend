@@ -57,7 +57,7 @@ export class TimelinePAConnectivityController {
   };
 
   /**
-   * Get shape layers in GeoJSON format for a connectivity component
+   * Get shape layer in GeoJSON format for the geofence
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
