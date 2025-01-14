@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { RestAPIObject } from "pages/search/types/api";
+import { RasterAPIObject } from "pages/search/types/api";
 import { polygonFeature } from "pages/search/types/drawer";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 
@@ -46,8 +46,9 @@ class SearchAPI {
     period: string,
     category: number,
     polygon: polygonFeature
-  ): RestAPIObject {
+  ): RasterAPIObject {
     const requestBody = { polygon };
+    const source = axios.CancelToken.source();
 
     return {
       request: SearchAPI.makePostRequest(
@@ -55,6 +56,7 @@ class SearchAPI {
         requestBody,
         { responseType: "json" }
       ),
+      source,
     };
   }
 

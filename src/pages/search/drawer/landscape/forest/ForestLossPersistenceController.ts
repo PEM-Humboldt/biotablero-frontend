@@ -229,60 +229,49 @@ export class ForestLossPersistenceController {
   }
 
   async getLayers(period: string): Promise<Array<rasterLayer>> {
-    // Assume that Search loaded the geofence shape in the context
     // TODO: Figure out how to cancel the request if necessary
     if (this.areaType && this.areaId) {
-      try {
-        const res = await Promise.all(
-          ForestLPKeys.map(
-            (category) =>
-              RestAPI.requestForestLPLayer(
-                this.areaType ?? "",
-                this.areaId ?? "",
-                period,
-                category
-              ).request
-          )
-        );
-        // Manejo de errores / mostrar modal o mno
-        return ForestLPKeys.map((category, idx) => ({
-          id: category,
-          data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-            res[idx].data
-          )}`,
+      const res = await Promise.all(
+        ForestLPKeys.map(
+          (category) =>
+            RestAPI.requestForestLPLayer(
+              this.areaType ?? "",
+              this.areaId ?? "",
+              period,
+              category
+            ).request
+        )
+      );
+      // Manejo de errores / mostrar modal o mno
+      return ForestLPKeys.map((category, idx) => ({
+        id: category,
+        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
+          res[idx].data
+        )}`,
+        selected: false,
+        paneLevel: 2,
+      }));
+    } else if (this.polygon) {
+      const res = await Promise.all(
+        ForestLPKeys.map(
+          (category) =>
+            SearchAPI.requestForestLPLayer(
+              period,
+              ForestLPCategories[category],
+              this.polygon!
+            ).request
+        )
+      );
+
+      return res.map((response, idx) => {
+        const base64Image = response.layer;
+        return {
+          id: `${period}-${ForestLPKeys[idx]}`,
+          data: `data:image/png;base64,${base64Image}`,
           selected: false,
           paneLevel: 2,
-        }));
-      } catch (error) {
-        // TODO: handle error
-        throw error;
-      }
-    } else if (this.polygon) {
-      try {
-        const res = await Promise.all(
-          ForestLPKeys.map(
-            (category) =>
-              SearchAPI.requestForestLPLayer(
-                period,
-                ForestLPCategories[category],
-                this.polygon!
-              ).request
-          )
-        );
-
-        return res.map((response, idx) => {
-          const base64Image = response.layer;
-          return {
-            id: `${period}-${ForestLPKeys[idx]}`,
-            data: `data:image/png;base64,${base64Image}`,
-            selected: false,
-            paneLevel: 2,
-          };
-        });
-      } catch (error) {
-        console.error("Error al cargar la capa basada en polígono:", error);
-        throw new Error("Failed to load polygon-based layer");
-      }
+        };
+      });
     }
     throw Error("Polygon and area undefined");
   }
