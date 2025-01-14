@@ -270,14 +270,14 @@ export class ForestLossPersistenceController {
           )
         );
 
-        return res.flatMap((response, idx) => {
-          const images = response.data.images;
-          return Object.entries(images).map(([imageKey, base64Data]) => ({
-            id: `${ForestLPKeys[idx]}-${imageKey}`,
-            data: `data:image/png;base64,${base64Data}`,
+        return res.map((response, idx) => {
+          const base64Image = response.layer;
+          return {
+            id: `${period}-${ForestLPKeys[idx]}`,
+            data: `data:image/png;base64,${base64Image}`,
             selected: false,
             paneLevel: 2,
-          }));
+          };
         });
       } catch (error) {
         console.error("Error al cargar la capa basada en polígono:", error);
