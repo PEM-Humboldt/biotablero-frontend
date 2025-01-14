@@ -16,6 +16,7 @@ import BackendAPI from "utils/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { TimelinePAConnectivityController } from "pages/search/drawer/landscape/connectivity/TimelinePAConnectivityController";
+import { shapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   prot: "Protegida",
@@ -33,7 +34,7 @@ interface timelinePAConnState {
   texts: {
     paConnTimeline: textsObject;
   };
-  layers: Array<any>;
+  layers: Array<shapeLayer>;
 }
 class TimelinePAConnectivity extends React.Component<
   Props,
@@ -103,7 +104,7 @@ class TimelinePAConnectivity extends React.Component<
     setLoadingLayer(true, false);
 
     const newActiveLayer = {
-      id: "TimelinePAConn",
+      id: "timelinePAConn",
       name: "Conectividad de áreas protegidas",
     };
 
@@ -111,10 +112,10 @@ class TimelinePAConnectivity extends React.Component<
       this.TimelinePACController.getGeofence(),
       this.TimelinePACController.getLayer(),
     ])
-      .then(([geofenceLayer, TimelinePAConn]) => {
+      .then(([geofenceLayer, timelinePAConn]) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, TimelinePAConn] }),
+            () => ({ layers: [geofenceLayer, timelinePAConn] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
