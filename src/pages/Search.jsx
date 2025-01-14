@@ -251,7 +251,6 @@ class Search extends Component {
    * @param {Object} feature target object
    */
   featureStyle = (objParams) => (feature) => {
-    
     const {
       type,
       color = null,
@@ -1429,7 +1428,7 @@ class Search extends Component {
       rasterLayers,
       shapeLayers,
     } = this.state;
-    
+
     const {
       selectedAreaTypeId,
       selectedAreaId
