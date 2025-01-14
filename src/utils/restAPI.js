@@ -1,4 +1,5 @@
 import axios, { CancelToken } from 'axios';
+import { RestAPIObject } from "pages/search/types/api";
 
 class RestAPI {
   /**
@@ -164,7 +165,7 @@ class RestAPI {
    * @param {String} areaId area id to request
    * @param {String} geofenceId geofence id to request
    *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @return {RestAPIObject} layer object to be loaded in the map
    */
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
     const source = CancelToken.source();
@@ -342,68 +343,6 @@ class RestAPI {
       ),
       source,
     };
-  }
-
-  /**
-   * Get the layers of the protected areas with higher dPC value in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} paNumber number of protected areas to request, f.e. 5
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestDPCLayer(areaType, areaId, paNumber) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the layer of a strategic ecosystem in a given area.
-   * Data obtained from connectivity service
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type to request geometry
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestPAConnSELayer(areaType, areaId, seType) {
-    const source = CancelToken.source();
-    switch (seType) {
-      case 'dryForestPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Bosque Seco Tropical`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      case 'paramoPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Páramo`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      case 'wetlandPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Humedal`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      default:
-        return {
-          request: Promise.reject(new Error('undefined option')),
-          source,
-        };
-    }
   }
 
   /**

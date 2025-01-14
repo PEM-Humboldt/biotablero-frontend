@@ -39,6 +39,7 @@ class Search extends Component {
       areaList: [],
       layers: {},
       rasterLayers:[],
+      shapeLayers: [],
       loadingLayer: false,
       selectedAreaType: null,
       selectedArea: null,
@@ -78,7 +79,22 @@ class Search extends Component {
   setRasterLayers = (layers) => {
     this.setState({ rasterLayers: layers });
   }
+  
+  setShapeLayers = (layers) => {
+      this.setState({ shapeLayers: layers });
+  }
 
+  /**
+   * Set the active layer in the state
+   *
+   * @param {object} newActiveLayer Id and name of the current active layer
+   */
+  setActiveLayer = (newActiveLayer) => {
+    this.setState({
+      activeLayer: newActiveLayer,
+    });
+  }
+  
   /**
    * Control modal for switch layers
    *
@@ -361,16 +377,6 @@ class Search extends Component {
       case 'basinSubzones':
         feature.bindTooltip(feature.feature.properties.geofence_name, optionsTooltip).openTooltip();
         break;
-      case 'currentPAConn':
-      case 'timelinePAConn':
-      case 'currentSEPAConn':
-        feature.bindTooltip(
-          `<b>${feature.feature.properties.name}:</b>
-          <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
-          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-          optionsTooltip,
-        ).openTooltip();
-        break;
       default:
         changeStyle = false;
         break;
@@ -518,21 +524,6 @@ class Search extends Component {
           return newState;
         });
       }
-        break;
-      case 'paramoPAConn':
-        this.shutOffLayer('wetlandPAConn');
-        this.shutOffLayer('dryForestPAConn');
-        this.switchLayer('paramoPAConn');
-        break;
-      case 'wetlandPAConn':
-        this.shutOffLayer('paramoPAConn');
-        this.shutOffLayer('dryForestPAConn');
-        this.switchLayer('wetlandPAConn');
-        break;
-      case 'dryForestPAConn':
-        this.shutOffLayer('wetlandPAConn');
-        this.shutOffLayer('paramoPAConn');
-        this.switchLayer('dryForestPAConn');
         break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
@@ -1164,63 +1155,6 @@ class Search extends Component {
           };
         });
         break;
-      case 'currentPAConn':
-      case 'timelinePAConn':
-      case 'currentSEPAConn':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-          });
-          requestObj = RestAPI.requestDPCLayer(
-            selectedAreaTypeId,
-            selectedAreaId,
-          );
-          shutOtherLayers = false;
-          layerStyle = this.featureStyle({ type: 'currentPAConn' });
-          layerKey = 'currentPAConn';
-          newActiveLayer = {
-            id: 'currentPAConn',
-            name: `Conectividad de áreas protegidas${(layerType === 'currentSEPAConn') ? ' y Ecosistemas estratégicos (EE)' : ''}`,
-          };
-        });
-        break;
-      case 'paramoPAConn':
-        requestObj = RestAPI.requestPAConnSELayer(
-          selectedAreaTypeId, selectedAreaId, layerType,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        newActiveLayer = {
-          id: 'paramoPAConn',
-          name: 'Conectividad de áreas protegidas - Páramo',
-        };
-        paneLevel = 2;
-        break;
-      case 'dryForestPAConn':
-        requestObj = RestAPI.requestPAConnSELayer(
-          selectedAreaTypeId, selectedAreaId, layerType,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        newActiveLayer = {
-          id: 'dryForestPAConn',
-          name: 'Conectividad de áreas protegidas - Bosque Seco Tropical',
-        };
-        paneLevel = 2;
-        break;
-      case 'wetlandPAConn':
-        requestObj = RestAPI.requestPAConnSELayer(
-          selectedAreaTypeId, selectedAreaId, layerType,
-        );
-        shutOtherLayers = false;
-        layerStyle = this.featureStyle({ type: layerType, color: 'sePAConn' });
-        newActiveLayer = {
-          id: 'wetlandPAConn',
-          name: 'Conectividad de áreas protegidas - Humedales',
-        };
-        paneLevel = 2;
-        break;
       default:
         if (/SciHfPA-*/.test(layerType)) {
           const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
@@ -1492,6 +1426,7 @@ class Search extends Component {
       searchType,
       openErrorModal,
       rasterLayers,
+      shapeLayers,
     } = this.state;
 
     const {
@@ -1559,7 +1494,10 @@ class Search extends Component {
             searchType: searchType,
             polygon: polygon,
             rasterLayers: rasterLayers,
+            shapeLayers: shapeLayers,
             setRasterLayers: this.setRasterLayers,
+            setShapeLayers: this.setShapeLayers,
+            setActiveLayer: this.setActiveLayer,
             setLoadingLayer: this.setLoadingLayer,
             setPolygonValues: this.setPolygonValues,
             handlerClickOnGraph: this.clickOnGraph,

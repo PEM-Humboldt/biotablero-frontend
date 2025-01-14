@@ -1,5 +1,6 @@
 import React from "react";
 import { Polygon } from "pages/search/types/drawer";
+import { shapeLayer } from "pages/search/types/layers";
 
 export interface rasterLayer {
   paneLevel: number;
@@ -14,10 +15,13 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   polygon: Polygon | null;
   rasterLayers: Array<rasterLayer>;
+  shapeLayers: Array<shapeLayer>;
   setRasterLayers(layers: Array<rasterLayer>): void;
-  setLoadingLayer(loading:boolean, error:boolean): void;
+  setShapeLayers(layers: Array<shapeLayer>): void;
+  setLoadingLayer(loading: boolean, error: boolean): void;
   setPolygonValues(areaValue: number): void;
   switchLayer(layer: string): void;
+  setActiveLayer(layer: { id: string; name: string }): void;
   handlerClickOnGraph({}): void;
   cancelActiveRequests(): void;
 }
@@ -29,10 +33,13 @@ const SearchContext = React.createContext<SearchContextValues>({
   polygon: null,
   setPolygonValues: () => {},
   rasterLayers: [],
+  shapeLayers: [],
   setRasterLayers: () => {},
+  setShapeLayers: () => {},
   setLoadingLayer: () => {},
-  //TODO: "Delete when migration of switch layer is finished"
+  //TODO: "Delete when migration of switch layer is finished" (all 3)
   switchLayer: () => {},
+  setActiveLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},
 });

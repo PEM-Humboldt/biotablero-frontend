@@ -14,9 +14,11 @@ import {
   currentSEPAConn,
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
+import { CurrentSEPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { shapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -43,14 +45,17 @@ interface State {
   texts: {
     paConnSE: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
+  CurrentSEPACController;
 
   constructor(props: Props) {
     super(props);
+    this.CurrentSEPACController = new CurrentSEPAConnectivityController();
     this.state = {
       showInfoGraph: true,
       currentPAConnParamo: [],
@@ -68,15 +73,21 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       texts: {
         paConnSE: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
 
-    switchLayer("currentSEPAConn");
+    this.CurrentSEPACController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
@@ -182,10 +193,36 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }
       })
       .catch(() => {});
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "currentSEPAConn",
+      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+    };
+
+    Promise.all([
+      this.CurrentSEPACController.getGeofence(),
+      this.CurrentSEPACController.getLayer(),
+    ])
+      .then(([geofenceLayer, currentSEPAConn]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, currentSEPAConn] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.CurrentSEPACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -198,8 +235,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -255,7 +291,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "paramo" });
-                handlerClickOnGraph({ chartType: "paramoPAConn" });
+                this.clickOnGraph("paramoPAConn");
               }}
             />
           </div>
@@ -296,7 +332,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "dryForest" });
-                handlerClickOnGraph({ chartType: "dryForestPAConn" });
+                this.clickOnGraph("dryForestPAConn");
               }}
             />
           </div>
@@ -337,7 +373,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "wetland" });
-                handlerClickOnGraph({ chartType: "wetlandPAConn" });
+                this.clickOnGraph("wetlandPAConn");
               }}
             />
           </div>
@@ -367,6 +403,58 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       </div>
     );
   }
+
+  clickOnGraph = async (layerId: string) => {
+    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
+      .context as SearchContextValues;
+
+    let layerName: string = "";
+    let layerDescription: string = "";
+
+    switch (layerId) {
+      case "paramoPAConn":
+        layerName = "Páramo";
+        layerDescription = "Conectividad de áreas protegidas - Páramo";
+        break;
+      case "dryForestPAConn":
+        layerName = "Bosque Seco Tropical";
+        layerDescription =
+          "Conectividad de áreas protegidas - Bosque Seco Tropical";
+        break;
+      case "wetlandPAConn":
+        layerName = "Humedal";
+        layerDescription = "Conectividad de áreas protegidas - Humedales";
+        break;
+    }
+
+    if (!this.state.layers.find((layer) => layer.id === layerId)) {
+      setLoadingLayer(true, false);
+      try {
+        const SELayer = await this.CurrentSEPACController.getSELayer(
+          layerId,
+          layerName
+        );
+
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, SELayer],
+          }),
+          () => {
+            setLoadingLayer(false, false);
+          }
+        );
+      } catch (error) {
+        setLoadingLayer(false, true);
+      }
+    }
+
+    const activeLayers = this.state.layers.filter((layer) =>
+      ["geofence", "currentSEPAConn", layerId].includes(layer.id)
+    );
+    setShapeLayers(activeLayers);
+
+    setActiveLayer({ id: layerId, name: layerDescription });
+  };
 }
 
 export default CurrentSEPAConnectivity;

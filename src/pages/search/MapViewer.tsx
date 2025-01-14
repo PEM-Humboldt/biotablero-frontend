@@ -15,16 +15,11 @@ import {
 import DrawControl from "pages/search/mapViewer/DrawControl";
 
 import "leaflet/dist/leaflet.css";
-import {
-  GeoJSONOptions,
-  LatLngBoundsExpression,
-  LatLngBoundsLiteral,
-  PathOptions,
-} from "leaflet";
+import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/drawer";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import * as geojson from "geojson";
+import { shapeLayer } from "pages/search/types/layers";
 
 interface Props {
   drawPolygonEnabled: boolean;
@@ -36,13 +31,7 @@ interface Props {
   rasterBounds: LatLngBoundsExpression;
   polygon: PolygonType;
   loadPolygonInfo: () => void;
-  layers: Array<{
-    paneLevel: number;
-    id: string;
-    json: geojson.GeoJsonObject | geojson.GeoJsonObject[];
-    layerStyle?: PathOptions;
-    onEachFeature: GeoJSONOptions["onEachFeature"];
-  }>;
+  layers: Array<shapeLayer>;
   rasterLayers: Array<{
     paneLevel: number;
     id: string;
@@ -110,13 +99,21 @@ class MapViewer extends React.Component<Props, State> {
       drawPolygonEnabled,
       loadPolygonInfo,
     } = this.props;
-    const { rasterLayers } = this.context as SearchContextValues;
+    //TODO Borrar searchRasterLayers al finalizar la migracion
+    //Trabajar igual los shapeLayers
+    const { rasterLayers, shapeLayers } = this.context as SearchContextValues;
+
     const { openErrorModal } = this.state;
 
     const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
+    const totalShapeLayers = [...shapeLayers, ...layers];
 
     const paneLevels = Array.from(
-      new Set([...layers, ...totalRasterLayers].map((layer) => layer.paneLevel))
+      new Set(
+        [...totalShapeLayers, ...totalRasterLayers].map(
+          (layer) => layer.paneLevel
+        )
+      )
     );
 
     return (
@@ -181,7 +178,7 @@ class MapViewer extends React.Component<Props, State> {
         />
         {paneLevels.map((panelLevel, index) => (
           <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
-            {layers
+            {totalShapeLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => (
                 <GeoJSON

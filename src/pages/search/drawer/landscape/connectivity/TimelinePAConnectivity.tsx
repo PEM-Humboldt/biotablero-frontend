@@ -15,6 +15,8 @@ import { textsObject } from "pages/search/types/texts";
 import BackendAPI from "utils/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
+import { TimelinePAConnectivityController } from "pages/search/drawer/landscape/connectivity/TimelinePAConnectivityController";
+import { shapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   prot: "Protegida",
@@ -32,6 +34,7 @@ interface timelinePAConnState {
   texts: {
     paConnTimeline: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 class TimelinePAConnectivity extends React.Component<
   Props,
@@ -39,9 +42,11 @@ class TimelinePAConnectivity extends React.Component<
 > {
   static contextType = SearchContext;
   mounted = false;
+  TimelinePACController;
 
   constructor(props: Props) {
     super(props);
+    this.TimelinePACController = new TimelinePAConnectivityController();
     this.state = {
       showInfoGraph: true,
       timelinePAConnData: [],
@@ -49,15 +54,21 @@ class TimelinePAConnectivity extends React.Component<
       texts: {
         paConnTimeline: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
 
-    switchLayer("timelinePAConn");
+    this.TimelinePACController.setArea(areaId, geofenceId.toString());
 
     Promise.all([
       BackendAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
@@ -89,10 +100,36 @@ class TimelinePAConnectivity extends React.Component<
         }
       })
       .catch(() => {});
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "timelinePAConn",
+      name: "Conectividad de áreas protegidas",
+    };
+
+    Promise.all([
+      this.TimelinePACController.getGeofence(),
+      this.TimelinePACController.getLayer(),
+    ])
+      .then(([geofenceLayer, timelinePAConn]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, timelinePAConn] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.TimelinePACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**

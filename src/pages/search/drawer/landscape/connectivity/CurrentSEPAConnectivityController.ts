@@ -1,17 +1,14 @@
-import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
-import { DPC } from "pages/search/types/connectivity";
-import formatNumber from "utils/format";
-import { SmallBarTooltip } from "pages/search/types/charts";
-import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
+import RestAPI from "utils/restAPI";
 import {
   shapeLayer,
   connectivityFeaturePropierties,
 } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { RestAPIObject } from "pages/search/types/api";
+import formatNumber from "utils/format";
 
-export class CurrentPAConnectivityController {
+export class CurrentSEPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
   activeRequests: Map<any, any> = new Map();
@@ -24,53 +21,12 @@ export class CurrentPAConnectivityController {
   }
 
   /**
-   * Transform data structure to be passed to component as a prop
-   *
-   * @param {Array<DPC>} rawData raw data from RestAPI
-   *
-   * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
-   */
-  getGraphData(rawData: Array<DPC>) {
-    const tooltips: Array<SmallBarTooltip> = [];
-    const categories: Set<string> = new Set();
-    const transformedData: Array<SmallBarsData> = rawData.map((pa) => {
-      const object = {
-        group: pa.id,
-        data: [
-          {
-            category: pa.key,
-            value: pa.value,
-          },
-        ],
-      };
-
-      tooltips.push({
-        group: pa.id,
-        category: pa.key,
-        tooltipContent: [
-          pa.name,
-          `${formatNumber(pa.value, 2)}`,
-          `${formatNumber(pa.area, 2)} ha`,
-        ],
-      });
-
-      if (!categories.has(pa.key)) {
-        categories.add(pa.key);
-      }
-
-      return object;
-    });
-
-    return { transformedData, keys: Array.from(categories), tooltips };
-  }
-
-  /**
    * Get shape layers in GeoJSON format for a connectivity component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getLayer = async (): Promise<shapeLayer> => {
-    const layerId = "currentPAConn";
+    const layerId = "currentSEPAConn";
 
     const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
@@ -127,6 +83,37 @@ export class CurrentPAConnectivityController {
     const layerData = {
       id: layerId,
       paneLevel: 1,
+      json: res,
+      layerStyle: layerStyle,
+    };
+
+    return layerData;
+  };
+
+  getSELayer = async (
+    layerId: string,
+    layerName: string
+  ): Promise<shapeLayer> => {
+    const reqPromise: RestAPIObject = BackendAPI.requestPAConnSELayer(
+      this.areaType ?? "",
+      this.areaId ?? "",
+      layerName
+    );
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(layerId, source);
+    const res = await request;
+    this.activeRequests.delete(layerId);
+
+    const layerStyle = () => ({
+      stroke: false,
+      fillColor: matchColor(layerId)(),
+      fillOpacity: 0.6,
+    });
+
+    const layerData = {
+      id: layerId,
+      paneLevel: 2,
       json: res,
       layerStyle: layerStyle,
     };

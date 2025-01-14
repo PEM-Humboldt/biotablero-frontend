@@ -16,6 +16,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/drawer/landscape/connectivity/CurrentPAConnectivityController";
+import { shapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -50,6 +51,7 @@ interface currentPAConnState {
     paConnCurrent: textsObject;
     paConnDPC: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
@@ -59,6 +61,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   constructor(props: Props) {
     super(props);
     this.CPACController = new CurrentPAConnectivityController();
+    this.mounted = false;
     this.state = {
       infoShown: new Set(["current"]),
       currentPAConnData: [],
@@ -72,15 +75,20 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         paConnCurrent: { info: "", cons: "", meto: "", quote: "" },
         paConnDPC: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
-
-    switchLayer("currentPAConn");
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
+    this.CPACController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestCurrentPAConnectivity(areaId, geofenceId)
       .then((res: Array<currentPAConn>) => {
@@ -151,10 +159,36 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           }));
         });
     });
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "currentPAConn",
+      name: "Conectividad de áreas protegidas",
+    };
+
+    Promise.all([
+      this.CPACController.getGeofence(),
+      this.CPACController.getLayer(),
+    ])
+      .then(([geofenceLayer, currentPAConn]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, currentPAConn] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.CPACController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   toggleInfo = (value: string) => {
@@ -170,8 +204,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       currentPAConnData,
       dpcData,
@@ -262,9 +295,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               tooltips={graphData.tooltips}
               message={dpcMess}
               colors={matchColor("dpc")}
-              onClickHandler={(selected: string) =>
-                handlerClickOnGraph({ selectedKey: selected })
-              }
+              onClickHandler={(selected: string) => {
+                this.highlightFeature(selected);
+              }}
               margin={{
                 bottom: 50,
                 left: 40,
@@ -297,6 +330,23 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       </div>
     );
   }
+
+  /**
+   * Highlight an specific feature of the Currenta PA layer
+   *
+   * @param {string} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "currentPAConn") {
+        layer.layerStyle = this.CPACController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+  };
 }
 
 export default CurrentPAConnectivity;
