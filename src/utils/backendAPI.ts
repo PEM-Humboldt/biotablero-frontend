@@ -591,6 +591,25 @@ class BackendAPI {
     };
   }
 
+  /**
+   * Get the geometry associated for the current human footprint in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {RestAPIObject} layer object to be loaded in the map
+   */
+  static requestCurrentHFLayer(areaType: string, areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/hf/layers/current/categories`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
