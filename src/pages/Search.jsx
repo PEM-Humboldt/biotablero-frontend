@@ -1339,19 +1339,12 @@ class Search extends Component {
     this.cancelActiveRequests();
     let unsetLayers = [
       'fc',
-      'hfCurrent',
       'hfPersistence',
       'paramo',
       'dryForest',
       'wetland',
       'geofence',
       'forestIntegrity',
-      'currentPAConn',
-      'timelinePAConn',
-      'currentSEPAConn',
-      'paramoPAConn',
-      'dryForestPAConn',
-      'wetlandPAConn',
     ];
     this.mapBounds = null;
     this.setState((prevState) => {
