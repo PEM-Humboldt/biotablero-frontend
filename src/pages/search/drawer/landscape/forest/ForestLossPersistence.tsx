@@ -115,10 +115,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     const graphData = this.flpController.getGraphData(forestLP);
 
-    const selectedIndex =
-      searchType === "drawPolygon" && forestLP.length > 0
-        ? forestLP[forestLP.length - 1].id
-        : this.currentPeriod;
+    const selectedIndex = this.currentPeriod;
 
     return (
       <div className="graphcontainer pt6">
