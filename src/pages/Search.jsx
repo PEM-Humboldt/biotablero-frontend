@@ -961,8 +961,6 @@ class Search extends Component {
           rasterLayerOpts.push({ id: `portfoliosCA|${targetName}|${portfolioId}`, paneLevel: 2 });
         });
       }
-    } else if(sectionName === 'drawPolygon') {
-      polygonLayerOpts=[{id:'drawnPolygon', fill: rasterUrls.length === 0}];
     }
 
     if (shapeLayerOpts.length <= 0 && rasterLayerOpts.length <= 0 && polygonLayerOpts.length <= 0) {
@@ -993,9 +991,6 @@ class Search extends Component {
         }
         if (rasterLayers.every((e) => e === null)) {
           this.reportDataError();
-        }
-        if (searchType === "drawPolygon") {
-          this.geofenceBounds = polygonBounds;
         }
 
         if (this.geofenceBounds !== null) {
@@ -1103,7 +1098,6 @@ class Search extends Component {
       case 'speciesRecordsGaps':
       case 'hfPersistence':
       case 'hfTimeline':
-      case 'drawPolygon':
         this.setSectionLayers(layerType);
         return;
       // Current progress of the refactor

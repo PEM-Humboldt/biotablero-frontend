@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { RasterAPIObject } from "pages/search/types/api";
 import { polygonFeature } from "pages/search/types/drawer";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 
@@ -7,7 +8,7 @@ class SearchAPI {
    * Get the list of current scripts.
    */
   static requestTestBackend(): Promise<Array<String>> {
-    return SearchAPI.makeGetRequest(`docs`);
+    return SearchAPI.makeGetRequest(`redoc`);
   }
 
   /**
@@ -27,8 +28,7 @@ class SearchAPI {
     return SearchAPI.makePostRequest(
       "metrics/LossPersistence/values",
       requestBody,
-      { responseType: "json" },
-      false
+      { responseType: "json" }
     );
   }
 
@@ -38,23 +38,25 @@ class SearchAPI {
    * @param {String} period item id to get
    * @param {Number} category index of the category to get
    * @param {Polygon} polygon selected polygon in GEOJson format
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @param {String} category;
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
 
   static requestForestLPLayer(
     period: string,
     category: number,
-    polygon: polygonFeature | null
-  ): { request: Promise<any> } {
+    polygon: polygonFeature
+  ): RasterAPIObject {
     const requestBody = { polygon };
+    const source = axios.CancelToken.source();
 
     return {
       request: SearchAPI.makePostRequest(
         `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
         requestBody,
-        { responseType: "json" },
-        true
+        { responseType: "json" }
       ),
+      source,
     };
   }
 
@@ -99,14 +101,8 @@ class SearchAPI {
    * @param {String} endpoint endpoint to attach to url
    * @param {Object} requestBody JSON object with the request body
    * @param {Array} options config params to the request
-   * @param {Boolean} completeRes define if get all the response or only data part
    */
-  static makePostRequest(
-    endpoint: string,
-    requestBody: {},
-    options = {},
-    completeRes = false
-  ) {
+  static makePostRequest(endpoint: string, requestBody: {}, options = {}) {
     const config: AxiosRequestConfig = {
       headers: {
         "Content-Type": "application/json",
@@ -119,12 +115,7 @@ class SearchAPI {
         requestBody,
         config
       )
-      .then((res) => {
-        if (completeRes) {
-          return res;
-        }
-        return res.data;
-      })
+      .then((res) => res.data)
       .catch((error) => {
         let message = "Bad POST response. Try later";
         if (error.response) message = error.response.status;

@@ -1,5 +1,5 @@
 import axios, { CancelToken } from 'axios';
-import { RestAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
 
 class RestAPI {
   /**
@@ -165,7 +165,7 @@ class RestAPI {
    * @param {String} areaId area id to request
    * @param {String} geofenceId geofence id to request
    *
-   * @return {RestAPIObject} layer object to be loaded in the map
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
   static requestGeofenceGeometryByArea(areaId, geofenceId) {
     const source = CancelToken.source();

@@ -8,7 +8,7 @@ import {
   ForestLPExt,
   ForestLPRawDataPolygon,
   ForestLPKeys,
-  ForestLayerResponse,
+  ForestLPCategories,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
@@ -17,6 +17,7 @@ import { polygonFeature } from "pages/search/types/drawer";
 import RestAPI from "utils/restAPI";
 import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/SearchContext";
+import { CancelTokenSource } from "axios";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -28,6 +29,7 @@ export class ForestLossPersistenceController {
   areaType: string | null = null;
   areaId: string | null = null;
   polygon: polygonFeature | null = null;
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
@@ -229,57 +231,68 @@ export class ForestLossPersistenceController {
   }
 
   async getLayers(period: string): Promise<Array<rasterLayer>> {
-    // Assume that Search loaded the geofence shape in the context
-    // TODO: Figure out how to cancel the request if necessary
     if (this.areaType && this.areaId) {
-      try {
-        const res = await Promise.all(
-          ForestLPKeys.map(
-            (category) =>
-              RestAPI.requestForestLPLayer(
-                this.areaType ?? "",
-                this.areaId ?? "",
-                period,
-                category
-              ).request
-          )
+      const requests: Array<Promise<any>> = [];
+      ForestLPKeys.forEach((category) => {
+        const { request, source } = RestAPI.requestForestLPLayer(
+          this.areaType ?? "",
+          this.areaId ?? "",
+          period,
+          category
         );
-        // Manejo de errores / mostrar modal o mno
-        return ForestLPKeys.map((category, idx) => ({
-          id: category,
-          data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-            res[idx].data
-          )}`,
+        requests.push(request);
+        this.activeRequests.set(`${period}-${category}`, source);
+      });
+
+      const res = await Promise.all(requests);
+
+      ForestLPKeys.forEach((category) => {
+        this.activeRequests.delete(`${period}-${category}`);
+      });
+
+      if (res.includes("request canceled")) throw Error("request canceled");
+
+      return ForestLPKeys.map((category, idx) => ({
+        id: category,
+        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
+          res[idx].data
+        )}`,
+        selected: false,
+        paneLevel: 2,
+      }));
+    } else if (this.polygon) {
+      const requests: Array<Promise<{ layer: string }>> = [];
+      ForestLPKeys.forEach((category) => {
+        const { request, source } = SearchAPI.requestForestLPLayer(
+          period,
+          ForestLPCategories[category],
+          this.polygon!
+        );
+        requests.push(request);
+        this.activeRequests.set(`${period}-${category}`, source);
+      });
+      const res = await Promise.all(requests);
+
+      return res.map((response, idx) => {
+        const base64Image = response.layer;
+        return {
+          id: `${period}-${ForestLPKeys[idx]}`,
+          data: `data:image/png;base64,${base64Image}`,
           selected: false,
           paneLevel: 2,
-        }));
-      } catch (error) {
-        // TODO: handle error
-        throw error;
-      }
-    } else if (this.polygon) {
-      try {
-        const res = await Promise.all(
-          ForestLPKeys.map(
-            (_, idx) =>
-              SearchAPI.requestForestLPLayer(period, idx, this.polygon).request
-          )
-        );
-
-        return res.flatMap((response, idx) => {
-          const images = response.data.images;
-          return Object.entries(images).map(([imageKey, base64Data]) => ({
-            id: `${ForestLPKeys[idx]}-${imageKey}`,
-            data: `data:image/png;base64,${base64Data}`,
-            selected: false,
-            paneLevel: 2,
-          }));
-        });
-      } catch (error) {
-        console.error("Error al cargar la capa basada en polígono:", error);
-        throw new Error("Failed to load polygon-based layer");
-      }
+        };
+      });
     }
     throw Error("Polygon and area undefined");
   }
+
+  /**
+   * Send the cancel signal to all active requests and remove them from the map
+   */
+  cancelActiveRequests = () => {
+    this.activeRequests.forEach((value, key) => {
+      value.cancel();
+      this.activeRequests.delete(key);
+    });
+  };
 }

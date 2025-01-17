@@ -5,13 +5,14 @@ import {
   connectivityFeaturePropierties,
 } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
-import { RestAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
 import formatNumber from "utils/format";
+import { CancelTokenSource } from "axios";
 
 export class CurrentSEPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
-  activeRequests: Map<any, any> = new Map();
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
@@ -28,7 +29,7 @@ export class CurrentSEPAConnectivityController {
   getLayer = async (): Promise<shapeLayer> => {
     const layerId = "currentSEPAConn";
 
-    const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
+    const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
       this.areaId ?? ""
     );
@@ -64,7 +65,7 @@ export class CurrentSEPAConnectivityController {
   getGeofence = async (): Promise<shapeLayer> => {
     const layerId = "geofence";
 
-    const reqPromise: RestAPIObject = RestAPI.requestGeofenceGeometryByArea(
+    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
       this.areaType ?? "",
       this.areaId ?? ""
     );
@@ -94,7 +95,7 @@ export class CurrentSEPAConnectivityController {
     layerId: string,
     layerName: string
   ): Promise<shapeLayer> => {
-    const reqPromise: RestAPIObject = BackendAPI.requestPAConnSELayer(
+    const reqPromise: ShapeAPIObject = BackendAPI.requestPAConnSELayer(
       this.areaType ?? "",
       this.areaId ?? "",
       layerName
