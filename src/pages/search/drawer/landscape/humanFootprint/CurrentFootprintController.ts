@@ -94,32 +94,23 @@ export class CurrentFootprintController {
    *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    const tooltipLabel = {
+    type TooltipLabel = Record<"natural" | "baja" | "media" | "alta", string>;
+
+    const tooltipLabel: TooltipLabel = {
       natural: "Natural",
       baja: "Baja",
       media: "Media",
       alta: "Alta",
-      estable_natural: "Estable Natural",
-      dinamica: "Dinámica",
-      estable_alta: "Estable Alta",
-      aTotal: "Total",
-      paramo: "Páramo",
-      wetland: "Humedal",
-      dryForest: "Bosque Seco Tropical",
-      perdida: "Pérdida",
-      persistencia: "Persistencia",
-      ganancia: "Ganancia",
-      no_bosque: "No bosque",
-      scialta: "Alto",
-      scibaja_moderada: "Bajo Moderado",
     };
 
     const feature = event.target;
     const optionsTooltip = { sticky: true };
 
+    const key = feature.feature.properties.key as keyof TooltipLabel;
+
     feature
       .bindTooltip(
-        `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
+        `<b>${tooltipLabel[key]}:</b>
         <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
         optionsTooltip
       )
@@ -151,11 +142,13 @@ export class CurrentFootprintController {
    */
   setLayerStyle =
     (selectedKey = "") =>
-    (feature?: { properties: { key: any; id: string } }) => ({
-      stroke: false,
-      fillColor: matchColor("hfCurrent")(feature?.properties.key),
-      fillOpacity: feature?.properties.id === selectedKey ? 1 : 0.6,
-    });
+    (feature?: { properties: { key: string; id: string } }) => {
+      return {
+        stroke: false,
+        fillColor: matchColor("hfCurrent")(feature?.properties.key),
+        fillOpacity: feature?.properties.key === selectedKey ? 1 : 0.6,
+      };
+    };
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

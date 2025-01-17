@@ -195,9 +195,9 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
             units="ha"
             colors={matchColor("hfCurrent")}
             padding={0.25}
-            onClickGraphHandler={(selected) =>
-              handlerClickOnGraph({ selectedKey: selected })
-            }
+            onClickGraphHandler={(selected: string) => {
+              this.highlightFeature(selected);
+            }}
           />
         </div>
         <TextBoxes
@@ -212,6 +212,23 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       </div>
     );
   }
+
+  /**
+   * Highlight an specific feature of the Currenta PA layer
+   *
+   * @param {string} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "hfCurrent") {
+        layer.layerStyle = this.CurrentHFController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+  };
 }
 
 export default CurrentFootprint;
