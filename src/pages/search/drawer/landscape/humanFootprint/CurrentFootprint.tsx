@@ -16,6 +16,8 @@ import {
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { CurrentFootprintController } from "pages/search/drawer/landscape/humanFootprint/CurrentFootprintController";
+import { shapeLayer } from "pages/search/types/layers";
 
 interface currentHFCategoriesExt extends currentHFCategories {
   label: string;
@@ -31,13 +33,16 @@ interface currentHFState {
   texts: {
     hfCurrent: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 class CurrentFootprint extends React.Component<Props, currentHFState> {
   mounted = false;
+  CurrentHFController;
 
   constructor(props: Props) {
     super(props);
+    this.CurrentHFController = new CurrentFootprintController();
     this.state = {
       showInfoGraph: true,
       hfCurrent: [],
@@ -47,15 +52,21 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       texts: {
         hfCurrent: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
 
-    switchLayer("hfCurrent");
+    this.CurrentHFController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestCurrentHFValue(areaId, geofenceId)
       .then((res: currentHFValue) => {
@@ -95,10 +106,36 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
           texts: { hfCurrent: { info: "", cons: "", meto: "", quote: "" } },
         });
       });
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "hfCurrent",
+      name: "HH promedio · 2018'",
+    };
+
+    Promise.all([
+      this.CurrentHFController.getGeofence(),
+      this.CurrentHFController.getLayer(),
+    ])
+      .then(([geofenceLayer, hfCurrent]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, hfCurrent] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.CurrentHFController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -158,9 +195,9 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
             units="ha"
             colors={matchColor("hfCurrent")}
             padding={0.25}
-            onClickGraphHandler={(selected) =>
-              handlerClickOnGraph({ selectedKey: selected })
-            }
+            onClickGraphHandler={(selected: string) => {
+              this.highlightFeature(selected);
+            }}
           />
         </div>
         <TextBoxes
@@ -175,6 +212,23 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       </div>
     );
   }
+
+  /**
+   * Highlight an specific feature of the Currenta PA layer
+   *
+   * @param {string} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "hfCurrent") {
+        layer.layerStyle = this.CurrentHFController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+  };
 }
 
 export default CurrentFootprint;
