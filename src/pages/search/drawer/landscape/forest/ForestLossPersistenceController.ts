@@ -26,8 +26,8 @@ interface ForestLPData {
 }
 
 export class ForestLossPersistenceController {
-  areaType: string | null = null;
-  areaId: string | null = null;
+  areaType: string = "";
+  areaId: string = "";
   polygon: polygonFeature | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
@@ -65,24 +65,17 @@ export class ForestLossPersistenceController {
   /**
    * Returns forest LP data and persistence value in a given area
    *
-   * @param areaType area type
-   * @param areaId area id
    * @param latestPeriod string with range of years for latest period
    * @param searchType string to identify the type of search
-   * @param polygon Coordinates of polygon
    *
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (
-    // TODO: take these parameters from the class attributes*
-    areaType: string,
-    areaId: string | number,
     latestPeriod: string,
-    searchType: "definedArea" | "drawPolygon",
-    polygon: polygonFeature | null
+    searchType: "definedArea" | "drawPolygon"
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
-      return SearchAPI.requestForestLPData(polygon)
+      return SearchAPI.requestForestLPData(this.polygon)
         .then((data: ForestLPRawDataPolygon[]) => {
           const rawData: Array<ForestLPRawDataPolygon> = data;
           const {
@@ -108,6 +101,10 @@ export class ForestLossPersistenceController {
             ? latestPeriodData.persistencia
             : rawData[rawData.length - 1].persistencia;
 
+          // There is no logical reason to do this, but if you don't, only in this case (I don't
+          // know if it's when drawing a polygon or when using the new backend and response
+          // structure) the periods are reversed after being passed to the nivo component
+          forestLP.reverse();
           return {
             forestLP,
             forestPersistenceValue,
@@ -118,7 +115,7 @@ export class ForestLossPersistenceController {
           throw new Error("Error getting data");
         });
     } else {
-      return BackendAPI.requestForestLP(areaType, areaId)
+      return BackendAPI.requestForestLP(this.areaType, this.areaId)
         .then((data) => {
           const forestLP = data.map((item) => ({
             ...item,
