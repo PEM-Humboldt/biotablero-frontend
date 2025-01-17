@@ -358,7 +358,6 @@ class Search extends Component {
           optionsTooltip,
         ).openTooltip();
         break;
-      case 'hfCurrent':
       case 'hfPersistence':
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
@@ -633,11 +632,6 @@ class Search extends Component {
           layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
         }
         break;
-      case 'hfCurrent':
-        reqPromise = () => RestAPI.requestCurrentHFGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        break;
       case 'hfPersistence':
         reqPromise = () => RestAPI.requestHFPersistenceGeometry(
           selectedAreaTypeId, selectedAreaId,
@@ -865,9 +859,6 @@ class Search extends Component {
       ];
       newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
-    } else if (sectionName === 'hfCurrent') {
-      shapeLayerOpts = [{ id: 'hfCurrent', paneLevel: 1 }];
-      newActiveLayer.name = 'HH promedio · 2018';
     } else if (sectionName === 'hfPersistence') {
       shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
       newActiveLayer.name = 'HH - Persistencia';
@@ -1110,7 +1101,6 @@ class Search extends Component {
     switch (layerType) {
       case 'coverages':
       case 'speciesRecordsGaps':
-      case 'hfCurrent':
       case 'hfPersistence':
       case 'hfTimeline':
       case 'drawPolygon':
