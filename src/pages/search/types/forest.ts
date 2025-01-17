@@ -40,12 +40,3 @@ export interface ForestLPRawDataPolygon {
   persistencia: number;
   no_bosque: number;
 }
-
-export interface ForestLayerResponse {
-  data: {
-    images: Record<string, string>;
-  };
-  headers: {
-    "content-type": string;
-  };
-}
