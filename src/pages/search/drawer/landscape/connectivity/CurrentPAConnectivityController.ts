@@ -9,12 +9,13 @@ import {
   connectivityFeaturePropierties,
 } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
-import { RestAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
+import { CancelTokenSource } from "axios";
 
 export class CurrentPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
-  activeRequests: Map<any, any> = new Map();
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
@@ -72,7 +73,7 @@ export class CurrentPAConnectivityController {
   getLayer = async (): Promise<shapeLayer> => {
     const layerId = "currentPAConn";
 
-    const reqPromise: RestAPIObject = BackendAPI.requestDPCLayer(
+    const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
       this.areaId ?? ""
     );
@@ -108,7 +109,7 @@ export class CurrentPAConnectivityController {
   getGeofence = async (): Promise<shapeLayer> => {
     const layerId = "geofence";
 
-    const reqPromise: RestAPIObject = RestAPI.requestGeofenceGeometryByArea(
+    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
       this.areaType ?? "",
       this.areaId ?? ""
     );

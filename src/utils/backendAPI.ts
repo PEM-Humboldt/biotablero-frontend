@@ -31,6 +31,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/drawer";
+import { ShapeAPIObject } from "pages/search/types/api";
 class BackendAPI {
   /** ****** */
   /** FOREST */
@@ -549,13 +550,13 @@ class BackendAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {Number} paNumber number of protected areas to request, f.e. 5
    *
-   * @return {RestAPIObject} layer object to be loaded in the map
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
   static requestDPCLayer(
     areaType: string,
     areaId: string,
     paNumber = undefined
-  ) {
+  ): ShapeAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
@@ -574,7 +575,7 @@ class BackendAPI {
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    * @param {String} seType strategic ecosystem type to request geometry
    *
-   * @return {RestAPIObject} layer object to be loaded in the map
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
   static requestPAConnSELayer(
     areaType: string,

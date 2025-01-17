@@ -39,7 +39,7 @@ class SearchAPI {
    * @param {Number} category index of the category to get
    * @param {Polygon} polygon selected polygon in GEOJson format
    * @param {String} category;
-   * @return {RestAPIObject} layer object to be loaded in the map
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
 
   static requestForestLPLayer(
