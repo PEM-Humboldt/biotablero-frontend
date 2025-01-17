@@ -7,11 +7,12 @@ import {
 import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import formatNumber from "utils/format";
+import { CancelTokenSource } from "axios";
 
 export class CurrentSEPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
-  activeRequests: Map<any, any> = new Map();
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
