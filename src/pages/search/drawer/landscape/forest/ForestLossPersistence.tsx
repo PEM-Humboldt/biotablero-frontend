@@ -98,8 +98,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    const { setRasterLayers } = this.context as SearchContextValues;
     this.mounted = false;
+    this.flpController.cancelActiveRequests();
+    const { setRasterLayers } = this.context as SearchContextValues;
     setRasterLayers([]);
   }
 
@@ -207,6 +208,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
   switchLayer = (period: string) => {
     const { setRasterLayers, setLoadingLayer } = this
       .context as SearchContextValues;
+
     setLoadingLayer(true, false);
     this.flpController
       .getLayers(period)
@@ -216,8 +218,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
           setLoadingLayer(false, false);
         }
       })
-      .catch(() => {
-        setLoadingLayer(false, true);
+      .catch((e) => {
+        if (e.toString() != "Error: request canceled") {
+          setLoadingLayer(false, true);
+        }
       });
   };
 }

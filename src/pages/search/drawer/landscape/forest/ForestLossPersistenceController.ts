@@ -17,6 +17,7 @@ import { polygonFeature } from "pages/search/types/drawer";
 import RestAPI from "utils/restAPI";
 import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/SearchContext";
+import { CancelTokenSource } from "axios";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -28,6 +29,7 @@ export class ForestLossPersistenceController {
   areaType: string | null = null;
   areaId: string | null = null;
   polygon: polygonFeature | null = null;
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
@@ -229,20 +231,27 @@ export class ForestLossPersistenceController {
   }
 
   async getLayers(period: string): Promise<Array<rasterLayer>> {
-    // TODO: Figure out how to cancel the request if necessary
     if (this.areaType && this.areaId) {
-      const res = await Promise.all(
-        ForestLPKeys.map(
-          (category) =>
-            RestAPI.requestForestLPLayer(
-              this.areaType ?? "",
-              this.areaId ?? "",
-              period,
-              category
-            ).request
-        )
-      );
-      // Manejo de errores / mostrar modal o mno
+      const requests: Array<Promise<any>> = [];
+      ForestLPKeys.forEach((category) => {
+        const { request, source } = RestAPI.requestForestLPLayer(
+          this.areaType ?? "",
+          this.areaId ?? "",
+          period,
+          category
+        );
+        requests.push(request);
+        this.activeRequests.set(`${period}-${category}`, source);
+      });
+
+      const res = await Promise.all(requests);
+
+      ForestLPKeys.forEach((category) => {
+        this.activeRequests.delete(`${period}-${category}`);
+      });
+
+      if (res.includes("request canceled")) throw Error("request canceled");
+
       return ForestLPKeys.map((category, idx) => ({
         id: category,
         data: `data:${res[idx].headers["content-type"]};base64, ${base64(
@@ -252,16 +261,17 @@ export class ForestLossPersistenceController {
         paneLevel: 2,
       }));
     } else if (this.polygon) {
-      const res = await Promise.all(
-        ForestLPKeys.map(
-          (category) =>
-            SearchAPI.requestForestLPLayer(
-              period,
-              ForestLPCategories[category],
-              this.polygon!
-            ).request
-        )
-      );
+      const requests: Array<Promise<{ layer: string }>> = [];
+      ForestLPKeys.forEach((category) => {
+        const { request, source } = SearchAPI.requestForestLPLayer(
+          period,
+          ForestLPCategories[category],
+          this.polygon!
+        );
+        requests.push(request);
+        this.activeRequests.set(`${period}-${category}`, source);
+      });
+      const res = await Promise.all(requests);
 
       return res.map((response, idx) => {
         const base64Image = response.layer;
@@ -275,4 +285,14 @@ export class ForestLossPersistenceController {
     }
     throw Error("Polygon and area undefined");
   }
+
+  /**
+   * Send the cancel signal to all active requests and remove them from the map
+   */
+  cancelActiveRequests = () => {
+    this.activeRequests.forEach((value, key) => {
+      value.cancel();
+      this.activeRequests.delete(key);
+    });
+  };
 }
