@@ -4,11 +4,12 @@ import BackendAPI from "utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { RestAPIObject } from "pages/search/types/api";
+import { CancelTokenSource } from "axios";
 
 export class CurrentFootprintController {
-  areaType: string | null = null;
-  areaId: string | null = null;
-  activeRequests: Map<any, any> = new Map();
+  areaType: string = "";
+  areaId: string = "";
+  activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
 
@@ -18,7 +19,7 @@ export class CurrentFootprintController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for a connectivity component
+   * Get shape layers in GeoJSON format for current human footprint component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
@@ -26,8 +27,8 @@ export class CurrentFootprintController {
     const layerId = "hfCurrent";
 
     const reqPromise: RestAPIObject = BackendAPI.requestCurrentHFLayer(
-      this.areaType ?? "",
-      this.areaId ?? ""
+      this.areaType,
+      this.areaId
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -62,8 +63,8 @@ export class CurrentFootprintController {
     const layerId = "geofence";
 
     const reqPromise: RestAPIObject = RestAPI.requestGeofenceGeometryByArea(
-      this.areaType ?? "",
-      this.areaId ?? ""
+      this.areaType,
+      this.areaId
     );
 
     const layerStyle = () => ({
