@@ -598,13 +598,60 @@ class BackendAPI {
    * @param {String} areaType area type id, f.e. "ea", "states"
    * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
    *
-   * @return {RestAPIObject} layer object to be loaded in the map
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
   static requestCurrentHFLayer(areaType: string, areaId: number | string) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `${areaType}/${areaId}/hf/layers/current/categories`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the structural condition index with human footprint persistence
+   * in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFGLayer(areaType: string, areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated to protected areas in a given combination of structural condition
+   * index and human footprint persistence in an specific area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} sciCat sci category
+   * @param {String} hfPers hf persistence category
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFPALayer(
+    areaType: string,
+    areaId: string | number,
+    sciCat: string,
+    hfPers: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`,
         { cancelToken: source.token }
       ),
       source,

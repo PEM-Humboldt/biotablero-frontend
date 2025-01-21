@@ -271,42 +271,6 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated for the structural condition index with human footprint persistence
-   * in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestSCIHFGeometry(areaType, areaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the geometry associated to protected areas in a given combination of structural condition
-   * index and human footprint persistence in an specific area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} sciCat sci category
-   * @param {String} hfPers hf persistence category
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestSCIHFPAGeometry(areaType, areaId, sciCat, hfPers) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * Get the layer associated to a category and period of forest loss and persistence
    * in a given area
    *
