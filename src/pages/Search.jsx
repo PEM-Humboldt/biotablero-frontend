@@ -103,7 +103,6 @@ class Search extends Component {
    */
   // TODO: "Clear when all components handle layers directly"
   setLoadingLayer =  (loading, error) => {
-    this.shutOffLayer();
     this.setState({
       loadingLayer: loading,
       layerError: error,
