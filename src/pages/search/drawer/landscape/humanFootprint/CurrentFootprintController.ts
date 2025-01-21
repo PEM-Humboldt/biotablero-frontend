@@ -3,7 +3,7 @@ import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
-import { RestAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
 export class CurrentFootprintController {
@@ -26,7 +26,7 @@ export class CurrentFootprintController {
   getLayer = async (): Promise<shapeLayer> => {
     const layerId = "hfCurrent";
 
-    const reqPromise: RestAPIObject = BackendAPI.requestCurrentHFLayer(
+    const reqPromise: ShapeAPIObject = BackendAPI.requestCurrentHFLayer(
       this.areaType,
       this.areaId
     );
@@ -62,7 +62,7 @@ export class CurrentFootprintController {
   getGeofence = async (): Promise<shapeLayer> => {
     const layerId = "geofence";
 
-    const reqPromise: RestAPIObject = RestAPI.requestGeofenceGeometryByArea(
+    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
       this.areaType,
       this.areaId
     );
