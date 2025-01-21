@@ -19,6 +19,8 @@ import { textsObject } from "pages/search/types/texts";
 import Pie from "pages/search/shared_components/charts/Pie";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { shapeLayer } from "pages/search/types/layers";
+import { ForestIntegrityController } from "pages/search/drawer/landscape/forest/ForestIntegrityController";
 
 type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
 /**
@@ -62,15 +64,18 @@ interface FIState {
   };
   selectedCategory: SCIHFCats | null;
   loading: wrapperMessage;
+  layers: Array<shapeLayer>;
 }
 
 class ForestIntegrity extends React.Component<Props, FIState> {
   static contextType = SearchContext;
 
   mounted = false;
+  ForestIntegrityController;
 
   constructor(props: Props) {
     super(props);
+    this.ForestIntegrityController = new ForestIntegrityController();
     this.state = {
       showInfoGraph: true,
       SciHfCats: {
@@ -124,15 +129,22 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       },
       selectedCategory: null,
       loading: "loading",
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
 
-    switchLayer("forestIntegrity");
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
+
+    this.ForestIntegrityController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestSCIHF(areaId, geofenceId)
       .then((res: Array<SCIHF>) => {
@@ -195,10 +207,36 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         }
       })
       .catch(() => {});
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "forestIntegrity",
+      name: "Índice de condición estructural de bosques",
+    };
+
+    Promise.all([
+      this.ForestIntegrityController.getGeofence(),
+      this.ForestIntegrityController.getLayer(),
+    ])
+      .then(([geofenceLayer, forestIntegrity]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, forestIntegrity] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.ForestIntegrityController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -219,8 +257,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       loading,
       texts,
     } = this.state;
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -250,12 +287,9 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             data={Object.values(SciHfCats)}
             units="ha"
             colors={matchColor("SciHf")}
-            onClickHandler={(sectionId: string) => {
-              this.setState({ selectedCategory: sectionId as SCIHFCats });
-              handlerClickOnGraph({
-                chartType: "SciHf",
-                selectedKey: sectionId,
-              });
+            onClickHandler={(selected: string) => {
+              this.setState({ selectedCategory: selected as SCIHFCats });
+              this.clickOnGraph(selected);
             }}
           />
           <div className="fiLegend">
@@ -299,6 +333,56 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       </div>
     );
   }
+
+  /**
+   * Highlight an specific feature of the Currenta PA layer
+   *
+   * @param {string} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "forestIntegrity") {
+        layer.layerStyle =
+          this.ForestIntegrityController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+  };
+
+  clickOnGraph = async (selectedKey: string) => {
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
+
+    this.highlightFeature(selectedKey);
+
+    if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
+      setLoadingLayer(true, false);
+      try {
+        const PALayer = await this.ForestIntegrityController.getPALayer(
+          selectedKey
+        );
+
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, PALayer],
+          }),
+          () => {
+            setLoadingLayer(false, false);
+          }
+        );
+      } catch (error) {
+        setLoadingLayer(false, true);
+      }
+    }
+
+    const activeLayers = this.state.layers.filter((layer) =>
+      ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
+    );
+    setShapeLayers(activeLayers);
+  };
 }
 
 export default ForestIntegrity;
