@@ -90,7 +90,7 @@ export class ForestIntegrityController {
   /**
    * Get shape layers in GeoJSON format for protected areas
    *
-   * @param {string} selectedKey Id of the protected area to request
+   * @param {string} selectedKey category for SCI and HF
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
