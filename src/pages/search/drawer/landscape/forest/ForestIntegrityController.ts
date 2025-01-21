@@ -87,6 +87,13 @@ export class ForestIntegrityController {
     return layerData;
   };
 
+  /**
+   * Get shape layers in GeoJSON format for protected areas
+   *
+   * @param {string} selectedKey Id of the protected area to request
+   *
+   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   */
   getPALayer = async (selectedKey: string): Promise<shapeLayer> => {
     const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
     const hfPers = selectedKey.substring(
@@ -138,20 +145,8 @@ export class ForestIntegrityController {
 
     const HFLabels: Record<string, string> = {
       natural: "Natural",
-      baja: "Baja",
-      media: "Media",
-      alta: "Alta",
-      estable_natural: "Estable Natural",
       dinamica: "Dinámica",
-      estable_alta: "Estable Alta",
-      aTotal: "Total",
-      paramo: "Páramo",
-      wetland: "Humedal",
-      dryForest: "Bosque Seco Tropical",
-      perdida: "Pérdida",
-      persistencia: "Persistencia",
-      ganancia: "Ganancia",
-      no_bosque: "No bosque",
+      alta: "Alta",
     };
 
     const feature = event.target;
@@ -179,7 +174,7 @@ export class ForestIntegrityController {
   };
 
   /**
-   * Set the features style, applying an specific Highlight if neccesary
+   * Set the features style, applying an specific Highlight if necessary
    *
    * @param {string} selectedKey Id of the feature to highlight.
    *

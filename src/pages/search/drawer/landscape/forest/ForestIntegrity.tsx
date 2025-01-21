@@ -335,7 +335,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
   }
 
   /**
-   * Highlight an specific feature of the Currenta PA layer
+   * Highlight an specific feature of the forest integrity layer
    *
    * @param {string} selectedKey Id of the feature
    */
@@ -371,17 +371,21 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           }),
           () => {
             setLoadingLayer(false, false);
+            const activeLayers = this.state.layers.filter((layer) =>
+              ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
+            );
+            setShapeLayers(activeLayers);
           }
         );
       } catch (error) {
         setLoadingLayer(false, true);
       }
+    } else {
+      const activeLayers = this.state.layers.filter((layer) =>
+        ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
+      );
+      setShapeLayers(activeLayers);
     }
-
-    const activeLayers = this.state.layers.filter((layer) =>
-      ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
-    );
-    setShapeLayers(activeLayers);
   };
 }
 
