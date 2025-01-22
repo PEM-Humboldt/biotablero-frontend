@@ -101,10 +101,11 @@ export class ForestLossPersistenceController {
             ? latestPeriodData.persistencia
             : rawData[rawData.length - 1].persistencia;
 
-          // There is no logical reason to do this, but if you don't, only in this case (I don't
-          // know if it's when drawing a polygon or when using the new backend and response
-          // structure) the periods are reversed after being passed to the nivo component
-          forestLP.reverse();
+          forestLP.sort((pA, pB) => {
+            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+            return yearA - yearB;
+          });
           return {
             forestLP,
             forestPersistenceValue,
@@ -131,6 +132,11 @@ export class ForestLossPersistenceController {
           );
           const forestPersistenceValue = persistenceData?.area ?? 0;
 
+          forestLP.sort((pA, pB) => {
+            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+            return yearA - yearB;
+          });
           return {
             forestLP,
             forestPersistenceValue,
