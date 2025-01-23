@@ -16,6 +16,8 @@ import { textsObject } from "pages/search/types/texts";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
+import { TimelineFootprintController } from "pages/search/drawer/landscape/humanFootprint/TimelineFootprintController";
+import { shapeLayer } from "pages/search/types/layers";
 
 const changeValues: Array<CartesianMarkerProps> = [
   {
@@ -74,6 +76,7 @@ interface State {
   texts: {
     hfTimeline: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 interface hfTimelineExt extends hfTimeline {
@@ -86,9 +89,11 @@ interface seDetailsExt extends seDetails {
 
 class TimelineFootprint extends React.Component<Props, State> {
   mounted = false;
+  TimelineHFController;
 
   constructor(props: Props) {
     super(props);
+    this.TimelineHFController = new TimelineFootprintController();
     this.state = {
       showInfoGraph: true,
       hfTimeline: [],
@@ -97,6 +102,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       texts: {
         hfTimeline: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
@@ -104,11 +110,14 @@ class TimelineFootprint extends React.Component<Props, State> {
     this.mounted = true;
 
     const {
-      areaType: areaId,
-      areaId: geofenceId,
-      switchLayer,
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
     } = this.context as SearchContextValues;
-    switchLayer("hfTimeline");
+
+    this.TimelineHFController.setArea(areaId, geofenceId.toString());
 
     Promise.all([
       BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
@@ -143,6 +152,29 @@ class TimelineFootprint extends React.Component<Props, State> {
           texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
         });
       });
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "hfPersistence",
+      name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
+    };
+
+    Promise.all([
+      this.TimelineHFController.getGeofence(),
+      this.TimelineHFController.getLayer(),
+    ])
+      .then(([geofenceLayer, hfPersistence]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, hfPersistence] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
