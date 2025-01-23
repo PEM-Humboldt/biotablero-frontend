@@ -677,6 +677,31 @@ class BackendAPI {
     };
   }
 
+  /**
+   * According to the strategic ecosystem type, get the footprint timeline geometry
+   * associated to the selected area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestHFLayerBySEInGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/se/layers/${seType}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
