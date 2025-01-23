@@ -233,6 +233,11 @@ export class ForestLossPersistenceController {
     return result;
   }
 
+  /**
+   * Get the raster layers required for a Forest Loss Persistence period
+   *
+   * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
+   */
   async getLayers(period: string): Promise<Array<rasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
