@@ -26,8 +26,8 @@ interface ForestLPData {
 }
 
 export class ForestLossPersistenceController {
-  areaType: string | null = null;
-  areaId: string | null = null;
+  areaType: string = "";
+  areaId: string = "";
   polygon: polygonFeature | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
@@ -65,24 +65,17 @@ export class ForestLossPersistenceController {
   /**
    * Returns forest LP data and persistence value in a given area
    *
-   * @param areaType area type
-   * @param areaId area id
    * @param latestPeriod string with range of years for latest period
    * @param searchType string to identify the type of search
-   * @param polygon Coordinates of polygon
    *
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (
-    // TODO: take these parameters from the class attributes*
-    areaType: string,
-    areaId: string | number,
     latestPeriod: string,
-    searchType: "definedArea" | "drawPolygon",
-    polygon: polygonFeature | null
+    searchType: "definedArea" | "drawPolygon"
   ): Promise<ForestLPData> => {
     if (searchType === "drawPolygon") {
-      return SearchAPI.requestForestLPData(polygon)
+      return SearchAPI.requestForestLPData(this.polygon)
         .then((data: ForestLPRawDataPolygon[]) => {
           const rawData: Array<ForestLPRawDataPolygon> = data;
           const {
@@ -108,6 +101,11 @@ export class ForestLossPersistenceController {
             ? latestPeriodData.persistencia
             : rawData[rawData.length - 1].persistencia;
 
+          forestLP.sort((pA, pB) => {
+            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+            return yearA - yearB;
+          });
           return {
             forestLP,
             forestPersistenceValue,
@@ -118,7 +116,7 @@ export class ForestLossPersistenceController {
           throw new Error("Error getting data");
         });
     } else {
-      return BackendAPI.requestForestLP(areaType, areaId)
+      return BackendAPI.requestForestLP(this.areaType, this.areaId)
         .then((data) => {
           const forestLP = data.map((item) => ({
             ...item,
@@ -134,6 +132,11 @@ export class ForestLossPersistenceController {
           );
           const forestPersistenceValue = persistenceData?.area ?? 0;
 
+          forestLP.sort((pA, pB) => {
+            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+            return yearA - yearB;
+          });
           return {
             forestLP,
             forestPersistenceValue,
@@ -230,6 +233,11 @@ export class ForestLossPersistenceController {
     return result;
   }
 
+  /**
+   * Get the raster layers required for a Forest Loss Persistence period
+   *
+   * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
+   */
   async getLayers(period: string): Promise<Array<rasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];

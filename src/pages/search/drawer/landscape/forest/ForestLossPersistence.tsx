@@ -58,13 +58,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     this.switchLayer(this.currentPeriod);
 
     this.flpController
-      .getForestLPData(
-        areaId,
-        geofenceId,
-        this.currentPeriod,
-        searchType,
-        polygon?.geojson ?? null
-      )
+      .getForestLPData(this.currentPeriod, searchType)
       .then((data) => {
         if (this.mounted) {
           this.setState({
@@ -115,10 +109,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     const graphData = this.flpController.getGraphData(forestLP);
 
-    const selectedIndex =
-      searchType === "drawPolygon" && forestLP.length > 0
-        ? forestLP[forestLP.length - 1].id
-        : this.currentPeriod;
+    const selectedIndex = this.currentPeriod;
 
     return (
       <div className="graphcontainer pt6">
