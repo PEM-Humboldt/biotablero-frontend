@@ -658,6 +658,25 @@ class BackendAPI {
     };
   }
 
+  /**
+   * Get the geometry associated for the human footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestHFPersistenceLayer(areaType: string, areaId: string | number) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/hf/layers/persistence`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
   /** ************ */
   /** CROSS MODULE */
   /** ************ */
