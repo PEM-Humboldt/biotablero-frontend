@@ -148,8 +148,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const {
       hfCurrent,
       hfCurrentValue,
