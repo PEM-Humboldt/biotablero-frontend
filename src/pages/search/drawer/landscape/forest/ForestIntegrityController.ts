@@ -1,4 +1,3 @@
-import formatNumber from "utils/format";
 import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
@@ -6,7 +5,7 @@ import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
-export class CurrentFootprintController {
+export class ForestIntegrityController {
   areaType: string = "";
   areaId: string = "";
   activeRequests: Map<string, CancelTokenSource> = new Map();
@@ -19,14 +18,14 @@ export class CurrentFootprintController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for current human footprint component
+   * Get shape layers in GeoJSON format for forest integrity component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getLayer = async (): Promise<shapeLayer> => {
-    const layerId = "hfCurrent";
+    const layerId = "forestIntegrity";
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestCurrentHFLayer(
+    const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFGLayer(
       this.areaType,
       this.areaId
     );
@@ -45,7 +44,7 @@ export class CurrentFootprintController {
 
     const layerData = {
       id: layerId,
-      paneLevel: 1,
+      paneLevel: 2,
       json: res,
       onEachFeature: onEachFeature,
       layerStyle: this.setLayerStyle(),
@@ -80,7 +79,51 @@ export class CurrentFootprintController {
 
     const layerData = {
       id: layerId,
-      paneLevel: 1,
+      paneLevel: 0,
+      json: res,
+      layerStyle: layerStyle,
+    };
+
+    return layerData;
+  };
+
+  /**
+   * Get shape layers in GeoJSON format for protected areas
+   *
+   * @param {string} selectedKey category for SCI and HF
+   *
+   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   */
+  getPALayer = async (selectedKey: string): Promise<shapeLayer> => {
+    const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
+    const hfPers = selectedKey.substring(
+      selectedKey.indexOf("-") + 1,
+      selectedKey.length
+    );
+
+    const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFPALayer(
+      this.areaType,
+      this.areaId,
+      sciCat,
+      hfPers
+    );
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(selectedKey, source);
+    const res = await request;
+    this.activeRequests.delete(selectedKey);
+
+    const layerStyle = () => ({
+      stroke: true,
+      color: matchColor("border")(),
+      fillOpacity: 0,
+      weight: 1,
+      opacity: 1,
+    });
+
+    const layerData = {
+      id: selectedKey,
+      paneLevel: 3,
       json: res,
       layerStyle: layerStyle,
     };
@@ -95,27 +138,23 @@ export class CurrentFootprintController {
    *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    type TooltipLabel = Record<"natural" | "baja" | "media" | "alta", string>;
+    const SCILabels: Record<string, string> = {
+      alta: "Alto",
+      baja_moderada: "Bajo Moderado",
+    };
 
-    const tooltipLabel: TooltipLabel = {
+    const HFLabels: Record<string, string> = {
       natural: "Natural",
-      baja: "Baja",
-      media: "Media",
+      dinamica: "Dinámica",
       alta: "Alta",
     };
 
     const feature = event.target;
-    const optionsTooltip = { sticky: true };
+    const { sci_cat, hf_pers } = feature.feature.properties;
 
-    const key = feature.feature.properties.key as keyof TooltipLabel;
+    const tooltipContent = `SCI ${SCILabels[sci_cat]} - HH ${HFLabels[hf_pers]}`;
 
-    feature
-      .bindTooltip(
-        `<b>${tooltipLabel[key]}:</b>
-        <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip
-      )
-      .openTooltip();
+    feature.bindTooltip(tooltipContent, { sticky: true }).openTooltip();
 
     feature.setStyle({
       fillOpacity: 1,
@@ -135,7 +174,7 @@ export class CurrentFootprintController {
   };
 
   /**
-   * Set the features style, applying an specific Highlight if neccesary
+   * Set the features style, applying an specific Highlight if necessary
    *
    * @param {string} selectedKey Id of the feature to highlight.
    *
@@ -143,11 +182,13 @@ export class CurrentFootprintController {
    */
   setLayerStyle =
     (selectedKey = "") =>
-    (feature?: { properties: { key: string; id: string } }) => {
+    (feature?: { properties: { [x: string]: string } }) => {
+      const keys = ["sci_cat", "hf_pers"];
+      const key = keys.map((val) => feature?.properties[val]).join("-");
       return {
         stroke: false,
-        fillColor: matchColor("hfCurrent")(feature?.properties.key),
-        fillOpacity: feature?.properties.key === selectedKey ? 1 : 0.6,
+        fillColor: matchColor("SciHf")(key),
+        fillOpacity: key === selectedKey ? 1 : 0.6,
       };
     };
 

@@ -111,7 +111,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
     const newActiveLayer = {
       id: "hfCurrent",
-      name: "HH promedio · 2018'",
+      name: "HH promedio · 2018",
     };
 
     Promise.all([

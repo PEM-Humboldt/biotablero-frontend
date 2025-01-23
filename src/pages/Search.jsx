@@ -103,7 +103,6 @@ class Search extends Component {
    */
   // TODO: "Clear when all components handle layers directly"
   setLoadingLayer =  (loading, error) => {
-    this.shutOffLayer();
     this.setState({
       loadingLayer: loading,
       layerError: error,
@@ -259,12 +258,7 @@ class Search extends Component {
       let key = null;
       let ftype = type;
 
-      if (type === 'forestIntegrity') {
-        const keys = 'sci_cat-hf_pers'.split('-');
-        key = keys.reduce((acc, val) => `${acc}-${feature.properties[val]}`, '');
-        key = key.slice(1);
-        ftype = 'SciHf';
-      } else if (/PAConn$/.test(type)) {
+      if (/PAConn$/.test(type)) {
         key = feature.properties.dpc_cat;
         ftype = 'dpc';
       } else if (type === 'fc') {
@@ -344,8 +338,6 @@ class Search extends Component {
       persistencia: 'Persistencia',
       ganancia: 'Ganancia',
       no_bosque: 'No bosque',
-      scialta: 'Alto',
-      scibaja_moderada: 'Bajo Moderado',
     };
     const feature = event.target;
     let changeStyle = true;
@@ -362,12 +354,6 @@ class Search extends Component {
         feature.bindTooltip(
           `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-          optionsTooltip,
-        ).openTooltip();
-        break;
-      case 'forestIntegrity':
-        feature.bindTooltip(
-          `SCI ${tooltipLabel[`sci${feature.feature.properties.sci_cat}`]} - HH ${tooltipLabel[feature.feature.properties.hf_pers]}`,
           optionsTooltip,
         ).openTooltip();
         break;
@@ -497,33 +483,6 @@ class Search extends Component {
         }
         break;
       // Current progress of the refactor
-      case 'SciHf': {
-        const sciCat = selectedKey.substring(0, selectedKey.indexOf('-'));
-        const hfPers = selectedKey.substring(selectedKey.indexOf('-') + 1, selectedKey.length);
-        const { layers, activeLayer: { id: activeLayer } } = this.state;
-
-        if (!activeLayer || !layers[activeLayer]) return;
-
-        const psKeys = Object.keys(layers).filter((key) => /SciHfPA-*/.test(key));
-        psKeys.forEach((key) => this.shutOffLayer(key));
-        this.switchLayer(`SciHfPA-${sciCat}-${hfPers}`);
-
-        this.setState((prev) => {
-          const newState = prev;
-          newState.layers[activeLayer].layerStyle = (feature) => {
-            if (feature.properties.sci_cat === sciCat
-              && feature.properties.hf_pers === hfPers) {
-                return {
-                  weight: 1,
-                  fillOpacity: 1,
-                };
-              }
-            return this.featureStyle({ type: activeLayer })(feature);
-          };
-          return newState;
-        });
-      }
-        break;
       default: {
         const { layers, activeLayer: { id: activeLayer } } = this.state;
 
@@ -1121,35 +1080,8 @@ class Search extends Component {
           id: 'geofence',
         };
         break;
-      case 'forestIntegrity':
-        this.switchLayer('geofence', () => {
-          this.setState({
-            loadingLayer: true,
-            layerError: false,
-          });
-
-          requestObj = RestAPI.requestSCIHFGeometry(
-            selectedAreaTypeId, selectedAreaId,
-          );
-          paneLevel = 2;
-          shutOtherLayers = false;
-          newActiveLayer = {
-            id: layerType,
-            name: 'Índice de condición estructural de bosques',
-          };
-        });
-        break;
       default:
-        if (/SciHfPA-*/.test(layerType)) {
-          const [, sci, hf] = layerType.match(/SciHfPA-(\w+)-(\w+)/);
-          requestObj = RestAPI.requestSCIHFPAGeometry(
-            selectedAreaTypeId, selectedAreaId, sci, hf,
-          );
-          shutOtherLayers = false;
-          paneLevel = 3;
-          interaction = false;
-          layerStyle = this.featureStyle({ type: 'border' });
-        } else if (/numberOfSpecies*/.test(layerType)) {
+        if (/numberOfSpecies*/.test(layerType)) {
           this.setSectionLayers(layerType);
           return;
         } else if (/seCoverages*/.test(layerType)) {
@@ -1338,14 +1270,10 @@ class Search extends Component {
       'dryForest',
       'wetland',
       'geofence',
-      'forestIntegrity',
     ];
     this.mapBounds = null;
     this.setState((prevState) => {
       const newState = { ...prevState };
-
-      const psKeys = Object.keys(newState.layers).filter((key) => /SciHfPA-*/.test(key));
-      unsetLayers = unsetLayers.concat(psKeys);
 
       unsetLayers.forEach((layer) => {
         if (newState.layers[layer]) delete newState.layers[layer];
