@@ -219,22 +219,6 @@ class RestAPI {
   }
 
   /**
-   * Get the geometry associated for the human footprint persistence in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestHFPersistenceGeometry(areaType, areaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * According to the strategic ecosystem type, get the footprint timeline geometry
    * associated to the selected area
    *

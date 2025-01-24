@@ -350,13 +350,6 @@ class Search extends Component {
           optionsTooltip,
         ).openTooltip();
         break;
-      case 'hfPersistence':
-        feature.bindTooltip(
-          `<b>${tooltipLabel[feature.feature.properties.key]}:</b>
-          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-          optionsTooltip,
-        ).openTooltip();
-        break;
       case 'states':
       case 'ea':
       case 'basinSubzones':
@@ -591,11 +584,6 @@ class Search extends Component {
           layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
         }
         break;
-      case 'hfPersistence':
-        reqPromise = () => RestAPI.requestHFPersistenceGeometry(
-          selectedAreaTypeId, selectedAreaId,
-        );
-        break;
       case 'paramo':
       case 'dryForest':
       case 'wetland': {
@@ -818,9 +806,6 @@ class Search extends Component {
       ];
       newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
-    } else if (sectionName === 'hfPersistence') {
-      shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
-      newActiveLayer.name = 'HH - Persistencia';
     } else if (sectionName === 'hfTimeline'
       || sectionName === 'hfTimeline-aTotal') {
       shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
@@ -1055,7 +1040,6 @@ class Search extends Component {
     switch (layerType) {
       case 'coverages':
       case 'speciesRecordsGaps':
-      case 'hfPersistence':
       case 'hfTimeline':
         this.setSectionLayers(layerType);
         return;
@@ -1265,7 +1249,6 @@ class Search extends Component {
     this.cancelActiveRequests();
     let unsetLayers = [
       'fc',
-      'hfPersistence',
       'paramo',
       'dryForest',
       'wetland',

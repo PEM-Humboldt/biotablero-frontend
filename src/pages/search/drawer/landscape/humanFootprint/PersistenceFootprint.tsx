@@ -12,6 +12,8 @@ import { hfPersistence } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { shapeLayer } from "pages/search/types/layers";
+import { PersistenceFootprintController } from "pages/search/drawer/landscape/humanFootprint/PersistenceFootprintController";
 
 const getLabel = {
   estable_natural: "Estable Natural",
@@ -31,13 +33,16 @@ interface persistenceHFState {
   texts: {
     hfPersistence: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   mounted = false;
+  PersistenceHFController;
 
   constructor(props: Props) {
     super(props);
+    this.PersistenceHFController = new PersistenceFootprintController();
     this.state = {
       showInfoGraph: true,
       hfPersistence: [],
@@ -45,15 +50,21 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
       texts: {
         hfPersistence: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaId, geofenceId, switchLayer } = this
-      .context as SearchContextValues;
+    const {
+      areaId,
+      geofenceId,
+      setShapeLayers,
+      setLoadingLayer,
+      setActiveLayer,
+    } = this.context as SearchContextValues;
 
-    switchLayer("hfPersistence");
+    this.PersistenceHFController.setArea(areaId, geofenceId.toString());
 
     BackendAPI.requestHFPersistence(areaId, geofenceId)
       .then((res: Array<hfPersistence>) => {
@@ -82,10 +93,36 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
           texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
         });
       });
+
+    setLoadingLayer(true, false);
+
+    const newActiveLayer = {
+      id: "hfPersistence",
+      name: "HH - Persistencia",
+    };
+
+    Promise.all([
+      this.PersistenceHFController.getGeofence(),
+      this.PersistenceHFController.getLayer(),
+    ])
+      .then(([geofenceLayer, hfPersistence]) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [geofenceLayer, hfPersistence] }),
+            () => setLoadingLayer(false, false)
+          );
+          setShapeLayers(this.state.layers);
+          setActiveLayer(newActiveLayer);
+        }
+      })
+      .catch(() => setLoadingLayer(false, true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers } = this.context as SearchContextValues;
+    this.PersistenceHFController.cancelActiveRequests();
+    setShapeLayers([]);
   }
 
   /**
@@ -98,8 +135,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const { showInfoGraph, hfPersistence, message, texts } = this.state;
     return (
       <div className="graphcontainer pt6">
@@ -128,9 +164,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
             units="ha"
             colors={matchColor("hfPersistence")}
             padding={0.25}
-            onClickGraphHandler={(selected) =>
-              handlerClickOnGraph({ selectedKey: selected })
-            }
+            onClickGraphHandler={(selected) => this.highlightFeature(selected)}
           />
         </div>
         <TextBoxes
@@ -145,6 +179,24 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
       </div>
     );
   }
+
+  /**
+   * Highlight an specific feature of the Persistence Human Footprint layer
+   *
+   * @param {string} selectedKey Id of the feature
+   */
+  highlightFeature = (selectedKey: string) => {
+    const { setShapeLayers } = this.context as SearchContextValues;
+    const { layers } = this.state;
+    const highlightedLayers = layers.map((layer) => {
+      if (layer.id === "hfPersistence") {
+        layer.layerStyle =
+          this.PersistenceHFController.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+  };
 }
 
 export default PersistenceFootprint;
