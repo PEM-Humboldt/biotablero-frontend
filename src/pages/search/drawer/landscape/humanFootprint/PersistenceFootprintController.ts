@@ -92,7 +92,6 @@ export class PersistenceFootprintController {
    * Highlight and set the tooltip
    *
    * @param {L.LeafletMouseEvent} event objet
-   *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
     type TooltipLabel = Record<
@@ -111,7 +110,6 @@ export class PersistenceFootprintController {
 
     const key = feature.feature.properties.key as keyof TooltipLabel;
 
-    console.log(key);
     feature
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
@@ -129,7 +127,6 @@ export class PersistenceFootprintController {
    * Reset the feature style
    *
    * @param {L.LeafletMouseEvent} event objet
-   *
    */
   resetShapeHighlight = (event: L.LeafletMouseEvent) => {
     const feature = event.target;
@@ -138,7 +135,7 @@ export class PersistenceFootprintController {
   };
 
   /**
-   * Set the features style, applying an specific Highlight if neccesary
+   * Set the features style, applying an specific Highlight if necessary
    *
    * @param {string} selectedKey Id of the feature to highlight.
    *
