@@ -6,6 +6,8 @@ import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
+type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
+
 export class TimelineFootprintController {
   areaType: string = "";
   areaId: string = "";
@@ -81,6 +83,48 @@ export class TimelineFootprintController {
     const layerData = {
       id: layerId,
       paneLevel: 1,
+      json: res,
+      layerStyle: layerStyle,
+    };
+
+    return layerData;
+  };
+
+  /**
+   * Get shape layers in GeoJSON format for protected areas
+   *
+   * @param {string} selectedKey category for SCI and HF
+   *
+   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   */
+  getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
+    const seType: SEKeys = {
+      paramo: "Páramo",
+      dryForest: "Bosque Seco Tropical",
+      wetland: "Humedal",
+    };
+
+    const reqPromise: ShapeAPIObject = BackendAPI.requestHFLayerBySEInGeofence(
+      this.areaType,
+      this.areaId,
+      seType[selectedKey]
+    );
+
+    const { request, source } = reqPromise;
+    this.activeRequests.set(selectedKey, source);
+    const res = await request;
+    this.activeRequests.delete(selectedKey);
+
+    const layerStyle = () => ({
+      stroke: false,
+      color: matchColor("hfTimeline")(selectedKey),
+      fillOpacity: 0.6,
+      weight: 1,
+    });
+
+    const layerData = {
+      id: selectedKey,
+      paneLevel: 3,
       json: res,
       layerStyle: layerStyle,
     };

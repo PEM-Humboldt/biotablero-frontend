@@ -19,6 +19,8 @@ import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/drawer/landscape/humanFootprint/TimelineFootprintController";
 import { shapeLayer } from "pages/search/types/layers";
 
+type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
+
 const changeValues: Array<CartesianMarkerProps> = [
   {
     axis: "y",
@@ -246,8 +248,7 @@ class TimelineFootprint extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId, handlerClickOnGraph } = this
-      .context as SearchContextValues;
+    const { areaId, geofenceId } = this.context as SearchContextValues;
     const { showInfoGraph, hfTimeline, selectedEcosystem, message, texts } =
       this.state;
     return (
@@ -275,12 +276,9 @@ class TimelineFootprint extends React.Component<Props, State> {
             data={hfTimeline}
             message={message}
             markers={changeValues}
-            onClickGraphHandler={(selection: string) => {
-              this.setSelectedEcosystem(selection);
-              handlerClickOnGraph({
-                chartType: "hfTimeline",
-                selectedKey: selection,
-              });
+            onClickGraphHandler={(selectedKey) => {
+              this.setSelectedEcosystem(selectedKey);
+              this.clickOnGraph(selectedKey);
             }}
           />
           {selectedEcosystem && (
@@ -306,6 +304,49 @@ class TimelineFootprint extends React.Component<Props, State> {
       </div>
     );
   }
+
+  clickOnGraph = async (selectedKey: string) => {
+    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
+      .context as SearchContextValues;
+
+    const seTitle: SEKeys = {
+      paramo: "Páramos",
+      dryForest: "Bosque seco tropical",
+      wetland: "Humedales",
+    };
+
+    const layerDescription = `HH - Persistencia - ${seTitle[selectedKey]}`;
+
+    if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
+      setLoadingLayer(true, false);
+      try {
+        const SELayer = await this.TimelineHFController.getSELayer(selectedKey);
+
+        this.setState(
+          (prevState) => ({
+            layers: [...prevState.layers, SELayer],
+          }),
+          () => {
+            console.log(this.state.layers);
+            setLoadingLayer(false, false);
+            const activeLayers = this.state.layers.filter((layer) =>
+              ["geofence", "hfPersistence", selectedKey].includes(layer.id)
+            );
+            setShapeLayers(activeLayers);
+          }
+        );
+      } catch (error) {
+        setLoadingLayer(false, true);
+      }
+    } else {
+      const activeLayers = this.state.layers.filter((layer) =>
+        ["geofence", "persistenceHF", selectedKey].includes(layer.id)
+      );
+      setShapeLayers(activeLayers);
+    }
+
+    setActiveLayer({ id: selectedKey, name: layerDescription });
+  };
 }
 
 export default TimelineFootprint;
