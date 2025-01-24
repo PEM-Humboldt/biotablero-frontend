@@ -32,14 +32,16 @@ const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
   polygon: null,
   setPolygonValues: () => {},
-  rasterLayers: [],
-  shapeLayers: [],
   setRasterLayers: () => {},
   setShapeLayers: () => {},
   setLoadingLayer: () => {},
+  // TODO: Consider remove them from context and pass them as properties to MapViewer
+  rasterLayers: [],
+  shapeLayers: [],
+  // TODO: Rename to "setMapTitle"
+  setActiveLayer: () => {},
   //TODO: "Delete when migration of switch layer is finished" (all 3)
   switchLayer: () => {},
-  setActiveLayer: () => {},
   handlerClickOnGraph: () => {},
   cancelActiveRequests: () => {},
 });
