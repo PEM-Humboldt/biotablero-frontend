@@ -79,7 +79,7 @@ export class ForestIntegrityController {
 
     const layerData = {
       id: layerId,
-      paneLevel: 0,
+      paneLevel: 1,
       json: res,
       layerStyle: layerStyle,
     };
