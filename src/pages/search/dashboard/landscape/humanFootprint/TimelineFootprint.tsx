@@ -19,7 +19,7 @@ import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/drawer/landscape/humanFootprint/TimelineFootprintController";
 import { shapeLayer } from "pages/search/types/layers";
 
-type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
+type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
 
 const changeValues: Array<CartesianMarkerProps> = [
   {
@@ -162,14 +162,11 @@ class TimelineFootprint extends React.Component<Props, State> {
       name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
     };
 
-    Promise.all([
-      this.TimelineHFController.getGeofence(),
-      this.TimelineHFController.getLayer(),
-    ])
-      .then(([geofenceLayer, hfPersistence]) => {
+    this.TimelineHFController.getLayer()
+      .then((hfPersistence) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, hfPersistence] }),
+            () => ({ layers: [hfPersistence] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -310,43 +307,60 @@ class TimelineFootprint extends React.Component<Props, State> {
     const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
       .context as SearchContextValues;
 
+    let layerDescription = "";
+
     const seTitle: SEKeys = {
       paramo: "Páramos",
       dryForest: "Bosque seco tropical",
       wetland: "Humedales",
+      aTotal: "Total",
     };
 
-    const layerDescription = `HH - Persistencia - ${seTitle[selectedKey]}`;
-
-    if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
-      setLoadingLayer(true, false);
-      try {
-        const SELayer = await this.TimelineHFController.getSELayer(selectedKey);
-
-        this.setState(
-          (prevState) => ({
-            layers: [...prevState.layers, SELayer],
-          }),
-          () => {
-            console.log(this.state.layers);
-            setLoadingLayer(false, false);
-            const activeLayers = this.state.layers.filter((layer) =>
-              ["geofence", "hfPersistence", selectedKey].includes(layer.id)
-            );
-            setShapeLayers(activeLayers);
-          }
-        );
-      } catch (error) {
-        setLoadingLayer(false, true);
-      }
-    } else {
-      const activeLayers = this.state.layers.filter((layer) =>
-        ["geofence", "persistenceHF", selectedKey].includes(layer.id)
+    if (selectedKey === "aTotal") {
+      setShapeLayers(
+        this.state.layers.filter((layer) =>
+          ["hfPersistence"].includes(layer.id)
+        )
       );
-      setShapeLayers(activeLayers);
-    }
+      const activeLayer = {
+        id: "hfPersistence",
+        name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
+      };
+      setActiveLayer(activeLayer);
+    } else {
+      layerDescription = `HH - Persistencia - ${seTitle[selectedKey]}`;
 
-    setActiveLayer({ id: selectedKey, name: layerDescription });
+      if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
+        setLoadingLayer(true, false);
+        try {
+          const SELayer = await this.TimelineHFController.getSELayer(
+            selectedKey
+          );
+
+          this.setState(
+            (prevState) => ({
+              layers: [...prevState.layers, SELayer],
+            }),
+            () => {
+              setLoadingLayer(false, false);
+              const activeLayers = this.state.layers.filter((layer) =>
+                ["hfPersistence", selectedKey].includes(layer.id)
+              );
+              setShapeLayers(activeLayers);
+            }
+          );
+        } catch (error) {
+          setLoadingLayer(false, true);
+        }
+      } else {
+        const activeLayers = this.state.layers.filter((layer) =>
+          ["hfPersistence", selectedKey].includes(layer.id)
+        );
+        setShapeLayers(activeLayers);
+      }
+
+      setActiveLayer({ id: selectedKey, name: layerDescription });
+    }
   };
 }
 
