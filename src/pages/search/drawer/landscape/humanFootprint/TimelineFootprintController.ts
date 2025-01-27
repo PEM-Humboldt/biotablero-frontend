@@ -21,7 +21,7 @@ export class TimelineFootprintController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for persistence human footprint component
+   * Get shape layers in GeoJSON format for timeline human footprint component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
@@ -57,43 +57,9 @@ export class TimelineFootprintController {
   };
 
   /**
-   * Get shape layer in GeoJSON format for the geofence
+   * Get shape layers in GeoJSON format for special ecosystems
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
-   */
-  getGeofence = async (): Promise<shapeLayer> => {
-    const layerId = "geofence";
-
-    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
-      this.areaType,
-      this.areaId
-    );
-
-    const layerStyle = () => ({
-      stroke: false,
-      fillColor: matchColor(layerId)(),
-      fillOpacity: 0.6,
-    });
-
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
-
-    const layerData = {
-      id: layerId,
-      paneLevel: 1,
-      json: res,
-      layerStyle: layerStyle,
-    };
-
-    return layerData;
-  };
-
-  /**
-   * Get shape layers in GeoJSON format for protected areas
-   *
-   * @param {string} selectedKey category for SCI and HF
+   * @param {string} selectedKey category for special ecosystems
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
