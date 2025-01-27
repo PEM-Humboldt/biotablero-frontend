@@ -441,9 +441,6 @@ class Search extends Component {
       case 'seCoverage':
         this.highlightRaster(`${chartType}-${chartSection}-${selectedKey}`);
         break;
-      case 'hfTimeline':
-        this.setSectionLayers(`hfTimeline-${selectedKey}`);
-        break;
       case 'numberOfSpecies': {
         const { activeLayer: { id: activeLayer } } = this.state;
         if (chartSection !== 'inferred') {
@@ -584,15 +581,6 @@ class Search extends Component {
           layerStyle = { stroke: true, color: matchColor("border")(), weight: 2, opacity: 1, fillOpacity: 0 };
         }
         break;
-      case 'paramo':
-      case 'dryForest':
-      case 'wetland': {
-        reqPromise = () => RestAPI.requestHFGeometryBySEInGeofence(
-          selectedAreaTypeId, selectedAreaId, layerName,
-        );
-        layerStyle = this.featureStyle({ type: layerName, color: layerName });
-        break;
-      }
       default:
         break;
     }
@@ -806,28 +794,6 @@ class Search extends Component {
       ];
       newActiveLayer.name = `Coberturas - ${SELabel(seType)}`;
       newActiveLayer.defaultOpacity = 0.7;
-    } else if (sectionName === 'hfTimeline'
-      || sectionName === 'hfTimeline-aTotal') {
-      shapeLayerOpts = [{ id: 'hfPersistence', paneLevel: 1 }];
-      newActiveLayer.name = 'HH - Persistencia y Ecosistemas estratégicos (EE)';
-    } else if (sectionName === 'hfTimeline-paramo') {
-      shapeLayerOpts = [
-        { id: 'hfPersistence', paneLevel: 1 },
-        { id: 'paramo', fitBounds: false, paneLevel: 2 },
-      ];
-      newActiveLayer.name = 'HH - Persistencia - Páramos';
-    } else if (sectionName === 'hfTimeline-dryForest') {
-      shapeLayerOpts = [
-        { id: 'hfPersistence', paneLevel: 1 },
-        { id: 'dryForest', fitBounds: false, paneLevel: 2 },
-      ];
-      newActiveLayer.name = 'HH - Persistencia - Bosque Seco Tropical';
-    } else if (sectionName === 'hfTimeline-wetland') {
-      shapeLayerOpts = [
-        { id: 'hfPersistence', paneLevel: 1 },
-        { id: 'wetland', fitBounds: false, paneLevel: 2 },
-      ];
-      newActiveLayer.name = 'HH - Persistencia - Humedales';
     } else if (/numberOfSpecies*/.test(sectionName)) {
       const groupLabel = {
         total: 'Total',
@@ -1040,9 +1006,6 @@ class Search extends Component {
     switch (layerType) {
       case 'coverages':
       case 'speciesRecordsGaps':
-      case 'hfTimeline':
-        this.setSectionLayers(layerType);
-        return;
       // Current progress of the refactor
       case undefined:
       case null:
