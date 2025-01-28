@@ -1,6 +1,8 @@
 import React from "react";
-import { Polygon } from "pages/search/types/drawer";
+import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
 import { shapeLayer } from "pages/search/types/layers";
+
+export type srchType = "definedArea" | "drawPolygon" | null;
 
 export interface rasterLayer {
   paneLevel: number;
@@ -10,36 +12,44 @@ export interface rasterLayer {
   selected?: boolean;
 }
 export interface SearchContextValues {
-  areaId: string;
-  geofenceId: string | number;
   searchType: "definedArea" | "drawPolygon";
-  polygon: Polygon | null;
-  rasterLayers: Array<rasterLayer>;
-  shapeLayers: Array<shapeLayer>;
+  areaType?: AreaType;
+  areaId?: AreaIdBasic;
+  polygon?: Polygon;
+  areaHa?: number;
+  setSearchType(searchType: srchType): void;
+  setAreaType(areaType?: AreaType): void;
+  setAreaId(areaId?: AreaIdBasic): void;
+  setPolygon(polygon?: Polygon): void;
+  setAreaHa(value?: number): void;
+  //
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layers: Array<shapeLayer>): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
+  // TODO: Evaluar la necesidad de tenerlo aquí
   setPolygonValues(areaValue: number): void;
-  switchLayer(layer: string): void;
-  setActiveLayer(layer: { id: string; name: string }): void;
-  handlerClickOnGraph({}): void;
-  cancelActiveRequests(): void;
+  setMapTitle(
+    name: string,
+    gradientData: { from: number; to: number; colors: Array<string> }
+  ): void;
+  switchLayer?(layer: string): void;
+  handlerClickOnGraph?({}): void;
+  cancelActiveRequests?(): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
-  areaId: "",
-  geofenceId: "",
   searchType: "definedArea",
-  polygon: null,
+  setSearchType: () => {},
+  setAreaType: () => {},
+  setAreaId: () => {},
+  setPolygon: () => {},
+  setAreaHa: () => {},
+  //
   setPolygonValues: () => {},
   setRasterLayers: () => {},
   setShapeLayers: () => {},
   setLoadingLayer: () => {},
-  // TODO: Consider remove them from context and pass them as properties to MapViewer
-  rasterLayers: [],
-  shapeLayers: [],
-  // TODO: Rename to "setMapTitle"
-  setActiveLayer: () => {},
+  setMapTitle: () => {},
   //TODO: "Delete when migration of switch layer is finished" (all 3)
   switchLayer: () => {},
   handlerClickOnGraph: () => {},

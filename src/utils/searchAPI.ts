@@ -1,15 +1,86 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
-import { polygonFeature } from "pages/search/types/drawer";
+import {
+  AreaId,
+  AreaIdBasic,
+  AreaType,
+  polygonFeature,
+} from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+import RestAPI from "./restAPI";
 
 class SearchAPI {
   /**
-   * Get the list of current scripts.
+   * Check if search backend is up
    */
   static requestTestBackend(): Promise<Array<String>> {
     return SearchAPI.makeGetRequest(`redoc`);
   }
+
+  /** ****** */
+  /** SEARCH */
+  /** ****** */
+
+  /**
+   * Get complete information about an area
+   *
+   * @param {areaType} string TEMPORAL
+   * @param {areaId} string | number area id
+   *
+   * @returns {Promise<AreaId>} object with area information
+   */
+  static requestAreaInfo(areaType: string, areaId: string | number) {
+    // TODO: Ajustar con los llamados al nuevo backend
+    // (por url) traer toda la lista de areaType
+    // traer el área
+    // Traer la geometria
+  }
+
+  /** *************** */
+  /** SEARCH SELECTOR */
+  /** *************** */
+
+  /**
+   * Get the list of area types
+   *
+   * @return {Promise<Array<AreaType>>} array of area types
+   */
+  static requestAreaTypes(): Promise<Array<AreaType>> {
+    // TODO: Esto es un mockup
+    const areaTypes: Array<AreaType> = [
+      { id: "states", name: "Departamentos" },
+      { id: "ea", name: "Jurisdicciones ambientales" },
+      { id: "basinSubzone", name: "Subzonas hidrográficas" },
+      { id: "se", name: "Ecosistemas Estratégicos" },
+      { id: "custom", name: "Consulta Personalizada" },
+    ];
+
+    return Promise.resolve(areaTypes);
+  }
+
+  /**
+   * Get the list of areaIds for a given area type
+   *
+   * @param {areaType} areaType areaType to filter areas ids
+   *
+   * @return {Promise<Array<AreaIdBasic>>} array of area types
+   */
+  static requestAreaIds(areaType: string): Promise<Array<AreaIdBasic>> {
+    switch (areaType) {
+      case "states":
+        return RestAPI.getAllStates();
+      case "ea":
+        return RestAPI.getAllEAs();
+      case "basinSubzone":
+        return RestAPI.getAllSubzones();
+      default:
+        return Promise.resolve([]);
+    }
+  }
+
+  /** *********************** */
+  /** FOREST LOSS PERSISTENCE */
+  /** *********************** */
 
   /**
    * Get the forest loss and persistence data by periods and categories in the given polygon.

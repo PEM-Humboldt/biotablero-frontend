@@ -16,7 +16,7 @@ import DrawControl from "pages/search/mapViewer/DrawControl";
 
 import "leaflet/dist/leaflet.css";
 import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
-import { Polygon as PolygonType } from "pages/search/types/drawer";
+import { Polygon as PolygonType } from "pages/search/types/dashboard";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
 import { shapeLayer } from "pages/search/types/layers";
@@ -26,10 +26,11 @@ interface Props {
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
+  // TODO: tipar correctamente
   mapTitle: string;
   mapBounds: LatLngBoundsExpression;
   rasterBounds: LatLngBoundsExpression;
-  polygon: PolygonType;
+  polygon: PolygonType | null;
   loadPolygonInfo: () => void;
   layers: Array<shapeLayer>;
   rasterLayers: Array<{
@@ -76,6 +77,7 @@ class MapViewer extends React.Component<Props, State> {
     this.mapRef = React.createRef<Map>();
   }
 
+  // TODO: ESto seguramente no está sirviendo para nada
   componentDidUpdate(prevProps: Props) {
     const { mapBounds } = this.props;
     if (prevProps.mapBounds !== mapBounds) {
@@ -101,18 +103,17 @@ class MapViewer extends React.Component<Props, State> {
     } = this.props;
     //TODO Borrar searchRasterLayers al finalizar la migracion
     //Trabajar igual los shapeLayers
-    const { rasterLayers, shapeLayers } = this.context as SearchContextValues;
+    // const { rasterLayers, shapeLayers } = this.context as SearchContextValues;
 
     const { openErrorModal } = this.state;
 
-    const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
-    const totalShapeLayers = [...shapeLayers, ...layers];
+    // const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
+    // const totalShapeLayers = [...shapeLayers, ...layers];
 
     const paneLevels = Array.from(
       new Set(
-        [...totalShapeLayers, ...totalRasterLayers].map(
-          (layer) => layer.paneLevel
-        )
+        // [...totalShapeLayers, ...totalRasterLayers].map(
+        [...layers, ...searchRasterLayers].map((layer) => layer.paneLevel)
       )
     );
 
@@ -178,7 +179,7 @@ class MapViewer extends React.Component<Props, State> {
         />
         {paneLevels.map((panelLevel, index) => (
           <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
-            {totalShapeLayers
+            {layers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => (
                 <GeoJSON
@@ -188,7 +189,7 @@ class MapViewer extends React.Component<Props, State> {
                   onEachFeature={layer.onEachFeature}
                 />
               ))}
-            {totalRasterLayers
+            {searchRasterLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => {
                 let opacity = layer.selected ? 1 : 0.7;
