@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Accordion from 'pages/search/Accordion';
-import Richness from 'pages/search/drawer/species/Richness';
-import FunctionalDiversity from 'pages/search/drawer/species/FunctionalDiversity';
+import Richness from 'pages/search/dashboard/species/Richness';
+import FunctionalDiversity from 'pages/search/dashboard/species/FunctionalDiversity';
 import SearchContext from 'pages/search/SearchContext';
 import isFlagEnabled from 'utils/isFlagEnabled';
 
