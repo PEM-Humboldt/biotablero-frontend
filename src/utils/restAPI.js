@@ -160,22 +160,6 @@ class RestAPI {
   }
 
   /**
-   * Request a specific geofence geometry identified by area and geofence
-   *
-   * @param {String} areaId area id to request
-   * @param {String} geofenceId geofence id to request
-   *
-   * @return {ShapeAPIObject} layer object to be loaded in the map
-   */
-  static requestGeofenceGeometryByArea(areaId, geofenceId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * Get the coverage layer divided by categories in a given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"

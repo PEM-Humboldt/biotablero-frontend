@@ -30,7 +30,7 @@ import {
   portfoliosByTarget,
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
-import { geofenceDetails } from "pages/search/types/drawer";
+import { geofenceDetails } from "pages/search/types/dashboard";
 import { ShapeAPIObject } from "pages/search/types/api";
 class BackendAPI {
   /** ****** */
@@ -673,6 +673,28 @@ class BackendAPI {
         `${areaType}/${areaId}/hf/layers/persistence`,
         { cancelToken: source.token }
       ),
+      source,
+    };
+  }
+
+  /** ****** */
+  /** SEARCH */
+  /** ****** */
+
+  /**
+   * Request a specific geometry identified by area type and id
+   *
+   * @param {String} areaType area type to request
+   * @param {String | Number} areaId area id to request
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestAreaLayer(areaType: string, areaId: string | number) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(`${areaType}/layers/${areaId}`, {
+        cancelToken: source.token,
+      }),
       source,
     };
   }
