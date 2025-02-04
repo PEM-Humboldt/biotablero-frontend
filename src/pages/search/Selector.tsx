@@ -12,7 +12,7 @@ import {
 } from "pages/search/selector/selectorMessages";
 import SearchAPI from "utils/searchAPI";
 import { AreaIdBasic, AreaType } from "./types/dashboard";
-import SearchContext, { SearchContextValues } from "./SearchContext";
+import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { Autocomplete, TextField } from "@mui/material";
 import isUndefinedOrNull from "utils/validations";
 import BackendAPI from "utils/backendAPI";

@@ -1,13 +1,16 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, { srchType } from "./search/SearchContext";
+import SearchContext, {
+  rasterLayer,
+  srchType,
+} from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
-import { AreaIdBasic, AreaType, Polygon } from "./search/types/dashboard";
+import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
-import MapViewer from "./search/MapViewer";
+import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
-import Dashboard from "./search/Dashboard";
-import Selector from "./search/Selector";
+import Dashboard from "pages/search/Dashboard";
+import Selector from "pages/search/Selector";
 import BackendAPI from "utils/backendAPI";
 
 interface Props extends RouteComponentProps {
