@@ -30,7 +30,7 @@ export interface SearchContextValues {
   setPolygonValues(areaValue: number): void;
   setMapTitle(
     name: string,
-    gradientData: { from: number; to: number; colors: Array<string> }
+    gradientData?: { from: number; to: number; colors: Array<string> }
   ): void;
   switchLayer?(layer: string): void;
   handlerClickOnGraph?({}): void;

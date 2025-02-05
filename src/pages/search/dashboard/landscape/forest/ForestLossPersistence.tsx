@@ -197,11 +197,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   switchLayer = (period: string) => {
-    const {
-      setRasterLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { setRasterLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
 
     setLoadingLayer(true, false);
     this.flpController
@@ -210,11 +207,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
         if (this.mounted) {
           setRasterLayers(layers);
           setLoadingLayer(false, false);
-          const activeLayer = {
-            id: this.currentPeriod,
-            name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
-          };
-          setActiveLayer(activeLayer);
+          setMapTitle(
+            `Pérdida y persistencia de bosque (${this.currentPeriod})`
+          );
         }
       })
       .catch((e) => {

@@ -28,12 +28,16 @@ interface State {
   areaId?: AreaIdBasic;
   polygon?: Polygon;
   areaHa?: number;
+  mapTitle: {
+    name: string;
+    gradientData?: { from: number; to: number; colors: Array<string> };
+  };
 }
 
 class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { searchType: "definedArea" };
+    this.state = { searchType: "definedArea", mapTitle: { name: "" } };
   }
 
   async componentDidMount() {
@@ -89,8 +93,18 @@ class Search extends Component<Props, State> {
     this.setState({ areaHa: value });
   };
 
+  setMapTitle = (
+    name: string,
+    gradientData?: { from: number; to: number; colors: Array<string> }
+  ) => {
+    this.setState({
+      mapTitle: { name: name, gradientData: gradientData },
+    });
+  };
+
   render() {
-    const { searchType, areaType, areaId, polygon, areaHa } = this.state;
+    const { searchType, areaType, areaId, polygon, areaHa, mapTitle } =
+      this.state;
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
@@ -119,7 +133,7 @@ class Search extends Component<Props, State> {
           setRasterLayers: () => {},
           setShapeLayers: () => {},
           setLoadingLayer: () => {},
-          setMapTitle: () => {},
+          setMapTitle: this.setMapTitle,
         }}
       >
         <div className="appSearcher wrappergrid">
@@ -130,7 +144,7 @@ class Search extends Component<Props, State> {
             rasterLayers={[]}
             drawPolygonEnabled={false}
             loadPolygonInfo={() => {}}
-            mapTitle=""
+            mapTitle={mapTitle}
             mapBounds={[
               [-4.2316872, -82.1243666],
               [16.0571269, -66.85119073],

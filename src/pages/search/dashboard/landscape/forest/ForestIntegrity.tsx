@@ -136,13 +136,8 @@ class ForestIntegrity extends React.Component<Props, FIState> {
   componentDidMount() {
     this.mounted = true;
 
-    const {
-      areaType,
-      areaId,
-      setShapeLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
+      this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -213,11 +208,6 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
     setLoadingLayer(true, false);
 
-    const newActiveLayer = {
-      id: "forestIntegrity",
-      name: "Índice de condición estructural de bosques",
-    };
-
     this.ForestIntegrityController.getLayer()
       .then((forestIntegrity) => {
         if (this.mounted) {
@@ -226,7 +216,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle("Índice de condición estructural de bosques");
         }
       })
       .catch(() => setLoadingLayer(false, true));

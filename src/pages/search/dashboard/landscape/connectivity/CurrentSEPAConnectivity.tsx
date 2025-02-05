@@ -79,13 +79,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaType,
-      areaId,
-      setShapeLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
+      this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -199,11 +194,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
     setLoadingLayer(true, false);
 
-    const newActiveLayer = {
-      id: "currentSEPAConn",
-      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
-    };
-
     this.CurrentSEPACController.getLayer()
       .then((currentSEPAConn) => {
         if (this.mounted) {
@@ -212,7 +202,9 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle(
+            "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)"
+          );
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -409,11 +401,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const {
-      setShapeLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
 
     let layerName: string = "";
     let layerDescription: string = "";
@@ -460,7 +449,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     );
     setShapeLayers(activeLayers);
 
-    setActiveLayer({ id: layerId, name: layerDescription });
+    setMapTitle(layerDescription);
   };
 }
 

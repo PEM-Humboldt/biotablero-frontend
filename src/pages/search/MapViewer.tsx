@@ -27,7 +27,10 @@ interface Props {
   loadingLayer: boolean;
   layerError: boolean;
   // TODO: tipar correctamente
-  mapTitle: string;
+  mapTitle: {
+    name: string;
+    gradientData?: { from: number; to: number; colors: Array<string> };
+  };
   mapBounds: LatLngBoundsExpression;
   rasterBounds: LatLngBoundsExpression;
   polygon: PolygonType | null;
@@ -119,7 +122,14 @@ class MapViewer extends React.Component<Props, State> {
 
     return (
       <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
-        {mapTitle}
+        {/* TODO agrega componente para el gradiente */}
+        {mapTitle && (
+          <>
+            <div className="mapsTitle">
+              <div className="title">{mapTitle.name}</div>
+            </div>
+          </>
+        )}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
