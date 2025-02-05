@@ -16,7 +16,9 @@ import TabContainer from "pages/search/shared_components/TabContainer";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
-interface Props {}
+interface Props {
+  handlerBackButton(): void;
+}
 
 interface State {
   showPortfolios: boolean;
@@ -47,19 +49,15 @@ class Dashboard extends React.Component<Props, State> {
     const { searchType, areaType, areaId, polygon, areaHa } = this
       .context as SearchContextValues;
 
+    const { handlerBackButton } = this.props;
+
     let initialSelectedIndex = 0;
     if (searchType === "drawPolygon") initialSelectedIndex = 1;
 
     return (
       <div className="informer">
         <div className="drawer_header">
-          <button
-            className="geobtn"
-            type="button"
-            onClick={() => {
-              // TODO: Borrar cosas
-            }}
-          >
+          <button className="geobtn" type="button" onClick={handlerBackButton}>
             <BackIcon />
           </button>
           <div className="HAgen">

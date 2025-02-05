@@ -169,6 +169,21 @@ class Search extends Component<Props, State> {
     });
   };
 
+  handlerBackButton = () => {
+    this.setState({
+      areaId: undefined,
+      areaType: undefined,
+      areaHa: undefined,
+      searchType: "definedArea",
+      areaLayer: { id: "", paneLevel: 0, json: [] },
+      rasterLayers: [],
+      shapeLayers: [],
+      mapTitle: { name: "" },
+      loadingLayer: false,
+      layerError: false,
+    });
+  };
+
   render() {
     const {
       searchType,
@@ -192,7 +207,7 @@ class Search extends Component<Props, State> {
       !isUndefinedOrNull(areaLayer) &&
       !isUndefinedOrNull(areaHa)
     ) {
-      toShow = <Dashboard />;
+      toShow = <Dashboard handlerBackButton={this.handlerBackButton} />;
     }
     return (
       <SearchContext.Provider
