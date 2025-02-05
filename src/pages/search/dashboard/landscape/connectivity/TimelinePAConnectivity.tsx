@@ -75,7 +75,11 @@ class TimelinePAConnectivity extends React.Component<
 
     Promise.all([
       BackendAPI.requestTimelinePAConnectivity(areaTypeId, areaIdId, "prot"),
-      BackendAPI.requestTimelinePAConnectivity(areaTypeId, areaIdId, "prot_conn"),
+      BackendAPI.requestTimelinePAConnectivity(
+        areaTypeId,
+        areaIdId,
+        "prot_conn"
+      ),
     ])
       .then((res) => {
         if (this.mounted) {
@@ -111,14 +115,11 @@ class TimelinePAConnectivity extends React.Component<
       name: "Conectividad de áreas protegidas",
     };
 
-    Promise.all([
-      this.TimelinePACController.getGeofence(),
-      this.TimelinePACController.getLayer(),
-    ])
-      .then(([geofenceLayer, timelinePAConn]) => {
+    this.TimelinePACController.getLayer()
+      .then((timelinePAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, timelinePAConn] }),
+            () => ({ layers: [timelinePAConn] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -163,12 +164,11 @@ class TimelinePAConnectivity extends React.Component<
 
   render() {
     const { showInfoGraph, timelinePAConnData, message, texts } = this.state;
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
-      
+    const { areaType, areaId } = this.context as SearchContextValues;
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
-  
+
     return (
       <div className="graphcontainer pt6">
         <h2>

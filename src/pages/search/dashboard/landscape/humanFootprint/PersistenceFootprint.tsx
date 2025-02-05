@@ -104,14 +104,11 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
       name: "HH - Persistencia",
     };
 
-    Promise.all([
-      this.PersistenceHFController.getGeofence(),
-      this.PersistenceHFController.getLayer(),
-    ])
-      .then(([geofenceLayer, hfPersistence]) => {
+    this.PersistenceHFController.getLayer()
+      .then((hfPersistence) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, hfPersistence] }),
+            () => ({ layers: [hfPersistence] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -138,10 +135,9 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   };
 
   render() {
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const { showInfoGraph, hfPersistence, message, texts } = this.state;
-        
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 

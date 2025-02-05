@@ -218,14 +218,11 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       name: "Índice de condición estructural de bosques",
     };
 
-    Promise.all([
-      this.ForestIntegrityController.getGeofence(),
-      this.ForestIntegrityController.getLayer(),
-    ])
-      .then(([geofenceLayer, forestIntegrity]) => {
+    this.ForestIntegrityController.getLayer()
+      .then((forestIntegrity) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, forestIntegrity] }),
+            () => ({ layers: [forestIntegrity] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -260,12 +257,11 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       loading,
       texts,
     } = this.state;
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
-      
+    const { areaType, areaId } = this.context as SearchContextValues;
+
     const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();  
-      
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -380,7 +376,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           () => {
             setLoadingLayer(false, false);
             const activeLayers = this.state.layers.filter((layer) =>
-              ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
+              ["forestIntegrity", selectedKey].includes(layer.id)
             );
             setShapeLayers(activeLayers);
           }
@@ -390,7 +386,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       }
     } else {
       const activeLayers = this.state.layers.filter((layer) =>
-        ["geofence", "forestIntegrity", selectedKey].includes(layer.id)
+        ["forestIntegrity", selectedKey].includes(layer.id)
       );
       setShapeLayers(activeLayers);
     }

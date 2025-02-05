@@ -117,14 +117,11 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       name: "HH promedio · 2018",
     };
 
-    Promise.all([
-      this.CurrentHFController.getGeofence(),
-      this.CurrentHFController.getLayer(),
-    ])
-      .then(([geofenceLayer, hfCurrent]) => {
+    this.CurrentHFController.getLayer()
+      .then((hfCurrent) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, hfCurrent] }),
+            () => ({ layers: [hfCurrent] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -151,8 +148,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   };
 
   render() {
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       hfCurrent,
       hfCurrentValue,
@@ -161,7 +157,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       message,
       texts,
     } = this.state;
-    
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 

@@ -88,10 +88,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       setLoadingLayer,
       setMapTitle: setActiveLayer,
     } = this.context as SearchContextValues;
-    
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
-    
+
     this.CPACController.setArea(areaTypeId, areaIdId);
 
     BackendAPI.requestCurrentPAConnectivity(areaTypeId, areaIdId)
@@ -171,14 +171,11 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       name: "Conectividad de áreas protegidas",
     };
 
-    Promise.all([
-      this.CPACController.getGeofence(),
-      this.CPACController.getLayer(),
-    ])
-      .then(([geofenceLayer, currentPAConn]) => {
+    this.CPACController.getLayer()
+      .then((currentPAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, currentPAConn] }),
+            () => ({ layers: [currentPAConn] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -208,8 +205,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       currentPAConnData,
       dpcData,
@@ -218,7 +214,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
-        
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 

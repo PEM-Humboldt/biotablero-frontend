@@ -46,13 +46,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaType,
-      areaId,
-      searchType,
-      polygon,
-      setPolygonValues,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, searchType, polygon, setPolygonValues } = this
+      .context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -112,14 +107,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
   render() {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
-    const {
-      areaType,
-      areaId,
-      searchType,
-      rasterLayers,
-      setRasterLayers,
-    } = this.context as SearchContextValues;
-    
+    const { areaType, areaId, searchType, rasterLayers, setRasterLayers } = this
+      .context as SearchContextValues;
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 

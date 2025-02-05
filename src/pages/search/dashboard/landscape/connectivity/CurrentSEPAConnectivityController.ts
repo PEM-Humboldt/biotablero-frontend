@@ -57,40 +57,6 @@ export class CurrentSEPAConnectivityController {
     return layerData;
   };
 
-  /**
-   * Get shape layer in GeoJSON format for the geofence
-   *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
-   */
-  getGeofence = async (): Promise<shapeLayer> => {
-    const layerId = "geofence";
-
-    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
-      this.areaType ?? "",
-      this.areaId ?? ""
-    );
-
-    const layerStyle = () => ({
-      stroke: false,
-      fillColor: matchColor(layerId)(),
-      fillOpacity: 0.6,
-    });
-
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
-
-    const layerData = {
-      id: layerId,
-      paneLevel: 1,
-      json: res,
-      layerStyle: layerStyle,
-    };
-
-    return layerData;
-  };
-
   getSELayer = async (
     layerId: string,
     layerName: string

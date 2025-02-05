@@ -204,14 +204,11 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
     };
 
-    Promise.all([
-      this.CurrentSEPACController.getGeofence(),
-      this.CurrentSEPACController.getLayer(),
-    ])
-      .then(([geofenceLayer, currentSEPAConn]) => {
+    this.CurrentSEPACController.getLayer()
+      .then((currentSEPAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, currentSEPAConn] }),
+            () => ({ layers: [currentSEPAConn] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
@@ -238,8 +235,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaType, areaId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -252,7 +248,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       messages: { paramo, dryForest, wetland },
       texts,
     } = this.state;
-    
+
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 
@@ -460,7 +456,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     const activeLayers = this.state.layers.filter((layer) =>
-      ["geofence", "currentSEPAConn", layerId].includes(layer.id)
+      ["currentSEPAConn", layerId].includes(layer.id)
     );
     setShapeLayers(activeLayers);
 
