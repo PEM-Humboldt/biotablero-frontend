@@ -47,15 +47,18 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       searchType,
       polygon,
       setPolygonValues,
     } = this.context as SearchContextValues;
 
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     if (searchType === "definedArea") {
-      this.flpController.setArea(areaId, geofenceId.toString());
+      this.flpController.setArea(areaTypeId, areaIdId);
     } else if (polygon && polygon.geojson) {
       this.flpController.setPolygon(polygon.geojson);
     }
@@ -110,12 +113,15 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
       this.state;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       searchType,
       rasterLayers,
       setRasterLayers,
     } = this.context as SearchContextValues;
+    
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
     const graphData = this.flpController.getGraphData(forestLP);
 
@@ -192,7 +198,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           metoText={texts.forestLP.meto}
           quoteText={texts.forestLP.quote}
           downloadData={this.flpController.getDownloadData(forestLP)}
-          downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

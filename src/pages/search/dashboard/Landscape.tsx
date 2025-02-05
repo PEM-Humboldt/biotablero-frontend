@@ -43,13 +43,6 @@ class Landscape extends React.Component<Props, State> {
    */
   handleAccordionChange = (level: string, tabLayerId: string) => {
     const { visible } = this.state;
-    const { switchLayer, cancelActiveRequests } = this
-      .context as SearchContextValues;
-    cancelActiveRequests();
-
-    if (tabLayerId === "") {
-      switchLayer("");
-    }
 
     switch (level) {
       case "1":
@@ -69,22 +62,22 @@ class Landscape extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { areaType: areaId } = this.context as SearchContextValues;
-    let visible = areaId === "ea" ? "fc" : "hf";
+    const { areaType } = this.context as SearchContextValues;
+    let visible = areaType?.id === "ea" ? "fc" : "hf";
     this.setState((prev) => ({
       visible: visible,
     }));
   }
 
   render() {
-    const { areaType: areaId } = this.context as SearchContextValues;
+    const { areaType } = this.context as SearchContextValues;
     const { childMap, visible } = this.state;
     const initialArray: Array<accordionComponent> = [
       {
         label: {
           id: "fc",
           name: "FC y Biomas",
-          collapsed: areaId !== "ea",
+          collapsed: areaType?.id !== "ea",
         },
         component: CompensationFactor,
       },
@@ -125,15 +118,14 @@ class Landscape extends React.Component<Props, State> {
 
     let selected: Array<string> = [];
 
-    switch (areaId) {
+    switch (areaType?.id) {
       case "states":
       case "basinSubzones":
-        selected = ["forest", "connectivity"];
-        // selected = ["hf", "forest", "connectivity"];
+        selected = ["hf", "forest", "connectivity"];
         break;
       case "ea":
         // selected = ["fc", "hf", "forest", "connectivity"];
-        selected = ["forest", "connectivity"];
+        selected = ["hf", "forest", "connectivity"];
         break;
       default:
         selected = ["forest"];

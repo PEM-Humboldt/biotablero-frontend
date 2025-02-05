@@ -80,16 +80,19 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
       setMapTitle: setActiveLayer,
     } = this.context as SearchContextValues;
 
-    this.CurrentSEPACController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
+    this.CurrentSEPACController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestCurrentSEPAConnectivity(areaTypeId, areaIdId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protParamo = 0;
@@ -121,8 +124,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       });
 
     BackendAPI.requestCurrentSEPAConnectivity(
-      areaId,
-      geofenceId,
+      areaTypeId,
+      areaIdId,
       "Bosque Seco Tropical"
     )
       .then((res: Array<currentSEPAConn>) => {
@@ -155,7 +158,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Humedal")
+    BackendAPI.requestCurrentSEPAConnectivity(areaTypeId, areaIdId, "Humedal")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protWetland = 0;
@@ -235,7 +238,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
+    const { areaType, areaId } = this
       .context as SearchContextValues;
     const {
       currentPAConnParamo,
@@ -249,6 +252,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       messages: { paramo, dryForest, wetland },
       texts,
     } = this.state;
+    
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -278,7 +285,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnParamo && currentPAConnParamo.length > 0 && (
             <DownloadCSV
               data={currentPAConnParamo}
-              filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_paramo_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">
@@ -319,7 +326,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnDryForest && currentPAConnDryForest.length > 0 && (
             <DownloadCSV
               data={currentPAConnDryForest}
-              filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_dryforest_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">
@@ -360,7 +367,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnWetland && currentPAConnWetland.length > 0 && (
             <DownloadCSV
               data={currentPAConnWetland}
-              filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_wetland_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">

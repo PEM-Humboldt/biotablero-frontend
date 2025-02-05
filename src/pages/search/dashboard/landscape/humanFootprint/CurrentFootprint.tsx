@@ -59,16 +59,19 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
       setMapTitle: setActiveLayer,
     } = this.context as SearchContextValues;
 
-    this.CurrentHFController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestCurrentHFValue(areaId, geofenceId)
+    this.CurrentHFController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestCurrentHFValue(areaTypeId, areaIdId)
       .then((res: currentHFValue) => {
         if (this.mounted) {
           this.setState({
@@ -79,7 +82,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       })
       .catch(() => {});
 
-    BackendAPI.requestCurrentHFCategories(areaId, geofenceId)
+    BackendAPI.requestCurrentHFCategories(areaTypeId, areaIdId)
       .then((res: Array<currentHFCategories>) => {
         if (this.mounted) {
           this.setState({
@@ -148,7 +151,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
+    const { areaType, areaId } = this
       .context as SearchContextValues;
     const {
       hfCurrent,
@@ -158,6 +161,10 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       message,
       texts,
     } = this.state;
+    
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -205,7 +212,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
           metoText={texts.hfCurrent.meto}
           quoteText={texts.hfCurrent.quote}
           downloadData={hfCurrent}
-          downloadName={`hf_current_${areaId}_${geofenceId}.csv`}
+          downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

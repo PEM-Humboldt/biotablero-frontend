@@ -137,16 +137,19 @@ class ForestIntegrity extends React.Component<Props, FIState> {
     this.mounted = true;
 
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
       setMapTitle: setActiveLayer,
     } = this.context as SearchContextValues;
 
-    this.ForestIntegrityController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestSCIHF(areaId, geofenceId)
+    this.ForestIntegrityController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestSCIHF(areaTypeId, areaIdId)
       .then((res: Array<SCIHF>) => {
         if (this.mounted) {
           if (res.length <= 0) {
@@ -257,8 +260,12 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       loading,
       texts,
     } = this.state;
-    const { areaType: areaId, areaId: geofenceId } = this
+    const { areaType, areaId } = this
       .context as SearchContextValues;
+      
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();  
+      
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -310,7 +317,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           metoText={texts.forestSCIHF.meto}
           quoteText={texts.forestSCIHF.quote}
           downloadData={Object.values(SciHfCats)}
-          downloadName={`forest_integrity_${areaId}_${geofenceId}.csv`}
+          downloadName={`forest_integrity_${areaTypeId}_${areaIdId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />
@@ -319,7 +326,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             <h6>Distribución en áreas protegidas</h6>
             <DownloadCSV
               data={Object.values(ProtectedAreas[selectedCategory])}
-              filename={`bt_fi_areas_${selectedCategory}_${areaId}_${geofenceId}.csv`}
+              filename={`bt_fi_areas_${selectedCategory}_${areaTypeId}_${areaIdId}.csv`}
             />
             <div style={{ padding: "0 12px" }}>
               <SmallStackedBar

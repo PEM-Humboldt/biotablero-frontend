@@ -57,16 +57,19 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
       setMapTitle: setActiveLayer,
     } = this.context as SearchContextValues;
 
-    this.PersistenceHFController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestHFPersistence(areaId, geofenceId)
+    this.PersistenceHFController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestHFPersistence(areaTypeId, areaIdId)
       .then((res: Array<hfPersistence>) => {
         if (this.mounted) {
           this.setState({
@@ -135,9 +138,13 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
+    const { areaType, areaId } = this
       .context as SearchContextValues;
     const { showInfoGraph, hfPersistence, message, texts } = this.state;
+        
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -170,7 +177,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         </div>
         <TextBoxes
           downloadData={hfPersistence}
-          downloadName={`persistence_${areaId}_${geofenceId}.csv`}
+          downloadName={`persistence_${areaTypeId}_${areaIdId}.csv`}
           quoteText={texts.hfPersistence.quote}
           metoText={texts.hfPersistence.meto}
           consText={texts.hfPersistence.cons}

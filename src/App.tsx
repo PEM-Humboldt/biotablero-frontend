@@ -58,8 +58,8 @@ const App: React.FunctionComponent = () => {
       name: "Consultas geográficas",
       component: (
         <Search
-          areaType={query.get("area_type")}
-          areaId={query.get("area_id")}
+          areaType={query.get("area_type") ?? undefined}
+          areaId={query.get("area_id") ?? undefined}
           setHeaderNames={setHeaderNames}
         />
       ),
