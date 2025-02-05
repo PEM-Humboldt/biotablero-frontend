@@ -1,16 +1,10 @@
 import React from "react";
 import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
-import { shapeLayer } from "pages/search/types/layers";
+import { shapeLayer, rasterLayer } from "pages/search/types/layers";
+import * as geojson from "geojson";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
 
-export interface rasterLayer {
-  paneLevel: number;
-  id: string;
-  data: string;
-  opacity?: number;
-  selected?: boolean;
-}
 export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   areaType?: AreaType;
@@ -22,12 +16,12 @@ export interface SearchContextValues {
   setAreaId(areaId?: AreaIdBasic): void;
   setPolygon(polygon?: Polygon): void;
   setAreaHa(value?: number): void;
+  setAreaLayer(layer: geojson.GeoJsonObject): void;
   //
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layers: Array<shapeLayer>): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   // TODO: Evaluar la necesidad de tenerlo aquí
-  setPolygonValues(areaValue: number): void;
   setMapTitle(
     name: string,
     gradientData?: { from: number; to: number; colors: Array<string> }
@@ -44,8 +38,8 @@ const SearchContext = React.createContext<SearchContextValues>({
   setAreaId: () => {},
   setPolygon: () => {},
   setAreaHa: () => {},
+  setAreaLayer: () => {},
   //
-  setPolygonValues: () => {},
   setRasterLayers: () => {},
   setShapeLayers: () => {},
   setLoadingLayer: () => {},

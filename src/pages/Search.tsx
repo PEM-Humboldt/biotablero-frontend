@@ -1,9 +1,6 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, {
-  rasterLayer,
-  srchType,
-} from "pages/search/SearchContext";
+import SearchContext, { srchType } from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
 import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
@@ -12,6 +9,10 @@ import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import BackendAPI from "utils/backendAPI";
+import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import matchColor from "utils/matchColor";
+import { GeoJsonObject } from "geojson";
+import L from "leaflet";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -28,16 +29,29 @@ interface State {
   areaId?: AreaIdBasic;
   polygon?: Polygon;
   areaHa?: number;
+  areaLayer: shapeLayer;
+  shapeLayers: Array<shapeLayer>;
+  rasterLayers: Array<rasterLayer>;
   mapTitle: {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
   };
+  loadingLayer: boolean;
+  layerError: boolean;
 }
 
 class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { searchType: "definedArea", mapTitle: { name: "" } };
+    this.state = {
+      searchType: "definedArea",
+      areaLayer: { id: "", paneLevel: 0, json: [] },
+      rasterLayers: [],
+      shapeLayers: [],
+      mapTitle: { name: "" },
+      loadingLayer: false,
+      layerError: false,
+    };
   }
 
   async componentDidMount() {
@@ -57,6 +71,16 @@ class Search extends Component<Props, State> {
           areaType: typeObj,
           areaId: idObj,
           areaHa: Number(ha.total_area),
+          areaLayer: {
+            id: "geofence",
+            paneLevel: 1,
+            json: layer,
+            layerStyle: () => ({
+              stroke: false,
+              fillColor: matchColor("geofence")(),
+              fillOpacity: 0.6,
+            }),
+          },
           polygon: layer,
         });
       });
@@ -102,15 +126,70 @@ class Search extends Component<Props, State> {
     });
   };
 
+  setAreaLayer = (layerJson: GeoJsonObject) => {
+    this.setState({
+      areaLayer: {
+        id: "geofence",
+        paneLevel: 1,
+        json: layerJson,
+        layerStyle: () => ({
+          stroke: false,
+          fillColor: matchColor("geofence")(),
+          fillOpacity: 0.6,
+        }),
+      },
+    });
+  };
+
+  setRasterLayers = (layers: Array<rasterLayer>) => {
+    this.setState({ rasterLayers: layers });
+  };
+
+  setShapeLayers = (
+    layers: Array<shapeLayer>,
+    showAreaLayer: boolean = false
+  ) => {
+    this.setState({
+      shapeLayers: showAreaLayer
+        ? [this.state.areaLayer, ...layers]
+        : [...layers],
+    });
+  };
+
+  /**
+   * Control modal for switch layers
+   *
+   * @param {boolean} loading
+   * @param {boolean} error
+   */
+  setLoadingLayer = (loading: boolean, error: boolean) => {
+    this.setState({
+      loadingLayer: loading,
+      layerError: error,
+    });
+  };
+
   render() {
-    const { searchType, areaType, areaId, polygon, areaHa, mapTitle } =
-      this.state;
+    const {
+      searchType,
+      areaType,
+      areaId,
+      polygon,
+      areaHa,
+      areaLayer,
+      shapeLayers,
+      rasterLayers,
+      mapTitle,
+      loadingLayer,
+      layerError,
+    } = this.state;
+
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
-      !isUndefinedOrNull(polygon) &&
       !isUndefinedOrNull(areaType) &&
       !isUndefinedOrNull(areaId) &&
+      !isUndefinedOrNull(areaLayer) &&
       !isUndefinedOrNull(areaHa)
     ) {
       toShow = <Dashboard />;
@@ -128,20 +207,21 @@ class Search extends Component<Props, State> {
           setAreaId: this.setAreaId,
           setPolygon: this.setPolygon,
           setAreaHa: this.setAreaHa,
+          setAreaLayer: this.setAreaLayer,
           //
-          setPolygonValues: () => {},
-          setRasterLayers: () => {},
-          setShapeLayers: () => {},
-          setLoadingLayer: () => {},
+          setRasterLayers: this.setRasterLayers,
+          setShapeLayers: this.setShapeLayers,
+          setLoadingLayer: this.setLoadingLayer,
           setMapTitle: this.setMapTitle,
         }}
       >
         <div className="appSearcher wrappergrid">
           <MapViewer
             geoServerUrl={GeoServerAPI.getRequestURL()}
-            loadingLayer={false}
-            layerError={false}
-            rasterLayers={[]}
+            loadingLayer={loadingLayer}
+            layerError={layerError}
+            shapeLayers={shapeLayers}
+            rasterLayers={rasterLayers}
             drawPolygonEnabled={false}
             loadPolygonInfo={() => {}}
             mapTitle={mapTitle}
@@ -151,7 +231,6 @@ class Search extends Component<Props, State> {
             ]}
             rasterBounds={[]}
             polygon={null}
-            layers={[]}
           />
           <div className="contentView">{toShow}</div>
         </div>

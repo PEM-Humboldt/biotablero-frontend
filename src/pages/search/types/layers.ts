@@ -10,6 +10,14 @@ export interface shapeLayer {
   layerStyle?: StyleFunction;
 }
 
+export interface rasterLayer {
+  paneLevel: number;
+  id: string;
+  data: string;
+  opacity?: number;
+  selected?: boolean;
+}
+
 export interface connectivityFeaturePropierties {
   area: number;
   dpc_cat: string;

@@ -13,6 +13,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
+import { rasterLayer } from "pages/search/types/layers";
 
 interface Props {}
 interface State {
@@ -167,7 +168,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             onClickHandler={(period, category) => {
               if (period === this.currentPeriod) {
                 setRasterLayers(
-                  rasterLayers.map((layer) => {
+                  rasterLayers.map((layer: rasterLayer) => {
                     if (layer.id === category) {
                       return { ...layer, selected: true };
                     } else {
@@ -205,7 +206,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       .getLayers(period)
       .then((layers) => {
         if (this.mounted) {
-          setRasterLayers(layers);
+          //setRasterLayers(layers);
           setLoadingLayer(false, false);
           setMapTitle(
             `Pérdida y persistencia de bosque (${this.currentPeriod})`
