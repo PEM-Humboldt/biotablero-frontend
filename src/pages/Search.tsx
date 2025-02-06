@@ -12,7 +12,7 @@ import BackendAPI from "utils/backendAPI";
 import { rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
-import L from "leaflet";
+import L, { LatLngBoundsExpression } from "leaflet";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -32,6 +32,7 @@ interface State {
   areaLayer: shapeLayer;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
+  bounds: LatLngBoundsExpression | null;
   mapTitle: {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
@@ -48,6 +49,7 @@ class Search extends Component<Props, State> {
       areaLayer: { id: "", paneLevel: 0, json: [] },
       rasterLayers: [],
       shapeLayers: [],
+      bounds: null,
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
@@ -126,9 +128,10 @@ class Search extends Component<Props, State> {
     });
   };
 
-  setAreaLayer = (layerJson: GeoJsonObject) => {
-    this.setState({
-      areaLayer: {
+  setAreaLayer = (layerJson: GeoJsonObject | null) => {
+    if (layerJson) {
+      const bounds = L.geoJSON(layerJson).getBounds();
+      const areaLayer = {
         id: "geofence",
         paneLevel: 1,
         json: layerJson,
@@ -137,8 +140,18 @@ class Search extends Component<Props, State> {
           fillColor: matchColor("geofence")(),
           fillOpacity: 0.6,
         }),
-      },
-    });
+      };
+
+      this.setState({
+        areaLayer,
+        bounds,
+      });
+    } else {
+      this.setState({
+        areaLayer: { id: "", paneLevel: 0, json: [] },
+        bounds: null,
+      });
+    }
   };
 
   setRasterLayers = (layers: Array<rasterLayer>) => {
@@ -178,6 +191,7 @@ class Search extends Component<Props, State> {
       areaLayer: { id: "", paneLevel: 0, json: [] },
       rasterLayers: [],
       shapeLayers: [],
+      bounds: null,
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
@@ -192,6 +206,7 @@ class Search extends Component<Props, State> {
       polygon,
       areaHa,
       areaLayer,
+      bounds,
       shapeLayers,
       rasterLayers,
       mapTitle,
@@ -240,10 +255,7 @@ class Search extends Component<Props, State> {
             drawPolygonEnabled={false}
             loadPolygonInfo={() => {}}
             mapTitle={mapTitle}
-            mapBounds={[
-              [-4.2316872, -82.1243666],
-              [16.0571269, -66.85119073],
-            ]}
+            bounds={bounds}
             rasterBounds={[]}
             polygon={null}
           />

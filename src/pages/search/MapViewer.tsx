@@ -20,6 +20,7 @@ import { Polygon as PolygonType } from "pages/search/types/dashboard";
 import SearchContext from "pages/search/SearchContext";
 
 import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import isUndefinedOrNull from "utils/validations";
 
 interface Props {
   drawPolygonEnabled: boolean;
@@ -31,7 +32,7 @@ interface Props {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
   };
-  mapBounds: LatLngBoundsExpression;
+  bounds: LatLngBoundsExpression | null;
   rasterBounds: LatLngBoundsExpression;
   polygon: PolygonType | null;
   loadPolygonInfo: () => void;
@@ -76,12 +77,16 @@ class MapViewer extends React.Component<Props, State> {
 
   // TODO: ESto seguramente no está sirviendo para nada
   componentDidUpdate(prevProps: Props) {
-    /*const { mapBounds } = this.props;
-    if (prevProps.mapBounds !== mapBounds) {
-      this.mapRef.current?.leafletElement.flyToBounds(
-        mapBounds ?? config.params.colombia
-      );
-    }*/
+    const { bounds } = this.props;
+    const map = this.mapRef.current?.leafletElement;
+
+    if (!map) return;
+
+    if (!bounds) {
+      map.flyToBounds(config.params.colombia);
+    } else if (prevProps.bounds !== bounds) {
+      map.flyToBounds(bounds);
+    }
   }
 
   render() {
@@ -230,3 +235,6 @@ class MapViewer extends React.Component<Props, State> {
 export default MapViewer;
 
 MapViewer.contextType = SearchContext;
+function elseif(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
