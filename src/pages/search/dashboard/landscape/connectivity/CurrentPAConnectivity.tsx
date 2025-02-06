@@ -168,7 +168,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
             () => ({ layers: [currentPAConn] }),
             () => setLoadingLayer(false, false)
           );
-          setShapeLayers(this.state.layers);
+          setShapeLayers(this.state.layers, true);
           setMapTitle("Conectividad de áreas protegidas");
         }
       })
@@ -177,9 +177,11 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
     this.CPACController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
   }
 
   toggleInfo = (value: string) => {

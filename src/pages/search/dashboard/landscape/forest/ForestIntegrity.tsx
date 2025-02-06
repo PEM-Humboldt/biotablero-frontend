@@ -215,7 +215,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             () => ({ layers: [forestIntegrity] }),
             () => setLoadingLayer(false, false)
           );
-          setShapeLayers(this.state.layers);
+          setShapeLayers(this.state.layers, true);
           setMapTitle("Índice de condición estructural de bosques");
         }
       })
@@ -224,9 +224,11 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
     this.ForestIntegrityController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
   }
 
   /**
@@ -343,7 +345,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       }
       return layer;
     });
-    setShapeLayers(highlightedLayers);
+    setShapeLayers(highlightedLayers, true);
   };
 
   clickOnGraph = async (selectedKey: string) => {
@@ -368,7 +370,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             const activeLayers = this.state.layers.filter((layer) =>
               ["forestIntegrity", selectedKey].includes(layer.id)
             );
-            setShapeLayers(activeLayers);
+            setShapeLayers(activeLayers, true);
           }
         );
       } catch (error) {
@@ -378,7 +380,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       const activeLayers = this.state.layers.filter((layer) =>
         ["forestIntegrity", selectedKey].includes(layer.id)
       );
-      setShapeLayers(activeLayers);
+      setShapeLayers(activeLayers, true);
     }
   };
 }

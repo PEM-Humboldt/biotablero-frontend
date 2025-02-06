@@ -19,7 +19,7 @@ export interface SearchContextValues {
   setAreaLayer(layer: geojson.GeoJsonObject): void;
   //
   setRasterLayers(layers: Array<rasterLayer>): void;
-  setShapeLayers(layers: Array<shapeLayer>): void;
+  setShapeLayers(layers: Array<shapeLayer>, showAreaLayer?: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   // TODO: Evaluar la necesidad de tenerlo aquí
   setMapTitle(

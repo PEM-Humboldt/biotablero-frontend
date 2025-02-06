@@ -201,7 +201,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             () => ({ layers: [currentSEPAConn] }),
             () => setLoadingLayer(false, false)
           );
-          setShapeLayers(this.state.layers);
+          setShapeLayers(this.state.layers, true);
           setMapTitle(
             "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)"
           );
@@ -212,9 +212,11 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
   }
 
   /**
@@ -447,7 +449,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     const activeLayers = this.state.layers.filter((layer) =>
       ["currentSEPAConn", layerId].includes(layer.id)
     );
-    setShapeLayers(activeLayers);
+    setShapeLayers(activeLayers, true);
 
     setMapTitle(layerDescription);
   };

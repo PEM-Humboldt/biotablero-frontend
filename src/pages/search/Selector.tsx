@@ -180,7 +180,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
   optionsList,
 }) => {
   const context = useContext(SearchContext);
-  const { areaType, setAreaId, setPolygon, setAreaHa } =
+  const { areaType, setAreaId, setAreaLayer, setAreaHa } =
     context as SearchContextValues;
 
   return (
@@ -191,7 +191,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       onChange={(event, value) => {
         if (isUndefinedOrNull(value)) {
           setAreaId();
-          setPolygon();
+          //setAreaLayer();
           setAreaHa();
         } else {
           setAreaId(value || undefined);
@@ -202,7 +202,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
             BackendAPI.requestAreaLayer(areaType!.id, value?.id!).request,
           ]).then(([ha, layer]) => {
             setAreaHa(Number(ha.total_area));
-            setPolygon(layer);
+            setAreaLayer(layer);
           });
         }
       }}

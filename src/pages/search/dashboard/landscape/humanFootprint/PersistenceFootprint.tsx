@@ -110,9 +110,11 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
     this.PersistenceHFController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
   }
 
   /**

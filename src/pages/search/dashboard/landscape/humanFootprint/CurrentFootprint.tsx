@@ -123,9 +123,11 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer } = this
+      .context as SearchContextValues;
     this.CurrentHFController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
   }
 
   /**
