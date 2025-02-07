@@ -16,7 +16,7 @@ import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
 import RestAPI from "utils/restAPI";
 import base64 from "pages/search/utils/base64ArrayBuffer";
-import { rasterLayer } from "pages/search/SearchContext";
+import { rasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 
 interface ForestLPData {

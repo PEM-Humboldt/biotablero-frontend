@@ -168,7 +168,7 @@ class Search extends Component<Props, State> {
         : [...layers],
     });
   };
-
+  
   /**
    * Control modal for switch layers
    *
@@ -213,7 +213,7 @@ class Search extends Component<Props, State> {
       loadingLayer,
       layerError,
     } = this.state;
-
+    
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
@@ -232,6 +232,7 @@ class Search extends Component<Props, State> {
           areaId: areaId,
           polygon: polygon,
           areaHa: areaHa,
+          rasterLayers: rasterLayers,
           setSearchType: this.setSearchType,
           setAreaType: this.setAreaType,
           setAreaId: this.setAreaId,

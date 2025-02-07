@@ -11,6 +11,7 @@ export interface SearchContextValues {
   areaId?: AreaIdBasic;
   polygon?: Polygon;
   areaHa?: number;
+  rasterLayers: Array<rasterLayer>;
   setSearchType(searchType: srchType): void;
   setAreaType(areaType?: AreaType): void;
   setAreaId(areaId?: AreaIdBasic): void;
@@ -33,6 +34,7 @@ export interface SearchContextValues {
 
 const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
+  rasterLayers: [],
   setSearchType: () => {},
   setAreaType: () => {},
   setAreaId: () => {},
