@@ -99,14 +99,29 @@ class Search extends Component<Props, State> {
     }
   }
 
+  /**
+   * Set the value for the search type
+   *
+   * @param {srchType} searchType
+   */
   setSearchType = (searchType: srchType) => {
     this.setState({ searchType });
   };
 
+  /**
+   * Set id and name for the area type
+   *
+   * @param {AreaType} areaType
+   */
   setAreaType = (areaType?: AreaType) => {
     this.setState({ areaType });
   };
 
+  /**
+   * Set id and name for the query area
+   *
+   * @param {AreaIdBasic} areaId
+   */
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
   };
@@ -115,10 +130,21 @@ class Search extends Component<Props, State> {
     this.setState({ polygon });
   };
 
+  /**
+   * Set the value for the area surface in Ha
+   *
+   * @param {number} value
+   */
   setAreaHa = (value: number) => {
     this.setState({ areaHa: value });
   };
 
+  /**
+   * Set values for map title component
+   *
+   * @param {string} name
+   * @param {string} gradientData
+   */
   setMapTitle = (
     name: string,
     gradientData?: { from: number; to: number; colors: Array<string> }
@@ -128,6 +154,11 @@ class Search extends Component<Props, State> {
     });
   };
 
+  /**
+   * Set the value for the geofence layer object
+   *
+   * @param {GeoJsonObject | null} layerJson
+   */
   setAreaLayer = (layerJson: GeoJsonObject | null) => {
     if (layerJson) {
       const bounds = L.geoJSON(layerJson).getBounds();
@@ -154,10 +185,21 @@ class Search extends Component<Props, State> {
     }
   };
 
+  /**
+   * Set values for raster layers array
+   *
+   * @param {Array<rasterLayer>} layers
+   */
   setRasterLayers = (layers: Array<rasterLayer>) => {
     this.setState({ rasterLayers: layers });
   };
 
+  /**
+   * Set values for GeoJson layers array and determine if shows the geofence layer
+   *
+   * @param {Array<shapeLayer>} layers
+   * @param {boolean} showAreaLayer
+   */
   setShapeLayers = (
     layers: Array<shapeLayer>,
     showAreaLayer: boolean = false
@@ -168,9 +210,9 @@ class Search extends Component<Props, State> {
         : [...layers],
     });
   };
-  
+
   /**
-   * Control modal for switch layers
+   * Set the state for loading layer an layer error
    *
    * @param {boolean} loading
    * @param {boolean} error
@@ -182,6 +224,11 @@ class Search extends Component<Props, State> {
     });
   };
 
+  /**
+   * Clear state when back button is clicked
+   *
+   * @param {GeoJsonObject | null} layerJson
+   */
   handlerBackButton = () => {
     this.setState({
       areaId: undefined,
@@ -213,7 +260,7 @@ class Search extends Component<Props, State> {
       loadingLayer,
       layerError,
     } = this.state;
-    
+
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
