@@ -11,14 +11,12 @@ export interface SearchContextValues {
   areaId?: AreaIdBasic;
   polygon?: Polygon;
   areaHa?: number;
-  rasterLayers: Array<rasterLayer>;
   setSearchType(searchType: srchType): void;
   setAreaType(areaType?: AreaType): void;
   setAreaId(areaId?: AreaIdBasic): void;
   setPolygon(polygon?: Polygon): void;
   setAreaHa(value?: number): void;
   setAreaLayer(layer: geojson.GeoJsonObject): void;
-  //
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layers: Array<shapeLayer>, showAreaLayer?: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
@@ -34,7 +32,6 @@ export interface SearchContextValues {
 
 const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
-  rasterLayers: [],
   setSearchType: () => {},
   setAreaType: () => {},
   setAreaId: () => {},

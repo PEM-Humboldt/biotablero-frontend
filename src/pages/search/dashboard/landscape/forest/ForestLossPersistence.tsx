@@ -24,6 +24,7 @@ interface State {
   texts: {
     forestLP: textsObject;
   };
+  layers: Array<rasterLayer>;
 }
 
 class ForestLossPersistence extends React.Component<Props, State> {
@@ -42,12 +43,13 @@ class ForestLossPersistence extends React.Component<Props, State> {
       texts: {
         forestLP: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, searchType, polygon, setPolygonValues } = this
+    const { areaType, areaId, searchType, polygon } = this
       .context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
@@ -71,9 +73,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
             message: null,
           });
         }
-        if (searchType === "drawPolygon") {
+        // TODO activar nuevamente cuando se implemente la lógica para el manejo de polígonos personaalizados
+        /*if (searchType === "drawPolygon") {
           setPolygonValues(data.forestLPArea ?? 0);
-        }
+        }*/
       })
       .catch(() => {
         this.setState({ message: "no-data" });
@@ -106,9 +109,15 @@ class ForestLossPersistence extends React.Component<Props, State> {
   };
 
   render() {
-    const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
-      this.state;
-    const { areaType, areaId, searchType, rasterLayers, setRasterLayers } = this
+    const {
+      forestLP,
+      forestPersistenceValue,
+      showInfoGraph,
+      message,
+      texts,
+      layers,
+    } = this.state;
+    const { areaType, areaId, setRasterLayers } = this
       .context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
@@ -168,13 +177,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
             onClickHandler={(period, category) => {
               if (period === this.currentPeriod) {
                 setRasterLayers(
-                  rasterLayers.map((layer: rasterLayer) => {
-                    if (layer.id === category) {
-                      return { ...layer, selected: true };
-                    } else {
-                      return { ...layer, selected: false };
-                    }
-                  })
+                  layers.map((layer) => ({
+                    ...layer,
+                    selected: layer.id === category,
+                  }))
                 );
               } else {
                 this.currentPeriod = period;
@@ -205,8 +211,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
     this.flpController
       .getLayers(period)
       .then((layers) => {
+        this.setState({ layers: layers });
+
         if (this.mounted) {
-          setRasterLayers(layers);
+          setRasterLayers(this.state.layers);
           setLoadingLayer(false, false);
           setMapTitle(
             `Pérdida y persistencia de bosque (${this.currentPeriod})`

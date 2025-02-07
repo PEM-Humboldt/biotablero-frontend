@@ -20,7 +20,6 @@ import { Polygon as PolygonType } from "pages/search/types/dashboard";
 import SearchContext from "pages/search/SearchContext";
 
 import { rasterLayer, shapeLayer } from "pages/search/types/layers";
-import isUndefinedOrNull from "utils/validations";
 
 interface Props {
   drawPolygonEnabled: boolean;
@@ -32,8 +31,7 @@ interface Props {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
   };
-  bounds: LatLngBoundsExpression | null;
-  rasterBounds: LatLngBoundsExpression;
+  bounds: LatLngBoundsExpression;
   polygon: PolygonType | null;
   loadPolygonInfo: () => void;
   shapeLayers: Array<shapeLayer>;
@@ -82,7 +80,7 @@ class MapViewer extends React.Component<Props, State> {
 
     if (!map) return;
 
-    if (!bounds) {
+    if (Array.isArray(bounds) && bounds.length === 0) {
       map.flyToBounds(config.params.colombia);
     } else if (prevProps.bounds !== bounds) {
       map.flyToBounds(bounds);
@@ -97,7 +95,7 @@ class MapViewer extends React.Component<Props, State> {
       layerError,
       rasterLayers,
       shapeLayers,
-      rasterBounds,
+      bounds,
       mapTitle,
       polygon,
       drawPolygonEnabled,
@@ -201,7 +199,7 @@ class MapViewer extends React.Component<Props, State> {
                   <ImageOverlay
                     key={layer.id}
                     url={layer.data}
-                    bounds={rasterBounds}
+                    bounds={bounds}
                     opacity={opacity}
                   />
                 );

@@ -32,7 +32,7 @@ interface State {
   areaLayer: shapeLayer;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
-  bounds: LatLngBoundsExpression | null;
+  bounds: LatLngBoundsExpression;
   mapTitle: {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
@@ -49,7 +49,7 @@ class Search extends Component<Props, State> {
       areaLayer: { id: "", paneLevel: 0, json: [] },
       rasterLayers: [],
       shapeLayers: [],
-      bounds: null,
+      bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
@@ -180,7 +180,7 @@ class Search extends Component<Props, State> {
     } else {
       this.setState({
         areaLayer: { id: "", paneLevel: 0, json: [] },
-        bounds: null,
+        bounds: [],
       });
     }
   };
@@ -238,7 +238,7 @@ class Search extends Component<Props, State> {
       areaLayer: { id: "", paneLevel: 0, json: [] },
       rasterLayers: [],
       shapeLayers: [],
-      bounds: null,
+      bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
@@ -279,7 +279,6 @@ class Search extends Component<Props, State> {
           areaId: areaId,
           polygon: polygon,
           areaHa: areaHa,
-          rasterLayers: rasterLayers,
           setSearchType: this.setSearchType,
           setAreaType: this.setAreaType,
           setAreaId: this.setAreaId,
@@ -304,7 +303,6 @@ class Search extends Component<Props, State> {
             loadPolygonInfo={() => {}}
             mapTitle={mapTitle}
             bounds={bounds}
-            rasterBounds={[]}
             polygon={null}
           />
           <div className="contentView">{toShow}</div>
