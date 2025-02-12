@@ -29,11 +29,12 @@ interface Props {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
   };
-  bounds: LatLngBoundsExpression;
-  polygon: PolygonType | null;
-  loadPolygonInfo: () => void;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
+  bounds: LatLngBoundsExpression;
+  // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
+  polygon: PolygonType | null;
+  loadPolygonInfo: () => void;
   userLogged?: {
     id: number;
     username: string;
