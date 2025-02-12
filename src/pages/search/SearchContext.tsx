@@ -1,5 +1,5 @@
 import React from "react";
-import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
+import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { shapeLayer, rasterLayer } from "pages/search/types/layers";
 import * as geojson from "geojson";
 
@@ -9,16 +9,15 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   areaType?: AreaType;
   areaId?: AreaIdBasic;
-  polygon?: Polygon;
   areaHa?: number;
   setSearchType(searchType: srchType): void;
   setAreaType(areaType?: AreaType): void;
   setAreaId(areaId?: AreaIdBasic): void;
-  setPolygon(polygon?: Polygon): void;
   setAreaHa(value?: number): void;
-  setAreaLayer(layer: geojson.GeoJsonObject): void;
+  setAreaLayer(layer?: geojson.GeoJsonObject): void;
   setRasterLayers(layers: Array<rasterLayer>): void;
-  setShapeLayers(layers: Array<shapeLayer>, showAreaLayer?: boolean): void;
+  setShapeLayers(layers: Array<shapeLayer>): void;
+  setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   // TODO: Evaluar la necesidad de tenerlo aquí
   setMapTitle(
@@ -35,12 +34,11 @@ const SearchContext = React.createContext<SearchContextValues>({
   setSearchType: () => {},
   setAreaType: () => {},
   setAreaId: () => {},
-  setPolygon: () => {},
   setAreaHa: () => {},
   setAreaLayer: () => {},
-  //
   setRasterLayers: () => {},
   setShapeLayers: () => {},
+  setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
   setMapTitle: () => {},
   //TODO: "Delete when migration of switch layer is finished" (all 3)

@@ -136,8 +136,14 @@ class ForestIntegrity extends React.Component<Props, FIState> {
   componentDidMount() {
     this.mounted = true;
 
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setMapTitle,
+      setShowAreaLayer,
+    } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -215,7 +221,8 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             () => ({ layers: [forestIntegrity] }),
             () => setLoadingLayer(false, false)
           );
-          setShapeLayers(this.state.layers, true);
+          setShowAreaLayer(true);
+          setShapeLayers(this.state.layers);
           setMapTitle("Índice de condición estructural de bosques");
         }
       })
@@ -224,9 +231,10 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer } = this
       .context as SearchContextValues;
     this.ForestIntegrityController.cancelActiveRequests();
+    setShowAreaLayer(false);
     setShapeLayers([]);
     setLoadingLayer(false, false);
   }
@@ -345,7 +353,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       }
       return layer;
     });
-    setShapeLayers(highlightedLayers, true);
+    setShapeLayers(highlightedLayers);
   };
 
   clickOnGraph = async (selectedKey: string) => {
@@ -370,7 +378,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             const activeLayers = this.state.layers.filter((layer) =>
               ["forestIntegrity", selectedKey].includes(layer.id)
             );
-            setShapeLayers(activeLayers, true);
+            setShapeLayers(activeLayers);
           }
         );
       } catch (error) {
@@ -380,7 +388,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       const activeLayers = this.state.layers.filter((layer) =>
         ["forestIntegrity", selectedKey].includes(layer.id)
       );
-      setShapeLayers(activeLayers, true);
+      setShapeLayers(activeLayers);
     }
   };
 }

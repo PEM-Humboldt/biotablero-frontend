@@ -17,7 +17,6 @@ import DrawControl from "pages/search/mapViewer/DrawControl";
 import "leaflet/dist/leaflet.css";
 import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
-import SearchContext from "pages/search/SearchContext";
 
 import { rasterLayer, shapeLayer } from "pages/search/types/layers";
 
@@ -26,7 +25,6 @@ interface Props {
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
-  // TODO: tipar correctamente
   mapTitle: {
     name: string;
     gradientData?: { from: number; to: number; colors: Array<string> };
@@ -73,7 +71,6 @@ class MapViewer extends React.Component<Props, State> {
     this.mapRef = React.createRef<Map>();
   }
 
-  // TODO: ESto seguramente no está sirviendo para nada
   componentDidUpdate(prevProps: Props) {
     const { bounds } = this.props;
     const map = this.mapRef.current?.leafletElement;
@@ -231,8 +228,3 @@ class MapViewer extends React.Component<Props, State> {
 }
 
 export default MapViewer;
-
-MapViewer.contextType = SearchContext;
-function elseif(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

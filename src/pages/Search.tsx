@@ -2,7 +2,7 @@ import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import SearchContext, { srchType } from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
-import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
+import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
 import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
@@ -27,11 +27,11 @@ interface State {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: AreaType;
   areaId?: AreaIdBasic;
-  polygon?: Polygon;
   areaHa?: number;
   areaLayer: shapeLayer;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
+  showAreaLayer: boolean;
   bounds: LatLngBoundsExpression;
   mapTitle: {
     name: string;
@@ -46,9 +46,10 @@ class Search extends Component<Props, State> {
     super(props);
     this.state = {
       searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: [] },
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
       rasterLayers: [],
       shapeLayers: [],
+      showAreaLayer: false,
       bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
@@ -83,7 +84,6 @@ class Search extends Component<Props, State> {
               fillOpacity: 0.6,
             }),
           },
-          polygon: layer,
         });
       });
     } else if (!isUndefinedOrNull(areaType)) {
@@ -126,10 +126,6 @@ class Search extends Component<Props, State> {
     this.setState({ areaId });
   };
 
-  setPolygon = (polygon: Polygon) => {
-    this.setState({ polygon });
-  };
-
   /**
    * Set the value for the area surface in Ha
    *
@@ -157,9 +153,9 @@ class Search extends Component<Props, State> {
   /**
    * Set the value for the geofence layer object
    *
-   * @param {GeoJsonObject | null} layerJson
+   * @param {GeoJsonObject | undefined} layerJson
    */
-  setAreaLayer = (layerJson: GeoJsonObject | null) => {
+  setAreaLayer = (layerJson?: GeoJsonObject) => {
     if (layerJson) {
       const bounds = L.geoJSON(layerJson).getBounds();
       const areaLayer = {
@@ -179,7 +175,11 @@ class Search extends Component<Props, State> {
       });
     } else {
       this.setState({
-        areaLayer: { id: "", paneLevel: 0, json: [] },
+        areaLayer: {
+          id: "",
+          paneLevel: 0,
+          json: { type: "FeatureCollection" },
+        },
         bounds: [],
       });
     }
@@ -198,17 +198,17 @@ class Search extends Component<Props, State> {
    * Set values for GeoJson layers array and determine if shows the geofence layer
    *
    * @param {Array<shapeLayer>} layers
-   * @param {boolean} showAreaLayer
    */
-  setShapeLayers = (
-    layers: Array<shapeLayer>,
-    showAreaLayer: boolean = false
-  ) => {
-    this.setState({
-      shapeLayers: showAreaLayer
-        ? [this.state.areaLayer, ...layers]
-        : [...layers],
-    });
+  setShapeLayers = (layers: Array<shapeLayer>) => {
+    this.setState({ shapeLayers: layers });
+  };
+
+  /**
+   * Set true the value for show area layer
+   *
+   */
+  setShowAreaLayer = (active: boolean) => {
+    this.setState({ showAreaLayer: active });
   };
 
   /**
@@ -226,8 +226,6 @@ class Search extends Component<Props, State> {
 
   /**
    * Clear state when back button is clicked
-   *
-   * @param {GeoJsonObject | null} layerJson
    */
   handlerBackButton = () => {
     this.setState({
@@ -235,7 +233,7 @@ class Search extends Component<Props, State> {
       areaType: undefined,
       areaHa: undefined,
       searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: [] },
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
       rasterLayers: [],
       shapeLayers: [],
       bounds: [],
@@ -250,7 +248,6 @@ class Search extends Component<Props, State> {
       searchType,
       areaType,
       areaId,
-      polygon,
       areaHa,
       areaLayer,
       bounds,
@@ -277,17 +274,15 @@ class Search extends Component<Props, State> {
           searchType: "definedArea",
           areaType: areaType,
           areaId: areaId,
-          polygon: polygon,
           areaHa: areaHa,
           setSearchType: this.setSearchType,
           setAreaType: this.setAreaType,
           setAreaId: this.setAreaId,
-          setPolygon: this.setPolygon,
           setAreaHa: this.setAreaHa,
           setAreaLayer: this.setAreaLayer,
-          //
           setRasterLayers: this.setRasterLayers,
           setShapeLayers: this.setShapeLayers,
+          setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
           setMapTitle: this.setMapTitle,
         }}
@@ -297,7 +292,11 @@ class Search extends Component<Props, State> {
             geoServerUrl={GeoServerAPI.getRequestURL()}
             loadingLayer={loadingLayer}
             layerError={layerError}
-            shapeLayers={shapeLayers}
+            shapeLayers={
+              this.state.showAreaLayer
+                ? [areaLayer, ...shapeLayers]
+                : shapeLayers
+            }
             rasterLayers={rasterLayers}
             drawPolygonEnabled={false}
             loadPolygonInfo={() => {}}

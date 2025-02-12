@@ -36,10 +36,6 @@ class TabContainer extends React.Component<Props, State> {
    * Function to change visible content on tabs click
    */
   changeTab = (event: React.SyntheticEvent, selectedIndex: number) => {
-    if (this.context) {
-      const { cancelActiveRequests } = this.context as SearchContextValues;
-      cancelActiveRequests();
-    }
     this.setState({ selectedIndex });
   };
 

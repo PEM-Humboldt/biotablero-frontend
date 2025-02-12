@@ -4,8 +4,7 @@ import { GeoJSONOptions, StyleFunction } from "leaflet";
 export interface shapeLayer {
   id: string;
   paneLevel: number;
-  json: geojson.GeoJsonObject | Array<geojson.GeoJsonObject>;
-  active?: boolean;
+  json: geojson.GeoJsonObject;
   onEachFeature?: GeoJSONOptions["onEachFeature"];
   layerStyle?: StyleFunction;
 }

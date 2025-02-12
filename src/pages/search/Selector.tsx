@@ -24,7 +24,7 @@ const Selector = () => {
   const [polygonError, setPolygonError] = useState(false);
 
   const context = useContext(SearchContext);
-  const { setSearchType, setAreaHa, setAreaId, setAreaType, setPolygon } =
+  const { setSearchType, setAreaHa, setAreaId, setAreaType, setAreaLayer } =
     context as SearchContextValues;
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const Selector = () => {
     setAreaHa();
     setAreaId();
     setAreaType();
-    setPolygon();
+    setAreaLayer();
   };
 
   return (
@@ -191,7 +191,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       onChange={(event, value) => {
         if (isUndefinedOrNull(value)) {
           setAreaId();
-          //setAreaLayer();
+          setAreaLayer();
           setAreaHa();
         } else {
           setAreaId(value || undefined);
