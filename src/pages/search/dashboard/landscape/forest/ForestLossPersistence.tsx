@@ -13,6 +13,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
+import { rasterLayer } from "pages/search/types/layers";
 
 interface Props {}
 interface State {
@@ -23,6 +24,7 @@ interface State {
   texts: {
     forestLP: textsObject;
   };
+  layers: Array<rasterLayer>;
 }
 
 class ForestLossPersistence extends React.Component<Props, State> {
@@ -41,24 +43,23 @@ class ForestLossPersistence extends React.Component<Props, State> {
       texts: {
         forestLP: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaType: areaId,
-      areaId: geofenceId,
-      searchType,
-      polygon,
-      setPolygonValues,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, searchType } = this
+      .context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
     if (searchType === "definedArea") {
-      this.flpController.setArea(areaId, geofenceId.toString());
-    } else if (polygon && polygon.geojson) {
+      this.flpController.setArea(areaTypeId, areaIdId);
+    } /*else if (polygon && polygon.geojson) {
       this.flpController.setPolygon(polygon.geojson);
-    }
+    }*/
 
     this.switchLayer(this.currentPeriod);
 
@@ -72,9 +73,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
             message: null,
           });
         }
-        if (searchType === "drawPolygon") {
+        // TODO activar nuevamente cuando se implemente la lógica para el manejo de polígonos personaalizados
+        /*if (searchType === "drawPolygon") {
           setPolygonValues(data.forestLPArea ?? 0);
-        }
+        }*/
       })
       .catch(() => {
         this.setState({ message: "no-data" });
@@ -93,8 +95,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentWillUnmount() {
     this.mounted = false;
     this.flpController.cancelActiveRequests();
-    const { setRasterLayers } = this.context as SearchContextValues;
+    const { setRasterLayers, setMapTitle } = this
+      .context as SearchContextValues;
     setRasterLayers([]);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -107,15 +111,19 @@ class ForestLossPersistence extends React.Component<Props, State> {
   };
 
   render() {
-    const { forestLP, forestPersistenceValue, showInfoGraph, message, texts } =
-      this.state;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
-      searchType,
-      rasterLayers,
-      setRasterLayers,
-    } = this.context as SearchContextValues;
+      forestLP,
+      forestPersistenceValue,
+      showInfoGraph,
+      message,
+      texts,
+      layers,
+    } = this.state;
+    const { areaType, areaId, setRasterLayers } = this
+      .context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
     const graphData = this.flpController.getGraphData(forestLP);
 
@@ -171,13 +179,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
             onClickHandler={(period, category) => {
               if (period === this.currentPeriod) {
                 setRasterLayers(
-                  rasterLayers.map((layer) => {
-                    if (layer.id === category) {
-                      return { ...layer, selected: true };
-                    } else {
-                      return { ...layer, selected: false };
-                    }
-                  })
+                  layers.map((layer) => ({
+                    ...layer,
+                    selected: layer.id === category,
+                  }))
                 );
               } else {
                 this.currentPeriod = period;
@@ -192,7 +197,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
           metoText={texts.forestLP.meto}
           quoteText={texts.forestLP.quote}
           downloadData={this.flpController.getDownloadData(forestLP)}
-          downloadName={`forest_loss_persistence_${areaId}_${geofenceId}.csv`}
+          downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />
@@ -201,24 +206,21 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   switchLayer = (period: string) => {
-    const {
-      setRasterLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { setRasterLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
 
     setLoadingLayer(true, false);
     this.flpController
       .getLayers(period)
       .then((layers) => {
+        this.setState({ layers: layers });
+
         if (this.mounted) {
-          setRasterLayers(layers);
+          setRasterLayers(this.state.layers);
           setLoadingLayer(false, false);
-          const activeLayer = {
-            id: this.currentPeriod,
+          setMapTitle({
             name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
-          };
-          setActiveLayer(activeLayer);
+          });
         }
       })
       .catch((e) => {

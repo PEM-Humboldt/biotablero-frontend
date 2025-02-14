@@ -4,10 +4,17 @@ import { GeoJSONOptions, StyleFunction } from "leaflet";
 export interface shapeLayer {
   id: string;
   paneLevel: number;
-  json: geojson.GeoJsonObject | Array<geojson.GeoJsonObject>;
-  active?: boolean;
+  json: geojson.GeoJsonObject;
   onEachFeature?: GeoJSONOptions["onEachFeature"];
   layerStyle?: StyleFunction;
+}
+
+export interface rasterLayer {
+  paneLevel: number;
+  id: string;
+  data: string;
+  opacity?: number;
+  selected?: boolean;
 }
 
 export interface connectivityFeaturePropierties {
@@ -16,4 +23,13 @@ export interface connectivityFeaturePropierties {
   id: string;
   name: string;
   value: number;
+}
+
+export interface MapTitle {
+  name: string;
+  gradientData?: {
+    from: number;
+    to: number;
+    colors: Array<string>;
+  };
 }

@@ -50,7 +50,7 @@ class SearchAPI {
     const areaTypes: Array<AreaType> = [
       { id: "states", name: "Departamentos" },
       { id: "ea", name: "Jurisdicciones ambientales" },
-      { id: "basinSubzone", name: "Subzonas hidrográficas" },
+      { id: "basinSubzones", name: "Subzonas hidrográficas" },
       { id: "se", name: "Ecosistemas Estratégicos" },
       { id: "custom", name: "Consulta Personalizada" },
     ];
@@ -71,7 +71,7 @@ class SearchAPI {
         return RestAPI.getAllStates();
       case "ea":
         return RestAPI.getAllEAs();
-      case "basinSubzone":
+      case "basinSubzones":
         return RestAPI.getAllSubzones();
       default:
         return Promise.resolve([]);

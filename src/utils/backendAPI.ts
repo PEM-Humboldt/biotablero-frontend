@@ -689,7 +689,10 @@ class BackendAPI {
    *
    * @return {ShapeAPIObject} layer object to be loaded in the map
    */
-  static requestAreaLayer(areaType: string, areaId: string | number) {
+  static requestAreaLayer(
+    areaType: string,
+    areaId: string | number
+  ): ShapeAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(`${areaType}/layers/${areaId}`, {

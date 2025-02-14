@@ -77,7 +77,6 @@ export class PersistenceFootprintController {
 
     const key = feature.feature.properties.key as keyof TooltipLabel;
 
-    console.log(key);
     feature
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>

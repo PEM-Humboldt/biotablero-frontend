@@ -34,7 +34,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
       },
       component: PersistenceFooprint,
     },
-    {
+    /*{
       label: {
         id: "hfTimeline",
         name: "Histórico y Ecosistémas estratégicos (EE)",
@@ -45,7 +45,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa diferentes análisis de huella humana en esta área de consulta",
       },
       component: TimelineFootprint,
-    },
+    },*/
   ];
   return (
     <div style={{ width: "100%" }}>

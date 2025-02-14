@@ -82,15 +82,20 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
-      setMapTitle: setActiveLayer,
+      setMapTitle,
+      setShowAreaLayer,
     } = this.context as SearchContextValues;
-    this.CPACController.setArea(areaId, geofenceId.toString());
 
-    BackendAPI.requestCurrentPAConnectivity(areaId, geofenceId)
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.CPACController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestCurrentPAConnectivity(areaTypeId, areaIdId)
       .then((res: Array<currentPAConn>) => {
         if (this.mounted) {
           const protConn = res.find((item) => item.key === "prot_conn");
@@ -120,7 +125,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         }));
       });
 
-    BackendAPI.requestDPC(areaId, geofenceId, 5)
+    BackendAPI.requestDPC(areaTypeId, areaIdId, 5)
       .then((res: Array<DPC>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -162,23 +167,16 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
     setLoadingLayer(true, false);
 
-    const newActiveLayer = {
-      id: "currentPAConn",
-      name: "Conectividad de áreas protegidas",
-    };
-
-    Promise.all([
-      this.CPACController.getGeofence(),
-      this.CPACController.getLayer(),
-    ])
-      .then(([geofenceLayer, currentPAConn]) => {
+    this.CPACController.getLayer()
+      .then((currentPAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, currentPAConn] }),
+            () => ({ layers: [currentPAConn] }),
             () => setLoadingLayer(false, false)
           );
+          setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -186,9 +184,13 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
+      this.context as SearchContextValues;
     this.CPACController.cancelActiveRequests();
+    setShowAreaLayer(false);
     setShapeLayers([]);
+    setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   toggleInfo = (value: string) => {
@@ -204,8 +206,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       currentPAConnData,
       dpcData,
@@ -214,6 +215,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       messages: { conn, dpc: dpcMess },
       texts,
     } = this.state;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     const graphData = this.CPACController.getGraphData(dpcData);
 
     return (
@@ -252,7 +257,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               metoText={texts.paConnCurrent.meto}
               quoteText={texts.paConnCurrent.quote}
               downloadData={currentPAConnData}
-              downloadName={`conn_current_${areaId}_${geofenceId}.csv`}
+              downloadName={`conn_current_${areaTypeId}_${areaIdId}.csv`}
               toggleInfo={() => this.toggleInfo("current")}
               isInfoOpen={infoShown.has("current")}
             />
@@ -323,7 +328,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
             metoText={texts.paConnDPC.meto}
             quoteText={texts.paConnDPC.quote}
             downloadData={dpcData}
-            downloadName={`conn_dpc_${areaId}_${geofenceId}.csv`}
+            downloadName={`conn_dpc_${areaTypeId}_${areaIdId}.csv`}
             isInfoOpen={infoShown.has("dpc")}
             toggleInfo={() => this.toggleInfo("dpc")}
           />

@@ -2,7 +2,7 @@ import * as geojson from "geojson";
 import { CancelTokenSource } from "axios";
 
 export interface ShapeAPIObject {
-  request: Promise<geojson.GeoJsonObject | geojson.GeoJsonObject[]>;
+  request: Promise<geojson.GeoJsonObject>;
   source: CancelTokenSource;
 }
 

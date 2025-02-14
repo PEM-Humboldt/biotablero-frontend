@@ -17,29 +17,21 @@ import DrawControl from "pages/search/mapViewer/DrawControl";
 import "leaflet/dist/leaflet.css";
 import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 
-import { shapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 
 interface Props {
   drawPolygonEnabled: boolean;
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
-  // TODO: tipar correctamente
-  mapTitle: string;
-  mapBounds: LatLngBoundsExpression;
-  rasterBounds: LatLngBoundsExpression;
+  mapTitle: MapTitle;
+  shapeLayers: Array<shapeLayer>;
+  rasterLayers: Array<rasterLayer>;
+  bounds: LatLngBoundsExpression;
+  // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
   polygon: PolygonType | null;
   loadPolygonInfo: () => void;
-  layers: Array<shapeLayer>;
-  rasterLayers: Array<{
-    paneLevel: number;
-    id: string;
-    data: string;
-    opacity: number;
-    selected?: boolean;
-  }>;
   userLogged?: {
     id: number;
     username: string;
@@ -77,13 +69,16 @@ class MapViewer extends React.Component<Props, State> {
     this.mapRef = React.createRef<Map>();
   }
 
-  // TODO: ESto seguramente no está sirviendo para nada
   componentDidUpdate(prevProps: Props) {
-    const { mapBounds } = this.props;
-    if (prevProps.mapBounds !== mapBounds) {
-      this.mapRef.current?.leafletElement.flyToBounds(
-        mapBounds ?? config.params.colombia
-      );
+    const { bounds } = this.props;
+    const map = this.mapRef.current?.leafletElement;
+
+    if (!map) return;
+
+    if (Array.isArray(bounds) && bounds.length === 0) {
+      map.flyToBounds(config.params.colombia);
+    } else if (prevProps.bounds !== bounds) {
+      map.flyToBounds(bounds);
     }
   }
 
@@ -93,9 +88,9 @@ class MapViewer extends React.Component<Props, State> {
       userLogged,
       loadingLayer,
       layerError,
-      rasterLayers: searchRasterLayers,
-      layers,
-      rasterBounds,
+      rasterLayers,
+      shapeLayers,
+      bounds,
       mapTitle,
       polygon,
       drawPolygonEnabled,
@@ -107,19 +102,22 @@ class MapViewer extends React.Component<Props, State> {
 
     const { openErrorModal } = this.state;
 
-    // const totalRasterLayers = [...rasterLayers, ...searchRasterLayers];
-    // const totalShapeLayers = [...shapeLayers, ...layers];
-
     const paneLevels = Array.from(
-      new Set(
-        // [...totalShapeLayers, ...totalRasterLayers].map(
-        [...layers, ...searchRasterLayers].map((layer) => layer.paneLevel)
-      )
+      new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
+
+    const titleName = mapTitle?.name || "";
 
     return (
       <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
-        {mapTitle}
+        {/* TODO agrega componente para el gradiente */}
+        {titleName && (
+          <>
+            <div className="mapsTitle">
+              <div className="title">{titleName}</div>
+            </div>
+          </>
+        )}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
@@ -179,7 +177,7 @@ class MapViewer extends React.Component<Props, State> {
         />
         {paneLevels.map((panelLevel, index) => (
           <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
-            {layers
+            {shapeLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => (
                 <GeoJSON
@@ -189,7 +187,7 @@ class MapViewer extends React.Component<Props, State> {
                   onEachFeature={layer.onEachFeature}
                 />
               ))}
-            {searchRasterLayers
+            {rasterLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => {
                 let opacity = layer.selected ? 1 : 0.7;
@@ -198,7 +196,7 @@ class MapViewer extends React.Component<Props, State> {
                   <ImageOverlay
                     key={layer.id}
                     url={layer.data}
-                    bounds={rasterBounds}
+                    bounds={bounds}
                     opacity={opacity}
                   />
                 );
@@ -230,5 +228,3 @@ class MapViewer extends React.Component<Props, State> {
 }
 
 export default MapViewer;
-
-MapViewer.contextType = SearchContext;

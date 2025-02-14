@@ -61,18 +61,26 @@ class TimelinePAConnectivity extends React.Component<
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
-      setMapTitle: setActiveLayer,
+      setMapTitle,
+      setShowAreaLayer,
     } = this.context as SearchContextValues;
 
-    this.TimelinePACController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.TimelinePACController.setArea(areaTypeId, areaIdId);
 
     Promise.all([
-      BackendAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot"),
-      BackendAPI.requestTimelinePAConnectivity(areaId, geofenceId, "prot_conn"),
+      BackendAPI.requestTimelinePAConnectivity(areaTypeId, areaIdId, "prot"),
+      BackendAPI.requestTimelinePAConnectivity(
+        areaTypeId,
+        areaIdId,
+        "prot_conn"
+      ),
     ])
       .then((res) => {
         if (this.mounted) {
@@ -102,24 +110,18 @@ class TimelinePAConnectivity extends React.Component<
       .catch(() => {});
 
     setLoadingLayer(true, false);
+    setMapTitle({ name: "" });
 
-    const newActiveLayer = {
-      id: "timelinePAConn",
-      name: "Conectividad de áreas protegidas",
-    };
-
-    Promise.all([
-      this.TimelinePACController.getGeofence(),
-      this.TimelinePACController.getLayer(),
-    ])
-      .then(([geofenceLayer, timelinePAConn]) => {
+    this.TimelinePACController.getLayer()
+      .then((timelinePAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, timelinePAConn] }),
+            () => ({ layers: [timelinePAConn] }),
             () => setLoadingLayer(false, false)
           );
+          setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -127,9 +129,13 @@ class TimelinePAConnectivity extends React.Component<
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
+      this.context as SearchContextValues;
     this.TimelinePACController.cancelActiveRequests();
+    setShowAreaLayer(false);
     setShapeLayers([]);
+    setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -160,8 +166,11 @@ class TimelinePAConnectivity extends React.Component<
 
   render() {
     const { showInfoGraph, timelinePAConnData, message, texts } = this.state;
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -194,7 +203,7 @@ class TimelinePAConnectivity extends React.Component<
               metoText={texts.paConnTimeline.meto}
               quoteText={texts.paConnTimeline.quote}
               downloadData={processDataCsv(timelinePAConnData)}
-              downloadName={`conn_timeline_${areaId}_${geofenceId}.csv`}
+              downloadName={`conn_timeline_${areaTypeId}_${areaIdId}.csv`}
               isInfoOpen={showInfoGraph}
               toggleInfo={this.toggleInfoGraph}
             />

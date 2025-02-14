@@ -1,14 +1,18 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, { srchType } from "./search/SearchContext";
+import SearchContext, { srchType } from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
-import { AreaIdBasic, AreaType, Polygon } from "./search/types/dashboard";
+import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
-import MapViewer from "./search/MapViewer";
+import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
-import Dashboard from "./search/Dashboard";
-import Selector from "./search/Selector";
+import Dashboard from "pages/search/Dashboard";
+import Selector from "pages/search/Selector";
 import BackendAPI from "utils/backendAPI";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
+import matchColor from "utils/matchColor";
+import { GeoJsonObject } from "geojson";
+import L, { LatLngBoundsExpression } from "leaflet";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -23,14 +27,31 @@ interface State {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: AreaType;
   areaId?: AreaIdBasic;
-  polygon?: Polygon;
   areaHa?: number;
+  areaLayer: shapeLayer;
+  shapeLayers: Array<shapeLayer>;
+  rasterLayers: Array<rasterLayer>;
+  showAreaLayer: boolean;
+  bounds: LatLngBoundsExpression;
+  mapTitle: MapTitle;
+  loadingLayer: boolean;
+  layerError: boolean;
 }
 
 class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { searchType: "definedArea" };
+    this.state = {
+      searchType: "definedArea",
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
+      rasterLayers: [],
+      shapeLayers: [],
+      showAreaLayer: false,
+      bounds: [],
+      mapTitle: { name: "" },
+      loadingLayer: false,
+      layerError: false,
+    };
   }
 
   async componentDidMount() {
@@ -50,7 +71,16 @@ class Search extends Component<Props, State> {
           areaType: typeObj,
           areaId: idObj,
           areaHa: Number(ha.total_area),
-          polygon: layer,
+          areaLayer: {
+            id: "geofence",
+            paneLevel: 1,
+            json: layer,
+            layerStyle: () => ({
+              stroke: false,
+              fillColor: matchColor("geofence")(),
+              fillOpacity: 0.6,
+            }),
+          },
         });
       });
     } else if (!isUndefinedOrNull(areaType)) {
@@ -66,37 +96,171 @@ class Search extends Component<Props, State> {
     }
   }
 
+  /**
+   * Set the value for the search type
+   *
+   * @param {srchType} searchType
+   */
   setSearchType = (searchType: srchType) => {
     this.setState({ searchType });
   };
 
+  /**
+   * Set id and name for the area type
+   *
+   * @param {AreaType} areaType
+   */
   setAreaType = (areaType?: AreaType) => {
     this.setState({ areaType });
   };
 
+  /**
+   * Set id and name for the query area
+   *
+   * @param {AreaIdBasic} areaId
+   */
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
   };
 
-  setPolygon = (polygon: Polygon) => {
-    this.setState({ polygon });
-  };
-
+  /**
+   * Set the value for the area surface in Ha
+   *
+   * @param {number} value
+   */
   setAreaHa = (value: number) => {
     this.setState({ areaHa: value });
   };
 
+  /**
+   * Set values for map title component
+   *
+   * @param {MapTitle} mapTitle
+   */
+  setMapTitle = (mapTitle: MapTitle) => {
+    this.setState({
+      mapTitle: mapTitle,
+    });
+  };
+
+  /**
+   * Set the value for the geofence layer object
+   *
+   * @param {GeoJsonObject | undefined} layerJson
+   */
+  setAreaLayer = (layerJson?: GeoJsonObject) => {
+    if (layerJson) {
+      const bounds = L.geoJSON(layerJson).getBounds();
+      const areaLayer = {
+        id: "geofence",
+        paneLevel: 1,
+        json: layerJson,
+        layerStyle: () => ({
+          stroke: false,
+          fillColor: matchColor("geofence")(),
+          fillOpacity: 0.6,
+        }),
+      };
+
+      this.setState({
+        areaLayer,
+        bounds,
+      });
+    } else {
+      this.setState({
+        areaLayer: {
+          id: "",
+          paneLevel: 0,
+          json: { type: "FeatureCollection" },
+        },
+        bounds: [],
+      });
+    }
+  };
+
+  /**
+   * Set values for raster layers array
+   *
+   * @param {Array<rasterLayer>} layers
+   */
+  setRasterLayers = (layers: Array<rasterLayer>) => {
+    this.setState({ rasterLayers: layers });
+  };
+
+  /**
+   * Set values for GeoJson layers array and determine if shows the geofence layer
+   *
+   * @param {Array<shapeLayer>} layers
+   */
+  setShapeLayers = (layers: Array<shapeLayer>) => {
+    this.setState({ shapeLayers: layers });
+  };
+
+  /**
+   * Set true the value for show area layer
+   *
+   * @param {boolean} active
+   */
+  setShowAreaLayer = (active: boolean) => {
+    this.setState({ showAreaLayer: active });
+  };
+
+  /**
+   * Set the state for loading layer an layer error
+   *
+   * @param {boolean} loading
+   * @param {boolean} error
+   */
+  setLoadingLayer = (loading: boolean, error: boolean) => {
+    this.setState({
+      loadingLayer: loading,
+      layerError: error,
+    });
+  };
+
+  /**
+   * Clear state when back button is clicked
+   */
+  handlerBackButton = () => {
+    this.setState({
+      areaId: undefined,
+      areaType: undefined,
+      areaHa: undefined,
+      searchType: "definedArea",
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
+      rasterLayers: [],
+      shapeLayers: [],
+      bounds: [],
+      mapTitle: { name: "" },
+      loadingLayer: false,
+      layerError: false,
+    });
+  };
+
   render() {
-    const { searchType, areaType, areaId, polygon, areaHa } = this.state;
+    const {
+      searchType,
+      areaType,
+      areaId,
+      areaHa,
+      areaLayer,
+      bounds,
+      shapeLayers,
+      rasterLayers,
+      mapTitle,
+      loadingLayer,
+      layerError,
+    } = this.state;
+
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
-      !isUndefinedOrNull(polygon) &&
       !isUndefinedOrNull(areaType) &&
       !isUndefinedOrNull(areaId) &&
+      !isUndefinedOrNull(areaLayer) &&
       !isUndefinedOrNull(areaHa)
     ) {
-      toShow = <Dashboard />;
+      toShow = <Dashboard handlerBackButton={this.handlerBackButton} />;
     }
     return (
       <SearchContext.Provider
@@ -104,37 +268,35 @@ class Search extends Component<Props, State> {
           searchType: "definedArea",
           areaType: areaType,
           areaId: areaId,
-          polygon: polygon,
           areaHa: areaHa,
           setSearchType: this.setSearchType,
           setAreaType: this.setAreaType,
           setAreaId: this.setAreaId,
-          setPolygon: this.setPolygon,
           setAreaHa: this.setAreaHa,
-          //
-          setPolygonValues: () => {},
-          setRasterLayers: () => {},
-          setShapeLayers: () => {},
-          setLoadingLayer: () => {},
-          setMapTitle: () => {},
+          setAreaLayer: this.setAreaLayer,
+          setRasterLayers: this.setRasterLayers,
+          setShapeLayers: this.setShapeLayers,
+          setShowAreaLayer: this.setShowAreaLayer,
+          setLoadingLayer: this.setLoadingLayer,
+          setMapTitle: this.setMapTitle,
         }}
       >
         <div className="appSearcher wrappergrid">
           <MapViewer
             geoServerUrl={GeoServerAPI.getRequestURL()}
-            loadingLayer={false}
-            layerError={false}
-            rasterLayers={[]}
+            loadingLayer={loadingLayer}
+            layerError={layerError}
+            shapeLayers={
+              this.state.showAreaLayer
+                ? [areaLayer, ...shapeLayers]
+                : shapeLayers
+            }
+            rasterLayers={rasterLayers}
             drawPolygonEnabled={false}
             loadPolygonInfo={() => {}}
-            mapTitle=""
-            mapBounds={[
-              [-4.2316872, -82.1243666],
-              [16.0571269, -66.85119073],
-            ]}
-            rasterBounds={[]}
+            mapTitle={mapTitle}
+            bounds={bounds}
             polygon={null}
-            layers={[]}
           />
           <div className="contentView">{toShow}</div>
         </div>

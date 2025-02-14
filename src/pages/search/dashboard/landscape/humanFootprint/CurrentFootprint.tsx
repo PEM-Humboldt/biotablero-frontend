@@ -58,17 +58,15 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaType: areaId,
-      areaId: geofenceId,
-      setShapeLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
+      this.context as SearchContextValues;
 
-    this.CurrentHFController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestCurrentHFValue(areaId, geofenceId)
+    this.CurrentHFController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestCurrentHFValue(areaTypeId, areaIdId)
       .then((res: currentHFValue) => {
         if (this.mounted) {
           this.setState({
@@ -79,7 +77,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       })
       .catch(() => {});
 
-    BackendAPI.requestCurrentHFCategories(areaId, geofenceId)
+    BackendAPI.requestCurrentHFCategories(areaTypeId, areaIdId)
       .then((res: Array<currentHFCategories>) => {
         if (this.mounted) {
           this.setState({
@@ -109,23 +107,15 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
     setLoadingLayer(true, false);
 
-    const newActiveLayer = {
-      id: "hfCurrent",
-      name: "HH promedio · 2018",
-    };
-
-    Promise.all([
-      this.CurrentHFController.getGeofence(),
-      this.CurrentHFController.getLayer(),
-    ])
-      .then(([geofenceLayer, hfCurrent]) => {
+    this.CurrentHFController.getLayer()
+      .then((hfCurrent) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, hfCurrent] }),
+            () => ({ layers: [hfCurrent] }),
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle({ name: "HH promedio · 2018" });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -133,9 +123,12 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
     this.CurrentHFController.cancelActiveRequests();
     setShapeLayers([]);
+    setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -148,8 +141,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       hfCurrent,
       hfCurrentValue,
@@ -158,6 +150,10 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       message,
       texts,
     } = this.state;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -205,7 +201,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
           metoText={texts.hfCurrent.meto}
           quoteText={texts.hfCurrent.quote}
           downloadData={hfCurrent}
-          downloadName={`hf_current_${areaId}_${geofenceId}.csv`}
+          downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={this.toggleInfoGraph}
         />

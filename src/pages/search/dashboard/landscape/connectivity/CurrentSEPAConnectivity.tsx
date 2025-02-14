@@ -80,16 +80,20 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
+      areaType,
+      areaId,
       setShapeLayers,
       setLoadingLayer,
-      setMapTitle: setActiveLayer,
+      setMapTitle,
+      setShowAreaLayer,
     } = this.context as SearchContextValues;
 
-    this.CurrentSEPACController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Páramo")
+    this.CurrentSEPACController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestCurrentSEPAConnectivity(areaTypeId, areaIdId, "Páramo")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protParamo = 0;
@@ -121,8 +125,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       });
 
     BackendAPI.requestCurrentSEPAConnectivity(
-      areaId,
-      geofenceId,
+      areaTypeId,
+      areaIdId,
       "Bosque Seco Tropical"
     )
       .then((res: Array<currentSEPAConn>) => {
@@ -155,7 +159,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    BackendAPI.requestCurrentSEPAConnectivity(areaId, geofenceId, "Humedal")
+    BackendAPI.requestCurrentSEPAConnectivity(areaTypeId, areaIdId, "Humedal")
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
           let protWetland = 0;
@@ -195,24 +199,20 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       .catch(() => {});
 
     setLoadingLayer(true, false);
+    setMapTitle({ name: "" });
 
-    const newActiveLayer = {
-      id: "currentSEPAConn",
-      name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
-    };
-
-    Promise.all([
-      this.CurrentSEPACController.getGeofence(),
-      this.CurrentSEPACController.getLayer(),
-    ])
-      .then(([geofenceLayer, currentSEPAConn]) => {
+    this.CurrentSEPACController.getLayer()
+      .then((currentSEPAConn) => {
         if (this.mounted) {
           this.setState(
-            () => ({ layers: [geofenceLayer, currentSEPAConn] }),
+            () => ({ layers: [currentSEPAConn] }),
             () => setLoadingLayer(false, false)
           );
+          setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle({
+            name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+          });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -220,9 +220,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
+      this.context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
+    setShowAreaLayer(false);
     setShapeLayers([]);
+    setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -235,8 +239,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -249,6 +252,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       messages: { paramo, dryForest, wetland },
       texts,
     } = this.state;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -278,7 +285,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnParamo && currentPAConnParamo.length > 0 && (
             <DownloadCSV
               data={currentPAConnParamo}
-              filename={`bt_conn_paramo_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_paramo_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">
@@ -319,7 +326,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnDryForest && currentPAConnDryForest.length > 0 && (
             <DownloadCSV
               data={currentPAConnDryForest}
-              filename={`bt_conn_dryforest_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_dryforest_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">
@@ -360,7 +367,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           {currentPAConnWetland && currentPAConnWetland.length > 0 && (
             <DownloadCSV
               data={currentPAConnWetland}
-              filename={`bt_conn_wetland_${areaId}_${geofenceId}.csv`}
+              filename={`bt_conn_wetland_${areaTypeId}_${areaIdId}.csv`}
             />
           )}
           <div className="svgPointer">
@@ -406,11 +413,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const {
-      setShapeLayers,
-      setLoadingLayer,
-      setMapTitle: setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
 
     let layerName: string = "";
     let layerDescription: string = "";
@@ -453,11 +457,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     const activeLayers = this.state.layers.filter((layer) =>
-      ["geofence", "currentSEPAConn", layerId].includes(layer.id)
+      ["currentSEPAConn", layerId].includes(layer.id)
     );
     setShapeLayers(activeLayers);
-
-    setActiveLayer({ id: layerId, name: layerDescription });
+    setMapTitle({ name: layerDescription });
   };
 }
 
