@@ -115,7 +115,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
-          setMapTitle("HH promedio · 2018");
+          setMapTitle({ name: "HH promedio · 2018" });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -123,11 +123,12 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
       .context as SearchContextValues;
     this.CurrentHFController.cancelActiveRequests();
     setShapeLayers([]);
     setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**

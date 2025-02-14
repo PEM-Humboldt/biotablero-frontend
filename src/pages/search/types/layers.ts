@@ -24,3 +24,12 @@ export interface connectivityFeaturePropierties {
   name: string;
   value: number;
 }
+
+export interface MapTitle {
+  name: string;
+  gradientData?: {
+    from: number;
+    to: number;
+    colors: Array<string>;
+  };
+}

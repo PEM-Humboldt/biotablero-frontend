@@ -199,6 +199,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       .catch(() => {});
 
     setLoadingLayer(true, false);
+    setMapTitle({ name: "" });
 
     this.CurrentSEPACController.getLayer()
       .then((currentSEPAConn) => {
@@ -209,9 +210,9 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
-          setMapTitle(
-            "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)"
-          );
+          setMapTitle({
+            name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+          });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -219,12 +220,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer } = this
-      .context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
+      this.context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
     setShowAreaLayer(false);
     setShapeLayers([]);
     setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -411,8 +413,8 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const { setShapeLayers, setLoadingLayer, setMapTitle, setShowAreaLayer } =
-      this.context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
 
     let layerName: string = "";
     let layerDescription: string = "";
@@ -458,7 +460,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       ["currentSEPAConn", layerId].includes(layer.id)
     );
     setShapeLayers(activeLayers);
-    setMapTitle(layerDescription);
+    setMapTitle({ name: layerDescription });
   };
 }
 

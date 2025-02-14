@@ -110,6 +110,7 @@ class TimelinePAConnectivity extends React.Component<
       .catch(() => {});
 
     setLoadingLayer(true, false);
+    setMapTitle({ name: "" });
 
     this.TimelinePACController.getLayer()
       .then((timelinePAConn) => {
@@ -120,7 +121,7 @@ class TimelinePAConnectivity extends React.Component<
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
-          setMapTitle("Conectividad de áreas protegidas");
+          setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -128,12 +129,13 @@ class TimelinePAConnectivity extends React.Component<
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer } = this
-      .context as SearchContextValues;
+    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
+      this.context as SearchContextValues;
     this.TimelinePACController.cancelActiveRequests();
     setShowAreaLayer(false);
     setShapeLayers([]);
     setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**

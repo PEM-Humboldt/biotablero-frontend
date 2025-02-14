@@ -1,6 +1,6 @@
 import React from "react";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { shapeLayer, rasterLayer } from "pages/search/types/layers";
+import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
@@ -19,14 +19,7 @@ export interface SearchContextValues {
   setShapeLayers(layers: Array<shapeLayer>): void;
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
-  // TODO: Evaluar la necesidad de tenerlo aquí
-  setMapTitle(
-    name: string,
-    gradientData?: { from: number; to: number; colors: Array<string> }
-  ): void;
-  switchLayer?(layer: string): void;
-  handlerClickOnGraph?({}): void;
-  cancelActiveRequests?(): void;
+  setMapTitle(mapTitle: MapTitle): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -41,10 +34,6 @@ const SearchContext = React.createContext<SearchContextValues>({
   setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
   setMapTitle: () => {},
-  //TODO: "Delete when migration of switch layer is finished" (all 3)
-  switchLayer: () => {},
-  handlerClickOnGraph: () => {},
-  cancelActiveRequests: () => {},
 });
 
 export default SearchContext;

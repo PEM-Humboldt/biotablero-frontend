@@ -95,8 +95,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentWillUnmount() {
     this.mounted = false;
     this.flpController.cancelActiveRequests();
-    const { setRasterLayers } = this.context as SearchContextValues;
+    const { setRasterLayers, setMapTitle } = this
+      .context as SearchContextValues;
     setRasterLayers([]);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -216,9 +218,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
         if (this.mounted) {
           setRasterLayers(this.state.layers);
           setLoadingLayer(false, false);
-          setMapTitle(
-            `Pérdida y persistencia de bosque (${this.currentPeriod})`
-          );
+          setMapTitle({
+            name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
+          });
         }
       })
       .catch((e) => {

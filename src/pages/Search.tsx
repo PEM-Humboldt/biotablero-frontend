@@ -9,7 +9,7 @@ import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import BackendAPI from "utils/backendAPI";
-import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
@@ -33,10 +33,7 @@ interface State {
   rasterLayers: Array<rasterLayer>;
   showAreaLayer: boolean;
   bounds: LatLngBoundsExpression;
-  mapTitle: {
-    name: string;
-    gradientData?: { from: number; to: number; colors: Array<string> };
-  };
+  mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
 }
@@ -138,15 +135,11 @@ class Search extends Component<Props, State> {
   /**
    * Set values for map title component
    *
-   * @param {string} name
-   * @param {string} gradientData
+   * @param {MapTitle} mapTitle
    */
-  setMapTitle = (
-    name: string,
-    gradientData?: { from: number; to: number; colors: Array<string> }
-  ) => {
+  setMapTitle = (mapTitle: MapTitle) => {
     this.setState({
-      mapTitle: { name: name, gradientData: gradientData },
+      mapTitle: mapTitle,
     });
   };
 
@@ -206,6 +199,7 @@ class Search extends Component<Props, State> {
   /**
    * Set true the value for show area layer
    *
+   * @param {boolean} active
    */
   setShowAreaLayer = (active: boolean) => {
     this.setState({ showAreaLayer: active });

@@ -18,17 +18,14 @@ import "leaflet/dist/leaflet.css";
 import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
 
-import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 
 interface Props {
   drawPolygonEnabled: boolean;
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
-  mapTitle: {
-    name: string;
-    gradientData?: { from: number; to: number; colors: Array<string> };
-  };
+  mapTitle: MapTitle;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
   bounds: LatLngBoundsExpression;
@@ -109,13 +106,15 @@ class MapViewer extends React.Component<Props, State> {
       new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
 
+    const titleName = mapTitle?.name || "";
+
     return (
       <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
         {/* TODO agrega componente para el gradiente */}
-        {mapTitle && (
+        {titleName && (
           <>
             <div className="mapsTitle">
-              <div className="title">{mapTitle.name}</div>
+              <div className="title">{titleName}</div>
             </div>
           </>
         )}
