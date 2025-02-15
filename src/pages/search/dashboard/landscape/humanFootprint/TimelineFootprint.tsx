@@ -16,7 +16,7 @@ import { textsObject } from "pages/search/types/texts";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
-import { TimelineFootprintController } from "pages/search/drawer/landscape/humanFootprint/TimelineFootprintController";
+import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
 import { shapeLayer } from "pages/search/types/layers";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
@@ -111,25 +111,23 @@ class TimelineFootprint extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
 
-    const {
-      areaId,
-      geofenceId,
-      setShapeLayers,
-      setLoadingLayer,
-      setActiveLayer,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
+      this.context as SearchContextValues;
 
-    this.TimelineHFController.setArea(areaId, geofenceId.toString());
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.TimelineHFController.setArea(areaTypeId, areaIdId.toString());
 
     Promise.all([
-      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
-      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Humedal"),
+      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Páramo"),
+      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Humedal"),
       BackendAPI.requestSEHFTimeline(
-        areaId,
-        geofenceId,
+        areaTypeId,
+        areaIdId,
         "Bosque Seco Tropical"
       ),
-      BackendAPI.requestTotalHFTimeline(areaId, geofenceId),
+      BackendAPI.requestTotalHFTimeline(areaTypeId, areaIdId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
@@ -157,11 +155,6 @@ class TimelineFootprint extends React.Component<Props, State> {
 
     setLoadingLayer(true, false);
 
-    const newActiveLayer = {
-      id: "hfPersistence",
-      name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
-    };
-
     this.TimelineHFController.getLayer()
       .then((hfPersistence) => {
         if (this.mounted) {
@@ -170,7 +163,9 @@ class TimelineFootprint extends React.Component<Props, State> {
             () => setLoadingLayer(false, false)
           );
           setShapeLayers(this.state.layers);
-          setActiveLayer(newActiveLayer);
+          setMapTitle({
+            name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
+          });
         }
       })
       .catch(() => setLoadingLayer(false, true));
@@ -178,6 +173,12 @@ class TimelineFootprint extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+      .context as SearchContextValues;
+    this.TimelineHFController.cancelActiveRequests();
+    setShapeLayers([]);
+    setLoadingLayer(false, false);
+    setMapTitle({ name: "" });
   }
 
   /**
@@ -195,12 +196,15 @@ class TimelineFootprint extends React.Component<Props, State> {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType: string) => {
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     if (seType !== "aTotal") {
       BackendAPI.requestSEDetailInArea(
-        areaId,
-        geofenceId,
+        areaTypeId,
+        areaIdId,
         this.getLabel(seType)
       ).then((value) => {
         const res = { ...value, type: seType };
@@ -246,9 +250,13 @@ class TimelineFootprint extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaId, geofenceId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const { showInfoGraph, hfTimeline, selectedEcosystem, message, texts } =
       this.state;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -294,7 +302,7 @@ class TimelineFootprint extends React.Component<Props, State> {
             metoText={texts.hfTimeline.meto}
             quoteText={texts.hfTimeline.quote}
             downloadData={processDataCsv(hfTimeline)}
-            downloadName={`hf_timeline_${areaId}_${geofenceId}.csv`}
+            downloadName={`hf_timeline_${areaTypeId}_${areaIdId}.csv`}
             isInfoOpen={showInfoGraph}
             toggleInfo={this.toggleInfoGraph}
           />
@@ -304,7 +312,7 @@ class TimelineFootprint extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (selectedKey: string) => {
-    const { setShapeLayers, setLoadingLayer, setActiveLayer } = this
+    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
       .context as SearchContextValues;
 
     let layerDescription = "";
@@ -322,19 +330,19 @@ class TimelineFootprint extends React.Component<Props, State> {
           ["hfPersistence"].includes(layer.id)
         )
       );
-      const activeLayer = {
-        id: "hfPersistence",
+      setMapTitle({
         name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
-      };
-      setActiveLayer(activeLayer);
+      });
     } else {
-      layerDescription = `HH - Persistencia - ${seTitle[selectedKey]}`;
+      layerDescription = `HH - Persistencia - ${
+        seTitle[selectedKey as keyof SEKeys]
+      }`;
 
       if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
         setLoadingLayer(true, false);
         try {
           const SELayer = await this.TimelineHFController.getSELayer(
-            selectedKey
+            selectedKey as keyof Omit<SEKeys, "aTotal">
           );
 
           this.setState(
@@ -359,7 +367,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         setShapeLayers(activeLayers);
       }
 
-      setActiveLayer({ id: selectedKey, name: layerDescription });
+      setMapTitle({ name: layerDescription });
     }
   };
 }

@@ -102,7 +102,6 @@ export class TimelineFootprintController {
    * Highlight and set the tooltip
    *
    * @param {L.LeafletMouseEvent} event objet
-   *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
     type TooltipLabel = Record<
@@ -121,7 +120,6 @@ export class TimelineFootprintController {
 
     const key = feature.feature.properties.key as keyof TooltipLabel;
 
-    console.log(key);
     feature
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
@@ -139,7 +137,6 @@ export class TimelineFootprintController {
    * Reset the feature style
    *
    * @param {L.LeafletMouseEvent} event objet
-   *
    */
   resetShapeHighlight = (event: L.LeafletMouseEvent) => {
     const feature = event.target;
