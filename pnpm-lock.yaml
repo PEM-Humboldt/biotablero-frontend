@@ -22,6 +22,9 @@ importers:
 
   .:
     dependencies:
+      '@appigram/react-yandex-metrika':
+        specifier: ^2.8.9
+        version: 2.8.9(react@17.0.2)
       '@emotion/react':
         specifier: ~11.9.0
         version: 11.9.3(@babel/core@7.18.13)(@types/react@18.2.55)(react@17.0.2)
@@ -334,6 +337,14 @@ packages:
       json-schema: 0.4.0
       jsonpointer: 5.0.1
       leven: 3.1.0
+    dev: false
+
+  /@appigram/react-yandex-metrika@2.8.9(react@17.0.2):
+    resolution: {integrity: sha512-Ltkmtr1lCDDeejuuE78F49pVBBndRtVc84andeQDz0x3zWqz4xiYRpy2JzzH/4/Y0dDHcSkc4hek+1AJmwEfGA==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 17.0.2
     dev: false
 
   /@babel/code-frame@7.23.5:
@@ -2413,6 +2424,7 @@ packages:
   /@humanwhocodes/config-array@0.11.14:
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
     engines: {node: '>=10.10.0'}
+    deprecated: Use @eslint/config-array instead
     dependencies:
       '@humanwhocodes/object-schema': 2.0.2
       debug: 4.3.4(supports-color@5.5.0)
@@ -2426,6 +2438,7 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.2:
     resolution: {integrity: sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==}
+    deprecated: Use @eslint/object-schema instead
 
   /@iarna/toml@2.2.5:
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
@@ -9217,6 +9230,7 @@ packages:
   /eslint@8.56.0:
     resolution: {integrity: sha512-Go19xM6T9puCOWntie1/P997aXxFsOi37JIHRWI514Hc6ZnaHGKY9xFhrU65RT6CcBEzZoGG1e6Nq+DT04ZtZQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.56.0)
@@ -9893,7 +9907,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: The v1 package contains DANGEROUS / INSECURE binaries. Upgrade to safe fsevents v2
+    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
