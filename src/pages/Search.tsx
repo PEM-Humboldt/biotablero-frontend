@@ -13,13 +13,14 @@ import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
+import { Names } from "types/layoutTypes";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: string;
   areaId?: number | string;
   // TODO: Tipar correctamente
-  setHeaderNames: Function;
+  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 interface State {
@@ -55,7 +56,7 @@ class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { areaType, areaId, history } = this.props;
+    const { areaType, areaId, history, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
       // TODO: Con el nuevo backend solo es llamar al endpoint que trae todos los detalles del area (que trae el objeto de tipo AreaId)
       // [Borrar] Con el backend actual:
@@ -82,6 +83,7 @@ class Search extends Component<Props, State> {
             }),
           },
         });
+        setHeaderNames({ parent: idObj!.name, child: typeObj!.name });
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar
@@ -235,6 +237,9 @@ class Search extends Component<Props, State> {
       loadingLayer: false,
       layerError: false,
     });
+
+    const { setHeaderNames } = this.props;
+    setHeaderNames({ parent: "", child: "" });
   };
 
   render() {
@@ -252,7 +257,9 @@ class Search extends Component<Props, State> {
       layerError,
     } = this.state;
 
-    let toShow = <Selector />;
+    const { setHeaderNames } = this.props;
+
+    let toShow = <Selector setHeaderNames={setHeaderNames} />;
     if (
       !isUndefinedOrNull(searchType) &&
       !isUndefinedOrNull(areaType) &&
