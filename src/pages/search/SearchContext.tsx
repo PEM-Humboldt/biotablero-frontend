@@ -20,6 +20,8 @@ export interface SearchContextValues {
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   setMapTitle(mapTitle: MapTitle): void;
+  setCurrentComponent(currentComponent: string): void;
+  unmountComponent(component: string): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -34,6 +36,8 @@ const SearchContext = React.createContext<SearchContextValues>({
   setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
   setMapTitle: () => {},
+  setCurrentComponent: () => {},
+  unmountComponent: () => {},
 });
 
 export default SearchContext;

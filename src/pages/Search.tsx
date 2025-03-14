@@ -36,6 +36,7 @@ interface State {
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
+  currentComponent: string;
 }
 
 class Search extends Component<Props, State> {
@@ -51,6 +52,7 @@ class Search extends Component<Props, State> {
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
+      currentComponent: "",
     };
   }
 
@@ -206,7 +208,7 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Set the state for loading layer an layer error
+   * Set the state for loading layer and layer error
    *
    * @param {boolean} loading
    * @param {boolean} error
@@ -218,6 +220,31 @@ class Search extends Component<Props, State> {
     });
   };
 
+  /**
+   * Set the name of the current component being mounted
+   *
+   * @param {string} currentComponent
+   */
+  setCurrentComponent = (currentComponent: string) => {
+    this.setState({ currentComponent: currentComponent });
+  };
+
+  /**
+   * Clear layers vars in the context
+   *
+   * @param {string} component
+   */
+  unmountComponent = (component: string) => {
+    const { currentComponent } = this.state;
+
+    if (component === currentComponent) {
+      this.setShapeLayers([]);
+      this.setRasterLayers([]);
+      this.setLoadingLayer(false, false);
+      this.setMapTitle({ name: "" });
+      this.setShowAreaLayer(false);
+    }
+  };
   /**
    * Clear state when back button is clicked
    */
@@ -279,6 +306,8 @@ class Search extends Component<Props, State> {
           setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
           setMapTitle: this.setMapTitle,
+          setCurrentComponent: this.setCurrentComponent,
+          unmountComponent: this.unmountComponent,
         }}
       >
         <div className="appSearcher wrappergrid">
