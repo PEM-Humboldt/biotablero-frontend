@@ -260,8 +260,6 @@ class Search extends Component<Props, State> {
       layerError,
     } = this.state;
 
-    const { setHeaderNames } = this.props;
-
     let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
@@ -289,7 +287,6 @@ class Search extends Component<Props, State> {
           setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
           setMapTitle: this.setMapTitle,
-          setHeaderNames: setHeaderNames,
         }}
       >
         <div className="appSearcher wrappergrid">

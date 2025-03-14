@@ -21,7 +21,6 @@ export interface SearchContextValues {
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   setMapTitle(mapTitle: MapTitle): void;
-  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -36,7 +35,6 @@ const SearchContext = React.createContext<SearchContextValues>({
   setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
   setMapTitle: () => {},
-  setHeaderNames: () => {},
 });
 
 export default SearchContext;
