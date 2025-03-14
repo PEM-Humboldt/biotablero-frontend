@@ -2,7 +2,6 @@ import React from "react";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
-import { Names } from "types/layoutTypes";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
 
