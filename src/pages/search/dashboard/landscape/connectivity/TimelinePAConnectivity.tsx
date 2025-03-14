@@ -42,6 +42,7 @@ class TimelinePAConnectivity extends React.Component<
 > {
   static contextType = SearchContext;
   mounted = false;
+  componentName = "timelinePAConn";
   TimelinePACController;
 
   constructor(props: Props) {
@@ -67,7 +68,10 @@ class TimelinePAConnectivity extends React.Component<
       setLoadingLayer,
       setMapTitle,
       setShowAreaLayer,
+      setCurrentComponent,
     } = this.context as SearchContextValues;
+
+    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -129,13 +133,9 @@ class TimelinePAConnectivity extends React.Component<
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const { unmountComponent } = this.context as SearchContextValues;
     this.TimelinePACController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
+    unmountComponent(this.componentName);
   }
 
   /**

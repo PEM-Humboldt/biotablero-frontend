@@ -29,6 +29,7 @@ interface State {
 
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
+  componentName = "forestLP";
   flpController;
   currentPeriod = "2016-2021";
 
@@ -49,8 +50,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, searchType } = this
+    const { areaType, areaId, searchType, setCurrentComponent } = this
       .context as SearchContextValues;
+
+    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -95,10 +98,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentWillUnmount() {
     this.mounted = false;
     this.flpController.cancelActiveRequests();
-    const { setRasterLayers, setMapTitle } = this
-      .context as SearchContextValues;
-    setRasterLayers([]);
-    setMapTitle({ name: "" });
+    const { unmountComponent } = this.context as SearchContextValues;
+    unmountComponent(this.componentName);
   }
 
   /**

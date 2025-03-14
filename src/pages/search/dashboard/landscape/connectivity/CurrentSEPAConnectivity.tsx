@@ -51,6 +51,7 @@ interface State {
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
+  componentName = "currentSEPAConn";
   CurrentSEPACController;
 
   constructor(props: Props) {
@@ -86,10 +87,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       setLoadingLayer,
       setMapTitle,
       setShowAreaLayer,
+      setCurrentComponent,
     } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
+
+    setCurrentComponent(this.componentName);
 
     this.CurrentSEPACController.setArea(areaTypeId, areaIdId);
 
@@ -220,13 +224,10 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const { unmountComponent } = this.context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
+
+    unmountComponent(this.componentName);
   }
 
   /**

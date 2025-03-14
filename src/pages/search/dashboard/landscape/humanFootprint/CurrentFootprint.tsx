@@ -38,6 +38,7 @@ interface currentHFState {
 
 class CurrentFootprint extends React.Component<Props, currentHFState> {
   mounted = false;
+  componentName = "hfCurrent";
   CurrentHFController;
 
   constructor(props: Props) {
@@ -58,8 +59,16 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setMapTitle,
+      setCurrentComponent,
+    } = this.context as SearchContextValues;
+
+    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -123,12 +132,10 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
-      .context as SearchContextValues;
+    const { unmountComponent } = this.context as SearchContextValues;
     this.CurrentHFController.cancelActiveRequests();
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
+
+    unmountComponent(this.componentName);
   }
 
   /**

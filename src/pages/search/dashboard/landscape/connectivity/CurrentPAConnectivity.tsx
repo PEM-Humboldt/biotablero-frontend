@@ -56,6 +56,7 @@ interface currentPAConnState {
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
+  componentName = "currentPAConn";
   CPACController;
 
   constructor(props: Props) {
@@ -88,7 +89,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       setLoadingLayer,
       setMapTitle,
       setShowAreaLayer,
+      setCurrentComponent,
     } = this.context as SearchContextValues;
+
+    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -184,13 +188,10 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const { unmountComponent } = this.context as SearchContextValues;
     this.CPACController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
+
+    unmountComponent(this.componentName);
   }
 
   toggleInfo = (value: string) => {

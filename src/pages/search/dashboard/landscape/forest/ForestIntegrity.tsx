@@ -71,6 +71,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
   static contextType = SearchContext;
 
   mounted = false;
+  componentName = "forestSCIHF";
   ForestIntegrityController;
 
   constructor(props: Props) {
@@ -143,7 +144,10 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       setLoadingLayer,
       setMapTitle,
       setShowAreaLayer,
+      setCurrentComponent,
     } = this.context as SearchContextValues;
+
+    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -231,13 +235,16 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      setShapeLayers,
+      setLoadingLayer,
+      setShowAreaLayer,
+      setMapTitle,
+      unmountComponent,
+    } = this.context as SearchContextValues;
     this.ForestIntegrityController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
+
+    unmountComponent(this.componentName);
   }
 
   /**
