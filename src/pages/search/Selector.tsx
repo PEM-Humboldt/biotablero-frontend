@@ -17,7 +17,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import isUndefinedOrNull from "utils/validations";
 import BackendAPI from "utils/backendAPI";
 
-const Selector: React.FunctionComponent = () => {
+const Selector = () => {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState(false);
