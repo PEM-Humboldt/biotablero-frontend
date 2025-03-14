@@ -117,12 +117,15 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Set id and name for the query area
+   * Set id and name for the query area and set the header names
    *
    * @param {AreaIdBasic} areaId
    */
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
+
+    const { setHeaderNames } = this.props;
+    setHeaderNames({ parent: this.state.areaType!.name, child: areaId!.name });
   };
 
   /**
@@ -259,7 +262,7 @@ class Search extends Component<Props, State> {
 
     const { setHeaderNames } = this.props;
 
-    let toShow = <Selector setHeaderNames={setHeaderNames} />;
+    let toShow = <Selector />;
     if (
       !isUndefinedOrNull(searchType) &&
       !isUndefinedOrNull(areaType) &&
@@ -286,6 +289,7 @@ class Search extends Component<Props, State> {
           setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
           setMapTitle: this.setMapTitle,
+          setHeaderNames: setHeaderNames,
         }}
       >
         <div className="appSearcher wrappergrid">

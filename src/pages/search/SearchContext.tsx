@@ -2,6 +2,7 @@ import React from "react";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
+import { Names } from "types/layoutTypes";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
 
@@ -20,6 +21,7 @@ export interface SearchContextValues {
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean, error: boolean): void;
   setMapTitle(mapTitle: MapTitle): void;
+  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -34,6 +36,7 @@ const SearchContext = React.createContext<SearchContextValues>({
   setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
   setMapTitle: () => {},
+  setHeaderNames: () => {},
 });
 
 export default SearchContext;

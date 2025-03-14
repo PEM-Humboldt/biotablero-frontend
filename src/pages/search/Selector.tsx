@@ -16,15 +16,8 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { Autocomplete, TextField } from "@mui/material";
 import isUndefinedOrNull from "utils/validations";
 import BackendAPI from "utils/backendAPI";
-import { Names } from "types/layoutTypes";
 
-interface SelectorProps {
-  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
-}
-
-const Selector: React.FunctionComponent<SelectorProps> = ({
-  setHeaderNames,
-}) => {
+const Selector: React.FunctionComponent = () => {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState(false);
@@ -56,7 +49,6 @@ const Selector: React.FunctionComponent<SelectorProps> = ({
         : SearchAreas,
       componentProps: {
         areasList: areaTypes,
-        setHeaderNames,
       },
       collapsed: false,
     },
@@ -125,11 +117,9 @@ const Selector: React.FunctionComponent<SelectorProps> = ({
 
 interface SearchAreasProps {
   areasList: Array<AreaType>;
-  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
   areasList,
-  setHeaderNames,
 }) => {
   const [areasId, setAreasId] = useState<Array<AreaIdBasic>>([]);
   const context = useContext(SearchContext);
@@ -153,7 +143,6 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
       component: AreaAutocomplete,
       componentProps: {
         optionsList: areasId,
-        setHeaderNames,
       },
     }));
 
@@ -185,12 +174,10 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
 
 interface AreaAutocompleteProps {
   optionsList: Array<AreaIdBasic>;
-  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
   optionsList,
-  setHeaderNames,
 }) => {
   const context = useContext(SearchContext);
   const { areaType, setAreaId, setAreaLayer, setAreaHa } =
@@ -217,7 +204,6 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
             setAreaHa(Number(ha.total_area));
             setAreaLayer(layer);
           });
-          setHeaderNames({ parent: areaType!.name, child: value!.name });
         }
       }}
       style={{ width: "100%" }}
