@@ -64,11 +64,9 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
-      setCurrentComponent,
     } = this.context as SearchContextValues;
-
-    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -114,28 +112,25 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         });
       });
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.CurrentHFController.getLayer()
       .then((hfCurrent) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfCurrent] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "HH promedio · 2018" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch(() => setLayerError(true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { unmountComponent } = this.context as SearchContextValues;
     this.CurrentHFController.cancelActiveRequests();
-
-    unmountComponent(this.componentName);
   }
 
   /**

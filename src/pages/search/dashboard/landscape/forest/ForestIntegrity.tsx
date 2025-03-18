@@ -142,12 +142,10 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
       setShowAreaLayer,
-      setCurrentComponent,
     } = this.context as SearchContextValues;
-
-    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -216,35 +214,26 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       })
       .catch(() => {});
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.ForestIntegrityController.getLayer()
       .then((forestIntegrity) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [forestIntegrity] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "Índice de condición estructural de bosques" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch(() => setLayerError(true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const {
-      setShapeLayers,
-      setLoadingLayer,
-      setShowAreaLayer,
-      setMapTitle,
-      unmountComponent,
-    } = this.context as SearchContextValues;
     this.ForestIntegrityController.cancelActiveRequests();
-
-    unmountComponent(this.componentName);
   }
 
   /**
@@ -365,13 +354,13 @@ class ForestIntegrity extends React.Component<Props, FIState> {
   };
 
   clickOnGraph = async (selectedKey: string) => {
-    const { setShapeLayers, setLoadingLayer } = this
+    const { setShapeLayers, setLoadingLayer, setLayerError } = this
       .context as SearchContextValues;
 
     this.highlightFeature(selectedKey);
 
     if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
-      setLoadingLayer(true, false);
+      setLoadingLayer(true);
       try {
         const PALayer = await this.ForestIntegrityController.getPALayer(
           selectedKey
@@ -382,7 +371,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             layers: [...prevState.layers, PALayer],
           }),
           () => {
-            setLoadingLayer(false, false);
+            setLoadingLayer(false);
             const activeLayers = this.state.layers.filter((layer) =>
               ["forestIntegrity", selectedKey].includes(layer.id)
             );
@@ -390,7 +379,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           }
         );
       } catch (error) {
-        setLoadingLayer(false, true);
+        setLayerError(true);
       }
     } else {
       const activeLayers = this.state.layers.filter((layer) =>

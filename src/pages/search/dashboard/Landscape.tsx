@@ -43,6 +43,9 @@ class Landscape extends React.Component<Props, State> {
    */
   handleAccordionChange = (level: string, tabLayerId: string) => {
     const { visible } = this.state;
+    const { clearLayers } = this.context as SearchContextValues;
+
+    clearLayers();
 
     switch (level) {
       case "1":

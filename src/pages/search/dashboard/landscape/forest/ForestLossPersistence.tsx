@@ -50,10 +50,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, searchType, setCurrentComponent } = this
+    const { areaType, areaId, searchType } = this
       .context as SearchContextValues;
-
-    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -98,8 +96,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentWillUnmount() {
     this.mounted = false;
     this.flpController.cancelActiveRequests();
-    const { unmountComponent } = this.context as SearchContextValues;
-    unmountComponent(this.componentName);
   }
 
   /**
@@ -207,10 +203,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   switchLayer = (period: string) => {
-    const { setRasterLayers, setLoadingLayer, setMapTitle } = this
-      .context as SearchContextValues;
+    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
+      this.context as SearchContextValues;
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
     this.flpController
       .getLayers(period)
       .then((layers) => {
@@ -218,7 +214,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
         if (this.mounted) {
           setRasterLayers(this.state.layers);
-          setLoadingLayer(false, false);
+          setLoadingLayer(false);
           setMapTitle({
             name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
           });
@@ -226,7 +222,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch((e) => {
         if (e.toString() != "Error: request canceled") {
-          setLoadingLayer(false, true);
+          setLayerError(true);
         }
       });
   };

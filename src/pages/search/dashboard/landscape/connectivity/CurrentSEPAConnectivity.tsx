@@ -85,15 +85,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
       setShowAreaLayer,
-      setCurrentComponent,
     } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
-
-    setCurrentComponent(this.componentName);
 
     this.CurrentSEPACController.setArea(areaTypeId, areaIdId);
 
@@ -202,7 +200,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       })
       .catch(() => {});
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
     setMapTitle({ name: "" });
 
     this.CurrentSEPACController.getLayer()
@@ -210,7 +208,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentSEPAConn] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -219,15 +217,12 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch(() => setLayerError(true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { unmountComponent } = this.context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
-
-    unmountComponent(this.componentName);
   }
 
   /**
@@ -414,7 +409,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
       .context as SearchContextValues;
 
     let layerName: string = "";
@@ -437,7 +432,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     if (!this.state.layers.find((layer) => layer.id === layerId)) {
-      setLoadingLayer(true, false);
+      setLoadingLayer(true);
       try {
         const SELayer = await this.CurrentSEPACController.getSELayer(
           layerId,
@@ -449,11 +444,11 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             layers: [...prevState.layers, SELayer],
           }),
           () => {
-            setLoadingLayer(false, false);
+            setLoadingLayer(false);
           }
         );
       } catch (error) {
-        setLoadingLayer(false, true);
+        setLayerError(true);
       }
     }
 

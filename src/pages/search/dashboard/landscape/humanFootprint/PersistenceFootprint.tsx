@@ -62,11 +62,9 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
-      setCurrentComponent,
     } = this.context as SearchContextValues;
-
-    setCurrentComponent(this.componentName);
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -101,28 +99,25 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         });
       });
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.PersistenceHFController.getLayer()
       .then((hfPersistence) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "HH - Persistencia" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch(() => setLayerError(true));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { unmountComponent } = this.context as SearchContextValues;
     this.PersistenceHFController.cancelActiveRequests();
-
-    unmountComponent(this.componentName);
   }
 
   /**
