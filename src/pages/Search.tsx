@@ -37,7 +37,6 @@ interface State {
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
-  currentComponent: string;
 }
 
 class Search extends Component<Props, State> {
@@ -53,7 +52,6 @@ class Search extends Component<Props, State> {
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
-      currentComponent: "",
     };
   }
 
@@ -213,43 +211,41 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Set the state for loading layer and layer error
+   * Set the state for loading layer
    *
    * @param {boolean} loading
-   * @param {boolean} error
    */
-  setLoadingLayer = (loading: boolean, error: boolean) => {
+  setLoadingLayer = (loading: boolean) => {
     this.setState({
       loadingLayer: loading,
+    });
+  };
+
+  /**
+   * Set the state for layer error
+   *
+   * @param {boolean} error
+   */
+  setLayerError = (error: boolean) => {
+    this.setState({
       layerError: error,
     });
   };
 
   /**
-   * Set the name of the current component being mounted
+   * Prepare the layers vars in the context
    *
-   * @param {string} currentComponent
    */
-  setCurrentComponent = (currentComponent: string) => {
-    this.setState({ currentComponent: currentComponent });
+
+  clearLayers = () => {
+    this.setShapeLayers([]);
+    this.setRasterLayers([]);
+    this.setLoadingLayer(false);
+    this.setLayerError(false);
+    this.setMapTitle({ name: "" });
+    this.setShowAreaLayer(false);
   };
 
-  /**
-   * Clear layers vars in the context
-   *
-   * @param {string} component
-   */
-  unmountComponent = (component: string) => {
-    const { currentComponent } = this.state;
-
-    if (component === currentComponent) {
-      this.setShapeLayers([]);
-      this.setRasterLayers([]);
-      this.setLoadingLayer(false, false);
-      this.setMapTitle({ name: "" });
-      this.setShowAreaLayer(false);
-    }
-  };
   /**
    * Clear state when back button is clicked
    */
@@ -313,9 +309,9 @@ class Search extends Component<Props, State> {
           setShapeLayers: this.setShapeLayers,
           setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
+          setLayerError: this.setLayerError,
           setMapTitle: this.setMapTitle,
-          setCurrentComponent: this.setCurrentComponent,
-          unmountComponent: this.unmountComponent,
+          clearLayers: this.clearLayers,
         }}
       >
         <div className="appSearcher wrappergrid">

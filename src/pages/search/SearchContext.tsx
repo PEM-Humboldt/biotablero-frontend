@@ -18,10 +18,10 @@ export interface SearchContextValues {
   setRasterLayers(layers: Array<rasterLayer>): void;
   setShapeLayers(layers: Array<shapeLayer>): void;
   setShowAreaLayer(active: boolean): void;
-  setLoadingLayer(loading: boolean, error: boolean): void;
+  setLoadingLayer(loading: boolean): void;
+  setLayerError(error: boolean): void;
   setMapTitle(mapTitle: MapTitle): void;
-  setCurrentComponent(currentComponent: string): void;
-  unmountComponent(component: string): void;
+  clearLayers(): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -35,9 +35,9 @@ const SearchContext = React.createContext<SearchContextValues>({
   setShapeLayers: () => {},
   setShowAreaLayer: () => {},
   setLoadingLayer: () => {},
+  setLayerError: () => {},
   setMapTitle: () => {},
-  setCurrentComponent: () => {},
-  unmountComponent: () => {},
+  clearLayers: () => {},
 });
 
 export default SearchContext;
