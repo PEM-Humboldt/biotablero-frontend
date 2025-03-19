@@ -126,7 +126,7 @@ class TimelinePAConnectivity extends React.Component<
           setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {

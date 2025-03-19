@@ -19,7 +19,7 @@ export interface SearchContextValues {
   setShapeLayers(layers: Array<shapeLayer>): void;
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean): void;
-  setLayerError(error: boolean): void;
+  setLayerError(error?: string): void;
   setMapTitle(mapTitle: MapTitle): void;
   clearLayers(): void;
 }

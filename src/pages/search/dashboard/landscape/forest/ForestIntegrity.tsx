@@ -228,7 +228,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           setMapTitle({ name: "Índice de condición estructural de bosques" });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
@@ -379,7 +379,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           }
         );
       } catch (error) {
-        setLayerError(true);
+        setLayerError((error as Error).message);
       }
     } else {
       const activeLayers = this.state.layers.filter((layer) =>

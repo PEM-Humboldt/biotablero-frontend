@@ -226,9 +226,9 @@ class Search extends Component<Props, State> {
    *
    * @param {boolean} error
    */
-  setLayerError = (error: boolean) => {
+  setLayerError = (error?: string) => {
     this.setState({
-      layerError: error,
+      layerError: !!error,
     });
   };
 
@@ -241,7 +241,7 @@ class Search extends Component<Props, State> {
     this.setShapeLayers([]);
     this.setRasterLayers([]);
     this.setLoadingLayer(false);
-    this.setLayerError(false);
+    this.setLayerError();
     this.setMapTitle({ name: "" });
     this.setShowAreaLayer(false);
   };

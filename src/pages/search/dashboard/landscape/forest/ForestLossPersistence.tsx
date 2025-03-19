@@ -222,7 +222,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch((e) => {
         if (e.toString() != "Error: request canceled") {
-          setLayerError(true);
+          setLayerError(e.toString());
         }
       });
   };

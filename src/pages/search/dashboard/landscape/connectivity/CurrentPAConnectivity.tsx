@@ -181,7 +181,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {

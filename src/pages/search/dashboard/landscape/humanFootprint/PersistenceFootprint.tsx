@@ -112,7 +112,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
           setMapTitle({ name: "HH - Persistencia" });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {

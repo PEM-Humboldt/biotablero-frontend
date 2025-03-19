@@ -125,7 +125,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
           setMapTitle({ name: "HH promedio · 2018" });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {

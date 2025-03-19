@@ -217,7 +217,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           });
         }
       })
-      .catch(() => setLayerError(true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
@@ -448,7 +448,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           }
         );
       } catch (error) {
-        setLayerError(true);
+        setLayerError(error instanceof Error ? error.message : String(error));
       }
     }
 
