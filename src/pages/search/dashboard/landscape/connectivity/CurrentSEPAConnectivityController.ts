@@ -57,69 +57,43 @@ export class CurrentSEPAConnectivityController {
     return layerData;
   };
 
-  /**
-   * Get shape layer in GeoJSON format for the geofence
-   *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
-   */
-  getGeofence = async (): Promise<shapeLayer> => {
-    const layerId = "geofence";
-
-    const reqPromise: ShapeAPIObject = RestAPI.requestGeofenceGeometryByArea(
-      this.areaType ?? "",
-      this.areaId ?? ""
-    );
-
-    const layerStyle = () => ({
-      stroke: false,
-      fillColor: matchColor(layerId)(),
-      fillOpacity: 0.6,
-    });
-
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
-
-    const layerData = {
-      id: layerId,
-      paneLevel: 1,
-      json: res,
-      layerStyle: layerStyle,
-    };
-
-    return layerData;
-  };
-
   getSELayer = async (
     layerId: string,
     layerName: string
   ): Promise<shapeLayer> => {
-    const reqPromise: ShapeAPIObject = BackendAPI.requestPAConnSELayer(
-      this.areaType ?? "",
-      this.areaId ?? "",
-      layerName
-    );
+    try {
+      const reqPromise: ShapeAPIObject = BackendAPI.requestPAConnSELayer(
+        this.areaType ?? "",
+        this.areaId ?? "",
+        layerName
+      );
 
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
+      const { request, source } = reqPromise;
+      this.activeRequests.set(layerId, source);
 
-    const layerStyle = () => ({
-      stroke: false,
-      fillColor: matchColor(layerId)(),
-      fillOpacity: 0.6,
-    });
+      const res = await request;
+      this.activeRequests.delete(layerId);
 
-    const layerData = {
-      id: layerId,
-      paneLevel: 2,
-      json: res,
-      layerStyle: layerStyle,
-    };
+      const layerStyle = () => ({
+        stroke: false,
+        fillColor: matchColor(layerId)(),
+        fillOpacity: 0.6,
+      });
 
-    return layerData;
+      const layerData: shapeLayer = {
+        id: layerId,
+        paneLevel: 2,
+        json: res,
+        layerStyle: layerStyle,
+      };
+
+      return layerData;
+    } catch (error) {
+      this.activeRequests.delete(layerId);
+      throw new Error(
+        error instanceof Error ? error.message : "Error al obtener la capa"
+      );
+    }
   };
 
   /**
