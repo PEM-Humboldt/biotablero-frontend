@@ -111,8 +111,14 @@ class TimelineFootprint extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
 
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+    } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -153,14 +159,14 @@ class TimelineFootprint extends React.Component<Props, State> {
         });
       });
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.TimelineHFController.getLayer()
       .then((hfPersistence) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShapeLayers(this.state.layers);
           setMapTitle({
@@ -168,17 +174,12 @@ class TimelineFootprint extends React.Component<Props, State> {
           });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
-      .context as SearchContextValues;
     this.TimelineHFController.cancelActiveRequests();
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
   }
 
   /**
@@ -312,7 +313,7 @@ class TimelineFootprint extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (selectedKey: string) => {
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
       .context as SearchContextValues;
 
     let layerDescription = "";
@@ -339,7 +340,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       }`;
 
       if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
-        setLoadingLayer(true, false);
+        setLoadingLayer(true);
         try {
           const SELayer = await this.TimelineHFController.getSELayer(
             selectedKey as keyof Omit<SEKeys, "aTotal">
@@ -350,7 +351,7 @@ class TimelineFootprint extends React.Component<Props, State> {
               layers: [...prevState.layers, SELayer],
             }),
             () => {
-              setLoadingLayer(false, false);
+              setLoadingLayer(false);
               const activeLayers = this.state.layers.filter((layer) =>
                 ["hfPersistence", selectedKey].includes(layer.id)
               );
@@ -358,7 +359,7 @@ class TimelineFootprint extends React.Component<Props, State> {
             }
           );
         } catch (error) {
-          setLoadingLayer(false, true);
+          setLayerError(error instanceof Error ? error.message : String(error));
         }
       } else {
         const activeLayers = this.state.layers.filter((layer) =>

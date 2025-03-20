@@ -64,38 +64,46 @@ export class TimelineFootprintController {
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
-    const seType: SEKeys = {
-      paramo: "Páramo",
-      dryForest: "Bosque Seco Tropical",
-      wetland: "Humedal",
-    };
+    try {
+      const seType: SEKeys = {
+        paramo: "Páramo",
+        dryForest: "Bosque Seco Tropical",
+        wetland: "Humedal",
+      };
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestHFLayerBySEInGeofence(
-      this.areaType,
-      this.areaId,
-      seType[selectedKey]
-    );
+      const reqPromise: ShapeAPIObject =
+        BackendAPI.requestHFLayerBySEInGeofence(
+          this.areaType,
+          this.areaId,
+          seType[selectedKey]
+        );
 
-    const { request, source } = reqPromise;
-    this.activeRequests.set(selectedKey, source);
-    const res = await request;
-    this.activeRequests.delete(selectedKey);
+      const { request, source } = reqPromise;
+      this.activeRequests.set(selectedKey, source);
+      const res = await request;
+      this.activeRequests.delete(selectedKey);
 
-    const layerStyle = () => ({
-      stroke: false,
-      color: matchColor("hfTimeline")(selectedKey),
-      fillOpacity: 0.6,
-      weight: 1,
-    });
+      const layerStyle = () => ({
+        stroke: false,
+        color: matchColor("hfTimeline")(selectedKey),
+        fillOpacity: 0.6,
+        weight: 1,
+      });
 
-    const layerData = {
-      id: selectedKey,
-      paneLevel: 3,
-      json: res,
-      layerStyle: layerStyle,
-    };
+      const layerData = {
+        id: selectedKey,
+        paneLevel: 3,
+        json: res,
+        layerStyle: layerStyle,
+      };
 
-    return layerData;
+      return layerData;
+    } catch (error) {
+      this.activeRequests.delete(selectedKey);
+      throw new Error(
+        error instanceof Error ? error.message : "Error al obtener la capa"
+      );
+    }
   };
 
   /**
