@@ -29,6 +29,7 @@ interface State {
 
 class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
+  componentName = "forestLP";
   flpController;
   currentPeriod = "2016-2021";
 
@@ -95,10 +96,6 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentWillUnmount() {
     this.mounted = false;
     this.flpController.cancelActiveRequests();
-    const { setRasterLayers, setMapTitle } = this
-      .context as SearchContextValues;
-    setRasterLayers([]);
-    setMapTitle({ name: "" });
   }
 
   /**
@@ -206,10 +203,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
   }
 
   switchLayer = (period: string) => {
-    const { setRasterLayers, setLoadingLayer, setMapTitle } = this
-      .context as SearchContextValues;
+    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
+      this.context as SearchContextValues;
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
     this.flpController
       .getLayers(period)
       .then((layers) => {
@@ -217,7 +214,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
         if (this.mounted) {
           setRasterLayers(this.state.layers);
-          setLoadingLayer(false, false);
+          setLoadingLayer(false);
           setMapTitle({
             name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
           });
@@ -225,7 +222,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       })
       .catch((e) => {
         if (e.toString() != "Error: request canceled") {
-          setLoadingLayer(false, true);
+          setLayerError(e.toString());
         }
       });
   };

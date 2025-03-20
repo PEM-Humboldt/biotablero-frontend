@@ -51,6 +51,7 @@ interface State {
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
+  componentName = "currentSEPAConn";
   CurrentSEPACController;
 
   constructor(props: Props) {
@@ -84,6 +85,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
       setShowAreaLayer,
     } = this.context as SearchContextValues;
@@ -198,7 +200,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       })
       .catch(() => {});
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
     setMapTitle({ name: "" });
 
     this.CurrentSEPACController.getLayer()
@@ -206,7 +208,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentSEPAConn] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -215,18 +217,12 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
   }
 
   /**
@@ -413,7 +409,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
       .context as SearchContextValues;
 
     let layerName: string = "";
@@ -436,7 +432,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     if (!this.state.layers.find((layer) => layer.id === layerId)) {
-      setLoadingLayer(true, false);
+      setLoadingLayer(true);
       try {
         const SELayer = await this.CurrentSEPACController.getSELayer(
           layerId,
@@ -448,11 +444,11 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             layers: [...prevState.layers, SELayer],
           }),
           () => {
-            setLoadingLayer(false, false);
+            setLoadingLayer(false);
           }
         );
       } catch (error) {
-        setLoadingLayer(false, true);
+        setLayerError(error instanceof Error ? error.message : String(error));
       }
     }
 

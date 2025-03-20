@@ -13,13 +13,14 @@ import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
+import { Names } from "types/layoutTypes";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: string;
   areaId?: number | string;
   // TODO: Tipar correctamente
-  setHeaderNames: Function;
+  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 interface State {
@@ -55,7 +56,7 @@ class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { areaType, areaId, history } = this.props;
+    const { areaType, areaId, history, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
       // TODO: Con el nuevo backend solo es llamar al endpoint que trae todos los detalles del area (que trae el objeto de tipo AreaId)
       // [Borrar] Con el backend actual:
@@ -82,6 +83,7 @@ class Search extends Component<Props, State> {
             }),
           },
         });
+        setHeaderNames({ parent: idObj!.name, child: typeObj!.name });
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar
@@ -115,12 +117,15 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Set id and name for the query area
+   * Set id and name for the query area and set the header names
    *
    * @param {AreaIdBasic} areaId
    */
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
+
+    const { setHeaderNames } = this.props;
+    setHeaderNames({ parent: this.state.areaType!.name, child: areaId!.name });
   };
 
   /**
@@ -206,16 +211,39 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Set the state for loading layer an layer error
+   * Set the state for loading layer
    *
    * @param {boolean} loading
-   * @param {boolean} error
    */
-  setLoadingLayer = (loading: boolean, error: boolean) => {
+  setLoadingLayer = (loading: boolean) => {
     this.setState({
       loadingLayer: loading,
-      layerError: error,
     });
+  };
+
+  /**
+   * Set the state for layer error
+   *
+   * @param {boolean} error
+   */
+  setLayerError = (error?: string) => {
+    this.setState({
+      layerError: !!error,
+    });
+  };
+
+  /**
+   * Prepare the layers vars in the context
+   *
+   */
+
+  clearLayers = () => {
+    this.setShapeLayers([]);
+    this.setRasterLayers([]);
+    this.setLoadingLayer(false);
+    this.setLayerError();
+    this.setMapTitle({ name: "" });
+    this.setShowAreaLayer(false);
   };
 
   /**
@@ -235,6 +263,9 @@ class Search extends Component<Props, State> {
       loadingLayer: false,
       layerError: false,
     });
+
+    const { setHeaderNames } = this.props;
+    setHeaderNames({ parent: "", child: "" });
   };
 
   render() {
@@ -278,7 +309,9 @@ class Search extends Component<Props, State> {
           setShapeLayers: this.setShapeLayers,
           setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
+          setLayerError: this.setLayerError,
           setMapTitle: this.setMapTitle,
+          clearLayers: this.clearLayers,
         }}
       >
         <div className="appSearcher wrappergrid">

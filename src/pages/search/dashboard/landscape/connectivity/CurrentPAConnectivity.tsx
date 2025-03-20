@@ -56,6 +56,7 @@ interface currentPAConnState {
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   mounted = false;
+  componentName = "currentPAConn";
   CPACController;
 
   constructor(props: Props) {
@@ -86,6 +87,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       areaId,
       setShapeLayers,
       setLoadingLayer,
+      setLayerError,
       setMapTitle,
       setShowAreaLayer,
     } = this.context as SearchContextValues;
@@ -165,32 +167,26 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         });
     });
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.CPACController.getLayer()
       .then((currentPAConn) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentPAConn] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer, setShowAreaLayer, setMapTitle } =
-      this.context as SearchContextValues;
     this.CPACController.cancelActiveRequests();
-    setShowAreaLayer(false);
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
-    setMapTitle({ name: "" });
   }
 
   toggleInfo = (value: string) => {
