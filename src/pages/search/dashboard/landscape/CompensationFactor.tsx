@@ -12,6 +12,8 @@ import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
+import { shapeLayer } from "pages/search/types/layers";
 
 interface cfDataExt extends cfData {
   label: string;
@@ -34,6 +36,7 @@ interface compensationFactorState {
     biomes: textsObject;
     bioticRegions: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 class CompensationFactor extends React.Component<
@@ -41,9 +44,11 @@ class CompensationFactor extends React.Component<
   compensationFactorState
 > {
   mounted = false;
+  CFController;
 
   constructor(props: Props) {
     super(props);
+    this.CFController = new CompensationFactorController();
     this.state = {
       infoShown: new Set(["cf"]),
       biomes: [],
@@ -59,22 +64,30 @@ class CompensationFactor extends React.Component<
         biomes: { info: "", cons: "", meto: "", quote: "" },
         bioticRegions: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
     const {
-      areaType: areaId,
-      areaId: geofenceId,
-      switchLayer,
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+      setShowAreaLayer,
     } = this.context as SearchContextValues;
 
-    if (areaId !== "ea") return;
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
-    switchLayer("fc");
+    if (areaTypeId !== "ea") return;
 
-    BackendAPI.requestBiomes(areaId, geofenceId)
+    this.CFController.setArea(areaTypeId, areaIdId);
+
+    BackendAPI.requestBiomes(areaTypeId, areaIdId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -98,7 +111,7 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    BackendAPI.requestCompensationFactor(areaId, geofenceId)
+    BackendAPI.requestCompensationFactor(areaTypeId, areaIdId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -122,7 +135,7 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    BackendAPI.requestBioticUnits(areaId, geofenceId)
+    BackendAPI.requestBioticUnits(areaTypeId, areaIdId)
       .then((res: Array<cfData>) => {
         if (this.mounted) {
           this.setState((prev) => ({
@@ -165,6 +178,22 @@ class CompensationFactor extends React.Component<
           }));
         });
     });
+
+    setLoadingLayer(true);
+
+    this.CFController.getLayer()
+      .then((fc) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [fc] }),
+            () => setLoadingLayer(false)
+          );
+          setShowAreaLayer(true);
+          setShapeLayers(this.state.layers);
+          setMapTitle({ name: "FC - Biomas" });
+        }
+      })
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
