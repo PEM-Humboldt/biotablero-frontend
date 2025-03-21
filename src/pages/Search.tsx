@@ -114,6 +114,9 @@ class Search extends Component<Props, State> {
    */
   setAreaType = (areaType?: AreaType) => {
     this.setState({ areaType });
+
+    const { history } = this.props;
+    history.push(`?area_type=${areaType!.id}`);
   };
 
   /**
@@ -124,8 +127,11 @@ class Search extends Component<Props, State> {
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
 
-    const { setHeaderNames } = this.props;
+    const { setHeaderNames, history } = this.props;
+    const { areaType } = this.state;
+
     setHeaderNames({ parent: this.state.areaType!.name, child: areaId!.name });
+    history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
   };
 
   /**
@@ -264,8 +270,9 @@ class Search extends Component<Props, State> {
       layerError: false,
     });
 
-    const { setHeaderNames } = this.props;
+    const { setHeaderNames, history } = this.props;
     setHeaderNames({ parent: "", child: "" });
+    history.replace(history.location.pathname);
   };
 
   render() {
