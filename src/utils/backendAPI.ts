@@ -189,6 +189,22 @@ class BackendAPI {
     );
   }
 
+  /**
+   * Request the layer of the biomes by EA
+   * @param {Number | String} areaId id ea to request
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestBiomesbyEALayer(areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(`ea/layers/${areaId}/biomes`, {
+        cancelToken: source.token,
+      }),
+      source,
+    };
+  }
+
   /** *************** */
   /** HUMAN FOOTPRINT */
   /** *************** */
