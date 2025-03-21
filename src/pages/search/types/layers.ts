@@ -25,6 +25,13 @@ export interface connectivityFeaturePropierties {
   value: number;
 }
 
+export interface compensationFactorPropierties {
+  gid: number;
+  name_biome: string;
+  id_biome: string;
+  compensation_factor: number;
+}
+
 export interface MapTitle {
   name: string;
   gradientData?: {
