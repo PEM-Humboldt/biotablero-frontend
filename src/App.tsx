@@ -6,11 +6,16 @@ import AppContext from "app/AppContext";
 import Layout from "app/Layout";
 import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
-import Home from "pages/Home";
+//import Home from "pages/Home";
+
+import Inicio from "pages/Inicio";
+
 import Search from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
+
+
 
 import "main.css";
 import "cbm-dashboard/dist/bundle.css";
@@ -49,7 +54,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: "default",
       name: "",
-      component: <Home referrer={location.pathname} />,
+      component: <Inicio referrer={location.pathname} />,
     });
 
   const loadSearch = () => {
@@ -151,6 +156,11 @@ const App: React.FunctionComponent = () => {
       <main>
         <Switch>
           <Route exact path="/" render={loadHome} />
+
+
+        {/*<Route path="/inicio-nuevo" render={() => <Inicio/>} />*/} 
+
+          
           <Route path="/Consultas" render={loadSearch} />
           <Route path="/Indicadores" render={loadIndicator} />
           <Route path="/GEB/Compensaciones" render={loadCompensator} />
