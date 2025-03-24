@@ -1,0 +1,445 @@
+* {
+    font-family: "Lato", sans-serif;
+}
+body {
+    margin: 0;
+}
+/* Colores variables*/
+:root {
+    --rojo: #e84a5f;
+    --negro: #22231c;
+    --grisocuro: #39464c;
+    --azul: #355c6c;
+    --gris: #f6f6f6;
+    --blanco: #ffffff;
+}
+/* Carousel*/
+.prev-arrow,
+.next-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    border-radius: 50%;
+    color: white;
+}
+.prev-arrow {
+    left: -26px;
+}
+.next-arrow {
+    right: -26px;
+}
+.prev-arrow:hover,
+.next-arrow:hover {
+    background-color: var(--rojo);
+}
+#CarrourselBio .imagen-fondo .Titulo p {
+    font-size: xx-large;
+    color: var(--blanco);
+}
+.imagen-fondo {
+    background: url("../src/images/biotablero-slider.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 3% 0 4%;
+    height: auto;
+    width: 100%;
+    animation: zoom 20000ms infinite;
+}
+.imagen-fondo h1 {
+    color: var(--blanco);
+    font-weight: 400;
+}
+/* ModuloPrincipal*/
+.ModuloPrincipal .moduactivo {
+    border: 2px solid rgba(255, 255, 255, 0.79);
+    background-color: rgba(0, 0, 0, 0.22);
+    border-radius: 11px;
+    margin: auto;
+    width: 75%;
+}
+.ModuloPrincipal span {
+    color: var(--blanco);
+}
+.ModuloPrincipal .btncricle button {
+    background-color: #e84a5f00;
+    border: 2px solid #fff;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    min-width: 0;
+    height: 39px;
+    width: 39px;
+}
+.ModuloPrincipal .btncricle button:hover {
+    background-color: var(--rojo);
+    border: 1px solid var(--rojo);
+}
+/* Contenedor Que es*/
+.Contenedorquees {
+    background-color: #f5f5f5;
+}
+
+img.Modulos {
+    background-color: rgba(17, 17, 17, 0.52);
+    /* border-bottom: 1px solid #ffffff; */
+    border-bottom: 1px solid var(--blanco);
+    padding: 23% 17%;
+    border-radius: 6px;
+    overflow: auto;
+    margin: auto;
+}
+.contenedor {
+    padding: 19px;
+}
+/* Cenefa*/
+.Cenefa {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 0;
+}
+.Cenefa {
+    background-color: var(--rojo);
+    letter-spacing: 1px;
+    min-height: 135px;
+    padding: 0px 0;
+    font-weight: 500;
+    text-align: center;
+    color: white;
+    margin: 0;
+    z-index: 0;
+}
+/* Tabs*/
+#Tabs h1 {
+    font-weight: 400;
+    color: var(--blanco);
+}
+#Tabs h1,
+#Tabs p {
+    font-family: "Lato";
+}
+#Tabs p a {
+    font-weight: 600;
+    color: var(--rojo);
+}
+#Tabs p {
+    font-size: 17px;
+    margin-top: 17px;
+}
+#Tabs {
+    position: relative;
+    background-color: var(--gris);
+    font-family: "Lato";
+    padding-top: 20px;
+    padding-bottom: 59px;
+}
+#Tabs .MuiBox-root {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    z-index: 1;
+}
+#Tabs .Mui-selected {
+    background-color: var(--grisocuro);
+    color: var(--blanco);
+    border: 0;
+}
+#Tabs button:hover {
+    background-color: var(--azul);
+    color: var(--blanco);
+    border: 0;
+}
+#Tabs button {
+    background-color: var(--blanco);
+    border: 1px solid var(--gris);
+    color: var(--negro);
+    display: inline-grid;
+    justify-content: start;
+    text-transform: initial;
+    padding: 27px;
+    font-size: 17px;
+}
+#Tabs .css-10d9dml-MuiTabs-indicator {
+    background-color: var(--rojo);
+}
+.titulo-centrado {
+    text-align: center;
+    padding-top: 33px;
+    width: 100%;
+}
+/* Estilos modal*/
+.Modalregistro .Inciosesion Button,
+.Modalregistro .Registro Button {
+    background-color: var(--rojo);
+}
+
+.Modalregistro .Inciosesion Button:hover,
+.Modalregistro .Registro Button:hover {
+    background-color: var(--azul);
+}
+
+.Modalregistro .css-1qltlow-MuiTabs-indicator {
+    background-color: var(--rojo);
+}
+.Modalregistro .css-s2t35c-MuiTabs-scroller {
+    background-color: #000000;
+}
+
+.moduactivo.active {
+    border: 2px solid var(--blanco);
+}
+/* Accesibilidad: */
+@media (min-width: 0) {
+    #Tabs h1 {
+        font-size: 21px;
+    }
+    #Tabs {
+        padding-top: 0;
+    }
+
+    .Megamenu .logo {
+        font-size: 1.3em;
+    }
+    .Cenefa {
+        padding: 6px 0 69px;
+    }
+
+    .imagen-fondo {
+        background-repeat: inherit;
+    }
+    #Colaboradores.Colaboradores {
+        text-align: center;
+    }
+    .imagen-fondo h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    .Contenedorquees grid.Icono {
+        padding-bottom: 0;
+    }
+    #CarrourselBio .css-f2xmkk-MuiGrid-root {
+        display: inline-flex;
+        justify-content: center;
+        margin-left: 0;
+        width: 100%;
+    }
+    #CarrourselBio p {
+        color: var(--blanco);
+        font-weight: 300;
+        font-size: 34px;
+    }
+    .imagen-fondo .Titulo p {
+        color: var(--blanco);
+        text-align: center;
+        padding-left: 8px;
+        font-size: 21px;
+    }
+    #CarrouselBio p {
+        margin: 23px 0 30px;
+        padding-left: 11px;
+        color: #ffffff;
+        color: var(--blanco);
+        font-weight: 400;
+        font-size: 23px;
+        text-align: center;
+    }
+
+    #CarrouselBio .contenedor {
+        display: inline-flex;
+        justify-content: center;
+    }
+    #CarrouselBio .contenedor span {
+        font-size: 1.8em;
+    }
+    #Tabs .MuiBox-root {
+        align-items: center;
+    }
+    #Tabs .Contenedorquees {
+        margin-top: 32px;
+        margin-bottom: 14px;
+    }
+    #Tabs .Contenedorquees p {
+        margin-top: 0;
+    }
+
+    #Tabs .MuiTabs-scroller {
+        margin-top: 23%;
+    }
+    #Tabs .Espaciado h1 {
+        display: none;
+    }
+    .next-arrow {
+        right: -2px;
+    }
+    .prev-arrow {
+        left: -13px;
+    }
+    #Tabs ol {
+        padding-inline-start: 40px;
+        margin-block-start: 1em;
+    }
+}
+@media (min-width: 576px) {
+    .Megamenu .logo {
+        font-size: 1.7em;
+    }
+    .imagen-fondo h1 {
+        font-size: 2.2em;
+    }
+    .Cenefa h1 {
+        font-size: 1.5em;
+    }
+    div#Tab {
+        padding-top: 42px;
+    }
+    #Colaboradores.Colaboradores {
+        text-align: center;
+    }
+    #Tabs .MuiTabs-scroller {
+        margin-top: 0;
+    }
+    #Tabs .Espaciado h1 {
+        display: block;
+    }
+    #Tabs .Espaciado {
+        padding: 0 23px;
+    }
+    #Tabs .MuiBox-root {
+        align-items: flex-start;
+    }
+    
+    
+}
+@media (min-width: 768px) {
+    #CarrourselBio .css-f2xmkk-MuiGrid-root {
+        width: 100%;
+        margin-left: inherit;
+        display: inline-flex;
+        justify-content: center;
+    }
+    .imagen-fondo .Titulo p {
+        font-size: 35px;
+    }
+    .css-f2xmkk-MuiGrid-root > .MuiGrid-item {
+        padding-left: 0;
+    }
+    #Colaboradores.Colaboradores {
+        text-align: center;
+    }
+    .cenefa-izquierda {
+        display: none;
+    }
+    .Cenefa {
+        padding: 6px 0 0;
+    }
+    .Cenefa {
+        min-height: 100px;
+    }
+    .ModuloPrincipal span {
+        font-size: 16px;
+    }
+    div#Tab {
+        padding-top: 26px;
+    }
+    #Tabs .Contenedorquees {
+        margin-top: 45px;
+    }
+}
+@media (min-width: 992px) {
+    .imagen-fondo {
+        background-repeat: no-repeat;
+    }
+    .Colaboradores {
+        text-align: right;
+    }
+    .Cenefa h1 {
+        padding: 36px 0;
+        font-size: 2em;
+    }
+    .titulo-centrado {
+        padding-top: 37px;
+    }
+
+    #Tabs h1 {
+        font-size: 3em;
+    }
+    #Tabs h1 {
+        padding-top: 5px;
+        padding-bottom: 20px;
+    }
+
+    #Tabs .Contenedorquees {
+        margin-top: 100px;
+        margin-bottom: 5px;
+    }
+    .Cenefa {
+        padding: 0px 0 0;
+    }
+    .Cenefa {
+        min-height: 125px;
+    }
+    .css-f2xmkk-MuiGrid-root > .MuiGrid-item {
+        padding-left: 0;
+    }
+    #CarrouselBio p {
+        font-size: 33px;
+    }
+
+    #Colaboradores.Colaboradores {
+        text-align: right;
+    }
+    .ModuloPrincipal span {
+        font-size: 18px;
+    }
+    div#Tab {
+        padding-top: 35px;
+    }
+}
+
+@media (min-width: 1200px) {
+}
+@media (min-width: 1400px) {
+}
+/* Keyframes: */
+@keyframes zoom {
+    0% {
+        background-size: 100%;
+    }
+    50% {
+        background-size: 110%;
+    }
+    100% {
+        background-size: 100%;
+    }
+}
+.contenedor {
+    opacity: 0;
+    transform: translateY(-15px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    pointer-events: none;
+}
+.contenedor.activo {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.activo {
+    animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
