@@ -188,7 +188,6 @@ class CompensationFactor extends React.Component<
             () => ({ layers: [fc] }),
             () => setLoadingLayer(false)
           );
-          setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "FC - Biomas" });
         }

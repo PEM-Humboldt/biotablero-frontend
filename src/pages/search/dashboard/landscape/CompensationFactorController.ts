@@ -92,8 +92,6 @@ export class CompensationFactorController {
   /**
    * Set the features style, applying an specific Highlight if neccesary
    *
-   * @param {string} selectedKey Id of the feature to highlight.
-   *
    * @returns {Function} function receiving a geoJsonFeature as required by leaflet
    */
   setLayerStyle =
