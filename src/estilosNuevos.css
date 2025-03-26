@@ -78,7 +78,7 @@ body {
 }
 .ModuloPrincipal .btncricle button:hover {
     background-color: var(--rojo);
-    border: 1px solid var(--rojo);
+    border: 2px solid var(--blanco);
 }
 /* Contenedor Que es*/
 .Contenedorquees {
@@ -241,14 +241,28 @@ img.Modulos {
         padding-left: 8px;
         font-size: 21px;
     }
-    #CarrouselBio p {
-        margin: 23px 0 30px;
-        padding-left: 11px;
-        color: #ffffff;
-        color: var(--blanco);
-        font-weight: 400;
-        font-size: 23px;
+    #CarrouselBio .css-9ujvgz-MuiGrid-root {
+        width: calc(100% + 0px);
+        margin-left: 0;
+    }
+    
+    #CarrouselBio .css-9ujvgz-MuiGrid-root>.MuiGrid-item {
+        padding-left: 0;
         text-align: center;
+    }
+    #CarrouselBio .css-919fip-MuiGrid-root {
+        width: calc(100% + 0px);
+        margin-left: 0;
+    }
+    #CarrouselBio p {
+            display: inline-flex ;
+            margin: 23px 0 30px;
+            padding: 11px;
+            color: var(--blanco);
+            font-weight: 400;
+            font-size: 23px;
+            text-align: center;
+            justify-content: center;
     }
 
     #CarrouselBio .contenedor {
@@ -257,6 +271,14 @@ img.Modulos {
     }
     #CarrouselBio .contenedor span {
         font-size: 1.8em;
+    }
+    #Tabs b {
+        border: 1px solid #d4d4d4;
+        padding: 2px 7px;
+        font-size: 1.2rem;
+    }
+    #Tabs .Mui-selected b {
+        border: 1px solid #ffffff;
     }
     #Tabs .MuiBox-root {
         align-items: center;
@@ -268,10 +290,10 @@ img.Modulos {
     #Tabs .Contenedorquees p {
         margin-top: 0;
     }
-
+/*
     #Tabs .MuiTabs-scroller {
         margin-top: 23%;
-    }
+    }*/
     #Tabs .Espaciado h1 {
         display: none;
     }
@@ -284,6 +306,10 @@ img.Modulos {
     #Tabs ol {
         padding-inline-start: 40px;
         margin-block-start: 1em;
+    }
+    #Tabs h2 {
+        color: var(--azul);
+        font-size: 1rem;
     }
 }
 @media (min-width: 576px) {
@@ -302,9 +328,9 @@ img.Modulos {
     #Colaboradores.Colaboradores {
         text-align: center;
     }
-    #Tabs .MuiTabs-scroller {
+ /*   #Tabs .MuiTabs-scroller {
         margin-top: 0;
-    }
+    }*/
     #Tabs .Espaciado h1 {
         display: block;
     }
@@ -323,6 +349,10 @@ img.Modulos {
         margin-left: inherit;
         display: inline-flex;
         justify-content: center;
+    }
+    #CarrouselBio .css-9ujvgz-MuiGrid-root>.MuiGrid-item {
+        padding-left: 0;
+        text-align: left;
     }
     .imagen-fondo .Titulo p {
         font-size: 35px;
@@ -350,6 +380,10 @@ img.Modulos {
     }
     #Tabs .Contenedorquees {
         margin-top: 45px;
+    }
+    #Tabs h2 {
+        color: var(--negro);
+        font-size: 1rem;
     }
 }
 @media (min-width: 992px) {
