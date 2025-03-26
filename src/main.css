@@ -116,16 +116,18 @@ header.cabezote {
 
 .cabezoteRight {
     display: flex;
+    align-items: flex-start;
 }
 
 .cabezoteRight h2 {
     display: inline-block;
     font-size: 2em;
     font-family: "Lato", sans-serif;
-    color: #fff;
+    color: #000000;
     transform: translateY(50%);
     -webkit-transform: translateY(50%);
     padding: 0 8px;
+    font-weight: 400;
 }
 
 nav {
@@ -135,6 +137,7 @@ nav {
     vertical-align: top;
     display: inline-flex;
     align-items: center;
+    height: 100%;
 }
 
 nav a {
@@ -149,7 +152,7 @@ nav a:hover {
 #menuToggle {
     display: block;
     position: relative;
-    top: 18px;
+    top: 0px;
     left: 14px;
     z-index: 3;
     -webkit-user-select: none;
@@ -208,10 +211,10 @@ nav a:hover {
 
 }
 #menu {
-	position: absolute;
-	width: 639px;
+    position: absolute;
+    width: 639px;
     gap: 9px 0px;
-    margin: 27px 42px 0 0;
+    margin: 35px 42px 0 0;
     padding: 28px 30px 27px 31px;
     background: #ededed;
     list-style-type: none;
@@ -219,7 +222,6 @@ nav a:hover {
     transform-origin: 0% 0%;
     transform: translateY(-100%);
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-
     background: #fff;
     border-bottom-right-radius: 5px;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.12), 0 3px 3px rgba(0, 0, 0, 0.14);
@@ -227,11 +229,11 @@ nav a:hover {
     flex-wrap: wrap;
     flex-direction: row;
     border-left: 4px solid #e84a5f;
-	display: none;
+    display: none;
 }
 #menu p {
     margin-bottom: 3px;
-    padding-left: 9px;
+    padding-left: 0px;
     font-size: 23px;
     width: 100%;
 }
@@ -239,12 +241,13 @@ nav a:hover {
     padding: 10px 0;
     font-size: 20px;
     display: inline-flex;
-    align-items: flex-end;
+    align-items: center;
 }
 
 #menu img {
     filter: invert(0) brightness(0);
-    padding: 0px 9px;
+    padding: 0 8px 0 0;
+    width: 57px;
 }
 #menu li::before {
     content: "";
@@ -270,10 +273,10 @@ nav a:hover {
 
 header h3 {
     font-weight: 400;
-    height: 55px;
-    padding: 10px 10px 0;
+    /* height: 55px; */
+    padding: 16px 10px 0;
     margin-left: 5px;
-    font-size: 36px;
+    font-size: 30px;
     color: #e84a5f;
     line-height: 1;
     display: inline-block;
@@ -1384,12 +1387,20 @@ a#reset-filters {
     background-color: #e84a5f;
 }
 .header_info {
-    background-color: #e9e9e9;
-    padding: 15px 0px;
+    background-color: #e9e9e94d;
+    padding: 15px 15px;
     text-align: right;
     display: grid;
     grid-auto-flow: column;
     align-self: center;
+}
+.header_info:hover {
+    background-color: #e84a5f;
+}
+.header_info:hover svg, .header_info:hover h2, .header_info:hover .Indicadores,  .header_info:hover .Consultasgeográficas,  .header_info:hover .Monitoreocomunitario, .header_info:hover .Portafolios  {
+    fill: var(--blanco);
+    color:#fff;
+    filter: hue-rotate(45deg);
 }
 .header_info h1 {
     font-size: 1.2em;
@@ -1410,6 +1421,7 @@ a#reset-filters {
     background-image: url(images/geografico.png);
     -webkit-background-size: contain;
     background-size: contain;
+    filter: invert(1);
     float: right;
     width: 65px;
     height: 65px;
@@ -1419,6 +1431,7 @@ a#reset-filters {
     background-image: url(images/indicadores.png);
     -webkit-background-size: contain;
     background-size: contain;
+    filter: invert(1);
     float: right;
     width: 65px;
     height: 65px;
@@ -1428,6 +1441,7 @@ a#reset-filters {
     background-image: url(images/portafolios.png);
     -webkit-background-size: contain;
     background-size: contain;
+    filter: invert(1);
     float: right;
     width: 65px;
     height: 65px;
@@ -1446,6 +1460,7 @@ a#reset-filters {
     background-image: url(images/mcomunitario.png);
     -webkit-background-size: contain;
     background-size: contain;
+    filter: invert(1);
     float: right;
     width: 65px;
     height: 65px;
@@ -2698,7 +2713,9 @@ tspan,
     outline: none;
     cursor: pointer;
 }
-
+.loginBtn svg {
+    color: #555555;
+}
 .rightTitle {
     text-align: right;
     font-size: 11px;
@@ -2772,15 +2789,16 @@ tspan,
 
 .uim_modal {
     position: fixed;
+    left: 0;
+    right: 0;
+    top: 29%;
+    margin: auto;
     width: 300px;
     background-color: #ffffff;
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.12), 0 3px 3px rgba(0, 0, 0, 0.14);
-    top: 85px;
-    right: 25px;
     border-radius: 5px 0 0 5px;
-    padding: 140px 20px 30px;
+    padding: 190px 20px 30px;
 }
-
 .uim_modal.loginModal {
     background-image: url(images/login.png);
     /*background-image: url(images/bgmountain.png);*/
@@ -2812,30 +2830,41 @@ tspan,
 
 .loginbtn,
 .logoutbtn {
-    margin-top: 30px;
+    margin-top: 27px;
     outline: none;
     cursor: pointer;
-    color: #e84a5f;
-    text-align: right;
-    text-decoration: underline;
-    background-color: transparent;
+    text-align: center;
     border: none;
-    float: right;
-    font-size: 12px;
+    width: 100%;
+    background-color: #e84a5f;
+    padding: 9px 10px;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .uim_modal .closebtn {
-    color: #ea485f;
-    position: relative;
+    background-color: white;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    position: absolute;
+    color: #aaa2a3;
+    width: 30px;
+    height: 30px;
+    right: 4px;
+    top: 6px;
 }
-
+.uim_modal .closebtn:hover {
+    background-color: #e84a5f;
+}
 .loginbtn.disabled {
-    color: #345b6b;
+    color: #fff;
     text-decoration: none;
 }
 
 .recoverbtn {
-    margin-top: 30px;
+    margin-top:27px;
     outline: none;
     cursor: pointer;
     color: #345b6b;
@@ -3479,15 +3508,12 @@ h3.warningNote {
 }
 @media (min-width: 0) {
 	#menu {
-		width: 300px;
+        width: 330px;
 	}
 	#menuToggle input:checked ~ ul {
-		transform: translate(-43%, 0);
-		display: inline-flex;
-	}
-
-
-	
+        transform: translate(-60%, 0);
+        display: inline-flex;
+	}	
 }
 
 @media (min-width: 990px) {
