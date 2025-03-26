@@ -6,7 +6,9 @@ import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
-export class PersistenceFootprintController {
+type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
+
+export class TimelineFootprintController {
   areaType: string = "";
   areaId: string = "";
   activeRequests: Map<string, CancelTokenSource> = new Map();
@@ -19,7 +21,7 @@ export class PersistenceFootprintController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for persistence human footprint component
+   * Get shape layers in GeoJSON format for timeline human footprint component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
@@ -52,6 +54,56 @@ export class PersistenceFootprintController {
     };
 
     return layerData;
+  };
+
+  /**
+   * Get shape layers in GeoJSON format for special ecosystems
+   *
+   * @param {string} selectedKey category for special ecosystems
+   *
+   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   */
+  getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
+    try {
+      const seType: SEKeys = {
+        paramo: "Páramo",
+        dryForest: "Bosque Seco Tropical",
+        wetland: "Humedal",
+      };
+
+      const reqPromise: ShapeAPIObject =
+        BackendAPI.requestHFLayerBySEInGeofence(
+          this.areaType,
+          this.areaId,
+          seType[selectedKey]
+        );
+
+      const { request, source } = reqPromise;
+      this.activeRequests.set(selectedKey, source);
+      const res = await request;
+      this.activeRequests.delete(selectedKey);
+
+      const layerStyle = () => ({
+        stroke: false,
+        color: matchColor("hfTimeline")(selectedKey),
+        fillOpacity: 0.6,
+        weight: 1,
+      });
+
+      const layerData = {
+        id: selectedKey,
+        paneLevel: 3,
+        json: res,
+        layerStyle: layerStyle,
+      };
+
+      return layerData;
+    } catch (error) {
+      this.activeRequests.delete(selectedKey);
+      throw new Error(
+        error instanceof Error ? error.message : "Error al obtener la capa"
+      );
+    }
   };
 
   /**
@@ -101,7 +153,7 @@ export class PersistenceFootprintController {
   };
 
   /**
-   * Set the features style, applying an specific Highlight if necessary
+   * Set the features style, applying an specific Highlight if neccesary
    *
    * @param {string} selectedKey Id of the feature to highlight.
    *

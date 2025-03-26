@@ -1,14 +1,15 @@
-import formatNumber from "utils/format";
-import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
-import { shapeLayer } from "pages/search/types/layers";
+import {
+  shapeLayer,
+  compensationFactorPropierties,
+} from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
-export class PersistenceFootprintController {
-  areaType: string = "";
-  areaId: string = "";
+export class CompensationFactorController {
+  areaType: string | null = null;
+  areaId: string | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
@@ -19,16 +20,15 @@ export class PersistenceFootprintController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for persistence human footprint component
+   * Get shape layers in GeoJSON format for compensation factor component
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getLayer = async (): Promise<shapeLayer> => {
-    const layerId = "hfPersistence";
+    const layerId = "fc";
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestHFPersistenceLayer(
-      this.areaType,
-      this.areaId
+    const reqPromise: ShapeAPIObject = BackendAPI.requestBiomesbyEALayer(
+      this.areaId ?? ""
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -58,28 +58,16 @@ export class PersistenceFootprintController {
    * Highlight and set the tooltip
    *
    * @param {L.LeafletMouseEvent} event objet
+   *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    type TooltipLabel = Record<
-      "estable_natural" | "dinamica" | "estable_alta",
-      string
-    >;
-
-    const tooltipLabel: TooltipLabel = {
-      estable_natural: "Estable Natural",
-      dinamica: "Dinámica",
-      estable_alta: "Estable Alta",
-    };
-
     const feature = event.target;
     const optionsTooltip = { sticky: true };
 
-    const key = feature.feature.properties.key as keyof TooltipLabel;
-
     feature
       .bindTooltip(
-        `<b>${tooltipLabel[key]}:</b>
-        <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
+        `<b>Bioma-IAvH:</b> ${feature.feature.properties.name_biome}
+          <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
         optionsTooltip
       )
       .openTooltip();
@@ -93,6 +81,7 @@ export class PersistenceFootprintController {
    * Reset the feature style
    *
    * @param {L.LeafletMouseEvent} event objet
+   *
    */
   resetShapeHighlight = (event: L.LeafletMouseEvent) => {
     const feature = event.target;
@@ -101,21 +90,16 @@ export class PersistenceFootprintController {
   };
 
   /**
-   * Set the features style, applying an specific Highlight if necessary
-   *
-   * @param {string} selectedKey Id of the feature to highlight.
+   * Set the features style, applying an specific Highlight if neccesary
    *
    * @returns {Function} function receiving a geoJsonFeature as required by leaflet
    */
   setLayerStyle =
-    (selectedKey = "") =>
-    (feature?: { properties: { key: string; id: string } }) => {
-      return {
-        stroke: false,
-        fillColor: matchColor("hfPersistence")(feature?.properties.key),
-        fillOpacity: feature?.properties.key === selectedKey ? 1 : 0.6,
-      };
-    };
+    () => (feature?: { properties: compensationFactorPropierties }) => ({
+      stroke: false,
+      fillColor: matchColor("fc")(feature?.properties.compensation_factor),
+      fillOpacity: 0.6,
+    });
 
   /**
    * Send the cancel signal to all active requests and remove them from the map
