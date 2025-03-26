@@ -48,7 +48,7 @@ const Menu: React.FunctionComponent = () => {
       <span />
       <span />
       <ul id="menu">
-<p><strong>Explora nuestros módulos</strong></p>
+        <p><strong>Explora nuestros módulos</strong></p>
 
         {/*  <Link to="/" onClick={changeMenuState}>
           <li>Inicio</li>
@@ -97,7 +97,7 @@ const Menu: React.FunctionComponent = () => {
             </li>
           </Link>
         )}
-      </ul>;
+      </ul>
 
     </div>
   );
