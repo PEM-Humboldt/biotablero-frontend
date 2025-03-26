@@ -136,7 +136,7 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
     .map((area) => ({
       label: {
         id: area.id,
-        name: area.name,
+        name: area.label,
         disabled: area.id === "se",
         collapsed: areaType?.id !== area.id,
       },
@@ -154,7 +154,7 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
     if (expandedTab === "") {
       setAreaType();
     } else {
-      setAreaType({ id: expandedTab, name: expandedTabLabel || expandedTab });
+      setAreaType({ id: expandedTab, label: expandedTabLabel || expandedTab });
       SearchAPI.requestAreaIds(expandedTab).then((areas) => setAreasId(areas));
     }
   };

@@ -83,7 +83,7 @@ class Search extends Component<Props, State> {
             }),
           },
         });
-        setHeaderNames({ parent: idObj!.name, child: typeObj!.name });
+        setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar
@@ -130,7 +130,7 @@ class Search extends Component<Props, State> {
     const { setHeaderNames, history } = this.props;
     const { areaType } = this.state;
 
-    setHeaderNames({ parent: this.state.areaType!.name, child: areaId!.name });
+    setHeaderNames({ parent: this.state.areaType!.label, child: areaId!.name });
     history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
   };
 
