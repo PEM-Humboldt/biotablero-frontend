@@ -46,9 +46,7 @@ class SearchAPI {
    * @return {Promise<Array<AreaType>>} array of area types
    */
   static requestAreaTypes(): Promise<Array<AreaType>> {
-    return SearchAPI.makeGetRequest(
-      "areas/types"
-    );
+    return SearchAPI.makeGetRequest("areas/types");
   }
 
   /**
