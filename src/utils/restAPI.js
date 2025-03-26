@@ -130,20 +130,6 @@ class RestAPI {
   /** ******************** */
 
   /**
-   * Request the geometry of the biomes by EA
-   * @param {String} eaId id ea to request
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestBiomesbyEAGeometry(eaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * Request area geometry by id
    *
    * @param {String} areaId area id to request
