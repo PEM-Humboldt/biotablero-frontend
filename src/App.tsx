@@ -134,7 +134,10 @@ const App: React.FunctionComponent = () => {
 
   return (
     <AppContext.Provider value={{ user }}>
-      <YMInitializer accounts={yandexMetrikaId ? [yandexMetrikaId] : []} />
+      <YMInitializer
+        accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
+        options={{ webvisor: true }}
+      />
       <main>
         <Switch>
           <Route exact path="/" render={loadHome} />
