@@ -3413,6 +3413,17 @@ h3.warningNote {
         background:inherit;
     }
 }
+@media (min-width:644px) and (max-width:767px) {
+    .Cenefa {
+        min-height: 0;
+    }
+    .Cenefa {
+        padding: 1px 0 30px;
+    }
+    #Tabs .Espaciado h1 {
+        display: none;
+    }
+}
 @media screen and (max-width: 619px) {
     /*
     menu, .content {
