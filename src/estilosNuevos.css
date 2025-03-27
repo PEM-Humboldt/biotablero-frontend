@@ -89,6 +89,7 @@ img.Modulos {
     background-color: rgba(17, 17, 17, 0.52);
     /* border-bottom: 1px solid #ffffff; */
     border-bottom: 1px solid var(--blanco);
+    backdrop-filter: blur(2px);
     padding: 23% 17%;
     border-radius: 6px;
     overflow: auto;
@@ -120,6 +121,9 @@ img.Modulos {
     font-weight: 400;
     color: var(--blanco);
 }
+#Tabs  .css-1ehaqqx-MuiButtonBase-root-MuiTabScrollButton-root {
+    display: none;
+}
 #Tabs h1,
 #Tabs p {
     font-family: "Lato";
@@ -128,9 +132,12 @@ img.Modulos {
     font-weight: 600;
     color: var(--rojo);
 }
+#Tabs span {
+    font-size: 1.2rem;
+}
 #Tabs p {
-    font-size: 17px;
-    margin-top: 17px;
+    font-size: 18px;
+    margin-top: 34px;
 }
 #Tabs {
     position: relative;
@@ -290,10 +297,6 @@ img.Modulos {
     #Tabs .Contenedorquees p {
         margin-top: 0;
     }
-/*
-    #Tabs .MuiTabs-scroller {
-        margin-top: 23%;
-    }*/
     #Tabs .Espaciado h1 {
         display: none;
     }
@@ -308,8 +311,11 @@ img.Modulos {
         margin-block-start: 1em;
     }
     #Tabs h2 {
-        color: var(--azul);
         font-size: 1rem;
+        color: var(--negro);
+    }
+    .interna h5 {
+        font-size: 16px;
     }
 }
 @media (min-width: 576px) {
@@ -328,9 +334,6 @@ img.Modulos {
     #Colaboradores.Colaboradores {
         text-align: center;
     }
- /*   #Tabs .MuiTabs-scroller {
-        margin-top: 0;
-    }*/
     #Tabs .Espaciado h1 {
         display: block;
     }
@@ -340,8 +343,6 @@ img.Modulos {
     #Tabs .MuiBox-root {
         align-items: flex-start;
     }
-    
-    
 }
 @media (min-width: 768px) {
     #CarrourselBio .css-f2xmkk-MuiGrid-root {
@@ -353,6 +354,7 @@ img.Modulos {
     #CarrouselBio .css-9ujvgz-MuiGrid-root>.MuiGrid-item {
         padding-left: 0;
         text-align: left;
+        font-size: 11px;
     }
     .imagen-fondo .Titulo p {
         font-size: 35px;
@@ -376,14 +378,20 @@ img.Modulos {
         font-size: 16px;
     }
     div#Tab {
-        padding-top: 26px;
+        padding-top: 8px;
+    }
+    #Tabs h1 {
+        font-size: 24px;
     }
     #Tabs .Contenedorquees {
         margin-top: 45px;
     }
     #Tabs h2 {
         color: var(--negro);
-        font-size: 1rem;
+        font-size: 1.5rem;
+    }
+    #Tabs .Espaciado {
+        margin-top: 42px;
     }
 }
 @media (min-width: 992px) {
@@ -408,7 +416,9 @@ img.Modulos {
         padding-top: 5px;
         padding-bottom: 20px;
     }
-
+    #Tabs .Espaciado {
+        margin-top: 0;
+    }
     #Tabs .Contenedorquees {
         margin-top: 100px;
         margin-bottom: 5px;
@@ -435,6 +445,7 @@ img.Modulos {
     div#Tab {
         padding-top: 35px;
     }
+    
 }
 
 @media (min-width: 1200px) {
