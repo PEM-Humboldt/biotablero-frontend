@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Tooltip from "@mui/material/Tooltip";
 import { Grid, Container, Button } from "@mui/material";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
@@ -90,31 +91,38 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
                     {modules.map((module) => (
                         <div key={module.id} className="ModuloPrincipal" style={{ height: "auto", padding: 12 }}>
                             <div className={`moduactivo ${activeModule === module.id ? "active" : ""}`}>
-                                <img className="Modulos" src={module.image} alt={module.title} style={{ width: "65%", height: "auto", cursor: "pointer" }} onClick={() => handleClick(module.id)} />
+                                <Tooltip title="Haz clic para explorar" arrow>
+                                    <img className="Modulos" src={module.image} alt={module.title} style={{ width: "65%", height: "auto", cursor: "pointer" }} onClick={() => handleClick(module.id)} />
+                                </Tooltip>
+
                                 {showContainer && activeModule === module.id && (
                                     <Grid container spacing={2} alignItems="center" className={`contenedor ${animateContainer ? "activo" : ""}`} gap={1}>
                                         <Grid item xs={12} sm={7} md={6} lg={7} sx={{ textAlign: { xs: "center", sm: "left" } }}>
                                             <span>{module.title}</span>
                                         </Grid>
                                         <Grid className="btncricle" item xs={3} sm={2} md={2} lg={2}>
-                                            <Button
-                                                onClick={() => handleClick(module.id)}
-                                                style={{
-                                                    backgroundColor: "#e84a5f",
-                                                    border: "2px solid #fff",
-                                                    padding: "12px",
-                                                }}
-                                            >
-                                                <img src={iconoinfo} alt="Información" />
-                                            </Button>
+                                            <Tooltip title="Más información" arrow>
+                                                <Button
+                                                    onClick={() => handleClick(module.id)}
+                                                    style={{
+                                                        backgroundColor: "#e84a5f",
+                                                        border: "2px solid #fff",
+                                                        padding: "12px",
+                                                    }}
+                                                >
+                                                    <img src={iconoinfo} alt="Información" />
+                                                </Button>
+                                            </Tooltip>
                                         </Grid>
 
                                         <Grid className="btncricle" item xs={3} sm={2} md={2} lg={2}>
-                                            <Link to={module.link} style={{ textDecoration: "none" }}>
-                                                <Button>
-                                                    <img src={iconomas} alt="Ir al módulo" />
-                                                </Button>
-                                            </Link>
+                                            <Tooltip title="Ir al módulo" arrow>
+                                                <Link to={module.link} style={{ textDecoration: "none" }}>
+                                                    <Button>
+                                                        <img src={iconomas} alt="Ir al módulo" />
+                                                    </Button>
+                                                </Link>
+                                            </Tooltip>
                                         </Grid>
                                     </Grid>
                                 )}
