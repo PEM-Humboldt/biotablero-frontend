@@ -25,10 +25,10 @@ const QueEs = () => {
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
                                     <Box className="icon-container">
-                                        <grid className="Icono">
+                                        <Grid className="Icono">
                                             {" "}
                                             <img src={Quees} alt="¿Qué es BioTablero?" className="icon-img" />
-                                        </grid>
+                                        </Grid>
                                     </Box>
                                     <Typography variant="h6" component="h2" fontWeight="bold">
                                         ¿Qué es BioTablero?
@@ -46,10 +46,10 @@ const QueEs = () => {
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
-                                    <grid className="Icono">
+                                    <Grid className="Icono">
                                         {" "}
                                         <img src={aquinvaDirgido} alt=" ¿A quién va dirigido?" />
-                                    </grid>
+                                    </Grid>
                                     <Typography variant="h6" component="h2" fontWeight="bold">
                                         ¿A quién va dirigido?
                                     </Typography>
@@ -65,10 +65,10 @@ const QueEs = () => {
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
-                                    <grid className="Icono">
+                                    <Grid className="Icono">
                                         {" "}
                                         <img src={quienLohace} alt="¿Quién lo hace?" />
-                                    </grid>
+                                    </Grid>
                                     <Typography variant="h6" component="h2" fontWeight="bold">
                                         ¿Quién lo hace?
                                     </Typography>
@@ -85,10 +85,10 @@ const QueEs = () => {
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
-                                    <grid className="Icono">
+                                    <Grid className="Icono">
                                         {" "}
                                         <img src={nuestroObjetivo} alt="¿Cuál es nuestro objetivo?" />
-                                    </grid>
+                                    </Grid>
                                     <Typography variant="h6" component="h2" fontWeight="bold">
                                         ¿Cuál es nuestro objetivo?
                                     </Typography>

@@ -116,16 +116,16 @@ header.cabezote {
 
 .cabezoteRight {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    -webkit-transform: inherit;
 }
-
 .cabezoteRight h2 {
     display: inline-block;
     font-size: 2em;
     font-family: "Lato", sans-serif;
     color: #000000;
-    transform: translateY(50%);
-    -webkit-transform: translateY(50%);
+    transform: translateY(32%);
+    -webkit-transform: translateY(32%);
     padding: 0 8px;
     font-weight: 400;
 }
@@ -2621,14 +2621,12 @@ tr.row2table:nth-child(odd) {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-
 .listSS {
     margin-top: 10px;
     background: #fff;
     color: #e84a5f;
     border-radius: 3px;
 }
-
 .HasSelected {
     background: #fff;
     color: #e84a5f;
@@ -2642,11 +2640,9 @@ tr.row2table:nth-child(odd) {
     font-weight: 500;
     margin-bottom: 5px;
 }
-
 .addedBioma {
     color: #51b4c1;
 }
-
 .backgraph,
 .downgraph,
 .saveStrategyButton {
@@ -2666,14 +2662,12 @@ tr.row2table:nth-child(odd) {
     min-height: 32px !important;
     min-width: 164px !important;
 }
-
 .downgraph {
     margin-top: 10px !important;
 }
 .saveStrategyButton {
     min-width: initial !important;
 }
-
 .downgraph svg,
 .backgraph svg,
 .iconsave svg,
@@ -2685,13 +2679,11 @@ tr.row2table:nth-child(odd) {
     color: #ea495f;
     float: left;
 }
-
 .backgraph:hover,
 .downgraph:hover,
 .saveStrategyButton:hover {
     background-color: #fff !important;
 }
-
 tspan,
 .vx-axis-label {
     font-stretch: always !important;
@@ -2700,18 +2692,19 @@ tspan,
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
 }
-
 .loginBtnCont {
     display: grid;
     min-height: 70px;
     margin-top: -6px;
 }
-
 .loginBtn {
     border: none;
     background-color: transparent;
     outline: none;
     cursor: pointer;
+}
+.loginbtn:hover {
+    background-color: var(--azul);
 }
 .loginBtn svg {
     color: #555555;
@@ -3416,6 +3409,9 @@ h3.warningNote {
         width: auto;
         margin-bottom: 50px;
     }
+    .wrapperPort {
+        background:inherit;
+    }
 }
 @media screen and (max-width: 619px) {
     /*
@@ -3505,6 +3501,17 @@ h3.warningNote {
         -webkit-background-size: contain;
         background-size: contain;
     }
+    .wrapperPort {
+        background: none;
+    }
+    .fullgrid .indicatorCard {
+        width: 58%;
+    }
+    .links {
+        position: absolute;
+        right: 5px;
+        top: 6px;
+    }
 }
 @media (min-width: 0) {
 	#menu {
@@ -3514,6 +3521,12 @@ h3.warningNote {
         transform: translate(-60%, 0);
         display: inline-flex;
 	}	
+    .interna h5 {
+        font-size: 16px;
+    }
+    .cabezoteRight h2 {
+        font-size: 0em;
+    }
 }
 
 @media (min-width: 990px) {
@@ -3523,5 +3536,10 @@ h3.warningNote {
 	#menuToggle input:checked ~ ul {
         transform: translate(-92.3%, 0);
     }
-
+    .cabezoteRight h2 {
+        font-size: 1.2em;
+    }
+    #Tabs ol {
+        font-size: 18px;
+    }
 }
