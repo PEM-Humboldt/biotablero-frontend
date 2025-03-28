@@ -136,7 +136,17 @@ const App: React.FunctionComponent = () => {
     <AppContext.Provider value={{ user }}>
       <YMInitializer
         accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
-        options={{ webvisor: true }}
+        options={{
+          webvisor: true,
+          trackHash: true,
+          clickmap: true,
+          accurateTrackBounce: true,
+          trackLinks: true,
+          params: {
+            cookieDomain: ".humboldt.org.co",
+            cookieFlags: "SameSite=None; Secure",
+          },
+        }}
       />
       <main>
         <Switch>
