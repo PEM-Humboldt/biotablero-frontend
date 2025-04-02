@@ -41,7 +41,7 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
           </a>
         </div>
         <div className="colaboradores">
-          <h4>Colaboradores</h4>
+          <span>Colaboradores</span>
           {logoSet[logosId].map((name) => {
             return (
               <a
