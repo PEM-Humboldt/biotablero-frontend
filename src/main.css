@@ -271,7 +271,7 @@ nav a:hover {
     transform: scaleX(1);
 }
 
-header h3 {
+header p {
     font-weight: 400;
     /* height: 55px; */
     padding: 16px 10px 0;
@@ -282,7 +282,7 @@ header h3 {
     display: inline-block;
 }
 
-header h3 a {
+header p a {
     color: #e84a5f;
 }
 
