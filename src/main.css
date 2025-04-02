@@ -927,7 +927,7 @@ footer span {
     font-size: 13px;
 }
 .footerflex {
-    padding: 0px 0;
+    padding: 17px 21px;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
@@ -943,7 +943,7 @@ footer span {
 .colaboradores img {
     object-position: center;
     object-fit: contain;
-    height: 60px;
+    height: 51px;
     width: 70px;
 }
 
@@ -999,8 +999,15 @@ footer h3 a:hover,
 }
 
 .quoteStyle {
+    padding-top: 19px;
     width: 130px;
+    float: right;
 }
+footer.footerflex .institutoDiv {
+    color: white;
+}
+
+
 
 /* isotope */
 
@@ -3496,6 +3503,9 @@ h3.warningNote {
     }
     .footersm {
         align-items: flex-end;
+        float: inherit;
+        margin: auto;
+        gap: 25px;
     }
     /* Nuevo css 2025 */
 }
@@ -3536,8 +3546,30 @@ h3.warningNote {
     .cabezoteRight h2 {
         font-size: 0em;
     }
+    .footerflex {
+        flex-direction: column;
+        align-items: center;
+    }
+    footer span {
+        text-align: left;
+        padding-top: 14px;
+    }
+    .colaboradores a {
+        margin-left: 9px;
+    }
 }
 
+@media (min-width:550px) {
+.footerflex {
+    flex-direction: inherit;
+    align-items: center;
+}
+footer span {
+    text-align: right;
+    padding-top: 0;
+}
+
+}
 @media (min-width: 990px) {
 	#menu {
 		width: 639px;
