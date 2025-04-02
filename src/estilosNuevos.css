@@ -207,6 +207,9 @@ img.Modulos {
     #Tabs h1 {
         font-size: 21px;
     }
+    .interna span {
+        display: block;
+    }
     #Tabs {
         padding-top: 0;
     }
@@ -263,7 +266,7 @@ img.Modulos {
     }
     #CarrouselBio p {
             display: inline-flex ;
-            margin: 23px 0 30px;
+            margin: 18px 0 30px;
             padding: 11px;
             color: var(--blanco);
             font-weight: 400;
@@ -271,7 +274,6 @@ img.Modulos {
             text-align: center;
             justify-content: center;
     }
-
     #CarrouselBio .contenedor {
         display: inline-flex;
         justify-content: center;
@@ -320,6 +322,10 @@ img.Modulos {
     #Tabs button {
         min-width: 100%;
     }
+    .interna span {
+        font-size: 14px;
+        padding: 12px 0 0 15px;
+    }
 }
 @media (min-width: 576px) {
     .Megamenu .logo {
@@ -348,6 +354,9 @@ img.Modulos {
     }
 }
 @media (min-width: 768px) {
+    .interna span {
+        display: none;
+    }
     #CarrourselBio .css-f2xmkk-MuiGrid-root {
         width: 100%;
         margin-left: inherit;

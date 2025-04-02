@@ -13,7 +13,7 @@ const Title: React.FunctionComponent<Props> = ({ title, subTitle }) => (
         <b>{title}</b>
       </Link>
     </p>
-    {subTitle && <h5>{subTitle}</h5>}
+    {subTitle && <span>{subTitle}</span>}
   </div>
 );
 

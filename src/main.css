@@ -280,6 +280,7 @@ header p {
     color: #e84a5f;
     line-height: 1;
     display: inline-block;
+
 }
 
 header p a {
@@ -288,10 +289,8 @@ header p a {
 
 .interna {
     display: inline-block;
-    padding: 5px 10px 0;
     resize: both;
 }
-
 .interna h3 {
     padding: 0;
     margin: 0;
@@ -299,15 +298,11 @@ header p a {
     font-size: 32px;
     color: #e84a5f;
 }
-
-.interna h5 {
-    font-size: 18px;
+.interna span {
     line-height: 0;
-    padding: 12px 0 0 1px;
     color: #5a5050;
     font-weight: 400;
 }
-
 .userBox {
     display: inline-block;
     position: relative;
@@ -315,7 +310,6 @@ header p a {
     resize: both;
     color: #fff;
 }
-
 .userBox:hover {
     color: #2a363b;
 }
@@ -923,7 +917,7 @@ footer {
     z-index: 20;
 }
 
-footer h4 {
+footer span {
     text-align: right;
     padding-bottom: 15px;
     display: block;
