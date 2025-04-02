@@ -8,11 +8,11 @@ interface Props {
 
 const Title: React.FunctionComponent<Props> = ({ title, subTitle }) => (
   <div className={subTitle ? "interna" : "cabezoteRight"}>
-    <h3>
+    <p>
       <Link to="/">
         <b>{title}</b>
       </Link>
-    </h3>
+    </p>
     {subTitle && <h5>{subTitle}</h5>}
   </div>
 );
