@@ -32,39 +32,46 @@ interface FooterProps {
 }
 
 const Footer: React.FC<FooterProps> = ({ logosId }) => (
-  <footer>
-    {logosId && logoSet[logosId] ? (
-      <div className="footerflex">
-        <div>
-          <a href="http://www.humboldt.org.co/es/">
-            <img src={logohumboldt} alt="" />
-          </a>
-        </div>
-        <div className="colaboradores">
+  <footer className="footerflex">
+    {/* Div 1: Nombre del Instituto (Mostrar siempre) */}
+    <div className="institutoDiv">
+      { (logosId === "default" || logosId === "monitoreo") && (
+        <a href="http://www.humboldt.org.co/es/">
+          <img src={logohumboldt} alt="Instituto Humboldt" />
+        </a>
+      )}
+      <div>
+        Instituto de Investigación de Recursos Biológicos <br />
+        <b>Alexander von Humboldt</b>
+      </div>
+    </div>
+
+    {/* Div 2: Colaboradores, Cítese y Contacto */}
+    <div className="colaboradoresDiv">
+      <div className="colaboradores">
+        {logosId && (logosId === "default" || logosId === "monitoreo") && (
           <span>Colaboradores</span>
-          {logoSet[logosId].map((name) => {
-            return (
+        )}
+        {logosId && logoSet[logosId] ? (
+          logoSet[logosId].map((name) => (
+            (logosId === "default" || logosId === "monitoreo") && (
               <a
                 href={logosData[name].url}
                 target="_blank"
                 rel="noopener noreferrer"
                 key={name}
               >
-                <img src={logosData[name].img} alt="" />
+                <img src={logosData[name].img} alt={name} />
               </a>
-            );
-          })}
-        </div>
+            )
+          ))
+        ) : (
+          logosId && (logosId === "default" || logosId === "monitoreo") ? (
+            <p>No se encontraron colaboradores para esta sección.</p>
+          ) : null
+        )}
       </div>
-    ) : (
-      ""
-    )}
-    <div className="footersm" style={{ position: "relative" }}>
-      <a href="http://www.humboldt.org.co/es/">
-        Instituto de Investigación de Recursos Biológicos
-        <br />
-        <b>Alexander von Humboldt</b>
-      </a>
+
       <div className="footersm quoteStyle">
         <h3>
           <button
@@ -86,5 +93,7 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
     </div>
   </footer>
 );
+
+
 
 export default Footer;
