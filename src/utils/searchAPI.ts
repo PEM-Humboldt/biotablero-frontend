@@ -4,7 +4,7 @@ import {
   AreaIdBasic,
   AreaType,
   polygonFeature,
-  AreaDetails
+  AreaId
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import RestAPI from "./restAPI";
@@ -26,9 +26,9 @@ class SearchAPI {
    *
    * @param {string | number} areaId Area identifier
    *
-   * @returns {Promise<AreaDetails>} Object with area information
+   * @returns {Promise<AreaId>} Object with area information
    */
-  static requestAreaInfo(areaId: string | number): Promise<AreaDetails> {
+  static requestAreaInfo(areaId: string | number): Promise<AreaId> {
     return SearchAPI.makeGetRequest(`areas/${areaId}`);
   }
 

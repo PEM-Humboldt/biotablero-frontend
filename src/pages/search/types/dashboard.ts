@@ -16,11 +16,6 @@ export interface AreaIdBasic {
 }
 
 export interface AreaId extends AreaIdBasic {
-  area_ha: number;
-  polygon: Polygon;
-}
-
-export interface AreaDetails extends AreaIdBasic {
   geometry: Polygon;
   area: number;
 }
