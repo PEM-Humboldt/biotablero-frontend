@@ -1,10 +1,10 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
 import {
-  AreaId,
   AreaIdBasic,
   AreaType,
   polygonFeature,
+  AreaDetails
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import RestAPI from "./restAPI";
@@ -24,16 +24,23 @@ class SearchAPI {
   /**
    * Get complete information about an area
    *
-   * @param {areaType} string TEMPORAL
-   * @param {areaId} string | number area id
+   * @param {string | number} areaId Area identifier
    *
-   * @returns {Promise<AreaId>} object with area information
+   * @returns {Promise<AreaDetails>} Object with area information
    */
-  static requestAreaInfo(areaType: string, areaId: string | number) {
-    // TODO: Ajustar con los llamados al nuevo backend
-    // (por url) traer toda la lista de areaType
-    // traer el área
-    // Traer la geometria
+  static requestAreaInfo(areaId: string | number): Promise<AreaDetails> {
+    return SearchAPI.makeGetRequest(`areas/${areaId}`);
+  }
+
+  /**
+   * Get areas
+   * 
+   * @param {string} type Area type
+   * 
+   * @returns {Promise<Array<AreaIdBasic>>} Array with areas data
+   */
+  static requestAreas(type: string): Promise<Array<AreaIdBasic>> {
+    return SearchAPI.makeGetRequest(`areas?type=${type}`);
   }
 
   /** *************** */

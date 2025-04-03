@@ -20,6 +20,11 @@ export interface AreaId extends AreaIdBasic {
   polygon: Polygon;
 }
 
+export interface AreaDetails extends AreaIdBasic {
+  geometry: Polygon;
+  area: number;
+}
+
 export interface polygonFeature {
   type: "Feature";
   geometry: {
