@@ -7,7 +7,6 @@ import {
   AreaId
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
-import RestAPI from "./restAPI";
 
 class SearchAPI {
   /**
@@ -32,17 +31,6 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(`areas/${areaId}`);
   }
 
-  /**
-   * Get areas
-   * 
-   * @param {string} type Area type
-   * 
-   * @returns {Promise<Array<AreaIdBasic>>} Array with areas data
-   */
-  static requestAreas(type: string): Promise<Array<AreaIdBasic>> {
-    return SearchAPI.makeGetRequest(`areas?type=${type}`);
-  }
-
   /** *************** */
   /** SEARCH SELECTOR */
   /** *************** */
@@ -64,16 +52,7 @@ class SearchAPI {
    * @return {Promise<Array<AreaIdBasic>>} array of area types
    */
   static requestAreaIds(areaType: string): Promise<Array<AreaIdBasic>> {
-    switch (areaType) {
-      case "states":
-        return RestAPI.getAllStates();
-      case "ea":
-        return RestAPI.getAllEAs();
-      case "basinSubzones":
-        return RestAPI.getAllSubzones();
-      default:
-        return Promise.resolve([]);
-    }
+    return SearchAPI.makeGetRequest(`areas?type=${areaType}`);
   }
 
   /** *********************** */
