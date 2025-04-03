@@ -20,7 +20,7 @@ const QueEs = () => {
                 }}
             >
                 <Grid container spacing={3} justifyContent="center">
-                    <Grid item xs={12} md={6} lg={6}>
+                    <Grid item xs={12} md={6} lg={6} className="scale-up-center">
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
@@ -42,7 +42,7 @@ const QueEs = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={6}>
+                    <Grid item xs={12} md={6} lg={6} className="scale-up-center">
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
@@ -61,7 +61,7 @@ const QueEs = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} md={6} lg={6}>
+                    <Grid item xs={12} md={6} lg={6} className="scale-up-center">
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
@@ -81,7 +81,7 @@ const QueEs = () => {
                         </Card>
                     </Grid>
 
-                    <Grid item xs={12} md={6} lg={6}>
+                    <Grid item xs={12} md={6} lg={6} className="scale-up-center">
                         <Card sx={{ padding: 2, borderRadius: 2, boxShadow: 3 }}>
                             <CardContent>
                                 <Box display="flex" alignItems="center" gap={1}>
