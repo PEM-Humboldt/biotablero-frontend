@@ -121,7 +121,7 @@ img.Modulos {
     font-weight: 400;
     color: var(--blanco);
 }
-#Tabs  .css-1ehaqqx-MuiButtonBase-root-MuiTabScrollButton-root {
+#Tabs .css-1ehaqqx-MuiButtonBase-root-MuiTabScrollButton-root {
     display: none;
 }
 #Tabs h1,
@@ -176,6 +176,21 @@ img.Modulos {
 #Tabs .css-10d9dml-MuiTabs-indicator {
     background-color: var(--rojo);
 }
+.contenedor {
+    opacity: 0;
+    transform: translateY(-15px);
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    pointer-events: none;
+}
+.contenedor.activo {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.activo {
+    animation: slideIn 0.3s ease-out;
+}
+
 .titulo-centrado {
     text-align: center;
     padding-top: 33px;
@@ -198,7 +213,6 @@ img.Modulos {
 .Modalregistro .css-s2t35c-MuiTabs-scroller {
     background-color: #000000;
 }
-
 .moduactivo.active {
     border: 2px solid var(--blanco);
 }
@@ -255,8 +269,8 @@ img.Modulos {
         width: calc(100% + 0px);
         margin-left: 0;
     }
-    
-    #CarrouselBio .css-9ujvgz-MuiGrid-root>.MuiGrid-item {
+
+    #CarrouselBio .css-9ujvgz-MuiGrid-root > .MuiGrid-item {
         padding-left: 0;
         text-align: center;
     }
@@ -265,14 +279,14 @@ img.Modulos {
         margin-left: 0;
     }
     #CarrouselBio p {
-            display: inline-flex ;
-            margin: 18px 0 30px;
-            padding: 11px;
-            color: var(--blanco);
-            font-weight: 400;
-            font-size: 23px;
-            text-align: center;
-            justify-content: center;
+        display: inline-flex;
+        margin: 18px 0 30px;
+        padding: 11px;
+        color: var(--blanco);
+        font-weight: 400;
+        font-size: 23px;
+        text-align: center;
+        justify-content: center;
     }
     #CarrouselBio .contenedor {
         display: inline-flex;
@@ -352,10 +366,14 @@ img.Modulos {
     #Tabs .MuiBox-root {
         align-items: flex-start;
     }
+    #Tab .css-drc93y-MuiPaper-root-MuiCard-root {
+        min-height: 259px;
+    }
 }
 @media (min-width: 768px) {
-    .interna span {
-        display: none;
+    #menu strong {
+        color: var(--negro);
+        margin-left: -5px;
     }
     #CarrourselBio .css-f2xmkk-MuiGrid-root {
         width: 100%;
@@ -363,7 +381,7 @@ img.Modulos {
         display: inline-flex;
         justify-content: center;
     }
-    #CarrouselBio .css-9ujvgz-MuiGrid-root>.MuiGrid-item {
+    #CarrouselBio .css-9ujvgz-MuiGrid-root > .MuiGrid-item {
         padding-left: 0;
         text-align: left;
         font-size: 11px;
@@ -386,10 +404,10 @@ img.Modulos {
     .Cenefa {
         min-height: 100px;
     }
-    .ModuloPrincipal span {
+    #CarrouselBio   .ModuloPrincipal span {
         font-size: 16px;
     }
-    div#Tab {
+    #Tab {
         padding-top: 8px;
     }
     #Tabs h1 {
@@ -408,8 +426,14 @@ img.Modulos {
     #Tabs button {
         max-width: 360px;
     }
+    #Tab .css-drc93y-MuiPaper-root-MuiCard-root {
+        min-height: auto;
+    }
     .css-sbio02-MuiTabs-root {
         margin-top: 11px;
+    }
+    .interna span {
+        display: none;
     }
 }
 @media (min-width: 992px) {
@@ -426,7 +450,6 @@ img.Modulos {
     .titulo-centrado {
         padding-top: 37px;
     }
-
     #Tabs h1 {
         font-size: 3em;
     }
@@ -438,8 +461,11 @@ img.Modulos {
         margin-top: 0;
     }
     #Tabs .Contenedorquees {
-        margin-top: 90px;
+        margin-top: 83px;
         margin-bottom: 5px;
+    }
+    #Tab {
+        padding-top: 35px;
     }
     .Cenefa {
         padding: 0px 0 0;
@@ -453,22 +479,20 @@ img.Modulos {
     #CarrouselBio p {
         font-size: 33px;
     }
-
+    #CarrouselBio .contenedor {
+        padding: 19px 4px;
+    }
     #Colaboradores.Colaboradores {
         text-align: right;
     }
-    .ModuloPrincipal span {
+    #CarrouselBio  .ModuloPrincipal span {
         font-size: 18px;
     }
-    div#Tab {
-        padding-top: 35px;
+}
+@media (min-width:1024px) {
+    #CarrouselBio .contenedor {
+        padding: 19px 19px;
     }
-    
-}
-
-@media (min-width: 1200px) {
-}
-@media (min-width: 1400px) {
 }
 /* Keyframes: */
 @keyframes zoom {
@@ -482,20 +506,6 @@ img.Modulos {
         background-size: 100%;
     }
 }
-.contenedor {
-    opacity: 0;
-    transform: translateY(-15px);
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    pointer-events: none;
-}
-.contenedor.activo {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-}
-.activo {
-    animation: slideIn 0.3s ease-out;
-}
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -504,5 +514,29 @@ img.Modulos {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+.scale-up-center {
+    -webkit-animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+    animation: scale-up-center 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+@-webkit-keyframes scale-up-center {
+    0% {
+        -webkit-transform: scale(0.5);
+        transform: scale(0.5);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
+    }
+}
+@keyframes scale-up-center {
+    0% {
+        -webkit-transform: scale(0.4);
+        transform: scale(0.4);
+    }
+    100% {
+        -webkit-transform: scale(1);
+        transform: scale(1);
     }
 }
