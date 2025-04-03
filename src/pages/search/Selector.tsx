@@ -195,14 +195,12 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
           setAreaHa();
         } else {
           setAreaId(value || undefined);
-          // TODO: Con el nuevo backend solo es un llamado a un endpoint
           // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
           Promise.all([
-            BackendAPI.requestGeofenceDetails(areaType!.id, value?.id!),
-            BackendAPI.requestAreaLayer(areaType!.id, value?.id!).request,
-          ]).then(([ha, layer]) => {
-            setAreaHa(Number(ha.total_area));
-            setAreaLayer(layer);
+            SearchAPI.requestAreaInfo(value?.id!)
+          ]).then(([areaId]) => {
+            setAreaHa(Number(areaId.area));
+            setAreaLayer(areaId.geometry);
           });
         }
       }}

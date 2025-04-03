@@ -8,7 +8,6 @@ import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import BackendAPI from "utils/backendAPI";
 import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
@@ -58,24 +57,27 @@ class Search extends Component<Props, State> {
   async componentDidMount() {
     const { areaType, areaId, history, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
-      // TODO: Con el nuevo backend solo es llamar al endpoint que trae todos los detalles del area (que trae el objeto de tipo AreaId)
-      // [Borrar] Con el backend actual:
       Promise.all([
         SearchAPI.requestAreaTypes(),
         SearchAPI.requestAreaIds(areaType!),
-        BackendAPI.requestGeofenceDetails(areaType!, areaId!),
-        BackendAPI.requestAreaLayer(areaType!, areaId!).request,
-      ]).then(([types, ids, ha, layer]) => {
+        SearchAPI.requestAreaInfo(areaId!)
+      ]).then(([types, ids, areaId]) => {
         const typeObj = types.find(({ id }) => id === areaType);
-        const idObj = ids.find(({ id }) => id === areaId);
+        const idObj = ids.find(({ id }) => id === areaId.id);
+
+        if (!areaId || !areaId.geometry || !areaId.geometry.type) {
+          console.error("Invalid GeoJSON:", areaId.geometry);
+          return;
+        }        
+
         this.setState({
           areaType: typeObj,
           areaId: idObj,
-          areaHa: Number(ha.total_area),
+          areaHa: Number(areaId.area),
           areaLayer: {
             id: "geofence",
             paneLevel: 1,
-            json: layer,
+            json: areaId.geometry,
             layerStyle: () => ({
               stroke: false,
               fillColor: matchColor("geofence")(),
@@ -84,17 +86,10 @@ class Search extends Component<Props, State> {
           },
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
-      });
-    } else if (!isUndefinedOrNull(areaType)) {
-      // TODO: Con el nuevo backend esto se va a borrar
-      SearchAPI.requestAreaTypes().then((areaList) => {
-        this.setState({
-          areaType: areaList.find(({ id }) => id === areaType),
-        });
-      });
-    } else if (isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
-      // TODO: Este caso no existirá una vez se pueda identificar el área solo con el id (sin el areaType)
-      history.replace(history.location.pathname);
+      })
+      .catch(error => {
+        console.error("GeoJSON loading error:", error);
+      });;
     }
   }
 
@@ -204,7 +199,10 @@ class Search extends Component<Props, State> {
    * @param {Array<shapeLayer>} layers
    */
   setShapeLayers = (layers: Array<shapeLayer>) => {
-    this.setState({ shapeLayers: layers });
+    let invalidLayers = layers.some(l => typeof l.json === "object" && Object.keys(l.json).length === 0);
+    
+    if (!invalidLayers)
+      this.setState({ shapeLayers: layers });
   };
 
   /**
