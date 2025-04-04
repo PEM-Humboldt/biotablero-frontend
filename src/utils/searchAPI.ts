@@ -4,7 +4,7 @@ import {
   AreaIdBasic,
   AreaType,
   polygonFeature,
-  AreaId
+  AreaId,
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 

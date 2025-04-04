@@ -196,12 +196,12 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
         } else {
           setAreaId(value || undefined);
           // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          Promise.all([
-            SearchAPI.requestAreaInfo(value?.id!)
-          ]).then(([areaId]) => {
-            setAreaHa(Number(areaId.area));
-            setAreaLayer(GeoJsonUtils.castAreaIdToFeatureCollection(areaId));
-          });
+          Promise.all([SearchAPI.requestAreaInfo(value?.id!)]).then(
+            ([areaId]) => {
+              setAreaHa(Number(areaId.area));
+              setAreaLayer(GeoJsonUtils.castAreaIdToFeatureCollection(areaId));
+            }
+          );
         }
       }}
       style={{ width: "100%" }}

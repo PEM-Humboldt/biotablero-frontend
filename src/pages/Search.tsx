@@ -61,7 +61,7 @@ class Search extends Component<Props, State> {
       Promise.all([
         SearchAPI.requestAreaTypes(),
         SearchAPI.requestAreaIds(areaType!),
-        SearchAPI.requestAreaInfo(areaId!)
+        SearchAPI.requestAreaInfo(areaId!),
       ]).then(([types, ids, areaId]) => {
         const typeObj = types.find(({ id }) => id === areaType);
         const idObj = ids.find(({ id }) => id === areaId.id);
