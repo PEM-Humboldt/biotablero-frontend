@@ -1,5 +1,5 @@
 import { LatLngExpression, LatLngBounds } from "leaflet";
-import { GeoJsonObject } from "geojson";
+import { Geometry } from "geojson";
 
 export interface geofenceDetails {
   total_area: string;
@@ -17,7 +17,7 @@ export interface AreaIdBasic {
 }
 
 export interface AreaId extends AreaIdBasic {
-  geometry: GeoJsonObject;
+  geometry: Geometry;
   area: number;
 }
 

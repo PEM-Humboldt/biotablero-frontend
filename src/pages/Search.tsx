@@ -13,6 +13,7 @@ import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
+import GeoJsonUtils from "utils/GeoJsonUtils";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -55,7 +56,7 @@ class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { areaType, areaId, history, setHeaderNames } = this.props;
+    const { areaType, areaId, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
       Promise.all([
         SearchAPI.requestAreaTypes(),
@@ -65,11 +66,6 @@ class Search extends Component<Props, State> {
         const typeObj = types.find(({ id }) => id === areaType);
         const idObj = ids.find(({ id }) => id === areaId.id);
 
-        if (!areaId || !areaId.geometry || !areaId.geometry.type) {
-          console.error("Invalid GeoJSON:", areaId.geometry);
-          return;
-        }        
-
         this.setState({
           areaType: typeObj,
           areaId: idObj,
@@ -77,7 +73,7 @@ class Search extends Component<Props, State> {
           areaLayer: {
             id: "geofence",
             paneLevel: 1,
-            json: areaId.geometry,
+            json: GeoJsonUtils.castAreaIdToFeatureCollection(areaId),
             layerStyle: () => ({
               stroke: false,
               fillColor: matchColor("geofence")(),
@@ -86,10 +82,7 @@ class Search extends Component<Props, State> {
           },
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
-      })
-      .catch(error => {
-        console.error("GeoJSON loading error:", error);
-      });;
+      });
     }
   }
 
@@ -199,7 +192,7 @@ class Search extends Component<Props, State> {
    * @param {Array<shapeLayer>} layers
    */
   setShapeLayers = (layers: Array<shapeLayer>) => {
-    let invalidLayers = layers.some(l => typeof l.json === "object" && Object.keys(l.json).length === 0);
+    let invalidLayers = layers.some(l => typeof l.json === "object" && Object.keys(l.json).length === 0);    
     
     if (!invalidLayers)
       this.setState({ shapeLayers: layers });

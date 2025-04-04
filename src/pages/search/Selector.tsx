@@ -15,7 +15,7 @@ import { AreaIdBasic, AreaType } from "./types/dashboard";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { Autocomplete, TextField } from "@mui/material";
 import isUndefinedOrNull from "utils/validations";
-import BackendAPI from "utils/backendAPI";
+import GeoJsonUtils from "utils/GeoJsonUtils";
 
 const Selector = () => {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
@@ -200,7 +200,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
             SearchAPI.requestAreaInfo(value?.id!)
           ]).then(([areaId]) => {
             setAreaHa(Number(areaId.area));
-            setAreaLayer(areaId.geometry);
+            setAreaLayer(GeoJsonUtils.castAreaIdToFeatureCollection(areaId));
           });
         }
       }}
