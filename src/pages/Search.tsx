@@ -192,9 +192,7 @@ class Search extends Component<Props, State> {
    * @param {Array<shapeLayer>} layers
    */
   setShapeLayers = (layers: Array<shapeLayer>) => {
-    let invalidLayers = layers.some(l => typeof l.json === "object" && Object.keys(l.json).length === 0);    
-    
-    if (!invalidLayers)
+    if (!GeoJsonUtils.hasInvalidGeoJson(layers))
       this.setState({ shapeLayers: layers });
   };
 
