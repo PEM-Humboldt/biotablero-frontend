@@ -8,12 +8,12 @@ import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import BackendAPI from "utils/backendAPI";
 import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
+import GeoJsonUtils from "utils/GeoJsonUtils";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -56,26 +56,24 @@ class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { areaType, areaId, history, setHeaderNames } = this.props;
+    const { areaType, areaId, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
-      // TODO: Con el nuevo backend solo es llamar al endpoint que trae todos los detalles del area (que trae el objeto de tipo AreaId)
-      // [Borrar] Con el backend actual:
       Promise.all([
         SearchAPI.requestAreaTypes(),
         SearchAPI.requestAreaIds(areaType!),
-        BackendAPI.requestGeofenceDetails(areaType!, areaId!),
-        BackendAPI.requestAreaLayer(areaType!, areaId!).request,
-      ]).then(([types, ids, ha, layer]) => {
+        SearchAPI.requestAreaInfo(areaId!),
+      ]).then(([types, ids, areaId]) => {
         const typeObj = types.find(({ id }) => id === areaType);
-        const idObj = ids.find(({ id }) => id === areaId);
+        const idObj = ids.find(({ id }) => id === areaId.id);
+
         this.setState({
           areaType: typeObj,
           areaId: idObj,
-          areaHa: Number(ha.total_area),
+          areaHa: Number(areaId.area),
           areaLayer: {
             id: "geofence",
             paneLevel: 1,
-            json: layer,
+            json: GeoJsonUtils.castAreaIdToFeatureCollection(areaId),
             layerStyle: () => ({
               stroke: false,
               fillColor: matchColor("geofence")(),
@@ -85,16 +83,6 @@ class Search extends Component<Props, State> {
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
       });
-    } else if (!isUndefinedOrNull(areaType)) {
-      // TODO: Con el nuevo backend esto se va a borrar
-      SearchAPI.requestAreaTypes().then((areaList) => {
-        this.setState({
-          areaType: areaList.find(({ id }) => id === areaType),
-        });
-      });
-    } else if (isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
-      // TODO: Este caso no existirá una vez se pueda identificar el área solo con el id (sin el areaType)
-      history.replace(history.location.pathname);
     }
   }
 
@@ -204,7 +192,8 @@ class Search extends Component<Props, State> {
    * @param {Array<shapeLayer>} layers
    */
   setShapeLayers = (layers: Array<shapeLayer>) => {
-    this.setState({ shapeLayers: layers });
+    if (!GeoJsonUtils.hasInvalidGeoJson(layers))
+      this.setState({ shapeLayers: layers });
   };
 
   /**
