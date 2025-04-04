@@ -32,7 +32,6 @@ class GeoJsonUtils {
    * @returns True if has at least one invalid layer. False otherwise
    */
   static hasInvalidGeoJson(layers: Array<shapeLayer>): boolean {
-    debugger
     let listHasInvalidObject = layers.some(l => typeof l.json === "object" && Object.keys(l.json).length === 0);
 
     if (listHasInvalidObject)
