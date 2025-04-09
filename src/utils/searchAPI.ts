@@ -1,13 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
 import {
-  AreaId,
   AreaIdBasic,
   AreaType,
   polygonFeature,
+  AreaId,
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
-import RestAPI from "./restAPI";
 
 class SearchAPI {
   /**
@@ -24,16 +23,12 @@ class SearchAPI {
   /**
    * Get complete information about an area
    *
-   * @param {areaType} string TEMPORAL
-   * @param {areaId} string | number area id
+   * @param {string | number} areaId Area identifier
    *
-   * @returns {Promise<AreaId>} object with area information
+   * @returns {Promise<AreaId>} Object with area information
    */
-  static requestAreaInfo(areaType: string, areaId: string | number) {
-    // TODO: Ajustar con los llamados al nuevo backend
-    // (por url) traer toda la lista de areaType
-    // traer el área
-    // Traer la geometria
+  static requestAreaInfo(areaId: string | number): Promise<AreaId> {
+    return SearchAPI.makeGetRequest(`areas/${areaId}`);
   }
 
   /** *************** */
@@ -57,16 +52,7 @@ class SearchAPI {
    * @return {Promise<Array<AreaIdBasic>>} array of area types
    */
   static requestAreaIds(areaType: string): Promise<Array<AreaIdBasic>> {
-    switch (areaType) {
-      case "states":
-        return RestAPI.getAllStates();
-      case "ea":
-        return RestAPI.getAllEAs();
-      case "basinSubzones":
-        return RestAPI.getAllSubzones();
-      default:
-        return Promise.resolve([]);
-    }
+    return SearchAPI.makeGetRequest(`areas?type=${areaType}`);
   }
 
   /** *********************** */
