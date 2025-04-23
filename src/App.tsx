@@ -138,11 +138,6 @@ const App: React.FunctionComponent = () => {
       <main>
         <Switch>
           <Route exact path="/" render={loadHome} />
-
-
-        {/*<Route path="/inicio-nuevo" render={() => <Inicio/>} />*/} 
-
-          
           <Route path="/Consultas" render={loadSearch} />
           <Route path="/Indicadores" render={loadIndicator} />
           <Route path="/GEB/Compensaciones" render={loadCompensator} />
