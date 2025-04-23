@@ -4,7 +4,7 @@ import Tabsmodulos from "./home/TabsComponent";
 import Header from "../app/layout/Header"; 
 import Footer from "../app/layout/Footer"; 
 import "../estilosNuevos.css";
-import "../Headerfooter.css";
+import "../headerFooter.css";
 
 const Inicio = ({ referrer }) => {
     const [activeTab, setActiveTab] = useState(0);
