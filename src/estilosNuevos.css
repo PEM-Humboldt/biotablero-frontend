@@ -371,10 +371,6 @@ img.Modulos {
     }
 }
 @media (min-width: 768px) {
-    #menu strong {
-        color: var(--negro);
-        margin-left: -5px;
-    }
     #CarrourselBio .css-f2xmkk-MuiGrid-root {
         width: 100%;
         margin-left: inherit;
