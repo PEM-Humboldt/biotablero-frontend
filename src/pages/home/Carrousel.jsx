@@ -6,12 +6,12 @@ import Tooltip from "@mui/material/Tooltip";
 import { Grid, Container, Button } from "@mui/material";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import iconoinfo from "../../images/icono-info.svg";
-import iconomas from "../../images/icono-mas.svg";
-import Consultasgeograficas from "../../images/consulta-geografica-logo.svg";
-import Indicadores from "../../images/indicadores-biodiversidad-icono.svg";
-import Portafolio from "../../images/portafolio-icono.svg";
-import Comunitario from "../../images/monitoreo-comunitario-icono.svg";
+import iconoinfo from "images/icono-info.svg";
+import iconomas from "images/icono-mas.svg";
+import Consultasgeograficas from "images/consulta-geografica-logo.svg";
+import Indicadores from "images/indicadores-biodiversidad-icono.svg";
+import Portafolio from "images/portafolio-icono.svg";
+import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import { Link } from "react-router-dom";
 
 function PrevArrow(props) {
@@ -57,7 +57,7 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
         { id: 1, title: "Consultas Geográficas", image: Consultasgeograficas, link: "/Consultas" },
         { id: 2, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores" },
         { id: 3, title: "Portafolios", image: Portafolio, link: "/Portafolios" },
-        { id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo" },
+        /*{ id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo" },*/
     ];
 
     const [animateContainer, setAnimateContainer] = useState(false);

@@ -296,7 +296,7 @@ function Tabsmodulos({ activeTab, setActiveTab }) {
                                 </Tabs>
 
                                 <Box className="Espaciado" sx={{ flex: 1 }}>
-                                    <Typography className="slide-top "
+                                    <Typography 
                                         component="h1"
                                         variant="h4"
                                         sx={{

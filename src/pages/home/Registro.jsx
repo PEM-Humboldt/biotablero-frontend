@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Tabs, Tab, TextField, Button, Box, Paper } from "@mui/material";
-import fotoSesion from "../../images/foto-sesion.jpg";
-import fotoRegistro from "../../images/foto-registro.jpg";
+import fotoSesion from "images/foto-sesion.jpg";
+import fotoRegistro from "images/foto-registro.jpg";
 
 function FormularioRegistro() {
     const [tabIndex, setTabIndex] = useState(0);

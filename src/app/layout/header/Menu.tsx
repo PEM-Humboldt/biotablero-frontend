@@ -4,12 +4,12 @@ import AppContext, { AppContextValue } from "app/AppContext";
 import isFlagEnabled from "utils/isFlagEnabled";
 
 
-import Consultasgeograficas from "../../../images/consulta-geografica-logo.svg";
-import Indicadores from "../../../images/indicadores-biodiversidad-icono.svg";
-import Portafolio from "../../../images/portafolio-icono.svg";
-import Comunitario from "../../../images/monitoreo-comunitario-icono.svg";
-//import Compensacion from "../../../images/compensacion-ambiental-icono.svg";
-import Alerta from "../../../images/alertas-tempranas-icono.svg";
+import Consultasgeograficas from "images/consulta-geografica-logo.svg";
+import Indicadores from "images/indicadores-biodiversidad-icono.svg";
+import Portafolio from "images/portafolio-icono.svg";
+/*import Comunitario from "images/monitoreo-comunitario-icono.svg";*/
+import Compensacion from "images/compensacion-ambiental-icono.svg";
+import Alerta from "images/alertas-tempranas-icono.svg";
 
 
 
@@ -50,9 +50,6 @@ const Menu: React.FunctionComponent = () => {
       <ul id="menu">
         <p><strong>Explora nuestros módulos</strong></p>
 
-        {/*  <Link to="/" onClick={changeMenuState}>
-          <li>Inicio</li>
-        </Link>*/}
         <Link to="/Consultas" onClick={changeMenuState}>
           <li>
             {" "}
@@ -70,7 +67,7 @@ const Menu: React.FunctionComponent = () => {
           <Link to="/GEB/Compensaciones" onClick={changeMenuState}>
             <li>
               {" "}
-              <img src={Consultasgeograficas} alt="Consultas" width="40" height="auto" />Compensaciones
+              <img src={Compensacion} alt="Compensaciones" width="40" height="auto" />Compensaciones
             </li>
           </Link>
         )}
@@ -88,15 +85,15 @@ const Menu: React.FunctionComponent = () => {
             </li>
           </Link>
         )}
-        {showCBMDashboard && (
-          <Link to="/Monitoreo" onClick={changeMenuState}>
+        {/*showCBMDashboard && (
+       <Link to="/Monitoreo" onClick={changeMenuState}>
             <li>
               {" "}
-              <img src={Comunitario} alt="Consultas" width="40" height="auto" />
+              <img src={Comunitario} alt="Monitoreo Comunitario" width="40" height="auto" />
               Monitoreo Comunitario
             </li>
-          </Link>
-        )}
+          </Link> 
+        )*/}
       </ul>
 
     </div>
