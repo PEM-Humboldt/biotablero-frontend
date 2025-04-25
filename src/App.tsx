@@ -6,16 +6,11 @@ import AppContext from "app/AppContext";
 import Layout from "app/Layout";
 import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
-//import Home from "pages/Home";
-
-import Inicio from "pages/Inicio";
-
+import Home from "pages/Home";
 import Search from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
-
-
 import "main.css";
 import "cbm-dashboard/dist/bundle.css";
 import "indicators/dist/bundle.css";
@@ -53,7 +48,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: "default",
       name: "",
-      component: <Inicio referrer={location.pathname} />,
+      component: <Home referrer={location.pathname} />,
     });
 
   const loadSearch = () => {

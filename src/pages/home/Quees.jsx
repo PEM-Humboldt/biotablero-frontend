@@ -1,9 +1,9 @@
 import React from "react";
 import { Container, Grid, Card, CardContent, Typography, Box } from "@mui/material";
-import Quees from "../../images/biotablero-icono.svg";
-import aquinvaDirgido from "../../images/a-quien-va-dirigido.svg";
-import quienLohace from "../../images/quien-lo-hace.svg";
-import nuestroObjetivo from "../../images/cual-es-nuestro-objetivo.svg";
+import Quees from "images/biotablero-icono.svg";
+import aquinvaDirgido from "images/a-quien-va-dirigido.svg";
+import quienLohace from "images/quien-lo-hace.svg";
+import nuestroObjetivo from "images/cual-es-nuestro-objetivo.svg";
 
 const QueEs = () => {
     return (
