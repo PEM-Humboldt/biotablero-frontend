@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,7 +12,9 @@ import Consultasgeograficas from "images/consulta-geografica-logo.svg";
 import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
+import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
 import { Link } from "react-router-dom";
+import AppContext from "app/AppContext";
 
 function PrevArrow(props) {
     const { onClick } = props;
@@ -33,6 +35,7 @@ function NextArrow(props) {
 }
 
 function Carrousel({ setActiveTab, setShowQueEs }) {
+    const { user } = useContext(AppContext);
     const [activeModule, setActiveModule] = useState(null);
     const [showContainer, setShowContainer] = useState(false);
 
@@ -54,11 +57,14 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
     };
 
     const modules = [
-        { id: 1, title: "Consultas Geográficas", image: Consultasgeograficas, link: "/Consultas" },
-        { id: 2, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores" },
-        { id: 3, title: "Portafolios", image: Portafolio, link: "/Portafolios" },
-        /*{ id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo" },*/
+        { id: 1, title: "Consultas Geográficas", image: Consultasgeograficas, link: "/Consultas", auth: false },
+        { id: 2, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores", auth: false },
+        { id: 3, title: "Portafolios", image: Portafolio, link: "/Portafolios", auth: false },
+        //{ id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo", auth: false },
+        { id: 5, title: "Compensación Ambiental", image: compensacionAmbiental, link: "/GEB/Compensaciones", auth: true },
     ];
+
+    const availableModules = user ? modules : modules.filter((module) => !module.auth);
 
     const [animateContainer, setAnimateContainer] = useState(false);
 
@@ -88,7 +94,7 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
                     <p>EXPLORA NUESTROS MÓDULOS</p>
                 </Grid>
                 <Slider {...settings}>
-                    {modules.map((module) => (
+                    {availableModules.map((module) => (
                         <div key={module.id} className="ModuloPrincipal" style={{ height: "auto", padding: 12 }}>
                             <div className={`moduactivo ${activeModule === module.id ? "active" : ""}`}>
                                 <Tooltip title="Haz clic para explorar" arrow>
