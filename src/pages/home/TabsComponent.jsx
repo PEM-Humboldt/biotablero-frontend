@@ -186,7 +186,7 @@ const categories = [
                     </Typography>
                 ),
                 content:
-                    "</p>Esta herramienta surge como una iniciativa para compartir los resultados del monitoreo comunitario de Variables Esenciales de Biodiversidad (VEB) en Montes de María. Consiste en un conjunto de gráficos que resumen la información recolectada en campo por tres asociaciones comunitarias de la zona, a partir de siete metodologías de monitoreo planteadas según sus metas para el territorio. Está basado en la ruta de monitoreo presentada en el libro “Monitoreo comunitario de la biodiversidad en Montes de María”</p>",
+                    "<p>Las compensaciones ambientales son un instrumento para compensar la pérdida de biodiversidad. El módulo de compensaciones es una herramienta que permite a las empresas encontrar opciones de respuestas a cuatro preguntas: <br><br><strong>¿Qué compensar?</strong>, <strong>¿Cuánto compensar?</strong>, <strong>¿Dónde compensar?</strong> y <strong>¿Cómo compensar?</strong>, este puede ser usado para proyectos licenciados, en licenciamiento o en diagnóstico de alternativas.</p>",
             },
             {
                 title: (
@@ -195,7 +195,7 @@ const categories = [
                     </Typography>
                 ),
                 content:
-                    "<p>Dado que uno de los pasos más difíciles de implementar en las estrategias de monitoreo comunitario es el análisis de los datos, se espera que esta herramienta ponga a disposición de las comunidades los resultados de la recolección de información que realizan ellos en campo, por medio de gráficos que sintetizan lo que van obteniendo con el tiempo.</p>",
+                    "<p>En 2018 el Ministerio de Ambiente y Desarrollo Sostenible publica la <strong>segunda versión del manual de compensaciones por pérdida de biodiversidad</strong>  . Esta actualización incluye, entre otras modificaciones, un cálculo nuevo para los factores de compensación y la opción de agrupamiento de compensaciones en proyectos lineales. La aplicación del manual requiere la consulta a múltiples fuentes de información y su análisis en los contextos particulares de cada proyecto.<br><br> El módulo de compensaciones es necesario porque facilita que las empresas <strong>visualicen diferentes alternativas de compensación y creen portafolios con opciones que cumplan con la normatividad vigente</strong>. A su vez, el módulo de compensaciones incorpora análisis regionales y nacionales, lo cual potencia la efectividad de las compensaciones a nivel nacional.</p>",
             },
             {
                 title: (
@@ -204,20 +204,20 @@ const categories = [
                     </Typography>
                 ),
                 content:
-                    "<p>Tres asociaciones comunitarias de agricultores, mujeres y hombres, víctimas del conflicto armado del departamento de Bolívar. La Asociación de Mujeres Unidas de San Isidro (AMUSI) compuesta por más de 30 familias del corregimiento San Isidro en el municipio El Carmen de Bolívar. La Asociación Integral de Campesinos de Cañito (ASICAC), conformada por más de 40 familias de la vereda Cañito, en el municipio de San Juan Nepomuceno. La Asociación de Productores Agropecuarios de la vereda Brasilar (ASOBRASILAR), compuesta por 25 asociados.</p>",
+                    "<p>La información que se despliega en el módulo de compensaciones es generada a partir de <strong>cartografía oficial que es analizada por el programa de Gestión Territorial del Instituto Humboldt aplicando el manual de compensaciones de 2018.</p></strong> ",
             },
             {
                 title: (
                     <Typography variant="body2" component="span">
-                        <b>4</b> ¿Qué encuentras?
+                        <b>3</b> ¿Qué encuentras?
                     </Typography>
                 ),
                 content:
-                    "<p>Este sitio contiene gráficos de resumen de la información recolectada por las asociaciones para las siete metodologías propuestas en el libro Monitoreo comunitario de la biodiversidad en Montes de María” Los datos son subidos a la web por los monitores encargados por medio de KoBoToolbox a partir de los formatos diligenciados en físico. Además, se puede encontrar un indicador del estado del monitoreo según los compromisos anuales, la metodología y la asociación.</p>",
+                    "<p>En el modulo de compensaciones encuentras respuesta a <strong>¿Qué compensar?, ¿Cuánto compensar?, ¿Dónde compensar? y ¿Cómo compensar?</strong> estas respuestas se generan a partir de información previamente analizada para el proyecto que se está consultando. En este módulo la empresa encontrará la descripción de los <strong> ecosistemas equivalentes afectados, el número total de hectáreas a compensar, propuesta de agrupaciones de compensaciones, y estrategias de cómo compensar</strong>        : restauración, recuperación, rehabilitación dentro y fuera de áreas SINAP, preservación y declaratoria de nuevas áreas protegidas. El usuario puede seleccionar entre las opciones ofrecidas hasta alcanzar las hectáreas totales a compensar, con lo cual construirá un portafolio inicial de opciones de compensación. </p>",
             },
         ],
     },
-    /*
+
     {
         title: "Alertas Tempranas",
         subcategories: [
@@ -242,7 +242,7 @@ const categories = [
                     "Este sitio contiene gráficos de resumen de la información recolectada por las asociaciones para las siete metodologías propuestas en el libro Monitoreo comunitario de la biodiversidad en Montes de María” Los datos son subidos a la web por los monitores encargados por medio de KoBoToolbox a partir de los formatos diligenciados en físico. Además, se puede encontrar un indicador del estado del monitoreo según los compromisos anuales, la metodología y la asociación.",
             },
         ],
-    },*/
+    },
 ];
 
 function Tabsmodulos({ activeTab, setActiveTab }) {
@@ -280,23 +280,14 @@ function Tabsmodulos({ activeTab, setActiveTab }) {
                             </Box>
                         ) : (
                             <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
-                                <Tabs
-                                    orientation="vertical"
-                                    variant="scrollable"
-                                    value={subTab}
-                                    onChange={handleSubTabChange}
-                                    sx={{marginTop:  { xs: "77px", sm: "23px"},
-                                        width: { xs: "100%", sm: 290 },
-                                        alignSelf: "center",
-                                    }}
-                                >
+                                <Tabs orientation="vertical" variant="scrollable" value={subTab} onChange={handleSubTabChange} sx={{ marginTop: { xs: "77px", sm: "23px" }, width: { xs: "100%", sm: 290 }, alignSelf: "center" }}>
                                     {categories[activeTab].subcategories.map((sub, index) => (
                                         <Tab key={index} label={sub.title} />
                                     ))}
                                 </Tabs>
 
                                 <Box className="Espaciado" sx={{ flex: 1 }}>
-                                    <Typography 
+                                    <Typography
                                         component="h1"
                                         variant="h4"
                                         sx={{
