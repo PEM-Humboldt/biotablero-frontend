@@ -2844,4 +2844,7 @@ h3.warningNote {
     #Tabs ol {
         font-size: 18px;
     }
+    .indicatorCard h1 {
+        font-weight: 200;
+    }
 }

@@ -9,10 +9,14 @@ const Inicio = ({ referrer }) => {
     const [showQueEs, setShowQueEs] = useState(true); 
 
     return (
+  
+
         <div>
             <Carrousel setActiveTab={setActiveTab} setShowQueEs={setShowQueEs} />
             <Tabsmodulos activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
+     
+
     );
 }
 
