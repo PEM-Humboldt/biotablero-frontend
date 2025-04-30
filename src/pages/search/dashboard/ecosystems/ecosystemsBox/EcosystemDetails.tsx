@@ -17,6 +17,8 @@ import {
 import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
+import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
+import { rasterLayer } from "pages/search/types/layers";
 
 export interface PAData {
   area: number;
@@ -36,6 +38,7 @@ interface State {
     coverage: wrapperMessage;
     pa: wrapperMessage;
   };
+  layers: Array<rasterLayer>;
 }
 
 interface Props {
@@ -43,9 +46,10 @@ interface Props {
 }
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
-
+  EcosystemsController;
   constructor(props: Props) {
     super(props);
+    this.EcosystemsController = new EcosystemsController();
     this.state = {
       coverageData: [],
       paData: [],
@@ -54,23 +58,25 @@ class EcosystemDetails extends React.Component<Props, State> {
         coverage: "loading",
         pa: "loading",
       },
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
     const { SEValues } = this.props;
-    const {
-      areaType: areaId,
-      areaId: geofenceId,
-      switchLayer,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const SEType = SEValues.type;
     const SEArea = SEValues.area;
     const { stopLoad } = this.state;
 
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.EcosystemsController.setArea(areaTypeId, areaIdId);
+
     if (!stopLoad) {
-      BackendAPI.requestSECoverageByGeofence(areaId, geofenceId, SEType)
+      BackendAPI.requestSECoverageByGeofence(areaTypeId, areaIdId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState((prev) => ({
@@ -91,7 +97,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           }));
         });
 
-      BackendAPI.requestSEPAByGeofence(areaId, geofenceId, SEType)
+      BackendAPI.requestSEPAByGeofence(areaTypeId, areaIdId, SEType)
         .then((res) => {
           if (this.mounted) {
             this.setState((prev) => ({
@@ -112,7 +118,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           }));
         });
 
-      switchLayer(`seCoverages-${SEKey(SEType)}`);
+      this.switchLayer(SEType);
     }
   }
 
@@ -126,7 +132,7 @@ class EcosystemDetails extends React.Component<Props, State> {
   render() {
     const { coverageData, paData, stopLoad, messages } = this.state;
     const { SEValues } = this.props;
-    const { handlerClickOnGraph } = this.context as SearchContextValues;
+
     if (!stopLoad) {
       return (
         <div>
@@ -139,11 +145,7 @@ class EcosystemDetails extends React.Component<Props, State> {
               units="ha"
               colors={matchColor("coverage")}
               onClickGraphHandler={(selected) => {
-                handlerClickOnGraph({
-                  chartType: "seCoverage",
-                  chartSection: SEKey(SEValues.type),
-                  selectedKey: selected,
-                });
+                this.clickOnGraph(selected);
               }}
             />
           </h3>
@@ -162,6 +164,53 @@ class EcosystemDetails extends React.Component<Props, State> {
     }
     return null;
   }
+
+  switchLayer = (SEType: string) => {
+    const {
+      setRasterLayers,
+      setLoadingLayer,
+      setShowAreaLayer,
+      setLayerError,
+      setMapTitle,
+      clearLayers,
+    } = this.context as SearchContextValues;
+
+    clearLayers();
+    setLoadingLayer(true);
+    setRasterLayers([]);
+
+    this.EcosystemsController.getCoveragesSELayer(SEType)
+      .then((layers) => {
+        this.setState({ layers: layers });
+
+        if (this.mounted) {
+          setRasterLayers(this.state.layers);
+          setLoadingLayer(false);
+          setShowAreaLayer(true);
+          setMapTitle({
+            name: `Coberturas - ${SEType}`,
+          });
+        }
+      })
+      .catch((e) => {
+        if (e.toString() != "Error: request canceled") {
+          setLayerError(e.toString());
+        }
+      });
+  };
+
+  clickOnGraph = (selectedKey: string) => {
+    console.log(selectedKey);
+    const { layers } = this.state;
+    const { setRasterLayers } = this.context as SearchContextValues;
+
+    setRasterLayers(
+      layers.map((layer) => ({
+        ...layer,
+        selected: layer.id === selectedKey,
+      }))
+    );
+  };
 }
 
 export default EcosystemDetails;
