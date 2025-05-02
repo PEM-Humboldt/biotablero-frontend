@@ -490,6 +490,11 @@ class Ecosystems extends React.Component<Props, State> {
       });
   };
 
+  /**
+   * Set the selected layer to highlight
+   *  @param {string} selectedKey Special Ecosystem type
+   */
+
   clickOnGraph = (selectedKey: string) => {
     const { layers } = this.state;
     const { setRasterLayers } = this.context as SearchContextValues;

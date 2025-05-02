@@ -58,13 +58,13 @@ export class EcosystemsController {
 
   /**
    * Get the raster layers required for a Forest Loss Persistence period
+   *  @param {string} seType Special Ecosystem type
    *
-   * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
+   * @returns { Promise<Array<rasterLayer>> } layers for the Special Ecosystem type
    */
   async getCoveragesSELayer(seType: string): Promise<Array<rasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
-      console.log(69, coverageKeys);
       coverageKeys.forEach((category: string) => {
         const { request, source } = BackendAPI.requestCoveragesSELayer(
           this.areaType ?? "",
