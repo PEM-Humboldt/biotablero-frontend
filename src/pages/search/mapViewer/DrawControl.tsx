@@ -82,7 +82,7 @@ class DrawControl extends React.Component<{}, State> {
     geojson.geometry.bbox = bbox;
 
     const { setAreaType, setAreaLayer } = this.context as SearchContextValues;
-    setAreaType({ id: "custom", name: "Consulta Personalizada" });
+    setAreaType({ id: "custom", label: "Consulta Personalizada" });
     setAreaLayer(geojson);
     // TODO: request backend with geojson for an id and set that id in the url and areaId context
     this.setState({
