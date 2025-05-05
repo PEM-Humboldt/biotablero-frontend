@@ -29,7 +29,7 @@ interface State {
   areaId?: AreaIdBasic;
   polygon?: Polygon;
   areaHa?: number;
-  areaLayer: shapeLayer;
+  areaLayer: shapeLayer | null;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
   bounds: LatLngBoundsExpression;
@@ -39,6 +39,7 @@ interface State {
   };
   loadingLayer: boolean;
   layerError: boolean;
+  showDrawControl: boolean;
 }
 
 class Search extends Component<Props, State> {
@@ -46,13 +47,14 @@ class Search extends Component<Props, State> {
     super(props);
     this.state = {
       searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: [] },
+      areaLayer: null,
       rasterLayers: [],
       shapeLayers: [],
       bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
+      showDrawControl: true,
     };
   }
 
@@ -179,7 +181,7 @@ class Search extends Component<Props, State> {
       });
     } else {
       this.setState({
-        areaLayer: { id: "", paneLevel: 0, json: [] },
+        areaLayer: null,
         bounds: [],
       });
     }
@@ -205,9 +207,7 @@ class Search extends Component<Props, State> {
     showAreaLayer: boolean = false
   ) => {
     this.setState({
-      shapeLayers: showAreaLayer
-        ? [this.state.areaLayer, ...layers]
-        : [...layers],
+      shapeLayers: layers,
     });
   };
 
@@ -225,6 +225,18 @@ class Search extends Component<Props, State> {
   };
 
   /**
+   * Set the state for shown the draw control in MapViewer
+   *
+   * @param {boolean} loading
+   * @param {boolean} error
+   */
+  setShowDrawControl = (show: boolean) => {
+    this.setState({
+      showDrawControl: show,
+    });
+  };
+
+  /**
    * Clear state when back button is clicked
    *
    * @param {GeoJsonObject | null} layerJson
@@ -235,7 +247,7 @@ class Search extends Component<Props, State> {
       areaType: undefined,
       areaHa: undefined,
       searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: [] },
+      areaLayer: null,
       rasterLayers: [],
       shapeLayers: [],
       bounds: [],
@@ -259,9 +271,10 @@ class Search extends Component<Props, State> {
       mapTitle,
       loadingLayer,
       layerError,
+      showDrawControl,
     } = this.state;
 
-    let toShow = <Selector />;
+    let toShow = <Selector setShowDrawControl={this.setShowDrawControl} />;
     if (
       !isUndefinedOrNull(searchType) &&
       !isUndefinedOrNull(areaType) &&
@@ -274,7 +287,7 @@ class Search extends Component<Props, State> {
     return (
       <SearchContext.Provider
         value={{
-          searchType: "definedArea",
+          searchType: searchType ?? "definedArea",
           areaType: areaType,
           areaId: areaId,
           polygon: polygon,
@@ -299,7 +312,7 @@ class Search extends Component<Props, State> {
             layerError={layerError}
             shapeLayers={shapeLayers}
             rasterLayers={rasterLayers}
-            drawPolygonEnabled={false}
+            showDrawControl={showDrawControl && searchType === "drawPolygon"}
             loadPolygonInfo={() => {}}
             mapTitle={mapTitle}
             bounds={bounds}
