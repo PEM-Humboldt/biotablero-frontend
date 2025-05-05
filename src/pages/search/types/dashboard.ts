@@ -6,7 +6,7 @@ export interface geofenceDetails {
 
 export interface AreaType {
   id: string;
-  name: string;
+  label: string;
 }
 
 export interface AreaIdBasic {

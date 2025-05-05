@@ -38,6 +38,7 @@ interface persistenceHFState {
 
 class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   mounted = false;
+  componentName = "hfPersistence";
   PersistenceHFController;
 
   constructor(props: Props) {
@@ -56,8 +57,14 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+    } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -92,29 +99,25 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         });
       });
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
 
     this.PersistenceHFController.getLayer()
       .then((hfPersistence) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
           setShapeLayers(this.state.layers);
-          setMapTitle("HH - Persistencia");
+          setMapTitle({ name: "HH - Persistencia" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
-      .context as SearchContextValues;
     this.PersistenceHFController.cancelActiveRequests();
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
   }
 
   /**

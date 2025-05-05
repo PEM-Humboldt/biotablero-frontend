@@ -51,6 +51,7 @@ interface State {
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
   static contextType = SearchContext;
   mounted = false;
+  componentName = "currentSEPAConn";
   CurrentSEPACController;
 
   constructor(props: Props) {
@@ -79,8 +80,15 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+      setShowAreaLayer,
+    } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -192,31 +200,29 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       })
       .catch(() => {});
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
+    setMapTitle({ name: "" });
 
     this.CurrentSEPACController.getLayer()
       .then((currentSEPAConn) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentSEPAConn] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
-          setShapeLayers(this.state.layers, true);
-          setMapTitle(
-            "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)"
-          );
+          setShowAreaLayer(true);
+          setShapeLayers(this.state.layers);
+          setMapTitle({
+            name: "Conectividad de áreas protegidas y Ecosistemas estratégicos (EE)",
+          });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
-      .context as SearchContextValues;
     this.CurrentSEPACController.cancelActiveRequests();
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
   }
 
   /**
@@ -403,7 +409,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   }
 
   clickOnGraph = async (layerId: string) => {
-    const { setShapeLayers, setLoadingLayer, setMapTitle } = this
+    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
       .context as SearchContextValues;
 
     let layerName: string = "";
@@ -426,7 +432,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     if (!this.state.layers.find((layer) => layer.id === layerId)) {
-      setLoadingLayer(true, false);
+      setLoadingLayer(true);
       try {
         const SELayer = await this.CurrentSEPACController.getSELayer(
           layerId,
@@ -438,20 +444,19 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
             layers: [...prevState.layers, SELayer],
           }),
           () => {
-            setLoadingLayer(false, false);
+            setLoadingLayer(false);
           }
         );
       } catch (error) {
-        setLoadingLayer(false, true);
+        setLayerError(error instanceof Error ? error.message : String(error));
       }
     }
 
     const activeLayers = this.state.layers.filter((layer) =>
       ["currentSEPAConn", layerId].includes(layer.id)
     );
-    setShapeLayers(activeLayers, true);
-
-    setMapTitle(layerDescription);
+    setShapeLayers(activeLayers);
+    setMapTitle({ name: layerDescription });
   };
 }
 

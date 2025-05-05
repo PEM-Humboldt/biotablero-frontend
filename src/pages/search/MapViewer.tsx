@@ -17,25 +17,21 @@ import "leaflet/dist/leaflet.css";
 
 import DrawControl from "pages/search/mapViewer/DrawControl";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
-import SearchContext from "pages/search/SearchContext";
 
-import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 
 interface Props {
   showDrawControl: boolean;
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
-  // TODO: tipar correctamente
-  mapTitle: {
-    name: string;
-    gradientData?: { from: number; to: number; colors: Array<string> };
-  };
-  bounds: LatLngBoundsExpression;
-  polygon: PolygonType | null;
-  loadPolygonInfo: () => void;
+  mapTitle: MapTitle;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
+  bounds: LatLngBoundsExpression;
+  // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
+  polygon: PolygonType | null;
+  loadPolygonInfo: () => void;
   userLogged?: {
     id: number;
     username: string;
@@ -73,7 +69,6 @@ class MapViewer extends React.Component<Props, State> {
     this.mapRef = React.createRef<Map>();
   }
 
-  // TODO: ESto seguramente no está sirviendo para nada
   componentDidUpdate(prevProps: Props) {
     const { bounds } = this.props;
     const map = this.mapRef.current;
@@ -110,13 +105,15 @@ class MapViewer extends React.Component<Props, State> {
       new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
 
+    const titleName = mapTitle?.name || "";
+
     return (
       <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
         {/* TODO agrega componente para el gradiente */}
-        {mapTitle && (
+        {titleName && (
           <>
             <div className="mapsTitle">
-              <div className="title">{mapTitle.name}</div>
+              <div className="title">{titleName}</div>
             </div>
           </>
         )}
@@ -231,8 +228,3 @@ class MapViewer extends React.Component<Props, State> {
 }
 
 export default MapViewer;
-
-MapViewer.contextType = SearchContext;
-function elseif(arg0: boolean) {
-  throw new Error("Function not implemented.");
-}

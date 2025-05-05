@@ -2,24 +2,25 @@ import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import SearchContext, { srchType } from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
-import { AreaIdBasic, AreaType, Polygon } from "pages/search/types/dashboard";
+import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
 import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import BackendAPI from "utils/backendAPI";
-import { rasterLayer, shapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
+import { Names } from "types/layoutTypes";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: string;
   areaId?: number | string;
   // TODO: Tipar correctamente
-  setHeaderNames: Function;
+  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 interface State {
@@ -27,16 +28,13 @@ interface State {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: AreaType;
   areaId?: AreaIdBasic;
-  polygon?: Polygon;
   areaHa?: number;
-  areaLayer: shapeLayer | null;
+  areaLayer: shapeLayer;
   shapeLayers: Array<shapeLayer>;
   rasterLayers: Array<rasterLayer>;
+  showAreaLayer: boolean;
   bounds: LatLngBoundsExpression;
-  mapTitle: {
-    name: string;
-    gradientData?: { from: number; to: number; colors: Array<string> };
-  };
+  mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
   showDrawControl: boolean;
@@ -47,9 +45,10 @@ class Search extends Component<Props, State> {
     super(props);
     this.state = {
       searchType: "definedArea",
-      areaLayer: null,
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
       rasterLayers: [],
       shapeLayers: [],
+      showAreaLayer: false,
       bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
@@ -59,7 +58,7 @@ class Search extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const { areaType, areaId, history } = this.props;
+    const { areaType, areaId, history, setHeaderNames } = this.props;
     if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
       // TODO: Con el nuevo backend solo es llamar al endpoint que trae todos los detalles del area (que trae el objeto de tipo AreaId)
       // [Borrar] Con el backend actual:
@@ -85,8 +84,8 @@ class Search extends Component<Props, State> {
               fillOpacity: 0.6,
             }),
           },
-          polygon: layer,
         });
+        setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar
@@ -117,19 +116,24 @@ class Search extends Component<Props, State> {
    */
   setAreaType = (areaType?: AreaType) => {
     this.setState({ areaType });
+
+    const { history } = this.props;
+    history.push(`?area_type=${areaType!.id}`);
   };
 
   /**
-   * Set id and name for the query area
+   * Set id and name for the query area and set the header names
    *
    * @param {AreaIdBasic} areaId
    */
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
-  };
 
-  setPolygon = (polygon: Polygon) => {
-    this.setState({ polygon });
+    const { setHeaderNames, history } = this.props;
+    const { areaType } = this.state;
+
+    setHeaderNames({ parent: this.state.areaType!.label, child: areaId!.name });
+    history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
   };
 
   /**
@@ -144,24 +148,20 @@ class Search extends Component<Props, State> {
   /**
    * Set values for map title component
    *
-   * @param {string} name
-   * @param {string} gradientData
+   * @param {MapTitle} mapTitle
    */
-  setMapTitle = (
-    name: string,
-    gradientData?: { from: number; to: number; colors: Array<string> }
-  ) => {
+  setMapTitle = (mapTitle: MapTitle) => {
     this.setState({
-      mapTitle: { name: name, gradientData: gradientData },
+      mapTitle: mapTitle,
     });
   };
 
   /**
    * Set the value for the geofence layer object
    *
-   * @param {GeoJsonObject | null} layerJson
+   * @param {GeoJsonObject | undefined} layerJson
    */
-  setAreaLayer = (layerJson: GeoJsonObject | null) => {
+  setAreaLayer = (layerJson?: GeoJsonObject) => {
     if (layerJson) {
       const bounds = L.geoJSON(layerJson).getBounds();
       const areaLayer = {
@@ -181,7 +181,11 @@ class Search extends Component<Props, State> {
       });
     } else {
       this.setState({
-        areaLayer: null,
+        areaLayer: {
+          id: "",
+          paneLevel: 0,
+          json: { type: "FeatureCollection" },
+        },
         bounds: [],
       });
     }
@@ -200,32 +204,44 @@ class Search extends Component<Props, State> {
    * Set values for GeoJson layers array and determine if shows the geofence layer
    *
    * @param {Array<shapeLayer>} layers
-   * @param {boolean} showAreaLayer
    */
-  setShapeLayers = (
-    layers: Array<shapeLayer>,
-    showAreaLayer: boolean = false
-  ) => {
-    this.setState({
-      shapeLayers: layers,
-    });
+  setShapeLayers = (layers: Array<shapeLayer>) => {
+    this.setState({ shapeLayers: layers });
   };
 
   /**
-   * Set the state for loading layer an layer error
+   * Set true the value for show area layer
+   *
+   * @param {boolean} active
+   */
+  setShowAreaLayer = (active: boolean) => {
+    this.setState({ showAreaLayer: active });
+  };
+
+  /**
+   * Set the state for loading layer
    *
    * @param {boolean} loading
-   * @param {boolean} error
    */
-  setLoadingLayer = (loading: boolean, error: boolean) => {
+  setLoadingLayer = (loading: boolean) => {
     this.setState({
       loadingLayer: loading,
-      layerError: error,
     });
   };
 
   /**
-   * Set the state for shown the draw control in MapViewer
+   * Set the state for layer error
+   *
+   * @param {boolean} error
+   */
+  setLayerError = (error?: string) => {
+    this.setState({
+      layerError: !!error,
+    });
+  };
+
+  /**
+   * Set the state to show the draw control in MapViewer
    *
    * @param {boolean} loading
    * @param {boolean} error
@@ -235,11 +251,20 @@ class Search extends Component<Props, State> {
       showDrawControl: show,
     });
   };
+  /**
+   * Prepare the layers vars in the context
+   */
+  clearLayers = () => {
+    this.setShapeLayers([]);
+    this.setRasterLayers([]);
+    this.setLoadingLayer(false);
+    this.setLayerError();
+    this.setMapTitle({ name: "" });
+    this.setShowAreaLayer(false);
+  };
 
   /**
    * Clear state when back button is clicked
-   *
-   * @param {GeoJsonObject | null} layerJson
    */
   handlerBackButton = () => {
     this.setState({
@@ -247,7 +272,7 @@ class Search extends Component<Props, State> {
       areaType: undefined,
       areaHa: undefined,
       searchType: "definedArea",
-      areaLayer: null,
+      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
       rasterLayers: [],
       shapeLayers: [],
       bounds: [],
@@ -255,6 +280,10 @@ class Search extends Component<Props, State> {
       loadingLayer: false,
       layerError: false,
     });
+
+    const { setHeaderNames, history } = this.props;
+    setHeaderNames({ parent: "", child: "" });
+    history.replace(history.location.pathname);
   };
 
   render() {
@@ -262,7 +291,6 @@ class Search extends Component<Props, State> {
       searchType,
       areaType,
       areaId,
-      polygon,
       areaHa,
       areaLayer,
       bounds,
@@ -290,19 +318,19 @@ class Search extends Component<Props, State> {
           searchType: searchType ?? "definedArea",
           areaType: areaType,
           areaId: areaId,
-          polygon: polygon,
           areaHa: areaHa,
           setSearchType: this.setSearchType,
           setAreaType: this.setAreaType,
           setAreaId: this.setAreaId,
-          setPolygon: this.setPolygon,
           setAreaHa: this.setAreaHa,
           setAreaLayer: this.setAreaLayer,
-          //
           setRasterLayers: this.setRasterLayers,
           setShapeLayers: this.setShapeLayers,
+          setShowAreaLayer: this.setShowAreaLayer,
           setLoadingLayer: this.setLoadingLayer,
+          setLayerError: this.setLayerError,
           setMapTitle: this.setMapTitle,
+          clearLayers: this.clearLayers,
         }}
       >
         <div className="appSearcher wrappergrid">
@@ -310,7 +338,11 @@ class Search extends Component<Props, State> {
             geoServerUrl={GeoServerAPI.getRequestURL()}
             loadingLayer={loadingLayer}
             layerError={layerError}
-            shapeLayers={shapeLayers}
+            shapeLayers={
+              this.state.showAreaLayer
+                ? [areaLayer, ...shapeLayers]
+                : shapeLayers
+            }
             rasterLayers={rasterLayers}
             showDrawControl={showDrawControl && searchType === "drawPolygon"}
             loadPolygonInfo={() => {}}

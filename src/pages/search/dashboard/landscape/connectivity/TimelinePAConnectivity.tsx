@@ -42,6 +42,7 @@ class TimelinePAConnectivity extends React.Component<
 > {
   static contextType = SearchContext;
   mounted = false;
+  componentName = "timelinePAConn";
   TimelinePACController;
 
   constructor(props: Props) {
@@ -60,8 +61,15 @@ class TimelinePAConnectivity extends React.Component<
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, setShapeLayers, setLoadingLayer, setMapTitle } =
-      this.context as SearchContextValues;
+    const {
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+      setShowAreaLayer,
+    } = this.context as SearchContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -103,29 +111,27 @@ class TimelinePAConnectivity extends React.Component<
       })
       .catch(() => {});
 
-    setLoadingLayer(true, false);
+    setLoadingLayer(true);
+    setMapTitle({ name: "" });
 
     this.TimelinePACController.getLayer()
       .then((timelinePAConn) => {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [timelinePAConn] }),
-            () => setLoadingLayer(false, false)
+            () => setLoadingLayer(false)
           );
-          setShapeLayers(this.state.layers, true);
-          setMapTitle("Conectividad de áreas protegidas");
+          setShowAreaLayer(true);
+          setShapeLayers(this.state.layers);
+          setMapTitle({ name: "Conectividad de áreas protegidas" });
         }
       })
-      .catch(() => setLoadingLayer(false, true));
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    const { setShapeLayers, setLoadingLayer } = this
-      .context as SearchContextValues;
     this.TimelinePACController.cancelActiveRequests();
-    setShapeLayers([]);
-    setLoadingLayer(false, false);
   }
 
   /**

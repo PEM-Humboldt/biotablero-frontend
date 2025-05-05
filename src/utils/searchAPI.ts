@@ -46,16 +46,7 @@ class SearchAPI {
    * @return {Promise<Array<AreaType>>} array of area types
    */
   static requestAreaTypes(): Promise<Array<AreaType>> {
-    // TODO: Esto es un mockup
-    const areaTypes: Array<AreaType> = [
-      { id: "states", name: "Departamentos" },
-      { id: "ea", name: "Jurisdicciones ambientales" },
-      { id: "basinSubzones", name: "Subzonas hidrográficas" },
-      { id: "se", name: "Ecosistemas Estratégicos" },
-      { id: "custom", name: "Consulta Personalizada" },
-    ];
-
-    return Promise.resolve(areaTypes);
+    return SearchAPI.makeGetRequest("areas/types");
   }
 
   /**

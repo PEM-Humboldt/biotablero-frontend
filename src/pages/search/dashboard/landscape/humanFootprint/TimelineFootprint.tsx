@@ -16,6 +16,10 @@ import { textsObject } from "pages/search/types/texts";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
+import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
+import { shapeLayer } from "pages/search/types/layers";
+
+type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
 
 const changeValues: Array<CartesianMarkerProps> = [
   {
@@ -74,6 +78,7 @@ interface State {
   texts: {
     hfTimeline: textsObject;
   };
+  layers: Array<shapeLayer>;
 }
 
 interface hfTimelineExt extends hfTimeline {
@@ -86,9 +91,11 @@ interface seDetailsExt extends seDetails {
 
 class TimelineFootprint extends React.Component<Props, State> {
   mounted = false;
+  TimelineHFController;
 
   constructor(props: Props) {
     super(props);
+    this.TimelineHFController = new TimelineFootprintController();
     this.state = {
       showInfoGraph: true,
       hfTimeline: [],
@@ -97,6 +104,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       texts: {
         hfTimeline: { info: "", cons: "", meto: "", quote: "" },
       },
+      layers: [],
     };
   }
 
@@ -104,21 +112,28 @@ class TimelineFootprint extends React.Component<Props, State> {
     this.mounted = true;
 
     const {
-      areaType: areaId,
-      areaId: geofenceId,
-      switchLayer,
+      areaType,
+      areaId,
+      setShapeLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
     } = this.context as SearchContextValues;
-    switchLayer("hfTimeline");
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.TimelineHFController.setArea(areaTypeId, areaIdId.toString());
 
     Promise.all([
-      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Páramo"),
-      BackendAPI.requestSEHFTimeline(areaId, geofenceId, "Humedal"),
+      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Páramo"),
+      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Humedal"),
       BackendAPI.requestSEHFTimeline(
-        areaId,
-        geofenceId,
+        areaTypeId,
+        areaIdId,
         "Bosque Seco Tropical"
       ),
-      BackendAPI.requestTotalHFTimeline(areaId, geofenceId),
+      BackendAPI.requestTotalHFTimeline(areaTypeId, areaIdId),
     ])
       .then(([paramo, wetland, dryForest, aTotal]) => {
         if (this.mounted) {
@@ -143,10 +158,28 @@ class TimelineFootprint extends React.Component<Props, State> {
           texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
         });
       });
+
+    setLoadingLayer(true);
+
+    this.TimelineHFController.getLayer()
+      .then((hfPersistence) => {
+        if (this.mounted) {
+          this.setState(
+            () => ({ layers: [hfPersistence] }),
+            () => setLoadingLayer(false)
+          );
+          setShapeLayers(this.state.layers);
+          setMapTitle({
+            name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
+          });
+        }
+      })
+      .catch((error) => setLayerError(error));
   }
 
   componentWillUnmount() {
     this.mounted = false;
+    this.TimelineHFController.cancelActiveRequests();
   }
 
   /**
@@ -164,12 +197,15 @@ class TimelineFootprint extends React.Component<Props, State> {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType: string) => {
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     if (seType !== "aTotal") {
       BackendAPI.requestSEDetailInArea(
-        areaId,
-        geofenceId,
+        areaTypeId,
+        areaIdId,
         this.getLabel(seType)
       ).then((value) => {
         const res = { ...value, type: seType };
@@ -215,13 +251,13 @@ class TimelineFootprint extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      areaType: areaId,
-      areaId: geofenceId,
-      handlerClickOnGraph,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
     const { showInfoGraph, hfTimeline, selectedEcosystem, message, texts } =
       this.state;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -247,12 +283,9 @@ class TimelineFootprint extends React.Component<Props, State> {
             data={hfTimeline}
             message={message}
             markers={changeValues}
-            onClickGraphHandler={(selection: string) => {
-              this.setSelectedEcosystem(selection);
-              handlerClickOnGraph({
-                chartType: "hfTimeline",
-                selectedKey: selection,
-              });
+            onClickGraphHandler={(selectedKey) => {
+              this.setSelectedEcosystem(selectedKey);
+              this.clickOnGraph(selectedKey);
             }}
           />
           {selectedEcosystem && (
@@ -270,7 +303,7 @@ class TimelineFootprint extends React.Component<Props, State> {
             metoText={texts.hfTimeline.meto}
             quoteText={texts.hfTimeline.quote}
             downloadData={processDataCsv(hfTimeline)}
-            downloadName={`hf_timeline_${areaId}_${geofenceId}.csv`}
+            downloadName={`hf_timeline_${areaTypeId}_${areaIdId}.csv`}
             isInfoOpen={showInfoGraph}
             toggleInfo={this.toggleInfoGraph}
           />
@@ -278,6 +311,66 @@ class TimelineFootprint extends React.Component<Props, State> {
       </div>
     );
   }
+
+  clickOnGraph = async (selectedKey: string) => {
+    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
+      .context as SearchContextValues;
+
+    let layerDescription = "";
+
+    const seTitle: SEKeys = {
+      paramo: "Páramos",
+      dryForest: "Bosque seco tropical",
+      wetland: "Humedales",
+      aTotal: "Total",
+    };
+
+    if (selectedKey === "aTotal") {
+      setShapeLayers(
+        this.state.layers.filter((layer) =>
+          ["hfPersistence"].includes(layer.id)
+        )
+      );
+      setMapTitle({
+        name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
+      });
+    } else {
+      layerDescription = `HH - Persistencia - ${
+        seTitle[selectedKey as keyof SEKeys]
+      }`;
+
+      if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
+        setLoadingLayer(true);
+        try {
+          const SELayer = await this.TimelineHFController.getSELayer(
+            selectedKey as keyof Omit<SEKeys, "aTotal">
+          );
+
+          this.setState(
+            (prevState) => ({
+              layers: [...prevState.layers, SELayer],
+            }),
+            () => {
+              setLoadingLayer(false);
+              const activeLayers = this.state.layers.filter((layer) =>
+                ["hfPersistence", selectedKey].includes(layer.id)
+              );
+              setShapeLayers(activeLayers);
+            }
+          );
+        } catch (error) {
+          setLayerError(error instanceof Error ? error.message : String(error));
+        }
+      } else {
+        const activeLayers = this.state.layers.filter((layer) =>
+          ["hfPersistence", selectedKey].includes(layer.id)
+        );
+        setShapeLayers(activeLayers);
+      }
+
+      setMapTitle({ name: layerDescription });
+    }
+  };
 }
 
 export default TimelineFootprint;

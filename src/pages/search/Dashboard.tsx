@@ -46,8 +46,7 @@ class Dashboard extends React.Component<Props, State> {
   }
 
   render() {
-    const { searchType, areaType, areaId, polygon, areaHa } = this
-      .context as SearchContextValues;
+    const { searchType, areaHa } = this.context as SearchContextValues;
 
     const { handlerBackButton } = this.props;
 

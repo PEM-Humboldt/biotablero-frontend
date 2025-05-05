@@ -61,40 +61,48 @@ export class ForestIntegrityController {
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
   getPALayer = async (selectedKey: string): Promise<shapeLayer> => {
-    const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
-    const hfPers = selectedKey.substring(
-      selectedKey.indexOf("-") + 1,
-      selectedKey.length
-    );
+    try {
+      const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
+      const hfPers = selectedKey.substring(
+        selectedKey.indexOf("-") + 1,
+        selectedKey.length
+      );
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFPALayer(
-      this.areaType,
-      this.areaId,
-      sciCat,
-      hfPers
-    );
+      const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFPALayer(
+        this.areaType,
+        this.areaId,
+        sciCat,
+        hfPers
+      );
 
-    const { request, source } = reqPromise;
-    this.activeRequests.set(selectedKey, source);
-    const res = await request;
-    this.activeRequests.delete(selectedKey);
+      const { request, source } = reqPromise;
+      this.activeRequests.set(selectedKey, source);
 
-    const layerStyle = () => ({
-      stroke: true,
-      color: matchColor("border")(),
-      fillOpacity: 0,
-      weight: 1,
-      opacity: 1,
-    });
+      const res = await request;
+      this.activeRequests.delete(selectedKey);
 
-    const layerData = {
-      id: selectedKey,
-      paneLevel: 3,
-      json: res,
-      layerStyle: layerStyle,
-    };
+      const layerStyle = () => ({
+        stroke: true,
+        color: matchColor("border")(),
+        fillOpacity: 0,
+        weight: 1,
+        opacity: 1,
+      });
 
-    return layerData;
+      const layerData: shapeLayer = {
+        id: selectedKey,
+        paneLevel: 3,
+        json: res,
+        layerStyle: layerStyle,
+      };
+
+      return layerData;
+    } catch (error) {
+      this.activeRequests.delete(selectedKey);
+      throw new Error(
+        error instanceof Error ? error.message : "Error al obtener la capa"
+      );
+    }
   };
 
   /**

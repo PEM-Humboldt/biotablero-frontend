@@ -5,7 +5,6 @@ export interface shapeLayer {
   id: string;
   paneLevel: number;
   json: geojson.GeoJsonObject;
-  active?: boolean;
   onEachFeature?: GeoJSONOptions["onEachFeature"];
   layerStyle?: StyleFunction;
 }
@@ -24,4 +23,20 @@ export interface connectivityFeaturePropierties {
   id: string;
   name: string;
   value: number;
+}
+
+export interface compensationFactorPropierties {
+  gid: number;
+  name_biome: string;
+  id_biome: string;
+  compensation_factor: number;
+}
+
+export interface MapTitle {
+  name: string;
+  gradientData?: {
+    from: number;
+    to: number;
+    colors: Array<string>;
+  };
 }
