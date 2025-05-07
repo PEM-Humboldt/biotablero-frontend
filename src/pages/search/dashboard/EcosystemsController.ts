@@ -4,6 +4,10 @@ import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";
 import base64 from "pages/search/utils/base64ArrayBuffer";
 
+/**
+ * Controller for Ecosystems Component
+ * @class
+ */
 export class EcosystemsController {
   areaType: string = "";
   areaId: string = "";
@@ -11,6 +15,11 @@ export class EcosystemsController {
 
   constructor() {}
 
+  /**
+   * Set area values for the controller
+   *  @param {string} areaType Value for the type of area selected
+   *  @param {string} areaId Value for the id of area selected
+   */
   setArea(areaType: string, areaId: string) {
     this.areaType = areaType;
     this.areaId = areaId;
