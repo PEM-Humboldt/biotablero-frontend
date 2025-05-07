@@ -1,5 +1,4 @@
-export type coverageBasicType = "N" | "S" | "T";
-export type coverageType = coverageBasicType | "X";
+export type coverageType = "N" | "S" | "T" | "X";
 
 export type coverageLabels =
   | ""

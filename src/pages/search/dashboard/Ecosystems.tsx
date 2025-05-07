@@ -111,6 +111,10 @@ class Ecosystems extends React.Component<Props, State> {
 
     BackendAPI.requestCoverage(areaTypeId, areaIdId)
       .then((res) => {
+        res.map(({ type, ...rest }) => ({
+          ...rest,
+          key: type,
+        }));
         if (this.mounted) {
           this.setState((prev) => ({
             coverage: transformCoverageValues(res),
@@ -460,15 +464,8 @@ class Ecosystems extends React.Component<Props, State> {
   }
 
   switchLayer = () => {
-    const {
-      setRasterLayers,
-      setLoadingLayer,
-      setLayerError,
-      setMapTitle,
-      clearLayers,
-    } = this.context as SearchContextValues;
-
-    clearLayers();
+    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
+      this.context as SearchContextValues;
 
     setLoadingLayer(true);
     this.EcosystemsController.getCoveragesLayers()

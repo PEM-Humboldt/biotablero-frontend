@@ -172,10 +172,8 @@ class EcosystemDetails extends React.Component<Props, State> {
       setShowAreaLayer,
       setLayerError,
       setMapTitle,
-      clearLayers,
     } = this.context as SearchContextValues;
 
-    clearLayers();
     setLoadingLayer(true);
     setRasterLayers([]);
 

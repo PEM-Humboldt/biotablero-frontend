@@ -18,7 +18,12 @@ import {
   textResponse,
   textsObject,
 } from "pages/search/types/texts";
-import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
+import {
+  Coverage,
+  SEPAData,
+  coverageType,
+  seDetails,
+} from "pages/search/types/ecosystems";
 import {
   concentration,
   gaps,
@@ -318,7 +323,13 @@ class BackendAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<Array<Coverage>> {
+  ): Promise<
+    Array<
+      Omit<Coverage, "key"> & {
+        type: coverageType;
+      }
+    >
+  > {
     return BackendAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
@@ -377,7 +388,13 @@ class BackendAPI {
   static requestCoverage(
     areaType: string,
     areaId: string | number
-  ): Promise<Array<Coverage>> {
+  ): Promise<
+    Array<
+      Omit<Coverage, "key"> & {
+        type: coverageType;
+      }
+    >
+  > {
     return BackendAPI.makeGetRequest(
       `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );

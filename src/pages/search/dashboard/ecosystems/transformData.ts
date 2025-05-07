@@ -3,6 +3,7 @@ import {
   SEPAData,
   coverageLabels,
   SEPADataExt,
+  coverageType,
 } from "pages/search/types/ecosystems";
 
 export const transformPAValues = (
@@ -39,7 +40,13 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (rawData: Array<Coverage>) => {
+export const transformCoverageValues = (
+  rawData: Array<
+    Omit<Coverage, "key"> & {
+      type: coverageType;
+    }
+  >
+) => {
   if (!rawData) return [];
   return rawData.map((item) => {
     let label: coverageLabels = "";
