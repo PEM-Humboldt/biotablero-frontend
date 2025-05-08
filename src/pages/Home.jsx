@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import Carrousel from "./home/Carrousel";
-import Tabsmodulos from "./home/TabsComponent";
-import "../estilosNuevos.css";
-import "../headerFooter.css";
+import Carrousel from "pages/home/Carrousel";
+import Tabsmodulos from "pages/home/tabsComponent";
+
+import "newStyles.css";
+import "headerFooter.css";
+
 
 const Inicio = ({ referrer }) => {
     const [activeTab, setActiveTab] = useState(0);
