@@ -30,10 +30,9 @@ const logoSet: LogosConfig = {
 interface FooterProps {
   logosId: keyof LogosConfig | null;
 }
-
 const Footer: React.FC<FooterProps> = ({ logosId }) => (
   <footer className="footerflex">
-    {/* Div 1: Nombre del Instituto (Mostrar siempre) */}
+
     <div className="institutoDiv">
       { (logosId === "default" || logosId === "monitoreo") && (
         <a href="http://www.humboldt.org.co/es/">
@@ -45,8 +44,6 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
         <b>Alexander von Humboldt</b>
       </div>
     </div>
-
-    {/* Div 2: Colaboradores, Cítese y Contacto */}
     <div className="colaboradoresDiv">
       <div className="colaboradores">
         {logosId && (logosId === "default" || logosId === "monitoreo") && (

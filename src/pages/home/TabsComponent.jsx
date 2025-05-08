@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Typography, Container } from "@mui/material";
-import QueEs from "./Quees";
-import Cenefa from "./Cenefa";
+
+import QueEs from "pages/home/Quees";
+import Cenefa from "pages/home/Cenefa";
 
 const categories = [
     {
