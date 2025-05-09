@@ -1,4 +1,5 @@
 export type coverageType = "N" | "S" | "T" | "X";
+
 export type coverageLabels =
   | ""
   | "Natural"
@@ -9,6 +10,7 @@ export interface Coverage {
   area: number;
   type: coverageType;
   percentage: number;
+  label: string;
 }
 export interface SEPAData {
   area: number;
@@ -22,3 +24,5 @@ export interface seDetails {
   national_percentage: number;
   total_area: string;
 }
+
+export const coverageKeys = ["N", "S", "T"] as const;

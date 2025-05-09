@@ -146,49 +146,6 @@ class RestAPI {
   }
 
   /**
-   * Get the coverage layer divided by categories in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} coverageType coverage category
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestCoveragesLayer(areaType, areaId, coverageType) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
-      source,
-    };
-  }
-
-  /**
-   * Get the coverage layer divided by categories in a given strategic ecosystem and area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} coverageType coverage category
-   * @param {String} seType strategic ecosystem type
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-   static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
-      source,
-    };
-  }
-
-  /**
    * Get the layer associated to a category and period of forest loss and persistence
    * in a given area
    *

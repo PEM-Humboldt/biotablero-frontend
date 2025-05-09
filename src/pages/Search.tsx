@@ -84,6 +84,7 @@ class Search extends Component<Props, State> {
           },
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
+        this.setAreaLayer(layer);
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar
