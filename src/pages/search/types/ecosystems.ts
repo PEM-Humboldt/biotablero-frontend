@@ -8,7 +8,7 @@ export type coverageLabels =
   | "Sin clasificar / Nubes";
 export interface Coverage {
   area: number;
-  key: coverageType;
+  type: coverageType;
   percentage: number;
   label: string;
 }

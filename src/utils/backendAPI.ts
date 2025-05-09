@@ -323,13 +323,7 @@ class BackendAPI {
     areaType: string,
     areaId: string | number,
     seType: string
-  ): Promise<
-    Array<
-      Omit<Coverage, "key"> & {
-        type: coverageType;
-      }
-    >
-  > {
+  ): Promise<Array<Coverage>> {
     return BackendAPI.makeGetRequest(
       `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
     );
@@ -388,13 +382,7 @@ class BackendAPI {
   static requestCoverage(
     areaType: string,
     areaId: string | number
-  ): Promise<
-    Array<
-      Omit<Coverage, "key"> & {
-        type: coverageType;
-      }
-    >
-  > {
+  ): Promise<Array<Coverage>> {
     return BackendAPI.makeGetRequest(
       `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );

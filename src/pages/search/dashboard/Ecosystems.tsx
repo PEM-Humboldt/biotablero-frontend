@@ -17,7 +17,11 @@ import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
-import { Coverage, SEPAData } from "pages/search/types/ecosystems";
+import {
+  Coverage,
+  coverageType,
+  SEPAData,
+} from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { rasterLayer } from "pages/search/types/layers";
 
@@ -41,7 +45,11 @@ interface State {
     delete: (arg0: string) => void;
     add: (arg0: string) => void;
   };
-  coverage: Array<Coverage>;
+  coverage: Array<
+    Omit<Coverage, "type"> & {
+      key: coverageType;
+    }
+  >;
   PAAreas: Array<{
     area: number;
     label: string;
@@ -111,10 +119,10 @@ class Ecosystems extends React.Component<Props, State> {
 
     BackendAPI.requestCoverage(areaTypeId, areaIdId)
       .then((res) => {
-        res.map(({ type, ...rest }) => ({
+        /*res.map(({ type, ...rest }) => ({
           ...rest,
           key: type,
-        }));
+        }));*/
         if (this.mounted) {
           this.setState((prev) => ({
             coverage: transformCoverageValues(res),

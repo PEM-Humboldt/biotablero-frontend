@@ -40,13 +40,7 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (
-  rawData: Array<
-    Omit<Coverage, "key"> & {
-      type: coverageType;
-    }
-  >
-) => {
+export const transformCoverageValues = (rawData: Array<Coverage>) => {
   if (!rawData) return [];
   return rawData.map((item) => {
     let label: coverageLabels = "";
