@@ -7,7 +7,6 @@ import {
 } from "pages/search/dashboard/ecosystems/transformData";
 import matchColor from "utils/matchColor";
 
-import { SEKey } from "pages/search/utils/appropriate_keys";
 import {
   coverageType,
   Coverage,
@@ -44,6 +43,7 @@ interface State {
 interface Props {
   SEValues: SEPADataExt;
 }
+
 class EcosystemDetails extends React.Component<Props, State> {
   mounted = false;
   EcosystemsController;
@@ -165,6 +165,10 @@ class EcosystemDetails extends React.Component<Props, State> {
     return null;
   }
 
+  /**
+   * Load layers according to the selected special ecosystem
+   *  @param {string} SEType Special Ecosystem type
+   */
   switchLayer = (SEType: string) => {
     const {
       setRasterLayers,

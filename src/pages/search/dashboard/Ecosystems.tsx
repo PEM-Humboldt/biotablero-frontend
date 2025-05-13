@@ -75,6 +75,10 @@ interface State {
   layers: Array<rasterLayer>;
 }
 
+/**
+ * Ecosystems Component
+ * @class
+ */
 class Ecosystems extends React.Component<Props, State> {
   mounted = false;
   EcosystemsController;
