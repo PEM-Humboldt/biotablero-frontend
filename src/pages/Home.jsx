@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Carrousel from "pages/home/Carrousel";
-import Tabsmodulos from "pages/home/TabSComponent";
+import Tabsmodulos from "pages/home/TabsComponent";
 import "newStyles.css";
 import "headerFooter.css";
 
