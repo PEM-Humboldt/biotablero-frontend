@@ -106,7 +106,7 @@ const DrawPolygon = () => {
     setIsEditing(false);
     setIsRemoving(false);
     drawControl!._toolbars.edit._actionButtons[1].button.click();
-  }
+  };
 
   /**
    * Handles send button click. Set the drawn polygon as the area layer in context to be consulted.
