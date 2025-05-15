@@ -18,12 +18,7 @@ import {
   textResponse,
   textsObject,
 } from "pages/search/types/texts";
-import {
-  Coverage,
-  SEPAData,
-  coverageType,
-  seDetails,
-} from "pages/search/types/ecosystems";
+import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
 import {
   concentration,
   gaps,

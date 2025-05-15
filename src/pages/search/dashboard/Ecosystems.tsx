@@ -17,11 +17,7 @@ import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
-import {
-  Coverage,
-  coverageType,
-  SEPAData,
-} from "pages/search/types/ecosystems";
+import { CoverageExt, SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { rasterLayer } from "pages/search/types/layers";
 
@@ -36,8 +32,14 @@ import { rasterLayer } from "pages/search/types/layers";
 const getPercentage = (part: number, total: number): number =>
   parseFloat(((part * 100) / total).toFixed(2));
 
+/**
+ * Ecosystems components props.
+ */
 interface Props {}
 
+/**
+ * Internal state of the Ecosystems component.
+ */
 interface State {
   showInfoMain: boolean;
   infoShown: {
@@ -45,11 +47,7 @@ interface State {
     delete: (arg0: string) => void;
     add: (arg0: string) => void;
   };
-  coverage: Array<
-    Omit<Coverage, "type"> & {
-      key: coverageType;
-    }
-  >;
+  coverage: Array<CoverageExt>;
   PAAreas: Array<{
     area: number;
     label: string;
@@ -123,10 +121,6 @@ class Ecosystems extends React.Component<Props, State> {
 
     BackendAPI.requestCoverage(areaTypeId, areaIdId)
       .then((res) => {
-        /*res.map(({ type, ...rest }) => ({
-          ...rest,
-          key: type,
-        }));*/
         if (this.mounted) {
           this.setState((prev) => ({
             coverage: transformCoverageValues(res),
@@ -240,12 +234,20 @@ class Ecosystems extends React.Component<Props, State> {
     this.EcosystemsController.cancelActiveRequests();
   }
 
+  /**
+   * Toggles the visibility state of the main tooltip.
+   */
   toggleInfoGeneral = () => {
     this.setState((prevState) => ({
       showInfoMain: !prevState.showInfoMain,
     }));
   };
 
+  /**
+   * Toggles the display of a specific help section.
+   *
+   * @param {string} value - Section id
+   */
   toggleInfo = (value: string) => {
     this.setState((prev) => {
       const newState = prev;
@@ -474,6 +476,10 @@ class Ecosystems extends React.Component<Props, State> {
       </div>
     );
   }
+
+  /**
+   * Requests and updates raster layers corresponding to coverages.
+   */
 
   switchLayer = () => {
     const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =

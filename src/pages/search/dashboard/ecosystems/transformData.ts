@@ -3,7 +3,6 @@ import {
   SEPAData,
   coverageLabels,
   SEPADataExt,
-  coverageType,
 } from "pages/search/types/ecosystems";
 
 export const transformPAValues = (

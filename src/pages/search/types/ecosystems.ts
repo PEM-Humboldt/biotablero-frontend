@@ -10,7 +10,10 @@ export interface Coverage {
   area: number;
   type: coverageType;
   percentage: number;
-  label: string;
+}
+export interface CoverageExt extends Coverage {
+  key: coverageType;
+  label: coverageLabels;
 }
 export interface SEPAData {
   area: number;
