@@ -100,6 +100,15 @@ const DrawPolygon = () => {
   };
 
   /**
+   * Handles cancelEdit and cancelRemove buttons click
+   */
+  const cancelChange = () => {
+    setIsEditing(false);
+    setIsRemoving(false);
+    drawControl!._toolbars.edit._actionButtons[1].button.click();
+  }
+
+  /**
    * Handles send button click. Set the drawn polygon as the area layer in context to be consulted.
    */
   const sendClick = () => {
@@ -152,6 +161,14 @@ const DrawPolygon = () => {
             </span>
           </div>
         </button>
+        <button id="cancelEdit" disabled={!isEditing}>
+          <div style={{ display: "flex" }} onClick={cancelChange}>
+            Poner un icono
+            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
+              Cancelar edición
+            </span>
+          </div>
+        </button>
       </div>
       <div>
         <button id="remove" disabled={drawnPolygon === null || isEditing}>
@@ -166,6 +183,14 @@ const DrawPolygon = () => {
             Poner un icono
             <span style={{ paddingLeft: 10, alignSelf: "center" }}>
               Finalizar borrado de polígono
+            </span>
+          </div>
+        </button>
+        <button id="cancelRemove" disabled={!isRemoving}>
+          <div style={{ display: "flex" }} onClick={cancelChange}>
+            Poner un icono
+            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
+              Cancelar edición
             </span>
           </div>
         </button>
