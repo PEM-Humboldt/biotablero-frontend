@@ -83,8 +83,8 @@ importers:
         specifier: workspace:1.0.0
         version: file:packages/indicators(@types/react@18.2.55)
       leaflet:
-        specifier: 1.4.0
-        version: 1.4.0
+        specifier: 1.9.4
+        version: 1.9.4
       leaflet-draw:
         specifier: ^1.0.4
         version: 1.0.4
@@ -105,10 +105,10 @@ importers:
         version: 1.0.4
       react-leaflet:
         specifier: ^4.2.1
-        version: 4.2.1(leaflet@1.4.0)(react-dom@17.0.2)(react@17.0.2)
+        version: 4.2.1(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2)
       react-leaflet-draw:
         specifier: ^0.20.6
-        version: 0.20.6(leaflet-draw@1.0.4)(leaflet@1.4.0)(prop-types@15.8.1)(react-leaflet@4.2.1)(react@17.0.2)
+        version: 0.20.6(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@4.2.1)(react@17.0.2)
       react-router-dom:
         specifier: 5.3.3
         version: 5.3.3(react@17.0.2)
@@ -126,8 +126,11 @@ importers:
         specifier: ^7946.0.14
         version: 7946.0.14
       '@types/leaflet':
-        specifier: ^1.9.8
-        version: 1.9.8
+        specifier: ^1.9.16
+        version: 1.9.16
+      '@types/leaflet-draw':
+        specifier: ^1.0.11
+        version: 1.0.11
       '@types/node':
         specifier: ^17.0.41
         version: 17.0.45
@@ -140,9 +143,6 @@ importers:
       '@types/react-json-to-csv':
         specifier: ^1.0.0
         version: 1.2.4
-      '@types/react-leaflet':
-        specifier: ^2.8.2
-        version: 2.8.3
       '@types/react-router-dom':
         specifier: ^5.3.3
         version: 5.3.3
@@ -4648,14 +4648,14 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
-  /@react-leaflet/core@2.1.0(leaflet@1.4.0)(react-dom@17.0.2)(react@17.0.2):
+  /@react-leaflet/core@2.1.0(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2):
     resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
     peerDependencies:
       leaflet: ^1.9.0
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      leaflet: 1.4.0
+      leaflet: 1.9.4
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
@@ -5257,8 +5257,14 @@ packages:
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
-  /@types/leaflet@1.9.8:
-    resolution: {integrity: sha512-EXdsL4EhoUtGm2GC2ZYtXn+Fzc6pluVgagvo2VC1RHWToLGlTRwVYoDpqS/7QXa01rmDyBjJk3Catpf60VMkwg==}
+  /@types/leaflet-draw@1.0.11:
+    resolution: {integrity: sha512-dyedtNm3aSmnpi6FM6VSl28cQuvP+MD7pgpXyO3Q1ZOCvrJKmzaDq0P3YZTnnBs61fQCKSnNYmbvCkDgFT9FHQ==}
+    dependencies:
+      '@types/leaflet': 1.9.16
+    dev: true
+
+  /@types/leaflet@1.9.16:
+    resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
     dependencies:
       '@types/geojson': 7946.0.14
     dev: true
@@ -5319,13 +5325,6 @@ packages:
   /@types/react-json-to-csv@1.2.4:
     resolution: {integrity: sha512-zWD3nzp63HiWkxz/ZNaE1gfVlkZCVZvYbEofD99jCvFuxE7wVuu8H99DdHwdaEptwR4D8RAWUB5s5D5gNUaxhA==}
     dependencies:
-      '@types/react': 18.2.55
-    dev: true
-
-  /@types/react-leaflet@2.8.3:
-    resolution: {integrity: sha512-MeBQnVQe6ikw8dkuZE4F96PvMdQeilZG6/ekk5XxhkSzU3lofedULn3UR/6G0uIHjbRazi4DA8LnLACX0bPhBg==}
-    dependencies:
-      '@types/leaflet': 1.9.8
       '@types/react': 18.2.55
     dev: true
 
@@ -12171,8 +12170,8 @@ packages:
     resolution: {integrity: sha512-rsQ6saQO5ST5Aj6XRFylr5zvarWgzWnrg46zQ1MEOEIHsppdC/8hnN8qMoFvACsPvTioAuysya/TVtog15tyAQ==}
     dev: false
 
-  /leaflet@1.4.0:
-    resolution: {integrity: sha512-x9j9tGY1+PDLN9pcWTx9/y6C5nezoTMB8BLK5jTakx+H7bPlnbCHfi9Hjg+Qt36sgDz/cb9lrSpNQXmk45Tvhw==}
+  /leaflet@1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
     dev: false
 
   /leven@3.1.0:
@@ -15205,7 +15204,7 @@ packages:
       json-to-csv-export: 1.1.2
     dev: false
 
-  /react-leaflet-draw@0.20.6(leaflet-draw@1.0.4)(leaflet@1.4.0)(prop-types@15.8.1)(react-leaflet@4.2.1)(react@17.0.2):
+  /react-leaflet-draw@0.20.6(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@4.2.1)(react@17.0.2):
     resolution: {integrity: sha512-mGypDjJNrrnVpfKfGYovNBuJZXSk39ClOdUJe/5dB5Cj3f2BGQlY9txyV4UmUxZCbc96aq+FMwrGZeM4BokhHQ==}
     peerDependencies:
       leaflet: ^1.8.0
@@ -15215,23 +15214,23 @@ packages:
       react-leaflet: ^4.0.0
     dependencies:
       fast-deep-equal: 3.1.3
-      leaflet: 1.4.0
+      leaflet: 1.9.4
       leaflet-draw: 1.0.4
       lodash-es: 4.17.21
       prop-types: 15.8.1
       react: 17.0.2
-      react-leaflet: 4.2.1(leaflet@1.4.0)(react-dom@17.0.2)(react@17.0.2)
+      react-leaflet: 4.2.1(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2)
     dev: false
 
-  /react-leaflet@4.2.1(leaflet@1.4.0)(react-dom@17.0.2)(react@17.0.2):
+  /react-leaflet@4.2.1(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2):
     resolution: {integrity: sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==}
     peerDependencies:
       leaflet: ^1.9.0
       react: ^18.0.0
       react-dom: ^18.0.0
     dependencies:
-      '@react-leaflet/core': 2.1.0(leaflet@1.4.0)(react-dom@17.0.2)(react@17.0.2)
-      leaflet: 1.4.0
+      '@react-leaflet/core': 2.1.0(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2)
+      leaflet: 1.9.4
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
     dev: false
