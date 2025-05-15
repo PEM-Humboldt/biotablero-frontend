@@ -11,6 +11,7 @@ import {
 import SearchAPI from "utils/searchAPI";
 import { AreaType } from "pages/search/types/dashboard";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import DrawPolygon from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 
 interface Props {
@@ -40,8 +41,8 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
       .catch(() => setAreasError(true));
 
     SearchAPI.requestTestBackend().catch(() => {
-      // setPolygonError(true);
-      // setShowDrawControl(false);
+      setPolygonError(true);
+      setShowDrawControl(false);
     });
   }, []);
 
@@ -70,7 +71,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
         collapsed: !(searchType === "drawPolygon"),
       },
       // TODO: Considerar move DrawPolygon aquí mismo o mover SearchAreas a otro archivo
-      component: polygonError ? ErrorMessage : <div>wip</div>,
+      component: polygonError ? ErrorMessage : DrawPolygon,
     },
     {
       label: {

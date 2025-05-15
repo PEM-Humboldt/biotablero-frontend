@@ -1,6 +1,9 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, { srchType } from "pages/search/SearchContext";
+import SearchContext, {
+  drawControlHandler,
+  srchType,
+} from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
@@ -38,6 +41,7 @@ interface State {
   loadingLayer: boolean;
   layerError: boolean;
   showDrawControl: boolean;
+  onEditControlMounted: drawControlHandler;
 }
 
 class Search extends Component<Props, State> {
@@ -54,6 +58,7 @@ class Search extends Component<Props, State> {
       loadingLayer: false,
       layerError: false,
       showDrawControl: true,
+      onEditControlMounted: () => {},
     };
   }
 
@@ -293,6 +298,15 @@ class Search extends Component<Props, State> {
     history.replace(history.location.pathname);
   };
 
+  /**
+   * Sets the handler function to control the leaflet-draw component
+   *
+   * @param handler {drawControlHandler} function to handle draw component
+   */
+  setOnEditControlMounted = (handler: drawControlHandler) => {
+    this.setState({ onEditControlMounted: handler });
+  };
+
   render() {
     const {
       searchType,
@@ -307,6 +321,7 @@ class Search extends Component<Props, State> {
       loadingLayer,
       layerError,
       showDrawControl,
+      onEditControlMounted,
     } = this.state;
 
     let toShow = <Selector setShowDrawControl={this.setShowDrawControl} />;
@@ -338,6 +353,8 @@ class Search extends Component<Props, State> {
           setLayerError: this.setLayerError,
           setMapTitle: this.setMapTitle,
           clearLayers: this.clearLayers,
+          onEditControlMounted: onEditControlMounted,
+          setOnEditControlMounted: this.setOnEditControlMounted,
         }}
       >
         <div className="appSearcher wrappergrid">
