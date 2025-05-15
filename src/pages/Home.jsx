@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Carrousel from "pages/home/Carrousel";
-import Tabsmodulos from "pages/home/tabsComponent";
+import Tabsmodulos from "pages/home/TabSComponent";
 import "newStyles.css";
 import "headerFooter.css";
 
@@ -11,13 +11,11 @@ const Inicio = ({ referrer }) => {
 
     return (
   
-
         <div>
             <Carrousel setActiveTab={setActiveTab} setShowQueEs={setShowQueEs} />
             <Tabsmodulos activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
      
-
     );
 }
 
