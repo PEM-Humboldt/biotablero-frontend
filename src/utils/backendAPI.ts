@@ -31,7 +31,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
 class BackendAPI {
   /** ****** */
   /** FOREST */
@@ -481,6 +481,52 @@ class BackendAPI {
   ): Promise<Array<concentration>> {
     return BackendAPI.makeGetRequest(
       `richness/concentration?areaType=${areaType}&areaId=${areaId}`
+    );
+  }
+
+  /**
+   * Get the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {RasterAPIObject} layer object to be loaded in the map
+   */
+  static requestNOSLayer(
+    areaType: string,
+    areaId: number | string,
+    group: string
+  ): RasterAPIObject {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `richness/number-species/layer?areaType=${areaType}&areaId=${areaId}&group=${group}`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the threshold values for the layer of number of species for the specified group
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} group group to get the layer for, options are: total | endemic | invasive |
+   * threatened
+   *
+   * @return {Promise<Object>} object with min an max values
+   */
+  static requestNOSLayerThresholds(
+    areaType: string,
+    areaId: number | string,
+    group: string
+  ): Promise<Object> {
+    return BackendAPI.makeGetRequest(
+      `richness/number-species/layer/thresholds?areaType=${areaType}&areaId=${areaId}&group=${group}`
     );
   }
 
