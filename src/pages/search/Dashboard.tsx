@@ -71,7 +71,7 @@ class Dashboard extends React.Component<Props, State> {
           titles={[
             // { label: "Ecosistemas", icon: <Ecosistemas />, showTab: false },
             { label: "Paisaje", icon: <Paisaje /> },
-            // { label: "Especies", icon: <Especies />, showTab: false },
+            { label: "Especies", icon: <Especies /> },
             {
               label: "Portafolios",
               icon: <Portafolios />,
