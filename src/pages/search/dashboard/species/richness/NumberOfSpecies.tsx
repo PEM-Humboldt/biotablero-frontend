@@ -26,6 +26,8 @@ import { wrapperMessage } from "pages/search/types/charts";
 import { helperText, textsObject } from "pages/search/types/texts";
 import { NOSGroups, NOSNational } from "pages/search/types/richness";
 import BackendAPI from "utils/backendAPI";
+import { rasterLayer } from "pages/search/types/layers";
+import { NumberOfSpeciesController } from "pages/search/dashboard/species/richness/NumberOfSpeciesController";
 
 const NOSTexts = {
   inferred: { info: "", cons: "", meto: "", quote: "" },
@@ -106,6 +108,7 @@ interface State {
   helperText: helperText;
   maximumValues: Array<NOSNational>;
   showErrorMessage: boolean;
+  layers: Array<rasterLayer>;
 }
 
 const allDataAreas = ["max", "max_inferred", "max_observed"] as const;
@@ -154,9 +157,10 @@ interface selectedData extends Pick<completeData, "id" | "title" | "labels"> {
 }
 class NumberOfSpecies extends React.Component<Props, State> {
   mounted = false;
-
+  NOSController;
   constructor(props: Props) {
     super(props);
+    this.NOSController = new NumberOfSpeciesController();
     this.state = {
       showInfoGraph: true,
       data: [],
@@ -169,18 +173,21 @@ class NumberOfSpecies extends React.Component<Props, State> {
       helperText: { helper: "" },
       maximumValues: [],
       showErrorMessage: false,
+      layers: [],
     };
   }
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
 
     Promise.all([
-      BackendAPI.requestNumberOfSpecies(areaId, geofenceId, "all"),
-      BackendAPI.requestNSThresholds(areaId, geofenceId, "all"),
-      BackendAPI.requestNSNationalMax(areaId, "all"),
+      BackendAPI.requestNumberOfSpecies(areaTypeId, areaIdId, "all"),
+      BackendAPI.requestNSThresholds(areaTypeId, areaIdId, "all"),
+      BackendAPI.requestNSNationalMax(areaTypeId, "all"),
     ])
       .then(([values, thresholds, nationalMax]) => {
         const data: Array<completeData> = [];
@@ -236,7 +243,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                 ].reduce(
                   (result, key) => ({
                     ...result,
-                    [key]: getLabel(key, areaId, region),
+                    [key]: getLabel(key, areaTypeId, region),
                   }),
                   {}
                 ),
@@ -298,6 +305,8 @@ class NumberOfSpecies extends React.Component<Props, State> {
         }
       })
       .catch(() => {});
+
+    //this.switchLayer();
   }
 
   componentWillUnmount() {
@@ -321,7 +330,6 @@ class NumberOfSpecies extends React.Component<Props, State> {
    */
   filter = (category: "inferred" | "observed" | "all") => () => {
     const { allData, selected } = this.state;
-    const { handlerClickOnGraph } = this.context as SearchContextValues;
     if (category === "all") {
       this.setState({
         data: allData.map((group) => ({
@@ -335,8 +343,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
         texts: { info: "", cons: "", meto: "", quote: "" },
         showInfoGraph: false,
       });
-      handlerClickOnGraph({
-        chartType: "numberOfSpecies",
+      this.switchLayer({
         chartSection: "all",
         selectedKey: selected,
       });
@@ -382,8 +389,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
         texts: NOSTexts[category],
         showInfoGraph: true,
       });
-      handlerClickOnGraph({
-        chartType: "numberOfSpecies",
+      this.switchLayer({
         chartSection: category,
         selectedKey: selected,
       });
@@ -419,11 +425,13 @@ class NumberOfSpecies extends React.Component<Props, State> {
   };
 
   render() {
-    const {
-      areaType: areaId,
-      areaId: geofenceId,
-      handlerClickOnGraph,
-    } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as SearchContextValues;
+
+    const areaTypeId = areaType!.id;
+    const areaIdId = areaId!.id.toString();
+
+    this.NOSController.setArea(areaTypeId, areaIdId);
+
     const {
       showInfoGraph,
       message,
@@ -491,7 +499,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
             hoverImage={biomodelos2}
             onClick={this.filter("inferred")}
           >
-            {getLabel("inferred", areaId)}
+            {getLabel("inferred", areaTypeId)}
           </TextLegend>
           <TextLegend
             className={`${filter === "observed" ? "filtered" : ""}`}
@@ -501,7 +509,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
             hoverImage={mappoint2}
             onClick={this.filter("observed")}
           >
-            {getLabel("observed", areaId)}
+            {getLabel("observed", areaTypeId)}
           </TextLegend>
           <div
             className={`fullview-container${
@@ -534,7 +542,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                   <div>
                     {(filter === "all" || filter === "inferred") && (
                       <>
-                        {getLabel("national_inferred", areaId)}
+                        {getLabel("national_inferred", areaTypeId)}
                         <b>
                           {
                             maximumValues.find((e) => e.id === bar.id)
@@ -546,7 +554,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                     {filter === "all" && <br />}
                     {(filter === "all" || filter === "observed") && (
                       <>
-                        {getLabel("national_observed", areaId)}
+                        {getLabel("national_observed", areaTypeId)}
                         <b>
                           {
                             maximumValues.find((e) => e.id === bar.id)
@@ -582,8 +590,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                   colors={matchColor("richnessNos")}
                   onClickHandler={() => {
                     this.setState({ selected: bar.id });
-                    handlerClickOnGraph({
-                      chartType: "numberOfSpecies",
+                    this.switchLayer({
                       chartSection: filter,
                       selectedKey: bar.id,
                     });
@@ -601,7 +608,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                 color={matchColor("richnessNos")(key)}
                 key={key}
               >
-                {getLabel(key, areaId, bioticRegion)}
+                {getLabel(key, areaTypeId, bioticRegion)}
               </ThickLineLegend>
             ))}
           {data[0] &&
@@ -615,7 +622,7 @@ class NumberOfSpecies extends React.Component<Props, State> {
                     marginLeft="2px"
                     marginRight="6px"
                   >
-                    {getLabel(`${key}2`, areaId, bioticRegion)}
+                    {getLabel(`${key}2`, areaTypeId, bioticRegion)}
                   </PointFilledLegend>
                 );
               }
@@ -625,14 +632,14 @@ class NumberOfSpecies extends React.Component<Props, State> {
                   color={matchColor("richnessNos")(key)}
                   key={key}
                 >
-                  {getLabel(key, areaId, bioticRegion)}
+                  {getLabel(key, areaTypeId, bioticRegion)}
                 </LineLegend>
               );
             })}
         </div>
         <TextBoxes
           downloadData={this.processDownload(data)}
-          downloadName={`rich_number_of_species_${areaId}_${geofenceId}.csv`}
+          downloadName={`rich_number_of_species_${areaTypeId}_${areaIdId}.csv`}
           consText={texts.cons}
           quoteText={texts.quote}
           metoText={texts.meto}
@@ -642,6 +649,45 @@ class NumberOfSpecies extends React.Component<Props, State> {
       </div>
     );
   }
+
+  switchLayer = ({ chartSection, selectedKey }) => {
+    const {
+      setRasterLayers,
+      setLoadingLayer,
+      setLayerError,
+      setMapTitle,
+      setShowAreaLayer,
+      clearLayers,
+    } = this.context as SearchContextValues;
+
+    clearLayers();
+    const groupLabel = getLabel(selectedKey);
+    const layerName =
+      groupLabel.charAt(0).toUpperCase() + groupLabel.slice(1).toLowerCase();
+
+    if (chartSection === "inferred") {
+      setLoadingLayer(true);
+      this.NOSController.getLayer(selectedKey)
+        .then((layers) => {
+          this.setState({ layers: [layers] });
+
+          if (this.mounted) {
+            setRasterLayers(this.state.layers);
+            setLoadingLayer(false);
+            setMapTitle({
+              name: `Número de especies - ${layerName}`,
+            });
+          }
+        })
+        .catch((e) => {
+          if (e.toString() != "Error: request canceled") {
+            setLayerError(e.toString());
+          }
+        });
+    } else {
+      setShowAreaLayer(true);
+    }
+  };
 }
 
 export default NumberOfSpecies;
