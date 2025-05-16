@@ -7,7 +7,12 @@ import {
 } from "pages/search/dashboard/ecosystems/transformData";
 import matchColor from "utils/matchColor";
 
-import { SEPADataExt, CoverageExt } from "pages/search/types/ecosystems";
+import {
+  Coverage,
+  coverageLabels,
+  coverageType,
+  SEPADataExt,
+} from "pages/search/types/ecosystems";
 import BackendAPI from "utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
@@ -19,6 +24,10 @@ export interface PAData {
   label: string;
   key: string;
   percentage: number;
+}
+export interface CoverageExt extends Coverage {
+  key: coverageType;
+  label: coverageLabels;
 }
 interface State {
   coverageData: Array<CoverageExt>;

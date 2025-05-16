@@ -14,10 +14,12 @@ import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
-import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
+import SmallStackedBar, {
+  SmallStackedBarData,
+} from "pages/search/shared_components/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
-import { CoverageExt, SEPAData } from "pages/search/types/ecosystems";
+import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { rasterLayer } from "pages/search/types/layers";
 
@@ -47,7 +49,7 @@ interface State {
     delete: (arg0: string) => void;
     add: (arg0: string) => void;
   };
-  coverage: Array<CoverageExt>;
+  coverage: Array<SmallStackedBarData>;
   PAAreas: Array<{
     area: number;
     label: string;
