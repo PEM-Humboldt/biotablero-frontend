@@ -1,6 +1,9 @@
 import { Component } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, { srchType } from "pages/search/SearchContext";
+import SearchContext, {
+  drawControlHandler,
+  srchType,
+} from "pages/search/SearchContext";
 import SearchAPI from "utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import isUndefinedOrNull from "utils/validations";
@@ -37,6 +40,8 @@ interface State {
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
+  showDrawControl: boolean;
+  onEditControlMounted: drawControlHandler;
 }
 
 class Search extends Component<Props, State> {
@@ -52,6 +57,8 @@ class Search extends Component<Props, State> {
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
+      showDrawControl: true,
+      onEditControlMounted: () => {},
     };
   }
 
@@ -106,8 +113,10 @@ class Search extends Component<Props, State> {
   setAreaType = (areaType?: AreaType) => {
     this.setState({ areaType });
 
-    const { history } = this.props;
-    history.push(`?area_type=${areaType!.id}`);
+    if (areaType) {
+      const { history } = this.props;
+      history.push(`?area_type=${areaType!.id}`);
+    }
   };
 
   /**
@@ -118,11 +127,16 @@ class Search extends Component<Props, State> {
   setAreaId = (areaId?: AreaIdBasic) => {
     this.setState({ areaId });
 
-    const { setHeaderNames, history } = this.props;
     const { areaType } = this.state;
+    if (areaId && areaType) {
+      const { setHeaderNames, history } = this.props;
 
-    setHeaderNames({ parent: this.state.areaType!.label, child: areaId!.name });
-    history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
+      setHeaderNames({
+        parent: this.state.areaType!.label,
+        child: areaId!.name,
+      });
+      history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
+    }
   };
 
   /**
@@ -230,10 +244,19 @@ class Search extends Component<Props, State> {
   };
 
   /**
-   * Prepare the layers vars in the context
+   * Set the state to show the draw control in MapViewer
    *
+   * @param {boolean} loading
+   * @param {boolean} error
    */
-
+  setShowDrawControl = (show: boolean) => {
+    this.setState({
+      showDrawControl: show,
+    });
+  };
+  /**
+   * Prepare the layers vars in the context
+   */
   clearLayers = () => {
     this.setShapeLayers([]);
     this.setRasterLayers([]);
@@ -266,6 +289,15 @@ class Search extends Component<Props, State> {
     history.replace(history.location.pathname);
   };
 
+  /**
+   * Sets the handler function to control the leaflet-draw component
+   *
+   * @param handler {drawControlHandler} function to handle draw component
+   */
+  setOnEditControlMounted = (handler: drawControlHandler) => {
+    this.setState({ onEditControlMounted: handler });
+  };
+
   render() {
     const {
       searchType,
@@ -279,9 +311,11 @@ class Search extends Component<Props, State> {
       mapTitle,
       loadingLayer,
       layerError,
+      showDrawControl,
+      onEditControlMounted,
     } = this.state;
 
-    let toShow = <Selector />;
+    let toShow = <Selector setShowDrawControl={this.setShowDrawControl} />;
     if (
       !isUndefinedOrNull(searchType) &&
       !isUndefinedOrNull(areaType) &&
@@ -294,7 +328,7 @@ class Search extends Component<Props, State> {
     return (
       <SearchContext.Provider
         value={{
-          searchType: "definedArea",
+          searchType: searchType ?? "definedArea",
           areaType: areaType,
           areaId: areaId,
           areaHa: areaHa,
@@ -310,6 +344,8 @@ class Search extends Component<Props, State> {
           setLayerError: this.setLayerError,
           setMapTitle: this.setMapTitle,
           clearLayers: this.clearLayers,
+          onEditControlMounted: onEditControlMounted,
+          setOnEditControlMounted: this.setOnEditControlMounted,
         }}
       >
         <div className="appSearcher wrappergrid">
@@ -323,7 +359,7 @@ class Search extends Component<Props, State> {
                 : shapeLayers
             }
             rasterLayers={rasterLayers}
-            drawPolygonEnabled={false}
+            showDrawControl={showDrawControl && searchType === "drawPolygon"}
             loadPolygonInfo={() => {}}
             mapTitle={mapTitle}
             bounds={bounds}

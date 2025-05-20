@@ -5,7 +5,7 @@ import { Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   ImageOverlay,
-  Map,
+  MapContainer,
   TileLayer,
   WMSTileLayer,
 } from 'react-leaflet';
@@ -58,9 +58,9 @@ class MapViewer extends React.Component {
     }
     const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
     if (rasterBounds) {
-      this.mapRef.current.leafletElement.fitBounds(rasterBounds);
+      this.mapRef.current.fitBounds(rasterBounds);
     } else if (countActiveLayers === 0 && !loadingLayer) {
-      this.mapRef.current.leafletElement.setView(config.params.center, 5);
+      this.mapRef.current.setView(config.params.center, 5);
     }
   }
 
@@ -92,11 +92,11 @@ class MapViewer extends React.Component {
     if (layer.options.fitBounds === false) fitBounds = false;
 
     if (state === false) {
-      this.mapRef.current.leafletElement.removeLayer(layer);
+      this.mapRef.current.removeLayer(layer);
     } else {
-      this.mapRef.current.leafletElement.addLayer(layer);
+      this.mapRef.current.addLayer(layer);
       if (fitBounds) {
-        this.mapRef.current.leafletElement.fitBounds(layer.getBounds());
+        this.mapRef.current.fitBounds(layer.getBounds());
       }
     }
   }
@@ -113,7 +113,7 @@ class MapViewer extends React.Component {
     } = this.props;
     const { openErrorModal } = this.state;
     return (
-      <Map id="map" ref={this.mapRef} center={config.params.center} zoom={5}>
+      <MapContainer id="map" ref={this.mapRef} center={config.params.center} zoom={5}>
         {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
@@ -186,7 +186,7 @@ class MapViewer extends React.Component {
             alt="Regiones"
           />
         )}
-      </Map>
+      </MapContainer>
     );
   }
 }
