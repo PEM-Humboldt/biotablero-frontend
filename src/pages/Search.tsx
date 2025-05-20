@@ -72,18 +72,9 @@ class Search extends Component<Props, State> {
           areaType: typeObj,
           areaId: idObj,
           areaHa: Number(ha.total_area),
-          areaLayer: {
-            id: "geofence",
-            paneLevel: 1,
-            json: layer,
-            layerStyle: () => ({
-              stroke: false,
-              fillColor: matchColor("geofence")(),
-              fillOpacity: 0.6,
-            }),
-          },
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
+        this.setAreaLayer(layer);
       });
     } else if (!isUndefinedOrNull(areaType)) {
       // TODO: Con el nuevo backend esto se va a borrar

@@ -69,7 +69,7 @@ class Dashboard extends React.Component<Props, State> {
         <TabContainer
           initialSelectedIndex={initialSelectedIndex}
           titles={[
-            // { label: "Ecosistemas", icon: <Ecosistemas />, showTab: false },
+            { label: "Ecosistemas", icon: <Ecosistemas /> },
             { label: "Paisaje", icon: <Paisaje /> },
             // { label: "Especies", icon: <Especies />, showTab: false },
             {
@@ -79,10 +79,9 @@ class Dashboard extends React.Component<Props, State> {
             },
           ]}
         >
-          {/* <div> */}
-          {/** TODO: tomar generalArea del contexto */}
-          {/* <Ecosystems generalArea={areaHa} /> */}
-          {/* </div> */}
+          <div>
+            <Ecosystems />
+          </div>
           <div>
             <Landscape />
           </div>

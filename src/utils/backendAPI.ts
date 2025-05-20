@@ -31,7 +31,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
 class BackendAPI {
   /** ****** */
   /** FOREST */
@@ -381,6 +381,58 @@ class BackendAPI {
     return BackendAPI.makeGetRequest(
       `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
     );
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   *
+   * @return {Promise<RasterAPIObject>} layer object to be loaded in the map
+   */
+  static requestCoveragesLayer(
+    areaType: string,
+    areaId: number | string,
+    coverageType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given strategic ecosystem and area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestCoveragesSELayer(
+    areaType: string,
+    areaId: number | string,
+    coverageType: string,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
   }
 
   /** ******** */
