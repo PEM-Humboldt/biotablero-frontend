@@ -8,6 +8,7 @@ import EditPolygonIcon from "pages/search/selector/EditIcon";
 import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import "./DrawPolygon.css";
 
 const DrawPolygon = () => {
   const context = useContext(SearchContext);
@@ -15,6 +16,7 @@ const DrawPolygon = () => {
   const [drawControl, setDrawControl] = useState<any>();
   const [drawnPolygon, setDrawnPolygon] =
     useState<Polygon<geojson.Polygon> | null>(null);
+  const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
@@ -27,7 +29,23 @@ const DrawPolygon = () => {
     setDrawControl(newDrawControl);
     newDrawControl._map.on("draw:created", onPolygonDrawn);
     newDrawControl._map.on("draw:edited", onPolygonEdited);
-    newDrawControl._map.on("draw:deleted ", onPolygoDeleted);
+    newDrawControl._map.on("draw:deleted", onPolygoDeleted);
+    newDrawControl._map.on("draw:drawstart", onDrawStart);
+    newDrawControl._map.on("draw:drawstop", onDrawStop);
+  };
+
+  /**
+   * Listens for when drawing starts
+   */
+  const onDrawStart = () => {
+    setIsDrawing(true);
+  };
+
+  /**
+   * Listens for when drawing stops
+   */
+  const onDrawStop = () => {
+    setIsDrawing(false);
   };
 
   /**
@@ -37,6 +55,7 @@ const DrawPolygon = () => {
    */
   const onPolygonDrawn = (e: DrawEvents.Created) => {
     setDrawnPolygon(e.layer as Polygon);
+    setIsDrawing(false);
   };
 
   /**
@@ -64,6 +83,7 @@ const DrawPolygon = () => {
    * Handles draw button click
    */
   const drawClick = () => {
+    setIsDrawing(true);
     drawControl!._toolbars.draw._modes.polygon.handler.enable();
   };
 
@@ -131,83 +151,126 @@ const DrawPolygon = () => {
 
   return (
     <div className="drawPAcc">
-      <div style={{ paddingBottom: 15 }}>
-        Seleccione cada una de las opciones...
+      <div className="drawPAcc-header">
+        <div className="drawPAcc-title">
+          {isDrawing
+            ? "Dibujando polígono..."
+            : isEditing
+            ? "Editando polígono..."
+            : isRemoving
+            ? "Haga clic en el polígono para eliminarlo"
+            : drawnPolygon
+            ? "Polígono creado - Seleccione una acción"
+            : "Dibuje UN polígono para comenzar"}
+        </div>
       </div>
-      <div>
-        <button id="draw" disabled={drawnPolygon !== null}>
-          <div style={{ display: "flex" }} onClick={drawClick}>
+
+      <div className="drawPAcc-content">
+        {/* Draw Section */}
+        <div className="button-section">
+          <button
+            className={`action-button ${isDrawing ? "active" : ""}`}
+            disabled={drawnPolygon !== null}
+            onClick={drawClick}
+          >
             <PolygonIcon />
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Dibujar
-            </span>
-          </div>
-        </button>
-        <p>instrucciones crear...</p>
-      </div>
-      <div>
-        <button id="edit" disabled={drawnPolygon === null || isRemoving}>
-          <div style={{ display: "flex" }} onClick={editClick}>
+            <span>Dibujar polígono</span>
+          </button>
+          <p className="instruction-text">
+            {drawnPolygon
+              ? "✓ Polígono dibujado correctamente"
+              : isDrawing
+              ? "Haga clic en el mapa para empezar a dibujar (doble clic para finalizar)"
+              : "Haga clic aquí para activar. Luego dibuje UN polígono en el mapa (doble clic para finalizar)."}
+          </p>
+        </div>
+
+        {/* Edit Section */}
+        <div className="button-section">
+          <button
+            className={`action-button ${isEditing ? "active" : ""}`}
+            disabled={drawnPolygon === null || isRemoving || isDrawing}
+            onClick={editClick}
+          >
             <EditPolygonIcon />
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>Editar</span>
-          </div>
-        </button>
-        <p>instrucciones editar ..</p>
-        <button id="finishEdit" disabled={!isEditing}>
-          <div style={{ display: "flex" }} onClick={finishEdit}>
-            Poner un icono
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Finalizar edición
-            </span>
-          </div>
-        </button>
-        <button id="cancelEdit" disabled={!isEditing}>
-          <div style={{ display: "flex" }} onClick={cancelChange}>
-            Poner un icono
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Cancelar edición
-            </span>
-          </div>
-        </button>
-      </div>
-      <div>
-        <button id="remove" disabled={drawnPolygon === null || isEditing}>
-          <div style={{ display: "flex" }} onClick={removeClick}>
+            <span>Editar polígono</span>
+          </button>
+          <p className="instruction-text">
+            {drawnPolygon === null
+              ? "Primero debe dibujar un polígono"
+              : isEditing
+              ? "Arrastre los puntos para modificar la forma"
+              : "Haga clic para activar el modo edición"}
+          </p>
+
+          {isEditing && (
+            <>
+              <button className="secondary-button" onClick={finishEdit}>
+                <div className="icon-placeholder"></div>
+                <span>Guardar cambios</span>
+              </button>
+
+              <button className="secondary-button" onClick={cancelChange}>
+                <div className="icon-placeholder cancel"></div>
+                <span>Cancelar cambios</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Remove Section */}
+        <div className="button-section">
+          <button
+            className={`action-button ${isRemoving ? "active" : ""}`}
+            disabled={drawnPolygon === null || isEditing || isDrawing}
+            onClick={removeClick}
+          >
             <RemoveIcon />
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>Borrar</span>
-          </div>
-        </button>
-        <p>instrucciones borrar ..</p>
-        <button id="finishRemove" disabled={!isRemoving}>
-          <div style={{ display: "flex" }} onClick={finishRemove}>
-            Poner un icono
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Finalizar borrado de polígono
-            </span>
-          </div>
-        </button>
-        <button id="cancelRemove" disabled={!isRemoving}>
-          <div style={{ display: "flex" }} onClick={cancelChange}>
-            Poner un icono
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Cancelar edición
-            </span>
-          </div>
-        </button>
-      </div>
-      <div>
-        <button
-          id="send"
-          disabled={drawnPolygon === null || isEditing || isRemoving}
-        >
-          <div style={{ display: "flex" }} onClick={sendClick}>
+            <span>Borrar polígono</span>
+          </button>
+          <p className="instruction-text">
+            {drawnPolygon === null
+              ? "Primero debe dibujar un polígono"
+              : isRemoving
+              ? "Haga clic en el polígono del mapa para eliminarlo"
+              : "Eliminará el polígono actual del mapa"}
+          </p>
+
+          {isRemoving && (
+            <>
+              <button className="secondary-button" onClick={finishRemove}>
+                <div className="icon-placeholder"></div>
+                <span>Confirmar eliminación</span>
+              </button>
+
+              <button className="secondary-button" onClick={cancelChange}>
+                <div className="icon-placeholder cancel"></div>
+                <span>Cancelar eliminación</span>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Send Section */}
+        <div className="button-section">
+          <button
+            className={`action-button`}
+            disabled={
+              drawnPolygon === null || isEditing || isRemoving || isDrawing
+            }
+            onClick={sendClick}
+          >
             <Done />
-            <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-              Enviar polygono
-            </span>
-          </div>
-        </button>
-        <p>instrucciones enviar...</p>
+            <span>Enviar consulta</span>
+          </button>
+          <p className="instruction-text">
+            {drawnPolygon === null
+              ? "Primero debe dibujar un polígono"
+              : isEditing || isRemoving || isDrawing
+              ? "Complete la acción actual antes de enviar"
+              : "Procesar consulta con el polígono creado"}
+          </p>
+        </div>
       </div>
     </div>
   );
