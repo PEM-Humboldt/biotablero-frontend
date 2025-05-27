@@ -204,7 +204,7 @@ const DrawPolygon = () => {
           </p>
 
           {isEditing && (
-            <>
+            <div className="secondary-buttons-container">
               <button className="secondary-button" onClick={finishEdit}>
                 <div className="icon-placeholder"></div>
                 <span>Guardar cambios</span>
@@ -214,7 +214,7 @@ const DrawPolygon = () => {
                 <div className="icon-placeholder cancel"></div>
                 <span>Cancelar cambios</span>
               </button>
-            </>
+            </div>
           )}
         </div>
 
@@ -237,7 +237,7 @@ const DrawPolygon = () => {
           </p>
 
           {isRemoving && (
-            <>
+            <div className="secondary-buttons-container">
               <button className="secondary-button" onClick={finishRemove}>
                 <div className="icon-placeholder"></div>
                 <span>Confirmar eliminación</span>
@@ -247,7 +247,7 @@ const DrawPolygon = () => {
                 <div className="icon-placeholder cancel"></div>
                 <span>Cancelar eliminación</span>
               </button>
-            </>
+            </div>
           )}
         </div>
 

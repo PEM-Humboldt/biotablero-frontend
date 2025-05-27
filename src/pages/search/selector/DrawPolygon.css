@@ -71,9 +71,16 @@
   flex-shrink: 0;
 }
 
+.secondary-buttons-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
 .secondary-button {
   display: flex;
   align-items: center;
+  flex: 1;
   width: 100%;
   padding: 10px 16px;
   background: #f8f9fa;
@@ -115,7 +122,7 @@
 .icon-placeholder {
   width: 16px;
   height: 16px;
-  background: #adb5bd;
+  background: #5e8859;
   border-radius: 2px;
   margin-right: 8px;
   flex-shrink: 0;
@@ -137,6 +144,10 @@
   content: "✕";
 }
 
+.icon-placeholder.cancel {
+  background-color: tomato;
+}
+
 /* Responsive adjustments */
 @media screen and (max-width: 480px) {
   .drawPAcc-content {
@@ -148,9 +159,13 @@
     font-size: 13px;
   }
 
+  .secondary-buttons-container {
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .secondary-button {
-    padding: 8px 14px;
-    font-size: 12px;
+    flex: none;
   }
 }
 
