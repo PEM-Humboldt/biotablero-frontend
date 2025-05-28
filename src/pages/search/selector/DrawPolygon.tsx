@@ -166,7 +166,6 @@ const DrawPolygon = () => {
       </div>
 
       <div className="drawPAcc-content">
-        {/* Draw Section */}
         <div className="button-section">
           <button
             className={`action-button ${isDrawing ? "active" : ""}`}
@@ -185,7 +184,6 @@ const DrawPolygon = () => {
           </p>
         </div>
 
-        {/* Edit Section */}
         <div className="button-section">
           <button
             className={`action-button ${isEditing ? "active" : ""}`}
@@ -218,7 +216,6 @@ const DrawPolygon = () => {
           )}
         </div>
 
-        {/* Remove Section */}
         <div className="button-section">
           <button
             className={`action-button ${isRemoving ? "active" : ""}`}
@@ -251,7 +248,6 @@ const DrawPolygon = () => {
           )}
         </div>
 
-        {/* Send Section */}
         <div className="button-section">
           <button
             className={`action-button`}
