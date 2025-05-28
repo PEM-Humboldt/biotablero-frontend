@@ -115,8 +115,12 @@ const DrawPolygon = () => {
    * Handles finishRemove button click
    */
   const finishRemove = () => {
-    setIsRemoving(false);
-    drawControl!._toolbars.edit._actionButtons[0].button.click();
+    let haslayer = drawControl!._map.hasLayer(drawnPolygon);
+
+    if (!haslayer) {
+      setIsRemoving(false);
+      drawControl!._toolbars.edit._actionButtons[0].button.click();
+    }
   };
 
   /**
