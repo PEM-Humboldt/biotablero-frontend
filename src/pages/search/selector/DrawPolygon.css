@@ -1,0 +1,181 @@
+.drawPAcc {
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  font-family: "Roboto", sans-serif;
+}
+
+.drawPAcc-header {
+  color: #d2506a;
+  padding: 12px 16px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #b7b7b7;
+}
+
+.drawPAcc-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin: 0;
+  letter-spacing: 0.3px;
+}
+
+.drawPAcc-content {
+  padding: 0 8px;
+}
+
+/* Button Sections */
+.button-section {
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 16px;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 8px;
+}
+
+.action-button:hover:not(:disabled) {
+  background: #d63850;
+}
+
+.action-button.active {
+  background: #e84a5f;
+}
+
+.action-button.active:hover {
+  background: #d63850;
+}
+
+.action-button:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.action-button svg {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.secondary-buttons-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.secondary-button {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  padding: 10px 16px;
+  background: #f8f9fa;
+  color: #6c757d;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 6px;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #bad4ee;
+  color: #495057;
+}
+
+.secondary-button:disabled {
+  background: #f8f9fa;
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+.secondary-button svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.instruction-text {
+  font-size: 12px;
+  color: #6c757d;
+  line-height: 1.4;
+  margin: 8px 0 12px 0;
+  padding-left: 4px;
+}
+
+.icon-placeholder {
+  width: 16px;
+  height: 16px;
+  background: #5e8859;
+  border-radius: 2px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.icon-placeholder::before {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.icon-placeholder.cancel::before {
+  content: "✕";
+}
+
+.icon-placeholder.cancel {
+  background-color: tomato;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 480px) {
+  .drawPAcc-content {
+    padding: 0 4px;
+  }
+
+  .action-button {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .secondary-buttons-container {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .secondary-button {
+    flex: none;
+  }
+}
+
+/* Focus states for accessibility */
+.action-button:focus,
+.secondary-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(232, 74, 95, 0.3); /* Rojo para el focus */
+}
+
+.action-button.active:focus {
+  box-shadow: 0 0 0 2px #3498db; /* Azul para el focus cuando activo */
+}
