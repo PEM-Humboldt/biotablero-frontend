@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Accordion from 'pages/search/Accordion';
-import SpeciesRecordsGaps from 'pages/search/dashboard/species/richness/SpeciesRecordsGaps';
 
 const Richness = (props) => {
   const {
@@ -9,24 +8,7 @@ const Richness = (props) => {
     openTab,
   } = props;
 
-  const componentsArray = [
-    {
-      label: {
-        id: 'numberOfSpecies',
-        name: 'Número de especies',
-        collapsed: openTab !== 'numberOfSpecies',
-      },
-      component: NumberOfSpecies,
-    },
-    {
-      label: {
-        id: 'speciesRecordsGaps',
-        name: 'Vacíos en registros de especies',
-        collapsed: openTab !== 'speciesRecordsGaps',
-      },
-      component: SpeciesRecordsGaps,
-    },
-  ];
+  const componentsArray = [ ];
   return (
     <div style={{ width: '100%' }}>
       <Accordion
