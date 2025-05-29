@@ -3,7 +3,6 @@ import React from 'react';
 import Accordion from 'pages/search/Accordion';
 import Richness from 'pages/search/dashboard/species/Richness';
 import SearchContext from 'pages/search/SearchContext';
-import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
   mounted = false;
@@ -80,7 +79,6 @@ class Species extends React.Component {
     const {
       childMap,
       availableComponents,
-      functionalFlag,
     } = this.state;
     const initialArray = [
       {
