@@ -4,7 +4,6 @@ import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Especies from "@mui/icons-material/FilterVintage";
 import Paisaje from "@mui/icons-material/FilterHdr";
-import Portafolios from "@mui/icons-material/DashboardCustomize";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
@@ -13,15 +12,11 @@ import Ecosystems from "pages/search/dashboard/Ecosystems";
 import formatNumber from "utils/format";
 import TabContainer from "pages/search/shared_components/TabContainer";
 
-import isFlagEnabled from "utils/isFlagEnabled";
-
 interface Props {
   handlerBackButton(): void;
 }
 
-interface State {
-  showPortfolios: boolean;
-}
+interface State {}
 
 const styles = () => ({
   root: {
@@ -33,15 +28,6 @@ const styles = () => ({
 class Dashboard extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      showPortfolios: false,
-    };
-  }
-
-  componentDidMount() {
-    isFlagEnabled("portfolios").then((value) =>
-      this.setState({ showPortfolios: value })
-    );
   }
 
   render() {
@@ -71,11 +57,6 @@ class Dashboard extends React.Component<Props, State> {
             { label: "Ecosistemas", icon: <Ecosistemas /> },
             { label: "Paisaje", icon: <Paisaje /> },
             // { label: "Especies", icon: <Especies />, showTab: false },
-            {
-              label: "Portafolios",
-              icon: <Portafolios />,
-              showTab: this.state.showPortfolios,
-            },
           ]}
         >
           <div>
@@ -87,9 +68,6 @@ class Dashboard extends React.Component<Props, State> {
           <div>
             <Species />
           </div>
-          {/* <div>
-            <Portfolios />
-          </div> */}
         </TabContainer>
       </div>
     );
