@@ -4,8 +4,7 @@ import Accordion from 'pages/search/Accordion';
 
 const Richness = (props) => {
   const {
-    handleAccordionChange,
-    openTab,
+    handleAccordionChange
   } = props;
 
   const componentsArray = [ ];
@@ -23,13 +22,11 @@ const Richness = (props) => {
 };
 
 Richness.propTypes = {
-  handleAccordionChange: PropTypes.func,
-  openTab: PropTypes.string,
+  handleAccordionChange: PropTypes.func
 };
 
 Richness.defaultProps = {
-  handleAccordionChange: () => {},
-  openTab: '',
+  handleAccordionChange: () => {}
 };
 
 export default Richness;
