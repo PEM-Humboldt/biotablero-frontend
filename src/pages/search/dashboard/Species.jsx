@@ -14,7 +14,6 @@ class Species extends React.Component {
     this.state = {
       visible: 'richness',
       childMap: {
-        richness: 'numberOfSpecies',
         functionalDiversity: 'tropicalDryForest',
       },
       availableComponents: [],
