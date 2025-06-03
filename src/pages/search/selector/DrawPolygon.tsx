@@ -115,6 +115,12 @@ const DrawPolygon = () => {
    * Handles finishRemove button click
    */
   const finishRemove = () => {
+    let haslayer = drawControl!._map.hasLayer(drawnPolygon);
+
+    if (haslayer) {
+      drawnPolygon!.remove();
+    }
+
     setIsRemoving(false);
     drawControl!._toolbars.edit._actionButtons[0].button.click();
   };
@@ -166,7 +172,6 @@ const DrawPolygon = () => {
       </div>
 
       <div className="drawPAcc-content">
-        {/* Draw Section */}
         <div className="button-section">
           <button
             className={`action-button ${isDrawing ? "active" : ""}`}
@@ -185,7 +190,6 @@ const DrawPolygon = () => {
           </p>
         </div>
 
-        {/* Edit Section */}
         <div className="button-section">
           <button
             className={`action-button ${isEditing ? "active" : ""}`}
@@ -218,7 +222,6 @@ const DrawPolygon = () => {
           )}
         </div>
 
-        {/* Remove Section */}
         <div className="button-section">
           <button
             className={`action-button ${isRemoving ? "active" : ""}`}
@@ -251,7 +254,6 @@ const DrawPolygon = () => {
           )}
         </div>
 
-        {/* Send Section */}
         <div className="button-section">
           <button
             className={`action-button`}
