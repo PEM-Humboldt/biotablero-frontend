@@ -345,21 +345,28 @@ class TimelineFootprint extends React.Component<Props, State> {
           const SELayer = await this.TimelineHFController.getSELayer(
             selectedKey as keyof Omit<SEKeys, "aTotal">
           );
-
-          this.setState(
-            (prevState) => ({
-              layers: [...prevState.layers, SELayer],
-            }),
-            () => {
-              setLoadingLayer(false);
-              const activeLayers = this.state.layers.filter((layer) =>
-                ["hfPersistence", selectedKey].includes(layer.id)
-              );
-              setShapeLayers(activeLayers);
-            }
-          );
+          if (SELayer) {
+            this.setState(
+              (prevState) => ({
+                layers: [...prevState.layers, SELayer],
+              }),
+              () => {
+                setLoadingLayer(false);
+                const activeLayers = this.state.layers.filter((layer) =>
+                  ["hfPersistence", selectedKey].includes(layer.id)
+                );
+                setShapeLayers(activeLayers);
+              }
+            );
+          } else {
+            setLoadingLayer(false);
+          }
         } catch (error) {
-          setLayerError(error instanceof Error ? error.message : String(error));
+          throw new Error(
+            error instanceof Error ? error.message : String(error)
+          );
+        } finally {
+          setLoadingLayer(false);
         }
       } else {
         const activeLayers = this.state.layers.filter((layer) =>

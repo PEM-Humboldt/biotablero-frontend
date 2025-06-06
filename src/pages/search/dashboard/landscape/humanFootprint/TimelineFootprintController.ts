@@ -1,5 +1,4 @@
 import formatNumber from "utils/format";
-import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
@@ -63,7 +62,9 @@ export class TimelineFootprintController {
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
-  getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
+  getSELayer = async (
+    selectedKey: keyof SEKeys
+  ): Promise<shapeLayer | null> => {
     try {
       const seType: SEKeys = {
         paramo: "Páramo",
@@ -83,21 +84,28 @@ export class TimelineFootprintController {
       const res = await request;
       this.activeRequests.delete(selectedKey);
 
-      const layerStyle = () => ({
-        stroke: false,
-        color: matchColor("hfTimeline")(selectedKey),
-        fillOpacity: 0.6,
-        weight: 1,
-      });
+      if (
+        res &&
+        res.type === "FeatureCollection" &&
+        "features" in res &&
+        Array.isArray((res as any).features)
+      ) {
+        const layerStyle = () => ({
+          stroke: false,
+          color: matchColor("hfTimeline")(selectedKey),
+          fillOpacity: 0.6,
+          weight: 1,
+        });
 
-      const layerData = {
-        id: selectedKey,
-        paneLevel: 3,
-        json: res,
-        layerStyle: layerStyle,
-      };
+        return {
+          id: selectedKey,
+          paneLevel: 3,
+          json: res,
+          layerStyle: layerStyle,
+        };
+      }
 
-      return layerData;
+      return null;
     } catch (error) {
       this.activeRequests.delete(selectedKey);
       throw new Error(
