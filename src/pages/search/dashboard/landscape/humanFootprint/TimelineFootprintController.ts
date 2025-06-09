@@ -4,6 +4,7 @@ import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
+import { hasValidGeoJSONData } from "utils/validations";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
 
@@ -62,9 +63,7 @@ export class TimelineFootprintController {
    *
    * @returns { Promise<shapeLayer> } object with the parameters of the layer
    */
-  getSELayer = async (
-    selectedKey: keyof SEKeys
-  ): Promise<shapeLayer | null> => {
+  getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
     try {
       const seType: SEKeys = {
         paramo: "Páramo",
@@ -84,12 +83,7 @@ export class TimelineFootprintController {
       const res = await request;
       this.activeRequests.delete(selectedKey);
 
-      if (
-        res &&
-        res.type === "FeatureCollection" &&
-        "features" in res &&
-        Array.isArray((res as any).features)
-      ) {
+      if (hasValidGeoJSONData(res)) {
         const layerStyle = () => ({
           stroke: false,
           color: matchColor("hfTimeline")(selectedKey),
@@ -103,9 +97,9 @@ export class TimelineFootprintController {
           json: res,
           layerStyle: layerStyle,
         };
+      } else {
+        throw new Error(`GeoJSON inválido para la capa ${selectedKey}`);
       }
-
-      return null;
     } catch (error) {
       this.activeRequests.delete(selectedKey);
       throw new Error(
