@@ -3,10 +3,13 @@ import { RasterAPIObject } from "pages/search/types/api";
 import {
   AreaIdBasic,
   AreaType,
-  polygonFeature,
   AreaId,
+  polygonFeature,
 } from "pages/search/types/dashboard";
+import { CoverageRawDataPolygon } from "pages/search/types/ecosystems";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+
+export type MetricsTypes = "LossPersistence" | "Coverage";
 
 class SearchAPI {
   /**
@@ -105,6 +108,34 @@ class SearchAPI {
         { responseType: "json" }
       ),
       source,
+    };
+  }
+
+  /** ******* */
+  /** METRICS */
+  /** ******* */
+
+  static requestMetricsValues(
+    metricId: MetricsTypes,
+    polygonId: number | string
+  ): Promise<Array<ForestLPRawDataPolygon | CoverageRawDataPolygon>> {
+    return SearchAPI.makeGetRequest(
+      `metrics/${metricId}/values/${polygonId}`
+    );
+  }
+
+  static requestMetricsLayer(
+    metricId: MetricsTypes,
+    itemId: string,
+    category: number,
+    polygonId: number | string
+  ): RasterAPIObject {
+    const source = axios.CancelToken.source();
+    return {
+      request: SearchAPI.makeGetRequest(
+        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&category=${category}`
+      ),
+      source: source,
     };
   }
 
