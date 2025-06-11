@@ -44,7 +44,7 @@ export interface ForestLPRawDataPolygon {
 /**
  * Loss Persistence data
  */
-export interface ILPResponse {
+export interface LPResponse {
   period: string;
   loss: number;
   persistence: number;
@@ -54,7 +54,7 @@ export interface ILPResponse {
 /**
  * Loss Persistence data with areas
  */
-export interface ILPAreas extends ILPResponse {
+export interface LPAreas extends LPResponse {
   lossHa: number;
   persistenceHa: number;
   noForestHa: number;

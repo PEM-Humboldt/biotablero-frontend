@@ -1,4 +1,4 @@
-import { ForestLPRawDataPolygon, ILPAreas, ILPResponse } from "../types/forest";
+import { ForestLPRawDataPolygon, LPAreas, LPResponse } from "../types/forest";
 
 /**
  * Metrics utils
@@ -14,7 +14,7 @@ export class MetricsUtils {
      * @param lpData Loss Persistence back end data
      * @returns Loss Persistence mapped data
      */
-    static mapLPResponse(lpData: ForestLPRawDataPolygon) : ILPResponse {
+    static mapLPResponse(lpData: ForestLPRawDataPolygon) : LPResponse {
         return {
             period: lpData.periodo,
             loss: lpData.perdida,
@@ -28,11 +28,11 @@ export class MetricsUtils {
      * @param lpData Loss Persistence data
      * @returns Loss Persistence object with areas
      */
-    static calcLPAreas(lpData: ILPResponse): ILPAreas {
+    static calcLPAreas(lpData: LPResponse): LPAreas {
         let totalHa: number = lpData.noForest + lpData.loss + lpData.persistence;
         let totalHa1Percent = totalHa / 100;
 
-        let response = lpData as ILPAreas;
+        let response = lpData as LPAreas;
         response.totalHa = totalHa;
         response.lossHa = lpData.loss / totalHa1Percent;
         response.persistenceHa = lpData.persistence / totalHa1Percent;
