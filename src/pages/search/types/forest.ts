@@ -52,11 +52,10 @@ export interface LPResponse {
 }
 
 /**
- * Loss Persistence data with areas
+ * Loss Persistence data with percents
  */
 export interface LPAreas extends LPResponse {
-  lossHa: number;
-  persistenceHa: number;
-  noForestHa: number;
-  totalHa: number;
+  percentagesLoss: number;
+  percentagesPersistence: number;
+  percentagesNoForest: number;
 }
