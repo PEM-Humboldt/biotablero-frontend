@@ -4,7 +4,7 @@ import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
-import { hasValidGeoJSONData } from "utils/validations";
+import { hasValidGeoJSONData } from "utils/GeoJsonUtils";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
 
@@ -98,7 +98,7 @@ export class TimelineFootprintController {
           layerStyle: layerStyle,
         };
       } else {
-        throw new Error(`GeoJSON inválido para la capa ${selectedKey}`);
+        throw new Error(`GeoJSON inválido`);
       }
     } catch (error) {
       this.activeRequests.delete(selectedKey);
