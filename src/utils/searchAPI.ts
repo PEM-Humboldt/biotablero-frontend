@@ -115,20 +115,34 @@ class SearchAPI {
   /** METRICS */
   /** ******* */
 
+  /**
+   * Get metrics values
+   * @param metricId Metric identifier
+   * @param polygonId Polygon identifier
+   * @returns List of metrics values
+   */
   static requestMetricsValues(
     metricId: MetricsTypes,
-    polygonId: number | string
+    polygonId: number,
   ): Promise<Array<ForestLPRawDataPolygon | CoverageRawDataPolygon>> {
     return SearchAPI.makeGetRequest(
       `metrics/${metricId}/values/${polygonId}`
     );
   }
 
+  /**
+   * Get metrics layers
+   * @param metricId Metric identifier
+   * @param itemId Item identifier
+   * @param category Category identifier
+   * @param polygonId Polygon identifier
+   * @returns URL with layer image
+   */
   static requestMetricsLayer(
     metricId: MetricsTypes,
     itemId: string,
     category: number,
-    polygonId: number | string
+    polygonId: number,
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
     return {
