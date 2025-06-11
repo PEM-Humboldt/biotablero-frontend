@@ -89,11 +89,11 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
         } else {
           setAreaId(value!);
           // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          Promise.all([
-            SearchAPI.requestAreaInfo(value!.id),
-          ]).then(([areaId]) => {
-            setAreaHa(Number(areaId.area));
-          });
+          Promise.all([SearchAPI.requestAreaInfo(value!.id)]).then(
+            ([areaId]) => {
+              setAreaHa(Number(areaId.area));
+            }
+          );
         }
       }}
       style={{ width: "100%" }}
