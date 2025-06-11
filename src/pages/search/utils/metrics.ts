@@ -24,19 +24,32 @@ export class MetricsUtils {
     }
 
     /**
-     * Calculate Loss Persistence areas in hectares
+     * Map Loss Persistence object from back end
+     * @param lpData Loss Persistence back end data
+     * @returns Loss Persistence mapped data
+     */
+    static mapLPForestData(lpData: ForestLPRawDataPolygon) : LPResponse {
+        return {
+            period: lpData.periodo,
+            loss: lpData.perdida,
+            persistence: lpData.persistencia,
+            noForest: lpData.no_bosque,
+        }
+    }
+
+    /**
+     * Calculate Loss Persistence percenttages
      * @param lpData Loss Persistence data
-     * @returns Loss Persistence object with areas
+     * @returns Loss Persistence object with percentages
      */
     static calcLPAreas(lpData: LPResponse): LPAreas {
         let totalHa: number = lpData.noForest + lpData.loss + lpData.persistence;
-        let totalHa1Percent = totalHa / 100;
+        let totalHaOnePercent: number = totalHa / 100;
 
         let response = lpData as LPAreas;
-        response.totalHa = totalHa;
-        response.lossHa = lpData.loss / totalHa1Percent;
-        response.persistenceHa = lpData.persistence / totalHa1Percent;
-        response.noForestHa = lpData.noForest / totalHa1Percent;
+        response.percentagesLoss = lpData.loss / totalHaOnePercent;
+        response.percentagesPersistence = lpData.persistence / totalHaOnePercent;
+        response.percentagesNoForest = lpData.noForest / totalHaOnePercent;
 
         return response;
     }
