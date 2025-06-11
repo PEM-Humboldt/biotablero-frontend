@@ -3,29 +3,36 @@ import { useContext, useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 
 import Accordion from "pages/search/Accordion";
-import DrawPolygon from "pages/search/selector/DrawPolygon";
-
 import isFlagEnabled from "utils/isFlagEnabled";
 import {
   ErrorMessage,
   LoadingMessage,
 } from "pages/search/selector/selectorMessages";
 import SearchAPI from "utils/searchAPI";
-import { AreaIdBasic, AreaType } from "./types/dashboard";
+import { AreaType } from "pages/search/types/dashboard";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import { Autocomplete, TextField } from "@mui/material";
-import isUndefinedOrNull from "utils/validations";
-import GeoJsonUtils from "utils/GeoJsonUtils";
+import DrawPolygon from "pages/search/selector/DrawPolygon";
+import SearchAreas from "pages/search/selector/SearchAreas";
 
-const Selector = () => {
+interface Props {
+  setShowDrawControl(show: boolean): void;
+}
+
+const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState(false);
   const [polygonError, setPolygonError] = useState(false);
 
   const context = useContext(SearchContext);
-  const { setSearchType, setAreaHa, setAreaId, setAreaType, setAreaLayer } =
-    context as SearchContextValues;
+  const {
+    searchType,
+    setSearchType,
+    setAreaHa,
+    setAreaId,
+    setAreaType,
+    setAreaLayer,
+  } = context as SearchContextValues;
 
   useEffect(() => {
     isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
@@ -33,7 +40,10 @@ const Selector = () => {
       .then((result) => setAreaTypes(result))
       .catch(() => setAreasError(true));
 
-    SearchAPI.requestTestBackend().catch(() => setPolygonError(true));
+    SearchAPI.requestTestBackend().catch(() => {
+      setPolygonError(true);
+      setShowDrawControl(false);
+    });
   }, []);
 
   const sections = [
@@ -41,6 +51,7 @@ const Selector = () => {
       label: {
         id: "panel1-Geocerca",
         name: "Área de consulta",
+        collapsed: !(searchType === "definedArea"),
       },
       component: areasError
         ? ErrorMessage
@@ -50,7 +61,6 @@ const Selector = () => {
       componentProps: {
         areasList: areaTypes,
       },
-      collapsed: false,
     },
     {
       label: {
@@ -58,6 +68,7 @@ const Selector = () => {
         name: "Dibujar polígono",
         icon: EditIcon,
         disabled: !drawPolygonFlag,
+        collapsed: !(searchType === "drawPolygon"),
       },
       // TODO: Considerar move DrawPolygon aquí mismo o mover SearchAreas a otro archivo
       component: polygonError ? ErrorMessage : DrawPolygon,
@@ -76,6 +87,7 @@ const Selector = () => {
       setSearchType("definedArea");
     } else if (expTab === "draw-polygon") {
       setSearchType("drawPolygon");
+      setShowDrawControl(true);
     } else {
       setSearchType(null);
     }
@@ -112,124 +124,6 @@ const Selector = () => {
         handleChange={onChange}
       />
     </div>
-  );
-};
-
-interface SearchAreasProps {
-  areasList: Array<AreaType>;
-}
-const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
-  areasList,
-}) => {
-  const [areasId, setAreasId] = useState<Array<AreaIdBasic>>([]);
-  const context = useContext(SearchContext);
-  const { areaType, setAreaType } = context as SearchContextValues;
-
-  useEffect(() => {
-    if (!isUndefinedOrNull(areaType)) {
-      SearchAPI.requestAreaIds(areaType!.id).then((areas) => setAreasId(areas));
-    }
-  }, []);
-
-  const components = areasList
-    .filter((area) => area.id !== "custom")
-    .map((area) => ({
-      label: {
-        id: area.id,
-        name: area.label,
-        disabled: area.id === "se",
-        collapsed: areaType?.id !== area.id,
-      },
-      component: AreaAutocomplete,
-      componentProps: {
-        optionsList: areasId,
-      },
-    }));
-
-  const onChange = (
-    level: string,
-    expandedTab: string,
-    expandedTabLabel?: string
-  ) => {
-    if (expandedTab === "") {
-      setAreaType();
-    } else {
-      setAreaType({ id: expandedTab, label: expandedTabLabel || expandedTab });
-      SearchAPI.requestAreaIds(expandedTab).then((areas) => setAreasId(areas));
-    }
-  };
-
-  return (
-    <div style={{ width: "100%" }}>
-      <Accordion
-        componentsArray={components}
-        classNameDefault="m0"
-        classNameSelected="m0"
-        level="2"
-        handleChange={onChange}
-      />
-    </div>
-  );
-};
-
-interface AreaAutocompleteProps {
-  optionsList: Array<AreaIdBasic>;
-}
-
-const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
-  optionsList,
-}) => {
-  const context = useContext(SearchContext);
-  const { areaType, setAreaId, setAreaLayer, setAreaHa } =
-    context as SearchContextValues;
-
-  return (
-    <Autocomplete
-      id="autocomplete-selector"
-      options={optionsList}
-      getOptionLabel={(option) => option.name}
-      onChange={(event, value) => {
-        if (isUndefinedOrNull(value)) {
-          setAreaId();
-          setAreaLayer();
-          setAreaHa();
-        } else {
-          setAreaId(value || undefined);
-          // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          Promise.all([SearchAPI.requestAreaInfo(value?.id!)]).then(
-            ([areaId]) => {
-              setAreaHa(Number(areaId.area));
-              setAreaLayer(GeoJsonUtils.castAreaIdToFeatureCollection(areaId));
-            }
-          );
-        }
-      }}
-      style={{ width: "100%" }}
-      renderInput={(params) => (
-        <TextField
-          InputProps={params.InputProps}
-          inputProps={params.inputProps}
-          fullWidth={params.fullWidth}
-          label="Escriba el nombre a buscar"
-          placeholder="Seleccionar..."
-          variant="standard"
-          InputLabelProps={{ shrink: true }}
-        />
-      )}
-      renderOption={(props, option) => (
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        <li {...props} key={option.id}>
-          {option.name}
-        </li>
-      )}
-      autoHighlight
-      ListboxProps={{
-        style: {
-          maxHeight: "100px",
-          border: "0px",
-        },
-      }}
-    />
   );
 };
 

@@ -4,6 +4,7 @@ import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
+export type drawControlHandler = (control: any) => void;
 
 export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
@@ -22,6 +23,8 @@ export interface SearchContextValues {
   setLayerError(error?: string): void;
   setMapTitle(mapTitle: MapTitle): void;
   clearLayers(): void;
+  onEditControlMounted: drawControlHandler;
+  setOnEditControlMounted(handler: Function): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
@@ -38,6 +41,8 @@ const SearchContext = React.createContext<SearchContextValues>({
   setLayerError: () => {},
   setMapTitle: () => {},
   clearLayers: () => {},
+  onEditControlMounted: () => {},
+  setOnEditControlMounted: () => {},
 });
 
 export default SearchContext;

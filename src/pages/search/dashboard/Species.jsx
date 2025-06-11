@@ -2,9 +2,7 @@ import React from 'react';
 
 import Accordion from 'pages/search/Accordion';
 import Richness from 'pages/search/dashboard/species/Richness';
-import FunctionalDiversity from 'pages/search/dashboard/species/FunctionalDiversity';
 import SearchContext from 'pages/search/SearchContext';
-import isFlagEnabled from 'utils/isFlagEnabled';
 
 class Species extends React.Component {
   mounted = false;
@@ -13,10 +11,6 @@ class Species extends React.Component {
     super(props);
     this.state = {
       visible: 'richness',
-      childMap: {
-        richness: 'numberOfSpecies',
-        functionalDiversity: 'tropicalDryForest',
-      },
       availableComponents: [],
       functionalFlag: false,
     };
@@ -29,28 +23,21 @@ class Species extends React.Component {
     switch (areaId) {
       case 'states':
         if (geofenceId !== '88') {
-          selected = ['richness', 'functionalDiversity'];
+          selected = ['richness'];
         }
         break;
       case 'ea':
         if (geofenceId !== 'CORALINA') {
-          selected = ['richness', 'functionalDiversity'];
+          selected = ['richness'];
         }
         break;
       case 'basinSubzones':
-        selected = ['richness', 'functionalDiversity'];
+        selected = ['richness'];
         break;
       default:
         break;
     }
     this.setState({ availableComponents: selected });
-
-    isFlagEnabled('functionalDiversity')
-      .then((value) => {
-        if(this.mounted) {
-          this.setState({ functionalFlag: value });
-        }
-      });
   }
 
   componentWillUnmount() {
@@ -92,7 +79,6 @@ class Species extends React.Component {
     const {
       childMap,
       availableComponents,
-      functionalFlag,
     } = this.state;
     const initialArray = [
       {
@@ -104,18 +90,6 @@ class Species extends React.Component {
         componentProps: {
           handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.richness,
-        },
-      },
-      {
-        label: {
-          id: 'functionalDiversity',
-          name: 'Diversidad Funcional',
-          disabled: !functionalFlag,
-        },
-        component: FunctionalDiversity,
-        componentProps: {
-          handleAccordionChange: this.handleAccordionChange,
-          openTab: childMap.functionalDiversity,
         },
       },
     ];

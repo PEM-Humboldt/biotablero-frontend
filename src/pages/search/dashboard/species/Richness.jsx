@@ -1,34 +1,13 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 
 import Accordion from 'pages/search/Accordion';
-import NumberOfSpecies from 'pages/search/dashboard/species/richness/NumberOfSpecies';
-import SpeciesRecordsGaps from 'pages/search/dashboard/species/richness/SpeciesRecordsGaps';
 
 const Richness = (props) => {
   const {
-    handleAccordionChange,
-    openTab,
+    handleAccordionChange
   } = props;
 
-  const componentsArray = [
-    {
-      label: {
-        id: 'numberOfSpecies',
-        name: 'Número de especies',
-        collapsed: openTab !== 'numberOfSpecies',
-      },
-      component: NumberOfSpecies,
-    },
-    {
-      label: {
-        id: 'speciesRecordsGaps',
-        name: 'Vacíos en registros de especies',
-        collapsed: openTab !== 'speciesRecordsGaps',
-      },
-      component: SpeciesRecordsGaps,
-    },
-  ];
+  const componentsArray = [ ];
   return (
     <div style={{ width: '100%' }}>
       <Accordion
@@ -43,13 +22,11 @@ const Richness = (props) => {
 };
 
 Richness.propTypes = {
-  handleAccordionChange: PropTypes.func,
-  openTab: PropTypes.string,
+  handleAccordionChange: PropTypes.func
 };
 
 Richness.defaultProps = {
-  handleAccordionChange: () => {},
-  openTab: '',
+  handleAccordionChange: () => {}
 };
 
 export default Richness;

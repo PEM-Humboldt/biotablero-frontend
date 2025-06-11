@@ -4,24 +4,24 @@ import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   ImageOverlay,
-  Map,
+  MapContainer,
   TileLayer,
   WMSTileLayer,
   Pane,
   GeoJSON,
   Polygon,
 } from "react-leaflet";
-
-import DrawControl from "pages/search/mapViewer/DrawControl";
+import { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 
 import "leaflet/dist/leaflet.css";
-import { LatLngBoundsExpression, LatLngBoundsLiteral } from "leaflet";
+
+import DrawControl from "pages/search/mapViewer/DrawControl";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
 
 import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 
 interface Props {
-  drawPolygonEnabled: boolean;
+  showDrawControl: boolean;
   geoServerUrl: string;
   loadingLayer: boolean;
   layerError: boolean;
@@ -71,7 +71,7 @@ class MapViewer extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     const { bounds } = this.props;
-    const map = this.mapRef.current?.leafletElement;
+    const map = this.mapRef.current;
 
     if (!map) return;
 
@@ -93,8 +93,7 @@ class MapViewer extends React.Component<Props, State> {
       bounds,
       mapTitle,
       polygon,
-      drawPolygonEnabled,
-      loadPolygonInfo,
+      showDrawControl,
     } = this.props;
     //TODO Borrar searchRasterLayers al finalizar la migracion
     //Trabajar igual los shapeLayers
@@ -109,7 +108,7 @@ class MapViewer extends React.Component<Props, State> {
     const titleName = mapTitle?.name || "";
 
     return (
-      <Map id="map" ref={this.mapRef} bounds={config.params.colombia}>
+      <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
         {/* TODO agrega componente para el gradiente */}
         {titleName && (
           <>
@@ -168,15 +167,17 @@ class MapViewer extends React.Component<Props, State> {
             </button>
           </div>
         </Modal>
-        {drawPolygonEnabled && (
-          <DrawControl loadPolygonInfo={loadPolygonInfo} />
-        )}
+        {showDrawControl && <DrawControl />}
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         {paneLevels.map((panelLevel, index) => (
-          <Pane key={panelLevel} style={{ zIndex: 500 + index }}>
+          <Pane
+            name={`Pane${panelLevel}`}
+            key={panelLevel}
+            style={{ zIndex: 500 + index }}
+          >
             {shapeLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => (
@@ -219,10 +220,9 @@ class MapViewer extends React.Component<Props, State> {
             url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
             opacity={0.4}
             transparent
-            alt="Regiones"
           />
         )}
-      </Map>
+      </MapContainer>
     );
   }
 }
