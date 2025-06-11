@@ -1,5 +1,4 @@
-import axios, { CancelToken } from 'axios';
-import { ShapeAPIObject } from "pages/search/types/api";
+import axios from 'axios';
 
 class RestAPI {
   /**
@@ -141,29 +140,6 @@ class RestAPI {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the layer associated to a category and period of forest loss and persistence
-   * in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} period period
-   * @param {String} category forest loss and persistence category
-   *
-   * @return {Object<any>} layer object to be loaded in the map
-   */
-  static requestForestLPLayer(areaType, areaId, period, category) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `forest/lp/layer?areaType=${areaType}&areaId=${areaId}&period=${period}&category=${category}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
       source,
     };
   }
