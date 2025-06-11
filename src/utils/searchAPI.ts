@@ -123,11 +123,9 @@ class SearchAPI {
    */
   static requestMetricsValues(
     metricId: MetricsTypes,
-    polygonId: number,
+    polygonId: number
   ): Promise<Array<ForestLPRawDataPolygon | CoverageRawDataPolygon>> {
-    return SearchAPI.makeGetRequest(
-      `metrics/${metricId}/values/${polygonId}`
-    );
+    return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 
   /**
@@ -142,7 +140,7 @@ class SearchAPI {
     metricId: MetricsTypes,
     itemId: string,
     category: number,
-    polygonId: number,
+    polygonId: number
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
     return {

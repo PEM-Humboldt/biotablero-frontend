@@ -116,10 +116,13 @@ export class ForestLossPersistenceController {
           throw new Error("Error getting data");
         });
     } else {
-      return SearchAPI.requestMetricsValues("LossPersistence", Number(this.areaId))
+      return SearchAPI.requestMetricsValues(
+        "LossPersistence",
+        Number(this.areaId)
+      )
         .then((data) => {
           const lpOnly = data.filter(
-            (d): d is ForestLPRawDataPolygon => 'periodo' in d && 'perdida' in d
+            (d): d is ForestLPRawDataPolygon => "periodo" in d
           );
 
           const mappedData = lpOnly.map((item) => {
@@ -148,10 +151,12 @@ export class ForestLossPersistenceController {
                 area: item.noForest,
                 percentage: item.percentagesNoForest,
               },
-            ]
+            ],
           }));
 
-          const periodData = mappedData.find(({ period }) => period === latestPeriod);
+          const periodData = mappedData.find(
+            ({ period }) => period === latestPeriod
+          );
           const persistenceData = periodData?.persistence;
           const forestPersistenceValue = persistenceData ?? 0;
 
@@ -270,7 +275,7 @@ export class ForestLossPersistenceController {
           "LossPersistence",
           period,
           value,
-          Number(this.areaId),
+          Number(this.areaId)
         );
         requests.push(request);
         this.activeRequests.set(`${period}-${value}`, source);
