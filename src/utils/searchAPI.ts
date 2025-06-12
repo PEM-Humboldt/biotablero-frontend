@@ -151,6 +151,27 @@ class SearchAPI {
     };
   }
 
+  /**
+   * 
+   * @param url 
+   * @returns 
+   */
+  static getLayerData(response: { layer: string }): Promise<any> {
+    return axios
+      .get(response.layer, {
+        responseType: 'blob'
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        let message = "Bad GET response. Try later";
+        if (error.request && error.request.statusText === "")
+          message = "no-data-available";
+        return Promise.reject(message);
+      });
+  }
+
   /** ************** */
   /** BASE FUNCTIONS */
   /** ************** */
