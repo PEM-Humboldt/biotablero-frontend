@@ -79,6 +79,7 @@ class Search extends Component<Props, State> {
           areaHa: Number(areaId.area),
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
+        this.setAreaLayer(areaId.geometry);
       });
     }
   }
