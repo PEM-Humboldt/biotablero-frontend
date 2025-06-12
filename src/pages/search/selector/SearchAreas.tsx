@@ -81,7 +81,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       id="autocomplete-selector"
       options={optionsList}
       getOptionLabel={(option) => option.name}
-      onChange={(event, value) => {
+      onChange={(_, value) => {
         if (isUndefinedOrNull(value)) {
           setAreaId();
           setAreaLayer();
@@ -92,6 +92,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
           Promise.all([SearchAPI.requestAreaInfo(value!.id)]).then(
             ([areaId]) => {
               setAreaHa(Number(areaId.area));
+              setAreaLayer(areaId.geometry);
             }
           );
         }
