@@ -156,7 +156,7 @@ class SearchAPI {
    * @param url 
    * @returns 
    */
-  static getLayerData(response: { layer: string }): Promise<any> {
+  static getLayerData(response: { layer: string }): Promise<Blob> {
     return axios
       .get(response.layer, {
         responseType: 'blob'

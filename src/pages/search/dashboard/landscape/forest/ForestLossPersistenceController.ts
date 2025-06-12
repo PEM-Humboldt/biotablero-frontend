@@ -297,10 +297,18 @@ export class ForestLossPersistenceController {
       });
 
       const layerResponses = await Promise.all(layersRequests);
+
+      const layersBase64Promises: Array<Promise<string>> = [];
+      layerResponses.forEach(([response], index) => {
+        const layerBase64 = MetricsUtils.blobToBase64(response[index]);
+        layersBase64Promises.push(layerBase64)
+      });
+
+      const layersBase64 = await Promise.all(layersBase64Promises);
       
-      let response = ForestLPKeys.map((category, idx) => ({
+      let response = ForestLPKeys.map((category, index) => ({
         id: category,
-        data: URL.createObjectURL(layerResponses[idx]),
+        data: `data:image/png;base64,${layersBase64[index]}`,
         selected: false,
         paneLevel: 2,
       }));
