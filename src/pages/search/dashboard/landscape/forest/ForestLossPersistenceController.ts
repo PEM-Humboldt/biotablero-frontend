@@ -267,10 +267,11 @@ export class ForestLossPersistenceController {
    * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
    */
   async getLayers(period: string): Promise<Array<rasterLayer>> {
+    
     if (this.areaId) {
       const requests: Array<Promise<any>> = [];
 
-      Object.entries(ForestLPCategories).forEach(([key, value]) => {
+      Object.entries(ForestLPCategories).forEach(([_, value]) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "LossPersistence",
           period,
@@ -282,21 +283,29 @@ export class ForestLossPersistenceController {
       });
 
       const res = await Promise.all(requests);
-
+      
       ForestLPKeys.forEach((category) => {
         this.activeRequests.delete(`${period}-${category}`);
       });
 
       if (res.includes("request canceled")) throw Error("request canceled");
 
-      return ForestLPKeys.map((category, idx) => ({
+      const layersRequests: Array<Promise<any>> = [];
+      res.forEach((response) => {
+        const request = SearchAPI.getLayerData(response);
+        layersRequests.push(request)
+      });
+
+      const layerResponses = await Promise.all(layersRequests);
+      
+      let response = ForestLPKeys.map((category, idx) => ({
         id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data
-        )}`,
+        data: URL.createObjectURL(layerResponses[idx]),
         selected: false,
         paneLevel: 2,
       }));
+
+      return response;
     } else if (this.polygon) {
       const requests: Array<Promise<{ layer: string }>> = [];
       ForestLPKeys.forEach((category) => {

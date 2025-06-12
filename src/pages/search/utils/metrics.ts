@@ -37,7 +37,7 @@ export class MetricsUtils {
   }
 
   /**
-   * Calculate Loss Persistence percenttages
+   * Calculate Loss Persistence percentages
    * @param lpData Loss Persistence data
    * @returns Loss Persistence object with percentages
    */
