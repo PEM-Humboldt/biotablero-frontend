@@ -290,7 +290,7 @@ export class ForestLossPersistenceController {
 
       if (res.includes("request canceled")) throw Error("request canceled");
 
-      const layersRequests: Array<Promise<any>> = [];
+      const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {
         const request = SearchAPI.getLayerData(response);
         layersRequests.push(request)
@@ -299,19 +299,20 @@ export class ForestLossPersistenceController {
       const layerResponses = await Promise.all(layersRequests);
 
       const layersBase64Promises: Array<Promise<string>> = [];
-      layerResponses.forEach(([response], index) => {
-        const layerBase64 = MetricsUtils.blobToBase64(response[index]);
+
+      layerResponses.forEach((response) => {        
+        const layerBase64 = MetricsUtils.blobToBase64(response);
         layersBase64Promises.push(layerBase64)
       });
 
-      const layersBase64 = await Promise.all(layersBase64Promises);
+      const layersBase64 = await Promise.all(layersBase64Promises);      
       
       let response = ForestLPKeys.map((category, index) => ({
         id: category,
-        data: `data:image/png;base64,${layersBase64[index]}`,
+        data: layersBase64[index],
         selected: false,
         paneLevel: 2,
-      }));
+      }));      
 
       return response;
     } else if (this.polygon) {
