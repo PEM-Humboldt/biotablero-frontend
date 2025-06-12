@@ -105,7 +105,7 @@ class MapViewer extends React.Component<Props, State> {
       new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
 
-    const titleName = mapTitle?.name || "";
+    const titleName = mapTitle?.name || "";    
 
     return (
       <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
@@ -191,13 +191,14 @@ class MapViewer extends React.Component<Props, State> {
             {rasterLayers
               .filter((l) => l.paneLevel === panelLevel)
               .map((layer) => {
+                let boundsPatch = config.params.colombia;
                 let opacity = layer.selected ? 1 : 0.7;
                 if (layer.opacity) opacity = layer.opacity;
                 return (
                   <ImageOverlay
                     key={layer.id}
                     url={layer.data}
-                    bounds={bounds}
+                    bounds={boundsPatch}
                     opacity={opacity}
                   />
                 );
