@@ -64,7 +64,6 @@ export class MetricsUtils {
       reader.onloadend = () => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(blob);
-    })
+    });
   }
-  
 }
