@@ -105,7 +105,7 @@ class MapViewer extends React.Component<Props, State> {
       new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
     );
 
-    const titleName = mapTitle?.name || "";    
+    const titleName = mapTitle?.name || "";
 
     return (
       <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
