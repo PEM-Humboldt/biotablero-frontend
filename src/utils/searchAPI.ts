@@ -152,9 +152,9 @@ class SearchAPI {
   }
 
   /**
-   *
-   * @param url
-   * @returns
+   * Get layer image data
+   * @param url Layer image url
+   * @returns Blob image data
    */
   static getLayerData(response: { layer: string }): Promise<Blob> {
     return axios
