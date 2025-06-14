@@ -357,6 +357,8 @@ class TimelineFootprint extends React.Component<Props, State> {
               setShapeLayers(activeLayers);
             }
           );
+        } catch (error) {
+          setLayerError(error instanceof Error ? error.message : String(error));
         } finally {
           setLoadingLayer(false);
         }

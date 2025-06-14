@@ -5,6 +5,7 @@ import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 import { hasValidGeoJSONData } from "utils/GeoJsonUtils";
+import { AnyARecord } from "node:dns";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
 
@@ -98,13 +99,16 @@ export class TimelineFootprintController {
           layerStyle: layerStyle,
         };
       } else {
-        throw new Error(`GeoJSON inválido`);
+        throw new Error("Invalid GeoJSON");
       }
-    } catch (error) {
-      this.activeRequests.delete(selectedKey);
-      throw new Error(
-        error instanceof Error ? error.message : "Error al obtener la capa"
-      );
+    } catch (error: any) {
+      if (error != "Error: Invalid GeoJSON") {
+        throw new Error(
+          error instanceof Error ? error.message : "Error al obtener la capa"
+        );
+      } else {
+        return { id: "", paneLevel: 0, json: { type: "FeatureCollection" } };
+      }
     }
   };
 
