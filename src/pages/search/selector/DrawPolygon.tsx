@@ -10,7 +10,7 @@ import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
 import SearchAPI from "utils/searchAPI";
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 import { AreaIdBasic } from "../types/dashboard";
 
 const DrawPolygon = () => {
@@ -141,7 +141,7 @@ const DrawPolygon = () => {
   /**
    * Handles send button click. Set the drawn polygon as the area layer in context to be consulted.
    */
-  const sendClick = () => {    
+  const sendClick = () => {
     const polygonBounds = L.polygon(drawnPolygon!.getLatLngs()).getBounds();
     const bbox: geojson.BBox = [
       polygonBounds.getSouthWest().lng,
@@ -153,29 +153,28 @@ const DrawPolygon = () => {
       drawnPolygon!.toGeoJSON() as geojson.Feature<geojson.Polygon>;
     geojson.geometry.bbox = bbox;
 
-    const { setAreaType, setAreaLayer, setAreaId, setAreaHa } = context as SearchContextValues;
+    const { setAreaType, setAreaLayer, setAreaId, setAreaHa } =
+      context as SearchContextValues;
     setAreaType({ id: "custom", label: "Consulta Personalizada" });
     setAreaLayer(geojson);
-    
+
     SearchAPI.requestAreaPolygon(geojson)
-      .then((data: {polygon_id: number}) => {
+      .then((data: { polygon_id: number }) => {
         let areaBasic: AreaIdBasic = {
-          id: data.polygon_id, 
+          id: data.polygon_id,
           area_type: {
-            id:"custom", 
-            label: "Consulta Personalizada"
-          }, 
-          name: "polígono"
-        }
+            id: "custom",
+            label: "Consulta Personalizada",
+          },
+          name: "polígono",
+        };
         setAreaId(areaBasic);
 
         SearchAPI.requestAreaInfo(areaBasic.id)
-          .then(
-            (areaData) => {
-              setAreaHa(Number(areaData.area));
-              setAreaLayer(areaData.geometry);
-            }
-          )
+          .then((areaData) => {
+            setAreaHa(Number(areaData.area));
+            setAreaLayer(areaData.geometry);
+          })
           .catch(() => {
             throw new Error("Error getting area data");
           });

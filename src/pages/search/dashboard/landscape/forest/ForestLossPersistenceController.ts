@@ -69,67 +69,65 @@ export class ForestLossPersistenceController {
    *
    * @returns Object with forest LP data and persistence value
    */
-  getForestLPData = (
-    latestPeriod: string,
-  ): Promise<ForestLPData> => {
+  getForestLPData = (latestPeriod: string): Promise<ForestLPData> => {
     if (this.areaId) {
       return SearchAPI.requestMetricsValues(
         "LossPersistence",
         Number(this.areaId)
       )
-      .then((data) => {
-        const lpOnly = data.filter(
-          (d): d is ForestLPRawDataPolygon => "periodo" in d
-        );
+        .then((data) => {
+          const lpOnly = data.filter(
+            (d): d is ForestLPRawDataPolygon => "periodo" in d
+          );
 
-        const mappedData = lpOnly.map((item) => {
-          let itemMapped = MetricsUtils.mapLPResponse(item);
-          return MetricsUtils.calcLPAreas(itemMapped);
+          const mappedData = lpOnly.map((item) => {
+            let itemMapped = MetricsUtils.mapLPResponse(item);
+            return MetricsUtils.calcLPAreas(itemMapped);
+          });
+
+          const forestLP: Array<ForestLPExt> = mappedData.map((item) => ({
+            id: item.period,
+            data: [
+              {
+                label: "Pérdida",
+                key: "perdida",
+                area: item.loss,
+                percentage: item.percentagesLoss,
+              },
+              {
+                label: "Persistencia",
+                key: "persistencia",
+                area: item.persistence,
+                percentage: item.percentagesPersistence,
+              },
+              {
+                label: "No bosque",
+                key: "no_bosque",
+                area: item.noForest,
+                percentage: item.percentagesNoForest,
+              },
+            ],
+          }));
+
+          const periodData = mappedData.find(
+            ({ period }) => period === latestPeriod
+          );
+          const persistenceData = periodData?.persistence;
+          const forestPersistenceValue = persistenceData ?? 0;
+
+          forestLP.sort((pA, pB) => {
+            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+            return yearA - yearB;
+          });
+          return {
+            forestLP,
+            forestPersistenceValue,
+          };
+        })
+        .catch(() => {
+          throw new Error("Error getting data");
         });
-
-        const forestLP: Array<ForestLPExt> = mappedData.map((item) => ({
-          id: item.period,
-          data: [
-            {
-              label: "Pérdida",
-              key: "perdida",
-              area: item.loss,
-              percentage: item.percentagesLoss,
-            },
-            {
-              label: "Persistencia",
-              key: "persistencia",
-              area: item.persistence,
-              percentage: item.percentagesPersistence,
-            },
-            {
-              label: "No bosque",
-              key: "no_bosque",
-              area: item.noForest,
-              percentage: item.percentagesNoForest,
-            },
-          ],
-        }));
-
-        const periodData = mappedData.find(
-          ({ period }) => period === latestPeriod
-        );
-        const persistenceData = periodData?.persistence;
-        const forestPersistenceValue = persistenceData ?? 0;
-
-        forestLP.sort((pA, pB) => {
-          const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
-          const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
-          return yearA - yearB;
-        });
-        return {
-          forestLP,
-          forestPersistenceValue,
-        };
-      })
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
     }
 
     throw Error("Area undefined");

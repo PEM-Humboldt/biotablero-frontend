@@ -64,16 +64,16 @@ class SearchAPI {
    * @param polygon Polygon search data
    * @returns Polygon identifier
    */
-  static requestAreaPolygon(polygon: geojson.Feature<geojson.Polygon>): Promise<{ polygon_id: number }> {
+  static requestAreaPolygon(
+    polygon: geojson.Feature<geojson.Polygon>
+  ): Promise<{ polygon_id: number }> {
     const requestBody = {
       polygon: polygon,
     };
 
-    return SearchAPI.makePostRequest(
-      "areas/polygon",
-      requestBody,
-      { responseType: "json" }
-    );
+    return SearchAPI.makePostRequest("areas/polygon", requestBody, {
+      responseType: "json",
+    });
   }
 
   /** *********************** */
