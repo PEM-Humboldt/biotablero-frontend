@@ -65,7 +65,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     this.switchLayer(this.currentPeriod);
 
     this.flpController
-      .getForestLPData(this.currentPeriod, searchType)
+      .getForestLPData(this.currentPeriod)
       .then((data) => {
         if (this.mounted) {
           this.setState({
