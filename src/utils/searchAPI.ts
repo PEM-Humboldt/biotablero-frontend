@@ -81,27 +81,6 @@ class SearchAPI {
   /** *********************** */
 
   /**
-   * Get the forest loss and persistence data by periods and categories in the given polygon.
-   *
-   * @param {Polygon} polygon selected polygon
-   *
-   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
-   */
-  static requestForestLPData(
-    polygon: polygonFeature | null
-  ): Promise<Array<ForestLPRawDataPolygon>> {
-    const requestBody = {
-      polygon: polygon,
-    };
-
-    return SearchAPI.makePostRequest(
-      "metrics/LossPersistence/values",
-      requestBody,
-      { responseType: "json" }
-    );
-  }
-
-  /**
    * Get the layer associated to a polygon query for Forest LP
    *
    * @param {String} period item id to get
