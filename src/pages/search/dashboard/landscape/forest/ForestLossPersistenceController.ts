@@ -72,6 +72,7 @@ export class ForestLossPersistenceController {
   getForestLPData = (
     latestPeriod: string,
   ): Promise<ForestLPData> => {
+    if (this.areaId) {
       return SearchAPI.requestMetricsValues(
         "LossPersistence",
         Number(this.areaId)
@@ -129,6 +130,9 @@ export class ForestLossPersistenceController {
       .catch(() => {
         throw new Error("Error getting data");
       });
+    }
+
+    throw Error("Area undefined");
   };
 
   /**
