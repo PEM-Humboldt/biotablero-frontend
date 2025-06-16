@@ -14,7 +14,6 @@ import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
-import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
