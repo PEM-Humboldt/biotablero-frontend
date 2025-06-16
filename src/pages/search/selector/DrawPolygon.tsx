@@ -9,6 +9,9 @@ import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
+import SearchAPI from "utils/searchAPI";
+import { useHistory } from 'react-router-dom';
+import { AreaIdBasic } from "../types/dashboard";
 
 const DrawPolygon = () => {
   const context = useContext(SearchContext);
@@ -19,6 +22,7 @@ const DrawPolygon = () => {
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
+  const history = useHistory();
 
   useEffect(() => {
     setOnEditControlMounted(onEditControlMounted);
@@ -137,7 +141,7 @@ const DrawPolygon = () => {
   /**
    * Handles send button click. Set the drawn polygon as the area layer in context to be consulted.
    */
-  const sendClick = () => {
+  const sendClick = () => {    
     const polygonBounds = L.polygon(drawnPolygon!.getLatLngs()).getBounds();
     const bbox: geojson.BBox = [
       polygonBounds.getSouthWest().lng,
@@ -149,9 +153,37 @@ const DrawPolygon = () => {
       drawnPolygon!.toGeoJSON() as geojson.Feature<geojson.Polygon>;
     geojson.geometry.bbox = bbox;
 
-    const { setAreaType, setAreaLayer } = context as SearchContextValues;
+    const { setAreaType, setAreaLayer, setAreaId, setAreaHa } = context as SearchContextValues;
     setAreaType({ id: "custom", label: "Consulta Personalizada" });
     setAreaLayer(geojson);
+    
+    SearchAPI.requestAreaPolygon(geojson)
+      .then((data: {polygon_id: number}) => {
+        let areaBasic: AreaIdBasic = {
+          id: data.polygon_id, 
+          area_type: {
+            id:"custom", 
+            label: "Consulta Personalizada"
+          }, 
+          name: "polígono"
+        }
+        setAreaId(areaBasic);
+
+        SearchAPI.requestAreaInfo(areaBasic.id)
+          .then(
+            (areaData) => {
+              setAreaHa(Number(areaData.area));
+              setAreaLayer(areaData.geometry);
+            }
+          )
+          .catch(() => {
+            throw new Error("Error getting area data");
+          });
+      })
+      .catch(() => {
+        throw new Error("Error getting area polygon data");
+      });
+
     setDrawnPolygon(null);
   };
 
