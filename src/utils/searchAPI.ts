@@ -8,6 +8,7 @@ import {
 } from "pages/search/types/dashboard";
 import { CoverageRawDataPolygon } from "pages/search/types/ecosystems";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+import * as geojson from "geojson";
 
 export type MetricsTypes = "LossPersistence" | "Coverage";
 
@@ -56,6 +57,23 @@ class SearchAPI {
    */
   static requestAreaIds(areaType: string): Promise<Array<AreaIdBasic>> {
     return SearchAPI.makeGetRequest(`areas?type=${areaType}`);
+  }
+
+  /**
+   * Returns the identifier of a polygon
+   * @param polygon Polygon search data
+   * @returns Polygon identifier
+   */
+  static requestAreaPolygon(polygon: geojson.Feature<geojson.Polygon>): Promise<{ polygon_id: number }> {
+    const requestBody = {
+      polygon: polygon,
+    };
+
+    return SearchAPI.makePostRequest(
+      "areas/polygon",
+      requestBody,
+      { responseType: "json" }
+    );
   }
 
   /** *********************** */
