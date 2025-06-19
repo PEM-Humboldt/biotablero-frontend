@@ -280,6 +280,7 @@ class Search extends Component<Props, State> {
       shapeLayers: [],
       bounds: [],
       mapTitle: { name: "" },
+      showAreaLayer: false,
       loadingLayer: false,
       layerError: false,
     });
