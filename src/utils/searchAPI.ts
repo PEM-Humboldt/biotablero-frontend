@@ -1,14 +1,77 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { polygonFeature } from "pages/search/types/drawer";
+import { RasterAPIObject } from "pages/search/types/api";
+import {
+  AreaId,
+  AreaIdBasic,
+  AreaType,
+  polygonFeature,
+} from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+import RestAPI from "./restAPI";
 
 class SearchAPI {
   /**
-   * Get the list of current scripts.
+   * Check if search backend is up
    */
   static requestTestBackend(): Promise<Array<String>> {
-    return SearchAPI.makeGetRequest(`docs`);
+    return SearchAPI.makeGetRequest(`redoc`);
   }
+
+  /** ****** */
+  /** SEARCH */
+  /** ****** */
+
+  /**
+   * Get complete information about an area
+   *
+   * @param {areaType} string TEMPORAL
+   * @param {areaId} string | number area id
+   *
+   * @returns {Promise<AreaId>} object with area information
+   */
+  static requestAreaInfo(areaType: string, areaId: string | number) {
+    // TODO: Ajustar con los llamados al nuevo backend
+    // (por url) traer toda la lista de areaType
+    // traer el área
+    // Traer la geometria
+  }
+
+  /** *************** */
+  /** SEARCH SELECTOR */
+  /** *************** */
+
+  /**
+   * Get the list of area types
+   *
+   * @return {Promise<Array<AreaType>>} array of area types
+   */
+  static requestAreaTypes(): Promise<Array<AreaType>> {
+    return SearchAPI.makeGetRequest("areas/types");
+  }
+
+  /**
+   * Get the list of areaIds for a given area type
+   *
+   * @param {areaType} areaType areaType to filter areas ids
+   *
+   * @return {Promise<Array<AreaIdBasic>>} array of area types
+   */
+  static requestAreaIds(areaType: string): Promise<Array<AreaIdBasic>> {
+    switch (areaType) {
+      case "states":
+        return RestAPI.getAllStates();
+      case "ea":
+        return RestAPI.getAllEAs();
+      case "basinSubzones":
+        return RestAPI.getAllSubzones();
+      default:
+        return Promise.resolve([]);
+    }
+  }
+
+  /** *********************** */
+  /** FOREST LOSS PERSISTENCE */
+  /** *********************** */
 
   /**
    * Get the forest loss and persistence data by periods and categories in the given polygon.
@@ -27,8 +90,7 @@ class SearchAPI {
     return SearchAPI.makePostRequest(
       "metrics/LossPersistence/values",
       requestBody,
-      { responseType: "json" },
-      false
+      { responseType: "json" }
     );
   }
 
@@ -36,26 +98,27 @@ class SearchAPI {
    * Get the layer associated to a polygon query for Forest LP
    *
    * @param {String} period item id to get
+   * @param {Number} category index of the category to get
    * @param {Polygon} polygon selected polygon in GEOJson format
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @param {String} category;
+   * @return {ShapeAPIObject} layer object to be loaded in the map
    */
 
   static requestForestLPLayer(
     period: string,
-    polygon: polygonFeature | null
-  ): Promise<Object> | any {
-    const requestBody = {
-      polygon: polygon,
-    };
+    category: number,
+    polygon: polygonFeature
+  ): RasterAPIObject {
+    const requestBody = { polygon };
+    const source = axios.CancelToken.source();
 
     return {
       request: SearchAPI.makePostRequest(
-        `metrics/LossPersistence/layer?item_id=${period}`,
+        `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
         requestBody,
-        { responseType: "arraybuffer" },
-        true
+        { responseType: "json" }
       ),
+      source,
     };
   }
 
@@ -100,14 +163,8 @@ class SearchAPI {
    * @param {String} endpoint endpoint to attach to url
    * @param {Object} requestBody JSON object with the request body
    * @param {Array} options config params to the request
-   * @param {Boolean} completeRes define if get all the response or only data part
    */
-  static makePostRequest(
-    endpoint: string,
-    requestBody: {},
-    options = {},
-    completeRes = false
-  ) {
+  static makePostRequest(endpoint: string, requestBody: {}, options = {}) {
     const config: AxiosRequestConfig = {
       headers: {
         "Content-Type": "application/json",
@@ -120,12 +177,7 @@ class SearchAPI {
         requestBody,
         config
       )
-      .then((res) => {
-        if (completeRes) {
-          return res;
-        }
-        return res.data;
-      })
+      .then((res) => res.data)
       .catch((error) => {
         let message = "Bad POST response. Try later";
         if (error.response) message = error.response.status;

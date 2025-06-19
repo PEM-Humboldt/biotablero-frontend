@@ -1,4 +1,5 @@
 import axios, { CancelToken } from 'axios';
+import { ShapeAPIObject } from "pages/search/types/api";
 
 class RestAPI {
   /**
@@ -129,20 +130,6 @@ class RestAPI {
   /** ******************** */
 
   /**
-   * Request the geometry of the biomes by EA
-   * @param {String} eaId id ea to request
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestBiomesbyEAGeometry(eaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`ea/layers/${eaId}/biomes`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * Request area geometry by id
    *
    * @param {String} areaId area id to request
@@ -159,169 +146,6 @@ class RestAPI {
   }
 
   /**
-   * Request a specific geofence geometry identified by area and geofence
-   *
-   * @param {String} areaId area id to request
-   * @param {String} geofenceId geofence id to request
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestGeofenceGeometryByArea(areaId, geofenceId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaId}/layers/${geofenceId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the coverage layer divided by categories in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} coverageType coverage category
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestCoveragesLayer(areaType, areaId, coverageType) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
-      source,
-    };
-  }
-
-  /**
-   * Get the coverage layer divided by categories in a given strategic ecosystem and area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} coverageType coverage category
-   * @param {String} seType strategic ecosystem type
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-   static requestCoveragesSELayer(areaType, areaId, coverageType, seType) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
-      source,
-    };
-  }
-
-  /**
-   * Get the geometry associated for the current human footprint in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestCurrentHFGeometry(areaType, areaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/current/categories`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the geometry associated for the human footprint persistence in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestHFPersistenceGeometry(areaType, areaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`${areaType}/${areaId}/hf/layers/persistence`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * According to the strategic ecosystem type, get the footprint timeline geometry
-   * associated to the selected area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type to request geometry
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestHFGeometryBySEInGeofence(areaType, areaId, seType) {
-    const source = CancelToken.source();
-    switch (seType) {
-      case 'dryForest':
-        return {
-          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Bosque Seco Tropical`, { cancelToken: source.token }),
-          source,
-        };
-      case 'paramo':
-        return {
-          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Páramo`, { cancelToken: source.token }),
-          source,
-        };
-      case 'wetland':
-        return {
-          request: RestAPI.makeGetRequest(`${areaType}/${areaId}/se/layers/Humedal`, { cancelToken: source.token }),
-          source,
-        };
-      default:
-        return {
-          request: Promise.reject(new Error('undefined option')),
-          source,
-        };
-    }
-  }
-
-  /**
-   * Get the geometry associated for the structural condition index with human footprint persistence
-   * in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestSCIHFGeometry(areaType, areaId) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the geometry associated to protected areas in a given combination of structural condition
-   * index and human footprint persistence in an specific area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} sciCat sci category
-   * @param {String} hfPers hf persistence category
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestSCIHFPAGeometry(areaType, areaId, sciCat, hfPers) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
    * Get the layer associated to a category and period of forest loss and persistence
    * in a given area
    *
@@ -330,7 +154,7 @@ class RestAPI {
    * @param {String} period period
    * @param {String} category forest loss and persistence category
    *
-   * @return {Promise<Object>} layer object to be loaded in the map
+   * @return {Object<any>} layer object to be loaded in the map
    */
   static requestForestLPLayer(areaType, areaId, period, category) {
     const source = CancelToken.source();
@@ -342,68 +166,6 @@ class RestAPI {
       ),
       source,
     };
-  }
-
-  /**
-   * Get the layers of the protected areas with higher dPC value in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} paNumber number of protected areas to request, f.e. 5
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestDPCLayer(areaType, areaId, paNumber) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(`connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the layer of a strategic ecosystem in a given area.
-   * Data obtained from connectivity service
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type to request geometry
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-  static requestPAConnSELayer(areaType, areaId, seType) {
-    const source = CancelToken.source();
-    switch (seType) {
-      case 'dryForestPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Bosque Seco Tropical`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      case 'paramoPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Páramo`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      case 'wetlandPAConn':
-        return {
-          request: RestAPI.makeGetRequest(
-            `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=Humedal`,
-            { cancelToken: source.token },
-          ),
-          source,
-        };
-      default:
-        return {
-          request: Promise.reject(new Error('undefined option')),
-          source,
-        };
-    }
   }
 
   /**

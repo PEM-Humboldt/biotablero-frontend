@@ -1,7 +1,12 @@
 export const SCICats = ["alta", "baja_moderada"] as const;
 export const HFCats = ["estable_natural", "dinamica", "estable_alta"] as const;
 
-export const ForestLPKeys = ["persistencia", "perdida", "no_bosque"] as const;
+export const ForestLPKeys = ["perdida", "persistencia", "no_bosque"] as const;
+export const ForestLPCategories = {
+  perdida: 0,
+  persistencia: 1,
+  no_bosque: 2,
+} as const;
 
 export interface SCIHF {
   hf_pers: typeof HFCats[number];

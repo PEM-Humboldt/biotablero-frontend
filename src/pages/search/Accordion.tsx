@@ -11,8 +11,8 @@ interface Props {
   classNameDefault: string;
   handleChange: (
     level: string,
-    tabLayerId: string,
-    expandedTab?: string
+    expandedTab: string,
+    expandedTabLabel?: string
   ) => void;
   level: string;
 }
@@ -85,7 +85,7 @@ class Accordion extends React.Component<Props, State> {
               const expandedTab =
                 expanded !== item.label.id ? item.label.id : "";
               this.setState({ expanded: expandedTab });
-              handleChange(level, expandedTab);
+              handleChange(level, expandedTab, item.label.name?.toString());
             }}
             TransitionProps={{ unmountOnExit: true }}
             disabled={item.label.disabled}

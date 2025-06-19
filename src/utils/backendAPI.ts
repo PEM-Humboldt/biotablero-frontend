@@ -30,7 +30,8 @@ import {
   portfoliosByTarget,
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
-import { geofenceDetails } from "pages/search/types/drawer";
+import { geofenceDetails } from "pages/search/types/dashboard";
+import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
 class BackendAPI {
   /** ****** */
   /** FOREST */
@@ -186,6 +187,22 @@ class BackendAPI {
     return BackendAPI.makeGetRequest(
       `${areaType}/${areaId}/compensationFactor`
     );
+  }
+
+  /**
+   * Request the layer of the biomes by EA
+   * @param {Number | String} areaId id ea to request
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestBiomesbyEALayer(areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(`ea/layers/${areaId}/biomes`, {
+        cancelToken: source.token,
+      }),
+      source,
+    };
   }
 
   /** *************** */
@@ -366,6 +383,58 @@ class BackendAPI {
     );
   }
 
+  /**
+   * Get the coverage layer divided by categories in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   *
+   * @return {Promise<RasterAPIObject>} layer object to be loaded in the map
+   */
+  static requestCoveragesLayer(
+    areaType: string,
+    areaId: number | string,
+    coverageType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the coverage layer divided by categories in a given strategic ecosystem and area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} coverageType coverage category
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Object>} layer object to be loaded in the map
+   */
+  static requestCoveragesSELayer(
+    areaType: string,
+    areaId: number | string,
+    coverageType: string,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
+        { cancelToken: source.token, responseType: "arraybuffer" },
+        true
+      ),
+      source,
+    };
+  }
+
   /** ******** */
   /** RICHNESS */
   /** ******** */
@@ -538,6 +607,190 @@ class BackendAPI {
         { cancelToken: source.token, responseType: "arraybuffer" },
         true
       ),
+      source,
+    };
+  }
+
+  /**
+   * Get the layers of the protected areas with higher dPC value in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {Number} paNumber number of protected areas to request, f.e. 5
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestDPCLayer(
+    areaType: string,
+    areaId: string,
+    paNumber = undefined
+  ): ShapeAPIObject {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the layer of a strategic ecosystem in a given area.
+   * Data obtained from connectivity service
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestPAConnSELayer(
+    areaType: string,
+    areaId: string,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the current human footprint in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestCurrentHFLayer(areaType: string, areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/hf/layers/current/categories`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the structural condition index with human footprint persistence
+   * in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFGLayer(areaType: string, areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated to protected areas in a given combination of structural condition
+   * index and human footprint persistence in an specific area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} sciCat sci category
+   * @param {String} hfPers hf persistence category
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFPALayer(
+    areaType: string,
+    areaId: string | number,
+    sciCat: string,
+    hfPers: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the human footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestHFPersistenceLayer(areaType: string, areaId: string | number) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/hf/layers/persistence`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /**
+   * According to the strategic ecosystem type, get the footprint timeline geometry
+   * associated to the selected area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestHFLayerBySEInGeofence(
+    areaType: string,
+    areaId: string | number,
+    seType: string
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/se/layers/${seType}`,
+        { cancelToken: source.token }
+      ),
+      source,
+    };
+  }
+
+  /** ****** */
+  /** SEARCH */
+  /** ****** */
+
+  /**
+   * Request a specific geometry identified by area type and id
+   *
+   * @param {String} areaType area type to request
+   * @param {String | Number} areaId area id to request
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestAreaLayer(
+    areaType: string,
+    areaId: string | number
+  ): ShapeAPIObject {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(`${areaType}/layers/${areaId}`, {
+        cancelToken: source.token,
+      }),
       source,
     };
   }

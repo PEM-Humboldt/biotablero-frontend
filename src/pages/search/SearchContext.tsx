@@ -1,26 +1,48 @@
 import React from "react";
-import { Polygon } from "pages/search/types/drawer";
+import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
+import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
+import * as geojson from "geojson";
+
+export type srchType = "definedArea" | "drawPolygon" | null;
+export type drawControlHandler = (control: any) => void;
 
 export interface SearchContextValues {
-  areaId: string;
-  geofenceId: string | number;
   searchType: "definedArea" | "drawPolygon";
-  polygon: Polygon | null;
-  setPolygonValues(areaValue: number): void;
-  switchLayer(layer: string): void;
-  handlerClickOnGraph({}): void;
-  cancelActiveRequests(): void;
+  areaType?: AreaType;
+  areaId?: AreaIdBasic;
+  areaHa?: number;
+  setSearchType(searchType: srchType): void;
+  setAreaType(areaType?: AreaType): void;
+  setAreaId(areaId?: AreaIdBasic): void;
+  setAreaHa(value?: number): void;
+  setAreaLayer(layer?: geojson.GeoJsonObject): void;
+  setRasterLayers(layers: Array<rasterLayer>): void;
+  setShapeLayers(layers: Array<shapeLayer>): void;
+  setShowAreaLayer(active: boolean): void;
+  setLoadingLayer(loading: boolean): void;
+  setLayerError(error?: string): void;
+  setMapTitle(mapTitle: MapTitle): void;
+  clearLayers(): void;
+  onEditControlMounted: drawControlHandler;
+  setOnEditControlMounted(handler: Function): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({
-  areaId: "",
-  geofenceId: "",
   searchType: "definedArea",
-  polygon: null,
-  setPolygonValues: () => {},
-  switchLayer: () => {},
-  handlerClickOnGraph: () => {},
-  cancelActiveRequests: () => {},
+  setSearchType: () => {},
+  setAreaType: () => {},
+  setAreaId: () => {},
+  setAreaHa: () => {},
+  setAreaLayer: () => {},
+  setRasterLayers: () => {},
+  setShapeLayers: () => {},
+  setShowAreaLayer: () => {},
+  setLoadingLayer: () => {},
+  setLayerError: () => {},
+  setMapTitle: () => {},
+  clearLayers: () => {},
+  onEditControlMounted: () => {},
+  setOnEditControlMounted: () => {},
 });
 
 export default SearchContext;

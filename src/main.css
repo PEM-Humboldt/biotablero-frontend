@@ -1529,6 +1529,10 @@ overflow: auto;
   border: 0 !important;
 }
 
+.leaflet-draw-section {
+  display: none;
+}
+
 .selector-expanded > div:nth-child(1),
 #panel1-Geocerca > div:nth-child(1),
 #draw-polygon > div:nth-child(1),
