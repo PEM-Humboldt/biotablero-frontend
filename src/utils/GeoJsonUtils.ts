@@ -3,27 +3,6 @@ import { Feature, FeatureCollection, Geometry } from "geojson";
 import { shapeLayer } from "pages/search/types/layers";
 
 /**
- * Cast AreaId to FeatureCollection object
- *
- * @param {AreaId} areaData Area data
- * @returns {FeatureCollection<Geometry, any>} FeatureCollection object
- */
-export const castAreaIdToFeatureCollection = (
-  areaData: AreaId
-): FeatureCollection<Geometry, any> => {
-  const featureJson: Feature<Geometry, any> = {
-    type: "Feature",
-    properties: {
-      id: areaData.id,
-      key: areaData.name,
-    },
-    geometry: areaData.geometry,
-  };
-
-  return { type: "FeatureCollection", features: [featureJson] };
-};
-
-/**
  * Check if layers list has at least one invalid object
  *
  * @param {Array<shapeLayer>} layers Layers list
