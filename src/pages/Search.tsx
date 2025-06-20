@@ -16,7 +16,7 @@ import matchColor from "utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
-import GeoJsonUtils from "utils/GeoJsonUtils";
+import { hasInvalidGeoJson } from "utils/GeoJsonUtils";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
@@ -197,8 +197,7 @@ class Search extends Component<Props, State> {
    * @param {Array<shapeLayer>} layers
    */
   setShapeLayers = (layers: Array<shapeLayer>) => {
-    if (!GeoJsonUtils.hasInvalidGeoJson(layers))
-      this.setState({ shapeLayers: layers });
+    if (!hasInvalidGeoJson(layers)) this.setState({ shapeLayers: layers });
   };
 
   /**
