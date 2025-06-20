@@ -1,5 +1,4 @@
-import { AreaId } from "pages/search/types/dashboard";
-import { Feature, FeatureCollection, Geometry } from "geojson";
+import { FeatureCollection } from "geojson";
 import { shapeLayer } from "pages/search/types/layers";
 
 /**
