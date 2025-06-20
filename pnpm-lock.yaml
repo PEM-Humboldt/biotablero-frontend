@@ -22,9 +22,6 @@ importers:
 
   .:
     dependencies:
-      '@appigram/react-yandex-metrika':
-        specifier: ^2.8.9
-        version: 2.8.9(react@17.0.2)
       '@emotion/react':
         specifier: ~11.9.0
         version: 11.9.3(@babel/core@7.18.13)(@types/react@18.2.55)(react@17.0.2)
@@ -337,14 +334,6 @@ packages:
       json-schema: 0.4.0
       jsonpointer: 5.0.1
       leven: 3.1.0
-    dev: false
-
-  /@appigram/react-yandex-metrika@2.8.9(react@17.0.2):
-    resolution: {integrity: sha512-Ltkmtr1lCDDeejuuE78F49pVBBndRtVc84andeQDz0x3zWqz4xiYRpy2JzzH/4/Y0dDHcSkc4hek+1AJmwEfGA==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      react: 17.0.2
     dev: false
 
   /@babel/code-frame@7.23.5:

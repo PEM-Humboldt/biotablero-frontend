@@ -1,10 +1,10 @@
 import formatNumber from "utils/format";
+import RestAPI from "utils/restAPI";
 import BackendAPI from "utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
 import matchColor from "utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
-import GeoJsonUtils from "utils/GeoJsonUtils";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
 
@@ -83,31 +83,26 @@ export class TimelineFootprintController {
       const res = await request;
       this.activeRequests.delete(selectedKey);
 
-      if (GeoJsonUtils.hasValidGeoJSONData(res)) {
-        const layerStyle = () => ({
-          stroke: false,
-          color: matchColor("hfTimeline")(selectedKey),
-          fillOpacity: 0.6,
-          weight: 1,
-        });
+      const layerStyle = () => ({
+        stroke: false,
+        color: matchColor("hfTimeline")(selectedKey),
+        fillOpacity: 0.6,
+        weight: 1,
+      });
 
-        return {
-          id: selectedKey,
-          paneLevel: 3,
-          json: res,
-          layerStyle: layerStyle,
-        };
-      } else {
-        throw new Error("Invalid GeoJSON");
-      }
-    } catch (error: any) {
-      if (error != "Error: Invalid GeoJSON") {
-        throw new Error(
-          error instanceof Error ? error.message : "Error al obtener la capa"
-        );
-      } else {
-        return { id: "", paneLevel: 0, json: { type: "FeatureCollection" } };
-      }
+      const layerData = {
+        id: selectedKey,
+        paneLevel: 3,
+        json: res,
+        layerStyle: layerStyle,
+      };
+
+      return layerData;
+    } catch (error) {
+      this.activeRequests.delete(selectedKey);
+      throw new Error(
+        error instanceof Error ? error.message : "Error al obtener la capa"
+      );
     }
   };
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, Redirect, useLocation } from "react-router-dom";
-import { YMInitializer } from "@appigram/react-yandex-metrika";
 
 import AppContext from "app/AppContext";
 import Layout from "app/Layout";
@@ -130,24 +129,8 @@ const App: React.FunctionComponent = () => {
     );
   };
 
-  const yandexMetrikaId = Number(process.env.REACT_APP_YM_ID);
-
   return (
     <AppContext.Provider value={{ user }}>
-      <YMInitializer
-        accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
-        options={{
-          webvisor: true,
-          trackHash: true,
-          clickmap: true,
-          accurateTrackBounce: true,
-          trackLinks: true,
-          params: {
-            cookieDomain: ".humboldt.org.co",
-            cookieFlags: "SameSite=None; Secure",
-          },
-        }}
-      />
       <main>
         <Switch>
           <Route exact path="/" render={loadHome} />

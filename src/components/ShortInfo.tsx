@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { isUndefinedOrNull } from "utils/validations";
+import isUndefinedOrNull from "utils/validations";
 
 interface ShortInfoTypes {
   className?: string;
