@@ -4,7 +4,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import Accordion from "pages/search/Accordion";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import isUndefinedOrNull from "utils/validations";
+import { isUndefinedOrNull } from "utils/validations";
 import BackendAPI from "utils/backendAPI";
 import SearchAPI from "utils/searchAPI";
 
