@@ -1,55 +1,41 @@
-import { AreaId } from "pages/search/types/dashboard";
-import { Feature, FeatureCollection, Geometry } from "geojson";
+import { FeatureCollection } from "geojson";
 import { shapeLayer } from "pages/search/types/layers";
 
-class GeoJsonUtils {
-  /**
-   * Cast AreaId to FeatureCollection object
-   *
-   * @param {AreaId} areaData Area data
-   *
-   * @returns {FeatureCollection<Geometry, any>} FeatureCollection object
-   */
-  static castAreaIdToFeatureCollection(
-    areaData: AreaId
-  ): FeatureCollection<Geometry, any> {
-    const featureJson: Feature<Geometry, any> = {
-      type: "Feature",
-      properties: {
-        id: areaData.id,
-        key: areaData.name,
-      },
-      geometry: areaData.geometry,
-    };
+/**
+ * Check if layers list has at least one invalid object
+ *
+ * @param {Array<shapeLayer>} layers Layers list
+ * @returns True if has at least one invalid layer. False otherwise
+ */
+export const hasInvalidGeoJson = (layers: Array<shapeLayer>): boolean => {
+  const listHasInvalidObject = layers.some(
+    (l) => typeof l.json === "object" && Object.keys(l.json).length === 0
+  );
 
-    return { type: "FeatureCollection", features: [featureJson] };
-  }
+  if (listHasInvalidObject) return true;
 
-  /**
-   * Check if layers list has at least one invalid object
-   *
-   * @param {Array<shapeLayer>} layers Layers list
-   *
-   * @returns True if has at least one invalid layer. False otherwise
-   */
-  static hasInvalidGeoJson(layers: Array<shapeLayer>): boolean {
-    let listHasInvalidObject = layers.some(
-      (l) => typeof l.json === "object" && Object.keys(l.json).length === 0
-    );
+  const listHasInvalidFeature = layers.some(
+    (l) =>
+      l.json.type === "FeatureCollection" &&
+      ((l.json as FeatureCollection).features === null ||
+        (l.json as FeatureCollection).features === undefined)
+  );
 
-    if (listHasInvalidObject) return true;
+  return listHasInvalidFeature;
+};
 
-    let listHasInvalidFeature = layers.some(
-      (l) =>
-        l.json.type == "FeatureCollection" &&
-        ((l.json as FeatureCollection).features === null ||
-          (l.json as FeatureCollection).features === undefined)
-    );
-
-    if (listHasInvalidFeature) return true;
-
-    return false;
-  }
-}
-
-export default GeoJsonUtils;
+/**
+ * Validate if an GeoJSON Object is not empty
+ * @param {geojson} object GeoJSON to be validated
+ *
+ * @returns True if the GeoJSON contains information, false if it's empty
+ */
+export const hasValidGeoJSONData = (geojson: any): boolean => {
+  return (
+    geojson &&
+    typeof geojson === "object" &&
+    geojson.type === "FeatureCollection" &&
+    Array.isArray(geojson.features) &&
+    geojson.features.length > 0
+  );
+};
