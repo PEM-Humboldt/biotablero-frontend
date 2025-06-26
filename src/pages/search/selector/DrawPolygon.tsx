@@ -11,7 +11,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
 import SearchAPI from "utils/searchAPI";
 import { useHistory } from "react-router-dom";
-import { AreaIdBasic } from "../types/dashboard";
+import { AreaIdBasic } from "pages/search/types/dashboard";
 
 const DrawPolygon = () => {
   const context = useContext(SearchContext);
