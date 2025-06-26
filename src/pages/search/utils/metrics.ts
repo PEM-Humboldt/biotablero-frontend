@@ -42,8 +42,7 @@ export class MetricsUtils {
    * @returns Loss Persistence object with percentages
    */
   static calcLPAreas(lpData: LPResponse): LPAreas {
-    let totalHa: number = lpData.noForest + lpData.loss + lpData.persistence;
-    let totalHaOnePercent: number = totalHa / 100;
+    const totalHaOnePercent: number = (lpData.noForest + lpData.loss + lpData.persistence) / 100;
 
     let response = lpData as LPAreas;
     response.percentagesLoss = lpData.loss / totalHaOnePercent;

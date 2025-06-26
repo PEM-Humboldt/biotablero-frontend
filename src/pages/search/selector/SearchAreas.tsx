@@ -5,7 +5,6 @@ import Accordion from "pages/search/Accordion";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
-import BackendAPI from "utils/backendAPI";
 import SearchAPI from "utils/searchAPI";
 
 interface SearchAreasProps {
@@ -89,8 +88,8 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
         } else {
           setAreaId(value!);
           // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          Promise.all([SearchAPI.requestAreaInfo(value!.id)]).then(
-            ([areaId]) => {
+          SearchAPI.requestAreaInfo(value!.id).then(
+            (areaId) => {
               setAreaHa(Number(areaId.area));
               setAreaLayer(areaId.geometry);
             }
