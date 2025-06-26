@@ -10,7 +10,8 @@ import { CoverageRawDataPolygon } from "pages/search/types/ecosystems";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
 
-export type MetricsTypes = "LossPersistence" | "Coverage";
+type MetricsTypes = "LossPersistence" | "Coverage";
+type RawDataPolygon = ForestLPRawDataPolygon | CoverageRawDataPolygon
 
 class SearchAPI {
   /**
@@ -121,7 +122,7 @@ class SearchAPI {
   static requestMetricsValues(
     metricId: MetricsTypes,
     polygonId: number
-  ): Promise<Array<ForestLPRawDataPolygon | CoverageRawDataPolygon>> {
+  ): Promise<Array<RawDataPolygon>> {
     return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 
