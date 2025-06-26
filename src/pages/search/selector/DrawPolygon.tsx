@@ -10,7 +10,6 @@ import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
 import SearchAPI from "utils/searchAPI";
-import { useHistory } from "react-router-dom";
 import { AreaIdBasic } from "pages/search/types/dashboard";
 
 const DrawPolygon = () => {
@@ -22,7 +21,6 @@ const DrawPolygon = () => {
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
-  const history = useHistory();
 
   useEffect(() => {
     setOnEditControlMounted(onEditControlMounted);

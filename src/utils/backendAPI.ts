@@ -1,5 +1,5 @@
 import axios, { CancelTokenSource } from "axios";
-import { SCIHF, ForestLP } from "pages/search/types/forest";
+import { SCIHF } from "pages/search/types/forest";
 import { cfData } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
@@ -31,7 +31,8 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
-import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
+
 class BackendAPI {
   /** ****** */
   /** FOREST */
