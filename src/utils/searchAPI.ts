@@ -11,7 +11,7 @@ import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
 
 type MetricsTypes = "LossPersistence" | "Coverage";
-type RawDataPolygon = ForestLPRawDataPolygon | CoverageRawDataPolygon
+type RawDataPolygon = ForestLPRawDataPolygon | CoverageRawDataPolygon;
 
 class SearchAPI {
   /**
