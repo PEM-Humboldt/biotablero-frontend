@@ -26,13 +26,3 @@ export interface seDetails {
 }
 
 export const coverageKeys = ["N", "S", "T"] as const;
-
-/**
- * Coverage data from back end
- */
-export interface CoverageRawDataPolygon {
-  ano: string;
-  natural: number;
-  secundaria: number;
-  transformada: number;
-}

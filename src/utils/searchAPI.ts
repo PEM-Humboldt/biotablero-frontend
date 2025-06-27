@@ -6,12 +6,11 @@ import {
   AreaId,
   polygonFeature,
 } from "pages/search/types/dashboard";
-import { CoverageRawDataPolygon } from "pages/search/types/ecosystems";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
 
-type MetricsTypes = "LossPersistence" | "Coverage";
-type RawDataPolygon = ForestLPRawDataPolygon | CoverageRawDataPolygon;
+type MetricsTypes = "LossPersistence";
+type RawDataPolygon = ForestLPRawDataPolygon;
 
 class SearchAPI {
   /**
