@@ -31,7 +31,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
 
 class BackendAPI {
   /** ****** */
