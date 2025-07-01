@@ -56,7 +56,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 
-    if (searchType === "definedArea") {
+    if (searchType === "definedArea" || searchType === "drawPolygon") {
       this.flpController.setArea(areaTypeId, areaIdId);
     } /*else if (polygon && polygon.geojson) {
       this.flpController.setPolygon(polygon.geojson);

@@ -1,10 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
-import {
-  AreaIdBasic,
-  AreaType,
-  AreaId,
-} from "pages/search/types/dashboard";
+import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
 
