@@ -4,7 +4,6 @@ import {
   AreaIdBasic,
   AreaType,
   AreaId,
-  polygonFeature,
 } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
@@ -74,38 +73,6 @@ class SearchAPI {
     return SearchAPI.makePostRequest("areas/polygon", requestBody, {
       responseType: "json",
     });
-  }
-
-  /** *********************** */
-  /** FOREST LOSS PERSISTENCE */
-  /** *********************** */
-
-  /**
-   * Get the layer associated to a polygon query for Forest LP
-   *
-   * @param {String} period item id to get
-   * @param {Number} category index of the category to get
-   * @param {Polygon} polygon selected polygon in GEOJson format
-   * @param {String} category;
-   * @return {ShapeAPIObject} layer object to be loaded in the map
-   */
-
-  static requestForestLPLayer(
-    period: string,
-    category: number,
-    polygon: polygonFeature
-  ): RasterAPIObject {
-    const requestBody = { polygon };
-    const source = axios.CancelToken.source();
-
-    return {
-      request: SearchAPI.makePostRequest(
-        `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
-        requestBody,
-        { responseType: "json" }
-      ),
-      source,
-    };
   }
 
   /** ******* */

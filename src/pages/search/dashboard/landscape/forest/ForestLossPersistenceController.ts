@@ -271,28 +271,6 @@ export class ForestLossPersistenceController {
       }));
 
       return response;
-    } else if (this.polygon) {
-      const requests: Array<Promise<{ layer: string }>> = [];
-      ForestLPKeys.forEach((category) => {
-        const { request, source } = SearchAPI.requestForestLPLayer(
-          period,
-          ForestLPCategories[category],
-          this.polygon!
-        );
-        requests.push(request);
-        this.activeRequests.set(`${period}-${category}`, source);
-      });
-      const res = await Promise.all(requests);
-
-      return res.map((response, idx) => {
-        const base64Image = response.layer;
-        return {
-          id: `${period}-${ForestLPKeys[idx]}`,
-          data: `data:image/png;base64,${base64Image}`,
-          selected: false,
-          paneLevel: 2,
-        };
-      });
     }
     throw Error("Polygon and area undefined");
   }
