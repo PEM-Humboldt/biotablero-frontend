@@ -32,9 +32,8 @@ interface FooterProps {
 }
 const Footer: React.FC<FooterProps> = ({ logosId }) => (
   <footer className="footerflex">
-
     <div className="institutoDiv">
-      { (logosId === "default" || logosId === "monitoreo") && (
+      {(logosId === "default" || logosId === "monitoreo") && (
         <a href="http://www.humboldt.org.co/es/">
           <img src={logohumboldt} alt="Instituto Humboldt" />
         </a>
@@ -50,23 +49,22 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
           <span>Colaboradores</span>
         )}
         {logosId && logoSet[logosId] ? (
-          logoSet[logosId].map((name) => (
-            (logosId === "default" || logosId === "monitoreo") && (
-              <a
-                href={logosData[name].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={name}
-              >
-                <img src={logosData[name].img} alt={name} />
-              </a>
-            )
-          ))
-        ) : (
-          logosId && (logosId === "default" || logosId === "monitoreo") ? (
-            <p>No se encontraron colaboradores para esta sección.</p>
-          ) : null
-        )}
+          logoSet[logosId].map(
+            (name) =>
+              (logosId === "default" || logosId === "monitoreo") && (
+                <a
+                  href={logosData[name].url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={name}
+                >
+                  <img src={logosData[name].img} alt={name} />
+                </a>
+              )
+          )
+        ) : logosId && (logosId === "default" || logosId === "monitoreo") ? (
+          <p>No se encontraron colaboradores para esta sección.</p>
+        ) : null}
       </div>
 
       <div className="footersm quoteStyle">
@@ -90,7 +88,5 @@ const Footer: React.FC<FooterProps> = ({ logosId }) => (
     </div>
   </footer>
 );
-
-
 
 export default Footer;
