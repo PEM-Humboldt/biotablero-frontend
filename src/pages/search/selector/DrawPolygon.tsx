@@ -9,6 +9,8 @@ import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
+import SearchAPI from "utils/searchAPI";
+import { AreaIdBasic } from "pages/search/types/dashboard";
 
 const DrawPolygon = () => {
   const context = useContext(SearchContext);
@@ -149,9 +151,36 @@ const DrawPolygon = () => {
       drawnPolygon!.toGeoJSON() as geojson.Feature<geojson.Polygon>;
     geojson.geometry.bbox = bbox;
 
-    const { setAreaType, setAreaLayer } = context as SearchContextValues;
+    const { setAreaType, setAreaLayer, setAreaId, setAreaHa } =
+      context as SearchContextValues;
     setAreaType({ id: "custom", label: "Consulta Personalizada" });
     setAreaLayer(geojson);
+
+    SearchAPI.requestAreaPolygon(geojson)
+      .then((data: { polygon_id: number }) => {
+        let areaBasic: AreaIdBasic = {
+          id: data.polygon_id,
+          area_type: {
+            id: "custom",
+            label: "Consulta Personalizada",
+          },
+          name: "polígono",
+        };
+        setAreaId(areaBasic);
+
+        SearchAPI.requestAreaInfo(areaBasic.id)
+          .then((areaData) => {
+            setAreaHa(Number(areaData.area));
+            setAreaLayer(areaData.geometry);
+          })
+          .catch(() => {
+            throw new Error("Error getting area data");
+          });
+      })
+      .catch(() => {
+        throw new Error("Error getting area polygon data");
+      });
+
     setDrawnPolygon(null);
   };
 

@@ -1,5 +1,4 @@
 import axios, { CancelToken } from 'axios';
-import { ShapeAPIObject } from "pages/search/types/api";
 
 class RestAPI {
   /**
@@ -36,48 +35,6 @@ class RestAPI {
    */
   static requestNationalCoverage(idGeofence) {
     return RestAPI.makeGetRequest(`se/${idGeofence}/coverage`);
-  }
-
-  /**
-   * Recover a list with all basin areas available in the database
-   */
-  static getAllBasinAreas() {
-    return RestAPI.makeGetRequest('basinAreas');
-  }
-
-  /**
-   * Recover a list with all basin zones available in the database
-   */
-  static getAllZones() {
-    return RestAPI.makeGetRequest('basinZones');
-  }
-
-  /**
-   * Recover a list with all basin subzones available in the database
-   */
-  static getAllSubzones() {
-    return RestAPI.makeGetRequest('basinSubzones');
-  }
-
-  /**
-   * Recover a list with all States available in the database
-   */
-  static getAllStates() {
-    return RestAPI.makeGetRequest('states');
-  }
-
-  /**
-   * Recover a list with all Strategic Ecosystems availables in the database
-   */
-  static getAllSEs() {
-    return RestAPI.makeGetRequest('se/primary');
-  }
-
-  /**
-   * Recover a list with all Environmental Authorities availables in the database
-   */
-  static getAllEAs() {
-    return RestAPI.makeGetRequest('ea');
   }
 
   /**
@@ -141,29 +98,6 @@ class RestAPI {
     const source = CancelToken.source();
     return {
       request: RestAPI.makeGetRequest(`${areaId}/layers/national`, { cancelToken: source.token }),
-      source,
-    };
-  }
-
-  /**
-   * Get the layer associated to a category and period of forest loss and persistence
-   * in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} period period
-   * @param {String} category forest loss and persistence category
-   *
-   * @return {Object<any>} layer object to be loaded in the map
-   */
-  static requestForestLPLayer(areaType, areaId, period, category) {
-    const source = CancelToken.source();
-    return {
-      request: RestAPI.makeGetRequest(
-        `forest/lp/layer?areaType=${areaType}&areaId=${areaId}&period=${period}&category=${category}`,
-        { cancelToken: source.token, responseType: 'arraybuffer' },
-        true,
-      ),
       source,
     };
   }

@@ -1,12 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
-import {
-  AreaIdBasic,
-  AreaType,
-  polygonFeature,
-  AreaId,
-} from "pages/search/types/dashboard";
+import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+import * as geojson from "geojson";
+
+type MetricsTypes = "LossPersistence";
+type RawDataPolygon = ForestLPRawDataPolygon;
 
 class SearchAPI {
   /**
@@ -55,57 +54,82 @@ class SearchAPI {
     return SearchAPI.makeGetRequest(`areas?type=${areaType}`);
   }
 
-  /** *********************** */
-  /** FOREST LOSS PERSISTENCE */
-  /** *********************** */
-
   /**
-   * Get the forest loss and persistence data by periods and categories in the given polygon.
-   *
-   * @param {Polygon} polygon selected polygon
-   *
-   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
+   * Returns the identifier of a polygon
+   * @param polygon Polygon search data
+   * @returns Polygon identifier
    */
-  static requestForestLPData(
-    polygon: polygonFeature | null
-  ): Promise<Array<ForestLPRawDataPolygon>> {
+  static requestAreaPolygon(
+    polygon: geojson.Feature<geojson.Polygon>
+  ): Promise<{ polygon_id: number }> {
     const requestBody = {
       polygon: polygon,
     };
 
-    return SearchAPI.makePostRequest(
-      "metrics/LossPersistence/values",
-      requestBody,
-      { responseType: "json" }
-    );
+    return SearchAPI.makePostRequest("areas/polygon", requestBody, {
+      responseType: "json",
+    });
+  }
+
+  /** ******* */
+  /** METRICS */
+  /** ******* */
+
+  /**
+   * Get metrics values
+   * @param metricId Metric identifier
+   * @param polygonId Polygon identifier
+   * @returns List of metrics values
+   */
+  static requestMetricsValues(
+    metricId: MetricsTypes,
+    polygonId: number
+  ): Promise<Array<RawDataPolygon>> {
+    return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 
   /**
-   * Get the layer associated to a polygon query for Forest LP
-   *
-   * @param {String} period item id to get
-   * @param {Number} category index of the category to get
-   * @param {Polygon} polygon selected polygon in GEOJson format
-   * @param {String} category;
-   * @return {ShapeAPIObject} layer object to be loaded in the map
+   * Get metrics layers
+   * @param metricId Metric identifier
+   * @param itemId Item identifier
+   * @param category Category identifier
+   * @param polygonId Polygon identifier
+   * @returns URL with layer image
    */
-
-  static requestForestLPLayer(
-    period: string,
+  static requestMetricsLayer(
+    metricId: MetricsTypes,
+    itemId: string,
     category: number,
-    polygon: polygonFeature
+    polygonId: number
   ): RasterAPIObject {
-    const requestBody = { polygon };
     const source = axios.CancelToken.source();
-
     return {
-      request: SearchAPI.makePostRequest(
-        `metrics/LossPersistence/layer?item_id=${period}&category=${category}`,
-        requestBody,
-        { responseType: "json" }
+      request: SearchAPI.makeGetRequest(
+        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&category=${category}`
       ),
-      source,
+      source: source,
     };
+  }
+
+  /**
+   * Get layer image data
+   * @param url Layer image url
+   * @returns Blob image data
+   */
+  static getLayerData(response: { layer: string }): Promise<Blob> {
+    return axios
+      .get(response.layer, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        let message = "Bad GET response. Try later";
+        if (error.request && error.request.statusText === "")
+          message = "no-data-available";
+        return Promise.reject(message);
+      });
   }
 
   /** ************** */

@@ -14,10 +14,9 @@ import { textsObject } from "pages/search/types/texts";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
-import RestAPI from "utils/restAPI";
-import base64 from "pages/search/utils/base64ArrayBuffer";
 import { rasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
+import { MetricsUtils } from "pages/search/utils/metrics";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -70,82 +69,63 @@ export class ForestLossPersistenceController {
    *
    * @returns Object with forest LP data and persistence value
    */
-  getForestLPData = (
-    latestPeriod: string,
-    searchType: "definedArea" | "drawPolygon"
-  ): Promise<ForestLPData> => {
-    if (searchType === "drawPolygon") {
-      return SearchAPI.requestForestLPData(this.polygon)
-        .then((data: ForestLPRawDataPolygon[]) => {
-          const rawData: Array<ForestLPRawDataPolygon> = data;
-          const {
-            perdida = 0,
-            persistencia = 0,
-            no_bosque = 0,
-          } = rawData[0] || {};
-          const forestLPArea = perdida + persistencia + no_bosque;
-          const forestLP = rawData.map((item) => ({
-            id: item.periodo,
-            data: ForestLPKeys.map((category) => ({
-              area: item[category],
-              key: category,
-              percentage: (item[category] / forestLPArea) * 100,
-              label: ForestLossPersistenceController.getLabel(category),
-            })),
-          }));
-
-          const latestPeriodData = rawData.find(
-            (item) => item.periodo === latestPeriod
-          );
-          const forestPersistenceValue = latestPeriodData
-            ? latestPeriodData.persistencia
-            : rawData[rawData.length - 1].persistencia;
-
-          forestLP.sort((pA, pB) => {
-            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
-            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
-            return yearA - yearB;
-          });
-          return {
-            forestLP,
-            forestPersistenceValue,
-            forestLPArea,
-          };
-        })
-        .catch(() => {
-          throw new Error("Error getting data");
-        });
-    } else {
-      return BackendAPI.requestForestLP(this.areaType, this.areaId)
-        .then((data) => {
-          const forestLP = data.map((item) => ({
-            ...item,
-            data: item.data.map((element) => ({
-              ...element,
-              label: ForestLossPersistenceController.getLabel(element.key),
-            })),
-          }));
-
-          const periodData = data.find(({ id }) => id === latestPeriod)?.data;
-          const persistenceData = periodData?.find(
-            ({ key }) => key === "persistencia"
-          );
-          const forestPersistenceValue = persistenceData?.area ?? 0;
-
-          forestLP.sort((pA, pB) => {
-            const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
-            const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
-            return yearA - yearB;
-          });
-          return {
-            forestLP,
-            forestPersistenceValue,
-          };
-        })
-        .catch(() => {
-          throw new Error("Error getting data");
-        });
+  getForestLPData = (latestPeriod: string): Promise<ForestLPData> => {
+    if (this.areaId === "") {
+      throw Error("Area undefined");
     }
+
+    return SearchAPI.requestMetricsValues(
+      "LossPersistence",
+      Number(this.areaId)
+    )
+      .then((data: ForestLPRawDataPolygon[]) => {
+        const mappedData = data.map((item) => {
+          const itemMapped = MetricsUtils.mapLPResponse(item);
+          return MetricsUtils.calcLPAreas(itemMapped);
+        });
+
+        const forestLP: Array<ForestLPExt> = mappedData.map((item) => ({
+          id: item.period,
+          data: [
+            {
+              label: "Pérdida",
+              key: "perdida",
+              area: item.loss,
+              percentage: item.percentagesLoss,
+            },
+            {
+              label: "Persistencia",
+              key: "persistencia",
+              area: item.persistence,
+              percentage: item.percentagesPersistence,
+            },
+            {
+              label: "No bosque",
+              key: "no_bosque",
+              area: item.noForest,
+              percentage: item.percentagesNoForest,
+            },
+          ],
+        }));
+
+        const periodData = mappedData.find(
+          ({ period }) => period === latestPeriod
+        );
+        const forestPersistenceValue = periodData?.persistence ?? 0;
+
+        forestLP.sort((pA, pB) => {
+          const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
+          const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
+          return yearA - yearB;
+        });
+        return {
+          forestLP,
+          forestPersistenceValue,
+        };
+      })
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
   };
 
   /**
@@ -239,17 +219,18 @@ export class ForestLossPersistenceController {
    * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
    */
   async getLayers(period: string): Promise<Array<rasterLayer>> {
-    if (this.areaType && this.areaId) {
+    if (this.areaId) {
       const requests: Array<Promise<any>> = [];
-      ForestLPKeys.forEach((category) => {
-        const { request, source } = RestAPI.requestForestLPLayer(
-          this.areaType ?? "",
-          this.areaId ?? "",
+
+      Object.values(ForestLPCategories).forEach((value) => {
+        const { request, source } = SearchAPI.requestMetricsLayer(
+          "LossPersistence",
           period,
-          category
+          value,
+          Number(this.areaId)
         );
         requests.push(request);
-        this.activeRequests.set(`${period}-${category}`, source);
+        this.activeRequests.set(`${period}-${value}`, source);
       });
 
       const res = await Promise.all(requests);
@@ -260,36 +241,31 @@ export class ForestLossPersistenceController {
 
       if (res.includes("request canceled")) throw Error("request canceled");
 
-      return ForestLPKeys.map((category, idx) => ({
+      const layersRequests: Array<Promise<Blob>> = [];
+      res.forEach((response) => {
+        const request = SearchAPI.getLayerData(response);
+        layersRequests.push(request);
+      });
+
+      const layerResponses = await Promise.all(layersRequests);
+
+      const layersBase64Promises: Array<Promise<string>> = [];
+
+      layerResponses.forEach((response) => {
+        const layerBase64 = MetricsUtils.blobToBase64(response);
+        layersBase64Promises.push(layerBase64);
+      });
+
+      const layersBase64 = await Promise.all(layersBase64Promises);
+
+      let response = ForestLPKeys.map((category, index) => ({
         id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data
-        )}`,
+        data: layersBase64[index],
         selected: false,
         paneLevel: 2,
       }));
-    } else if (this.polygon) {
-      const requests: Array<Promise<{ layer: string }>> = [];
-      ForestLPKeys.forEach((category) => {
-        const { request, source } = SearchAPI.requestForestLPLayer(
-          period,
-          ForestLPCategories[category],
-          this.polygon!
-        );
-        requests.push(request);
-        this.activeRequests.set(`${period}-${category}`, source);
-      });
-      const res = await Promise.all(requests);
 
-      return res.map((response, idx) => {
-        const base64Image = response.layer;
-        return {
-          id: `${period}-${ForestLPKeys[idx]}`,
-          data: `data:image/png;base64,${base64Image}`,
-          selected: false,
-          paneLevel: 2,
-        };
-      });
+      return response;
     }
     throw Error("Polygon and area undefined");
   }

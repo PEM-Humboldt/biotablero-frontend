@@ -1,5 +1,5 @@
 import axios, { CancelTokenSource } from "axios";
-import { SCIHF, ForestLP } from "pages/search/types/forest";
+import { SCIHF } from "pages/search/types/forest";
 import { cfData } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
@@ -32,6 +32,7 @@ import {
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
 import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
+
 class BackendAPI {
   /** ****** */
   /** FOREST */
@@ -51,23 +52,6 @@ class BackendAPI {
   ): Promise<Array<SCIHF>> {
     return BackendAPI.makeGetRequest(
       `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
-    );
-  }
-
-  /**
-   * Get the forest loss and persistence data by periods and categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the forest loss and persistence
-   */
-  static requestForestLP(
-    areaType: string,
-    areaId: string | number
-  ): Promise<Array<ForestLP>> {
-    return BackendAPI.makeGetRequest(
-      `forest/lp?areaType=${areaType}&areaId=${areaId}`
     );
   }
 
@@ -766,31 +750,6 @@ class BackendAPI {
         `${areaType}/${areaId}/se/layers/${seType}`,
         { cancelToken: source.token }
       ),
-      source,
-    };
-  }
-
-  /** ****** */
-  /** SEARCH */
-  /** ****** */
-
-  /**
-   * Request a specific geometry identified by area type and id
-   *
-   * @param {String} areaType area type to request
-   * @param {String | Number} areaId area id to request
-   *
-   * @return {ShapeAPIObject} layer object to be loaded in the map
-   */
-  static requestAreaLayer(
-    areaType: string,
-    areaId: string | number
-  ): ShapeAPIObject {
-    const source = axios.CancelToken.source();
-    return {
-      request: BackendAPI.makeGetRequest(`${areaType}/layers/${areaId}`, {
-        cancelToken: source.token,
-      }),
       source,
     };
   }
