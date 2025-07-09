@@ -78,13 +78,9 @@ export class ForestLossPersistenceController {
       "LossPersistence",
       Number(this.areaId)
     )
-      .then((data) => {
-        const lpOnly = data.filter(
-          (d): d is ForestLPRawDataPolygon => "periodo" in d
-        );
-
-        const mappedData = lpOnly.map((item) => {
-          let itemMapped = MetricsUtils.mapLPResponse(item);
+      .then((data: ForestLPRawDataPolygon[]) => {
+        const mappedData = data.map((item) => {
+          const itemMapped = MetricsUtils.mapLPResponse(item);
           return MetricsUtils.calcLPAreas(itemMapped);
         });
 
@@ -226,7 +222,7 @@ export class ForestLossPersistenceController {
     if (this.areaId) {
       const requests: Array<Promise<any>> = [];
 
-      Object.entries(ForestLPCategories).forEach(([_, value]) => {
+      Object.values(ForestLPCategories).forEach((value) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "LossPersistence",
           period,
