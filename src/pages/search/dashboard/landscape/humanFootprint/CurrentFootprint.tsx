@@ -5,7 +5,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 

@@ -12,7 +12,7 @@ import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";

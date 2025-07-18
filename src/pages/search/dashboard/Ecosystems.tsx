@@ -11,7 +11,7 @@ import {
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from "utils/format";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import RestAPI from "utils/restAPI";
 import BackendAPI from "pages/search/utils/backendAPI";
 import SmallStackedBar, {

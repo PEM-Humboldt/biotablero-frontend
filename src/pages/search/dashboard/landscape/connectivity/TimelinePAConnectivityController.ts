@@ -4,7 +4,7 @@ import {
   shapeLayer,
   connectivityFeaturePropierties,
 } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import formatNumber from "utils/format";
 import { CancelTokenSource } from "axios";

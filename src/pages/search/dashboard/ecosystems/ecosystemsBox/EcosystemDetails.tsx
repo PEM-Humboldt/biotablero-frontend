@@ -5,7 +5,7 @@ import {
   transformPAValues,
   transformCoverageValues,
 } from "pages/search/dashboard/ecosystems/transformData";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 
 import {
   Coverage,
