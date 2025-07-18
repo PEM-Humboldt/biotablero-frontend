@@ -9,7 +9,7 @@ import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaIdBasic } from "pages/search/types/dashboard";
 
 const DrawPolygon = () => {

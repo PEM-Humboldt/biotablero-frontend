@@ -3,7 +3,7 @@ import {
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
 import BackendAPI from "pages/search/utils/backendAPI";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import {
   ForestLPExt,
   ForestLPRawDataPolygon,

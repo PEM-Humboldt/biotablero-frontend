@@ -4,7 +4,7 @@ import SearchContext, {
   drawControlHandler,
   srchType,
 } from "pages/search/SearchContext";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
 import MapViewer from "pages/search/MapViewer";
