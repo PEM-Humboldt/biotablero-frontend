@@ -7,7 +7,7 @@ import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import formatNumber from "utils/format";
 import matchColor from "utils/matchColor";
 import processDataCsv from "utils/processDataCsv";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";

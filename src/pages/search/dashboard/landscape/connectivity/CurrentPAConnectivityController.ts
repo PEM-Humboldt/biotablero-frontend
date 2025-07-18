@@ -3,7 +3,7 @@ import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import RestAPI from "utils/restAPI";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import {
   shapeLayer,
   connectivityFeaturePropierties,

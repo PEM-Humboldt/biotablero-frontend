@@ -2,7 +2,7 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import SearchAPI from "utils/searchAPI";
 import {
   ForestLPExt,

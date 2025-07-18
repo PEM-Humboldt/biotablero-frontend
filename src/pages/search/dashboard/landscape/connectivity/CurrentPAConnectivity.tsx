@@ -6,7 +6,7 @@ import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import matchColor from "utils/matchColor";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import formatNumber from "utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 

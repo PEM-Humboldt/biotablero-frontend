@@ -11,7 +11,7 @@ import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "utils/matchColor";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";

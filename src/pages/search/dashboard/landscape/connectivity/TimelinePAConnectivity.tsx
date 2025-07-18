@@ -12,7 +12,7 @@ import {
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { TimelinePAConnectivityController } from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivityController";

@@ -1,4 +1,4 @@
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import RestAPI from "utils/restAPI";
 import {
   shapeLayer,
