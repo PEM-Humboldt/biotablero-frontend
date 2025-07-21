@@ -11,7 +11,7 @@ import {
   ForestLPCategories,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
 import { rasterLayer } from "pages/search/types/layers";

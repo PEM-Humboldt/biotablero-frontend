@@ -3,7 +3,7 @@ import { ResponsiveBar } from "@nivo/bar";
 import { AxisTickProps } from "@nivo/axes";
 
 import { darkenColor } from "utils/colorUtils";
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { Tick } from "pages/search/shared_components/CssTicks";

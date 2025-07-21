@@ -1,7 +1,7 @@
 import { ResponsivePie } from "@nivo/pie";
 import React from "react";
 
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import { lightenColor, darkenColor } from "utils/colorUtils";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 

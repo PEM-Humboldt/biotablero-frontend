@@ -1,6 +1,6 @@
 import { ResponsiveBar } from "@nivo/bar";
 
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
 
 interface Props {

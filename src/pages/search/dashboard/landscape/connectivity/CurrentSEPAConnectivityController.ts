@@ -6,7 +6,7 @@ import {
 } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import { CancelTokenSource } from "axios";
 
 export class CurrentSEPAConnectivityController {
