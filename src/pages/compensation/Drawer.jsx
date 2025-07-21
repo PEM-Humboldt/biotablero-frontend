@@ -9,7 +9,7 @@ import { ParentSize } from '@vx/responsive';
 import SaveIcon from '@mui/icons-material/Save';
 import DownloadIcon from '@mui/icons-material/GetApp';
 
-import RestAPI from 'utils/restAPI';
+import RestAPI from 'pages/compensation/utils/restAPI';
 
 import CustomInputNumber from 'pages/compensation/drawer/CustomInputNumber';
 import NewBiomeForm from 'pages/compensation/drawer/NewBiomeForm';
