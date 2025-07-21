@@ -16,7 +16,7 @@ import matchColor from "pages/search/utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
-import { hasInvalidGeoJson } from "utils/GeoJsonUtils";
+import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
