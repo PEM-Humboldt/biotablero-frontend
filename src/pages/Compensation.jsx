@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 
 import constructDataForCompensation from 'pages/compensation/constructDataForSelector';
 import GeoServerAPI from 'utils/geoServerAPI';
-import RestAPI from 'utils/restAPI';
+import RestAPI from 'pages/compensation/utils/restAPI';
 import MapViewer from 'pages/compensation/MapViewer';
 import Drawer from 'pages/compensation/Drawer';
 import NewProjectForm from 'pages/compensation/NewProjectForm';
