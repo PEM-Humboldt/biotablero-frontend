@@ -7,7 +7,7 @@ import PortfolioDescriptions from "pages/home/information/Portfolio";
 import SearchDescriptions from "pages/home/information/Searches";
 import CbmdDescriptions from "pages/home/information/Cbmd";
 
-import { BasicTitleTypes } from "types/informationTypes";
+import { BasicTitleTypes } from "pages/home/types/informationTypes";
 
 interface InformationTypes {
   activeModule: string;
