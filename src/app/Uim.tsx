@@ -69,7 +69,7 @@ const Uim: React.FC<loginUimProps> = ({ setUser }) => {
         ) : (
           <AccountCircleOutlined
             className="userBox"
-            style={{ fontSize: "40px" }}
+            style={{ fontSize: "35px" }}
           />
         )}
       </button>

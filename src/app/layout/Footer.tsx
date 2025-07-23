@@ -30,41 +30,43 @@ const logoSet: LogosConfig = {
 interface FooterProps {
   logosId: keyof LogosConfig | null;
 }
-
 const Footer: React.FC<FooterProps> = ({ logosId }) => (
-  <footer>
-    {logosId && logoSet[logosId] ? (
-      <div className="footerflex">
-        <div>
-          <a href="http://www.humboldt.org.co/es/">
-            <img src={logohumboldt} alt="" />
-          </a>
-        </div>
-        <div className="colaboradores">
-          <h4>Colaboradores</h4>
-          {logoSet[logosId].map((name) => {
-            return (
-              <a
-                href={logosData[name].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={name}
-              >
-                <img src={logosData[name].img} alt="" />
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    ) : (
-      ""
-    )}
-    <div className="footersm" style={{ position: "relative" }}>
-      <a href="http://www.humboldt.org.co/es/">
-        Instituto de Investigación de Recursos Biológicos
-        <br />
+  <footer className="footerflex">
+    <div className="institutoDiv">
+      {(logosId === "default" || logosId === "monitoreo") && (
+        <a href="http://www.humboldt.org.co/es/">
+          <img src={logohumboldt} alt="Instituto Humboldt" />
+        </a>
+      )}
+      <div>
+        Instituto de Investigación de Recursos Biológicos <br />
         <b>Alexander von Humboldt</b>
-      </a>
+      </div>
+    </div>
+    <div className="colaboradoresDiv">
+      <div className="colaboradores">
+        {logosId && (logosId === "default" || logosId === "monitoreo") && (
+          <span>Colaboradores</span>
+        )}
+        {logosId && logoSet[logosId] ? (
+          logoSet[logosId].map(
+            (name) =>
+              (logosId === "default" || logosId === "monitoreo") && (
+                <a
+                  href={logosData[name].url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={name}
+                >
+                  <img src={logosData[name].img} alt={name} />
+                </a>
+              )
+          )
+        ) : logosId && (logosId === "default" || logosId === "monitoreo") ? (
+          <p>No se encontraron colaboradores para esta sección.</p>
+        ) : null}
+      </div>
+
       <div className="footersm quoteStyle">
         <h3>
           <button
