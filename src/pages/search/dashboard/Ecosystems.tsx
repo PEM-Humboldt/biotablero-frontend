@@ -10,10 +10,9 @@ import {
 } from "pages/search/dashboard/ecosystems/transformData";
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
-import formatNumber from "utils/format";
-import matchColor from "utils/matchColor";
-import RestAPI from "utils/restAPI";
-import BackendAPI from "utils/backendAPI";
+import formatNumber from "pages/search/utils/format";
+import matchColor from "pages/search/utils/matchColor";
+import BackendAPI from "pages/search/utils/backendAPI";
 import SmallStackedBar, {
   SmallStackedBarData,
 } from "pages/search/shared_components/charts/SmallStackedBar";
@@ -212,7 +211,7 @@ class Ecosystems extends React.Component<Props, State> {
       });
 
     ["ecosystems", "coverage", "pa", "se"].forEach((item) => {
-      RestAPI.requestSectionTexts(item)
+      BackendAPI.requestSectionTexts(item)
         .then((res) => {
           if (this.mounted) {
             this.setState((prevState) => ({

@@ -2,8 +2,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
 import EcosystemDetails from "pages/search/dashboard/ecosystems/ecosystemsBox/EcosystemDetails";
-import formatNumber from "utils/format";
-import matchColor from "utils/matchColor";
+import formatNumber from "pages/search/utils/format";
+import matchColor from "pages/search/utils/matchColor";
 
 import { transformSEValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SEPADataExt } from "pages/search/types/ecosystems";

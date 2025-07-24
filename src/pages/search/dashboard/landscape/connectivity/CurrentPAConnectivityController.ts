@@ -1,14 +1,13 @@
 import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import RestAPI from "utils/restAPI";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import {
   shapeLayer,
   connectivityFeaturePropierties,
 } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 

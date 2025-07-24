@@ -4,8 +4,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import matchColor from "utils/matchColor";
-import formatNumber from "utils/format";
+import matchColor from "pages/search/utils/matchColor";
+import formatNumber from "pages/search/utils/format";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";

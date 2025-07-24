@@ -5,7 +5,7 @@ import Accordion from "pages/search/Accordion";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 
 interface SearchAreasProps {
   areasList: Array<AreaType>;

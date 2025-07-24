@@ -1,5 +1,5 @@
 import React from "react";
-import { BasicTitleTypes } from "types/informationTypes";
+import { BasicTitleTypes } from "pages/home/types/informationTypes";
 
 const descriptions: BasicTitleTypes = {
   queEs: {

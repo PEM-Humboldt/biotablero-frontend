@@ -2,8 +2,8 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "pages/search/shared_components/charts/SmallBars";
-import BackendAPI from "utils/backendAPI";
-import SearchAPI from "utils/searchAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import {
   ForestLPExt,
   ForestLPRawDataPolygon,
@@ -11,7 +11,7 @@ import {
   ForestLPCategories,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import formatNumber from "utils/format";
+import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
 import { rasterLayer } from "pages/search/types/layers";

@@ -4,8 +4,8 @@ import React from "react";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
-import matchColor from "utils/matchColor";
-import BackendAPI from "utils/backendAPI";
+import matchColor from "pages/search/utils/matchColor";
+import BackendAPI from "pages/search/utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";

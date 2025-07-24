@@ -1,7 +1,6 @@
-import RestAPI from "utils/restAPI";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 

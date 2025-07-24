@@ -1,4 +1,4 @@
-import colorPalettes from "utils/colorPalettes";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 // Structure to define the relation among the type of information, the palette to use and
 // the order to assign the colors in the palette to the values (if any)

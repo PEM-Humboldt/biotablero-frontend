@@ -5,7 +5,7 @@ import {
   transformPAValues,
   transformCoverageValues,
 } from "pages/search/dashboard/ecosystems/transformData";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 
 import {
   Coverage,
@@ -13,7 +13,7 @@ import {
   coverageType,
   SEPADataExt,
 } from "pages/search/types/ecosystems";
-import BackendAPI from "utils/backendAPI";
+import BackendAPI from "pages/search/utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";

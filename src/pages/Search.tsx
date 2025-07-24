@@ -4,7 +4,7 @@ import SearchContext, {
   drawControlHandler,
   srchType,
 } from "pages/search/SearchContext";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
 import MapViewer from "pages/search/MapViewer";
@@ -12,11 +12,11 @@ import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
-import { hasInvalidGeoJson } from "utils/GeoJsonUtils";
+import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
 interface Props extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId

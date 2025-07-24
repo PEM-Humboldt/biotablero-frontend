@@ -8,7 +8,7 @@ import {
   ErrorMessage,
   LoadingMessage,
 } from "pages/search/selector/selectorMessages";
-import SearchAPI from "utils/searchAPI";
+import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaType } from "pages/search/types/dashboard";
 import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
 import DrawPolygon from "pages/search/selector/DrawPolygon";

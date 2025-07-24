@@ -1,11 +1,10 @@
-import formatNumber from "utils/format";
-import BackendAPI from "utils/backendAPI";
+import formatNumber from "pages/search/utils/format";
+import BackendAPI from "pages/search/utils/backendAPI";
 import { shapeLayer } from "pages/search/types/layers";
-import matchColor from "utils/matchColor";
+import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
-import { hasValidGeoJSONData } from "utils/GeoJsonUtils";
-import { AnyARecord } from "node:dns";
+import { hasValidGeoJSONData } from "pages/search/utils/GeoJsonUtils";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
 
