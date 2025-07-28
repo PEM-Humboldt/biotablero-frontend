@@ -21,26 +21,30 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 }) => (
   <header className="cabezote">
     <div className="cabezoteLeft">
-      <nav>
-        <Menu />
-      </nav>
       <Title title="BioTablero" subTitle={activeModule} />
     </div>
     {/* TODO: Sending active user information: image, userName, ...
         to be upload when user is active */}
-    <div className="header_info">
-      <div className="cabezoteRight">
-        {activeModule && !parent && !child && <h2>{`${activeModule}`}</h2>}
-        {parent && child && (
-          <h1>
-            <b>{`${child}`}</b>
-            <br />
-            {parent}
-          </h1>
-        )}
-        <div className={`${activeModule.replace(/ /g, "")}`} />
+
+    <div className="cabezoteRight">
+      <nav>
+        <Menu />
+      </nav>
+
+      <div className="header_info">
+        <div className="cabezoteRight">
+          {activeModule && !parent && !child && <h2>{`${activeModule}`}</h2>}
+          {parent && child && (
+            <h1>
+              <b>{`${child}`}</b>
+              <br />
+              {parent}
+            </h1>
+          )}
+          <div className={`${activeModule.replace(/ /g, "")}`} />
+        </div>
+        {uim}
       </div>
-      {uim}
     </div>
   </header>
 );

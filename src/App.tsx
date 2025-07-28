@@ -11,7 +11,6 @@ import Search from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
-
 import "main.css";
 import "cbm-dashboard/dist/bundle.css";
 import "indicators/dist/bundle.css";
