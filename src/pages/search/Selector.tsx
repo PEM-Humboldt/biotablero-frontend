@@ -25,7 +25,6 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [polygonError, setPolygonError] = useState(false);
   const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
 
-
   const context = useContext(SearchContext);
   const {
     searchType,
@@ -58,13 +57,13 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
       },
       component: areasError
         ? () => <ErrorMessage />
-      : isLoadingAreaTypes
-      ? () => <LoadingMessage />
-      : areaTypes.length < 1
-      ? () => <ErrorMessage empty={true} />
-      : SearchAreas,
-  componentProps: {
-    areasList: areaTypes,
+        : isLoadingAreaTypes
+        ? () => <LoadingMessage />
+        : areaTypes.length < 1
+        ? () => <ErrorMessage empty={true} />
+        : SearchAreas,
+      componentProps: {
+        areasList: areaTypes,
       },
     },
     {

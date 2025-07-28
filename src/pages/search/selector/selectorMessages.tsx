@@ -20,4 +20,3 @@ export const ErrorMessage = ({ empty = false }: { empty?: boolean }) => (
     </span>
   </div>
 );
-
