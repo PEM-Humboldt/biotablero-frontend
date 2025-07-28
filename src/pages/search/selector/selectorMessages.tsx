@@ -10,11 +10,14 @@ export const LoadingMessage = () => (
   </div>
 );
 
-export const ErrorMessage = () => (
+export const ErrorMessage = ({ empty = false }: { empty?: boolean }) => (
   <div style={{ display: "flex" }}>
     <WarningIcon style={{ color: "#e84a5f" }} />
     <span style={{ paddingLeft: 10, alignSelf: "center" }}>
-      Hubo un error en esta funcionalidad, prueba otra alternativa.
+      {empty
+        ? "No hay áreas de consulta disponibles en el momento."
+        : "Hubo un error en esta funcionalidad, prueba otra alternativa."}
     </span>
   </div>
 );
+

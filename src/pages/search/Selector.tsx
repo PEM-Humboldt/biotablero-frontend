@@ -23,6 +23,8 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState(false);
   const [polygonError, setPolygonError] = useState(false);
+  const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
+
 
   const context = useContext(SearchContext);
   const {
@@ -38,7 +40,8 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
     isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
     SearchAPI.requestAreaTypes()
       .then((result) => setAreaTypes(result))
-      .catch(() => setAreasError(true));
+      .catch(() => setAreasError(true))
+      .finally(() => setIsLoadingAreaTypes(false));
 
     SearchAPI.requestTestBackend().catch(() => {
       setPolygonError(true);
@@ -54,12 +57,14 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
         collapsed: !(searchType === "definedArea"),
       },
       component: areasError
-        ? ErrorMessage
-        : areaTypes.length < 1
-        ? LoadingMessage
-        : SearchAreas,
-      componentProps: {
-        areasList: areaTypes,
+        ? () => <ErrorMessage />
+      : isLoadingAreaTypes
+      ? () => <LoadingMessage />
+      : areaTypes.length < 1
+      ? () => <ErrorMessage empty={true} />
+      : SearchAreas,
+  componentProps: {
+    areasList: areaTypes,
       },
     },
     {
