@@ -11,6 +11,7 @@ import Search from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
+import { Monitoring } from "pages/Monitoring"
 import "main.css";
 import "cbm-dashboard/dist/bundle.css";
 import "indicators/dist/bundle.css";
@@ -67,6 +68,18 @@ const App: React.FunctionComponent = () => {
     });
   };
 
+  const loadMonitoring = () => {
+    const query = buildQuery(location.search);
+    return loadComponent({
+      logoSet: null,
+      name: "Monitoreo Comunitario",
+      component: (
+        <Monitoring/>
+      ),
+      className: "fullgrid",
+    });
+  };
+  
   const loadIndicator = () =>
     loadComponent({
       logoSet: null,
@@ -155,9 +168,7 @@ const App: React.FunctionComponent = () => {
           <Route path="/GEB/Compensaciones" render={loadCompensator} />
           <Route path="/Portafolios" render={loadPortfolio} />
           <Route path="/Alertas" render={loadHome} />
-          <Route
-            path="/Monitoreo"
-            render={showCBMDashboard ? loadCBMDashboard : loadHome}
+          <Route path="/Monitoreo" render={loadMonitoring}
           />
         </Switch>
       </main>

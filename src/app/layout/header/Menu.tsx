@@ -61,6 +61,18 @@ const Menu: React.FunctionComponent = () => {
             Consultas Geográficas
           </li>
         </Link>
+        <Link to="/Monitoreo" onClick={changeMenuState}>
+          <li>
+            {" "}
+            <img
+              src={Consultasgeograficas}
+              alt="Monitoreo Comunitario"
+              width="43"
+              height="auto"
+            />
+            Monitoreo Comunitario
+          </li>
+        </Link>
         <Link to="/Indicadores" onClick={changeMenuState}>
           <li>
             {" "}
