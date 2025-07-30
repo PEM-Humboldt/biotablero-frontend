@@ -4,7 +4,6 @@ import { Map } from "pages/monitoring/Map";
 import "pages/monitoring/utils/monitoring.css";
 
 export const Monitoring = () => {
-
   return (
     <div>
       <SideBar />
