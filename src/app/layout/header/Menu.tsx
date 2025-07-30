@@ -6,7 +6,7 @@ import isFlagEnabled from "utils/isFlagEnabled";
 import Consultasgeograficas from "images/consulta-geografica-logo.svg";
 import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
-/*import Comunitario from "images/monitoreo-comunitario-icono.svg";*/
+import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import Compensacion from "images/compensacion-ambiental-icono.svg";
 import Alerta from "images/alertas-tempranas-icono.svg";
 
@@ -65,7 +65,7 @@ const Menu: React.FunctionComponent = () => {
           <li>
             {" "}
             <img
-              src={Consultasgeograficas}
+              src={Comunitario}
               alt="Monitoreo Comunitario"
               width="43"
               height="auto"
