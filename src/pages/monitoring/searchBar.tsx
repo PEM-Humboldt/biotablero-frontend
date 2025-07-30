@@ -11,7 +11,11 @@ export const SearchBar: React.FC = () => {
 
   /* TODO: Load real data from Monitoring API*/
   const statesOptions = ["Amazonas", "Antioquia", "Arauca"];
-  const initiativesOptions = ["Cuidadora de la Amazonía", "Fundación Gaia", "Fundación Omacha"];
+  const initiativesOptions = [
+    "Cuidadora de la Amazonía",
+    "Fundación Gaia",
+    "Fundación Omacha",
+  ];
   const naturalLevelsOptions = ["Genes", "Pobladores", "Ecosistemas"];
 
   const handleSearch = () => {

@@ -75,7 +75,7 @@ export const SideBar: React.FC = () => {
           left: collapsed ? collapsedWidth - 12 : drawerWidth - 12,
         }}
       >
-        <IconButton size="small" onClick={toggleDrawer} >
+        <IconButton size="small" onClick={toggleDrawer}>
           {collapsed ? <ChevronRight /> : <ChevronLeft />}
         </IconButton>
       </Box>

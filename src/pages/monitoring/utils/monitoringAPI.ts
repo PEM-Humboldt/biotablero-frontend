@@ -1,8 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 
-
 class MonitoringAPI {
-
   /** ************** */
   /** BASE FUNCTIONS */
   /** ************** */
