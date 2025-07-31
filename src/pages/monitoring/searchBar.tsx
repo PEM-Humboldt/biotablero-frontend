@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIconSvg from "pages/monitoring/assets/search-icon.svg";
+import CalendarIconSvg from "pages/monitoring/assets/calendar-icon.svg";
+import IniciativeIconSvg from "pages/monitoring/assets/iniciative-icon.svg";
+import ArrowDownIconSvg from "pages/monitoring/assets/arrow-down-icon.svg";
 
 export const SearchBar: React.FC = () => {
   const [text, setText] = useState("");
@@ -24,7 +26,7 @@ export const SearchBar: React.FC = () => {
 
   return (
     <div id="search-bar">
-      <div className="search-bar-container">
+      <div className="search-bar-container  ">
         <div className="search-bar-field">
           <input
             type="text"
@@ -33,29 +35,32 @@ export const SearchBar: React.FC = () => {
             onChange={(e) => setText(e.target.value)}
             className="search-bar-input"
           />
-          <SearchIcon fontSize="small" />
+          <img src={SearchIconSvg} className="search-bar-icon" />
         </div>
 
         <div className="search-bar-field">
-          <select
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            className="search-bar-input"
-          >
-            <option value="">Departamento</option>
-            {statesOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
+          <div className="custom-select-wrapper">
+            <select
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className="search-bar-select"
+            >
+              <option value="">Departamento</option>
+              {statesOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <img src={ArrowDownIconSvg} className="search-bar-icon" />
+          </div>
         </div>
 
         <div className="search-bar-field">
           <select
             value={initiative}
             onChange={(e) => setInitiative(e.target.value)}
-            className="search-bar-input"
+            className="search-bar-select"
           >
             <option value="">Iniciativas</option>
             {initiativesOptions.map((opt) => (
@@ -64,13 +69,14 @@ export const SearchBar: React.FC = () => {
               </option>
             ))}
           </select>
+          <img src={IniciativeIconSvg} className="search-bar-icon" />
         </div>
 
         <div className="search-bar-field">
           <select
             value={naturalLevel}
             onChange={(e) => setNaturalLevel(e.target.value)}
-            className="search-bar-input"
+            className="search-bar-select"
           >
             <option value="">Nivel natural</option>
             {naturalLevelsOptions.map((opt) => (
@@ -79,6 +85,7 @@ export const SearchBar: React.FC = () => {
               </option>
             ))}
           </select>
+          <img src={ArrowDownIconSvg} className="search-bar-icon" />
         </div>
 
         <div className="search-bar-field">
@@ -89,7 +96,7 @@ export const SearchBar: React.FC = () => {
             onChange={(e) => setText(e.target.value)}
             className="search-bar-input"
           />
-          <CalendarTodayIcon fontSize="small" />
+          <img src={CalendarIconSvg} className="search-bar-icon" />
         </div>
 
         <button className="search-bar-button" onClick={handleSearch}>

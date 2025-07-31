@@ -23,7 +23,7 @@ const drawerWidth = 200;
 const collapsedWidth = 60;
 
 export const SideBar: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const toggleDrawer = () => setCollapsed((prev) => !prev);
 
   const items = [
