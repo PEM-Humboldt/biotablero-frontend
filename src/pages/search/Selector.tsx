@@ -25,7 +25,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState<AreasErrorType>("none");
   const [polygonError, setPolygonError] = useState(false);
-  const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(false);
+  const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
   const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
     none: "",
     "request-failed":
@@ -44,8 +44,6 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   } = context as SearchContextValues;
 
   useEffect(() => {
-    setIsLoadingAreaTypes(true);
-
     isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
     SearchAPI.requestAreaTypes()
       .then((result) => {
