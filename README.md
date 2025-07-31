@@ -138,6 +138,14 @@ Para verificar los estilos de las dependencias propias ejecute:
 pnpm -r lint
 ```
 
+### Corregir reglas de estilo
+
+Para realizar la correción en los estilos, se deberia ejecutar lo siguiente:
+
+```sh
+npx prettier --write "(ruta archivo)"
+```
+
 ---
 
 # Autores

@@ -18,11 +18,20 @@ interface Props {
   setShowDrawControl(show: boolean): void;
 }
 
+type AreasErrorType = "none" | "request-failed" | "empty-result";
+
 const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
-  const [areasError, setAreasError] = useState(false);
+  const [areasError, setAreasError] = useState<AreasErrorType>("none");
   const [polygonError, setPolygonError] = useState(false);
+  const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
+  const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
+    none: "",
+    "request-failed":
+      "Hubo un error en esta funcionalidad, prueba otra alternativa.",
+    "empty-result": "No se encontraron áreas disponibles para consultar.",
+  };
 
   const context = useContext(SearchContext);
   const {
@@ -37,14 +46,38 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   useEffect(() => {
     isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
     SearchAPI.requestAreaTypes()
-      .then((result) => setAreaTypes(result))
-      .catch(() => setAreasError(true));
+      .then((result) => {
+        if (result.length < 1) {
+          setAreasError("empty-result");
+        } else {
+          setAreaTypes(result);
+          setAreasError("none");
+        }
+      })
+      .catch(() => {
+        setAreasError("request-failed");
+      })
+      .finally(() => {
+        setIsLoadingAreaTypes(false);
+      });
 
     SearchAPI.requestTestBackend().catch(() => {
       setPolygonError(true);
       setShowDrawControl(false);
     });
   }, []);
+
+  let ComponentToRender: React.FC<any>;
+
+  if (isLoadingAreaTypes) {
+    ComponentToRender = () => <LoadingMessage />;
+  } else if (areasError !== "none") {
+    ComponentToRender = () => (
+      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError]} />
+    );
+  } else {
+    ComponentToRender = SearchAreas;
+  }
 
   const sections = [
     {
@@ -53,11 +86,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
         name: "Área de consulta",
         collapsed: !(searchType === "definedArea"),
       },
-      component: areasError
-        ? ErrorMessage
-        : areaTypes.length < 1
-        ? LoadingMessage
-        : SearchAreas,
+      component: ComponentToRender,
       componentProps: {
         areasList: areaTypes,
       },
