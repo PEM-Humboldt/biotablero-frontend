@@ -28,8 +28,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
   const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(false);
   const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
     none: "",
-    "request-failed":
-    "Hubo un error en esta funcionalidad, prueba otra alternativa.",
+    "request-failed":"Hubo un error en esta funcionalidad, prueba otra alternativa.",
     "empty-result": "No se encontraron áreas disponibles para consultar.",
   };
 
@@ -45,7 +44,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
 
   useEffect(() => {
     setIsLoadingAreaTypes(true);
-    
+
     isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
     SearchAPI.requestAreaTypes()
       .then((result) => {
