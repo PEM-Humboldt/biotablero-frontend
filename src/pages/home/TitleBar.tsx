@@ -1,5 +1,7 @@
+import React from "react";
+
 type TitleBarProps = {
-  title: string;
+  title: string | React.ReactNode;
   alignClass: string;
 };
 

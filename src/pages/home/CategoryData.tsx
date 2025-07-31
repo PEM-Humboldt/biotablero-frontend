@@ -1,11 +1,15 @@
 import React from "react";
 import { Typography } from "@mui/material";
-
 import { WhatIs } from "pages/home/WhatIs";
 
-type Category = {
+export type Category = {
   title: string | React.ReactNode;
-} & ({ content: string | React.ReactNode } | { subcategories: Category[] });
+} & ({ content: string | React.ReactNode } | { subcategories: SubCategory[] });
+
+type SubCategory = {
+  title: string | React.ReactNode;
+  content: string;
+};
 
 export const categories: Category[] = [
   {
