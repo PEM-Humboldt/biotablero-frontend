@@ -3,9 +3,11 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-export const Map: React.FC = () => {
-  const center: LatLngExpression = [4.5709, -74.2973];
+interface MapProps {
+  center?: LatLngExpression;
+}
 
+export const Map: React.FC<MapProps> = ({ center = [4.5709, -74.2973] }) => {
   return (
     <MapContainer center={center} zoom={6} className="map-container">
       <TileLayer

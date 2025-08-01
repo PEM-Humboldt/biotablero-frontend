@@ -3,13 +3,13 @@ import React from "react";
 interface DashboardProps {
   title: string;
   subtitle: string;
-  child: any;
+  children: React.ReactNode;
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({
   title,
   subtitle,
-  child,
+  children,
 }) => {
   return (
     <div className="dashboard-container">
@@ -17,7 +17,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         <h1 className="dashboard-title">{title}</h1>
         <p className="dashboard-subtitle">{subtitle}</p>
       </div>
-      <div className="dashboard-content">{child}</div>
+      <div className="dashboard-content">{children}</div>
     </div>
   );
 };

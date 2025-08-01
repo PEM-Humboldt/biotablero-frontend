@@ -69,7 +69,6 @@ const App: React.FunctionComponent = () => {
   };
 
   const loadMonitoring = () => {
-    const query = buildQuery(location.search);
     return loadComponent({
       logoSet: null,
       name: "Monitoreo Comunitario",
