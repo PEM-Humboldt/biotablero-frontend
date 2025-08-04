@@ -22,7 +22,6 @@ type ArrowProps = {
 
 type CarrouselProps = {
   setActiveTab: React.Dispatch<number | null>;
-  setShowWhatIs: React.Dispatch<boolean>;
 };
 
 interface module {
@@ -102,7 +101,7 @@ const modules: module[] = [
   },
 ];
 
-export function Carrousel({ setActiveTab, setShowWhatIs }: CarrouselProps) {
+export function Carrousel({ setActiveTab }: CarrouselProps) {
   const { user } = useContext(AppContext);
   const [activeModule, setActiveModule] = useState<null | number>(null);
   const [animateContainer, setAnimateContainer] = useState(false);
@@ -120,12 +119,10 @@ export function Carrousel({ setActiveTab, setShowWhatIs }: CarrouselProps) {
       setTimeout(() => {
         setActiveModule(null);
         setActiveTab(0);
-        setShowWhatIs(true);
       }, 300);
     } else {
       setActiveModule(id);
       setActiveTab(id);
-      setShowWhatIs(false);
 
       setTimeout(() => setAnimateContainer(true), 300);
     }

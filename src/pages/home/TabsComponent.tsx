@@ -5,19 +5,10 @@ import { categories, type Category } from "./CategoryData";
 
 type TabsModulesProps = {
   activeTab: number | null;
-  setActiveTab: React.Dispatch<number | null>;
 };
 
-export function TabsModules({ activeTab, setActiveTab }: TabsModulesProps) {
+export function TabsModules({ activeTab }: TabsModulesProps) {
   const [subTab, setSubTab] = useState(0);
-
-  const handleTabChange = (
-    _: React.SyntheticEvent,
-    newValue: number | null
-  ) => {
-    setActiveTab(newValue);
-    setSubTab(0);
-  };
 
   const handleSubTabChange = (_: React.SyntheticEvent, newValue: number) => {
     setSubTab(newValue);
@@ -33,9 +24,6 @@ export function TabsModules({ activeTab, setActiveTab }: TabsModulesProps) {
           <TitleBar
             title={currentCategory !== null ? currentCategory.title : ""}
             alignClass={alignClass}
-            sx={{
-              display: { xs: activeTab !== 0 ? "block" : "none", sm: "none" },
-            }}
           />
           <Box
             id="Tab"
