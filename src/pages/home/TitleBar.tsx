@@ -5,10 +5,10 @@ type TitleBarProps = {
   alignClass: string;
 };
 
-export function TitleBar({ title, alignClass }: TitleBarProps) {
+export const TitleBar = ({ title, alignClass }: TitleBarProps) => {
   return (
     <div className="Cenefa">
       <h1 className={` ${alignClass}`}>{title}</h1>
     </div>
   );
-}
+};

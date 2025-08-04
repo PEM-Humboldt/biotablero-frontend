@@ -7,7 +7,7 @@ type TabsModulesProps = {
   activeTab: number | null;
 };
 
-export function TabsModules({ activeTab }: TabsModulesProps) {
+export const TabsModules = ({ activeTab }: TabsModulesProps) => {
   const [subTab, setSubTab] = useState(0);
 
   const handleSubTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -97,4 +97,4 @@ export function TabsModules({ activeTab }: TabsModulesProps) {
       </Container>
     </div>
   );
-}
+};

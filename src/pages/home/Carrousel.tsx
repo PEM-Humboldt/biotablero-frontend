@@ -32,26 +32,26 @@ interface module {
   auth: boolean;
 }
 
-function PrevArrow({ onClick }: ArrowProps) {
+const PrevArrow = ({ onClick }: ArrowProps) => {
   return (
     <div className="prev-arrow" onClick={onClick}>
       <KeyboardArrowLeft fontSize="large" />
     </div>
   );
-}
+};
 
-function NextArrow({ onClick }: ArrowProps) {
+const NextArrow = ({ onClick }: ArrowProps) => {
   return (
     <div className="next-arrow" onClick={onClick}>
       <KeyboardArrowRight fontSize="large" />
     </div>
   );
-}
+};
 
-function makeCarrouselSettings(
+const makeCarrouselSettings = (
   prevArrow: React.ReactNode,
   nextArrow: React.ReactNode
-) {
+) => {
   return {
     dots: true,
     infinite: true,
@@ -67,7 +67,7 @@ function makeCarrouselSettings(
       { breakpoint: 480, settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
-}
+};
 
 const modules: module[] = [
   {
@@ -101,7 +101,7 @@ const modules: module[] = [
   },
 ];
 
-export function Carrousel({ setActiveTab }: CarrouselProps) {
+export const Carrousel = ({ setActiveTab }: CarrouselProps) => {
   const { user } = useContext(AppContext);
   const [activeModule, setActiveModule] = useState<null | number>(null);
   const [animateContainer, setAnimateContainer] = useState(false);
@@ -224,4 +224,4 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
       </Container>
     </div>
   );
-}
+};
