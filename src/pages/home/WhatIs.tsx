@@ -6,10 +6,10 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import Quees from "images/biotablero-icono.svg";
-import aquinvaDirgido from "images/a-quien-va-dirigido.svg";
-import quienLohace from "images/quien-lo-hace.svg";
-import nuestroObjetivo from "images/cual-es-nuestro-objetivo.svg";
+import whatIs from "images/biotablero-icono.svg";
+import whomIsItFor from "images/a-quien-va-dirigido.svg";
+import whoDoesIt from "images/quien-lo-hace.svg";
+import ourGoal from "images/cual-es-nuestro-objetivo.svg";
 
 export const WhatIs = () => {
   return (
@@ -34,7 +34,7 @@ export const WhatIs = () => {
                     <Grid className="Icono">
                       {" "}
                       <img
-                        src={Quees}
+                        src={whatIs}
                         alt="¿Qué es BioTablero?"
                         className="icon-img"
                       />
@@ -61,7 +61,7 @@ export const WhatIs = () => {
                 <Box display="flex" alignItems="center" gap={1}>
                   <Grid className="Icono">
                     {" "}
-                    <img src={aquinvaDirgido} alt=" ¿A quién va dirigido?" />
+                    <img src={whomIsItFor} alt=" ¿A quién va dirigido?" />
                   </Grid>
                   <Typography variant="h6" component="h2" fontWeight="bold">
                     ¿A quién va dirigido?
@@ -83,7 +83,7 @@ export const WhatIs = () => {
                 <Box display="flex" alignItems="center" gap={1}>
                   <Grid className="Icono">
                     {" "}
-                    <img src={quienLohace} alt="¿Quién lo hace?" />
+                    <img src={whoDoesIt} alt="¿Quién lo hace?" />
                   </Grid>
                   <Typography variant="h6" component="h2" fontWeight="bold">
                     ¿Quién lo hace?
@@ -106,10 +106,7 @@ export const WhatIs = () => {
                 <Box display="flex" alignItems="center" gap={1}>
                   <Grid className="Icono">
                     {" "}
-                    <img
-                      src={nuestroObjetivo}
-                      alt="¿Cuál es nuestro objetivo?"
-                    />
+                    <img src={ourGoal} alt="¿Cuál es nuestro objetivo?" />
                   </Grid>
                   <Typography variant="h6" component="h2" fontWeight="bold">
                     ¿Cuál es nuestro objetivo?

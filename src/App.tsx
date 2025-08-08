@@ -48,7 +48,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: "default",
       name: "",
-      component: <Home referrer={location.pathname} />,
+      component: <Home />,
     });
 
   const loadSearch = () => {

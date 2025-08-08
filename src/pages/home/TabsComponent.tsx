@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Typography, Container } from "@mui/material";
 import { TitleBar } from "pages/home/TitleBar";
-import { categories, type Category } from "./CategoryData";
+import { categories, type Category } from "pages/home/modulesData";
 
 type TabsModulesProps = {
   activeTab: number | null;
 };
 
-// NOTE: Hay un conflicto con titleBar y el componente de titulos de los tabs
+// TODO: Hay un conflicto con titleBar y el componente de titulos de los tabs
 // su naturaleza es redundante, pero el uno está dependiendo de estilos
 // implementados en el otro, es necesario limpiar y revisar estilos
 export const TabsModules = ({ activeTab }: TabsModulesProps) => {
