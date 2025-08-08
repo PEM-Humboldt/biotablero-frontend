@@ -1,9 +1,9 @@
 /* eslint-env browser */
-import React from 'react';
-import ReactDOM from 'react-dom';
-import ReactGA from 'react-ga4';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import React, { StrictMode } from "react";
+import ReactDOM from "react-dom";
+import ReactGA from "react-ga4";
+import { BrowserRouter } from "react-router-dom";
+import App from "./App";
 // TODO: Habilitar registerServiceWorker cuando esté habilitado el dominio en HTTPS
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -17,11 +17,11 @@ ReactGA.initialize(process.env.REACT_APP_GA_TRACKING_ID, {
 });
 
 ReactDOM.render(
-  (
+  <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  ),
-  document.getElementById('root'),
+  </StrictMode>,
+  document.getElementById("root")
 );
 // registerServiceWorker();
