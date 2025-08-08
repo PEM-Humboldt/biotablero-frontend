@@ -21,7 +21,6 @@
   padding: 0.5rem 1rem;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 1200;
   width: 100%;
   display: flex;
 }
@@ -108,8 +107,8 @@
 
 .sidebar-toggle {
   position: absolute;
-  top: 16px;
-  transform: translateX(-50%);
+  top: 0.5rem;
+  transform: translateX(-20%);
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 50%;

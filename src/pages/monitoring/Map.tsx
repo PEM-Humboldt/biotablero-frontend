@@ -9,7 +9,12 @@ interface MapProps {
 
 export const Map: React.FC<MapProps> = ({ center = [4.5709, -74.2973] }) => {
   return (
-    <MapContainer center={center} zoom={6} className="map-container">
+    <MapContainer
+      center={center}
+      zoom={6}
+      className="map-container"
+      touchExtend={false}
+    >
       <TileLayer
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
