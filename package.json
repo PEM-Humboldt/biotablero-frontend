@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "start": "vite preview --port 5000",
+    "start": "vite preview --port 3000",
     "check-format": "prettier --check 'src/**/*.{ts,tsx}'"
   },
   "dependencies": {

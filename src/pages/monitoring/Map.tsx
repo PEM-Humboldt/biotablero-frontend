@@ -7,6 +7,8 @@ interface MapProps {
   center?: LatLngExpression;
 }
 
+// HACK: touchExtend dentro de MapContainer existe mientras se actualiza
+// librería para evitar el warn, no afecta funcionalidad en escritorio
 export const Map: React.FC<MapProps> = ({ center = [4.5709, -74.2973] }) => {
   return (
     <MapContainer
