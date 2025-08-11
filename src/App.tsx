@@ -6,7 +6,7 @@ import AppContext from "app/AppContext";
 import Layout from "app/Layout";
 import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
-import Home from "pages/Home";
+import { Home } from "pages/Home";
 import Search from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
@@ -49,7 +49,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: "default",
       name: "",
-      component: <Home referrer={location.pathname} />,
+      component: <Home />,
     });
 
   const loadSearch = () => {
