@@ -129,10 +129,10 @@ importers:
         specifier: ^7946.0.14
         version: 7946.0.14
       '@types/leaflet':
-        specifier: ^1.9.16
+        specifier: ~1.9.16
         version: 1.9.16
       '@types/leaflet-draw':
-        specifier: ^1.0.11
+        specifier: ~1.0.11
         version: 1.0.11
       '@types/node':
         specifier: ~18.19.0

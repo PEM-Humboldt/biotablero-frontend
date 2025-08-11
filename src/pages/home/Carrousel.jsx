@@ -58,9 +58,9 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
 
     const modules = [
         { id: 1, title: "Consultas Geográficas", image: Consultasgeograficas, link: "/Consultas", auth: false },
-        { id: 2, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores", auth: false },
-        { id: 3, title: "Portafolios", image: Portafolio, link: "/Portafolios", auth: false },
-        //{ id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo", auth: false },
+        { id: 2, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo", auth: false },
+        { id: 3, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores", auth: false },
+        { id: 4, title: "Portafolios", image: Portafolio, link: "/Portafolios", auth: false },
         { id: 5, title: "Compensación Ambiental", image: compensacionAmbiental, link: "/GEB/Compensaciones", auth: true },
     ];
 
