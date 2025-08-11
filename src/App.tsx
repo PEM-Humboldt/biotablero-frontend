@@ -129,7 +129,7 @@ const App: React.FunctionComponent = () => {
     );
   };
 
-  const yandexMetrikaId = Number(process.env.REACT_APP_YM_ID);
+  const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
 
   return (
     <AppContext.Provider value={{ user }}>
