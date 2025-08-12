@@ -125,7 +125,7 @@ Tenga en cuenta las siguientes cosas:
 Ejecutar la siguiente linea para verificar los estilos del proyecto:
 
 ```sh
-pnpm format:check
+pnpm check-format
 ```
 
 Ejecuta la siguiente linea para formatear los archivos del proyecto
@@ -143,7 +143,7 @@ pnpm lint
 Para corregir automaticamente el codigo según la guía de estilo (cuando sea posible)
 
 ```sh
-pnpm lint:fix
+pnpm fix-lint
 ```
 
 ### Corregir reglas de estilo
