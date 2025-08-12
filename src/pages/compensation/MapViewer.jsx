@@ -1,20 +1,20 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
-import { Modal } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Modal } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   ImageOverlay,
   MapContainer,
   TileLayer,
   WMSTileLayer,
-} from 'react-leaflet';
+} from "react-leaflet";
 
-import 'leaflet/dist/leaflet.css';
+import "leaflet/dist/leaflet.css";
 
 const config = {};
 config.params = {
-  center: [5.2500, -74.9167], // Location: Mariquita-Tolima
+  center: [5.25, -74.9167], // Location: Mariquita-Tolima
 };
 
 class MapViewer extends React.Component {
@@ -33,7 +33,7 @@ class MapViewer extends React.Component {
     });
 
     return responseObj;
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -52,11 +52,13 @@ class MapViewer extends React.Component {
     const { loadingLayer, rasterBounds } = this.props;
     if (update) {
       Object.keys(layers).forEach((layerName) => {
-        if (activeLayers.includes(layerName)) this.showLayer(layers[layerName], true);
+        if (activeLayers.includes(layerName))
+          this.showLayer(layers[layerName], true);
         else this.showLayer(layers[layerName], false);
       });
     }
-    const countActiveLayers = Object.values(activeLayers).filter(Boolean).length;
+    const countActiveLayers =
+      Object.values(activeLayers).filter(Boolean).length;
     if (rasterBounds) {
       this.mapRef.current.fitBounds(rasterBounds);
     } else if (countActiveLayers === 0 && !loadingLayer) {
@@ -65,14 +67,16 @@ class MapViewer extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, 'active');
-    newActiveLayers = Object.keys(newActiveLayers).filter((name) => newActiveLayers[name]);
+    let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, "active");
+    newActiveLayers = Object.keys(newActiveLayers).filter(
+      (name) => newActiveLayers[name]
+    );
     const { layers: oldLayers, activeLayers } = prevState;
     if (newActiveLayers.join() === activeLayers.join()) {
       return { update: false };
     }
 
-    const layers = MapViewer.infoFromLayers(nextProps.layers, 'layer');
+    const layers = MapViewer.infoFromLayers(nextProps.layers, "layer");
     Object.keys(oldLayers).forEach((name) => {
       if (layers[name] !== oldLayers[name]) {
         oldLayers[name].remove();
@@ -99,7 +103,7 @@ class MapViewer extends React.Component {
         this.mapRef.current.fitBounds(layer.getBounds());
       }
     }
-  }
+  };
 
   render() {
     const {
@@ -113,16 +117,21 @@ class MapViewer extends React.Component {
     } = this.props;
     const { openErrorModal } = this.state;
     return (
-      <MapContainer id="map" ref={this.mapRef} center={config.params.center} zoom={5}>
+      <MapContainer
+        id="map"
+        ref={this.mapRef}
+        center={config.params.center}
+        zoom={5}
+      >
         {mapTitle}
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={loadingLayer}
           disableAutoFocus
-          container={() => document.getElementById('map')}
-          style={{ position: 'absolute' }}
-          BackdropProps={{ style: { position: 'absolute' } }}
+          container={() => document.getElementById("map")}
+          style={{ position: "absolute" }}
+          BackdropProps={{ style: { position: "absolute" } }}
         >
           <div className="generalAlarm">
             <h2>
@@ -141,10 +150,12 @@ class MapViewer extends React.Component {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={layerError && openErrorModal}
-          onClose={() => { this.setState({ openErrorModal: false }); }}
-          container={() => document.getElementById('map')}
-          style={{ position: 'absolute' }}
-          BackdropProps={{ style: { position: 'absolute' } }}
+          onClose={() => {
+            this.setState({ openErrorModal: false });
+          }}
+          container={() => document.getElementById("map")}
+          style={{ position: "absolute" }}
+          BackdropProps={{ style: { position: "absolute" } }}
         >
           <div className="generalAlarm">
             <h2>
@@ -153,8 +164,10 @@ class MapViewer extends React.Component {
             <button
               type="button"
               className="closebtn"
-              style={{ position: 'absolute' }}
-              onClick={() => { this.setState({ openErrorModal: false }); }}
+              style={{ position: "absolute" }}
+              onClick={() => {
+                this.setState({ openErrorModal: false });
+              }}
               title="Cerrar"
             >
               <CloseIcon />
@@ -163,9 +176,10 @@ class MapViewer extends React.Component {
         </Modal>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        {rasterLayers && rasterBounds && (
+        {rasterLayers &&
+          rasterBounds &&
           rasterLayers.map((ras, index) => (
             <ImageOverlay
               key={index}
@@ -173,8 +187,7 @@ class MapViewer extends React.Component {
               bounds={rasterBounds}
               opacity={ras.opacity}
             />
-          ))
-        )}
+          ))}
         {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
         {userLogged && (
           <WMSTileLayer
@@ -200,10 +213,12 @@ MapViewer.propTypes = {
   layers: PropTypes.object.isRequired,
   // eslint-disable-next-line react/no-unused-prop-types
   layerError: PropTypes.bool,
-  rasterLayers: PropTypes.arrayOf(PropTypes.shape({
-    data: PropTypes.string,
-    opacity: PropTypes.number,
-  })),
+  rasterLayers: PropTypes.arrayOf(
+    PropTypes.shape({
+      data: PropTypes.string,
+      opacity: PropTypes.number,
+    })
+  ),
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,
 };

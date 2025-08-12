@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Typography from '@mui/material/Typography';
+import React from "react";
+import PropTypes from "prop-types";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Typography from "@mui/material/Typography";
 
 class TabContainer extends React.Component {
   constructor(props) {
@@ -22,9 +22,7 @@ class TabContainer extends React.Component {
   };
 
   render() {
-    const {
-      children, titles, tabClasses,
-    } = this.props;
+    const { children, titles, tabClasses } = this.props;
     const { value } = this.state;
     return (
       <div>
@@ -35,9 +33,7 @@ class TabContainer extends React.Component {
             className="DrawerTab"
             centered
           >
-            {titles.map(({
-              label, icon, disabled, selected,
-            }, i) => (
+            {titles.map(({ label, icon, disabled, selected }, i) => (
               <Tab
                 className={`tabs ${tabClasses}`}
                 label={label}
@@ -49,13 +45,14 @@ class TabContainer extends React.Component {
             ))}
           </Tabs>
         </AppBar>
-        {children.map((child, i) => (
-          value === i && (
-            <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
-              {child}
-            </Typography>
-          )
-        ))}
+        {children.map(
+          (child, i) =>
+            value === i && (
+              <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
+                {child}
+              </Typography>
+            )
+        )}
       </div>
     );
   }
@@ -69,7 +66,7 @@ TabContainer.propTypes = {
 };
 
 TabContainer.defaultProps = {
-  tabClasses: '',
+  tabClasses: "",
   initialSelectedIndex: 1,
 };
 

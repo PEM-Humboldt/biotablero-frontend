@@ -1,15 +1,13 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-import Accordion from 'pages/search/Accordion';
+import Accordion from "pages/search/Accordion";
 
 const Richness = (props) => {
-  const {
-    handleAccordionChange
-  } = props;
+  const { handleAccordionChange } = props;
 
-  const componentsArray = [ ];
+  const componentsArray = [];
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: "100%" }}>
       <Accordion
         componentsArray={componentsArray}
         classNameDefault="m1"
@@ -22,11 +20,11 @@ const Richness = (props) => {
 };
 
 Richness.propTypes = {
-  handleAccordionChange: PropTypes.func
+  handleAccordionChange: PropTypes.func,
 };
 
 Richness.defaultProps = {
-  handleAccordionChange: () => {}
+  handleAccordionChange: () => {},
 };
 
 export default Richness;

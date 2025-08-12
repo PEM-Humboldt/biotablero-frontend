@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import AddProjectIcon from '@mui/icons-material/Check';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import AddProjectIcon from "@mui/icons-material/Check";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
 class NewBiomeForm extends Component {
   constructor(props) {
@@ -17,7 +17,7 @@ class NewBiomeForm extends Component {
    */
   handleChangeBiomes = (event, biomeSelected) => {
     this.setState({ biomeSelected });
-  }
+  };
 
   /**
    * Return the biomes selector and its current value
@@ -38,19 +38,17 @@ class NewBiomeForm extends Component {
             variant="outlined"
           />
         )}
-        ListboxProps={
-          {
-            style: {
-              maxHeight: '150px',
-              border: '0px',
-            },
-          }
-        }
+        ListboxProps={{
+          style: {
+            maxHeight: "150px",
+            border: "0px",
+          },
+        }}
         onChange={this.handleChangeBiomes}
         size="small"
       />
     );
-  }
+  };
 
   render() {
     const { biomeSelected } = this.state;

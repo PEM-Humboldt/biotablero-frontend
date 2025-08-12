@@ -1,9 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import Dashboard from 'cbm-dashboard';
+import Dashboard from "cbm-dashboard";
 
-const CBMDashboard = () => (
-  <Dashboard />
-);
+const CBMDashboard = () => <Dashboard />;
 
 export default CBMDashboard;

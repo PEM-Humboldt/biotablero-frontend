@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CloseIcon from '@mui/icons-material/Close';
-import AddProjectIcon from '@mui/icons-material/Check';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import CloseIcon from "@mui/icons-material/Close";
+import AddProjectIcon from "@mui/icons-material/Check";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
 class NewProjectForm extends Component {
   constructor(props) {
@@ -21,11 +21,11 @@ class NewProjectForm extends Component {
    */
   handleChangeRegion = (event, values) => {
     this.setState({
-      regionSelected: values ? values.value : '',
+      regionSelected: values ? values.value : "",
       statusSelected: null,
       newName: null,
     });
-  }
+  };
 
   /**
    * Return the regions selector and its current value
@@ -51,18 +51,18 @@ class NewProjectForm extends Component {
         )}
       />
     );
-  }
+  };
 
   /**
    * Event handler when a status option is selected
    */
   handleChangeStatus = (event, statusValue) => {
     this.setState({
-      statusSelected: statusValue ? statusValue.value : '',
+      statusSelected: statusValue ? statusValue.value : "",
       newNameState: null,
       newName: null,
     });
-  }
+  };
 
   /**
    * Return the status selector and its current value
@@ -76,13 +76,11 @@ class NewProjectForm extends Component {
           autoHighlight
           options={status}
           getOptionLabel={(option) => option.label}
-          ListboxProps={
-            {
-              style: {
-                border: '0px',
-              },
-            }
-          }
+          ListboxProps={{
+            style: {
+              border: "0px",
+            },
+          }}
           onChange={this.handleChangeStatus}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           renderInput={(params) => (
@@ -102,10 +100,11 @@ class NewProjectForm extends Component {
             </li>
           )}
         />
-        { // TODO: Handle error for new project if the company doesn' have regions and status
-          (statusSelected === 'newState') && (<br />) && (
+        {
+          // TODO: Handle error for new project if the company doesn' have regions and status
+          statusSelected === "newState" && <br /> && (
             <TextField
-              value={newNameState || ''}
+              value={newNameState || ""}
               placeholder="Nuevo estado"
               onChange={this.handleChangeNameStatus}
               inputProps={{ maxLength: 50 }}
@@ -117,30 +116,29 @@ class NewProjectForm extends Component {
         }
       </div>
     );
-  }
+  };
 
   /**
    * Event handler when the name is selected
    */
   handleChangeName = (event) => {
     this.setState({
-      newName: event.target.value ? event.target.value : '',
+      newName: event.target.value ? event.target.value : "",
     });
-  }
+  };
 
   /**
    * Event handler when the name is selected
    */
   handleChangeNameStatus = (event) => {
     this.setState({
-      newNameState: event.target.value ? event.target.value : '',
+      newNameState: event.target.value ? event.target.value : "",
     });
-  }
+  };
 
   render() {
-    const {
-      regionSelected, statusSelected, newName, newNameState,
-    } = this.state;
+    const { regionSelected, statusSelected, newName, newNameState } =
+      this.state;
     const { handlers } = this.props;
     return (
       <div className="newProjectModal">
@@ -161,7 +159,7 @@ class NewProjectForm extends Component {
           {this.listStatus()}
           <br />
           <TextField
-            value={newName || ''}
+            value={newName || ""}
             placeholder="Nombre del proyecto"
             onChange={this.handleChangeName}
             variant="outlined"
@@ -169,18 +167,23 @@ class NewProjectForm extends Component {
             fullWidth
             size="small"
           />
-          { // TODO: Handle error for new project if the company doesn' have regions and status
+          {
+            // TODO: Handle error for new project if the company doesn' have regions and status
             regionSelected && (newNameState || statusSelected) && newName && (
-            <button
-              type="button"
-              className="addprjbtn"
-              onClick={() => {
-                handlers[0](regionSelected, (newNameState || statusSelected), newName.trim());
-              }}
-              title="Crear proyecto"
-            >
-              <AddProjectIcon />
-            </button>
+              <button
+                type="button"
+                className="addprjbtn"
+                onClick={() => {
+                  handlers[0](
+                    regionSelected,
+                    newNameState || statusSelected,
+                    newName.trim()
+                  );
+                }}
+                title="Crear proyecto"
+              >
+                <AddProjectIcon />
+              </button>
             )
           }
         </div>
