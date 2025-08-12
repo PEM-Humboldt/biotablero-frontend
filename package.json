@@ -27,7 +27,6 @@
     "@react-spring/web": "~9.3.1",
     "@vx/responsive": "~0.0.199",
     "axios": "~1.6.5",
-    "cbm-dashboard": "workspace:1.0.0",
     "chart.js": "~3.8.0",
     "indicators": "workspace:1.0.0",
     "leaflet": "1.9.4",
