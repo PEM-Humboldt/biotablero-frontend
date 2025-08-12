@@ -60,7 +60,9 @@ module.exports = {
       { prefer: "type-imports" },
     ],
     "@typescript-eslint/comma-dangle": "off",
+    "@typescript-eslint/indent": "off",
     "@typescript-eslint/quotes": "off",
+
 
     "no-restricted-imports": [
       "error",
