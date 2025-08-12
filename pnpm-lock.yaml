@@ -76,9 +76,6 @@ importers:
       axios:
         specifier: ~1.6.5
         version: 1.6.7
-      cbm-dashboard:
-        specifier: workspace:1.0.0
-        version: file:packages/cbm-dashboard(@types/react@17.0.87)(mapbox-gl@1.13.3)
       chart.js:
         specifier: ~3.8.0
         version: 3.8.2
