@@ -8,12 +8,10 @@ import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
 import Search from "pages/Search";
-import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
-import "cbm-dashboard/dist/bundle.css";
 import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
@@ -109,14 +107,6 @@ const App: React.FunctionComponent = () => {
       logoSet: null,
       name: "Portafolios",
       component: <Portfolio />,
-      className: "fullgrid",
-    });
-
-  const loadCBMDashboard = () =>
-    loadComponent({
-      logoSet: "monitoreo",
-      name: "Monitoreo comunitario",
-      component: <CBMDashboard />,
       className: "fullgrid",
     });
 

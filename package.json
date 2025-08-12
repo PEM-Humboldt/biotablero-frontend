@@ -45,9 +45,6 @@
     "@appigram/react-yandex-metrika": "^2.8.9"
   },
   "dependenciesMeta": {
-    "cbm-dashboard": {
-      "injected": true
-    },
     "indicators": {
       "injected": true
     }

@@ -171,86 +171,8 @@ importers:
         specifier: ~4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.14)
     dependenciesMeta:
-      cbm-dashboard:
-        injected: true
       indicators:
         injected: true
-
-  packages/cbm-dashboard:
-    dependencies:
-      '@material-ui/core':
-        specifier: ^4.12.4
-        version: 4.12.4(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      '@material-ui/icons':
-        specifier: ^4.11.3
-        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      babel-plugin-transform-runtime:
-        specifier: ~6.23.0
-        version: 6.23.0
-      papaparse:
-        specifier: ~5.3.2
-        version: 5.3.2
-      plotly.js:
-        specifier: ~2.28.0
-        version: 2.28.0(mapbox-gl@1.13.3)
-      prop-types:
-        specifier: ~15.8.1
-        version: 15.8.1
-      react:
-        specifier: ~17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ~17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-plotly.js:
-        specifier: ~2.5.1
-        version: 2.5.1(plotly.js@2.28.0)(react@17.0.2)
-    devDependencies:
-      '@babel/core':
-        specifier: ~7.18.13
-        version: 7.18.13
-      '@babel/preset-env':
-        specifier: ~7.18.10
-        version: 7.18.10(@babel/core@7.18.13)
-      '@babel/preset-react':
-        specifier: ~7.17.12
-        version: 7.17.12(@babel/core@7.18.13)
-      '@rollup/plugin-babel':
-        specifier: ~5.3.1
-        version: 5.3.1(@babel/core@7.18.13)(rollup@2.75.7)
-      '@rollup/plugin-commonjs':
-        specifier: ~17.1.0
-        version: 17.1.0(rollup@2.75.7)
-      '@rollup/plugin-node-resolve':
-        specifier: ~13.3.0
-        version: 13.3.0(rollup@2.75.7)
-      eslint:
-        specifier: ~7.17.0
-        version: 7.17.0
-      eslint-config-airbnb:
-        specifier: ~18.2.1
-        version: 18.2.1(eslint-plugin-import@2.29.1)(eslint-plugin-jsx-a11y@6.8.0)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react@7.33.2)(eslint@7.17.0)
-      eslint-config-prettier:
-        specifier: ~7.1.0
-        version: 7.1.0(eslint@7.17.0)
-      eslint-plugin-prettier:
-        specifier: ~3.3.1
-        version: 3.3.1(eslint-config-prettier@7.1.0)(eslint@7.17.0)(prettier@2.6.2)
-      parcel:
-        specifier: 1.12.4
-        version: 1.12.4
-      prettier:
-        specifier: ~2.6.2
-        version: 2.6.2
-      rollup:
-        specifier: ~2.75.6
-        version: 2.75.7
-      rollup-plugin-css-only:
-        specifier: ~3.1.0
-        version: 3.1.0(rollup@2.75.7)
-      rollup-plugin-node-polyfills:
-        specifier: ~0.2.1
-        version: 0.2.1
 
   packages/indicators:
     dependencies:
@@ -13429,26 +13351,6 @@ packages:
       string-width: 4.2.3
       y18n: 5.0.8
       yargs-parser: 21.1.1
-    dev: false
-
-  file:packages/cbm-dashboard(@types/react@17.0.87)(mapbox-gl@1.13.3):
-    resolution: {directory: packages/cbm-dashboard, type: directory}
-    id: file:packages/cbm-dashboard
-    name: cbm-dashboard
-    dependencies:
-      '@material-ui/core': 4.12.4(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      '@material-ui/icons': 4.11.3(@material-ui/core@4.12.4)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      babel-plugin-transform-runtime: 6.23.0
-      papaparse: 5.3.2
-      plotly.js: 2.28.0(mapbox-gl@1.13.3)
-      prop-types: 15.8.1
-      react: 17.0.2
-      react-dom: 17.0.2(react@17.0.2)
-      react-plotly.js: 2.5.1(plotly.js@2.28.0)(react@17.0.2)
-    transitivePeerDependencies:
-      - '@types/react'
-      - mapbox-gl
-      - supports-color
     dev: false
 
   file:packages/indicators(@types/react@17.0.87):
