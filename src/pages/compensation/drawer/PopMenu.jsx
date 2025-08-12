@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import AddIcon from '@mui/icons-material/AddLocation';
-import BackGraphIcon from '@mui/icons-material/Timeline';
-import PropTypes from 'prop-types';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import React, { Component } from "react";
+import AddIcon from "@mui/icons-material/AddLocation";
+import BackGraphIcon from "@mui/icons-material/Timeline";
+import PropTypes from "prop-types";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 
 class PopMenu extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -37,7 +37,7 @@ class PopMenu extends Component {
     this.setState({
       subBasin: subBasinSelected,
     });
-  }
+  };
 
   /**
    * Event handler when a CAR option is selected
@@ -52,8 +52,18 @@ class PopMenu extends Component {
     }
 
     const { biome, subBasin } = this.state;
-    const { data: { [biome]: { [subBasin]: { [ea]: valsArray } } } } = this.props;
-    const { id_biome: idBiome, id_subzone: idSubzone, id_ea: idEA } = valsArray[0];
+    const {
+      data: {
+        [biome]: {
+          [subBasin]: { [ea]: valsArray },
+        },
+      },
+    } = this.props;
+    const {
+      id_biome: idBiome,
+      id_subzone: idSubzone,
+      id_ea: idEA,
+    } = valsArray[0];
 
     loadStrategies({
       biome: { name: biome, id: idBiome },
@@ -61,7 +71,7 @@ class PopMenu extends Component {
       ea: { name: ea, id: idEA },
     });
     showDotsGraph(false);
-  }
+  };
 
   /**
    * Print Select element for different environmental authorities
@@ -70,27 +80,32 @@ class PopMenu extends Component {
    */
   renderEAs = () => {
     const { biome, subBasin } = this.state;
-    const { data: { [biome]: { [subBasin]: easObject } } } = this.props;
+    const {
+      data: {
+        [biome]: { [subBasin]: easObject },
+      },
+    } = this.props;
 
     let options = [];
     if (easObject) {
-      options = Object.keys(easObject).map((element) => ({ value: element, label: element }));
+      options = Object.keys(easObject).map((element) => ({
+        value: element,
+        label: element,
+      }));
     }
     return (
       <Autocomplete
         autoHighlight
         options={options}
         getOptionLabel={(option) => option.label}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
         key={`${biome}-${subBasin}`}
-        ListboxProps={
-          {
-            style: {
-              maxHeight: '100px',
-              border: '0px',
-            },
-          }
-        }
+        ListboxProps={{
+          style: {
+            maxHeight: "100px",
+            border: "0px",
+          },
+        }}
         onChange={this.handleEAChange}
         isOptionEqualToValue={(option, value) => option.label === value.label}
         renderInput={(params) => (
@@ -105,7 +120,7 @@ class PopMenu extends Component {
         )}
       />
     );
-  }
+  };
 
   /**
    * Print Select element with sub-basin options
@@ -113,10 +128,15 @@ class PopMenu extends Component {
    */
   renderSubBasins = () => {
     const { biome } = this.state;
-    const { data: { [biome]: subBasinsObj } } = this.props;
+    const {
+      data: { [biome]: subBasinsObj },
+    } = this.props;
     let options = [];
     if (subBasinsObj) {
-      options = Object.keys(subBasinsObj).map((element) => ({ value: element, label: element }));
+      options = Object.keys(subBasinsObj).map((element) => ({
+        value: element,
+        label: element,
+      }));
     }
     return (
       <div>
@@ -124,16 +144,14 @@ class PopMenu extends Component {
           autoHighlight
           options={options}
           getOptionLabel={(option) => option.label}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
           key={`${biome}`}
-          ListboxProps={
-            {
-              style: {
-                maxHeight: '100px',
-                border: '0px',
-              },
-            }
-          }
+          ListboxProps={{
+            style: {
+              maxHeight: "100px",
+              border: "0px",
+            },
+          }}
           onChange={this.handleSubBasinChange}
           isOptionEqualToValue={(option, value) => option.label === value.label}
           renderInput={(params) => (
@@ -149,35 +167,33 @@ class PopMenu extends Component {
         />
       </div>
     );
-  }
+  };
 
   render() {
-    const {
-      showDotsGraph, visibleGraph,
-    } = this.props;
+    const { showDotsGraph, visibleGraph } = this.props;
     const { biome, subBasin } = this.state;
     return (
       <div className="complist-longer">
         <div className="popbtns">
-          { !visibleGraph && (
-          <button
-            className="backgraph"
-            type="button"
-            onClick={() => {
-              showDotsGraph(true);
-            }}
-          >
-            <BackGraphIcon />
-            Gráfico Biomas
-          </button>
+          {!visibleGraph && (
+            <button
+              className="backgraph"
+              type="button"
+              onClick={() => {
+                showDotsGraph(true);
+              }}
+            >
+              <BackGraphIcon />
+              Gráfico Biomas
+            </button>
           )}
         </div>
         <AddIcon />
         <div className="Biomatit">
-          {biome || 'Seleccione un bioma del gráfico o del mapa'}
+          {biome || "Seleccione un bioma del gráfico o del mapa"}
         </div>
-        {biome ? this.renderSubBasins() : ''}
-        {subBasin ? this.renderEAs() : ''}
+        {biome ? this.renderSubBasins() : ""}
+        {subBasin ? this.renderEAs() : ""}
       </div>
     );
   }
