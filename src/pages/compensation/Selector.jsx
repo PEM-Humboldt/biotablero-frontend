@@ -1,14 +1,14 @@
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AddIcon from '@mui/icons-material/Add';
-import Autocomplete from '@mui/material/Autocomplete';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import EditIcon from '@mui/icons-material/Edit';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import PropTypes from 'prop-types';
-import React from 'react';
-import TextField from '@mui/material/TextField';
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AddIcon from "@mui/icons-material/Add";
+import Autocomplete from "@mui/material/Autocomplete";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import EditIcon from "@mui/icons-material/Edit";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PropTypes from "prop-types";
+import React from "react";
+import TextField from "@mui/material/TextField";
 
 class Selector extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -16,7 +16,11 @@ class Selector extends React.Component {
       const { data } = nextProps;
       const expandedId = nextProps.expandedId || 0;
       const expandedByDefault = data[expandedId] || { id: null, label: null };
-      return { expanded: expandedByDefault.id, selected: expandedByDefault.id, new: false };
+      return {
+        expanded: expandedByDefault.id,
+        selected: expandedByDefault.id,
+        new: false,
+      };
     }
     return null;
   }
@@ -34,7 +38,7 @@ class Selector extends React.Component {
     const { handlers } = this.props;
     const expandedPanel = expanded ? panel : false;
     handlers[0](expandedPanel);
-    if (panel === 'addProject') {
+    if (panel === "addProject") {
       this.setState({
         expanded: null,
       });
@@ -57,12 +61,10 @@ class Selector extends React.Component {
   };
 
   renderInnerElement = (parent, listSize, data) => (obj, index) => {
-    const {
-      type, label, name, id_project: projectId,
-    } = obj;
+    const { type, label, name, id_project: projectId } = obj;
     const { handlers } = this.props;
     switch (listSize) {
-      case 'large':
+      case "large":
         return (
           <Autocomplete
             id="autocomplete-selector"
@@ -71,7 +73,7 @@ class Selector extends React.Component {
             onChange={(event, values) => {
               handlers[2](parent, values);
             }}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             renderInput={(params) => (
               <TextField
                 InputProps={params.InputProps}
@@ -85,14 +87,12 @@ class Selector extends React.Component {
             )}
             key={`${type}-${label || name}-${index}`}
             autoHighlight
-            ListboxProps={
-              {
-                style: {
-                  maxHeight: '100px',
-                  border: '0px',
-                },
-              }
-            }
+            ListboxProps={{
+              style: {
+                maxHeight: "100px",
+                border: "0px",
+              },
+            }}
           />
         );
       default:
@@ -107,100 +107,113 @@ class Selector extends React.Component {
           </button>
         );
     }
-  }
+  };
 
   render() {
     const { description, iconClass } = this.props;
     let { data } = this.props;
     data = data || [];
-    const {
-      expanded, selected, subExpanded,
-    } = this.state;
+    const { expanded, selected, subExpanded } = this.state;
     return (
       <div className="selector">
         <div className={iconClass} />
-        <div className="description">
-          {description}
-        </div>
-        { (data.length > 0) && (data.map((firstLevel) => {
-          const {
-            id, label, disabled, iconOption, detailId, idLabel,
-          } = firstLevel;
-          const options = firstLevel.options || firstLevel.projectsStates || [];
-          return (
-            <Accordion
-              className={`m0 ${selected === id ? 'selector-expanded' : ''}`}
-              id={idLabel}
-              expanded={expanded === id}
-              disabled={disabled}
-              onChange={this.firstLevelChange(id)}
-              key={id}
-            >
-              <AccordionSummary
-                expandIcon={
-                  (((iconOption === 'add') && <AddIcon />)
-                  || ((iconOption === 'upload') && <CloudUploadIcon />)
-                  || ((iconOption === 'edit') && <EditIcon />)
-                  || (<ExpandMoreIcon />))
-                }
+        <div className="description">{description}</div>
+        {data.length > 0 &&
+          data.map((firstLevel) => {
+            const { id, label, disabled, iconOption, detailId, idLabel } =
+              firstLevel;
+            const options =
+              firstLevel.options || firstLevel.projectsStates || [];
+            return (
+              <Accordion
+                className={`m0 ${selected === id ? "selector-expanded" : ""}`}
+                id={idLabel}
+                expanded={expanded === id}
+                disabled={disabled}
+                onChange={this.firstLevelChange(id)}
+                key={id}
               >
-                {label}
-              </AccordionSummary>
-              <AccordionDetails
-                id={detailId}
-              >
-                {options.map((secondLevel) => {
-                  const {
-                    id: subId,
-                    label: subLabel,
-                    disabled: subDisabled,
-                  } = secondLevel;
-                  const subOptions = secondLevel.options || secondLevel.projects || [];
-                  return (
-                    <Accordion
-                      className="m0"
-                      id={subId}
-                      expanded={subExpanded === subId}
-                      disabled={subDisabled}
-                      onChange={this.secondLevelChange(subId)}
-                      key={subId}
-                    >
-                      <AccordionSummary
-                        expandIcon={
-                          (((iconOption === 'add') && <AddIcon />)
-                          || ((iconOption === 'upload') && <CloudUploadIcon />)
-                          || ((iconOption === 'edit') && <EditIcon />)
-                          || (<ExpandMoreIcon />))
-                        }
+                <AccordionSummary
+                  expandIcon={
+                    (iconOption === "add" && <AddIcon />) ||
+                    (iconOption === "upload" && <CloudUploadIcon />) ||
+                    (iconOption === "edit" && <EditIcon />) || (
+                      <ExpandMoreIcon />
+                    )
+                  }
+                >
+                  {label}
+                </AccordionSummary>
+                <AccordionDetails id={detailId}>
+                  {options.map((secondLevel) => {
+                    const {
+                      id: subId,
+                      label: subLabel,
+                      disabled: subDisabled,
+                    } = secondLevel;
+                    const subOptions =
+                      secondLevel.options || secondLevel.projects || [];
+                    return (
+                      <Accordion
+                        className="m0"
+                        id={subId}
+                        expanded={subExpanded === subId}
+                        disabled={subDisabled}
+                        onChange={this.secondLevelChange(subId)}
+                        key={subId}
                       >
-                        {subLabel}
-                      </AccordionSummary>
-                      <AccordionDetails className={subOptions.length < 7 ? 'inlineb' : ''}>
-                        {subOptions.length < 7
-                          ? subOptions.map(this.renderInnerElement(subId, subOptions.length))
-                          : [{ subOptions }].map(this.renderInnerElement(subId, 'large', subOptions))}
-                      </AccordionDetails>
-                    </Accordion>
-                  );
-                })}
-              </AccordionDetails>
-            </Accordion>
-          );
-        }))}
+                        <AccordionSummary
+                          expandIcon={
+                            (iconOption === "add" && <AddIcon />) ||
+                            (iconOption === "upload" && <CloudUploadIcon />) ||
+                            (iconOption === "edit" && <EditIcon />) || (
+                              <ExpandMoreIcon />
+                            )
+                          }
+                        >
+                          {subLabel}
+                        </AccordionSummary>
+                        <AccordionDetails
+                          className={subOptions.length < 7 ? "inlineb" : ""}
+                        >
+                          {subOptions.length < 7
+                            ? subOptions.map(
+                                this.renderInnerElement(
+                                  subId,
+                                  subOptions.length
+                                )
+                              )
+                            : [{ subOptions }].map(
+                                this.renderInnerElement(
+                                  subId,
+                                  "large",
+                                  subOptions
+                                )
+                              )}
+                        </AccordionDetails>
+                      </Accordion>
+                    );
+                  })}
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
       </div>
     );
   }
 }
 
 Selector.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string,
-    label: PropTypes.string,
-    disabled: PropTypes.bool,
-    expandIcon: PropTypes.node,
-    detailId: PropTypes.string,
-    options: PropTypes.array,
-  })),
+  data: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      label: PropTypes.string,
+      disabled: PropTypes.bool,
+      expandIcon: PropTypes.node,
+      detailId: PropTypes.string,
+      options: PropTypes.array,
+    })
+  ),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,
   iconClass: PropTypes.string,
@@ -211,7 +224,7 @@ Selector.defaultProps = {
   data: [],
   handlers: [],
   description: {},
-  iconClass: '',
+  iconClass: "",
   expandedId: 0,
 };
 
