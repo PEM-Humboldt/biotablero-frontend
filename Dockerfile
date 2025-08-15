@@ -13,8 +13,6 @@ WORKDIR /app
 COPY . .
 
 # Congelamos todas las versiones para evitar lios
-RUN pnpm -r install --frozen-lockfile
-RUN pnpm -r build-pkg
 RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
