@@ -1,8 +1,8 @@
-import { Component } from "react";
+import { Component, useEffect, useState } from "react";
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import SearchContext, {
-  drawControlHandler,
-  srchType,
+  drawControlHandler as DrawControlHandler,
+  srchType as SrchType,
 } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
@@ -11,41 +11,116 @@ import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
+import {
+  MapTitle,
+  rasterLayer as RasterLayer,
+  shapeLayer as ShapeLayer,
+} from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L, { LatLngBoundsExpression } from "leaflet";
 import { Names } from "types/layoutTypes";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
-interface Props extends RouteComponentProps {
+// TODO: REVISAR EL TIPDADO ANTES DE SEGUIR
+interface SearchProps extends RouteComponentProps {
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: string;
+  // Este tipo no es correcto,
   areaId?: number | string;
   // TODO: Tipar correctamente
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
 interface State {
-  searchType: srchType;
+  searchType: SrchType;
   // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: AreaType;
   areaId?: AreaIdBasic;
   areaHa?: number;
-  areaLayer: shapeLayer;
-  shapeLayers: Array<shapeLayer>;
-  rasterLayers: Array<rasterLayer>;
+  areaLayer: ShapeLayer;
+  shapeLayers: Array<ShapeLayer>;
+  rasterLayers: Array<RasterLayer>;
   showAreaLayer: boolean;
   bounds: LatLngBoundsExpression;
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
   showDrawControl: boolean;
-  onEditControlMounted: drawControlHandler;
+  onEditControlMounted: DrawControlHandler;
 }
 
-class Search extends Component<Props, State> {
-  constructor(props: Props) {
+export const SearchFN = (props: SearchProps) => {
+  const [searchType, setSearchType] = useState<SrchType>("definedArea");
+  const [areaType, setAreaType] = useState<AreaType | undefined>();
+  const [areaId, setAreaId] = useState<AreaIdBasic | undefined>();
+  const [areaHa, setAreaHa] = useState<number | undefined>();
+  const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
+    id: "",
+    paneLevel: 0,
+    json: { type: "FeatureCollection" },
+  });
+  const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
+  const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
+  const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
+  const [bounds, setBounds] = useState<LatLngBoundsExpression>([]);
+  const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
+  const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
+  const [layerError, setLayerError] = useState<boolean>(false);
+  const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
+  const [onEditControlMounted, setOnEditControlMounted] =
+    useState<DrawControlHandler>(() => {});
+
+  useEffect(() => {
+    const areaIdProp = props.areaId;
+    const areaTypeProp = props.areaType;
+    const serHeaderNamesProp = props.setHeaderNames;
+
+    // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
+    // lo que no lo usé para validar si avanza con la sincronización
+    if (
+      areaIdProp === undefined ||
+      areaIdProp === null ||
+      areaTypeProp === undefined ||
+      areaTypeProp === null
+    ) {
+      return;
+    }
+
+    Promise.all([
+      SearchAPI.requestAreaTypes(),
+
+      // los nombres si estan correctos? en requestId pide areaType
+      SearchAPI.requestAreaIds(areaTypeProp),
+
+      // los nombres si estan correctos? en requestInfo pide areaId
+      SearchAPI.requestAreaInfo(areaIdProp),
+    ]).then(([types, ids, areaId]) => {
+      const typeObj = types.find(({ id }) => id === areaTypeProp);
+      const idObj = ids.find(({ id }) => id === areaId.id);
+
+      setAreaType(typeObj);
+      setAreaId(idObj);
+      setAreaHa(props.areaId);
+
+      // NOTE: el type de areaId creo que esta mal definido desde los props
+      // this.setState({
+      //   areaType: typeObj,
+      //   areaId: idObj,
+      //   areaHa: Number(areaId.area),
+      // });
+      serHeaderNamesProp({
+        parent: idObj?.name ?? "",
+        child: typeObj?.label ?? "",
+      });
+
+      this.setAreaLayer(areaId.geometry);
+    });
+  });
+};
+
+class Search extends Component<SearchProps, State> {
+  constructor(props: SearchProps) {
     super(props);
     this.state = {
       searchType: "definedArea",
@@ -87,9 +162,9 @@ class Search extends Component<Props, State> {
   /**
    * Set the value for the search type
    *
-   * @param {srchType} searchType
+   * @param {SrchType} searchType
    */
-  setSearchType = (searchType: srchType) => {
+  setSearchType = (searchType: SrchType) => {
     this.setState({ searchType });
   };
 
@@ -185,18 +260,18 @@ class Search extends Component<Props, State> {
   /**
    * Set values for raster layers array
    *
-   * @param {Array<rasterLayer>} layers
+   * @param {Array<RasterLayer>} layers
    */
-  setRasterLayers = (layers: Array<rasterLayer>) => {
+  setRasterLayers = (layers: Array<RasterLayer>) => {
     this.setState({ rasterLayers: layers });
   };
 
   /**
    * Set values for GeoJson layers array and determine if shows the geofence layer
    *
-   * @param {Array<shapeLayer>} layers
+   * @param {Array<ShapeLayer>} layers
    */
-  setShapeLayers = (layers: Array<shapeLayer>) => {
+  setShapeLayers = (layers: Array<ShapeLayer>) => {
     if (!hasInvalidGeoJson(layers)) this.setState({ shapeLayers: layers });
   };
 
@@ -281,9 +356,9 @@ class Search extends Component<Props, State> {
   /**
    * Sets the handler function to control the leaflet-draw component
    *
-   * @param handler {drawControlHandler} function to handle draw component
+   * @param handler {DrawControlHandler} function to handle draw component
    */
-  setOnEditControlMounted = (handler: drawControlHandler) => {
+  setOnEditControlMounted = (handler: DrawControlHandler) => {
     this.setState({ onEditControlMounted: handler });
   };
 
