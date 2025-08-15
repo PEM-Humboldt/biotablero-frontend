@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
-import LinkIcon from './URLIcon';
-import PlusIcon from '../../components/PlusIcon';
-import ExpandedCard from './ExpandedCard';
+import LinkIcon from "pages/indicators/app/cardManager/URLIcon";
+import PlusIcon from "pages/indicators/components/PlusIcon";
+import ExpandedCard from "pages/indicators/app/cardManager/ExpandedCard";
 
 const Card = (props) => {
   const { item, expandClick, isExpanded, wasExpanded } = props;
@@ -16,12 +16,16 @@ const Card = (props) => {
   const cardRef = useRef();
   useEffect(() => {
     if (wasExpanded) {
-      cardRef.current.scrollIntoView({ behavior: 'smooth' });
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [wasExpanded]);
 
   return (
-    <div id={id} className={`indicatorCard${wasExpanded ? ' no-transition' : ''}`} ref={cardRef}>
+    <div
+      id={id}
+      className={`indicatorCard${wasExpanded ? " no-transition" : ""}`}
+      ref={cardRef}
+    >
       <div className="cardTitles">
         <h1>{title}</h1>
         <div className="links">
@@ -52,7 +56,7 @@ const Card = (props) => {
       <h3>OBJETIVO</h3>
       <h4>{target}</h4>
       <h3>ESCALA</h3>
-      <h4>{scale.join(', ')}</h4>
+      <h4>{scale.join(", ")}</h4>
     </div>
   );
 };

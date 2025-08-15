@@ -1,28 +1,32 @@
-import React, { useEffect, useReducer } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useReducer } from "react";
+import PropTypes from "prop-types";
 
-import { Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import DotIcon from '@material-ui/icons/FiberManualRecord';
-import CloseIcon from '../components/CloseIcon';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@material-ui/core";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import DotIcon from "@material-ui/icons/FiberManualRecord";
+import CloseIcon from "pages/indicators/components/CloseIcon";
 
 const boxColors = [
-  '#b1babc',
-  '#b1b2b7',
-  '#666a72',
-  '#b8bfcf',
-  '#8792af',
-  '#697f9f',
-  '#5a6e7e',
-  '#b8bcaf',
-  '#7b8780',
-  '#988b7d',
+  "#b1babc",
+  "#b1b2b7",
+  "#666a72",
+  "#b8bfcf",
+  "#8792af",
+  "#697f9f",
+  "#5a6e7e",
+  "#b8bcaf",
+  "#7b8780",
+  "#988b7d",
 ];
 
 const TagManager = (props) => {
   const { data, filterData } = props;
   const [selected, updateSelected] = useReducer((state, { action, value }) => {
-    if (action === 'clear') {
+    if (action === "clear") {
       return [];
     }
     if (state.some((stateVal) => stateVal[0] === value[0])) {
@@ -45,11 +49,11 @@ const TagManager = (props) => {
                 className="clearFilters"
                 title="Limpiar filtros"
                 type="button"
-                onClick={() => updateSelected({ action: 'clear' })}
+                onClick={() => updateSelected({ action: "clear" })}
               >
                 <CloseIcon />
               </button>
-              {`${selected.length} filtro${selected.length > 1 ? 's' : ''}`}
+              {`${selected.length} filtro${selected.length > 1 ? "s" : ""}`}
             </h4>
           )}
         </div>
@@ -78,7 +82,10 @@ const TagManager = (props) => {
                       value={tag}
                       checked={selected.some((stateVal) => stateVal[0] === tag)}
                       onChange={() =>
-                        updateSelected({ action: 'click', value: [tag, boxColors[idx]] })
+                        updateSelected({
+                          action: "click",
+                          value: [tag, boxColors[idx]],
+                        })
                       }
                     />
                     {tag}

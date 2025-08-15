@@ -8,11 +8,10 @@ import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
 import Search from "pages/Search";
-import Indicator from "pages/Indicator";
+import { Indicators } from "pages/Indicators";
 import Portfolio from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
-import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
@@ -79,7 +78,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: null,
       name: "Indicadores",
-      component: <Indicator />,
+      component: <Indicators />,
       className: "fullgrid",
     });
 
