@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths(), svgr()],
   server: {
     port: 3000,
-    open: true,
+    // open: true, // Activar la apertura automática
   },
   // NOTE: por legacy con CRA mantenemos 'build', vite por default utiliza 'dist'
   build: {

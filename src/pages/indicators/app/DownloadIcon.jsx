@@ -1,10 +1,13 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-
-import { SvgIcon } from '@material-ui/core';
+import PropTypes from "prop-types";
+import { SvgIcon } from "@material-ui/core";
 
 const DownloadIcon = ({ color, fontSize }) => (
-  <SvgIcon style={{ color, fontSize }} width="23.507" height="25.751" viewBox="0 0 23.507 25.751">
+  <SvgIcon
+    style={{ color, fontSize }}
+    width="23.507"
+    height="25.751"
+    viewBox="0 0 23.507 25.751"
+  >
     <path
       id="Path_25"
       data-name="Path 25"
@@ -21,7 +24,7 @@ DownloadIcon.propTypes = {
 };
 
 DownloadIcon.defaultProps = {
-  color: '',
+  color: "",
   fontSize: 19,
 };
 

@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
-
-import { getIndicators, filterIndicators } from '../utils/firebase';
+import { useEffect, useState } from "react";
+import {
+  getIndicators,
+  filterIndicators,
+} from "pages/indicators/utils/firebase";
 
 const useUpdateResults = () => {
   const [filters, setFilters] = useState([]);

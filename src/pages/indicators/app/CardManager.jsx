@@ -1,13 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
 
-import Masonry from 'react-masonry-component';
-
-import Card from './cardManager/Card';
+import Masonry from "react-masonry-component";
+import Card from "pages/indicators/app/cardManager/Card";
 
 const masonryOptions = {
   transitionDuration: 0,
-  itemSelector: '.indicatorCard',
+  itemSelector: ".indicatorCard",
   columnWidth: 360,
   horizontalOrder: true,
 };

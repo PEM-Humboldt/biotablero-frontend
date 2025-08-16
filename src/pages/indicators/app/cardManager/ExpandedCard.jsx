@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 
-import LinkIcon from './URLIcon';
-import MinusIcon from '../../components/MinusIcon';
+import LinkIcon from "pages/indicators/app/cardManager/URLIcon";
+import MinusIcon from "pages/indicators/components/MinusIcon";
 
 const ExpandedCard = ({ item, expandClick }) => {
   const {
@@ -13,16 +13,16 @@ const ExpandedCard = ({ item, expandClick }) => {
     scale,
     externalLink,
     goals = [],
-    periodicity = '',
-    use = '',
-    description = '',
-    requirements = '',
+    periodicity = "",
+    use = "",
+    description = "",
+    requirements = "",
     ebv = [],
-    source = '',
+    source = "",
   } = item;
   const cardRef = useRef();
   useEffect(() => {
-    cardRef.current.scrollIntoView({ behavior: 'smooth' });
+    cardRef.current.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   return (
@@ -65,13 +65,13 @@ const ExpandedCard = ({ item, expandClick }) => {
           {scale.length > 0 && (
             <>
               <h3>ESCALA</h3>
-              <h4>{scale.join(', ')}</h4>
+              <h4>{scale.join(", ")}</h4>
             </>
           )}
           {goals.length > 0 && (
             <>
               <h3>METAS</h3>
-              <h4>{goals.join('\n')}</h4>
+              <h4>{goals.join("\n")}</h4>
             </>
           )}
           {periodicity && (
@@ -98,7 +98,7 @@ const ExpandedCard = ({ item, expandClick }) => {
             <>
               <br />
               <h4>
-                <b>VEBs:</b> {ebv.join(',')}
+                <b>VEBs:</b> {ebv.join(",")}
               </h4>
             </>
           )}
@@ -141,18 +141,18 @@ ExpandedCard.propTypes = {
 
 ExpandedCard.defaultProps = {
   item: {
-    title: '',
-    target: '',
-    lastUpdate: '',
+    title: "",
+    target: "",
+    lastUpdate: "",
     scale: [],
     goals: [],
-    periodicity: '',
-    use: '',
-    description: '',
+    periodicity: "",
+    use: "",
+    description: "",
     ebv: [],
-    source: '',
-    requirements: '',
-    externalLink: '',
+    source: "",
+    requirements: "",
+    externalLink: "",
   },
   expandClick: () => {},
 };
