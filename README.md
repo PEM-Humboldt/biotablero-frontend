@@ -29,16 +29,7 @@ Active pnpm como el manejador de paquetes:
 corepack enable
 ```
 
-### 1.2. Construcción de dependencias
-
-Algunas dependencias del proyecto son paquetes incluidos en este mismo repositorio, para "_compilar_" dichas dependencias ejecute:
-
-```sh
-pnpm -r install
-pnpm -r build-pkg
-```
-
-### 1.3. Instalación de paquetes
+### 1.2. Instalación de paquetes
 
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
@@ -46,7 +37,7 @@ Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 pnpm install
 ```
 
-### 1.4. Configuración de variables de entorno
+### 1.3. Configuración de variables de entorno
 
 Crear una copia del archivo _.env_ con el nombre _.env.local_ actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
 
@@ -69,7 +60,7 @@ VITE_YM_ID=''
 
 ```
 
-### 1.5. Ejecución
+### 1.4. Ejecución
 
 Por último, ejecute la siguiente instrucción:
 
