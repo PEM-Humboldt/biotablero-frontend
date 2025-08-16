@@ -8,13 +8,10 @@ import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
 import Search from "pages/Search";
-import CBMDashboard from "pages/CBMDashboard";
-import Indicator from "pages/Indicator";
+import { Indicators } from "pages/Indicators";
 import Portfolio from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
-import "cbm-dashboard/dist/bundle.css";
-import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
@@ -81,7 +78,7 @@ const App: React.FunctionComponent = () => {
     loadComponent({
       logoSet: null,
       name: "Indicadores",
-      component: <Indicator />,
+      component: <Indicators />,
       className: "fullgrid",
     });
 
@@ -112,14 +109,6 @@ const App: React.FunctionComponent = () => {
       className: "fullgrid",
     });
 
-  const loadCBMDashboard = () =>
-    loadComponent({
-      logoSet: "monitoreo",
-      name: "Monitoreo comunitario",
-      component: <CBMDashboard />,
-      className: "fullgrid",
-    });
-
   const loadComponent = ({
     logoSet,
     name,
@@ -139,7 +128,7 @@ const App: React.FunctionComponent = () => {
     );
   };
 
-  const yandexMetrikaId = Number(process.env.REACT_APP_YM_ID);
+  const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
 
   return (
     <AppContext.Provider value={{ user }}>

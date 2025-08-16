@@ -148,7 +148,7 @@ class SearchAPI {
       ...options,
     };
     return axios
-      .get(`${process.env.REACT_APP_SEARCH_BACKEND_URL}/${endpoint}`, config)
+      .get(`${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -183,7 +183,7 @@ class SearchAPI {
     };
     return axios
       .post(
-        `${process.env.REACT_APP_SEARCH_BACKEND_URL}/${endpoint}`,
+        `${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`,
         requestBody,
         config
       )

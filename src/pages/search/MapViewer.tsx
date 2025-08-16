@@ -58,20 +58,18 @@ const config = {
 };
 
 class MapViewer extends React.Component<Props, State> {
-  mapRef;
+  map: Map | null = null;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       openErrorModal: true,
     };
-
-    this.mapRef = React.createRef<Map>();
   }
 
   componentDidUpdate(prevProps: Props) {
     const { bounds } = this.props;
-    const map = this.mapRef.current;
+    const { map } = this;
 
     if (!map) return;
 
@@ -107,8 +105,17 @@ class MapViewer extends React.Component<Props, State> {
 
     const titleName = mapTitle?.name || "";
 
+    // HACK: touchExtend dentro de MapContainer existe mientras se actualiza
+    // librería para evitar el warn, no afecta funcionalidad en escritorio
     return (
-      <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
+      <MapContainer
+        id="map"
+        whenCreated={(map) => {
+          this.map = map;
+        }}
+        bounds={config.params.colombia}
+        touchExtend={false}
+      >
         {/* TODO agrega componente para el gradiente */}
         {titleName && (
           <>
