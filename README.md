@@ -119,10 +119,22 @@ Ejecutar la siguiente linea para verificar los estilos del proyecto:
 pnpm check-format
 ```
 
-Para verificar los estilos de las dependencias propias ejecute:
+Ejecuta la siguiente linea para formatear los archivos del proyecto
 
 ```sh
-pnpm -r lint
+pnpm format
+```
+
+Para verificar que el codigo siga las guias de estilo
+
+```sh
+pnpm lint
+```
+
+Para corregir automaticamente el codigo según la guía de estilo (cuando sea posible)
+
+```sh
+pnpm fix-lint
 ```
 
 ### Corregir reglas de estilo

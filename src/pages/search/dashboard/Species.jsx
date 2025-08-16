@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import Accordion from 'pages/search/Accordion';
-import Richness from 'pages/search/dashboard/species/Richness';
-import SearchContext from 'pages/search/SearchContext';
+import Accordion from "pages/search/Accordion";
+import Richness from "pages/search/dashboard/species/Richness";
+import SearchContext from "pages/search/SearchContext";
 
 class Species extends React.Component {
   mounted = false;
@@ -10,7 +10,7 @@ class Species extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      visible: 'richness',
+      visible: "richness",
       availableComponents: [],
       functionalFlag: false,
     };
@@ -21,18 +21,18 @@ class Species extends React.Component {
     const { areaId, geofenceId } = this.context;
     let selected = [];
     switch (areaId) {
-      case 'states':
-        if (geofenceId !== '88') {
-          selected = ['richness'];
+      case "states":
+        if (geofenceId !== "88") {
+          selected = ["richness"];
         }
         break;
-      case 'ea':
-        if (geofenceId !== 'CORALINA') {
-          selected = ['richness'];
+      case "ea":
+        if (geofenceId !== "CORALINA") {
+          selected = ["richness"];
         }
         break;
-      case 'basinSubzones':
-        selected = ['richness'];
+      case "basinSubzones":
+        selected = ["richness"];
         break;
       default:
         break;
@@ -59,10 +59,10 @@ class Species extends React.Component {
     }
 
     switch (level) {
-      case '1':
+      case "1":
         this.setState({ visible: tabLayerId });
         break;
-      case '2':
+      case "2":
         this.setState((prev) => ({
           childMap: {
             ...prev.childMap,
@@ -73,18 +73,15 @@ class Species extends React.Component {
       default:
         break;
     }
-  }
+  };
 
   render() {
-    const {
-      childMap,
-      availableComponents,
-    } = this.state;
+    const { childMap, availableComponents } = this.state;
     const initialArray = [
       {
         label: {
-          id: 'richness',
-          name: 'Riqueza',
+          id: "richness",
+          name: "Riqueza",
         },
         component: Richness,
         componentProps: {
@@ -94,7 +91,9 @@ class Species extends React.Component {
       },
     ];
 
-    const componentsArray = initialArray.filter((f) => availableComponents.includes(f.label.id));
+    const componentsArray = initialArray.filter((f) =>
+      availableComponents.includes(f.label.id)
+    );
 
     return (
       <Accordion
