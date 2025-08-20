@@ -83,10 +83,13 @@ export const SearchFN = (props: SearchProps) => {
 
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
 
+  // HACK: Mientras acá para luego halarlos como hook
+  const { setHeaderNames, history } = props;
+
+  // Llamado de data para renderizadi inicial del mapa y los gráficos
   useEffect(() => {
     const areaIdProp = props.areaId;
     const areaTypeProp = props.areaType;
-    const setHeaderNamesProp = props.setHeaderNames;
 
     // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
     // lo que no lo usé para validar si avanza con la sincronización
@@ -110,13 +113,31 @@ export const SearchFN = (props: SearchProps) => {
       setAreaType(typeObj);
       setAreaId(idObj);
       setAreaHa(Number(areaInfo.area));
-      setHeaderNamesProp({
+      setHeaderNames({
         parent: idObj?.name ?? "",
         child: typeObj?.label ?? "",
       });
       updateAreaLayer(areaInfo.geometry);
     });
-  });
+  }, []);
+
+  // Actualización del url
+  useEffect(() => {
+    if (!areaType) {
+      return;
+    }
+
+    let urlNewParams = `?area_type=${areaType!.id}`;
+    if (areaId) {
+      urlNewParams += `&area_id=${areaId.id}`;
+      setHeaderNames({
+        parent: areaType.label,
+        child: areaId.name,
+      });
+    }
+
+    history.push(urlNewParams);
+  }, [areaType, areaId, history, setHeaderNames]);
 
   // NOTE: prv setAreaLayer
   const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
@@ -139,32 +160,6 @@ export const SearchFN = (props: SearchProps) => {
         json: { type: "FeatureCollection" },
       };
     });
-  };
-
-  // NOTE: prv setAreaType
-  const updateURLAreaType = (areaTypeProp: AreaType) => {
-    setAreaType(areaTypeProp);
-
-    if (areaTypeProp) {
-      // TODO: usar directamente el hook del router
-      const { history } = props;
-      history.push(`?area_type=${areaType!.id}`);
-    }
-  };
-
-  // NOTE: prv setAreaId
-  const updateAreaId = (areaIdProp: AreaIdBasic) => {
-    setAreaId(areaIdProp);
-
-    if (areaIdProp && areaType) {
-      // TODO: usar directamente el hook del router
-      const { setHeaderNames, history } = props;
-      setHeaderNames({
-        parent: areaType.label,
-        child: areaIdProp.name,
-      });
-      history.push(`?area_type=${areaType.id}&area_id=${areaIdProp.id}`);
-    }
   };
 
   // NOTE: prv setShapeLayers
@@ -199,15 +194,68 @@ export const SearchFN = (props: SearchProps) => {
     setLayerError(false);
 
     // TODO: usar directamente el hook del router
-    const { setHeaderNames, history } = props;
     setHeaderNames({ parent: "", child: "" });
     history.replace(history.location.pathname);
   };
 
+  // Valor derivado, no debe estar en un state
   const bounds =
     areaLayer.id === "geofence" && areaLayer.json
       ? L.geoJSON(areaLayer.json).getBounds()
       : [];
+
+  return (
+    <SearchContext.Provider
+      value={{
+        searchType: searchType ?? "definedArea",
+        areaType: areaType,
+        areaId: areaId,
+        areaHa: areaHa,
+        setSearchType: setSearchType,
+        setAreaType: setAreaType,
+        setAreaId: setAreaId,
+        setAreaHa: setAreaHa,
+        setAreaLayer: updateAreaLayer,
+        setRasterLayers: setRasterLayers,
+        setShapeLayers: updateShapeLayers,
+        setShowAreaLayer: setShowAreaLayer,
+        setLoadingLayer: setLoadingLayer,
+        setLayerError: setLayerError,
+        setMapTitle: setMapTitle,
+        clearLayers: clearLayers,
+        onEditControlMounted: onEditControlMounted,
+        setOnEditControlMounted: setOnEditControlMounted,
+      }}
+    >
+      <div className="appSearcher wrappergrid">
+        <MapViewer
+          geoServerUrl={GeoServerAPI.getRequestURL()}
+          loadingLayer={loadingLayer}
+          layerError={layerError}
+          shapeLayers={
+            showAreaLayer ? [areaLayer, ...shapeLayers] : shapeLayers
+          }
+          rasterLayers={rasterLayers}
+          showDrawControl={showDrawControl && searchType === "drawPolygon"}
+          loadPolygonInfo={() => {}}
+          mapTitle={mapTitle}
+          bounds={bounds}
+          polygon={null}
+        />
+        <div className="contentView">
+          {!isUndefinedOrNull(searchType) &&
+          !isUndefinedOrNull(areaType) &&
+          !isUndefinedOrNull(areaId) &&
+          !isUndefinedOrNull(areaLayer) &&
+          !isUndefinedOrNull(areaHa) ? (
+            <Selector setShowDrawControl={setShowDrawControl} />
+          ) : (
+            <Dashboard handlerBackButton={handlerBackButton} />
+          )}
+        </div>
+      </div>
+    </SearchContext.Provider>
+  );
 };
 
 class Search extends Component<SearchProps, State> {
