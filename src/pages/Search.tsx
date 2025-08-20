@@ -24,11 +24,8 @@ import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
 // TODO: REVISAR EL TIPDADO ANTES DE SEGUIR
 interface SearchProps extends RouteComponentProps {
-  // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
   areaType?: string;
-  // Este tipo no es correcto,
-  areaId?: number | string;
-  // TODO: Tipar correctamente
+  areaId?: string;
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
@@ -50,6 +47,8 @@ interface State {
   showAreaLayer: boolean;
 }
 
+// Bound se calcula ahora en render para evitar un estado derivado a partir del  areaLayer o multiples fuentes de verdad
+
 // searchType,
 // areaType,
 // areaId,
@@ -63,74 +62,153 @@ interface State {
 // showDrawControl,
 // onEditControlMounted,
 
-// export const SearchFN = (props: SearchProps) => {
-//   const [searchType, setSearchType] = useState<SrchType>("definedArea");
-//   const [areaType, setAreaType] = useState<AreaType | undefined>();
-//   const [areaId, setAreaId] = useState<AreaIdBasic | undefined>();
-//   const [areaHa, setAreaHa] = useState<number | undefined>();
-//   const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
-//     id: "",
-//     paneLevel: 0,
-//     json: { type: "FeatureCollection" },
-//   });
-//   const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
-//   const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
-//   const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
-//   const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
-//   const [layerError, setLayerError] = useState<boolean>(false);
-//   const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
-//   const [onEditControlMounted, setOnEditControlMounted] =
-//     useState<DrawControlHandler>(() => {});
-//
-//   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-//
-//   useEffect(() => {
-//     const areaIdProp = props.areaId;
-//     const areaTypeProp = props.areaType;
-//     const serHeaderNamesProp = props.setHeaderNames;
-//
-//     // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
-//     // lo que no lo usé para validar si avanza con la sincronización
-//     if (
-//       areaIdProp === undefined ||
-//       areaIdProp === null ||
-//       areaTypeProp === undefined ||
-//       areaTypeProp === null
-//     ) {
-//       return;
-//     }
-//
-//     Promise.all([
-//       SearchAPI.requestAreaTypes(),
-//
-//       // los nombres si estan correctos? en requestId pide areaType
-//       SearchAPI.requestAreaIds(areaTypeProp),
-//
-//       // los nombres si estan correctos? en requestInfo pide areaId
-//       SearchAPI.requestAreaInfo(areaIdProp),
-//     ]).then(([types, ids, areaId]) => {
-//       const typeObj = types.find(({ id }) => id === areaTypeProp);
-//       const idObj = ids.find(({ id }) => id === areaId.id);
-//
-//       setAreaType(typeObj);
-//       setAreaId(idObj);
-//       setAreaHa(props.areaId);
-//
-//       // NOTE: el type de areaId creo que esta mal definido desde los props
-//       // this.setState({
-//       //   areaType: typeObj,
-//       //   areaId: idObj,
-//       //   areaHa: Number(areaId.area),
-//       // });
-//       serHeaderNamesProp({
-//         parent: idObj?.name ?? "",
-//         child: typeObj?.label ?? "",
-//       });
-//
-//       this.setAreaLayer(areaId.geometry);
-//     });
-//   });
-// };
+export const SearchFN = (props: SearchProps) => {
+  const [searchType, setSearchType] = useState<SrchType>("definedArea");
+  const [areaType, setAreaType] = useState<AreaType | undefined>();
+  const [areaId, setAreaId] = useState<AreaIdBasic | undefined>();
+  const [areaHa, setAreaHa] = useState<number | undefined>();
+  const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
+    id: "",
+    paneLevel: 0,
+    json: { type: "FeatureCollection" },
+  });
+  const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
+  const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
+  const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
+  const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
+  const [layerError, setLayerError] = useState<boolean>(false);
+  const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
+  const [onEditControlMounted, setOnEditControlMounted] =
+    useState<DrawControlHandler>(() => {});
+
+  const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
+
+  useEffect(() => {
+    const areaIdProp = props.areaId;
+    const areaTypeProp = props.areaType;
+    const setHeaderNamesProp = props.setHeaderNames;
+
+    // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
+    // lo que no lo usé para validar si avanza con la sincronización
+    if (
+      areaIdProp === undefined ||
+      areaIdProp === null ||
+      areaTypeProp === undefined ||
+      areaTypeProp === null
+    ) {
+      return;
+    }
+
+    Promise.all([
+      SearchAPI.requestAreaTypes(),
+      SearchAPI.requestAreaIds(areaTypeProp),
+      SearchAPI.requestAreaInfo(areaIdProp),
+    ]).then(([areaTypes, areaIds, areaInfo]) => {
+      const typeObj = areaTypes.find(({ id }) => id === areaTypeProp);
+      const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+
+      setAreaType(typeObj);
+      setAreaId(idObj);
+      setAreaHa(Number(areaInfo.area));
+      setHeaderNamesProp({
+        parent: idObj?.name ?? "",
+        child: typeObj?.label ?? "",
+      });
+      updateAreaLayer(areaInfo.geometry);
+    });
+  });
+
+  // NOTE: prv setAreaLayer
+  const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
+    setAreaLayer(() => {
+      if (layerJSON) {
+        return {
+          id: "geofence",
+          paneLevel: 1,
+          json: layerJSON,
+          layerStyle: () => ({
+            stroke: false,
+            fillColor: matchColor("geofence")(),
+            fillOpacity: 0.6,
+          }),
+        };
+      }
+      return {
+        id: "",
+        paneLevel: 0,
+        json: { type: "FeatureCollection" },
+      };
+    });
+  };
+
+  // NOTE: prv setAreaType
+  const updateURLAreaType = (areaTypeProp: AreaType) => {
+    setAreaType(areaTypeProp);
+
+    if (areaTypeProp) {
+      // TODO: usar directamente el hook del router
+      const { history } = props;
+      history.push(`?area_type=${areaType!.id}`);
+    }
+  };
+
+  // NOTE: prv setAreaId
+  const updateAreaId = (areaIdProp: AreaIdBasic) => {
+    setAreaId(areaIdProp);
+
+    if (areaIdProp && areaType) {
+      // TODO: usar directamente el hook del router
+      const { setHeaderNames, history } = props;
+      setHeaderNames({
+        parent: areaType.label,
+        child: areaIdProp.name,
+      });
+      history.push(`?area_type=${areaType.id}&area_id=${areaIdProp.id}`);
+    }
+  };
+
+  // NOTE: prv setShapeLayers
+  const updateShapeLayers = (layers: ShapeLayer[]) => {
+    if (!hasInvalidGeoJson(layers)) {
+      setShapeLayers(layers);
+    }
+  };
+
+  // NOTE: prv clearLayers
+  const clearLayers = () => {
+    setShapeLayers([]);
+    setRasterLayers([]);
+    setLoadingLayer(false);
+    setLayerError(false);
+    setMapTitle({ name: "" });
+    setShowAreaLayer(false);
+  };
+
+  // NOTE: prv handlerBackButton
+  const handlerBackButton = () => {
+    setAreaId(undefined);
+    setAreaType(undefined);
+    setAreaHa(undefined);
+    setSearchType("definedArea");
+    setAreaLayer({ id: "", paneLevel: 0, json: { type: "FeatureCollection" } });
+    setRasterLayers([]);
+    setShapeLayers([]);
+    setMapTitle({ name: "" });
+    setShowAreaLayer(false);
+    setLoadingLayer(false);
+    setLayerError(false);
+
+    // TODO: usar directamente el hook del router
+    const { setHeaderNames, history } = props;
+    setHeaderNames({ parent: "", child: "" });
+    history.replace(history.location.pathname);
+  };
+
+  const bounds =
+    areaLayer.id === "geofence" && areaLayer.json
+      ? L.geoJSON(areaLayer.json).getBounds()
+      : [];
+};
 
 class Search extends Component<SearchProps, State> {
   constructor(props: SearchProps) {
@@ -156,17 +234,17 @@ class Search extends Component<SearchProps, State> {
         SearchAPI.requestAreaTypes(),
         SearchAPI.requestAreaIds(areaType!),
         SearchAPI.requestAreaInfo(areaId!),
-      ]).then(([types, ids, areaId]) => {
-        const typeObj = types.find(({ id }) => id === areaType);
-        const idObj = ids.find(({ id }) => id === areaId.id);
+      ]).then(([areaTypes, areaIDs, areaInfo]) => {
+        const typeObj = areaTypes.find(({ id }) => id === areaType);
+        const idObj = areaIDs.find(({ id }) => id === areaInfo.id);
 
         this.setState({
           areaType: typeObj,
           areaId: idObj,
-          areaHa: Number(areaId.area),
+          areaHa: Number(areaInfo.area),
         });
         setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
-        this.setAreaLayer(areaId.geometry);
+        this.setAreaLayer(areaInfo.geometry);
       });
     }
   }
@@ -186,6 +264,7 @@ class Search extends Component<SearchProps, State> {
    * @param {AreaType} areaType
    */
   setAreaType = (areaType?: AreaType) => {
+    // WARN: LISTO
     this.setState({ areaType });
 
     if (areaType) {
@@ -200,6 +279,7 @@ class Search extends Component<SearchProps, State> {
    * @param {AreaIdBasic} areaId
    */
   setAreaId = (areaId?: AreaIdBasic) => {
+    // WARN: LISTO
     this.setState({ areaId });
 
     const { areaType } = this.state;
@@ -240,6 +320,7 @@ class Search extends Component<SearchProps, State> {
    * @param {GeoJsonObject | undefined} layerJson
    */
   setAreaLayer = (layerJson?: GeoJsonObject) => {
+    // WARN: LISTO
     if (layerJson) {
       const areaLayer = {
         id: "geofence",
@@ -281,6 +362,7 @@ class Search extends Component<SearchProps, State> {
    * @param {Array<ShapeLayer>} layers
    */
   setShapeLayers = (layers: Array<ShapeLayer>) => {
+    // WARN: LISTO
     if (!hasInvalidGeoJson(layers)) this.setState({ shapeLayers: layers });
   };
 
@@ -330,6 +412,7 @@ class Search extends Component<SearchProps, State> {
    * Prepare the layers vars in the context
    */
   clearLayers = () => {
+    // WARN: LISTO
     this.setShapeLayers([]);
     this.setRasterLayers([]);
     this.setLoadingLayer(false);
@@ -342,6 +425,7 @@ class Search extends Component<SearchProps, State> {
    * Clear state when back button is clicked
    */
   handlerBackButton = () => {
+    // WARN: LISTO
     this.setState({
       areaId: undefined,
       areaType: undefined,
