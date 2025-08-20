@@ -41,83 +41,96 @@ interface State {
   areaLayer: ShapeLayer;
   shapeLayers: Array<ShapeLayer>;
   rasterLayers: Array<RasterLayer>;
-  showAreaLayer: boolean;
-  bounds: LatLngBoundsExpression;
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
   showDrawControl: boolean;
   onEditControlMounted: DrawControlHandler;
+
+  showAreaLayer: boolean;
 }
 
-export const SearchFN = (props: SearchProps) => {
-  const [searchType, setSearchType] = useState<SrchType>("definedArea");
-  const [areaType, setAreaType] = useState<AreaType | undefined>();
-  const [areaId, setAreaId] = useState<AreaIdBasic | undefined>();
-  const [areaHa, setAreaHa] = useState<number | undefined>();
-  const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
-    id: "",
-    paneLevel: 0,
-    json: { type: "FeatureCollection" },
-  });
-  const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
-  const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
-  const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-  const [bounds, setBounds] = useState<LatLngBoundsExpression>([]);
-  const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
-  const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
-  const [layerError, setLayerError] = useState<boolean>(false);
-  const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
-  const [onEditControlMounted, setOnEditControlMounted] =
-    useState<DrawControlHandler>(() => {});
+// searchType,
+// areaType,
+// areaId,
+// areaHa,
+// areaLayer,
+// shapeLayers,
+// rasterLayers,
+// mapTitle,
+// loadingLayer,
+// layerError,
+// showDrawControl,
+// onEditControlMounted,
 
-  useEffect(() => {
-    const areaIdProp = props.areaId;
-    const areaTypeProp = props.areaType;
-    const serHeaderNamesProp = props.setHeaderNames;
-
-    // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
-    // lo que no lo usé para validar si avanza con la sincronización
-    if (
-      areaIdProp === undefined ||
-      areaIdProp === null ||
-      areaTypeProp === undefined ||
-      areaTypeProp === null
-    ) {
-      return;
-    }
-
-    Promise.all([
-      SearchAPI.requestAreaTypes(),
-
-      // los nombres si estan correctos? en requestId pide areaType
-      SearchAPI.requestAreaIds(areaTypeProp),
-
-      // los nombres si estan correctos? en requestInfo pide areaId
-      SearchAPI.requestAreaInfo(areaIdProp),
-    ]).then(([types, ids, areaId]) => {
-      const typeObj = types.find(({ id }) => id === areaTypeProp);
-      const idObj = ids.find(({ id }) => id === areaId.id);
-
-      setAreaType(typeObj);
-      setAreaId(idObj);
-      setAreaHa(props.areaId);
-
-      // NOTE: el type de areaId creo que esta mal definido desde los props
-      // this.setState({
-      //   areaType: typeObj,
-      //   areaId: idObj,
-      //   areaHa: Number(areaId.area),
-      // });
-      serHeaderNamesProp({
-        parent: idObj?.name ?? "",
-        child: typeObj?.label ?? "",
-      });
-
-      this.setAreaLayer(areaId.geometry);
-    });
-  });
-};
+// export const SearchFN = (props: SearchProps) => {
+//   const [searchType, setSearchType] = useState<SrchType>("definedArea");
+//   const [areaType, setAreaType] = useState<AreaType | undefined>();
+//   const [areaId, setAreaId] = useState<AreaIdBasic | undefined>();
+//   const [areaHa, setAreaHa] = useState<number | undefined>();
+//   const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
+//     id: "",
+//     paneLevel: 0,
+//     json: { type: "FeatureCollection" },
+//   });
+//   const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
+//   const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
+//   const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
+//   const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
+//   const [layerError, setLayerError] = useState<boolean>(false);
+//   const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
+//   const [onEditControlMounted, setOnEditControlMounted] =
+//     useState<DrawControlHandler>(() => {});
+//
+//   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
+//
+//   useEffect(() => {
+//     const areaIdProp = props.areaId;
+//     const areaTypeProp = props.areaType;
+//     const serHeaderNamesProp = props.setHeaderNames;
+//
+//     // NOTE: El helper isUndefinedOrNull corta la inferencia de tipos por
+//     // lo que no lo usé para validar si avanza con la sincronización
+//     if (
+//       areaIdProp === undefined ||
+//       areaIdProp === null ||
+//       areaTypeProp === undefined ||
+//       areaTypeProp === null
+//     ) {
+//       return;
+//     }
+//
+//     Promise.all([
+//       SearchAPI.requestAreaTypes(),
+//
+//       // los nombres si estan correctos? en requestId pide areaType
+//       SearchAPI.requestAreaIds(areaTypeProp),
+//
+//       // los nombres si estan correctos? en requestInfo pide areaId
+//       SearchAPI.requestAreaInfo(areaIdProp),
+//     ]).then(([types, ids, areaId]) => {
+//       const typeObj = types.find(({ id }) => id === areaTypeProp);
+//       const idObj = ids.find(({ id }) => id === areaId.id);
+//
+//       setAreaType(typeObj);
+//       setAreaId(idObj);
+//       setAreaHa(props.areaId);
+//
+//       // NOTE: el type de areaId creo que esta mal definido desde los props
+//       // this.setState({
+//       //   areaType: typeObj,
+//       //   areaId: idObj,
+//       //   areaHa: Number(areaId.area),
+//       // });
+//       serHeaderNamesProp({
+//         parent: idObj?.name ?? "",
+//         child: typeObj?.label ?? "",
+//       });
+//
+//       this.setAreaLayer(areaId.geometry);
+//     });
+//   });
+// };
 
 class Search extends Component<SearchProps, State> {
   constructor(props: SearchProps) {
@@ -128,7 +141,6 @@ class Search extends Component<SearchProps, State> {
       rasterLayers: [],
       shapeLayers: [],
       showAreaLayer: false,
-      bounds: [],
       mapTitle: { name: "" },
       loadingLayer: false,
       layerError: false,
@@ -229,7 +241,6 @@ class Search extends Component<SearchProps, State> {
    */
   setAreaLayer = (layerJson?: GeoJsonObject) => {
     if (layerJson) {
-      const bounds = L.geoJSON(layerJson).getBounds();
       const areaLayer = {
         id: "geofence",
         paneLevel: 1,
@@ -243,7 +254,6 @@ class Search extends Component<SearchProps, State> {
 
       this.setState({
         areaLayer,
-        bounds,
       });
     } else {
       this.setState({
@@ -252,7 +262,6 @@ class Search extends Component<SearchProps, State> {
           paneLevel: 0,
           json: { type: "FeatureCollection" },
         },
-        bounds: [],
       });
     }
   };
@@ -341,7 +350,6 @@ class Search extends Component<SearchProps, State> {
       areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
       rasterLayers: [],
       shapeLayers: [],
-      bounds: [],
       mapTitle: { name: "" },
       showAreaLayer: false,
       loadingLayer: false,
@@ -369,7 +377,6 @@ class Search extends Component<SearchProps, State> {
       areaId,
       areaHa,
       areaLayer,
-      bounds,
       shapeLayers,
       rasterLayers,
       mapTitle,
@@ -378,6 +385,11 @@ class Search extends Component<SearchProps, State> {
       showDrawControl,
       onEditControlMounted,
     } = this.state;
+
+    const bounds =
+      areaLayer.id === "geofence" && areaLayer.json
+        ? L.geoJSON(areaLayer.json).getBounds()
+        : [];
 
     let toShow = <Selector setShowDrawControl={this.setShowDrawControl} />;
     if (
