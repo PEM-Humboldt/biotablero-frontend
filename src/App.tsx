@@ -7,7 +7,7 @@ import Layout from "app/Layout";
 import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
-import Search from "pages/Search";
+import { Search } from "pages/Search";
 import CBMDashboard from "pages/CBMDashboard";
 import Indicator from "pages/Indicator";
 import Portfolio from "pages/Portfolio";
@@ -57,13 +57,7 @@ const App: React.FunctionComponent = () => {
     return loadComponent({
       logoSet: null,
       name: "Consultas geográficas",
-      component: (
-        <Search
-          areaType={query.get("area_type") ?? undefined}
-          areaId={query.get("area_id") ?? undefined}
-          setHeaderNames={setHeaderNames}
-        />
-      ),
+      component: <Search setHeaderNames={setHeaderNames} />,
       className: "fullgrid",
     });
   };
