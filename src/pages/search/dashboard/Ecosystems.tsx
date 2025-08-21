@@ -20,7 +20,7 @@ import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 
 /**
  * Calculate percentage for a given value according to total
@@ -71,7 +71,7 @@ interface State {
     pa: textsObject;
     se: textsObject;
   };
-  layers: Array<rasterLayer>;
+  layers: Array<RasterLayer>;
 }
 
 /**

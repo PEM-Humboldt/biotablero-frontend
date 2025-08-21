@@ -1,5 +1,5 @@
 import BackendAPI from "pages/search/utils/backendAPI";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
@@ -19,9 +19,9 @@ export class ForestIntegrityController {
   /**
    * Get shape layers in GeoJSON format for forest integrity component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "forestIntegrity";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFGLayer(
@@ -57,9 +57,9 @@ export class ForestIntegrityController {
    *
    * @param {string} selectedKey category for SCI and HF
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getPALayer = async (selectedKey: string): Promise<shapeLayer> => {
+  getPALayer = async (selectedKey: string): Promise<ShapeLayer> => {
     try {
       const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
       const hfPers = selectedKey.substring(
@@ -88,7 +88,7 @@ export class ForestIntegrityController {
         opacity: 1,
       });
 
-      const layerData: shapeLayer = {
+      const layerData: ShapeLayer = {
         id: selectedKey,
         paneLevel: 3,
         json: res,

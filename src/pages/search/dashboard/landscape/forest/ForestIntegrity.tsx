@@ -19,7 +19,7 @@ import { textsObject } from "pages/search/types/texts";
 import Pie from "pages/search/shared_components/charts/Pie";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/dashboard/landscape/forest/ForestIntegrityController";
 
 type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
@@ -64,7 +64,7 @@ interface FIState {
   };
   selectedCategory: SCIHFCats | null;
   loading: wrapperMessage;
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class ForestIntegrity extends React.Component<Props, FIState> {

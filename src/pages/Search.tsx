@@ -12,11 +12,7 @@ import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import {
-  MapTitle,
-  rasterLayer as RasterLayer,
-  shapeLayer as ShapeLayer,
-} from "pages/search/types/layers";
+import { MapTitle, RasterLayer, ShapeLayer } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { GeoJsonObject } from "geojson";
 import L from "leaflet";

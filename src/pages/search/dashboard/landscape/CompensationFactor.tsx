@@ -13,7 +13,7 @@ import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 interface cfDataExt extends cfData {
   label: string;
@@ -36,7 +36,7 @@ interface compensationFactorState {
     biomes: textsObject;
     bioticRegions: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class CompensationFactor extends React.Component<

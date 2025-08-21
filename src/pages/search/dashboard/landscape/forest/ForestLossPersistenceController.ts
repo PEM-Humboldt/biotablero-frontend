@@ -14,7 +14,7 @@ import { textsObject } from "pages/search/types/texts";
 import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { polygonFeature } from "pages/search/types/dashboard";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 
@@ -216,9 +216,9 @@ export class ForestLossPersistenceController {
   /**
    * Get the raster layers required for a Forest Loss Persistence period
    *
-   * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
+   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
-  async getLayers(period: string): Promise<Array<rasterLayer>> {
+  async getLayers(period: string): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<any>> = [];
 

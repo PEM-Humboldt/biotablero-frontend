@@ -18,7 +18,7 @@ import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landsc
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -45,7 +45,7 @@ interface State {
   texts: {
     paConnSE: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
