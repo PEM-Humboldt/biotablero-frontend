@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 class CustomInputNumber extends React.Component {
   constructor(props) {
@@ -28,13 +28,18 @@ class CustomInputNumber extends React.Component {
     this.setState((prevState) => ({
       add: !prevState.add,
       inputError: error,
-      value: action === '-' ? 0 : Number(prevState.value).toFixed(2),
+      value: action === "-" ? 0 : Number(prevState.value).toFixed(2),
     }));
-  }
+  };
 
   render() {
     const {
-      name, id, maxValue, operateArea, reportError, updateClickedStrategy,
+      name,
+      id,
+      maxValue,
+      operateArea,
+      reportError,
+      updateClickedStrategy,
     } = this.props;
     const { add, inputError, value } = this.state;
     return (
@@ -42,22 +47,26 @@ class CustomInputNumber extends React.Component {
         <input
           name={id}
           type="text"
-          ref={(input) => { this.input = input; }}
+          ref={(input) => {
+            this.input = input;
+          }}
           placeholder="0"
           readOnly={!add}
-          className={inputError ? 'inputError' : ''}
+          className={inputError ? "inputError" : ""}
           value={value}
-          onFocus={() => this.setState({ value: value || '' })}
+          onFocus={() => this.setState({ value: value || "" })}
           onClick={() => updateClickedStrategy(id)}
-          onChange={({ target }) => this.setState({ value: target.value || '' })}
+          onChange={({ target }) =>
+            this.setState({ value: target.value || "" })
+          }
         />
         <button
-          className={`${add ? 'addbiome' : 'subbiome'} smbtn`}
+          className={`${add ? "addbiome" : "subbiome"} smbtn`}
           type="button"
           aria-label="Agregar hectareas"
           disabled={value <= 0}
           onClick={() => {
-            const action = add ? '+' : '-';
+            const action = add ? "+" : "-";
             if (value <= maxValue) {
               operateArea(Number(value), action, id, name);
               this.switchAction(action);
@@ -65,10 +74,10 @@ class CustomInputNumber extends React.Component {
               reportError(`No puede agregar más de ${maxValue}`);
               this.setState({ value: 0 });
             } else if (!Number.isNaN(value)) {
-              reportError('Sólo números permitidos');
+              reportError("Sólo números permitidos");
               this.setState({ value: 0 });
             } else {
-              operateArea(0, '-');
+              operateArea(0, "-");
               this.switchAction(action, add);
             }
           }}

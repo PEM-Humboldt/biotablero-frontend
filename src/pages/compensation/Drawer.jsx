@@ -1,37 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import withStyles from '@mui/styles/withStyles';
-import { Button } from '@mui/material';
-import QueIcon from '@mui/icons-material/LiveHelp';
-import DondeIcon from '@mui/icons-material/Beenhere';
-import BackIcon from '@mui/icons-material/FirstPage';
-import { ParentSize } from '@vx/responsive';
-import SaveIcon from '@mui/icons-material/Save';
-import DownloadIcon from '@mui/icons-material/GetApp';
+import React from "react";
+import PropTypes from "prop-types";
+import withStyles from "@mui/styles/withStyles";
+import { Button } from "@mui/material";
+import QueIcon from "@mui/icons-material/LiveHelp";
+import DondeIcon from "@mui/icons-material/Beenhere";
+import BackIcon from "@mui/icons-material/FirstPage";
+import { ParentSize } from "@vx/responsive";
+import SaveIcon from "@mui/icons-material/Save";
+import DownloadIcon from "@mui/icons-material/GetApp";
 
-import RestAPI from 'pages/compensation/utils/restAPI';
+import RestAPI from "pages/compensation/utils/restAPI";
 
-import CustomInputNumber from 'pages/compensation/drawer/CustomInputNumber';
-import NewBiomeForm from 'pages/compensation/drawer/NewBiomeForm';
-import PopMenu from 'pages/compensation/drawer/PopMenu';
-import StrategiesBox from 'pages/compensation/drawer/StrategiesBox';
-import TableStylized from 'pages/compensation/drawer/TableStylized';
-import ConfirmationModal from 'components/ConfirmationModal';
-import GraphLoader from 'pages/compensation/drawer/GraphLoader';
-import TabContainer from 'pages/compensation/drawer/TabContainer';
-import AppContext from 'app/AppContext';
+import CustomInputNumber from "pages/compensation/drawer/CustomInputNumber";
+import NewBiomeForm from "pages/compensation/drawer/NewBiomeForm";
+import PopMenu from "pages/compensation/drawer/PopMenu";
+import StrategiesBox from "pages/compensation/drawer/StrategiesBox";
+import TableStylized from "pages/compensation/drawer/TableStylized";
+import ConfirmationModal from "components/ConfirmationModal";
+import GraphLoader from "pages/compensation/drawer/GraphLoader";
+import TabContainer from "pages/compensation/drawer/TabContainer";
+import AppContext from "app/AppContext";
 
 const styles = () => ({
   root: {
-    width: '100%',
-    backgroundColor: 'transparent',
+    width: "100%",
+    backgroundColor: "transparent",
   },
 });
 
 class Drawer extends React.Component {
   static getDerivedStateFromProps(nextProps) {
     if (nextProps.biomesImpacted.length > 0) {
-      const { biomes, totals } = Drawer.cleanWhatWhereData(nextProps.biomesImpacted);
+      const { biomes, totals } = Drawer.cleanWhatWhereData(
+        nextProps.biomesImpacted
+      );
       return {
         whereData: biomes,
         totals,
@@ -52,31 +54,45 @@ class Drawer extends React.Component {
       name: element.biome.name,
       affected_percentage: Number(element.area_impacted_pct).toFixed(2),
       fc: element.biome.compensation_factor,
-      affected_natural: Math.ceil(element.natural_area_ha) ? Number(element.natural_area_ha).toFixed(2) : '',
-      total_compensate: Math.ceil(element.area_to_compensate_ha) ? Number(element.area_to_compensate_ha).toFixed(2) : '',
-      affected_secondary: Math.ceil(element.secondary_area_ha) ? Number(element.secondary_area_ha).toFixed(2) : '',
-      affected_transformed: Math.ceil(element.transformed_area_ha) ? Number(element.transformed_area_ha).toFixed(2) : '',
+      affected_natural: Math.ceil(element.natural_area_ha)
+        ? Number(element.natural_area_ha).toFixed(2)
+        : "",
+      total_compensate: Math.ceil(element.area_to_compensate_ha)
+        ? Number(element.area_to_compensate_ha).toFixed(2)
+        : "",
+      affected_secondary: Math.ceil(element.secondary_area_ha)
+        ? Number(element.secondary_area_ha).toFixed(2)
+        : "",
+      affected_transformed: Math.ceil(element.transformed_area_ha)
+        ? Number(element.transformed_area_ha).toFixed(2)
+        : "",
     }));
     const totals = biomes.reduce(
       (acc, element) => ({
-        affected_natural: acc.affected_natural + Number(element.affected_natural),
-        affected_secondary: acc.affected_secondary + Number(element.affected_secondary),
-        affected_transformed: acc.affected_transformed + Number(element.affected_transformed),
-        affected_percentage: acc.affected_percentage + Number(element.affected_percentage),
-        total_compensate: acc.total_compensate + Number(element.total_compensate),
+        affected_natural:
+          acc.affected_natural + Number(element.affected_natural),
+        affected_secondary:
+          acc.affected_secondary + Number(element.affected_secondary),
+        affected_transformed:
+          acc.affected_transformed + Number(element.affected_transformed),
+        affected_percentage:
+          acc.affected_percentage + Number(element.affected_percentage),
+        total_compensate:
+          acc.total_compensate + Number(element.total_compensate),
       }),
-      { // Initial values
+      {
+        // Initial values
         affected_natural: 0,
         affected_secondary: 0,
         affected_transformed: 0,
         affected_percentage: 0,
         total_compensate: 0,
-      },
+      }
     );
     return {
       biomes,
       totals: {
-        name: 'TOTALES (CUANTO)',
+        name: "TOTALES (CUANTO)",
         affected_natural: totals.affected_natural.toFixed(2),
         affected_secondary: totals.affected_secondary.toFixed(2),
         affected_transformed: totals.affected_transformed.toFixed(2),
@@ -84,7 +100,7 @@ class Drawer extends React.Component {
         total_compensate: totals.total_compensate.toFixed(2),
       },
     };
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -92,7 +108,7 @@ class Drawer extends React.Component {
       // 'Que-Cuanto' control states
       whereData: [],
       totals: {
-        name: 'TOTALES (CUANTO)',
+        name: "TOTALES (CUANTO)",
         affected_natural: 0,
         affected_secondary: 0,
         affected_transformed: 0,
@@ -105,7 +121,7 @@ class Drawer extends React.Component {
       addBiomesToProjectModal: false,
       // 'Donde-Como' control states
       selectedArea: 0,
-      tableError: '',
+      tableError: "",
       graphStatus: { DotsWhere: true },
       selectedStrategyFields: {},
       allStrategies: [],
@@ -118,17 +134,15 @@ class Drawer extends React.Component {
   }
 
   componentDidMount() {
-    const {
-      biomesImpacted, companyId, projectId,
-    } = this.props;
+    const { biomesImpacted, companyId, projectId } = this.props;
     if (biomesImpacted.length <= 0) {
       RestAPI.getAllBiomes()
-        .then((biomes) => (
+        .then((biomes) =>
           this.setState({
             controlAddingBiomes: true,
             allBiomes: biomes,
           })
-        ))
+        )
         .catch(() => {
           const { reportConnError } = this.props;
           reportConnError();
@@ -144,9 +158,18 @@ class Drawer extends React.Component {
             const key = `${strategy.id_biome}-${strategy.id_subzone}-${strategy.id_ea}`;
             if (!savedStrategies[key]) {
               savedStrategies[key] = {
-                biome: { name: strategy.biome.name, id: strategy.biome.id_biome },
-                subBasin: { name: strategy.szh.geofence_name, id: strategy.szh.geofence_id },
-                ea: { name: strategy.ea.geofence_name, id: strategy.ea.geofence_id },
+                biome: {
+                  name: strategy.biome.name,
+                  id: strategy.biome.id_biome,
+                },
+                subBasin: {
+                  name: strategy.szh.geofence_name,
+                  id: strategy.szh.geofence_id,
+                },
+                ea: {
+                  name: strategy.ea.geofence_name,
+                  id: strategy.ea.geofence_id,
+                },
                 strategies: [],
                 area: 0,
               };
@@ -189,10 +212,12 @@ class Drawer extends React.Component {
       });
       return {
         biomesDraft: newBiomes,
-        allBiomes: prevState.allBiomes.filter((element) => element.id_biome !== biome.id_biome),
+        allBiomes: prevState.allBiomes.filter(
+          (element) => element.id_biome !== biome.id_biome
+        ),
       };
     });
-  }
+  };
 
   /**
    * Update a biome property value for a biome in biomesDraft
@@ -223,13 +248,16 @@ class Drawer extends React.Component {
             compensation_factor: fc,
           } = biome;
           biome.area_impacted_ha = natural + secondary + transformed;
-          biome.area_to_compensate_ha = (fc * natural) + ((fc / 2) * secondary) + transformed;
+          biome.area_to_compensate_ha =
+            fc * natural + (fc / 2) * secondary + transformed;
         }
         totalImpacted += biome.area_impacted_ha;
       });
       drafts.forEach((element) => {
         const biome = element;
-        biome.area_impacted_pct = ((biome.area_impacted_ha / totalImpacted) * 100 || 0).toFixed(2);
+        biome.area_impacted_pct = (
+          (biome.area_impacted_ha / totalImpacted) * 100 || 0
+        ).toFixed(2);
         totalNatural += biome.natural_area_ha;
         totalSecondary += biome.secondary_area_ha;
         totalTransformed += biome.transformed_area_ha;
@@ -240,7 +268,7 @@ class Drawer extends React.Component {
       return {
         biomesDraft: drafts,
         totals: {
-          name: 'TOTALES (CUANTO)',
+          name: "TOTALES (CUANTO)",
           affected_natural: totalNatural.toFixed(2),
           affected_secondary: totalSecondary.toFixed(2),
           affected_transformed: totalTransformed.toFixed(2),
@@ -249,26 +277,25 @@ class Drawer extends React.Component {
         },
       };
     });
-  }
+  };
 
   /**
    * Send biomesDraft to persist in the backend
    */
   sendAddBiomesToProject = () => {
-    const {
-      companyId, projectId, reloadProject,
-    } = this.props;
+    const { companyId, projectId, reloadProject } = this.props;
     const { biomesDraft } = this.state;
-    RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft)
-      .then(() => {
+    RestAPI.addImpactedBiomesToProject(companyId, projectId, biomesDraft).then(
+      () => {
         this.setState({
           biomesDraft: [],
           addBiomesToProjectModal: false,
           controlAddingBiomes: false,
         });
         reloadProject(projectId);
-      });
-  }
+      }
+    );
+  };
 
   /**
    * Depending on the type of project (new or saved) prepare the table rows as inputs or just text
@@ -295,30 +322,42 @@ class Drawer extends React.Component {
         values: [
           biome.name,
           biome.compensation_factor,
-          (<input
+          <input
             name="natural_area_ha"
             type="text"
             placeholder="0"
             defaultValue={biome.natural_area_ha.toFixed(2)}
-            onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
-            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
-          />),
-          (<input
+            onFocus={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+            onBlur={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+          />,
+          <input
             name="secondary_area_ha"
             type="text"
             placeholder="0"
             defaultValue={biome.secondary_area_ha.toFixed(2)}
-            onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
-            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
-          />),
-          (<input
+            onFocus={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+            onBlur={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+          />,
+          <input
             name="transformed_area_ha"
             type="text"
             placeholder="0"
             defaultValue={biome.transformed_area_ha.toFixed(2)}
-            onFocus={(event) => { this.updateDraftBiome(event.target, biome); }}
-            onBlur={(event) => { this.updateDraftBiome(event.target, biome); }}
-          />),
+            onFocus={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+            onBlur={(event) => {
+              this.updateDraftBiome(event.target, biome);
+            }}
+          />,
           `${biome.area_impacted_pct}%`,
           biome.area_to_compensate_ha.toFixed(2),
         ],
@@ -326,7 +365,7 @@ class Drawer extends React.Component {
     }
 
     return tableRows;
-  }
+  };
 
   /** ****************************************** */
   /** HANDLERS TO DISPLAY ELEMENTS ON SECOND TAB */
@@ -343,7 +382,7 @@ class Drawer extends React.Component {
         DotsWhere: value,
       },
     });
-  }
+  };
 
   /**
    * Set an error message above the compensations table
@@ -352,17 +391,19 @@ class Drawer extends React.Component {
    */
   reportTableError = (message) => {
     this.setState({ tableError: message });
-  }
+  };
 
   /**
    * Function to reset values when area changes
    */
-  resetAreaSelected = (name) => { // TODO: Change search by biome: name for ID
+  resetAreaSelected = (name) => {
+    // TODO: Change search by biome: name for ID
     const { updateCurrentBiome } = this.props;
     this.setState((prevState) => {
-      const removeArea = prevState.selectedStrategies.reduce((acc, item) => (
-        acc + item.value
-      ), 0);
+      const removeArea = prevState.selectedStrategies.reduce(
+        (acc, item) => acc + item.value,
+        0
+      );
       return {
         biome: {},
         subBasin: {},
@@ -374,7 +415,7 @@ class Drawer extends React.Component {
       };
     });
     updateCurrentBiome(name);
-  }
+  };
 
   /**
    * Request the available strategies for the given parameters
@@ -406,13 +447,14 @@ class Drawer extends React.Component {
           },
           allStrategies: strategies,
         });
-        if (geometry !== null && geometry.features !== null) showStrategies(geometry);
+        if (geometry !== null && geometry.features !== null)
+          showStrategies(geometry);
       })
       .catch(() => {
         const { reportConnError } = this.props;
         reportConnError();
       });
-  }
+  };
 
   /** ********** */
   /** STRATEGIES */
@@ -430,35 +472,36 @@ class Drawer extends React.Component {
     this.setState((prevState) => {
       const state = { ...prevState };
       switch (operator) {
-        case '+':
+        case "+":
           state.selectedArea += Number(value);
           state.selectedStrategies.push({ id, value, name });
           break;
-        case '-':
+        case "-":
           state.selectedArea -= Number(value);
           state.selectedArea = Math.abs(state.selectedArea);
-          state.selectedStrategies = state.selectedStrategies.filter((s) => s.id !== id);
+          state.selectedStrategies = state.selectedStrategies.filter(
+            (s) => s.id !== id
+          );
           break;
         default:
           break;
       }
-      state.tableError = '';
+      state.tableError = "";
       return state;
     });
-  }
+  };
 
   /**
    * Save to backend the selected strategies
    */
   saveStrategies = () => {
-    const {
-      companyId,
-      projectId,
-      updateCurrentBiome,
-    } = this.props;
+    const { companyId, projectId, updateCurrentBiome } = this.props;
     let { user } = this.context;
     if (!user) user = { id: null };
-    const { selectedStrategyFields: { biome, subBasin, ea }, selectedStrategies } = this.state;
+    const {
+      selectedStrategyFields: { biome, subBasin, ea },
+      selectedStrategies,
+    } = this.state;
     const strategiesToSave = selectedStrategies.map((strategy) => ({
       id_biome: biome.id,
       id_ea: ea.id,
@@ -469,45 +512,51 @@ class Drawer extends React.Component {
     }));
     RestAPI.bulkSaveStrategies(companyId, projectId, strategiesToSave)
       .then(() => {
-        this.setState((prevState) => {
-          const { savedStrategies } = prevState;
-          savedStrategies[`${biome.id}-${subBasin.id}-${ea.id}`] = {
-            biome,
-            subBasin,
-            ea,
-            strategies: selectedStrategies.map((strategy) => ({
-              id: strategy.id,
-              name: strategy.name,
-              value: strategy.value,
-            })),
-            area: selectedStrategies.reduce((acc, item) => acc + item.value, 0),
-          };
-          return {
-            saveStrategiesModal: false,
-            savedStrategies,
-            savedArea: prevState.savedArea + prevState.selectedArea,
-            biome: {},
-            subBasin: {},
-            ea: {},
-            selectedStrategyFields: {},
-            allStrategies: [],
-            selectedStrategies: [],
-            selectedArea: 0,
-            graphStatus: {
-              DotsWhere: true,
-            },
-          };
-        }, () => {
-          // Call updateCurrentBiome() explicitly after the state has been updated. If called before
-          // setState() a maximum deep exceeded occurs.
-          updateCurrentBiome('');
-        });
+        this.setState(
+          (prevState) => {
+            const { savedStrategies } = prevState;
+            savedStrategies[`${biome.id}-${subBasin.id}-${ea.id}`] = {
+              biome,
+              subBasin,
+              ea,
+              strategies: selectedStrategies.map((strategy) => ({
+                id: strategy.id,
+                name: strategy.name,
+                value: strategy.value,
+              })),
+              area: selectedStrategies.reduce(
+                (acc, item) => acc + item.value,
+                0
+              ),
+            };
+            return {
+              saveStrategiesModal: false,
+              savedStrategies,
+              savedArea: prevState.savedArea + prevState.selectedArea,
+              biome: {},
+              subBasin: {},
+              ea: {},
+              selectedStrategyFields: {},
+              allStrategies: [],
+              selectedStrategies: [],
+              selectedArea: 0,
+              graphStatus: {
+                DotsWhere: true,
+              },
+            };
+          },
+          () => {
+            // Call updateCurrentBiome() explicitly after the state has been updated. If called before
+            // setState() a maximum deep exceeded occurs.
+            updateCurrentBiome("");
+          }
+        );
       })
       .catch(() => {
         const { reportConnError } = this.props;
         reportConnError();
       });
-  }
+  };
 
   /**
    * get the url to download the strategies saved in the current project
@@ -517,43 +566,39 @@ class Drawer extends React.Component {
     const { companyId, projectId } = this.props;
     RestAPI.downloadProjectStrategiesUrl(companyId, projectId)
       .then(({ url }) => {
-        window.open(url, '_blank');
+        window.open(url, "_blank");
       })
       .finally(() => {
         this.setState({ downloadingStrategies: false });
       });
-  }
+  };
 
   renderSavedStrategies = () => {
     const { savedStrategies } = this.state;
     return (
       <div>
-        {Object.values(savedStrategies).map(({
-          biome, ea, subBasin, area, strategies,
-        }) => {
-          const tableRows = strategies.map((strategy) => ({
-            key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
-            values: [
-              strategy.name,
-              strategy.value,
-              '-',
-            ],
-          }));
-          return (
-            <StrategiesBox
-              key={`${biome.id}-${subBasin.id}-${ea.id}`}
-              biome={biome.name}
-              ea={ea.name}
-              subBasin={subBasin.name}
-              area={area}
-              strategies={tableRows}
-              showTable={false}
-            />
-          );
-        })}
+        {Object.values(savedStrategies).map(
+          ({ biome, ea, subBasin, area, strategies }) => {
+            const tableRows = strategies.map((strategy) => ({
+              key: `${strategy.id}-${biome.id}-${subBasin.id}-${ea.id}`,
+              values: [strategy.name, strategy.value, "-"],
+            }));
+            return (
+              <StrategiesBox
+                key={`${biome.id}-${subBasin.id}-${ea.id}`}
+                biome={biome.name}
+                ea={ea.name}
+                subBasin={subBasin.name}
+                area={area}
+                strategies={tableRows}
+                showTable={false}
+              />
+            );
+          }
+        )}
       </div>
     );
-  }
+  };
 
   /**
    * Display strategies options for the selected parameters in selectedStrategyFields state
@@ -584,68 +629,76 @@ class Drawer extends React.Component {
           />
         );
         if (savedStrategies[key]) {
-          const found = savedStrategies[key]
-            .strategies.find((item) => item.id === Number(strategy.id));
+          const found = savedStrategies[key].strategies.find(
+            (item) => item.id === Number(strategy.id)
+          );
           if (found) addRow = found.value;
         }
         return {
           key: `${strategy.id}-${key}`,
-          values: [
-            strategy.strategy_name,
-            strategy.area_ha.toFixed(2),
-            addRow,
-          ],
+          values: [strategy.strategy_name, strategy.area_ha.toFixed(2), addRow],
         };
       });
     }
-    return biome && subBasin && ea && (
-      <div className="complist">
-        <StrategiesBox
-          biome={biome.name}
-          ea={ea.name}
-          subBasin={subBasin.name}
-          area={selectedArea}
-          strategies={tableRows}
-        />
-        {tableError && (
-          <div className="tableError">
-            {tableError}
-          </div>
-        )}
-        {selectedArea > 0 && (
-          <button
-            className="saveStrategyButton"
-            type="button"
-            onClick={() => { this.setState({ saveStrategiesModal: true }); }}
-          >
-            <SaveIcon className="iconsave" />
-            Finalizar
-          </button>
-        )}
-        <ConfirmationModal
-          open={saveStrategiesModal}
-          onClose={() => { this.setState({ saveStrategiesModal: false }); }}
-          message="Al guardar estas estrategias, no podrán editarse. ¿Desea continuar?"
-          onContinue={this.saveStrategies}
-          onCancel={() => { this.setState({ saveStrategiesModal: false }); }}
-        />
-      </div>
+    return (
+      biome &&
+      subBasin &&
+      ea && (
+        <div className="complist">
+          <StrategiesBox
+            biome={biome.name}
+            ea={ea.name}
+            subBasin={subBasin.name}
+            area={selectedArea}
+            strategies={tableRows}
+          />
+          {tableError && <div className="tableError">{tableError}</div>}
+          {selectedArea > 0 && (
+            <button
+              className="saveStrategyButton"
+              type="button"
+              onClick={() => {
+                this.setState({ saveStrategiesModal: true });
+              }}
+            >
+              <SaveIcon className="iconsave" />
+              Finalizar
+            </button>
+          )}
+          <ConfirmationModal
+            open={saveStrategiesModal}
+            onClose={() => {
+              this.setState({ saveStrategiesModal: false });
+            }}
+            message="Al guardar estas estrategias, no podrán editarse. ¿Desea continuar?"
+            onContinue={this.saveStrategies}
+            onCancel={() => {
+              this.setState({ saveStrategiesModal: false });
+            }}
+          />
+        </div>
+      )
     );
-  }
+  };
 
   /**
    * Function to render szh-ea selector when there is a selected biome
    */
   renderSelector = () => {
-    const { graphStatus: { DotsWhere } } = this.state;
+    const {
+      graphStatus: { DotsWhere },
+    } = this.state;
     const { currentBiome, impactedBiomesDecisionTree } = this.props;
 
-    const data = currentBiome !== null
-      ? { [currentBiome]: impactedBiomesDecisionTree[currentBiome] } : {};
+    const data =
+      currentBiome !== null
+        ? { [currentBiome]: impactedBiomesDecisionTree[currentBiome] }
+        : {};
     return (
       <ParentSize className="nocolor">
-        {(parent) => (
-          parent.width && parent.height && (
+        {(parent) =>
+          parent.width &&
+          parent.height && (
             <PopMenu
               visibleGraph={DotsWhere}
               loadStrategies={this.loadStrategies}
@@ -653,21 +706,24 @@ class Drawer extends React.Component {
               data={data}
             />
           )
-        )}
+        }
       </ParentSize>
     );
-  }
+  };
 
   /**
    * Function to render graphs when necessary
    */
   renderGraphs = (data, activeBiome, labelX, labelY, graph, colors) => {
-    const { graphStatus: { DotsWhere } } = this.state;
-    if (graph === 'Dots' && DotsWhere) {
+    const {
+      graphStatus: { DotsWhere },
+    } = this.state;
+    if (graph === "Dots" && DotsWhere) {
       return (
         <ParentSize className="nocolor">
-          {(parent) => (
-            parent.width && parent.height && (
+          {(parent) =>
+            parent.width &&
+            parent.height && (
               <GraphLoader
                 width={parent.width}
                 height={parent.height}
@@ -680,20 +736,26 @@ class Drawer extends React.Component {
                 elementOnClick={(name) => this.resetAreaSelected(name)}
               />
             )
-          )}
+          }
         </ParentSize>
       );
     }
     return null;
-  }
+  };
 
   render() {
+    const { back, colors, classes, biomesImpacted, currentBiome } = this.props;
     const {
-      back, colors, classes, biomesImpacted, currentBiome,
-    } = this.props;
-    const {
-      whereData, totals, selectedArea, tableError, addBiomesToProjectModal, controlAddingBiomes,
-      allBiomes, savedStrategies, savedArea, downloadingStrategies,
+      whereData,
+      totals,
+      selectedArea,
+      tableError,
+      addBiomesToProjectModal,
+      controlAddingBiomes,
+      allBiomes,
+      savedStrategies,
+      savedArea,
+      downloadingStrategies,
     } = this.state;
 
     const tableRows = this.prepareBiomesTableRows();
@@ -701,11 +763,7 @@ class Drawer extends React.Component {
     return (
       <div className="informer">
         <div className="drawer_header">
-          <button
-            className="geobtn"
-            type="button"
-            onClick={() => back()}
-          >
+          <button className="geobtn" type="button" onClick={() => back()}>
             <BackIcon />
           </button>
           <div />
@@ -715,101 +773,120 @@ class Drawer extends React.Component {
           classes={classes}
           tabClasses="tabs2"
           titles={[
-            { label: 'Qué · Cuánto', icon: (<QueIcon />) },
-            { label: 'Dónde · Cómo', icon: (<DondeIcon />), disabled: controlAddingBiomes },
+            { label: "Qué · Cuánto", icon: <QueIcon /> },
+            {
+              label: "Dónde · Cómo",
+              icon: <DondeIcon />,
+              disabled: controlAddingBiomes,
+            },
           ]}
         >
           {[
-            (
-              <div key="1">
-                <div className="total">
-                  <h3>
-                    TOTAL A COMPENSAR
-                  </h3>
-                  <h4>
-                    {totals.total_compensate}
-                  </h4>
-                </div>
-                {controlAddingBiomes && (
-                  <NewBiomeForm
-                    biomes={allBiomes}
-                    addBiomeHandler={this.addBiomeToProject}
-                  />
-                )}
-                <TableStylized
-                  headers={['BIOMA IAVH', 'F.C', 'NAT (ha)', 'SEC (ha)', 'TRANS (ha)', 'AFECT (%)', 'TOTAL (ha)']}
-                  rows={tableRows}
-                  footers={[totals.name, totals.fc, totals.affected_natural,
-                    totals.affected_secondary, totals.affected_transformed,
-                    `${totals.affected_percentage}%`, totals.total_compensate]}
-                  addRows={biomesImpacted}
-                />
-                {controlAddingBiomes && tableRows.length > 0 && (
-                  <button
-                    type="button"
-                    className="sendCreateBiomes"
-                    onClick={() => { this.setState({ addBiomesToProjectModal: true }); }}
-                    title="Guardar biomas en proyecto"
-                  >
-                    Guardar
-                  </button>
-                )}
-                <ConfirmationModal
-                  open={addBiomesToProjectModal}
-                  onClose={() => { this.setState({ addBiomesToProjectModal: false }); }}
-                  message="Una vez guardados los cambios no podrá editarlos, ¿está seguro de continuar?"
-                  onContinue={this.sendAddBiomesToProject}
-                  onCancel={() => { this.setState({ addBiomesToProjectModal: false }); }}
-                />
+            <div key="1">
+              <div className="total">
+                <h3>TOTAL A COMPENSAR</h3>
+                <h4>{totals.total_compensate}</h4>
               </div>
-            ),
-            (
-              <div key="2">
-                <div className="total">
-                  <h3>
-                    TOTAL A COMPENSAR
-                  </h3>
-                  <h4>
-                    {totals.total_compensate}
-                  </h4>
-                </div>
-                <div className="total carrito">
-                  <h3>
-                    AREA SELECCIONADA
-                  </h3>
-                  <h4 className={((selectedArea + savedArea) >= totals.total_compensate) ? 'areaCompleted' : ''}>
-                    {(savedArea + selectedArea).toFixed(2)}
-                  </h4>
-                </div>
-                {this.renderGraphs(whereData, currentBiome, '% Area afectada', 'Factor de Compensación', 'Dots', colors)}
-                {this.renderSelector()}
-                {Object.keys(savedStrategies).length > 0 && (
-                  <Button
-                    className="downgraph"
-                    id="downloadStrategies"
-                    type="button"
-                    onClick={this.downloadPlan}
-                    disabled={downloadingStrategies}
-                  >
-                    {downloadingStrategies
-                      ? ('Generando archivo...')
-                      : (
-                        <>
-                          <DownloadIcon className="icondown" />
-                          Descargar plan
-                        </>
-                      )}
-                  </Button>
-                )}
-                {tableError && (
-                  <div className="tableError">
-                    {tableError}
-                  </div>
-                )}
-                {this.renderAvailableStrategies()}
-                {this.renderSavedStrategies()}
+              {controlAddingBiomes && (
+                <NewBiomeForm
+                  biomes={allBiomes}
+                  addBiomeHandler={this.addBiomeToProject}
+                />
+              )}
+              <TableStylized
+                headers={[
+                  "BIOMA IAVH",
+                  "F.C",
+                  "NAT (ha)",
+                  "SEC (ha)",
+                  "TRANS (ha)",
+                  "AFECT (%)",
+                  "TOTAL (ha)",
+                ]}
+                rows={tableRows}
+                footers={[
+                  totals.name,
+                  totals.fc,
+                  totals.affected_natural,
+                  totals.affected_secondary,
+                  totals.affected_transformed,
+                  `${totals.affected_percentage}%`,
+                  totals.total_compensate,
+                ]}
+                addRows={biomesImpacted}
+              />
+              {controlAddingBiomes && tableRows.length > 0 && (
+                <button
+                  type="button"
+                  className="sendCreateBiomes"
+                  onClick={() => {
+                    this.setState({ addBiomesToProjectModal: true });
+                  }}
+                  title="Guardar biomas en proyecto"
+                >
+                  Guardar
+                </button>
+              )}
+              <ConfirmationModal
+                open={addBiomesToProjectModal}
+                onClose={() => {
+                  this.setState({ addBiomesToProjectModal: false });
+                }}
+                message="Una vez guardados los cambios no podrá editarlos, ¿está seguro de continuar?"
+                onContinue={this.sendAddBiomesToProject}
+                onCancel={() => {
+                  this.setState({ addBiomesToProjectModal: false });
+                }}
+              />
+            </div>,
+            <div key="2">
+              <div className="total">
+                <h3>TOTAL A COMPENSAR</h3>
+                <h4>{totals.total_compensate}</h4>
               </div>
-            ),
+              <div className="total carrito">
+                <h3>AREA SELECCIONADA</h3>
+                <h4
+                  className={
+                    selectedArea + savedArea >= totals.total_compensate
+                      ? "areaCompleted"
+                      : ""
+                  }
+                >
+                  {(savedArea + selectedArea).toFixed(2)}
+                </h4>
+              </div>
+              {this.renderGraphs(
+                whereData,
+                currentBiome,
+                "% Area afectada",
+                "Factor de Compensación",
+                "Dots",
+                colors
+              )}
+              {this.renderSelector()}
+              {Object.keys(savedStrategies).length > 0 && (
+                <Button
+                  className="downgraph"
+                  id="downloadStrategies"
+                  type="button"
+                  onClick={this.downloadPlan}
+                  disabled={downloadingStrategies}
+                >
+                  {downloadingStrategies ? (
+                    "Generando archivo..."
+                  ) : (
+                    <>
+                      <DownloadIcon className="icondown" />
+                      Descargar plan
+                    </>
+                  )}
+                </Button>
+              )}
+              {tableError && <div className="tableError">{tableError}</div>}
+              {this.renderAvailableStrategies()}
+              {this.renderSavedStrategies()}
+            </div>,
           ]}
         </TabContainer>
       </div>
@@ -839,8 +916,8 @@ Drawer.propTypes = {
 
 Drawer.defaultProps = {
   back: () => {},
-  colors: ['#eabc47'],
-  currentBiome: '',
+  colors: ["#eabc47"],
+  currentBiome: "",
   biomesImpacted: [],
   updateCurrentBiome: () => {},
   impactedBiomesDecisionTree: {},

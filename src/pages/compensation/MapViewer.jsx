@@ -245,4 +245,3 @@ MapViewer.defaultProps = {
 };
 
 export default MapViewer;
-
