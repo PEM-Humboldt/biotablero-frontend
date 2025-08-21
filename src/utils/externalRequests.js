@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 class ExternalRequests {
   /**
@@ -9,7 +9,9 @@ class ExternalRequests {
    * @return {Promise<Array>} Array of objects with feature flags
    */
   static requestFeaturesFlags() {
-    const objectId = `https://biotablero.s3.amazonaws.com/featureFlags_${process.env.REACT_APP_ENVIRONMENT}.json`;
+    const objectId = `https://biotablero.s3.amazonaws.com/featureFlags_${
+      import.meta.env.VITE_ENVIRONMENT
+    }.json`;
     return ExternalRequests.makeGetRequest(objectId);
   }
 
@@ -23,12 +25,14 @@ class ExternalRequests {
    * @param {String} url external url
    */
   static makeGetRequest(URL) {
-    return axios.get(URL)
+    return axios
+      .get(URL)
       .then((res) => res.data)
       .catch((error) => {
-        let message = 'Bad GET response. Try later';
+        let message = "Bad GET response. Try later";
         if (error.response) message = error.response.status;
-        if (error.request && error.request.statusText === '') message = 'no-data-available';
+        if (error.request && error.request.statusText === "")
+          message = "no-data-available";
         return Promise.reject(message);
       });
   }

@@ -17,10 +17,7 @@ class MonitoringAPI {
       ...options,
     };
     return axios
-      .get(
-        `${process.env.REACT_APP_MONITORING_BACKEND_URL}/${endpoint}`,
-        config
-      )
+      .get(`${import.meta.env.VITE_MONITORING_BACKEND_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -55,7 +52,7 @@ class MonitoringAPI {
     };
     return axios
       .post(
-        `${process.env.REACT_APP_MONITORING_BACKEND_URL}/${endpoint}`,
+        `${import.meta.env.VITE_MONITORING_BACKEND_URL}/${endpoint}`,
         requestBody,
         config
       )

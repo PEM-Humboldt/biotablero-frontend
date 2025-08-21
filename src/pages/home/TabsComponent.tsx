@@ -56,7 +56,7 @@ export const TabsModules = ({ activeTab }: TabsModulesProps) => {
                   sx={{
                     marginTop: { xs: "77px", sm: "23px" },
                     width: { xs: "100%", sm: 290 },
-                    alignSelf: "center",
+                    alignSelf: "flex-start",
                   }}
                 >
                   {currentCategory !== null &&

@@ -442,7 +442,7 @@ class Compensation extends Component {
               status={statusList}
               handlers={[
                 this.setNewProject,
-                this.handleCloseModal('newProjectModal'),
+                this.handleCloseModal('newProjectModal')
               ]}
             />
           </>
