@@ -8,7 +8,6 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  // NOTE: por legacy con CRA mantenemos 'build', vite por default utiliza 'dist'
   build: {
     outDir: "dist",
     sourcemap: true,
