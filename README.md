@@ -29,16 +29,7 @@ Active pnpm como el manejador de paquetes:
 corepack enable
 ```
 
-### 1.2. Construcción de dependencias:
-
-Algunas dependencias del proyecto son paquetes incluidos en este mismo repositorio, para "_compilar_" dichas dependencias ejecute:
-
-```sh
-pnpm -r install
-pnpm -r build-pkg
-```
-
-### 1.3. Instalación de paquetes:
+### 1.2. Instalación de paquetes
 
 Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 
@@ -46,42 +37,38 @@ Ejecute la siguiente sentencia para instalar las dependencias del proyecto:
 pnpm install
 ```
 
-### 1.4. Configuración de variables de entorno:
+### 1.3. Configuración de variables de entorno
 
 Crear una copia del archivo _.env_ con el nombre _.env.local_ actualizando los valores de las variables, de acuerdo a su entorno de desarollo.
 
 - No olvide pedirle al admin los valores de las variables de entorno.
 
 ```sh
-REACT_APP_BACKEND_URL=''
-REACT_APP_GEOSERVER_URL=''
-REACT_APP_BACKEND_KEY=''
-REACT_APP_ENVIRONMENT='develop|staging|production'
-REACT_APP_API_KEY=''
-REACT_APP_DOMAIN=''
-REACT_APP_PROJECT_ID=''
-REACT_APP_STORAGE_BUCKET=''
-REACT_APP_SENDER_ID=''
-REACT_APP_APP_ID=''
-REACT_APP_SEARCH_BACKEND_URL=''
-REACT_APP_GA_TRACKING_ID=''
-REACT_APP_YM_ID=''
+VITE_BACKEND_URL=''
+VITE_GEOSERVER_URL=''
+VITE_BACKEND_KEY=''
+VITE_ENVIRONMENT='develop|staging|production'
+VITE_API_KEY=''
+VITE_DOMAIN=''
+VITE_PROJECT_ID=''
+VITE_STORAGE_BUCKET=''
+VITE_SENDER_ID=''
+VITE_APP_ID=''
+VITE_SEARCH_BACKEND_URL=''
+VITE_GA_TRACKING_ID=''
+VITE_YM_ID=''
 
 ```
 
-### 1.5. Ejecución:
+### 1.4. Ejecución
 
 Por último, ejecute la siguiente instrucción:
 
 ```sh
-pnpm start-dev
+pnpm dev
 ```
 
-La instrucción iniciará el proyecto en su entorno local y se abrirá en el navegador.
-
-### 1.6. Problemas
-
-En caso de tener inconvenientes al ejecutar el proyecto en ubuntu revisar [este issue](https://github.com/facebook/create-react-app/issues/2549#issuecomment-315678389).
+La instrucción iniciará el proyecto en su entorno local en el puerto 3000, para abrirlo puedes ir a [http://localhost:3000](http://localhost:3000), o, oprimir `o + [Enter]` en el terminal donde está corriendo Vite.
 
 ## 2. Despliegue con Docker
 
@@ -91,7 +78,7 @@ Para desplegar como contenedor de Docker es necesario contar la versión 17.05.0
 
 Descargar el repositorio en el servidor donde se desplegará el servicio.
 
-Tenga en cuenta la configuración de [las variables de entorno](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used): se deberá crear una copia del archivo _.env_ con el nombre _.env.production.local_, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
+Tenga en cuenta la configuración de las variables de entorno: se deberá crear una copia del archivo _.env_ con el nombre _.env.production.local_, y actualizar los valores de las variables, de acuerdo a su entorno de despliegue.
 
 Ejecutar la siguiente instrucción para construir la imagen:
 

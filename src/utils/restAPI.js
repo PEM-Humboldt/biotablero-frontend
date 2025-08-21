@@ -1,4 +1,4 @@
-import axios, { CancelToken } from 'axios';
+import axios, { CancelToken } from "axios";
 
 class RestAPI {
   /**
@@ -8,16 +8,12 @@ class RestAPI {
    * @param {String} password password in database
    */
   static requestUser(username, password) {
-    return RestAPI.makePostRequest(
-      'users/login',
-      {
-        username: `${username}`,
-        password: `${password}`,
-      },
-    );
+    return RestAPI.makePostRequest("users/login", {
+      username: `${username}`,
+      password: `${password}`,
+    });
   }
 
-  
   /** ************** */
   /** BASE FUNCTIONS */
   /** ************** */
@@ -31,10 +27,11 @@ class RestAPI {
     const config = {
       ...options,
       headers: {
-        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+        Authorization: `apiKey ${import.meta.env.VITE_BACKEND_KEY}`,
       },
     };
-    return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
+    return axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -43,11 +40,12 @@ class RestAPI {
       })
       .catch((error) => {
         if (axios.isCancel(error)) {
-          return Promise.resolve('request canceled');
+          return Promise.resolve("request canceled");
         }
-        let message = 'Bad GET response. Try later';
+        let message = "Bad GET response. Try later";
         if (error.response) message = error.response.status;
-        if (error.request && error.request.statusText === '') message = 'no-data-available';
+        if (error.request && error.request.statusText === "")
+          message = "no-data-available";
         return Promise.reject(message);
       });
   }
@@ -61,15 +59,20 @@ class RestAPI {
   static makePostRequest(endpoint, requestBody) {
     const config = {
       headers: {
-        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+        Authorization: `apiKey ${import.meta.env.VITE_BACKEND_KEY}`,
       },
     };
-    return axios.post(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, requestBody, config)
+    return axios
+      .post(
+        `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
+        requestBody,
+        config
+      )
       .then((res) => res.data)
       .catch((error) => {
-        let message = 'Bad POST response. Try later';
+        let message = "Bad POST response. Try later";
         if (error.response) message = error.response.status;
-        if (error.request.statusText === '') message = 'no-data-available';
+        if (error.request.statusText === "") message = "no-data-available";
         return Promise.reject(message);
       });
   }
