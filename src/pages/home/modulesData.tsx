@@ -63,6 +63,47 @@ export const categories: Category[] = [
     ],
   },
   {
+    title: "Monitoreo Comunitario",
+    subcategories: [
+      {
+        title: (
+          <Typography variant="body2" component="span">
+            <b>1</b> ¿Qué es?
+          </Typography>
+        ),
+        content:
+          "<p>Esta herramienta surge como una iniciativa para compartir los resultados del monitoreo comunitario de Variables Esenciales de Biodiversidad (VEB) en Montes de María. Consiste en un conjunto de gráficos que resumen la información recolectada en campo por tres asociaciones comunitarias de la zona, a partir de siete metodologías de monitoreo planteadas según sus metas para el territorio. Está basado en la ruta de monitoreo presentada en el libro “Monitoreo comunitario de la biodiversidad en Montes de María”</p>",
+      },
+      {
+        title: (
+          <Typography variant="body2" component="span">
+            <b>2</b> ¿Por qué?
+          </Typography>
+        ),
+        content:
+          "<p>Dado que uno de los pasos más difíciles de implementar en las estrategias de monitoreo comunitario es el <strong>análisis de los datos,</strong> se espera que esta herramienta ponga a disposición de las comunidades los resultados de la recolección de información que realizan ellos en campo, por medio de <strong>gráficos que sintetizan</strong> lo que van obteniendo con el tiempo. </p>",
+      },
+      {
+        title: (
+          <Typography variant="body2" component="span">
+            <b>3</b> ¿Quién produce?
+          </Typography>
+        ),
+        content:
+          "<p>Tres asociaciones comunitarias de agricultores, mujeres y hombres, víctimas del conflicto armado del departamento de Bolívar. <strong>La Asociación de Mujeres Unidas de San Isidro (AMUSI)</strong> compuesta por más de 30 familias del corregimiento San Isidro en el municipio El Carmen de Bolívar. <strong>La Asociación Integral de Campesinos de Cañito (ASICAC)</strong>, conformada por más de 40 familias de la vereda Cañito, en el municipio de San Juan Nepomuceno. <strong>La Asociación de Productores Agropecuarios de la vereda Brasilar (ASOBRASILAR)</strong>, compuesta por 25 asociados.</p>",
+      },
+      {
+        title: (
+          <Typography variant="body2" component="span">
+            <b>4</b> ¿Qué encuentras?
+          </Typography>
+        ),
+        content:
+          '<p>Este sitio contiene gráficos de <strong>resumen de la información recolectada por las asociaciones</strong> para las siete metodologías propuestas en el libro "<a class="linkText" target="_blank" rel="noreferrer" href="http://repository.humboldt.org.co/handle/20.500.11761/35586">Monitoreo comunitario de la biodiversidad en Montes de María</a>". Los datos son subidos a la web por los monitores encargados por medio de <a class="linkText" target="_blank" rel="noreferrer" href="https://www.kobotoolbox.org/">KoBoToolbox</a> a partir de los formatos diligenciados en físico. Además, se puede encontrar un <strong>indicador del estado del monitoreo</strong> según los compromisos anuales, la metodología y la asociación.</p>',
+      },
+    ],
+  },
+  {
     title: "Indicadores de Biodiversidad",
     subcategories: [
       {
@@ -140,47 +181,6 @@ export const categories: Category[] = [
         ),
         content:
           "<p>En este módulo encuentras los <strong>diferentes portafolios a escala nacional</strong> generados desde el Instituto Humboldt. Cada portafolio se basa en distintos objetivos y características de conservación que responden a <strong>contextos de análisis particulares,</strong> por esto no hay un solo portafolio posible, pues la <strong>selección de las áreas depende de los objetivos de conservación</strong>.</p>",
-      },
-    ],
-  },
-  {
-    title: "Monitoreo Comunitario",
-    subcategories: [
-      {
-        title: (
-          <Typography variant="body2" component="span">
-            <b>1</b> ¿Qué es?
-          </Typography>
-        ),
-        content:
-          "<p>Esta herramienta surge como una iniciativa para compartir los resultados del monitoreo comunitario de Variables Esenciales de Biodiversidad (VEB) en Montes de María. Consiste en un conjunto de gráficos que resumen la información recolectada en campo por tres asociaciones comunitarias de la zona, a partir de siete metodologías de monitoreo planteadas según sus metas para el territorio. Está basado en la ruta de monitoreo presentada en el libro “Monitoreo comunitario de la biodiversidad en Montes de María”</p>",
-      },
-      {
-        title: (
-          <Typography variant="body2" component="span">
-            <b>2</b> ¿Por qué?
-          </Typography>
-        ),
-        content:
-          "<p>Dado que uno de los pasos más difíciles de implementar en las estrategias de monitoreo comunitario es el <strong>análisis de los datos,</strong> se espera que esta herramienta ponga a disposición de las comunidades los resultados de la recolección de información que realizan ellos en campo, por medio de <strong>gráficos que sintetizan</strong> lo que van obteniendo con el tiempo. </p>",
-      },
-      {
-        title: (
-          <Typography variant="body2" component="span">
-            <b>3</b> ¿Quién produce?
-          </Typography>
-        ),
-        content:
-          "<p>Tres asociaciones comunitarias de agricultores, mujeres y hombres, víctimas del conflicto armado del departamento de Bolívar. <strong>La Asociación de Mujeres Unidas de San Isidro (AMUSI)</strong> compuesta por más de 30 familias del corregimiento San Isidro en el municipio El Carmen de Bolívar. <strong>La Asociación Integral de Campesinos de Cañito (ASICAC)</strong>, conformada por más de 40 familias de la vereda Cañito, en el municipio de San Juan Nepomuceno. <strong>La Asociación de Productores Agropecuarios de la vereda Brasilar (ASOBRASILAR)</strong>, compuesta por 25 asociados.</p>",
-      },
-      {
-        title: (
-          <Typography variant="body2" component="span">
-            <b>4</b> ¿Qué encuentras?
-          </Typography>
-        ),
-        content:
-          '<p>Este sitio contiene gráficos de <strong>resumen de la información recolectada por las asociaciones</strong> para las siete metodologías propuestas en el libro "<a class="linkText" target="_blank" rel="noreferrer" href="http://repository.humboldt.org.co/handle/20.500.11761/35586">Monitoreo comunitario de la biodiversidad en Montes de María</a>". Los datos son subidos a la web por los monitores encargados por medio de <a class="linkText" target="_blank" rel="noreferrer" href="https://www.kobotoolbox.org/">KoBoToolbox</a> a partir de los formatos diligenciados en físico. Además, se puede encontrar un <strong>indicador del estado del monitoreo</strong> según los compromisos anuales, la metodología y la asociación.</p>',
       },
     ],
   },
