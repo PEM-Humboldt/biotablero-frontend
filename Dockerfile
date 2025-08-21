@@ -16,7 +16,7 @@ FROM node:22-alpine AS release
 
 WORKDIR /app
 
-COPY --from=build /app/build ./build
+COPY --from=build /app/dist ./dist
 
 RUN npm install -g serve@~13.0.0
 

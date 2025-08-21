@@ -68,7 +68,7 @@ Por último, ejecute la siguiente instrucción:
 pnpm dev
 ```
 
-La instrucción iniciará el proyecto en su entorno local y se abrirá en el navegador.
+La instrucción iniciará el proyecto en su entorno local en el puerto 3000, para abrirlo puedes ir a [http://localhost:3000](http://localhost:3000), o, oprimir `o + [Enter]` en el terminal donde está corriendo Vite.
 
 ## 2. Despliegue con Docker
 
