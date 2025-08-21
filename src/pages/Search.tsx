@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { RouteComponentProps, useHistory, useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import SearchContext, {
   drawControlHandler as DrawControlHandler,
   SearchContextValues,
@@ -26,15 +26,6 @@ import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 interface SearchProps {
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
-
-// TODO: OBSERVACIONES:
-// 1. estandarizar uso NULL o UNDEFINED
-// 2. Revisar si setLayerError hace un llamado mas abajo, pues la funcion anterior convertia la cadena en bool
-// 3. UN TIPO, UNA IDEA... de string a bool de LayerError, es un boool
-// pero en el componente el setter era una funcion que pasaba de bool a str
-// 4. Desagregar mas el componente => URL, mapa y sidebar
-// 5. Fallbacks para url errada o con parámetros inexistentes
-// 6. Proyección del mapa rarita -> Huila, Arauca
 
 export const Search = (props: SearchProps) => {
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
@@ -169,7 +160,6 @@ export const Search = (props: SearchProps) => {
     history.replace(pathname);
   };
 
-  // NOTE: Valor derivado, no debe estar en un state
   const bounds =
     areaLayer.id === "geofence" && areaLayer.json
       ? L.geoJSON(areaLayer.json).getBounds()
