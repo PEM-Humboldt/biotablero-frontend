@@ -1,7 +1,7 @@
 import BackendAPI from "pages/search/utils/backendAPI";
 import {
-  shapeLayer,
-  connectivityFeaturePropierties,
+  ShapeLayer,
+  ConnectivityFeaturePropierties,
 } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
@@ -23,9 +23,9 @@ export class CurrentSEPAConnectivityController {
   /**
    * Get shape layers in GeoJSON format for a connectivity component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "currentSEPAConn";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
@@ -59,7 +59,7 @@ export class CurrentSEPAConnectivityController {
   getSELayer = async (
     layerId: string,
     layerName: string
-  ): Promise<shapeLayer> => {
+  ): Promise<ShapeLayer> => {
     try {
       const reqPromise: ShapeAPIObject = BackendAPI.requestPAConnSELayer(
         this.areaType ?? "",
@@ -79,7 +79,7 @@ export class CurrentSEPAConnectivityController {
         fillOpacity: 0.6,
       });
 
-      const layerData: shapeLayer = {
+      const layerData: ShapeLayer = {
         id: layerId,
         paneLevel: 2,
         json: res,
@@ -140,7 +140,7 @@ export class CurrentSEPAConnectivityController {
    */
   setLayerStyle =
     (selectedKey = "") =>
-    (feature?: { properties: connectivityFeaturePropierties }) => ({
+    (feature?: { properties: ConnectivityFeaturePropierties }) => ({
       stroke: false,
       fillColor: matchColor("dpc")(feature?.properties.dpc_cat),
       fillOpacity: feature?.properties.id === selectedKey ? 1 : 0.6,

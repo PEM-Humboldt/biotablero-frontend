@@ -1,5 +1,5 @@
 import BackendAPI from "pages/search/utils/backendAPI";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";
 import base64 from "pages/search/utils/base64ArrayBuffer";
@@ -28,9 +28,9 @@ export class EcosystemsController {
   /**
    * Get the raster layers required for a Forest Loss Persistence period
    *
-   * @returns { Promise<Array<rasterLayer>> } layers for the categories in the indicated period
+   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
-  async getCoveragesLayers(): Promise<Array<rasterLayer>> {
+  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
 
@@ -69,9 +69,9 @@ export class EcosystemsController {
    * Get the raster layers required for a Forest Loss Persistence period
    *  @param {string} seType Special Ecosystem type
    *
-   * @returns { Promise<Array<rasterLayer>> } layers for the Special Ecosystem type
+   * @returns { Promise<Array<RasterLayer>> } layers for the Special Ecosystem type
    */
-  async getCoveragesSELayer(seType: string): Promise<Array<rasterLayer>> {
+  async getCoveragesSELayer(seType: string): Promise<Array<RasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
       coverageKeys.forEach((category: string) => {

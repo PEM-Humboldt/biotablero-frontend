@@ -1,6 +1,6 @@
 import formatNumber from "pages/search/utils/format";
 import BackendAPI from "pages/search/utils/backendAPI";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
@@ -23,9 +23,9 @@ export class TimelineFootprintController {
   /**
    * Get shape layers in GeoJSON format for timeline human footprint component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "hfPersistence";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestHFPersistenceLayer(
@@ -61,9 +61,9 @@ export class TimelineFootprintController {
    *
    * @param {string} selectedKey category for special ecosystems
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getSELayer = async (selectedKey: keyof SEKeys): Promise<shapeLayer> => {
+  getSELayer = async (selectedKey: keyof SEKeys): Promise<ShapeLayer> => {
     try {
       const seType: SEKeys = {
         paramo: "Páramo",

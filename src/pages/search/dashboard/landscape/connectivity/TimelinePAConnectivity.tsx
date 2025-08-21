@@ -16,7 +16,7 @@ import BackendAPI from "pages/search/utils/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { TimelinePAConnectivityController } from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivityController";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   prot: "Protegida",
@@ -34,7 +34,7 @@ interface timelinePAConnState {
   texts: {
     paConnTimeline: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 class TimelinePAConnectivity extends React.Component<
   Props,

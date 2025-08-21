@@ -1,6 +1,6 @@
 import formatNumber from "pages/search/utils/format";
 import BackendAPI from "pages/search/utils/backendAPI";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
@@ -20,9 +20,9 @@ export class CurrentFootprintController {
   /**
    * Get shape layers in GeoJSON format for current human footprint component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "hfCurrent";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestCurrentHFLayer(

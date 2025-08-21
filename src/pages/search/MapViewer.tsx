@@ -18,7 +18,7 @@ import "leaflet/dist/leaflet.css";
 import DrawControl from "pages/search/mapViewer/DrawControl";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
 
-import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
+import { MapTitle, RasterLayer, ShapeLayer } from "pages/search/types/layers";
 
 interface Props {
   showDrawControl: boolean;
@@ -26,8 +26,8 @@ interface Props {
   loadingLayer: boolean;
   layerError: boolean;
   mapTitle: MapTitle;
-  shapeLayers: Array<shapeLayer>;
-  rasterLayers: Array<rasterLayer>;
+  shapeLayers: Array<ShapeLayer>;
+  rasterLayers: Array<RasterLayer>;
   bounds: LatLngBoundsExpression;
   // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
   polygon: PolygonType | null;

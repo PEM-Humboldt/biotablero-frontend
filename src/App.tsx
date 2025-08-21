@@ -7,7 +7,7 @@ import Layout from "app/Layout";
 import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
-import Search from "pages/Search";
+import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
 import Portfolio from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
@@ -32,15 +32,8 @@ const App: React.FunctionComponent = () => {
     parent: "",
     child: "",
   });
-  const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
   const location = useLocation();
-
-  useEffect(() => {
-    isFlagEnabled("CBMModule").then((value) => setShowCBMDashboard(value));
-  }, []);
-
-  const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
   const loadHome = () =>
     loadComponent({
@@ -50,17 +43,10 @@ const App: React.FunctionComponent = () => {
     });
 
   const loadSearch = () => {
-    const query = buildQuery(location.search);
     return loadComponent({
       logoSet: null,
       name: "Consultas geográficas",
-      component: (
-        <Search
-          areaType={query.get("area_type") ?? undefined}
-          areaId={query.get("area_id") ?? undefined}
-          setHeaderNames={setHeaderNames}
-        />
-      ),
+      component: <Search setHeaderNames={setHeaderNames} />,
       className: "fullgrid",
     });
   };

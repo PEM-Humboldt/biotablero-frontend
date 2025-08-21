@@ -1,7 +1,7 @@
 import * as geojson from "geojson";
 import { GeoJSONOptions, StyleFunction } from "leaflet";
 
-export interface shapeLayer {
+export interface ShapeLayer {
   id: string;
   paneLevel: number;
   json: geojson.GeoJsonObject;
@@ -9,7 +9,7 @@ export interface shapeLayer {
   layerStyle?: StyleFunction;
 }
 
-export interface rasterLayer {
+export interface RasterLayer {
   paneLevel: number;
   id: string;
   data: string;
@@ -17,7 +17,7 @@ export interface rasterLayer {
   selected?: boolean;
 }
 
-export interface connectivityFeaturePropierties {
+export interface ConnectivityFeaturePropierties {
   area: number;
   dpc_cat: string;
   id: string;
@@ -25,7 +25,7 @@ export interface connectivityFeaturePropierties {
   value: number;
 }
 
-export interface compensationFactorPropierties {
+export interface CompensationFactorPropierties {
   gid: number;
   name_biome: string;
   id_biome: string;

@@ -1,7 +1,7 @@
 import BackendAPI from "pages/search/utils/backendAPI";
 import {
-  shapeLayer,
-  compensationFactorPropierties,
+  ShapeLayer,
+  CompensationFactorPropierties,
 } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
@@ -22,9 +22,9 @@ export class CompensationFactorController {
   /**
    * Get shape layers in GeoJSON format for compensation factor component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "fc";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestBiomesbyEALayer(
@@ -95,7 +95,7 @@ export class CompensationFactorController {
    * @returns {Function} function receiving a geoJsonFeature as required by leaflet
    */
   setLayerStyle =
-    () => (feature?: { properties: compensationFactorPropierties }) => ({
+    () => (feature?: { properties: CompensationFactorPropierties }) => ({
       stroke: false,
       fillColor: matchColor("fc")(feature?.properties.compensation_factor),
       fillOpacity: 0.6,

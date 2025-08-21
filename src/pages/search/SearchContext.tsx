@@ -1,6 +1,6 @@
 import React from "react";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { shapeLayer, rasterLayer, MapTitle } from "pages/search/types/layers";
+import { ShapeLayer, RasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
 
 export type srchType = "definedArea" | "drawPolygon" | null;
@@ -16,8 +16,8 @@ export interface SearchContextValues {
   setAreaId(areaId?: AreaIdBasic): void;
   setAreaHa(value?: number): void;
   setAreaLayer(layer?: geojson.GeoJsonObject): void;
-  setRasterLayers(layers: Array<rasterLayer>): void;
-  setShapeLayers(layers: Array<shapeLayer>): void;
+  setRasterLayers(layers: Array<RasterLayer>): void;
+  setShapeLayers(layers: Array<ShapeLayer>): void;
   setShowAreaLayer(active: boolean): void;
   setLoadingLayer(loading: boolean): void;
   setLayerError(error?: string): void;
