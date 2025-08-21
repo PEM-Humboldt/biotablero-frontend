@@ -11,22 +11,20 @@ export interface SearchContextValues {
   areaType?: AreaType;
   areaId?: AreaIdBasic;
   areaHa?: number;
-  setSearchType: React.Dispatch<React.SetStateAction<srchType>>;
-  setAreaType: React.Dispatch<React.SetStateAction<AreaType | undefined>>;
-  setAreaId: React.Dispatch<React.SetStateAction<AreaIdBasic | undefined>>;
-  setAreaHa: React.Dispatch<React.SetStateAction<number | undefined>>;
-  setAreaLayer: (layer?: geojson.GeoJsonObject) => void;
-  setRasterLayers: React.Dispatch<React.SetStateAction<Array<rasterLayer>>>;
-  setShapeLayers: (layers: Array<shapeLayer>) => void;
-  setShowAreaLayer: React.Dispatch<React.SetStateAction<boolean>>;
-  setLoadingLayer: React.Dispatch<React.SetStateAction<boolean>>;
-  setLayerError: React.Dispatch<React.SetStateAction<boolean>>;
-  setMapTitle: React.Dispatch<React.SetStateAction<MapTitle>>;
-  clearLayers: () => void;
+  setSearchType(searchType: srchType): void;
+  setAreaType(areaType?: AreaType): void;
+  setAreaId(areaId?: AreaIdBasic): void;
+  setAreaHa(value?: number): void;
+  setAreaLayer(layer?: geojson.GeoJsonObject): void;
+  setRasterLayers(layers: Array<rasterLayer>): void;
+  setShapeLayers(layers: Array<shapeLayer>): void;
+  setShowAreaLayer(active: boolean): void;
+  setLoadingLayer(loading: boolean): void;
+  setLayerError(error?: string): void;
+  setMapTitle(mapTitle: MapTitle): void;
+  clearLayers(): void;
   onEditControlMounted: drawControlHandler;
-  setOnEditControlMounted: React.Dispatch<
-    React.SetStateAction<drawControlHandler>
-  >;
+  setOnEditControlMounted(handler: Function): void;
 }
 
 const SearchContext = React.createContext<SearchContextValues>({

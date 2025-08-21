@@ -23,7 +23,7 @@ import L from "leaflet";
 import { Names } from "types/layoutTypes";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
-interface SearchProps extends RouteComponentProps {
+interface SearchProps {
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
@@ -34,11 +34,12 @@ interface SearchProps extends RouteComponentProps {
 // pero en el componente el setter era una funcion que pasaba de bool a str
 // 4. Desagregar mas el componente => URL, mapa y sidebar
 // 5. Fallbacks para url errada o con parámetros inexistentes
+// 6. Proyección del mapa rarita -> Huila
 
 export const Search = (props: SearchProps) => {
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
-  const [areaType, setAreaType] = useState<AreaType | null>(null);
-  const [areaId, setAreaId] = useState<AreaIdBasic | null>(null);
+  const [areaType, setAreaType] = useState<AreaType>();
+  const [areaId, setAreaId] = useState<AreaIdBasic>();
   const [areaHa, setAreaHa] = useState<number | undefined>();
   const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
     id: "",
@@ -102,6 +103,7 @@ export const Search = (props: SearchProps) => {
     }
 
     let urlNewParams = `?area_type=${areaType!.id}`;
+
     if (areaId) {
       urlNewParams += `&area_id=${areaId.id}`;
       setHeaderNames({
@@ -110,8 +112,12 @@ export const Search = (props: SearchProps) => {
       });
     }
 
+    if (search === urlNewParams) {
+      return;
+    }
+
     history.push(urlNewParams);
-  }, [areaType, areaId, history]);
+  }, [areaType, areaId, history, search]);
 
   const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
     if (layerJSON) {
@@ -150,8 +156,8 @@ export const Search = (props: SearchProps) => {
   };
 
   const handlerBackButton = () => {
-    setAreaId(null);
-    setAreaType(null);
+    setAreaId(undefined);
+    setAreaType(undefined);
     setAreaHa(undefined);
     setSearchType("definedArea");
     setAreaLayer({ id: "", paneLevel: 0, json: { type: "FeatureCollection" } });
@@ -182,7 +188,7 @@ export const Search = (props: SearchProps) => {
     setRasterLayers: setRasterLayers,
     setShowAreaLayer: setShowAreaLayer,
     setLoadingLayer: setLoadingLayer,
-    setLayerError: setLayerError,
+    setLayerError: (error?: string) => setLayerError(!!error),
     setMapTitle: setMapTitle,
     clearLayers: clearLayers,
     onEditControlMounted: onEditControlMounted,
