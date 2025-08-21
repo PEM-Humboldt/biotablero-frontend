@@ -34,7 +34,7 @@ interface SearchProps {
 // pero en el componente el setter era una funcion que pasaba de bool a str
 // 4. Desagregar mas el componente => URL, mapa y sidebar
 // 5. Fallbacks para url errada o con parámetros inexistentes
-// 6. Proyección del mapa rarita -> Huila
+// 6. Proyección del mapa rarita -> Huila, Arauca
 
 export const Search = (props: SearchProps) => {
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
@@ -62,7 +62,7 @@ export const Search = (props: SearchProps) => {
 
   const { setHeaderNames } = props;
 
-  // Gather data for loading
+  // Obtiene la data para la carga
   useEffect(() => {
     const query = new URLSearchParams(search);
     const areaIdURL = query.get("area_id");
@@ -96,28 +96,26 @@ export const Search = (props: SearchProps) => {
     });
   }, [search]);
 
-  // URL update
+  // Actualiza la URL
   useEffect(() => {
     if (!areaType) {
       return;
     }
 
-    let urlNewParams = `?area_type=${areaType!.id}`;
-
+    let urlNewParams = `?area_type=${areaType.id}`;
     if (areaId) {
       urlNewParams += `&area_id=${areaId.id}`;
+    }
+
+    // Si la url está al día, previene re-renderizados
+    if (search !== urlNewParams) {
+      history.push(urlNewParams);
       setHeaderNames({
         parent: areaType.label,
-        child: areaId.name,
+        child: areaId?.name ?? "",
       });
     }
-
-    if (search === urlNewParams) {
-      return;
-    }
-
-    history.push(urlNewParams);
-  }, [areaType, areaId, history, search]);
+  }, [areaType, areaId, history, search, setHeaderNames]);
 
   const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
     if (layerJSON) {

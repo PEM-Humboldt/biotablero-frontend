@@ -35,15 +35,8 @@ const App: React.FunctionComponent = () => {
     parent: "",
     child: "",
   });
-  const [showCBMDashboard, setShowCBMDashboard] = useState<boolean>(false);
 
   const location = useLocation();
-
-  useEffect(() => {
-    isFlagEnabled("CBMModule").then((value) => setShowCBMDashboard(value));
-  }, []);
-
-  const buildQuery = (queryString: string) => new URLSearchParams(queryString);
 
   const loadHome = () =>
     loadComponent({
@@ -53,7 +46,6 @@ const App: React.FunctionComponent = () => {
     });
 
   const loadSearch = () => {
-    const query = buildQuery(location.search);
     return loadComponent({
       logoSet: null,
       name: "Consultas geográficas",
@@ -103,14 +95,6 @@ const App: React.FunctionComponent = () => {
       logoSet: null,
       name: "Portafolios",
       component: <Portfolio />,
-      className: "fullgrid",
-    });
-
-  const loadCBMDashboard = () =>
-    loadComponent({
-      logoSet: "monitoreo",
-      name: "Monitoreo comunitario",
-      component: <CBMDashboard />,
       className: "fullgrid",
     });
 
