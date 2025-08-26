@@ -5,78 +5,91 @@ module.exports = {
     node: true,
   },
   extends: [
-    "plugin:react/recommended",
     "airbnb",
-    "plugin:@typescript-eslint/recommended",
+    "airbnb-typescript",
+    "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
+    ecmaFeatures: { jsx: true },
     ecmaVersion: "latest",
     sourceType: "module",
+    project: "./tsconfig.json",
   },
-  plugins: ["react", "@typescript-eslint", "react-hooks"],
+  plugins: ["react", "@typescript-eslint", "react-hooks", "import"],
   rules: {
-    "react/react-in-jsx-scope": "off", // Not needed for React 17+
-    "react/jsx-filename-extension": [1, { extensions: [".tsx", ".jsx"] }], // permite JSX en .tsx
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": [
+      "error",
+      {
+        namedComponents: "function-declaration",
+        unnamedComponents: "arrow-function",
+      },
+    ],
+
+    "import/no-cycle": "error",
     "import/extensions": [
       "error",
       "ignorePackages",
-      {
-        ts: "never",
-        tsx: "never",
-        js: "never",
-        jsx: "never",
-      },
+      { ts: "never", tsx: "never", js: "never", jsx: "never" },
     ],
-    "react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn",
+    "import/no-default-export": "error",
+    "import/prefer-default-export": "off",
+    "import/no-relative-parent-imports": "error",
     "import/no-extraneous-dependencies": [
       "error",
       {
         devDependencies: [
-          "**/*.test.ts",
-          "**/*.test.tsx",
-          "**/*.spec.ts",
-          "**/*.spec.tsx",
+          "**/*.test.{ts,tsx}",
+          "**/*.spec.{ts,tsx}",
           "vite.config.ts",
+          "jest.config.{js,ts}",
         ],
       },
     ],
 
-    "no-nested-ternary": "error", // No permitir operadores ternarios anidados
-    curly: "error", // Obligar uso de llaves en bloques de control
-    "brace-style": ["error", "1tbs", { allowSingleLine: false }], // Estilo de llaves
-    "import/no-default-export": "error", // No permitir exportaciones default
-    // No permitir importaciones default desde src/, pero sí desde node_modules
-    "no-restricted-imports": [
+    "@typescript-eslint/prefer-function-type": "error",
+    "@typescript-eslint/no-unused-vars": [
       "error",
-      {
-        patterns: [
-          {
-            group: ["./src/**", "../src/**", "../../src/**", "src/**"],
-            importNames: ["default"],
-            message:
-              "No se permiten importaciones default desde la carpeta src. Usa named imports.",
-          },
-        ],
-      },
+      { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
     ],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      { prefer: "type-imports" },
+    ],
+
+    "func-style": ["error", "declaration", { allowArrowFunctions: true }],
+    "prefer-arrow-callback": [
+      "error",
+      { allowNamedFunctions: true, allowUnboundThis: true },
+    ],
+    "no-nested-ternary": "error",
+    curly: "error",
+    "no-console": ["warn", { allow: ["warn", "error"] }],
+    "no-var": "error",
+    "prefer-const": "error",
   },
+
   settings: {
+    react: { version: "detect" },
     "import/resolver": {
       typescript: {
+        alwaysTryTypes: true,
         project: "./tsconfig.json",
       },
-      node: {
-        extensions: [".js", ".jsx", ".ts", ".tsx"],
-      },
+      node: { extensions: [".js", ".jsx", ".ts", ".tsx"] },
     },
-    react: {
-      version: "detect",
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"],
     },
   },
+
+  overrides: [
+    {
+      files: ["vite.config.ts", "*.config.js"],
+      rules: { "import/no-default-export": "off" },
+    },
+  ],
 };
