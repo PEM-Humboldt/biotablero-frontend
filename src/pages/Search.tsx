@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import SearchContext, {
-  drawControlHandler as DrawControlHandler,
+  DrawControlHandler,
   SearchContextValues,
-  srchType as SrchType,
+  SrchType,
 } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";

@@ -3,15 +3,15 @@ import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { ShapeLayer, RasterLayer, MapTitle } from "pages/search/types/layers";
 import * as geojson from "geojson";
 
-export type srchType = "definedArea" | "drawPolygon" | null;
-export type drawControlHandler = (control: any) => void;
+export type SrchType = "definedArea" | "drawPolygon" | null;
+export type DrawControlHandler = (control: any) => void;
 
 export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   areaType?: AreaType;
   areaId?: AreaIdBasic;
   areaHa?: number;
-  setSearchType(searchType: srchType): void;
+  setSearchType(searchType: SrchType): void;
   setAreaType(areaType?: AreaType): void;
   setAreaId(areaId?: AreaIdBasic): void;
   setAreaHa(value?: number): void;
@@ -23,7 +23,7 @@ export interface SearchContextValues {
   setLayerError(error?: string): void;
   setMapTitle(mapTitle: MapTitle): void;
   clearLayers(): void;
-  onEditControlMounted: drawControlHandler;
+  onEditControlMounted: DrawControlHandler;
   setOnEditControlMounted(handler: Function): void;
 }
 
