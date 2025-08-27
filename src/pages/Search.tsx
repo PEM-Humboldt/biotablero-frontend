@@ -43,13 +43,11 @@ export const Search = (props: SearchProps) => {
     useState<DrawControlHandler>(() => {});
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
 
-  // Hacer al componente autónomo, que pueda acceder directamente a la URL
   const history = useHistory();
   const { search, pathname } = useLocation();
 
   const { setHeaderNames } = props;
 
-  // Obtiene la data para la carga
   useEffect(() => {
     const query = new URLSearchParams(search);
     const areaIdURL = query.get("area_id");
@@ -83,26 +81,33 @@ export const Search = (props: SearchProps) => {
     });
   }, [search]);
 
-  // Actualiza la URL
-  useEffect(() => {
-    if (!areaType) {
+  const handleUpdateURL = (
+    areaTypeParam: AreaType | undefined,
+    areaIdParam: AreaIdBasic | undefined
+  ) => {
+    if (areaTypeParam === undefined) {
+      history.push("");
       return;
     }
 
-    let urlNewParams = `?area_type=${areaType.id}`;
-    if (areaId) {
-      urlNewParams += `&area_id=${areaId.id}`;
+    let urlNewParams = `?area_type=${areaTypeParam.id}`;
+    if (areaIdParam) {
+      urlNewParams += `&area_id=${areaIdParam.id}`;
     }
 
-    // Si la url está al día, previene re-renderizados
-    if (search !== urlNewParams) {
-      history.push(urlNewParams);
-      setHeaderNames({
-        parent: areaType.label,
-        child: areaId?.name ?? "",
-      });
-    }
-  }, [areaType, areaId, history, search, setHeaderNames]);
+    history.push(urlNewParams);
+  };
+
+  const handleAreaTypeUpdate = (areaTypeProp: AreaType) => {
+    setAreaType(areaTypeProp);
+    setAreaId(undefined);
+    handleUpdateURL(areaTypeProp, undefined);
+  };
+
+  const handleAreaIdUpdate = (areaIdProp: AreaIdBasic) => {
+    setAreaId(areaIdProp);
+    handleUpdateURL(areaType, areaIdProp);
+  };
 
   const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
     if (layerJSON) {
@@ -166,8 +171,6 @@ export const Search = (props: SearchProps) => {
     areaId: areaId,
     areaHa: areaHa,
     setSearchType: setSearchType,
-    setAreaType: setAreaType,
-    setAreaId: setAreaId,
     setAreaHa: setAreaHa,
     setRasterLayers: setRasterLayers,
     setShowAreaLayer: setShowAreaLayer,
@@ -180,6 +183,8 @@ export const Search = (props: SearchProps) => {
     searchType: searchType ?? "definedArea",
     setAreaLayer: updateAreaLayer, // helper,
     setShapeLayers: updateShapeLayers, // helper,
+    setAreaType: handleAreaTypeUpdate,
+    setAreaId: handleAreaIdUpdate,
   };
 
   const showDashboard =
