@@ -50,35 +50,41 @@ export const Search = (props: SearchProps) => {
 
   useEffect(() => {
     const query = new URLSearchParams(search);
-    const areaIdURL = query.get("area_id");
     const areaTypeURL = query.get("area_type");
+    const areaIdURL = query.get("area_id");
 
-    if (
-      areaIdURL === undefined ||
-      areaIdURL === null ||
-      areaTypeURL === undefined ||
-      areaTypeURL === null
-    ) {
+    if (areaTypeURL === null) {
       return;
     }
 
-    Promise.all([
-      SearchAPI.requestAreaTypes(),
-      SearchAPI.requestAreaIds(areaTypeURL),
-      SearchAPI.requestAreaInfo(areaIdURL),
-    ]).then(([areaTypes, areaIds, areaInfo]) => {
-      const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
-      const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+    const updateUI = async () => {
+      try {
+        const [areaTypes, areaIds] = await Promise.all([
+          SearchAPI.requestAreaTypes(),
+          SearchAPI.requestAreaIds(areaTypeURL),
+        ]);
+        const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
+        setAreaType(typeObj);
 
-      setAreaType(typeObj);
-      setAreaId(idObj);
-      setAreaHa(Number(areaInfo.area));
-      setHeaderNames({
-        parent: idObj?.name ?? "",
-        child: typeObj?.label ?? "",
-      });
-      updateAreaLayer(areaInfo.geometry);
-    });
+        if (areaIdURL === null) {
+          setHeaderNames({
+            parent: "",
+            child: typeObj?.label ?? "",
+          });
+        } else {
+          const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
+          const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+          setAreaId(idObj);
+          setAreaHa(Number(areaInfo.area));
+          setHeaderNames({
+            parent: idObj?.name ?? "",
+            child: typeObj?.label ?? "",
+          });
+          updateAreaLayer(areaInfo.geometry);
+        }
+      } catch (err) {}
+    };
+    updateUI();
   }, [search]);
 
   const handleUpdateURL = (
@@ -86,11 +92,12 @@ export const Search = (props: SearchProps) => {
     areaIdParam: AreaIdBasic | undefined
   ) => {
     if (areaTypeParam === undefined) {
-      history.push("");
+      history.push(pathname);
       return;
     }
 
     let urlNewParams = `?area_type=${areaTypeParam.id}`;
+
     if (areaIdParam) {
       urlNewParams += `&area_id=${areaIdParam.id}`;
     }
@@ -171,6 +178,8 @@ export const Search = (props: SearchProps) => {
     areaId: areaId,
     areaHa: areaHa,
     setSearchType: setSearchType,
+    setAreaType: handleAreaTypeUpdate,
+    setAreaId: handleAreaIdUpdate,
     setAreaHa: setAreaHa,
     setRasterLayers: setRasterLayers,
     setShowAreaLayer: setShowAreaLayer,
@@ -183,8 +192,6 @@ export const Search = (props: SearchProps) => {
     searchType: searchType ?? "definedArea",
     setAreaLayer: updateAreaLayer, // helper,
     setShapeLayers: updateShapeLayers, // helper,
-    setAreaType: handleAreaTypeUpdate,
-    setAreaId: handleAreaIdUpdate,
   };
 
   const showDashboard =
