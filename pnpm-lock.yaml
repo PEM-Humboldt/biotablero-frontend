@@ -18,200 +18,201 @@ overrides:
   tough-cookie@<4.1.3: '>=4.1.3'
   nth-check@<2.0.1: '>=2.0.1'
 
-importers:
+dependencies:
+  '@appigram/react-yandex-metrika':
+    specifier: ^2.8.9
+    version: 2.8.9(react@17.0.2)
+  '@emotion/react':
+    specifier: ~11.9.0
+    version: 11.9.3(@babel/core@7.28.0)(@types/react@17.0.87)(react@17.0.2)
+  '@emotion/styled':
+    specifier: ~11.8.1
+    version: 11.8.1(@babel/core@7.28.0)(@emotion/react@11.9.3)(@types/react@17.0.87)(react@17.0.2)
+  '@material-ui/core':
+    specifier: ^4.12.4
+    version: 4.12.4(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
+  '@material-ui/icons':
+    specifier: ^4.11.3
+    version: 4.11.3(@material-ui/core@4.12.4)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
+  '@mui/icons-material':
+    specifier: ~5.8.3
+    version: 5.8.4(@mui/material@5.8.7)(@types/react@17.0.87)(react@17.0.2)
+  '@mui/material':
+    specifier: ~5.8.3
+    version: 5.8.7(@emotion/react@11.9.3)(@emotion/styled@11.8.1)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
+  '@mui/styles':
+    specifier: ~5.8.3
+    version: 5.8.7(@types/react@17.0.87)(react@17.0.2)
+  '@nivo/axes':
+    specifier: ~0.79.0
+    version: 0.79.0(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/bar':
+    specifier: ~0.79.1
+    version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/bullet':
+    specifier: ~0.79.1
+    version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/core':
+    specifier: ~0.79.0
+    version: 0.79.0(@nivo/tooltip@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/line':
+    specifier: ~0.79.1
+    version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/pie':
+    specifier: ~0.79.1
+    version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/scales':
+    specifier: ^0.84.0
+    version: 0.84.0
+  '@nivo/scatterplot':
+    specifier: ^0.84.0
+    version: 0.84.0(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
+  '@nivo/tooltip':
+    specifier: ~0.79.0
+    version: 0.79.0(@nivo/core@0.79.0)(react-dom@17.0.2)(react@17.0.2)
+  '@react-spring/web':
+    specifier: ~9.3.1
+    version: 9.3.1(react-dom@17.0.2)(react@17.0.2)
+  '@vx/responsive':
+    specifier: ~0.0.199
+    version: 0.0.199(react@17.0.2)
+  axios:
+    specifier: ~1.6.5
+    version: 1.6.7
+  chart.js:
+    specifier: ~3.8.0
+    version: 3.8.2
+  firebase:
+    specifier: ~9.8.4
+    version: 9.8.4
+  leaflet:
+    specifier: 1.9.4
+    version: 1.9.4
+  leaflet-draw:
+    specifier: ^1.0.4
+    version: 1.0.4
+  prop-types:
+    specifier: 15.8.1
+    version: 15.8.1
+  react:
+    specifier: ~17.0.2
+    version: 17.0.2
+  react-dom:
+    specifier: ~17.0.2
+    version: 17.0.2(react@17.0.2)
+  react-ga4:
+    specifier: ^2.1.0
+    version: 2.1.0
+  react-json-to-csv:
+    specifier: ~1.0.4
+    version: 1.0.4
+  react-leaflet:
+    specifier: ~3.2.5
+    version: 3.2.5(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2)
+  react-leaflet-draw:
+    specifier: ~0.19.8
+    version: 0.19.8(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@3.2.5)(react@17.0.2)
+  react-masonry-component:
+    specifier: ~6.3.0
+    version: 6.3.0(react@17.0.2)
+  react-router-dom:
+    specifier: 5.3.3
+    version: 5.3.3(react@17.0.2)
+  react-slick:
+    specifier: ^0.30.3
+    version: 0.30.3(react-dom@17.0.2)(react@17.0.2)
+  slick-carousel:
+    specifier: ^1.8.1
+    version: 1.8.1(jquery@3.7.1)
+  styled-components:
+    specifier: ~5.3.11
+    version: 5.3.11(@babel/core@7.28.0)(react-dom@17.0.2)(react-is@18.2.0)(react@17.0.2)
 
-  .:
-    dependencies:
-      '@appigram/react-yandex-metrika':
-        specifier: ^2.8.9
-        version: 2.8.9(react@17.0.2)
-      '@emotion/react':
-        specifier: ~11.9.0
-        version: 11.9.3(@babel/core@7.28.0)(@types/react@17.0.87)(react@17.0.2)
-      '@emotion/styled':
-        specifier: ~11.8.1
-        version: 11.8.1(@babel/core@7.28.0)(@emotion/react@11.9.3)(@types/react@17.0.87)(react@17.0.2)
-      '@material-ui/core':
-        specifier: ^4.12.4
-        version: 4.12.4(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      '@material-ui/icons':
-        specifier: ^4.11.3
-        version: 4.11.3(@material-ui/core@4.12.4)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      '@mui/icons-material':
-        specifier: ~5.8.3
-        version: 5.8.4(@mui/material@5.8.7)(@types/react@17.0.87)(react@17.0.2)
-      '@mui/material':
-        specifier: ~5.8.3
-        version: 5.8.7(@emotion/react@11.9.3)(@emotion/styled@11.8.1)(@types/react@17.0.87)(react-dom@17.0.2)(react@17.0.2)
-      '@mui/styles':
-        specifier: ~5.8.3
-        version: 5.8.7(@types/react@17.0.87)(react@17.0.2)
-      '@nivo/axes':
-        specifier: ~0.79.0
-        version: 0.79.0(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/bar':
-        specifier: ~0.79.1
-        version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/bullet':
-        specifier: ~0.79.1
-        version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/core':
-        specifier: ~0.79.0
-        version: 0.79.0(@nivo/tooltip@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/line':
-        specifier: ~0.79.1
-        version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/pie':
-        specifier: ~0.79.1
-        version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/scales':
-        specifier: ^0.84.0
-        version: 0.84.0
-      '@nivo/scatterplot':
-        specifier: ^0.84.0
-        version: 0.84.0(prop-types@15.8.1)(react-dom@17.0.2)(react@17.0.2)
-      '@nivo/tooltip':
-        specifier: ~0.79.0
-        version: 0.79.0(@nivo/core@0.79.0)(react-dom@17.0.2)(react@17.0.2)
-      '@react-spring/web':
-        specifier: ~9.3.1
-        version: 9.3.1(react-dom@17.0.2)(react@17.0.2)
-      '@vx/responsive':
-        specifier: ~0.0.199
-        version: 0.0.199(react@17.0.2)
-      axios:
-        specifier: ~1.6.5
-        version: 1.6.7
-      chart.js:
-        specifier: ~3.8.0
-        version: 3.8.2
-      firebase:
-        specifier: ~9.8.4
-        version: 9.8.4
-      leaflet:
-        specifier: 1.9.4
-        version: 1.9.4
-      leaflet-draw:
-        specifier: ^1.0.4
-        version: 1.0.4
-      prop-types:
-        specifier: 15.8.1
-        version: 15.8.1
-      react:
-        specifier: ~17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ~17.0.2
-        version: 17.0.2(react@17.0.2)
-      react-ga4:
-        specifier: ^2.1.0
-        version: 2.1.0
-      react-json-to-csv:
-        specifier: ~1.0.4
-        version: 1.0.4
-      react-leaflet:
-        specifier: ~3.2.5
-        version: 3.2.5(leaflet@1.9.4)(react-dom@17.0.2)(react@17.0.2)
-      react-leaflet-draw:
-        specifier: ~0.19.8
-        version: 0.19.8(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@3.2.5)(react@17.0.2)
-      react-masonry-component:
-        specifier: ~6.3.0
-        version: 6.3.0(react@17.0.2)
-      react-router-dom:
-        specifier: 5.3.3
-        version: 5.3.3(react@17.0.2)
-      react-slick:
-        specifier: ^0.30.3
-        version: 0.30.3(react-dom@17.0.2)(react@17.0.2)
-      slick-carousel:
-        specifier: ^1.8.1
-        version: 1.8.1(jquery@3.7.1)
-      styled-components:
-        specifier: ~5.3.11
-        version: 5.3.11(@babel/core@7.28.0)(react-dom@17.0.2)(react-is@18.2.0)(react@17.0.2)
-    devDependencies:
-      '@types/geojson':
-        specifier: ^7946.0.14
-        version: 7946.0.14
-      '@types/leaflet':
-        specifier: ~1.9.16
-        version: 1.9.16
-      '@types/leaflet-draw':
-        specifier: ~1.0.11
-        version: 1.0.11
-      '@types/node':
-        specifier: ~18.19.0
-        version: 18.19.122
-      '@types/react':
-        specifier: ~17.0.87
-        version: 17.0.87
-      '@types/react-dom':
-        specifier: ~17.0.26
-        version: 17.0.26(@types/react@17.0.87)
-      '@types/react-json-to-csv':
-        specifier: ^1.0.0
-        version: 1.2.4
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
-      '@types/styled-components':
-        specifier: ^5.1.34
-        version: 5.1.34
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^8.39.1
-        version: 8.39.1(@typescript-eslint/parser@8.39.1)(eslint@8.57.1)(typescript@5.4.5)
-      '@typescript-eslint/parser':
-        specifier: ^8.39.1
-        version: 8.39.1(eslint@8.57.1)(typescript@5.4.5)
-      '@vitejs/plugin-react':
-        specifier: ~4.3.0
-        version: 4.3.4(vite@5.2.14)
-      eslint:
-        specifier: ~8.57.1
-        version: 8.57.1
-      eslint-config-airbnb:
-        specifier: ~19.0.4
-        version: 19.0.4(eslint-plugin-import@2.32.0)(eslint-plugin-jsx-a11y@6.10.2)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react@7.37.5)(eslint@8.57.1)
-      eslint-config-prettier:
-        specifier: ~7.1.0
-        version: 7.1.0(eslint@8.57.1)
-      eslint-import-resolver-typescript:
-        specifier: ^4.4.4
-        version: 4.4.4(eslint-plugin-import@2.32.0)(eslint@8.57.1)
-      eslint-plugin-import:
-        specifier: ^2.32.0
-        version: 2.32.0(@typescript-eslint/parser@8.39.1)(eslint-import-resolver-typescript@4.4.4)(eslint@8.57.1)
-      eslint-plugin-jsx-a11y:
-        specifier: ^6.10.2
-        version: 6.10.2(eslint@8.57.1)
-      eslint-plugin-prettier:
-        specifier: ~4.2.5
-        version: 4.2.5(eslint-config-prettier@7.1.0)(eslint@8.57.1)(prettier@2.7.1)
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@8.57.1)
-      eslint-plugin-react-hooks:
-        specifier: ^4.6.0
-        version: 4.6.0(eslint@8.57.1)
-      jsdom:
-        specifier: ~22.1.0
-        version: 22.1.0
-      prettier:
-        specifier: 2.7.1
-        version: 2.7.1
-      typescript:
-        specifier: ~5.4.0
-        version: 5.4.5
-      vite:
-        specifier: ~5.2.12
-        version: 5.2.14(@types/node@18.19.122)
-      vite-plugin-svgr:
-        specifier: ~4.2.0
-        version: 4.2.0(typescript@5.4.5)(vite@5.2.14)
-      vite-tsconfig-paths:
-        specifier: ~4.3.2
-        version: 4.3.2(typescript@5.4.5)(vite@5.2.14)
+devDependencies:
+  '@types/geojson':
+    specifier: ^7946.0.14
+    version: 7946.0.14
+  '@types/leaflet':
+    specifier: ~1.9.16
+    version: 1.9.16
+  '@types/leaflet-draw':
+    specifier: ~1.0.11
+    version: 1.0.11
+  '@types/node':
+    specifier: ~18.19.0
+    version: 18.19.122
+  '@types/react':
+    specifier: ~17.0.87
+    version: 17.0.87
+  '@types/react-dom':
+    specifier: ~17.0.26
+    version: 17.0.26(@types/react@17.0.87)
+  '@types/react-json-to-csv':
+    specifier: ^1.0.0
+    version: 1.2.4
+  '@types/react-router-dom':
+    specifier: ^5.3.3
+    version: 5.3.3
+  '@types/styled-components':
+    specifier: ^5.1.34
+    version: 5.1.34
+  '@typescript-eslint/eslint-plugin':
+    specifier: ^8.39.1
+    version: 8.39.1(@typescript-eslint/parser@8.39.1)(eslint@8.57.1)(typescript@5.4.5)
+  '@typescript-eslint/parser':
+    specifier: ^8.39.1
+    version: 8.39.1(eslint@8.57.1)(typescript@5.4.5)
+  '@vitejs/plugin-react':
+    specifier: ~4.3.0
+    version: 4.3.4(vite@5.2.14)
+  eslint:
+    specifier: ~8.57.1
+    version: 8.57.1
+  eslint-config-airbnb:
+    specifier: ~19.0.4
+    version: 19.0.4(eslint-plugin-import@2.32.0)(eslint-plugin-jsx-a11y@6.10.2)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react@7.37.5)(eslint@8.57.1)
+  eslint-config-airbnb-typescript:
+    specifier: ~17.1.0
+    version: 17.1.0(@typescript-eslint/eslint-plugin@8.39.1)(@typescript-eslint/parser@8.39.1)(eslint-plugin-import@2.32.0)(eslint@8.57.1)
+  eslint-config-prettier:
+    specifier: ~7.1.0
+    version: 7.1.0(eslint@8.57.1)
+  eslint-import-resolver-typescript:
+    specifier: ^4.4.4
+    version: 4.4.4(eslint-plugin-import@2.32.0)(eslint@8.57.1)
+  eslint-plugin-import:
+    specifier: ^2.32.0
+    version: 2.32.0(@typescript-eslint/parser@8.39.1)(eslint-import-resolver-typescript@4.4.4)(eslint@8.57.1)
+  eslint-plugin-jsx-a11y:
+    specifier: ^6.10.2
+    version: 6.10.2(eslint@8.57.1)
+  eslint-plugin-prettier:
+    specifier: ~4.2.5
+    version: 4.2.5(eslint-config-prettier@7.1.0)(eslint@8.57.1)(prettier@2.7.1)
+  eslint-plugin-react:
+    specifier: ^7.37.5
+    version: 7.37.5(eslint@8.57.1)
+  eslint-plugin-react-hooks:
+    specifier: ^4.6.0
+    version: 4.6.0(eslint@8.57.1)
+  jsdom:
+    specifier: ~22.1.0
+    version: 22.1.0
+  prettier:
+    specifier: 2.7.1
+    version: 2.7.1
+  typescript:
+    specifier: ~5.4.0
+    version: 5.4.5
+  vite:
+    specifier: ~5.2.12
+    version: 5.2.14(@types/node@18.19.122)
+  vite-plugin-svgr:
+    specifier: ~4.2.0
+    version: 4.2.0(typescript@5.4.5)(vite@5.2.14)
+  vite-tsconfig-paths:
+    specifier: ~4.3.2
+    version: 4.3.2(typescript@5.4.5)(vite@5.2.14)
 
 packages:
 
@@ -4305,6 +4306,21 @@ packages:
       object.assign: 4.1.5
       object.entries: 1.1.7
       semver: 6.3.1
+    dev: true
+
+  /eslint-config-airbnb-typescript@17.1.0(@typescript-eslint/eslint-plugin@8.39.1)(@typescript-eslint/parser@8.39.1)(eslint-plugin-import@2.32.0)(eslint@8.57.1):
+    resolution: {integrity: sha512-GPxI5URre6dDpJ0CtcthSZVBAfI+Uw7un5OYNVxP2EYi3H81Jw701yFP7AU+/vCE7xBtFmjge7kfhhk4+RAiig==}
+    peerDependencies:
+      '@typescript-eslint/eslint-plugin': ^5.13.0 || ^6.0.0
+      '@typescript-eslint/parser': ^5.0.0 || ^6.0.0
+      eslint: ^7.32.0 || ^8.2.0
+      eslint-plugin-import: ^2.25.3
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 8.39.1(@typescript-eslint/parser@8.39.1)(eslint@8.57.1)(typescript@5.4.5)
+      '@typescript-eslint/parser': 8.39.1(eslint@8.57.1)(typescript@5.4.5)
+      eslint: 8.57.1
+      eslint-config-airbnb-base: 15.0.0(eslint-plugin-import@2.32.0)(eslint@8.57.1)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.39.1)(eslint-import-resolver-typescript@4.4.4)(eslint@8.57.1)
     dev: true
 
   /eslint-config-airbnb@19.0.4(eslint-plugin-import@2.32.0)(eslint-plugin-jsx-a11y@6.10.2)(eslint-plugin-react-hooks@4.6.0)(eslint-plugin-react@7.37.5)(eslint@8.57.1):
