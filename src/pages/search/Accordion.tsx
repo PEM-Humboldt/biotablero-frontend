@@ -37,15 +37,14 @@ class Accordion extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { componentsArray: prevArray } = prevProps;
-    const { componentsArray } = this.props;
-    const prvSection = prevArray.find((cmp) => !cmp.label.collapsed);
-    const curSection = componentsArray.find((cmp) => !cmp.label.collapsed);
+    const prvSection = prevProps.componentsArray.find(
+      (cmp) => !cmp.label.collapsed
+    );
+    const curSection = this.props.componentsArray.find(
+      (cmp) => !cmp.label.collapsed
+    );
 
-    if (
-      (prevArray.length === 0 && componentsArray.length > 0) ||
-      prvSection?.label.collapsed !== curSection?.label.collapsed
-    ) {
+    if (prvSection?.label.collapsed !== curSection?.label.collapsed) {
       this.setDefaultTab();
     }
   }
