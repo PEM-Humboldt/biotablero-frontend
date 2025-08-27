@@ -21,7 +21,7 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
     if (!isUndefinedOrNull(areaType)) {
       SearchAPI.requestAreaIds(areaType!.id).then((areas) => setAreasId(areas));
     }
-  }, []);
+  }, [areaType]);
 
   const components = areasList
     .filter((area) => area.id !== "custom")

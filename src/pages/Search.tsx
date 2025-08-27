@@ -57,34 +57,36 @@ export const Search = (props: SearchProps) => {
       return;
     }
 
-    const updateUI = async () => {
+    const syncSearchConsole = async () => {
       try {
         const [areaTypes, areaIds] = await Promise.all([
           SearchAPI.requestAreaTypes(),
           SearchAPI.requestAreaIds(areaTypeURL),
         ]);
         const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
+        const headerNames = { child: typeObj?.label ?? "" };
         setAreaType(typeObj);
 
         if (areaIdURL === null) {
-          setHeaderNames({
-            parent: "",
-            child: typeObj?.label ?? "",
-          });
-        } else {
-          const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
-          const idObj = areaIds.find(({ id }) => id === areaInfo.id);
-          setAreaId(idObj);
-          setAreaHa(Number(areaInfo.area));
-          setHeaderNames({
-            parent: idObj?.name ?? "",
-            child: typeObj?.label ?? "",
-          });
-          updateAreaLayer(areaInfo.geometry);
+          setHeaderNames({ ...headerNames, parent: "" });
+          return;
         }
-      } catch (err) {}
+
+        const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
+        const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+
+        setAreaId(idObj);
+        setAreaHa(Number(areaInfo.area));
+        setHeaderNames({ ...headerNames, parent: idObj?.name ?? "" });
+        updateAreaLayer(areaInfo.geometry);
+      } catch (err) {
+        console.error(
+          `Something happened while fetching the area's data: ${err}`
+        );
+      }
     };
-    updateUI();
+
+    syncSearchConsole();
   }, [search]);
 
   const handleUpdateURL = (
@@ -97,7 +99,6 @@ export const Search = (props: SearchProps) => {
     }
 
     let urlNewParams = `?area_type=${areaTypeParam.id}`;
-
     if (areaIdParam) {
       urlNewParams += `&area_id=${areaIdParam.id}`;
     }
