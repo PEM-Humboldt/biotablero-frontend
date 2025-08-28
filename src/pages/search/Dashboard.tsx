@@ -5,7 +5,10 @@ import Ecosistemas from "@mui/icons-material/Nature";
 import Especies from "@mui/icons-material/FilterVintage";
 import Paisaje from "@mui/icons-material/FilterHdr";
 
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
 import Species from "pages/search/dashboard/Species";
 import Ecosystems from "pages/search/dashboard/Ecosystems";

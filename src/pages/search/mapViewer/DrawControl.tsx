@@ -4,7 +4,10 @@ import "leaflet-draw";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 
 const DrawControl = () => {

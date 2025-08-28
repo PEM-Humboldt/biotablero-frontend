@@ -1,22 +1,27 @@
 import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import SearchContext, {
-  DrawControlHandler,
-  SearchContextValues,
-  SrchType,
+import { GeoJsonObject } from "geojson";
+import L from "leaflet";
+
+import {
+  SearchContext,
+  type DrawControlHandler,
+  type SearchContextValues,
+  type SrchType,
 } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
-import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { isUndefinedOrNull } from "utils/validations";
+import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import { MapTitle, RasterLayer, ShapeLayer } from "pages/search/types/layers";
+import type {
+  MapTitle,
+  RasterLayer,
+  ShapeLayer,
+} from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
-import { GeoJsonObject } from "geojson";
-import L from "leaflet";
-import { Names } from "types/layoutTypes";
+import type { Names } from "types/layoutTypes";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
 interface SearchProps {
@@ -196,11 +201,10 @@ export const Search = (props: SearchProps) => {
   };
 
   const showDashboard =
-    !isUndefinedOrNull(searchType) &&
-    !isUndefinedOrNull(areaType) &&
-    !isUndefinedOrNull(areaId) &&
-    !isUndefinedOrNull(areaLayer) &&
-    !isUndefinedOrNull(areaHa);
+    searchType !== null &&
+    areaType !== undefined &&
+    areaId !== undefined &&
+    areaHa !== undefined;
 
   return (
     <SearchContext.Provider value={contextValues}>

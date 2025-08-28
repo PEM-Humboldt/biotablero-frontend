@@ -27,7 +27,7 @@ export interface SearchContextValues {
   setOnEditControlMounted(handler: Function): void;
 }
 
-const SearchContext = React.createContext<SearchContextValues>({
+export const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
   setSearchType: () => {},
   setAreaType: () => {},
@@ -44,5 +44,3 @@ const SearchContext = React.createContext<SearchContextValues>({
   onEditControlMounted: () => {},
   setOnEditControlMounted: () => {},
 });
-
-export default SearchContext;

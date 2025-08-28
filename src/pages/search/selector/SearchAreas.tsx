@@ -2,7 +2,10 @@ import { useContext, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
 import Accordion from "pages/search/Accordion";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
 import SearchAPI from "pages/search/utils/searchAPI";

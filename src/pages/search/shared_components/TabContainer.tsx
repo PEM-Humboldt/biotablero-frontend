@@ -3,7 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { SearchContext } from "pages/search/SearchContext";
 
 interface Titles {
   label: string;

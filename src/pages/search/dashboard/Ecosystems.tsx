@@ -9,7 +9,10 @@ import {
   transformSEAreas,
 } from "pages/search/dashboard/ecosystems/transformData";
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";

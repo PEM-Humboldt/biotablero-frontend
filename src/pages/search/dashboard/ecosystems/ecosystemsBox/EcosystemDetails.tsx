@@ -1,5 +1,8 @@
 import React from "react";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 
 import {
   transformPAValues,
