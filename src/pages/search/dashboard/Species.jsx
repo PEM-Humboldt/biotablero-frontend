@@ -2,7 +2,15 @@ import React from "react";
 
 import Accordion from "pages/search/Accordion";
 import Richness from "pages/search/dashboard/species/Richness";
+<<<<<<< HEAD
 import { SearchContext } from "pages/search/SearchContext";
+=======
+<<<<<<< HEAD
+import SearchContext from "pages/search/SearchContext";
+=======
+import { SearchContext } from "pages/search/SearchContext";
+>>>>>>> abf393bd (Tidy up the search context imports)
+>>>>>>> 295523a0 (Tidy up the search context imports)
 
 class Species extends React.Component {
   mounted = false;
