@@ -98,19 +98,6 @@ docker run -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front
 
 ## 3. Utilitarios
 
-### Desarrollo en dependencias
-
-Para trabajar en una dependencia en específico y observar los cambios en estas, ejecute:
-
-```sh
-pnpm --filter ./packages/<nombre_paquete> build-dev
-```
-
-Tenga en cuenta las siguientes cosas:
-
-- El build toma más tiempo la primera vez que se genera, pero cada vez que se detecte un cambio puede tomar aproximadamente 5seg en volver a generarse.
-- Si desea habilitar el sourcemap puede hacerlo en la configuración de cada dependencia, o incluso mejor, ejecute la dependencia de forma independiente y trabaje directamente sobre ella.
-
 ### Verificar reglas de estilo
 
 Ejecutar la siguiente linea para verificar los estilos del proyecto:
@@ -135,14 +122,6 @@ Para corregir automaticamente el codigo según la guía de estilo (cuando sea po
 
 ```sh
 pnpm fix-lint
-```
-
-### Corregir reglas de estilo
-
-Para realizar la correción en los estilos, se deberia ejecutar lo siguiente:
-
-```sh
-npx prettier --write "(ruta archivo)"
 ```
 
 ---
