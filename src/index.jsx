@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 import ReactGA from "react-ga4";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import { App } from "App";
 import { StrictMode } from "react";
 // TODO: Habilitar registerServiceWorker cuando esté habilitado el dominio en HTTPS
 // import registerServiceWorker from './registerServiceWorker';

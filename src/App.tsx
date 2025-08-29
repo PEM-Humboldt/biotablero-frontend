@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Switch, Route, Redirect, useLocation } from "react-router-dom";
+import { Switch, Redirect, useLocation } from "react-router-dom";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
+
+import { CompatRoute, CompatRouter } from "react-router-dom-v5-compat";
 
 import AppContext from "app/AppContext";
 import Layout from "app/Layout";
@@ -15,9 +17,8 @@ import "main.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 
-import { LogosConfig, Names } from "types/layoutTypes";
-
-import { UserTypes } from "types/loginUimProps";
+import type { LogosConfig, Names } from "types/layoutTypes";
+import type { UserTypes } from "types/loginUimProps";
 
 interface LoadComponentTypes {
   logoSet: keyof LogosConfig | null;
@@ -26,7 +27,7 @@ interface LoadComponentTypes {
   className?: string;
 }
 
-const App: React.FunctionComponent = () => {
+export function App() {
   const [user, setUser] = useState<UserTypes | null>(null);
   const [headerNames, setHeaderNames] = useState<Names>({
     parent: "",
@@ -34,6 +35,25 @@ const App: React.FunctionComponent = () => {
   });
 
   const location = useLocation();
+
+  const loadComponent = ({
+    logoSet,
+    name,
+    component,
+    className = "",
+  }: LoadComponentTypes) => {
+    return (
+      <Layout
+        moduleName={name}
+        footerLogos={logoSet}
+        headerNames={headerNames}
+        uim={<Uim setUser={setUser} />}
+        className={className}
+      >
+        {component}
+      </Layout>
+    );
+  };
 
   const loadHome = () =>
     loadComponent({
@@ -95,25 +115,6 @@ const App: React.FunctionComponent = () => {
       className: "fullgrid",
     });
 
-  const loadComponent = ({
-    logoSet,
-    name,
-    component,
-    className = "",
-  }: LoadComponentTypes) => {
-    return (
-      <Layout
-        moduleName={name}
-        footerLogos={logoSet}
-        headerNames={headerNames}
-        uim={<Uim setUser={setUser} />}
-        className={className}
-      >
-        {component}
-      </Layout>
-    );
-  };
-
   const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
 
   return (
@@ -133,18 +134,18 @@ const App: React.FunctionComponent = () => {
         }}
       />
       <main>
-        <Switch>
-          <Route exact path="/" render={loadHome} />
-          <Route path="/Consultas" render={loadSearch} />
-          <Route path="/Indicadores" render={loadIndicator} />
-          <Route path="/GEB/Compensaciones" render={loadCompensator} />
-          <Route path="/Portafolios" render={loadPortfolio} />
-          <Route path="/Alertas" render={loadHome} />
-          <Route path="/Monitoreo" render={loadMonitoring} />
-        </Switch>
+        <CompatRouter>
+          <Switch>
+            <CompatRoute exact path="/" render={loadHome} />
+            <CompatRoute path="/Consultas" render={loadSearch} />
+            <CompatRoute path="/Indicadores" render={loadIndicator} />
+            <CompatRoute path="/GEB/Compensaciones" render={loadCompensator} />
+            <CompatRoute path="/Portafolios" render={loadPortfolio} />
+            <CompatRoute path="/Alertas" render={loadHome} />
+            <CompatRoute path="/Monitoreo" render={loadMonitoring} />
+          </Switch>
+        </CompatRouter>
       </main>
     </AppContext.Provider>
   );
-};
-
-export default App;
+}

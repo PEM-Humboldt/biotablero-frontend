@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom-v5-compat";
 import type { GeoJsonObject } from "geojson";
 import L from "leaflet";
 
@@ -47,7 +47,7 @@ export function Search(props: SearchProps) {
   const [onEditControlMounted, setOnEditControlMounted] =
     useState<DrawControlHandler>(() => {});
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { search, pathname } = useLocation();
 
   const { setHeaderNames } = props;
@@ -119,7 +119,7 @@ export function Search(props: SearchProps) {
       areaIdParam: AreaIdBasic | undefined
     ) => {
       if (areaTypeParam === undefined) {
-        history.push(pathname);
+        navigate(pathname);
         return;
       }
 
@@ -128,9 +128,9 @@ export function Search(props: SearchProps) {
         urlNewParams += `&area_id=${areaIdParam.id}`;
       }
 
-      history.push(urlNewParams);
+      navigate(urlNewParams);
     },
-    [history, pathname]
+    [navigate, pathname]
   );
 
   const handleAreaTypeUpdate = useCallback(
@@ -178,7 +178,7 @@ export function Search(props: SearchProps) {
     setLoadingLayer(false);
     setLayerError(false);
     setHeaderNames({ parent: "", child: "" });
-    history.replace(pathname);
+    navigate(pathname, { replace: true });
   };
 
   const bounds =
