@@ -59,6 +59,7 @@ module.exports = {
       "error",
       { prefer: "type-imports" },
     ],
+    "@typescript-eslint/quotes": "off",
 
     "func-style": ["error", "declaration", { allowArrowFunctions: true }],
     "prefer-arrow-callback": [
