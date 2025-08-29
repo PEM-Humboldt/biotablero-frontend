@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import { GeoJsonObject } from "geojson";
+import type { GeoJsonObject } from "geojson";
 import L from "leaflet";
 
 import {
@@ -28,7 +28,7 @@ interface SearchProps {
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
-export const Search = (props: SearchProps) => {
+export function Search(props: SearchProps) {
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
   const [areaType, setAreaType] = useState<AreaType>();
   const [areaId, setAreaId] = useState<AreaIdBasic>();
@@ -47,11 +47,30 @@ export const Search = (props: SearchProps) => {
   const [onEditControlMounted, setOnEditControlMounted] =
     useState<DrawControlHandler>(() => {});
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-
   const history = useHistory();
   const { search, pathname } = useLocation();
 
   const { setHeaderNames } = props;
+  const handleAreaLayerUpdate = (layerJSON?: GeoJsonObject) => {
+    if (layerJSON) {
+      setAreaLayer({
+        id: "geofence",
+        paneLevel: 1,
+        json: layerJSON,
+        layerStyle: () => ({
+          stroke: false,
+          fillColor: matchColor("geofence")(),
+          fillOpacity: 0.6,
+        }),
+      });
+    } else {
+      setAreaLayer({
+        id: "",
+        paneLevel: 0,
+        json: { type: "FeatureCollection" },
+      });
+    }
+  };
 
   useEffect(() => {
     const query = new URLSearchParams(search);
@@ -83,7 +102,7 @@ export const Search = (props: SearchProps) => {
         setAreaId(idObj);
         setAreaHa(Number(areaInfo.area));
         setHeaderNames({ ...headerNames, parent: idObj?.name ?? "" });
-        updateAreaLayer(areaInfo.geometry);
+        handleAreaLayerUpdate(areaInfo.geometry);
       } catch (err) {
         console.error(
           `Something happened while fetching the area's data: ${err}`
@@ -92,58 +111,46 @@ export const Search = (props: SearchProps) => {
     };
 
     syncSearchConsole();
-  }, [search]);
+  }, [search, setHeaderNames]);
 
-  const handleUpdateURL = (
-    areaTypeParam: AreaType | undefined,
-    areaIdParam: AreaIdBasic | undefined
-  ) => {
-    if (areaTypeParam === undefined) {
-      history.push(pathname);
-      return;
-    }
+  const handleUpdateURL = useCallback(
+    (
+      areaTypeParam: AreaType | undefined,
+      areaIdParam: AreaIdBasic | undefined
+    ) => {
+      if (areaTypeParam === undefined) {
+        history.push(pathname);
+        return;
+      }
 
-    let urlNewParams = `?area_type=${areaTypeParam.id}`;
-    if (areaIdParam) {
-      urlNewParams += `&area_id=${areaIdParam.id}`;
-    }
+      let urlNewParams = `?area_type=${areaTypeParam.id}`;
+      if (areaIdParam) {
+        urlNewParams += `&area_id=${areaIdParam.id}`;
+      }
 
-    history.push(urlNewParams);
-  };
+      history.push(urlNewParams);
+    },
+    [history, pathname]
+  );
 
-  const handleAreaTypeUpdate = (areaTypeProp: AreaType) => {
-    setAreaType(areaTypeProp);
-    setAreaId(undefined);
-    handleUpdateURL(areaTypeProp, undefined);
-  };
+  const handleAreaTypeUpdate = useCallback(
+    (areaTypeProp: AreaType) => {
+      setAreaType(areaTypeProp);
+      setAreaId(undefined);
+      handleUpdateURL(areaTypeProp, undefined);
+    },
+    [handleUpdateURL]
+  );
 
-  const handleAreaIdUpdate = (areaIdProp: AreaIdBasic) => {
-    setAreaId(areaIdProp);
-    handleUpdateURL(areaType, areaIdProp);
-  };
+  const handleAreaIdUpdate = useCallback(
+    (areaIdProp: AreaIdBasic) => {
+      setAreaId(areaIdProp);
+      handleUpdateURL(areaType, areaIdProp);
+    },
+    [areaType, handleUpdateURL]
+  );
 
-  const updateAreaLayer = (layerJSON?: GeoJsonObject) => {
-    if (layerJSON) {
-      setAreaLayer({
-        id: "geofence",
-        paneLevel: 1,
-        json: layerJSON,
-        layerStyle: () => ({
-          stroke: false,
-          fillColor: matchColor("geofence")(),
-          fillOpacity: 0.6,
-        }),
-      });
-    } else {
-      setAreaLayer({
-        id: "",
-        paneLevel: 0,
-        json: { type: "FeatureCollection" },
-      });
-    }
-  };
-
-  const updateShapeLayers = (layers: ShapeLayer[]) => {
+  const handleShapeLayersUpdate = (layers: ShapeLayer[]) => {
     if (!hasInvalidGeoJson(layers)) {
       setShapeLayers(layers);
     }
@@ -179,26 +186,37 @@ export const Search = (props: SearchProps) => {
       ? L.geoJSON(areaLayer.json).getBounds()
       : [];
 
-  const contextValues: SearchContextValues = {
-    areaType: areaType,
-    areaId: areaId,
-    areaHa: areaHa,
-    setSearchType: setSearchType,
-    setAreaType: handleAreaTypeUpdate,
-    setAreaId: handleAreaIdUpdate,
-    setAreaHa: setAreaHa,
-    setRasterLayers: setRasterLayers,
-    setShowAreaLayer: setShowAreaLayer,
-    setLoadingLayer: setLoadingLayer,
-    setLayerError: (error?: string) => setLayerError(!!error),
-    setMapTitle: setMapTitle,
-    clearLayers: clearLayers,
-    onEditControlMounted: onEditControlMounted,
-    setOnEditControlMounted: setOnEditControlMounted,
-    searchType: searchType ?? "definedArea",
-    setAreaLayer: updateAreaLayer, // helper,
-    setShapeLayers: updateShapeLayers, // helper,
-  };
+  const contextValues = useMemo<SearchContextValues>(
+    () => ({
+      areaType,
+      areaId,
+      areaHa,
+      setSearchType,
+      setAreaHa,
+      setRasterLayers,
+      setShowAreaLayer,
+      setLoadingLayer,
+      setMapTitle,
+      clearLayers,
+      onEditControlMounted,
+      setOnEditControlMounted,
+      searchType: searchType ?? "definedArea",
+      setLayerError: (error?: string) => setLayerError(!!error),
+      setAreaType: handleAreaTypeUpdate,
+      setAreaId: handleAreaIdUpdate,
+      setAreaLayer: handleAreaLayerUpdate,
+      setShapeLayers: handleShapeLayersUpdate,
+    }),
+    [
+      areaHa,
+      areaId,
+      areaType,
+      handleAreaIdUpdate,
+      handleAreaTypeUpdate,
+      onEditControlMounted,
+      searchType,
+    ]
+  );
 
   const showDashboard =
     searchType !== null &&
@@ -234,4 +252,4 @@ export const Search = (props: SearchProps) => {
       </div>
     </SearchContext.Provider>
   );
-};
+}
