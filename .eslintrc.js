@@ -37,7 +37,6 @@ module.exports = {
     ],
     "import/no-default-export": "error",
     "import/prefer-default-export": "off",
-    "import/no-relative-parent-imports": "error",
     "import/no-extraneous-dependencies": [
       "error",
       {
@@ -59,8 +58,20 @@ module.exports = {
       "error",
       { prefer: "type-imports" },
     ],
+    "@typescript-eslint/comma-dangle": "off",
     "@typescript-eslint/quotes": "off",
 
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: [
+          {
+            group: ["./", "../"],
+            message: "The relative imports are not allowed.",
+          },
+        ],
+      },
+    ],
     "func-style": ["error", "declaration", { allowArrowFunctions: true }],
     "prefer-arrow-callback": [
       "error",
