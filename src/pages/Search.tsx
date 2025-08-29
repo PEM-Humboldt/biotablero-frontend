@@ -48,7 +48,7 @@ export function Search(props: SearchProps) {
   const [onEditControlMounted, setOnEditControlMounted] =
     useState<DrawControlHandler>(() => {});
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const { search, pathname } = useLocation();
 
   const { setHeaderNames } = props;
@@ -157,7 +157,7 @@ export function Search(props: SearchProps) {
       areaIdParam: AreaIdBasic | undefined
     ) => {
       if (areaTypeParam === undefined) {
-        history.push(pathname);
+        navigate(pathname);
         return;
       }
 
@@ -166,9 +166,9 @@ export function Search(props: SearchProps) {
         urlNewParams += `&area_id=${areaIdParam.id}`;
       }
 
-      history.push(urlNewParams);
+      navigate(urlNewParams);
     },
-    [history, pathname]
+    [navigate, pathname]
   );
 
   const handleAreaTypeUpdate = useCallback(
