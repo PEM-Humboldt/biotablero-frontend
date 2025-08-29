@@ -63,7 +63,6 @@ module.exports = {
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/quotes": "off",
 
-
     "no-restricted-imports": [
       "error",
       {
