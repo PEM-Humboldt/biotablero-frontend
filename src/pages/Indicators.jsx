@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import CardManager from "pages/indicators/app/CardManager";
 import TagManager from "pages/indicators/app/TagManager";
@@ -9,7 +9,7 @@ import { getTags } from "pages/indicators/utils/firebase";
 
 import "pages/indicators/main.css";
 
-export const Indicators = () => {
+export function Indicators() {
   const [openFilter, setOpenFilter] = useState(true);
   const [tags, setTags] = useState(new Map());
   const [loadingTags, setLoadingTags] = useState(true);
@@ -19,10 +19,13 @@ export const Indicators = () => {
     updateFilters,
   } = useUpdateResults();
 
-  useEffect(async () => {
-    const tagsData = await getTags();
-    setTags(tagsData);
-    setLoadingTags(false);
+  useEffect(() => {
+    const fetchTags = async () => {
+      const tagsData = await getTags();
+      setTags(tagsData);
+      setLoadingTags(false);
+    };
+    fetchTags();
   }, []);
 
   const filterData = (filters) => {
@@ -68,13 +71,13 @@ export const Indicators = () => {
       <div className="countD">
         {loadingData && "Cargando información..."}
         {!loadingData && cardsData.length <= 0 && "No hay indicadores"}
-        {!loadingData && cardsData.length > 0 && (
-          <>{cardsData.length} indicadores</>
-        )}
+        {!loadingData &&
+          cardsData.length > 0 &&
+          `${cardsData.length} indicadores`}
       </div>
       <div className="masonry-cards">
         <CardManager cardsData={cardsData} />
       </div>
     </div>
   );
-};
+}
