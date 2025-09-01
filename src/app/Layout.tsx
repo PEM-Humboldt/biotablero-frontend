@@ -1,5 +1,5 @@
 import { Footer } from "app/layout/Footer";
-import Header from "app/layout/Header";
+import { Header } from "app/layout/Header";
 
 import type { LogosConfig, Names } from "types/layoutTypes";
 
