@@ -10,12 +10,21 @@ import Uim from "app/Uim";
 import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
+<<<<<<< HEAD
 import { Search } from "pages/Search";
 import Portfolio from "pages/Portfolio";
+=======
+import { Portfolio } from "pages/Portfolio";
+>>>>>>> a22a6f97 (updates 1 level componens of Home and Portfolio to the new router)
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
+
+// NOTE: módulos migrados:
+// Search
+// Indicators
+// Portfolio
 
 import type { LogosConfig, Names } from "types/layoutTypes";
 import type { UserTypes } from "types/loginUimProps";

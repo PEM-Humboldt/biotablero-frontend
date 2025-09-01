@@ -10,7 +10,7 @@ type TabsModulesProps = {
 // TODO: Hay un conflicto con titleBar y el componente de titulos de los tabs
 // su naturaleza es redundante, pero el uno está dependiendo de estilos
 // implementados en el otro, es necesario limpiar y revisar estilos
-export const TabsModules = ({ activeTab }: TabsModulesProps) => {
+export function TabsModules({ activeTab }: TabsModulesProps) {
   const [subTab, setSubTab] = useState(0);
 
   const handleSubTabChange = (_: React.SyntheticEvent, newValue: number) => {
@@ -43,7 +43,7 @@ export const TabsModules = ({ activeTab }: TabsModulesProps) => {
                   variant="h4"
                   className={activeTab === 0 ? "titulo-centrado" : ""}
                   sx={{ mb: 0, color: "white" }}
-                ></Typography>
+                />
                 {"content" in categories[0] && categories[0].content}
               </Box>
             ) : (
@@ -98,4 +98,4 @@ export const TabsModules = ({ activeTab }: TabsModulesProps) => {
       </Container>
     </div>
   );
-};
+}
