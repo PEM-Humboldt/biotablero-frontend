@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import AppContext, { AppContextValue } from "app/AppContext";
+import { AppContext, type AppContextValue } from "app/AppContext";
 import isFlagEnabled from "utils/isFlagEnabled";
 
 import Consultasgeograficas from "images/consulta-geografica-logo.svg";
