@@ -46,8 +46,7 @@
     "react-leaflet": "~3.2.5",
     "react-leaflet-draw": "~0.19.8",
     "react-masonry-component": "~6.3.0",
-    "react-router-dom": "5.3.3",
-    "react-router-dom-v5-compat": "^6.30.0",
+    "react-router-dom": "6",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
     "styled-components": "~5.3.11"
