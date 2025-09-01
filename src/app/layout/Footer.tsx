@@ -48,6 +48,7 @@ export function Footer({ logosId }: FooterProps) {
           <b>Alexander von Humboldt</b>
         </div>
       </div>
+
       <div className="colaboradoresDiv">
         {logosId !== null && logoSet[logosId] && (
           <div className="colaboradores">

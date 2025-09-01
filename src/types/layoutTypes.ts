@@ -1,4 +1,4 @@
-export type KEYS =
+export type Collaborators =
   | "nasa"
   | "temple"
   | "siac"
@@ -8,8 +8,8 @@ export type KEYS =
   | "umed";
 
 export interface LogosConfig {
-  default: Array<KEYS>;
-  monitoreo: Array<KEYS>;
+  default: Collaborators[];
+  monitoreo: Collaborators[];
 }
 
 export interface Names {
