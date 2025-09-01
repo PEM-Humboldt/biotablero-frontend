@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Menu } from "app/layout/header/Menu";
-import Title from "app/layout/header/Title";
+import { Title } from "app/layout/header/Title";
 
 interface Names {
   parent?: string;

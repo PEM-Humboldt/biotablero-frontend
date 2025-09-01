@@ -63,7 +63,7 @@ export function App() {
   const loadSearch = () =>
     makeComponentWrapper({
       logoSet: null,
-      name: "Consultas geográficas",
+      name: "Consultas Geográficas",
       component: <Search setHeaderNames={setHeaderNames} />,
       className: "fullgrid",
     });
@@ -88,7 +88,7 @@ export function App() {
     user ? (
       makeComponentWrapper({
         logoSet: null,
-        name: "Compensación ambiental",
+        name: "Compensación Ambiental",
         component: <Compensation setHeaderNames={setHeaderNames} />,
         className: "fullgrid",
       })
