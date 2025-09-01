@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Switch, Redirect, useLocation } from "react-router-dom";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
 
@@ -15,20 +15,10 @@ import { Portfolio } from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
 
-import isFlagEnabled from "utils/isFlagEnabled";
-
-// NOTE: módulos migrados:
-// Search
-// Indicators
-// Portfolio
-// Home
-// Monitoring
-// compensation
-
 import type { LogosConfig, Names } from "types/layoutTypes";
 import type { UserTypes } from "types/loginUimProps";
 
-interface LoadComponentTypes {
+interface MakeComponentWrapperArgs {
   logoSet: keyof LogosConfig | null;
   name: string;
   component: React.ReactNode;
@@ -44,79 +34,68 @@ export function App() {
 
   const location = useLocation();
 
-  const loadComponent = ({
+  const makeComponentWrapper = ({
     logoSet,
     name,
     component,
     className = "",
-  }: LoadComponentTypes) => {
-    return (
-      <Layout
-        moduleName={name}
-        footerLogos={logoSet}
-        headerNames={headerNames}
-        uim={<Uim setUser={setUser} />}
-        className={className}
-      >
-        {component}
-      </Layout>
-    );
-  };
+  }: MakeComponentWrapperArgs) => (
+    <Layout
+      moduleName={name}
+      footerLogos={logoSet}
+      headerNames={headerNames}
+      uim={<Uim setUser={setUser} />}
+      className={className}
+    >
+      {component}
+    </Layout>
+  );
 
   const loadHome = () =>
-    loadComponent({
+    makeComponentWrapper({
       logoSet: "default",
       name: "",
       component: <Home />,
     });
 
-  const loadSearch = () => {
-    return loadComponent({
+  const loadSearch = () =>
+    makeComponentWrapper({
       logoSet: null,
       name: "Consultas geográficas",
       component: <Search setHeaderNames={setHeaderNames} />,
       className: "fullgrid",
     });
-  };
 
-  const loadMonitoring = () => {
-    return loadComponent({
+  const loadMonitoring = () =>
+    makeComponentWrapper({
       logoSet: "monitoreo",
       name: "Monitoreo Comunitario",
       component: <Monitoring />,
       className: "fullgrid",
     });
-  };
 
   const loadIndicator = () =>
-    loadComponent({
+    makeComponentWrapper({
       logoSet: null,
       name: "Indicadores",
       component: <Indicators />,
       className: "fullgrid",
     });
 
-  const loadCompensator = () => {
-    if (user) {
-      return loadComponent({
+  const loadCompensator = () =>
+    user ? (
+      makeComponentWrapper({
         logoSet: null,
         name: "Compensación ambiental",
         component: <Compensation setHeaderNames={setHeaderNames} />,
         className: "fullgrid",
-      });
-    }
-    return (
-      <Redirect
-        to={{
-          pathname: "/",
-          state: { prevUrl: location.pathname },
-        }}
-      />
+      })
+    ) : (
+      <Redirect to={{ pathname: "/", state: { prevUrl: location.pathname } }} />
     );
-  };
 
   const loadPortfolio = () =>
-    loadComponent({
+    makeComponentWrapper({
       logoSet: null,
       name: "Portafolios",
       component: <Portfolio />,
@@ -124,9 +103,10 @@ export function App() {
     });
 
   const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
+  const contextValue = useMemo(() => ({ user }), [user]);
 
   return (
-    <AppContext.Provider value={{ user }}>
+    <AppContext.Provider value={contextValue}>
       <YMInitializer
         accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
         options={{
