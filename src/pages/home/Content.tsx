@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import AppContext from "app/AppContext";
+import { AppContext } from "app/AppContext";
 import MenuButton from "pages/home/content/MenuButton";
 import CssCarousel from "pages/home/content/CssCarousel";
 
