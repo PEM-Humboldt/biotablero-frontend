@@ -4,7 +4,7 @@ import { TabsModules } from "pages/home/TabsComponent";
 import "newStyles.css";
 import "headerFooter.css";
 
-export const Home = () => {
+export function Home() {
   const [activeTab, setActiveTab] = useState<number | null>(0);
 
   return (
@@ -13,4 +13,4 @@ export const Home = () => {
       <TabsModules activeTab={activeTab} />
     </div>
   );
-};
+}

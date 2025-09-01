@@ -11,11 +11,16 @@ import Compensation from "pages/Compensation";
 import { Home } from "pages/Home";
 import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
-import Portfolio from "pages/Portfolio";
+import { Portfolio } from "pages/Portfolio";
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
+
+// NOTE: módulos migrados:
+// Search
+// Indicators
+// Portfolio
 
 import type { LogosConfig, Names } from "types/layoutTypes";
 import type { UserTypes } from "types/loginUimProps";
