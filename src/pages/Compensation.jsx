@@ -1,8 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import L from "leaflet";
 import Modal from "@mui/material/Modal";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
+import { Component } from "react";
 
 import constructDataForCompensation from "pages/compensation/constructDataForSelector";
 import GeoServerAPI from "utils/geoServerAPI";
@@ -14,7 +13,7 @@ import Selector from "pages/compensation/Selector";
 import Description from "pages/compensation/SelectorData";
 import AppContext from "app/AppContext";
 
-class Compensation extends Component {
+export class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -598,9 +597,3 @@ class Compensation extends Component {
 }
 
 Compensation.contextType = AppContext;
-
-Compensation.propTypes = {
-  setHeaderNames: PropTypes.func.isRequired,
-};
-
-export default Compensation;
