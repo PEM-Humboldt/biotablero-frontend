@@ -11,7 +11,7 @@ import Drawer from "pages/compensation/Drawer";
 import NewProjectForm from "pages/compensation/NewProjectForm";
 import Selector from "pages/compensation/Selector";
 import Description from "pages/compensation/SelectorData";
-import AppContext from "app/AppContext";
+import { AppContext } from "app/AppContext";
 
 export class Compensation extends Component {
   constructor(props) {
