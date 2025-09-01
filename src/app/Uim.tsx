@@ -2,14 +2,14 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 
-import AppContext, { AppContextValue } from "app/AppContext";
+import { AppContext, type AppContextValue } from "app/AppContext";
 import Login from "app/uim/Login";
 import UserInfo from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
 
-import { loginUimProps } from "types/loginUimProps";
+import type { loginUimProps } from "types/loginUimProps";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -23,16 +23,12 @@ const defaultModalsValues: LogModalsTypes = {
   userModal: false,
 };
 
-const Uim: React.FC<loginUimProps> = ({ setUser }) => {
+export function Uim({ setUser }: loginUimProps) {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
 
   /**
    * Meant to be used by onClick handlers. Set the state for the corresponding
    * modal to true, and the others to false.
-   *
-   * @params {String} modal modal name to turn on
-   *
-   * @returns {function}
    */
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
@@ -41,10 +37,6 @@ const Uim: React.FC<loginUimProps> = ({ setUser }) => {
   /**
    * Meant to be used by onClick handlers. Set the state for the corresponding
    * modal to false
-   *
-   * @params {String} modal modal name to turn off
-   *
-   * @returns {function}{void}
    */
   const turnOffModal = (modal: string) => () => {
     setModals({ ...modals, [modal]: false });
@@ -109,6 +101,4 @@ const Uim: React.FC<loginUimProps> = ({ setUser }) => {
       />
     </div>
   );
-};
-
-export default Uim;
+}

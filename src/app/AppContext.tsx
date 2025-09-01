@@ -13,8 +13,6 @@ export interface AppContextValue {
   user: userValues | null;
 }
 
-const AppContext = React.createContext<AppContextValue>({
+export const AppContext = React.createContext<AppContextValue>({
   user: null,
 });
-
-export default AppContext;

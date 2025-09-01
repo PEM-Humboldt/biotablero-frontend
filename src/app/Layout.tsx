@@ -1,7 +1,7 @@
-import Footer from "app/layout/Footer";
+import { Footer } from "app/layout/Footer";
 import Header from "app/layout/Header";
 
-import { LogosConfig, Names } from "types/layoutTypes";
+import type { LogosConfig, Names } from "types/layoutTypes";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,19 +12,19 @@ interface LayoutProps {
   className: string;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({
+export function Layout({
   children,
   moduleName,
   footerLogos,
   headerNames,
   uim,
   className,
-}) => (
-  <div className={className}>
-    <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
-    {children}
-    <Footer logosId={footerLogos} />
-  </div>
-);
-
-export default Layout;
+}: LayoutProps) {
+  return (
+    <div className={className}>
+      <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
+      {children}
+      <Footer logosId={footerLogos} />
+    </div>
+  );
+}

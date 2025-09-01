@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Switch, Redirect, useLocation } from "react-router-dom";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
 
 import { CompatRoute, CompatRouter } from "react-router-dom-v5-compat";
 
-import AppContext from "app/AppContext";
-import Layout from "app/Layout";
-import Uim from "app/Uim";
-import Compensation from "pages/Compensation";
+import { AppContext } from "app/AppContext";
+import { Layout } from "app/Layout";
+import { Uim } from "app/Uim";
+import { Compensation } from "pages/Compensation";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
 <<<<<<< HEAD
@@ -25,6 +25,9 @@ import isFlagEnabled from "utils/isFlagEnabled";
 // Search
 // Indicators
 // Portfolio
+// Home
+// Monitoring
+// compensation
 
 import type { LogosConfig, Names } from "types/layoutTypes";
 import type { UserTypes } from "types/loginUimProps";
@@ -82,7 +85,7 @@ export function App() {
 
   const loadMonitoring = () => {
     return loadComponent({
-      logoSet: null,
+      logoSet: "monitoreo",
       name: "Monitoreo Comunitario",
       component: <Monitoring />,
       className: "fullgrid",
