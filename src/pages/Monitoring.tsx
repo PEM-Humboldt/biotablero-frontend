@@ -4,7 +4,7 @@ import { Map } from "pages/monitoring/Map";
 import { Dashboard } from "pages/monitoring/Dashboard";
 import "pages/monitoring/styles/monitoring.css";
 
-export const Monitoring = () => {
+export function Monitoring() {
   return (
     <div className="monitoring-root">
       <div className="map-wrapper">
@@ -14,8 +14,10 @@ export const Monitoring = () => {
       <div className="monitoring-body">
         <SearchBar />
         <SideBar />
-        <Dashboard title="" subtitle="" children={null} />
+        <Dashboard title="" subtitle="">
+          {null}
+        </Dashboard>
       </div>
     </div>
   );
-};
+}
