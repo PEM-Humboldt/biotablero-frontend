@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { Link, NavLink } from "react-router-dom-v5-compat";
+import { Link, NavLink } from "react-router-dom";
 import { AppContext, type AppContextValue } from "app/AppContext";
 import isFlagEnabled from "utils/isFlagEnabled";
 

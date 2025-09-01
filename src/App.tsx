@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from "react";
-import { Switch, Redirect, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Route, Routes } from "react-router-dom";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
-
-import { CompatRoute, CompatRouter } from "react-router-dom-v5-compat";
 
 import { AppContext } from "app/AppContext";
 import { Layout } from "app/Layout";
@@ -91,7 +89,7 @@ export function App() {
         className: "fullgrid",
       })
     ) : (
-      <Redirect to={{ pathname: "/", state: { prevUrl: location.pathname } }} />
+      <Navigate to="/" state={{ prevUrl: location.pathname }} />
     );
 
   const loadPortfolio = () =>
@@ -122,17 +120,15 @@ export function App() {
         }}
       />
       <main>
-        <CompatRouter>
-          <Switch>
-            <CompatRoute exact path="/" render={loadHome} />
-            <CompatRoute path="/Consultas" render={loadSearch} />
-            <CompatRoute path="/Indicadores" render={loadIndicator} />
-            <CompatRoute path="/GEB/Compensaciones" render={loadCompensator} />
-            <CompatRoute path="/Portafolios" render={loadPortfolio} />
-            <CompatRoute path="/Alertas" render={loadHome} />
-            <CompatRoute path="/Monitoreo" render={loadMonitoring} />
-          </Switch>
-        </CompatRouter>
+        <Routes>
+          <Route path="/" element={loadHome()} />
+          <Route path="/Consultas" element={loadSearch()} />
+          <Route path="/Indicadores" element={loadIndicator()} />
+          <Route path="/GEB/Compensaciones" element={loadCompensator()} />
+          <Route path="/Portafolios" element={loadPortfolio()} />
+          <Route path="/Alertas" element={loadHome()} />
+          <Route path="/Monitoreo" element={loadMonitoring()} />
+        </Routes>
       </main>
     </AppContext.Provider>
   );
