@@ -1,66 +1,44 @@
-import logohumboldt from "images/logohumboldt.png";
-import logoSiac from "images/logosiac.png";
-import nasa from "images/nasa.png";
-import temple from "images/temple.png";
-import geobon from "images/geobonlogo.png";
-import usaid from "images/usaidlogo.png";
-import umed from "images/umed.png";
-
-import type { Collaborators, LogosConfig } from "types/layoutTypes";
-
-type LogosImg = {
-  [key in Collaborators]: { img: string; url: string };
-};
-
-const logosData: LogosImg = {
-  nasa: { img: nasa, url: "https://www.nasa.gov/" },
-  temple: { img: temple, url: "https://www.temple.edu/" },
-  siac: { img: logoSiac, url: "http://www.siac.gov.co/" },
-  geobon: { img: geobon, url: "https://geobon.org/" },
-  usaid: { img: usaid, url: "https://www.usaid.gov/" },
-  umed: { img: umed, url: "https://udemedellin.edu.co/" },
-};
-
-const logoSet: LogosConfig = {
-  default: ["nasa", "temple", "siac"],
-  monitoreo: ["usaid", "geobon", "umed", "temple"],
-};
+import type { Collaborators } from "types/layoutTypes";
+import { collaboratorsData, footerInfo } from "app/layout/footer/text";
 
 interface FooterProps {
-  logosId: keyof LogosConfig | null;
+  collaboratorsId?: Set<Collaborators>;
 }
-export function Footer({ logosId }: FooterProps) {
+
+export function Footer({ collaboratorsId }: FooterProps) {
   const handleCitationClick = () => {
-    navigator.clipboard.writeText(
-      "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"
-    );
+    navigator.clipboard.writeText(footerInfo.citationClipboard);
   };
+
+  const collaborators = collaboratorsId ? [...collaboratorsId] : [];
 
   return (
     <footer className="footerflex">
       <div className="institutoDiv">
-        <a href="http://www.humboldt.org.co/es/">
-          <img src={logohumboldt} alt="Instituto Humboldt" />
+        <a href={footerInfo.IAVH.url}>
+          <img src={footerInfo.IAVH.img} alt={footerInfo.IAVH.linkAlt} />
         </a>
         <div>
-          Instituto de Investigación de Recursos Biológicos
+          {footerInfo.IAVH.tag}
           <br />
-          <b>Alexander von Humboldt</b>
+          <b>{footerInfo.IAVH.name}</b>
         </div>
       </div>
 
       <div className="colaboradoresDiv">
-        {logosId !== null && logoSet[logosId] && (
+        {collaborators.length > 0 && (
           <div className="colaboradores">
-            <span>Colaboradores</span>
-            {logoSet[logosId].map((name) => (
+            <span>{footerInfo.uiTxt.collaboratorsTitle}</span>
+            {collaborators.map((collaborator) => (
               <a
-                href={logosData[name].url}
+                href={collaboratorsData[collaborator].url}
                 target="_blank"
                 rel="noopener noreferrer"
-                key={name}
               >
-                <img src={logosData[name].img} alt={name} />
+                <img
+                  src={collaboratorsData[collaborator].img}
+                  alt={collaborator}
+                />
               </a>
             ))}
           </div>
@@ -70,15 +48,17 @@ export function Footer({ logosId }: FooterProps) {
           <h3>
             <button
               type="button"
-              title='La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"'
+              title={footerInfo.citationTooltip}
               className="footerTooltip"
               onClick={handleCitationClick}
             >
-              Cítese
+              {footerInfo.uiTxt.links.citation}
             </button>
           </h3>
           <h3>
-            <a href="mailto:biotablero@humboldt.org.co">Contacto</a>
+            <a href={`mailto:${footerInfo.IAVH.contact}`}>
+              {footerInfo.uiTxt.links.contact}
+            </a>
           </h3>
         </div>
       </div>

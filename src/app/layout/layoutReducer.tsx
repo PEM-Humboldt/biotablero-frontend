@@ -1,0 +1,62 @@
+import type { UserTypes } from "types/loginUimProps";
+import type { Collaborators, Names } from "types/layoutTypes";
+
+export interface LayoutState {
+  moduleName: string;
+  logos: Set<Collaborators>;
+  headerNames: Names;
+  user: UserTypes | null;
+  className?: string;
+}
+
+enum UpdatedLayout {
+  MODULE_NAME = "moduleName",
+  SECTION_LOGOS = "sectionLogos",
+  HEADER_NAMES = "headerNames",
+  LOGGED_USER = "user",
+  LOGGED_OUT = "out",
+  CLASS_NAME = "className",
+  SECTION = "section",
+}
+
+type LayoutActions =
+  | { type: UpdatedLayout.MODULE_NAME; newName: string }
+  | { type: UpdatedLayout.SECTION_LOGOS; newLogos: Set<Collaborators> }
+  | { type: UpdatedLayout.HEADER_NAMES; newHeader: Names }
+  | { type: UpdatedLayout.LOGGED_USER; user: UserTypes }
+  | { type: UpdatedLayout.LOGGED_OUT }
+  | { type: UpdatedLayout.CLASS_NAME; newClass: string }
+  | {
+      type: UpdatedLayout.SECTION;
+      sectionData: Pick<LayoutState, "moduleName" | "logos" | "className">;
+    };
+
+export function layoutReducer(
+  state: LayoutState,
+  action: LayoutActions
+): LayoutState {
+  switch (action.type) {
+    case UpdatedLayout.MODULE_NAME:
+      return { ...state, moduleName: action.newName };
+    case UpdatedLayout.SECTION_LOGOS:
+      return { ...state, logos: action.newLogos };
+    case UpdatedLayout.HEADER_NAMES:
+      return { ...state, headerNames: action.newHeader };
+    case UpdatedLayout.LOGGED_USER:
+      return { ...state, user: action.user };
+    case UpdatedLayout.LOGGED_OUT:
+      return { ...state, user: null };
+    case UpdatedLayout.CLASS_NAME:
+      return { ...state, className: action.newClass };
+    case UpdatedLayout.SECTION:
+      return {
+        ...state,
+        moduleName: action.sectionData.moduleName,
+        logos: action.sectionData.logos,
+        className: action.sectionData.className,
+      };
+    default:
+      console.warn("Unknown requested layoutReducer action");
+      return state;
+  }
+}
