@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
 import Accordion from "pages/search/Accordion";
@@ -13,18 +13,13 @@ import SearchAPI from "pages/search/utils/searchAPI";
 interface SearchAreasProps {
   areasList: Array<AreaType>;
 }
+
 const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
   areasList,
 }) => {
-  const [areasId, setAreasId] = useState<Array<AreaIdBasic>>([]);
   const context = useContext(SearchContext);
-  const { areaType, setAreaType } = context as SearchContextValues;
-
-  useEffect(() => {
-    if (!isUndefinedOrNull(areaType)) {
-      SearchAPI.requestAreaIds(areaType!.id).then((areas) => setAreasId(areas));
-    }
-  }, [areaType]);
+  const { areaNamesList, areaType, setAreaType } =
+    context as SearchContextValues;
 
   const components = areasList
     .filter((area) => area.id !== "custom")
@@ -37,12 +32,12 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
       },
       component: AreaAutocomplete,
       componentProps: {
-        optionsList: areasId,
+        optionsList: areaNamesList,
       },
     }));
 
   const onChange = (
-    level: string,
+    _level: string,
     expandedTab: string,
     expandedTabLabel?: string
   ) => {
@@ -50,7 +45,6 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
       setAreaType();
     } else {
       setAreaType({ id: expandedTab, label: expandedTabLabel || expandedTab });
-      SearchAPI.requestAreaIds(expandedTab).then((areas) => setAreasId(areas));
     }
   };
 
@@ -75,8 +69,7 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
   optionsList,
 }) => {
   const context = useContext(SearchContext);
-  const { areaType, setAreaId, setAreaLayer, setAreaHa } =
-    context as SearchContextValues;
+  const { setAreaId, setAreaLayer, setAreaHa } = context as SearchContextValues;
 
   return (
     <Autocomplete

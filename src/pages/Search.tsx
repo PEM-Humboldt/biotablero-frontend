@@ -32,6 +32,7 @@ export function Search(props: SearchProps) {
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
   const [areaType, setAreaType] = useState<AreaType>();
   const [areaId, setAreaId] = useState<AreaIdBasic>();
+  const [areaNamesList, setAreaNamesList] = useState<AreaIdBasic[]>([]);
   const [areaHa, setAreaHa] = useState<number | undefined>();
   const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
     id: "",
@@ -90,6 +91,7 @@ export function Search(props: SearchProps) {
         const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
         const headerNames = { child: typeObj?.label ?? "" };
         setAreaType(typeObj);
+        setAreaNamesList(areaIds);
 
         if (areaIdURL === null) {
           setHeaderNames({ ...headerNames, parent: "" });
@@ -190,6 +192,7 @@ export function Search(props: SearchProps) {
     () => ({
       areaType,
       areaId,
+      areaNamesList,
       areaHa,
       setSearchType,
       setAreaHa,
@@ -210,6 +213,7 @@ export function Search(props: SearchProps) {
     [
       areaHa,
       areaId,
+      areaNamesList,
       areaType,
       handleAreaIdUpdate,
       handleAreaTypeUpdate,

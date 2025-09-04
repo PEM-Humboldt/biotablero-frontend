@@ -10,6 +10,7 @@ export interface SearchContextValues {
   searchType: "definedArea" | "drawPolygon";
   areaType?: AreaType;
   areaId?: AreaIdBasic;
+  areaNamesList: AreaIdBasic[];
   areaHa?: number;
   setSearchType(searchType: SrchType): void;
   setAreaType(areaType?: AreaType): void;
@@ -29,6 +30,7 @@ export interface SearchContextValues {
 
 export const SearchContext = React.createContext<SearchContextValues>({
   searchType: "definedArea",
+  areaNamesList: [],
   setSearchType: () => {},
   setAreaType: () => {},
   setAreaId: () => {},
