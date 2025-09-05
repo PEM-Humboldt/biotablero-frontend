@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import type { GeoJsonObject } from "geojson";
 import L from "leaflet";
+import type * as geojson from "geojson";
 
 import {
   SearchContext,
@@ -52,33 +52,37 @@ export function Search(props: SearchProps) {
   const { search, pathname } = useLocation();
 
   const { setHeaderNames } = props;
-  const handleAreaLayerUpdate = (layerJSON?: GeoJsonObject) => {
-    if (layerJSON) {
-      setAreaLayer({
-        id: "geofence",
-        paneLevel: 1,
-        json: layerJSON,
-        layerStyle: () => ({
-          stroke: false,
-          fillColor: matchColor("geofence")(),
-          fillOpacity: 0.6,
-        }),
-      });
-    } else {
-      setAreaLayer({
-        id: "",
-        paneLevel: 0,
-        json: { type: "FeatureCollection" },
-      });
-    }
-  };
+
+  const handleAreaLayerUpdate = useCallback(
+    (layerJSON?: geojson.GeoJsonObject) => {
+      if (layerJSON) {
+        setAreaLayer({
+          id: "geofence",
+          paneLevel: 1,
+          json: layerJSON,
+          layerStyle: () => ({
+            stroke: false,
+            fillColor: matchColor("geofence")(),
+            fillOpacity: 0.6,
+          }),
+        });
+      } else {
+        setAreaLayer({
+          id: "",
+          paneLevel: 0,
+          json: { type: "FeatureCollection" },
+        });
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     const query = new URLSearchParams(search);
     const areaTypeURL = query.get("area_type");
     const areaIdURL = query.get("area_id");
 
-    if (areaTypeURL === null) {
+    if (searchType !== "definedArea" || areaTypeURL === null) {
       return;
     }
 
@@ -106,14 +110,46 @@ export function Search(props: SearchProps) {
         setHeaderNames({ ...headerNames, parent: idObj?.name ?? "" });
         handleAreaLayerUpdate(areaInfo.geometry);
       } catch (err) {
-        console.error(
-          `Something happened while fetching the area's data: ${err}`
-        );
+        console.error(`Error while fetching the area's data: ${err}`);
       }
     };
 
     syncSearchConsole();
-  }, [search, setHeaderNames]);
+  }, [search, setHeaderNames, handleAreaLayerUpdate, searchType]);
+
+  useEffect(() => {
+    if (
+      areaType?.id !== "custom" ||
+      !areaLayer.json ||
+      (areaId && typeof areaId.id === "number")
+    ) {
+      return;
+    }
+
+    const syncDrawConsole = async () => {
+      const geojson = areaLayer.json as geojson.Feature<geojson.Polygon>;
+
+      try {
+        const areaPolygon = await SearchAPI.requestAreaPolygon(geojson);
+        const areaBasic: AreaIdBasic = {
+          id: areaPolygon.polygon_id,
+          name: "polígono",
+          area_type: areaType,
+        };
+        setAreaId(areaBasic);
+
+        const areaInfo = await SearchAPI.requestAreaInfo(
+          areaPolygon.polygon_id
+        );
+        setAreaHa(Number(areaInfo.area));
+        handleAreaLayerUpdate(areaInfo.geometry);
+      } catch (err) {
+        console.error(`Error processing custom polygon: ${err}`);
+      }
+    };
+
+    syncDrawConsole();
+  }, [areaType, areaLayer, areaId, handleAreaLayerUpdate]);
 
   const handleUpdateURL = useCallback(
     (
@@ -152,22 +188,27 @@ export function Search(props: SearchProps) {
     [areaType, handleUpdateURL]
   );
 
-  const handleShapeLayersUpdate = (layers: ShapeLayer[]) => {
+  const handleShapeLayersUpdate = useCallback((layers: ShapeLayer[]) => {
     if (!hasInvalidGeoJson(layers)) {
       setShapeLayers(layers);
     }
-  };
+  }, []);
 
-  const clearLayers = () => {
+  const handleSetLayerError = useCallback(
+    (error?: string) => setLayerError(!!error),
+    []
+  );
+
+  const clearLayers = useCallback(() => {
     setShapeLayers([]);
     setRasterLayers([]);
     setLoadingLayer(false);
     setLayerError(false);
     setMapTitle({ name: "" });
     setShowAreaLayer(false);
-  };
+  }, []);
 
-  const handlerBackButton = () => {
+  const handlerBackButton = useCallback(() => {
     setAreaId(undefined);
     setAreaType(undefined);
     setAreaHa(undefined);
@@ -181,7 +222,7 @@ export function Search(props: SearchProps) {
     setLayerError(false);
     setHeaderNames({ parent: "", child: "" });
     history.replace(pathname);
-  };
+  }, [history, pathname, setHeaderNames]);
 
   const bounds =
     areaLayer.id === "geofence" && areaLayer.json
@@ -194,6 +235,8 @@ export function Search(props: SearchProps) {
       areaId,
       areaNamesList,
       areaHa,
+      searchType: searchType ?? "definedArea",
+      onEditControlMounted,
       setSearchType,
       setAreaHa,
       setRasterLayers,
@@ -201,10 +244,8 @@ export function Search(props: SearchProps) {
       setLoadingLayer,
       setMapTitle,
       clearLayers,
-      onEditControlMounted,
       setOnEditControlMounted,
-      searchType: searchType ?? "definedArea",
-      setLayerError: (error?: string) => setLayerError(!!error),
+      setLayerError: handleSetLayerError,
       setAreaType: handleAreaTypeUpdate,
       setAreaId: handleAreaIdUpdate,
       setAreaLayer: handleAreaLayerUpdate,
@@ -219,9 +260,12 @@ export function Search(props: SearchProps) {
       handleAreaTypeUpdate,
       onEditControlMounted,
       searchType,
+      handleSetLayerError,
+      handleAreaLayerUpdate,
+      handleShapeLayersUpdate,
+      clearLayers,
     ]
   );
-
   const showDashboard =
     searchType !== null &&
     areaType !== undefined &&

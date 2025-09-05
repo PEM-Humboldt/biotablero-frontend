@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Done } from "@mui/icons-material";
 import L, { Polygon } from "leaflet";
 import type { DrawEvents } from "leaflet";
@@ -12,12 +12,11 @@ import {
   type SearchContextValues,
 } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
-import SearchAPI from "pages/search/utils/searchAPI";
-import { AreaIdBasic } from "pages/search/types/dashboard";
 
 const DrawPolygon = () => {
   const context = useContext(SearchContext);
-  const { setOnEditControlMounted } = context as SearchContextValues;
+  const { setOnEditControlMounted, setAreaType, setAreaLayer } =
+    context as SearchContextValues;
   const [drawControl, setDrawControl] = useState<any>();
   const [drawnPolygon, setDrawnPolygon] =
     useState<Polygon<geojson.Polygon> | null>(null);
@@ -25,125 +24,109 @@ const DrawPolygon = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
-  useEffect(() => {
-    setOnEditControlMounted(onEditControlMounted);
+  const onDrawStart = useCallback(() => {
+    setIsDrawing(true);
   }, []);
 
-  const onEditControlMounted = (control: any) => {
-    const newDrawControl = control;
-    setDrawControl(newDrawControl);
-    newDrawControl._map.on("draw:created", onPolygonDrawn);
-    newDrawControl._map.on("draw:edited", onPolygonEdited);
-    newDrawControl._map.on("draw:deleted", onPolygoDeleted);
-    newDrawControl._map.on("draw:drawstart", onDrawStart);
-    newDrawControl._map.on("draw:drawstop", onDrawStop);
-  };
-
-  /**
-   * Listens for when drawing starts
-   */
-  const onDrawStart = () => {
-    setIsDrawing(true);
-  };
-
-  /**
-   * Listens for when drawing stops
-   */
-  const onDrawStop = () => {
+  const onDrawStop = useCallback(() => {
     setIsDrawing(false);
-  };
+  }, []);
 
-  /**
-   * Listens for the polygon created event
-   *
-   * @param {DrawEvents.Created} e LeafletDraw created event
-   */
-  const onPolygonDrawn = (e: DrawEvents.Created) => {
+  const onPolygonDrawn = useCallback((e: DrawEvents.Created) => {
     setDrawnPolygon(e.layer as Polygon);
     setIsDrawing(false);
-  };
+  }, []);
 
-  /**
-   * Listens for the polygon edited event
-   *
-   * @param {Object} e LeafletDraw event
-   */
-  const onPolygonEdited = (e: DrawEvents.Edited) => {
+  const onPolygonEdited = useCallback((e: DrawEvents.Edited) => {
     const editedLayers = e.layers.getLayers();
     if (editedLayers.length > 0) {
       setDrawnPolygon(editedLayers[0] as Polygon);
     }
-  };
+  }, []);
 
-  /**
-   * Listens for the polygon deleted event
-   *
-   * @param {Object} e LeafletDraw event
-   */
-  const onPolygoDeleted = (e: DrawEvents.Deleted) => {
+  const onPolygoDeleted = useCallback(() => {
     setDrawnPolygon(null);
-  };
+  }, []);
 
-  /**
-   * Handles draw button click
-   */
+  const onEditControlMounted = useCallback(
+    (control: any) => {
+      const newDrawControl = control;
+      setDrawControl(newDrawControl);
+      newDrawControl._map.on("draw:created", onPolygonDrawn);
+      newDrawControl._map.on("draw:edited", onPolygonEdited);
+      newDrawControl._map.on("draw:deleted", onPolygoDeleted);
+      newDrawControl._map.on("draw:drawstart", onDrawStart);
+      newDrawControl._map.on("draw:drawstop", onDrawStop);
+    },
+    [onPolygonDrawn, onPolygonEdited, onPolygoDeleted, onDrawStart, onDrawStop]
+  );
+
+  useEffect(() => {
+    setOnEditControlMounted(() => onEditControlMounted);
+
+    return () => {
+      if (drawControl && drawControl._map) {
+        drawControl._map.off("draw:drawstart", onDrawStart);
+        drawControl._map.off("draw:drawstop", onDrawStop);
+        drawControl._map.off("draw:created", onPolygonDrawn);
+        drawControl._map.off("draw:edited", onPolygonEdited);
+        drawControl._map.off("draw:deleted", onPolygoDeleted);
+      }
+      setOnEditControlMounted(() => () => {});
+    };
+  }, [
+    setOnEditControlMounted,
+    onEditControlMounted,
+    drawControl,
+    onDrawStart,
+    onDrawStop,
+    onPolygonDrawn,
+    onPolygonEdited,
+    onPolygoDeleted,
+  ]);
+
   const drawClick = () => {
     setIsDrawing(true);
     drawControl!._toolbars.draw._modes.polygon.handler.enable();
   };
 
-  /**
-   * Handles edit button click
-   */
   const editClick = () => {
     setIsEditing(true);
     drawControl!._toolbars.edit._modes.edit.handler.enable();
   };
 
-  /**
-   * Handles finishEdit button click
-   */
   const finishEdit = () => {
     setIsEditing(false);
     drawControl!._toolbars.edit._actionButtons[0].button.click();
   };
 
-  /**
-   * Handles remove button click
-   */
   const removeClick = () => {
     setIsRemoving(true);
     drawControl!._toolbars.edit._modes.remove.handler.enable();
   };
 
-  /**
-   * Handles finishRemove button click
-   */
   const finishRemove = () => {
-    let haslayer = drawControl!._map.hasLayer(drawnPolygon);
-
-    if (haslayer) {
+    if (
+      drawControl &&
+      drawnPolygon &&
+      drawControl._map.hasLayer(drawnPolygon)
+    ) {
       drawnPolygon!.remove();
     }
-
     setIsRemoving(false);
     drawControl!._toolbars.edit._actionButtons[0].button.click();
   };
 
-  /**
-   * Handles cancelEdit and cancelRemove buttons click
-   */
   const cancelChange = () => {
     setIsEditing(false);
     setIsRemoving(false);
     drawControl!._toolbars.edit._actionButtons[1].button.click();
   };
 
-  /**
-   * Handles send button click. Set the drawn polygon as the area layer in context to be consulted.
-   */
   const sendClick = () => {
-    const polygonBounds = L.polygon(drawnPolygon!.getLatLngs()).getBounds();
+    if (!drawnPolygon) return;
+
+    const polygonBounds = L.polygon(drawnPolygon.getLatLngs()).getBounds();
     const bbox: geojson.BBox = [
       polygonBounds.getSouthWest().lng,
       polygonBounds.getSouthWest().lat,
@@ -151,39 +134,11 @@ const DrawPolygon = () => {
       polygonBounds.getNorthEast().lat,
     ];
     const geojson =
-      drawnPolygon!.toGeoJSON() as geojson.Feature<geojson.Polygon>;
+      drawnPolygon.toGeoJSON() as geojson.Feature<geojson.Polygon>;
     geojson.geometry.bbox = bbox;
 
-    const { setAreaType, setAreaLayer, setAreaId, setAreaHa } =
-      context as SearchContextValues;
     setAreaType({ id: "custom", label: "Consulta Personalizada" });
     setAreaLayer(geojson);
-
-    SearchAPI.requestAreaPolygon(geojson)
-      .then((data: { polygon_id: number }) => {
-        let areaBasic: AreaIdBasic = {
-          id: data.polygon_id,
-          area_type: {
-            id: "custom",
-            label: "Consulta Personalizada",
-          },
-          name: "polígono",
-        };
-        setAreaId(areaBasic);
-
-        SearchAPI.requestAreaInfo(areaBasic.id)
-          .then((areaData) => {
-            setAreaHa(Number(areaData.area));
-            setAreaLayer(areaData.geometry);
-          })
-          .catch(() => {
-            throw new Error("Error getting area data");
-          });
-      })
-      .catch(() => {
-        throw new Error("Error getting area polygon data");
-      });
-
     setDrawnPolygon(null);
   };
 
