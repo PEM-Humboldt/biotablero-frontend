@@ -1,3 +1,4 @@
+// TODO: Este utilitario puede (y debe) ser eliminado
 /**
  * Validate if a variable is undefined or null
  * @param {any} variable variable to be validated
