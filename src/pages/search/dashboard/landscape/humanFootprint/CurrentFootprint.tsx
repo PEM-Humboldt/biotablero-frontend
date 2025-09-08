@@ -2,7 +2,10 @@ import React from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
@@ -17,7 +20,7 @@ import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 interface currentHFCategoriesExt extends currentHFCategories {
   label: string;
@@ -33,7 +36,7 @@ interface currentHFState {
   texts: {
     hfCurrent: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class CurrentFootprint extends React.Component<Props, currentHFState> {

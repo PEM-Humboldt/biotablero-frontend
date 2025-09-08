@@ -1,364 +1,303 @@
-import { Component } from "react";
-import { RouteComponentProps, withRouter } from "react-router-dom";
-import SearchContext, {
-  drawControlHandler,
-  srchType,
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import L from "leaflet";
+import type * as geojson from "geojson";
+
+import {
+  SearchContext,
+  type DrawControlHandler,
+  type SearchContextValues,
+  type SrchType,
 } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
-import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { isUndefinedOrNull } from "utils/validations";
+import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import MapViewer from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import Dashboard from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
+import type {
+  MapTitle,
+  RasterLayer,
+  ShapeLayer,
+} from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
-import { GeoJsonObject } from "geojson";
-import L, { LatLngBoundsExpression } from "leaflet";
-import { Names } from "types/layoutTypes";
+import type { Names } from "types/layoutTypes";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
 
-interface Props extends RouteComponentProps {
-  // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
-  areaType?: string;
-  areaId?: number | string;
-  // TODO: Tipar correctamente
+interface SearchProps {
   setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
 }
 
-interface State {
-  searchType: srchType;
-  // TODO: areaType y area depronto deben desaparecer, en el futuro la consulta al backend será solo por areaId
-  areaType?: AreaType;
-  areaId?: AreaIdBasic;
-  areaHa?: number;
-  areaLayer: shapeLayer;
-  shapeLayers: Array<shapeLayer>;
-  rasterLayers: Array<rasterLayer>;
-  showAreaLayer: boolean;
-  bounds: LatLngBoundsExpression;
-  mapTitle: MapTitle;
-  loadingLayer: boolean;
-  layerError: boolean;
-  showDrawControl: boolean;
-  onEditControlMounted: drawControlHandler;
-}
+export function Search(props: SearchProps) {
+  const [searchType, setSearchType] = useState<SrchType>("definedArea");
+  const [areaType, setAreaType] = useState<AreaType>();
+  const [areaId, setAreaId] = useState<AreaIdBasic>();
+  const [areaNamesList, setAreaNamesList] = useState<AreaIdBasic[]>([]);
+  const [areaHa, setAreaHa] = useState<number | undefined>();
+  const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
+    id: "",
+    paneLevel: 0,
+    json: { type: "FeatureCollection" },
+  });
+  const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
+  const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
+  const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
+  const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
+  const [layerError, setLayerError] = useState<boolean>(false);
+  const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
+  const [onEditControlMounted, setOnEditControlMounted] =
+    useState<DrawControlHandler>(() => {});
+  const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
+  const history = useHistory();
+  const { search, pathname } = useLocation();
 
-class Search extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
-      rasterLayers: [],
-      shapeLayers: [],
-      showAreaLayer: false,
-      bounds: [],
-      mapTitle: { name: "" },
-      loadingLayer: false,
-      layerError: false,
-      showDrawControl: true,
-      onEditControlMounted: () => {},
-    };
-  }
+  const { setHeaderNames } = props;
 
-  async componentDidMount() {
-    const { areaType, areaId, setHeaderNames } = this.props;
-    if (!isUndefinedOrNull(areaType) && !isUndefinedOrNull(areaId)) {
-      Promise.all([
-        SearchAPI.requestAreaTypes(),
-        SearchAPI.requestAreaIds(areaType!),
-        SearchAPI.requestAreaInfo(areaId!),
-      ]).then(([types, ids, areaId]) => {
-        const typeObj = types.find(({ id }) => id === areaType);
-        const idObj = ids.find(({ id }) => id === areaId.id);
-
-        this.setState({
-          areaType: typeObj,
-          areaId: idObj,
-          areaHa: Number(areaId.area),
+  const handleAreaLayerUpdate = useCallback(
+    (layerJSON?: geojson.GeoJsonObject) => {
+      if (layerJSON) {
+        setAreaLayer({
+          id: "geofence",
+          paneLevel: 1,
+          json: layerJSON,
+          layerStyle: () => ({
+            stroke: false,
+            fillColor: matchColor("geofence")(),
+            fillOpacity: 0.6,
+          }),
         });
-        setHeaderNames({ parent: idObj!.name, child: typeObj!.label });
-        this.setAreaLayer(areaId.geometry);
-      });
-    }
-  }
-
-  /**
-   * Set the value for the search type
-   *
-   * @param {srchType} searchType
-   */
-  setSearchType = (searchType: srchType) => {
-    this.setState({ searchType });
-  };
-
-  /**
-   * Set id and name for the area type
-   *
-   * @param {AreaType} areaType
-   */
-  setAreaType = (areaType?: AreaType) => {
-    this.setState({ areaType });
-
-    if (areaType) {
-      const { history } = this.props;
-      history.push(`?area_type=${areaType!.id}`);
-    }
-  };
-
-  /**
-   * Set id and name for the query area and set the header names
-   *
-   * @param {AreaIdBasic} areaId
-   */
-  setAreaId = (areaId?: AreaIdBasic) => {
-    this.setState({ areaId });
-
-    const { areaType } = this.state;
-    if (areaId && areaType) {
-      const { setHeaderNames, history } = this.props;
-
-      setHeaderNames({
-        parent: this.state.areaType!.label,
-        child: areaId!.name,
-      });
-      history.push(`?area_type=${areaType!.id}&area_id=${areaId!.id}`);
-    }
-  };
-
-  /**
-   * Set the value for the area surface in Ha
-   *
-   * @param {number} value
-   */
-  setAreaHa = (value: number) => {
-    this.setState({ areaHa: value });
-  };
-
-  /**
-   * Set values for map title component
-   *
-   * @param {MapTitle} mapTitle
-   */
-  setMapTitle = (mapTitle: MapTitle) => {
-    this.setState({
-      mapTitle: mapTitle,
-    });
-  };
-
-  /**
-   * Set the value for the geofence layer object
-   *
-   * @param {GeoJsonObject | undefined} layerJson
-   */
-  setAreaLayer = (layerJson?: GeoJsonObject) => {
-    if (layerJson) {
-      const bounds = L.geoJSON(layerJson).getBounds();
-      const areaLayer = {
-        id: "geofence",
-        paneLevel: 1,
-        json: layerJson,
-        layerStyle: () => ({
-          stroke: false,
-          fillColor: matchColor("geofence")(),
-          fillOpacity: 0.6,
-        }),
-      };
-
-      this.setState({
-        areaLayer,
-        bounds,
-      });
-    } else {
-      this.setState({
-        areaLayer: {
+      } else {
+        setAreaLayer({
           id: "",
           paneLevel: 0,
           json: { type: "FeatureCollection" },
-        },
-        bounds: [],
-      });
+        });
+      }
+    },
+    []
+  );
+
+  useEffect(() => {
+    const query = new URLSearchParams(search);
+    const areaTypeURL = query.get("area_type");
+    const areaIdURL = query.get("area_id");
+
+    if (searchType !== "definedArea" || areaTypeURL === null) {
+      return;
     }
-  };
 
-  /**
-   * Set values for raster layers array
-   *
-   * @param {Array<rasterLayer>} layers
-   */
-  setRasterLayers = (layers: Array<rasterLayer>) => {
-    this.setState({ rasterLayers: layers });
-  };
+    const syncSearchConsole = async () => {
+      try {
+        const [areaTypes, areaIds] = await Promise.all([
+          SearchAPI.requestAreaTypes(),
+          SearchAPI.requestAreaIds(areaTypeURL),
+        ]);
+        const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
+        const headerNames = { child: typeObj?.label ?? "" };
+        setAreaType(typeObj);
+        setAreaNamesList(areaIds);
 
-  /**
-   * Set values for GeoJson layers array and determine if shows the geofence layer
-   *
-   * @param {Array<shapeLayer>} layers
-   */
-  setShapeLayers = (layers: Array<shapeLayer>) => {
-    if (!hasInvalidGeoJson(layers)) this.setState({ shapeLayers: layers });
-  };
+        if (areaIdURL === null) {
+          setHeaderNames({ ...headerNames, parent: "" });
+          return;
+        }
 
-  /**
-   * Set true the value for show area layer
-   *
-   * @param {boolean} active
-   */
-  setShowAreaLayer = (active: boolean) => {
-    this.setState({ showAreaLayer: active });
-  };
+        const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
+        const idObj = areaIds.find(({ id }) => id === areaInfo.id);
 
-  /**
-   * Set the state for loading layer
-   *
-   * @param {boolean} loading
-   */
-  setLoadingLayer = (loading: boolean) => {
-    this.setState({
-      loadingLayer: loading,
-    });
-  };
+        setAreaId(idObj);
+        setAreaHa(Number(areaInfo.area));
+        setHeaderNames({ ...headerNames, parent: idObj?.name ?? "" });
+        handleAreaLayerUpdate(areaInfo.geometry);
+      } catch (err) {
+        console.error(`Error while fetching the area's data: ${err}`);
+      }
+    };
 
-  /**
-   * Set the state for layer error
-   *
-   * @param {boolean} error
-   */
-  setLayerError = (error?: string) => {
-    this.setState({
-      layerError: !!error,
-    });
-  };
+    syncSearchConsole();
+  }, [search, setHeaderNames, handleAreaLayerUpdate, searchType]);
 
-  /**
-   * Set the state to show the draw control in MapViewer
-   *
-   * @param {boolean} loading
-   * @param {boolean} error
-   */
-  setShowDrawControl = (show: boolean) => {
-    this.setState({
-      showDrawControl: show,
-    });
-  };
-  /**
-   * Prepare the layers vars in the context
-   */
-  clearLayers = () => {
-    this.setShapeLayers([]);
-    this.setRasterLayers([]);
-    this.setLoadingLayer(false);
-    this.setLayerError();
-    this.setMapTitle({ name: "" });
-    this.setShowAreaLayer(false);
-  };
+  useEffect(() => {
+    if (
+      areaType?.id !== "custom" ||
+      !areaLayer.json ||
+      (areaId && typeof areaId.id === "number")
+    ) {
+      return;
+    }
 
-  /**
-   * Clear state when back button is clicked
-   */
-  handlerBackButton = () => {
-    this.setState({
-      areaId: undefined,
-      areaType: undefined,
-      areaHa: undefined,
-      searchType: "definedArea",
-      areaLayer: { id: "", paneLevel: 0, json: { type: "FeatureCollection" } },
-      rasterLayers: [],
-      shapeLayers: [],
-      bounds: [],
-      mapTitle: { name: "" },
-      showAreaLayer: false,
-      loadingLayer: false,
-      layerError: false,
-    });
+    const syncDrawConsole = async () => {
+      const geojson = areaLayer.json as geojson.Feature<geojson.Polygon>;
 
-    const { setHeaderNames, history } = this.props;
+      try {
+        const areaPolygon = await SearchAPI.requestAreaPolygon(geojson);
+        const areaBasic: AreaIdBasic = {
+          id: areaPolygon.polygon_id,
+          name: "polígono",
+          area_type: areaType,
+        };
+        setAreaId(areaBasic);
+
+        const areaInfo = await SearchAPI.requestAreaInfo(
+          areaPolygon.polygon_id
+        );
+        setAreaHa(Number(areaInfo.area));
+        handleAreaLayerUpdate(areaInfo.geometry);
+      } catch (err) {
+        console.error(`Error processing custom polygon: ${err}`);
+      }
+    };
+
+    syncDrawConsole();
+  }, [areaType, areaLayer, areaId, handleAreaLayerUpdate]);
+
+  const handleUpdateURL = useCallback(
+    (
+      areaTypeParam: AreaType | undefined,
+      areaIdParam: AreaIdBasic | undefined
+    ) => {
+      if (areaTypeParam === undefined) {
+        history.push(pathname);
+        return;
+      }
+
+      let urlNewParams = `?area_type=${areaTypeParam.id}`;
+      if (areaIdParam) {
+        urlNewParams += `&area_id=${areaIdParam.id}`;
+      }
+
+      history.push(urlNewParams);
+    },
+    [history, pathname]
+  );
+
+  const handleAreaTypeUpdate = useCallback(
+    (areaTypeProp: AreaType) => {
+      setAreaType(areaTypeProp);
+      setAreaId(undefined);
+      handleUpdateURL(areaTypeProp, undefined);
+    },
+    [handleUpdateURL]
+  );
+
+  const handleAreaIdUpdate = useCallback(
+    (areaIdProp: AreaIdBasic) => {
+      setAreaId(areaIdProp);
+      handleUpdateURL(areaType, areaIdProp);
+    },
+    [areaType, handleUpdateURL]
+  );
+
+  const handleShapeLayersUpdate = useCallback((layers: ShapeLayer[]) => {
+    if (!hasInvalidGeoJson(layers)) {
+      setShapeLayers(layers);
+    }
+  }, []);
+
+  const handleSetLayerError = useCallback(
+    (error?: string) => setLayerError(!!error),
+    []
+  );
+
+  const clearLayers = useCallback(() => {
+    setShapeLayers([]);
+    setRasterLayers([]);
+    setLoadingLayer(false);
+    setLayerError(false);
+    setMapTitle({ name: "" });
+    setShowAreaLayer(false);
+  }, []);
+
+  const handlerBackButton = useCallback(() => {
+    setAreaId(undefined);
+    setAreaType(undefined);
+    setAreaHa(undefined);
+    setSearchType("definedArea");
+    setAreaLayer({ id: "", paneLevel: 0, json: { type: "FeatureCollection" } });
+    setRasterLayers([]);
+    setShapeLayers([]);
+    setMapTitle({ name: "" });
+    setShowAreaLayer(false);
+    setLoadingLayer(false);
+    setLayerError(false);
     setHeaderNames({ parent: "", child: "" });
-    history.replace(history.location.pathname);
-  };
+    history.replace(pathname);
+  }, [history, pathname, setHeaderNames]);
 
-  /**
-   * Sets the handler function to control the leaflet-draw component
-   *
-   * @param handler {drawControlHandler} function to handle draw component
-   */
-  setOnEditControlMounted = (handler: drawControlHandler) => {
-    this.setState({ onEditControlMounted: handler });
-  };
+  const bounds =
+    areaLayer.id === "geofence" && areaLayer.json
+      ? L.geoJSON(areaLayer.json).getBounds()
+      : [];
 
-  render() {
-    const {
-      searchType,
+  const contextValues = useMemo<SearchContextValues>(
+    () => ({
       areaType,
       areaId,
+      areaNamesList,
       areaHa,
-      areaLayer,
-      bounds,
-      shapeLayers,
-      rasterLayers,
-      mapTitle,
-      loadingLayer,
-      layerError,
-      showDrawControl,
+      searchType: searchType ?? "definedArea",
       onEditControlMounted,
-    } = this.state;
+      setSearchType,
+      setAreaHa,
+      setRasterLayers,
+      setShowAreaLayer,
+      setLoadingLayer,
+      setMapTitle,
+      clearLayers,
+      setOnEditControlMounted,
+      setLayerError: handleSetLayerError,
+      setAreaType: handleAreaTypeUpdate,
+      setAreaId: handleAreaIdUpdate,
+      setAreaLayer: handleAreaLayerUpdate,
+      setShapeLayers: handleShapeLayersUpdate,
+    }),
+    [
+      areaHa,
+      areaId,
+      areaNamesList,
+      areaType,
+      handleAreaIdUpdate,
+      handleAreaTypeUpdate,
+      onEditControlMounted,
+      searchType,
+      handleSetLayerError,
+      handleAreaLayerUpdate,
+      handleShapeLayersUpdate,
+      clearLayers,
+    ]
+  );
+  const showDashboard =
+    searchType !== null &&
+    areaType !== undefined &&
+    areaId !== undefined &&
+    areaHa !== undefined;
 
-    let toShow = <Selector setShowDrawControl={this.setShowDrawControl} />;
-    if (
-      !isUndefinedOrNull(searchType) &&
-      !isUndefinedOrNull(areaType) &&
-      !isUndefinedOrNull(areaId) &&
-      !isUndefinedOrNull(areaLayer) &&
-      !isUndefinedOrNull(areaHa)
-    ) {
-      toShow = <Dashboard handlerBackButton={this.handlerBackButton} />;
-    }
-    return (
-      <SearchContext.Provider
-        value={{
-          searchType: searchType ?? "definedArea",
-          areaType: areaType,
-          areaId: areaId,
-          areaHa: areaHa,
-          setSearchType: this.setSearchType,
-          setAreaType: this.setAreaType,
-          setAreaId: this.setAreaId,
-          setAreaHa: this.setAreaHa,
-          setAreaLayer: this.setAreaLayer,
-          setRasterLayers: this.setRasterLayers,
-          setShapeLayers: this.setShapeLayers,
-          setShowAreaLayer: this.setShowAreaLayer,
-          setLoadingLayer: this.setLoadingLayer,
-          setLayerError: this.setLayerError,
-          setMapTitle: this.setMapTitle,
-          clearLayers: this.clearLayers,
-          onEditControlMounted: onEditControlMounted,
-          setOnEditControlMounted: this.setOnEditControlMounted,
-        }}
-      >
-        <div className="appSearcher wrappergrid">
-          <MapViewer
-            geoServerUrl={GeoServerAPI.getRequestURL()}
-            loadingLayer={loadingLayer}
-            layerError={layerError}
-            shapeLayers={
-              this.state.showAreaLayer
-                ? [areaLayer, ...shapeLayers]
-                : shapeLayers
-            }
-            rasterLayers={rasterLayers}
-            showDrawControl={showDrawControl && searchType === "drawPolygon"}
-            loadPolygonInfo={() => {}}
-            mapTitle={mapTitle}
-            bounds={bounds}
-            polygon={null}
-          />
-          <div className="contentView">{toShow}</div>
+  return (
+    <SearchContext.Provider value={contextValues}>
+      <div className="appSearcher wrappergrid">
+        <MapViewer
+          loadingLayer={loadingLayer}
+          layerError={layerError}
+          rasterLayers={rasterLayers}
+          mapTitle={mapTitle}
+          bounds={bounds}
+          polygon={null}
+          loadPolygonInfo={() => {}}
+          showDrawControl={showDrawControl && searchType === "drawPolygon"}
+          shapeLayers={
+            showAreaLayer ? [areaLayer, ...shapeLayers] : shapeLayers
+          }
+          geoServerUrl={GeoServerAPI.getRequestURL()}
+        />
+
+        <div className="contentView">
+          {showDashboard ? (
+            <Dashboard handlerBackButton={handlerBackButton} />
+          ) : (
+            <Selector setShowDrawControl={setShowDrawControl} />
+          )}
         </div>
-      </SearchContext.Provider>
-    );
-  }
+      </div>
+    </SearchContext.Provider>
+  );
 }
-
-export default withRouter(Search);

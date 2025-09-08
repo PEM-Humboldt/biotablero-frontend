@@ -1,13 +1,13 @@
 import { FeatureCollection } from "geojson";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 /**
  * Check if layers list has at least one invalid object
  *
- * @param {Array<shapeLayer>} layers Layers list
+ * @param {Array<ShapeLayer>} layers Layers list
  * @returns True if has at least one invalid layer. False otherwise
  */
-export const hasInvalidGeoJson = (layers: Array<shapeLayer>): boolean => {
+export const hasInvalidGeoJson = (layers: Array<ShapeLayer>): boolean => {
   const listHasInvalidObject = layers.some(
     (l) => typeof l.json === "object" && Object.keys(l.json).length === 0
   );

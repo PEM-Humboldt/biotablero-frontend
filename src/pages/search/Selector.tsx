@@ -10,7 +10,7 @@ import {
 } from "pages/search/selector/selectorMessages";
 import SearchAPI from "pages/search/utils/searchAPI";
 import { AreaType } from "pages/search/types/dashboard";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import { SearchContext, SearchContextValues } from "pages/search/SearchContext";
 import DrawPolygon from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 

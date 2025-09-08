@@ -4,7 +4,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
@@ -18,7 +21,7 @@ import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landsc
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -45,7 +48,7 @@ interface State {
   texts: {
     paConnSE: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class CurrentSEPAConnectivity extends React.Component<Props, State> {

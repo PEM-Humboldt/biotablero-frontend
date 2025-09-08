@@ -4,7 +4,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
 import formatNumber from "pages/search/utils/format";
@@ -16,7 +19,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   unprot: "No protegida",
@@ -51,7 +54,7 @@ interface currentPAConnState {
     paConnCurrent: textsObject;
     paConnDPC: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {

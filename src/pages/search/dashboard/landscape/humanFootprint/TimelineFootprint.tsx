@@ -3,7 +3,10 @@ import InfoIcon from "@mui/icons-material/Info";
 
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
@@ -17,7 +20,7 @@ import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
 
@@ -78,7 +81,7 @@ interface State {
   texts: {
     hfTimeline: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 interface hfTimelineExt extends hfTimeline {

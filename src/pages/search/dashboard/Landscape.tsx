@@ -5,7 +5,10 @@ import CompensationFactor from "pages/search/dashboard/landscape/CompensationFac
 import Forest from "pages/search/dashboard/landscape/Forest";
 import HumanFootprint from "pages/search/dashboard/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import { accordionComponent } from "pages/search/types/ui";
 
 interface Props {}

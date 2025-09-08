@@ -1,7 +1,10 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
@@ -12,7 +15,7 @@ import { hfPersistence } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { shapeLayer } from "pages/search/types/layers";
+import { ShapeLayer } from "pages/search/types/layers";
 import { PersistenceFootprintController } from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprintController";
 
 const getLabel = {
@@ -33,7 +36,7 @@ interface persistenceHFState {
   texts: {
     hfPersistence: textsObject;
   };
-  layers: Array<shapeLayer>;
+  layers: Array<ShapeLayer>;
 }
 
 class PersistenceFootprint extends React.Component<Props, persistenceHFState> {

@@ -9,7 +9,10 @@ import {
   transformSEAreas,
 } from "pages/search/dashboard/ecosystems/transformData";
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
@@ -20,7 +23,7 @@ import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 
 /**
  * Calculate percentage for a given value according to total
@@ -71,7 +74,7 @@ interface State {
     pa: textsObject;
     se: textsObject;
   };
-  layers: Array<rasterLayer>;
+  layers: Array<RasterLayer>;
 }
 
 /**

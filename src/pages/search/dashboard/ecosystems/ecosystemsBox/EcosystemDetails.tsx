@@ -1,5 +1,8 @@
 import React from "react";
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 
 import {
   transformPAValues,
@@ -17,7 +20,7 @@ import BackendAPI from "pages/search/utils/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 
 export interface PAData {
   area: number;
@@ -37,7 +40,7 @@ interface State {
     coverage: wrapperMessage;
     pa: wrapperMessage;
   };
-  layers: Array<rasterLayer>;
+  layers: Array<RasterLayer>;
 }
 
 interface Props {

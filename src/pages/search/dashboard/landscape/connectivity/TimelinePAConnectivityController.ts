@@ -1,7 +1,7 @@
 import BackendAPI from "pages/search/utils/backendAPI";
 import {
-  shapeLayer,
-  connectivityFeaturePropierties,
+  ShapeLayer,
+  ConnectivityFeaturePropierties,
 } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
@@ -23,9 +23,9 @@ export class TimelinePAConnectivityController {
   /**
    * Get shape layers in GeoJSON format for a connectivity component
    *
-   * @returns { Promise<shapeLayer> } object with the parameters of the layer
+   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<shapeLayer> => {
+  getLayer = async (): Promise<ShapeLayer> => {
     const layerId = "TimelinePAConn";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
@@ -101,7 +101,7 @@ export class TimelinePAConnectivityController {
    */
   setLayerStyle =
     (selectedKey = "") =>
-    (feature?: { properties: connectivityFeaturePropierties }) => ({
+    (feature?: { properties: ConnectivityFeaturePropierties }) => ({
       stroke: false,
       fillColor: matchColor("dpc")(feature?.properties.dpc_cat),
       fillOpacity: feature?.properties.id === selectedKey ? 1 : 0.6,

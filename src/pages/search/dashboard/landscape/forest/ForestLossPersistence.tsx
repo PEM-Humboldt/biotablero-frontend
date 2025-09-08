@@ -1,7 +1,10 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import SearchContext, { SearchContextValues } from "pages/search/SearchContext";
+import {
+  SearchContext,
+  type SearchContextValues,
+} from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
@@ -13,7 +16,7 @@ import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
-import { rasterLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 
 interface Props {}
 interface State {
@@ -24,7 +27,7 @@ interface State {
   texts: {
     forestLP: textsObject;
   };
-  layers: Array<rasterLayer>;
+  layers: Array<RasterLayer>;
 }
 
 class ForestLossPersistence extends React.Component<Props, State> {
