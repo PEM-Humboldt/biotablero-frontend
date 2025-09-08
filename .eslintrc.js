@@ -28,6 +28,7 @@ module.exports = {
         unnamedComponents: "arrow-function",
       },
     ],
+    "react/require-default-props": "off",
 
     "import/no-cycle": "error",
     "import/extensions": [
