@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
@@ -221,8 +221,8 @@ export function Search(props: SearchProps) {
     setLoadingLayer(false);
     setLayerError(false);
     setHeaderNames({ parent: "", child: "" });
-    history.replace(pathname);
-  }, [history, pathname, setHeaderNames]);
+    navigate(pathname);
+  }, [navigate, pathname, setHeaderNames]);
 
   const bounds =
     areaLayer.id === "geofence" && areaLayer.json

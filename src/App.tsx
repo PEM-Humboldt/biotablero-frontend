@@ -8,20 +8,16 @@ import { Uim } from "app/Uim";
 import { Compensation } from "pages/Compensation";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
-<<<<<<< HEAD
 import { Search } from "pages/Search";
-import Portfolio from "pages/Portfolio";
-=======
 import { Portfolio } from "pages/Portfolio";
->>>>>>> a22a6f97 (updates 1 level componens of Home and Portfolio to the new router)
 import { Monitoring } from "pages/Monitoring";
 import "main.css";
 
-import type { LogosConfig, Names } from "types/layoutTypes";
+import type { Names } from "types/layoutTypes";
 import type { UserTypes } from "types/loginUimProps";
 
 interface MakeComponentWrapperArgs {
-  logoSet: keyof LogosConfig | null;
+  logoSet: string | null;
   name: string;
   component: React.ReactNode;
   className?: string;
@@ -44,7 +40,7 @@ export function App() {
   }: MakeComponentWrapperArgs) => (
     <Layout
       moduleName={name}
-      footerLogos={logoSet}
+      // footerLogos={new Set(["nasa", "temple", "siac"])}
       headerNames={headerNames}
       uim={<Uim setUser={setUser} />}
       className={className}

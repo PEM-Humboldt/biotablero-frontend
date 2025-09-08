@@ -7,11 +7,6 @@ export type Collaborators =
   | "usaid"
   | "umed";
 
-export interface LogosConfig {
-  default: Collaborators[];
-  monitoreo: Collaborators[];
-}
-
 export interface Names {
   parent: string;
   child: string;
