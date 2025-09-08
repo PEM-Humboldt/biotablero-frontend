@@ -1,49 +1,42 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 const TableStylized = ({
-  headers, rows, footers, classTable, remarkedElement, hide,
+  headers,
+  rows,
+  footers,
+  classTable,
+  remarkedElement,
+  hide,
 }) => (
   <div>
     <table
       className={`graphcard ${classTable}`}
-      style={{ display: hide ? 'none' : 'inline-table' }}
+      style={{ display: hide ? "none" : "inline-table" }}
     >
       <thead>
         <tr className="row1table">
-          {
-            headers.map((element, i) => (
-              <th key={`header-${i}`}>
-                {element}
-              </th>
-            ))
-          }
+          {headers.map((element, i) => (
+            <th key={`header-${i}`}>{element}</th>
+          ))}
         </tr>
       </thead>
       <tbody>
-        {
-          rows.map((row) => (
-            <tr className="row2table" key={row.key}>
-              {row.values.map((element, i) => (
-                <td key={`row-${row.key}-${i}`}>
-                  {
-                    (remarkedElement === element) ? <b>{element}</b> : element
-                  }
-                </td>
-              ))}
-            </tr>
-          ))
-        }
+        {rows.map((row) => (
+          <tr className="row2table" key={row.key}>
+            {row.values.map((element, i) => (
+              <td key={`row-${row.key}-${i}`}>
+                {remarkedElement === element ? <b>{element}</b> : element}
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
       <tfoot>
         <tr className="row3table">
-          {
-            footers.map((element, i) => (
-              <td key={`footer-${i}`}>
-                {element}
-              </td>
-            ))
-          }
+          {footers.map((element, i) => (
+            <td key={`footer-${i}`}>{element}</td>
+          ))}
         </tr>
       </tfoot>
     </table>
@@ -63,8 +56,8 @@ TableStylized.propTypes = {
 
 TableStylized.defaultProps = {
   footers: [],
-  classTable: '',
-  remarkedElement: '',
+  classTable: "",
+  remarkedElement: "",
   hide: false,
 };
 

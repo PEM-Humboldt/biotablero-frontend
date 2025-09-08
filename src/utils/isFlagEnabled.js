@@ -1,12 +1,11 @@
-import ExternalRequests from 'utils/externalRequests';
+import ExternalRequests from "utils/externalRequests";
 
-const isFlagEnabled = (id) => (
+const isFlagEnabled = (id) =>
   ExternalRequests.requestFeaturesFlags()
-  .then((res) => {
-    const feature = res.find((obj) => obj.id === id);
-    return feature ? feature.enabled : false;
-  })
-  .catch(() => false)
-);
+    .then((res) => {
+      const feature = res.find((obj) => obj.id === id);
+      return feature ? feature.enabled : false;
+    })
+    .catch(() => false);
 
 export default isFlagEnabled;
