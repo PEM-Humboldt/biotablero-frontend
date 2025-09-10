@@ -15,9 +15,11 @@ export function Footer({ collaboratorsId }: FooterProps) {
   return (
     <footer className="footerflex">
       <div className="institutoDiv">
-        <a href={footerInfo.IAVH.url}>
-          <img src={footerInfo.IAVH.img} alt={footerInfo.IAVH.linkAlt} />
-        </a>
+        {collaborators.length > 0 && (
+          <a href={footerInfo.IAVH.url}>
+            <img src={footerInfo.IAVH.img} alt={footerInfo.IAVH.linkAlt} />
+          </a>
+        )}
         <div>
           {footerInfo.IAVH.tag}
           <br />
@@ -34,6 +36,7 @@ export function Footer({ collaboratorsId }: FooterProps) {
                 href={collaboratorsData[collaborator].url}
                 target="_blank"
                 rel="noopener noreferrer"
+                key={collaborator}
               >
                 <img
                   src={collaboratorsData[collaborator].img}

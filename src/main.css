@@ -2874,14 +2874,6 @@ h3.warningNote {
     top: 6px;
   }
 }
-@media (min-width: 0) {
-  .interna h5 {
-    font-size: 16px;
-  }
-  .cabezoteRight h2 {
-    font-size: 0em;
-  }
-}
 @media (min-width: 990px) {
   .cabezoteRight h2 {
     font-size: 1.2em;
@@ -2893,4 +2885,3 @@ h3.warningNote {
     font-weight: 200;
   }
 }
-

@@ -9,7 +9,7 @@ export interface LayoutState {
   className?: string;
 }
 
-enum UpdatedLayout {
+export enum UpdatedLayout {
   MODULE_NAME = "moduleName",
   SECTION_LOGOS = "sectionLogos",
   HEADER_NAMES = "headerNames",
@@ -19,10 +19,10 @@ enum UpdatedLayout {
   SECTION = "section",
 }
 
-type LayoutActions =
+export type LayoutActions =
   | { type: UpdatedLayout.MODULE_NAME; newName: string }
   | { type: UpdatedLayout.SECTION_LOGOS; newLogos: Set<Collaborators> }
-  | { type: UpdatedLayout.HEADER_NAMES; newHeader: Names }
+  | { type: UpdatedLayout.HEADER_NAMES; newHeader: Partial<Names> }
   | { type: UpdatedLayout.LOGGED_USER; user: UserTypes }
   | { type: UpdatedLayout.LOGGED_OUT }
   | { type: UpdatedLayout.CLASS_NAME; newClass: string }
@@ -41,7 +41,10 @@ export function layoutReducer(
     case UpdatedLayout.SECTION_LOGOS:
       return { ...state, logos: action.newLogos };
     case UpdatedLayout.HEADER_NAMES:
-      return { ...state, headerNames: action.newHeader };
+      return {
+        ...state,
+        headerNames: { ...state.headerNames, ...action.newHeader },
+      };
     case UpdatedLayout.LOGGED_USER:
       return { ...state, user: action.user };
     case UpdatedLayout.LOGGED_OUT:

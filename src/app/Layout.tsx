@@ -1,11 +1,17 @@
-import { useReducer } from "react";
+import React, { useReducer } from "react";
 import { Outlet } from "react-router-dom";
 
 import { Footer } from "app/layout/Footer";
 import { Header } from "app/layout/Header";
 import { Uim } from "app/Uim";
 import type { Collaborators, Names } from "types/layoutTypes";
-import { layoutReducer, type LayoutState } from "app/layout/layoutReducer";
+import {
+  layoutReducer,
+  UpdatedLayout,
+  type LayoutActions,
+  type LayoutState,
+} from "app/layout/layoutReducer";
+import type { UserTypes } from "types/loginUimProps";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -50,18 +56,38 @@ const initialLayout: LayoutState = {
   className: "",
 };
 
+export interface UiManager {
+  layoutState: LayoutState;
+  layoutDispatch: React.Dispatch<LayoutActions>;
+}
+
 export function MainLayout() {
-  const [layout, dispatchLayout] = useReducer(layoutReducer, initialLayout);
+  const [layoutState, layoutDispatch] = useReducer(
+    layoutReducer,
+    initialLayout
+  );
+
+  const handleSetUser = (user: UserTypes | null) => {
+    console.log(user);
+    if (user === null) {
+      return;
+    }
+
+    layoutDispatch({
+      type: UpdatedLayout.LOGGED_USER,
+      user,
+    });
+  };
 
   return (
-    <div className={layout.className}>
+    <div className={layoutState.className}>
       <Header
-        activeModule={layout.moduleName}
-        headerNames={layout.headerNames}
-        uim={<Uim setUser={dispatchLayout} />}
+        activeModule={layoutState.moduleName}
+        headerNames={layoutState.headerNames}
+        uim={<Uim setUser={handleSetUser} />}
       />
-      <Outlet context={dispatchLayout} />
-      <Footer collaboratorsId={layout.logos} />
+      <Outlet context={{ layoutState, layoutDispatch }} />
+      <Footer collaboratorsId={layoutState.logos} />
     </div>
   );
 }

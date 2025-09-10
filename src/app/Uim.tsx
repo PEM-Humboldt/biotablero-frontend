@@ -5,11 +5,11 @@ import Modal from "@mui/material/Modal";
 import { useState, useContext } from "react";
 
 import { AppContext, type AppContextValue } from "app/AppContext";
-import Login from "app/uim/Login";
-import UserInfo from "app/uim/UserInfo";
+import { Login } from "app/uim/Login";
+import { UserInfo } from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
 
-import type { loginUimProps } from "types/loginUimProps";
+import type { LoginUimProps } from "types/loginUimProps";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -23,7 +23,7 @@ const defaultModalsValues: LogModalsTypes = {
   userModal: false,
 };
 
-export function Uim({ setUser }: loginUimProps) {
+export function Uim({ setUser }: LoginUimProps) {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
 
   /**

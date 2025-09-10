@@ -6,10 +6,14 @@ import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
 import useUpdateResults from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
+import type { UiManager } from "app/Layout";
 
 import "pages/indicators/main.css";
+import { useOutletContext } from "react-router-dom";
+import { UpdatedLayout } from "app/layout/layoutReducer";
 
 export function Indicators() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
   const [openFilter, setOpenFilter] = useState(true);
   const [tags, setTags] = useState(new Map());
   const [loadingTags, setLoadingTags] = useState(true);
@@ -20,6 +24,17 @@ export function Indicators() {
   } = useUpdateResults();
 
   useEffect(() => {
+    layoutDispatch({
+      type: UpdatedLayout.SECTION,
+      sectionData: {
+        moduleName: "Indicadores",
+        logos: new Set(),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
+
+  useEffect(() => {
     const fetchTags = async () => {
       const tagsData = await getTags();
       setTags(tagsData);
@@ -28,7 +43,7 @@ export function Indicators() {
     fetchTags();
   }, []);
 
-  const filterData = (filters) => {
+  const filterData = (filters: boolean) => {
     updateFilters(filters);
   };
 

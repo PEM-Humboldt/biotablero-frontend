@@ -9,6 +9,6 @@ export interface UserTypes {
   username: string;
 }
 
-export interface loginUimProps {
+export interface LoginUimProps {
   setUser: (res: UserTypes | null) => void;
 }

@@ -1,6 +1,23 @@
 import Item from "pages/portfolio/Item";
+import { useOutletContext } from "react-router-dom";
+import type { UiManager } from "app/Layout";
+import { useEffect } from "react";
+import { UpdatedLayout } from "app/layout/layoutReducer";
 
 export function Portfolio() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
+
+  useEffect(() => {
+    layoutDispatch({
+      type: UpdatedLayout.SECTION,
+      sectionData: {
+        moduleName: "Portafolios",
+        logos: new Set(),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
+
   return (
     <div className="wrapperPort">
       <div className="splitPort">

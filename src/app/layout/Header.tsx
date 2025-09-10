@@ -14,6 +14,9 @@ interface HeaderProps {
   uim: React.ReactNode;
 }
 
+// TODO: revisar nombres de 'parent' y 'child', pueden ser confusos y la
+// relación jerárquica al parecer está invertida
+
 export function Header({
   activeModule,
   headerNames: { parent, child },
@@ -22,7 +25,7 @@ export function Header({
   return (
     <header className="cabezote">
       <div className="cabezoteLeft">
-        <Title title="BioTablero" subTitle={activeModule} />
+        <Title title="BioTablero" />
       </div>
       <div className="cabezoteRight">
         <nav>
@@ -39,7 +42,7 @@ export function Header({
                 {parent}
               </h1>
             )}
-            <div className={`${activeModule.replace(/ /g, "")}`} />
+            <div className={`${activeModule.replace(" ", "")}`} />
           </div>
           {uim}
         </div>

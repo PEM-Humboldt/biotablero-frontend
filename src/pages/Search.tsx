@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
@@ -21,14 +21,16 @@ import type {
   ShapeLayer,
 } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
-import type { Names } from "types/layoutTypes";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
+import type { UiManager } from "app/Layout";
+import { UpdatedLayout } from "app/layout/layoutReducer";
 
-interface SearchProps {
-  setHeaderNames: React.Dispatch<React.SetStateAction<Names>>;
-}
+export function Search() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
+  const navigate = useNavigate();
+  const { search, pathname } = useLocation();
 
-export function Search(props: SearchProps) {
+  // TODO: Volver esto un useReducer
   const [searchType, setSearchType] = useState<SrchType>("definedArea");
   const [areaType, setAreaType] = useState<AreaType>();
   const [areaId, setAreaId] = useState<AreaIdBasic>();
@@ -48,10 +50,17 @@ export function Search(props: SearchProps) {
   const [onEditControlMounted, setOnEditControlMounted] =
     useState<DrawControlHandler>(() => {});
   const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
-  const navigate = useNavigate();
-  const { search, pathname } = useLocation();
 
-  const { setHeaderNames } = props;
+  useEffect(() => {
+    layoutDispatch({
+      type: UpdatedLayout.SECTION,
+      sectionData: {
+        moduleName: "Consultas Geográficas",
+        logos: new Set(),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
 
   const handleAreaLayerUpdate = useCallback(
     (layerJSON?: geojson.GeoJsonObject) => {
@@ -98,7 +107,10 @@ export function Search(props: SearchProps) {
         setAreaNamesList(areaIds);
 
         if (areaIdURL === null) {
-          setHeaderNames({ ...headerNames, parent: "" });
+          layoutDispatch({
+            type: UpdatedLayout.HEADER_NAMES,
+            newHeader: { ...headerNames, parent: "" },
+          });
           return;
         }
 
@@ -107,7 +119,10 @@ export function Search(props: SearchProps) {
 
         setAreaId(idObj);
         setAreaHa(Number(areaInfo.area));
-        setHeaderNames({ ...headerNames, parent: idObj?.name ?? "" });
+        layoutDispatch({
+          type: UpdatedLayout.HEADER_NAMES,
+          newHeader: { ...headerNames, parent: idObj?.name ?? "" },
+        });
         handleAreaLayerUpdate(areaInfo.geometry);
       } catch (err) {
         console.error(`Error while fetching the area's data: ${err}`);
@@ -115,7 +130,7 @@ export function Search(props: SearchProps) {
     };
 
     syncSearchConsole();
-  }, [search, setHeaderNames, handleAreaLayerUpdate, searchType]);
+  }, [search, layoutDispatch, handleAreaLayerUpdate, searchType]);
 
   useEffect(() => {
     if (
@@ -220,9 +235,12 @@ export function Search(props: SearchProps) {
     setShowAreaLayer(false);
     setLoadingLayer(false);
     setLayerError(false);
-    setHeaderNames({ parent: "", child: "" });
+    layoutDispatch({
+      type: UpdatedLayout.HEADER_NAMES,
+      newHeader: { parent: "", child: "" },
+    });
     navigate(pathname);
-  }, [navigate, pathname, setHeaderNames]);
+  }, [navigate, pathname, layoutDispatch]);
 
   const bounds =
     areaLayer.id === "geofence" && areaLayer.json
