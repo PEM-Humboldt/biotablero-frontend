@@ -5,8 +5,8 @@ import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "types/layoutTypes";
 
-// HACK: Este componente de redireccionamiento es temporal mientras
-// se actualiza el módulo de compensaciones a un módulo de función
+// HACK: Este componente de redireccionamiento es temporal, existe mientras
+// se actualiza el módulo de compensaciones a un componente de función
 export function RenderCompensation() {
   const { layoutState, layoutDispatch } = useOutletContext<UiManager>();
 

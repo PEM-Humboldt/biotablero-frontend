@@ -3,9 +3,9 @@ import type { Collaborators, Names } from "types/layoutTypes";
 
 export interface LayoutState {
   moduleName: string;
-  logos: Set<Collaborators>;
   headerNames: Names;
   user: UserType | null;
+  logos: Set<Collaborators>;
   className?: string;
 }
 

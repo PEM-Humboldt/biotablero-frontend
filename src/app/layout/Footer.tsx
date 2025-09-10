@@ -1,16 +1,16 @@
 import type { Collaborators } from "types/layoutTypes";
-import { collaboratorsData, footerInfo } from "app/layout/footer/text";
+import { collaboratorsData, footerInfo } from "app/layout/footer/footerData";
 
 interface FooterProps {
-  collaboratorsId?: Set<Collaborators>;
+  logos: Set<Collaborators>;
 }
 
-export function Footer({ collaboratorsId }: FooterProps) {
+export function Footer({ logos }: FooterProps) {
   const handleCitationClick = () => {
     navigator.clipboard.writeText(footerInfo.citationClipboard);
   };
 
-  const collaborators = collaboratorsId ? [...collaboratorsId] : [];
+  const collaborators = logos ? [...logos] : [];
 
   return (
     <footer className="footerflex">

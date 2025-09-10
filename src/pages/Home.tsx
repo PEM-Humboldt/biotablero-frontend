@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
-import { Carrousel } from "pages/home/Carrousel";
-import { TabsModules } from "pages/home/TabsComponent";
 import type { UiManager } from "app/Layout";
 import { UpdatedLayout } from "app/layout/layoutReducer";
+import { Carrousel } from "pages/home/Carrousel";
+import { TabsModules } from "pages/home/TabsComponent";
 
 import "newStyles.css";
 import "headerFooter.css";
@@ -18,7 +18,7 @@ export function Home() {
       type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "",
-        logos: new Set(["usaid", "geobon", "umed", "temple"]),
+        logos: new Set(["nasa", "temple", "siac"]),
         className: "",
       },
     });

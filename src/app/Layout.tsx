@@ -10,39 +10,7 @@ import {
   type LayoutState,
 } from "app/layout/layoutReducer";
 
-// interface LayoutProps {
-//   children: React.ReactNode;
-//   moduleName: string;
-//   footerLogos: Set<Collaborators> | null;
-//   headerNames: Names;
-//   uim: React.ReactNode;
-//   className: string;
-// }
-
-// export function Layout({
-//   children,
-//   moduleName,
-//   footerLogos,
-//   headerNames,
-//   uim,
-//   className,
-// }: LayoutProps) {
-//   return (
-//     <div className={className}>
-//       <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
-//       {children}
-//       <Footer collaboratorsId={footerLogos} />
-//     </div>
-//   );
-// }
-
-// const logoSet: LogosConfig = {
-//   default: ["nasa", "temple", "siac"],
-//   monitoreo: ["usaid", "geobon", "umed", "temple"],
-// };
-// New shit
-
-const initialLayout: LayoutState = {
+const layoutInitial: LayoutState = {
   moduleName: "home",
   logos: new Set(),
   headerNames: {
@@ -61,7 +29,7 @@ export interface UiManager {
 export function MainLayout() {
   const [layoutState, layoutDispatch] = useReducer(
     layoutReducer,
-    initialLayout
+    layoutInitial
   );
 
   return (
@@ -73,7 +41,7 @@ export function MainLayout() {
         layoutDispatch={layoutDispatch}
       />
       <Outlet context={{ layoutState, layoutDispatch }} />
-      <Footer collaboratorsId={layoutState.logos} />
+      <Footer logos={layoutState.logos} />
     </div>
   );
 }
