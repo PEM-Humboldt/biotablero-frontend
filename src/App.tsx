@@ -1,4 +1,4 @@
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
 
 import { MainLayout } from "app/Layout";
@@ -7,7 +7,7 @@ import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
 import { Monitoring } from "pages/Monitoring";
 import { Portfolio } from "pages/Portfolio";
-import { createBrowserRouter } from "react-router-dom";
+import { UpdatedLayout } from "app/layout/layoutReducer";
 
 import "main.css";
 
@@ -23,6 +23,16 @@ export const routes = createBrowserRouter([
       {
         path: "Consultas",
         Component: Search,
+        handle: {
+          layout: {
+            type: UpdatedLayout.SECTION,
+            sectionData: {
+              moduleName: "Consultas Geográficas",
+              logos: new Set(),
+              className: "fullgrid",
+            },
+          },
+        },
       },
       {
         path: "Monitoreo",

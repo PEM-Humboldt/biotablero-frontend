@@ -4,7 +4,8 @@ import { Outlet } from "react-router-dom";
 import { Footer } from "app/layout/Footer";
 import { Header } from "app/layout/Header";
 import { Uim } from "app/Uim";
-import type { Collaborators, Names } from "types/layoutTypes";
+// import type { Collaborators, Names } from "types/layoutTypes";
+
 import {
   layoutReducer,
   UpdatedLayout,
@@ -13,31 +14,31 @@ import {
 } from "app/layout/layoutReducer";
 import type { UserTypes } from "types/loginUimProps";
 
-interface LayoutProps {
-  children: React.ReactNode;
-  moduleName: string;
-  footerLogos: Set<Collaborators> | null;
-  headerNames: Names;
-  uim: React.ReactNode;
-  className: string;
-}
+// interface LayoutProps {
+//   children: React.ReactNode;
+//   moduleName: string;
+//   footerLogos: Set<Collaborators> | null;
+//   headerNames: Names;
+//   uim: React.ReactNode;
+//   className: string;
+// }
 
-export function Layout({
-  children,
-  moduleName,
-  footerLogos,
-  headerNames,
-  uim,
-  className,
-}: LayoutProps) {
-  return (
-    <div className={className}>
-      <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
-      {children}
-      <Footer collaboratorsId={footerLogos} />
-    </div>
-  );
-}
+// export function Layout({
+//   children,
+//   moduleName,
+//   footerLogos,
+//   headerNames,
+//   uim,
+//   className,
+// }: LayoutProps) {
+//   return (
+//     <div className={className}>
+//       <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
+//       {children}
+//       <Footer collaboratorsId={footerLogos} />
+//     </div>
+//   );
+// }
 
 // const logoSet: LogosConfig = {
 //   default: ["nasa", "temple", "siac"],
