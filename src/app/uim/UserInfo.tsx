@@ -1,28 +1,23 @@
-import React from "react";
-
-import { AppContext } from "app/AppContext";
+import type { UserType } from "types/loginUimProps";
 
 interface LogoutHandlerProps {
   logoutHandler: () => void;
+  user: UserType;
 }
-export function UserInfo({ logoutHandler }: LogoutHandlerProps) {
+export function UserInfo({ user, logoutHandler }: LogoutHandlerProps) {
   return (
-    <AppContext.Consumer>
-      {({ user }) => (
-        <div className="user_info">
-          <b>Usuario</b>
-          <br />
-          {user?.name}
-          <button
-            className="logoutbtn"
-            title="Salir"
-            type="button"
-            onClick={logoutHandler}
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      )}
-    </AppContext.Consumer>
+    <div className="user_info">
+      <b>Usuario</b>
+      <br />
+      {user.name}
+      <button
+        className="logoutbtn"
+        title="Salir"
+        type="button"
+        onClick={logoutHandler}
+      >
+        Cerrar Sesión
+      </button>
+    </div>
   );
 }

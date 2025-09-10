@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -13,8 +13,8 @@ import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import { Link } from "react-router-dom";
-import { AppContext } from "app/AppContext";
+import { Link, useOutletContext } from "react-router-dom";
+import type { UiManager } from "app/Layout";
 
 type ArrowProps = {
   onClick?: () => void;
@@ -24,7 +24,7 @@ type CarrouselProps = {
   setActiveTab: React.Dispatch<number | null>;
 };
 
-interface module {
+interface Module {
   id: number;
   title: string;
   image: string;
@@ -69,7 +69,7 @@ const makeCarrouselSettings = (
   };
 };
 
-const modules: module[] = [
+const modules: Module[] = [
   {
     id: 1,
     title: "Consultas Geográficas",
@@ -108,14 +108,14 @@ const modules: module[] = [
 ];
 
 export function Carrousel({ setActiveTab }: CarrouselProps) {
-  const { user } = useContext(AppContext);
+  const { layoutState } = useOutletContext<UiManager>();
   const [activeModule, setActiveModule] = useState<null | number>(null);
   const [animateContainer, setAnimateContainer] = useState(false);
 
   const settings = makeCarrouselSettings(<PrevArrow />, <NextArrow />);
   const showContainer = activeModule !== null;
 
-  const availableModules = user
+  const availableModules = layoutState.user
     ? modules
     : modules.filter((module) => !module.auth);
 

@@ -3,16 +3,12 @@ import { Outlet } from "react-router-dom";
 
 import { Footer } from "app/layout/Footer";
 import { Header } from "app/layout/Header";
-import { Uim } from "app/Uim";
-// import type { Collaborators, Names } from "types/layoutTypes";
 
 import {
   layoutReducer,
-  UpdatedLayout,
   type LayoutActions,
   type LayoutState,
 } from "app/layout/layoutReducer";
-import type { UserTypes } from "types/loginUimProps";
 
 // interface LayoutProps {
 //   children: React.ReactNode;
@@ -68,24 +64,13 @@ export function MainLayout() {
     initialLayout
   );
 
-  const handleSetUser = (user: UserTypes | null) => {
-    console.log(user);
-    if (user === null) {
-      return;
-    }
-
-    layoutDispatch({
-      type: UpdatedLayout.LOGGED_USER,
-      user,
-    });
-  };
-
   return (
     <div className={layoutState.className}>
       <Header
         activeModule={layoutState.moduleName}
         headerNames={layoutState.headerNames}
-        uim={<Uim setUser={handleSetUser} />}
+        user={layoutState.user}
+        layoutDispatch={layoutDispatch}
       />
       <Outlet context={{ layoutState, layoutDispatch }} />
       <Footer collaboratorsId={layoutState.logos} />

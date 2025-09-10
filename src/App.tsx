@@ -10,6 +10,7 @@ import { Portfolio } from "pages/Portfolio";
 import { UpdatedLayout } from "app/layout/layoutReducer";
 
 import "main.css";
+import { RenderCompensation } from "pages/CompensationAuth";
 
 export const routes = createBrowserRouter([
   {
@@ -23,16 +24,6 @@ export const routes = createBrowserRouter([
       {
         path: "Consultas",
         Component: Search,
-        handle: {
-          layout: {
-            type: UpdatedLayout.SECTION,
-            sectionData: {
-              moduleName: "Consultas Geográficas",
-              logos: new Set(),
-              className: "fullgrid",
-            },
-          },
-        },
       },
       {
         path: "Monitoreo",
@@ -41,6 +32,10 @@ export const routes = createBrowserRouter([
       {
         path: "Indicadores",
         Component: Indicators,
+      },
+      {
+        path: "/GEB/Compensaciones",
+        Component: RenderCompensation,
       },
       {
         path: "Portafolios",

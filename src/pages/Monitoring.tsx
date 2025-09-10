@@ -14,7 +14,7 @@ export function Monitoring() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.SECTION,
+      type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "Monitoreo Comunitario",
         logos: new Set(["usaid", "geobon", "umed", "temple"]),

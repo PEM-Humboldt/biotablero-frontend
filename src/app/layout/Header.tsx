@@ -2,6 +2,9 @@ import React from "react";
 
 import { Menu } from "app/layout/header/Menu";
 import { Title } from "app/layout/header/Title";
+import { Uim } from "app/Uim";
+import { UpdatedLayout, type LayoutActions } from "app/layout/layoutReducer";
+import type { UserType } from "types/loginUimProps";
 
 interface Names {
   parent?: string;
@@ -11,7 +14,8 @@ interface Names {
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
-  uim: React.ReactNode;
+  layoutDispatch: React.Dispatch<LayoutActions>;
+  user: UserType | null;
 }
 
 // TODO: revisar nombres de 'parent' y 'child', pueden ser confusos y la
@@ -20,31 +24,53 @@ interface HeaderProps {
 export function Header({
   activeModule,
   headerNames: { parent, child },
-  uim,
+  user,
+  layoutDispatch,
 }: HeaderProps) {
+  const handleSetUser = (userToSet: UserType | null) => {
+    if (userToSet === null) {
+      return;
+    }
+
+    layoutDispatch({
+      type: UpdatedLayout.LOGGED_USER,
+      user: userToSet,
+    });
+  };
+
+  const handleLogOutUser = () => {
+    layoutDispatch({ type: UpdatedLayout.LOGGED_OUT });
+  };
+
+  const renderCompositeTitle = parent !== "" && child !== "";
+
   return (
     <header className="cabezote">
       <div className="cabezoteLeft">
         <Title title="BioTablero" />
       </div>
       <div className="cabezoteRight">
-        <nav>
-          <Menu />
-        </nav>
+        <Menu currentUser={user} />
 
         <div className="header_info">
           <div className="cabezoteRight">
-            {activeModule && !parent && !child && <h2>{`${activeModule}`}</h2>}
-            {parent && child && (
+            {renderCompositeTitle ? (
               <h1>
-                <b>{`${child}`}</b>
+                <b>{child}</b>
                 <br />
                 {parent}
               </h1>
+            ) : (
+              <h2>{activeModule}</h2>
             )}
-            <div className={`${activeModule.replace(" ", "")}`} />
+            <span className={`${activeModule.replace(" ", "")}`} />
           </div>
-          {uim}
+
+          <Uim
+            currentUser={user}
+            setUser={handleSetUser}
+            logoutUser={handleLogOutUser}
+          />
         </div>
       </div>
     </header>

@@ -1,11 +1,11 @@
-import type { UserTypes } from "types/loginUimProps";
+import type { UserType } from "types/loginUimProps";
 import type { Collaborators, Names } from "types/layoutTypes";
 
 export interface LayoutState {
   moduleName: string;
   logos: Set<Collaborators>;
   headerNames: Names;
-  user: UserTypes | null;
+  user: UserType | null;
   className?: string;
 }
 
@@ -16,18 +16,18 @@ export enum UpdatedLayout {
   LOGGED_USER = "user",
   LOGGED_OUT = "out",
   CLASS_NAME = "className",
-  SECTION = "section",
+  CHANGE_SECTION = "changeSection",
 }
 
 export type LayoutActions =
   | { type: UpdatedLayout.MODULE_NAME; newName: string }
   | { type: UpdatedLayout.SECTION_LOGOS; newLogos: Set<Collaborators> }
   | { type: UpdatedLayout.HEADER_NAMES; newHeader: Partial<Names> }
-  | { type: UpdatedLayout.LOGGED_USER; user: UserTypes }
+  | { type: UpdatedLayout.LOGGED_USER; user: UserType }
   | { type: UpdatedLayout.LOGGED_OUT }
   | { type: UpdatedLayout.CLASS_NAME; newClass: string }
   | {
-      type: UpdatedLayout.SECTION;
+      type: UpdatedLayout.CHANGE_SECTION;
       sectionData: Pick<LayoutState, "moduleName" | "logos" | "className">;
     };
 
@@ -51,12 +51,13 @@ export function layoutReducer(
       return { ...state, user: null };
     case UpdatedLayout.CLASS_NAME:
       return { ...state, className: action.newClass };
-    case UpdatedLayout.SECTION:
+    case UpdatedLayout.CHANGE_SECTION:
       return {
         ...state,
         moduleName: action.sectionData.moduleName,
         logos: action.sectionData.logos,
         className: action.sectionData.className,
+        headerNames: { parent: "", child: "" },
       };
     default:
       console.warn("Unknown requested layoutReducer action");

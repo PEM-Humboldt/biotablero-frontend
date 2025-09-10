@@ -1002,6 +1002,7 @@ a#reset-filters {
   background-color: #e84a5f;
 }
 .ConsultasGeográficas {
+  display: block;
   background-image: url(images/geografico.png);
   -webkit-background-size: contain;
   background-size: contain;
@@ -1011,6 +1012,7 @@ a#reset-filters {
   height: 65px;
 }
 .Indicadores {
+  display: block;
   background-image: url(images/indicadores.png);
   -webkit-background-size: contain;
   background-size: contain;
@@ -1020,6 +1022,7 @@ a#reset-filters {
   height: 65px;
 }
 .Portafolios {
+  display: block;
   background-image: url(images/portafolios.png);
   -webkit-background-size: contain;
   background-size: contain;
@@ -1029,6 +1032,7 @@ a#reset-filters {
   height: 65px;
 }
 .CompensaciónAmbiental {
+  display: block;
   background-image: url(images/compensaciones.png);
   -webkit-background-size: contain;
   background-size: contain;
@@ -1037,6 +1041,7 @@ a#reset-filters {
   height: 65px;
 }
 .MonitoreoComunitario {
+  display: block;
   background-image: url(images/mcomunitario.png);
   -webkit-background-size: contain;
   background-size: contain;

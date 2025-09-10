@@ -53,7 +53,7 @@ export function Search() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.SECTION,
+      type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "Consultas Geográficas",
         logos: new Set(),

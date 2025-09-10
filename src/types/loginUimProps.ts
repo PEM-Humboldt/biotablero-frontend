@@ -1,14 +1,24 @@
-interface CompanyTypes {
-  id: number;
-}
-
-export interface UserTypes {
-  company?: CompanyTypes;
+export interface UserType {
   id: number;
   name: string;
   username: string;
+  company?: {
+    id: number;
+  };
+}
+
+// WARN: CONFLICTO CON ESTE TIPO QUE VIENE DEL CONTEXTO VIEJO
+interface userValues {
+  id?: number;
+  username: string;
+  name?: string;
+  company?: {
+    id: number;
+  };
 }
 
 export interface LoginUimProps {
-  setUser: (res: UserTypes | null) => void;
+  currentUser: UserType | null;
+  setUser: (res: UserType | null) => void;
+  logoutUser: () => void;
 }

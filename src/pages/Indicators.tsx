@@ -25,7 +25,7 @@ export function Indicators() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.SECTION,
+      type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "Indicadores",
         logos: new Set(),

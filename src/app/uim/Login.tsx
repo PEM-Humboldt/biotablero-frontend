@@ -14,7 +14,7 @@ const defaultStateValues: StateLoginValues = {
   password: "",
 };
 
-export function Login({ setUser }: LoginUimProps) {
+export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
   const [userValues, setUserValues] =
     useState<StateLoginValues>(defaultStateValues);
 

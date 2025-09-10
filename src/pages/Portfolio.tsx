@@ -9,7 +9,7 @@ export function Portfolio() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.SECTION,
+      type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "Portafolios",
         logos: new Set(),

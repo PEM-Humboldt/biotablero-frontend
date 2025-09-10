@@ -15,7 +15,7 @@ export function Home() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.SECTION,
+      type: UpdatedLayout.CHANGE_SECTION,
       sectionData: {
         moduleName: "",
         logos: new Set(["usaid", "geobon", "umed", "temple"]),
