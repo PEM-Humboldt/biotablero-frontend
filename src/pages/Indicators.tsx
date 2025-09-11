@@ -4,7 +4,7 @@ import CardManager from "pages/indicators/app/CardManager";
 import TagManager from "pages/indicators/app/TagManager";
 import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
-import useUpdateResults from "pages/indicators/hooks/useUpdateResults";
+import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
 import type { UiManager } from "app/Layout";
 
@@ -17,11 +17,7 @@ export function Indicators() {
   const [openFilter, setOpenFilter] = useState(true);
   const [tags, setTags] = useState(new Map());
   const [loadingTags, setLoadingTags] = useState(true);
-  const {
-    loading: loadingData,
-    result: cardsData,
-    updateFilters,
-  } = useUpdateResults();
+  const { isLoading, result: cardsData, updateFilters } = useUpdateResults();
 
   useEffect(() => {
     layoutDispatch({
@@ -36,11 +32,16 @@ export function Indicators() {
 
   useEffect(() => {
     const fetchTags = async () => {
-      const tagsData = await getTags();
-      setTags(tagsData);
-      setLoadingTags(false);
+      try {
+        const tagsData = await getTags();
+        setTags(tagsData);
+      } catch (err) {
+        console.warn("cannot get tag data:", err);
+      } finally {
+        setLoadingTags(false);
+      }
     };
-    fetchTags();
+    void fetchTags();
   }, []);
 
   const filterData = (filters: boolean) => {
@@ -84,9 +85,9 @@ export function Indicators() {
         </div>
       )}
       <div className="countD">
-        {loadingData && "Cargando información..."}
-        {!loadingData && cardsData.length <= 0 && "No hay indicadores"}
-        {!loadingData &&
+        {isLoading && "Cargando información..."}
+        {!isLoading && cardsData.length <= 0 && "No hay indicadores"}
+        {!isLoading &&
           cardsData.length > 0 &&
           `${cardsData.length} indicadores`}
       </div>
