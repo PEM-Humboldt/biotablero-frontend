@@ -50,7 +50,7 @@ function NextArrow({ onClick }: ArrowProps) {
 
 const makeCarrouselSettings = (
   prevArrow: React.ReactNode,
-  nextArrow: React.ReactNode
+  nextArrow: React.ReactNode,
 ) => {
   return {
     dots: true,
