@@ -1,7 +1,8 @@
-import ReactDOM from "react-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import ReactGA from "react-ga4";
 import { App } from "App";
-import { StrictMode } from "react";
+
 // TODO: Habilitar registerServiceWorker cuando esté habilitado el dominio en HTTPS
 // import registerServiceWorker from './registerServiceWorker';
 
@@ -14,10 +15,15 @@ if (import.meta.env.MODE === "production") {
   });
 }
 
-ReactDOM.render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-  document.getElementById("root")
+const container = document.getElementById("root");
+if (!container) {
+  throw new Error("No se encontró el elemento root");
+}
+
+const root = createRoot(container);
+root.render(
+  // <StrictMode>
+  <App />,
+  // </StrictMode>,
 );
 // registerServiceWorker();
