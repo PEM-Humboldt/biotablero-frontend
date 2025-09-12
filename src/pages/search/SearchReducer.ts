@@ -54,8 +54,7 @@ export enum SearchUpdated {
 // const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
 // const [layerError, setLayerError] = useState<boolean>(false);
 // const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
-// const [onEditControlMounted, setOnEditControlMounted] =
-//   useState<DrawControlHandler>(() => {});
+// const [onEditControlMounted, setOnEditControlMounted] = useState<DrawControlHandler>(() => {});
 // const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
 export type SearchState = {
   searchType: SrchType;

@@ -1,13 +1,9 @@
-import { useCallback, useEffect, useMemo, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
-import {
-  type DrawControlHandler,
-  type SrchType,
-  SearchContext,
-} from "pages/search/SearchContext";
+import { SearchCTX } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import MapViewer from "pages/search/MapViewer";
@@ -17,11 +13,11 @@ import Selector from "pages/search/Selector";
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
 import {
+  type SearchActions,
   searchInitialState,
   searchReducer,
   SearchUpdated,
 } from "pages/search/SearchReducer";
-import type { MapTitle, RasterLayer } from "pages/search/types/layers";
 
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -140,18 +136,15 @@ export function Search() {
   }, [searchState.areaId, searchState.areaLayer.json, searchState.areaType]);
 
   const handleUpdateURL = useCallback(
-    (
-      areaTypeParam: AreaType | undefined,
-      areaIdParam: AreaIdBasic | undefined,
-    ) => {
-      if (areaTypeParam === undefined) {
+    (areaType: AreaType | undefined, areaId: AreaIdBasic | undefined) => {
+      if (areaType === undefined) {
         navigate(pathname);
         return;
       }
 
-      let urlNewParams = `?area_type=${areaTypeParam.id}`;
-      if (areaIdParam) {
-        urlNewParams += `&area_id=${areaIdParam.id}`;
+      let urlNewParams = `?area_type=${areaType.id}`;
+      if (areaId !== undefined) {
+        urlNewParams += `&area_id=${areaId.id}`;
       }
 
       navigate(urlNewParams);
@@ -159,20 +152,17 @@ export function Search() {
     [navigate, pathname],
   );
 
-  const handleAreaTypeUpdate = useCallback(
-    (areaTypeProp: AreaType) => {
-      searchDispatch({ type: SearchUpdated.AREA_TYPE, areaType: areaTypeProp });
-      handleUpdateURL(areaTypeProp, undefined);
+  const searchDispatchComplete = useCallback(
+    (action: SearchActions) => {
+      searchDispatch(action);
+      if (action.type === SearchUpdated.AREA_TYPE) {
+        handleUpdateURL(action.areaType, undefined);
+      }
+      if (action.type === SearchUpdated.AREA_ID) {
+        handleUpdateURL(searchState.areaType, action.areaId);
+      }
     },
-    [handleUpdateURL],
-  );
-
-  const handleAreaIdUpdate = useCallback(
-    (areaIdProp: AreaIdBasic) => {
-      searchDispatch({ type: SearchUpdated.AREA_ID, areaId: areaIdProp });
-      handleUpdateURL(searchState.areaType, areaIdProp);
-    },
-    [searchState.areaType, handleUpdateURL],
+    [handleUpdateURL, searchState.areaType],
   );
 
   const bounds =
@@ -180,100 +170,13 @@ export function Search() {
       ? L.geoJSON(searchState.areaLayer.json).getBounds()
       : [];
 
-  const contextValues = useMemo(
-    () => ({
-      areaType: searchState.areaType,
-      areaId: searchState.areaId,
-      areaNamesList: searchState.areaNamesList,
-      areaHa: searchState.areaHa,
-      searchType: searchState.searchType ?? "definedArea",
-      onEditControlMounted: searchState.drawControls ?? (() => {}),
-      //
-      setSearchType: (searchType: SrchType) => {
-        searchDispatch({
-          type: SearchUpdated.SEARCH_TYPE,
-          searchType: searchType,
-        });
-      },
-      setAreaHa: (areaHa: number | undefined) => {
-        searchDispatch({
-          type: SearchUpdated.AREA_HA,
-          areaHa: areaHa,
-        });
-      },
-      setRasterLayers: (rasterLayers: RasterLayer[]) => {
-        searchDispatch({
-          type: SearchUpdated.RASTER_LAYERS,
-          rasterLayers: rasterLayers,
-        });
-      },
-      setShowAreaLayer: (showAreaLayer: boolean) => {
-        searchDispatch({
-          type: SearchUpdated.SHOW_AREA_LAYER,
-          showAreaLayer: showAreaLayer,
-        });
-      },
-      setLoadingLayer: (loadingLayer: boolean) => {
-        searchDispatch({
-          type: SearchUpdated.LOADING_LAYER,
-          loadingLayer: loadingLayer,
-        });
-      },
-      setMapTitle: (mapTitle: MapTitle) => {
-        searchDispatch({
-          type: SearchUpdated.MAP_TITLE,
-          mapTitle: mapTitle,
-        });
-      },
-      clearLayers: () => {
-        searchDispatch({ type: SearchUpdated.CLEAR_LAYERS });
-      },
-      setOnEditControlMounted: (drawControls: DrawControlHandler) => {
-        searchDispatch({
-          type: SearchUpdated.DRAW_CONTROLS,
-          drawControls: drawControls,
-        });
-      },
-      setLayerError: (layerError: boolean) => {
-        searchDispatch({
-          type: SearchUpdated.LAYER_ERROR,
-          layerError: layerError,
-        });
-      },
-      setAreaType: handleAreaTypeUpdate,
-      setAreaId: handleAreaIdUpdate,
-      setAreaLayer: (areaLayerJSON: geojson.GeoJsonObject | undefined) => {
-        searchDispatch({
-          type: SearchUpdated.AREA_LAYER,
-          areaLayerJSON: areaLayerJSON,
-        });
-      },
-      setShapeLayers: (rasterLayers: RasterLayer[]) => {
-        searchDispatch({
-          type: SearchUpdated.RASTER_LAYERS,
-          rasterLayers: rasterLayers,
-        });
-      },
-    }),
-    [
-      searchState.areaType,
-      searchState.areaId,
-      searchState.areaNamesList,
-      searchState.areaHa,
-      searchState.searchType,
-      searchState.drawControls,
-      handleAreaTypeUpdate,
-      handleAreaIdUpdate,
-    ],
-  );
-
   const showDashboard =
     searchState.areaType !== undefined &&
     searchState.areaId !== undefined &&
     searchState.areaHa !== undefined;
 
   return (
-    <SearchContext.Provider value={contextValues}>
+    <SearchCTX state={searchState} dispatch={searchDispatchComplete}>
       <div className="appSearcher wrappergrid">
         <MapViewer
           loadingLayer={searchState.loadingLayer}
@@ -314,6 +217,6 @@ export function Search() {
           )}
         </div>
       </div>
-    </SearchContext.Provider>
+    </SearchCTX>
   );
 }
