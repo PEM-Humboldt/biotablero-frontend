@@ -7,14 +7,14 @@ import { Map } from "pages/monitoring/Map";
 import { Dashboard } from "pages/monitoring/Dashboard";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "app/Layout";
-import { UpdatedLayout } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.CHANGE_SECTION,
+      type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleName: "Monitoreo Comunitario",
         logos: new Set(["usaid", "geobon", "umed", "temple"]),

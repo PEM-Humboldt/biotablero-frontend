@@ -10,7 +10,7 @@ import type { UiManager } from "app/Layout";
 
 import "pages/indicators/main.css";
 import { useOutletContext } from "react-router-dom";
-import { UpdatedLayout } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 
 export function Indicators() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -21,7 +21,7 @@ export function Indicators() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.CHANGE_SECTION,
+      type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleName: "Indicadores",
         logos: new Set(),

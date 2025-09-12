@@ -200,13 +200,15 @@ const cache = {
 /**
  * returns the color determined for a given value.
  *
- * @param {string} type type of information to apply colors.
- * @param {boolean} resetCache whether to clean the cache before assigning colors. Applies to 'pa'
+ * @param {string} type - type of information to apply colors.
+ * @param {boolean} [resetCache=false] - whether to clean the cache before assigning colors. Applies to 'pa'
  *
- * @param {any} value value to assign a color, type of data will depend on type arg.
+ * @param {any} value - value to assign a color, type of data will depend on type arg.
  *
  * fc will receive numbers between 4 and 10 (multiple of 0.25).
  * The rest of the types will receive strings.
+ *
+ * @returns {function(string | number): (string | null)} A function that takes a value and returns a color string or null.
  */
 const matchColor = (type, resetCache = false) => {
   const info = match[type] || match.default;

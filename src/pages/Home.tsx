@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import type { UiManager } from "app/Layout";
-import { UpdatedLayout } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 import { Carrousel } from "pages/home/Carrousel";
 import { TabsModules } from "pages/home/TabsComponent";
 
@@ -15,7 +15,7 @@ export function Home() {
 
   useEffect(() => {
     layoutDispatch({
-      type: UpdatedLayout.CHANGE_SECTION,
+      type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleName: "",
         logos: new Set(["nasa", "temple", "siac"]),

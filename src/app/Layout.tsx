@@ -29,7 +29,7 @@ export interface UiManager {
 export function MainLayout() {
   const [layoutState, layoutDispatch] = useReducer(
     layoutReducer,
-    layoutInitial
+    layoutInitial,
   );
 
   return (

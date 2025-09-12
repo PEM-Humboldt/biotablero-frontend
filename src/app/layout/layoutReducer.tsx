@@ -9,7 +9,7 @@ export interface LayoutState {
   className?: string;
 }
 
-export enum UpdatedLayout {
+export enum LayoutUpdated {
   MODULE_NAME = "moduleName",
   SECTION_LOGOS = "sectionLogos",
   HEADER_NAMES = "headerNames",
@@ -20,38 +20,38 @@ export enum UpdatedLayout {
 }
 
 export type LayoutActions =
-  | { type: UpdatedLayout.MODULE_NAME; newName: string }
-  | { type: UpdatedLayout.SECTION_LOGOS; newLogos: Set<Collaborators> }
-  | { type: UpdatedLayout.HEADER_NAMES; newHeader: Partial<Names> }
-  | { type: UpdatedLayout.LOGGED_USER; user: UserType }
-  | { type: UpdatedLayout.LOGGED_OUT }
-  | { type: UpdatedLayout.CLASS_NAME; newClass: string }
+  | { type: LayoutUpdated.MODULE_NAME; newName: string }
+  | { type: LayoutUpdated.SECTION_LOGOS; newLogos: Set<Collaborators> }
+  | { type: LayoutUpdated.HEADER_NAMES; newHeader: Partial<Names> }
+  | { type: LayoutUpdated.LOGGED_USER; user: UserType }
+  | { type: LayoutUpdated.LOGGED_OUT }
+  | { type: LayoutUpdated.CLASS_NAME; newClass: string }
   | {
-      type: UpdatedLayout.CHANGE_SECTION;
+      type: LayoutUpdated.CHANGE_SECTION;
       sectionData: Pick<LayoutState, "moduleName" | "logos" | "className">;
     };
 
 export function layoutReducer(
   state: LayoutState,
-  action: LayoutActions
+  action: LayoutActions,
 ): LayoutState {
   switch (action.type) {
-    case UpdatedLayout.MODULE_NAME:
+    case LayoutUpdated.MODULE_NAME:
       return { ...state, moduleName: action.newName };
-    case UpdatedLayout.SECTION_LOGOS:
+    case LayoutUpdated.SECTION_LOGOS:
       return { ...state, logos: action.newLogos };
-    case UpdatedLayout.HEADER_NAMES:
+    case LayoutUpdated.HEADER_NAMES:
       return {
         ...state,
         headerNames: { ...state.headerNames, ...action.newHeader },
       };
-    case UpdatedLayout.LOGGED_USER:
+    case LayoutUpdated.LOGGED_USER:
       return { ...state, user: action.user };
-    case UpdatedLayout.LOGGED_OUT:
+    case LayoutUpdated.LOGGED_OUT:
       return { ...state, user: null };
-    case UpdatedLayout.CLASS_NAME:
+    case LayoutUpdated.CLASS_NAME:
       return { ...state, className: action.newClass };
-    case UpdatedLayout.CHANGE_SECTION:
+    case LayoutUpdated.CHANGE_SECTION:
       return {
         ...state,
         moduleName: action.sectionData.moduleName,

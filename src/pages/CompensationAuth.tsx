@@ -1,5 +1,5 @@
 import type { UiManager } from "app/Layout";
-import { UpdatedLayout } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { Compensation } from "pages/Compensation";
@@ -22,7 +22,7 @@ export function RenderCompensation() {
       });
     }
     layoutDispatch({
-      type: UpdatedLayout.CHANGE_SECTION,
+      type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleName: "Compensación Ambiental",
         logos: new Set(),
@@ -32,7 +32,7 @@ export function RenderCompensation() {
   }, [renderCompensation, pathname, navigate, layoutDispatch]);
 
   const handleSetHeaderNames = (names: Names) =>
-    layoutDispatch({ type: UpdatedLayout.HEADER_NAMES, newHeader: names });
+    layoutDispatch({ type: LayoutUpdated.HEADER_NAMES, newHeader: names });
 
   return (
     <Compensation

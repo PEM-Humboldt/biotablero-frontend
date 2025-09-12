@@ -3,7 +3,7 @@ import React from "react";
 import { Menu } from "app/layout/header/Menu";
 import { Title } from "app/layout/header/Title";
 import { Uim } from "app/Uim";
-import { UpdatedLayout, type LayoutActions } from "app/layout/layoutReducer";
+import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
 import type { UserType } from "types/loginUimProps";
 
 interface Names {
@@ -33,13 +33,13 @@ export function Header({
     }
 
     layoutDispatch({
-      type: UpdatedLayout.LOGGED_USER,
+      type: LayoutUpdated.LOGGED_USER,
       user: userToSet,
     });
   };
 
   const handleLogOutUser = () => {
-    layoutDispatch({ type: UpdatedLayout.LOGGED_OUT });
+    layoutDispatch({ type: LayoutUpdated.LOGGED_OUT });
   };
 
   const renderCompositeTitle = parent !== "" && child !== "";
