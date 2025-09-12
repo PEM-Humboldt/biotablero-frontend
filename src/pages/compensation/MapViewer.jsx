@@ -48,9 +48,6 @@ class MapViewer extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!this.mapRef.current) {
-      return;
-    }
     const { layers, activeLayers, update } = this.state;
     const { loadingLayer, rasterBounds } = this.props;
     if (update) {
@@ -72,7 +69,7 @@ class MapViewer extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     let newActiveLayers = MapViewer.infoFromLayers(nextProps.layers, "active");
     newActiveLayers = Object.keys(newActiveLayers).filter(
-      (name) => newActiveLayers[name]
+      (name) => newActiveLayers[name],
     );
     const { layers: oldLayers, activeLayers } = prevState;
     if (newActiveLayers.join() === activeLayers.join()) {
@@ -95,9 +92,6 @@ class MapViewer extends React.Component {
    * @param {Boolean} state if it's false, then the layer should be hidden
    */
   showLayer = (layer, state) => {
-    if (!this.mapRef.current) {
-      return;
-    }
     let fitBounds = true;
     if (layer.options.fitBounds === false) fitBounds = false;
 
@@ -122,18 +116,12 @@ class MapViewer extends React.Component {
       mapTitle,
     } = this.props;
     const { openErrorModal } = this.state;
-
-    // HACK: touchExtend dentro de MapContainer existe mientras se actualiza
-    // librería para evitar el warn, no afecta funcionalidad en escritorio
     return (
       <MapContainer
         id="map"
-        whenCreated={(map) => {
-          this.mapRef.current = map;
-        }}
+        ref={this.mapRef}
         center={config.params.center}
         zoom={5}
-        touchExtend={false}
       >
         {mapTitle}
         <Modal
@@ -229,7 +217,7 @@ MapViewer.propTypes = {
     PropTypes.shape({
       data: PropTypes.string,
       opacity: PropTypes.number,
-    })
+    }),
   ),
   rasterBounds: PropTypes.object,
   mapTitle: PropTypes.object,

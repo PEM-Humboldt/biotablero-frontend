@@ -18,7 +18,7 @@ import "leaflet/dist/leaflet.css";
 import DrawControl from "pages/search/mapViewer/DrawControl";
 import { Polygon as PolygonType } from "pages/search/types/dashboard";
 
-import { MapTitle, RasterLayer, ShapeLayer } from "pages/search/types/layers";
+import { MapTitle, rasterLayer, shapeLayer } from "pages/search/types/layers";
 
 interface Props {
   showDrawControl: boolean;
@@ -26,8 +26,8 @@ interface Props {
   loadingLayer: boolean;
   layerError: boolean;
   mapTitle: MapTitle;
-  shapeLayers: Array<ShapeLayer>;
-  rasterLayers: Array<RasterLayer>;
+  shapeLayers: Array<shapeLayer>;
+  rasterLayers: Array<rasterLayer>;
   bounds: LatLngBoundsExpression;
   // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
   polygon: PolygonType | null;
@@ -58,18 +58,20 @@ const config = {
 };
 
 class MapViewer extends React.Component<Props, State> {
-  map: Map | null = null;
+  mapRef;
 
   constructor(props: Props) {
     super(props);
     this.state = {
       openErrorModal: true,
     };
+
+    this.mapRef = React.createRef<Map>();
   }
 
   componentDidUpdate(prevProps: Props) {
     const { bounds } = this.props;
-    const { map } = this;
+    const map = this.mapRef.current;
 
     if (!map) return;
 
@@ -100,22 +102,15 @@ class MapViewer extends React.Component<Props, State> {
     const { openErrorModal } = this.state;
 
     const paneLevels = Array.from(
-      new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
+      new Set(
+        [...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel),
+      ),
     );
 
     const titleName = mapTitle?.name || "";
 
-    // HACK: touchExtend dentro de MapContainer existe mientras se actualiza
-    // librería para evitar el warn, no afecta funcionalidad en escritorio
     return (
-      <MapContainer
-        id="map"
-        whenCreated={(map) => {
-          this.map = map;
-        }}
-        bounds={config.params.colombia}
-        touchExtend={false}
-      >
+      <MapContainer id="map" ref={this.mapRef} bounds={config.params.colombia}>
         {/* TODO agrega componente para el gradiente */}
         {titleName && (
           <>
