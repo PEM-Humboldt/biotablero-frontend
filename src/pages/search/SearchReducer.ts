@@ -37,25 +37,6 @@ export enum SearchUpdated {
   WILDCARD = "wildcard",
 }
 
-// TODO: Volver esto un useReducer
-// const [searchType, setSearchType] = useState<SrchType>("definedArea");
-// const [areaType, setAreaType] = useState<AreaType>();
-// const [areaId, setAreaId] = useState<AreaIdBasic>();
-// const [areaNamesList, setAreaNamesList] = useState<AreaIdBasic[]>([]);
-// const [areaHa, setAreaHa] = useState<number | undefined>();
-// const [areaLayer, setAreaLayer] = useState<ShapeLayer>({
-//   id: "",
-//   paneLevel: 0,
-//   json: { type: "FeatureCollection" },
-// });
-// const [shapeLayers, setShapeLayers] = useState<ShapeLayer[]>([]);
-// const [rasterLayers, setRasterLayers] = useState<RasterLayer[]>([]);
-// const [mapTitle, setMapTitle] = useState<MapTitle>({ name: "" });
-// const [loadingLayer, setLoadingLayer] = useState<boolean>(false);
-// const [layerError, setLayerError] = useState<boolean>(false);
-// const [showDrawControl, setShowDrawControl] = useState<boolean>(true);
-// const [onEditControlMounted, setOnEditControlMounted] = useState<DrawControlHandler>(() => {});
-// const [showAreaLayer, setShowAreaLayer] = useState<boolean>(false);
 export type SearchState = {
   searchType: SrchType;
   areaType: AreaType | undefined;
@@ -73,25 +54,6 @@ export type SearchState = {
   showAreaLayer: boolean;
 };
 
-// searchType: "definedArea" | "drawPolygon";
-// areaType?: AreaType;
-// areaId?: AreaIdBasic;
-// areaNamesList: AreaIdBasic[];
-// areaHa?: number;
-// setSearchType(searchType: SrchType): void;
-// setAreaType(areaType?: AreaType): void;
-// setAreaId(areaId?: AreaIdBasic): void;
-// setAreaHa(value?: number): void;
-// setAreaLayer(layer?: geojson.GeoJsonObject): void;
-// setRasterLayers(layers: Array<RasterLayer>): void;
-// setShapeLayers(layers: Array<ShapeLayer>): void;
-// setShowAreaLayer(active: boolean): void;
-// setLoadingLayer(loading: boolean): void;
-// setLayerError(error?: string): void;
-// setMapTitle(mapTitle: MapTitle): void;
-// clearLayers(): void;
-// onEditControlMounted: DrawControlHandler;
-// setOnEditControlMounted(handler: Function): void;
 export type SearchActions =
   | { type: SearchUpdated.SEARCH_TYPE; searchType: SrchType } // -> searchType
   | { type: SearchUpdated.AREA_TYPE; areaType: AreaType } // handleAreaTypeUpdate

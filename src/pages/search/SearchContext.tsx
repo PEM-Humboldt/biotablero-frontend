@@ -4,7 +4,11 @@ import {
   type SearchActions,
   type SearchState,
 } from "pages/search/SearchReducer";
-import type { MapTitle, RasterLayer } from "pages/search/types/layers";
+import type {
+  MapTitle,
+  RasterLayer,
+  ShapeLayer,
+} from "pages/search/types/layers";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 export type SrchType = "definedArea" | "drawPolygon" | null;
 export type DrawControlHandler = (control: any) => void;
@@ -28,6 +32,8 @@ export const useSearchDispatchCTX = () => {
   }
   return dispatch;
 
+  // NOTE: Revisar los paquetes de exportacion
+  //
   // return useMemo(
   //   () => ({
   //     setSearchType: (searchType: SrchType) =>
@@ -90,3 +96,57 @@ export function SearchCTX({
     </SearchStateCTX.Provider>
   );
 }
+
+// WARN: de acá pa' bajo es temporal, se va a penas se migre el componente
+export type SearchContextValues = {
+  // nuevas en contexto
+  areaLayer: ShapeLayer;
+  shapeLayers: ShapeLayer[];
+  rasterLayers: RasterLayer[];
+  mapTitle: MapTitle;
+  loadingLayer: boolean;
+  layerError: boolean;
+  drawControls: DrawControlHandler | (() => void);
+  showDrawControl: boolean;
+  showAreaLayer: boolean;
+
+  // contexto Viejo
+  searchType: "definedArea" | "drawPolygon";
+  areaType?: AreaType;
+  areaId?: AreaIdBasic;
+  areaNamesList: AreaIdBasic[];
+  areaHa?: number;
+  setSearchType(searchType: SrchType): void;
+  setAreaType(areaType?: AreaType): void;
+  setAreaId(areaId?: AreaIdBasic): void;
+  setAreaHa(value?: number): void;
+  setAreaLayer(layer?: geojson.GeoJsonObject): void;
+  setRasterLayers(layers: Array<RasterLayer>): void;
+  setShapeLayers(layers: Array<ShapeLayer>): void;
+  setShowAreaLayer(active: boolean): void;
+  setLoadingLayer(loading: boolean): void;
+  setLayerError(error?: string): void;
+  setMapTitle(mapTitle: MapTitle): void;
+  clearLayers(): void;
+  onEditControlMounted: DrawControlHandler;
+  setOnEditControlMounted(handler: () => void): void;
+};
+
+export const SearchContext = createContext<SearchContextValues>({
+  searchType: "definedArea",
+  areaNamesList: [],
+  setSearchType: () => {},
+  setAreaType: () => {},
+  setAreaId: () => {},
+  setAreaHa: () => {},
+  setAreaLayer: () => {},
+  setRasterLayers: () => {},
+  setShapeLayers: () => {},
+  setShowAreaLayer: () => {},
+  setLoadingLayer: () => {},
+  setLayerError: () => {},
+  setMapTitle: () => {},
+  clearLayers: () => {},
+  onEditControlMounted: () => {},
+  setOnEditControlMounted: () => {},
+});
