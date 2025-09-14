@@ -6,13 +6,14 @@ import { EditControl } from "react-leaflet-draw";
 
 import {
   SearchContext,
-  type SearchContextValues,
+  useSearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 
 const DrawControl = () => {
-  const context = useContext(SearchContext);
-  const { onEditControlMounted } = context as SearchContextValues;
+  const context = useSearchLegacyCTX();
+  const { onEditControlMounted } = context as LegacyContextValues;
   return (
     <FeatureGroup>
       <EditControl

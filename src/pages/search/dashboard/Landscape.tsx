@@ -6,8 +6,8 @@ import Forest from "pages/search/dashboard/landscape/Forest";
 import HumanFootprint from "pages/search/dashboard/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import { accordionComponent } from "pages/search/types/ui";
 
@@ -24,8 +24,7 @@ interface State {
 }
 
 class Landscape extends React.Component<Props, State> {
-  static contextType = SearchContext;
-
+  static contextType = SearchLegacyCTX;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -46,7 +45,7 @@ class Landscape extends React.Component<Props, State> {
    */
   handleAccordionChange = (level: string, tabLayerId: string) => {
     const { visible } = this.state;
-    const { clearLayers } = this.context as SearchContextValues;
+    const { clearLayers } = this.context as LegacyContextValues;
 
     clearLayers();
 
@@ -68,7 +67,7 @@ class Landscape extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { areaType } = this.context as SearchContextValues;
+    const { areaType } = this.context as LegacyContextValues;
     let visible = areaType?.id === "ea" ? "fc" : "hf";
     this.setState((prev) => ({
       visible: visible,
@@ -76,7 +75,7 @@ class Landscape extends React.Component<Props, State> {
   }
 
   render() {
-    const { areaType } = this.context as SearchContextValues;
+    const { areaType } = this.context as LegacyContextValues;
     const { childMap, visible } = this.state;
     const initialArray: Array<accordionComponent> = [
       {
@@ -138,7 +137,7 @@ class Landscape extends React.Component<Props, State> {
     }
 
     const componentsArray = initialArray.filter((f) =>
-      selected.includes(f.label.id)
+      selected.includes(f.label.id),
     );
 
     return (
@@ -154,5 +153,3 @@ class Landscape extends React.Component<Props, State> {
 }
 
 export default Landscape;
-
-Landscape.contextType = SearchContext;

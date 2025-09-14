@@ -8,8 +8,8 @@ import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
@@ -46,6 +46,7 @@ class CompensationFactor extends React.Component<
   Props,
   compensationFactorState
 > {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   CFController;
 
@@ -81,7 +82,7 @@ class CompensationFactor extends React.Component<
       setLayerError,
       setMapTitle,
       setShowAreaLayer,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -189,7 +190,7 @@ class CompensationFactor extends React.Component<
         if (this.mounted) {
           this.setState(
             () => ({ layers: [fc] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "FC - Biomas" });
@@ -228,7 +229,7 @@ class CompensationFactor extends React.Component<
       texts,
     } = this.state;
     const { areaType: areaId, areaId: geofenceId } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     return (
       <div style={{ width: "100%" }}>
@@ -344,5 +345,3 @@ class CompensationFactor extends React.Component<
 }
 
 export default CompensationFactor;
-
-CompensationFactor.contextType = SearchContext;

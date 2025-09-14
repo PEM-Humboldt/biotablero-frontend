@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 
 import {
@@ -48,6 +48,7 @@ interface Props {
 }
 
 class EcosystemDetails extends React.Component<Props, State> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   EcosystemsController;
   constructor(props: Props) {
@@ -68,7 +69,7 @@ class EcosystemDetails extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
     const { SEValues } = this.props;
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const SEType = SEValues.type;
     const SEArea = SEValues.area;
     const { stopLoad } = this.state;
@@ -179,7 +180,7 @@ class EcosystemDetails extends React.Component<Props, State> {
       setShowAreaLayer,
       setLayerError,
       setMapTitle,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     setLoadingLayer(true);
     setRasterLayers([]);
@@ -210,16 +211,15 @@ class EcosystemDetails extends React.Component<Props, State> {
    */
   clickOnGraph = (selectedKey: string) => {
     const { layers } = this.state;
-    const { setRasterLayers } = this.context as SearchContextValues;
+    const { setRasterLayers } = this.context as LegacyContextValues;
 
     setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      }))
+      })),
     );
   };
 }
 
 export default EcosystemDetails;
-EcosystemDetails.contextType = SearchContext;

@@ -2,8 +2,8 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
@@ -40,6 +40,7 @@ interface persistenceHFState {
 }
 
 class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "hfPersistence";
   PersistenceHFController;
@@ -67,7 +68,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
       setLoadingLayer,
       setLayerError,
       setMapTitle,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -109,7 +110,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "HH - Persistencia" });
@@ -133,7 +134,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
   };
 
   render() {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const { showInfoGraph, hfPersistence, message, texts } = this.state;
 
     const areaTypeId = areaType!.id;
@@ -188,7 +189,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
    * @param {string} selectedKey Id of the feature
    */
   highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers } = this.context as LegacyContextValues;
     const { layers } = this.state;
     const highlightedLayers = layers.map((layer) => {
       if (layer.id === "hfPersistence") {
@@ -202,5 +203,3 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
 }
 
 export default PersistenceFootprint;
-
-PersistenceFootprint.contextType = SearchContext;

@@ -10,8 +10,8 @@ import {
 } from "pages/search/dashboard/ecosystems/transformData";
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
@@ -82,6 +82,7 @@ interface State {
  * @class
  */
 class Ecosystems extends React.Component<Props, State> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   EcosystemsController;
   constructor(props: Props) {
@@ -114,7 +115,7 @@ class Ecosystems extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, areaHa } = this.context as SearchContextValues;
+    const { areaType, areaId, areaHa } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -153,7 +154,7 @@ class Ecosystems extends React.Component<Props, State> {
               .reduce((prev, next) => prev + next);
             const PAAreas = transformPAValues(res, areaHa!);
             const noProtectedArea = PAAreas.find(
-              (item) => item.key === "No Protegida"
+              (item) => item.key === "No Protegida",
             );
 
             let PADivergentData = false;
@@ -231,7 +232,7 @@ class Ecosystems extends React.Component<Props, State> {
   }
 
   componentWillUnmount() {
-    const { clearLayers } = this.context as SearchContextValues;
+    const { clearLayers } = this.context as LegacyContextValues;
 
     this.mounted = false;
     clearLayers();
@@ -276,7 +277,7 @@ class Ecosystems extends React.Component<Props, State> {
       activeSE,
       messages: { se },
     } = this.state;
-    const { areaHa } = this.context as SearchContextValues;
+    const { areaHa } = this.context as LegacyContextValues;
 
     if (se === "loading") return "Cargando...";
     if (se === "no-data")
@@ -327,7 +328,7 @@ class Ecosystems extends React.Component<Props, State> {
       texts,
     } = this.state;
 
-    const { areaId, areaHa } = this.context as SearchContextValues;
+    const { areaId, areaHa } = this.context as LegacyContextValues;
 
     const areaIdId = areaId!.id.toString();
 
@@ -487,7 +488,7 @@ class Ecosystems extends React.Component<Props, State> {
 
   switchLayer = () => {
     const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      this.context as SearchContextValues;
+      this.context as LegacyContextValues;
 
     setLoadingLayer(true);
     this.EcosystemsController.getCoveragesLayers()
@@ -516,17 +517,15 @@ class Ecosystems extends React.Component<Props, State> {
 
   clickOnGraph = (selectedKey: string) => {
     const { layers } = this.state;
-    const { setRasterLayers } = this.context as SearchContextValues;
+    const { setRasterLayers } = this.context as LegacyContextValues;
 
     setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      }))
+      })),
     );
   };
 }
 
 export default Ecosystems;
-
-Ecosystems.contextType = SearchContext;

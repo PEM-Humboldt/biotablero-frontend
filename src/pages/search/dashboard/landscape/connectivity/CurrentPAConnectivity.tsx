@@ -5,8 +5,8 @@ import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
@@ -58,6 +58,7 @@ interface currentPAConnState {
 }
 
 class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "currentPAConn";
   CPACController;
@@ -93,7 +94,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
       setLayerError,
       setMapTitle,
       setShowAreaLayer,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -177,7 +178,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentPAConn] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -205,7 +206,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
   };
 
   render() {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const {
       currentPAConnData,
       dpcData,
@@ -342,7 +343,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
    * @param {string} selectedKey Id of the feature
    */
   highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers } = this.context as LegacyContextValues;
     const { layers } = this.state;
     const highlightedLayers = layers.map((layer) => {
       if (layer.id === "currentPAConn") {
@@ -355,5 +356,3 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
 }
 
 export default CurrentPAConnectivity;
-
-CurrentPAConnectivity.contextType = SearchContext;

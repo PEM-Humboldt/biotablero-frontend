@@ -8,15 +8,15 @@ import EditPolygonIcon from "pages/search/selector/EditIcon";
 import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import {
-  SearchContext,
-  type SearchContextValues,
+  useSearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import "./DrawPolygon.css";
 
 const DrawPolygon = () => {
-  const context = useContext(SearchContext);
+  const context = useSearchLegacyCTX();
   const { setOnEditControlMounted, setAreaType, setAreaLayer } =
-    context as SearchContextValues;
+    context as LegacyContextValues;
   const [drawControl, setDrawControl] = useState<any>();
   const [drawnPolygon, setDrawnPolygon] =
     useState<Polygon<geojson.Polygon> | null>(null);
@@ -58,7 +58,7 @@ const DrawPolygon = () => {
       newDrawControl._map.on("draw:drawstart", onDrawStart);
       newDrawControl._map.on("draw:drawstop", onDrawStop);
     },
-    [onPolygonDrawn, onPolygonEdited, onPolygoDeleted, onDrawStart, onDrawStop]
+    [onPolygonDrawn, onPolygonEdited, onPolygoDeleted, onDrawStart, onDrawStop],
   );
 
   useEffect(() => {
@@ -149,12 +149,12 @@ const DrawPolygon = () => {
           {isDrawing
             ? "Dibujando polígono..."
             : isEditing
-            ? "Editando polígono..."
-            : isRemoving
-            ? "Haga clic en el polígono para eliminarlo"
-            : drawnPolygon
-            ? "Polígono creado - Seleccione una acción"
-            : "Dibuje UN polígono para comenzar"}
+              ? "Editando polígono..."
+              : isRemoving
+                ? "Haga clic en el polígono para eliminarlo"
+                : drawnPolygon
+                  ? "Polígono creado - Seleccione una acción"
+                  : "Dibuje UN polígono para comenzar"}
         </div>
       </div>
 
@@ -172,8 +172,8 @@ const DrawPolygon = () => {
             {drawnPolygon
               ? "✓ Polígono dibujado correctamente"
               : isDrawing
-              ? "Haga clic en el mapa para empezar a dibujar (doble clic para finalizar)"
-              : "Haga clic aquí para activar. Luego dibuje UN polígono en el mapa (doble clic para finalizar)."}
+                ? "Haga clic en el mapa para empezar a dibujar (doble clic para finalizar)"
+                : "Haga clic aquí para activar. Luego dibuje UN polígono en el mapa (doble clic para finalizar)."}
           </p>
         </div>
 
@@ -190,8 +190,8 @@ const DrawPolygon = () => {
             {drawnPolygon === null
               ? "Primero debe dibujar un polígono"
               : isEditing
-              ? "Arrastre los puntos para modificar la forma"
-              : "Haga clic para activar el modo edición"}
+                ? "Arrastre los puntos para modificar la forma"
+                : "Haga clic para activar el modo edición"}
           </p>
 
           {isEditing && (
@@ -222,8 +222,8 @@ const DrawPolygon = () => {
             {drawnPolygon === null
               ? "Primero debe dibujar un polígono"
               : isRemoving
-              ? "Haga clic en el polígono del mapa para eliminarlo"
-              : "Eliminará el polígono actual del mapa"}
+                ? "Haga clic en el polígono del mapa para eliminarlo"
+                : "Eliminará el polígono actual del mapa"}
           </p>
 
           {isRemoving && (
@@ -256,8 +256,8 @@ const DrawPolygon = () => {
             {drawnPolygon === null
               ? "Primero debe dibujar un polígono"
               : isEditing || isRemoving || isDrawing
-              ? "Complete la acción actual antes de enviar"
-              : "Procesar consulta con el polígono creado"}
+                ? "Complete la acción actual antes de enviar"
+                : "Procesar consulta con el polígono creado"}
           </p>
         </div>
       </div>
