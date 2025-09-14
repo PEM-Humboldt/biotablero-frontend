@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 import {
@@ -17,11 +17,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DrawControl from "pages/search/mapViewer/DrawControl";
 import type { UiManager } from "app/Layout";
 import type { Polygon as PolygonType } from "pages/search/types/dashboard";
-import type { ShapeLayer } from "pages/search/types/layers";
-import {
-  SearchContext,
-  type SearchContextValues,
-} from "pages/search/SearchContext";
+import { useSearchStateCTX } from "pages/search/SearchContext";
 import "leaflet/dist/leaflet.css";
 
 const COLOMBIA_BOUNDS: LatLngBoundsLiteral = [
@@ -38,8 +34,6 @@ const config = {
 interface MapViewerProps {
   bounds: LatLngBoundsExpression;
   geoServerUrl: string;
-  showDrawControl: boolean;
-  shapeLayers: ShapeLayer[];
 
   // TODO: ajustar cuando haya conexión de consulta por polígono dibujado
   polygon: PolygonType | null;
@@ -47,22 +41,28 @@ interface MapViewerProps {
 }
 
 export function MapViewer({
-  geoServerUrl,
   bounds,
-  showDrawControl,
-  shapeLayers,
-
-  // TODO: ajustar cuando haya conexión de consulta por polígono dibujado
+  geoServerUrl,
   polygon,
   loadPolygonInfo,
 }: MapViewerProps) {
   const [errorModal, setErrorModal] = useState(true);
   const mapRef = useRef<Map>(null);
-  const { layoutState } = useOutletContext<UiManager>();
+  const {
+    layoutState: { user },
+  } = useOutletContext<UiManager>();
 
-  // TODO: Actualizar con el nuevo contexto
-  const { loadingLayer, layerError, rasterLayers, mapTitle } =
-    useContext<SearchContextValues>(SearchContext);
+  const {
+    searchType,
+    areaLayer,
+    shapeLayers,
+    rasterLayers,
+    mapTitle,
+    loadingLayer,
+    layerError,
+    showDrawControl,
+    showAreaLayer,
+  } = useSearchStateCTX();
 
   useEffect(() => {
     const map = mapRef.current;
@@ -85,17 +85,20 @@ export function MapViewer({
 
   const handleModalClose = () => setErrorModal(false);
 
-  const { user } = layoutState;
+  const drawControlRender = showDrawControl && searchType === "drawPolygon";
   const titleName = mapTitle?.name || "";
+  const shapeLayersRender = showAreaLayer
+    ? [areaLayer, ...shapeLayers]
+    : shapeLayers;
   const paneLevels = [
     ...new Set(
-      [...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel),
+      [...shapeLayersRender, ...rasterLayers].map((layer) => layer.paneLevel),
     ),
   ];
 
   return (
     <MapContainer id="map" ref={mapRef} bounds={config.params.colombia}>
-      {/* TODO agrega componente para el gradiente */}
+      {/* TODO: agrega componente para el gradiente */}
 
       {titleName && (
         <>
@@ -153,7 +156,7 @@ export function MapViewer({
         </div>
       </Modal>
 
-      {showDrawControl && <DrawControl />}
+      {drawControlRender && <DrawControl />}
 
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -166,7 +169,7 @@ export function MapViewer({
           key={panelLevel}
           style={{ zIndex: 500 + index }}
         >
-          {shapeLayers
+          {shapeLayersRender
             .filter((l) => l.paneLevel === panelLevel)
             .map((layer) => (
               <GeoJSON
