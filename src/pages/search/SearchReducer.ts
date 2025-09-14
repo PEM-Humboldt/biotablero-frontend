@@ -68,7 +68,7 @@ export type SearchActions =
   | { type: SearchUpdated.RASTER_LAYERS; rasterLayers: RasterLayer[] } // handleShapeLayersUpdate
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
   | { type: SearchUpdated.LOADING_LAYER; loadingLayer: boolean }
-  | { type: SearchUpdated.LAYER_ERROR; layerError: boolean } // handleSetLayerError
+  | { type: SearchUpdated.LAYER_ERROR; layerError: string | undefined } // handleSetLayerError
   | { type: SearchUpdated.DRAW_CONTROLS; drawControls: DrawControlHandler } // -> onEditControlMounted
   | { type: SearchUpdated.SHOW_DRAW_CONTROL; showDrawControl: boolean }
   | { type: SearchUpdated.SHOW_AREA_LAYER; showAreaLayer: boolean }
@@ -182,6 +182,7 @@ export function searchReducer(
     case SearchUpdated.LOADING_LAYER:
       return { ...state, loadingLayer: action.loadingLayer };
     case SearchUpdated.LAYER_ERROR:
+      // TODO: Revisar por una implementación más robusta de manejo de errores
       return { ...state, layerError: !!action.layerError };
     case SearchUpdated.DRAW_CONTROLS:
       return { ...state, drawControls: action.drawControls };

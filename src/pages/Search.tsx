@@ -1,14 +1,19 @@
-import { useCallback, useEffect, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
-import { SearchCTX } from "pages/search/SearchContext";
+import {
+  LegacyCTX,
+  SearchCTX,
+  SearchLegacyCTX,
+  useSearchLegacyCTX,
+} from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import MapViewer from "pages/search/MapViewer";
+import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
-import Dashboard from "pages/search/Dashboard";
+import { Dashboard } from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
@@ -67,6 +72,7 @@ export function Search() {
             type: SearchUpdated.CONSOLE_PARTIAL,
             payload: { areaType: typeObj, areaNamesList: areaIds },
           });
+
           return;
         }
 
@@ -165,6 +171,21 @@ export function Search() {
     [handleUpdateURL, searchState.areaType],
   );
 
+  const handleGoBackClick = () => {
+    layoutDispatch({
+      type: LayoutUpdated.HEADER_NAMES,
+      newHeader: { parent: "", child: "" },
+    });
+    searchDispatch({ type: SearchUpdated.GO_BACK });
+    navigate(pathname);
+  };
+
+  const handleShowDrawControls = (show: boolean) => {
+    searchDispatch({
+      type: SearchUpdated.SHOW_DRAW_CONTROL,
+      showDrawControl: showDrawControl,
+    });
+  };
   const bounds =
     searchState.areaLayer.id === "geofence" && searchState.areaLayer.json
       ? L.geoJSON(searchState.areaLayer.json).getBounds()
@@ -177,46 +198,24 @@ export function Search() {
 
   return (
     <SearchCTX state={searchState} dispatch={searchDispatchComplete}>
-      <div className="appSearcher wrappergrid">
-        <MapViewer
-          loadingLayer={searchState.loadingLayer}
-          layerError={searchState.layerError}
-          rasterLayers={searchState.rasterLayers}
-          mapTitle={searchState.mapTitle}
-          bounds={bounds}
-          polygon={null}
-          loadPolygonInfo={() => {}}
-          showDrawControl={
-            searchState.showDrawControl &&
-            searchState.searchType === "drawPolygon"
-          }
-          shapeLayers={
-            searchState.showAreaLayer
-              ? [searchState.areaLayer, ...searchState.shapeLayers]
-              : searchState.shapeLayers
-          }
-          geoServerUrl={GeoServerAPI.getRequestURL()}
-        />
+      <LegacyCTX>
+        <div className="appSearcher wrappergrid">
+          <MapViewer
+            bounds={bounds}
+            polygon={null}
+            loadPolygonInfo={() => {}}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
+          />
 
-        <div className="contentView">
-          {showDashboard ? (
-            <Dashboard
-              handlerBackButton={() => {
-                searchDispatch({ type: SearchUpdated.GO_BACK });
-              }}
-            />
-          ) : (
-            <Selector
-              setShowDrawControl={(showDrawControl: boolean) => {
-                searchDispatch({
-                  type: SearchUpdated.SHOW_DRAW_CONTROL,
-                  showDrawControl: showDrawControl,
-                });
-              }}
-            />
-          )}
+          <div className="contentView">
+            {showDashboard ? (
+              <Dashboard goBackClick={handleGoBackClick} />
+            ) : (
+              <Selector setShowDrawControl={handleShowDrawControls} />
+            )}
+          </div>
         </div>
-      </div>
+      </LegacyCTX>
     </SearchCTX>
   );
 }
