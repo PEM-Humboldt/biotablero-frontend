@@ -190,7 +190,7 @@ class EcosystemDetails extends React.Component<Props, State> {
         this.setState({ layers: layers });
 
         if (this.mounted) {
-          setRasterLayers(this.state.layers);
+          setRasterLayers(layers);
           setLoadingLayer(false);
           setShowAreaLayer(true);
           setMapTitle({

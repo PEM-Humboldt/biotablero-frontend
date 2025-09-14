@@ -209,7 +209,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         this.setState({ layers: layers });
 
         if (this.mounted) {
-          setRasterLayers(this.state.layers);
+          setRasterLayers(layers);
           setLoadingLayer(false);
           setMapTitle({
             name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,

@@ -189,7 +189,7 @@ export function MapViewer({
               }
               return (
                 <ImageOverlay
-                  key={layer.id}
+                  key={`${layer.id}-${layer.data}`}
                   url={layer.data}
                   bounds={bounds}
                   opacity={opacity}

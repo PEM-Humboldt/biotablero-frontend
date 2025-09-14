@@ -185,22 +185,13 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
     [searchDispatch],
   );
 
-  const legacyCTXvalue = useMemo(
-    () => ({
-      ...searchState,
-      ...expandedSearchDispatch,
-      drawControlsRef,
-      areDrawControlsMounted,
-      setAreDrawControlMounted,
-    }),
-    [
-      searchState,
-      expandedSearchDispatch,
-      drawControlsRef,
-      areDrawControlsMounted,
-      setAreDrawControlMounted,
-    ],
-  );
+  const legacyCTXvalue = {
+    ...searchState,
+    ...expandedSearchDispatch,
+    drawControlsRef,
+    areDrawControlsMounted,
+    setAreDrawControlMounted,
+  };
 
   return (
     <SearchLegacyCTX.Provider value={legacyCTXvalue}>
