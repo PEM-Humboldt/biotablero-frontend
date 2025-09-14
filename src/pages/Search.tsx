@@ -139,7 +139,7 @@ export function Search() {
   const handleUpdateURL = useCallback(
     (areaType: AreaType | undefined, areaId: AreaIdBasic | undefined) => {
       if (areaType === undefined) {
-        navigate(pathname);
+        void navigate(pathname);
         return;
       }
 
@@ -148,7 +148,7 @@ export function Search() {
         urlNewParams += `&area_id=${areaId.id}`;
       }
 
-      navigate(urlNewParams);
+      void navigate(urlNewParams);
     },
     [navigate, pathname],
   );
@@ -172,7 +172,7 @@ export function Search() {
       newHeader: { parent: "", child: "" },
     });
     searchDispatch({ type: SearchUpdated.GO_BACK });
-    navigate(pathname);
+    void navigate(pathname);
   };
 
   const handleShowDrawControls = useCallback(
