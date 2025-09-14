@@ -172,7 +172,7 @@ export function searchReducer(
       }
       return { ...state, shapeLayers: action.shapeLayers };
     case SearchUpdated.RASTER_LAYERS:
-      return { ...state, rasterLayers: [...action.rasterLayers] };
+      return { ...state, rasterLayers: action.rasterLayers };
     case SearchUpdated.MAP_TITLE:
       return { ...state, mapTitle: action.mapTitle };
     case SearchUpdated.LOADING_LAYER:

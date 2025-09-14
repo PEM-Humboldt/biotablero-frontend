@@ -70,6 +70,11 @@ export function MapViewer({
       return;
     }
 
+    // NOTE: soluciona las discrepancias de render entre react y leaflet
+    map.whenReady(() => {
+      map.invalidateSize();
+    });
+
     if (Array.isArray(bounds) && bounds.length === 0) {
       map.flyToBounds(config.params.colombia);
     } else {
