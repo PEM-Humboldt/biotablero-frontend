@@ -14,7 +14,7 @@ import {
 import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-import DrawControl from "pages/search/mapViewer/DrawControl";
+import { DrawControl } from "pages/search/mapViewer/DrawControl";
 import type { UiManager } from "app/Layout";
 import type { Polygon as PolygonType } from "pages/search/types/dashboard";
 import { useSearchStateCTX } from "pages/search/SearchContext";
@@ -44,7 +44,7 @@ export function MapViewer({
   bounds,
   geoServerUrl,
   polygon,
-  loadPolygonInfo,
+  loadPolygonInfo: _,
 }: MapViewerProps) {
   const [errorModal, setErrorModal] = useState(true);
   const mapRef = useRef<Map>(null);
@@ -179,6 +179,7 @@ export function MapViewer({
                 onEachFeature={layer.onEachFeature}
               />
             ))}
+
           {rasterLayers
             .filter((l) => l.paneLevel === panelLevel)
             .map((layer) => {

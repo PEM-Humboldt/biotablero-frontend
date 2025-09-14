@@ -1,14 +1,9 @@
-import React, { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { useNavigate, useLocation, useOutletContext } from "react-router-dom";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
-import {
-  LegacyCTX,
-  SearchCTX,
-  SearchLegacyCTX,
-  useSearchLegacyCTX,
-} from "pages/search/SearchContext";
+import { LegacyCTX, SearchCTX } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
@@ -180,12 +175,16 @@ export function Search() {
     navigate(pathname);
   };
 
-  const handleShowDrawControls = (show: boolean) => {
-    searchDispatch({
-      type: SearchUpdated.SHOW_DRAW_CONTROL,
-      showDrawControl: showDrawControl,
-    });
-  };
+  const handleShowDrawControls = useCallback(
+    (show: boolean) => {
+      searchDispatch({
+        type: SearchUpdated.SHOW_DRAW_CONTROL,
+        showDrawControl: show,
+      });
+    },
+    [searchDispatch],
+  );
+
   const bounds =
     searchState.areaLayer.id === "geofence" && searchState.areaLayer.json
       ? L.geoJSON(searchState.areaLayer.json).getBounds()
@@ -211,7 +210,7 @@ export function Search() {
             {showDashboard ? (
               <Dashboard goBackClick={handleGoBackClick} />
             ) : (
-              <Selector setShowDrawControl={handleShowDrawControls} />
+              <Selector showDrawControls={handleShowDrawControls} />
             )}
           </div>
         </div>

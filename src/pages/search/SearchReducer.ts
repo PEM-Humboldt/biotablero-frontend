@@ -1,4 +1,4 @@
-import type { DrawControlHandler, SrchType } from "pages/search/SearchContext";
+import type { SrchType } from "pages/search/SearchContext";
 import type {
   AreaId,
   AreaIdBasic,
@@ -25,7 +25,6 @@ export enum SearchUpdated {
   MAP_TITLE = "mapTitle",
   LOADING_LAYER = "loadingLayer",
   LAYER_ERROR = "layerError",
-  DRAW_CONTROLS = "drawControls", // legacy -> onEditControlMounted
   SHOW_DRAW_CONTROL = "showDrawControl",
   SHOW_AREA_LAYER = "showAreaLayer",
   CLEAR_LAYERS = "clearLayers",
@@ -49,7 +48,6 @@ export type SearchState = {
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
-  drawControls: DrawControlHandler | (() => void);
   showDrawControl: boolean;
   showAreaLayer: boolean;
 };
@@ -69,7 +67,6 @@ export type SearchActions =
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
   | { type: SearchUpdated.LOADING_LAYER; loadingLayer: boolean }
   | { type: SearchUpdated.LAYER_ERROR; layerError: string | undefined } // handleSetLayerError
-  | { type: SearchUpdated.DRAW_CONTROLS; drawControls: DrawControlHandler } // -> onEditControlMounted
   | { type: SearchUpdated.SHOW_DRAW_CONTROL; showDrawControl: boolean }
   | { type: SearchUpdated.SHOW_AREA_LAYER; showAreaLayer: boolean }
   | { type: SearchUpdated.GO_BACK } // handlerBackButton
@@ -113,7 +110,7 @@ const searchClearLayersState: Pick<
 
 const searchGoBackState: Omit<
   SearchState,
-  "areaNamesList" | "drawControls" | "showDrawControl"
+  "areaNamesList" | "showDrawControl"
 > = {
   ...searchClearLayersState,
   searchType: "definedArea",
@@ -126,7 +123,6 @@ const searchGoBackState: Omit<
 export const searchInitialState: SearchState = {
   ...searchGoBackState,
   areaNamesList: [],
-  drawControls: () => {},
   showDrawControl: false,
 };
 
@@ -184,8 +180,6 @@ export function searchReducer(
     case SearchUpdated.LAYER_ERROR:
       // TODO: Revisar por una implementación más robusta de manejo de errores
       return { ...state, layerError: !!action.layerError };
-    case SearchUpdated.DRAW_CONTROLS:
-      return { ...state, drawControls: action.drawControls };
     case SearchUpdated.SHOW_DRAW_CONTROL:
       return { ...state, showDrawControl: action.showDrawControl };
     case SearchUpdated.SHOW_AREA_LAYER:
