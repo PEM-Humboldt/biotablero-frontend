@@ -101,6 +101,7 @@ export type LegacyContextValues = {
   setLayerError: (error?: string) => void;
   setMapTitle: (mapTitle: MapTitle) => void;
   clearLayers: () => void;
+
   onEditControlMounted?: DrawControlHandler;
   setOnEditControlMounted: (handler: () => void) => void;
 };

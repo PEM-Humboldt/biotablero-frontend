@@ -14,7 +14,7 @@ import {
   useSearchLegacyCTX,
   useSearchStateCTX,
 } from "pages/search/SearchContext";
-import DrawPolygon from "pages/search/selector/DrawPolygon";
+import { DrawPolygon } from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 
 interface SelectorProps {
