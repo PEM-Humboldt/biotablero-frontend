@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 import {
   ImageOverlay,

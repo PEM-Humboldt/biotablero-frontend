@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import { useEffect } from "react";
 
 import { SearchBar } from "pages/monitoring/searchBar";

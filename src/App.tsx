@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router";
 import { YMInitializer } from "@appigram/react-yandex-metrika";
 
 import { MainLayout } from "app/Layout";

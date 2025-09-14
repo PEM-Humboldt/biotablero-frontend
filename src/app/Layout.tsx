@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 
 import { Footer } from "app/layout/Footer";
 import { Header } from "app/layout/Header";

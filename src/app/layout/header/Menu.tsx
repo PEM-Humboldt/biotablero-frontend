@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router";
 import isFlagEnabled from "utils/isFlagEnabled";
 
 import Consultasgeograficas from "images/consulta-geografica-logo.svg";

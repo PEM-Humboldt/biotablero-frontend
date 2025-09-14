@@ -9,7 +9,7 @@ import { getTags } from "pages/indicators/utils/firebase";
 import type { UiManager } from "app/Layout";
 
 import "pages/indicators/main.css";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 import { LayoutUpdated } from "app/layout/layoutReducer";
 
 export function Indicators() {

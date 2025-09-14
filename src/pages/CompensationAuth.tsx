@@ -1,7 +1,7 @@
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
 import { useEffect } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
+import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "types/layoutTypes";
 

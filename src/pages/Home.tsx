@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router";
 
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";

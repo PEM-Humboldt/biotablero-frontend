@@ -13,7 +13,7 @@ import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router";
 import type { UiManager } from "app/Layout";
 
 type ArrowProps = {
