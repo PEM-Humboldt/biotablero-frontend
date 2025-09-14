@@ -1,23 +1,35 @@
-import { useContext } from "react";
-
+import { useEffect } from "react";
+import { useSearchDrawControlsCTX } from "pages/search/SearchContext";
 import "leaflet-draw";
+import type L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
-
-import {
-  SearchContext,
-  useSearchLegacyCTX,
-  type LegacyContextValues,
-} from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 
-const DrawControl = () => {
-  const context = useSearchLegacyCTX();
-  const { onEditControlMounted } = context as LegacyContextValues;
+export function DrawControl() {
+  const { drawControlsRef, setAreDrawControlMounted } =
+    useSearchDrawControlsCTX();
+
+  const onMounted = (control: L.Control.Draw) => {
+    if (drawControlsRef) {
+      drawControlsRef.current = control;
+      setAreDrawControlMounted(true);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (drawControlsRef) {
+        drawControlsRef.current = null;
+        setAreDrawControlMounted(false);
+      }
+    };
+  }, [drawControlsRef, setAreDrawControlMounted]);
+
   return (
     <FeatureGroup>
       <EditControl
-        onMounted={onEditControlMounted}
+        onMounted={onMounted}
         draw={{
           polyline: false,
           rectangle: false,
@@ -42,6 +54,4 @@ const DrawControl = () => {
       />
     </FeatureGroup>
   );
-};
-
-export default DrawControl;
+}

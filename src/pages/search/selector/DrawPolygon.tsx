@@ -7,15 +7,18 @@ import type * as geojson from "geojson";
 import EditPolygonIcon from "pages/search/selector/EditIcon";
 import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
-import { useSearchLegacyCTX } from "pages/search/SearchContext";
+import {
+  useSearchDrawControlsCTX,
+  useSearchLegacyCTX,
+} from "pages/search/SearchContext";
 import { uiText } from "pages/search/selector/drawPolygon/uiText";
 import "pages/search/selector/DrawPolygon.css";
 import { DrawMode } from "pages/search/selector/drawPolygon/types";
 
 export function DrawPolygon() {
-  const { setOnEditControlMounted, setAreaType, setAreaLayer } =
-    useSearchLegacyCTX();
-  const [drawControl, setDrawControl] = useState<any>();
+  const { drawControlsRef, areDrawControlsMounted } =
+    useSearchDrawControlsCTX();
+  const { setAreaType, setAreaLayer } = useSearchLegacyCTX();
   const [drawnPolygon, setDrawnPolygon] =
     useState<Polygon<geojson.Polygon> | null>(null);
 
@@ -47,78 +50,70 @@ export function DrawPolygon() {
     setDrawMode(DrawMode.IDLE);
   }, []);
 
-  const onEditControlMounted = useCallback(
-    (control: any) => {
-      const newDrawControl = control;
-      setDrawControl(newDrawControl);
-      newDrawControl._map.on("draw:created", onPolygonDrawn);
-      newDrawControl._map.on("draw:edited", onPolygonEdited);
-      newDrawControl._map.on("draw:deleted", onPolygoDeleted);
-      newDrawControl._map.on("draw:drawstart", onDrawStart);
-      newDrawControl._map.on("draw:drawstop", onDrawStop);
-    },
-    [onPolygonDrawn, onPolygonEdited, onPolygoDeleted, onDrawStart, onDrawStop],
-  );
-
   useEffect(() => {
-    setOnEditControlMounted(() => onEditControlMounted);
+    if (areDrawControlsMounted && drawControlsRef?.current) {
+      const drawControl = drawControlsRef.current;
+      drawControl._map.on("draw:created", onPolygonDrawn);
+      drawControl._map.on("draw:edited", onPolygonEdited);
+      drawControl._map.on("draw:deleted", onPolygoDeleted);
+      drawControl._map.on("draw:drawstart", onDrawStart);
+      drawControl._map.on("draw:drawstop", onDrawStop);
 
-    return () => {
-      if (drawControl && drawControl._map) {
-        drawControl._map.off("draw:drawstart", onDrawStart);
-        drawControl._map.off("draw:drawstop", onDrawStop);
-        drawControl._map.off("draw:created", onPolygonDrawn);
-        drawControl._map.off("draw:edited", onPolygonEdited);
-        drawControl._map.off("draw:deleted", onPolygoDeleted);
-      }
-      setOnEditControlMounted(() => () => {});
-    };
+      return () => {
+        if (drawControl && drawControl._map) {
+          drawControl._map.off("draw:created", onPolygonDrawn);
+          drawControl._map.off("draw:edited", onPolygonEdited);
+          drawControl._map.off("draw:deleted", onPolygoDeleted);
+          drawControl._map.off("draw:drawstart", onDrawStart);
+          drawControl._map.off("draw:drawstop", onDrawStop);
+        }
+      };
+    }
   }, [
-    setOnEditControlMounted,
-    onEditControlMounted,
-    drawControl,
-    onDrawStart,
-    onDrawStop,
+    areDrawControlsMounted,
+    drawControlsRef,
     onPolygonDrawn,
     onPolygonEdited,
     onPolygoDeleted,
+    onDrawStart,
+    onDrawStop,
   ]);
 
   const drawClick = () => {
     setDrawMode(DrawMode.DRAW);
-    drawControl!._toolbars.draw._modes.polygon.handler.enable();
+    drawControlsRef!.current!._toolbars.draw._modes.polygon.handler.enable();
   };
 
   const editClick = () => {
     setDrawMode(DrawMode.EDIT);
-    drawControl!._toolbars.edit._modes.edit.handler.enable();
+    drawControlsRef!.current!._toolbars.edit._modes.edit.handler.enable();
   };
 
   const finishEdit = () => {
     setDrawMode(DrawMode.DONE);
-    drawControl!._toolbars.edit._actionButtons[0].button.click();
+    drawControlsRef!.current!._toolbars.edit._actionButtons[0].button.click();
   };
 
   const removeClick = () => {
     setDrawMode(DrawMode.DELETE);
-    drawControl!._toolbars.edit._modes.remove.handler.enable();
+    drawControlsRef!.current!._toolbars.edit._modes.remove.handler.enable();
   };
 
   const finishRemove = () => {
     if (
-      drawControl &&
+      drawControlsRef?.current &&
       drawnPolygon &&
-      drawControl._map.hasLayer(drawnPolygon)
+      drawControlsRef.current._map.hasLayer(drawnPolygon)
     ) {
       drawnPolygon!.remove();
     }
     setDrawMode(DrawMode.IDLE);
-    drawControl!._toolbars.edit._actionButtons[0].button.click();
+    drawControlsRef!.current!._toolbars.edit._actionButtons[0].button.click();
   };
 
   const cancelChange = () => {
     setDrawMode(DrawMode.DONE);
-    drawControl!._toolbars.edit._actionButtons[1].button.click();
+    drawControlsRef!.current!._toolbars.edit._actionButtons[1].button.click();
   };
 
   const sendClick = () => {
@@ -153,7 +148,7 @@ export function DrawPolygon() {
         <div className="button-section">
           <button
             className={`action-button ${drawMode === DrawMode.DRAW ? "active" : ""}`}
-            disabled={drawnPolygon !== null}
+            disabled={drawnPolygon !== null || !areDrawControlsMounted}
             onClick={drawClick}
           >
             <PolygonIcon />
@@ -170,7 +165,8 @@ export function DrawPolygon() {
             disabled={
               drawnPolygon === null ||
               drawMode === DrawMode.DELETE ||
-              drawMode === DrawMode.DRAW
+              drawMode === DrawMode.DRAW ||
+              !areDrawControlsMounted
             }
             onClick={editClick}
           >
@@ -202,7 +198,8 @@ export function DrawPolygon() {
             disabled={
               drawnPolygon === null ||
               drawMode === DrawMode.EDIT ||
-              drawMode === DrawMode.DRAW
+              drawMode === DrawMode.DRAW ||
+              !areDrawControlsMounted
             }
             onClick={removeClick}
           >
@@ -235,7 +232,8 @@ export function DrawPolygon() {
               drawnPolygon === null ||
               drawMode === DrawMode.EDIT ||
               drawMode === DrawMode.DELETE ||
-              drawMode === DrawMode.DRAW
+              drawMode === DrawMode.DRAW ||
+              !areDrawControlsMounted
             }
             onClick={sendClick}
           >

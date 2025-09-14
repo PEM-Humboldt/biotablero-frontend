@@ -4,6 +4,9 @@ import {
   useMemo,
   type Dispatch,
   type ReactNode,
+  useRef,
+  useState,
+  type MutableRefObject,
 } from "react";
 
 import {
@@ -17,12 +20,20 @@ import type {
   ShapeLayer,
 } from "pages/search/types/layers";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
+import type * as geojson from "geojson";
+import type L from "leaflet";
+
 export type SrchType = "definedArea" | "drawPolygon" | null;
 export type DrawControlHandler = (control: unknown) => void;
-import type * as geojson from "geojson";
+export type DrawControlType = {
+  drawControlsRef: MutableRefObject<L.Control.Draw | null>;
+  areDrawControlsMounted: boolean;
+  setAreDrawControlMounted: (mounted: boolean) => void;
+};
 
 const SearchStateCTX = createContext<SearchState | null>(null);
 const SearchDispatchCTX = createContext<Dispatch<SearchActions> | null>(null);
+const SearchDrawControlsCTX = createContext<DrawControlType | null>(null);
 export const SearchLegacyCTX = createContext<LegacyContextValues | null>(null);
 
 export function useSearchStateCTX() {
@@ -43,6 +54,16 @@ export function useSearchDispatchCTX() {
   return dispatch;
 }
 
+export function useSearchDrawControlsCTX() {
+  const drawControls = useContext(SearchDrawControlsCTX);
+  if (!drawControls) {
+    throw new Error(
+      "SearchDrawControlsCTX must be within the SearchStateContext",
+    );
+  }
+  return drawControls;
+}
+
 export function useSearchLegacyCTX() {
   const context = useContext(SearchLegacyCTX);
   if (!context) {
@@ -60,12 +81,22 @@ export function SearchCTX({
   dispatch: React.Dispatch<SearchActions>;
   children: React.ReactNode;
 }) {
+  const drawControlsRef = useRef(null);
+  const [areDrawControlsMounted, setAreDrawControlMounted] = useState(false);
+  const searchDrawCTXvalues = {
+    drawControlsRef,
+    areDrawControlsMounted,
+    setAreDrawControlMounted,
+  };
+
   return (
-    <SearchStateCTX.Provider value={state}>
-      <SearchDispatchCTX.Provider value={dispatch}>
-        {children}
-      </SearchDispatchCTX.Provider>
-    </SearchStateCTX.Provider>
+    <SearchDrawControlsCTX.Provider value={searchDrawCTXvalues}>
+      <SearchStateCTX.Provider value={state}>
+        <SearchDispatchCTX.Provider value={dispatch}>
+          {children}
+        </SearchDispatchCTX.Provider>
+      </SearchStateCTX.Provider>
+    </SearchDrawControlsCTX.Provider>
   );
 }
 
@@ -84,7 +115,8 @@ export type LegacyContextValues = {
   mapTitle: MapTitle;
   loadingLayer: boolean;
   layerError: boolean;
-  drawControls?: DrawControlHandler | (() => void);
+  drawControlsRef: React.MutableRefObject<L.Control.Draw> | null;
+  areDrawControlsMounted: boolean;
   showDrawControl: boolean;
   showAreaLayer: boolean;
 
@@ -100,15 +132,18 @@ export type LegacyContextValues = {
   setLoadingLayer: (loading: boolean) => void;
   setLayerError: (error?: string) => void;
   setMapTitle: (mapTitle: MapTitle) => void;
+  setAreDrawControlMounted: (mounted: boolean) => void;
   clearLayers: () => void;
-
-  onEditControlMounted?: DrawControlHandler;
-  setOnEditControlMounted: (handler: () => void) => void;
 };
 
 export function LegacyCTX({ children }: { children: ReactNode }) {
   const searchState = useSearchStateCTX();
   const searchDispatch = useSearchDispatchCTX();
+  const {
+    drawControlsRef: drawControlsRef,
+    areDrawControlsMounted,
+    setAreDrawControlMounted,
+  } = useSearchDrawControlsCTX();
 
   const expandedSearchDispatch = useMemo(
     () => ({
@@ -132,9 +167,6 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
 
       clearLayers: () => searchDispatch({ type: SearchUpdated.CLEAR_LAYERS }),
 
-      setOnEditControlMounted: (drawControls: DrawControlHandler) =>
-        searchDispatch({ type: SearchUpdated.DRAW_CONTROLS, drawControls }),
-
       setLayerError: (layerError: string | undefined) =>
         searchDispatch({ type: SearchUpdated.LAYER_ERROR, layerError }),
 
@@ -154,8 +186,20 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
   );
 
   const legacyCTXvalue = useMemo(
-    () => ({ ...searchState, ...expandedSearchDispatch }),
-    [searchState, expandedSearchDispatch],
+    () => ({
+      ...searchState,
+      ...expandedSearchDispatch,
+      drawControlsRef,
+      areDrawControlsMounted,
+      setAreDrawControlMounted,
+    }),
+    [
+      searchState,
+      expandedSearchDispatch,
+      drawControlsRef,
+      areDrawControlsMounted,
+      setAreDrawControlMounted,
+    ],
   );
 
   return (
@@ -164,3 +208,4 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
     </SearchLegacyCTX.Provider>
   );
 }
+
