@@ -51,7 +51,7 @@ export class Compensation extends Component {
           currentCompanyId: user.company.id,
           currentCompany: user.username.toUpperCase(),
         },
-        () => this.loadProjectsList()
+        () => this.loadProjectsList(),
       );
     }
   }
@@ -163,7 +163,7 @@ export class Compensation extends Component {
             parent: `${currentCompany} ${idRegion}`,
             child: `${prjStatus} ${label}`,
           });
-        }
+        },
       );
     });
   };
@@ -180,18 +180,18 @@ export class Compensation extends Component {
       feature.properties.area_impacted_pct > 12
     ) {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "high" in obj)
+        colors.find((obj) => "high" in obj),
       );
     } else if (
       feature.properties.compensation_factor < 6.5 &&
       feature.properties.area_impacted_pct < 12
     ) {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "low" in obj)
+        colors.find((obj) => "low" in obj),
       );
     } else {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "medium" in obj)
+        colors.find((obj) => "medium" in obj),
       );
     }
     return styleResponse;
@@ -219,7 +219,7 @@ export class Compensation extends Component {
         area
           .bindPopup(
             `<b>Proyecto:</b> ${currentProject.name}
-          <br><b>Área:</b> ${currentProject.area_ha}`
+          <br><b>Área:</b> ${currentProject.area_ha}`,
           )
           .openPopup();
         break;
@@ -235,7 +235,7 @@ export class Compensation extends Component {
           }
           <br><b>% de afectación:</b> ${
             area.feature.properties.area_impacted_pct || "Sin información"
-          }`
+          }`,
           )
           .openPopup();
         break;
@@ -245,14 +245,14 @@ export class Compensation extends Component {
             .bindPopup(
               `<b>Estrategia:</b> ${area.feature.properties.strategy}
             <br><b>Area:</b> ${area.feature.properties.area_ha} ha
-            <br><b>Estado:</b> ${area.feature.properties.area_status}`
+            <br><b>Estado:</b> ${area.feature.properties.area_status}`,
             )
             .openPopup();
         } else {
           area
             .bindPopup(
               `<b>Estrategia:</b> ${area.feature.properties.strategy}
-            <br><b>Area:</b> ${area.feature.properties.area_ha} ha`
+            <br><b>Area:</b> ${area.feature.properties.area_ha} ha`,
             )
             .openPopup();
         }
@@ -313,7 +313,7 @@ export class Compensation extends Component {
           newProjectModal: false,
         });
         // TODO: Show here instructions to add biomes to the project
-      }
+      },
     );
   };
 
@@ -333,7 +333,7 @@ export class Compensation extends Component {
       () => {
         const { setHeaderNames } = this.props;
         setHeaderNames({ parent: "", child: "" });
-      }
+      },
     );
     this.loadProjectsList();
   };
@@ -361,7 +361,7 @@ export class Compensation extends Component {
 
   innerElementChange = (parent, projectId) => {
     this.loadProject(
-      typeof projectId === "object" ? projectId.id_project : projectId
+      typeof projectId === "object" ? projectId.id_project : projectId,
     );
   };
 
@@ -400,7 +400,7 @@ export class Compensation extends Component {
           this.resetHighlight(oldArea, "projectBiomes");
           oldArea.closePopup();
         }
-      }
+      },
     );
   };
 
@@ -455,11 +455,11 @@ export class Compensation extends Component {
         newAreas
           .sort(
             (a, b) =>
-              a.feature.properties.area_ha - b.feature.properties.area_ha
+              a.feature.properties.area_ha - b.feature.properties.area_ha,
           )
           .forEach((area) => this.highlightFeature(area, "strategies"));
         oldAreas.forEach((area) => this.resetHighlight(area, "strategies"));
-      }
+      },
     );
   };
 
