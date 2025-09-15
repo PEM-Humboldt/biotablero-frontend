@@ -10,7 +10,7 @@ interface MessageProps {
 const withMessageWrapper = <T,>(
   WrappedChart: React.ComponentType<
     Omit<T & MessageProps, "message" | "customMessage">
-  >
+  >,
 ) => {
   const WithMessageWrapper: React.FC<T & MessageProps> = (props) => {
     const { message, customMessage, ...otherProps } = props;

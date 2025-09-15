@@ -47,9 +47,40 @@ class MapViewer extends React.Component {
     this.mapRef = React.createRef();
   }
 
+  componentDidMount() {
+    const map = this.mapRef.current;
+    if (map) {
+      map.whenReady(() => {
+        map.invalidateSize();
+      });
+    }
+
+    const { layers: layersFromProps } = this.props;
+    const layerObjects = MapViewer.infoFromLayers(layersFromProps, "layer");
+    let activeLayers = MapViewer.infoFromLayers(layersFromProps, "active");
+    activeLayers = Object.keys(activeLayers).filter(
+      (name) => activeLayers[name],
+    );
+
+    activeLayers.forEach((layerName) => {
+      const layer = layerObjects[layerName];
+      if (layer) {
+        this.showLayer(layer, true);
+      }
+    });
+  }
+
   componentDidUpdate() {
     const { layers, activeLayers, update } = this.state;
     const { loadingLayer, rasterBounds } = this.props;
+
+    const map = this.mapRef.current;
+    if (map) {
+      map.whenReady(() => {
+        map.invalidateSize();
+      });
+    }
+
     if (update) {
       Object.keys(layers).forEach((layerName) => {
         if (activeLayers.includes(layerName))

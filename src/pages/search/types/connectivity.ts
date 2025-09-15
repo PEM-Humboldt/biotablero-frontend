@@ -19,7 +19,7 @@ export const currentSEPAConnKeys = [
 export const SEPAEcosystems = ["paramo", "wetland", "dryForest"] as const;
 
 export interface currentPAConn {
-  key: typeof currentPAConnKeys[number];
+  key: (typeof currentPAConnKeys)[number];
   area: number;
   percentage: number;
 }
@@ -27,7 +27,7 @@ export interface currentPAConn {
 export interface DPC {
   id: string;
   name: string;
-  key: typeof DPCKeys[number];
+  key: (typeof DPCKeys)[number];
   area: number;
   value: number;
 }
@@ -38,7 +38,7 @@ export interface timeLinePAConnValues {
 }
 
 export interface timelinePAConn {
-  key: typeof timelinePAConnKeys[number];
+  key: (typeof timelinePAConnKeys)[number];
   data: Array<timeLinePAConnValues>;
 }
 
@@ -46,5 +46,5 @@ export interface currentSEPAConn {
   area: number;
   percentage: number;
   label: string;
-  key: typeof currentSEPAConnKeys[number];
+  key: (typeof currentSEPAConnKeys)[number];
 }

@@ -47,33 +47,33 @@ const BarItem: typeof OrigBar = ({
 
   const renderTooltip = useMemo(
     () => () => createElement(tooltip, { ...bar, ...data }),
-    [tooltip, bar, data]
+    [tooltip, bar, data],
   );
 
   const handleClick = useCallback(
     (event: MouseEvent<SVGRectElement>) => {
       onClick?.({ color: bar.color, ...data }, event);
     },
-    [bar, data, onClick]
+    [bar, data, onClick],
   );
   const handleTooltip = useCallback(
     (event: MouseEvent<SVGRectElement>) =>
       showTooltipFromEvent(renderTooltip(), event, "right"),
-    [showTooltipFromEvent, renderTooltip]
+    [showTooltipFromEvent, renderTooltip],
   );
   const handleMouseEnter = useCallback(
     (event: MouseEvent<SVGRectElement>) => {
       onMouseEnter?.(data, event);
       showTooltipFromEvent(renderTooltip(), event);
     },
-    [data, onMouseEnter, showTooltipFromEvent, renderTooltip]
+    [data, onMouseEnter, showTooltipFromEvent, renderTooltip],
   );
   const handleMouseLeave = useCallback(
     (event: MouseEvent<SVGRectElement>) => {
       onMouseLeave?.(data, event);
       hideTooltip();
     },
-    [data, hideTooltip, onMouseLeave]
+    [data, hideTooltip, onMouseLeave],
   );
 
   // extra handlers to allow keyboard navigation

@@ -27,7 +27,7 @@ export class CurrentFootprintController {
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestCurrentHFLayer(
       this.areaType,
-      this.areaId
+      this.areaId,
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -78,7 +78,7 @@ export class CurrentFootprintController {
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
         <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip
+        optionsTooltip,
       )
       .openTooltip();
 

@@ -177,7 +177,7 @@ class NewProjectForm extends Component {
                   handlers[0](
                     regionSelected,
                     newNameState || statusSelected,
-                    newName.trim()
+                    newName.trim(),
                   );
                 }}
                 title="Crear proyecto"

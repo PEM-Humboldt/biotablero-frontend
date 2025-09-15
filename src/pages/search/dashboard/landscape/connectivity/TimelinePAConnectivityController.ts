@@ -30,7 +30,7 @@ export class TimelinePAConnectivityController {
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
       this.areaType ?? "",
-      this.areaId ?? ""
+      this.areaId ?? "",
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -71,7 +71,7 @@ export class TimelinePAConnectivityController {
         `<b>${feature.feature.properties.name}:</b>
           <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
           <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip
+        optionsTooltip,
       )
       .openTooltip();
 

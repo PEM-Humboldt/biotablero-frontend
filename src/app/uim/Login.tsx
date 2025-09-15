@@ -53,7 +53,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
           type="submit"
           onClick={() => {
             RestAPI.requestUser(userValues.username, userValues.password).then(
-              (res) => setUser(res)
+              (res) => setUser(res),
             );
           }}
         >

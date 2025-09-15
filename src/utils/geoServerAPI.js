@@ -9,7 +9,7 @@ class GeoServerAPI {
       if (projectName)
         return GeoServerAPI.requestWFSBiotablero(
           "User_GEB_projects",
-          `CQL_FILTER=NOM_GEN='${projectName}'`
+          `CQL_FILTER=NOM_GEN='${projectName}'`,
         );
       const response = GeoServerAPI.requestWFSBiotablero("User_GEB_projects");
       return response;
@@ -24,7 +24,7 @@ class GeoServerAPI {
     if (envEntity)
       return GeoServerAPI.requestWFSBiotablero(
         "BIOMAS_BY_CAR_MP",
-        `CQL_FILTER=GroupByCar%20like%20"%'${envEntity}'"`
+        `CQL_FILTER=GroupByCar%20like%20"%'${envEntity}'"`,
       );
     const response = GeoServerAPI.requestWFSBiotablero("BIOMAS_BY_CAR_MP");
     return response;
@@ -66,11 +66,11 @@ class GeoServerAPI {
   static requestWFSBiotablero(subType, params) {
     if (params) {
       return GeoServerAPI.makeRequest(
-        `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&${params}&outputFormat=application%2Fjson`
+        `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&${params}&outputFormat=application%2Fjson`,
       );
     }
     return GeoServerAPI.makeRequest(
-      `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`
+      `geoserver/Biotablero/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Biotablero:${subType}&outputFormat=application%2Fjson`,
     );
   }
 

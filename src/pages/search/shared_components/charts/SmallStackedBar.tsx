@@ -68,7 +68,7 @@ const SmallStackedBar = (props: Props) => {
    */
   const getToolTip = (
     id: string | number,
-    allData: Record<string, string | number>
+    allData: Record<string, string | number>,
   ) => {
     if (id !== "NA") {
       return (

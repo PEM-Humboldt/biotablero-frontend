@@ -64,7 +64,7 @@ export function TabsModules({ activeTab }: TabsModulesProps) {
                     currentCategory.subcategories.map(
                       (sub: Category, index: number) => (
                         <Tab key={index} label={sub.title} />
-                      )
+                      ),
                     )}
                 </Tabs>
 

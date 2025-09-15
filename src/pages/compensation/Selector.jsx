@@ -180,15 +180,15 @@ class Selector extends React.Component {
                             ? subOptions.map(
                                 this.renderInnerElement(
                                   subId,
-                                  subOptions.length
-                                )
+                                  subOptions.length,
+                                ),
                               )
                             : [{ subOptions }].map(
                                 this.renderInnerElement(
                                   subId,
                                   "large",
-                                  subOptions
-                                )
+                                  subOptions,
+                                ),
                               )}
                         </AccordionDetails>
                       </Accordion>
@@ -212,7 +212,7 @@ Selector.propTypes = {
       expandIcon: PropTypes.node,
       detailId: PropTypes.string,
       options: PropTypes.array,
-    })
+    }),
   ),
   handlers: PropTypes.arrayOf(PropTypes.func),
   description: PropTypes.object,

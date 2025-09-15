@@ -28,7 +28,7 @@ export class CompensationFactorController {
     const layerId = "fc";
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestBiomesbyEALayer(
-      this.areaId ?? ""
+      this.areaId ?? "",
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -68,7 +68,7 @@ export class CompensationFactorController {
       .bindTooltip(
         `<b>Bioma-IAvH:</b> ${feature.feature.properties.name_biome}
           <br><b>Factor de compensación:</b> ${feature.feature.properties.compensation_factor}`,
-        optionsTooltip
+        optionsTooltip,
       )
       .openTooltip();
 

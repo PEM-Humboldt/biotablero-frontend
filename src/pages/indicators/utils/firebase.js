@@ -73,11 +73,11 @@ const getTags = async () => {
 
   const tagsArray = Array.from(tags);
   const catNames = await Promise.all(
-    tagsArray.map(([cat]) => getDoc(doc(db, "tag_categories", cat)))
+    tagsArray.map(([cat]) => getDoc(doc(db, "tag_categories", cat))),
   );
 
   return new Map(
-    catNames.map((cat, idx) => [cat.data().category, tagsArray[idx][1]])
+    catNames.map((cat, idx) => [cat.data().category, tagsArray[idx][1]]),
   );
 };
 

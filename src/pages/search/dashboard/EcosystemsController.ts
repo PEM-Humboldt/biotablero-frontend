@@ -38,7 +38,7 @@ export class EcosystemsController {
         const { request, source } = BackendAPI.requestCoveragesLayer(
           this.areaType ?? "",
           this.areaId ?? "",
-          category
+          category,
         );
         requests.push(request);
         this.activeRequests.set(category, source);
@@ -55,7 +55,7 @@ export class EcosystemsController {
       return coverageKeys.map((category, idx) => ({
         id: category,
         data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data
+          res[idx].data,
         )}`,
         selected: false,
         paneLevel: 2,
@@ -79,7 +79,7 @@ export class EcosystemsController {
           this.areaType ?? "",
           this.areaId ?? "",
           category,
-          seType
+          seType,
         );
         requests.push(request);
         this.activeRequests.set(category, source);
@@ -96,7 +96,7 @@ export class EcosystemsController {
       return coverageKeys.map((category, idx) => ({
         id: category,
         data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data
+          res[idx].data,
         )}`,
         selected: false,
         paneLevel: 2,

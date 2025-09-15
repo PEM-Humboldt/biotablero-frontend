@@ -23,7 +23,7 @@ interface PropsPointLeg {
 }
 
 const PointLegend: StyledComponent<any, any, {}> = styled(
-  Legend
+  Legend,
 )<PropsPointLeg>`
   &:before {
     display: inline-block;
@@ -42,7 +42,7 @@ interface PropsFilledLeg {
 }
 
 const PointFilledLegend: StyledComponent<any, any, {}> = styled(
-  PointLegend
+  PointLegend,
 )<PropsFilledLeg>`
   &:before {
     background-color: ${(props) => props.color};
@@ -50,7 +50,7 @@ const PointFilledLegend: StyledComponent<any, any, {}> = styled(
 `;
 
 const SquareFilledLegend: StyledComponent<any, any, {}> = styled(
-  PointLegend
+  PointLegend,
 )<PropsFilledLeg>`
   &:before {
     background-color: ${(props) => props.color};
@@ -63,7 +63,7 @@ interface PropsSquareBorderLeg {
 }
 
 const SquareBorderLegend: StyledComponent<any, any, {}> = styled(
-  PointLegend
+  PointLegend,
 )<PropsSquareBorderLeg>`
   &:before {
     color: #ffffff;
