@@ -2,10 +2,10 @@ import {
   useContext,
   createContext,
   useMemo,
-  type Dispatch,
-  type ReactNode,
   useRef,
   useState,
+  type Dispatch,
+  type ReactNode,
   type MutableRefObject,
 } from "react";
 
@@ -64,14 +64,6 @@ export function useSearchDrawControlsCTX() {
   return drawControls;
 }
 
-export function useSearchLegacyCTX() {
-  const context = useContext(SearchLegacyCTX);
-  if (!context) {
-    throw new Error("useSearchLegacyCTX must be within the SearchStateContext");
-  }
-  return context;
-}
-
 export function SearchCTX({
   state,
   dispatch,
@@ -100,8 +92,16 @@ export function SearchCTX({
   );
 }
 
-// HACK: soporte de contexto para componentes de clase pendiente de actualizar
-// DE ACÁ PA' BAJO VUELA PRRO
+// HACK: soporte de contexto para componentes de clase o
+// pendientes de actualizar... DE ACÁ PA' BAJO VUELA PRRO
+export function useSearchLegacyCTX() {
+  const context = useContext(SearchLegacyCTX);
+  if (!context) {
+    throw new Error("useSearchLegacyCTX must be within the SearchStateContext");
+  }
+  return context;
+}
+
 export type LegacyContextValues = {
   // state
   searchType: SrchType;
@@ -117,10 +117,12 @@ export type LegacyContextValues = {
   layerError: boolean;
   showDrawControl: boolean;
   showAreaLayer: boolean;
+
+  // RefContext
   drawControlsRef: MutableRefObject<L.Control.Draw | null>;
   areDrawControlsMounted: boolean;
-
   setAreDrawControlMounted: (mounted: boolean) => void;
+
   // dispatch
   setSearchType: (searchType: SrchType) => void;
   setAreaType: (areaType: AreaType) => void;

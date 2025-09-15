@@ -100,7 +100,7 @@ export function Search() {
     if (
       searchState.areaType?.id !== "custom" ||
       !searchState.areaLayer.json ||
-      (searchState.areaId && typeof searchState.areaId.id === "number")
+      typeof searchState?.areaId.id === "number"
     ) {
       return;
     }
