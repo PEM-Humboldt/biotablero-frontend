@@ -1,24 +1,35 @@
 import { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 
-import LinkIcon from "pages/indicators/app/cardManager/URLIcon";
+import { URLIcon } from "pages/indicators/app/cardManager/URLIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
-import ExpandedCard from "pages/indicators/app/cardManager/ExpandedCard";
+import {
+  ExpandedCard,
+  type ExpandedCardProps,
+} from "pages/indicators/app/cardManager/ExpandedCard";
 
-const Card = (props) => {
-  const { item, expandClick, isExpanded, wasExpanded } = props;
+interface CardProps extends ExpandedCardProps {
+  isExpanded: boolean;
+  wasExpanded: boolean;
+}
+
+export function Card({
+  item,
+  expandClick,
+  isExpanded,
+  wasExpanded,
+}: CardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { id, title, target, lastUpdate, scale, externalLink } = item;
+
+  useEffect(() => {
+    if (cardRef.current && wasExpanded) {
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [wasExpanded]);
 
   if (isExpanded) {
     return <ExpandedCard item={item} expandClick={expandClick} />;
   }
-
-  const { id, title, target, lastUpdate, scale, externalLink } = item;
-  const cardRef = useRef();
-  useEffect(() => {
-    if (wasExpanded) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [wasExpanded]);
 
   return (
     <div
@@ -37,7 +48,7 @@ const Card = (props) => {
               target="_blank"
               rel="noreferrer"
             >
-              <LinkIcon fontSize={19} />
+              <URLIcon fontSize={19} />
             </a>
           )}
           <div
@@ -59,17 +70,4 @@ const Card = (props) => {
       <h4>{scale.join(", ")}</h4>
     </div>
   );
-};
-
-Card.propTypes = {
-  item: ExpandedCard.propTypes.item.isRequired,
-  expandClick: PropTypes.func,
-  isExpanded: PropTypes.bool.isRequired,
-  wasExpanded: PropTypes.bool.isRequired,
-};
-
-Card.defaultProps = {
-  expandClick: () => {},
-};
-
-export default Card;
+}
