@@ -3,9 +3,6 @@ import { createRoot } from "react-dom/client";
 import ReactGA from "react-ga4";
 import { App } from "App";
 
-// TODO: Habilitar registerServiceWorker cuando esté habilitado el dominio en HTTPS
-// import registerServiceWorker from './registerServiceWorker';
-
 if (import.meta.env.MODE === "production") {
   ReactGA.initialize(import.meta.env.VITE_GA_TRACKING_ID, {
     gaOptions: {
@@ -26,4 +23,3 @@ root.render(
   <App />,
   // </StrictMode>,
 );
-// registerServiceWorker();
