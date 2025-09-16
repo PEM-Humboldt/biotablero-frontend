@@ -23,18 +23,20 @@ interface SelectorProps {
 
 type AreasErrorType = "none" | "request-failed" | "empty-result";
 
+// TODO: Pensar a futuro un sistema más robusto para manejo de errores
+const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
+  none: "",
+  "request-failed":
+    "Hubo un error en esta funcionalidad, prueba otra alternativa.",
+  "empty-result": "No se encontraron áreas disponibles para consultar.",
+};
+
 function Selector({ showDrawControls }: SelectorProps) {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState<AreasErrorType>("none");
   const [polygonError, setPolygonError] = useState(false);
   const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
-  const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
-    none: "",
-    "request-failed":
-      "Hubo un error en esta funcionalidad, prueba otra alternativa.",
-    "empty-result": "No se encontraron áreas disponibles para consultar.",
-  };
 
   const { searchType } = useSearchStateCTX();
   const { setSearchType, setAreaHa, setAreaId, setAreaType, setAreaLayer } =
@@ -82,7 +84,7 @@ function Selector({ showDrawControls }: SelectorProps) {
     ComponentToRender = () => <LoadingMessage />;
   } else if (areasError !== "none") {
     ComponentToRender = () => (
-      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError]} />
+      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError.split(":")[0]]} />
     );
   } else {
     ComponentToRender = SearchAreas;
