@@ -85,11 +85,14 @@ export function Indicators() {
         </div>
       )}
       <div className="countD">
-        {isLoading && "Cargando información..."}
-        {!isLoading && cardsData.length <= 0 && "No hay indicadores"}
-        {!isLoading &&
-          cardsData.length > 0 &&
-          `${cardsData.length} indicadores`}
+        {loadingData && "Cargando información..."}
+        {!loadingData && cardsData.length <= 0 && "No hay indicadores"}
+        {!loadingData && cardsData.length > 0 && (
+          <>
+            {cardsData.length}
+            indicadores
+          </>
+        )}
       </div>
       <div className="masonry-cards">
         <CardManager cardsData={cardsData} />

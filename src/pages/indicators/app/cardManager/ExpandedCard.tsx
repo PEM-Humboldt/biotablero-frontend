@@ -1,17 +1,37 @@
 import { useEffect, useRef } from "react";
-import PropTypes from "prop-types";
 
-import LinkIcon from "pages/indicators/app/cardManager/URLIcon";
+import { URLIcon } from "pages/indicators/app/cardManager/URLIcon";
 import MinusIcon from "pages/indicators/components/MinusIcon";
 
-const ExpandedCard = ({ item, expandClick }) => {
-  const {
+export type ExpandedCardItems = {
+  id: string;
+  title: string;
+  target: string;
+  lastUpdate: string;
+  scale: string[];
+  goals: string[];
+  periodicity: string;
+  use: string;
+  description: string;
+  ebv: string[];
+  source: string;
+  requirements: string;
+  externalLink: string;
+};
+
+export type ExpandedCardProps = {
+  item: ExpandedCardItems;
+  expandClick: () => void;
+};
+
+export function ExpandedCard({
+  item: {
     id,
-    title,
-    target,
-    lastUpdate,
-    scale,
-    externalLink,
+    title = "",
+    target = "",
+    lastUpdate = "",
+    scale = [],
+    externalLink = "",
     goals = [],
     periodicity = "",
     use = "",
@@ -19,10 +39,15 @@ const ExpandedCard = ({ item, expandClick }) => {
     requirements = "",
     ebv = [],
     source = "",
-  } = item;
-  const cardRef = useRef();
+  },
+  expandClick,
+}: ExpandedCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    cardRef.current.scrollIntoView({ behavior: "smooth" });
+    if (cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
 
   return (
@@ -38,7 +63,7 @@ const ExpandedCard = ({ item, expandClick }) => {
               target="_blank"
               rel="noreferrer"
             >
-              <LinkIcon fontSize={30} />
+              <URLIcon fontSize={30} />
             </a>
           )}
           <div
@@ -118,43 +143,4 @@ const ExpandedCard = ({ item, expandClick }) => {
       </div>
     </div>
   );
-};
-
-ExpandedCard.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string,
-    target: PropTypes.string,
-    lastUpdate: PropTypes.string,
-    scale: PropTypes.arrayOf(PropTypes.string),
-    goals: PropTypes.arrayOf(PropTypes.string),
-    periodicity: PropTypes.string,
-    use: PropTypes.string,
-    description: PropTypes.string,
-    ebv: PropTypes.arrayOf(PropTypes.string),
-    source: PropTypes.string,
-    requirements: PropTypes.string,
-    externalLink: PropTypes.string,
-  }),
-  expandClick: PropTypes.func,
-};
-
-ExpandedCard.defaultProps = {
-  item: {
-    title: "",
-    target: "",
-    lastUpdate: "",
-    scale: [],
-    goals: [],
-    periodicity: "",
-    use: "",
-    description: "",
-    ebv: [],
-    source: "",
-    requirements: "",
-    externalLink: "",
-  },
-  expandClick: () => {},
-};
-
-export default ExpandedCard;
+}

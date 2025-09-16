@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 
 import Masonry from "react-masonry-component";
-import Card from "pages/indicators/app/cardManager/Card";
+import { Card } from "pages/indicators/app/cardManager/Card";
 
 const masonryOptions = {
   transitionDuration: 0,
@@ -42,8 +41,8 @@ function CardManager({ cardsData }) {
   );
 }
 
-CardManager.propTypes = {
-  cardsData: PropTypes.arrayOf(Card.propTypes.item).isRequired,
-};
+// CardManager.propTypes = {
+//   cardsData: PropTypes.arrayOf(Card.propTypes.item).isRequired,
+// };
 
 export default CardManager;

@@ -10,7 +10,7 @@ export const useUpdateResults = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const indicatorsController = async () => {
       setIsLoading(true);
       try {
         if (filters.length === 0) {
@@ -27,7 +27,7 @@ export const useUpdateResults = () => {
       }
     };
 
-    void fetchData();
+    void indicatorsController();
   }, [filters]);
 
   const updateFilters = (newFilters) => {
