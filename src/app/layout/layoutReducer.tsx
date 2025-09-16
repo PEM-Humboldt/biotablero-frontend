@@ -57,7 +57,7 @@ export function layoutReducer(
         moduleName: action.sectionData.moduleName,
         logos: action.sectionData.logos,
         className: action.sectionData.className,
-        headerNames: { parent: "", child: "" },
+        headerNames: { title: "", subtitle: "" },
       };
     default:
       console.warn("Unknown requested layoutReducer action");

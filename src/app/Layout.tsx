@@ -14,8 +14,8 @@ const layoutInitial: LayoutState = {
   moduleName: "home",
   logos: new Set(),
   headerNames: {
-    parent: "",
-    child: "",
+    title: "",
+    subtitle: "",
   },
   user: null,
   className: "",

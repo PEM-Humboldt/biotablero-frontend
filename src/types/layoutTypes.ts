@@ -8,6 +8,6 @@ export type Collaborators =
   | "umed";
 
 export interface Names {
-  parent: string;
-  child: string;
+  title: string;
+  subtitle: string;
 }

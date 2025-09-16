@@ -55,12 +55,12 @@ export function Search() {
           SearchAPI.requestAreaIds(areaTypeURL),
         ]);
         const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
-        const headerNames = { child: typeObj?.label ?? "" };
+        const headerNames = { subtitle: typeObj?.label ?? "" };
 
         if (areaIdURL === null) {
           layoutDispatch({
             type: LayoutUpdated.HEADER_NAMES,
-            newHeader: { ...headerNames, parent: "" },
+            newHeader: { ...headerNames, title: "" },
           });
 
           searchDispatch({
@@ -76,7 +76,7 @@ export function Search() {
 
         layoutDispatch({
           type: LayoutUpdated.HEADER_NAMES,
-          newHeader: { ...headerNames, parent: idObj?.name ?? "" },
+          newHeader: { ...headerNames, title: idObj?.name ?? "" },
         });
 
         searchDispatch({
@@ -169,7 +169,7 @@ export function Search() {
   const handleGoBackClick = () => {
     layoutDispatch({
       type: LayoutUpdated.HEADER_NAMES,
-      newHeader: { parent: "", child: "" },
+      newHeader: { title: "", subtitle: "" },
     });
     searchDispatch({ type: SearchUpdated.GO_BACK });
     void navigate(pathname);

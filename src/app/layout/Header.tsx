@@ -7,8 +7,8 @@ import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
 import type { UserType } from "types/loginUimProps";
 
 interface Names {
-  parent?: string;
-  child?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 interface HeaderProps {
@@ -18,12 +18,9 @@ interface HeaderProps {
   user: UserType | null;
 }
 
-// TODO: revisar nombres de 'parent' y 'child', pueden ser confusos y la
-// relación jerárquica al parecer está invertida
-
 export function Header({
   activeModule,
-  headerNames: { parent, child },
+  headerNames: { title: title, subtitle: subtitle },
   user,
   layoutDispatch,
 }: HeaderProps) {
@@ -42,7 +39,7 @@ export function Header({
     layoutDispatch({ type: LayoutUpdated.LOGGED_OUT });
   };
 
-  const renderCompositeTitle = parent !== "" && child !== "";
+  const renderCompositeTitle = title !== "" && subtitle !== "";
 
   return (
     <header className="cabezote">
@@ -56,9 +53,9 @@ export function Header({
           <div className="cabezoteRight">
             {renderCompositeTitle ? (
               <h1>
-                <b>{child}</b>
+                <b>{title}</b>
                 <br />
-                {parent}
+                {subtitle}
               </h1>
             ) : (
               <h2>{activeModule}</h2>

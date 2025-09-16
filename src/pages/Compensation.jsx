@@ -58,7 +58,7 @@ export class Compensation extends Component {
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames({ parent: "", child: "" });
+    setHeaderNames({ title: "", subtitle: "" });
   }
 
   loadProjectsList = () => {
@@ -160,8 +160,8 @@ export class Compensation extends Component {
             },
           } = this.state;
           setHeaderNames({
-            parent: `${currentCompany} ${idRegion}`,
-            child: `${prjStatus} ${label}`,
+            title: `${currentCompany} ${idRegion}`,
+            subtitle: `${prjStatus} ${label}`,
           });
         },
       );
@@ -332,7 +332,7 @@ export class Compensation extends Component {
       },
       () => {
         const { setHeaderNames } = this.props;
-        setHeaderNames({ parent: "", child: "" });
+        setHeaderNames({ title: "", subtitle: "" });
       },
     );
     this.loadProjectsList();
