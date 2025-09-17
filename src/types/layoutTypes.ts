@@ -3,7 +3,6 @@ export type Collaborators =
   | "temple"
   | "siac"
   | "geobon"
-  | "geobon"
   | "usaid"
   | "umed";
 

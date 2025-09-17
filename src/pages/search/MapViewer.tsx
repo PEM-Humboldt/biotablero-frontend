@@ -176,14 +176,16 @@ export function MapViewer({
         >
           {shapeLayersRender
             .filter((l) => l.paneLevel === panelLevel)
-            .map((layer) => (
-              <GeoJSON
-                key={layer.id}
-                data={layer.json}
-                style={layer.layerStyle}
-                onEachFeature={layer.onEachFeature}
-              />
-            ))}
+            .map((layer) =>
+              layer.json && layer.json.type ? (
+                <GeoJSON
+                  key={layer.id}
+                  data={layer.json}
+                  style={layer.layerStyle}
+                  onEachFeature={layer.onEachFeature}
+                />
+              ) : null,
+            )}
 
           {rasterLayers
             .filter((l) => l.paneLevel === panelLevel)

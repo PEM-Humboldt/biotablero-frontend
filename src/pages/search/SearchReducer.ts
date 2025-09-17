@@ -170,9 +170,19 @@ export function searchReducer(
       if (hasInvalidGeoJson(action.shapeLayers)) {
         return state;
       }
-      return { ...state, shapeLayers: action.shapeLayers };
+      return {
+        ...state,
+        shapeLayers: action.shapeLayers,
+        loadingLayer: false,
+        layerError: false,
+      };
     case SearchUpdated.RASTER_LAYERS:
-      return { ...state, rasterLayers: action.rasterLayers };
+      return {
+        ...state,
+        rasterLayers: action.rasterLayers,
+        loadingLayer: false,
+        layerError: false,
+      };
     case SearchUpdated.MAP_TITLE:
       return { ...state, mapTitle: action.mapTitle };
     case SearchUpdated.LOADING_LAYER:

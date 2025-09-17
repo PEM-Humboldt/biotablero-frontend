@@ -9,13 +9,15 @@ import { ShapeLayer } from "pages/search/types/layers";
  */
 export const hasInvalidGeoJson = (layers: Array<ShapeLayer>): boolean => {
   const listHasInvalidObject = layers.some(
-    (l) => typeof l.json === "object" && Object.keys(l.json).length === 0,
+    (l) =>
+      l.json && typeof l.json === "object" && Object.keys(l.json).length === 0,
   );
 
   if (listHasInvalidObject) return true;
 
   const listHasInvalidFeature = layers.some(
     (l) =>
+      l.json &&
       l.json.type === "FeatureCollection" &&
       ((l.json as FeatureCollection).features === null ||
         (l.json as FeatureCollection).features === undefined),

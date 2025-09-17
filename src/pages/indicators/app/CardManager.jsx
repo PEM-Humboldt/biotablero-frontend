@@ -11,7 +11,7 @@ const masonryOptions = {
   horizontalOrder: true,
 };
 
-const CardManager = ({ cardsData }) => {
+function CardManager({ cardsData }) {
   const [expanded, setExpanded] = useState(null);
   const prevExpanded = useRef();
 
@@ -40,7 +40,7 @@ const CardManager = ({ cardsData }) => {
       })}
     </Masonry>
   );
-};
+}
 
 CardManager.propTypes = {
   cardsData: PropTypes.arrayOf(Card.propTypes.item).isRequired,
