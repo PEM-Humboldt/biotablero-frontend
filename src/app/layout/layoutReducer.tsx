@@ -1,4 +1,4 @@
-import type { UserType } from "types/loginUimProps";
+import type { UserType } from "app/uim/types";
 import type { Collaborators, Names } from "types/layoutTypes";
 
 export interface LayoutState {
@@ -13,10 +13,10 @@ export enum LayoutUpdated {
   MODULE_NAME = "moduleName",
   SECTION_LOGOS = "sectionLogos",
   HEADER_NAMES = "headerNames",
-  LOGGED_USER = "user",
-  LOGGED_OUT = "out",
   CLASS_NAME = "className",
   CHANGE_SECTION = "changeSection",
+  LOGGED_USER = "loggedIn",
+  LOGGED_OUT = "loggedOut",
 }
 
 export type LayoutActions =

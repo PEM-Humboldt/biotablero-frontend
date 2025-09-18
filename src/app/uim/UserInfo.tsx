@@ -1,4 +1,4 @@
-import type { UserType } from "types/loginUimProps";
+import type { UserType } from "app/uim/types";
 
 interface LogoutHandlerProps {
   logoutHandler: () => void;

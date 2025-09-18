@@ -4,7 +4,7 @@ import { Menu } from "app/layout/header/Menu";
 import { Title } from "app/layout/header/Title";
 import { Uim } from "app/Uim";
 import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
-import type { UserType } from "types/loginUimProps";
+import type { UserType } from "app/uim/types";
 
 interface Names {
   title?: string;
