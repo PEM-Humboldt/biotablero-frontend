@@ -7,7 +7,7 @@ import Modal from "@mui/material/Modal";
 import { Login } from "app/uim/Login";
 import { UserInfo } from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
-import type { LoginUimProps } from "types/loginUimProps";
+import type { UserType } from "app/uim/types";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -19,6 +19,12 @@ const defaultModalsValues: LogModalsTypes = {
   loginModal: false,
   logoutModal: false,
   userModal: false,
+};
+
+export type LoginUimProps = {
+  currentUser: UserType | null;
+  setUser: (res: UserType | null) => void;
+  logoutUser: () => void;
 };
 
 export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
