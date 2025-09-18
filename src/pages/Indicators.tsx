@@ -85,9 +85,9 @@ export function Indicators() {
         </div>
       )}
       <div className="countD">
-        {loadingData && "Cargando información..."}
-        {!loadingData && cardsData.length <= 0 && "No hay indicadores"}
-        {!loadingData && cardsData.length > 0 && (
+        {loadingTags && "Cargando información..."}
+        {!loadingTags && cardsData.length <= 0 && "No hay indicadores"}
+        {!loadingTags && cardsData.length > 0 && (
           <>
             {cardsData.length}
             indicadores
