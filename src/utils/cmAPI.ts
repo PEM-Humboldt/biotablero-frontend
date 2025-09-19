@@ -1,11 +1,9 @@
 import { getTokensFromLS, setTokensInLS } from "app/uim/utils/JWTstorage";
 import axios, {
+  isAxiosError,
   type AxiosResponse,
   type InternalAxiosRequestConfig,
-  isAxiosError,
   type AxiosError,
-  AxiosHeaders,
-  AxiosRequestHeaders,
 } from "axios";
 
 const AUTH_SERVER = "/realms/bt-cm/protocol/openid-connect/token";
@@ -37,6 +35,12 @@ type AuthParams =
       refresh_token: string;
     };
 
+/**
+ * Type guard that checks if a response object matches the `LoginData` shape.
+ *
+ * @param res - The value to validate.
+ * @returns `true` if the object contains both `access_token` and `refresh_token`, otherwise `false`.
+ */
 export function isResponseLoginData(res: unknown): res is LoginData {
   return (
     res !== undefined &&
@@ -47,6 +51,12 @@ export function isResponseLoginData(res: unknown): res is LoginData {
   );
 }
 
+/**
+ * Type guard that checks if a response object matches the `RequestError` shape.
+ *
+ * @param res - The value to validate.
+ * @returns `true` if the object contains both `status` and `message`, otherwise `false`.
+ */
 export function isResponseRequestError(res: unknown): res is RequestError {
   return (
     res !== undefined &&
@@ -57,7 +67,7 @@ export function isResponseRequestError(res: unknown): res is RequestError {
   );
 }
 
-export async function makeAuthRequest(
+async function makeAuthRequest(
   endpoint: string,
   params: AuthParams,
 ): Promise<LoginData | RequestError> {
@@ -96,7 +106,11 @@ export async function makeAuthRequest(
 }
 
 /**
- * Request the user access and gets its JWT tokens
+ * Sends a login request to the authentication server and retrieves JWT tokens.
+ *
+ * @param username - The username to authenticate with.
+ * @param password - The password associated with the username.
+ * @returns A `LoginData` object containing the JWT tokens, or a `RequestError` if authentication fails.
  */
 export async function requestLogin(
   username: string,
@@ -110,7 +124,10 @@ export async function requestLogin(
 }
 
 /**
- * Gets the updated user JWT tokens
+ * Refreshes the access token using the provided refresh token.
+ *
+ * @param refreshToken - The refresh token to exchange for a new access token.
+ * @returns A `LoginData` object containing the updated JWT tokens, or a `RequestError` if the refresh fails.
  */
 export async function refreshAccessToken(
   refreshToken: string,
@@ -121,7 +138,7 @@ export async function refreshAccessToken(
   });
 }
 
-// Interceptor para todos los requests de usuario en el módulo CM
+// NOTE: Interceptor para todos los requests de usuario en el módulo CM
 const cmClient = axios.create({
   baseURL: import.meta.env.VITE_CM_BACKEND_URL as string,
 });
@@ -173,8 +190,17 @@ cmClient.interceptors.response.use(
   },
 );
 
-/*
- * Axios wrapper to handle all the http requests to the CM module
+/**
+ * Wrapper around Axios to standardize requests to the CM module.
+ *
+ * Handles query parameter encoding, error normalization, and token injection through interceptors.
+ *
+ * @typeParam T - The expected response payload type.
+ * @param type - The HTTP method (`get`, `post`, `put`, or `delete`).
+ * @param endpoint - The API endpoint relative to the CM backend base URL.
+ * @param data - Optional key-value pairs to send as query parameters or request body.
+ * @param headers - Optional custom headers for the request.
+ * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
  */
 export async function cmRequest<T>(
   type: "get" | "post" | "put" | "delete",
