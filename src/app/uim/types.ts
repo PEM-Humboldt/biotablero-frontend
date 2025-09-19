@@ -17,4 +17,5 @@ export type UserType = {
   // Sacar estos campos del token
   company?: Company;
   name?: string;
+  profileImg?: string;
 };

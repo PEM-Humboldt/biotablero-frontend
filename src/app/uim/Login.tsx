@@ -3,7 +3,7 @@ import {
   requestLogin,
   isResponseLoginData,
   isResponseLoginError,
-} from "utils/restAPI";
+} from "utils/cmAPI";
 import type { LoginUimProps } from "app/Uim";
 import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
 
@@ -61,6 +61,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       setTokensInLS(res.access_token, res.refresh_token);
       const user = parseUserFromJwt(res.access_token);
 
+      console.log(user);
       void setUser(user);
     } catch (err) {
       console.warn(err);
@@ -101,7 +102,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
           className={validateForm ? "loginbtn" : "loginbtn disabled"}
           disabled={!validateForm}
           type="button"
-          onClick={handleLogin}
+          onClick={() => void handleLogin()}
         >
           {uiTXT.form.buttons.login}
         </button>

@@ -16,7 +16,7 @@ export function RenderCompensation() {
 
   useEffect(() => {
     if (!renderCompensation) {
-      navigate("/", {
+      void navigate("/", {
         state: { prevUrl: pathname },
         replace: true,
       });

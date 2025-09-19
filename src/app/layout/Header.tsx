@@ -1,10 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router";
 
 import { Menu } from "app/layout/header/Menu";
 import { Title } from "app/layout/header/Title";
 import { Uim } from "app/Uim";
 import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
 import type { UserType } from "app/uim/types";
+import { deleteTokensFromLS } from "app/uim/utils/JWTstorage";
 
 interface Names {
   title?: string;
@@ -24,6 +26,7 @@ export function Header({
   user,
   layoutDispatch,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const handleSetUser = (userToSet: UserType | null) => {
     if (userToSet === null) {
       return;
@@ -36,7 +39,9 @@ export function Header({
   };
 
   const handleLogOutUser = () => {
+    deleteTokensFromLS();
     layoutDispatch({ type: LayoutUpdated.LOGGED_OUT });
+    void navigate("/");
   };
 
   const renderCompositeTitle = title !== "" && subtitle !== "";
