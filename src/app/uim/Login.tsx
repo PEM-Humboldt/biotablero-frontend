@@ -5,27 +5,8 @@ import {
   isResponseAuthData,
 } from "utils/authAPI";
 import type { LoginUimProps } from "app/Uim";
+import { uiText } from "app/uim/login/uiText";
 import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
-
-const uiTXT = {
-  form: {
-    name: {
-      label: "Nombre de usuario",
-      placeholder: "Apoddo",
-    },
-    pass: {
-      label: "Contraseña",
-    },
-    buttons: {
-      login: "Ingresar",
-      recovery: "Recuperar contraseña",
-    },
-  },
-  error: {
-    400: "El usuario y/o la contraseña no son correctas",
-    500: "No es posible procesar tu ingreso, intentalo de nuevo más tarde",
-  },
-};
 
 export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
   const [loginError, setLoginError] = useState("");
@@ -52,7 +33,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       );
 
       if (isResponseRequestError(res)) {
-        setLoginError(res.status > 499 ? uiTXT.error[500] : uiTXT.error[400]);
+        setLoginError(res.status > 499 ? uiText.error[500] : uiText.error[400]);
         return;
       }
 
@@ -75,7 +56,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       void setUser(user);
     } catch (err) {
       console.warn(err);
-      void setLoginError(uiTXT.error[500]);
+      void setLoginError(uiText.error[500]);
     }
   };
 
@@ -85,26 +66,29 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
   return (
     <div className="login">
       <form onSubmit={(event) => event.preventDefault()}>
-        {loginError !== "" && <div>{loginError}</div>}
+        {loginError !== "" && (
+          <div style={{ color: "red", marginBottom: "0.5rem" }}>
+            {loginError}
+          </div>
+        )}
         <label>
-          {uiTXT.form.name.label}
+          {uiText.form.name.label}
           <input
             className="loginInput"
             type="text"
-            placeholder={uiTXT.form.name.placeholder}
             id="username"
+            placeholder={uiText.form.name.placeholder}
             onChange={handleChange}
           />
         </label>
 
         <label>
-          {uiTXT.form.pass.label}
+          {uiText.form.pass.label}
           <input
             className="loginInput"
-            placeholder="Contraseña"
+            type="password"
             id="password"
             onChange={handleChange}
-            type="password"
           />
         </label>
 
@@ -114,11 +98,11 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
           type="button"
           onClick={() => void handleLogin()}
         >
-          {uiTXT.form.buttons.login}
+          {uiText.form.buttons.login}
         </button>
 
         <button className="recoverbtn" type="button">
-          {uiTXT.form.buttons.recovery}
+          {uiText.form.buttons.recovery}
         </button>
       </form>
     </div>
