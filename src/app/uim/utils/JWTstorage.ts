@@ -1,4 +1,4 @@
-import type { Tokens } from "app/uim/types";
+import type { Tokens, UserType } from "app/uim/types";
 
 /*
  * Gets the tokens in the localStorage object
@@ -34,4 +34,32 @@ export function getJwtPayload<T>(token: string): T {
     Uint8Array.from(binaryString, (byte) => byte.charCodeAt(0)),
   );
   return JSON.parse(jsonPayload) as T;
+}
+
+/*
+ * Tests if an object fits in UserType
+ */
+export function isPayloadUserType(userObj: unknown): userObj is UserType {
+  return (
+    userObj !== undefined &&
+    userObj !== null &&
+    typeof userObj === "object" &&
+    "username" in userObj &&
+    "email" in userObj &&
+    "roles" in userObj &&
+    Array.isArray(userObj.roles)
+  );
+}
+
+/*
+ * Parse the JWT and selects from the payload to returns the user data
+ */
+export function parseUserFromJwt(token: string): UserType {
+  const payload = getJwtPayload(token);
+  if (!isPayloadUserType(payload)) {
+    throw new Error("Cannot parse the user's object from the response");
+  }
+
+  const { roles, username, email, company, name } = payload;
+  return { roles, username, email, company, name };
 }

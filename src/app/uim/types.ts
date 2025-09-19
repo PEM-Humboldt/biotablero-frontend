@@ -3,7 +3,7 @@ export type Tokens = {
   refreshToken: string | null;
 };
 
-export type Role = "admin" | "user";
+export type Role = "Admin" | "User";
 
 export type Company = {
   id: number;
@@ -11,7 +11,7 @@ export type Company = {
 };
 
 export type UserType = {
-  role: Role;
+  roles: Role[];
   username: string;
   email: string;
   // Sacar estos campos del token
