@@ -56,7 +56,7 @@ export function Header({ activeModule, headerNames }: HeaderProps) {
           </div>
 
           <Uim
-            currentUser={user}
+            user={user}
             setUser={handleSetUser}
             logoutUser={handleLogOutUser}
           />
