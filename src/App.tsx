@@ -33,7 +33,7 @@ export const routes = createBrowserRouter([
         Component: Indicators,
       },
       {
-        path: "/GEB/Compensaciones",
+        path: "/:user/Compensaciones",
         Component: RenderCompensation,
       },
       {

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { Link } from "react-router";
+
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,12 +10,8 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import iconoinfo from "images/icono-info.svg";
 import iconomas from "images/icono-mas.svg";
-import Consultasgeograficas from "images/consulta-geografica-logo.svg";
-import Indicadores from "images/indicadores-biodiversidad-icono.svg";
-import Portafolio from "images/portafolio-icono.svg";
-import Comunitario from "images/monitoreo-comunitario-icono.svg";
-import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import { Link } from "react-router";
+
+import { type DisplayModule, displayModules } from "app/layout/modules";
 import { useUserCTX } from "app/UserContext";
 
 type ArrowProps = {
@@ -23,14 +21,6 @@ type ArrowProps = {
 type CarrouselProps = {
   setActiveTab: React.Dispatch<number | null>;
 };
-
-interface Module {
-  id: number;
-  title: string;
-  image: string;
-  link: string;
-  auth: boolean;
-}
 
 function PrevArrow({ onClick }: ArrowProps) {
   return (
@@ -69,44 +59,6 @@ const makeCarrouselSettings = (
   };
 };
 
-const modules: Module[] = [
-  {
-    id: 1,
-    title: "Consultas Geográficas",
-    image: Consultasgeograficas,
-    link: "/Consultas",
-    auth: false,
-  },
-  {
-    id: 2,
-    title: "Monitoreo Comunitario",
-    image: Comunitario,
-    link: "/Monitoreo",
-    auth: false,
-  },
-  {
-    id: 3,
-    title: "Indicadores de Biodiversidad",
-    image: Indicadores,
-    link: "/Indicadores",
-    auth: false,
-  },
-  {
-    id: 4,
-    title: "Portafolios",
-    image: Portafolio,
-    link: "/Portafolios",
-    auth: false,
-  },
-  {
-    id: 5,
-    title: "Compensación Ambiental",
-    image: compensacionAmbiental,
-    link: "/GEB/Compensaciones",
-    auth: true,
-  },
-];
-
 export function Carrousel({ setActiveTab }: CarrouselProps) {
   const { user } = useUserCTX();
   const [activeModule, setActiveModule] = useState<null | number>(null);
@@ -115,9 +67,9 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
   const settings = makeCarrouselSettings(<PrevArrow />, <NextArrow />);
   const showContainer = activeModule !== null;
 
-  const availableModules = user
-    ? modules
-    : modules.filter((module) => !module.auth);
+  const modules = useMemo<DisplayModule[]>(() => {
+    return displayModules(user?.username, user?.company?.name);
+  }, [user?.username, user?.company?.name]);
 
   const handleClick = (id: number | null) => {
     if (activeModule === id) {
@@ -141,7 +93,7 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
           <p>EXPLORA NUESTROS MÓDULOS</p>
         </Grid>
         <Slider {...settings}>
-          {availableModules.map((module) => (
+          {modules.map((module) => (
             <div
               key={module.id}
               className="ModuloPrincipal"
