@@ -14,6 +14,17 @@ type LoginError = {
   message: string;
 };
 
+type AuthParams =
+  | {
+      grant_type: "password";
+      username: string;
+      password: string;
+    }
+  | {
+      grant_type: "refresh_token";
+      refresh_token: string;
+    };
+
 export function isResponseLoginData(res: unknown): res is LoginData {
   return (
     res !== undefined &&
@@ -34,19 +45,16 @@ export function isResponseLoginError(res: unknown): res is LoginError {
   );
 }
 
-/**
- * Request the user access and gets its JWT tokens
- */
-export async function requestLogin(
-  username: string,
-  password: string,
+export async function makeAuthRequest(
+  endpoint: string,
+  params: AuthParams,
 ): Promise<LoginData | LoginError> {
-  const url = `${import.meta.env.VITE_CM_BACKEND_URL}${LOGIN_ENDPOINT}`;
+  const url = `${import.meta.env.VITE_CM_BACKEND_URL}${endpoint}`;
+
   const body = new URLSearchParams();
-  body.append("grant_type", "password");
   body.append("client_id", "bt-mc-client");
-  body.append("username", username);
-  body.append("password", password);
+  Object.entries(params).forEach(([key, value]) => body.append(key, value));
+
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -73,4 +81,30 @@ export async function requestLogin(
 
     return { status: 503, message: "Couldn't connect with the server" };
   }
+}
+
+/**
+ * Request the user access and gets its JWT tokens
+ */
+export async function requestLogin(
+  username: string,
+  password: string,
+): Promise<LoginData | LoginError> {
+  return makeAuthRequest(LOGIN_ENDPOINT, {
+    grant_type: "password",
+    username,
+    password,
+  });
+}
+
+/**
+ * Gets the updated user JWT tokens
+ */
+export async function refreshAccessToken(
+  refreshToken: string,
+): Promise<LoginData | LoginError> {
+  return makeAuthRequest(TOKEN_REFRESH_ENDPOINT, {
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+  });
 }
