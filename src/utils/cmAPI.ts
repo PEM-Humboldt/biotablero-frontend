@@ -1,4 +1,12 @@
-import axios, { isAxiosError } from "axios";
+import { getTokensFromLS, setTokensInLS } from "app/uim/utils/JWTstorage";
+import axios, {
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+  isAxiosError,
+  type AxiosError,
+  AxiosHeaders,
+  AxiosRequestHeaders,
+} from "axios";
 
 const AUTH_SERVER = "/realms/bt-cm/protocol/openid-connect/token";
 const LOGIN_ENDPOINT = `${AUTH_SERVER}?password`;
@@ -9,10 +17,14 @@ type LoginData = {
   refresh_token: string;
 };
 
-type LoginError = {
+type RequestError = {
   status: number;
   message: string;
 };
+
+interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
 
 type AuthParams =
   | {
@@ -35,7 +47,7 @@ export function isResponseLoginData(res: unknown): res is LoginData {
   );
 }
 
-export function isResponseLoginError(res: unknown): res is LoginError {
+export function isResponseRequestError(res: unknown): res is RequestError {
   return (
     res !== undefined &&
     res !== null &&
@@ -48,7 +60,7 @@ export function isResponseLoginError(res: unknown): res is LoginError {
 export async function makeAuthRequest(
   endpoint: string,
   params: AuthParams,
-): Promise<LoginData | LoginError> {
+): Promise<LoginData | RequestError> {
   const url = `${import.meta.env.VITE_CM_BACKEND_URL}${endpoint}`;
 
   const body = new URLSearchParams();
@@ -89,7 +101,7 @@ export async function makeAuthRequest(
 export async function requestLogin(
   username: string,
   password: string,
-): Promise<LoginData | LoginError> {
+): Promise<LoginData | RequestError> {
   return makeAuthRequest(LOGIN_ENDPOINT, {
     grant_type: "password",
     username,
@@ -102,9 +114,99 @@ export async function requestLogin(
  */
 export async function refreshAccessToken(
   refreshToken: string,
-): Promise<LoginData | LoginError> {
+): Promise<LoginData | RequestError> {
   return makeAuthRequest(TOKEN_REFRESH_ENDPOINT, {
     grant_type: "refresh_token",
     refresh_token: refreshToken,
   });
+}
+
+// Interceptor para todos los requests de usuario en el módulo CM
+const cmClient = axios.create({
+  baseURL: import.meta.env.VITE_CM_BACKEND_URL as string,
+});
+
+cmClient.interceptors.request.use(
+  (config) => {
+    const { accessToken } = getTokensFromLS();
+    if (accessToken) {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+    return config;
+  },
+  (error: AxiosError) => Promise.reject(error),
+);
+
+cmClient.interceptors.response.use(
+  (res) => res,
+  async (err: AxiosError) => {
+    const originalReq = err.config as ExtendedAxiosReqConfig;
+
+    if (err.response?.status !== 401 || originalReq?._retry) {
+      return Promise.reject(err);
+    }
+
+    originalReq._retry = true;
+
+    try {
+      const { refreshToken } = getTokensFromLS();
+      if (refreshToken === null) {
+        return Promise.reject(err);
+      }
+
+      const newTokens = await refreshAccessToken(refreshToken);
+      if (isResponseRequestError(newTokens)) {
+        return Promise.reject(err);
+      }
+
+      setTokensInLS(newTokens.access_token, newTokens.refresh_token);
+      originalReq.headers.set(
+        "Authorization",
+        `Bearer ${newTokens.access_token}`,
+      );
+      return cmClient(originalReq);
+    } catch (refreshError) {
+      console.error("Refresh token failed:", refreshError);
+    }
+
+    return Promise.reject(err);
+  },
+);
+
+/*
+ * Axios wrapper to handle all the http requests to the CM module
+ */
+export async function cmRequest<T>(
+  type: "get" | "post" | "put" | "delete",
+  endpoint: string,
+  data?: Record<string, string>,
+  headers?: Record<string, string>,
+): Promise<T | RequestError> {
+  try {
+    let response: AxiosResponse<T>;
+    const reqParams = new URLSearchParams();
+    if (data) {
+      Object.entries(data).forEach(([key, value]) =>
+        reqParams.append(key, value),
+      );
+    }
+
+    if (type === "get" || type === "delete") {
+      const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
+      response = await cmClient[type]<T>(fullEndpoint);
+    } else {
+      reqParams.append("client_id", "bt-mc-client");
+      response = await cmClient[type]<T>(endpoint, reqParams, { headers });
+    }
+
+    return response.data;
+  } catch (err) {
+    if (isAxiosError(err) && err.response) {
+      return {
+        status: err.response.status,
+        message: err?.message || "Request failed",
+      };
+    }
+    return { status: 503, message: "Couldn't connect with the server" };
+  }
 }
