@@ -1,11 +1,10 @@
-import React from "react";
-
 import { Menu } from "app/layout/header/Menu";
 import { Title } from "app/layout/header/Title";
 import { Uim } from "app/Uim";
-import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
 import type { UserType } from "types/loginUimProps";
 import { useUserCTX } from "app/UserContext";
+import type { UserType } from "app/uim/types";
+import { deleteTokensFromLS } from "app/uim/utils/JWTstorage";
 
 interface Names {
   title?: string;
@@ -31,6 +30,7 @@ export function Header({
 
   const handleLogOutUser = () => {
     logout();
+    deleteTokensFromLS();
   };
 
   const renderCompositeTitle = title !== "" && subtitle !== "";

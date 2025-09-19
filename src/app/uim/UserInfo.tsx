@@ -1,15 +1,19 @@
 import type { UserType } from "app/uim/types";
 
 interface LogoutHandlerProps {
-  logoutHandler: () => void;
   user: UserType;
+  logoutHandler: () => void;
 }
+
 export function UserInfo({ user, logoutHandler }: LogoutHandlerProps) {
   return (
     <div className="user_info">
-      <b>Usuario</b>
+      Usuario:{user.username}
       <br />
-      {user.name}
+      email registrado:{user.email}
+      <br />
+      tipo de usuario:{user.roles[0]}
+      <br />
       <button
         className="logoutbtn"
         title="Salir"

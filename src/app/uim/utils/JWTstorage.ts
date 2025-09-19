@@ -11,6 +11,14 @@ export function getTokensFromLS(): Tokens {
 }
 
 /*
+ * Removes all user tokens from ls
+ */
+export function deleteTokensFromLS(): void {
+  localStorage.removeItem("BT_access");
+  localStorage.removeItem("BT_refresh");
+}
+
+/*
  * Save the tokens in the localStorage object
  */
 export function setTokensInLS(
@@ -19,7 +27,7 @@ export function setTokensInLS(
 ): void {
   localStorage.setItem("BT_access", accessToken);
   if (refreshToken !== undefined) {
-    localStorage.setItem("BT_refresh", accessToken);
+    localStorage.setItem("BT_refresh", refreshToken);
   }
 }
 

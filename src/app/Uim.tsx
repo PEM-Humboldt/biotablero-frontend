@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -29,6 +29,17 @@ export type LoginUimProps = {
 
 export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
+  const userCard = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!userCard.current) {
+      return;
+    }
+    userCard.current.style.setProperty(
+      "--profile-img",
+      `url(${currentUser?.profileImg ? currentUser?.profileImg : "src/images/LogoGEB.png"})`,
+    );
+  }, [currentUser?.profileImg]);
 
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
@@ -66,7 +77,7 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
         onClose={hideModal(whichModal.modal)}
         disableAutoFocus
       >
-        <div className={`uim_modal ${whichModal.modal}`}>
+        <div ref={userCard} className={`uim_modal ${whichModal.modal}`}>
           <button
             type="button"
             className="closebtn"
