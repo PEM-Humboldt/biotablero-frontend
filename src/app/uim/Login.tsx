@@ -64,7 +64,14 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       setTokensInLS(res.access_token, res.refresh_token);
       const user = parseUserFromJwt(res.access_token);
 
-      console.log(user);
+      // HACK: mientras se cuadran los usuarios de compensaciones en el
+      // keycloak, para habilitar el uso con el usuario de la GEB
+      if (user.username === "geb") {
+        user.id = 1;
+        user.name = "Grupo Energía Bogotá";
+        user.company = { id: 1, name: "Grupo Energía Bogotá" };
+      }
+
       void setUser(user);
     } catch (err) {
       console.warn(err);

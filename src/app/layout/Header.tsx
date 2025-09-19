@@ -39,7 +39,7 @@ export function Header({ activeModule, headerNames }: HeaderProps) {
         <Title title="BioTablero" />
       </div>
       <div className="cabezoteRight">
-        <Menu currentUser={user} />
+        <Menu user={user} />
 
         <div className="header_info">
           <div className="cabezoteRight">
