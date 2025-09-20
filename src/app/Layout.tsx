@@ -9,6 +9,7 @@ import {
   type LayoutActions,
   type LayoutState,
 } from "app/layout/layoutReducer";
+import { UserCTX } from "app/UserContext";
 
 const layoutInitial: LayoutState = {
   moduleName: "home",
@@ -33,15 +34,15 @@ export function MainLayout() {
   );
 
   return (
-    <div className={layoutState.className}>
-      <Header
-        activeModule={layoutState.moduleName}
-        headerNames={layoutState.headerNames}
-        user={layoutState.user}
-        layoutDispatch={layoutDispatch}
-      />
-      <Outlet context={{ layoutState, layoutDispatch }} />
-      <Footer logos={layoutState.logos} />
-    </div>
+    <UserCTX>
+      <div className={layoutState.className}>
+        <Header
+          activeModule={layoutState.moduleName}
+          headerNames={layoutState.headerNames}
+        />
+        <Outlet context={{ layoutState, layoutDispatch }} />
+        <Footer logos={layoutState.logos} />
+      </div>
+    </UserCTX>
   );
 }

@@ -13,8 +13,8 @@ import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import { Link, useOutletContext } from "react-router";
-import type { UiManager } from "app/Layout";
+import { Link } from "react-router";
+import { useUserCTX } from "app/UserContext";
 
 type ArrowProps = {
   onClick?: () => void;
@@ -108,14 +108,14 @@ const modules: Module[] = [
 ];
 
 export function Carrousel({ setActiveTab }: CarrouselProps) {
-  const { layoutState } = useOutletContext<UiManager>();
+  const { user } = useUserCTX();
   const [activeModule, setActiveModule] = useState<null | number>(null);
   const [animateContainer, setAnimateContainer] = useState(false);
 
   const settings = makeCarrouselSettings(<PrevArrow />, <NextArrow />);
   const showContainer = activeModule !== null;
 
-  const availableModules = layoutState.user
+  const availableModules = user
     ? modules
     : modules.filter((module) => !module.auth);
 

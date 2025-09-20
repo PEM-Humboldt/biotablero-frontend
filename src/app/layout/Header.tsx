@@ -5,6 +5,7 @@ import { Title } from "app/layout/header/Title";
 import { Uim } from "app/Uim";
 import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
 import type { UserType } from "types/loginUimProps";
+import { useUserCTX } from "app/UserContext";
 
 interface Names {
   title?: string;
@@ -14,29 +15,22 @@ interface Names {
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
-  layoutDispatch: React.Dispatch<LayoutActions>;
-  user: UserType | null;
 }
 
 export function Header({
   activeModule,
   headerNames: { title: title, subtitle: subtitle },
-  user,
-  layoutDispatch,
 }: HeaderProps) {
+  const { user, login, logout } = useUserCTX();
   const handleSetUser = (userToSet: UserType | null) => {
     if (userToSet === null) {
       return;
     }
-
-    layoutDispatch({
-      type: LayoutUpdated.LOGGED_USER,
-      user: userToSet,
-    });
+    login(userToSet);
   };
 
   const handleLogOutUser = () => {
-    layoutDispatch({ type: LayoutUpdated.LOGGED_OUT });
+    logout();
   };
 
   const renderCompositeTitle = title !== "" && subtitle !== "";

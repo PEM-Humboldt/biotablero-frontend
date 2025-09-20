@@ -39,7 +39,7 @@ export const SearchLegacyCTX = createContext<LegacyContextValues | null>(null);
 export function useSearchStateCTX() {
   const context = useContext(SearchStateCTX);
   if (!context) {
-    throw new Error("useSearchStateCTX must be within the SearchStateContext");
+    throw new Error("useSearchStateCTX must be within the SearchStateCTX");
   }
   return context;
 }
@@ -48,7 +48,7 @@ export function useSearchDispatchCTX() {
   const dispatch = useContext(SearchDispatchCTX);
   if (!dispatch) {
     throw new Error(
-      "useSearchDispatchCTX must be within the SearchStateContext",
+      "useSearchDispatchCTX must be within the SearchDispatchCTX",
     );
   }
   return dispatch;
@@ -58,7 +58,7 @@ export function useSearchDrawControlsCTX() {
   const drawControls = useContext(SearchDrawControlsCTX);
   if (!drawControls) {
     throw new Error(
-      "SearchDrawControlsCTX must be within the SearchStateContext",
+      "useSearchDrawControlsCTX must be within the SearchDrawControlsCTX",
     );
   }
   return drawControls;
@@ -97,7 +97,7 @@ export function SearchCTX({
 export function useSearchLegacyCTX() {
   const context = useContext(SearchLegacyCTX);
   if (!context) {
-    throw new Error("useSearchLegacyCTX must be within the SearchStateContext");
+    throw new Error("useSearchLegacyCTX must be within the SearchCTX");
   }
   return context;
 }

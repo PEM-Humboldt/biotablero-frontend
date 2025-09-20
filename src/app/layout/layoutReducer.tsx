@@ -13,8 +13,6 @@ export enum LayoutUpdated {
   MODULE_NAME = "moduleName",
   SECTION_LOGOS = "sectionLogos",
   HEADER_NAMES = "headerNames",
-  LOGGED_USER = "user",
-  LOGGED_OUT = "out",
   CLASS_NAME = "className",
   CHANGE_SECTION = "changeSection",
 }
@@ -23,8 +21,6 @@ export type LayoutActions =
   | { type: LayoutUpdated.MODULE_NAME; newName: string }
   | { type: LayoutUpdated.SECTION_LOGOS; newLogos: Set<Collaborators> }
   | { type: LayoutUpdated.HEADER_NAMES; newHeader: Partial<Names> }
-  | { type: LayoutUpdated.LOGGED_USER; user: UserType }
-  | { type: LayoutUpdated.LOGGED_OUT }
   | { type: LayoutUpdated.CLASS_NAME; newClass: string }
   | {
       type: LayoutUpdated.CHANGE_SECTION;
@@ -45,10 +41,6 @@ export function layoutReducer(
         ...state,
         headerNames: { ...state.headerNames, ...action.newHeader },
       };
-    case LayoutUpdated.LOGGED_USER:
-      return { ...state, user: action.user };
-    case LayoutUpdated.LOGGED_OUT:
-      return { ...state, user: null };
     case LayoutUpdated.CLASS_NAME:
       return { ...state, className: action.newClass };
     case LayoutUpdated.CHANGE_SECTION:

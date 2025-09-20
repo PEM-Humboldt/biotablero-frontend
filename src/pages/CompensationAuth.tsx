@@ -4,19 +4,21 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "types/layoutTypes";
+import { useUserCTX } from "app/UserContext";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función
 export function RenderCompensation() {
-  const { layoutState, layoutDispatch } = useOutletContext<UiManager>();
+  const { user } = useUserCTX();
+  const { layoutDispatch } = useOutletContext<UiManager>();
 
-  const renderCompensation = layoutState.user !== null;
+  const renderCompensation = user !== null;
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   useEffect(() => {
     if (!renderCompensation) {
-      navigate("/", {
+      void navigate("/", {
         state: { prevUrl: pathname },
         replace: true,
       });
@@ -34,10 +36,5 @@ export function RenderCompensation() {
   const handleSetHeaderNames = (names: Names) =>
     layoutDispatch({ type: LayoutUpdated.HEADER_NAMES, newHeader: names });
 
-  return (
-    <Compensation
-      setHeaderNames={handleSetHeaderNames}
-      user={layoutState.user}
-    />
-  );
+  return <Compensation setHeaderNames={handleSetHeaderNames} user={user} />;
 }
