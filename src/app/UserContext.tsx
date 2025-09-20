@@ -6,7 +6,7 @@ import {
   useContext,
 } from "react";
 import { useNavigate } from "react-router";
-import { type UserType } from "types/loginUimProps";
+import type { UserType } from "app/uim/types";
 
 type UserContextType = {
   user: UserType | null;
