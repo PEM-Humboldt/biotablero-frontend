@@ -52,6 +52,7 @@ export function Menu({ user }: { user: UserType | null }) {
           {modules.map((module) => {
             return (
               <NavLink
+                key={module.id}
                 to={module.link}
                 onClick={changeMenuState}
                 style={handleActiveLink}

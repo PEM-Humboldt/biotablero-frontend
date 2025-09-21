@@ -10,7 +10,11 @@ import { Portfolio } from "pages/Portfolio";
 
 import "main.css";
 import { RenderCompensation } from "pages/CompensationAuth";
+import { userCheckNLoad } from "app/utils/userLoader";
+import { UserType } from "app/uim/types";
 
+const consoleUser = (user: UserType) =>
+  setTimeout(() => console.log(user), 5000);
 export const routes = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +31,12 @@ export const routes = createBrowserRouter([
       {
         path: "Monitoreo",
         Component: Monitoring,
+        loader: () =>
+          userCheckNLoad({
+            required: { username: "geb" },
+            redirectPath: "/",
+            onSuccessDataFetcher: consoleUser,
+          }),
       },
       {
         path: "Indicadores",
