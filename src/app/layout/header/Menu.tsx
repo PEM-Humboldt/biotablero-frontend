@@ -3,12 +3,13 @@ import { Link, NavLink } from "react-router";
 
 import isFlagEnabled from "utils/isFlagEnabled";
 import Alerta from "images/alertas-tempranas-icono.svg";
-import type { UserType } from "app/uim/types";
 import { type DisplayModule, displayModules } from "app/layout/modules";
+import { useUserCTX } from "app/UserContext";
 
-export function Menu({ user }: { user: UserType | null }) {
+export function Menu() {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [showAlerts, setShowAlerts] = useState<boolean>(false);
+  const { user } = useUserCTX();
 
   useEffect(() => {
     let isMounted = true;
