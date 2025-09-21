@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   List,
@@ -18,13 +18,15 @@ import {
   ContactSupportOutlined,
   SearchOutlined,
 } from "@mui/icons-material";
+import { useUserCTX } from "app/UserContext";
 
 const drawerWidth = 200;
 const collapsedWidth = 60;
 
-export const SideBar: React.FC = () => {
+export function SideBar() {
   const [collapsed, setCollapsed] = useState(true);
   const toggleDrawer = () => setCollapsed((prev) => !prev);
+  const { user } = useUserCTX();
 
   const items = [
     { text: "Inicio", icon: <HomeOutlined /> },
@@ -32,6 +34,10 @@ export const SideBar: React.FC = () => {
     { text: "Tutorial", icon: <SlideshowOutlined /> },
     { text: "Preguntas Frecuentes", icon: <ContactSupportOutlined /> },
   ];
+
+  if (user !== null) {
+    items.push({ text: "Admin usuario", icon: <SlideshowOutlined /> });
+  }
 
   return (
     <Box className="sidebar-root">
@@ -81,4 +87,4 @@ export const SideBar: React.FC = () => {
       </Box>
     </Box>
   );
-};
+}
