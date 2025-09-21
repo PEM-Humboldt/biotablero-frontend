@@ -28,11 +28,8 @@ export const routes = createBrowserRouter([
       {
         path: "Monitoreo",
         Component: Monitoring,
-        loader: () =>
-          userCheckNLoad({
-            required: { username: "geb" },
-            redirectPath: "/",
-          }),
+        loader: () => userCheckNLoad({ requirements: { username: "geb" } }),
+        children: [],
       },
       {
         path: "Indicadores",
