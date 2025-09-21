@@ -50,6 +50,7 @@ function redirectTo(redirectPath?: Path): void {
   if (!redirectPath) {
     return;
   }
-  console.log("carajo");
+
+  // eslint-disable-next-line @typescript-eslint/only-throw-error
   throw redirect(redirectPath);
 }
