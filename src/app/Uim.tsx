@@ -33,6 +33,7 @@ export function Uim() {
   const logoutUser = () => {
     logout();
     deleteTokensFromLS();
+    hideModal("logoutModal")();
   };
 
   const hideModal = (modal: string) => () => {
@@ -89,10 +90,7 @@ export function Uim() {
         styleCustom="newBiomeAlarm nBA2"
         onClose={hideModal("logoutModal")}
         message="¿Desea cerrar sesión?"
-        onContinue={() => {
-          logoutUser();
-          hideModal("logoutModal")();
-        }}
+        onContinue={logoutUser}
         onCancel={hideModal("logoutModal")}
       />
     </div>
