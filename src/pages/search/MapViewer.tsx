@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useOutletContext } from "react-router";
 import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 import {
   ImageOverlay,
@@ -15,10 +14,10 @@ import { Modal } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 import { DrawControl } from "pages/search/mapViewer/DrawControl";
-import type { UiManager } from "app/Layout";
 import type { Polygon as PolygonType } from "pages/search/types/dashboard";
 import { useSearchStateCTX } from "pages/search/SearchContext";
 import "leaflet/dist/leaflet.css";
+import { useUserCTX } from "app/UserContext";
 
 const COLOMBIA_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],
@@ -48,9 +47,7 @@ export function MapViewer({
 }: MapViewerProps) {
   const [errorModal, setErrorModal] = useState(true);
   const mapRef = useRef<Map>(null);
-  const {
-    layoutState: { user },
-  } = useOutletContext<UiManager>();
+  const { user } = useUserCTX();
 
   const {
     searchType,
@@ -217,7 +214,8 @@ export function MapViewer({
 
       {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
 
-      {user && (
+      {/* HACK: Pendiente a la integración de la db con el sistema de usuarios */}
+      {user && user.username === "geb" && (
         <WMSTileLayer
           layers="Biotablero:Regiones_geb"
           format="image/png"
