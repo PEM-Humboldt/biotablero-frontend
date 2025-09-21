@@ -14,7 +14,8 @@ export type UserType = {
   roles: Role[];
   username: string;
   email: string;
-  // Sacar estos campos del token
+
+  // NOTE: Sacar estos campos del token
   id?: number;
   company?: Company;
   name?: string;
