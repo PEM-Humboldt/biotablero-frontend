@@ -5,9 +5,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
 
 import { Login } from "app/uim/Login";
-import { UserInfo } from "app/uim/UserInfo";
+import { UserInfo as UserCard } from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
-import type { UserType } from "app/uim/types";
+import { useUserCTX } from "app/UserContext";
+import { deleteTokensFromLS } from "app/uim/utils/JWTstorage";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -21,17 +22,17 @@ const defaultModalsValues: LogModalsTypes = {
   userModal: false,
 };
 
-export type LoginUimProps = {
-  user: UserType | null;
-  setUser: (res: UserType | null) => void;
-  logoutUser: () => void;
-};
-
-export function Uim({ setUser, user, logoutUser }: LoginUimProps) {
+export function Uim() {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
+  const { user, logout } = useUserCTX();
 
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
+  };
+
+  const logoutUser = () => {
+    logout();
+    deleteTokensFromLS();
   };
 
   const hideModal = (modal: string) => () => {
@@ -80,11 +81,7 @@ export function Uim({ setUser, user, logoutUser }: LoginUimProps) {
           >
             <CloseIcon />
           </button>
-          {!user ? (
-            <Login setUser={setUser} />
-          ) : (
-            <UserInfo user={user} logoutHandler={showModal("logoutModal")} />
-          )}
+          {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
         </div>
       </Modal>
       <ConfirmationModal

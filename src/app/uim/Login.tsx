@@ -4,11 +4,11 @@ import {
   isResponseLoginData,
   isResponseRequestError,
 } from "utils/cmAPI";
-import type { LoginUimProps } from "app/Uim";
 import { uiText } from "app/uim/login/uiText";
 import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
+import { useUserCTX } from "app/UserContext";
 
-export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
+export function Login() {
   const [loginError, setLoginError] = useState("");
   const [loginData, setLoginData] = useState<{
     username: string;
@@ -17,6 +17,8 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
     username: "",
     password: "",
   });
+
+  const { login } = useUserCTX();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
@@ -50,7 +52,7 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
         user.company = { id: 1, name: "Grupo Energía Bogotá" };
       }
 
-      void setUser(user);
+      void login(user);
     } catch (err) {
       console.warn(err);
       void setLoginError(uiText.error[500]);
