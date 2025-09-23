@@ -1,10 +1,7 @@
-import { useOutletContext } from "react-router";
+import { Outlet, useOutletContext } from "react-router";
 import { useEffect } from "react";
 
-import { SearchBar } from "pages/monitoring/searchBar";
-import { SideBar } from "pages/monitoring/sideBar";
-import { Map } from "pages/monitoring/Map";
-import { Dashboard } from "pages/monitoring/Dashboard";
+import { SideBar } from "pages/monitoring/SideBar";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
@@ -25,17 +22,9 @@ export function Monitoring() {
 
   return (
     <div className="monitoring-root">
-      <div className="map-wrapper">
-        <Map />
-      </div>
+      <SideBar />
 
-      <div className="monitoring-body">
-        <SearchBar />
-        <SideBar />
-        <Dashboard title="" subtitle="">
-          {null}
-        </Dashboard>
-      </div>
+      <Outlet />
     </div>
   );
 }

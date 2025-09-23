@@ -18,11 +18,7 @@ import type { Polygon as PolygonType } from "pages/search/types/dashboard";
 import { useSearchStateCTX } from "pages/search/SearchContext";
 import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "app/UserContext";
-
-const COLOMBIA_BOUNDS: LatLngBoundsLiteral = [
-  [-4.2316872, -82.1243666],
-  [16.0571269, -66.85119073],
-];
+import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 
 const config = {
   params: {
