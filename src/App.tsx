@@ -11,6 +11,7 @@ import { Portfolio } from "pages/Portfolio";
 import "main.css";
 import { RenderCompensation } from "pages/CompensationAuth";
 import { userCheckNLoad } from "app/utils/userLoader";
+import { InitiativesMap } from "pages/monitoring/InitiativesMap";
 
 export const routes = createBrowserRouter([
   {
@@ -29,7 +30,7 @@ export const routes = createBrowserRouter([
         path: "Monitoreo",
         Component: Monitoring,
         loader: () => userCheckNLoad({ requirements: { username: "geb" } }),
-        children: [],
+        children: [{ index: true, Component: InitiativesMap }],
       },
       {
         path: "Indicadores",

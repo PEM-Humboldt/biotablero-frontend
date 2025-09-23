@@ -1,12 +1,8 @@
 import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { LatLngExpression, Map } from "leaflet";
+import { Map } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
-
-interface MapProps {
-  center?: LatLngExpression;
-}
 
 const config = {
   params: {
@@ -14,25 +10,8 @@ const config = {
   },
 };
 
-export function InitiativesMap({ bounds = [4.5709, -74.2973] }) {
+export function MapFinder({ bounds = [4.5709, -74.2973] }) {
   const mapRef = useRef<Map>(null);
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map) {
-      return;
-    }
-
-    map.whenReady(() => {
-      map.invalidateSize();
-    });
-
-    if (Array.isArray(bounds) && bounds.length !== 2) {
-      map.flyToBounds(config.params.colombia);
-    } else {
-      map.flyToBounds(config.params.colombia);
-    }
-  }, [bounds]);
 
   return (
     <MapContainer
