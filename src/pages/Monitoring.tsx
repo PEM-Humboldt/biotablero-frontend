@@ -1,7 +1,7 @@
 import { Outlet, useOutletContext } from "react-router";
 import { useEffect } from "react";
 
-import { SideBar } from "pages/monitoring/SideBar";
+import { SideBar } from "pages/monitoring/outlet/SideBar";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
