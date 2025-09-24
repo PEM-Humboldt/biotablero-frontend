@@ -4,13 +4,18 @@ import { redirect } from "react-router";
 
 type Path = `/${string}`;
 
-type UserCheckNLoad<ReturnType, CriticalReturnType> = {
+type CheckNLoadProps<ReturnType, CriticalReturnType> = {
   requirements: Partial<UserType>;
   redirectPath?: Path;
-  criticalFetcher?: (user: UserType) => Promise<CriticalReturnType>;
-  regularFetcher?: (user: UserType) => Promise<ReturnType>;
+  fetchCriticalData?: (user: UserType) => Promise<CriticalReturnType>;
+  fetchData?: (user: UserType) => Promise<ReturnType>;
   onFetchFailiure?: () => void;
 };
+
+export type CheckNLoadReturn<ReturnType, CriticalReturnType> = Promise<{
+  userData: Promise<ReturnType> | null;
+  criticalUserData: CriticalReturnType | null;
+} | null>;
 
 /**
  * Validates the current user and fetches optional critical and non-critical data.
@@ -21,8 +26,8 @@ type UserCheckNLoad<ReturnType, CriticalReturnType> = {
  * @param obj an object with the following shape:
  * @param obj.requiredUserData - A Partial<UserType> object with properties that must be verified.
  * @param obj.redirectPath - Path to redirect if validation fails.
- * @param obj.criticalFetcher - Async callback for critical user data.
- * @param obj.regularFetcher - Async callback for additional user data.
+ * @param obj.fetchCriticalData - Async callback for critical user data.
+ * @param obj.fetchData - Async callback for additional user data.
  * @param obj.onFetchFailiure - Optional callback when any data fetcher fails.
  *
  * @returns A promise resolving to:
@@ -33,16 +38,13 @@ type UserCheckNLoad<ReturnType, CriticalReturnType> = {
  * - `userData` is wrapped in a promise to enable Suspense/partial loading.
  * - `criticalUserData` is awaited immediately and required before continuing.
  */
-export async function userCheckNLoad<T, U>({
+export async function checkNLoad<T, U>({
   requirements,
   redirectPath,
-  criticalFetcher,
-  regularFetcher,
+  fetchCriticalData,
+  fetchData,
   onFetchFailiure,
-}: UserCheckNLoad<T, U>): Promise<{
-  userData: Promise<T> | null;
-  criticalUserData: U | null;
-} | null> {
+}: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
   const user = await getCredentials();
   if (!user) {
     redirectTo(redirectPath);
@@ -56,7 +58,7 @@ export async function userCheckNLoad<T, U>({
 
   let criticalUserData: U | null = null;
   try {
-    criticalUserData = criticalFetcher ? await criticalFetcher(user) : null;
+    criticalUserData = fetchCriticalData ? await fetchCriticalData(user) : null;
   } catch (err) {
     console.error("Cannot retreive critical user data:", err);
     if (onFetchFailiure) {
@@ -65,9 +67,9 @@ export async function userCheckNLoad<T, U>({
     throw err;
   }
 
-  const dataPromise = regularFetcher
+  const dataPromise = fetchData
     ? Promise.resolve(
-        regularFetcher(user).catch((err) => {
+        fetchData(user).catch((err) => {
           console.error("Cannot retreive user data:", err);
           if (onFetchFailiure) {
             onFetchFailiure();
