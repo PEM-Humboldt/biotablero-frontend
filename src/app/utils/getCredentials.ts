@@ -63,6 +63,7 @@ export function partialComparison<T extends Record<string, unknown>>(
       if (!result) {
         return false;
       }
+      continue;
     }
 
     if (Array.isArray(required) && Array.isArray(userHas)) {
@@ -71,6 +72,7 @@ export function partialComparison<T extends Record<string, unknown>>(
           return false;
         }
       }
+      continue;
     }
 
     if (required !== userHas) {
