@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   requestAccessToken,
   isResponseRequestError,
   isResponseAuthData,
 } from "utils/authAPI";
 import { uiText } from "app/uim/login/uiText";
-import {
-  deleteTokensFromLS,
-  getTokensFromLS,
-  parseUserFromJwt,
-  setTokensInLS,
-} from "app/uim/utils/JWTstorage";
+import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
 import { useUserCTX } from "app/UserContext";
 
 export function Login() {
@@ -45,7 +40,7 @@ export function Login() {
       }
 
       if (!isResponseAuthData(res)) {
-        setLoginError(uiTXT.error[500]);
+        setLoginError(uiText.error[500]);
         return;
       }
 
