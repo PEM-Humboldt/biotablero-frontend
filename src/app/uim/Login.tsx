@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
-  requestLogin,
-  isResponseLoginData,
+  requestAccessToken,
   isResponseRequestError,
-} from "utils/cmAPI";
+  isResponseAuthData,
+} from "utils/authAPI";
 import type { LoginUimProps } from "app/Uim";
 import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
 
@@ -46,14 +46,17 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
 
   const handleLogin = async () => {
     try {
-      const res = await requestLogin(loginData.username, loginData.password);
+      const res = await requestAccessToken(
+        loginData.username,
+        loginData.password,
+      );
 
       if (isResponseRequestError(res)) {
         setLoginError(res.status > 499 ? uiTXT.error[500] : uiTXT.error[400]);
         return;
       }
 
-      if (!isResponseLoginData(res)) {
+      if (!isResponseAuthData(res)) {
         setLoginError(uiTXT.error[500]);
         return;
       }

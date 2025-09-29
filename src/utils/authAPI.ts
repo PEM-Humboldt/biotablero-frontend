@@ -10,7 +10,7 @@ const AUTH_SERVER = "/realms/bt-cm/protocol/openid-connect/token";
 const LOGIN_ENDPOINT = `${AUTH_SERVER}?password`;
 const TOKEN_REFRESH_ENDPOINT = `${AUTH_SERVER}?refresh`;
 
-type LoginData = {
+type AuthData = {
   access_token: string;
   refresh_token: string;
 };
@@ -41,7 +41,7 @@ type AuthParams =
  * @param res - The value to validate.
  * @returns `true` if the object contains both `access_token` and `refresh_token`, otherwise `false`.
  */
-export function isResponseLoginData(res: unknown): res is LoginData {
+export function isResponseAuthData(res: unknown): res is AuthData {
   return (
     res !== undefined &&
     res !== null &&
@@ -70,8 +70,8 @@ export function isResponseRequestError(res: unknown): res is RequestError {
 async function makeAuthRequest(
   endpoint: string,
   params: AuthParams,
-): Promise<LoginData | RequestError> {
-  const url = `${import.meta.env.VITE_CM_BACKEND_URL}${endpoint}`;
+): Promise<AuthData | RequestError> {
+  const url = `${import.meta.env.VITE_AUTH_BACKEND_URL}${endpoint}`;
 
   const body = new URLSearchParams();
   body.append("client_id", "bt-mc-client");
@@ -83,10 +83,11 @@ async function makeAuthRequest(
     },
   };
 
+  console.log(url, body, config);
   try {
     const { data }: { data: unknown } = await axios.post(url, body, config);
 
-    if (!isResponseLoginData(data)) {
+    if (!isResponseAuthData(data)) {
       return { status: 500, message: "Unknown server error" };
     }
 
@@ -112,10 +113,10 @@ async function makeAuthRequest(
  * @param password - The password associated with the username.
  * @returns A `LoginData` object containing the JWT tokens, or a `RequestError` if authentication fails.
  */
-export async function requestLogin(
+export async function requestAccessToken(
   username: string,
   password: string,
-): Promise<LoginData | RequestError> {
+): Promise<AuthData | RequestError> {
   return makeAuthRequest(LOGIN_ENDPOINT, {
     grant_type: "password",
     username,
@@ -131,7 +132,7 @@ export async function requestLogin(
  */
 export async function refreshAccessToken(
   refreshToken: string,
-): Promise<LoginData | RequestError> {
+): Promise<AuthData | RequestError> {
   return makeAuthRequest(TOKEN_REFRESH_ENDPOINT, {
     grant_type: "refresh_token",
     refresh_token: refreshToken,
@@ -139,11 +140,11 @@ export async function refreshAccessToken(
 }
 
 // NOTE: Interceptor para todos los requests de usuario en el módulo CM
-const cmClient = axios.create({
-  baseURL: import.meta.env.VITE_CM_BACKEND_URL as string,
+const authClient = axios.create({
+  baseURL: import.meta.env.VITE_AUTH_BACKEND_URL,
 });
 
-cmClient.interceptors.request.use(
+authClient.interceptors.request.use(
   (config) => {
     const { accessToken } = getTokensFromLS();
     if (accessToken) {
@@ -154,7 +155,7 @@ cmClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-cmClient.interceptors.response.use(
+authClient.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     const originalReq = err.config as ExtendedAxiosReqConfig;
@@ -181,7 +182,7 @@ cmClient.interceptors.response.use(
         "Authorization",
         `Bearer ${newTokens.access_token}`,
       );
-      return cmClient(originalReq);
+      return authClient(originalReq);
     } catch (refreshError) {
       console.error("Refresh token failed:", refreshError);
     }
@@ -202,7 +203,7 @@ cmClient.interceptors.response.use(
  * @param headers - Optional custom headers for the request.
  * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
  */
-export async function cmRequest<T>(
+export async function authRequest<T>(
   type: "get" | "post" | "put" | "delete",
   endpoint: string,
   data?: Record<string, string>,
@@ -219,10 +220,10 @@ export async function cmRequest<T>(
 
     if (type === "get" || type === "delete") {
       const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
-      response = await cmClient[type]<T>(fullEndpoint);
+      response = await authClient[type]<T>(fullEndpoint);
     } else {
       reqParams.append("client_id", "bt-mc-client");
-      response = await cmClient[type]<T>(endpoint, reqParams, { headers });
+      response = await authClient[type]<T>(endpoint, reqParams, { headers });
     }
 
     return response.data;
