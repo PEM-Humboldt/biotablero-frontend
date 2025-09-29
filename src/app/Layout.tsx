@@ -1,30 +1,48 @@
-import Footer from "app/layout/Footer";
-import Header from "app/layout/Header";
+import React, { useReducer } from "react";
+import { Outlet } from "react-router";
 
-import { LogosConfig, Names } from "types/layoutTypes";
+import { Footer } from "app/layout/Footer";
+import { Header } from "app/layout/Header";
 
-interface LayoutProps {
-  children: React.ReactNode;
-  moduleName: string;
-  footerLogos: keyof LogosConfig | null;
-  headerNames: Names;
-  uim: React.ReactNode;
-  className: string;
+import {
+  layoutReducer,
+  type LayoutActions,
+  type LayoutState,
+} from "app/layout/layoutReducer";
+import { UserCTX } from "app/UserContext";
+
+const layoutInitial: LayoutState = {
+  moduleName: "home",
+  logos: new Set(),
+  headerNames: {
+    title: "",
+    subtitle: "",
+  },
+  user: null,
+  className: "",
+};
+
+export interface UiManager {
+  layoutState: LayoutState;
+  layoutDispatch: React.Dispatch<LayoutActions>;
 }
 
-const Layout: React.FunctionComponent<LayoutProps> = ({
-  children,
-  moduleName,
-  footerLogos,
-  headerNames,
-  uim,
-  className,
-}) => (
-  <div className={className}>
-    <Header activeModule={moduleName} headerNames={headerNames} uim={uim} />
-    {children}
-    <Footer logosId={footerLogos} />
-  </div>
-);
+export function MainLayout() {
+  const [layoutState, layoutDispatch] = useReducer(
+    layoutReducer,
+    layoutInitial,
+  );
 
-export default Layout;
+  return (
+    <UserCTX>
+      <div className={layoutState.className}>
+        <Header
+          activeModule={layoutState.moduleName}
+          headerNames={layoutState.headerNames}
+        />
+        <Outlet context={{ layoutState, layoutDispatch }} />
+        <Footer logos={layoutState.logos} />
+      </div>
+    </UserCTX>
+  );
+}

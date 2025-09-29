@@ -30,7 +30,7 @@ export class TimelineFootprintController {
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestHFPersistenceLayer(
       this.areaType,
-      this.areaId
+      this.areaId,
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -75,7 +75,7 @@ export class TimelineFootprintController {
         BackendAPI.requestHFLayerBySEInGeofence(
           this.areaType,
           this.areaId,
-          seType[selectedKey]
+          seType[selectedKey],
         );
 
       const { request, source } = reqPromise;
@@ -103,7 +103,7 @@ export class TimelineFootprintController {
     } catch (error: any) {
       if (error != "Error: Invalid GeoJSON") {
         throw new Error(
-          error instanceof Error ? error.message : "Error al obtener la capa"
+          error instanceof Error ? error.message : "Error al obtener la capa",
         );
       } else {
         return { id: "", paneLevel: 0, json: { type: "FeatureCollection" } };
@@ -137,7 +137,7 @@ export class TimelineFootprintController {
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
         <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip
+        optionsTooltip,
       )
       .openTooltip();
 

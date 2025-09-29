@@ -28,25 +28,25 @@ export const timelineHFYears = [
 
 export interface currentHFValue {
   value: number;
-  category: typeof currentHFCategories[number];
+  category: (typeof currentHFCategories)[number];
 }
 
 export interface currentHFCategories {
   area: number;
-  key: typeof currentHFCategories[number];
+  key: (typeof currentHFCategories)[number];
   percentage: number;
 }
 
 export interface hfPersistence {
   area: number;
-  key: typeof persistenceHFCategories[number];
+  key: (typeof persistenceHFCategories)[number];
   percentage: number;
 }
 
 export interface hfTimeline {
-  key: typeof timelineHFKeys[number];
+  key: (typeof timelineHFKeys)[number];
   data: Array<{
-    x: typeof timelineHFYears[number];
+    x: (typeof timelineHFYears)[number];
     y: number;
   }>;
 }

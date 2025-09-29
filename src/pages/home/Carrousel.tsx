@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -13,8 +13,8 @@ import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import compensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import { Link } from "react-router-dom";
-import AppContext from "app/AppContext";
+import { Link } from "react-router";
+import { useUserCTX } from "app/UserContext";
 
 type ArrowProps = {
   onClick?: () => void;
@@ -24,7 +24,7 @@ type CarrouselProps = {
   setActiveTab: React.Dispatch<number | null>;
 };
 
-interface module {
+interface Module {
   id: number;
   title: string;
   image: string;
@@ -32,25 +32,25 @@ interface module {
   auth: boolean;
 }
 
-const PrevArrow = ({ onClick }: ArrowProps) => {
+function PrevArrow({ onClick }: ArrowProps) {
   return (
     <div className="prev-arrow" onClick={onClick}>
       <KeyboardArrowLeft fontSize="large" />
     </div>
   );
-};
+}
 
-const NextArrow = ({ onClick }: ArrowProps) => {
+function NextArrow({ onClick }: ArrowProps) {
   return (
     <div className="next-arrow" onClick={onClick}>
       <KeyboardArrowRight fontSize="large" />
     </div>
   );
-};
+}
 
 const makeCarrouselSettings = (
   prevArrow: React.ReactNode,
-  nextArrow: React.ReactNode
+  nextArrow: React.ReactNode,
 ) => {
   return {
     dots: true,
@@ -59,8 +59,8 @@ const makeCarrouselSettings = (
     slidesToShow: 3,
     slidesToScroll: 3,
     arrows: true,
-    prevArrow: prevArrow,
-    nextArrow: nextArrow,
+    prevArrow,
+    nextArrow,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3, slidesToScroll: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2, slidesToScroll: 2 } },
@@ -69,7 +69,7 @@ const makeCarrouselSettings = (
   };
 };
 
-const modules: module[] = [
+const modules: Module[] = [
   {
     id: 1,
     title: "Consultas Geográficas",
@@ -107,8 +107,8 @@ const modules: module[] = [
   },
 ];
 
-export const Carrousel = ({ setActiveTab }: CarrouselProps) => {
-  const { user } = useContext(AppContext);
+export function Carrousel({ setActiveTab }: CarrouselProps) {
+  const { user } = useUserCTX();
   const [activeModule, setActiveModule] = useState<null | number>(null);
   const [animateContainer, setAnimateContainer] = useState(false);
 
@@ -230,4 +230,4 @@ export const Carrousel = ({ setActiveTab }: CarrouselProps) => {
       </Container>
     </div>
   );
-};
+}

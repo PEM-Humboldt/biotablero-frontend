@@ -72,7 +72,7 @@ const LargeStackedBar = (props: Props) => {
   const getToolTip = (
     id: string | number,
     allData: Record<string, string | number>,
-    color: string
+    color: string,
   ) => {
     if (allData[`${id}Percentage`]) {
       return (

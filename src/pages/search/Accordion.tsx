@@ -12,7 +12,7 @@ interface Props {
   handleChange: (
     level: string,
     expandedTab: string,
-    expandedTabLabel?: string
+    expandedTabLabel?: string,
   ) => void;
   level: string;
 }
@@ -38,10 +38,10 @@ class Accordion extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps: Props) {
     const prvSection = prevProps.componentsArray.find(
-      (cmp) => !cmp.label.collapsed
+      (cmp) => !cmp.label.collapsed,
     );
     const curSection = this.props.componentsArray.find(
-      (cmp) => !cmp.label.collapsed
+      (cmp) => !cmp.label.collapsed,
     );
 
     if (prvSection?.label.collapsed !== curSection?.label.collapsed) {

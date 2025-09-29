@@ -2,9 +2,10 @@ import React from "react";
 
 import Accordion from "pages/search/Accordion";
 import Richness from "pages/search/dashboard/species/Richness";
-import { SearchContext } from "pages/search/SearchContext";
+import { SearchLegacyCTX } from "../SearchContext";
 
 class Species extends React.Component {
+  static contextType = SearchLegacyCTX;
   mounted = false;
 
   constructor(props) {
@@ -92,7 +93,7 @@ class Species extends React.Component {
     ];
 
     const componentsArray = initialArray.filter((f) =>
-      availableComponents.includes(f.label.id)
+      availableComponents.includes(f.label.id),
     );
 
     return (
@@ -108,5 +109,3 @@ class Species extends React.Component {
 }
 
 export default Species;
-
-Species.contextType = SearchContext;

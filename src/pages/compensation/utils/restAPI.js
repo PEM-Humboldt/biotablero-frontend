@@ -13,7 +13,7 @@ class RestAPI {
    */
   static requestImpactedBiomes(companyId, projectId) {
     return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/biomes`
+      `companies/${companyId}/projects/${projectId}/biomes`,
     );
   }
 
@@ -25,7 +25,7 @@ class RestAPI {
    */
   static requestImpactedBiomesDecisionTree(companyId, projectId) {
     return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/decisionTree`
+      `companies/${companyId}/projects/${projectId}/decisionTree`,
     );
   }
 
@@ -52,7 +52,7 @@ class RestAPI {
    */
   static requestProjectByIdAndCompany(companyId, projectId) {
     return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}`
+      `companies/${companyId}/projects/${projectId}`,
     );
   }
 
@@ -62,7 +62,7 @@ class RestAPI {
    */
   static requestProjectsAndRegionsByCompany(companyId) {
     return RestAPI.makeGetRequest(
-      `companies/${companyId}/projects?group_props=id_region,prj_status`
+      `companies/${companyId}/projects?group_props=id_region,prj_status`,
     );
   }
 
@@ -86,7 +86,7 @@ class RestAPI {
     };
     return RestAPI.makePostRequest(
       `companies/${companyId}/projects`,
-      requestBody
+      requestBody,
     ).then((res) => ({
       id_project: res.gid,
       id_company: res.id_company,
@@ -119,7 +119,7 @@ class RestAPI {
     }));
     return RestAPI.makePostRequest(
       `companies/${companyId}/projects/${projectId}/biomes`,
-      cleanBiomes
+      cleanBiomes,
     );
   }
 
@@ -133,7 +133,7 @@ class RestAPI {
   static createProjectStrategy = (companyId, projectId, strategy) =>
     RestAPI.makePostRequest(
       `companies/${companyId}/projects/${projectId}/strategies`,
-      strategy
+      strategy,
     );
 
   /**
@@ -146,8 +146,8 @@ class RestAPI {
   static bulkSaveStrategies = (companyId, projectId, strategies) =>
     Promise.all(
       strategies.map((strategy) =>
-        RestAPI.createProjectStrategy(companyId, projectId, strategy)
-      )
+        RestAPI.createProjectStrategy(companyId, projectId, strategy),
+      ),
     );
 
   /**
@@ -158,7 +158,7 @@ class RestAPI {
    */
   static getSavedStrategies = (companyId, projectId) =>
     RestAPI.makeGetRequest(
-      `companies/${companyId}/projects/${projectId}/strategies`
+      `companies/${companyId}/projects/${projectId}/strategies`,
     );
 
   /**
@@ -166,7 +166,7 @@ class RestAPI {
    */
   static downloadProjectStrategiesUrl = (companyId, projectId) =>
     RestAPI.makeGetRequest(
-      `/companies/${companyId}/projects/${projectId}/strategies/download`
+      `/companies/${companyId}/projects/${projectId}/strategies/download`,
     );
 
   /** ************** */
@@ -221,7 +221,7 @@ class RestAPI {
       .post(
         `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
         requestBody,
-        config
+        config,
       )
       .then((res) => res.data)
       .catch((error) => {

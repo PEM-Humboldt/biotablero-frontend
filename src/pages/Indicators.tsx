@@ -1,31 +1,50 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import CardManager from "pages/indicators/app/CardManager";
 import TagManager from "pages/indicators/app/TagManager";
 import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
-import useUpdateResults from "pages/indicators/hooks/useUpdateResults";
+import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
+import type { UiManager } from "app/Layout";
 
 import "pages/indicators/main.css";
+import { useOutletContext } from "react-router";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 
-export const Indicators = () => {
+export function Indicators() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
   const [openFilter, setOpenFilter] = useState(true);
   const [tags, setTags] = useState(new Map());
   const [loadingTags, setLoadingTags] = useState(true);
-  const {
-    loading: loadingData,
-    result: cardsData,
-    updateFilters,
-  } = useUpdateResults();
+  const { isLoading, result: cardsData, updateFilters } = useUpdateResults();
 
-  useEffect(async () => {
-    const tagsData = await getTags();
-    setTags(tagsData);
-    setLoadingTags(false);
+  useEffect(() => {
+    layoutDispatch({
+      type: LayoutUpdated.CHANGE_SECTION,
+      sectionData: {
+        moduleName: "Indicadores",
+        logos: new Set(),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tagsData = await getTags();
+        setTags(tagsData);
+      } catch (err) {
+        console.warn("cannot get tag data:", err);
+      } finally {
+        setLoadingTags(false);
+      }
+    };
+    void fetchTags();
   }, []);
 
-  const filterData = (filters) => {
+  const filterData = (filters: boolean) => {
     updateFilters(filters);
   };
 
@@ -66,15 +85,15 @@ export const Indicators = () => {
         </div>
       )}
       <div className="countD">
-        {loadingData && "Cargando información..."}
-        {!loadingData && cardsData.length <= 0 && "No hay indicadores"}
-        {!loadingData && cardsData.length > 0 && (
-          <>{cardsData.length} indicadores</>
-        )}
+        {isLoading && "Cargando información..."}
+        {!isLoading && cardsData.length <= 0 && "No hay indicadores"}
+        {!isLoading &&
+          cardsData.length > 0 &&
+          `${cardsData.length} indicadores`}
       </div>
       <div className="masonry-cards">
         <CardManager cardsData={cardsData} />
       </div>
     </div>
   );
-};
+}

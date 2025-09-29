@@ -6,7 +6,7 @@ export interface componentProps {
   handleAccordionChange?: (
     level: string,
     tabLayerId: string,
-    expandedTab?: string
+    expandedTab?: string,
   ) => void;
   openTab?: string;
 }

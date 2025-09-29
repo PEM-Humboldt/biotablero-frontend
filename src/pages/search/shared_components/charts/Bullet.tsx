@@ -51,7 +51,7 @@ const tooltip = (value: number, color: string, label?: string) => {
         color={color}
       />,
       event,
-      "right"
+      "right",
     );
   };
 };
@@ -69,7 +69,7 @@ const LineMeasureWrap = (
   origMeasures: Record<string, number>,
   colors: colorsFunction,
   reverse: boolean,
-  labels?: Record<string, string>
+  labels?: Record<string, string>,
 ) => {
   /**
    * Custom component to display bullet measures as lines (like markers)
@@ -100,12 +100,12 @@ const LineMeasureWrap = (
         onMouseEnter={tooltip(
           data.v1,
           colors(measureKey),
-          labels?.[measureKey]
+          labels?.[measureKey],
         )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
-            event as React.MouseEvent<SVGRectElement, MouseEvent>
+            event as React.MouseEvent<SVGRectElement, MouseEvent>,
           )
         }
       />
@@ -126,7 +126,7 @@ const LineMeasureWrap = (
 const CircleMarkerWrap = (
   origMarkers: Record<string, number>,
   colors: colorsFunction,
-  labels?: Record<string, string>
+  labels?: Record<string, string>,
 ) => {
   /**
    * Custom component to display bullet markers as circles
@@ -145,12 +145,12 @@ const CircleMarkerWrap = (
         onMouseEnter={tooltip(
           data.value,
           colors(markerKey),
-          labels?.[markerKey]
+          labels?.[markerKey],
         )}
         onMouseLeave={(event: unknown) =>
           onMouseLeave(
             data,
-            event as React.MouseEvent<SVGLineElement, MouseEvent>
+            event as React.MouseEvent<SVGLineElement, MouseEvent>,
           )
         }
       >
@@ -172,7 +172,7 @@ const CircleMarkerWrap = (
  */
 const NoTooltipRangeWrap = (
   origRanges: Record<string, number>,
-  colors: colorsFunction
+  colors: colorsFunction,
 ) => {
   /**
    * Custom component to display bullet range without tooltip
@@ -270,12 +270,12 @@ const Bullet: React.FC<BulletProps> = (props) => {
           data.measures,
           colors,
           reverse,
-          data.labels?.measures
+          data.labels?.measures,
         )}
         markerComponent={CircleMarkerWrap(
           data.markers,
           colors,
-          data.labels?.markers
+          data.labels?.markers,
         )}
         isInteractive
         reverse={reverse}

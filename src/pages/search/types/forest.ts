@@ -9,8 +9,8 @@ export const ForestLPCategories = {
 } as const;
 
 export interface SCIHF {
-  hf_pers: typeof HFCats[number];
-  sci_cat: typeof SCICats[number];
+  hf_pers: (typeof HFCats)[number];
+  sci_cat: (typeof SCICats)[number];
   pa: string;
   area: number;
 }
@@ -19,7 +19,7 @@ export interface ForestLP {
   id: string;
   data: Array<{
     area: number;
-    key: typeof ForestLPKeys[number];
+    key: (typeof ForestLPKeys)[number];
     percentage: number;
   }>;
 }
@@ -28,7 +28,7 @@ export interface ForestLPExt {
   id: string;
   data: Array<{
     area: number;
-    key: typeof ForestLPKeys[number];
+    key: (typeof ForestLPKeys)[number];
     percentage: number;
     label: string;
   }>;

@@ -1,10 +1,9 @@
-import { useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 
 import Accordion from "pages/search/Accordion";
 import {
-  SearchContext,
-  type SearchContextValues,
+  useSearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { isUndefinedOrNull } from "utils/validations";
@@ -17,9 +16,9 @@ interface SearchAreasProps {
 const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
   areasList,
 }) => {
-  const context = useContext(SearchContext);
+  const context = useSearchLegacyCTX();
   const { areaNamesList, areaType, setAreaType } =
-    context as SearchContextValues;
+    context as LegacyContextValues;
 
   const components = areasList
     .filter((area) => area.id !== "custom")
@@ -39,7 +38,7 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
   const onChange = (
     _level: string,
     expandedTab: string,
-    expandedTabLabel?: string
+    expandedTabLabel?: string,
   ) => {
     if (expandedTab === "") {
       setAreaType();
@@ -68,8 +67,8 @@ interface AreaAutocompleteProps {
 const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
   optionsList,
 }) => {
-  const context = useContext(SearchContext);
-  const { setAreaId, setAreaLayer, setAreaHa } = context as SearchContextValues;
+  const context = useSearchLegacyCTX();
+  const { setAreaId, setAreaLayer, setAreaHa } = context as LegacyContextValues;
 
   return (
     <Autocomplete

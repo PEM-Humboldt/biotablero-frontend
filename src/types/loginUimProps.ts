@@ -1,14 +1,14 @@
-interface CompanyTypes {
-  id: number;
-}
-
-export interface UserTypes {
-  company?: CompanyTypes;
+export interface UserType {
   id: number;
   name: string;
   username: string;
+  company?: {
+    id: number;
+  };
 }
 
-export interface loginUimProps {
-  setUser: (res: UserTypes | null) => void;
+export interface LoginUimProps {
+  currentUser: UserType | null;
+  setUser: (res: UserType | null) => void;
+  logoutUser: () => void;
 }

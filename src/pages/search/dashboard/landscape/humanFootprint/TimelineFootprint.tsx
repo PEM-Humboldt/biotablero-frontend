@@ -4,8 +4,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
@@ -93,6 +93,7 @@ interface seDetailsExt extends seDetails {
 }
 
 class TimelineFootprint extends React.Component<Props, State> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   TimelineHFController;
 
@@ -121,7 +122,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       setLoadingLayer,
       setLayerError,
       setMapTitle,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -134,7 +135,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       BackendAPI.requestSEHFTimeline(
         areaTypeId,
         areaIdId,
-        "Bosque Seco Tropical"
+        "Bosque Seco Tropical",
       ),
       BackendAPI.requestTotalHFTimeline(areaTypeId, areaIdId),
     ])
@@ -169,7 +170,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShapeLayers(this.state.layers);
           setMapTitle({
@@ -200,7 +201,7 @@ class TimelineFootprint extends React.Component<Props, State> {
    * @param {string} seType type of strategic ecosystem to request
    */
   setSelectedEcosystem = (seType: string) => {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -209,7 +210,7 @@ class TimelineFootprint extends React.Component<Props, State> {
       BackendAPI.requestSEDetailInArea(
         areaTypeId,
         areaIdId,
-        this.getLabel(seType)
+        this.getLabel(seType),
       ).then((value) => {
         const res = { ...value, type: seType };
         this.setState({ selectedEcosystem: res });
@@ -254,7 +255,7 @@ class TimelineFootprint extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const { showInfoGraph, hfTimeline, selectedEcosystem, message, texts } =
       this.state;
 
@@ -295,7 +296,7 @@ class TimelineFootprint extends React.Component<Props, State> {
             <div>
               <h6>
                 {`${this.getLabel(
-                  selectedEcosystem.type
+                  selectedEcosystem.type,
                 )} dentro de la unidad de consulta`}
               </h6>
               <h5>{`${formatNumber(selectedEcosystem.total_area, 2)} ha`}</h5>
@@ -317,7 +318,7 @@ class TimelineFootprint extends React.Component<Props, State> {
 
   clickOnGraph = async (selectedKey: string) => {
     const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     let layerDescription = "";
 
@@ -331,8 +332,8 @@ class TimelineFootprint extends React.Component<Props, State> {
     if (selectedKey === "aTotal") {
       setShapeLayers(
         this.state.layers.filter((layer) =>
-          ["hfPersistence"].includes(layer.id)
-        )
+          ["hfPersistence"].includes(layer.id),
+        ),
       );
       setMapTitle({
         name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
@@ -346,7 +347,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         setLoadingLayer(true);
         try {
           const SELayer = await this.TimelineHFController.getSELayer(
-            selectedKey as keyof Omit<SEKeys, "aTotal">
+            selectedKey as keyof Omit<SEKeys, "aTotal">,
           );
           this.setState(
             (prevState) => ({
@@ -355,10 +356,10 @@ class TimelineFootprint extends React.Component<Props, State> {
             () => {
               setLoadingLayer(false);
               const activeLayers = this.state.layers.filter((layer) =>
-                ["hfPersistence", selectedKey].includes(layer.id)
+                ["hfPersistence", selectedKey].includes(layer.id),
               );
               setShapeLayers(activeLayers);
-            }
+            },
           );
         } catch (error) {
           setLayerError(error instanceof Error ? error.message : String(error));
@@ -367,7 +368,7 @@ class TimelineFootprint extends React.Component<Props, State> {
         }
       } else {
         const activeLayers = this.state.layers.filter((layer) =>
-          ["hfPersistence", selectedKey].includes(layer.id)
+          ["hfPersistence", selectedKey].includes(layer.id),
         );
         setShapeLayers(activeLayers);
       }
@@ -378,5 +379,3 @@ class TimelineFootprint extends React.Component<Props, State> {
 }
 
 export default TimelineFootprint;
-
-TimelineFootprint.contextType = SearchContext;

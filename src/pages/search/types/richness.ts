@@ -33,7 +33,7 @@ export const gapLimitKeys = [
 ] as const;
 
 export type gaps_limits = {
-  [Property in typeof gapLimitKeys[number]]: number;
+  [Property in (typeof gapLimitKeys)[number]]: number;
 };
 
 export interface concentration extends gaps_limits {
@@ -48,7 +48,7 @@ export interface gaps extends gaps_limits {
 }
 
 export function isGaps(
-  toBeDetermined: gaps | concentration
+  toBeDetermined: gaps | concentration,
 ): toBeDetermined is gaps {
   if ((toBeDetermined as gaps).region_name) return true;
   return false;

@@ -5,8 +5,8 @@ import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
@@ -36,7 +36,7 @@ interface State {
   currentPAConnParamo: Array<currentSEPAConn>;
   currentPAConnDryForest: Array<currentSEPAConn>;
   currentPAConnWetland: Array<currentSEPAConn>;
-  selectedEcosystem: typeof SEPAEcosystems[number] | null;
+  selectedEcosystem: (typeof SEPAEcosystems)[number] | null;
   protParamo: number;
   protDryForest: number;
   protWetland: number;
@@ -52,7 +52,7 @@ interface State {
 }
 
 class CurrentSEPAConnectivity extends React.Component<Props, State> {
-  static contextType = SearchContext;
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "currentSEPAConn";
   CurrentSEPACController;
@@ -91,7 +91,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       setLayerError,
       setMapTitle,
       setShowAreaLayer,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -132,7 +132,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     BackendAPI.requestCurrentSEPAConnectivity(
       areaTypeId,
       areaIdId,
-      "Bosque Seco Tropical"
+      "Bosque Seco Tropical",
     )
       .then((res: Array<currentSEPAConn>) => {
         if (this.mounted) {
@@ -211,7 +211,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [currentSEPAConn] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -238,7 +238,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
   };
 
   render() {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const {
       currentPAConnParamo,
       currentPAConnDryForest,
@@ -413,7 +413,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 
   clickOnGraph = async (layerId: string) => {
     const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     let layerName: string = "";
     let layerDescription: string = "";
@@ -439,7 +439,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
       try {
         const SELayer = await this.CurrentSEPACController.getSELayer(
           layerId,
-          layerName
+          layerName,
         );
 
         this.setState(
@@ -448,7 +448,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           }),
           () => {
             setLoadingLayer(false);
-          }
+          },
         );
       } catch (error) {
         setLayerError(error instanceof Error ? error.message : String(error));
@@ -456,7 +456,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
     }
 
     const activeLayers = this.state.layers.filter((layer) =>
-      ["currentSEPAConn", layerId].includes(layer.id)
+      ["currentSEPAConn", layerId].includes(layer.id),
     );
     setShapeLayers(activeLayers);
     setMapTitle({ name: layerDescription });
@@ -464,5 +464,3 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
 }
 
 export default CurrentSEPAConnectivity;
-
-CurrentSEPAConnectivity.contextType = SearchContext;

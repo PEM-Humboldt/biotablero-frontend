@@ -1,20 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
-interface Props {
+interface TitleProps {
   title: string;
-  subTitle: string;
 }
 
-const Title: React.FunctionComponent<Props> = ({ title, subTitle }) => (
-  <div className={subTitle ? "interna" : "cabezoteRight"}>
+export function Title({ title }: TitleProps) {
+  return (
     <p>
       <Link to="/">
         <b>{title}</b>
       </Link>
     </p>
-    {subTitle && <span>{subTitle}</span>}
-  </div>
-);
-
-export default Title;
+  );
+}

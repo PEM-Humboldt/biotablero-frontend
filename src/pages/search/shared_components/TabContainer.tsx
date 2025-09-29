@@ -3,7 +3,6 @@ import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
-import { SearchContext } from "pages/search/SearchContext";
 
 interface Titles {
   label: string;
@@ -62,7 +61,7 @@ class TabContainer extends React.Component<Props, State> {
                     key={i}
                     disabled={disabled}
                   />
-                )
+                ),
             )}
           </Tabs>
         </AppBar>
@@ -72,7 +71,7 @@ class TabContainer extends React.Component<Props, State> {
               <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
                 {child}
               </Typography>
-            )
+            ),
         )}
       </div>
     );
@@ -80,5 +79,3 @@ class TabContainer extends React.Component<Props, State> {
 }
 
 export default TabContainer;
-
-TabContainer.contextType = SearchContext;

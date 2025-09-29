@@ -14,8 +14,8 @@ import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/utils/backendAPI";
 
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
@@ -25,7 +25,7 @@ import { wrapperMessage } from "pages/search/types/charts";
 import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/dashboard/landscape/forest/ForestIntegrityController";
 
-type SCIHFCats = `${typeof SCICats[number]}-${typeof HFCats[number]}`;
+type SCIHFCats = `${(typeof SCICats)[number]}-${(typeof HFCats)[number]}`;
 /**
  * Get all combinations of SCI and HF categories to be used instead of Obejct.keys
  * @returns Array with all combinations of SCI and HF categories
@@ -71,8 +71,7 @@ interface FIState {
 }
 
 class ForestIntegrity extends React.Component<Props, FIState> {
-  static contextType = SearchContext;
-
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "forestSCIHF";
   ForestIntegrityController;
@@ -148,7 +147,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       setLayerError,
       setMapTitle,
       setShowAreaLayer,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -224,7 +223,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [forestIntegrity] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -257,7 +256,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
       loading,
       texts,
     } = this.state;
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -344,7 +343,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
    * @param {string} selectedKey Id of the feature
    */
   highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers } = this.context as LegacyContextValues;
     const { layers } = this.state;
     const highlightedLayers = layers.map((layer) => {
       if (layer.id === "forestIntegrity") {
@@ -358,16 +357,15 @@ class ForestIntegrity extends React.Component<Props, FIState> {
 
   clickOnGraph = async (selectedKey: string) => {
     const { setShapeLayers, setLoadingLayer, setLayerError } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     this.highlightFeature(selectedKey);
 
     if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
       setLoadingLayer(true);
       try {
-        const PALayer = await this.ForestIntegrityController.getPALayer(
-          selectedKey
-        );
+        const PALayer =
+          await this.ForestIntegrityController.getPALayer(selectedKey);
 
         this.setState(
           (prevState) => ({
@@ -376,17 +374,17 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           () => {
             setLoadingLayer(false);
             const activeLayers = this.state.layers.filter((layer) =>
-              ["forestIntegrity", selectedKey].includes(layer.id)
+              ["forestIntegrity", selectedKey].includes(layer.id),
             );
             setShapeLayers(activeLayers);
-          }
+          },
         );
       } catch (error) {
         setLayerError((error as Error).message);
       }
     } else {
       const activeLayers = this.state.layers.filter((layer) =>
-        ["forestIntegrity", selectedKey].includes(layer.id)
+        ["forestIntegrity", selectedKey].includes(layer.id),
       );
       setShapeLayers(activeLayers);
     }

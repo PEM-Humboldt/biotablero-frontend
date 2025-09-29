@@ -1,7 +1,6 @@
-import React from "react";
-
-import { Modal } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useRef, useState } from "react";
+import { useOutletContext } from "react-router";
+import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 import {
   ImageOverlay,
   MapContainer,
@@ -11,227 +10,222 @@ import {
   GeoJSON,
   Polygon,
 } from "react-leaflet";
-import { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 
+import { Modal } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { DrawControl } from "pages/search/mapViewer/DrawControl";
+import type { UiManager } from "app/Layout";
+import type { Polygon as PolygonType } from "pages/search/types/dashboard";
+import { useSearchStateCTX } from "pages/search/SearchContext";
 import "leaflet/dist/leaflet.css";
 
-import DrawControl from "pages/search/mapViewer/DrawControl";
-import { Polygon as PolygonType } from "pages/search/types/dashboard";
-
-import { MapTitle, RasterLayer, ShapeLayer } from "pages/search/types/layers";
-
-interface Props {
-  showDrawControl: boolean;
-  geoServerUrl: string;
-  loadingLayer: boolean;
-  layerError: boolean;
-  mapTitle: MapTitle;
-  shapeLayers: Array<ShapeLayer>;
-  rasterLayers: Array<RasterLayer>;
-  bounds: LatLngBoundsExpression;
-  // TODO ajustar cuando se haga la conexión con la consulta por polígono dibujado
-  polygon: PolygonType | null;
-  loadPolygonInfo: () => void;
-  userLogged?: {
-    id: number;
-    username: string;
-    name: string;
-    company: {
-      id: number;
-    };
-  };
-}
-
-interface State {
-  openErrorModal: boolean;
-}
-
-const colombiaBounds: LatLngBoundsLiteral = [
+const COLOMBIA_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],
   [16.0571269, -66.85119073],
 ];
 
 const config = {
   params: {
-    colombia: colombiaBounds,
+    colombia: COLOMBIA_BOUNDS,
   },
 };
 
-class MapViewer extends React.Component<Props, State> {
-  map: Map | null = null;
+interface MapViewerProps {
+  bounds: LatLngBoundsExpression;
+  geoServerUrl: string;
 
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      openErrorModal: true,
-    };
-  }
+  // TODO: ajustar cuando haya conexión de consulta por polígono dibujado
+  polygon: PolygonType | null;
+  loadPolygonInfo: () => void;
+}
 
-  componentDidUpdate(prevProps: Props) {
-    const { bounds } = this.props;
-    const { map } = this;
+export function MapViewer({
+  bounds,
+  geoServerUrl,
+  polygon,
+  loadPolygonInfo: _,
+}: MapViewerProps) {
+  const [errorModal, setErrorModal] = useState(true);
+  const mapRef = useRef<Map>(null);
+  const {
+    layoutState: { user },
+  } = useOutletContext<UiManager>();
 
-    if (!map) return;
+  const {
+    searchType,
+    areaLayer,
+    shapeLayers,
+    rasterLayers,
+    mapTitle,
+    loadingLayer,
+    layerError,
+    showDrawControl,
+    showAreaLayer,
+  } = useSearchStateCTX();
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) {
+      return;
+    }
+
+    // NOTE: soluciona las discrepancias de render entre react y leaflet
+    map.whenReady(() => {
+      map.invalidateSize();
+    });
 
     if (Array.isArray(bounds) && bounds.length === 0) {
       map.flyToBounds(config.params.colombia);
-    } else if (prevProps.bounds !== bounds) {
+    } else {
       map.flyToBounds(bounds);
     }
-  }
+  }, [bounds]);
 
-  render() {
-    const {
-      geoServerUrl,
-      userLogged,
-      loadingLayer,
-      layerError,
-      rasterLayers,
-      shapeLayers,
-      bounds,
-      mapTitle,
-      polygon,
-      showDrawControl,
-    } = this.props;
-    //TODO Borrar searchRasterLayers al finalizar la migracion
-    //Trabajar igual los shapeLayers
-    // const { rasterLayers, shapeLayers } = this.context as SearchContextValues;
+  useEffect(() => {
+    if (layerError) {
+      setErrorModal(true);
+    }
+  }, [layerError]);
 
-    const { openErrorModal } = this.state;
+  const handleModalClose = () => setErrorModal(false);
 
-    const paneLevels = Array.from(
-      new Set([...shapeLayers, ...rasterLayers].map((layer) => layer.paneLevel))
-    );
+  const drawControlRender = showDrawControl && searchType === "drawPolygon";
+  const titleName = mapTitle?.name || "";
+  const shapeLayersRender = showAreaLayer
+    ? [areaLayer, ...shapeLayers]
+    : shapeLayers;
+  const paneLevels = [
+    ...new Set(
+      [...shapeLayersRender, ...rasterLayers].map((layer) => layer.paneLevel),
+    ),
+  ];
 
-    const titleName = mapTitle?.name || "";
+  return (
+    <MapContainer id="map" ref={mapRef} bounds={config.params.colombia}>
+      {/* TODO: agrega componente para el gradiente */}
 
-    // HACK: touchExtend dentro de MapContainer existe mientras se actualiza
-    // librería para evitar el warn, no afecta funcionalidad en escritorio
-    return (
-      <MapContainer
-        id="map"
-        whenCreated={(map) => {
-          this.map = map;
-        }}
-        bounds={config.params.colombia}
-        touchExtend={false}
+      {titleName && (
+        <>
+          <div className="mapsTitle">
+            <div className="title">{titleName}</div>
+          </div>
+        </>
+      )}
+
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={loadingLayer}
+        disableAutoFocus
+        container={() => document.getElementById("map")}
+        style={{ position: "absolute" }}
+        BackdropProps={{ style: { position: "absolute" } }}
       >
-        {/* TODO agrega componente para el gradiente */}
-        {titleName && (
-          <>
-            <div className="mapsTitle">
-              <div className="title">{titleName}</div>
-            </div>
-          </>
-        )}
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={loadingLayer}
-          disableAutoFocus
-          container={() => document.getElementById("map")}
-          style={{ position: "absolute" }}
-          BackdropProps={{ style: { position: "absolute" } }}
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Cargando</b>
-              <div className="load-wrapp">
-                <div className="load-1">
-                  <div className="line" />
-                  <div className="line" />
-                  <div className="line" />
-                </div>
+        <div className="generalAlarm">
+          <h2>
+            <b>Cargando</b>
+            <div className="load-wrapp">
+              <div className="load-1">
+                <div className="line" />
+                <div className="line" />
+                <div className="line" />
               </div>
-            </h2>
-          </div>
-        </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={layerError && openErrorModal}
-          onClose={() => {
-            this.setState({ openErrorModal: false });
-          }}
-          container={() => document.getElementById("map")}
-          style={{ position: "absolute" }}
-          BackdropProps={{ style: { position: "absolute" } }}
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Capa no disponible actualmente</b>
-            </h2>
-            <button
-              type="button"
-              className="closebtn"
-              style={{ position: "absolute" }}
-              onClick={() => {
-                this.setState({ openErrorModal: false });
-              }}
-              title="Cerrar"
-            >
-              <CloseIcon />
-            </button>
-          </div>
-        </Modal>
-        {showDrawControl && <DrawControl />}
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        {paneLevels.map((panelLevel, index) => (
-          <Pane
-            name={`Pane${panelLevel}`}
-            key={panelLevel}
-            style={{ zIndex: 500 + index }}
+            </div>
+          </h2>
+        </div>
+      </Modal>
+
+      <Modal
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        open={layerError && errorModal}
+        onClose={handleModalClose}
+        container={() => document.getElementById("map")}
+        style={{ position: "absolute" }}
+        BackdropProps={{ style: { position: "absolute" } }}
+      >
+        <div className="generalAlarm">
+          <h2>
+            <b>Capa no disponible actualmente</b>
+          </h2>
+          <button
+            type="button"
+            className="closebtn"
+            style={{ position: "absolute" }}
+            onClick={handleModalClose}
+            title="Cerrar"
           >
-            {shapeLayers
-              .filter((l) => l.paneLevel === panelLevel)
-              .map((layer) => (
+            <CloseIcon />
+          </button>
+        </div>
+      </Modal>
+
+      {drawControlRender && <DrawControl />}
+
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+      />
+
+      {paneLevels.map((panelLevel, index) => (
+        <Pane
+          name={`Pane${panelLevel}`}
+          key={panelLevel}
+          style={{ zIndex: 500 + index }}
+        >
+          {shapeLayersRender
+            .filter((l) => l.paneLevel === panelLevel)
+            .map((layer) =>
+              layer.json && layer.json.type ? (
                 <GeoJSON
                   key={layer.id}
                   data={layer.json}
                   style={layer.layerStyle}
                   onEachFeature={layer.onEachFeature}
                 />
-              ))}
-            {rasterLayers
-              .filter((l) => l.paneLevel === panelLevel)
-              .map((layer) => {
-                let opacity = layer.selected ? 1 : 0.7;
-                if (layer.opacity) opacity = layer.opacity;
-                return (
-                  <ImageOverlay
-                    key={layer.id}
-                    url={layer.data}
-                    bounds={bounds}
-                    opacity={opacity}
-                  />
-                );
-              })}
-          </Pane>
-        ))}
-        {polygon && polygon.coordinates && (
-          <Polygon
-            positions={polygon.coordinates}
-            color={polygon.color}
-            opacity={0.8}
-            fill={polygon.fill}
-          />
-        )}
-        {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
-        {userLogged && (
-          <WMSTileLayer
-            layers="Biotablero:Regiones_geb"
-            format="image/png"
-            url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
-            opacity={0.4}
-            transparent
-          />
-        )}
-      </MapContainer>
-    );
-  }
-}
+              ) : null,
+            )}
 
-export default MapViewer;
+          {rasterLayers
+            .filter((l) => l.paneLevel === panelLevel)
+            .map((layer) => {
+              let opacity = layer.selected ? 1 : 0.7;
+              if (layer.opacity) {
+                opacity = layer.opacity;
+              }
+              return (
+                <ImageOverlay
+                  key={`${layer.id}-${layer.data}`}
+                  url={layer.data}
+                  bounds={bounds}
+                  opacity={opacity}
+                />
+              );
+            })}
+        </Pane>
+      ))}
+
+      {polygon && polygon.coordinates && (
+        <Polygon
+          positions={polygon.coordinates}
+          color={polygon.color}
+          opacity={0.8}
+          fill={polygon.fill}
+        />
+      )}
+
+      {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
+
+      {user && (
+        <WMSTileLayer
+          layers="Biotablero:Regiones_geb"
+          format="image/png"
+          url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
+          opacity={0.4}
+          transparent
+        />
+      )}
+    </MapContainer>
+  );
+}

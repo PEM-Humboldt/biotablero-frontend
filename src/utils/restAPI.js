@@ -66,7 +66,7 @@ class RestAPI {
       .post(
         `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
         requestBody,
-        config
+        config,
       )
       .then((res) => res.data)
       .catch((error) => {

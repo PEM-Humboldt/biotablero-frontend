@@ -3,8 +3,8 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
@@ -40,6 +40,7 @@ interface currentHFState {
 }
 
 class CurrentFootprint extends React.Component<Props, currentHFState> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "hfCurrent";
   CurrentHFController;
@@ -69,7 +70,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       setLoadingLayer,
       setLayerError,
       setMapTitle,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -122,7 +123,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         if (this.mounted) {
           this.setState(
             () => ({ layers: [hfCurrent] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShapeLayers(this.state.layers);
           setMapTitle({ name: "HH promedio · 2018" });
@@ -146,7 +147,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
   };
 
   render() {
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
     const {
       hfCurrent,
       hfCurrentValue,
@@ -220,7 +221,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
    * @param {string} selectedKey Id of the feature
    */
   highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as SearchContextValues;
+    const { setShapeLayers } = this.context as LegacyContextValues;
     const { layers } = this.state;
     const highlightedLayers = layers.map((layer) => {
       if (layer.id === "hfCurrent") {
@@ -233,5 +234,3 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 }
 
 export default CurrentFootprint;
-
-CurrentFootprint.contextType = SearchContext;

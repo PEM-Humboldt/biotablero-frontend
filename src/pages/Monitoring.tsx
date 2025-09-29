@@ -1,10 +1,28 @@
+import { useOutletContext } from "react-router";
+import { useEffect } from "react";
+
 import { SearchBar } from "pages/monitoring/searchBar";
 import { SideBar } from "pages/monitoring/sideBar";
 import { Map } from "pages/monitoring/Map";
 import { Dashboard } from "pages/monitoring/Dashboard";
 import "pages/monitoring/styles/monitoring.css";
+import type { UiManager } from "app/Layout";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 
-export const Monitoring = () => {
+export function Monitoring() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
+
+  useEffect(() => {
+    layoutDispatch({
+      type: LayoutUpdated.CHANGE_SECTION,
+      sectionData: {
+        moduleName: "Monitoreo Comunitario",
+        logos: new Set(["usaid", "geobon", "umed", "temple"]),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
+
   return (
     <div className="monitoring-root">
       <div className="map-wrapper">
@@ -14,8 +32,10 @@ export const Monitoring = () => {
       <div className="monitoring-body">
         <SearchBar />
         <SideBar />
-        <Dashboard title="" subtitle="" children={null} />
+        <Dashboard title="" subtitle="">
+          {null}
+        </Dashboard>
       </div>
     </div>
   );
-};
+}

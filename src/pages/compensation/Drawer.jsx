@@ -19,7 +19,6 @@ import TableStylized from "pages/compensation/drawer/TableStylized";
 import ConfirmationModal from "components/ConfirmationModal";
 import GraphLoader from "pages/compensation/drawer/GraphLoader";
 import TabContainer from "pages/compensation/drawer/TabContainer";
-import AppContext from "app/AppContext";
 
 const styles = () => ({
   root: {
@@ -32,7 +31,7 @@ class Drawer extends React.Component {
   static getDerivedStateFromProps(nextProps) {
     if (nextProps.biomesImpacted.length > 0) {
       const { biomes, totals } = Drawer.cleanWhatWhereData(
-        nextProps.biomesImpacted
+        nextProps.biomesImpacted,
       );
       return {
         whereData: biomes,
@@ -87,7 +86,7 @@ class Drawer extends React.Component {
         affected_transformed: 0,
         affected_percentage: 0,
         total_compensate: 0,
-      }
+      },
     );
     return {
       biomes,
@@ -141,7 +140,7 @@ class Drawer extends React.Component {
           this.setState({
             controlAddingBiomes: true,
             allBiomes: biomes,
-          })
+          }),
         )
         .catch(() => {
           const { reportConnError } = this.props;
@@ -213,7 +212,7 @@ class Drawer extends React.Component {
       return {
         biomesDraft: newBiomes,
         allBiomes: prevState.allBiomes.filter(
-          (element) => element.id_biome !== biome.id_biome
+          (element) => element.id_biome !== biome.id_biome,
         ),
       };
     });
@@ -293,7 +292,7 @@ class Drawer extends React.Component {
           controlAddingBiomes: false,
         });
         reloadProject(projectId);
-      }
+      },
     );
   };
 
@@ -402,7 +401,7 @@ class Drawer extends React.Component {
     this.setState((prevState) => {
       const removeArea = prevState.selectedStrategies.reduce(
         (acc, item) => acc + item.value,
-        0
+        0,
       );
       return {
         biome: {},
@@ -480,7 +479,7 @@ class Drawer extends React.Component {
           state.selectedArea -= Number(value);
           state.selectedArea = Math.abs(state.selectedArea);
           state.selectedStrategies = state.selectedStrategies.filter(
-            (s) => s.id !== id
+            (s) => s.id !== id,
           );
           break;
         default:
@@ -526,7 +525,7 @@ class Drawer extends React.Component {
               })),
               area: selectedStrategies.reduce(
                 (acc, item) => acc + item.value,
-                0
+                0,
               ),
             };
             return {
@@ -549,7 +548,7 @@ class Drawer extends React.Component {
             // Call updateCurrentBiome() explicitly after the state has been updated. If called before
             // setState() a maximum deep exceeded occurs.
             updateCurrentBiome("");
-          }
+          },
         );
       })
       .catch(() => {
@@ -594,7 +593,7 @@ class Drawer extends React.Component {
                 showTable={false}
               />
             );
-          }
+          },
         )}
       </div>
     );
@@ -630,7 +629,7 @@ class Drawer extends React.Component {
         );
         if (savedStrategies[key]) {
           const found = savedStrategies[key].strategies.find(
-            (item) => item.id === Number(strategy.id)
+            (item) => item.id === Number(strategy.id),
           );
           if (found) addRow = found.value;
         }
@@ -862,7 +861,7 @@ class Drawer extends React.Component {
                 "% Area afectada",
                 "Factor de Compensación",
                 "Dots",
-                colors
+                colors,
               )}
               {this.renderSelector()}
               {Object.keys(savedStrategies).length > 0 && (
@@ -893,8 +892,6 @@ class Drawer extends React.Component {
     );
   }
 }
-
-Drawer.contextType = AppContext;
 
 Drawer.propTypes = {
   back: PropTypes.func,

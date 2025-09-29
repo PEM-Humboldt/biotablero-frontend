@@ -51,7 +51,7 @@ class TabContainer extends React.Component {
               <Typography key={i} component="div" style={{ padding: 4 * 3 }}>
                 {child}
               </Typography>
-            )
+            ),
         )}
       </div>
     );

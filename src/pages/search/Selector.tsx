@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -9,63 +9,74 @@ import {
   LoadingMessage,
 } from "pages/search/selector/selectorMessages";
 import SearchAPI from "pages/search/utils/searchAPI";
-import { AreaType } from "pages/search/types/dashboard";
-import { SearchContext, SearchContextValues } from "pages/search/SearchContext";
-import DrawPolygon from "pages/search/selector/DrawPolygon";
+import type { AreaType } from "pages/search/types/dashboard";
+import {
+  useSearchLegacyCTX,
+  useSearchStateCTX,
+} from "pages/search/SearchContext";
+import { DrawPolygon } from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 
-interface Props {
-  setShowDrawControl(show: boolean): void;
+interface SelectorProps {
+  showDrawControls: (show: boolean) => void;
 }
 
 type AreasErrorType = "none" | "request-failed" | "empty-result";
 
-const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
+// TODO: Pensar a futuro un sistema más robusto para manejo de errores
+const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
+  none: "",
+  "request-failed":
+    "Hubo un error en esta funcionalidad, prueba otra alternativa.",
+  "empty-result": "No se encontraron áreas disponibles para consultar.",
+};
+
+function Selector({ showDrawControls }: SelectorProps) {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState<AreasErrorType>("none");
   const [polygonError, setPolygonError] = useState(false);
   const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
-  const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
-    none: "",
-    "request-failed":
-      "Hubo un error en esta funcionalidad, prueba otra alternativa.",
-    "empty-result": "No se encontraron áreas disponibles para consultar.",
-  };
 
-  const context = useContext(SearchContext);
-  const {
-    searchType,
-    setSearchType,
-    setAreaHa,
-    setAreaId,
-    setAreaType,
-    setAreaLayer,
-  } = context as SearchContextValues;
+  const { searchType } = useSearchStateCTX();
+  const { setSearchType, setAreaHa, setAreaId, setAreaType, setAreaLayer } =
+    useSearchLegacyCTX();
 
   useEffect(() => {
-    isFlagEnabled("drawPolygon").then((value) => setDrawPolygonFlag(value));
-    SearchAPI.requestAreaTypes()
-      .then((result) => {
-        if (result.length < 1) {
-          setAreasError("empty-result");
-        } else {
-          setAreaTypes(result);
-          setAreasError("none");
-        }
-      })
-      .catch(() => {
-        setAreasError("request-failed");
-      })
-      .finally(() => {
-        setIsLoadingAreaTypes(false);
-      });
+    const selectorSync = async () => {
+      try {
+        const polygonFlag = await isFlagEnabled("drawPolygon");
+        setDrawPolygonFlag(polygonFlag);
 
-    SearchAPI.requestTestBackend().catch(() => {
-      setPolygonError(true);
-      setShowDrawControl(false);
-    });
+        const areaTypesReq = await SearchAPI.requestAreaTypes();
+        if (areaTypesReq.length < 1) {
+          setAreasError("empty-result");
+        }
+        setAreaTypes(areaTypesReq);
+        setAreasError("none");
+      } catch (err) {
+        setAreasError(`request-failed: ${err.message}`);
+      } finally {
+        setIsLoadingAreaTypes(false);
+      }
+    };
+
+    void selectorSync();
   }, []);
+
+  useEffect(() => {
+    const testBackend = async () => {
+      try {
+        await SearchAPI.requestTestBackend();
+      } catch (err) {
+        console.error("Cannot get data from the backend", err);
+        setPolygonError(true);
+        showDrawControls(false);
+      }
+    };
+
+    void testBackend();
+  }, [showDrawControls]);
 
   let ComponentToRender: React.FC<any>;
 
@@ -73,7 +84,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
     ComponentToRender = () => <LoadingMessage />;
   } else if (areasError !== "none") {
     ComponentToRender = () => (
-      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError]} />
+      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError.split(":")[0]]} />
     );
   } else {
     ComponentToRender = SearchAreas;
@@ -116,7 +127,7 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
       setSearchType("definedArea");
     } else if (expTab === "draw-polygon") {
       setSearchType("drawPolygon");
-      setShowDrawControl(true);
+      showDrawControls(true);
     } else {
       setSearchType(null);
     }
@@ -154,6 +165,6 @@ const Selector: React.FC<Props> = ({ setShowDrawControl }) => {
       />
     </div>
   );
-};
+}
 
 export default Selector;

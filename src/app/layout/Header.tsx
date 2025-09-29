@@ -1,52 +1,69 @@
 import React from "react";
 
-import Menu from "app/layout/header/Menu";
-import Title from "app/layout/header/Title";
+import { Menu } from "app/layout/header/Menu";
+import { Title } from "app/layout/header/Title";
+import { Uim } from "app/Uim";
+import { LayoutUpdated, type LayoutActions } from "app/layout/layoutReducer";
+import type { UserType } from "types/loginUimProps";
+import { useUserCTX } from "app/UserContext";
 
 interface Names {
-  parent?: string;
-  child?: string;
+  title?: string;
+  subtitle?: string;
 }
 
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
-  uim: React.ReactNode;
 }
 
-const Header: React.FunctionComponent<HeaderProps> = ({
+export function Header({
   activeModule,
-  headerNames: { parent, child },
-  uim,
-}) => (
-  <header className="cabezote">
-    <div className="cabezoteLeft">
-      <Title title="BioTablero" subTitle={activeModule} />
-    </div>
-    {/* TODO: Sending active user information: image, userName, ...
-        to be upload when user is active */}
+  headerNames: { title: title, subtitle: subtitle },
+}: HeaderProps) {
+  const { user, login, logout } = useUserCTX();
+  const handleSetUser = (userToSet: UserType | null) => {
+    if (userToSet === null) {
+      return;
+    }
+    login(userToSet);
+  };
 
-    <div className="cabezoteRight">
-      <nav>
-        <Menu />
-      </nav>
+  const handleLogOutUser = () => {
+    logout();
+  };
 
-      <div className="header_info">
-        <div className="cabezoteRight">
-          {activeModule && !parent && !child && <h2>{`${activeModule}`}</h2>}
-          {parent && child && (
-            <h1>
-              <b>{`${child}`}</b>
-              <br />
-              {parent}
-            </h1>
-          )}
-          <div className={`${activeModule.replace(/ /g, "")}`} />
-        </div>
-        {uim}
+  const renderCompositeTitle = title !== "" && subtitle !== "";
+
+  return (
+    <header className="cabezote">
+      <div className="cabezoteLeft">
+        <Title title="BioTablero" />
       </div>
-    </div>
-  </header>
-);
+      <div className="cabezoteRight">
+        <Menu currentUser={user} />
 
-export default Header;
+        <div className="header_info">
+          <div className="cabezoteRight">
+            {renderCompositeTitle ? (
+              <h1>
+                <b>{title}</b>
+                <br />
+                {subtitle}
+              </h1>
+            ) : (
+              <h2>{activeModule}</h2>
+            )}
+            <span className={`${activeModule.replace(" ", "")}`} />
+          </div>
+
+          <Uim
+            currentUser={user}
+            setUser={handleSetUser}
+            logoutUser={handleLogOutUser}
+          />
+        </div>
+      </div>
+    </header>
+  );
+}

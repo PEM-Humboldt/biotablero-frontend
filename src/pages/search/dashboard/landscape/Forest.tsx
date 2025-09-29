@@ -2,13 +2,13 @@ import React, { useContext } from "react";
 import Accordion from "pages/search/Accordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
-import { SearchContext } from "pages/search/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/SearchContext";
 import { accordionComponent, componentProps } from "pages/search/types/ui";
 
 const Forest: React.FC<componentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
-  const { searchType } = useContext(SearchContext);
+  const { searchType } = useSearchLegacyCTX();
 
   const initialArray: Array<accordionComponent> = [
     {
@@ -38,7 +38,7 @@ const Forest: React.FC<componentProps> = (props) => {
   }
 
   const componentsArray = initialArray.filter((f) =>
-    selected.includes(f.label.id)
+    selected.includes(f.label.id),
   );
   return (
     <div style={{ width: "100%" }}>

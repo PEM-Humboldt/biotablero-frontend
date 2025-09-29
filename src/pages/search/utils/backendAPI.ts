@@ -48,10 +48,10 @@ class BackendAPI {
    */
   static requestSCIHF(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<SCIHF>> {
     return BackendAPI.makeGetRequest(
-      `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`
+      `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -68,10 +68,10 @@ class BackendAPI {
    */
   static requestCurrentPAConnectivity(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<currentPAConn>> {
     return BackendAPI.makeGetRequest(
-      `connectivity/current?areaType=${areaType}&areaId=${areaId}`
+      `connectivity/current?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -88,10 +88,10 @@ class BackendAPI {
   static requestCurrentSEPAConnectivity(
     areaType: string,
     areaId: string | number,
-    seType: string | number
+    seType: string | number,
   ): Promise<Array<currentSEPAConn>> {
     return BackendAPI.makeGetRequest(
-      `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+      `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
     );
   }
 
@@ -106,10 +106,10 @@ class BackendAPI {
   static requestDPC(
     areaType: string,
     areaId: string | number,
-    paNumber: number
+    paNumber: number,
   ): Promise<Array<DPC>> {
     return BackendAPI.makeGetRequest(
-      `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`
+      `connectivity/dpc?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`,
     );
   }
 
@@ -125,10 +125,10 @@ class BackendAPI {
   static requestTimelinePAConnectivity(
     areaType: string,
     areaId: string | number,
-    category: string
+    category: string,
   ): Promise<timelinePAConn> {
     return BackendAPI.makeGetRequest(
-      `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`
+      `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`,
     );
   }
 
@@ -142,7 +142,7 @@ class BackendAPI {
    */
   static requestBiomes(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<cfData>> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
   }
@@ -154,7 +154,7 @@ class BackendAPI {
    */
   static requestBioticUnits(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<cfData>> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
   }
@@ -166,10 +166,10 @@ class BackendAPI {
    */
   static requestCompensationFactor(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<cfData>> {
     return BackendAPI.makeGetRequest(
-      `${areaType}/${areaId}/compensationFactor`
+      `${areaType}/${areaId}/compensationFactor`,
     );
   }
 
@@ -202,7 +202,7 @@ class BackendAPI {
    */
   static requestCurrentHFValue(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<currentHFValue> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
   }
@@ -217,10 +217,10 @@ class BackendAPI {
    */
   static requestCurrentHFCategories(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<currentHFCategories>> {
     return BackendAPI.makeGetRequest(
-      `${areaType}/${areaId}/hf/current/categories`
+      `${areaType}/${areaId}/hf/current/categories`,
     );
   }
 
@@ -234,7 +234,7 @@ class BackendAPI {
    */
   static requestHFPersistence(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<hfPersistence>> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
@@ -249,7 +249,7 @@ class BackendAPI {
    */
   static requestTotalHFTimeline(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<hfTimeline> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/timeline`);
   }
@@ -267,10 +267,10 @@ class BackendAPI {
   static requestSEHFTimeline(
     areaType: string,
     areaId: string | number,
-    seType: string
+    seType: string,
   ): Promise<hfTimeline> {
     return BackendAPI.makeGetRequest(
-      `${areaType}/${areaId}/se/${seType}/hf/timeline`
+      `${areaType}/${areaId}/se/${seType}/hf/timeline`,
     );
   }
 
@@ -286,7 +286,7 @@ class BackendAPI {
   static requestSEDetailInArea(
     areaType: string,
     areaId: string | number,
-    seType: string
+    seType: string,
   ): Promise<seDetails> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/se/${seType}`);
   }
@@ -301,10 +301,10 @@ class BackendAPI {
   static requestSECoverageByGeofence(
     areaType: string,
     areaId: string | number,
-    seType: string
+    seType: string,
   ): Promise<Array<Coverage>> {
     return BackendAPI.makeGetRequest(
-      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+      `ecosystems/coverage/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
     );
   }
 
@@ -318,10 +318,10 @@ class BackendAPI {
   static requestSEPAByGeofence(
     areaType: string,
     areaId: string | number,
-    seType: string
+    seType: string,
   ): Promise<Array<SEPAData>> {
     return BackendAPI.makeGetRequest(
-      `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`
+      `/pa/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
     );
   }
 
@@ -332,10 +332,10 @@ class BackendAPI {
    */
   static requestStrategicEcosystems(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<SEPAData>> {
     return BackendAPI.makeGetRequest(
-      `ecosystems/se?areaType=${areaType}&areaId=${areaId}`
+      `ecosystems/se?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -346,10 +346,10 @@ class BackendAPI {
    */
   static requestProtectedAreas(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<SEPAData>> {
     return BackendAPI.makeGetRequest(
-      `/pa?areaType=${areaType}&areaId=${areaId}`
+      `/pa?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -360,10 +360,10 @@ class BackendAPI {
    */
   static requestCoverage(
     areaType: string,
-    areaId: string | number
+    areaId: string | number,
   ): Promise<Array<Coverage>> {
     return BackendAPI.makeGetRequest(
-      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`
+      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -379,14 +379,14 @@ class BackendAPI {
   static requestCoveragesLayer(
     areaType: string,
     areaId: number | string,
-    coverageType: string
+    coverageType: string,
   ) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
         { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        true,
       ),
       source,
     };
@@ -406,14 +406,14 @@ class BackendAPI {
     areaType: string,
     areaId: number | string,
     coverageType: string,
-    seType: string
+    seType: string,
   ) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `ecosystems/coverage/se/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}&seType=${seType}`,
         { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        true,
       ),
       source,
     };
@@ -435,12 +435,12 @@ class BackendAPI {
   static requestNumberOfSpecies(
     areaType: string,
     areaId: number | string,
-    group: string
+    group: string,
   ): Promise<Array<numberOfSpecies>> {
     return BackendAPI.makeGetRequest(
       `richness/number-species?areaType=${areaType}&areaId=${areaId}${
         group ? `&group=${group}` : ""
-      }`
+      }`,
     );
   }
 
@@ -457,12 +457,12 @@ class BackendAPI {
   static requestNSThresholds(
     areaType: string,
     areaId: number | string,
-    group: string
+    group: string,
   ): Promise<Array<NOSThresholds>> {
     return BackendAPI.makeGetRequest(
       `richness/number-species/thresholds?areaType=${areaType}&areaId=${areaId}${
         group ? `&group=${group}` : ""
-      }`
+      }`,
     );
   }
 
@@ -477,12 +477,12 @@ class BackendAPI {
    */
   static requestNSNationalMax(
     areaType: string,
-    group: string
+    group: string,
   ): Promise<Array<NOSNational>> {
     return BackendAPI.makeGetRequest(
       `richness/number-species/nationalMax?areaType=${areaType}${
         group ? `&group=${group}` : ""
-      }`
+      }`,
     );
   }
 
@@ -496,10 +496,10 @@ class BackendAPI {
    */
   static requestGaps(
     areaType: string,
-    areaId: number | string
+    areaId: number | string,
   ): Promise<Array<gaps>> {
     return BackendAPI.makeGetRequest(
-      `richness/gaps?areaType=${areaType}&areaId=${areaId}`
+      `richness/gaps?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -513,10 +513,10 @@ class BackendAPI {
    */
   static requestConcentration(
     areaType: string,
-    areaId: number | string
+    areaId: number | string,
   ): Promise<Array<concentration>> {
     return BackendAPI.makeGetRequest(
-      `richness/concentration?areaType=${areaType}&areaId=${areaId}`
+      `richness/concentration?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -536,10 +536,10 @@ class BackendAPI {
   static requestPortfoliosByTarget(
     areaType: string,
     areaId: number | string,
-    targetId: number
+    targetId: number,
   ): Promise<portfoliosByTarget> {
     return BackendAPI.makeGetRequest(
-      `portfolios-ca/targets/${targetId}/values?areaType=${areaType}&areaId=${areaId}`
+      `portfolios-ca/targets/${targetId}/values?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -553,10 +553,10 @@ class BackendAPI {
    */
   static requestTargetsList(
     areaType: string,
-    areaId: number | string
+    areaId: number | string,
   ): Promise<Array<targetOrPortfolio>> {
     return BackendAPI.makeGetRequest(
-      `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`
+      `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`,
     );
   }
 
@@ -582,14 +582,14 @@ class BackendAPI {
   static requestPortfoliosCALayer(
     areaType: string,
     areaId: string,
-    portfolioId: number
+    portfolioId: number,
   ): { request: Promise<Object>; source: CancelTokenSource } {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
         { cancelToken: source.token, responseType: "arraybuffer" },
-        true
+        true,
       ),
       source,
     };
@@ -607,13 +607,13 @@ class BackendAPI {
   static requestDPCLayer(
     areaType: string,
     areaId: string,
-    paNumber = undefined
+    paNumber = undefined,
   ): ShapeAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `connectivity/dpc/layer?areaType=${areaType}&areaId=${areaId}&paNumber=${paNumber}`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -632,13 +632,13 @@ class BackendAPI {
   static requestPAConnSELayer(
     areaType: string,
     areaId: string,
-    seType: string
+    seType: string,
   ) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -657,7 +657,7 @@ class BackendAPI {
     return {
       request: BackendAPI.makeGetRequest(
         `${areaType}/${areaId}/hf/layers/current/categories`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -677,7 +677,7 @@ class BackendAPI {
     return {
       request: BackendAPI.makeGetRequest(
         `forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -698,13 +698,13 @@ class BackendAPI {
     areaType: string,
     areaId: string | number,
     sciCat: string,
-    hfPers: string
+    hfPers: string,
   ) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -723,7 +723,7 @@ class BackendAPI {
     return {
       request: BackendAPI.makeGetRequest(
         `${areaType}/${areaId}/hf/layers/persistence`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -742,13 +742,13 @@ class BackendAPI {
   static requestHFLayerBySEInGeofence(
     areaType: string,
     areaId: string | number,
-    seType: string
+    seType: string,
   ) {
     const source = axios.CancelToken.source();
     return {
       request: BackendAPI.makeGetRequest(
         `${areaType}/${areaId}/se/layers/${seType}`,
-        { cancelToken: source.token }
+        { cancelToken: source.token },
       ),
       source,
     };
@@ -824,7 +824,7 @@ class BackendAPI {
    */
   static requestGeofenceDetails(
     idArea: string | number,
-    idGeofence: string | number
+    idGeofence: string | number,
   ): Promise<geofenceDetails> {
     return BackendAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }

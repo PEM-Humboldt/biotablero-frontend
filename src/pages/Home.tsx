@@ -1,11 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router";
+
+import type { UiManager } from "app/Layout";
+import { LayoutUpdated } from "app/layout/layoutReducer";
 import { Carrousel } from "pages/home/Carrousel";
 import { TabsModules } from "pages/home/TabsComponent";
+
 import "newStyles.css";
 import "headerFooter.css";
 
-export const Home = () => {
+export function Home() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
   const [activeTab, setActiveTab] = useState<number | null>(0);
+
+  useEffect(() => {
+    layoutDispatch({
+      type: LayoutUpdated.CHANGE_SECTION,
+      sectionData: {
+        moduleName: "",
+        logos: new Set(["nasa", "temple", "siac"]),
+        className: "",
+      },
+    });
+  }, [layoutDispatch]);
 
   return (
     <div>
@@ -13,4 +30,4 @@ export const Home = () => {
       <TabsModules activeTab={activeTab} />
     </div>
   );
-};
+}

@@ -4,8 +4,8 @@ import InfoIcon from "@mui/icons-material/Info";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
@@ -43,7 +43,7 @@ class TimelinePAConnectivity extends React.Component<
   Props,
   timelinePAConnState
 > {
-  static contextType = SearchContext;
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "timelinePAConn";
   TimelinePACController;
@@ -72,7 +72,7 @@ class TimelinePAConnectivity extends React.Component<
       setLayerError,
       setMapTitle,
       setShowAreaLayer,
-    } = this.context as SearchContextValues;
+    } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -84,7 +84,7 @@ class TimelinePAConnectivity extends React.Component<
       BackendAPI.requestTimelinePAConnectivity(
         areaTypeId,
         areaIdId,
-        "prot_conn"
+        "prot_conn",
       ),
     ])
       .then((res) => {
@@ -122,7 +122,7 @@ class TimelinePAConnectivity extends React.Component<
         if (this.mounted) {
           this.setState(
             () => ({ layers: [timelinePAConn] }),
-            () => setLoadingLayer(false)
+            () => setLoadingLayer(false),
           );
           setShowAreaLayer(true);
           setShapeLayers(this.state.layers);
@@ -165,7 +165,7 @@ class TimelinePAConnectivity extends React.Component<
 
   render() {
     const { showInfoGraph, timelinePAConnData, message, texts } = this.state;
-    const { areaType, areaId } = this.context as SearchContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -214,5 +214,3 @@ class TimelinePAConnectivity extends React.Component<
 }
 
 export default TimelinePAConnectivity;
-
-TimelinePAConnectivity.contextType = SearchContext;

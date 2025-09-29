@@ -1,8 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import L from "leaflet";
 import Modal from "@mui/material/Modal";
-import PropTypes from "prop-types";
-import React, { Component } from "react";
+import { Component } from "react";
 
 import constructDataForCompensation from "pages/compensation/constructDataForSelector";
 import GeoServerAPI from "utils/geoServerAPI";
@@ -12,9 +11,8 @@ import Drawer from "pages/compensation/Drawer";
 import NewProjectForm from "pages/compensation/NewProjectForm";
 import Selector from "pages/compensation/Selector";
 import Description from "pages/compensation/SelectorData";
-import AppContext from "app/AppContext";
 
-class Compensation extends Component {
+export class Compensation extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,21 +44,21 @@ class Compensation extends Component {
   }
 
   componentDidMount() {
-    const { user } = this.context;
+    const { user } = this.props;
     if (user && user.company && user.username) {
       this.setState(
         {
           currentCompanyId: user.company.id,
           currentCompany: user.username.toUpperCase(),
         },
-        () => this.loadProjectsList()
+        () => this.loadProjectsList(),
       );
     }
   }
 
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
-    setHeaderNames({ parent: "", child: "" });
+    setHeaderNames({ title: "", subtitle: "" });
   }
 
   loadProjectsList = () => {
@@ -162,10 +160,10 @@ class Compensation extends Component {
             },
           } = this.state;
           setHeaderNames({
-            parent: `${currentCompany} ${idRegion}`,
-            child: `${prjStatus} ${label}`,
+            title: `${currentCompany} ${idRegion}`,
+            subtitle: `${prjStatus} ${label}`,
           });
-        }
+        },
       );
     });
   };
@@ -182,18 +180,18 @@ class Compensation extends Component {
       feature.properties.area_impacted_pct > 12
     ) {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "high" in obj)
+        colors.find((obj) => "high" in obj),
       );
     } else if (
       feature.properties.compensation_factor < 6.5 &&
       feature.properties.area_impacted_pct < 12
     ) {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "low" in obj)
+        colors.find((obj) => "low" in obj),
       );
     } else {
       styleResponse.fillColor = Object.values(
-        colors.find((obj) => "medium" in obj)
+        colors.find((obj) => "medium" in obj),
       );
     }
     return styleResponse;
@@ -221,7 +219,7 @@ class Compensation extends Component {
         area
           .bindPopup(
             `<b>Proyecto:</b> ${currentProject.name}
-          <br><b>Área:</b> ${currentProject.area_ha}`
+          <br><b>Área:</b> ${currentProject.area_ha}`,
           )
           .openPopup();
         break;
@@ -237,7 +235,7 @@ class Compensation extends Component {
           }
           <br><b>% de afectación:</b> ${
             area.feature.properties.area_impacted_pct || "Sin información"
-          }`
+          }`,
           )
           .openPopup();
         break;
@@ -247,14 +245,14 @@ class Compensation extends Component {
             .bindPopup(
               `<b>Estrategia:</b> ${area.feature.properties.strategy}
             <br><b>Area:</b> ${area.feature.properties.area_ha} ha
-            <br><b>Estado:</b> ${area.feature.properties.area_status}`
+            <br><b>Estado:</b> ${area.feature.properties.area_status}`,
             )
             .openPopup();
         } else {
           area
             .bindPopup(
               `<b>Estrategia:</b> ${area.feature.properties.strategy}
-            <br><b>Area:</b> ${area.feature.properties.area_ha} ha`
+            <br><b>Area:</b> ${area.feature.properties.area_ha} ha`,
             )
             .openPopup();
         }
@@ -315,7 +313,7 @@ class Compensation extends Component {
           newProjectModal: false,
         });
         // TODO: Show here instructions to add biomes to the project
-      }
+      },
     );
   };
 
@@ -334,8 +332,8 @@ class Compensation extends Component {
       },
       () => {
         const { setHeaderNames } = this.props;
-        setHeaderNames({ parent: "", child: "" });
-      }
+        setHeaderNames({ title: "", subtitle: "" });
+      },
     );
     this.loadProjectsList();
   };
@@ -363,7 +361,7 @@ class Compensation extends Component {
 
   innerElementChange = (parent, projectId) => {
     this.loadProject(
-      typeof projectId === "object" ? projectId.id_project : projectId
+      typeof projectId === "object" ? projectId.id_project : projectId,
     );
   };
 
@@ -402,7 +400,7 @@ class Compensation extends Component {
           this.resetHighlight(oldArea, "projectBiomes");
           oldArea.closePopup();
         }
-      }
+      },
     );
   };
 
@@ -457,11 +455,11 @@ class Compensation extends Component {
         newAreas
           .sort(
             (a, b) =>
-              a.feature.properties.area_ha - b.feature.properties.area_ha
+              a.feature.properties.area_ha - b.feature.properties.area_ha,
           )
           .forEach((area) => this.highlightFeature(area, "strategies"));
         oldAreas.forEach((area) => this.resetHighlight(area, "strategies"));
-      }
+      },
     );
   };
 
@@ -485,7 +483,6 @@ class Compensation extends Component {
       impactedBiomesDecisionTree,
       clickedStrategy,
     } = this.state;
-    const { user } = this.context;
     return (
       <>
         {/** Modals section: new project, connection error or loading message */}
@@ -551,7 +548,7 @@ class Compensation extends Component {
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}
-            userLogged={user}
+            userLogged={this.props.user}
           />
           <div className="contentView">
             {!currentProject && (
@@ -594,11 +591,3 @@ class Compensation extends Component {
     );
   }
 }
-
-Compensation.contextType = AppContext;
-
-Compensation.propTypes = {
-  setHeaderNames: PropTypes.func.isRequired,
-};
-
-export default Compensation;

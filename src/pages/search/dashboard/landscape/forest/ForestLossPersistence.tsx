@@ -2,8 +2,8 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  SearchContext,
-  type SearchContextValues,
+  SearchLegacyCTX,
+  type LegacyContextValues,
 } from "pages/search/SearchContext";
 import ShortInfo from "components/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
@@ -31,6 +31,7 @@ interface State {
 }
 
 class ForestLossPersistence extends React.Component<Props, State> {
+  static contextType = SearchLegacyCTX;
   mounted = false;
   componentName = "forestLP";
   flpController;
@@ -54,7 +55,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
   componentDidMount() {
     this.mounted = true;
     const { areaType, areaId, searchType } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -112,7 +113,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       layers,
     } = this.state;
     const { areaType, areaId, setRasterLayers } = this
-      .context as SearchContextValues;
+      .context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
@@ -174,7 +175,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                   layers.map((layer) => ({
                     ...layer,
                     selected: layer.id === category,
-                  }))
+                  })),
                 );
               } else {
                 this.currentPeriod = period;
@@ -199,7 +200,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   switchLayer = (period: string) => {
     const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      this.context as SearchContextValues;
+      this.context as LegacyContextValues;
 
     setLoadingLayer(true);
     this.flpController
@@ -208,7 +209,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         this.setState({ layers: layers });
 
         if (this.mounted) {
-          setRasterLayers(this.state.layers);
+          setRasterLayers(layers);
           setLoadingLayer(false);
           setMapTitle({
             name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
@@ -224,5 +225,3 @@ class ForestLossPersistence extends React.Component<Props, State> {
 }
 
 export default ForestLossPersistence;
-
-ForestLossPersistence.contextType = SearchContext;

@@ -131,7 +131,7 @@ class SmallBars extends React.Component<Props, State> {
                     alternateAxisY.tickWidth,
                     alternateAxisY.tickHeight,
                     "left",
-                    selectedIndexValue
+                    selectedIndexValue,
                   ),
                 }
               : null
@@ -156,7 +156,7 @@ class SmallBars extends React.Component<Props, State> {
                 alternateAxisY.values,
                 alternateAxisY.tickWidth,
                 alternateAxisY.tickHeight,
-                "right"
+                "right",
               ),
             }
           }
@@ -176,7 +176,7 @@ class SmallBars extends React.Component<Props, State> {
           }}
           tooltip={({ id, indexValue, color }) => {
             const currentVal = tooltips.find(
-              (e) => e.category == id && e.group === indexValue
+              (e) => e.category == id && e.group === indexValue,
             );
             const tooltipRows = currentVal
               ? currentVal.tooltipContent.slice(1)
@@ -220,7 +220,7 @@ const CustomTickWrapper = (
   tickWidth: number = 90,
   tickHeight: number = 30,
   side: string = "left",
-  selected: string | number = ""
+  selected: string | number = "",
 ) => {
   return (tick: AxisTickProps<string>) => {
     return (

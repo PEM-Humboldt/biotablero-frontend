@@ -26,7 +26,7 @@ export class ForestIntegrityController {
 
     const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFGLayer(
       this.areaType,
-      this.areaId
+      this.areaId,
     );
 
     const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
@@ -64,14 +64,14 @@ export class ForestIntegrityController {
       const sciCat = selectedKey.substring(0, selectedKey.indexOf("-"));
       const hfPers = selectedKey.substring(
         selectedKey.indexOf("-") + 1,
-        selectedKey.length
+        selectedKey.length,
       );
 
       const reqPromise: ShapeAPIObject = BackendAPI.requestSCIHFPALayer(
         this.areaType,
         this.areaId,
         sciCat,
-        hfPers
+        hfPers,
       );
 
       const { request, source } = reqPromise;
@@ -99,7 +99,7 @@ export class ForestIntegrityController {
     } catch (error) {
       this.activeRequests.delete(selectedKey);
       throw new Error(
-        error instanceof Error ? error.message : "Error al obtener la capa"
+        error instanceof Error ? error.message : "Error al obtener la capa",
       );
     }
   };
