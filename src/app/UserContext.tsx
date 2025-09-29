@@ -14,7 +14,7 @@ import {
   parseUserFromJwt,
   setTokensInLS,
 } from "app/uim/utils/JWTstorage";
-import { isResponseRequestError, refreshAccessToken } from "utils/cmAPI";
+import { isResponseRequestError, refreshAccessToken } from "utils/authAPI";
 
 type UserContextType = {
   user: UserType | null;

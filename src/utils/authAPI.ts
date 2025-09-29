@@ -83,7 +83,6 @@ async function makeAuthRequest(
     },
   };
 
-  console.log(url, body, config);
   try {
     const { data }: { data: unknown } = await axios.post(url, body, config);
 
@@ -139,7 +138,7 @@ export async function refreshAccessToken(
   });
 }
 
-// NOTE: Interceptor para todos los requests de usuario en el módulo CM
+// NOTE: Interceptor para todos los requests de usuario en el módulo AUTH
 const authClient = axios.create({
   baseURL: import.meta.env.VITE_AUTH_BACKEND_URL,
 });
@@ -192,13 +191,13 @@ authClient.interceptors.response.use(
 );
 
 /**
- * Wrapper around Axios to standardize requests to the CM module.
+ * Wrapper around Axios to standardize requests to the Auth module.
  *
  * Handles query parameter encoding, error normalization, and token injection through interceptors.
  *
  * @typeParam T - The expected response payload type.
  * @param type - The HTTP method (`get`, `post`, `put`, or `delete`).
- * @param endpoint - The API endpoint relative to the CM backend base URL.
+ * @param endpoint - The API endpoint relative to the Auth backend base URL.
  * @param data - Optional key-value pairs to send as query parameters or request body.
  * @param headers - Optional custom headers for the request.
  * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.

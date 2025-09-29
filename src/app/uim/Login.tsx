@@ -2,14 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   requestAccessToken,
   isResponseRequestError,
-<<<<<<< HEAD
   isResponseAuthData,
 } from "utils/authAPI";
-import type { LoginUimProps } from "app/Uim";
-=======
-  refreshAccessToken,
-} from "utils/cmAPI";
->>>>>>> d12c83c4 (Preserve the user login state between sessions)
 import { uiText } from "app/uim/login/uiText";
 import {
   deleteTokensFromLS,
