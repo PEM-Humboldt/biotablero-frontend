@@ -18,8 +18,7 @@ type DashboardProps = {
 
 export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
   const { searchType, areaHa } = useSearchStateCTX();
-  const [selectedIndex, setSelectedIndex] = useState(1);//TODO: Devolver el indice a 0 cuando este listo Ecosistemas en el backend de consultas
-
+  const [selectedIndex, setSelectedIndex] = useState(1); //TODO: Devolver el indice a 0 cuando este listo Ecosistemas en el backend de consultas
 
   useEffect(() => {
     if (searchType === "drawPolygon") {
@@ -27,7 +26,7 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
     }
   }, [searchType]);
 
-    //TODO: Habilitar las secciones comentadas cuando se conecte el nuevo backend de consultas
+  //TODO: Habilitar las secciones comentadas cuando se conecte el nuevo backend de consultas
 
   return (
     <div className="informer">
