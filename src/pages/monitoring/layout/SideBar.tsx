@@ -51,6 +51,9 @@ export function SideBar() {
     },
   ];
 
+  const renderAdminTools = role === "Admin";
+  const renderUserTools = role === "User";
+
   return (
     <Box className="sidebar-root">
       <Paper
@@ -65,13 +68,16 @@ export function SideBar() {
           collapsed={collapsed}
           setCollapsed={setCollapsed}
         />
-        {role === "User" ? (
+
+        {renderUserTools && (
           <DashboardButtons
             items={userItems}
             collapsed={collapsed}
             setCollapsed={setCollapsed}
           />
-        ) : (
+        )}
+
+        {renderAdminTools && (
           <DashboardButtons
             items={adminItems}
             collapsed={collapsed}

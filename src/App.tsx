@@ -7,8 +7,11 @@ import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
 import { Monitoring } from "pages/Monitoring";
 import { Portfolio } from "pages/Portfolio";
-import { InitiativesMap } from "pages/monitoring/InitiativesMap";
-import { DashboardAdmin, DashboardUser } from "pages/monitoring/Dashboard";
+import { InitiativesMap } from "pages/monitoring/outlet/InitiativesMap";
+import {
+  DashboardAdmin,
+  DashboardUser,
+} from "pages/monitoring/outlet/Dashboard";
 import { RenderCompensation } from "pages/CompensationAuth";
 
 import { checkNLoad } from "app/utils/userLoader";
