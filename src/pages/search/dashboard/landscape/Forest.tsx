@@ -10,6 +10,7 @@ const Forest: React.FC<componentProps> = (props) => {
 
   const { searchType } = useSearchLegacyCTX();
 
+  //TODO: Habilitar seccion de integridad de bosques cuando se conecte el nuevo backend de consultas
   const initialArray: Array<accordionComponent> = [
     {
       label: {
@@ -19,14 +20,14 @@ const Forest: React.FC<componentProps> = (props) => {
       },
       component: ForestLossPersistence,
     },
-    {
+    /*{
       label: {
         id: "forestIntegrity",
         name: "Integridad",
         collapsed: openTab !== "forestIntegrity",
       },
       component: ForestIntegrity,
-    },
+    },*/
   ];
 
   let selected: Array<string> = [];

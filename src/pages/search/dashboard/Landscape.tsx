@@ -74,11 +74,12 @@ class Landscape extends React.Component<Props, State> {
     }));
   }
 
+  //TODO: Habilitar las pestañas comentadas cuando se conecte el nuevo backend de consultas
   render() {
     const { areaType } = this.context as LegacyContextValues;
     const { childMap, visible } = this.state;
     const initialArray: Array<accordionComponent> = [
-      {
+      /*{
         label: {
           id: "fc",
           name: "FC y Biomas",
@@ -96,7 +97,7 @@ class Landscape extends React.Component<Props, State> {
           handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.hf,
         },
-      },
+      },*/
       {
         label: {
           id: "forest",
@@ -108,7 +109,7 @@ class Landscape extends React.Component<Props, State> {
           openTab: childMap.forest,
         },
       },
-      {
+      /*{
         label: {
           id: "connectivity",
           name: "Conectividad de Áreas Protegidas",
@@ -118,7 +119,7 @@ class Landscape extends React.Component<Props, State> {
           handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.connectivity,
         },
-      },
+      },*/
     ];
 
     let selected: Array<string> = [];

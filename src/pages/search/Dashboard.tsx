@@ -18,13 +18,16 @@ type DashboardProps = {
 
 export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
   const { searchType, areaHa } = useSearchStateCTX();
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(1);//TODO: Devolver el indice a 0 cuando este listo Ecosistemas en el backend de consultas
+
 
   useEffect(() => {
     if (searchType === "drawPolygon") {
       setSelectedIndex(1);
     }
   }, [searchType]);
+
+    //TODO: Habilitar las secciones comentadas cuando se conecte el nuevo backend de consultas
 
   return (
     <div className="informer">
@@ -42,7 +45,7 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
       <TabContainer
         initialSelectedIndex={selectedIndex}
         titles={[
-          { label: "Ecosistemas", icon: <Ecosistemas /> },
+          //{ label: "Ecosistemas", icon: <Ecosistemas /> },
           { label: "Paisaje", icon: <Paisaje /> },
           // { label: "Especies", icon: <Especies />, showTab: false },
         ]}
