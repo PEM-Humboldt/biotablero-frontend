@@ -12,8 +12,8 @@ import {
 } from "@mui/icons-material";
 
 import { useUserCTX } from "app/UserContext";
-import type { DashboardItem } from "pages/monitoring/dashboard/types";
-import { DashboardButtons } from "pages/monitoring/dashboard/DashboardButtons";
+import type { DashboardItem } from "pages/monitoring/outlet/dashboard/types";
+import { DashboardButtons } from "pages/monitoring/outlet/dashboard/DashboardButtons";
 
 const drawerWidth = 400;
 const collapsedWidth = 60;

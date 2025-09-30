@@ -1,7 +1,7 @@
-import { SearchBar } from "pages/monitoring/initiativesMap/SearchBar";
-import { Browser } from "pages/monitoring/initiativesMap/Browser";
+import { SearchBar } from "pages/monitoring/outlet/initiativesMap/SearchBar";
+import { Browser } from "pages/monitoring/outlet/initiativesMap/Browser";
 import "pages/monitoring/styles/monitoring.css";
-import { MapFinder } from "pages/monitoring/initiativesMap/MapFinder";
+import { MapFinder } from "pages/monitoring/outlet/initiativesMap/MapFinder";
 
 export function InitiativesMap() {
   return (

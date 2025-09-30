@@ -1,69 +1,117 @@
-import axios, { AxiosRequestConfig } from "axios";
+import { getTokensFromLS, setTokensInLS } from "app/uim/utils/JWTstorage";
+import axios, {
+  isAxiosError,
+  type AxiosResponse,
+  type InternalAxiosRequestConfig,
+  type AxiosError,
+} from "axios";
+import {
+  isResponseRequestError,
+  refreshAccessToken,
+  type RequestError,
+} from "utils/authAPI";
 
-class MonitoringAPI {
-  /** ************** */
-  /** BASE FUNCTIONS */
-  /** ************** */
+// NOTE: Implementación base con interceptor para todos los requests de
+// usuario en el módulo de monitoreo
 
-  /**
-   * Request an endpoint through a GET request
-   *
-   * @param {String} endpoint endpoint to attach to url
-   * @param {Array} options config params to the request
-   * @param {Boolean} completeRes define if get all the response or only data part
-   */
-  static makeGetRequest(endpoint: string, options = {}, completeRes = false) {
-    const config = {
-      ...options,
-    };
-    return axios
-      .get(`${import.meta.env.VITE_MONITORING_BACKEND_URL}/${endpoint}`, config)
-      .then((res) => {
-        if (completeRes) {
-          return res;
-        }
-        return res.data;
-      })
-      .catch((error) => {
-        if (axios.isCancel(error)) {
-          return Promise.resolve("request canceled");
-        }
-        let message = "Bad GET response. Try later";
-        if (error.response) message = error.response.status;
-        if (error.request && error.request.statusText === "")
-          message = "no-data-available";
-        return Promise.reject(message);
-      });
-  }
-
-  /**
-   * Request an endpoint through a POST request
-   *
-   * @param {String} endpoint endpoint to attach to url
-   * @param {Object} requestBody JSON object with the request body
-   * @param {Array} options config params to the request
-   */
-  static makePostRequest(endpoint: string, requestBody: {}, options = {}) {
-    const config: AxiosRequestConfig = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      ...options,
-    };
-    return axios
-      .post(
-        `${import.meta.env.VITE_MONITORING_BACKEND_URL}/${endpoint}`,
-        requestBody,
-        config,
-      )
-      .then((res) => res.data)
-      .catch((error) => {
-        let message = "Bad POST response. Try later";
-        if (error.response) message = error.response.status;
-        if (error.request.statusText === "") message = "no-data-available";
-        return Promise.reject(message);
-      });
-  }
+interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
 }
 
-export default MonitoringAPI;
+const authClient = axios.create({
+  baseURL: import.meta.env.VITE_AUTH_BACKEND_URL,
+});
+
+authClient.interceptors.request.use(
+  (config) => {
+    const { accessToken } = getTokensFromLS();
+    if (accessToken) {
+      config.headers.set("Authorization", `Bearer ${accessToken}`);
+    }
+    return config;
+  },
+  (error: AxiosError) => Promise.reject(error),
+);
+
+authClient.interceptors.response.use(
+  (res) => res,
+  async (err: AxiosError) => {
+    const originalReq = err.config as ExtendedAxiosReqConfig;
+
+    if (err.response?.status !== 401 || originalReq?._retry) {
+      return Promise.reject(err);
+    }
+
+    originalReq._retry = true;
+
+    try {
+      const { refreshToken } = getTokensFromLS();
+      if (refreshToken === null) {
+        return Promise.reject(err);
+      }
+
+      const newTokens = await refreshAccessToken(refreshToken);
+      if (isResponseRequestError(newTokens)) {
+        return Promise.reject(err);
+      }
+
+      setTokensInLS(newTokens.access_token, newTokens.refresh_token);
+      originalReq.headers.set(
+        "Authorization",
+        `Bearer ${newTokens.access_token}`,
+      );
+      return authClient(originalReq);
+    } catch (refreshError) {
+      console.error("Refresh token failed:", refreshError);
+    }
+
+    return Promise.reject(err);
+  },
+);
+
+/**
+ * Wrapper around Axios to standardize requests to the Auth module.
+ *
+ * Handles query parameter encoding, error normalization, and token injection through interceptors.
+ *
+ * @typeParam T - The expected response payload type.
+ * @param type - The HTTP method (`get`, `post`, `put`, or `delete`).
+ * @param endpoint - The API endpoint relative to the Auth backend base URL.
+ * @param data - Optional key-value pairs to send as query parameters or request body.
+ * @param headers - Optional custom headers for the request.
+ * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
+ */
+export async function authRequest<T>(
+  type: "get" | "post" | "put" | "delete",
+  endpoint: string,
+  data?: Record<string, string>,
+  headers?: Record<string, string>,
+): Promise<T | RequestError> {
+  try {
+    let response: AxiosResponse<T>;
+    const reqParams = new URLSearchParams();
+    if (data) {
+      Object.entries(data).forEach(([key, value]) =>
+        reqParams.append(key, value),
+      );
+    }
+
+    if (type === "get" || type === "delete") {
+      const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
+      response = await authClient[type]<T>(fullEndpoint);
+    } else {
+      reqParams.append("client_id", "bt-mc-client");
+      response = await authClient[type]<T>(endpoint, reqParams, { headers });
+    }
+
+    return response.data;
+  } catch (err) {
+    if (isAxiosError(err) && err.response) {
+      return {
+        status: err.response.status,
+        message: err?.message || "Request failed",
+      };
+    }
+    return { status: 503, message: "Couldn't connect with the server" };
+  }
+}
