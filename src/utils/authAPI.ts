@@ -83,7 +83,6 @@ async function makeAuthRequest(
     },
   };
 
-  console.log(url, body, config);
   try {
     const { data }: { data: unknown } = await axios.post(url, body, config);
 
@@ -93,8 +92,6 @@ async function makeAuthRequest(
 
     return data;
   } catch (err) {
-    console.error(err);
-
     if (isAxiosError(err) && err.response) {
       return {
         status: err.response.status,
@@ -139,7 +136,6 @@ export async function refreshAccessToken(
   });
 }
 
-// NOTE: Interceptor para todos los requests de usuario en el módulo CM
 const authClient = axios.create({
   baseURL: import.meta.env.VITE_AUTH_BACKEND_URL,
 });
@@ -192,7 +188,7 @@ authClient.interceptors.response.use(
 );
 
 /**
- * Wrapper around Axios to standardize requests to the CM module.
+ * Wrapper around Axios to standardize requests to the Auth module.
  *
  * Handles query parameter encoding, error normalization, and token injection through interceptors.
  *

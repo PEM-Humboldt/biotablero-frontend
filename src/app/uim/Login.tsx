@@ -11,7 +11,7 @@ const uiTXT = {
   form: {
     name: {
       label: "Nombre de usuario",
-      placeholder: "Apoddo",
+      placeholder: "SobreNombre",
     },
     pass: {
       label: "Contraseña",
@@ -64,10 +64,8 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       setTokensInLS(res.access_token, res.refresh_token);
       const user = parseUserFromJwt(res.access_token);
 
-      console.log(user);
       void setUser(user);
-    } catch (err) {
-      console.warn(err);
+    } catch {
       void setLoginError(uiTXT.error[500]);
     }
   };

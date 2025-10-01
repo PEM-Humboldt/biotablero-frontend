@@ -7,7 +7,7 @@ import {
   type ExpandedCardProps,
 } from "pages/indicators/app/cardManager/ExpandedCard";
 
-interface CardProps extends ExpandedCardProps {
+export interface CardProps extends ExpandedCardProps {
   isExpanded: boolean;
   wasExpanded: boolean;
 }

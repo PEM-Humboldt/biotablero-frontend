@@ -37,7 +37,11 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
     }
     userCard.current.style.setProperty(
       "--profile-img",
-      `url(${currentUser?.profileImg ? currentUser?.profileImg : "src/images/LogoGEB.png"})`,
+      `url(${
+        currentUser?.profileImg
+          ? currentUser.profileImg
+          : `/images/user_icon.svg`
+      })`,
     );
   }, [currentUser?.profileImg]);
 
@@ -76,6 +80,7 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
         open={whichModal.state}
         onClose={hideModal(whichModal.modal)}
         disableAutoFocus
+        keepMounted
       >
         <div ref={userCard} className={`uim_modal ${whichModal.modal}`}>
           <button
