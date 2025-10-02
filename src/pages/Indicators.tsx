@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import CardManager from "pages/indicators/app/CardManager";
+import { CardManager } from "pages/indicators/app/CardManager";
 import TagManager from "pages/indicators/app/TagManager";
 import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";

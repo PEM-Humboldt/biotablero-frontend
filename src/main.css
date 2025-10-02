@@ -2229,6 +2229,7 @@ tspan,
 .uim_modal.userModal {
   background-image: var(--profile-img);
   background-position: 50% 20%;
+  background-size: 35%;
   background-repeat: no-repeat;
 }
 
