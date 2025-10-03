@@ -8,11 +8,9 @@ interface LogoutHandlerProps {
 export function UserInfo({ user, logoutHandler }: LogoutHandlerProps) {
   return (
     <div className="user_info">
-      Usuario:{user.username}
+      Usuario: {user.username}
       <br />
-      email registrado:{user.email}
-      <br />
-      tipo de usuario:{user.roles[0]}
+      Email registrado: {user.email}
       <br />
       <button
         className="logoutbtn"
