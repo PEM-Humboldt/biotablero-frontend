@@ -56,8 +56,7 @@ export function Login() {
       }
 
       void login(user);
-    } catch (err) {
-      console.warn(err);
+    } catch {
       void setLoginError(uiText.error[500]);
     }
   };
