@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -27,16 +27,6 @@ export function Uim() {
   const { user, logout } = useUserCTX();
   const userCard = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!userCard.current) {
-      return;
-    }
-    userCard.current.style.setProperty(
-      "--profile-img",
-      `url(${user?.profileImg ? user.profileImg : `/images/user_icon.svg`})`,
-    );
-  }, [user?.profileImg]);
-
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
   };
@@ -54,6 +44,13 @@ export function Uim() {
   const whichModal = user
     ? { modal: "userModal", state: modals.userModal }
     : { modal: "loginModal", state: modals.loginModal };
+
+  if (user && userCard.current) {
+    userCard.current.style.setProperty(
+      "--profile-img",
+      `url(${user?.profileImg ? user.profileImg : `/images/user_icon.svg`})`,
+    );
+  }
 
   return (
     <div className="loginBtnCont">

@@ -157,8 +157,7 @@ header.cabezote {
   display: flex;
   justify-content: space-between;
   background-color: #fff;
-  isolation: isolate;
-  z-index: 1000;
+  z-index: 10000;
 }
 header h4 {
   font-weight: 300;
@@ -336,4 +335,3 @@ footer span {
     transform: translate(-92.3%, 0);
   }
 }
-

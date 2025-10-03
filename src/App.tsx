@@ -103,20 +103,22 @@ export function App() {
 
   return (
     <>
-      <YMInitializer
-        accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
-        options={{
-          webvisor: true,
-          trackHash: true,
-          clickmap: true,
-          accurateTrackBounce: true,
-          trackLinks: true,
-          params: {
-            cookieDomain: ".humboldt.org.co",
-            cookieFlags: "SameSite=None; Secure",
-          },
-        }}
-      />
+      {import.meta.env.VITE_ENVIRONMENT === "production" && (
+        <YMInitializer
+          accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
+          options={{
+            webvisor: true,
+            trackHash: true,
+            clickmap: true,
+            accurateTrackBounce: true,
+            trackLinks: true,
+            params: {
+              cookieDomain: ".humboldt.org.co",
+              cookieFlags: "SameSite=None; Secure",
+            },
+          }}
+        />
+      )}
       <RouterProvider router={routes} />
     </>
   );
