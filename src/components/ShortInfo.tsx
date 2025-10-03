@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { isUndefinedOrNull } from "utils/validations";
 
 interface ShortInfoTypes {
   className?: string;
-  description?: string;
+  description: string;
   tooltip?: string;
   collapseButton?: boolean;
 }
@@ -27,9 +26,7 @@ const ShortInfo: React.FC<ShortInfoTypes> = ({
       <div
         className={`${className}-${hide_text}`}
         dangerouslySetInnerHTML={{
-          __html: `${
-            isUndefinedOrNull(description) ? "Cargando..." : description
-          }`,
+          __html: `${description === "" ? "Cargando..." : description}`,
         }}
       />
       {collapseButton && (

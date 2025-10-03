@@ -1,70 +1,115 @@
 import React, { useState } from "react";
+import {
+  requestAccessToken,
+  isResponseRequestError,
+  isResponseAuthData,
+} from "utils/authAPI";
+import type { LoginUimProps } from "app/Uim";
+import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
 
-import RestAPI from "utils/restAPI";
-
-import type { LoginUimProps } from "types/loginUimProps";
-
-interface StateLoginValues {
-  username: string;
-  password: string;
-}
-
-const defaultStateValues: StateLoginValues = {
-  username: "",
-  password: "",
+const uiTXT = {
+  form: {
+    name: {
+      label: "Nombre de usuario",
+      placeholder: "SobreNombre",
+    },
+    pass: {
+      label: "Contraseña",
+    },
+    buttons: {
+      login: "Ingresar",
+      recovery: "Recuperar contraseña",
+    },
+  },
+  error: {
+    400: "El usuario y/o la contraseña no son correctas",
+    500: "No es posible procesar tu ingreso, intentalo de nuevo más tarde",
+  },
 };
 
 export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
-  const [userValues, setUserValues] =
-    useState<StateLoginValues>(defaultStateValues);
-
-  const validateForm = () => {
-    return userValues.username.length > 0 && userValues.password.length > 0;
-  };
+  const [loginError, setLoginError] = useState("");
+  const [loginData, setLoginData] = useState<{
+    username: string;
+    password: string;
+  }>({
+    username: "",
+    password: "",
+  });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserValues({
-      ...userValues,
+    setLoginData({
+      ...loginData,
       [event.target.id]: `${event.target.value}`,
     });
   };
 
+  const handleLogin = async () => {
+    try {
+      const res = await requestAccessToken(
+        loginData.username,
+        loginData.password,
+      );
+
+      if (isResponseRequestError(res)) {
+        setLoginError(res.status > 499 ? uiTXT.error[500] : uiTXT.error[400]);
+        return;
+      }
+
+      if (!isResponseAuthData(res)) {
+        setLoginError(uiTXT.error[500]);
+        return;
+      }
+
+      setTokensInLS(res.access_token, res.refresh_token);
+      const user = parseUserFromJwt(res.access_token);
+
+      void setUser(user);
+    } catch {
+      void setLoginError(uiTXT.error[500]);
+    }
+  };
+
+  const validateForm =
+    loginData.username.length > 0 && loginData.password.length > 0;
+
   return (
     <div className="login">
       <form onSubmit={(event) => event.preventDefault()}>
-        <input
-          className="loginInput"
-          type="text"
-          placeholder="Usuario"
-          id="username"
-          onChange={handleChange}
-        />
-        <input
-          className="loginInput"
-          placeholder="Contraseña"
-          id="password"
-          onChange={handleChange}
-          type="password"
-        />
+        {loginError !== "" && <div>{loginError}</div>}
+        <label>
+          {uiTXT.form.name.label}
+          <input
+            className="loginInput"
+            type="text"
+            placeholder={uiTXT.form.name.placeholder}
+            id="username"
+            onChange={handleChange}
+          />
+        </label>
+
+        <label>
+          {uiTXT.form.pass.label}
+          <input
+            className="loginInput"
+            placeholder="Contraseña"
+            id="password"
+            onChange={handleChange}
+            type="password"
+          />
+        </label>
+
         <button
-          className={validateForm() ? "loginbtn" : "loginbtn disabled"}
-          title="Ingresar"
-          disabled={!validateForm()}
-          type="submit"
-          onClick={() => {
-            RestAPI.requestUser(userValues.username, userValues.password).then(
-              (res) => setUser(res),
-            );
-          }}
-        >
-          Ingresar
-        </button>
-        <button
-          className="recoverbtn"
+          className={validateForm ? "loginbtn" : "loginbtn disabled"}
+          disabled={!validateForm}
           type="button"
-          title="Acción no disponible"
+          onClick={() => void handleLogin()}
         >
-          Recuperar contraseña
+          {uiTXT.form.buttons.login}
+        </button>
+
+        <button className="recoverbtn" type="button">
+          {uiTXT.form.buttons.recovery}
         </button>
       </form>
     </div>

@@ -6,7 +6,6 @@ import {
   type LegacyContextValues,
 } from "pages/search/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { isUndefinedOrNull } from "utils/validations";
 import SearchAPI from "pages/search/utils/searchAPI";
 
 interface SearchAreasProps {
@@ -76,14 +75,14 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       options={optionsList}
       getOptionLabel={(option) => option.name}
       onChange={(_, value) => {
-        if (isUndefinedOrNull(value)) {
+        if (value === null) {
           setAreaId();
           setAreaLayer();
           setAreaHa();
         } else {
-          setAreaId(value!);
+          setAreaId(value);
           // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          SearchAPI.requestAreaInfo(value!.id).then((areaId) => {
+          SearchAPI.requestAreaInfo(value.id).then((areaId) => {
             setAreaHa(Number(areaId.area));
             setAreaLayer(areaId.geometry);
           });

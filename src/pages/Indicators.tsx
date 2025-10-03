@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import CardManager from "pages/indicators/app/CardManager";
+import { CardManager } from "pages/indicators/app/CardManager";
 import TagManager from "pages/indicators/app/TagManager";
 import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
@@ -85,11 +85,14 @@ export function Indicators() {
         </div>
       )}
       <div className="countD">
-        {isLoading && "Cargando información..."}
-        {!isLoading && cardsData.length <= 0 && "No hay indicadores"}
-        {!isLoading &&
-          cardsData.length > 0 &&
-          `${cardsData.length} indicadores`}
+        {loadingTags && "Cargando información..."}
+        {!loadingTags && cardsData.length <= 0 && "No hay indicadores"}
+        {!loadingTags && cardsData.length > 0 && (
+          <>
+            {cardsData.length}
+            indicadores
+          </>
+        )}
       </div>
       <div className="masonry-cards">
         <CardManager cardsData={cardsData} />
