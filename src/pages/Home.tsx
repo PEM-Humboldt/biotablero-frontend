@@ -7,7 +7,6 @@ import { Carrousel } from "pages/home/Carrousel";
 import { TabsModules } from "pages/home/TabsComponent";
 
 import "newStyles.css";
-import "headerFooter.css";
 
 export function Home() {
   const { layoutDispatch } = useOutletContext<UiManager>();

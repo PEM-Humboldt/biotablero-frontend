@@ -4,6 +4,8 @@ import { Outlet } from "react-router";
 import { Footer } from "app/layout/Footer";
 import { Header } from "app/layout/Header";
 
+import "core/layout/headerFooter.css";
+
 import {
   layoutReducer,
   type LayoutActions,

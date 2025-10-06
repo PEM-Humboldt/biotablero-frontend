@@ -14,7 +14,7 @@ import {
 import { RenderCompensation } from "pages/CompensationAuth";
 
 import { checkNLoad } from "app/utils/userLoader";
-import "main.css";
+import type { UserType } from "app/uim/types";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
