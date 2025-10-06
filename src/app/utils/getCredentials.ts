@@ -21,7 +21,6 @@ export async function getCredentials(): Promise<UserType | null> {
 
   const res = await refreshAccessToken(oldRefreshToken);
   if (isResponseRequestError(res)) {
-    console.error(`status ${res.status}, ${res.message}`);
     deleteTokensFromLS();
 
     // TODO: No ser tan guache y redirigir a página de logout
