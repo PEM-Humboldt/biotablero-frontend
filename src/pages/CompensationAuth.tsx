@@ -1,7 +1,12 @@
 import type { UiManager } from "app/Layout";
 import { LayoutUpdated } from "app/layout/layoutReducer";
 import { useEffect } from "react";
-import { useLocation, useNavigate, useOutletContext } from "react-router";
+import {
+  useLocation,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "types/layoutTypes";
 import { useUserCTX } from "app/UserContext";
@@ -12,9 +17,11 @@ export function RenderCompensation() {
   const { user } = useUserCTX();
   const { layoutDispatch } = useOutletContext<UiManager>();
 
-  const renderCompensation = user !== null;
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user: userInParams } = useParams();
+
+  const renderCompensation = user?.username === "geb";
 
   useEffect(() => {
     if (!renderCompensation) {
@@ -22,7 +29,10 @@ export function RenderCompensation() {
         state: { prevUrl: pathname },
         replace: true,
       });
+
+      return;
     }
+
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {

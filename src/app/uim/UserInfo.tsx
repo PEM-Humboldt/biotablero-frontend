@@ -1,22 +1,23 @@
-import type { UserType } from "app/uim/types";
+import { useUserCTX } from "app/UserContext";
 
-interface LogoutHandlerProps {
-  user: UserType;
-  logoutHandler: () => void;
-}
+export function UserInfo({ logout }: { logout: () => void }) {
+  const { user } = useUserCTX();
 
-export function UserInfo({ user, logoutHandler }: LogoutHandlerProps) {
   return (
     <div className="user_info">
-      Usuario: {user.username}
+      Usuario:
       <br />
-      Email registrado: {user.email}
+      <b>{user!.username}</b>
+      <br />
+      email registrado:
+      <br />
+      <b>{user!.email}</b>
       <br />
       <button
         className="logoutbtn"
         title="Salir"
         type="button"
-        onClick={logoutHandler}
+        onClick={logout}
       >
         Cerrar Sesión
       </button>

@@ -7,9 +7,32 @@ import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
 import { Monitoring } from "pages/Monitoring";
 import { Portfolio } from "pages/Portfolio";
-
-import "main.css";
+import { InitiativesMap } from "pages/monitoring/outlet/InitiativesMap";
+import {
+  DashboardAdmin,
+  DashboardUser,
+} from "pages/monitoring/outlet/Dashboard";
 import { RenderCompensation } from "pages/CompensationAuth";
+
+import { checkNLoad } from "app/utils/userLoader";
+import type { UserType } from "app/uim/types";
+import "main.css";
+
+const randomNum = (_user: UserType) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(Math.floor(Math.random() * 10_000));
+    }, 3000);
+  });
+};
+
+const randomNumCritical = (_user: UserType) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(Math.floor(Math.random() * 10_000));
+    }, 1000);
+  });
+};
 
 export const routes = createBrowserRouter([
   {
@@ -27,13 +50,44 @@ export const routes = createBrowserRouter([
       {
         path: "Monitoreo",
         Component: Monitoring,
+        loader: () => checkNLoad({ requirements: { username: "geb" } }),
+        children: [
+          { index: true, Component: InitiativesMap },
+          {
+            path: "dashboard",
+            children: [
+              {
+                path: "admin",
+                Component: DashboardAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                    fetchData: randomNum,
+                    fetchCriticalData: randomNumCritical,
+                  }),
+              },
+              {
+                path: "user",
+                Component: DashboardUser,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["User"] },
+                    redirectPath: "/Monitoreo",
+                    fetchData: randomNum,
+                    fetchCriticalData: randomNumCritical,
+                  }),
+              },
+            ],
+          },
+        ],
       },
       {
         path: "Indicadores",
         Component: Indicators,
       },
       {
-        path: "/GEB/Compensaciones",
+        path: "/:user/Compensaciones",
         Component: RenderCompensation,
       },
       {
@@ -49,20 +103,22 @@ export function App() {
 
   return (
     <>
-      <YMInitializer
-        accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
-        options={{
-          webvisor: true,
-          trackHash: true,
-          clickmap: true,
-          accurateTrackBounce: true,
-          trackLinks: true,
-          params: {
-            cookieDomain: ".humboldt.org.co",
-            cookieFlags: "SameSite=None; Secure",
-          },
-        }}
-      />
+      {import.meta.env.VITE_ENVIRONMENT === "production" && (
+        <YMInitializer
+          accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
+          options={{
+            webvisor: true,
+            trackHash: true,
+            clickmap: true,
+            accurateTrackBounce: true,
+            trackLinks: true,
+            params: {
+              cookieDomain: ".humboldt.org.co",
+              cookieFlags: "SameSite=None; Secure",
+            },
+          }}
+        />
+      )}
       <RouterProvider router={routes} />
     </>
   );

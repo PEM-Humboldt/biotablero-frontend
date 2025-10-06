@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef } from "react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
 
 import { Login } from "app/uim/Login";
-import { UserInfo } from "app/uim/UserInfo";
+import { UserInfo as UserCard } from "app/uim/UserInfo";
 import ConfirmationModal from "components/ConfirmationModal";
-import type { UserType } from "app/uim/types";
+import { useUserCTX } from "app/UserContext";
+import { deleteTokensFromLS } from "app/uim/utils/JWTstorage";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -21,41 +22,35 @@ const defaultModalsValues: LogModalsTypes = {
   userModal: false,
 };
 
-export type LoginUimProps = {
-  currentUser: UserType | null;
-  setUser: (res: UserType | null) => void;
-  logoutUser: () => void;
-};
-
-export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
+export function Uim() {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
+  const { user, logout } = useUserCTX();
   const userCard = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!userCard.current) {
-      return;
-    }
-    userCard.current.style.setProperty(
-      "--profile-img",
-      `url(${
-        currentUser?.profileImg
-          ? currentUser.profileImg
-          : `/images/user_icon.svg`
-      })`,
-    );
-  }, [currentUser?.profileImg]);
 
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
+  };
+
+  const logoutUser = () => {
+    logout();
+    deleteTokensFromLS();
+    hideModal("logoutModal")();
   };
 
   const hideModal = (modal: string) => () => {
     setModals({ ...modals, [modal]: false });
   };
 
-  const whichModal = currentUser
+  const whichModal = user
     ? { modal: "userModal", state: modals.userModal }
     : { modal: "loginModal", state: modals.loginModal };
+
+  if (user && userCard.current) {
+    userCard.current.style.setProperty(
+      "--profile-img",
+      `url(${user?.profileImg ? user.profileImg : `/images/user_icon.svg`})`,
+    );
+  }
 
   return (
     <div className="loginBtnCont">
@@ -65,7 +60,7 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
         onClick={showModal(whichModal.modal)}
         title="Iniciar sesión"
       >
-        {currentUser ? (
+        {user ? (
           <AccountCircle className="userBox" style={{ fontSize: "40px" }} />
         ) : (
           <AccountCircleOutlined
@@ -91,14 +86,7 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
           >
             <CloseIcon />
           </button>
-          {!currentUser ? (
-            <Login setUser={setUser} />
-          ) : (
-            <UserInfo
-              user={currentUser}
-              logoutHandler={showModal("logoutModal")}
-            />
-          )}
+          {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
         </div>
       </Modal>
       <ConfirmationModal
@@ -106,10 +94,7 @@ export function Uim({ setUser, currentUser, logoutUser }: LoginUimProps) {
         styleCustom="newBiomeAlarm nBA2"
         onClose={hideModal("logoutModal")}
         message="¿Desea cerrar sesión?"
-        onContinue={() => {
-          logoutUser();
-          hideModal("logoutModal")();
-        }}
+        onContinue={logoutUser}
         onCancel={hideModal("logoutModal")}
       />
     </div>

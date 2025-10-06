@@ -4,9 +4,17 @@ import {
   type ReactNode,
   useCallback,
   useContext,
+  useEffect,
 } from "react";
 import { useNavigate } from "react-router";
 import type { UserType } from "app/uim/types";
+import {
+  deleteTokensFromLS,
+  getTokensFromLS,
+  parseUserFromJwt,
+  setTokensInLS,
+} from "app/uim/utils/JWTstorage";
+import { isResponseRequestError, refreshAccessToken } from "utils/authAPI";
 
 type UserContextType = {
   user: UserType | null;
@@ -36,6 +44,28 @@ export function UserCTX({ children }: { children: ReactNode }) {
     },
     [navigate],
   );
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { refreshToken } = getTokensFromLS();
+      if (refreshToken === null) {
+        return;
+      }
+
+      const newTokens = await refreshAccessToken(refreshToken);
+      if (isResponseRequestError(newTokens)) {
+        deleteTokensFromLS();
+        return;
+      }
+
+      setTokensInLS(newTokens.access_token, newTokens.refresh_token);
+      const user = parseUserFromJwt(newTokens.access_token);
+
+      login(user);
+    };
+
+    void loadUser();
+  }, [login]);
 
   return (
     <UserContext.Provider value={{ user, login, updateUser, logout }}>

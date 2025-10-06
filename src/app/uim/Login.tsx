@@ -4,30 +4,11 @@ import {
   isResponseRequestError,
   isResponseAuthData,
 } from "utils/authAPI";
-import type { LoginUimProps } from "app/Uim";
+import { uiText } from "app/uim/login/uiText";
 import { parseUserFromJwt, setTokensInLS } from "app/uim/utils/JWTstorage";
+import { useUserCTX } from "app/UserContext";
 
-const uiTXT = {
-  form: {
-    name: {
-      label: "Nombre de usuario",
-      placeholder: "SobreNombre",
-    },
-    pass: {
-      label: "Contraseña",
-    },
-    buttons: {
-      login: "Ingresar",
-      recovery: "Recuperar contraseña",
-    },
-  },
-  error: {
-    400: "El usuario y/o la contraseña no son correctas",
-    500: "No es posible procesar tu ingreso, intentalo de nuevo más tarde",
-  },
-};
-
-export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
+export function Login() {
   const [loginError, setLoginError] = useState("");
   const [loginData, setLoginData] = useState<{
     username: string;
@@ -36,6 +17,8 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
     username: "",
     password: "",
   });
+
+  const { login } = useUserCTX();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
@@ -52,21 +35,29 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
       );
 
       if (isResponseRequestError(res)) {
-        setLoginError(res.status > 499 ? uiTXT.error[500] : uiTXT.error[400]);
+        setLoginError(res.status > 499 ? uiText.error[500] : uiText.error[400]);
         return;
       }
 
       if (!isResponseAuthData(res)) {
-        setLoginError(uiTXT.error[500]);
+        setLoginError(uiText.error[500]);
         return;
       }
 
       setTokensInLS(res.access_token, res.refresh_token);
       const user = parseUserFromJwt(res.access_token);
 
-      void setUser(user);
+      // HACK: mientras se cuadran los usuarios de compensaciones en el
+      // keycloak, para habilitar el uso con el usuario de la GEB
+      if (user.username === "geb") {
+        user.id = 1;
+        user.name = "Grupo Energía Bogotá";
+        user.company = { id: 1, name: "Grupo Energía Bogotá" };
+      }
+
+      void login(user);
     } catch {
-      void setLoginError(uiTXT.error[500]);
+      void setLoginError(uiText.error[500]);
     }
   };
 
@@ -76,26 +67,29 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
   return (
     <div className="login">
       <form onSubmit={(event) => event.preventDefault()}>
-        {loginError !== "" && <div>{loginError}</div>}
+        {loginError !== "" && (
+          <div style={{ color: "red", marginBottom: "0.5rem" }}>
+            {loginError}
+          </div>
+        )}
         <label>
-          {uiTXT.form.name.label}
+          {uiText.form.name.label}
           <input
             className="loginInput"
             type="text"
-            placeholder={uiTXT.form.name.placeholder}
             id="username"
+            placeholder={uiText.form.name.placeholder}
             onChange={handleChange}
           />
         </label>
 
         <label>
-          {uiTXT.form.pass.label}
+          {uiText.form.pass.label}
           <input
             className="loginInput"
-            placeholder="Contraseña"
+            type="password"
             id="password"
             onChange={handleChange}
-            type="password"
           />
         </label>
 
@@ -105,11 +99,11 @@ export function Login({ setUser }: Pick<LoginUimProps, "setUser">) {
           type="button"
           onClick={() => void handleLogin()}
         >
-          {uiTXT.form.buttons.login}
+          {uiText.form.buttons.login}
         </button>
 
         <button className="recoverbtn" type="button">
-          {uiTXT.form.buttons.recovery}
+          {uiText.form.buttons.recovery}
         </button>
       </form>
     </div>
