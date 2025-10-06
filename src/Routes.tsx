@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
 
-import { MainLayout } from "app/Layout";
+import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
 import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
@@ -13,8 +13,8 @@ import {
 } from "pages/monitoring/outlet/Dashboard";
 import { RenderCompensation } from "pages/CompensationAuth";
 
-import { checkNLoad } from "app/utils/userLoader";
-import type { UserType } from "app/uim/types";
+import { checkNLoad } from "core/utils/userLoader";
+import type { UserType } from "core/types/user";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {

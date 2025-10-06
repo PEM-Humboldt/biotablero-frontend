@@ -6,11 +6,11 @@ import MinusIcon from "pages/indicators/components/MinusIcon";
 import PlusIcon from "pages/indicators/components/PlusIcon";
 import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
-import type { UiManager } from "app/Layout";
+import type { UiManager } from "core/layout/MainLayout";
 
 import "pages/indicators/main.css";
 import { useOutletContext } from "react-router";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Indicators() {
   const { layoutDispatch } = useOutletContext<UiManager>();

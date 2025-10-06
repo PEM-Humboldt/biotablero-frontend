@@ -3,8 +3,8 @@ import { useEffect } from "react";
 
 import { SideBar } from "pages/monitoring/layout/SideBar";
 import "pages/monitoring/styles/monitoring.css";
-import type { UiManager } from "app/Layout";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import type { UiManager } from "core/layout/MainLayout";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();

@@ -1,8 +1,8 @@
 import Item from "pages/portfolio/Item";
 import { useOutletContext } from "react-router";
-import type { UiManager } from "app/Layout";
+import type { UiManager } from "core/layout/MainLayout";
 import { useEffect } from "react";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Portfolio() {
   const { layoutDispatch } = useOutletContext<UiManager>();

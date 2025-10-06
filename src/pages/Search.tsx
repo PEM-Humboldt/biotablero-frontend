@@ -10,8 +10,8 @@ import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "utils/geoServerAPI";
 import { Dashboard } from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
-import type { UiManager } from "app/Layout";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import type { UiManager } from "core/layout/MainLayout";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import {
   type SearchActions,
   searchInitialState,

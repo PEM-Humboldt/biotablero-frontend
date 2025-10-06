@@ -11,7 +11,7 @@ import {
   DashboardCustomize,
 } from "@mui/icons-material";
 
-import { useUserCTX } from "app/UserContext";
+import { useUserCTX } from "core/hooks/UserContext";
 import type { DashboardItem } from "pages/monitoring/outlet/dashboard/types";
 import { DashboardButtons } from "pages/monitoring/outlet/dashboard/DashboardButtons";
 

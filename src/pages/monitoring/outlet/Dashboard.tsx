@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { Await, useLoaderData } from "react-router";
 
-import { useUserCTX } from "app/UserContext";
-import type { CheckNLoadReturn } from "app/utils/userLoader";
+import { useUserCTX } from "core/hooks/UserContext";
+import type { CheckNLoadReturn } from "core/utils/userLoader";
 
 type LoadedDashboardUserData = Awaited<CheckNLoadReturn<number, number>>;
 

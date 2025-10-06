@@ -11,8 +11,11 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import iconoinfo from "images/icono-info.svg";
 import iconomas from "images/icono-mas.svg";
 
-import { type DisplayModule, displayModules } from "app/layout/modules";
-import { useUserCTX } from "app/UserContext";
+import {
+  type DisplayModule,
+  displayModules,
+} from "core/layout/mainLayout/modules";
+import { useUserCTX } from "core/hooks/UserContext";
 
 type ArrowProps = {
   onClick?: () => void;

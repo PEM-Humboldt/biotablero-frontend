@@ -2221,8 +2221,7 @@ tspan,
   padding: 190px 20px 30px;
 }
 .uim_modal.loginModal {
-  background-image: url(images/login.png);
-  /*background-image: url(images/bgmountain.png);*/
+  background-image: url("/src/core/assets/images/login.png");
   background-repeat: no-repeat;
 }
 
