@@ -9,7 +9,7 @@ type CheckNLoadProps<ReturnType, CriticalReturnType> = {
   redirectPath?: Path;
   fetchCriticalData?: (user: UserType) => Promise<CriticalReturnType>;
   fetchData?: (user: UserType) => Promise<ReturnType>;
-  onFetchFailiure?: () => void;
+  onFetchFailure?: () => void;
 };
 
 export type CheckNLoadReturn<ReturnType, CriticalReturnType> = Promise<{
@@ -24,7 +24,7 @@ export type CheckNLoadReturn<ReturnType, CriticalReturnType> = Promise<{
  * @template U - Type returned by the critical data fetcher.
  *
  * @param obj an object with the following shape:
- * @param obj.requiredUserData - A Partial<UserType> object with properties that must be verified.
+ * @param obj.requirements - A Partial<UserType> object with properties that must be verified.
  * @param obj.redirectPath - Path to redirect if validation fails.
  * @param obj.fetchCriticalData - Async callback for critical user data.
  * @param obj.fetchData - Async callback for additional user data.
@@ -43,7 +43,7 @@ export async function checkNLoad<T, U>({
   redirectPath,
   fetchCriticalData,
   fetchData,
-  onFetchFailiure,
+  onFetchFailure: onFetchFailiure,
 }: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
   const user = await getCredentials();
   if (!user) {
@@ -60,7 +60,7 @@ export async function checkNLoad<T, U>({
   try {
     criticalUserData = fetchCriticalData ? await fetchCriticalData(user) : null;
   } catch (err) {
-    console.error("Cannot retreive critical user data:", err);
+    console.error("Cannot retrieve critical user data:", err);
     if (onFetchFailiure) {
       onFetchFailiure();
     }
@@ -70,7 +70,7 @@ export async function checkNLoad<T, U>({
   const dataPromise = fetchData
     ? Promise.resolve(
         fetchData(user).catch((err) => {
-          console.error("Cannot retreive user data:", err);
+          console.error("Cannot retrieve user data:", err);
           if (onFetchFailiure) {
             onFetchFailiure();
           }

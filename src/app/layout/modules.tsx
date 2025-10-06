@@ -3,7 +3,6 @@ import Indicadores from "images/indicadores-biodiversidad-icono.svg";
 import Portafolio from "images/portafolio-icono.svg";
 import Comunitario from "images/monitoreo-comunitario-icono.svg";
 import CompensacionAmbiental from "images/compensacion-ambiental-icono.svg";
-import type { UserType } from "app/uim/types";
 
 interface Module {
   id: number;
