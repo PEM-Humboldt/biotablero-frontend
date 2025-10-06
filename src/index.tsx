@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import ReactGA from "react-ga4";
 import { App } from "App";
 
-if (import.meta.env.MODE === "production") {
+if (import.meta.env.VITE_ENVIRONMENT === "production") {
   ReactGA.initialize(import.meta.env.VITE_GA_TRACKING_ID, {
     gaOptions: {
       cookieDomain: ".humboldt.org.co",
