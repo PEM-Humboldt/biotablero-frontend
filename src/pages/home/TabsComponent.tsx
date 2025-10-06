@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Typography, Container } from "@mui/material";
-import { TitleBar } from "pages/home/TitleBar";
-import { categories, type Category } from "pages/home/modulesData";
+import { TitleBar } from "pages/home/tabsComponent/TitleBar";
+import {
+  categories,
+  type Category,
+} from "pages/home/tabsComponent/modulesData";
 
 type TabsModulesProps = {
   activeTab: number | null;

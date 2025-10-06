@@ -6,7 +6,7 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { Carrousel } from "pages/home/Carrousel";
 import { TabsModules } from "pages/home/TabsComponent";
 
-import "newStyles.css";
+import "pages/home/layout/newStyles.css";
 
 export function Home() {
   const { layoutDispatch } = useOutletContext<UiManager>();
