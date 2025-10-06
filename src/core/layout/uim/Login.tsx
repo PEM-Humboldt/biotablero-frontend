@@ -3,7 +3,7 @@ import {
   requestAccessToken,
   isResponseRequestError,
   isResponseAuthData,
-} from "utils/authAPI";
+} from "core/utils/authAPI";
 import { uiText } from "core/layout/uim/login/uiText";
 import { parseUserFromJwt, setTokensInLS } from "core/utils/JWTstorage";
 import { useUserCTX } from "core/hooks/UserContext";

@@ -1,5 +1,5 @@
 import type { UserType } from "core/types/user";
-import type { Collaborators, Names } from "types/layoutTypes";
+import type { Collaborators, Names } from "core/types/layout";
 
 export interface LayoutState {
   moduleName: string;

@@ -6,7 +6,7 @@ import {
   SquareBorderLegend,
 } from "pages/search/shared_components/CssLegends";
 import DownloadCSV from "pages/search/shared_components/DownloadCSV";
-import ShortInfo from "components/ShortInfo";
+import { ShortInfo } from "core/composites/ShortInfo";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 

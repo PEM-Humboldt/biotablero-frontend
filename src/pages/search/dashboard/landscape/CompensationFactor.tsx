@@ -1,7 +1,7 @@
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
-import ShortInfo from "components/ShortInfo";
+import { ShortInfo } from "core/composites/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 
 import matchColor from "pages/search/utils/matchColor";

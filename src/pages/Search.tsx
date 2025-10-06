@@ -7,7 +7,7 @@ import { LegacyCTX, SearchCTX } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/utils/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
-import GeoServerAPI from "utils/geoServerAPI";
+import GeoServerAPI from "core/utils/geoServerAPI";
 import { Dashboard } from "pages/search/Dashboard";
 import Selector from "pages/search/Selector";
 import type { UiManager } from "core/layout/MainLayout";

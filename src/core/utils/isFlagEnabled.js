@@ -1,4 +1,4 @@
-import ExternalRequests from "utils/externalRequests";
+import ExternalRequests from "core/utils/externalRequests";
 
 const isFlagEnabled = (id) =>
   ExternalRequests.requestFeaturesFlags()

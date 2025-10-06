@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, NavLink } from "react-router";
 
-import isFlagEnabled from "utils/isFlagEnabled";
+import isFlagEnabled from "core/utils/isFlagEnabled";
 import Alerta from "images/alertas-tempranas-icono.svg";
 import {
   type DisplayModule,

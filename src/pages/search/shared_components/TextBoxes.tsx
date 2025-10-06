@@ -4,7 +4,7 @@ import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
-import ShortInfo from "components/ShortInfo";
+import { ShortInfo } from "core/composites/ShortInfo";
 import DownloadCSV from "pages/search/shared_components/DownloadCSV";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 

@@ -2501,7 +2501,7 @@ h3.warningNote {
   -ms-box-sizing: border-box;
 }
 .splitPort {
-  background: url(images/bg1Port.png) no-repeat top right;
+  background: url("/src/images/bg1Port.png") no-repeat top right;
   background-size: 70vw;
   display: flex;
   justify-content: space-between;

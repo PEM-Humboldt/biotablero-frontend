@@ -7,12 +7,12 @@ interface ShortInfoTypes {
   collapseButton?: boolean;
 }
 
-const ShortInfo: React.FC<ShortInfoTypes> = ({
+export function ShortInfo({
   description = "",
   tooltip = "",
   collapseButton = true,
   className = "hidden",
-}) => {
+}: ShortInfoTypes) {
   const [rotate_button, setRotate_button] = useState(true);
   const [hide_text, setHide_text] = useState(true);
 
@@ -40,6 +40,4 @@ const ShortInfo: React.FC<ShortInfoTypes> = ({
       )}
     </div>
   );
-};
-
-export default ShortInfo;
+}

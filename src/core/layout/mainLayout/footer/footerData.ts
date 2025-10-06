@@ -6,7 +6,7 @@ import geobon from "images/geobonlogo.png";
 import usaid from "images/usaidlogo.png";
 import umed from "images/umed.png";
 
-import type { Collaborators } from "types/layoutTypes";
+import type { Collaborators } from "core/types/layout";
 
 export const collaboratorsData: {
   [key in Collaborators]: { img: string; url: string };
