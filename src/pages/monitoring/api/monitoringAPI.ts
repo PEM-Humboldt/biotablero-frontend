@@ -1,4 +1,4 @@
-import { getTokensFromLS, setTokensInLS } from "app/uim/utils/JWTstorage";
+import { getTokensFromLS, setTokensInLS } from "core/utils/JWTstorage";
 import axios, {
   isAxiosError,
   type AxiosResponse,
