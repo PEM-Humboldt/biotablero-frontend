@@ -9,7 +9,7 @@ import {
   isResponseRequestError,
   refreshAccessToken,
   type RequestError,
-} from "core/utils/authAPI";
+} from "core/api/auth";
 
 // NOTE: Implementación base con interceptor para todos los requests de
 // usuario en el módulo de monitoreo
