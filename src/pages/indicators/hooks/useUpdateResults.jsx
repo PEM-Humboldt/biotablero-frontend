@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   getIndicators,
   filterIndicators,
 } from "pages/indicators/utils/firebase";
 
+// NOTE: Es necesario llamar a FireBase cada que se hace un cambio?  puede cachearse?
 export const useUpdateResults = () => {
   const [filters, setFilters] = useState([]);
   const [result, setResult] = useState([]);
@@ -30,9 +31,9 @@ export const useUpdateResults = () => {
     void indicatorsController();
   }, [filters]);
 
-  const updateFilters = (newFilters) => {
+  const updateFilters = useCallback((newFilters) => {
     setFilters(newFilters);
-  };
+  }, []);
 
   return { isLoading, updateFilters, result };
 };

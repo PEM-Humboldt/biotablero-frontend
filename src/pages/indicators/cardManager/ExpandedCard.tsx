@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { URLIcon } from "pages/indicators/app/cardManager/URLIcon";
-import MinusIcon from "pages/indicators/components/MinusIcon";
+import { URLIcon, MinusIcon } from "core/ui/IconsIndicators";
 
 export type ExpandedCardItem = {
   id: string;
