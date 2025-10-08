@@ -1,4 +1,4 @@
-import PlusIcon from "pages/portfolio/PlusIcon";
+import { PlusIcon } from "core/ui/IconsIndicators";
 
 interface ItemTypes {
   title: string;
