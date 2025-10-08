@@ -5,7 +5,7 @@ import {
   parseUserFromJwt,
   setTokensInLS,
 } from "core/utils/JWTstorage";
-import { isResponseRequestError, refreshAccessToken } from "core/utils/authAPI";
+import { isResponseRequestError, refreshAccessToken } from "core/api/auth";
 
 /**
  * Gets the current user from stored tokens.
