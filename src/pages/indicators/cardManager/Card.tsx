@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
 
-import { URLIcon } from "pages/indicators/app/cardManager/URLIcon";
-import PlusIcon from "pages/indicators/components/PlusIcon";
+import { PlusIcon, URLIcon } from "core/ui/IconsIndicators";
 import {
   ExpandedCard,
   type ExpandedCardProps,
-} from "pages/indicators/app/cardManager/ExpandedCard";
+} from "pages/indicators/cardManager/ExpandedCard";
 
 export interface CardProps extends ExpandedCardProps {
   isExpanded: boolean;
