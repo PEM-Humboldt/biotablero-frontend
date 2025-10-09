@@ -7,10 +7,10 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/ui/Tooltips";
+import { IconTooltip } from "core/ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "pages/search/ui/TextBoxes";
+import TextBoxes from "core/ui/TextBoxes";
 
 import {
   currentHFValue,

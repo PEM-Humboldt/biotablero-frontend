@@ -2,7 +2,7 @@ import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/ui/Tooltips";
+import { IconTooltip } from "core/ui/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -11,7 +11,7 @@ import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "pages/search/ui/TextBoxes";
+import TextBoxes from "core/ui/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
