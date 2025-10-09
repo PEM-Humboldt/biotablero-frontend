@@ -1,7 +1,7 @@
 import { ResponsiveBar } from "@nivo/bar";
 
 import formatNumber from "pages/search/utils/format";
-import withMessageWrapper from "pages/search/shared_components/charts/withMessageWrapper";
+import withMessageWrapper from "pages/search/ui/charts/withMessageWrapper";
 
 interface Props {
   data: Array<LargeStackedBarData>;

@@ -18,7 +18,7 @@ import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar, {
   SmallStackedBarData,
-} from "pages/search/shared_components/charts/SmallStackedBar";
+} from "pages/search/ui/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { SEPAData } from "pages/search/types/ecosystems";

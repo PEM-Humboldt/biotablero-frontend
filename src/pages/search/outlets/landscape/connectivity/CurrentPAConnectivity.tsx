@@ -15,9 +15,9 @@ import TextBoxes from "pages/search/ui/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SmallBars from "pages/search/shared_components/charts/SmallBars";
+import SmallBars from "pages/search/ui/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
-import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import LargeStackedBar from "pages/search/ui/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/outlets/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
 

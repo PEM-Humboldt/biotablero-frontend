@@ -1,7 +1,7 @@
 import {
   SmallBarsData,
   SmallBarsDataDetails,
-} from "pages/search/shared_components/charts/SmallBars";
+} from "pages/search/ui/charts/SmallBars";
 import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import {
