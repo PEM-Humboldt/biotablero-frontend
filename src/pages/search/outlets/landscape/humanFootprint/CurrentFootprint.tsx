@@ -19,7 +19,7 @@ import {
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
+import { CurrentFootprintController } from "pages/search/outlets/landscape/humanFootprint/CurrentFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
 
 interface currentHFCategoriesExt extends currentHFCategories {

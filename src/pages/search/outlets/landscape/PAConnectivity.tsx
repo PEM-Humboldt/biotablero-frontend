@@ -1,7 +1,7 @@
 import Accordion from "pages/search/layout/Accordion";
-import CurrentPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivity";
-import TimelinePAConnectivity from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivity";
-import CurrentSEPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivity";
+import CurrentPAConnectivity from "pages/search/outlets/landscape/connectivity/CurrentPAConnectivity";
+import TimelinePAConnectivity from "pages/search/outlets/landscape/connectivity/TimelinePAConnectivity";
+import CurrentSEPAConnectivity from "pages/search/outlets/landscape/connectivity/CurrentSEPAConnectivity";
 import { accordionComponent, componentProps } from "pages/search/types/ui";
 
 const PAConnectivity: React.FC<componentProps> = (props) => {

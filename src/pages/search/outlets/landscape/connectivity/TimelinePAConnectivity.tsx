@@ -18,7 +18,7 @@ import { textsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
-import { TimelinePAConnectivityController } from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivityController";
+import { TimelinePAConnectivityController } from "pages/search/outlets/landscape/connectivity/TimelinePAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {

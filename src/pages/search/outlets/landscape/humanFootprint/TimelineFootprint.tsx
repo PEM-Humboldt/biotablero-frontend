@@ -19,7 +19,7 @@ import { textsObject } from "pages/search/types/texts";
 import Lines from "pages/search/shared_components/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
-import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
+import { TimelineFootprintController } from "pages/search/outlets/landscape/humanFootprint/TimelineFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;

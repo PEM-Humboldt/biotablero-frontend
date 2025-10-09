@@ -7,8 +7,8 @@ import {
   transformPAValues,
   transformCoverageValues,
   transformSEAreas,
-} from "pages/search/dashboard/ecosystems/transformData";
-import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
+} from "pages/search/outlets/ecosystems/transformData";
+import EcosystemsBox from "pages/search/outlets/ecosystems/EcosystemsBox";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -22,7 +22,7 @@ import SmallStackedBar, {
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { SEPAData } from "pages/search/types/ecosystems";
-import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
+import { EcosystemsController } from "pages/search/outlets/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
 /**

@@ -6,9 +6,9 @@ import Paisaje from "@mui/icons-material/FilterHdr";
 // import Especies from "@mui/icons-material/FilterVintage";
 
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
-import Landscape from "pages/search/dashboard/Landscape";
-import Species from "pages/search/dashboard/Species";
-import Ecosystems from "pages/search/dashboard/Ecosystems";
+import Landscape from "pages/search/outlets/Landscape";
+import Species from "pages/search/outlets/Species";
+import Ecosystems from "pages/search/outlets/Ecosystems";
 import formatNumber from "pages/search/utils/format";
 import TabContainer from "pages/search/shared_components/TabContainer";
 

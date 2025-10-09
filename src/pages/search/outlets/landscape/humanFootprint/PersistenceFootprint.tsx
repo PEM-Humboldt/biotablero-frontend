@@ -16,7 +16,7 @@ import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ShapeLayer } from "pages/search/types/layers";
-import { PersistenceFootprintController } from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprintController";
+import { PersistenceFootprintController } from "pages/search/outlets/landscape/humanFootprint/PersistenceFootprintController";
 
 const getLabel = {
   estable_natural: "Estable Natural",

@@ -15,7 +15,7 @@ import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
+import { CompensationFactorController } from "pages/search/outlets/landscape/CompensationFactorController";
 import { ShapeLayer } from "pages/search/types/layers";
 
 interface cfDataExt extends cfData {

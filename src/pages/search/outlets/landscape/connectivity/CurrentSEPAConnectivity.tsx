@@ -17,7 +17,7 @@ import {
   currentSEPAConn,
   SEPAEcosystems,
 } from "pages/search/types/connectivity";
-import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivityController";
+import { CurrentSEPAConnectivityController } from "pages/search/outlets/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";

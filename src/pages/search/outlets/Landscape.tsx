@@ -1,10 +1,10 @@
 import React from "react";
 
 import Accordion from "pages/search/layout/Accordion";
-import CompensationFactor from "pages/search/dashboard/landscape/CompensationFactor";
-import Forest from "pages/search/dashboard/landscape/Forest";
-import HumanFootprint from "pages/search/dashboard/landscape/HumanFootprint";
-import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
+import CompensationFactor from "pages/search/outlets/landscape/CompensationFactor";
+import Forest from "pages/search/outlets/landscape/Forest";
+import HumanFootprint from "pages/search/outlets/landscape/HumanFootprint";
+import PAConnectivity from "pages/search/outlets/landscape/PAConnectivity";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,

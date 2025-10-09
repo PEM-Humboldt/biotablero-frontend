@@ -15,7 +15,7 @@ import { ForestLPExt } from "pages/search/types/forest";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
-import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
+import { ForestLossPersistenceController } from "pages/search/outlets/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 
 interface Props {}

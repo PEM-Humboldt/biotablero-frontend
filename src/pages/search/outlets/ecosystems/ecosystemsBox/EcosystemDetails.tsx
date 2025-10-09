@@ -7,7 +7,7 @@ import {
 import {
   transformPAValues,
   transformCoverageValues,
-} from "pages/search/dashboard/ecosystems/transformData";
+} from "pages/search/outlets/ecosystems/transformData";
 import matchColor from "pages/search/utils/matchColor";
 
 import {
@@ -19,7 +19,7 @@ import {
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
-import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
+import { EcosystemsController } from "pages/search/outlets/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
 export interface PAData {
