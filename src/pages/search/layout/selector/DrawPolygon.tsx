@@ -11,9 +11,9 @@ import {
   useSearchDrawControlsCTX,
   useSearchLegacyCTX,
 } from "pages/search/hooks/SearchContext";
-import { uiText } from "pages/search/layout/selector/drawPolygon/uiText";
+import { uiText } from "pages/search/layout/selector/drawPolygon/layout/uiText";
 import "pages/search/layout/DrawPolygon.css";
-import { DrawMode } from "pages/search/layout/selector/drawPolygon/types";
+import { DrawMode } from "pages/search/layout/selector/drawPolygon/types/drawPolygon";
 
 export function DrawPolygon() {
   const { drawControlsRef, areDrawControlsMounted } =
