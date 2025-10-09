@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import Accordion from "pages/search/layout/Accordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
-import { useSearchLegacyCTX } from "pages/search/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
 import { accordionComponent, componentProps } from "pages/search/types/ui";
 
 const Forest: React.FC<componentProps> = (props) => {

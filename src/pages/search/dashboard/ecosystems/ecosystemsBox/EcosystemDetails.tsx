@@ -2,7 +2,7 @@ import React from "react";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 
 import {
   transformPAValues,

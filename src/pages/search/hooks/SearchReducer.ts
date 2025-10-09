@@ -1,4 +1,4 @@
-import type { SrchType } from "pages/search/SearchContext";
+import type { SrchType } from "pages/search/hooks/SearchContext";
 import type {
   AreaId,
   AreaIdBasic,

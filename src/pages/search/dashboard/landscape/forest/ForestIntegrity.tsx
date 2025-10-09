@@ -16,7 +16,7 @@ import BackendAPI from "pages/search/api/backendAPI";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import Pie from "pages/search/shared_components/charts/Pie";

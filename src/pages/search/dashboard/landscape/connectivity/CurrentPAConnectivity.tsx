@@ -7,7 +7,7 @@ import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import formatNumber from "pages/search/utils/format";

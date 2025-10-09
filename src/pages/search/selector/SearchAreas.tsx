@@ -4,7 +4,7 @@ import Accordion from "pages/search/layout/Accordion";
 import {
   useSearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import SearchAPI from "pages/search/api/searchAPI";
 

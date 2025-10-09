@@ -6,7 +6,7 @@ import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
 import TextBoxes from "pages/search/shared_components/TextBoxes";

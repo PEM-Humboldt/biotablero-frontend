@@ -13,7 +13,7 @@ import type { AreaType } from "pages/search/types/dashboard";
 import {
   useSearchLegacyCTX,
   useSearchStateCTX,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { DrawPolygon } from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 
