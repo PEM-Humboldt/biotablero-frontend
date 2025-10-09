@@ -4,16 +4,16 @@ import L, { type Polygon } from "leaflet";
 import type { DrawEvents } from "leaflet";
 import type * as geojson from "geojson";
 
-import EditPolygonIcon from "pages/search/selector/EditIcon";
-import PolygonIcon from "pages/search/selector/PolygonIcon";
-import RemoveIcon from "pages/search/selector/RemoveIcon";
+import EditPolygonIcon from "pages/search/layout/selector/EditIcon";
+import PolygonIcon from "pages/search/layout/selector/PolygonIcon";
+import RemoveIcon from "pages/search/layout/selector/RemoveIcon";
 import {
   useSearchDrawControlsCTX,
   useSearchLegacyCTX,
 } from "pages/search/hooks/SearchContext";
-import { uiText } from "pages/search/selector/drawPolygon/uiText";
+import { uiText } from "pages/search/layout/selector/drawPolygon/uiText";
 import "pages/search/layout/DrawPolygon.css";
-import { DrawMode } from "pages/search/selector/drawPolygon/types";
+import { DrawMode } from "pages/search/layout/selector/drawPolygon/types";
 
 export function DrawPolygon() {
   const { drawControlsRef, areDrawControlsMounted } =

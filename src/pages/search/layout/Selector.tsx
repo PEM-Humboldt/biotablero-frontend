@@ -7,15 +7,15 @@ import isFlagEnabled from "core/utils/isFlagEnabled";
 import {
   ErrorMessage,
   LoadingMessage,
-} from "pages/search/selector/selectorMessages";
+} from "pages/search/layout/selector/selectorMessages";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaType } from "pages/search/types/dashboard";
 import {
   useSearchLegacyCTX,
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
-import { DrawPolygon } from "pages/search/selector/DrawPolygon";
-import SearchAreas from "pages/search/selector/SearchAreas";
+import { DrawPolygon } from "pages/search/layout/selector/DrawPolygon";
+import SearchAreas from "pages/search/layout/selector/SearchAreas";
 
 interface SelectorProps {
   showDrawControls: (show: boolean) => void;

@@ -1,4 +1,4 @@
-import { DrawMode } from "pages/search/selector/drawPolygon/types";
+import { DrawMode } from "pages/search/layout/selector/drawPolygon/types";
 
 export const uiText = {
   title: {
