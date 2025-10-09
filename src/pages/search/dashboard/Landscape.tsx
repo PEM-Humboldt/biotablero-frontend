@@ -1,6 +1,6 @@
 import React from "react";
 
-import Accordion from "pages/search/Accordion";
+import Accordion from "pages/search/layout/Accordion";
 import CompensationFactor from "pages/search/dashboard/landscape/CompensationFactor";
 import Forest from "pages/search/dashboard/landscape/Forest";
 import HumanFootprint from "pages/search/dashboard/landscape/HumanFootprint";

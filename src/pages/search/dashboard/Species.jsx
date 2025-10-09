@@ -1,6 +1,6 @@
 import React from "react";
 
-import Accordion from "pages/search/Accordion";
+import Accordion from "pages/search/layout/Accordion";
 import Richness from "pages/search/dashboard/species/Richness";
 import { SearchLegacyCTX } from "../SearchContext";
 

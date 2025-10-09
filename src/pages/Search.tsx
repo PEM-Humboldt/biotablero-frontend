@@ -6,10 +6,10 @@ import type * as geojson from "geojson";
 import { LegacyCTX, SearchCTX } from "pages/search/SearchContext";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
-import { MapViewer } from "pages/search/MapViewer";
+import { MapViewer } from "pages/search/layout/MapViewer";
 import GeoServerAPI from "core/utils/geoServerAPI";
-import { Dashboard } from "pages/search/Dashboard";
-import Selector from "pages/search/Selector";
+import { Dashboard } from "pages/search/layout/Dashboard";
+import Selector from "pages/search/layout/Selector";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import {

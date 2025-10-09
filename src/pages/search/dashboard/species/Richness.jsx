@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import Accordion from "pages/search/Accordion";
+import Accordion from "pages/search/layout/Accordion";
 
 const Richness = (props) => {
   const { handleAccordionChange } = props;

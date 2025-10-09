@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import Accordion from "pages/search/Accordion";
+import Accordion from "pages/search/layout/Accordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
 import { useSearchLegacyCTX } from "pages/search/SearchContext";

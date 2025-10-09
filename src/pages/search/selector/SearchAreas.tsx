@@ -1,6 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 
-import Accordion from "pages/search/Accordion";
+import Accordion from "pages/search/layout/Accordion";
 import {
   useSearchLegacyCTX,
   type LegacyContextValues,
