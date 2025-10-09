@@ -1,10 +1,7 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import {
-  PointFilledLegend,
-  SquareBorderLegend,
-} from "core/ui/CssLegends";
+import { PointFilledLegend, SquareBorderLegend } from "core/ui/CssLegends";
 import DownloadCSV from "core/ui/DownloadCSV";
 import { ShortInfo } from "core/composites/ShortInfo";
 import TextBoxes from "core/ui/TextBoxes";
