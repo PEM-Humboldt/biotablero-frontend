@@ -8,7 +8,7 @@ import {
 import { ShortInfo } from "core/composites/ShortInfo";
 import { IconTooltip } from "pages/search/shared_components/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";

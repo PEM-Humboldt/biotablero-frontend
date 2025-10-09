@@ -1,4 +1,4 @@
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";

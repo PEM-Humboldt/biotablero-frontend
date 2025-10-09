@@ -10,7 +10,7 @@ import {
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "pages/search/shared_components/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
