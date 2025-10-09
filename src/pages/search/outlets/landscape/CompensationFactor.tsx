@@ -13,7 +13,7 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "pages/search/ui/charts/LargeStackedBar";
+import LargeStackedBar from "core/composites/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CompensationFactorController } from "pages/search/outlets/landscape/CompensationFactorController";
 import { ShapeLayer } from "pages/search/types/layers";

@@ -16,7 +16,7 @@ import TextBoxes from "core/ui/TextBoxes";
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { textsObject } from "pages/search/types/texts";
-import Lines from "pages/search/ui/charts/Lines";
+import Lines from "core/composites/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/outlets/landscape/humanFootprint/TimelineFootprintController";

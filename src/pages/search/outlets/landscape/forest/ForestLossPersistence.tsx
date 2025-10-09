@@ -12,7 +12,7 @@ import formatNumber from "pages/search/utils/format";
 import TextBoxes from "core/ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
-import SmallBars from "pages/search/ui/charts/SmallBars";
+import SmallBars from "core/composites/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/outlets/landscape/forest/ForestLossPersistenceController";

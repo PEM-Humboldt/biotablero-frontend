@@ -7,7 +7,7 @@ import {
 import { BasicTooltip, useTooltip } from "@nivo/tooltip";
 import { animated, to } from "@react-spring/web";
 
-import withMessageWrapper from "pages/search/ui/charts/withMessageWrapper";
+import withMessageWrapper from "core/composites/charts/withMessageWrapper";
 
 type colorsFunction = (param: string) => string;
 /**

@@ -19,8 +19,8 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import Pie from "pages/search/ui/charts/Pie";
-import SmallStackedBar from "pages/search/ui/charts/SmallStackedBar";
+import Pie from "core/composites/charts/Pie";
+import SmallStackedBar from "core/composites/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/outlets/landscape/forest/ForestIntegrityController";

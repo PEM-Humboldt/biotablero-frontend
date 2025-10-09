@@ -16,7 +16,7 @@ import {
 } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
-import Lines from "pages/search/ui/charts/Lines";
+import Lines from "core/composites/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { TimelinePAConnectivityController } from "pages/search/outlets/landscape/connectivity/TimelinePAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";

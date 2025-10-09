@@ -4,7 +4,7 @@ import { AxisTickProps } from "@nivo/axes";
 
 import { darkenColor } from "pages/search/utils/colorUtils";
 import formatNumber from "pages/search/utils/format";
-import withMessageWrapper from "pages/search/ui/charts/withMessageWrapper";
+import withMessageWrapper from "core/composites/charts/withMessageWrapper";
 import { SmallBarTooltip } from "pages/search/types/charts";
 import { Tick } from "core/ui/CssTicks";
 
