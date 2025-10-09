@@ -1,8 +1,8 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import { IconTooltip } from "pages/search/ui/Tooltips";
+import TextBoxes from "pages/search/ui/TextBoxes";
 import {
   transformPAValues,
   transformCoverageValues,

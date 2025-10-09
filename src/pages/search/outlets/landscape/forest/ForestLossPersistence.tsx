@@ -6,10 +6,10 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { IconTooltip } from "pages/search/ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
 import formatNumber from "pages/search/utils/format";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import TextBoxes from "pages/search/ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
 import SmallBars from "pages/search/shared_components/charts/SmallBars";

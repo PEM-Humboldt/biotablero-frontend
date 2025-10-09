@@ -10,7 +10,7 @@ import Landscape from "pages/search/outlets/Landscape";
 import Species from "pages/search/outlets/Species";
 import Ecosystems from "pages/search/outlets/Ecosystems";
 import formatNumber from "pages/search/utils/format";
-import TabContainer from "pages/search/shared_components/TabContainer";
+import TabContainer from "pages/search/ui/TabContainer";
 
 type DashboardProps = {
   goBackClick: () => void;

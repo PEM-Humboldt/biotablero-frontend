@@ -4,11 +4,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import {
   PointFilledLegend,
   SquareBorderLegend,
-} from "pages/search/shared_components/CssLegends";
-import DownloadCSV from "pages/search/shared_components/DownloadCSV";
+} from "pages/search/ui/CssLegends";
+import DownloadCSV from "pages/search/ui/DownloadCSV";
 import { ShortInfo } from "core/composites/ShortInfo";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import TextBoxes from "pages/search/ui/TextBoxes";
+import { IconTooltip } from "pages/search/ui/Tooltips";
 
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";

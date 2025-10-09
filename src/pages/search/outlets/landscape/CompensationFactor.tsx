@@ -2,11 +2,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { IconTooltip } from "pages/search/ui/Tooltips";
 
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import TextBoxes from "pages/search/ui/TextBoxes";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,

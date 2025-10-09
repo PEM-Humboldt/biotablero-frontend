@@ -1,9 +1,9 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import DownloadCSV from "pages/search/shared_components/DownloadCSV";
+import DownloadCSV from "pages/search/ui/DownloadCSV";
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { IconTooltip } from "pages/search/ui/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -11,7 +11,7 @@ import {
 import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import TextBoxes from "pages/search/ui/TextBoxes";
 
 import {
   currentSEPAConn,
