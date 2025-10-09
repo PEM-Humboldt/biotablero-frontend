@@ -8,7 +8,7 @@ import {
   ErrorMessage,
   LoadingMessage,
 } from "pages/search/selector/selectorMessages";
-import SearchAPI from "pages/search/utils/searchAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaType } from "pages/search/types/dashboard";
 import {
   useSearchLegacyCTX,

@@ -4,7 +4,7 @@ import L from "leaflet";
 import type * as geojson from "geojson";
 
 import { LegacyCTX, SearchCTX } from "pages/search/SearchContext";
-import SearchAPI from "pages/search/utils/searchAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "core/utils/geoServerAPI";
