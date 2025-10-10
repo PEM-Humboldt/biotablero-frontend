@@ -16,7 +16,14 @@
     "allowImportingTsExtensions": true,
     "esModuleInterop": true,
     "types": ["vite/client", "vite-plugin-svgr/client"],
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@ui/*": ["core/ui/*"],
+      "@api/*": ["core/api/*"],
+      "@composites/*": ["core/composites/*"],
+      "@appHooks/*": ["core/hooks/*"],
+      "@appTypes/*": ["core/types/*"]
+    }
   },
   "exclude": ["static", "build", "dist", "node_modules"],
   "include": ["src", "vite.config.ts"]
