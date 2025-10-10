@@ -12,7 +12,7 @@ import {
   useSearchLegacyCTX,
 } from "pages/search/hooks/SearchContext";
 import { uiText } from "pages/search/selector/drawPolygon/layout/uiText";
-import "pages/search/layout/DrawPolygon.css";
+import "pages/search/selector/drawPolygon/layout/DrawPolygon.css";
 import { DrawMode } from "pages/search/selector/drawPolygon/types/drawPolygon";
 
 export function DrawPolygon() {
