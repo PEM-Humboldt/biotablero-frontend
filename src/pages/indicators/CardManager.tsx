@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import Masonry from "react-masonry-component";
-import { Card } from "pages/indicators/app/cardManager/Card";
-import { type ExpandedCardItem } from "pages/indicators/app/cardManager/ExpandedCard";
+import { Card } from "pages/indicators/cardManager/Card";
+import { type ExpandedCardItem } from "pages/indicators/cardManager/ExpandedCard";
 
 const masonryOptions = {
   transitionDuration: 0,
