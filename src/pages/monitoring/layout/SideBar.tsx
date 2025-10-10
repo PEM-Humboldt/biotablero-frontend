@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 
 import { useUserCTX } from "core/hooks/UserContext";
-import type { DashboardItem } from "pages/monitoring/outlet/dashboard/types";
+import type { DashboardItem } from "pages/monitoring/types/monitoring";
 import { DashboardButtons } from "pages/monitoring/outlet/dashboard/DashboardButtons";
 
 const drawerWidth = 400;
