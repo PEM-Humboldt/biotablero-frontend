@@ -1,8 +1,8 @@
-import { SmallBarsData } from "pages/search/shared_components/charts/SmallBars";
+import { SmallBarsData } from "core/composites/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import {
   ShapeLayer,
   ConnectivityFeaturePropierties,

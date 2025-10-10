@@ -8,12 +8,12 @@ import {
   ErrorMessage,
   LoadingMessage,
 } from "pages/search/selector/selectorMessages";
-import SearchAPI from "pages/search/utils/searchAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaType } from "pages/search/types/dashboard";
 import {
   useSearchLegacyCTX,
   useSearchStateCTX,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { DrawPolygon } from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
 

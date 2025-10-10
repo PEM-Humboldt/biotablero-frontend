@@ -7,7 +7,7 @@ import matchColor from "pages/search/utils/matchColor";
 
 import { transformSEValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SEPADataExt } from "pages/search/types/ecosystems";
-import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
+import SmallStackedBar from "core/composites/charts/SmallStackedBar";
 
 interface Props {
   SETotalArea: number;

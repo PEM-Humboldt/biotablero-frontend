@@ -3,8 +3,8 @@ import { useNavigate, useLocation, useOutletContext } from "react-router";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
-import { LegacyCTX, SearchCTX } from "pages/search/SearchContext";
-import SearchAPI from "pages/search/utils/searchAPI";
+import { LegacyCTX, SearchCTX } from "pages/search/hooks/SearchContext";
+import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "core/utils/geoServerAPI";
@@ -17,7 +17,7 @@ import {
   searchInitialState,
   searchReducer,
   SearchUpdated,
-} from "pages/search/SearchReducer";
+} from "pages/search/hooks/SearchReducer";
 
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
