@@ -11,7 +11,7 @@ import whomIsItFor from "images/a-quien-va-dirigido.svg";
 import whoDoesIt from "images/quien-lo-hace.svg";
 import ourGoal from "images/cual-es-nuestro-objetivo.svg";
 
-export const WhatIs = () => {
+export function WhatIs() {
   return (
     <div className="Contenedorquees">
       <Container
@@ -126,4 +126,4 @@ export const WhatIs = () => {
       </Container>
     </div>
   );
-};
+}

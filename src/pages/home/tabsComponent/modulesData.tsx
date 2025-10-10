@@ -1,6 +1,6 @@
 import React from "react";
 import { Typography } from "@mui/material";
-import { WhatIs } from "pages/home/WhatIs";
+import { WhatIs } from "pages/home/tabsComponent/WhatIs";
 
 export type Category = {
   title: string | React.ReactNode;
