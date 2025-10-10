@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 
 import Accordion from "pages/search/Accordion";
-import isFlagEnabled from "core/utils/isFlagEnabled";
+import isFlagEnabled from "@utils/isFlagEnabled";
 import {
   ErrorMessage,
   LoadingMessage,

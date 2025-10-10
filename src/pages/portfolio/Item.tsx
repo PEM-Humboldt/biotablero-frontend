@@ -1,4 +1,4 @@
-import { PlusIcon } from "core/ui/IconsIndicators";
+import { PlusIcon } from "@ui/IconsIndicators";
 
 interface ItemTypes {
   title: string;

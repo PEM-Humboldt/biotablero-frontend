@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { URLIcon, MinusIcon } from "core/ui/IconsIndicators";
+import { URLIcon, MinusIcon } from "@ui/IconsIndicators";
 
 export type ExpandedCardItem = {
   id: string;

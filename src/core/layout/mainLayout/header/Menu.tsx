@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link, NavLink } from "react-router";
 
-import isFlagEnabled from "core/utils/isFlagEnabled";
+import isFlagEnabled from "@utils/isFlagEnabled";
 import Alert from "@assets/alertas-tempranas-icono.svg";
 import {
   type DisplayModule,
   displayModules,
 } from "core/layout/mainLayout/modules";
-import { useUserCTX } from "core/hooks/UserContext";
+import { useUserCTX } from "@hooks/UserContext";
 
 export function Menu() {
   const [openMenu, setOpenMenu] = useState<boolean>(false);

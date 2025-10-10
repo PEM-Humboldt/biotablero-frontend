@@ -17,7 +17,7 @@ import {
   SEPADataExt,
 } from "pages/search/types/ecosystems";
 import BackendAPI from "pages/search/api/backendAPI";
-import SmallStackedBar from "core/composites/charts/SmallStackedBar";
+import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";

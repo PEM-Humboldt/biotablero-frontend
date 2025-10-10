@@ -3,7 +3,7 @@ import React from "react";
 
 import formatNumber from "pages/search/utils/format";
 import { lightenColor, darkenColor } from "pages/search/utils/colorUtils";
-import withMessageWrapper from "core/composites/charts/withMessageWrapper";
+import withMessageWrapper from "@composites/charts/withMessageWrapper";
 
 interface Props {
   data: Array<PieData>;

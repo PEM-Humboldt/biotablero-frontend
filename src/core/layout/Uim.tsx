@@ -6,9 +6,9 @@ import Modal from "@mui/material/Modal";
 
 import { Login } from "core/layout/uim/Login";
 import { UserCard } from "core/layout/uim/UserInfo";
-import { ConfirmationModal } from "core/composites/ConfirmationModal";
-import { useUserCTX } from "core/hooks/UserContext";
-import { deleteTokensFromLS } from "core/utils/JWTstorage";
+import { ConfirmationModal } from "@composites/ConfirmationModal";
+import { useUserCTX } from "@hooks/UserContext";
+import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
 
 interface LogModalsTypes {

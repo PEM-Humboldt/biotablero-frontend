@@ -1,6 +1,6 @@
 import { ResponsiveBar } from "@nivo/bar";
 
-import BarItem from "core/composites/charts/BarItem";
+import BarItem from "@composites/charts/BarItem";
 import formatNumber from "pages/search/utils/format";
 import withMessageWrapper from "./withMessageWrapper";
 

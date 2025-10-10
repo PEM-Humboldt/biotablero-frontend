@@ -1,19 +1,19 @@
 import InfoIcon from "@mui/icons-material/Info";
 import React from "react";
 
-import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "core/ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "core/ui/TextBoxes";
+import TextBoxes from "@ui/TextBoxes";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "core/composites/charts/LargeStackedBar";
+import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
 import { ShapeLayer } from "pages/search/types/layers";

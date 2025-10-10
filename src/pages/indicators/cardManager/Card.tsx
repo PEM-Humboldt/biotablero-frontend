@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { PlusIcon, URLIcon } from "core/ui/IconsIndicators";
+import { PlusIcon, URLIcon } from "@ui/IconsIndicators";
 import {
   ExpandedCard,
   type ExpandedCardProps,

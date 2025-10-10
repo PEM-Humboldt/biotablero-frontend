@@ -1,8 +1,8 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
-import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "core/ui/Tooltips";
-import TextBoxes from "core/ui/TextBoxes";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
+import TextBoxes from "@ui/TextBoxes";
 import {
   transformPAValues,
   transformCoverageValues,
@@ -18,7 +18,7 @@ import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar, {
   SmallStackedBarData,
-} from "core/composites/charts/SmallStackedBar";
+} from "@composites/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { SEPAData } from "pages/search/types/ecosystems";

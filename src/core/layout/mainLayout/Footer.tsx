@@ -1,4 +1,4 @@
-import type { Collaborators } from "core/types/layout";
+import type { Collaborators } from "@appTypes/layout";
 import {
   collaboratorsData,
   footerInfo,

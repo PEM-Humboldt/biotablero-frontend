@@ -13,8 +13,8 @@ import {
 } from "pages/monitoring/outlet/Dashboard";
 import { RenderCompensation } from "pages/CompensationAuth";
 
-import { checkNLoad } from "core/utils/userLoader";
-import type { UserType } from "core/types/user";
+import { checkNLoad } from "@utils/userLoader";
+import type { UserType } from "@appTypes/user";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {

@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import DotIcon from "@material-ui/icons/FiberManualRecord";
-import { CloseIcon } from "core/ui/IconsIndicators";
+import { CloseIcon } from "@ui/IconsIndicators";
 
 const boxColors = [
   "#b1babc",

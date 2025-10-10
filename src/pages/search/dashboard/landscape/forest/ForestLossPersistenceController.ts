@@ -1,7 +1,7 @@
 import {
   SmallBarsData,
   SmallBarsDataDetails,
-} from "core/composites/charts/SmallBars";
+} from "@composites/charts/SmallBars";
 import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import {

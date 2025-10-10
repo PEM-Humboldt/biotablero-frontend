@@ -1,11 +1,11 @@
-import type { UserType } from "core/types/user";
+import type { UserType } from "@appTypes/user";
 import {
   deleteTokensFromLS,
   getTokensFromLS,
   parseUserFromJwt,
   setTokensInLS,
-} from "core/utils/JWTstorage";
-import { isResponseRequestError, refreshAccessToken } from "core/api/auth";
+} from "@utils/JWTstorage";
+import { isResponseRequestError, refreshAccessToken } from "@api/auth";
 
 /**
  * Gets the current user from stored tokens.

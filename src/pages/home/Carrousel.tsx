@@ -15,7 +15,7 @@ import {
   type DisplayModule,
   displayModules,
 } from "core/layout/mainLayout/modules";
-import { useUserCTX } from "core/hooks/UserContext";
+import { useUserCTX } from "@hooks/UserContext";
 
 type ArrowProps = {
   onClick?: () => void;

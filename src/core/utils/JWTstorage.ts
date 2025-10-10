@@ -1,4 +1,4 @@
-import type { Tokens, UserType } from "core/types/user";
+import type { Tokens, UserType } from "@appTypes/user";
 
 /**
  * Retrieves the JWT tokens stored in `localStorage`.

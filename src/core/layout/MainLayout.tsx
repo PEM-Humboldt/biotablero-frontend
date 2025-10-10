@@ -11,7 +11,7 @@ import {
   type LayoutActions,
   type LayoutState,
 } from "core/layout/mainLayout/hooks/layoutReducer";
-import { UserCTX } from "core/hooks/UserContext";
+import { UserCTX } from "@hooks/UserContext";
 
 const layoutInitial: LayoutState = {
   moduleName: "home",

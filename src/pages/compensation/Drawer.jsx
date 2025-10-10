@@ -16,7 +16,7 @@ import NewBiomeForm from "pages/compensation/drawer/NewBiomeForm";
 import PopMenu from "pages/compensation/drawer/PopMenu";
 import StrategiesBox from "pages/compensation/drawer/StrategiesBox";
 import TableStylized from "pages/compensation/drawer/TableStylized";
-import { ConfirmationModal } from "core/composites/ConfirmationModal";
+import { ConfirmationModal } from "@composites/ConfirmationModal";
 import GraphLoader from "pages/compensation/drawer/GraphLoader";
 import TabContainer from "pages/compensation/drawer/TabContainer";
 

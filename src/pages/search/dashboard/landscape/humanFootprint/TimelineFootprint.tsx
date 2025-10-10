@@ -1,8 +1,8 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "core/ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -11,12 +11,12 @@ import formatNumber from "pages/search/utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "core/ui/TextBoxes";
+import TextBoxes from "@ui/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { textsObject } from "pages/search/types/texts";
-import Lines from "core/composites/charts/Lines";
+import Lines from "@composites/charts/Lines";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";

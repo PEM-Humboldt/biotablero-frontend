@@ -1,5 +1,5 @@
-import type { UserType } from "core/types/user";
-import { getCredentials, partialComparison } from "core/utils/getCredentials";
+import type { UserType } from "@appTypes/user";
+import { getCredentials, partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
 
 type Path = `/${string}`;

@@ -3,7 +3,7 @@ import { Point, ResponsiveLine } from "@nivo/line";
 import { CartesianMarkerProps } from "@nivo/core";
 
 import formatNumber from "pages/search/utils/format";
-import withMessageWrapper from "core/composites/charts/withMessageWrapper";
+import withMessageWrapper from "@composites/charts/withMessageWrapper";
 
 interface LinesData {
   label: string;

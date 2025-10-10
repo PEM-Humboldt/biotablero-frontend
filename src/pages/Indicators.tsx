@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { MinusIcon, PlusIcon } from "@ui/IconsIndicators";
+import type { UiManager } from "core/layout/MainLayout";
 import { CardManager } from "pages/indicators/CardManager";
 import { TagManager } from "pages/indicators/TagManager";
-import { MinusIcon, PlusIcon } from "core/ui/IconsIndicators";
 import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
-import type { UiManager } from "core/layout/MainLayout";
 
 import "pages/indicators/layout/main.css";
 import { useOutletContext } from "react-router";

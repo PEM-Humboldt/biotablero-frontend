@@ -5,14 +5,14 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "core/ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
 import formatNumber from "pages/search/utils/format";
-import TextBoxes from "core/ui/TextBoxes";
+import TextBoxes from "@ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
-import SmallBars from "core/composites/charts/SmallBars";
+import SmallBars from "@composites/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";

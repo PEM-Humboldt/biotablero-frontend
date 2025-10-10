@@ -17,7 +17,7 @@ import { DrawControl } from "pages/search/mapViewer/DrawControl";
 import type { Polygon as PolygonType } from "pages/search/types/dashboard";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import "leaflet/dist/leaflet.css";
-import { useUserCTX } from "core/hooks/UserContext";
+import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 
 const config = {

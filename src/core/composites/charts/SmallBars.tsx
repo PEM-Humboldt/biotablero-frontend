@@ -4,9 +4,9 @@ import { AxisTickProps } from "@nivo/axes";
 
 import { darkenColor } from "pages/search/utils/colorUtils";
 import formatNumber from "pages/search/utils/format";
-import withMessageWrapper from "core/composites/charts/withMessageWrapper";
+import withMessageWrapper from "@composites/charts/withMessageWrapper";
 import { SmallBarTooltip } from "pages/search/types/charts";
-import { Tick } from "core/ui/CssTicks";
+import { Tick } from "@ui/CssTicks";
 
 interface Props {
   data: Array<SmallBarsData>;

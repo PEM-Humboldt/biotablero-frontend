@@ -22,7 +22,8 @@
       "@ui/*": ["core/ui/*"],
       "@composites/*": ["core/composites/*"],
       "@assets/*": ["core/assets/*"],
-      "@appHooks/*": ["core/hooks/*"],
+      "@utils/*": ["core/utils/*"],
+      "@hooks/*": ["core/hooks/*"],
       "@appTypes/*": ["core/types/*"]
     }
   },

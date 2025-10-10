@@ -4,9 +4,9 @@ import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
-import { ShortInfo } from "core/composites/ShortInfo";
-import DownloadCSV from "core/ui/DownloadCSV";
-import { IconTooltip } from "core/ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import DownloadCSV from "@ui/DownloadCSV";
+import { IconTooltip } from "@ui/Tooltips";
 
 interface TextBoxProps {
   downloadData?: Array<unknown>;

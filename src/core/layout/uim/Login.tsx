@@ -3,10 +3,10 @@ import {
   requestAccessToken,
   isResponseRequestError,
   isResponseAuthData,
-} from "core/api/auth";
+} from "@api/auth";
 import { uiText } from "core/layout/uim/login/uiText";
-import { parseUserFromJwt, setTokensInLS } from "core/utils/JWTstorage";
-import { useUserCTX } from "core/hooks/UserContext";
+import { parseUserFromJwt, setTokensInLS } from "@utils/JWTstorage";
+import { useUserCTX } from "@hooks/UserContext";
 
 export function Login() {
   const [loginError, setLoginError] = useState("");

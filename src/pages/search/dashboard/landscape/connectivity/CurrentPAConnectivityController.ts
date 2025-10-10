@@ -1,4 +1,4 @@
-import { SmallBarsData } from "core/composites/charts/SmallBars";
+import { SmallBarsData } from "@composites/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
 import formatNumber from "pages/search/utils/format";
 import { SmallBarTooltip } from "pages/search/types/charts";

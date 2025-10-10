@@ -3,8 +3,8 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
-import type { Names } from "core/types/layout";
-import { useUserCTX } from "core/hooks/UserContext";
+import type { Names } from "@appTypes/layout";
+import { useUserCTX } from "@hooks/UserContext";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función

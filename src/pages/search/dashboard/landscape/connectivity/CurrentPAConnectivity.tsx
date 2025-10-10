@@ -1,9 +1,9 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import { PointFilledLegend } from "core/ui/CssLegends";
-import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "core/ui/Tooltips";
+import { PointFilledLegend } from "@ui/CssLegends";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -11,13 +11,13 @@ import {
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import formatNumber from "pages/search/utils/format";
-import TextBoxes from "core/ui/TextBoxes";
+import TextBoxes from "@ui/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SmallBars from "core/composites/charts/SmallBars";
+import SmallBars from "@composites/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
-import LargeStackedBar from "core/composites/charts/LargeStackedBar";
+import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
 
