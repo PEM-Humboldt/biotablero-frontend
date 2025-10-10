@@ -25,7 +25,7 @@ type BoxColor = (typeof boxColors)[number];
 type TagWithColor = [tag: string, color: BoxColor];
 type TagManagerProps = {
   data: Map<string, string[]>;
-  filterData: (filters: boolean) => void;
+  filterData: (filters: string[]) => void;
 };
 
 export function TagManager({ data, filterData }: TagManagerProps) {
