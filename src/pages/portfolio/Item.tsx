@@ -1,5 +1,4 @@
-import React from "react";
-import PlusIcon from "pages/portfolio/PlusIcon";
+import { PlusIcon } from "core/ui/IconsIndicators";
 
 interface ItemTypes {
   title: string;
@@ -8,8 +7,7 @@ interface ItemTypes {
   link: string;
 }
 
-const Item: React.FC<ItemTypes> = (props) => {
-  const { title, year, description, link } = props;
+export function Item({ title, year, description, link }: ItemTypes) {
   return (
     <div className="portCard">
       <div className="pcTitle">{title}</div>
@@ -24,6 +22,4 @@ const Item: React.FC<ItemTypes> = (props) => {
       </div>
     </div>
   );
-};
-
-export default Item;
+}

@@ -4,16 +4,16 @@ import InfoIcon from "@mui/icons-material/Info";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { ShortInfo } from "core/composites/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { IconTooltip } from "core/ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/utils/backendAPI";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import BackendAPI from "pages/search/api/backendAPI";
+import TextBoxes from "core/ui/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import LargeStackedBar from "core/composites/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ShapeLayer } from "pages/search/types/layers";
 import { PersistenceFootprintController } from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprintController";

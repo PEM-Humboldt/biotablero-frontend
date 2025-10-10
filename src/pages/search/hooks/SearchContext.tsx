@@ -13,7 +13,7 @@ import {
   SearchUpdated,
   type SearchActions,
   type SearchState,
-} from "pages/search/SearchReducer";
+} from "pages/search/hooks/SearchReducer";
 import type {
   MapTitle,
   RasterLayer,

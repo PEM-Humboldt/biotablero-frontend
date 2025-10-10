@@ -1,9 +1,9 @@
 import {
   SmallBarsData,
   SmallBarsDataDetails,
-} from "pages/search/shared_components/charts/SmallBars";
-import BackendAPI from "pages/search/utils/backendAPI";
-import SearchAPI from "pages/search/utils/searchAPI";
+} from "core/composites/charts/SmallBars";
+import BackendAPI from "pages/search/api/backendAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import {
   ForestLPExt,
   ForestLPRawDataPolygon,
