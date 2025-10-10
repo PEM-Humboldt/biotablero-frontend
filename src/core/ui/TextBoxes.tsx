@@ -20,19 +20,18 @@ interface TextBoxProps {
 
 type boxValues = "meto" | "cons" | "quote" | null;
 
-const TextBoxes: React.FC<TextBoxProps> = (props) => {
-  const {
-    downloadData,
-    downloadName,
-    quoteText,
-    metoText,
-    consText,
-    toggleInfo,
-    isInfoOpen,
-  } = props;
-
+function TextBoxes({
+  downloadData,
+  downloadName,
+  quoteText,
+  metoText,
+  consText,
+  toggleInfo,
+  isInfoOpen,
+}: TextBoxProps) {
   const [boxShown, setBoxShown] = useState<boxValues>(null);
   const [activeBox, setActiveBox] = useState<boxValues>(null);
+
   useEffect(() => {
     if (isInfoOpen) {
       setBoxShown(null);
@@ -117,6 +116,6 @@ const TextBoxes: React.FC<TextBoxProps> = (props) => {
       )}
     </>
   );
-};
+}
 
 export default TextBoxes;
