@@ -166,7 +166,7 @@ a,
   color: #2a363b;
 }
 .iconUserLogged {
-  background: url(images/logout.png) no-repeat center;
+  background: url("/src/core/assets/logout.png") no-repeat center;
   float: right;
   width: 20px;
   height: 22px;
@@ -178,7 +178,7 @@ a,
 .finderline {
   width: 100%;
   min-height: 400px;
-  background: url(images/sky.jpg) no-repeat center center;
+  background: url("/src/core/assets/sky.jpg") no-repeat center center;
   background-size: cover;
   background-color: #2a363b;
   padding: 20px 0;
@@ -210,7 +210,7 @@ h2 {
   height: 280px;
   margin: 35px 15px;
   display: inline-block;
-  background: url(images/indicadores.png) no-repeat center center;
+  background: url("/src/core/assets/indicadores.png") no-repeat center center;
   font-size: 30px;
   line-height: 1;
   text-transform: uppercase;
@@ -224,25 +224,25 @@ h2 {
   font-weight: 400;
 }
 .geo {
-  background-image: url(images/geografico.png);
+  background-image: url("/src/core/assets/geografico.png");
 }
 .ind {
-  background-image: url(images/indicadores.png);
+  background-image: url("/src/core/assets/indicadores.png");
 }
 .per {
-  background-image: url(images/relaciones.png);
+  background-image: url("/src/core/assets/relaciones.png");
 }
 .com {
-  background-image: url(images/compensaciones.png);
+  background-image: url("/src/core/assets/compensaciones.png");
 }
 .port {
-  background-image: url(images/portafolios.png);
+  background-image: url("/src/core/assets/portafolios.png");
 }
 .ale {
-  background-image: url(images/alertas.png);
+  background-image: url("/src/core/assets/alertas.png");
 }
 .mon {
-  background-image: url(images/mcomunitario.png);
+  background-image: url("/src/core/assets/mcomunitario.png");
 }
 .activeicon {
   border: 2px solid #fff;
@@ -332,7 +332,7 @@ menu button.active {
   min-width: 28px;
   min-height: 28px;
   background: none;
-  background-image: url(images/downinfo.png);
+  background-image: url("/src/core/assets/downinfo.png");
   border: none;
   top: -14px;
   left: 85px;
@@ -480,7 +480,7 @@ menu button.active {
 .download {
   border: none;
   padding: 10px 13px 10px 37px;
-  background: url(images/down1.png) #fff 5px no-repeat;
+  background: url("/src/core/assets/down1.png") #fff 5px no-repeat;
   color: #e84a5f;
   font-size: 14px;
   margin: 0 35px 20px;
@@ -490,7 +490,7 @@ menu button.active {
 }
 .download:hover {
   background-color: #2a363b;
-  background-image: url(images/down2.png);
+  background-image: url("/src/core/assets/down2.png");
   color: #fff;
 }
 .mb10 {
@@ -1011,7 +1011,7 @@ a#reset-filters {
 }
 .ConsultasGeográficas {
   display: block;
-  background-image: url(images/geografico.png);
+  background-image: url("src/core/assets/geografico.png");
   -webkit-background-size: contain;
   background-size: contain;
   filter: invert(1);
@@ -1021,7 +1021,7 @@ a#reset-filters {
 }
 .Indicadores {
   display: block;
-  background-image: url(images/indicadores.png);
+  background-image: url("src/core/assets/indicadores.png");
   -webkit-background-size: contain;
   background-size: contain;
   filter: invert(1);
@@ -1031,7 +1031,7 @@ a#reset-filters {
 }
 .Portafolios {
   display: block;
-  background-image: url(images/portafolios.png);
+  background-image: url("src/core/assets/portafolios.png");
   -webkit-background-size: contain;
   background-size: contain;
   filter: invert(1);
@@ -1041,7 +1041,7 @@ a#reset-filters {
 }
 .CompensaciónAmbiental {
   display: block;
-  background-image: url(images/compensaciones.png);
+  background-image: url("src/core/assets/compensaciones.png");
   -webkit-background-size: contain;
   background-size: contain;
   float: right;
@@ -1050,7 +1050,7 @@ a#reset-filters {
 }
 .MonitoreoComunitario {
   display: block;
-  background-image: url(images/mcomunitario.png);
+  background-image: url("src/core/assets/mcomunitario.png");
   -webkit-background-size: contain;
   background-size: contain;
   filter: invert(1);
@@ -2221,7 +2221,7 @@ tspan,
   padding: 190px 20px 30px;
 }
 .uim_modal.loginModal {
-  background-image: url("/src/core/assets/images/login.png");
+  background-image: url("/src/core/assets/login.png");
   background-repeat: no-repeat;
 }
 
@@ -2489,7 +2489,7 @@ h3.warningNote {
   vertical-align: top;
 }
 .wrapperPort {
-  background: url(images/bg2Port.png) no-repeat bottom left;
+  background: url("/src/core/assets/bg2Port.png") no-repeat bottom left;
   background-size: contain;
 }
 .wrapperPort *,
@@ -2501,7 +2501,7 @@ h3.warningNote {
   -ms-box-sizing: border-box;
 }
 .splitPort {
-  background: url("/src/images/bg1Port.png") no-repeat top right;
+  background: url("/src/core/assets/bg1Port.png") no-repeat top right;
   background-size: 70vw;
   display: flex;
   justify-content: space-between;
@@ -2785,12 +2785,12 @@ h3.warningNote {
 }
 @media screen and (max-width: 780px) {
   .wrapperPort {
-    background: url(images/bg4Port.png) no-repeat top right;
+    background: url("/src/core/assets/bg4Port.png") no-repeat top right;
   }
 }
 @media screen and (max-width: 680px) {
   .splitPort {
-    background: url(images/bg3Port.png) no-repeat bottom left;
+    background: url("/src/core/assets/bg3Port.png") no-repeat bottom left;
     background-size: 70vw;
     display: inline-block;
   }

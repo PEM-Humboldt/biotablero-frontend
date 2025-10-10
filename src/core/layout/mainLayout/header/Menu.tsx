@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { Link, NavLink } from "react-router";
 
 import isFlagEnabled from "core/utils/isFlagEnabled";
-import Alerta from "images/alertas-tempranas-icono.svg";
+import Alert from "@assets/alertas-tempranas-icono.svg";
 import {
   type DisplayModule,
   displayModules,
@@ -73,7 +73,7 @@ export function Menu() {
               <li>
                 {" "}
                 <img
-                  src={Alerta}
+                  src={Alert}
                   alt="Alertas Tempranas"
                   width="40"
                   height="auto"

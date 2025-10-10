@@ -42,7 +42,7 @@ body {
   color: var(--blanco);
 }
 .imagen-fondo {
-  background: url("../src/images/biotablero-slider.webp");
+  background: url("../src/pages/home/assets/biotablero-slider.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -180,7 +180,9 @@ img.Modulos {
 .contenedor {
   opacity: 0;
   transform: translateY(-15px);
-  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
   pointer-events: none;
 }
 .contenedor.activo {
@@ -538,4 +540,3 @@ img.Modulos {
     transform: scale(1);
   }
 }
-

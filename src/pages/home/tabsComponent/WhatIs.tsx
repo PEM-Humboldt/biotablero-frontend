@@ -6,10 +6,10 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import whatIs from "images/biotablero-icono.svg";
-import whomIsItFor from "images/a-quien-va-dirigido.svg";
-import whoDoesIt from "images/quien-lo-hace.svg";
-import ourGoal from "images/cual-es-nuestro-objetivo.svg";
+import whatIs from "pages/home/assets/biotablero-icono.svg";
+import whomIsItFor from "pages/home/assets/a-quien-va-dirigido.svg";
+import whoDoesIt from "pages/home/assets/quien-lo-hace.svg";
+import ourGoal from "pages/home/assets/cual-es-nuestro-objetivo.svg";
 
 export function WhatIs() {
   return (

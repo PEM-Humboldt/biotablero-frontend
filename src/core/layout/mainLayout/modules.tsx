@@ -1,8 +1,8 @@
-import Consultasgeograficas from "images/consulta-geografica-logo.svg";
-import Indicadores from "images/indicadores-biodiversidad-icono.svg";
-import Portafolio from "images/portafolio-icono.svg";
-import Comunitario from "images/monitoreo-comunitario-icono.svg";
-import CompensacionAmbiental from "images/compensacion-ambiental-icono.svg";
+import Search from "@assets/modules/ico/consulta-geografica.svg";
+import Indicators from "@assets/modules/ico/indicadores-biodiversidad.svg";
+import Portfolio from "@assets/modules/ico/portafolio.svg";
+import Monitoring from "@assets/modules/ico/monitoreo-comunitario.svg";
+import Compensations from "@assets/modules/ico/compensacion-ambiental.svg";
 
 interface Module {
   id: number;
@@ -20,35 +20,35 @@ const modules: Module[] = [
   {
     id: 1,
     title: "Consultas Geográficas",
-    image: Consultasgeograficas,
+    image: Search,
     link: "/Consultas",
     authModule: false,
   },
   {
     id: 2,
     title: "Monitoreo Comunitario",
-    image: Comunitario,
+    image: Monitoring,
     link: "/Monitoreo",
     authModule: false,
   },
   {
     id: 3,
     title: "Indicadores de Biodiversidad",
-    image: Indicadores,
+    image: Indicators,
     link: "/Indicadores",
     authModule: false,
   },
   {
     id: 4,
     title: "Portafolios",
-    image: Portafolio,
+    image: Portfolio,
     link: "/Portafolios",
     authModule: false,
   },
   {
     id: 5,
     title: "Compensación Ambiental",
-    image: CompensacionAmbiental,
+    image: Compensations,
     link: (username: string) => `/${username.toUpperCase()}/Compensaciones`,
     authModule: true,
   },

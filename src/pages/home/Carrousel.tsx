@@ -8,8 +8,8 @@ import Tooltip from "@mui/material/Tooltip";
 import { Grid, Container, Button } from "@mui/material";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import iconoinfo from "images/icono-info.svg";
-import iconomas from "images/icono-mas.svg";
+import iconoinfo from "pages/home/assets/icono-info.svg";
+import iconomas from "pages/home/assets/icono-mas.svg";
 
 import {
   type DisplayModule,

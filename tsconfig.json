@@ -18,9 +18,10 @@
     "types": ["vite/client", "vite-plugin-svgr/client"],
     "baseUrl": "src",
     "paths": {
-      "@ui/*": ["core/ui/*"],
       "@api/*": ["core/api/*"],
+      "@ui/*": ["core/ui/*"],
       "@composites/*": ["core/composites/*"],
+      "@assets/*": ["core/assets/*"],
       "@appHooks/*": ["core/hooks/*"],
       "@appTypes/*": ["core/types/*"]
     }
