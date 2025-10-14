@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview",
+    "build:careless": "vite build",
+    "preview": "vite preview --port 3000",
     "start": "vite preview --port 3000",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx}'",
     "check-format": "prettier --check 'src/**/*.{js,jsx,ts,tsx}'",

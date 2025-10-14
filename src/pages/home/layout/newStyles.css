@@ -42,7 +42,7 @@ body {
   color: var(--blanco);
 }
 .imagen-fondo {
-  background: url("../src/pages/home/assets/biotablero-slider.webp");
+  background: url("/src/pages/home/assets/biotablero-slider.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
