@@ -11,7 +11,6 @@ import {
   DashboardAdmin,
   DashboardUser,
 } from "pages/monitoring/outlet/Dashboard";
-import { RenderCompensation } from "pages/CompensationAuth";
 
 import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
@@ -86,7 +85,13 @@ export const routes = createBrowserRouter([
       },
       {
         path: "/:user/Compensaciones",
-        Component: RenderCompensation,
+        lazy: async () => {
+          const { RenderCompensation } = await import("pages/CompensationAuth");
+
+          return {
+            Component: RenderCompensation,
+          };
+        },
       },
       {
         path: "Portafolios",
