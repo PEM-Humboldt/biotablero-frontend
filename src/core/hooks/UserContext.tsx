@@ -76,8 +76,23 @@ export function UserCTX({ children }: { children: ReactNode }) {
 
 export function useUserCTX() {
   const context = useContext(UserContext);
+
   if (!context) {
     throw new Error("useUserCTX must be within the UserProviderCTX");
   }
+
+  // HACK: mientras se cuadran los usuarios de compensaciones en el
+  // keycloak, para habilitar el uso con el usuario de la GEB
+  const { user, updateUser } = context;
+  useEffect(() => {
+    if (user?.username === "geb") {
+      updateUser({
+        id: 1,
+        name: "Grupo Energía Bogotá",
+        company: { id: 1, name: "Grupo Energía Bogotá" },
+      });
+    }
+  }, [updateUser, user?.username]);
+
   return context;
 }
