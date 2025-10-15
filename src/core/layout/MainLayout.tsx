@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Outlet } from "react-router";
+import { Outlet, useNavigation } from "react-router";
 
 import { Footer } from "core/layout/mainLayout/Footer";
 import { Header } from "core/layout/mainLayout/Header";
@@ -12,6 +12,7 @@ import {
   type LayoutState,
 } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserCTX } from "@hooks/UserContext";
+import { OnLoadingModal } from "@composites/OnLoadingModal";
 
 const layoutInitial: LayoutState = {
   moduleName: "home",
@@ -35,6 +36,8 @@ export function MainLayout() {
     layoutInitial,
   );
 
+  const navigation = useNavigation();
+
   return (
     <UserCTX>
       <div className={layoutState.className}>
@@ -42,7 +45,10 @@ export function MainLayout() {
           activeModule={layoutState.moduleName}
           headerNames={layoutState.headerNames}
         />
+
+        <OnLoadingModal open={navigation.state === "loading"} />
         <Outlet context={{ layoutState, layoutDispatch }} />
+
         <Footer logos={layoutState.logos} />
       </div>
     </UserCTX>
