@@ -2,9 +2,7 @@ import { createBrowserRouter } from "react-router";
 
 import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
-import { Search } from "pages/Search";
 import { Indicators } from "pages/Indicators";
-import { Monitoring } from "pages/Monitoring";
 import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlet/InitiativesMap";
 import {
@@ -42,12 +40,18 @@ export const routes = createBrowserRouter([
       },
       {
         path: "Consultas",
-        Component: Search,
+        lazy: async () => {
+          const { Search } = await import("pages/Search");
+          return { Component: Search };
+        },
       },
       {
         path: "Monitoreo",
-        Component: Monitoring,
         loader: () => checkNLoad({ requirements: { username: "geb" } }),
+        lazy: async () => {
+          const { Monitoring } = await import("pages/Monitoring");
+          return { Component: Monitoring };
+        },
         children: [
           { index: true, Component: InitiativesMap },
           {
@@ -87,10 +91,7 @@ export const routes = createBrowserRouter([
         path: "/:user/Compensaciones",
         lazy: async () => {
           const { RenderCompensation } = await import("pages/CompensationAuth");
-
-          return {
-            Component: RenderCompensation,
-          };
+          return { Component: RenderCompensation };
         },
       },
       {
