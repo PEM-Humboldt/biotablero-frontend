@@ -1,7 +1,7 @@
 import { SmallBarsData } from "@composites/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
-import formatNumber from "pages/search/utils/format";
-import { SmallBarTooltip } from "pages/search/types/charts";
+import { formatNumber } from "@utils/format";
+import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import BackendAPI from "pages/search/api/backendAPI";
 import {
   ShapeLayer,

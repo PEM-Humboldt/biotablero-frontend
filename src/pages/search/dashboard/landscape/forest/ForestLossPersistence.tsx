@@ -8,11 +8,11 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import TextBoxes from "@ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
-import SmallBars from "@composites/charts/SmallBars";
+import { SmallBars } from "@composites/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";

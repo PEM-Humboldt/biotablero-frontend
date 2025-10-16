@@ -11,8 +11,8 @@ import {
   ForestLPCategories,
 } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import formatNumber from "pages/search/utils/format";
-import { SmallBarTooltip } from "pages/search/types/charts";
+import { formatNumber } from "@utils/format";
+import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import { polygonFeature } from "pages/search/types/dashboard";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";

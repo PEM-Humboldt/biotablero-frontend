@@ -1,4 +1,3 @@
-/* eslint-disable no-bitwise */
 /**
  * Lighten or darken color base on percent sign. Taken from https://gist.github.com/renancouto/4675192
  * @param {String} color Hex color

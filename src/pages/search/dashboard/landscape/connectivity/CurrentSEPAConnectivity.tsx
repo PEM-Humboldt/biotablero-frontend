@@ -8,7 +8,7 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";

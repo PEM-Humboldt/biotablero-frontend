@@ -4,7 +4,8 @@
  * @param {Number} decimals percentage value
  */
 
-const formatNumber = (value, decimals) =>
-  Number(value).toLocaleString("en-US", { maximumFractionDigits: decimals });
-
-export default formatNumber;
+export function formatNumber(value, decimals) {
+  return Number(value).toLocaleString("en-US", {
+    maximumFractionDigits: decimals,
+  });
+}

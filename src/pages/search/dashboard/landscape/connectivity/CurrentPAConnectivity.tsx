@@ -10,12 +10,12 @@ import {
 } from "pages/search/hooks/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import TextBoxes from "@ui/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SmallBars from "@composites/charts/SmallBars";
+import { SmallBars } from "@composites/charts/SmallBars";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
