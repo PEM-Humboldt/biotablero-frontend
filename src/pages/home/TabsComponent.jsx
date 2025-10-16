@@ -281,9 +281,9 @@ function Tabsmodulos({ activeTab, setActiveTab }) {
                             </Box>
                         ) : (
                             <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
-                                <Tabs orientation="vertical" variant="scrollable" value={subTab} onChange={handleSubTabChange} sx={{ marginTop: { xs: "77px", sm: "23px" }, width: { xs: "100%", sm: 290 }, alignSelf: "center" }}>
+                                <Tabs orientation="vertical" variant="scrollable" value={subTab} onChange={handleSubTabChange} sx={{ marginTop: { xs: "77px", sm: "23px" }, width: { xs: "100%", sm: 290 }, alignSelf: "start" }}>
                                     {categories[activeTab].subcategories.map((sub, index) => (
-                                        <Tab key={index} label={sub.title} />
+                                        <Tab key={index} label={sub.title} sx={{ border: "none !important"}}/>
                                     ))}
                                 </Tabs>
 
