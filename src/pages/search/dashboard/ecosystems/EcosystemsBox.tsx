@@ -59,7 +59,7 @@ class EcosystemsBox extends React.Component<Props, State> {
               )}
               {!stopLoad && Number(SEValues.area) !== 0 && (
                 <SmallStackedBar
-                  message={null}
+                  loadStatus={null}
                   customMessage="Sin áreas protegidas"
                   data={transformSEValues(SEValues, SETotalArea)}
                   units="ha"

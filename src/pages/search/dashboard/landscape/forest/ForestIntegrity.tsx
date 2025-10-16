@@ -18,7 +18,7 @@ import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import Pie from "@composites/charts/Pie";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/dashboard/landscape/forest/ForestIntegrityController";
 
@@ -63,7 +63,7 @@ interface FIState {
     [Property in SCIHFCats]: Array<PA>;
   };
   selectedCategory: SCIHFCats | null;
-  loading: wrapperMessage;
+  loading: MessageWrapperType;
   layers: Array<ShapeLayer>;
 }
 
@@ -322,7 +322,7 @@ class ForestIntegrity extends React.Component<Props, FIState> {
             />
             <div style={{ padding: "0 12px" }}>
               <SmallStackedBar
-                message={loading}
+                loadStatus={loading}
                 data={ProtectedAreas[selectedCategory]}
                 units="ha"
                 colors={matchColor("pa", true)}

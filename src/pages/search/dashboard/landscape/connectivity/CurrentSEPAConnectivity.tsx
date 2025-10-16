@@ -20,7 +20,7 @@ import {
 import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
@@ -41,9 +41,9 @@ interface State {
   protDryForest: number;
   protWetland: number;
   messages: {
-    paramo: wrapperMessage;
-    dryForest: wrapperMessage;
-    wetland: wrapperMessage;
+    paramo: MessageWrapperType;
+    dryForest: MessageWrapperType;
+    wetland: MessageWrapperType;
   };
   texts: {
     paConnSE: textsObject;

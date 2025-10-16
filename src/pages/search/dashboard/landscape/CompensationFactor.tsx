@@ -14,7 +14,7 @@ import {
 import { cfData } from "pages/search/types/compensationFactor";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
 import { ShapeLayer } from "pages/search/types/layers";
 
@@ -30,9 +30,9 @@ interface compensationFactorState {
   fc: Array<cfDataExt>;
   bioticUnits: Array<cfDataExt>;
   messages: {
-    fc: wrapperMessage;
-    biomes: wrapperMessage;
-    bioticUnits: wrapperMessage;
+    fc: MessageWrapperType;
+    biomes: MessageWrapperType;
+    bioticUnits: MessageWrapperType;
   };
   texts: {
     cf: textsObject;

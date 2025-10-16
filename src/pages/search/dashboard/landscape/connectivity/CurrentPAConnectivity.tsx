@@ -16,7 +16,7 @@ import TextBoxes from "@ui/TextBoxes";
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import SmallBars from "@composites/charts/SmallBars";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
@@ -47,8 +47,8 @@ interface currentPAConnState {
   dpcData: Array<DPC>;
   prot: number;
   messages: {
-    conn: wrapperMessage;
-    dpc: wrapperMessage;
+    conn: MessageWrapperType;
+    dpc: MessageWrapperType;
   };
   texts: {
     paConnCurrent: textsObject;
@@ -299,7 +299,7 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               data={graphData.transformedData}
               keys={graphData.keys}
               tooltips={graphData.tooltips}
-              message={dpcMess}
+              loadStatus={dpcMess}
               colors={matchColor("dpc")}
               onClickHandler={(selected: string) => {
                 this.highlightFeature(selected);

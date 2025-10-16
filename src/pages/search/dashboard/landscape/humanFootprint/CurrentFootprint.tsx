@@ -18,7 +18,7 @@ import {
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { MessageWrapperType } from "@composites/charts/charts";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
 
@@ -32,7 +32,7 @@ interface currentHFState {
   hfCurrent: Array<currentHFCategoriesExt>;
   hfCurrentValue: string;
   hfCurrentCategory: string;
-  message: wrapperMessage;
+  message: MessageWrapperType;
   texts: {
     hfCurrent: textsObject;
   };

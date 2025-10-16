@@ -17,7 +17,7 @@ import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
 import { textsObject } from "pages/search/types/texts";
 import Lines from "@composites/charts/Lines";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
@@ -76,7 +76,7 @@ interface Props {}
 interface State {
   showInfoGraph: boolean;
   hfTimeline: Array<hfTimelineExt>;
-  message: wrapperMessage;
+  message: MessageWrapperType;
   selectedEcosystem: seDetailsExt | null;
   texts: {
     hfTimeline: textsObject;

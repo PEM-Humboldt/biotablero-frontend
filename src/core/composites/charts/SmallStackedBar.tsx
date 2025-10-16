@@ -2,7 +2,7 @@ import { ResponsiveBar } from "@nivo/bar";
 
 import BarItem from "@composites/charts/BarItem";
 import formatNumber from "pages/search/utils/format";
-import withMessageWrapper from "./withMessageWrapper";
+import { withMessageWrapper } from "@composites/charts/withMessageWrapper";
 
 interface Props {
   data: Array<SmallStackedBarData>;

@@ -18,7 +18,7 @@ import {
 } from "pages/search/types/ecosystems";
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
@@ -37,8 +37,8 @@ interface State {
   paData: Array<PAData>;
   stopLoad: boolean;
   messages: {
-    coverage: wrapperMessage;
-    pa: wrapperMessage;
+    coverage: MessageWrapperType;
+    pa: MessageWrapperType;
   };
   layers: Array<RasterLayer>;
 }
@@ -143,7 +143,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           <h3>
             Distribución de coberturas:
             <SmallStackedBar
-              message={messages.coverage}
+              loadStatus={messages.coverage}
               customMessage="No hay información disponible de coberturas"
               data={coverageData}
               units="ha"
@@ -156,7 +156,7 @@ class EcosystemDetails extends React.Component<Props, State> {
           <h3>
             Distribución en áreas protegidas:
             <SmallStackedBar
-              message={messages.pa}
+              loadStatus={messages.pa}
               customMessage="Sin áreas protegidas"
               data={paData}
               units="ha"
