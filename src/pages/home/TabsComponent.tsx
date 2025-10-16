@@ -66,7 +66,11 @@ export function TabsModules({ activeTab }: TabsModulesProps) {
                     "subcategories" in currentCategory &&
                     currentCategory.subcategories.map(
                       (sub: Category, index: number) => (
-                        <Tab key={index} label={sub.title} />
+                        <Tab
+                          key={index}
+                          label={sub.title}
+                          sx={{ border: "none !important" }}
+                        />
                       ),
                     )}
                 </Tabs>
