@@ -89,11 +89,11 @@ body {
 
 img.Modulos {
     background-color: rgba(17, 17, 17, 0.52);
-    /* border-bottom: 1px solid #ffffff; */
-    border-bottom: 1px solid var(--blanco);
+    outline: 2px solid var(--blanco);
+	outline-offset: 1px;
     backdrop-filter: blur(2px);
     padding: 23% 17%;
-    border-radius: 6px;
+    border-radius: 11px 11px 0 11px;
     overflow: auto;
     margin: auto;
 }
