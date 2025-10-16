@@ -1,21 +1,20 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { CardManager } from "pages/indicators/app/CardManager";
-import TagManager from "pages/indicators/app/TagManager";
-import MinusIcon from "pages/indicators/components/MinusIcon";
-import PlusIcon from "pages/indicators/components/PlusIcon";
+import { MinusIcon, PlusIcon } from "@ui/IconsIndicators";
+import type { UiManager } from "core/layout/MainLayout";
+import { CardManager } from "pages/indicators/CardManager";
+import { TagManager } from "pages/indicators/TagManager";
 import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
 import { getTags } from "pages/indicators/utils/firebase";
-import type { UiManager } from "app/Layout";
 
-import "pages/indicators/main.css";
+import "pages/indicators/layout/main.css";
 import { useOutletContext } from "react-router";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Indicators() {
   const { layoutDispatch } = useOutletContext<UiManager>();
   const [openFilter, setOpenFilter] = useState(true);
-  const [tags, setTags] = useState(new Map());
+  const [tags, setTags] = useState(new Map<string, string[]>());
   const [loadingTags, setLoadingTags] = useState(true);
   const { isLoading, result: cardsData, updateFilters } = useUpdateResults();
 
@@ -44,9 +43,12 @@ export function Indicators() {
     void fetchTags();
   }, []);
 
-  const filterData = (filters: boolean) => {
-    updateFilters(filters);
-  };
+  const filterData = useCallback(
+    (filters: boolean) => {
+      updateFilters(filters);
+    },
+    [updateFilters],
+  );
 
   return (
     <div className={`wrapperIndicators${openFilter ? "" : " full-content"}`}>

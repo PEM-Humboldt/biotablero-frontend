@@ -1,23 +1,23 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import { PointFilledLegend } from "pages/search/shared_components/CssLegends";
-import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { PointFilledLegend } from "@ui/CssLegends";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import matchColor from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import formatNumber from "pages/search/utils/format";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import TextBoxes from "@ui/TextBoxes";
 
 import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import SmallBars from "pages/search/shared_components/charts/SmallBars";
+import SmallBars from "@composites/charts/SmallBars";
 import { wrapperMessage } from "pages/search/types/charts";
-import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
 

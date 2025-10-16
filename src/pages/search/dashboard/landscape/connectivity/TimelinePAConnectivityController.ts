@@ -1,4 +1,4 @@
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 import {
   ShapeLayer,
   ConnectivityFeaturePropierties,

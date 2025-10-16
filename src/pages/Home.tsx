@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 
-import type { UiManager } from "app/Layout";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import type { UiManager } from "core/layout/MainLayout";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { Carrousel } from "pages/home/Carrousel";
 import { TabsModules } from "pages/home/TabsComponent";
 
-import "newStyles.css";
-import "headerFooter.css";
+import "pages/home/layout/newStyles.css";
 
 export function Home() {
   const { layoutDispatch } = useOutletContext<UiManager>();

@@ -10,10 +10,10 @@ import RemoveIcon from "pages/search/selector/RemoveIcon";
 import {
   useSearchDrawControlsCTX,
   useSearchLegacyCTX,
-} from "pages/search/SearchContext";
-import { uiText } from "pages/search/selector/drawPolygon/uiText";
-import "pages/search/selector/DrawPolygon.css";
-import { DrawMode } from "pages/search/selector/drawPolygon/types";
+} from "pages/search/hooks/SearchContext";
+import { uiText } from "pages/search/selector/drawPolygon/layout/uiText";
+import "pages/search/selector/drawPolygon/layout/DrawPolygon.css";
+import { DrawMode } from "pages/search/selector/drawPolygon/types/drawPolygon";
 
 export function DrawPolygon() {
   const { drawControlsRef, areDrawControlsMounted } =

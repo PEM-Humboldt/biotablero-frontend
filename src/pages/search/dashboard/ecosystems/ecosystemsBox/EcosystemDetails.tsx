@@ -2,7 +2,7 @@ import React from "react";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 
 import {
   transformPAValues,
@@ -16,8 +16,8 @@ import {
   coverageType,
   SEPADataExt,
 } from "pages/search/types/ecosystems";
-import BackendAPI from "pages/search/utils/backendAPI";
-import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
+import BackendAPI from "pages/search/api/backendAPI";
+import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";

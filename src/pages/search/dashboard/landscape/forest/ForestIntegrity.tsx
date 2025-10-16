@@ -1,26 +1,23 @@
 import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
-import {
-  PointFilledLegend,
-  SquareBorderLegend,
-} from "pages/search/shared_components/CssLegends";
-import DownloadCSV from "pages/search/shared_components/DownloadCSV";
-import ShortInfo from "components/ShortInfo";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+import { PointFilledLegend, SquareBorderLegend } from "@ui/CssLegends";
+import DownloadCSV from "@ui/DownloadCSV";
+import { ShortInfo } from "@composites/ShortInfo";
+import TextBoxes from "@ui/TextBoxes";
+import { IconTooltip } from "@ui/Tooltips";
 
 import matchColor from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/utils/backendAPI";
+import BackendAPI from "pages/search/api/backendAPI";
 
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
-import Pie from "pages/search/shared_components/charts/Pie";
-import SmallStackedBar from "pages/search/shared_components/charts/SmallStackedBar";
+import Pie from "@composites/charts/Pie";
+import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/dashboard/landscape/forest/ForestIntegrityController";

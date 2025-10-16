@@ -1,15 +1,10 @@
-import type { UiManager } from "app/Layout";
-import { LayoutUpdated } from "app/layout/layoutReducer";
+import type { UiManager } from "core/layout/MainLayout";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { useEffect } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router";
+import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
-import type { Names } from "types/layoutTypes";
-import { useUserCTX } from "app/UserContext";
+import type { Names } from "@appTypes/layout";
+import { useUserCTX } from "@hooks/UserContext";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función
@@ -19,7 +14,6 @@ export function RenderCompensation() {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user: userInParams } = useParams();
 
   const renderCompensation = user?.username === "geb";
 

@@ -8,7 +8,7 @@ import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
+} from "pages/search/hooks/SearchContext";
 import { accordionComponent } from "pages/search/types/ui";
 
 interface Props {}

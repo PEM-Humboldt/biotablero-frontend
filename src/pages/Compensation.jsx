@@ -4,7 +4,7 @@ import Modal from "@mui/material/Modal";
 import { Component } from "react";
 
 import constructDataForCompensation from "pages/compensation/constructDataForSelector";
-import GeoServerAPI from "utils/geoServerAPI";
+import GeoServerAPI from "@api/geoServer";
 import RestAPI from "pages/compensation/utils/restAPI";
 import MapViewer from "pages/compensation/MapViewer";
 import Drawer from "pages/compensation/Drawer";

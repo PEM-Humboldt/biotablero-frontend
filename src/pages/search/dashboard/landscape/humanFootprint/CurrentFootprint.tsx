@@ -5,19 +5,19 @@ import InfoIcon from "@mui/icons-material/Info";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
-} from "pages/search/SearchContext";
-import ShortInfo from "components/ShortInfo";
-import { IconTooltip } from "pages/search/shared_components/Tooltips";
+} from "pages/search/hooks/SearchContext";
+import { ShortInfo } from "@composites/ShortInfo";
+import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/utils/backendAPI";
-import TextBoxes from "pages/search/shared_components/TextBoxes";
+import BackendAPI from "pages/search/api/backendAPI";
+import TextBoxes from "@ui/TextBoxes";
 
 import {
   currentHFValue,
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "pages/search/shared_components/charts/LargeStackedBar";
+import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { wrapperMessage } from "pages/search/types/charts";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";

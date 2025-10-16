@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { Map } from "leaflet";
+import { type Map } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 
