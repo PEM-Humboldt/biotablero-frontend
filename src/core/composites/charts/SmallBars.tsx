@@ -36,7 +36,7 @@ type AlternateAxisY = {
   tickHeight?: number;
 };
 
-interface SmallBarrsProps {
+interface SmallBarsProps {
   data: Array<SmallBarsData>;
   keys: Array<string>;
   tooltips: Array<SmallBarTooltip>;
@@ -81,7 +81,7 @@ export function SmallBarsElement({
   margin = { top: 20, right: 15, bottom: 0, left: 90 },
   axisY = { enabled: false, legend: "" },
   axisX = { enabled: false, legend: "", format: ".2f", tickValues: undefined },
-}: SmallBarrsProps) {
+}: SmallBarsProps) {
   const [selectedIndexValue, setSelectedIndexValue] =
     useState<SmallBarsState>("");
 
@@ -208,7 +208,7 @@ export function SmallBarsElement({
   );
 }
 
-export const SmallBars = withMessageWrapper<SmallBarrsProps>(SmallBarsElement);
+export const SmallBars = withMessageWrapper<SmallBarsProps>(SmallBarsElement);
 
 function CustomTickWrapper(
   refValues: Record<string, string> | null = null,
