@@ -17,7 +17,7 @@ import {
 import { textsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
 import Lines from "@composites/charts/Lines";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { TimelinePAConnectivityController } from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
 
@@ -33,7 +33,7 @@ interface Props {}
 interface timelinePAConnState {
   showInfoGraph: boolean;
   timelinePAConnData: Array<timelinePAConnExt>;
-  message: wrapperMessage;
+  message: MessageWrapperType;
   texts: {
     paConnTimeline: textsObject;
   };

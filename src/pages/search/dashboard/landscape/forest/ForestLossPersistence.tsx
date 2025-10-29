@@ -8,13 +8,13 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import TextBoxes from "@ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
-import SmallBars from "@composites/charts/SmallBars";
+import { SmallBars } from "@composites/charts/SmallBars";
 import { textsObject } from "pages/search/types/texts";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 
@@ -22,7 +22,7 @@ interface Props {}
 interface State {
   showInfoGraph: boolean;
   forestLP: Array<ForestLPExt>;
-  message: wrapperMessage;
+  message: MessageWrapperType;
   forestPersistenceValue: number;
   texts: {
     forestLP: textsObject;
@@ -155,7 +155,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             data={graphData.transformedData}
             keys={graphData.keys}
             tooltips={graphData.tooltips}
-            message={message}
+            loadStatus={message}
             margin={{
               bottom: 50,
             }}

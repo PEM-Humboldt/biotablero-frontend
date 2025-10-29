@@ -13,14 +13,14 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar, {
   SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import { textsObject } from "pages/search/types/texts";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
@@ -64,9 +64,9 @@ interface State {
   SETotalArea: number;
   activeSE: string;
   messages: {
-    cov: wrapperMessage;
-    pa: wrapperMessage;
-    se: wrapperMessage;
+    cov: MessageWrapperType;
+    pa: MessageWrapperType;
+    se: MessageWrapperType;
   };
   texts: {
     ecosystems: textsObject;
@@ -380,7 +380,7 @@ class Ecosystems extends React.Component<Props, State> {
           <div className="graficaeco">
             <div className="svgPointer">
               <SmallStackedBar
-                message={cov}
+                loadStatus={cov}
                 data={coverage}
                 units="ha"
                 colors={matchColor("coverage")}
@@ -422,7 +422,7 @@ class Ecosystems extends React.Component<Props, State> {
           <div className="graficaeco">
             <h6>Distribución por áreas protegidas:</h6>
             <SmallStackedBar
-              message={pa}
+              loadStatus={pa}
               data={PAAreas}
               units="ha"
               colors={matchColor("pa", true)}

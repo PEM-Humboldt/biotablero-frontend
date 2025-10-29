@@ -2,7 +2,7 @@ import React from "react";
 import { Point, ResponsiveLine } from "@nivo/line";
 import { CartesianMarkerProps } from "@nivo/core";
 
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import withMessageWrapper from "@composites/charts/withMessageWrapper";
 
 interface LinesData {

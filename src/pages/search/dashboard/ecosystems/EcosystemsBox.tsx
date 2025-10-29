@@ -2,7 +2,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import React from "react";
 
 import EcosystemDetails from "pages/search/dashboard/ecosystems/ecosystemsBox/EcosystemDetails";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import matchColor from "pages/search/utils/matchColor";
 
 import { transformSEValues } from "pages/search/dashboard/ecosystems/transformData";
@@ -59,7 +59,7 @@ class EcosystemsBox extends React.Component<Props, State> {
               )}
               {!stopLoad && Number(SEValues.area) !== 0 && (
                 <SmallStackedBar
-                  message={null}
+                  loadStatus={null}
                   customMessage="Sin áreas protegidas"
                   data={transformSEValues(SEValues, SETotalArea)}
                   units="ha"

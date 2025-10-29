@@ -8,7 +8,7 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
@@ -20,7 +20,7 @@ import {
 import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
-import { wrapperMessage } from "pages/search/types/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
@@ -41,9 +41,9 @@ interface State {
   protDryForest: number;
   protWetland: number;
   messages: {
-    paramo: wrapperMessage;
-    dryForest: wrapperMessage;
-    wetland: wrapperMessage;
+    paramo: MessageWrapperType;
+    dryForest: MessageWrapperType;
+    wetland: MessageWrapperType;
   };
   texts: {
     paConnSE: textsObject;

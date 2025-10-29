@@ -1,36 +1,35 @@
-import React from "react";
+import { type ComponentType } from "react";
 
-import { wrapperMessage } from "pages/search/types/charts";
+export type MessageWrapperType = "loading" | "no-data" | "custom" | null;
 
 interface MessageProps {
-  message: wrapperMessage;
   customMessage?: string;
+  loadStatus: MessageWrapperType;
 }
 
-const withMessageWrapper = <T,>(
-  WrappedChart: React.ComponentType<
-    Omit<T & MessageProps, "message" | "customMessage">
-  >,
-) => {
-  const WithMessageWrapper: React.FC<T & MessageProps> = (props) => {
-    const { message, customMessage, ...otherProps } = props;
-    let errorMessage = null;
-    if (message === "loading") {
-      errorMessage = "Cargando información...";
-    } else if (message === "no-data") {
-      errorMessage = "Información no disponible";
-    } else if (message === "custom") {
-      errorMessage = customMessage;
-    }
-    if (errorMessage) {
-      return <div className="errorData">{errorMessage}</div>;
-    }
-    return <WrappedChart {...otherProps} />;
-  };
-  WithMessageWrapper.displayName = `WithMessageWrapper(${
-    WrappedChart.displayName || WrappedChart.name || "Chart"
-  })`;
-  return WithMessageWrapper;
+type WrapperProps<T> = MessageProps & T;
+
+const wrapperMessages = {
+  loading: () => "Cargando información...",
+  "no-data": () => "Información no disponible",
+  custom: (message?: string) => message ?? null,
 };
 
-export default withMessageWrapper;
+export function withMessageWrapper<T extends object>(
+  WrappedComponent: ComponentType<T>,
+) {
+  return ({ customMessage, loadStatus, ...otherProps }: WrapperProps<T>) => {
+    let loadingMessage: string | null = null;
+    if (customMessage !== undefined) {
+      loadingMessage = customMessage;
+    } else if (loadStatus) {
+      loadingMessage = wrapperMessages[loadStatus](customMessage);
+    }
+
+    return loadingMessage !== null ? (
+      <div className="errorData">{loadingMessage}</div>
+    ) : (
+      <WrappedComponent {...(otherProps as T)} />
+    );
+  };
+}

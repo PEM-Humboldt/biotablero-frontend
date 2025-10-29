@@ -1,4 +1,4 @@
-import formatNumber from "pages/search/utils/format";
+import { formatNumber } from "@utils/format";
 import BackendAPI from "pages/search/api/backendAPI";
 import { ShapeLayer } from "pages/search/types/layers";
 import matchColor from "pages/search/utils/matchColor";
