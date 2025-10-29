@@ -47,14 +47,6 @@ export function Login() {
       setTokensInLS(res.access_token, res.refresh_token);
       const user = parseUserFromJwt(res.access_token);
 
-      // HACK: mientras se cuadran los usuarios de compensaciones en el
-      // keycloak, para habilitar el uso con el usuario de la GEB
-      if (user.username === "geb") {
-        user.id = 1;
-        user.name = "Grupo Energía Bogotá";
-        user.company = { id: 1, name: "Grupo Energía Bogotá" };
-      }
-
       void login(user);
     } catch {
       void setLoginError(uiText.error[500]);
