@@ -86,39 +86,39 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
                 </Grid>
                 <Slider {...settings}>
                     {availableModules.map((module) => (
-                        <div key={module.id} className="ModuloPrincipal" style={{ height: "auto", padding: 12 }}>
-                            <div className="moduactivo active" >
+						<div key={module.id} className="ModuloPrincipal" style={{ height: "auto", padding: 12 }}>
+							<div className="moduactivo active" >
 								<Link to={module.link}>
-									<Tooltip title="Haz clic para explorar" arrow>
-										<img className="Modulos" src={module.image} alt={module.title} style={{ width: "65%", height: "auto", cursor: "pointer" }} />
-									</Tooltip>
-
-									<Grid container alignItems="center" className="contenedor activo" >
-										<Grid item xs={12} sm={8} md={9} lg={10} sx={{ textAlign: { xs: "center", sm: "left" } }}>
-											<span>{module.title}</span>
-										</Grid>
-										<Grid className="btncricle" item xs={12} sm={4} md={3} lg={2} sx={{ textAlign:"center" }}>
-											<Tooltip title="Más información" arrow>
-												<Button
-													onClick={(event) => {
-														event.preventDefault()
-														event.stopPropagation()
-														handleClick(module.id)}
-													}
-													style={{
-														backgroundColor: activeModule === module.id ? "#e84a5f" : "unset",
-														border: "2px solid #fff",
-														padding: "10px",
-													}}
-												>
-													<img src={iconoinfo} alt="Información" />
-												</Button>
-											</Tooltip>
-										</Grid>
-									</Grid>
+									<img className="Modulos" src={module.image} alt={module.title} style={{ width: "65%", height: "auto", cursor: "pointer" }} />
 								</Link>
-                            </div>
-                        </div>
+
+								<Grid container alignItems="center" className="contenedor activo" >
+									<Grid item xs={12} sm={8} md={9} lg={10} sx={{ textAlign: { xs: "center", sm: "left" }, minHeight:"54px", display:"flex"}}>
+										<Link to={module.link} style={{alignSelf:"center", padding:"5px 0"}}>
+											<span>{module.title}</span>
+										</Link>
+									</Grid>
+
+									<Grid className="btncricle" item xs={12} sm={4} md={3} lg={2} sx={{ textAlign:"center" }}>
+										<Tooltip title="Más información" arrow>
+											<Button
+												onClick={(event) => {
+													event.preventDefault()
+													handleClick(module.id)}
+												}
+												style={{
+													backgroundColor: activeModule === module.id ? "#e84a5f" : "unset",
+													border: "2px solid #fff",
+													padding: "10px",
+												}}
+											>
+												<img src={iconoinfo} alt="Información" />
+											</Button>
+										</Tooltip>
+									</Grid>
+								</Grid>
+							</div>
+						</div>
                     ))}
                 </Slider>
             </Container>
