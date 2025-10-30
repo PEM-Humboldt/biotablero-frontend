@@ -59,7 +59,7 @@ function Carrousel({ setActiveTab, setShowQueEs }) {
         { id: 2, title: "Indicadores de Biodiversidad", image: Indicadores, link: "/Indicadores", auth: false },
         { id: 3, title: "Portafolios", image: Portafolio, link: "/Portafolios", auth: false },
         //{ id: 4, title: "Monitoreo Comunitario", image: Comunitario, link: "/Monitoreo", auth: false },
-        { id: 5, title: "Compensación Ambiental", image: compensacionAmbiental, link: "/GEB/Compensaciones", auth: true },
+        { id: 4, title: "Compensación Ambiental", image: compensacionAmbiental, link: "/GEB/Compensaciones", auth: true },
     ];
 
     const availableModules = user ? modules : modules.filter((module) => !module.auth);
