@@ -10,19 +10,56 @@ import {
   refreshAccessToken,
   type RequestError,
 } from "@api/auth";
-
-// NOTE: Implementación base con interceptor para todos los requests de
-// usuario en el módulo de monitoreo
+import type {
+  ODataLog,
+  ODataParams,
+} from "pages/monitoring/types/requestParams";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const authClient = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_BACKEND_URL,
+interface MonitoringAPIOptions {
+  data?: Record<string, string>;
+  oData?: Partial<ODataParams>;
+  headers?: Record<string, string>;
+}
+
+type MonitoringAPIParams = {
+  endpoint: string;
+} & (
+  | {
+      type: "get";
+      options?: MonitoringAPIOptions;
+    }
+  | {
+      type: "put" | "delete" | "post";
+      options?: Omit<MonitoringAPIOptions, "oData">;
+    }
+);
+
+const monitoringClient = axios.create({
+  baseURL: import.meta.env.VITE_MONITORING_BACKEND_URL,
 });
 
-authClient.interceptors.request.use(
+export function isMonitoringAPIError(
+  response: unknown,
+): response is RequestError {
+  return (
+    typeof response === "object" &&
+    response !== null &&
+    "status" in response &&
+    "message" in response
+  );
+}
+
+function oDataToString(oDataParams: ODataParams): string {
+  return Object.entries(oDataParams)
+    .map(([param, value]) => `$${param}=${encodeURIComponent(String(value))}`)
+    .join("&");
+}
+
+monitoringClient.interceptors.request.use(
   (config) => {
     const { accessToken } = getTokensFromLS();
     if (accessToken) {
@@ -33,7 +70,7 @@ authClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-authClient.interceptors.response.use(
+monitoringClient.interceptors.response.use(
   (res) => res,
   async (err: AxiosError) => {
     const originalReq = err.config as ExtendedAxiosReqConfig;
@@ -60,7 +97,7 @@ authClient.interceptors.response.use(
         "Authorization",
         `Bearer ${newTokens.access_token}`,
       );
-      return authClient(originalReq);
+      return monitoringClient(originalReq);
     } catch (refreshError) {
       console.error("Refresh token failed:", refreshError);
     }
@@ -81,12 +118,12 @@ authClient.interceptors.response.use(
  * @param headers - Optional custom headers for the request.
  * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
  */
-export async function authRequest<T>(
-  type: "get" | "post" | "put" | "delete",
-  endpoint: string,
-  data?: Record<string, string>,
-  headers?: Record<string, string>,
-): Promise<T | RequestError> {
+export async function monitoringAPI<T>({
+  type,
+  endpoint,
+  data,
+  headers,
+}): Promise<T | RequestError> {
   try {
     let response: AxiosResponse<T>;
     const reqParams = new URLSearchParams();
@@ -98,10 +135,12 @@ export async function authRequest<T>(
 
     if (type === "get" || type === "delete") {
       const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
-      response = await authClient[type]<T>(fullEndpoint);
+      response = await monitoringClient[type]<T>(fullEndpoint);
     } else {
       reqParams.append("client_id", "bt-mc-client");
-      response = await authClient[type]<T>(endpoint, reqParams, { headers });
+      response = await monitoringClient[type]<T>(endpoint, reqParams, {
+        headers,
+      });
     }
 
     return response.data;
@@ -114,4 +153,20 @@ export async function authRequest<T>(
     }
     return { status: 503, message: "Couldn't connect with the server" };
   }
+}
+
+export async function getLogs(
+  odataParams: ODataParams = {},
+): Promise<ODataLog> {
+  const result = await monitoringAPI<[]>({
+    endpoint: "Logs",
+    type: "get",
+    options: { oData: odataParams },
+  });
+
+  if (isMonitoringAPIError(result)) {
+    throw new Error(result.message);
+  }
+
+  return result;
 }

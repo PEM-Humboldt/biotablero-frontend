@@ -12,6 +12,8 @@ import {
 
 import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
+import { MonitoringLogs } from "pages/monitoring/outlet/MonitoringLogs";
+import { getLogs } from "pages/monitoring/api/monitoringAPI";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -72,7 +74,16 @@ export const routes = createBrowserRouter([
                         fetchCriticalData: randomNumCritical,
                       }),
                   },
-                  { path: "logs", Component: () => <h1>carahjo</h1> },
+                  {
+                    path: "logs",
+                    Component: MonitoringLogs,
+                    loader: () =>
+                      checkNLoad({
+                        requirements: { roles: ["Admin"] },
+                        redirectPath: "/Monitoreo",
+                        fetchCriticalData: () => getLogs(),
+                      }),
+                  },
                 ],
               },
               {

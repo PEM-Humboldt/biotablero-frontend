@@ -15,6 +15,7 @@ interface ImportMetaEnv {
   readonly VITE_GA_TRACKING_ID: string;
   readonly VITE_YM_ID: string;
   readonly VITE_AUTH_BACKEND_URL: string;
+  readonly VITE_MONITORING_BACKEND_URL: string;
 }
 
 interface ImportMeta {
