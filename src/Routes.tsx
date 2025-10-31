@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Outlet } from "react-router";
 
 import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
@@ -59,14 +59,21 @@ export const routes = createBrowserRouter([
             children: [
               {
                 path: "admin",
-                Component: DashboardAdmin,
-                loader: () =>
-                  checkNLoad({
-                    requirements: { roles: ["Admin"] },
-                    redirectPath: "/Monitoreo",
-                    fetchData: randomNum,
-                    fetchCriticalData: randomNumCritical,
-                  }),
+                Component: () => <Outlet />,
+                children: [
+                  {
+                    index: true,
+                    Component: DashboardAdmin,
+                    loader: () =>
+                      checkNLoad({
+                        requirements: { roles: ["Admin"] },
+                        redirectPath: "/Monitoreo",
+                        fetchData: randomNum,
+                        fetchCriticalData: randomNumCritical,
+                      }),
+                  },
+                  { path: "logs", Component: () => <h1>carahjo</h1> },
+                ],
               },
               {
                 path: "user",
