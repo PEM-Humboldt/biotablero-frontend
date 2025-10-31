@@ -121,10 +121,12 @@ monitoringClient.interceptors.response.use(
 export async function monitoringAPI<T>({
   type,
   endpoint,
-  data,
-  headers,
-}): Promise<T | RequestError> {
+  options,
+}: MonitoringAPIParams): Promise<T | RequestError> {
+  const { data, headers } = options || {};
+
   try {
+    const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
     const reqParams = new URLSearchParams();
     if (data) {
@@ -134,13 +136,26 @@ export async function monitoringAPI<T>({
     }
 
     if (type === "get" || type === "delete") {
-      const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
+      const oDataParams =
+        type === "get" && options?.oData !== undefined
+          ? oDataToString(options.oData)
+          : "";
+
+      const params = [reqParams.toString(), oDataParams]
+        .filter(Boolean)
+        .join("&");
+
+      const fullEndpoint = `${baseURL}/${endpoint}${params ? `?${params}` : ""}`;
+
       response = await monitoringClient[type]<T>(fullEndpoint);
     } else {
       reqParams.append("client_id", "bt-mc-client");
-      response = await monitoringClient[type]<T>(endpoint, reqParams, {
-        headers,
-      });
+
+      response = await monitoringClient[type]<T>(
+        `${baseURL}/${endpoint}`,
+        reqParams,
+        { headers },
+      );
     }
 
     return response.data;
@@ -158,7 +173,7 @@ export async function monitoringAPI<T>({
 export async function getLogs(
   odataParams: ODataParams = {},
 ): Promise<ODataLog> {
-  const result = await monitoringAPI<[]>({
+  const result = await monitoringAPI<ODataLog>({
     endpoint: "Logs",
     type: "get",
     options: { oData: odataParams },
