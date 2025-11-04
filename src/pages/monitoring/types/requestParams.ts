@@ -11,15 +11,10 @@ export interface ODataParams {
 
 export type ODataLogEntry = {
   id: string;
-  level: string;
-  message: string;
   timeStamp: string;
   type: string;
+  shortMessage: string;
   userName: string;
-  clientIp: string;
-  clientAgent: string;
-  customRecord: boolean;
-  properties: string;
 };
 
 export type ODataLog = {
@@ -27,8 +22,6 @@ export type ODataLog = {
   value: ODataLogEntry[];
 };
 
-export interface LogEntry
-  extends Omit<ODataLogEntry, "timeStamp" | "properties"> {
+export interface LogEntry extends Omit<ODataLogEntry, "timeStamp"> {
   timeStamp: Date;
-  properties: Record<string, unknown>;
 }

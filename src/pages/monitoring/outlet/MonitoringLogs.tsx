@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { type CheckNLoadReturn } from "@appTypes/userLoader";
 
 import { LogsSearchBar } from "pages/monitoring/outlet/monitoringLogs/LogsSearchBar";
 import { LogsTable } from "pages/monitoring/outlet/monitoringLogs/LogsTable";
+import { LogsPager } from "pages/monitoring/outlet/monitoringLogs/LogsPager";
 import type {
   ODataParams,
   ODataLogEntry,
@@ -9,7 +11,6 @@ import type {
   LogEntry,
 } from "pages/monitoring/types/requestParams";
 import { useLoaderData } from "react-router";
-import { type CheckNLoadReturn } from "@utils/userLoader";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
@@ -18,7 +19,6 @@ function parseLogEntry(rawODataLog: ODataLogEntry): LogEntry {
   return {
     ...rawODataLog,
     timeStamp: new Date(rawODataLog.timeStamp),
-    properties: JSON.parse(rawODataLog.properties) as Record<string, unknown>,
   };
 }
 
@@ -49,6 +49,7 @@ export function MonitoringLogs() {
           records={parseODataLogs(logs)}
         />
       )}
+      <LogsPager />
     </>
   );
 }
