@@ -8,11 +8,11 @@ export const adminItems: DashboardItem[] = [
   {
     description: "Dashboard",
     icon: <SettingsApplicationsOutlined />,
-    linkTo: "Dashboard/admin",
+    linkTo: "Dashboard",
   },
   {
     description: "Logs",
     icon: <DockOutlined />,
-    linkTo: "Dashboard/admin/logs",
+    linkTo: "logs",
   },
 ];

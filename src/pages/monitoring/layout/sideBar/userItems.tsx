@@ -5,6 +5,6 @@ export const userItems: DashboardItem[] = [
   {
     description: "Dashboard",
     icon: <DashboardCustomize />,
-    linkTo: "Dashboard/user",
+    linkTo: "Dashboard",
   },
 ];
