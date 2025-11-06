@@ -1,4 +1,8 @@
-import { getTokensFromLS, setTokensInLS } from "@utils/JWTstorage";
+import {
+  getTokensFromLS,
+  setTokensInLS,
+  deleteTokensFromLS,
+} from "@utils/JWTstorage";
 import axios, {
   isAxiosError,
   type AxiosResponse,
@@ -98,6 +102,7 @@ monitoringClient.interceptors.response.use(
 
       const newTokens = await refreshAccessToken(refreshToken);
       if (isResponseRequestError(newTokens)) {
+        deleteTokensFromLS();
         return Promise.reject(err);
       }
 
