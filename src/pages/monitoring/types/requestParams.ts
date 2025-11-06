@@ -9,7 +9,7 @@ export interface ODataParams {
   search?: string;
 }
 
-export type ODataLogEntry = {
+export type ODataLogEntryShort = {
   id: string;
   timeStamp: string;
   type: string;
@@ -17,11 +17,28 @@ export type ODataLogEntry = {
   userName: string;
 };
 
+export interface ODataLogEntryFull extends ODataLogEntryShort {
+  clientAgent: string;
+  clientIp: string;
+  customRecord: boolean;
+  level: string;
+  message: string;
+  properties: string;
+}
+
 export type ODataLog = {
   "@odata.count": number;
-  value: ODataLogEntry[];
+  value: ODataLogEntryShort[];
 };
 
-export interface LogEntry extends Omit<ODataLogEntry, "timeStamp"> {
+export interface LogEntryShort extends Omit<ODataLogEntryShort, "timeStamp"> {
   timeStamp: Date;
 }
+
+export interface LogEntryFull
+  extends Omit<ODataLogEntryFull, "timeStamp" | "properties"> {
+  timeStamp: Date;
+  properties: Record<string, unknown>;
+}
+
+// export interface LogEntryFull extends

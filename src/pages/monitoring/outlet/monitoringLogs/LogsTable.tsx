@@ -1,11 +1,11 @@
 import { ODataTable } from "@composites/ODataTable";
-import { monitoringAPI } from "pages/monitoring/api/monitoringAPI";
-import type { LogEntry } from "pages/monitoring/types/requestParams";
+import type { LogEntryShort } from "pages/monitoring/types/requestParams";
 import { formatLogDate } from "pages/monitoring/utils/ODataFormatters";
+import { LogDetailsAction } from "pages/monitoring/outlet/monitoringLogs/LogCard";
 
 type LogsTableParams = {
   recordsAmount: number;
-  records: LogEntry[];
+  records: LogEntryShort[];
 };
 
 export function LogsTable({ recordsAmount, records }: LogsTableParams) {
@@ -25,11 +25,7 @@ export function LogsTable({ recordsAmount, records }: LogsTableParams) {
       name: "",
       source: "id",
       type: "action",
-      action: async (id) => {
-        console.log(
-          await monitoringAPI({ type: "get", endpoint: `Logs/${id}` }),
-        );
-      },
+      actions: LogDetailsAction,
       label: "Detalles",
     },
   ]);
