@@ -1,3 +1,5 @@
+import { type ReactNode } from "react";
+
 type HasId = {
   id: string;
 };
@@ -14,7 +16,7 @@ type ODataColumn<T> = {
   | {
       type: "action";
       label: string;
-      action: (value: T[keyof T]) => void;
+      actions: ({ value }: { value: unknown }) => ReactNode;
     }
 );
 
@@ -28,8 +30,9 @@ function ODataTableRow<T extends HasId>({
   const logDataString = (col: ODataColumn<T>, row: T) => {
     const value = row[col.source];
 
-    if (col.type === "action" && col.action) {
-      return <button onClick={() => col.action(value)}>{col.label}</button>;
+    if (col.type === "action") {
+      const Actions = col.actions;
+      return <Actions value={value} />;
     }
 
     if (col.type === "text" && col.processValue) {
@@ -83,7 +86,7 @@ export function ODataTable<T extends HasId>(cols: ODataColumn<T>[]) {
     sortCallback: (by: string) => void;
   }) {
     return (
-      <table>
+      <table style={{ margin: "0 auto !importan" }}>
         <OdataTableHead cols={cols} sortCallback={sortCallback} />
         <tbody>
           {values.map((row) => (
