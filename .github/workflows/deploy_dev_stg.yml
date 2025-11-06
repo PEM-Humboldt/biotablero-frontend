@@ -36,10 +36,8 @@ jobs:
 
       - name: install & build
         run: |
-          pnpm -r install
-          pnpm -r build-pkg
           pnpm install
-          pnpm build
+          pnpm build:careless
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
