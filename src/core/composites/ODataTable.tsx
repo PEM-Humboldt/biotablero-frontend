@@ -20,6 +20,20 @@ type ODataColumn<T> = {
     }
 );
 
+function OdataTableHead<T extends HasId>({ cols }: { cols: ODataColumn<T>[] }) {
+  return (
+    <thead>
+      <tr>
+        {cols.map((col, i) => (
+          <th scope="col" key={`i${col.name}_${i}`}>
+            {col.name}
+          </th>
+        ))}
+      </tr>
+    </thead>
+  );
+}
+
 function ODataTableRow<T extends HasId>({
   cols,
   row,
@@ -51,43 +65,11 @@ function ODataTableRow<T extends HasId>({
   );
 }
 
-function OdataTableHead<T extends HasId>({
-  cols,
-  sortCallback,
-}: {
-  cols: ODataColumn<T>[];
-  sortCallback: (by: string) => void;
-}) {
-  return (
-    <thead>
-      <tr>
-        {cols.map((col, i) => (
-          <th scope="col" key={`i${col.name}_${i}`}>
-            {col.type === "text" && col.sortBy !== undefined ? (
-              <button onClick={() => sortCallback(col.source as string)}>
-                {col.name}
-              </button>
-            ) : (
-              col.name
-            )}
-          </th>
-        ))}
-      </tr>
-    </thead>
-  );
-}
-
 export function ODataTable<T extends HasId>(cols: ODataColumn<T>[]) {
-  function Table({
-    values,
-    sortCallback,
-  }: {
-    values: T[];
-    sortCallback: (by: string) => void;
-  }) {
+  function Table({ values }: { values: T[] }) {
     return (
       <table style={{ margin: "0 auto !importan" }}>
-        <OdataTableHead cols={cols} sortCallback={sortCallback} />
+        <OdataTableHead cols={cols} />
         <tbody>
           {values.map((row) => (
             <ODataTableRow key={row.id} cols={cols} row={row} />

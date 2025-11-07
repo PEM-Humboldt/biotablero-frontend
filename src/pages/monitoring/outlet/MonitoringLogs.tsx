@@ -34,7 +34,9 @@ export function MonitoringLogs() {
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
   );
-  const [searchParams, setSearchParams] = useState<ODataParams>({});
+  const [searchParams, setSearchParams] = useState<ODataParams>({
+    orderby: "timeStamp desc",
+  });
 
   const updateLogs = async (oDataParams: ODataParams) => {
     const updatedLogs = await getLogs(oDataParams);

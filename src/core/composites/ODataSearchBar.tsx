@@ -62,7 +62,10 @@ export function ODataSearchBar<T>({
       }
     });
 
-    setSearchParams({});
+    setSearchParams((oldParams) => {
+      const { filter: _filter, ...otherParams } = oldParams;
+      return otherParams;
+    });
   };
 
   return (
