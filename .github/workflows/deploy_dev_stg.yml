@@ -13,11 +13,11 @@ on:
         required: true
 env:
   AZURE_WEBAPP_NAME: biotablero-frontend
-  REACT_APP_ENVIRONMENT:  ${{ inputs.app_env }}
-  REACT_APP_SEARCH_BACKEND_URL: ${{ vars.SEARCH_BACKEND_URL }}
-  REACT_APP_BACKEND_URL: ${{ vars.BACKEND_URL }}
-  REACT_APP_BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
-  REACT_APP_GA_TRACKING_ID: ${{ vars.GA_TRACKING_ID }}
+  VITE_ENVIRONMENT:  ${{ inputs.app_env }}
+  VITE_SEARCH_BACKEND_URL: ${{ vars.SEARCH_BACKEND_URL }}
+  VITE_BACKEND_URL: ${{ vars.BACKEND_URL }}
+  VITE_BACKEND_KEY: ${{ secrets.BACKEND_KEY }}
+  VITE_GA_TRACKING_ID: ${{ vars.GA_TRACKING_ID }}
 
 jobs:
   build-and-deploy:
