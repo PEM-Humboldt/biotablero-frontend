@@ -14,10 +14,9 @@ import {
   refreshAccessToken,
   type RequestError,
 } from "@api/auth";
-import type {
-  ODataLog,
-  ODataParams,
-} from "pages/monitoring/types/requestParams";
+import type { ODataParams } from "@appTypes/odata";
+import type { ODataLog } from "pages/monitoring/types/requestParams";
+import { oDataToString } from "@utils/odata";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -64,12 +63,6 @@ export function isMonitoringAPIError(
     "status" in response &&
     "message" in response
   );
-}
-
-function oDataToString(oDataParams: ODataParams): string {
-  return Object.entries(oDataParams)
-    .map(([param, value]) => `$${param}=${encodeURIComponent(String(value))}`)
-    .join("&");
 }
 
 monitoringClient.interceptors.request.use(

@@ -1,28 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { type CheckNLoadReturn } from "@appTypes/userLoader";
 
-import { LogsSearchBar } from "pages/monitoring/outlet/monitoringLogs/LogsSearchBar";
+import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { LogsTable } from "pages/monitoring/outlet/monitoringLogs/LogsTable";
 import { LogsPager } from "pages/monitoring/outlet/monitoringLogs/LogsPager";
+import type { ODataParams } from "@appTypes/odata";
 import type {
-  ODataParams,
   ODataLogEntryShort,
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/requestParams";
 import { useLoaderData } from "react-router";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
+import { searchComponents } from "pages/monitoring/outlet/monitoringLogs/layout/searchBarContent";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 export const LOGS_ELEMENT_ID = "logsElement";
-export const FOCUSABLE_ELEMENTS: string[] = [
-  "button",
-  "[href]",
-  "input",
-  "select",
-  "textarea",
-  '[tabindex]:not([tabindex="-1"])',
-];
 
 function parseLogEntry(rawODataLog: ODataLogEntryShort): LogEntryShort {
   return {
@@ -41,15 +34,27 @@ export function MonitoringLogs() {
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
   );
+  const [searchParams, setSearchParams] = useState<ODataParams>({});
 
   const updateLogs = async (oDataParams: ODataParams) => {
     const updatedLogs = await getLogs(oDataParams);
     setLogs(updatedLogs);
   };
 
+  useEffect(() => {
+    const filterChange = async () => {
+      await updateLogs(searchParams);
+    };
+
+    void filterChange();
+  }, [searchParams]);
+
   return (
     <>
-      <LogsSearchBar />
+      <ODataSearchBar
+        setSearchParams={setSearchParams}
+        components={searchComponents}
+      />
       <div
         id={LOGS_ELEMENT_ID}
         style={{

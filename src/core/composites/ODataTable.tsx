@@ -63,12 +63,12 @@ function OdataTableHead<T extends HasId>({
       <tr>
         {cols.map((col, i) => (
           <th scope="col" key={`i${col.name}_${i}`}>
-            {col.type === "text" && col?.sortBy === undefined ? (
-              col.name
-            ) : (
+            {col.type === "text" && col.sortBy !== undefined ? (
               <button onClick={() => sortCallback(col.source as string)}>
                 {col.name}
               </button>
+            ) : (
+              col.name
             )}
           </th>
         ))}
