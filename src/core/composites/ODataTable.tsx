@@ -1,24 +1,4 @@
-import { type ReactNode } from "react";
-
-type HasId = {
-  id: string;
-};
-
-type ODataColumn<T> = {
-  name: string;
-  source: keyof T;
-} & (
-  | {
-      type: "text";
-      sortBy?: boolean;
-      processValue?: (value: T[keyof T]) => string;
-    }
-  | {
-      type: "action";
-      label: string;
-      actions: ({ value }: { value: unknown }) => ReactNode;
-    }
-);
+import type { HasId, ODataColumn } from "@appTypes/odata";
 
 function OdataTableHead<T extends HasId>({ cols }: { cols: ODataColumn<T>[] }) {
   return (
@@ -65,7 +45,7 @@ function ODataTableRow<T extends HasId>({
   );
 }
 
-export function ODataTable<T extends HasId>(cols: ODataColumn<T>[]) {
+export function ODataTableFactory<T extends HasId>(cols: ODataColumn<T>[]) {
   function Table({ values }: { values: T[] }) {
     return (
       <table style={{ margin: "0 auto !importan" }}>

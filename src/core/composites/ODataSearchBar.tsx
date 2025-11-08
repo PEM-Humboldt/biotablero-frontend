@@ -5,11 +5,15 @@ import { useRef, type Dispatch, type SetStateAction } from "react";
 type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
   setSearchParams: Dispatch<SetStateAction<F>>;
+  reset: string;
+  submit: string;
 };
 
 export function ODataSearchBar<T>({
   components,
   setSearchParams,
+  reset = "",
+  submit = "",
 }: ODataSearchBarProps<T, ODataParams>) {
   const searchRefs = useRef<
     Record<string, HTMLInputElement | HTMLSelectElement>
@@ -22,7 +26,7 @@ export function ODataSearchBar<T>({
     }, 0.5),
   ).current;
 
-  const onChangeHandler = () => {
+  const getSearchParams = () => {
     const filters: string[] = [];
     const searchParams: ODataParams = {};
 
@@ -52,20 +56,22 @@ export function ODataSearchBar<T>({
 
     searchParams.filter = filters.length ? filters.join(" and ") : "";
 
-    debouncedSearch(searchParams);
+    return searchParams;
+  };
+
+  const onChangeHandler = () => {
+    debouncedSearch(getSearchParams());
+  };
+
+  const submitSearch = () => {
+    setSearchParams((oldParams) => ({ ...oldParams, ...getSearchParams() }));
   };
 
   const clearSearch = () => {
-    Object.values(searchRefs.current).forEach((element) => {
-      if (element) {
-        element.value = "";
-      }
-    });
-
-    setSearchParams((oldParams) => {
-      const { filter: _filter, ...otherParams } = oldParams;
-      return otherParams;
-    });
+    Object.values(searchRefs.current).forEach(
+      (element) => element && (element.value = ""),
+    );
+    setSearchParams(({ filter: _filter, ...otherParams }) => otherParams);
   };
 
   return (
@@ -90,8 +96,8 @@ export function ODataSearchBar<T>({
               }
               type={component.type}
               placeholder={component.placeholder ?? ""}
-              onChange={onChangeHandler}
-              onInput={onChangeHandler}
+              onChange={submit === "" ? onChangeHandler : undefined}
+              onInput={submit === "" ? onChangeHandler : undefined}
             />
           ) : (
             <select
@@ -101,7 +107,7 @@ export function ODataSearchBar<T>({
                   element)
               }
               name={component.label}
-              onChange={onChangeHandler}
+              onChange={submit === "" ? onChangeHandler : undefined}
             >
               <option></option>
               {component.values.map((value, i) => (
@@ -113,7 +119,8 @@ export function ODataSearchBar<T>({
           )}
         </label>
       ))}
-      <button onClick={clearSearch}>Borrar filtros</button>
+      {submit !== "" && <button onClick={submitSearch}>{submit}</button>}
+      {reset !== "" && <button onClick={clearSearch}>{reset}</button>}
     </div>
   );
 }

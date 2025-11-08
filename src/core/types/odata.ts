@@ -1,3 +1,25 @@
+import { type ReactNode } from "react";
+
+export type HasId = {
+  id: string;
+};
+
+export type ODataColumn<T> = {
+  name: string;
+  source: keyof T;
+} & (
+  | {
+      type: "text";
+      sortBy?: boolean;
+      processValue?: (value: T[keyof T]) => string;
+    }
+  | {
+      type: "action";
+      label: string;
+      actions: ({ value }: { value: unknown }) => ReactNode;
+    }
+);
+
 export interface ODataParams {
   filter?: string;
   select?: string;
@@ -15,6 +37,6 @@ export type SearchBarComponent<T> = {
   placeholder?: string;
 } & (
   | { type: "text" | "number" }
-  | { type: "date"; dateOperator?: "eq" | "ge" | "le" }
+  | { type: "date"; dateOperator: "eq" | "ge" | "le" }
   | { type: "select"; values: string[] }
 );
