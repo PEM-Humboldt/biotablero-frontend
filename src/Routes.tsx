@@ -4,12 +4,12 @@ import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
 import { Portfolio } from "pages/Portfolio";
-import { InitiativesMap } from "pages/monitoring/outlet/InitiativesMap";
-import { Dashboard } from "pages/monitoring/outlet/Dashboard";
+import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
+import { Dashboard } from "pages/monitoring/outlets/Dashboard";
 
 import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
-import { MonitoringLogs } from "pages/monitoring/outlet/MonitoringLogs";
+import { Logs } from "pages/monitoring/outlets/Logs";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 
 const randomNum = (_user: UserType) => {
@@ -79,7 +79,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "logs",
-            Component: MonitoringLogs,
+            Component: Logs,
             loader: () =>
               checkNLoad({
                 requirements: { roles: ["Admin"] },

@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
-import { type CheckNLoadReturn } from "@appTypes/userLoader";
+import { useLoaderData } from "react-router";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
-import { LogsTable } from "pages/monitoring/outlet/monitoringLogs/LogsTable";
-import { LogsPager } from "pages/monitoring/outlet/monitoringLogs/LogsPager";
+import { RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
+import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
+
+import { getLogs } from "pages/monitoring/api/monitoringAPI";
+import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
+import { LogsTable } from "pages/monitoring/outlets/logs/Table";
+import { LogsPager } from "pages/monitoring/outlets/logs/Pager";
+import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {
   ODataLogEntryShort,
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/requestParams";
-import { useLoaderData } from "react-router";
-import { getLogs } from "pages/monitoring/api/monitoringAPI";
-import { searchComponents } from "pages/monitoring/outlet/monitoringLogs/layout/searchBarContent";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
-export const LOGS_ELEMENT_ID = "logsElement";
 
 function parseLogEntry(rawODataLog: ODataLogEntryShort): LogEntryShort {
   return {
@@ -29,12 +31,14 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
   return value.map(parseLogEntry);
 }
 
-export function MonitoringLogs() {
+export function Logs() {
   const preloadedLogs = useLoaderData<LoadedLogs>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
   );
   const [searchParams, setSearchParams] = useState<ODataParams>({
+    top: RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
 
@@ -45,17 +49,27 @@ export function MonitoringLogs() {
 
   useEffect(() => {
     const filterChange = async () => {
-      await updateLogs(searchParams);
+      const skip = (currentPage - 1) * RECORDS_PER_PAGE;
+      const newSearchParams = {
+        ...searchParams,
+        skip: skip,
+      };
+      await updateLogs(newSearchParams);
     };
 
     void filterChange();
-  }, [searchParams]);
+  }, [searchParams, currentPage]);
+
+  const recordsAvailable = logs ? logs["@odata.count"] : 0;
 
   return (
     <>
+      <h2>{uiText.logsTitle}</h2>
       <ODataSearchBar
         setSearchParams={setSearchParams}
-        components={searchComponents}
+        components={searchBarItems}
+        submit={uiText.searchBar.submitBtn}
+        reset={uiText.searchBar.resetBtn}
       />
       <div
         id={LOGS_ELEMENT_ID}
@@ -66,14 +80,15 @@ export function MonitoringLogs() {
         }}
       >
         {logs === null || logs.value.length === 0 ? (
-          <h1>No hay logs disponibles</h1>
+          <p>{uiText.noLogsAvailable}</p>
         ) : (
-          <LogsTable
-            recordsAmount={logs["@odata.count"]}
-            records={parseODataLogs(logs)}
-          />
+          <LogsTable records={parseODataLogs(logs)} />
         )}
-        <LogsPager />
+        <LogsPager
+          currentPage={currentPage}
+          recordsAvailable={recordsAvailable}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </>
   );
