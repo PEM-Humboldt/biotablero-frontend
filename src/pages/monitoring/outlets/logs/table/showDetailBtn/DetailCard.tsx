@@ -39,6 +39,8 @@ export function DetailCard({
     }
   };
 
+  const logDate = new Date(log.timeStamp);
+
   return (
     <>
       {/* NOTE: Se omite regla para permitit el clic por fuera como acción 
@@ -55,7 +57,7 @@ export function DetailCard({
         onClick={handleBackdropClick}
         style={{
           position: "fixed",
-          top: "50%",
+          top: "30%",
           left: "50%",
           transform: "translate(-50%, -50%)",
           margin: 0,
@@ -67,9 +69,17 @@ export function DetailCard({
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         }}
       >
-        <h2>Detalles del Log ID: {log.id}</h2>
+        <h3>Registro del sistema</h3>
+        <p>ID: {log.id}</p>
+        <p>
+          Fecha y hora:{logDate.toLocaleDateString()}{" "}
+          {logDate.toLocaleTimeString()}
+        </p>
         <p>Tipo: {log.type}</p>
-        <p>Mensaje: {log.shortMessage}</p>
+        <p>Mensaje corto: {log.shortMessage}</p>
+        <p>Navegador: {log.clientAgent}</p>
+        <p>Dirección IP: {log.clientIp}</p>
+        <p>Descripcion: {log.message}</p>
         <button ref={closeButtonRef} onClick={handleClose}>
           Cerrar
         </button>

@@ -29,5 +29,3 @@ export interface LogEntryFull
   timeStamp: Date;
   properties: Record<string, unknown>;
 }
-
-// export interface LogEntryFull extends
