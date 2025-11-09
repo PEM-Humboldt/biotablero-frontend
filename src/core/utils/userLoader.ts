@@ -42,7 +42,7 @@ export async function checkNLoad<T, U>({
   redirectPath,
   fetchCriticalData,
   fetchData,
-  onFetchFailure: onFetchFailiure,
+  onFetchFailure,
 }: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
   const user = await getCredentials();
   if (!user) {
@@ -63,8 +63,8 @@ export async function checkNLoad<T, U>({
     criticalUserData = fetchCriticalData ? await fetchCriticalData(user) : null;
   } catch (err) {
     console.error("Cannot retrieve critical user data:", err);
-    if (onFetchFailiure) {
-      onFetchFailiure();
+    if (onFetchFailure) {
+      onFetchFailure();
     }
     throw err;
   }
@@ -73,8 +73,8 @@ export async function checkNLoad<T, U>({
     ? Promise.resolve(
         fetchData(user).catch((err) => {
           console.error("Cannot retrieve user data:", err);
-          if (onFetchFailiure) {
-            onFetchFailiure();
+          if (onFetchFailure) {
+            onFetchFailure();
           }
           throw err;
         }),
