@@ -6,4 +6,18 @@ export const uiText = {
     submitBtn: "", // NOTE: Leave empty to search while typing
     resetBtn: "Borrar filtros", // NOTE: leave empty to hide
   },
+
+  pager: {
+    buttons: {
+      prev: { text: "Anterior", icon: undefined },
+      next: { text: "siguiente", icon: undefined },
+      first: { text: "", icon: undefined },
+      last: { text: "", icon: undefined },
+    },
+    texts: {
+      registryPageName: "Página",
+      registryPageOf: "de",
+      gotoAltText: "ir a",
+    },
+  },
 };

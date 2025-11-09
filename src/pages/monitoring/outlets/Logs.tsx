@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
-import { RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
+import { TablePager } from "@composites/TablePager";
+import { LOG_RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
 
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
 import { LogsTable } from "pages/monitoring/outlets/logs/Table";
-import { LogsPager } from "pages/monitoring/outlets/logs/Pager";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {
   ODataLogEntryShort,
@@ -38,7 +38,7 @@ export function Logs() {
     preloadedLogs?.criticalUserData ?? null,
   );
   const [searchParams, setSearchParams] = useState<ODataParams>({
-    top: RECORDS_PER_PAGE,
+    top: LOG_RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
 
@@ -49,7 +49,7 @@ export function Logs() {
 
   useEffect(() => {
     const filterChange = async () => {
-      const skip = (currentPage - 1) * RECORDS_PER_PAGE;
+      const skip = (currentPage - 1) * LOG_RECORDS_PER_PAGE;
       const newSearchParams = {
         ...searchParams,
         skip: skip,
@@ -66,8 +66,8 @@ export function Logs() {
     <>
       <h2>{uiText.logsTitle}</h2>
       <ODataSearchBar
-        setSearchParams={setSearchParams}
         components={searchBarItems}
+        setSearchParams={setSearchParams}
         submit={uiText.searchBar.submitBtn}
         reset={uiText.searchBar.resetBtn}
       />
@@ -84,10 +84,14 @@ export function Logs() {
         ) : (
           <LogsTable records={parseODataLogs(logs)} />
         )}
-        <LogsPager
+        <TablePager
           currentPage={currentPage}
           recordsAvailable={recordsAvailable}
           onPageChange={setCurrentPage}
+          buttons={uiText.pager.buttons}
+          texts={uiText.pager.texts}
+          recordsPerPage={LOG_RECORDS_PER_PAGE}
+          paginated={3}
         />
       </div>
     </>
