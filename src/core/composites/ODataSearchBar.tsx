@@ -12,17 +12,18 @@ type ODataSearchBarProps<T, F> = {
 };
 
 /**
- * Renders a configurable OData search bar with input and select components.
- * It builds an OData `$filter` query string dynamically and updates search parameters
- * using a debounced handler or a submit button, depending on configuration.
+ * Renders a configurable OData search bar with text and select inputs.
+ * Builds an OData `$filter` query string dynamically and updates search parameters
+ * either automatically (debounced) or via a submit button, depending on configuration.
  *
- * @template T - The data type for the search context.
+ * @template T - Data type representing the search context.
  *
- * @param {Object} props
- * @param {Array} props.components - Array of search components defining labels, types, sources, and optional values for selects.
- * @param {(updater: (prev: ODataParams) => ODataParams) => void} props.setSearchParams - Function to update search parameters.
- * @param {string} [props.submit=""] - Optional label for a submit button. If empty, performs *live search* using a debounce method.
- * @param {string} [props.reset=""] - Optional label for a reset button. If empty, no reset button is rendered.
+ * @param props.components - Definitions for each search input, including label, type, data source, and optional select values.
+ * @param props.setSearchParams - Function that updates the parent OData query parameters.
+ * @param props.submit - Optional label for a submit button.
+ *	- If omitted or empty, the component performs live search using a debounce handler.
+ * @param props.reset - Optional label for a reset button.
+ *	- If omitted or empty, no reset button is rendered.
  */
 export function ODataSearchBar<T>({
   components,

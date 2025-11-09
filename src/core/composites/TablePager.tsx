@@ -29,40 +29,31 @@ type PagerProps = {
 };
 
 /**
- * Renders a paginated navigation control for tables or lists.
- * Supports numbered pages, next/previous navigation, and optional first/last buttons.
+ * Renders a paginated navigation control for tabular or list-based data.
+ * Provides flexible navigation with numbered pages, previous/next controls, and optional first/last buttons.
  *
- * @param {PagerProps} props - Pagination configuration.
- * @param {number} props.recordsAvailable - Total number of available records.
- * @param {number} props.recordsPerPage - Number of records per page.
- * @param {number} props.currentPage - The currently active page.
- * @param {(page: number) => void} props.onPageChange - Callback triggered when the user selects a new page.
- * @param {number | null} [props.paginated] - Number of visible page buttons around the current page.
+ * @param props - Pagination configuration.
+ * @param props.recordsAvailable - Total number of available records in the dataset.
+ * @param props.recordsPerPage - Number of records displayed per page.
+ * @param props.currentPage - The currently active page number.
+ * @param props.onPageChange - Callback executed when the user selects or navigates to a different page.
+ * @param props.paginated - Controls how many page numbers are visible around the current page:
  *   - If `0`, all pages are shown.
- *   - If null, only the current page is displayed as text.
- * @param {object} props.buttons - Optional button configurations (`first`, `prev`, `next`, `last`), each with `icon` and `text`.
- * @param {object} props.texts - Customizable text labels (e.g., `registryPageName`, `registryPageOf`, `gotoAltText`).
+ *   - If a positive number, limits the number of visible pages before and after the current page.
+ *   - If omitted or `null`, only a textual summary (e.g., "Page 3 of 12") is displayed.
+ * @param props.buttons - Button configuration for navigation elements.
+ *   Each button includes:
+ *   - `text`: the accessible label for screen readers.
+ *   - `icon`: an icon, string, or ReactNode to visually represent the action.
+ *   Supported button keys:
+ *   - `first` and `last` (optional) for jumping to the beginning or end.
+ *   - `prev` and `next` (required) for navigating between adjacent pages.
+ * @param props.texts - Text labels used in pagination display:
+ *   - `registryPageName`: label shown before the current page number.
+ *   - `registryPageOf`: label separating the current and total page count.
+ *   - `gotoAltText`: accessible label prefix for page number buttons.
  *
- * @returns {JSX.Element | null} Pagination controls, or `null` if only one page exists.
- *
- * @example
- * ```tsx
- * <TablePager
- *   currentPage={2}
- *   recordsAvailable={100}
- *   recordsPerPage={10}
- *   onPageChange={(page) => setPage(page)}
- *   paginated={3}
- *   buttons={{
- *     prev: { icon: "<", text: "Prev" },
- *     next: { icon: ">", text: "Next" },
- *   }}
- *   texts={{
- *     registryPageName: "Page",
- *     registryPageOf: "of",
- *   }}
- * />
- * ```
+ * @returns Pagination controls as a JSX element, or `null` if only one page exists.
  */
 export function TablePager({
   currentPage,

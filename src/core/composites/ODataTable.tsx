@@ -2,17 +2,27 @@ import type { HasId, ODataColumn } from "@appTypes/odata";
 
 /**
  * Creates a reusable OData table component with typed columns and dynamic rows.
- * Each table instance renders a header and body based on the provided column definitions.
+ * The generated component renders a header and body based on the provided column definitions.
  *
- * @template T - Data type for each table row. Must include an `id` property.
+ * @template T - Row data type. Must include an `id` property.
  *
- * @param {ODataColumn<T>[]} cols - Array of column definitions, including name, source, type, and optional value processors or actions.
- * @returns {(props: { values: T[] }) => JSX.Element} A React component that renders a table for the given data.
+ * @param cols - Column definitions describing how each field of type `T` should be rendered.
+ *   Each column has a `name` (display label) and a `source` (key from the row data).
+ *   Columns can be one of two types:
+ *   - **Text columns (`type: "text"`)**: display string or formatted values.
+ *     Optional:
+ *       - `sortBy` — indicates whether the column supports sorting.
+ *       - `processValue` — function to transform or format the raw value before rendering.
+ *   - **Action columns (`type: "action"`)**: render custom React components for each row.
+ *     Required:
+ *       - `label` — accessible label for the action.
+ *       - `actions` — render function that receives `{ value }` and returns a `ReactNode`.
+ *
+ * @returns A React component that renders a table for the given dataset.
  *
  * @remarks
- * - Columns of type `"action"` render custom React components defined in the column’s `actions` field.
- * - Columns of type `"text"` can optionally use `processValue` to format displayed values.
- * - Non-primitive values are stringified automatically.
+ * - Non-primitive values (e.g., objects) are automatically stringified.
+ * - Action columns allow embedding interactive components such as buttons or menus.
  */
 export function ODataTableFactory<T extends HasId>(cols: ODataColumn<T>[]) {
   function Table({ values }: { values: T[] }) {
