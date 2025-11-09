@@ -1,6 +1,8 @@
-import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
-import { debouncer } from "@utils/debouncer";
 import { useRef, type Dispatch, type SetStateAction } from "react";
+
+import { debouncer } from "@utils/debouncer";
+import { MakeODataFilterString } from "@utils/odata";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 
 type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
@@ -19,6 +21,28 @@ export function ODataSearchBar<T>({
     Record<string, HTMLInputElement | HTMLSelectElement>
   >({});
 
+  const getSearchValues = () => {
+    const filters: string[] = [];
+    const searchParams: ODataParams = {};
+
+    components.forEach((component, i) => {
+      const element = searchRefs.current[`${component.source as string}_${i}`];
+      const value = element?.value.trim() ?? "";
+
+      const filter = MakeODataFilterString(component, value);
+      if (filter) {
+        filters.push(filter);
+      }
+    });
+
+    searchParams.filter = filters.length ? filters.join(" and ") : "";
+    return searchParams;
+  };
+
+  const submitSearch = () => {
+    setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
+  };
+
   // NOTE: con useRef no se pierde el timer de búsqueda si cambian los filtros
   const debouncedSearch = useRef(
     debouncer((searchParams: ODataParams) => {
@@ -26,52 +50,24 @@ export function ODataSearchBar<T>({
     }, 0.5),
   ).current;
 
-  const getSearchParams = () => {
-    const filters: string[] = [];
-    const searchParams: ODataParams = {};
-
-    components.forEach((component, i) => {
-      const element = searchRefs.current[`${component.source as string}_${i}`];
-      const value = element?.value;
-
-      if (value) {
-        switch (component.type) {
-          case "text":
-            filters.push(`contains(${component.source as string}, '${value}')`);
-            break;
-          case "number":
-            filters.push(`${component.source as string} eq ${value}`);
-            break;
-          case "date": {
-            const operator = component.dateOperator ?? "eq";
-            filters.push(`${component.source as string} ${operator} ${value}`);
-            break;
-          }
-          case "select":
-            filters.push(`${component.source as string} eq '${value}'`);
-            break;
-        }
-      }
-    });
-
-    searchParams.filter = filters.length ? filters.join(" and ") : "";
-
-    return searchParams;
-  };
-
   const onChangeHandler = () => {
-    debouncedSearch(getSearchParams());
-  };
-
-  const submitSearch = () => {
-    setSearchParams((oldParams) => ({ ...oldParams, ...getSearchParams() }));
+    debouncedSearch(getSearchValues());
   };
 
   const clearSearch = () => {
-    Object.values(searchRefs.current).forEach(
-      (element) => element && (element.value = ""),
-    );
-    setSearchParams(({ filter: _filter, ...otherParams }) => otherParams);
+    let reset = false;
+
+    for (const ref of Object.values(searchRefs.current)) {
+      if (!ref || ref.value === "") {
+        continue;
+      }
+      reset = true;
+      ref.value = "";
+    }
+
+    if (reset) {
+      setSearchParams(({ filter: _filter, ...otherParams }) => otherParams);
+    }
   };
 
   return (
