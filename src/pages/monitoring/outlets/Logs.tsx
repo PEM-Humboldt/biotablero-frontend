@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router";
+import "pages/monitoring/outlets/logs/layout/logStyles.css";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
@@ -63,8 +64,10 @@ export function Logs() {
   const recordsAvailable = logs ? logs["@odata.count"] : 0;
 
   return (
-    <>
-      <h2>{uiText.logsTitle}</h2>
+    <main className="logs">
+      <header>
+        <h2>{uiText.logsTitle}</h2>
+      </header>
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
@@ -94,6 +97,6 @@ export function Logs() {
           paginated={3}
         />
       </div>
-    </>
+    </main>
   );
 }

@@ -1,0 +1,71 @@
+.logs {
+  margin: 0 0 0 60px;
+  padding: 1rem;
+  font-size: 0.9rem;
+
+  & button {
+    padding: 0.25rem 2rem;
+    font-size: inherit;
+  }
+
+  & input {
+    font-size: inherit;
+  }
+
+  & table {
+    margin: 2rem;
+    border-collapse: collapse;
+    border: none;
+    width: 100%;
+
+    & thead {
+      font-weight: bold;
+
+      & th {
+        background-color: #f1f1f1;
+        padding: 0.5rem 1rem;
+        border-left: solid 1rem white;
+        border-right: solid 1rem white;
+      }
+    }
+
+    & td {
+      border: 1px solid #d9d9d9;
+      padding: 0.5rem 1rem;
+
+      & button {
+        border: none;
+        background-color: #28a745;
+        color: white;
+        width: 100%;
+
+        &:hover {
+          background-color: #e84a5f;
+          cursor: pointer;
+        }
+      }
+    }
+
+    & tbody {
+      color: #666;
+
+      & tr:first-child td {
+        border-top: none;
+      }
+      & tr:last-child td {
+        border-bottom: none;
+      }
+      & tr td:first-child {
+        border-left: none;
+      }
+      & tr td:last-child {
+        border-right: none;
+      }
+
+      & tr:hover {
+        background: #f1f1f1;
+        color: #000;
+      }
+    }
+  }
+}
