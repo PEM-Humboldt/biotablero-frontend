@@ -27,14 +27,16 @@ import type { HasId, ODataColumn } from "@appTypes/odata";
 export function ODataTableFactory<T extends HasId>(cols: ODataColumn<T>[]) {
   function Table({ values }: { values: T[] }) {
     return (
-      <table style={{ margin: "0 auto !importan" }}>
-        <OdataTableHead cols={cols} />
-        <tbody>
-          {values.map((row) => (
-            <ODataTableRow key={row.id} cols={cols} row={row} />
-          ))}
-        </tbody>
-      </table>
+      <div className="table-container">
+        <table>
+          <OdataTableHead cols={cols} />
+          <tbody>
+            {values.map((row) => (
+              <ODataTableRow key={row.id} cols={cols} row={row} />
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 

@@ -9,10 +9,10 @@ export const uiText = {
 
   pager: {
     buttons: {
-      prev: { text: "Anterior", icon: undefined },
-      next: { text: "siguiente", icon: undefined },
-      first: { text: "", icon: undefined },
-      last: { text: "", icon: undefined },
+      prev: { text: "Anterior", icon: "<" },
+      next: { text: "siguiente", icon: ">" },
+      first: { text: "Primera", icon: "«" },
+      last: { text: "Última", icon: "»" },
     },
     texts: {
       registryPageName: "Página",

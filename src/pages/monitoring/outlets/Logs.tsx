@@ -95,6 +95,7 @@ export function Logs() {
           texts={uiText.pager.texts}
           recordsPerPage={LOG_RECORDS_PER_PAGE}
           paginated={3}
+          className="table-pager"
         />
       </div>
     </main>

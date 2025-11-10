@@ -26,6 +26,7 @@ type PagerProps = {
   recordsPerPage: number;
   onPageChange: (page: number) => void;
   paginated: number | null;
+  className: string;
 };
 
 /**
@@ -63,6 +64,7 @@ export function TablePager({
   recordsPerPage,
   onPageChange,
   paginated,
+  className,
 }: PagerProps) {
   const totalPages = Math.ceil(recordsAvailable / recordsPerPage);
 
@@ -85,7 +87,7 @@ export function TablePager({
   const pages = getVisiblePageIndexes(currentPage, totalPages, paginated);
 
   return totalPages <= 1 ? null : (
-    <div className="pagination-controls" style={{ marginTop: "1rem" }}>
+    <div className={className}>
       {buttons.first && (
         <PagerButton
           icon={buttons.first.icon}
@@ -113,7 +115,7 @@ export function TablePager({
           />
         ))
       ) : (
-        <span style={{ margin: "0 1rem" }}>
+        <span>
           {texts.registryPageName} {currentPage} {texts.registryPageOf}{" "}
           {totalPages}
         </span>
