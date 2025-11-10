@@ -51,35 +51,40 @@ export function DetailCard({
 		  jsx-a11y/no-noninteractive-element-interactions, 
 		  jsx-a11y/click-events-have-key-events 
 	  */}
-      <dialog
-        ref={dialogRef}
-        onClose={onClose}
-        onClick={handleBackdropClick}
-        style={{
-          position: "fixed",
-          top: "30%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          margin: 0,
-          maxWidth: "600px",
-          width: "90%",
-          padding: "20px",
-          borderRadius: "8px",
-          border: "none",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-        }}
-      >
+      <dialog ref={dialogRef} onClose={onClose} onClick={handleBackdropClick}>
         <h3>Registro del sistema</h3>
-        <p>ID: {log.id}</p>
-        <p>
-          Fecha y hora:{logDate.toLocaleDateString()}{" "}
-          {logDate.toLocaleTimeString()}
-        </p>
-        <p>Tipo: {log.type}</p>
-        <p>Mensaje corto: {log.shortMessage}</p>
-        <p>Navegador: {log.clientAgent}</p>
-        <p>Dirección IP: {log.clientIp}</p>
-        <p>Descripcion: {log.message}</p>
+        <div>
+          <p>
+            <span>ID</span>
+            <span>{log.id}</span>
+          </p>
+          <p>
+            <span>Fecha y hora</span>
+            <span>
+              {logDate.toLocaleDateString()} {logDate.toLocaleTimeString()}
+            </span>
+          </p>
+          <p>
+            <span>Tipo</span>
+            <span>{log.type}</span>
+          </p>
+          <p>
+            <span>Mensaje corto</span>
+            <span>{log.shortMessage}</span>
+          </p>
+          <p>
+            <span>Navegador</span>
+            <span>{log.clientAgent}</span>
+          </p>
+          <p>
+            <span>Dirección IP</span>
+            <span>{log.clientIp}</span>
+          </p>
+          <p>
+            <span>Descripcion</span>
+            <span>{log.message}</span>
+          </p>
+        </div>
         <button ref={closeButtonRef} onClick={handleClose}>
           Cerrar
         </button>

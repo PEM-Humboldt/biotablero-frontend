@@ -73,15 +73,9 @@ export function Logs() {
         setSearchParams={setSearchParams}
         submit={uiText.searchBar.submitBtn}
         reset={uiText.searchBar.resetBtn}
+        className="search-bar"
       />
-      <div
-        id={LOGS_ELEMENT_ID}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
+      <div id={LOGS_ELEMENT_ID}>
         {logs === null || logs.value.length === 0 ? (
           <p>{uiText.noLogsAvailable}</p>
         ) : (

@@ -7,6 +7,7 @@ import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
   setSearchParams: Dispatch<SetStateAction<F>>;
+  className: string;
   submit: string;
   reset: string;
 };
@@ -28,6 +29,7 @@ type ODataSearchBarProps<T, F> = {
 export function ODataSearchBar<T>({
   components,
   setSearchParams,
+  className = "",
   submit = "",
   reset = "",
 }: ODataSearchBarProps<T, ODataParams>) {
@@ -85,14 +87,7 @@ export function ODataSearchBar<T>({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "1rem",
-      }}
-    >
+    <div className={className}>
       {components.map((component, i) => (
         <label key={`${component.label}_${i}`}>
           {component.label}
