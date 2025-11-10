@@ -5,6 +5,16 @@
   background-color: #f7f7f7;
   min-height: 100vh;
 
+  & header {
+    display: flex;
+    margin: 2rem;
+
+    & h2 {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+  }
+
   & dialog {
     position: fixed;
     top: 30%;
