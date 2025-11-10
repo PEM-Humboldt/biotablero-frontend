@@ -40,6 +40,7 @@ export function UserCTX({ children }: { children: ReactNode }) {
   const logout = useCallback(
     (goTo?: string) => {
       setUser(null);
+      deleteTokensFromLS();
       void navigate(goTo ?? "/");
     },
     [navigate],

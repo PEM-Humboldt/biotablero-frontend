@@ -1,7 +1,7 @@
 import {
+  deleteTokensFromLS,
   getTokensFromLS,
   setTokensInLS,
-  deleteTokensFromLS,
 } from "@utils/JWTstorage";
 import axios, {
   isAxiosError,
@@ -107,9 +107,8 @@ monitoringClient.interceptors.response.use(
       return monitoringClient(originalReq);
     } catch (refreshError) {
       console.error("Refresh token failed:", refreshError);
+      throw refreshError;
     }
-
-    return Promise.reject(err);
   },
 );
 

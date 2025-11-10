@@ -6,6 +6,7 @@ import {
   setTokensInLS,
 } from "@utils/JWTstorage";
 import { isResponseRequestError, refreshAccessToken } from "@api/auth";
+import { redirect } from "react-router";
 
 /**
  * Gets the current user from stored tokens.
@@ -23,7 +24,9 @@ export async function getCredentials(): Promise<UserType | null> {
   if (isResponseRequestError(res)) {
     deleteTokensFromLS();
 
-    // TODO: No ser tan guache y redirigir a página de logout
+    // TODO: redirige al home mientras se crea la página de login
+    // del servicio de autenticación
+    redirect("/");
     window.location.reload();
     return null;
   }
