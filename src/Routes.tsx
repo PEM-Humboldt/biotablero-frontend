@@ -61,19 +61,15 @@ export const routes = createBrowserRouter([
               }),
             children: [
               {
-                children: [
-                  {
-                    index: true,
-                    Component: Dashboard,
-                    loader: () =>
-                      checkNLoad({
-                        requirements: {},
-                        redirectPath: "/Monitoreo",
-                        fetchData: randomNum,
-                        fetchCriticalData: randomNumCritical,
-                      }),
-                  },
-                ],
+                index: true,
+                Component: Dashboard,
+                loader: () =>
+                  checkNLoad({
+                    requirements: {},
+                    redirectPath: "/Monitoreo",
+                    fetchData: randomNum,
+                    fetchCriticalData: randomNumCritical,
+                  }),
               },
             ],
           },
