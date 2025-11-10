@@ -26,17 +26,17 @@ type CarrouselProps = {
 
 function PrevArrow({ onClick }: ArrowProps) {
   return (
-    <div className="prev-arrow" onClick={onClick}>
+    <button className="prev-arrow" onClick={onClick}>
       <KeyboardArrowLeft fontSize="large" />
-    </div>
+    </button>
   );
 }
 
 function NextArrow({ onClick }: ArrowProps) {
   return (
-    <div className="next-arrow" onClick={onClick}>
+    <button className="next-arrow" onClick={onClick}>
       <KeyboardArrowRight fontSize="large" />
-    </div>
+    </button>
   );
 }
 
@@ -96,63 +96,70 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
             >
               <div className="moduactivo active">
                 <Link to={module.link}>
-                  <Tooltip title="Haz clic para explorar" arrow>
-                    <img
-                      className="Modulos"
-                      src={module.image}
-                      alt={module.title}
-                      style={{
-                        width: "65%",
-                        height: "auto",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </Tooltip>
+                  <img
+                    className="Modulos"
+                    src={module.image}
+                    alt={module.title}
+                    style={{
+                      width: "65%",
+                      height: "auto",
+                      cursor: "pointer",
+                    }}
+                  />
+                </Link>
 
+                <Grid
+                  container
+                  alignItems="center"
+                  className="contenedor activo"
+                >
                   <Grid
-                    container
-                    alignItems="center"
-                    className="contenedor activo"
+                    item
+                    xs={12}
+                    sm={8}
+                    md={9}
+                    lg={10}
+                    sx={{
+                      textAlign: { xs: "center", sm: "left" },
+                      minHeight: "54px",
+                      display: "flex",
+                    }}
                   >
-                    <Grid
-                      item
-                      xs={12}
-                      sm={8}
-                      md={9}
-                      lg={10}
-                      sx={{ textAlign: { xs: "center", sm: "left" } }}
+                    <Link
+                      to={module.link}
+                      style={{ alignSelf: "center", padding: "5px 0" }}
                     >
                       <span>{module.title}</span>
-                    </Grid>
-                    <Grid
-                      className="btncricle"
-                      item
-                      xs={12}
-                      sm={4}
-                      md={3}
-                      lg={2}
-                      sx={{ textAlign: "center" }}
-                    >
-                      <Tooltip title="Más información" arrow>
-                        <Button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            handleClick(module.id);
-                          }}
-                          style={{
-                            backgroundColor:
-                              activeModule === module.id ? "#e84a5f" : "unset",
-                            border: "2px solid #fff",
-                            padding: "12px",
-                          }}
-                        >
-                          <img src={iconoinfo} alt="Información" />
-                        </Button>
-                      </Tooltip>
-                    </Grid>
+                    </Link>
                   </Grid>
-                </Link>
+                  <Grid
+                    className="btncricle"
+                    item
+                    xs={12}
+                    sm={4}
+                    md={3}
+                    lg={2}
+                    sx={{ textAlign: "center" }}
+                  >
+                    <Tooltip title="Más información" arrow>
+                      <Button
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          handleClick(module.id);
+                        }}
+                        style={{
+                          backgroundColor:
+                            activeModule === module.id ? "#e84a5f" : "unset",
+                          border: "2px solid #fff",
+                          padding: "12px",
+                        }}
+                      >
+                        <img src={iconoinfo} alt="Información" />
+                      </Button>
+                    </Tooltip>
+                  </Grid>
+                </Grid>
               </div>
             </div>
           ))}
