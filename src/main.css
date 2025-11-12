@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 * {
+    font-family: "Lato", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
     margin: 0;
     padding: 0;
 }
@@ -13,7 +15,6 @@ html {
 }
 body {
     font-size: 12px;
-    font-family: "Roboto", sans-serif;
     height: 100%;
 }
 iframe#webpack-dev-server-client-overlay {
@@ -38,12 +39,6 @@ header {
 }
 footer {
     grid-area: footer;
-}
-h1,
-h2,
-h3,
-h4 {
-    font-family: "Lato", sans-serif;
 }
 .clearfix:before,
 .clearfix:after {
@@ -93,7 +88,6 @@ a,
 .cabezoteRight h2 {
     display: inline-block;
     font-size: 2em;
-    font-family: "Lato", sans-serif;
     color: #000000;
     transform: translateY(32%);
     -webkit-transform: translateY(32%);
@@ -181,7 +175,6 @@ h2 {
     font-size: 22px;
     font-weight: 300;
     margin-bottom: 10px;
-    font-family: "Roboto", sans-serif;
     text-align: center;
 }
 .finder {
@@ -195,7 +188,6 @@ h2 {
     text-transform: uppercase;
     color: transparent;
     font-weight: 300;
-    font-family: "Lato", sans-serif;
     border: 2px solid transparent;
     transition: all 1s ease;
 }
@@ -320,7 +312,6 @@ menu button.active {
 .hidden-true p {
     max-width: 87%;
     margin: auto;
-    font-family: "Lato", sans-serif;
     font-size: 14px;
 }
 .rotate-false {
@@ -947,7 +938,6 @@ a#reset-filters {
     transition: all 1s ease;
 }
 .selector {
-    font-family: "Roboto", sans-serif;
     font-size: 12px;
 }
 .selector h1 {
@@ -1113,7 +1103,6 @@ a#reset-filters {
     flex: 3 1 60%;
     -webkit-order: 1;
     order: 1;
-    font-family: "Roboto", sans-serif !important;
     z-index: 0;
 }
 .leaflet-control-zoom a {
@@ -1465,7 +1454,6 @@ div[class*="eaRHYv"] {
 }
 .graphinfo2-true p,
 .graphinfo3-true p {
-    font-family: "Lato", sans-serif;
     color: #424242;
     padding: 3px 8px 10px 0;
     text-align: left;
@@ -2426,7 +2414,6 @@ h3.warningNote {
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
-    font-family: "Lato", sans-serif;
 }
 .colPort2 {
     width: 65vw;
