@@ -11,6 +11,7 @@ import Drawer from "pages/compensation/Drawer";
 import NewProjectForm from "pages/compensation/NewProjectForm";
 import Selector from "pages/compensation/Selector";
 import Description from "pages/compensation/SelectorData";
+import { OnLoadingModal } from "@ui/OnLoadingModal";
 
 export class Compensation extends Component {
   constructor(props) {
@@ -525,25 +526,9 @@ export class Compensation extends Component {
             </button>
           </div>
         </Modal>
-        <Modal
-          aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={loadingModal}
-          disableAutoFocus
-        >
-          <div className="generalAlarm">
-            <h2>
-              <b>Cargando</b>
-              <div className="load-wrapp">
-                <div className="load-1">
-                  <div className="line" />
-                  <div className="line" />
-                  <div className="line" />
-                </div>
-              </div>
-            </h2>
-          </div>
-        </Modal>
+
+        <OnLoadingModal open={loadingModal} containerID="map" />
+
         <div className="appSearcher wrappergrid">
           <MapViewer
             layers={layers}

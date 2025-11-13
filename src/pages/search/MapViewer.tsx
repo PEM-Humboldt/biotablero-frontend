@@ -19,6 +19,7 @@ import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
+import { OnLoadingModal } from "@ui/OnLoadingModal";
 
 const config = {
   params: {
@@ -106,28 +107,7 @@ export function MapViewer({
         </>
       )}
 
-      <Modal
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
-        open={loadingLayer}
-        disableAutoFocus
-        container={() => document.getElementById("map")}
-        style={{ position: "absolute" }}
-        BackdropProps={{ style: { position: "absolute" } }}
-      >
-        <div className="generalAlarm">
-          <h2>
-            <b>Cargando</b>
-            <div className="load-wrapp">
-              <div className="load-1">
-                <div className="line" />
-                <div className="line" />
-                <div className="line" />
-              </div>
-            </div>
-          </h2>
-        </div>
-      </Modal>
+      <OnLoadingModal open={loadingLayer} containerID="map" />
 
       <Modal
         aria-labelledby="simple-modal-title"

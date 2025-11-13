@@ -139,20 +139,14 @@
 
 /* HACK: MUI simpre trata de sobreescribir su fuente, fue necesario colocar 
  * esto para poder usar los elementos de tipografía creados con tailwind, 
- * una vez terminada esta migración se pueden eliminar el snippet */
+ * una vez terminada esta migración se pueden eliminar el snippet... */
 [class^="MuiTypography-root"],
 [class*=" MuiTypography-root"] {
   font-family: var(--font-sans) !important;
-  /* font-style: inherit !important; */
-  /* font-weight: inherit !important; */
 }
-
 [class^="MuiSvgIcon-fontSizeMedium"],
 [class*=" MuiSvgIcon-fontSizeMedium"] {
-  font-size: unset;
-  /* font-family: var(--font-sans) !important; */
-  /* font-style: inherit !important; */
-  /* font-weight: inherit !important; */
+  font-size: 3rem;
 }
 
 .loading-backdrop {
