@@ -4,15 +4,13 @@ import { Outlet, useNavigation } from "react-router";
 import { Footer } from "core/layout/mainLayout/Footer";
 import { Header } from "core/layout/mainLayout/Header";
 
-import "core/layout/headerFooter.css";
-
 import {
   layoutReducer,
   type LayoutActions,
   type LayoutState,
 } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserCTX } from "@hooks/UserContext";
-import { OnLoadingModal } from "@composites/OnLoadingModal";
+import { OnLoadingModal } from "@ui/OnLoadingModal";
 
 const layoutInitial: LayoutState = {
   moduleName: "home",

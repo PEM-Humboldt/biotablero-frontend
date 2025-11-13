@@ -63,11 +63,11 @@ export function Uim() {
         title="Iniciar sesión"
       >
         {user ? (
-          <AccountCircle className="userBox" style={{ fontSize: "40px" }} />
+          <AccountCircle className="userBox" style={{ fontSize: "4rem" }} />
         ) : (
           <AccountCircleOutlined
             className="userBox"
-            style={{ fontSize: "35px" }}
+            style={{ fontSize: "4rem" }}
           />
         )}
       </button>
