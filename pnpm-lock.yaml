@@ -190,6 +190,9 @@ devDependencies:
   prettier:
     specifier: 3.6.2
     version: 3.6.2
+  tailwindcss-language-server:
+    specifier: ^0.0.1
+    version: 0.0.1
   typescript:
     specifier: ~5.9.2
     version: 5.9.2
@@ -6274,6 +6277,11 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/core': 0.2.9
+    dev: true
+
+  /tailwindcss-language-server@0.0.1:
+    resolution: {integrity: sha512-lMoncp8ICeUA1kLVaiKARRUKQxRndKtIelydoMgg3P2ZjAIfcptN8Nin848+VClr2wGoM3+9RZ71sDG1YrnX1g==}
+    hasBin: true
     dev: true
 
   /tailwindcss@4.1.17:
