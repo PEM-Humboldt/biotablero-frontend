@@ -8,7 +8,6 @@ import Tooltip from "@mui/material/Tooltip";
 import { Grid, Container, Button } from "@mui/material";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
-import iconoinfo from "pages/home/assets/icono-info.svg";
 
 import {
   type DisplayModule,
@@ -101,7 +100,6 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
                     src={module.image}
                     alt={module.title}
                     style={{
-                      width: "65%",
                       height: "auto",
                       cursor: "pointer",
                     }}
@@ -155,7 +153,7 @@ export function Carrousel({ setActiveTab }: CarrouselProps) {
                           padding: "12px",
                         }}
                       >
-                        <img src={iconoinfo} alt="Información" />
+                        <span className="lowercase">i</span>
                       </Button>
                     </Tooltip>
                   </Grid>
