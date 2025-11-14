@@ -1,0 +1,33 @@
+@layer typography {
+  body {
+    @apply text-base font-light leading-relaxed text-black;
+    font-family: var(--font-sans);
+  }
+  h1,
+  .h1 {
+    @apply text-4xl sm:text-5xl font-bold mb-[1.625rem];
+  }
+  h2,
+  .h2 {
+    @apply text-2xl sm:text-3xl font-semibold mb-1;
+  }
+  h3,
+  .h3 {
+    @apply text-lg sm:text-2xl font-semibold mb-[0.75rem];
+  }
+  h4,
+  .h4 {
+    @apply text-base sm:text-lg font-normal mb-[0.5rem];
+  }
+  h5,
+  .h5 {
+    @apply text-base font-normal mb-[0.5rem];
+  }
+  h6,
+  .h6 {
+    @apply text-sm font-normal mb-[0.5rem];
+  }
+  p {
+    @apply text-base font-light mb-[1.2rem];
+  }
+}
