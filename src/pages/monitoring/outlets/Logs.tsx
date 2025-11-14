@@ -17,6 +17,10 @@ import type {
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/requestParams";
+import {
+  LoadStatusMsgBar,
+  type LoadStatusMsgBarProp,
+} from "@ui/loadStatusSecction";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 
@@ -38,24 +42,46 @@ export function Logs() {
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
   );
+  const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
+    message: uiText.logLoadingStates.loading,
+    type: "normal",
+  });
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: LOG_RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
 
-  const updateLogs = async (oDataParams: ODataParams) => {
-    const updatedLogs = await getLogs(oDataParams);
-    setLogs(updatedLogs);
-  };
-
   useEffect(() => {
     const filterChange = async () => {
+      setLoadMsg({
+        message: uiText.logLoadingStates.loading,
+        type: "normal",
+      });
       const skip = (currentPage - 1) * LOG_RECORDS_PER_PAGE;
       const newSearchParams = {
         ...searchParams,
         skip: skip,
       };
-      await updateLogs(newSearchParams);
+
+      try {
+        const updatedLogs = await getLogs(newSearchParams);
+        setLogs(updatedLogs);
+
+        setLoadMsg({
+          message: null,
+          type: "normal",
+        });
+      } catch (err) {
+        setLoadMsg({
+          message: uiText.logLoadingStates.error,
+          type: "error",
+        });
+
+        if (err instanceof Error) {
+          throw err;
+        }
+        throw new Error("Unknown error, cannot fetch logs data");
+      }
     };
 
     void filterChange();
@@ -75,6 +101,7 @@ export function Logs() {
         reset={uiText.searchBar.resetBtn}
         className="search-bar"
       />
+      <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       <div id={LOGS_ELEMENT_ID}>
         {logs === null || logs.value.length === 0 ? (
           <p>{uiText.noLogsAvailable}</p>
