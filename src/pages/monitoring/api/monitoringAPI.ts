@@ -106,6 +106,7 @@ monitoringClient.interceptors.response.use(
       );
       return monitoringClient(originalReq);
     } catch (refreshError) {
+      deleteTokensFromLS();
       console.error("Refresh token failed:", refreshError);
       throw refreshError;
     }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLoaderData } from "react-router";
 import "pages/monitoring/outlets/logs/layout/logStyles.css";
 
@@ -50,9 +50,15 @@ export function Logs() {
     top: LOG_RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
+  const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
     const filterChange = async () => {
+      if (prevSearchParamsRef.current !== searchParams) {
+        setCurrentPage(1);
+        prevSearchParamsRef.current = searchParams;
+      }
+
       setLoadMsg({
         message: uiText.logLoadingStates.loading,
         type: "normal",
@@ -66,7 +72,6 @@ export function Logs() {
       try {
         const updatedLogs = await getLogs(newSearchParams);
         setLogs(updatedLogs);
-
         setLoadMsg({
           message: null,
           type: "normal",

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 
 type ButtonData = {
   text: string;
@@ -84,7 +84,10 @@ export function TablePager({
     }
   };
 
-  const pages = getVisiblePageIndexes(currentPage, totalPages, paginated);
+  const pages = useMemo(
+    () => getVisiblePageIndexes(currentPage, totalPages, paginated),
+    [currentPage, totalPages, paginated],
+  );
 
   return totalPages <= 1 ? null : (
     <div className={className}>
