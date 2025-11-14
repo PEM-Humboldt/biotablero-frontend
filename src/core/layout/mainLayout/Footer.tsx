@@ -16,14 +16,14 @@ export function Footer({ logos }: FooterProps) {
   const collaborators = logos ? [...logos] : [];
 
   return (
-    <footer className="flex justify-between items-center py-2! px-1!">
+    <footer className="flex justify-between items-center py-2 px-1">
       <div>
         {collaborators.length > 0 && (
           <a href={footerInfo.IAVH.url}>
             <img src={footerInfo.IAVH.img} alt={footerInfo.IAVH.linkAlt} />
           </a>
         )}
-        <div className="text-white mt-0.25!">
+        <div className="text-white mt-1">
           {footerInfo.IAVH.tag}
           <br />
           <b>{footerInfo.IAVH.name}</b>
