@@ -3,6 +3,7 @@ import { YMInitializer } from "@appigram/react-yandex-metrika";
 import { routes } from "Routes";
 
 import "core/styles/main.css";
+import "core/styles/legacy.css";
 
 export function App() {
   const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
