@@ -9,16 +9,21 @@ type TypeValue = {
 };
 
 const getTypeValues = async () => {
-  const res = await monitoringAPI<TypeValue[]>({
-    type: "get",
-    endpoint: "LogType",
-  });
+  try {
+    const res = await monitoringAPI<TypeValue[]>({
+      type: "get",
+      endpoint: "LogType",
+    });
 
-  if (isResponseRequestError(res)) {
-    throw new Error(res.message);
+    if (isResponseRequestError(res)) {
+      throw new Error(res.message);
+    }
+
+    return res.map(({ name }) => name);
+  } catch (err) {
+    console.error(err);
+    return [];
   }
-
-  return res.map(({ name }) => name);
 };
 
 export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
