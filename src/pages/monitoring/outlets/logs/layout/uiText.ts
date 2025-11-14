@@ -13,6 +13,17 @@ export const uiText = {
     resetBtn: "Borrar filtros", // NOTE: leave empty to hide
   },
 
+  table: {
+    detailsBtn: {
+      defaultText: "Detalles",
+      loadStatus: {
+        loaded: null,
+        loading: "Cargando...",
+        error: "Registro no disponible, intenta de nuevo más tarde",
+      },
+    },
+  },
+
   pager: {
     buttons: {
       prev: { text: "Anterior", icon: "<" },

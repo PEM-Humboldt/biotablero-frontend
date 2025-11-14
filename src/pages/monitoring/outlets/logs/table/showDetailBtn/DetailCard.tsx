@@ -51,8 +51,13 @@ export function DetailCard({
 		  jsx-a11y/no-noninteractive-element-interactions, 
 		  jsx-a11y/click-events-have-key-events 
 	  */}
-      <dialog ref={dialogRef} onClose={onClose} onClick={handleBackdropClick}>
-        <h3>Registro del sistema</h3>
+      <dialog
+        ref={dialogRef}
+        onClose={onClose}
+        onClick={handleBackdropClick}
+        aria-labelledby={log.id}
+      >
+        <h3 id={log.id}>Registro del sistema</h3>
         <div>
           <p>
             <span>ID</span>
