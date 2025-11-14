@@ -6,7 +6,7 @@
   "tailwind": {
     "css": "src/core/styles/main.css",
     "baseColor": "gray",
-    "cssVariables": false,
+    "cssVariables": true,
     "prefix": ""
   },
   "iconLibrary": "lucide",
