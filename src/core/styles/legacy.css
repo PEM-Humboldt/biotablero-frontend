@@ -26,6 +26,15 @@ iframe#webpack-dev-server-client-overlay {
   gap: 0px 0px;
   height: 100vh;
 }
+
+.mingrid {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "header" "wrappergrid" "footer";
+  gap: 0px 0px;
+  min-height: 100vh;
+}
+
 .wrappergrid {
   grid-area: wrappergrid;
   overflow: auto;
