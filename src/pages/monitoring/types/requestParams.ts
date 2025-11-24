@@ -29,3 +29,25 @@ export interface LogEntryFull
   timeStamp: Date;
   properties: Record<string, unknown>;
 }
+
+type ODataInitiativeLocation = {
+  id: number;
+  locationId: number;
+  locality: string;
+  location: {
+    id: number;
+    name: string;
+    code: string;
+  };
+};
+
+export type ODataInitiativeList = {
+  id: number;
+  name: string;
+  description: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  locations: ODataInitiativeLocation[];
+};
