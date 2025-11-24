@@ -51,4 +51,28 @@
       }
     }
   }
+
+  .moduleIcon {
+    @apply block w-[65px] h-[65px] bg-contain float-right bg-no-repeat bg-center;
+
+    &.ConsultasGeográficas {
+      background-image: url("src/core/assets/geografico.png");
+      filter: invert(1);
+    }
+    &.Indicadores {
+      background-image: url("src/core/assets/indicadores.png");
+      filter: invert(1);
+    }
+    &.Portafolios {
+      background-image: url("src/core/assets/portafolios.png");
+      filter: invert(1);
+    }
+    &.CompensaciónAmbiental {
+      background-image: url("src/core/assets/compensaciones.png");
+    }
+    &.MonitoreoComunitario {
+      background-image: url("src/core/assets/mcomunitario.png");
+      filter: invert(1);
+    }
+  }
 }

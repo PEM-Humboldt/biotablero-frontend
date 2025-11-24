@@ -10,6 +10,7 @@ import { ConfirmationModal } from "@composites/ConfirmationModal";
 import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
+import { Button } from "@ui/shadCN/component/button";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -55,22 +56,26 @@ export function Uim() {
     : { modal: "loginModal", state: modals.loginModal };
 
   return (
-    <div className="loginBtnCont">
-      <button
-        type="button"
-        className="loginBtn"
+    <div>
+      {/* <div className="loginBtnCont"> */}
+      <Button
+        variant="outline"
+        size="bigIcon"
         onClick={showModal(whichModal.modal)}
-        title="Iniciar sesión"
       >
         {user ? (
-          <AccountCircle className="userBox" style={{ fontSize: "4rem" }} />
+          <>
+            <span className="sr-only">Iniciar sesión</span>
+            <AccountCircle className="px-2.5 pt-[4] text-[4rem]!" />
+          </>
         ) : (
-          <AccountCircleOutlined
-            className="userBox"
-            style={{ fontSize: "4rem" }}
-          />
+          <>
+            <span className="sr-only">Ver mi perfil</span>
+            <AccountCircleOutlined className="px-2.5 pt-[4] text-[4rem]!" />
+          </>
         )}
-      </button>
+      </Button>
+
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
@@ -102,3 +107,19 @@ export function Uim() {
     </div>
   );
 }
+
+// <button
+//   type="button"
+//   className="loginBtn"
+//   onClick={showModal(whichModal.modal)}
+//   title="Iniciar sesión"
+// >
+//   {user ? (
+//     <AccountCircle className="userBox" style={{ fontSize: "4rem" }} />
+//   ) : (
+//     <AccountCircleOutlined
+//       className="userBox"
+//       style={{ fontSize: "4rem" }}
+//     />
+//   )}
+// </button>

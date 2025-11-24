@@ -1,6 +1,6 @@
 import { Menu } from "core/layout/mainLayout/header/Menu";
-import { Title } from "core/layout/mainLayout/header/Title";
 import { Uim } from "core/layout/Uim";
+import { Link } from "react-router";
 
 interface Names {
   title?: string;
@@ -18,29 +18,40 @@ export function Header({ activeModule, headerNames }: HeaderProps) {
   const renderCompositeTitle = title !== "" && subtitle !== "";
 
   return (
-    <header className="cabezote">
-      <div className="cabezoteLeft">
-        <Title title="BioTablero" />
-      </div>
-      <div className="cabezoteRight">
+    <header className="flex h-[90px] justify-between border-b border-b-grey">
+      <div className="flex self-center px-8">
+        <Link to="/">
+          <h1 className="text-secondary font-semibold! m-0! text-xl sm:text-5xl!">
+            BioTablero
+            <span className="sr-only">{activeModule}</span>
+          </h1>
+        </Link>
+
         <Menu />
+      </div>
 
-        <div className="header_info">
-          <div className="cabezoteRight">
+      <div className="flex items-stretch">
+        <Uim />
+
+        {activeModule !== "" && (
+          <div className="flex px-8 items-center bg-grey-light">
             {renderCompositeTitle ? (
-              <h1>
-                <b>{title}</b>
+              <h2 className="text-lg font-semibold text-right text-grey-dark">
+                {title}
                 <br />
-                {subtitle}
-              </h1>
+                <span>{subtitle}</span>
+              </h2>
             ) : (
-              <h2>{activeModule}</h2>
+              <h2
+                className="text-lg font-normal! p-[18px] text-right m-0! text-grey-dark"
+                aria-hidden="true"
+              >
+                {activeModule}
+              </h2>
             )}
-            <span className={`${activeModule.replace(" ", "")}`} />
+            <span className={`moduleIcon ${activeModule.replace(" ", "")}`} />
           </div>
-
-          <Uim />
-        </div>
+        )}
       </div>
     </header>
   );
