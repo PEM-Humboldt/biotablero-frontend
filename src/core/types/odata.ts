@@ -38,5 +38,5 @@ export type SearchBarComponent<T> = {
 } & (
   | { type: "text" | "number" }
   | { type: "date"; dateOperator: "eq" | "ge" | "le" }
-  | { type: "select"; values: string[] }
+  | { type: "select"; values: string[] | { value: string; name: string }[] }
 );

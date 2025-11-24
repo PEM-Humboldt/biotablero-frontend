@@ -115,10 +115,8 @@ export function ODataSearchBar<T>({
               onChange={submit === "" ? onChangeHandler : undefined}
             >
               <option></option>
-              {component.values.map((value, i) => (
-                <option key={`${value}_${i}`} value={value}>
-                  {value}
-                </option>
+              {component.values.map((list, i) => (
+                <Option listItem={list} index={i} />
               ))}
             </select>
           )}
@@ -127,5 +125,23 @@ export function ODataSearchBar<T>({
       {submit !== "" && <button onClick={submitSearch}>{submit}</button>}
       {reset !== "" && <button onClick={clearSearch}>{reset}</button>}
     </div>
+  );
+}
+
+function Option({
+  listItem,
+  index,
+}: {
+  listItem: string | { value: string; name: string };
+  index: number;
+}) {
+  const isString = typeof listItem === "string";
+  const value = isString ? listItem : listItem.value;
+  const name = isString ? listItem : listItem.name;
+
+  return (
+    <option key={`${value}_${index}`} value={value ?? name}>
+      {name}
+    </option>
   );
 }
