@@ -1,5 +1,7 @@
-import { isResponseRequestError } from "@api/auth";
-import { monitoringAPI } from "pages/monitoring/api/monitoringAPI";
+import {
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 import type { LogEntryFull } from "pages/monitoring/types/requestParams";
 import { useState } from "react";
 import { createPortal } from "react-dom";
@@ -27,7 +29,7 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
         endpoint: `Logs/${value}`,
       });
 
-      if (isResponseRequestError(logData)) {
+      if (isMonitoringAPIError(logData)) {
         throw new Error(logData.message);
       }
 

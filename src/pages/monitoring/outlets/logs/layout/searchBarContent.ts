@@ -1,6 +1,8 @@
-import { isResponseRequestError } from "@api/auth";
 import { type SearchBarComponent } from "@appTypes/odata";
-import { monitoringAPI } from "pages/monitoring/api/monitoringAPI";
+import {
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 import { type ODataLogEntryShort } from "pages/monitoring/types/requestParams";
 
 type TypeValue = {
@@ -15,7 +17,7 @@ const getTypeValues = async () => {
       endpoint: "LogType",
     });
 
-    if (isResponseRequestError(res)) {
+    if (isMonitoringAPIError(res)) {
       throw new Error(res.message);
     }
 
