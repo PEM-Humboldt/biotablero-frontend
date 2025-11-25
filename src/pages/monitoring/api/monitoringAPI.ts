@@ -15,7 +15,10 @@ import {
   type RequestError,
 } from "@api/auth";
 import type { ODataParams } from "@appTypes/odata";
-import type { ODataLog } from "pages/monitoring/types/requestParams";
+import type {
+  ODataInitiative,
+  ODataLog,
+} from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
@@ -180,27 +183,44 @@ export async function monitoringAPI<T>({
 }
 
 /**
- * Fetches logs from the Monitoring API with optional OData query parameters.
+ * Creates a specialized async function to fetch data from a given API endpoint.
  *
- * This function is a thin wrapper around `monitoringAPI` specialized for the `"Logs"` endpoint.
- * Throws an error if the request fails or the backend returns an error response.
+ * This function is a generator that wraps `monitoringAPI` and specializes
+ * it for a specific endpoint.
  *
- * @param odataParams - Optional OData query parameters to filter, sort, or paginate results.
- * @returns A `Promise` resolving to an `ODataLog` object containing the logs data.
- * @throws If the API returns a `RequestError` or the request fails.
+ * @template T The expected OData data structure for the specific endpoint
+ * @param endpoint The name of the API endpoint to be fetched
+ * @returns An async function that accepts {@link ODataParams} and returns a `Promise<T>`.
+ * @throws If the API returns a `RequestError` or the underlying request fails.
  */
-export async function getLogs(
-  odataParams: ODataParams = {},
-): Promise<ODataLog> {
-  const result = await monitoringAPI<ODataLog>({
-    endpoint: "Logs",
-    type: "get",
-    options: { oData: odataParams },
-  });
+function createODataGetter<T>(endpoint: string) {
+  return async (odataParams: ODataParams): Promise<T> => {
+    const result = await monitoringAPI<T>({
+      endpoint,
+      type: "get",
+      options: { oData: odataParams },
+    });
 
-  if (isMonitoringAPIError(result)) {
-    throw new Error(result.message);
-  }
+    if (isMonitoringAPIError(result)) {
+      throw new Error(result.message);
+    }
 
-  return result;
+    return result;
+  };
 }
+
+/**
+ * Fetches log records from the "Logs" endpoint of the Monitoring API.
+ *
+ * @param odataParams Optional OData query parameters (filtering, pagination, etc.).
+ * @returns A `Promise` that resolves to an `ODataLog` object.
+ */
+export const getLogs = createODataGetter<ODataLog>("Logs");
+
+/**
+ * Fetches initiative data from the "Initiative" endpoint of the Monitoring API.
+ *
+ * @param odataParams Optional OData query parameters (filtering, pagination, etc.).
+ * @returns A `Promise` that resolves to an `ODataInitiatives` object.
+ */
+export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");

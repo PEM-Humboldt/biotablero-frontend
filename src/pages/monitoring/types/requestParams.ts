@@ -15,11 +15,6 @@ export interface ODataLogEntryFull extends ODataLogEntryShort {
   properties: string;
 }
 
-export type ODataLog = {
-  "@odata.count": number;
-  value: ODataLogEntryShort[];
-};
-
 export interface LogEntryShort extends Omit<ODataLogEntryShort, "timeStamp"> {
   timeStamp: Date;
 }
@@ -41,7 +36,7 @@ type ODataInitiativeLocation = {
   };
 };
 
-export type ODataInitiativeList = {
+export type ODataInitiativeEntry = {
   id: number;
   name: string;
   description: string;
@@ -51,3 +46,11 @@ export type ODataInitiativeList = {
   enabled: boolean;
   locations: ODataInitiativeLocation[];
 };
+
+type ODataResponse<T> = {
+  "@odata.count": number;
+  value: T[];
+};
+
+export type ODataLog = ODataResponse<ODataLogEntryShort>;
+export type ODataInitiative = ODataResponse<ODataInitiativeEntry>;
