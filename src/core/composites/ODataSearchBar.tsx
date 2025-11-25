@@ -116,7 +116,7 @@ export function ODataSearchBar<T>({
             >
               <option></option>
               {component.values.map((list, i) => (
-                <Option listItem={list} index={i} />
+                <Option key={i} listItem={list} />
               ))}
             </select>
           )}
@@ -130,18 +130,12 @@ export function ODataSearchBar<T>({
 
 function Option({
   listItem,
-  index,
 }: {
   listItem: string | { value: string; name: string };
-  index: number;
 }) {
   const isString = typeof listItem === "string";
   const value = isString ? listItem : listItem.value;
   const name = isString ? listItem : listItem.name;
 
-  return (
-    <option key={`${value}_${index}`} value={value ?? name}>
-      {name}
-    </option>
-  );
+  return <option value={value ?? name}>{name}</option>;
 }
