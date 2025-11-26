@@ -1,5 +1,5 @@
 import { type SearchBarComponent } from "@appTypes/odata";
-import { type ODataInitiativeList } from "pages/monitoring/types/requestParams";
+import { type ODataInitiativeEntry } from "pages/monitoring/types/requestParams";
 
 // TODO: Solucionar lo de la divipola
 // const getTypeValues = async () => {
@@ -18,27 +18,24 @@ import { type ODataInitiativeList } from "pages/monitoring/types/requestParams";
 //   }
 // };
 
-export const searchBarItems: SearchBarComponent<ODataInitiativeList>[] = [
-  { label: "Nombre de la iniciativa", type: "text", source: "name" },
+export const searchBarItems: SearchBarComponent<ODataInitiativeEntry>[] = [
+  { label: "Nombre de la iniciativa", type: "text", source: ["name"] },
   {
     label: "desde",
     type: "date",
-    source: "creationDate",
+    source: ["creationDate"],
     dateOperator: "ge",
   },
   {
     label: "hasta",
     type: "date",
-    source: "creationDate",
+    source: ["creationDate"],
     dateOperator: "le",
   },
   {
-    label: "Departamento o municipio",
-    type: "select",
-    source: "enabled",
-    values: [
-      { value: "true", name: "activa" },
-      { value: "false", name: "inactiva" },
-    ],
+    label: "ubicacion",
+    type: "text",
+    source: ["locality", "location/name"],
+    oDataEntity: "InitiativeLocations",
   },
 ];

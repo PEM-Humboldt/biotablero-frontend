@@ -1,7 +1,4 @@
-// Logs
+export const LOG_RECORDS_PER_PAGE = 4; // registrys on the logs summary
+export const INITIATIVES_PER_PAGE = 2; // Initiatives on the admin panel
 
-// The amount of registrys per page on the summary
-export const LOG_RECORDS_PER_PAGE = 20;
-
-// The Id to render the log detail card
-export const LOGS_ELEMENT_ID = "logsElement";
+export const LOGS_ELEMENT_ID = "logsElement"; // The Id to render the log detail card

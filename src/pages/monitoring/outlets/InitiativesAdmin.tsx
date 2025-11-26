@@ -1,21 +1,54 @@
+import { useEffect, useRef, useState } from "react";
+
 import type { ODataParams } from "@appTypes/odata";
 import { ODataSearchBar } from "@composites/ODataSearchBar";
-import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout/searchBarContent";
-import { useState } from "react";
+import { INITIATIVES_PER_PAGE } from "@config/monitoring";
+import { Button } from "@ui/shadCN/component/button";
 
-const INITIATIVES_PER_PAGE = 20;
+import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout/searchBarContent";
+import type { ODataInitiative } from "pages/monitoring/types/requestParams";
+import { getInitiatives } from "pages/monitoring/api/monitoringAPI";
+import { TablePager } from "@composites/TablePager";
 
 export function InitiativesAdmin() {
+  const [initiatives, setInitiatives] = useState<ODataInitiative | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: INITIATIVES_PER_PAGE,
-    orderby: "timeStamp desc",
+    orderby: "creationDate desc",
   });
+  const prevSearchParamsRef = useRef(searchParams);
 
-  console.log(searchParams);
+  useEffect(() => {
+    const loadInitiatives = async () => {
+      if (prevSearchParamsRef.current !== searchParams) {
+        setCurrentPage(1);
+        prevSearchParamsRef.current = searchParams;
+      }
+
+      const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
+      const newSearchParams = { ...searchParams, skip };
+
+      try {
+        const initiativesUpdated = await getInitiatives(newSearchParams);
+        console.log(initiativesUpdated.value);
+        setInitiatives(initiativesUpdated);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    void loadInitiatives();
+  }, [searchParams, currentPage]);
+
+  const initiativesAvailable = initiatives ? initiatives["@odata.count"] : 0;
 
   return (
-    <div className="ml-[60px]">
-      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">cabezote</div>
+    <div className="ml-[60px] bg-grey-light rounded-2xl p-8">
+      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
+        <h3>Administrador de iniciativas</h3>
+        <Button>Crear iniciativa</Button>
+      </div>
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         <ODataSearchBar
           components={searchBarItems}
@@ -30,7 +63,24 @@ export function InitiativesAdmin() {
         <div className="bg-red-300 my-8">formulario edicion</div>
         <div className="bg-red-300 my-8">barra iniciativa</div>
       </div>
-      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">paginador</div>
+      <TablePager
+        currentPage={currentPage}
+        recordsAvailable={initiativesAvailable}
+        onPageChange={setCurrentPage}
+        buttons={{
+          prev: { text: "Anterior", icon: "<" },
+          next: { text: "siguiente", icon: ">" },
+          first: { text: "Primera", icon: "«" },
+          last: { text: "Última", icon: "»" },
+        }}
+        texts={{
+          registryPageName: "Página",
+          registryPageOf: "de",
+          gotoAltText: "ir a",
+        }}
+        recordsPerPage={INITIATIVES_PER_PAGE}
+        paginated={3}
+      />
     </div>
   );
 }
