@@ -28,23 +28,23 @@ const getTypeValues = async () => {
 
 export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
   await (async () => [
-    { label: "Usuario", type: "text", source: "userName" },
+    { label: "Usuario", type: "text", source: ["userName"] },
     {
       label: "fecha inicio",
       type: "date",
-      source: "timeStamp",
+      source: ["timeStamp"],
       dateOperator: "ge",
     },
     {
       label: "fecha final",
       type: "date",
-      source: "timeStamp",
+      source: ["timeStamp"],
       dateOperator: "le",
     },
     {
       label: "Seleccione el tipo",
       type: "select",
-      source: "type",
+      source: ["type"],
       values: await getTypeValues(),
     },
   ])();

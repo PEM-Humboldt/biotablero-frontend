@@ -14,20 +14,27 @@ export function oDataToString(oDataParams: ODataParams): string {
 }
 
 /**
- * Generates an OData filter string based on component type and value.
+ * Generates an OData filter string based on the component type, value, and config.
+ *
+ * This function handles multi-field filtering, nested collection filtering,
+ * apply 'any(l: ...)' when 'oDataEntity' is set, and ensures case-insensitivity
+ * for 'text' searches.
  *
  * @template T - Type of the OData object model
  * @param component - Search bar component with type element type
  * @param value - the value from the input
  * @returns OData filter expression or null if value is empty
  *
- * Filter generation by type:
- * - `text`: `contains(field, 'value')` for partial matches
- * - `number`: `field eq value` for exact numeric matches
- * - `date`: `field {operator} value` where operator is eq/ge/le from component config
- * - `select`: `field eq 'value'` for exact string matches
+ * ---
+ *
+ * **Filter Generation Logic:**
+ *
+ * * **'text'**: `contains(tolower(field), 'value')` for case-insensitive partial matches.
+ * * **'number'**: `field eq value` for exact numeric matches.
+ * * **'select'**: `field eq 'value'` for exact string matches (quotes non-num values).
+ * * **'date'**: `field {operator} value` where operator is eq/ge/le.
  */
-export function MakeODataFilterString<T>(
+export function makeODataFilterString<T>(
   component: SearchBarComponent<T>,
   value: string,
 ): string | null {
@@ -35,18 +42,41 @@ export function MakeODataFilterString<T>(
     return null;
   }
 
-  switch (component.type) {
-    case "text":
-      return `contains(${component.source as string}, '${value}')`;
-    case "number":
-      return `${component.source as string} eq ${value}`;
-    case "date": {
-      const operator = component.dateOperator ?? "eq";
-      return `${component.source as string} ${operator} ${value}`;
+  const alias = "l";
+  const prefix = component.oDataEntity ? `${alias}/` : "";
+  const filterStrings: string[] = [];
+
+  for (const source of component.source) {
+    let base: string | null;
+
+    switch (component.type) {
+      case "text": {
+        const normalizaedSource = `tolower(${prefix}${source as string})`;
+        base = `contains(${normalizaedSource}, '${value.toLowerCase()}')`;
+        break;
+      }
+
+      case "number":
+      case "select": {
+        const valueFormatted = isNaN(Number(value)) ? `'${value}'` : value;
+        base = `${prefix}${source as string} eq ${valueFormatted}`;
+        break;
+      }
+
+      case "date": {
+        const operator = component.dateOperator ?? "eq";
+        base = `${prefix}${source as string} ${operator} ${value}`;
+        break;
+      }
+
+      default:
+        base = "";
     }
-    case "select":
-      return `${component.source as string} eq '${value}'`;
-    default:
-      return null;
+
+    filterStrings.push(base);
   }
+
+  return prefix
+    ? `${component.oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
+    : filterStrings.join(" or ");
 }

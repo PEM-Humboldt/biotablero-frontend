@@ -1,7 +1,7 @@
 import { useRef, type Dispatch, type SetStateAction } from "react";
 
 import { debouncer } from "@utils/debouncer";
-import { MakeODataFilterString } from "@utils/odata";
+import { makeODataFilterString } from "@utils/odata";
 import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 
 type ODataSearchBarProps<T, F> = {
@@ -42,16 +42,17 @@ export function ODataSearchBar<T>({
     const searchParams: ODataParams = {};
 
     components.forEach((component, i) => {
-      const element = searchRefs.current[`${component.source as string}_${i}`];
+      const element = searchRefs.current[`${component.source.join("_")}_${i}`];
       const value = element?.value.trim() ?? "";
 
-      const filter = MakeODataFilterString(component, value);
+      const filter = makeODataFilterString(component, value);
       if (filter) {
         filters.push(filter);
       }
     });
 
     searchParams.filter = filters.length ? filters.join(" and ") : "";
+
     return searchParams;
   };
 
@@ -96,7 +97,7 @@ export function ODataSearchBar<T>({
             <input
               ref={(element) =>
                 element &&
-                (searchRefs.current[`${component.source as string}_${i}`] =
+                (searchRefs.current[`${component.source.join("_")}_${i}`] =
                   element)
               }
               type={component.type}
@@ -108,7 +109,7 @@ export function ODataSearchBar<T>({
             <select
               ref={(element) =>
                 element &&
-                (searchRefs.current[`${component.source as string}_${i}`] =
+                (searchRefs.current[`${component.source.join("_")}_${i}`] =
                   element)
               }
               name={component.label}

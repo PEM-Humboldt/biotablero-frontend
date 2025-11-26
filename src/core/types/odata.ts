@@ -32,9 +32,10 @@ export interface ODataParams {
 }
 
 export type SearchBarComponent<T> = {
-  source: keyof T;
+  source: (keyof T)[];
   label: string;
   placeholder?: string;
+  oDataEntity?: string;
 } & (
   | { type: "text" | "number" }
   | { type: "date"; dateOperator: "eq" | "ge" | "le" }
