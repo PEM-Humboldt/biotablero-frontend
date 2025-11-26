@@ -1,3 +1,4 @@
+import { Button } from "@ui/shadCN/component/button";
 import { useMemo, type ReactNode } from "react";
 
 type ButtonData = {
@@ -26,7 +27,7 @@ type PagerProps = {
   recordsPerPage: number;
   onPageChange: (page: number) => void;
   paginated: number | null;
-  className: string;
+  className?: string;
 };
 
 /**
@@ -90,7 +91,7 @@ export function TablePager({
   );
 
   return totalPages <= 1 ? null : (
-    <div className={className}>
+    <div className={`flex gap-1 justify-center ${className}`}>
       {buttons.first && (
         <PagerButton
           icon={buttons.first.icon}
@@ -181,14 +182,21 @@ function PagerButton({
   icon,
   onClick,
   disabled,
+  className = "",
 }: {
   text: string;
   icon?: string | ReactNode;
   onClick: () => void;
   disabled: boolean;
+  className?: string;
 }) {
   return (
-    <button type="button" onClick={() => onClick()} disabled={disabled}>
+    <Button
+      variant="outline"
+      className={`border-grey px-2 rounded-lg aspect-square! hover:border-secondary ${className}`}
+      onClick={() => onClick()}
+      disabled={disabled}
+    >
       {icon ? (
         <>
           <span className="sr-only">{text}</span>
@@ -197,6 +205,6 @@ function PagerButton({
       ) : (
         <span>{text}</span>
       )}
-    </button>
+    </Button>
   );
 }
