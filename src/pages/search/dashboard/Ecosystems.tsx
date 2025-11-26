@@ -24,6 +24,7 @@ import {
 import { formatNumber } from "@utils/format";
 
 import BackendAPI from "pages/search/api/backendAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
@@ -82,8 +83,10 @@ export default function Ecosystems() {
     switchLayer();
 
     // COVERAGE
-    BackendAPI.requestCoverage(areaTypeId, areaIdId)
-      .then((res) => {
+    SearchAPI.requestMetricsValues(
+      "Coverage",
+      Number(areaIdId),
+    ).then((res) => {
         setCoverage(transformCoverageValues(res));
         setMessages((m) => ({ ...m, cov: null }));
       })

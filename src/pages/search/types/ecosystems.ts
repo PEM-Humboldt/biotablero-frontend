@@ -25,4 +25,15 @@ export interface seDetails {
   total_area: string;
 }
 
-export const coverageKeys = ["N", "S", "T"] as const;
+export const coverageKeys = {
+  N: 1,
+  S: 2,
+  T: 3,
+} as const;
+
+export interface CoverageResponse {
+  ano: number;
+  natural: number;
+  secundaria: number;
+  transformada: number;
+}

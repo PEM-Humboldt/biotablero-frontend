@@ -1,5 +1,5 @@
 import {
-  Coverage,
+  CoverageResponse,
   SEPAData,
   coverageLabels,
   SEPADataExt,
@@ -39,30 +39,24 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (rawData: Array<Coverage>) => {
+export const transformCoverageValues = (rawData: Array<CoverageResponse>) => {
   if (!rawData) return [];
-  return rawData.map((item) => {
-    let label: coverageLabels = "";
-    switch (item.type) {
-      case "N":
-        label = "Natural";
-        break;
-      case "S":
-        label = "Secundaria";
-        break;
-      case "T":
-        label = "Transformada";
-        break;
-      default:
-        label = "Sin clasificar / Nubes";
-    }
-    return {
-      ...item,
-      key: item.type,
-      area: Number(item.area),
-      label,
-    };
-  });
+  const data = rawData[0];
+
+  const items = [
+    { key: "N", label: "Natural", area: data.natural },
+    { key: "S", label: "Secundaria", area: data.secundaria },
+    { key: "T", label: "Transformada", area: data.transformada },
+  ];
+
+  const totalArea = data.natural + data.secundaria + data.transformada;
+
+  return items.map((item) => ({
+    area: item.area,
+    key: item.key,
+    percentage: totalArea > 0 ? item.area / totalArea : 0,
+    label: item.label,
+  }));
 };
 
 export const transformSEValues = (
