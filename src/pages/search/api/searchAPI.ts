@@ -4,7 +4,7 @@ import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
 import { ForestLPRawDataPolygon } from "pages/search/types/forest";
 import * as geojson from "geojson";
 
-type MetricsTypes = "LossPersistence";
+type MetricsTypes = "LossPersistence" | "Coverage";
 type RawDataPolygon = ForestLPRawDataPolygon;
 
 class SearchAPI {
