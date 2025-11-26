@@ -17,7 +17,10 @@ import {
   transformSEAreas,
 } from "pages/search/dashboard/ecosystems/transformData";
 
-import { SearchLegacyCTX, LegacyContextValues } from "pages/search/hooks/SearchContext";
+import {
+  SearchLegacyCTX,
+  LegacyContextValues,
+} from "pages/search/hooks/SearchContext";
 import { formatNumber } from "@utils/format";
 
 import BackendAPI from "pages/search/api/backendAPI";
@@ -88,7 +91,11 @@ export default function Ecosystems() {
         setMessages((m) => ({ ...m, cov: "no-data" }));
       });
 
+    //TODO: Habilitar las secciones comentadas cuando se esten listos los endpoints del nuevo backend
+
     // PROTECTED AREAS
+
+    /*
     BackendAPI.requestProtectedAreas(areaTypeId, areaIdId)
       .then((res) => {
         if (!Array.isArray(res) || !res[0]) return;
@@ -106,8 +113,10 @@ export default function Ecosystems() {
       .catch(() => {
         setMessages((m) => ({ ...m, pa: "no-data" }));
       });
+    */
 
     // STRATEGIC ECOSYSTEMS
+    /*
     BackendAPI.requestStrategicEcosystems(areaTypeId, areaIdId)
       .then((res) => {
         if (!Array.isArray(res)) return;
@@ -122,6 +131,7 @@ export default function Ecosystems() {
       .catch(() => {
         setMessages((m) => ({ ...m, se: "no-data" }));
       });
+    */
 
     // TEXTS
     ["ecosystems", "coverage", "pa", "se"].forEach((section) =>
@@ -131,7 +141,7 @@ export default function Ecosystems() {
         })
         .catch(() => {
           setTexts((t) => ({ ...t, [section]: {} }));
-        })
+        }),
     );
 
     return () => {
@@ -207,7 +217,7 @@ export default function Ecosystems() {
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      }))
+      })),
     );
   };
 
@@ -245,6 +255,7 @@ export default function Ecosystems() {
         />
 
         {/* PROTECTED AREAS */}
+        {/*}
         <ProtectedAreas
           PAAreas={PAAreas}
           PATotalArea={PATotalArea}
@@ -256,8 +267,10 @@ export default function Ecosystems() {
           messages={messages.pa}
           areaIdStr={areaIdStr}
         />
+        {*/}
 
         {/* STRATEGIC ECOSYSTEMS */}
+        {/*}
         <StrategicEcosystems
           SEAreas={SEAreas}
           SETotalArea={SETotalArea}
@@ -272,6 +285,7 @@ export default function Ecosystems() {
           isLoading={messages.se === "loading"}
           noData={messages.se === "no-data"}
         />
+        {*/}
       </div>
     </div>
   );
