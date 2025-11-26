@@ -1,4 +1,5 @@
 import BackendAPI from "pages/search/api/backendAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";
@@ -28,17 +29,18 @@ export class EcosystemsController {
   /**
    * Get the raster layers required for a Forest Loss Persistence period
    *
-   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
+   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period 
    */
   async getCoveragesLayers(): Promise<Array<RasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
 
-      coverageKeys.forEach((category: string) => {
-        const { request, source } = BackendAPI.requestCoveragesLayer(
-          this.areaType ?? "",
-          this.areaId ?? "",
+      Object.values(coverageKeys).forEach((category) => {
+        const { request, source } = SearchAPI.requestMetricsLayer(          
+          "Coverage",
+          "2020",
           category,
+          Number(this.areaId),
         );
         requests.push(request);
         this.activeRequests.set(category, source);
@@ -46,13 +48,13 @@ export class EcosystemsController {
 
       const res = await Promise.all(requests);
 
-      coverageKeys.forEach((category) => {
+      coverageCategories.forEach((category) => {
         this.activeRequests.delete(category);
       });
 
       if (res.includes("request canceled")) throw Error("request canceled");
 
-      return coverageKeys.map((category, idx) => ({
+      return coverageCategories.map((category, idx) => ({
         id: category,
         data: `data:${res[idx].headers["content-type"]};base64, ${base64(
           res[idx].data,
