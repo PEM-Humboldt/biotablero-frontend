@@ -32,6 +32,7 @@
     "@nivo/scales": "^0.84.0",
     "@nivo/scatterplot": "^0.84.0",
     "@nivo/tooltip": "~0.79.0",
+    "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
     "@react-spring/web": "~9.3.1",
     "@tailwindcss/vite": "^4.1.17",

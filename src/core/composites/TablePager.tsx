@@ -1,4 +1,5 @@
 import { Button } from "@ui/shadCN/component/button";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { useMemo, type ReactNode } from "react";
 import { defaultUI } from "@composites/tablePager/layout/uiText";
 
@@ -16,16 +17,16 @@ type ButtonDataConditional =
   | { enabled: false };
 
 export type PagerButtons = {
-  prev?: ButtonData;
-  next?: ButtonData;
-  first?: ButtonDataConditional;
-  last?: ButtonDataConditional;
+  prev: ButtonData;
+  next: ButtonData;
+  first: ButtonDataConditional;
+  last: ButtonDataConditional;
 };
 
 export type PagerTexts = {
-  registryName?: string;
-  registryAmountOf?: string;
-  gotoAltText?: string;
+  registryName: string;
+  registryAmountOf: string;
+  gotoAltText: string;
 };
 
 type PagerProps = {
@@ -34,8 +35,8 @@ type PagerProps = {
   recordsPerPage: number;
   onPageChange: (page: number) => void;
   paginated: number | null;
-  buttons?: PagerButtons;
-  pagination?: PagerTexts;
+  buttons?: Partial<PagerButtons>;
+  pagination?: Partial<PagerTexts>;
   className?: string;
 };
 
@@ -103,33 +104,37 @@ export function TablePager({
   const txtData = { ...defaultUI.pagination, ...pagination };
 
   return totalPages <= 1 ? null : (
-    <div className={`flex gap-1 justify-center ${className}`}>
-      {btnData.first.enabled && (
-        <PagerButton
-          icon={btnData.first.icon}
-          text={btnData.first.text}
-          onClick={() => handleGoToPage(1)}
-          disabled={currentPage === 1}
-        />
-      )}
+    <div className={`flex gap-2 justify-center ${className}`}>
+      <ButtonGroup className="">
+        {btnData.first.enabled && (
+          <PagerButton
+            icon={btnData.first.icon}
+            text={btnData.first.text}
+            onClick={() => handleGoToPage(1)}
+            disabled={currentPage === 1}
+          />
+        )}
 
-      <PagerButton
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        icon={btnData.prev.icon}
-        text={btnData.prev.text}
-      />
+        <PagerButton
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+          icon={btnData.prev.icon}
+          text={btnData.prev.text}
+        />
+      </ButtonGroup>
 
       {pages ? (
-        pages.map((page) => (
-          <PagerButton
-            key={`page_${page}`}
-            onClick={() => handleGoToPage(page)}
-            disabled={currentPage === page}
-            text={txtData.gotoAltText ?? ""}
-            icon={page}
-          />
-        ))
+        <ButtonGroup>
+          {pages.map((page) => (
+            <PagerButton
+              key={`page_${page}`}
+              onClick={() => handleGoToPage(page)}
+              disabled={currentPage === page}
+              text={txtData.gotoAltText ?? ""}
+              icon={page}
+            />
+          ))}
+        </ButtonGroup>
       ) : (
         <span>
           {txtData.registryName} {currentPage} {txtData.registryAmountOf}{" "}
@@ -137,21 +142,23 @@ export function TablePager({
         </span>
       )}
 
-      <PagerButton
-        onClick={handleNext}
-        disabled={currentPage >= totalPages}
-        icon={btnData.next.icon}
-        text={btnData.next.text}
-      />
-
-      {btnData.last.enabled && (
+      <ButtonGroup>
         <PagerButton
-          onClick={() => handleGoToPage(totalPages)}
+          onClick={handleNext}
           disabled={currentPage >= totalPages}
-          icon={btnData.last.icon}
-          text={btnData.last.text}
+          icon={btnData.next.icon}
+          text={btnData.next.text}
         />
-      )}
+
+        {btnData.last.enabled && (
+          <PagerButton
+            onClick={() => handleGoToPage(totalPages)}
+            disabled={currentPage >= totalPages}
+            icon={btnData.last.icon}
+            text={btnData.last.text}
+          />
+        )}
+      </ButtonGroup>
     </div>
   );
 }
@@ -205,7 +212,8 @@ function PagerButton({
   return (
     <Button
       variant="outline"
-      className={`border-grey px-2 rounded-lg aspect-square! hover:border-secondary ${className}`}
+      className={`border-grey px-2 aspect-square hover:border-secondary text-sm ${className}`}
+      size="sm"
       onClick={() => onClick()}
       disabled={disabled}
     >
