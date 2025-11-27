@@ -82,10 +82,7 @@ export function Logs() {
           type: "error",
         });
 
-        if (err instanceof Error) {
-          throw err;
-        }
-        throw new Error("Unknown error, cannot fetch logs data");
+        console.error("Unexpected error while getting the logs:", err);
       }
     };
 
@@ -106,24 +103,27 @@ export function Logs() {
         reset={uiText.searchBar.resetBtn}
         className="search-bar"
       />
-      <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
-      <div id={LOGS_ELEMENT_ID}>
-        {logs === null || logs.value.length === 0 ? (
-          <p>{uiText.noLogsAvailable}</p>
-        ) : (
-          <LogsTable records={parseODataLogs(logs)} />
-        )}
-        <TablePager
-          currentPage={currentPage}
-          recordsAvailable={recordsAvailable}
-          onPageChange={setCurrentPage}
-          buttons={uiText.pager.buttons}
-          texts={uiText.pager.texts}
-          recordsPerPage={LOG_RECORDS_PER_PAGE}
-          paginated={3}
-          className="table-pager"
-        />
-      </div>
+      {loadMsg.message !== null ? (
+        <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
+      ) : (
+        <div id={LOGS_ELEMENT_ID}>
+          {logs === null || logs.value.length === 0 ? (
+            <p>{uiText.noLogsAvailable}</p>
+          ) : (
+            <LogsTable records={parseODataLogs(logs)} />
+          )}
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={recordsAvailable}
+            onPageChange={setCurrentPage}
+            buttons={uiText.pager.buttons}
+            texts={uiText.pager.texts}
+            recordsPerPage={LOG_RECORDS_PER_PAGE}
+            paginated={3}
+            className="table-pager"
+          />
+        </div>
+      )}
     </main>
   );
 }
