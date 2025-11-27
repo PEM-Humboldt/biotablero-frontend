@@ -49,15 +49,13 @@ export function InitiativesAdmin() {
         <h3>Administrador de iniciativas</h3>
         <Button>Crear iniciativa</Button>
       </div>
-      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
-        <ODataSearchBar
-          components={searchBarItems}
-          setSearchParams={setSearchParams}
-          submit={"submit"}
-          reset={"reset"}
-          className="bg-red-500"
-        />
-      </div>
+      <ODataSearchBar
+        components={searchBarItems}
+        setSearchParams={setSearchParams}
+        submit={"submit"}
+        reset={"reset"}
+        className="bg-red-500"
+      />
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         iniciativas
         <div className="bg-red-300 my-8">formulario edicion</div>

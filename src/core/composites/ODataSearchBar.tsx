@@ -1,8 +1,19 @@
-import { useRef, type Dispatch, type SetStateAction } from "react";
+import {
+  type FormEvent,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 import { debouncer } from "@utils/debouncer";
 import { makeODataFilterString } from "@utils/odata";
 import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
+import { Input } from "@ui/shadCN/component/input";
+import { Button } from "@ui/shadCN/component/button";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@ui/shadCN/component/native-select";
 
 type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
@@ -56,7 +67,8 @@ export function ODataSearchBar<T>({
     return searchParams;
   };
 
-  const submitSearch = () => {
+  const submitSearch = (event: FormEvent) => {
+    event.preventDefault();
     setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
   };
 
@@ -79,7 +91,6 @@ export function ODataSearchBar<T>({
         continue;
       }
       reset = true;
-      ref.value = "";
     }
 
     if (reset) {
@@ -88,13 +99,34 @@ export function ODataSearchBar<T>({
   };
 
   return (
-    <div className={className}>
+    <form
+      onSubmit={submitSearch}
+      className={`flex flex-wrap bg-white gap-2 justify-center rounded-lg m-4 px-4 py-4 items-end ${className}`}
+    >
       {components.map((component, i) => (
-        <label key={`${component.label}_${i}`}>
+        <label
+          key={`${component.label}_${i}`}
+          className={`${i === 0 ? "flex-2" : "flex-1"} text-left text-base`}
+        >
           {component.label}
 
-          {component.type !== "select" ? (
-            <input
+          {component.type === "select" ? (
+            <NativeSelect
+              ref={(element) =>
+                element &&
+                (searchRefs.current[`${component.source.join("_")}_${i}`] =
+                  element)
+              }
+              name={component.label}
+              onChange={submit === "" ? onChangeHandler : undefined}
+            >
+              <NativeSelectOption></NativeSelectOption>
+              {component.values.map((list, i) => (
+                <Option key={i} listItem={list} />
+              ))}
+            </NativeSelect>
+          ) : (
+            <Input
               ref={(element) =>
                 element &&
                 (searchRefs.current[`${component.source.join("_")}_${i}`] =
@@ -105,27 +137,22 @@ export function ODataSearchBar<T>({
               onChange={submit === "" ? onChangeHandler : undefined}
               onInput={submit === "" ? onChangeHandler : undefined}
             />
-          ) : (
-            <select
-              ref={(element) =>
-                element &&
-                (searchRefs.current[`${component.source.join("_")}_${i}`] =
-                  element)
-              }
-              name={component.label}
-              onChange={submit === "" ? onChangeHandler : undefined}
-            >
-              <option></option>
-              {component.values.map((list, i) => (
-                <Option key={i} listItem={list} />
-              ))}
-            </select>
           )}
         </label>
       ))}
-      {submit !== "" && <button onClick={submitSearch}>{submit}</button>}
-      {reset !== "" && <button onClick={clearSearch}>{reset}</button>}
-    </div>
+      <div className="w-fit flex gap-2">
+        {submit !== "" && (
+          <Button type="submit" onClick={submitSearch}>
+            {submit}
+          </Button>
+        )}
+        {reset !== "" && (
+          <Button type="reset" variant="outline" onClick={clearSearch}>
+            {reset}
+          </Button>
+        )}
+      </div>
+    </form>
   );
 }
 
@@ -138,5 +165,5 @@ function Option({
   const value = isString ? listItem : listItem.value;
   const name = isString ? listItem : listItem.name;
 
-  return <option value={value ?? name}>{name}</option>;
+  return <NativeSelectOption value={value ?? name}>{name}</NativeSelectOption>;
 }
