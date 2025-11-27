@@ -4,14 +4,13 @@ import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
 import { Portfolio } from "pages/Portfolio";
-import { InitiativesMap } from "pages/monitoring/outlet/InitiativesMap";
-import {
-  DashboardAdmin,
-  DashboardUser,
-} from "pages/monitoring/outlet/Dashboard";
+import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
+import { Dashboard } from "pages/monitoring/outlets/Dashboard";
 
 import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
+import { Logs } from "pages/monitoring/outlets/Logs";
+import { getLogs } from "pages/monitoring/api/monitoringAPI";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -47,7 +46,6 @@ export const routes = createBrowserRouter([
       },
       {
         path: "Monitoreo",
-        loader: () => checkNLoad({ requirements: { username: "geb" } }),
         lazy: async () => {
           const { Monitoring } = await import("pages/Monitoring");
           return { Component: Monitoring };
@@ -56,30 +54,34 @@ export const routes = createBrowserRouter([
           { index: true, Component: InitiativesMap },
           {
             path: "dashboard",
+            loader: () =>
+              checkNLoad({
+                requirements: {},
+                redirectPath: "/Monitoreo",
+              }),
             children: [
               {
-                path: "admin",
-                Component: DashboardAdmin,
+                index: true,
+                Component: Dashboard,
                 loader: () =>
                   checkNLoad({
-                    requirements: { roles: ["Admin"] },
-                    redirectPath: "/Monitoreo",
-                    fetchData: randomNum,
-                    fetchCriticalData: randomNumCritical,
-                  }),
-              },
-              {
-                path: "user",
-                Component: DashboardUser,
-                loader: () =>
-                  checkNLoad({
-                    requirements: { roles: ["User"] },
+                    requirements: {},
                     redirectPath: "/Monitoreo",
                     fetchData: randomNum,
                     fetchCriticalData: randomNumCritical,
                   }),
               },
             ],
+          },
+          {
+            path: "logs",
+            Component: Logs,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["Admin"] },
+                redirectPath: "/Monitoreo",
+                fetchCriticalData: () => getLogs(),
+              }),
           },
         ],
       },
