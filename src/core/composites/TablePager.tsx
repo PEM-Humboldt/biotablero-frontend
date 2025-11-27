@@ -1,32 +1,41 @@
 import { Button } from "@ui/shadCN/component/button";
 import { useMemo, type ReactNode } from "react";
+import { defaultUI } from "@composites/tablePager/layout/uiText";
 
 type ButtonData = {
   text: string;
   icon?: string | ReactNode;
 };
 
-type PagerButtons = {
-  prev: ButtonData;
-  next: ButtonData;
-  first?: ButtonData;
-  last?: ButtonData;
+type ButtonDataConditional =
+  | {
+      enabled: true;
+      text: string;
+      icon?: string | ReactNode;
+    }
+  | { enabled: false };
+
+export type PagerButtons = {
+  prev?: ButtonData;
+  next?: ButtonData;
+  first?: ButtonDataConditional;
+  last?: ButtonDataConditional;
 };
 
-type PagerTexts = {
-  registryPageName: string;
-  registryPageOf: string;
+export type PagerTexts = {
+  registryName?: string;
+  registryAmountOf?: string;
   gotoAltText?: string;
 };
 
 type PagerProps = {
   currentPage: number;
   recordsAvailable: number;
-  buttons: PagerButtons;
-  texts: PagerTexts;
   recordsPerPage: number;
   onPageChange: (page: number) => void;
   paginated: number | null;
+  buttons?: PagerButtons;
+  pagination?: PagerTexts;
   className?: string;
 };
 
@@ -61,7 +70,7 @@ export function TablePager({
   currentPage,
   recordsAvailable,
   buttons,
-  texts,
+  pagination,
   recordsPerPage,
   onPageChange,
   paginated,
@@ -90,12 +99,15 @@ export function TablePager({
     [currentPage, totalPages, paginated],
   );
 
+  const btnData = { ...defaultUI.buttons, ...buttons };
+  const txtData = { ...defaultUI.pagination, ...pagination };
+
   return totalPages <= 1 ? null : (
     <div className={`flex gap-1 justify-center ${className}`}>
-      {buttons.first && (
+      {btnData.first.enabled && (
         <PagerButton
-          icon={buttons.first.icon}
-          text={buttons.first.text}
+          icon={btnData.first.icon}
+          text={btnData.first.text}
           onClick={() => handleGoToPage(1)}
           disabled={currentPage === 1}
         />
@@ -104,8 +116,8 @@ export function TablePager({
       <PagerButton
         onClick={handlePrevious}
         disabled={currentPage === 1}
-        icon={buttons.prev.icon}
-        text={buttons.prev.text}
+        icon={btnData.prev.icon}
+        text={btnData.prev.text}
       />
 
       {pages ? (
@@ -114,13 +126,13 @@ export function TablePager({
             key={`page_${page}`}
             onClick={() => handleGoToPage(page)}
             disabled={currentPage === page}
-            text={texts.gotoAltText ?? ""}
+            text={txtData.gotoAltText ?? ""}
             icon={page}
           />
         ))
       ) : (
         <span>
-          {texts.registryPageName} {currentPage} {texts.registryPageOf}{" "}
+          {txtData.registryName} {currentPage} {txtData.registryAmountOf}{" "}
           {totalPages}
         </span>
       )}
@@ -128,16 +140,16 @@ export function TablePager({
       <PagerButton
         onClick={handleNext}
         disabled={currentPage >= totalPages}
-        icon={buttons.next.icon}
-        text={buttons.next.text}
+        icon={btnData.next.icon}
+        text={btnData.next.text}
       />
 
-      {buttons.last && (
+      {btnData.last.enabled && (
         <PagerButton
           onClick={() => handleGoToPage(totalPages)}
           disabled={currentPage >= totalPages}
-          icon={buttons.last.icon}
-          text={buttons.last.text}
+          icon={btnData.last.icon}
+          text={btnData.last.text}
         />
       )}
     </div>

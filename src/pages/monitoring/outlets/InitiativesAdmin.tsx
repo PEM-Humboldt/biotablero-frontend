@@ -67,17 +67,6 @@ export function InitiativesAdmin() {
         currentPage={currentPage}
         recordsAvailable={initiativesAvailable}
         onPageChange={setCurrentPage}
-        buttons={{
-          prev: { text: "Anterior", icon: "<" },
-          next: { text: "siguiente", icon: ">" },
-          first: { text: "Primera", icon: "«" },
-          last: { text: "Última", icon: "»" },
-        }}
-        texts={{
-          registryPageName: "Página",
-          registryPageOf: "de",
-          gotoAltText: "ir a",
-        }}
         recordsPerPage={INITIATIVES_PER_PAGE}
         paginated={3}
       />
