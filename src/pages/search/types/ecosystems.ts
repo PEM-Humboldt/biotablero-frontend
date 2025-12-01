@@ -31,9 +31,3 @@ export const coverageKeys = {
   T: 3,
 } as const;
 
-export interface CoverageResponse {
-  ano: number;
-  natural: number;
-  secundaria: number;
-  transformada: number;
-}
