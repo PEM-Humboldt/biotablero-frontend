@@ -33,10 +33,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
 import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
-
-// percentage helper
-const getPercentage = (p: number, t: number) =>
-  parseFloat(((p * 100) / t).toFixed(2));
+import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 export default function Ecosystems() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
@@ -47,7 +44,7 @@ export default function Ecosystems() {
   const [showInfoMain, setShowInfoMain] = useState(false);
   const [infoShown, setInfoShown] = useState<Set<string>>(new Set());
 
-  const [coverage, setCoverage] = useState([]);
+  const [coverageData, setCoverageData] = useState<SmallStackedBarData[]>([]);
   const [PAAreas, setPAAreas] = useState([]);
   const [PATotalArea, setPATotalArea] = useState(0);
   const [PADivergentData, setPADivergentData] = useState(false);
@@ -83,11 +80,11 @@ export default function Ecosystems() {
     switchLayer();
 
     // COVERAGE
-    SearchAPI.requestMetricsValues(
+    SearchAPI.requestMetricsValues<"Coverage">(
       "Coverage",
       Number(areaIdId),
     ).then((res) => {
-        setCoverage(transformCoverageValues(res));
+        setCoverageData(transformCoverageValues(res));
         setMessages((m) => ({ ...m, cov: null }));
       })
       .catch(() => {
@@ -247,7 +244,7 @@ export default function Ecosystems() {
       <div className="graphcontainer pt5">
         {/* COVERAGE */}
         <Coverage
-          coverage={coverage}
+          coverage={coverageData}
           infoOpen={infoShown.has("coverage")}
           toggleInfo={() => toggleInfo("coverage")}
           texts={texts.coverage}

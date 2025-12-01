@@ -1,9 +1,9 @@
 import {
-  CoverageResponse,
   SEPAData,
   coverageLabels,
   SEPADataExt,
 } from "pages/search/types/ecosystems";
+import { MetricTypesMap } from "pages/search/types/metrics";
 
 export const transformPAValues = (
   rawData: Array<SEPAData>,
@@ -39,7 +39,7 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (rawData: Array<CoverageResponse>) => {
+export const transformCoverageValues = (rawData: Array<MetricTypesMap["Coverage"]>) => {
   if (!rawData) return [];
   const data = rawData[0];
 

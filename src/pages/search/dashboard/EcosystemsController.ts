@@ -4,6 +4,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";
 import base64 from "pages/search/utils/base64ArrayBuffer";
+import { MetricsUtils } from "pages/search/utils/metrics";
 
 /**
  * Controller for Ecosystems Component
@@ -26,53 +27,72 @@ export class EcosystemsController {
     this.areaId = areaId;
   }
 
+
   /**
-   * Get the raster layers required for a Forest Loss Persistence period
+   * Get the raster layers required for a Coverage type
    *
-   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period 
+   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
   async getCoveragesLayers(): Promise<Array<RasterLayer>> {
-    if (this.areaType && this.areaId) {
+    if (this.areaId) {
       const requests: Array<Promise<any>> = [];
 
       Object.values(coverageKeys).forEach((category) => {
-        const { request, source } = SearchAPI.requestMetricsLayer(          
+        const { request, source } = SearchAPI.requestMetricsLayer(
           "Coverage",
           "2020",
           category,
           Number(this.areaId),
         );
         requests.push(request);
-        this.activeRequests.set(category, source);
+        this.activeRequests.set(`${category}`, source);
       });
 
       const res = await Promise.all(requests);
 
-      coverageCategories.forEach((category) => {
-        this.activeRequests.delete(category);
+      Object.values(coverageKeys).forEach((category) => {
+        this.activeRequests.delete(`${category}`);
       });
 
       if (res.includes("request canceled")) throw Error("request canceled");
 
-      return coverageCategories.map((category, idx) => ({
+      const layersRequests: Array<Promise<Blob>> = [];
+      res.forEach((response) => {
+        const request = SearchAPI.getLayerData(response);
+        layersRequests.push(request);
+      });
+
+      const layerResponses = await Promise.all(layersRequests);
+
+      const layersBase64Promises: Array<Promise<string>> = [];
+
+      layerResponses.forEach((response) => {
+        const layerBase64 = MetricsUtils.blobToBase64(response);
+        layersBase64Promises.push(layerBase64);
+      });
+
+      const layersBase64 = await Promise.all(layersBase64Promises);
+
+      return Object.keys(coverageKeys).map((category, index) => ({
         id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data,
-        )}`,
+        data: layersBase64[index],
         selected: false,
         paneLevel: 2,
       }));
     }
-
     throw Error("Polygon and area undefined");
   }
 
   /**
-   * Get the raster layers required for a Forest Loss Persistence period
+   * Get the raster layers required for a Special Ecosystem type
    *  @param {string} seType Special Ecosystem type
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the Special Ecosystem type
    */
+
+  // TODO: Refactor to use SearchAPI when available
+  
+  /*
   async getCoveragesSELayer(seType: string): Promise<Array<RasterLayer>> {
     if (this.areaType && this.areaId) {
       const requests: Array<Promise<any>> = [];
@@ -107,7 +127,8 @@ export class EcosystemsController {
 
     throw Error("Polygon and area undefined");
   }
-
+  */
+ 
   /**
    * Send the cancel signal to all active requests and remove them from the map
    */

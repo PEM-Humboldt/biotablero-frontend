@@ -17,6 +17,7 @@ import { polygonFeature } from "pages/search/types/dashboard";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
+import { MetricTypesMap } from "pages/search/types/metrics";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -74,11 +75,11 @@ export class ForestLossPersistenceController {
       throw Error("Area undefined");
     }
 
-    return SearchAPI.requestMetricsValues(
+    return SearchAPI.requestMetricsValues<"LossPersistence">(
       "LossPersistence",
       Number(this.areaId),
     )
-      .then((data: ForestLPRawDataPolygon[]) => {
+      .then((data: Array<MetricTypesMap["LossPersistence"]>) => {
         const mappedData = data.map((item) => {
           const itemMapped = MetricsUtils.mapLPResponse(item);
           return MetricsUtils.calcLPAreas(itemMapped);
