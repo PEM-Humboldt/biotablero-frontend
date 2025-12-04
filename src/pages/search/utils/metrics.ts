@@ -1,4 +1,8 @@
-import { ForestLPRawDataPolygon, LPAreas, LPResponse } from "pages/search/types/forest";
+import {
+  ForestLPRawDataPolygon,
+  LPAreas,
+  LPResponse,
+} from "pages/search/types/forest";
 import { MetricTypesMap } from "pages/search/types/metrics";
 
 /**

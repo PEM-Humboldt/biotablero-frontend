@@ -39,7 +39,9 @@ export const transformPAValues = (
   return data;
 };
 
-export const transformCoverageValues = (rawData: Array<MetricTypesMap["Coverage"]>) => {
+export const transformCoverageValues = (
+  rawData: Array<MetricTypesMap["Coverage"]>,
+) => {
   if (!rawData) return [];
   const data = rawData[0];
 
