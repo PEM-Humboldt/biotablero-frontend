@@ -4,6 +4,7 @@ import React, {
   useContext,
   useCallback,
   useMemo,
+  useRef,
 } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
@@ -40,9 +41,12 @@ export default function Ecosystems() {
   const { areaType, areaId, areaHa } = context;
 
   const controller = useMemo(() => new EcosystemsController(), []);
+  const isMounted = useRef(true);
 
   const [showInfoMain, setShowInfoMain] = useState(false);
   const [infoShown, setInfoShown] = useState<Set<string>>(new Set());
+
+  const [period, setPeriod] = useState<string>("");
 
   const [coverageData, setCoverageData] = useState<SmallStackedBarData[]>([]);
   const [PAAreas, setPAAreas] = useState([]);
@@ -71,80 +75,88 @@ export default function Ecosystems() {
   const areaTypeId = areaType?.id;
   const areaIdId = areaId?.id.toString();
   const areaIdStr = areaIdId ?? "";
+  const periodRef = useRef(period);
 
   useEffect(() => {
+    periodRef.current = period;
+  }, [period]);
+
+  const contextRef = useRef(context);
+  useEffect(() => {
+    contextRef.current = context;
+  }, [context]);
+
+  const switchLayer = useCallback((periodArg?: string) => {
+    const contextRefCurrent = contextRef.current;
+
+    contextRefCurrent.setLoadingLayer(true);
+    contextRefCurrent.setMapTitle({ name: "Coberturas" });
+
+    const p = periodArg ?? periodRef.current;
+    if (!p) {
+      contextRefCurrent.setRasterLayers([]);
+      return;
+    }
+
+    controller
+      .getCoveragesLayers(p)
+      .then((layersRes) => {
+        if (!isMounted.current) return;
+        setLayers(layersRes);
+        contextRefCurrent.setRasterLayers(layersRes);
+        contextRefCurrent.setLoadingLayer(false);
+        contextRefCurrent.setMapTitle({ name: "Coberturas" });
+      })
+      .catch((e) => {
+        if (!isMounted.current) return;
+        contextRefCurrent.setLoadingLayer(false);
+        if (!e.toString().includes("request canceled")) {
+          contextRefCurrent.setLayerError?.(e.toString());
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    isMounted.current = true;
     if (!areaTypeId || !areaIdId) return;
 
     controller.setArea(areaTypeId, areaIdId);
 
     switchLayer();
 
-    // COVERAGE
-    SearchAPI.requestMetricsValues<"Coverage">(
-      "Coverage",
-      Number(areaIdId),
-    ).then((res) => {
+    SearchAPI.requestMetricsValues<"Coverage">("Coverage", Number(areaIdId))
+      .then((res) => {
+        if (!isMounted.current) return;
+
+        const obtainedPeriod = res[0]?.ano ?? "";
+        setPeriod(obtainedPeriod);
+
         setCoverageData(transformCoverageValues(res));
         setMessages((m) => ({ ...m, cov: null }));
+
+        switchLayer(obtainedPeriod);
       })
       .catch(() => {
+        if (!isMounted.current) return;
         setMessages((m) => ({ ...m, cov: "no-data" }));
+        contextRef.current.setLoadingLayer(false);
       });
-
-    //TODO: Habilitar las secciones comentadas cuando se esten listos los endpoints del nuevo backend
-
-    // PROTECTED AREAS
-
-    /*
-    BackendAPI.requestProtectedAreas(areaTypeId, areaIdId)
-      .then((res) => {
-        if (!Array.isArray(res) || !res[0]) return;
-
-        const total = res.reduce((acc, i) => acc + i.area, 0);
-        const paAreas = transformPAValues(res, areaHa!);
-
-        const noProt = paAreas.find((i) => i.key === "No Protegida");
-        setPADivergentData(Boolean(noProt?.percentage && noProt.percentage >= 0.97));
-
-        setPAAreas(paAreas);
-        setPATotalArea(total);
-        setMessages((m) => ({ ...m, pa: null }));
-      })
-      .catch(() => {
-        setMessages((m) => ({ ...m, pa: "no-data" }));
-      });
-    */
-
-    // STRATEGIC ECOSYSTEMS
-    /*
-    BackendAPI.requestStrategicEcosystems(areaTypeId, areaIdId)
-      .then((res) => {
-        if (!Array.isArray(res)) return;
-
-        const totalObj = res.find((o) => o.type === "Total");
-        const total = totalObj ? totalObj.area : 0;
-
-        setSEAreas(res.slice(1));
-        setSETotalArea(total);
-        setMessages((m) => ({ ...m, se: null }));
-      })
-      .catch(() => {
-        setMessages((m) => ({ ...m, se: "no-data" }));
-      });
-    */
 
     // TEXTS
     ["ecosystems", "coverage", "pa", "se"].forEach((section) =>
       BackendAPI.requestSectionTexts(section)
         .then((res) => {
+          if (!isMounted.current) return;
           setTexts((t) => ({ ...t, [section]: res }));
         })
         .catch(() => {
+          if (!isMounted.current) return;
           setTexts((t) => ({ ...t, [section]: {} }));
         }),
     );
 
     return () => {
+      isMounted.current = false;
       context.clearLayers();
       controller.cancelActiveRequests();
     };
@@ -153,7 +165,6 @@ export default function Ecosystems() {
   /**
    * Toggles the visibility state of the main tooltip.
    */
-
   const toggleInfoGeneral = () => setShowInfoMain((v) => !v);
 
   /**
@@ -168,31 +179,6 @@ export default function Ecosystems() {
       return newSet;
     });
   };
-
-  /**
-   * Requests and updates raster layers corresponding to coverages.
-   */
-
-  const switchLayer = useCallback(() => {
-    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      context;
-
-    setLoadingLayer(true);
-
-    controller
-      .getCoveragesLayers()
-      .then((layers) => {
-        setLayers(layers);
-        setRasterLayers(layers);
-        setLoadingLayer(false);
-        setMapTitle({ name: "Coberturas" });
-      })
-      .catch((e) => {
-        if (!e.toString().includes("request canceled")) {
-          setLayerError(e.toString());
-        }
-      });
-  }, [context]);
 
   /**
    * Set active strategic ecosystem graph
@@ -211,7 +197,6 @@ export default function Ecosystems() {
    * Set the selected layer to highlight
    *  @param {string} selectedKey Special Ecosystem type
    */
-
   const clickOnGraph = (selectedKey: string) => {
     context.setRasterLayers(
       layers.map((layer) => ({

@@ -27,31 +27,30 @@ export class EcosystemsController {
     this.areaId = areaId;
   }
 
-
   /**
    * Get the raster layers required for a Coverage type
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
-  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
+  async getCoveragesLayers(period: string): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<any>> = [];
 
-      Object.values(coverageKeys).forEach((category) => {
+      Object.keys(coverageKeys).forEach((categoryId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "Coverage",
-          "2020",
-          category,
+          period,
+          coverageKeys[categoryId],
           Number(this.areaId),
         );
         requests.push(request);
-        this.activeRequests.set(`${category}`, source);
+        this.activeRequests.set(categoryId, source);
       });
 
       const res = await Promise.all(requests);
 
-      Object.values(coverageKeys).forEach((category) => {
-        this.activeRequests.delete(`${category}`);
+      Object.keys(coverageKeys).forEach((categoryKey) => {
+        this.activeRequests.delete(categoryKey);
       });
 
       if (res.includes("request canceled")) throw Error("request canceled");
@@ -91,7 +90,7 @@ export class EcosystemsController {
    */
 
   // TODO: Refactor to use SearchAPI when available
-  
+
   /*
   async getCoveragesSELayer(seType: string): Promise<Array<RasterLayer>> {
     if (this.areaType && this.areaId) {
@@ -128,7 +127,7 @@ export class EcosystemsController {
     throw Error("Polygon and area undefined");
   }
   */
- 
+
   /**
    * Send the cancel signal to all active requests and remove them from the map
    */
