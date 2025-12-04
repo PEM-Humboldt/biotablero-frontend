@@ -85,7 +85,6 @@ body {
 img.Modulos {
   background-color: rgba(17, 17, 17, 0.52);
   outline: 2px solid var(--blanco);
-  outline-offset: 1px;
   backdrop-filter: blur(2px);
   padding: 23% 17%;
   border-radius: 11px 11px 0 11px;
@@ -93,7 +92,7 @@ img.Modulos {
   margin: auto;
 }
 .contenedor {
-  padding: 19px;
+  padding: 1rem;
 }
 /* Cenefa*/
 .Cenefa {
@@ -283,11 +282,11 @@ img.Modulos {
     justify-content: center;
   }
   #CarrouselBio .contenedor {
-    display: inline-flex;
-    justify-content: center;
+    display: flex;
+    justify-content: space-between;
   }
   #CarrouselBio .contenedor span {
-    font-size: 1.8em;
+    font-size: 1rem;
   }
   #Tabs b {
     border: 1px solid #d4d4d4;
@@ -481,7 +480,7 @@ img.Modulos {
 }
 @media (min-width: 1024px) {
   #CarrouselBio .contenedor {
-    padding: 19px 19px;
+    padding: 19px 0.5rem;
   }
 }
 /* Keyframes: */

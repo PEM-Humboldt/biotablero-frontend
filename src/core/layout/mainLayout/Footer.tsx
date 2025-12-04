@@ -16,14 +16,14 @@ export function Footer({ logos }: FooterProps) {
   const collaborators = logos ? [...logos] : [];
 
   return (
-    <footer className="footerflex">
-      <div className="institutoDiv">
+    <footer className="flex justify-between items-center py-2 px-1">
+      <div>
         {collaborators.length > 0 && (
           <a href={footerInfo.IAVH.url}>
             <img src={footerInfo.IAVH.img} alt={footerInfo.IAVH.linkAlt} />
           </a>
         )}
-        <div>
+        <div className="text-white mt-1">
           {footerInfo.IAVH.tag}
           <br />
           <b>{footerInfo.IAVH.name}</b>
@@ -32,7 +32,7 @@ export function Footer({ logos }: FooterProps) {
 
       <div className="colaboradoresDiv">
         {collaborators.length > 0 && (
-          <div className="colaboradores">
+          <div className="colaboradores flex">
             <span>{footerInfo.uiTxt.collaboratorsTitle}</span>
             {collaborators.map((collaborator) => (
               <a
