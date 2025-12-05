@@ -1,6 +1,6 @@
 import {
-  type FormEvent,
   useRef,
+  type FormEvent,
   type Dispatch,
   type SetStateAction,
 } from "react";
@@ -21,6 +21,12 @@ type ODataSearchBarProps<T, F> = {
   className: string;
   submit: string;
   reset: string;
+};
+
+type SearchFiledProps<T> = {
+  component: SearchBarComponent<T>;
+  onUpdateSearch?: () => void;
+  fieldRef: (element: HTMLInputElement | HTMLSelectElement | null) => void;
 };
 
 /**
@@ -107,37 +113,19 @@ export function ODataSearchBar<T>({
         <label
           key={`${component.label}_${i}`}
           className={`${i === 0 ? "flex-2" : "flex-1"} text-left text-base`}
+          htmlFor={component.label}
         >
           {component.label}
 
-          {component.type === "select" ? (
-            <NativeSelect
-              ref={(element) =>
-                element &&
-                (searchRefs.current[`${component.source.join("_")}_${i}`] =
-                  element)
-              }
-              name={component.label}
-              onChange={submit === "" ? onChangeHandler : undefined}
-            >
-              <NativeSelectOption></NativeSelectOption>
-              {component.values.map((list, i) => (
-                <Option key={i} listItem={list} />
-              ))}
-            </NativeSelect>
-          ) : (
-            <Input
-              ref={(element) =>
-                element &&
-                (searchRefs.current[`${component.source.join("_")}_${i}`] =
-                  element)
-              }
-              type={component.type}
-              placeholder={component.placeholder ?? ""}
-              onChange={submit === "" ? onChangeHandler : undefined}
-              onInput={submit === "" ? onChangeHandler : undefined}
-            />
-          )}
+          <SearchField
+            fieldRef={(element) =>
+              element &&
+              (searchRefs.current[`${component.source.join("-")}_${i}`] =
+                element)
+            }
+            component={component}
+            onUpdateSearch={submit === "" ? onChangeHandler : undefined}
+          />
         </label>
       ))}
       <div className="w-fit flex gap-2">
@@ -154,6 +142,44 @@ export function ODataSearchBar<T>({
       </div>
     </form>
   );
+}
+
+// NOTE: No se usa ForwardRef pues ya está en deshuso y va a ser eliminado
+function SearchField<T>({
+  component,
+  onUpdateSearch,
+  fieldRef,
+}: SearchFiledProps<T>) {
+  const commonParams = {
+    ref: fieldRef,
+    name: component.label,
+    id: component.label,
+    placeholder: component.placeholder ?? "",
+    type: component.type,
+  };
+
+  switch (component.type) {
+    case "select": {
+      return (
+        <NativeSelect {...commonParams} onChange={onUpdateSearch}>
+          <NativeSelectOption value="">
+            {component.placeholder ?? ""}
+          </NativeSelectOption>
+
+          {component.values.map((listItem, i) => (
+            <Option key={i} listItem={listItem} />
+          ))}
+        </NativeSelect>
+      );
+    }
+
+    case "text":
+    case "number":
+      return <Input onChange={onUpdateSearch} {...commonParams} />;
+
+    case "date":
+      return <Input onInput={onUpdateSearch} {...commonParams} />;
+  }
 }
 
 function Option({
