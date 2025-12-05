@@ -44,7 +44,8 @@ export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
       dateOperator: "le",
     },
     {
-      label: "Seleccione el tipo",
+      label: "Tipo de registro",
+      placeholder: "Seleciona el tipo",
       type: "select",
       source: ["type"],
       values: await getTypeValues(),

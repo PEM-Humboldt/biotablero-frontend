@@ -9,6 +9,7 @@ import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout
 import type { ODataInitiative } from "pages/monitoring/types/requestParams";
 import { getInitiatives } from "pages/monitoring/api/monitoringAPI";
 import { TablePager } from "@composites/TablePager";
+import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<ODataInitiative | null>(null);
@@ -18,6 +19,8 @@ export function InitiativesAdmin() {
     orderby: "creationDate desc",
   });
   const prevSearchParamsRef = useRef(searchParams);
+
+  // NOTE: desplegar la iniciativa que está como param en la url
 
   useEffect(() => {
     const loadInitiatives = async () => {
@@ -56,6 +59,7 @@ export function InitiativesAdmin() {
         reset={"reset"}
         className="bg-red-500"
       />
+      <InitiativeDataForm />
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         iniciativas
         <div className="bg-red-300 my-8">formulario edicion</div>
