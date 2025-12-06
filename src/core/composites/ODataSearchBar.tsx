@@ -1,5 +1,6 @@
 import {
   useRef,
+  useState,
   type FormEvent,
   type Dispatch,
   type SetStateAction,
@@ -7,7 +8,11 @@ import {
 
 import { debouncer } from "@utils/debouncer";
 import { makeODataFilterString } from "@utils/odata";
-import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
+import type {
+  ODataParams,
+  SearchBarComponent,
+  SelectValue,
+} from "@appTypes/odata";
 import { Input } from "@ui/shadCN/component/input";
 import { Button } from "@ui/shadCN/component/button";
 import {
@@ -19,15 +24,24 @@ type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
   setSearchParams: Dispatch<SetStateAction<F>>;
   className: string;
-  submit: string;
-  reset: string;
+  submit?: string;
+  reset?: string;
 };
 
 type SearchFiledProps<T> = {
   component: SearchBarComponent<T>;
   onUpdateSearch?: () => void;
   fieldRef: (element: HTMLInputElement | HTMLSelectElement | null) => void;
+  cache: SearchCache;
 };
+
+type CachedField = {
+  current: SelectValue[];
+  dataPool: Record<string, SelectValue[]>;
+  updater: (value: string) => Promise<SelectValue[]> | SelectValue[];
+};
+
+type SearchCache = Record<string, CachedField>;
 
 /**
  * Renders a configurable OData search bar with text and select inputs.
@@ -53,14 +67,19 @@ export function ODataSearchBar<T>({
   const searchRefs = useRef<
     Record<string, HTMLInputElement | HTMLSelectElement>
   >({});
-
+  const [cache, setCache] = useState<SearchCache>({});
   const getSearchValues = () => {
     const filters: string[] = [];
     const searchParams: ODataParams = {};
 
     components.forEach((component, i) => {
-      const element = searchRefs.current[`${component.source.join("_")}_${i}`];
+      const element = searchRefs.current[`${component.source.join("-")}_${i}`];
       const value = element?.value.trim() ?? "";
+
+      if (component.childUpdater !== undefined) {
+        const { label, childUpdater } = component;
+        void onParentUpdate(label, value, cache, setCache, childUpdater);
+      }
 
       const filter = makeODataFilterString(component, value);
       if (filter) {
@@ -91,6 +110,15 @@ export function ODataSearchBar<T>({
 
   const clearSearch = () => {
     let reset = false;
+
+    setCache((oldCache) => {
+      const cleanCache = { ...oldCache };
+      for (const value in cleanCache) {
+        cleanCache[value].current = [];
+      }
+
+      return cleanCache;
+    });
 
     for (const ref of Object.values(searchRefs.current)) {
       if (!ref || ref.value === "") {
@@ -123,8 +151,9 @@ export function ODataSearchBar<T>({
               (searchRefs.current[`${component.source.join("-")}_${i}`] =
                 element)
             }
-            component={component}
             onUpdateSearch={submit === "" ? onChangeHandler : undefined}
+            component={component}
+            cache={cache}
           />
         </label>
       ))}
@@ -149,6 +178,7 @@ function SearchField<T>({
   component,
   onUpdateSearch,
   fieldRef,
+  cache,
 }: SearchFiledProps<T>) {
   const commonParams = {
     ref: fieldRef,
@@ -160,15 +190,31 @@ function SearchField<T>({
 
   switch (component.type) {
     case "select": {
+      let values: SelectValue[];
+
+      if (component.dependsOnLabel !== undefined) {
+        const dynamicValues = cache[component?.dependsOnLabel]?.current || [];
+        values = dynamicValues;
+      } else {
+        values = component.values || [];
+      }
+
+      const disable = values.length === 0;
+
       return (
-        <NativeSelect {...commonParams} onChange={onUpdateSearch}>
+        <NativeSelect
+          {...commonParams}
+          onChange={onUpdateSearch}
+          disabled={disable}
+        >
           <NativeSelectOption value="">
             {component.placeholder ?? ""}
           </NativeSelectOption>
 
-          {component.values.map((listItem, i) => (
-            <Option key={i} listItem={listItem} />
-          ))}
+          {values.map((item, i) => {
+            const key = typeof item === "string" ? item : item.value;
+            return <Option key={`${key}_${i}`} listItem={item} />;
+          })}
         </NativeSelect>
       );
     }
@@ -182,14 +228,57 @@ function SearchField<T>({
   }
 }
 
-function Option({
-  listItem,
-}: {
-  listItem: string | { value: string; name: string };
-}) {
+function Option({ listItem }: { listItem: SelectValue }) {
   const isString = typeof listItem === "string";
   const value = isString ? listItem : listItem.value;
   const name = isString ? listItem : listItem.name;
 
   return <NativeSelectOption value={value ?? name}>{name}</NativeSelectOption>;
+}
+
+async function onParentUpdate(
+  label: string,
+  value: string | number,
+  cache: SearchCache,
+  cacheUpdater: Dispatch<SetStateAction<SearchCache>>,
+  childUpdater: (
+    value: string | number,
+  ) => Promise<SelectValue[]> | SelectValue[],
+) {
+  if (value === "") {
+    if (cache[label]?.current.length > 0) {
+      cacheUpdater((oldCache) => ({
+        ...oldCache,
+        [label]: { ...oldCache[label], current: [] },
+      }));
+    }
+    return;
+  }
+
+  if (cache[label] && cache[label]?.dataPool && cache[label].dataPool[value]) {
+    if (cache[label].current === cache[label].dataPool[value]) {
+      return;
+    }
+    const newCurrent = cache[label].dataPool[value];
+    const updatedLabel = { ...cache[label], current: newCurrent };
+    cacheUpdater((oldCache) => ({ ...oldCache, [label]: updatedLabel }));
+    return;
+  }
+
+  try {
+    const newValues = await childUpdater(value);
+
+    cacheUpdater((oldCache) => {
+      const oldPool = oldCache[label]?.dataPool || {};
+      const updatedLabel = {
+        updater: childUpdater,
+        current: newValues,
+        dataPool: { ...oldPool, [value]: newValues },
+      };
+
+      return { ...oldCache, [label]: updatedLabel };
+    });
+  } catch (err) {
+    console.error(err);
+  }
 }

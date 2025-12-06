@@ -31,13 +31,18 @@ export interface ODataParams {
   search?: string;
 }
 
+export type SelectValue = string | { value: string | number; name: string };
+
 export type SearchBarComponent<T> = {
-  source: (keyof T)[];
+  source: (keyof T)[] | string[];
   label: string;
   placeholder?: string;
   oDataEntity?: string;
+  childUpdater?: (
+    value: string | number,
+  ) => Promise<SelectValue[]> | SelectValue[];
 } & (
   | { type: "text" | "number" }
   | { type: "date"; dateOperator: "eq" | "ge" | "le" }
-  | { type: "select"; values: string[] | { value: string; name: string }[] }
+  | { type: "select"; values: SelectValue[] | null; dependsOnLabel?: string }
 );
