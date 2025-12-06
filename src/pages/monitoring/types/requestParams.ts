@@ -46,7 +46,6 @@ export type ODataInitiativeEntry = {
   enabled: boolean;
   locations: ODataInitiativeLocation[];
   locality: string;
-  ["location/name"]: string;
 };
 
 type ODataResponse<T> = {

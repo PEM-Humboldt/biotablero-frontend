@@ -20,6 +20,7 @@ import type {
   ODataLog,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
+import type { Location } from "pages/monitoring/types/monitoring";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -224,3 +225,24 @@ export const getLogs = createODataGetter<ODataLog>("Logs");
  * @returns A `Promise` that resolves to an `ODataInitiatives` object.
  */
 export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
+
+/**
+ * Fetches all the parent locations
+ */
+export async function getLocation(parentId?: number | string) {
+  try {
+    const queryParam = parentId !== undefined ? `?parentId=${parentId}` : "";
+    const res = await monitoringAPI<Location[]>({
+      type: "get",
+      endpoint: `Location${queryParam}`,
+    });
+    if (isMonitoringAPIError(res)) {
+      throw new Error(res.message);
+    }
+
+    return res.map(({ name, id }) => ({ name, value: id }));
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
