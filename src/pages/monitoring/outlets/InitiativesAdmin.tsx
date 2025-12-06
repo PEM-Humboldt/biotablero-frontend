@@ -55,7 +55,6 @@ export function InitiativesAdmin() {
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
-        submit={"submit"}
         reset={"reset"}
         className="bg-red-500"
       />
