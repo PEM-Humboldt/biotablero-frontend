@@ -1,133 +1,141 @@
-import { Form } from "react-router";
-import { Button } from "@ui/shadCN/component/button";
-import { Input } from "@ui/shadCN/component/input";
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@ui/shadCN/component/native-select";
-import { Textarea } from "@ui/shadCN/component/textarea";
+  type ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { Form } from "react-router";
 
-export function InitiativeDataForm(data) {
-  const handleSubmit = () => {
-    console.log("carajo");
+import { Button } from "@ui/shadCN/component/button";
+
+// import {
+//   isMonitoringAPIError,
+//   monitoringAPI,
+// } from "pages/monitoring/api/monitoringAPI";
+import type {
+  InitiativeDataForm,
+  InitiativeToUpadateForm,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { InitiativeLocations } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLocations";
+import { InitiativeLeaders } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLeaders";
+import { InitiativeContact } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeContact";
+import { InitiativeImages } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeImages";
+import { InitiativeGeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeGeneralInfo";
+import { debouncer } from "@utils/debouncer";
+
+const getInitialState = (
+  dataToUpdate?: InitiativeToUpadateForm,
+): InitiativeDataForm => {
+  if (dataToUpdate) {
+    const { id: _, ...oldInitiativeData } = dataToUpdate;
+    return oldInitiativeData;
+  }
+
+  return {
+    name: "",
+    shortName: "",
+    description: "",
+    locations: [],
+    contacts: [],
+    users: [],
+  };
+};
+
+export function InitiativeDataForm({
+  dataToUpdate,
+}: {
+  dataToUpdate?: InitiativeToUpadateForm;
+}) {
+  const [formID, setformID] = useState(0);
+
+  const initiativeData = useRef<InitiativeDataForm>(
+    getInitialState(dataToUpdate),
+  );
+
+  useEffect(() => {
+    if (dataToUpdate) {
+      initiativeData.current = getInitialState(dataToUpdate);
+      setformID((prev) => prev + 1); // Forzamos a los hijos a mostrar la info cargada
+    }
+  }, [dataToUpdate]);
+
+  const handleReset = () => {
+    initiativeData.current = getInitialState(dataToUpdate);
+    setformID((prev) => prev + 1);
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      console.log(initiativeData.current);
+      // const res = await monitoringAPI({
+      //   type: dataToUpdate === undefined ? "put" : "post",
+      //   endpoint: `initiative${dataToUpdate !== undefined && `/${dataToUpdate.id}`}`,
+      //   options: {
+      //     data: initiativeData,
+      //     headers: {
+      //       accept: "application/json",
+      //       "Content-Type": "application/json",
+      //     },
+      //   },
+      // });
+      //
+      // if (isMonitoringAPIError(res)) {
+      //   throw new Error(res.message);
+      // }
+
+      // TODO: Confirmación de usuario y cerrar pantalla
+      // console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <Form action="" onSubmit={handleSubmit}>
+    <Form
+      action=""
+      onReset={handleReset}
+      onSubmit={handleSubmit}
+      className="bg-white flex flex-col gap-8 m-4 p-4 rounded-lg"
+    >
       <fieldset>
-        <legend>Sobre la iniciativa</legend>
-        <label htmlFor="name">
-          Nombre
-          <Input
-            name="name"
-            id="name"
-            placeholder="Juntos por la Amazonía"
-            type="text"
-          />
-        </label>
-
-        <label>
-          Descripción
-          <Textarea placeholder="Esta iniciativa busca..." />
-        </label>
-
-        {/* NOTE: Agregar la comprobación de tamaño */}
-        <label>
-          Subir imagen para el perfíl de la iniciativa
-          <Input type="file" accept="image/jpg, image/png, image/webp" />
-        </label>
-
-        {/* NOTE: Agregar la comprobación de tamaño */}
-        <label>
-          Subir imagen para el banner de la iniciativa
-          <Input type="file" accept="image/jpg, image/png, image/webp" />
-        </label>
-
-        <fieldset>
-          <legend>Inivitar a participar a la iniciativa</legend>
-
-          <fieldset>
-            <legend>Líderes y liderezas</legend>
-            <h3>Actuales</h3>
-            <ul>
-              <li>Lidereza 1</li>
-              <li>Lidereza 2</li>
-            </ul>
-            <h3>A invitar</h3>
-            <ul>
-              <li>Lidereza 1</li>
-              <li>Lidereza 2</li>
-            </ul>
-            <label>
-              Correo del líder o lidereza a invitar
-              <Input placeholder="correo@electrónico.com" type="email" />
-            </label>
-            <Button type="button">Añadir</Button>
-          </fieldset>
-
-          <fieldset>
-            <legend>Participantes</legend>
-            <h3>Actuales</h3>
-            <ul>
-              <li>participante 1</li>
-              <li>participante 2</li>
-            </ul>
-            <h3>A invitar</h3>
-            <ul>
-              <li>participante 1</li>
-              <li>participante 2</li>
-            </ul>
-            <label>
-              Correo del participante a invitar
-              <Input placeholder="correo@electrónico.com" type="email" />
-            </label>
-            <Button type="button">Añadir</Button>
-          </fieldset>
-        </fieldset>
+        <legend>Información general</legend>
+        <InitiativeGeneralInfo
+          key={formID}
+          formDataRef={initiativeData}
+          formErrors={{ name: ["carajo"] }}
+        />
       </fieldset>
 
       <fieldset>
-        <legend>Ubicación</legend>
-
-        {/* NOTE: Cambiar por combobox */}
-        <label>
-          Departamento
-          <NativeSelect>
-            <NativeSelectOption value="">
-              Selecciona un departamento
-            </NativeSelectOption>
-          </NativeSelect>
-        </label>
-        <label>
-          Municipio
-          <Input placeholder="Juntos por la Amazonía" type="text" />
-        </label>
-        <label>
-          Localidad
-          <Input placeholder="Juntos por la Amazonía" type="text" />
-        </label>
+        <legend>Dónde está ubicada</legend>
+        <InitiativeLocations />
       </fieldset>
 
       <fieldset>
-        <legend>Contacto</legend>
-        <label>
-          Correo electrónico
-          <Input type="email" placeholder="hola@dominio.com" />
-        </label>
-        <label>
-          Teléfono
-          <Input type="tel" placeholder="hola@dominio.com" />
-        </label>
+        <legend>Información de contacto</legend>
+        <InitiativeContact />
       </fieldset>
 
-      <label>
-        Nombre de la iniciativa
-        <Input placeholder="Juntos por la Amazonía" type="text" />
-      </label>
-      <Button type="reset" variant="outline">
-        Reiniciar el formulario
-      </Button>
-      <Button>Crear la iniciativa</Button>
+      <fieldset>
+        <legend>Quienes son los y las líderezas</legend>
+        <InitiativeLeaders />
+      </fieldset>
+
+      <fieldset>
+        <legend>Imagenes de la iniciativa</legend>
+        <InitiativeImages />
+      </fieldset>
+
+      {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
+      <div className="flex flex-row-reverse gap-4">
+        <Button>Crear la iniciativa</Button>
+        <Button type="reset" variant="outline_destructive">
+          Reiniciar el formulario
+        </Button>
+      </div>
     </Form>
   );
 }
