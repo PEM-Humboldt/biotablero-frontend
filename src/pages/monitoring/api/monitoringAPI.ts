@@ -21,15 +21,11 @@ import type {
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
 import type { Location } from "pages/monitoring/types/monitoring";
+import { serializeQueryParams } from "@utils/htmlRequest";
+import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
-}
-
-interface MonitoringAPIOptions {
-  data?: Record<string, string>;
-  oData?: Partial<ODataParams>;
-  headers?: Record<string, string>;
 }
 
 type MonitoringAPIParams = {
@@ -37,11 +33,25 @@ type MonitoringAPIParams = {
 } & (
   | {
       type: "get";
-      options?: MonitoringAPIOptions;
+      options?: {
+        data?: QueryParams;
+        oData?: Partial<ODataParams>;
+        headers?: Record<string, string>;
+      };
     }
   | {
-      type: "put" | "delete" | "post";
-      options?: Omit<MonitoringAPIOptions, "oData">;
+      type: "delete";
+      options?: {
+        data?: QueryParams;
+        headers?: Record<string, string>;
+      };
+    }
+  | {
+      type: "put" | "post";
+      options?: {
+        data?: RequestBody;
+        headers?: Record<string, string>;
+      };
     }
 );
 
@@ -141,32 +151,29 @@ export async function monitoringAPI<T>({
     const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
     const { data, headers } = options ?? {};
-    const reqParams = new URLSearchParams();
-    if (data) {
-      Object.entries(data).forEach(([key, value]) =>
-        reqParams.append(key, value),
-      );
-    }
 
     if (type === "get" || type === "delete") {
+      const queryParams = data ? serializeQueryParams(data as QueryParams) : "";
+
       const oDataParams =
         type === "get" && options?.oData !== undefined
           ? oDataToString(options.oData)
           : "";
 
-      const params = [reqParams.toString(), oDataParams]
-        .filter(Boolean)
-        .join("&");
-
+      const params = [queryParams, oDataParams].filter(Boolean).join("&");
       const fullEndpoint = `${baseURL}/${endpoint}${params ? `?${params}` : ""}`;
 
       response = await monitoringClient[type]<T>(fullEndpoint);
     } else {
-      reqParams.append("client_id", "bt-mc-client");
+      // reqParams.append("client_id", "bt-mc-client");
+      const payload = {
+        client_id: "bt-mc-client",
+        ...data,
+      };
 
       response = await monitoringClient[type]<T>(
         `${baseURL}/${endpoint}`,
-        reqParams,
+        payload,
         { headers },
       );
     }
@@ -227,7 +234,16 @@ export const getLogs = createODataGetter<ODataLog>("Logs");
 export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
 
 /**
- * Fetches all the parent locations
+ * Retrieves the list of available all the locations from the Monitoring API.
+ * This function is typically used to populate cascading dropdown selectors.
+ *
+ * @param parentId [Optional] The ID of the parent location from which to fetch
+ * sub-locations. If omitted, the function returns all the parent locations.
+ *
+ * @returns A Promise that resolves to an array of location objects formatted
+ * for a selector:
+ * - `name`: The location's name.
+ * - `value`: The location's numeric ID.
  */
 export async function getLocation(parentId?: number | string) {
   try {

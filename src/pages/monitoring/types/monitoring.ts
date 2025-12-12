@@ -10,3 +10,12 @@ export type Location = {
   name: string;
   code: number;
 };
+
+export type UserLevel = {
+  id: number;
+  name: string;
+};
+
+export type GetStringKeys<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
