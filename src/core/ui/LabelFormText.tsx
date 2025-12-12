@@ -1,4 +1,4 @@
-import { OctagonX } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function LabelFormText({
@@ -16,7 +16,7 @@ export function LabelFormText({
         <ul className="block mx-2 pb-1">
           {validationErrors.map((errorTxt) => (
             <li className="text-secondary font-semibold mx-1 text-sm p-0 inline-flex items-baseline gap-0.5">
-              <OctagonX size={"1rem"} className="translate-y-1" />
+              <TriangleAlert size={"1rem"} className="translate-y-1" />
               {errorTxt}
             </li>
           ))}

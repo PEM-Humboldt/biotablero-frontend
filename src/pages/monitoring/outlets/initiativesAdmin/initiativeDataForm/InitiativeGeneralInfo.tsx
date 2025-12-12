@@ -7,7 +7,7 @@ import {
 
 import { Input } from "@ui/shadCN/component/input";
 import { Textarea } from "@ui/shadCN/component/textarea";
-import { LabelFormText } from "@ui/LabelText";
+import { LabelFormText } from "@ui/LabelFormText";
 
 import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { GetStringKeys } from "pages/monitoring/types/monitoring";
