@@ -7,7 +7,7 @@ import {
 
 import { Input } from "@ui/shadCN/component/input";
 import { Textarea } from "@ui/shadCN/component/textarea";
-import { LabelFormText } from "@ui/LabelFormText";
+import { TextAndErrorForLabel } from "@ui/LabelFormText";
 
 import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { GetStringKeys } from "pages/monitoring/types/monitoring";
@@ -57,9 +57,9 @@ export function InitiativeGeneralInfo({
     <>
       <div className="flex flex-wrap items-end gap-4 [&>label]:flex-1 [&>label]:my-1 [&>label]:first:flex-2 [&>label]:min-w-[200px]">
         <label htmlFor="name">
-          <LabelFormText validationErrors={inputErr.name ?? []}>
+          <TextAndErrorForLabel validationErrors={inputErr.name ?? []}>
             Nombre completo *
-          </LabelFormText>
+          </TextAndErrorForLabel>
           <Input
             name="name"
             id="name"
@@ -73,9 +73,9 @@ export function InitiativeGeneralInfo({
         </label>
 
         <label htmlFor="shortName">
-          <LabelFormText validationErrors={inputErr.shortName ?? []}>
+          <TextAndErrorForLabel validationErrors={inputErr.shortName ?? []}>
             Nombre corto
-          </LabelFormText>
+          </TextAndErrorForLabel>
           <Input
             name="shortName"
             id="shortName"
@@ -90,9 +90,9 @@ export function InitiativeGeneralInfo({
       </div>
 
       <label htmlFor="description">
-        <LabelFormText validationErrors={inputErr.description ?? []}>
+        <TextAndErrorForLabel validationErrors={inputErr.description ?? []}>
           Descripción *
-        </LabelFormText>
+        </TextAndErrorForLabel>
 
         <Textarea
           id="description"
