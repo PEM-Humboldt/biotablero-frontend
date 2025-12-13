@@ -13,35 +13,17 @@ import type {
   SearchBarComponent,
   SelectValue,
 } from "@appTypes/odata";
-import { Input } from "@ui/shadCN/component/input";
 import { Button } from "@ui/shadCN/component/button";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@ui/shadCN/component/native-select";
+import { SearchField } from "@composites/odataSearchBar/SearchField";
+import type { SearchParentData } from "@composites/odataSearchBar/types/odataSearchBar";
 
-type ODataSearchBarProps<T, F> = {
+export type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
   setSearchParams: Dispatch<SetStateAction<F>>;
   className: string;
   submit?: string;
   reset?: string;
 };
-
-type SearchFiledProps<T> = {
-  component: SearchBarComponent<T>;
-  onUpdateSearch?: () => void;
-  fieldRef: (element: HTMLInputElement | HTMLSelectElement | null) => void;
-  cache: SearchCache;
-};
-
-type CachedField = {
-  current: SelectValue[];
-  dataPool: Record<string, SelectValue[]>;
-  updater: (value: string) => Promise<SelectValue[]> | SelectValue[];
-};
-
-type SearchCache = Record<string, CachedField>;
 
 /**
  * Renders a configurable OData search bar with text and select inputs.
@@ -64,10 +46,11 @@ export function ODataSearchBar<T>({
   submit = "",
   reset = "",
 }: ODataSearchBarProps<T, ODataParams>) {
+  const [parentData, setParentData] = useState<SearchParentData>({});
   const searchRefs = useRef<
     Record<string, HTMLInputElement | HTMLSelectElement>
   >({});
-  const [cache, setCache] = useState<SearchCache>({});
+
   const getSearchValues = () => {
     const filters: string[] = [];
     const searchParams: ODataParams = {};
@@ -78,7 +61,13 @@ export function ODataSearchBar<T>({
 
       if (component.childUpdater !== undefined) {
         const { label, childUpdater } = component;
-        void onParentUpdate(label, value, cache, setCache, childUpdater);
+        void onParentUpdate(
+          label,
+          value,
+          parentData,
+          setParentData,
+          childUpdater,
+        );
       }
 
       const filter = makeODataFilterString(component, value);
@@ -111,13 +100,13 @@ export function ODataSearchBar<T>({
   const clearSearch = () => {
     let reset = false;
 
-    setCache((oldCache) => {
-      const cleanCache = { ...oldCache };
-      for (const value in cleanCache) {
-        cleanCache[value].current = [];
+    setParentData((oldParentData) => {
+      const cleanParent = { ...oldParentData };
+      for (const value in cleanParent) {
+        cleanParent[value].current = [];
       }
 
-      return cleanCache;
+      return cleanParent;
     });
 
     for (const ref of Object.values(searchRefs.current)) {
@@ -153,7 +142,7 @@ export function ODataSearchBar<T>({
             }
             onUpdateSearch={submit === "" ? onChangeHandler : undefined}
             component={component}
-            cache={cache}
+            parentData={parentData}
           />
         </label>
       ))}
@@ -173,107 +162,32 @@ export function ODataSearchBar<T>({
   );
 }
 
-// NOTE: No se usa ForwardRef pues ya está en deshuso y va a ser eliminado
-function SearchField<T>({
-  component,
-  onUpdateSearch,
-  fieldRef,
-  cache,
-}: SearchFiledProps<T>) {
-  const commonParams = {
-    ref: fieldRef,
-    name: component.label,
-    id: component.label,
-    placeholder: component.placeholder ?? "",
-    type: component.type,
-  };
-
-  switch (component.type) {
-    case "select": {
-      let values: SelectValue[];
-
-      if (component.dependsOnLabel !== undefined) {
-        const dynamicValues = cache[component?.dependsOnLabel]?.current || [];
-        values = dynamicValues;
-      } else {
-        values = component.values || [];
-      }
-
-      const disable = values.length === 0;
-
-      return (
-        <NativeSelect
-          {...commonParams}
-          onChange={onUpdateSearch}
-          disabled={disable}
-        >
-          <NativeSelectOption value="">
-            {component.placeholder ?? ""}
-          </NativeSelectOption>
-
-          {values.map((item, i) => {
-            const key = typeof item === "string" ? item : item.value;
-            return <Option key={`${key}_${i}`} listItem={item} />;
-          })}
-        </NativeSelect>
-      );
-    }
-
-    case "text":
-    case "number":
-      return <Input onChange={onUpdateSearch} {...commonParams} />;
-
-    case "date":
-      return <Input onInput={onUpdateSearch} {...commonParams} />;
-  }
-}
-
-function Option({ listItem }: { listItem: SelectValue }) {
-  const isString = typeof listItem === "string";
-  const value = isString ? listItem : listItem.value;
-  const name = isString ? listItem : listItem.name;
-
-  return <NativeSelectOption value={value ?? name}>{name}</NativeSelectOption>;
-}
-
 async function onParentUpdate(
   label: string,
   value: string | number,
-  cache: SearchCache,
-  cacheUpdater: Dispatch<SetStateAction<SearchCache>>,
+  parentData: SearchParentData,
+  parentDataUpdater: Dispatch<SetStateAction<SearchParentData>>,
   childUpdater: (
     value: string | number,
   ) => Promise<SelectValue[]> | SelectValue[],
 ) {
   if (value === "") {
-    if (cache[label]?.current.length > 0) {
-      cacheUpdater((oldCache) => ({
-        ...oldCache,
-        [label]: { ...oldCache[label], current: [] },
+    if (parentData[label]?.current.length > 0) {
+      parentDataUpdater((oldParentData) => ({
+        ...oldParentData,
+        [label]: { ...oldParentData[label], current: [] },
       }));
     }
-    return;
-  }
-
-  if (cache[label] && cache[label]?.dataPool && cache[label].dataPool[value]) {
-    if (cache[label].current === cache[label].dataPool[value]) {
-      return;
-    }
-    const newCurrent = cache[label].dataPool[value];
-    const updatedLabel = { ...cache[label], current: newCurrent };
-    cacheUpdater((oldCache) => ({ ...oldCache, [label]: updatedLabel }));
     return;
   }
 
   try {
     const newValues = await childUpdater(value);
 
-    cacheUpdater((oldCache) => {
-      const oldPool = oldCache[label]?.dataPool || {};
+    parentDataUpdater((oldCache) => {
       const updatedLabel = {
         updater: childUpdater,
         current: newValues,
-        dataPool: { ...oldPool, [value]: newValues },
       };
 
       return { ...oldCache, [label]: updatedLabel };
