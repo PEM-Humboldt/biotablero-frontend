@@ -1,42 +1,42 @@
-import {
-  type ChangeEvent,
-  type MutableRefObject,
-  useEffect,
-  useState,
-} from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 
 import { Input } from "@ui/shadCN/component/input";
 import { Textarea } from "@ui/shadCN/component/textarea";
-import { TextAndErrorForLabel } from "@ui/LabelFormText";
+import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
 
-import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type {
+  GeneralInfo,
+  InitiativeDataForm,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { GetStringKeys } from "pages/monitoring/types/monitoring";
 
 type FormStringValues = GetStringKeys<InitiativeDataForm>;
 
 export function InitiativeGeneralInfo({
-  formDataRef,
-  formErrors,
+  sectionInfo,
+  sectionUpdater,
+  serverValidationErrors,
 }: {
-  formDataRef: MutableRefObject<InitiativeDataForm>;
-  formErrors: { [key: string]: string[] };
+  sectionInfo: GeneralInfo;
+  sectionUpdater: (value: GeneralInfo) => void;
+  serverValidationErrors: { [key: string]: string[] };
 }) {
-  const [formValues, setFormValues] = useState({
-    name: formDataRef.current.name,
-    shortName: formDataRef.current.shortName,
-    description: formDataRef.current.description,
-  });
+  const [formValues, setFormValues] = useState({ ...sectionInfo });
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
+    sectionUpdater(formValues);
+  }, [formValues, sectionUpdater]);
+
+  useEffect(() => {
     const relevantErr: { [key: string]: string[] } = {};
-    for (const key in formValues) {
-      if (key in formErrors) {
-        relevantErr[key] = formErrors[key];
+    for (const key in sectionInfo) {
+      if (key in serverValidationErrors) {
+        relevantErr[key] = serverValidationErrors[key];
       }
     }
     setInputErr(relevantErr);
-  }, [formErrors, formValues]);
+  }, [serverValidationErrors, sectionInfo]);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -44,7 +44,6 @@ export function InitiativeGeneralInfo({
     const { name, value } = event.target;
 
     setFormValues((oldForm) => ({ ...oldForm, [name]: value }));
-    formDataRef.current[name as FormStringValues] = value;
   };
 
   const errorClass = (key: string) => {
