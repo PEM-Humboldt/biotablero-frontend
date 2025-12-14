@@ -1,18 +1,30 @@
+import { type MutableRefObject, useEffect, useState } from "react";
+import { CirclePlus } from "lucide-react";
+
 import { Button } from "@ui/shadCN/component/button";
 import { Input } from "@ui/shadCN/component/input";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@ui/shadCN/component/native-select";
-import { useEffect, useRef, useState } from "react";
+
 import {
   COLOMBIAN_DEPARTMENTS,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
-import { CircleMinus, CirclePlus } from "lucide-react";
+import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
-export function InitiativeLocations() {
-  const [polygonAvailable, setPolyconAvailable] = useState(true);
+export function InitiativeLocations({
+  formDataRef,
+  formErrors,
+}: {
+  formDataRef: MutableRefObject<InitiativeDataForm>;
+  formErrors: { [key: string]: string[] };
+}) {
+  const [locations, setLocations] = useState(
+    formDataRef.current.locations ?? [],
+  );
+  const [polygonAvailable, setPolyconAvailable] = useState();
   const [municipalities, setMunicipalities] = useState({});
 
   // TODO: Revisar con la actualizacion de la locaclizacion del fron
