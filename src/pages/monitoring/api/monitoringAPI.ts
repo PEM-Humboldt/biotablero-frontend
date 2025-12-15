@@ -18,9 +18,16 @@ import type { ODataParams } from "@appTypes/odata";
 import type {
   ODataInitiative,
   ODataLog,
+  ByUserID,
+  ByInitiativeID,
+  LookForUser,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
-import type { Location } from "pages/monitoring/types/monitoring";
+import type {
+  Location,
+  UserLevel,
+  User,
+} from "pages/monitoring/types/monitoring";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 
@@ -260,5 +267,56 @@ export async function getLocation(parentId?: number | string) {
   } catch (err) {
     console.error(err);
     return [];
+  }
+}
+
+export async function getUserLevels() {
+  try {
+    const res = await monitoringAPI<UserLevel[]>({
+      type: "get",
+      endpoint: "InitiativeUserLevel",
+    });
+
+    if (isMonitoringAPIError(res)) {
+      throw new Error(res.message);
+    }
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+/**
+ * Retrieves a list of users, optionally filtered by a specific Initiative ID.
+ *
+ * @param byInitiativeId - OPTIONAL. The ID of the initiative to retrieve all associated users. If omitted, all users are returned.
+ *
+ * @returns A `Promise` resolving to an array of User objects.
+ * @throws An `Error` if the Monitoring API returns an error status or if the request fails.
+ */
+export async function getUsers(
+  byInitiativeId?: number | string,
+): Promise<User[]> {
+  const reqOptions: MonitoringAPIParams = {
+    type: "get",
+    endpoint:
+      byInitiativeId === undefined
+        ? `InitiativeUser/`
+        : `InitiativeUser/GetByInitiative/${byInitiativeId}`,
+  };
+
+  try {
+    const res = await monitoringAPI<User[]>(reqOptions);
+
+    if (isMonitoringAPIError(res)) {
+      throw new Error(res.message);
+    }
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 }
