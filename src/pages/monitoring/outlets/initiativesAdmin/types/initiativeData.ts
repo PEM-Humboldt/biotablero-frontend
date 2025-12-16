@@ -11,7 +11,7 @@ export type LocationData = {
   locality: string;
 };
 
-export type ContactData = {
+export type InitiativeContact = {
   phone: string;
   email: string;
 };
@@ -24,7 +24,7 @@ export type UserData = {
 export type InitiativeDataForm = {
   general: GeneralInfo;
   locations: LocationData[];
-  contacts: ContactData[];
+  contacts: InitiativeContact[];
   users: UserData[];
 };
 
@@ -34,7 +34,7 @@ export type InitiativeToUpadate = {
   shortName: string;
   description: string;
   locations: LocationData[];
-  contacts: ContactData[];
+  contacts: InitiativeContact[];
   users: UserData[];
 };
 

@@ -17,7 +17,7 @@ export type UserLevel = {
 };
 
 export type User = {
-  id: number;
+  id?: number;
   userName: string;
   level: UserLevel;
 };

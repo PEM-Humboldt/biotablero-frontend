@@ -14,7 +14,10 @@ import type {
   InitiativeToUpadate,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { InitiativeLocations } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLocations";
-import { InitiativeLeaders } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLeaders";
+import {
+  UsersInfoInput,
+  UsersInfoDisplay,
+} from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeUsers";
 import {
   ContactInfoDisplay,
   ContactInfoInput,
@@ -110,7 +113,14 @@ export function InitiativeDataForm({
 
       <fieldset>
         <legend>líderezas y líderes de la iniciativa</legend>
-        <InitiativeLeaders />
+        <FormListManager
+          maxItems={3}
+          sectionInfo={initiativeData.current.users}
+          sectionUpdater={handleSectionUpate("users")}
+          AddItemComponent={UsersInfoInput}
+          CurrentItemsComponent={UsersInfoDisplay}
+          serverValidationErrors={{}}
+        />
       </fieldset>
 
       <fieldset>

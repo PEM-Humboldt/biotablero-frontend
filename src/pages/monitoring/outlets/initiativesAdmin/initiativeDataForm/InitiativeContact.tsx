@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Input } from "@ui/shadCN/component/input";
 import { Button } from "@ui/shadCN/component/button";
 import type {
+  InitiativeContact,
   ItemEditorProps,
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
@@ -10,7 +11,7 @@ import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 export function ContactInfoInput({
   setter,
   update,
-}: ItemEditorProps<{ email: string; phone: string }>) {
+}: ItemEditorProps<InitiativeContact>) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -97,7 +98,7 @@ export function ContactInfoDisplay({
   items,
   editItem,
   deleteItem,
-}: ItemsRenderProps<{ phone: string; email: string }>) {
+}: ItemsRenderProps<InitiativeContact>) {
   if (!items || items.length === 0) {
     return (
       <p className="text-gray-500">

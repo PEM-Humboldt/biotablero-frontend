@@ -55,7 +55,3 @@ type ODataResponse<T> = {
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeEntry>;
-
-export type ByUserID = { byId: number | string; byInitiativeId: never };
-export type ByInitiativeID = { byId: never; byInitiativeId: number | string };
-export type LookForUser = ByUserID | ByInitiativeID;
