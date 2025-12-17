@@ -18,9 +18,6 @@ import type { ODataParams } from "@appTypes/odata";
 import type {
   ODataInitiative,
   ODataLog,
-  ByUserID,
-  ByInitiativeID,
-  LookForUser,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
 import type {
@@ -30,6 +27,7 @@ import type {
 } from "pages/monitoring/types/monitoring";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
+import { usersMock } from "./usersMock";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -299,6 +297,11 @@ export async function getUserLevels() {
 export async function getUsers(
   byInitiativeId?: number | string,
 ): Promise<User[]> {
+  // NOTE: Llamado temporal al mock para llamar los usuarios
+  if (byInitiativeId === undefined) {
+    return usersMock;
+  }
+
   const reqOptions: MonitoringAPIParams = {
     type: "get",
     endpoint:
