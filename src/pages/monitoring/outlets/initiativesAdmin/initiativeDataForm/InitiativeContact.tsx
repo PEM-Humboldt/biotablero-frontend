@@ -123,7 +123,6 @@ export function ContactInfoDisplay({
             <td className="whitespace-nowrap">{values.email}</td>
             <td className="whitespace-nowrap">{values.phone}</td>
             <td className="whitespace-nowrap">
-              {/* Botón de Editar */}
               <Button
                 type="button"
                 onClick={() => editItem(i)}
@@ -136,6 +135,7 @@ export function ContactInfoDisplay({
                   <SquarePen className="size-4" />
                 </span>
               </Button>
+
               <Button
                 type="button"
                 onClick={() => deleteItem(i)}

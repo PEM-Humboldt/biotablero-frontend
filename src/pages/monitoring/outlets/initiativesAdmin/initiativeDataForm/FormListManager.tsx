@@ -8,15 +8,15 @@ export function FormListManager<T>({
   sectionInfo,
   sectionUpdater,
   maxItems,
-  CurrentItemsComponent,
   AddItemComponent,
+  CurrentItemsComponent,
   serverValidationErrors,
 }: {
   sectionInfo: T[];
   sectionUpdater: (value: T[]) => void;
   maxItems: number;
-  CurrentItemsComponent: ElementType<ItemsRenderProps<T>>;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
+  CurrentItemsComponent: ElementType<ItemsRenderProps<T>>;
   serverValidationErrors: { [key: string]: string[] };
 }) {
   const [items, setItems] = useState<T[]>(sectionInfo);
