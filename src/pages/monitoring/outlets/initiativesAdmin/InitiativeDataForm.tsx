@@ -114,7 +114,7 @@ export function InitiativeDataForm({
       <fieldset>
         <legend>líderezas y líderes de la iniciativa</legend>
         <FormListManager
-          maxItems={3}
+          maxItems={10}
           sectionInfo={initiativeData.current.users}
           sectionUpdater={handleSectionUpate("users")}
           AddItemComponent={UsersInfoInput}

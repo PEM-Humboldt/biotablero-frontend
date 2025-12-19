@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import type {
   ItemEditorProps,
@@ -18,8 +18,12 @@ import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
 
 const DEFAULT_NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];
 
-export function UsersInfoInput({ setter, update }: ItemEditorProps<User>) {
-  const [users, setUsers] = useState<User[]>([]);
+export function UsersInfoInput({
+  selectedItems,
+  setter,
+  update,
+}: ItemEditorProps<User>) {
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [user, setUser] = useState<number | string>("");
   const [error, setError] = useState<string[]>([]);
 
@@ -30,7 +34,7 @@ export function UsersInfoInput({ setter, update }: ItemEditorProps<User>) {
         if (isMonitoringAPIError(usersInfo)) {
           throw new Error(usersInfo.message);
         }
-        setUsers(usersInfo);
+        setAllUsers(usersInfo);
       } catch (err) {
         console.error(err);
       }
@@ -39,38 +43,34 @@ export function UsersInfoInput({ setter, update }: ItemEditorProps<User>) {
     void getUsersInfo();
   }, []);
 
-  const reset = useCallback(() => {
-    setUser(update !== null ? update.userName : "");
-  }, [update]);
-
   useEffect(() => {
     if (!update) {
       return;
     }
 
-    reset();
-  }, [update, reset]);
+    setUser(update !== null ? update.userName : "");
+  }, [update]);
+
+  const usersAvailable = useMemo((): User[] => {
+    if (selectedItems === undefined || !Array.isArray(selectedItems)) {
+      return allUsers;
+    }
+    const selectedUsers = new Set(selectedItems.map((u: User) => u.userName));
+    return allUsers.filter((u: User) => !selectedUsers.has(u.userName));
+  }, [selectedItems, allUsers]);
 
   const handleSave = () => {
+    if (!user) {
+      return;
+    }
     const newUser = {
       userName: user,
       level: DEFAULT_NEW_ADMIN_CREDENTIALS,
     } as User;
 
-    setter((savedData) => {
-      if (savedData.some((u) => u.userName === user)) {
-        setError((errStack) => [
-          ...errStack,
-          `${user} ya es administrador de la iniciativa`,
-        ]);
-        return savedData;
-      }
-
-      setError([]);
-      setUsers((oldUsers) => [...oldUsers.filter((u) => u.userName !== user)]);
-      return [...savedData, newUser];
-    });
-    reset();
+    setUser("");
+    setError([]);
+    setter((savedData) => [...savedData, newUser]);
   };
 
   return (
@@ -81,7 +81,7 @@ export function UsersInfoInput({ setter, update }: ItemEditorProps<User>) {
         </TextAndErrorForLabel>
         <Combobox
           id="leaders2"
-          items={users}
+          items={usersAvailable}
           value={user}
           setValue={setUser}
           keys={{ forLabel: "userName" }}
@@ -104,7 +104,7 @@ export function UsersInfoInput({ setter, update }: ItemEditorProps<User>) {
 }
 
 export function UsersInfoDisplay({
-  items,
+  selectedItems: items,
   editItem: _,
   deleteItem,
 }: ItemsRenderProps<User>) {
@@ -112,7 +112,7 @@ export function UsersInfoDisplay({
     items.length > 0 && (
       <ul>
         {items.map((user, i) => (
-          <li>
+          <li key={`${user.userName}_${i}`}>
             {user.userName}
 
             <Button

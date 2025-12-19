@@ -39,12 +39,13 @@ export type InitiativeToUpadate = {
 };
 
 export type ItemsRenderProps<T> = {
-  items: T[];
+  selectedItems: T[];
   editItem: (itemIndex: number) => void;
   deleteItem: (itemIndex: number) => void;
 };
 
 export type ItemEditorProps<T> = {
+  selectedItems?: T[];
   setter: Dispatch<SetStateAction<T[]>>;
   update: T | null;
 };

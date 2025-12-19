@@ -19,24 +19,24 @@ export function FormListManager<T>({
   CurrentItemsComponent: ElementType<ItemsRenderProps<T>>;
   serverValidationErrors: { [key: string]: string[] };
 }) {
-  const [items, setItems] = useState<T[]>(sectionInfo);
+  const [selectedItems, setSelectedItems] = useState<T[]>(sectionInfo);
   const [updateItem, setUpdateItem] = useState<T | null>(null);
 
   useEffect(() => {
-    sectionUpdater(items);
+    sectionUpdater(selectedItems);
     setUpdateItem(null);
-  }, [items, sectionUpdater]);
+  }, [selectedItems, sectionUpdater]);
 
   const handleEdit = (itemIndex: number) => {
-    setUpdateItem({ ...items[itemIndex] });
-    setItems((oldItems) => [
+    setUpdateItem({ ...selectedItems[itemIndex] });
+    setSelectedItems((oldItems) => [
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),
     ]);
   };
 
   const handleDelete = (itemIndex: number) => {
-    setItems((oldItems) => [
+    setSelectedItems((oldItems) => [
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),
     ]);
@@ -44,16 +44,20 @@ export function FormListManager<T>({
 
   return (
     <>
-      {items.length > 0 && (
+      {selectedItems.length > 0 && (
         <CurrentItemsComponent
-          items={items}
+          selectedItems={selectedItems}
           editItem={handleEdit}
           deleteItem={handleDelete}
         />
       )}
 
-      {items.length < maxItems && (
-        <AddItemComponent setter={setItems} update={updateItem} />
+      {selectedItems.length < maxItems && (
+        <AddItemComponent
+          selectedItems={selectedItems}
+          setter={setSelectedItems}
+          update={updateItem}
+        />
       )}
     </>
   );

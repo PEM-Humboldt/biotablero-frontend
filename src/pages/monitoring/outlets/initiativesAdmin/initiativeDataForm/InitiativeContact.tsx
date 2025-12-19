@@ -95,7 +95,7 @@ export function ContactInfoInput({
 }
 
 export function ContactInfoDisplay({
-  items,
+  selectedItems: items,
   editItem,
   deleteItem,
 }: ItemsRenderProps<InitiativeContact>) {
