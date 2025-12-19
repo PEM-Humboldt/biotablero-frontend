@@ -108,12 +108,16 @@ export function ContactInfoDisplay({
   }
 
   return (
-    <table className="divide-y [&_th]:px-2 [&_td]:px-2">
-      <thead className="bg-gray-50">
+    <table className="w-full [&_th]:px-2 [&_td]:px-2">
+      <caption className="text-left border-b h4">
+        Información de contacto inscrita
+      </caption>
+
+      <thead className="sr-only">
         <tr className="text-left [&_th]:font-normal">
           <th>Correo</th>
           <th>Teléfono</th>
-          <th></th>
+          <th className="w-px"></th>
         </tr>
       </thead>
 
@@ -121,8 +125,10 @@ export function ContactInfoDisplay({
         {items.map((values, i) => (
           <tr key={`${values.email}_${i}`} className="hover:bg-muted">
             <td className="whitespace-nowrap">{values.email}</td>
-            <td className="whitespace-nowrap">{values.phone}</td>
             <td className="whitespace-nowrap">
+              {values.phone ? values.phone : "---"}
+            </td>
+            <td className="whitespace-nowrap w-px">
               <Button
                 type="button"
                 onClick={() => editItem(i)}

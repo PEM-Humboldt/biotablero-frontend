@@ -1,22 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { Button } from "@ui/shadCN/component/button";
+import { CirclePlus, Eraser, Trash } from "lucide-react";
+import { Label } from "@ui/shadCN/component/label";
+import { Combobox } from "@ui/ComboBox";
+import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+
 import type {
   ItemEditorProps,
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { User } from "pages/monitoring/types/monitoring";
-import { USER_LEVELS } from "pages/monitoring/utils/manageUsers";
 import {
   getUsers,
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
-import { Combobox } from "@ui/ComboBox";
-import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus, Eraser } from "lucide-react";
-import { Label } from "@ui/shadCN/component/label";
-import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
-
-const DEFAULT_NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];
+import { NEW_ADMIN_CREDENTIALS } from "pages/monitoring/utils/manageUsers";
 
 export function UsersInfoInput({
   selectedItems,
@@ -65,7 +64,7 @@ export function UsersInfoInput({
     }
     const newUser = {
       userName: user,
-      level: DEFAULT_NEW_ADMIN_CREDENTIALS,
+      level: NEW_ADMIN_CREDENTIALS,
     } as User;
 
     setUser("");
@@ -110,25 +109,34 @@ export function UsersInfoDisplay({
 }: ItemsRenderProps<User>) {
   return (
     items.length > 0 && (
-      <ul>
-        {items.map((user, i) => (
-          <li key={`${user.userName}_${i}`}>
-            {user.userName}
+      <>
+        <h3 id="initiativeLeadersList" className="border-b h4">
+          Líderes inscritos actualmente
+        </h3>
 
-            <Button
-              type="button"
-              onClick={() => deleteItem(i)}
-              variant="ghost-clean"
-              size="icon-sm"
+        <ul aria-labelledby="initiativeLeadersList">
+          {items.map((user, i) => (
+            <li
+              key={`${user.userName}_${i}`}
+              className="flex items-center justify-between hover:bg-muted"
             >
-              <span className="sr-only">borrar la siguiente información</span>
-              <span aria-hidden="true">
-                <Eraser className="size-4" />
-              </span>
-            </Button>
-          </li>
-        ))}
-      </ul>
+              {user.userName}
+
+              <Button
+                type="button"
+                onClick={() => deleteItem(i)}
+                variant="ghost-clean"
+                size="icon-sm"
+              >
+                <span className="sr-only">Quitar como administrador</span>
+                <span aria-hidden="true">
+                  <Trash className="size-4" />
+                </span>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </>
     )
   );
 }
