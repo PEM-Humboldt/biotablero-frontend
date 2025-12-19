@@ -21,7 +21,7 @@ type ComboBoxProps<T> = {
   id?: string;
   items: T[];
   value: number | string;
-  setValue: React.Dispatch<React.SetStateAction<number | string>>;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
   uiText: { itemNotFound: string; trigger: string; inputPlaceholder: string };
 } & (

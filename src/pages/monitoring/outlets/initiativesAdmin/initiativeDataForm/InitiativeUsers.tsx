@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus, Eraser, Trash } from "lucide-react";
+import { CirclePlus, Trash } from "lucide-react";
 import { Label } from "@ui/shadCN/component/label";
 import { Combobox } from "@ui/ComboBox";
 import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
@@ -23,7 +23,7 @@ export function UsersInfoInput({
   update,
 }: ItemEditorProps<User>) {
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const [user, setUser] = useState<number | string>("");
+  const [user, setUser] = useState<string>("");
   const [error, setError] = useState<string[]>([]);
 
   useEffect(() => {
@@ -74,12 +74,12 @@ export function UsersInfoInput({
 
   return (
     <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-      <Label className="flex-1" htmlFor="leaders2">
+      <Label className="flex-1" htmlFor="leaders">
         <TextAndErrorForLabel validationErrors={error}>
           <span className="sr-only">Selecciona un lider o lidereza</span>
         </TextAndErrorForLabel>
         <Combobox
-          id="leaders2"
+          id="leaders"
           items={usersAvailable}
           value={user}
           setValue={setUser}

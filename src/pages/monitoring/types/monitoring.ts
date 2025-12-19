@@ -5,6 +5,11 @@ export type DashboardItem = { description: string; icon: ReactNode } & (
   | { action: () => void }
 );
 
+export type LocationList = {
+  name: string;
+  value: number;
+};
+
 export type Location = {
   id: number;
   name: string;

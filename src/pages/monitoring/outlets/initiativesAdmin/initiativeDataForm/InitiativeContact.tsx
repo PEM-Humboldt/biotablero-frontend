@@ -7,6 +7,7 @@ import type {
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 export function ContactInfoInput({
   setter,
@@ -58,48 +59,49 @@ export function ContactInfoInput({
         />
       </label>
 
-      <Button onClick={reset} type="button" variant="outline" size="icon">
-        <span className="sr-only">Reiniciar</span>
-        <span aria-hidden="true">
-          <UndoDot className="size-5" />
-        </span>
-      </Button>
+      <ButtonGroup>
+        <Button
+          onClick={handleSave}
+          type="button"
+          variant="outline"
+          size="icon"
+          title={update !== null ? "Guardar cambios" : "Añadir contacto"}
+        >
+          <span className="sr-only">
+            {update !== null ? "Guardar cambios" : "Añadir contacto"}
+          </span>
+          <span aria-hidden="true">
+            {update !== null ? (
+              <Check className="size-5" />
+            ) : (
+              <CirclePlus className="size-5" />
+            )}
+          </span>
+        </Button>
 
-      {update !== null ? (
         <Button
-          onClick={handleSave}
+          onClick={reset}
           type="button"
           variant="outline"
           size="icon"
+          title="Reiniciar"
         >
-          <span className="sr-only">Guardar cambios</span>
+          <span className="sr-only">Reiniciar</span>
           <span aria-hidden="true">
-            <Check className="size-5" />
+            <UndoDot className="size-5" />
           </span>
         </Button>
-      ) : (
-        <Button
-          onClick={handleSave}
-          type="button"
-          variant="outline"
-          size="icon"
-        >
-          <span className="sr-only">Añadir un nuevo método de contacto</span>
-          <span aria-hidden="true">
-            <CirclePlus className="size-5" />
-          </span>
-        </Button>
-      )}
+      </ButtonGroup>
     </div>
   );
 }
 
 export function ContactInfoDisplay({
-  selectedItems: items,
+  selectedItems,
   editItem,
   deleteItem,
 }: ItemsRenderProps<InitiativeContact>) {
-  if (!items || items.length === 0) {
+  if (!selectedItems || selectedItems.length === 0) {
     return (
       <p className="text-gray-500">
         No hay información de contacto registrada.
@@ -122,7 +124,7 @@ export function ContactInfoDisplay({
       </thead>
 
       <tbody>
-        {items.map((values, i) => (
+        {selectedItems.map((values, i) => (
           <tr key={`${values.email}_${i}`} className="hover:bg-muted">
             <td className="whitespace-nowrap">{values.email}</td>
             <td className="whitespace-nowrap">

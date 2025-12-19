@@ -25,27 +25,36 @@ export interface LogEntryFull
   properties: Record<string, unknown>;
 }
 
-type ODataInitiativeLocation = {
+export type LocationBasicInfo = {
   id: number;
-  locationId: number;
-  locality: string;
-  location: {
+  name: string;
+  code: string;
+  parent?: {
     id: number;
     name: string;
     code: string;
   };
 };
 
+type LocationCompleteInfo = {
+  id: number;
+  locationId: number;
+  locality: string;
+  location: LocationBasicInfo;
+};
+
 export type ODataInitiativeEntry = {
   id: number;
   name: string;
+  shortName: string;
   description: string;
+  influenceArea?: string;
+  objective?: string;
   creationDate: string;
   coordinate: [number, number];
   polygonArea: number;
   enabled: boolean;
-  locations: ODataInitiativeLocation[];
-  locality: string;
+  locations: LocationCompleteInfo[];
 };
 
 type ODataResponse<T> = {
