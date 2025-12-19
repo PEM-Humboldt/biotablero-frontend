@@ -8,7 +8,7 @@ import Paisaje from "@mui/icons-material/FilterHdr";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
 import Species from "pages/search/dashboard/Species";
-import Ecosystems from "pages/search/dashboard/Ecosystems";
+import { Ecosystems } from "pages/search/dashboard/Ecosystems";
 import { formatNumber } from "@utils/format";
 import TabContainer from "@ui/TabContainer";
 
