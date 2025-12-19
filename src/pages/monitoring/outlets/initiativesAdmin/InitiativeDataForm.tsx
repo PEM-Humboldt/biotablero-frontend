@@ -13,7 +13,10 @@ import type {
   InitiativeDataForm,
   InitiativeToUpadate,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { InitiativeLocations } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLocations";
+import {
+  LocationInput,
+  LocationDisplay,
+} from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLocations";
 import {
   UsersInfoInput,
   UsersInfoDisplay,
@@ -93,9 +96,13 @@ export function InitiativeDataForm({
 
       <fieldset>
         <legend>Dónde está ubicada</legend>
-        <InitiativeLocations
-          formDataRef={initiativeData}
-          formErrors={{ name: ["carajo"] }}
+        <FormListManager
+          maxItems={3}
+          sectionInfo={initiativeData.current.locations}
+          sectionUpdater={handleSectionUpate("locations")}
+          AddItemComponent={LocationInput}
+          CurrentItemsComponent={LocationDisplay}
+          serverValidationErrors={{}}
         />
       </fieldset>
 
@@ -114,7 +121,7 @@ export function InitiativeDataForm({
       <fieldset>
         <legend>líderezas y líderes de la iniciativa</legend>
         <FormListManager
-          maxItems={10}
+          maxItems={3}
           sectionInfo={initiativeData.current.users}
           sectionUpdater={handleSectionUpate("users")}
           AddItemComponent={UsersInfoInput}
