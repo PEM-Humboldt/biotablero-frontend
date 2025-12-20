@@ -20,7 +20,8 @@ import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { LocationList } from "pages/monitoring/types/monitoring";
-import { LocationBasicInfo } from "pages/monitoring/types/requestParams";
+import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
+import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/validations";
 
 export function LocationInput({
   selectedItems,
@@ -83,6 +84,12 @@ export function LocationInput({
       locationId: Number(municipality) || Number(department),
       locality,
     };
+
+    if (selectedItems && locationAlreadyExist(newLocation, selectedItems)) {
+      setError(["Ya existe esa ubicación"]);
+      return;
+    }
+
     setter((savedData) => [...savedData, newLocation]);
     reset();
   };
@@ -212,9 +219,7 @@ export function LocationDisplay({
                   className="mr-2"
                   size="icon-sm"
                 >
-                  <span className="sr-only">
-                    editar la siguiente información
-                  </span>
+                  <span className="sr-only">editar</span>
                   <span aria-hidden="true">
                     <SquarePen className="size-4" />
                   </span>
@@ -226,9 +231,7 @@ export function LocationDisplay({
                   variant="ghost-clean"
                   size="icon-sm"
                 >
-                  <span className="sr-only">
-                    borrar la siguiente información
-                  </span>
+                  <span className="sr-only">borrar</span>
                   <span aria-hidden="true">
                     <Eraser className="size-4" />
                   </span>
@@ -246,6 +249,7 @@ function LocationDataCells({ values }: { values: LocationData }) {
   const [locationInfo, setLocationInfo] = useState<LocationBasicInfo | null>(
     null,
   );
+
   useEffect(() => {
     const fetchLocationInfo = async () => {
       setLocationInfo(await getLocationInfoById(values.locationId));
@@ -254,7 +258,7 @@ function LocationDataCells({ values }: { values: LocationData }) {
   }, [values.locationId, values.locality]);
 
   return locationInfo === null ? (
-    <td colSpan={3}>Pailas, no tengo la data</td>
+    <td colSpan={3}>No se encontró la información intenta más tarde</td>
   ) : (
     <>
       <td className="whitespace-nowrap">
