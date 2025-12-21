@@ -1,4 +1,10 @@
-import { type ElementType, useEffect, useState } from "react";
+import {
+  type Dispatch,
+  type ElementType,
+  type SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import type {
   ItemEditorProps,
   ItemsRenderProps,
@@ -24,7 +30,6 @@ export function FormListManager<T>({
 
   useEffect(() => {
     sectionUpdater(selectedItems);
-    setUpdateItem(null);
   }, [selectedItems, sectionUpdater]);
 
   const handleEdit = (itemIndex: number) => {
@@ -42,6 +47,11 @@ export function FormListManager<T>({
     ]);
   };
 
+  const handleSave: Dispatch<SetStateAction<T[]>> = (value) => {
+    setSelectedItems(value);
+    setUpdateItem(null);
+  };
+
   return (
     <>
       {selectedItems.length > 0 && (
@@ -55,7 +65,7 @@ export function FormListManager<T>({
       {selectedItems.length < maxItems && (
         <AddItemComponent
           selectedItems={selectedItems}
-          setter={setSelectedItems}
+          setter={handleSave}
           update={updateItem}
         />
       )}

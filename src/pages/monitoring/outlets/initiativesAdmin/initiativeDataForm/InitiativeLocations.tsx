@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
@@ -36,7 +42,6 @@ export function LocationInput({
   const [error, setError] = useState<string[]>([]);
 
   useEffect(() => {
-    setMunicipality("");
     if (department === "") {
       setMunicipalities([]);
       return;
@@ -59,19 +64,37 @@ export function LocationInput({
     void getMunicipalities();
   }, [department]);
 
-  const reset = useCallback(() => {
-    setDepartment("");
-    setMunicipality("");
-    setLocality(update?.locality ?? "");
-    setError([]);
-  }, [update]);
+  const handleChangeDepartment: Dispatch<SetStateAction<string>> = (value) => {
+    const nextValue = typeof value === "function" ? value(department) : value;
+    setDepartment(nextValue);
 
-  useEffect(() => {
-    if (!update) {
+    if (nextValue !== department) {
+      setMunicipality("");
+      setLocality("");
+    }
+  };
+
+  const reset = useCallback(async () => {
+    setError([]);
+    if (update === null) {
+      setDepartment("");
+      setMunicipality("");
+      setLocality("");
       return;
     }
 
-    reset();
+    const loc = await getLocationInfoById(update.locationId);
+    if (loc === null) {
+      return;
+    }
+
+    setDepartment(loc?.parent ? String(loc.parent.id) : String(loc.id));
+    setMunicipality(loc?.parent ? String(loc.id) : "");
+    setLocality(update?.locality ?? "");
+  }, [update]);
+
+  useEffect(() => {
+    void reset();
   }, [update, reset]);
 
   const handleSave = () => {
@@ -91,7 +114,9 @@ export function LocationInput({
     }
 
     setter((savedData) => [...savedData, newLocation]);
-    reset();
+    setDepartment("");
+    setMunicipality("");
+    setLocality("");
   };
 
   return (
@@ -106,7 +131,7 @@ export function LocationInput({
             id="departments"
             items={COLOMBIAN_DEPARTMENTS}
             value={department}
-            setValue={setDepartment}
+            setValue={handleChangeDepartment}
             keys={{ forValue: "value", forLabel: "name" }}
             uiText={{
               itemNotFound: "Departamento no encontrado",
@@ -163,7 +188,7 @@ export function LocationInput({
           </Button>
 
           <Button
-            onClick={reset}
+            onClick={() => void reset()}
             type="button"
             variant="outline"
             size="icon"
@@ -201,45 +226,38 @@ export function LocationDisplay({
       </thead>
 
       <tbody>
-        {selectedItems.map((values, i) => {
-          const locationInfo = getLocationInfoById(values.locationId);
+        {selectedItems.map((values, i) => (
+          <tr key={`${values.locationId}_${i}`} className="hover:bg-muted">
+            <LocationDataCells values={values} />
 
-          return locationInfo === null ? (
-            <tr>
-              <td colSpan={4}>Pailas, no tengo la data</td>
-            </tr>
-          ) : (
-            <tr key={`${values.locationId}_${i}`} className="hover:bg-muted">
-              <LocationDataCells values={values} />
-              <td className="whitespace-nowrap w-px">
-                <Button
-                  type="button"
-                  onClick={() => editItem(i)}
-                  variant="ghost-clean"
-                  className="mr-2"
-                  size="icon-sm"
-                >
-                  <span className="sr-only">editar</span>
-                  <span aria-hidden="true">
-                    <SquarePen className="size-4" />
-                  </span>
-                </Button>
+            <td className="whitespace-nowrap w-px">
+              <Button
+                type="button"
+                onClick={() => editItem(i)}
+                variant="ghost-clean"
+                className="mr-2"
+                size="icon-sm"
+              >
+                <span className="sr-only">editar</span>
+                <span aria-hidden="true">
+                  <SquarePen className="size-4" />
+                </span>
+              </Button>
 
-                <Button
-                  type="button"
-                  onClick={() => deleteItem(i)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                >
-                  <span className="sr-only">borrar</span>
-                  <span aria-hidden="true">
-                    <Eraser className="size-4" />
-                  </span>
-                </Button>
-              </td>
-            </tr>
-          );
-        })}
+              <Button
+                type="button"
+                onClick={() => deleteItem(i)}
+                variant="ghost-clean"
+                size="icon-sm"
+              >
+                <span className="sr-only">borrar</span>
+                <span aria-hidden="true">
+                  <Eraser className="size-4" />
+                </span>
+              </Button>
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   );

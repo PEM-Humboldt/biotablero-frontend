@@ -44,11 +44,13 @@ export function InitiativeDataForm({
     setformID((prev) => prev + 1);
   };
 
-  const handleSectionUpate =
-    <K extends keyof InitiativeDataForm>(key: K) =>
-    (value: InitiativeDataForm[K]) => {
+  function handleSectionUpate<K extends keyof InitiativeDataForm>(key: K) {
+    function updateRef(value: InitiativeDataForm[K]) {
       initiativeData.current[key] = value;
-    };
+    }
+
+    return updateRef;
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -128,11 +130,6 @@ export function InitiativeDataForm({
           CurrentItemsComponent={UsersInfoDisplay}
           serverValidationErrors={{}}
         />
-      </fieldset>
-
-      <fieldset>
-        <legend>Imagenes de la iniciativa</legend>
-        <InitiativeImages />
       </fieldset>
 
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
