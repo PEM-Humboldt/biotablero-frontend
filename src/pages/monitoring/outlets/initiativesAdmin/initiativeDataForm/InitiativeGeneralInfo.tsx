@@ -4,13 +4,18 @@ import { Input } from "@ui/shadCN/component/input";
 import { Textarea } from "@ui/shadCN/component/textarea";
 import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
 
-import type {
-  GeneralInfo,
-  InitiativeDataForm,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { GetStringKeys } from "pages/monitoring/types/monitoring";
+import type { GeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+  InputGroupTextarea,
+} from "@ui/shadCN/component/input-group";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
 
-type FormStringValues = GetStringKeys<InitiativeDataForm>;
+const INITIAVIVE_NAME_MAX_LENGTH = 100;
+const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
+const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
 
 export function InitiativeGeneralInfo({
   sectionInfo,
@@ -46,12 +51,6 @@ export function InitiativeGeneralInfo({
     setFormValues((oldForm) => ({ ...oldForm, [name]: value }));
   };
 
-  const errorClass = (key: string) => {
-    return (inputErr[key]?.length || 0) > 0
-      ? "bg-red-50 border-2 border-secondary"
-      : "";
-  };
-
   return (
     <>
       <div className="flex flex-wrap items-end gap-4 [&>label]:flex-1 [&>label]:my-1 [&>label]:first:flex-2 [&>label]:min-w-[200px]">
@@ -59,32 +58,61 @@ export function InitiativeGeneralInfo({
           <TextAndErrorForLabel validationErrors={inputErr.name ?? []}>
             Nombre completo *
           </TextAndErrorForLabel>
-          <Input
-            name="name"
-            id="name"
-            placeholder="Juntos por la Amazonía"
-            type="text"
-            value={formValues.name}
-            onChange={handleChange}
-            className={errorClass("name")}
-            autoComplete="off"
-          />
+          <InputGroup>
+            <InputGroupInput
+              name="name"
+              id="name"
+              type="text"
+              value={formValues.name}
+              onChange={handleChange}
+              autoComplete="off"
+              placeholder="Juntos por la Amazonía"
+              maxLength={INITIAVIVE_NAME_MAX_LENGTH}
+              aria-invalid={inputErr.name !== undefined}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className={inputWarnColor(
+                formValues.name,
+                INITIAVIVE_NAME_MAX_LENGTH,
+              )}
+            >
+              {inputLengthCount(formValues.name, INITIAVIVE_NAME_MAX_LENGTH)}
+            </InputGroupAddon>
+          </InputGroup>
         </label>
 
         <label htmlFor="shortName">
           <TextAndErrorForLabel validationErrors={inputErr.shortName ?? []}>
             Nombre corto
           </TextAndErrorForLabel>
-          <Input
-            name="shortName"
-            id="shortName"
-            placeholder="JPLA"
-            type="text"
-            value={formValues.shortName}
-            onChange={handleChange}
-            className={errorClass("shortName")}
-            autoComplete="off"
-          />
+          <InputGroup>
+            <InputGroupInput
+              name="shortName"
+              id="shortName"
+              placeholder="JPLA"
+              type="text"
+              value={formValues.shortName}
+              onChange={handleChange}
+              autoComplete="off"
+              maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
+              aria-invalid={inputErr.shortName !== undefined}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className={inputWarnColor(
+                formValues.shortName,
+                INITIAVIVE_SHORTNAME_MAX_LENGTH,
+                0.8,
+              )}
+            >
+              {inputLengthCount(
+                formValues.shortName,
+                INITIAVIVE_SHORTNAME_MAX_LENGTH,
+                0.6,
+              )}
+            </InputGroupAddon>
+          </InputGroup>
         </label>
       </div>
 
@@ -93,14 +121,28 @@ export function InitiativeGeneralInfo({
           Descripción *
         </TextAndErrorForLabel>
 
-        <Textarea
-          id="description"
-          name="description"
-          placeholder="Esta iniciativa busca..."
-          value={formValues.description}
-          onChange={handleChange}
-          className={errorClass("description")}
-        />
+        <InputGroup>
+          <InputGroupTextarea
+            id="description"
+            name="description"
+            placeholder="Esta iniciativa busca..."
+            value={formValues.description}
+            onChange={handleChange}
+            maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+            aria-invalid={inputErr.description !== undefined}
+          />
+          <InputGroupAddon
+            align="block-end"
+            className={`${inputWarnColor(
+              formValues.description,
+              INITIAVIVE_DESCRIPTION_MAX_LENGTH,
+              0.95,
+            )} flex-row-reverse`}
+          >
+            {`${formValues.description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+            `}
+          </InputGroupAddon>
+        </InputGroup>
       </label>
     </>
   );

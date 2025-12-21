@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Form } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+} from "@ui/shadCN/component/button-group";
 
 // import {
 //   isMonitoringAPIError,
@@ -134,9 +138,15 @@ export function InitiativeDataForm({
 
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
       <div className="flex flex-row-reverse gap-4">
-        <Button onClick={handleSubmit} type="button">
-          Crear la iniciativa
-        </Button>
+        <ButtonGroup>
+          <Button onClick={handleSubmit} type="button">
+            Crear y cargar archivos
+          </Button>
+          <ButtonGroupSeparator />
+          <Button onClick={handleSubmit} type="button">
+            Crear
+          </Button>
+        </ButtonGroup>
         <Button type="reset" variant="outline_destructive">
           Reiniciar el formulario
         </Button>
