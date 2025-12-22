@@ -1,9 +1,7 @@
-import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { coverageKeys } from "pages/search/types/ecosystems";
-import base64 from "pages/search/utils/base64ArrayBuffer";
 import { MetricsUtils } from "pages/search/utils/metrics";
 
 /**
