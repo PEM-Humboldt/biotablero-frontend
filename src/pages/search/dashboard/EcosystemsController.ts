@@ -34,7 +34,7 @@ export class EcosystemsController {
    */
   async getCoveragesLayers(period: string): Promise<Array<RasterLayer>> {
     if (this.areaId) {
-      const requests: Array<Promise<any>> = [];
+      const requests: Array<Promise<{ layer: string }>> = [];
 
       Object.keys(coverageKeys).forEach((categoryId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
