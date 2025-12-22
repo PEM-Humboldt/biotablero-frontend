@@ -1,29 +1,16 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-  useRef,
-  useReducer,
-} from "react";
+import { useEffect, useContext, useCallback, useReducer } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import TextBoxes from "@ui/TextBoxes";
 
-import {
-  transformPAValues,
-  transformCoverageValues,
-  transformSEAreas,
-} from "pages/search/dashboard/ecosystems/transformData";
+import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 
 import {
   SearchLegacyCTX,
   LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import { formatNumber } from "@utils/format";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
@@ -46,7 +33,7 @@ type EcosystemsState = {
 
   coverageData: SmallStackedBarData[];
 
-  PAAreas:  Array<{
+  PAAreas: Array<{
     area: number;
     label: string;
     key: string;
@@ -108,21 +95,21 @@ const initialState: EcosystemsState = {
   },
 };
 
-
 type EcosystemsAction =
   | { type: "TOGGLE_MAIN_INFO" }
   | { type: "TOGGLE_SECTION_INFO"; payload: string }
   | { type: "SET_PERIOD"; payload: string }
-
   | { type: "SET_COVERAGE_DATA"; payload: SmallStackedBarData[] }
   | { type: "SET_LAYERS"; payload: RasterLayer[] }
-
   | { type: "SET_ACTIVE_SE"; payload: string }
-
-  | { type: "SET_MESSAGE"; payload: { key: "cov" | "pa" | "se"; value: MessageWrapperType } }
-
-  | { type: "SET_TEXTS"; payload: { section: keyof EcosystemsState["texts"]; value: TextsContent } };
-
+  | {
+      type: "SET_MESSAGE";
+      payload: { key: "cov" | "pa" | "se"; value: MessageWrapperType };
+    }
+  | {
+      type: "SET_TEXTS";
+      payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
+    };
 
 function ecosystemsReducer(
   state: EcosystemsState,
@@ -176,12 +163,11 @@ function ecosystemsReducer(
   }
 }
 
+const controller = new EcosystemsController();
+
 export function Ecosystems() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
   const { areaType, areaId, areaHa } = context;
-
-  const controller = useMemo(() => new EcosystemsController(), []);
-  const isMounted = useRef(true);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
@@ -200,60 +186,45 @@ export function Ecosystems() {
   const areaIdId = areaId?.id.toString();
   const areaIdStr = areaIdId ?? "";
 
-  const periodRef = useRef(period);
+  const switchLayer = useCallback(
+    (currentPeriod?: string) => {
+      const layerPeriod = currentPeriod ?? period;
+      if (!layerPeriod) {
+        context.setRasterLayers([]);
+        context.setLoadingLayer(false);
+        return;
+      }
+
+      controller
+        .getCoveragesLayers(layerPeriod)
+        .then((layersRes) => {
+          dispatch({ type: "SET_LAYERS", payload: layersRes });
+          context.setRasterLayers(layersRes);
+          context.setLoadingLayer(false);
+          context.setMapTitle({ name: "Coberturas" });
+        })
+        .catch((e) => {
+          context.setLoadingLayer(false);
+          if (!e.toString().includes("request canceled")) {
+            context.setLayerError?.(e.toString());
+          }
+        });
+    },
+    [period],
+  );
+
   useEffect(() => {
-    periodRef.current = period;
-  }, [period]);
+    context.setLoadingLayer(true);
 
-  const contextRef = useRef(context);
-  useEffect(() => {
-    contextRef.current = context;
-  }, [context]);
-
-  const switchLayer = useCallback((periodArg?: string) => {
-    const contextRefCurrent = contextRef.current;
-
-    contextRefCurrent.setMapTitle({ name: "Coberturas" });
-
-    const p = periodArg ?? periodRef.current;
-    if (!p) {
-      contextRefCurrent.setRasterLayers([]);
-      contextRefCurrent.setLoadingLayer(false);
+    if (!areaTypeId || !areaIdId) {
+      context.setLoadingLayer(false);
       return;
     }
 
-    controller
-      .getCoveragesLayers(p)
-      .then((layersRes) => {
-        if (!isMounted.current) return;
-        dispatch({ type: "SET_LAYERS", payload: layersRes });
-        contextRefCurrent.setRasterLayers(layersRes);
-        contextRefCurrent.setLoadingLayer(false);
-        contextRefCurrent.setMapTitle({ name: "Coberturas" });
-      })
-      .catch((e) => {
-        if (!isMounted.current) return;
-        contextRefCurrent.setLoadingLayer(false);
-        if (!e.toString().includes("request canceled")) {
-          contextRefCurrent.setLayerError?.(e.toString());
-        }
-      });
-  }, []);
-
-  useEffect(() => {
-    isMounted.current = true;
-
-    contextRef.current.setLoadingLayer(true);
-    
-    if (!areaTypeId || !areaIdId) return;
-
     controller.setArea(areaTypeId, areaIdId);
-    switchLayer();
 
     SearchAPI.requestMetricsValues<"Coverage">("Coverage", Number(areaIdId))
       .then((res) => {
-        if (!isMounted.current) return;
-
         const obtainedPeriod = res[0]?.ano ?? "";
         dispatch({ type: "SET_PERIOD", payload: obtainedPeriod });
 
@@ -269,60 +240,51 @@ export function Ecosystems() {
         switchLayer(obtainedPeriod);
       })
       .catch(() => {
-        if (!isMounted.current) return;
         dispatch({
           type: "SET_MESSAGE",
           payload: { key: "cov", value: "no-data" },
-        });        
-        contextRef.current.setLoadingLayer(false);
+        });
+        context.setLoadingLayer(false);
       });
 
-    // TEXTS
-
-    const TEXT_SECTIONS: TextSection[] = [
-      "ecosystems",
-      "coverage",
-      "pa",
-      "se",
-    ];
+    const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
 
     TEXT_SECTIONS.forEach((section) => {
       BackendAPI.requestSectionTexts(section)
         .then((res) => {
-          if (!isMounted.current) return;
           dispatch({
             type: "SET_TEXTS",
             payload: { section, value: res },
           });
         })
         .catch(() => {
-          if (!isMounted.current) return;
           dispatch({
             type: "SET_TEXTS",
-            payload: { section, value: { info: "", cons: "", meto: "", quote: "" } },
+            payload: {
+              section,
+              value: { info: "", cons: "", meto: "", quote: "" },
+            },
           });
         });
     });
 
     return () => {
-      isMounted.current = false;
       context.clearLayers();
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId]);
+  }, [areaTypeId, areaIdId, controller, switchLayer]);
 
   /**
    * Toggles the visibility state of the main tooltip.
    */
-    const toggleInfoGeneral = () =>
-      dispatch({ type: "TOGGLE_MAIN_INFO" });
+  const toggleInfoGeneral = () => dispatch({ type: "TOGGLE_MAIN_INFO" });
 
   /**
    * Toggles the display of a specific help section.
    *
-   * @param {string} value - Section id
+   * @param {TextSection} value - Section id
    */
-  const toggleInfo = (value: string) =>
+  const toggleInfo = (value: TextSection) =>
     dispatch({ type: "TOGGLE_SECTION_INFO", payload: value });
 
   /**
@@ -351,7 +313,7 @@ export function Ecosystems() {
   };
 
   const resetActiveSE = () => {
-    if (activeSE) dispatch({ type: "SET_ACTIVE_SE", payload: "" });  
+    if (activeSE) dispatch({ type: "SET_ACTIVE_SE", payload: "" });
   };
 
   return (
