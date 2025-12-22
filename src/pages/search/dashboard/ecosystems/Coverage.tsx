@@ -1,4 +1,3 @@
-import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
@@ -37,24 +36,28 @@ export function Coverage({
 }: Props) {
   return (
     <>
-      <button onClick={resetActiveSE} type="button" className="tittlebtn">
-        <h4>Cobertura</h4>
-      </button>
+      <div className="graphcontainer">
+        <h4>
+          <button type="button" className="titleBtn" onClick={resetActiveSE}>
+            Cobertura
+          </button>
+        </h4>
 
-      <IconTooltip title="Interpretación">
-        <InfoIcon
-          className={`downSpecial${infoOpen ? " activeBox" : ""}`}
-          onClick={toggleInfo}
-        />
-      </IconTooltip>
+        <IconTooltip title="Interpretación">
+          <InfoIcon
+            className={`downSpecial${infoOpen ? " activeBox" : ""}`}
+            onClick={toggleInfo}
+          />
+        </IconTooltip>
 
-      {infoOpen && (
-        <ShortInfo
-          description={`<p>${texts.info}</p>`}
-          className="graphinfo3"
-          collapseButton={false}
-        />
-      )}
+        {infoOpen && (
+          <ShortInfo
+            description={`<p>${texts.info}</p>`}
+            className="graphinfo3"
+            collapseButton={false}
+          />
+        )}
+      </div>
 
       <h6>Natural, Secundaria y Transformada:</h6>
 
