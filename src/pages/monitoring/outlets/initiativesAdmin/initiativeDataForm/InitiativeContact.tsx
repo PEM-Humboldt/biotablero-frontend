@@ -33,23 +33,19 @@ export function ContactInfoInput({
   setter,
   update,
 }: ItemEditorProps<InitiativeContact>) {
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(update?.email ?? "");
+  const [phone, setPhone] = useState(update?.phone ?? "");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   const reset = useCallback(() => {
     setInputErr({});
     setEmail(update?.email ?? "");
     setPhone(update?.phone ?? "");
-  }, [update]);
+  }, [update?.email, update?.phone]);
 
   useEffect(() => {
-    if (!update) {
-      return;
-    }
-
     reset();
-  }, [update, reset]);
+  }, [reset]);
 
   const handleSave = () => {
     setInputErr({});
