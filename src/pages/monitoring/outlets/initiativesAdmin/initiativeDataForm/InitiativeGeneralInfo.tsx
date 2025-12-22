@@ -1,10 +1,12 @@
-import { type ChangeEvent, useEffect, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
-import { Input } from "@ui/shadCN/component/input";
-import { Textarea } from "@ui/shadCN/component/textarea";
 import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
-
-import type { GeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   InputGroup,
   InputGroupInput,
@@ -12,6 +14,9 @@ import {
   InputGroupTextarea,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { StrValidator } from "@utils/validator";
+
+import type { GeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
@@ -26,30 +31,75 @@ export function InitiativeGeneralInfo({
   sectionUpdater: (value: GeneralInfo) => void;
   serverValidationErrors: { [key: string]: string[] };
 }) {
-  const [formValues, setFormValues] = useState({ ...sectionInfo });
+  const [name, setName] = useState(sectionInfo.name ?? "");
+  const [shortName, setShortName] = useState(sectionInfo.shortName ?? "");
+  const [description, setDescription] = useState(sectionInfo.description ?? "");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
-    sectionUpdater(formValues);
-  }, [formValues, sectionUpdater]);
+    setName(sectionInfo.name);
+    setShortName(sectionInfo.shortName);
+    setDescription(sectionInfo.description);
+  }, [sectionInfo.name, sectionInfo.shortName, sectionInfo.description]);
 
   useEffect(() => {
-    const relevantErr: { [key: string]: string[] } = {};
-    for (const key in sectionInfo) {
-      if (key in serverValidationErrors) {
-        relevantErr[key] = serverValidationErrors[key];
+    sectionUpdater({ name, shortName, description });
+  }, [name, shortName, description, sectionUpdater]);
+
+  const validationOnBlur = useCallback(
+    (
+      fieldName: string,
+      res: StrValidator,
+      fieldSetter: Dispatch<SetStateAction<string>>,
+    ) => {
+      const [cleanValue, errors] = res.result;
+
+      if (errors.length > 0) {
+        setInputErr((oldErr) => ({
+          ...oldErr,
+          [fieldName]: [
+            ...errors,
+            ...(serverValidationErrors?.[fieldName] ?? []),
+          ],
+        }));
+        return;
       }
-    }
-    setInputErr(relevantErr);
-  }, [serverValidationErrors, sectionInfo]);
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = event.target;
+      setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
+      fieldSetter(cleanValue);
+    },
+    [serverValidationErrors],
+  );
 
-    setFormValues((oldForm) => ({ ...oldForm, [name]: value }));
-  };
+  const nameOnBlur = () =>
+    validationOnBlur(
+      "name",
+      new StrValidator(name)
+        .sanitize()
+        .isRequired()
+        .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH),
+      setName,
+    );
+
+  const shortNameOnBlur = () =>
+    validationOnBlur(
+      "shortName",
+      new StrValidator(shortName)
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIAVIVE_SHORTNAME_MAX_LENGTH),
+      setName,
+    );
+
+  const descriptionOnBlur = () =>
+    validationOnBlur(
+      "description",
+      new StrValidator(description)
+        .sanitize()
+        .isRequired()
+        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+      setName,
+    );
 
   return (
     <>
@@ -63,8 +113,9 @@ export function InitiativeGeneralInfo({
               name="name"
               id="name"
               type="text"
-              value={formValues.name}
-              onChange={handleChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={nameOnBlur}
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
               maxLength={INITIAVIVE_NAME_MAX_LENGTH}
@@ -72,12 +123,9 @@ export function InitiativeGeneralInfo({
             />
             <InputGroupAddon
               align="inline-end"
-              className={inputWarnColor(
-                formValues.name,
-                INITIAVIVE_NAME_MAX_LENGTH,
-              )}
+              className={inputWarnColor(name, INITIAVIVE_NAME_MAX_LENGTH)}
             >
-              {inputLengthCount(formValues.name, INITIAVIVE_NAME_MAX_LENGTH)}
+              {inputLengthCount(name, INITIAVIVE_NAME_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </label>
@@ -92,8 +140,9 @@ export function InitiativeGeneralInfo({
               id="shortName"
               placeholder="JPLA"
               type="text"
-              value={formValues.shortName}
-              onChange={handleChange}
+              value={shortName}
+              onChange={(e) => setShortName(e.target.value)}
+              onBlur={shortNameOnBlur}
               autoComplete="off"
               maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
               aria-invalid={inputErr.shortName !== undefined}
@@ -101,13 +150,13 @@ export function InitiativeGeneralInfo({
             <InputGroupAddon
               align="inline-end"
               className={inputWarnColor(
-                formValues.shortName,
+                shortName,
                 INITIAVIVE_SHORTNAME_MAX_LENGTH,
                 0.8,
               )}
             >
               {inputLengthCount(
-                formValues.shortName,
+                shortName,
                 INITIAVIVE_SHORTNAME_MAX_LENGTH,
                 0.6,
               )}
@@ -126,20 +175,21 @@ export function InitiativeGeneralInfo({
             id="description"
             name="description"
             placeholder="Esta iniciativa busca..."
-            value={formValues.description}
-            onChange={handleChange}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            onBlur={descriptionOnBlur}
             maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             aria-invalid={inputErr.description !== undefined}
           />
           <InputGroupAddon
             align="block-end"
             className={`${inputWarnColor(
-              formValues.description,
+              description,
               INITIAVIVE_DESCRIPTION_MAX_LENGTH,
               0.95,
             )} flex-row-reverse`}
           >
-            {`${formValues.description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+            {`${description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             `}
           </InputGroupAddon>
         </InputGroup>
