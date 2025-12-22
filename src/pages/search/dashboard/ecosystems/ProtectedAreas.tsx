@@ -1,4 +1,3 @@
-import React from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
