@@ -1,4 +1,4 @@
-type ValidatorResponse = [sanitized: string, errors: string[]];
+export type ValidatorResponse = [sanitized: string, errors: string[]];
 
 /**
  * String validation and sanitization utility.

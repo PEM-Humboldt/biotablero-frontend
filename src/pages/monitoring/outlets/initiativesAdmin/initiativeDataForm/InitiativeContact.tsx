@@ -1,22 +1,44 @@
 import { useCallback, useEffect, useState } from "react";
-import { Input } from "@ui/shadCN/component/input";
+import {
+  Check,
+  CirclePlus,
+  Eraser,
+  Mail,
+  Phone,
+  SquarePen,
+  UndoDot,
+} from "lucide-react";
+
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+import { StrValidator } from "@utils/validator";
+
 import type {
   InitiativeContact,
   ItemEditorProps,
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
+
+const INITIATIVE_EMAIL_MAX_LENGHT = 120;
+const INITIATIVE_PHONE_MAX_LENGHT = 10;
 
 export function ContactInfoInput({
+  selectedItems,
   setter,
   update,
 }: ItemEditorProps<InitiativeContact>) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   const reset = useCallback(() => {
+    setInputErr({});
     setEmail(update?.email ?? "");
     setPhone(update?.phone ?? "");
   }, [update]);
@@ -30,33 +52,79 @@ export function ContactInfoInput({
   }, [update, reset]);
 
   const handleSave = () => {
-    const newContact = { phone, email };
+    setInputErr({});
+
+    const [cleanEmail, emailErrors] = new StrValidator(email)
+      .sanitize()
+      .isRequired()
+      .hasLengthLessOrEqualThan(INITIATIVE_EMAIL_MAX_LENGHT)
+      .isEmail()
+      .isUniqueIn(new Set(selectedItems?.map((e) => e.email))).result;
+
+    const [cleanPhone, phoneErrors] = new StrValidator(phone)
+      .isOptional()
+      .sanitize()
+      .isColombianPhone()
+      .isUniqueIn(new Set(selectedItems?.map((e) => e.phone))).result;
+
+    const errors = {
+      ...(emailErrors.length > 0 && { email: emailErrors }),
+      ...(phoneErrors.length > 0 && { phone: phoneErrors }),
+    };
+
+    if (Object.keys(errors).length > 0) {
+      setInputErr(errors);
+      return;
+    }
+
+    const newContact = { phone: cleanPhone, email: cleanEmail };
+
     setter((savedData) => [...savedData, newContact]);
-    reset();
+    setInputErr({});
+    setEmail("");
+    setPhone("");
   };
 
   return (
     <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
       <label htmlFor="email">
-        <span>Correo</span>
-        <Input
-          type="email"
-          placeholder="mi_iniciativa@dominio.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          autoComplete="off"
-        />
+        <TextAndErrorForLabel validationErrors={inputErr["email"] ?? {}}>
+          <span className="sr-only">Correo</span>
+        </TextAndErrorForLabel>
+        <InputGroup>
+          <InputGroupAddon>
+            <Mail aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
+            type="email"
+            placeholder="mi_iniciativa@dominio.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="off"
+            maxLength={INITIATIVE_EMAIL_MAX_LENGHT}
+            aria-invalid={inputErr.email !== undefined}
+          />
+        </InputGroup>
       </label>
 
       <label htmlFor="phone">
-        <span>Teléfono</span>
-        <Input
-          type="tel"
-          placeholder="3046669666"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          autoComplete="off"
-        />
+        <TextAndErrorForLabel validationErrors={inputErr["phone"] ?? {}}>
+          <span className="sr-only">Teléfono</span>
+        </TextAndErrorForLabel>
+        <InputGroup>
+          <InputGroupAddon>
+            <Phone aria-hidden="true" />
+          </InputGroupAddon>
+          <InputGroupInput
+            type="tel"
+            placeholder="3046669666"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            autoComplete="off"
+            maxLength={INITIATIVE_PHONE_MAX_LENGHT}
+            aria-invalid={inputErr.phone !== undefined}
+          />
+        </InputGroup>
       </label>
 
       <ButtonGroup>
