@@ -20,6 +20,7 @@ import {
 type ComboBoxProps<T> = {
   id?: string;
   items: T[];
+  maxItems?: number;
   value: number | string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
@@ -32,6 +33,7 @@ type ComboBoxProps<T> = {
 export function Combobox<T>({
   id,
   items,
+  maxItems,
   value,
   setValue,
   keys,
@@ -75,7 +77,7 @@ export function Combobox<T>({
           <CommandList>
             <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>
             <CommandGroup>
-              {items.map((item) => {
+              {(maxItems ? items.slice(0, maxItems) : items).map((item) => {
                 const itemValueStr = String(item[itemValue]);
                 const itemLabelStr = String(item[itemLabel]);
 

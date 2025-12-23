@@ -84,7 +84,10 @@ export function ContactInfoInput({
   return (
     <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
       <label htmlFor="email">
-        <TextAndErrorForLabel validationErrors={inputErr["email"] ?? {}}>
+        <TextAndErrorForLabel
+          errID="errors_email"
+          validationErrors={inputErr.email ?? []}
+        >
           <span className="sr-only">Correo</span>
         </TextAndErrorForLabel>
         <InputGroup>
@@ -92,19 +95,26 @@ export function ContactInfoInput({
             <Mail aria-hidden="true" />
           </InputGroupAddon>
           <InputGroupInput
+            name="email"
+            id="email"
             type="email"
-            placeholder="mi_iniciativa@dominio.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="off"
+            placeholder="mi_iniciativa@dominio.com"
             maxLength={INITIATIVE_EMAIL_MAX_LENGHT}
+            aria-required="true"
             aria-invalid={inputErr.email !== undefined}
+            aria-describedby={inputErr.email ? "errors_email" : undefined}
           />
         </InputGroup>
       </label>
 
       <label htmlFor="phone">
-        <TextAndErrorForLabel validationErrors={inputErr["phone"] ?? {}}>
+        <TextAndErrorForLabel
+          errID="errors_phone"
+          validationErrors={inputErr.phone ?? []}
+        >
           <span className="sr-only">Teléfono</span>
         </TextAndErrorForLabel>
         <InputGroup>
@@ -112,13 +122,16 @@ export function ContactInfoInput({
             <Phone aria-hidden="true" />
           </InputGroupAddon>
           <InputGroupInput
+            name="phone"
+            id="phone"
             type="tel"
-            placeholder="3046669666"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             autoComplete="off"
+            placeholder="3046669666"
             maxLength={INITIATIVE_PHONE_MAX_LENGHT}
             aria-invalid={inputErr.phone !== undefined}
+            aria-describedby={inputErr.phone ? "errors_phone" : undefined}
           />
         </InputGroup>
       </label>
@@ -148,9 +161,9 @@ export function ContactInfoInput({
           type="button"
           variant="outline"
           size="icon"
-          title="Reiniciar"
+          title="Restablecer campos"
         >
-          <span className="sr-only">Reiniciar</span>
+          <span className="sr-only">Restablecer campos</span>
           <span aria-hidden="true">
             <UndoDot className="size-5" />
           </span>

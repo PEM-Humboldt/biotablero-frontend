@@ -2,9 +2,11 @@ import { TriangleAlert } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function TextAndErrorForLabel({
+  errID,
   validationErrors,
   children,
 }: {
+  errID: string;
   validationErrors: string[];
   children: ReactNode;
 }) {
@@ -14,7 +16,7 @@ export function TextAndErrorForLabel({
     <div className="flex items-baseline flex-wrap">
       <span className={areErrors ? " font-bold" : ""}>{children}</span>{" "}
       {areErrors && (
-        <ul className="flex flex-wrap mx-2 pb-1">
+        <ul id={errID} aria-live="polite" className="flex flex-wrap mx-2 pb-1">
           {validationErrors.map((errorTxt) => (
             <li
               key={errorTxt}

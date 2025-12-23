@@ -141,14 +141,20 @@ export function LocationInput({
 
   return (
     <>
-      <TextAndErrorForLabel validationErrors={inputErr?.location ?? []}>
-        <span className="sr-only">Ingresa la ubicación de la iniciativa</span>
+      <TextAndErrorForLabel
+        errID="errors_location"
+        validationErrors={inputErr.location ?? []}
+      >
+        {inputErr?.location && (
+          <span className="sr-only">Errores de ubicación:</span>
+        )}
       </TextAndErrorForLabel>
+
       <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-        <Label className="flex-1" htmlFor="departments">
+        <Label className="flex-1" htmlFor="department">
           <span className="sr-only">Selecciona un Departamento</span>
           <Combobox
-            id="departments"
+            id="department"
             items={COLOMBIAN_DEPARTMENTS}
             value={department}
             setValue={setDepartment}
@@ -158,13 +164,16 @@ export function LocationInput({
               trigger: "Selecciona un departamento",
               inputPlaceholder: "buscar departamento",
             }}
+            aria-required="true"
+            aria-invalid={inputErr.location !== undefined}
+            aria-describedby={inputErr.location ? "errors_location" : undefined}
           />
         </Label>
 
-        <Label className="flex-1" htmlFor="departments">
+        <Label className="flex-1" htmlFor="municipality">
           <span className="sr-only">Selecciona un municipio</span>
           <Combobox
-            id="departments"
+            id="municipality"
             items={municipalities}
             value={municipality}
             setValue={setMunicipality}
@@ -175,23 +184,34 @@ export function LocationInput({
               inputPlaceholder: "buscar municipio",
             }}
             disabled={municipalities.length === 0}
+            aria-invalid={inputErr.location !== undefined}
+            aria-describedby={inputErr.location ? "errors_location" : undefined}
           />
         </Label>
 
-        <Label className="flex-1" htmlFor="departments">
-          <TextAndErrorForLabel validationErrors={inputErr?.locality ?? []}>
+        <Label className="flex-1" htmlFor="locality">
+          <TextAndErrorForLabel
+            errID="errors_locality"
+            validationErrors={inputErr.locality ?? []}
+          >
             <span className="sr-only">Escribe el nombre de la vereda</span>
           </TextAndErrorForLabel>
           <InputGroup>
             <InputGroupInput
+              name="locality"
+              id="locality"
+              type="text"
               value={locality}
               onChange={(e) => setLocality(e.target.value)}
-              placeholder="Localidad"
               onBlur={isLocalityValid}
-              aria-invalid={"locality" in inputErr}
               autoComplete="off"
+              placeholder="Nombre de la vereda"
               maxLength={INITIATIVE_LOCALITY_MAX_LENGTH}
               disabled={municipalities.length === 0}
+              aria-invalid={inputErr.locality !== undefined}
+              aria-describedby={
+                inputErr.locality ? "errors_locality" : undefined
+              }
             />
             <InputGroupAddon
               align="inline-end"
@@ -231,9 +251,9 @@ export function LocationInput({
             type="button"
             variant="outline"
             size="icon"
-            title="Reiniciar"
+            title="Restablecer campos"
           >
-            <span className="sr-only">Reiniciar</span>
+            <span className="sr-only">Restablecer campos</span>
             <span aria-hidden="true">
               <UndoDot className="size-5" />
             </span>

@@ -17,6 +17,8 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { NEW_ADMIN_CREDENTIALS } from "pages/monitoring/utils/manageUsers";
 
+const INITIATIVE_DISPLAY_LEADERS_SEARCH = 5;
+
 export function UsersInfoInput({
   selectedItems,
   setter,
@@ -24,7 +26,7 @@ export function UsersInfoInput({
 }: ItemEditorProps<User>) {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [user, setUser] = useState<string>("");
-  const [error, setError] = useState<string[]>([]);
+  const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
     const getUsersInfo = async () => {
@@ -68,19 +70,23 @@ export function UsersInfoInput({
     } as User;
 
     setUser("");
-    setError([]);
+    setInputErr({});
     setter((savedData) => [...savedData, newUser]);
   };
 
   return (
     <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
       <Label className="flex-1" htmlFor="leaders">
-        <TextAndErrorForLabel validationErrors={error}>
+        <TextAndErrorForLabel
+          errID="errors_leaders"
+          validationErrors={inputErr?.leaders ?? []}
+        >
           <span className="sr-only">Selecciona un lider o lidereza</span>
         </TextAndErrorForLabel>
         <Combobox
           id="leaders"
           items={usersAvailable}
+          maxItems={INITIATIVE_DISPLAY_LEADERS_SEARCH}
           value={user}
           setValue={setUser}
           keys={{ forLabel: "userName" }}
@@ -89,6 +95,8 @@ export function UsersInfoInput({
             trigger: "Selecciona un usuario ",
             inputPlaceholder: "buscar lider",
           }}
+          aria-invalid={inputErr.leaders !== undefined}
+          aria-describedby={inputErr.location ? "errors_leaders" : undefined}
         />
       </Label>
 

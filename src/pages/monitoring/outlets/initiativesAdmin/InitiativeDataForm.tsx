@@ -101,7 +101,7 @@ export function InitiativeDataForm({
       </fieldset>
 
       <fieldset>
-        <legend>Dónde está ubicada</legend>
+        <legend>Ubicación de la iniciativa</legend>
         <FormListManager
           maxItems={3}
           sectionInfo={initiativeData.current.locations}
@@ -113,7 +113,7 @@ export function InitiativeDataForm({
       </fieldset>
 
       <fieldset>
-        <legend>Contacto * </legend>
+        <legend>Información de contacto</legend>
         <FormListManager
           maxItems={5}
           sectionInfo={initiativeData.current.contacts}
@@ -139,9 +139,7 @@ export function InitiativeDataForm({
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
       <div className="flex flex-row-reverse gap-4">
         <ButtonGroup>
-          <Button onClick={handleSubmit} type="button">
-            Crear y cargar archivos
-          </Button>
+          <Button onClick={handleSubmit}>Crear y cargar archivos</Button>
           <ButtonGroupSeparator />
           <Button onClick={handleSubmit} type="button">
             Crear

@@ -88,7 +88,7 @@ export function InitiativeGeneralInfo({
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIAVIVE_SHORTNAME_MAX_LENGTH),
-      setName,
+      setShortName,
     );
 
   const descriptionOnBlur = () =>
@@ -98,14 +98,17 @@ export function InitiativeGeneralInfo({
         .sanitize()
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
-      setName,
+      setDescription,
     );
 
   return (
     <>
       <div className="flex flex-wrap items-end gap-4 [&>label]:flex-1 [&>label]:my-1 [&>label]:first:flex-2 [&>label]:min-w-[200px]">
         <label htmlFor="name">
-          <TextAndErrorForLabel validationErrors={inputErr.name ?? []}>
+          <TextAndErrorForLabel
+            errID="errors_name"
+            validationErrors={inputErr.name ?? []}
+          >
             Nombre completo *
           </TextAndErrorForLabel>
           <InputGroup>
@@ -119,7 +122,9 @@ export function InitiativeGeneralInfo({
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
               maxLength={INITIAVIVE_NAME_MAX_LENGTH}
+              aria-required="true"
               aria-invalid={inputErr.name !== undefined}
+              aria-describedby={inputErr.name ? "errors_name" : undefined}
             />
             <InputGroupAddon
               align="inline-end"
@@ -131,7 +136,10 @@ export function InitiativeGeneralInfo({
         </label>
 
         <label htmlFor="shortName">
-          <TextAndErrorForLabel validationErrors={inputErr.shortName ?? []}>
+          <TextAndErrorForLabel
+            errID="errors_shortName"
+            validationErrors={inputErr.shortName ?? []}
+          >
             Nombre corto
           </TextAndErrorForLabel>
           <InputGroup>
@@ -146,6 +154,9 @@ export function InitiativeGeneralInfo({
               autoComplete="off"
               maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
               aria-invalid={inputErr.shortName !== undefined}
+              aria-describedby={
+                inputErr.shortName ? "errors_shortName" : undefined
+              }
             />
             <InputGroupAddon
               align="inline-end"
@@ -166,7 +177,10 @@ export function InitiativeGeneralInfo({
       </div>
 
       <label htmlFor="description">
-        <TextAndErrorForLabel validationErrors={inputErr.description ?? []}>
+        <TextAndErrorForLabel
+          errID="errors_description"
+          validationErrors={inputErr.description ?? []}
+        >
           Descripción *
         </TextAndErrorForLabel>
 
@@ -180,6 +194,10 @@ export function InitiativeGeneralInfo({
             onBlur={descriptionOnBlur}
             maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             aria-invalid={inputErr.description !== undefined}
+            aria-required="true"
+            aria-describedby={
+              inputErr.description ? "errors_description" : undefined
+            }
           />
           <InputGroupAddon
             align="block-end"
