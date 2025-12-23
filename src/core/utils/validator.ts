@@ -17,10 +17,11 @@ export class StrValidator {
    * @param str - Initial string to validate.
    */
   constructor(str: string | number) {
-    this.strToValidate = String(str);
+    const instanceStr = String(str);
+    this.strToValidate = instanceStr;
     this.errors = [];
     this.optional = false;
-    this.originalStr = String(str);
+    this.originalStr = instanceStr;
   }
 
   /**

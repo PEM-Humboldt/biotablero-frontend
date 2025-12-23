@@ -1,4 +1,4 @@
-import { normalizeString } from "@utils/stringManipulation";
+import { StrValidator } from "@utils/validator";
 import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 /**
@@ -17,12 +17,13 @@ export function locationAlreadyExist(
   }
 
   const normalizedLookfor = lookfor?.locality
-    ? normalizeString(lookfor.locality)
+    ? StrValidator.normalize(lookfor.locality)
     : null;
 
   return inLocations.some((location) => {
     if (normalizedLookfor && location.locality) {
-      const nomalizedInLocation = normalizeString(location.locality);
+      const nomalizedInLocation = StrValidator.normalize(location.locality);
+
       if (normalizedLookfor !== nomalizedInLocation) {
         return false;
       }
