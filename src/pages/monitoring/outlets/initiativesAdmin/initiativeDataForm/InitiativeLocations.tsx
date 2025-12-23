@@ -1,14 +1,7 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { Input } from "@ui/shadCN/component/input";
 
 import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
@@ -28,6 +21,15 @@ import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { LocationList } from "pages/monitoring/types/monitoring";
 import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
 import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/validations";
+import { StrValidator } from "@utils/validator";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
+
+const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 
 export function LocationInput({
   selectedItems,
@@ -39,9 +41,12 @@ export function LocationInput({
   const [municipality, setMunicipality] = useState<string>("");
   const [locality, setLocality] = useState("");
 
-  const [error, setError] = useState<string[]>([]);
+  const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
+    setMunicipality("");
+    setLocality("");
+
     if (department === "") {
       setMunicipalities([]);
       return;
@@ -64,18 +69,8 @@ export function LocationInput({
     void getMunicipalities();
   }, [department]);
 
-  const handleChangeDepartment: Dispatch<SetStateAction<string>> = (value) => {
-    const nextValue = typeof value === "function" ? value(department) : value;
-    setDepartment(nextValue);
-
-    if (nextValue !== department) {
-      setMunicipality("");
-      setLocality("");
-    }
-  };
-
   const reset = useCallback(async () => {
-    setError([]);
+    setInputErr({});
     if (update === null) {
       setDepartment("");
       setMunicipality("");
@@ -95,11 +90,33 @@ export function LocationInput({
 
   useEffect(() => {
     void reset();
-  }, [update, reset]);
+  }, [reset]);
+
+  const isLocalityValid = () => {
+    const [cleanLocality, localityErrors] = new StrValidator(locality)
+      .isOptional()
+      .sanitize()
+      .hasLengthLessOrEqualThan(INITIATIVE_LOCALITY_MAX_LENGTH).result;
+
+    if (localityErrors.length > 0) {
+      setInputErr((oldErr) => ({ ...oldErr, locality: localityErrors }));
+      return false;
+    }
+
+    setLocality(cleanLocality);
+    return true;
+  };
 
   const handleSave = () => {
     if (department === "") {
-      setError(["se debe seleccionar al menos un departamento"]);
+      setInputErr((oldErr) => ({
+        ...oldErr,
+        location: ["se debe seleccionar al menos un departamento"],
+      }));
+      return;
+    }
+
+    if (!isLocalityValid) {
       return;
     }
 
@@ -109,7 +126,10 @@ export function LocationInput({
     };
 
     if (selectedItems && locationAlreadyExist(newLocation, selectedItems)) {
-      setError(["Ya existe esa ubicación"]);
+      setInputErr((oldErr) => ({
+        ...oldErr,
+        location: ["Ya existe esa ubicación"],
+      }));
       return;
     }
 
@@ -121,7 +141,7 @@ export function LocationInput({
 
   return (
     <>
-      <TextAndErrorForLabel validationErrors={error}>
+      <TextAndErrorForLabel validationErrors={inputErr?.location ?? []}>
         <span className="sr-only">Ingresa la ubicación de la iniciativa</span>
       </TextAndErrorForLabel>
       <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
@@ -131,7 +151,7 @@ export function LocationInput({
             id="departments"
             items={COLOMBIAN_DEPARTMENTS}
             value={department}
-            setValue={handleChangeDepartment}
+            setValue={setDepartment}
             keys={{ forValue: "value", forLabel: "name" }}
             uiText={{
               itemNotFound: "Departamento no encontrado",
@@ -159,12 +179,31 @@ export function LocationInput({
         </Label>
 
         <Label className="flex-1" htmlFor="departments">
-          <span className="sr-only">Escribe el nombre de la vereda</span>
-          <Input
-            value={locality}
-            onChange={(e) => setLocality(e.target.value)}
-            placeholder="Localidad"
-          />
+          <TextAndErrorForLabel validationErrors={inputErr?.locality ?? []}>
+            <span className="sr-only">Escribe el nombre de la vereda</span>
+          </TextAndErrorForLabel>
+          <InputGroup>
+            <InputGroupInput
+              value={locality}
+              onChange={(e) => setLocality(e.target.value)}
+              placeholder="Localidad"
+              onBlur={isLocalityValid}
+              aria-invalid={"locality" in inputErr}
+              autoComplete="off"
+              maxLength={INITIATIVE_LOCALITY_MAX_LENGTH}
+              disabled={municipalities.length === 0}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className={inputWarnColor(
+                locality,
+                INITIATIVE_LOCALITY_MAX_LENGTH,
+                0.8,
+              )}
+            >
+              {inputLengthCount(locality, INITIATIVE_LOCALITY_MAX_LENGTH, 0.6)}
+            </InputGroupAddon>
+          </InputGroup>
         </Label>
 
         <ButtonGroup>
