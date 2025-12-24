@@ -18,7 +18,7 @@ import {
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "@composites/charts/LargeStackedBar";
+import { LargeStackedBar, LargeStackedBarData } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
@@ -78,6 +78,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
     this.CurrentHFController.setArea(areaTypeId, areaIdId);
 
+
     /******** ToDo: Update the request for Avg HF *********/
     /*
     BackendAPI.requestCurrentHFValue(areaTypeId, areaIdId)
@@ -92,8 +93,8 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       .catch(() => {});
     */
 
-    SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
-      .then((res) => {
+      SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
+        .then((res) => {
         if (this.mounted) {
           this.setState({
             hfCurrent: this.CurrentHFController.transformData(res),
@@ -146,6 +147,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };
+
 
   render() {
     const { areaType, areaId } = this.context as LegacyContextValues;
