@@ -10,6 +10,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
+import SearchAPI from "pages/search/api/searchAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
@@ -18,7 +19,7 @@ import {
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
-import { MessageWrapperType } from "@composites/charts/charts";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
 
@@ -29,10 +30,10 @@ interface currentHFCategoriesExt extends currentHFCategories {
 interface Props {}
 interface currentHFState {
   showInfoGraph: boolean;
-  hfCurrent: Array<currentHFCategoriesExt>;
+  hfCurrent: Array<LargeStackedBarData>;
   hfCurrentValue: string;
   hfCurrentCategory: string;
-  message: MessageWrapperType;
+  message: any;
   texts: {
     hfCurrent: textsObject;
   };
@@ -77,6 +78,8 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
     this.CurrentHFController.setArea(areaTypeId, areaIdId);
 
+    /******** ToDo: Update the request for Avg HF *********/
+    /*
     BackendAPI.requestCurrentHFValue(areaTypeId, areaIdId)
       .then((res: currentHFValue) => {
         if (this.mounted) {
@@ -87,15 +90,13 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
         }
       })
       .catch(() => {});
+    */
 
-    BackendAPI.requestCurrentHFCategories(areaTypeId, areaIdId)
-      .then((res: Array<currentHFCategories>) => {
+    SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
+      .then((res) => {
         if (this.mounted) {
           this.setState({
-            hfCurrent: res.map((item) => ({
-              ...item,
-              label: `${item.key[0].toUpperCase()}${item.key.slice(1)}`,
-            })),
+            hfCurrent: this.CurrentHFController.transformData(res),
             message: null,
           });
         }

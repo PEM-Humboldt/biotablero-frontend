@@ -5,6 +5,8 @@ import matchColor from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
+import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
+import { MetricTypesMap } from "pages/search/types/metrics";
 export class CurrentFootprintController {
   areaType: string = "";
   areaId: string = "";
@@ -123,6 +125,30 @@ export class CurrentFootprintController {
     this.activeRequests.forEach((value, key) => {
       value.cancel();
       this.activeRequests.delete(key);
+    });
+  };
+
+  transformData = (
+    resData: Array<MetricTypesMap["CurrentHF"]>,
+  ): LargeStackedBarData[] => {
+    if (!resData.length) return [];
+
+    const { ano, ...categories } = resData[0];
+
+    const totalArea: number = Object.values(categories).reduce(
+      (total: number, value) => total + Number(value),
+      0,
+    );
+
+    return Object.entries(categories).map(([key, value]) => {
+      const area = Number(value);
+
+      return {
+        key,
+        area,
+        percentage: totalArea ? (area / totalArea) * 100 : 0,
+        label: key.charAt(0).toUpperCase() + key.slice(1),
+      };
     });
   };
 }
