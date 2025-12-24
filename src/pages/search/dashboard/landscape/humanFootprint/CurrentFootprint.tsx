@@ -18,10 +18,13 @@ import {
   currentHFCategories,
 } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import { LargeStackedBar, LargeStackedBarData } from "@composites/charts/LargeStackedBar";
+import {
+  LargeStackedBar,
+  LargeStackedBarData,
+} from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
-import { ShapeLayer } from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 
 interface currentHFCategoriesExt extends currentHFCategories {
   label: string;
@@ -30,6 +33,7 @@ interface currentHFCategoriesExt extends currentHFCategories {
 interface Props {}
 interface currentHFState {
   showInfoGraph: boolean;
+  period: string;
   hfCurrent: Array<LargeStackedBarData>;
   hfCurrentValue: string;
   hfCurrentCategory: string;
@@ -37,7 +41,7 @@ interface currentHFState {
   texts: {
     hfCurrent: textsObject;
   };
-  layers: Array<ShapeLayer>;
+  layers: Array<RasterLayer>;
 }
 
 class CurrentFootprint extends React.Component<Props, currentHFState> {
@@ -51,6 +55,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
     this.CurrentHFController = new CurrentFootprintController();
     this.state = {
       showInfoGraph: true,
+      period: "",
       hfCurrent: [],
       hfCurrentValue: "0",
       hfCurrentCategory: "",
@@ -64,20 +69,12 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
 
   componentDidMount() {
     this.mounted = true;
-    const {
-      areaType,
-      areaId,
-      setShapeLayers,
-      setLoadingLayer,
-      setLayerError,
-      setMapTitle,
-    } = this.context as LegacyContextValues;
+    const { areaType, areaId } = this.context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
     const areaIdId = areaId!.id.toString();
 
     this.CurrentHFController.setArea(areaTypeId, areaIdId);
-
 
     /******** ToDo: Update the request for Avg HF *********/
     /*
@@ -93,11 +90,12 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       .catch(() => {});
     */
 
-      SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
-        .then((res) => {
+    SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
+      .then((res) => {
         if (this.mounted) {
           this.setState({
             hfCurrent: this.CurrentHFController.transformData(res),
+            period: res[0]?.ano ?? "",
             message: null,
           });
         }
@@ -117,21 +115,12 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
           texts: { hfCurrent: { info: "", cons: "", meto: "", quote: "" } },
         });
       });
+  }
 
-    setLoadingLayer(true);
-
-    this.CurrentHFController.getLayer()
-      .then((hfCurrent) => {
-        if (this.mounted) {
-          this.setState(
-            () => ({ layers: [hfCurrent] }),
-            () => setLoadingLayer(false),
-          );
-          setShapeLayers(this.state.layers);
-          setMapTitle({ name: "HH promedio · 2018" });
-        }
-      })
-      .catch((error) => setLayerError(error));
+  componentDidUpdate(prevProps: Props, prevState: currentHFState) {
+    if (this.state.period && this.state.period !== prevState.period) {
+      this.switchLayer(this.state.period);
+    }
   }
 
   componentWillUnmount() {
@@ -147,7 +136,6 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
       showInfoGraph: !prevState.showInfoGraph,
     }));
   };
-
 
   render() {
     const { areaType, areaId } = this.context as LegacyContextValues;
@@ -200,9 +188,7 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
             units="ha"
             colors={matchColor("hfCurrent")}
             padding={0.25}
-            onClickGraphHandler={(selected: string) => {
-              this.highlightFeature(selected);
-            }}
+            onClickGraphHandler={this.clickOnGraph}
           />
         </div>
         <TextBoxes
@@ -218,21 +204,40 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
     );
   }
 
-  /**
-   * Highlight an specific feature of the Currenta PA layer
-   *
-   * @param {string} selectedKey Id of the feature
-   */
-  highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as LegacyContextValues;
+  clickOnGraph = (selectedKey: string) => {
+    const { setRasterLayers } = this.context as LegacyContextValues;
     const { layers } = this.state;
-    const highlightedLayers = layers.map((layer) => {
-      if (layer.id === "hfCurrent") {
-        layer.layerStyle = this.CurrentHFController.setLayerStyle(selectedKey);
-      }
-      return layer;
-    });
-    setShapeLayers(highlightedLayers);
+
+    setRasterLayers(
+      layers.map((layer) => ({
+        ...layer,
+        selected: layer.id === selectedKey,
+      })),
+    );
+  };
+
+  switchLayer = (period: string) => {
+    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
+      this.context as LegacyContextValues;
+
+    setLoadingLayer(true);
+    this.CurrentHFController.getCurrentHFLayers(period)
+      .then((layers) => {
+        this.setState({ layers: layers });
+
+        if (this.mounted) {
+          setRasterLayers(layers);
+          setLoadingLayer(false);
+          setMapTitle({
+            name: `HH promedio · ${period}`,
+          });
+        }
+      })
+      .catch((e) => {
+        if (e.toString() != "Error: request canceled") {
+          setLayerError(e.toString());
+        }
+      });
   };
 }
 
