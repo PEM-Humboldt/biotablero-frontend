@@ -22,7 +22,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
       },
       component: CurrentFootprint,
     },
-    {
+    /*{
       label: {
         id: "hfPersistence",
         name: "Persistencia",
@@ -45,7 +45,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa diferentes análisis de huella humana en esta área de consulta",
       },
       component: TimelineFootprint,
-    },
+    },*/
   ];
   return (
     <div style={{ width: "100%" }}>
