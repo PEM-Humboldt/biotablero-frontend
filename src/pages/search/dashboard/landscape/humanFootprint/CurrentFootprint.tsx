@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -14,200 +14,116 @@ import SearchAPI from "pages/search/api/searchAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
-  currentHFValue,
-  currentHFCategories,
-} from "pages/search/types/humanFootprint";
-import { textsObject } from "pages/search/types/texts";
-import {
   LargeStackedBar,
   LargeStackedBarData,
 } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
-
-interface currentHFCategoriesExt extends currentHFCategories {
-  label: string;
-}
+import { textsObject } from "pages/search/types/texts";
 
 interface Props {}
-interface currentHFState {
-  showInfoGraph: boolean;
-  period: string;
-  hfCurrent: Array<LargeStackedBarData>;
-  hfCurrentValue: string;
-  hfCurrentCategory: string;
-  message: any;
-  texts: {
-    hfCurrent: textsObject;
-  };
-  layers: Array<RasterLayer>;
-}
 
-class CurrentFootprint extends React.Component<Props, currentHFState> {
-  static contextType = SearchLegacyCTX;
-  mounted = false;
-  componentName = "hfCurrent";
-  CurrentHFController;
+const CurrentFootprint: React.FC<Props> = () => {
+  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
+  const {
+    areaType,
+    areaId,
+    setRasterLayers,
+    setLoadingLayer,
+    setLayerError,
+    setMapTitle,
+  } = context;
 
-  constructor(props: Props) {
-    super(props);
-    this.CurrentHFController = new CurrentFootprintController();
-    this.state = {
-      showInfoGraph: true,
-      period: "",
-      hfCurrent: [],
-      hfCurrentValue: "0",
-      hfCurrentCategory: "",
-      message: "loading",
-      texts: {
-        hfCurrent: { info: "", cons: "", meto: "", quote: "" },
-      },
-      layers: [],
-    };
-  }
+  const [showInfoGraph, setShowInfoGraph] = useState(true);
+  const [period, setPeriod] = useState("");
+  const [hfCurrent, setHfCurrent] = useState<LargeStackedBarData[]>([]);
+  const [hfCurrentValue] = useState("0");
+  const [hfCurrentCategory] = useState("");
+  const [message, setMessage] = useState<MessageWrapperType>("loading");
+  const [texts, setTexts] = useState<{ hfCurrent: textsObject }>({
+    hfCurrent: { info: "", cons: "", meto: "", quote: "" },
+  });
+  const [layers, setLayers] = useState<RasterLayer[]>([]);
 
-  componentDidMount() {
-    this.mounted = true;
-    const { areaType, areaId } = this.context as LegacyContextValues;
+  const controller = new CurrentFootprintController();
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
+  const areaTypeId = areaType!.id;
+  const areaIdId = areaId!.id.toString();
 
-    this.CurrentHFController.setArea(areaTypeId, areaIdId);
-
-    /******** ToDo: Update the request for Avg HF *********/
-    /*
-    BackendAPI.requestCurrentHFValue(areaTypeId, areaIdId)
-      .then((res: currentHFValue) => {
-        if (this.mounted) {
-          this.setState({
-            hfCurrentValue: Number(res.value).toFixed(2),
-            hfCurrentCategory: res.category,
-          });
-        }
-      })
-      .catch(() => {});
-    */
+  useEffect(() => {
+    controller.setArea(areaTypeId, areaIdId);
 
     SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
       .then((res) => {
-        if (this.mounted) {
-          this.setState({
-            hfCurrent: this.CurrentHFController.transformData(res),
-            period: res[0]?.ano ?? "",
-            message: null,
-          });
-        }
+        const obtainedPeriod = res[0]?.ano ?? "";
+        setHfCurrent(controller.transformData(res));
+        setPeriod(obtainedPeriod);
+        setMessage(null);
+        switchLayer(obtainedPeriod);
       })
       .catch(() => {
-        this.setState({ message: "no-data" });
+        setMessage("no-data");
       });
 
     BackendAPI.requestSectionTexts("hfCurrent")
       .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfCurrent: res } });
-        }
+        setTexts({ hfCurrent: res });
       })
       .catch(() => {
-        this.setState({
-          texts: { hfCurrent: { info: "", cons: "", meto: "", quote: "" } },
+        setTexts({
+          hfCurrent: { info: "", cons: "", meto: "", quote: "" },
         });
       });
-  }
 
-  componentDidUpdate(prevProps: Props, prevState: currentHFState) {
-    if (this.state.period && this.state.period !== prevState.period) {
-      this.switchLayer(this.state.period);
-    }
-  }
+    return () => {
+      controller.cancelActiveRequests();
+    };
+  }, [areaTypeId, areaIdId]);
 
-  componentWillUnmount() {
-    this.mounted = false;
-    this.CurrentHFController.cancelActiveRequests();
-  }
+  useEffect(() => {
+    if (!period) return;
 
-  /**
-   * Show or hide the detailed information on each graph
-   */
-  toggleInfoGraph = () => {
-    this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
-    }));
+    setLoadingLayer(true);
+
+    controller
+      .getCurrentHFLayers(period)
+      .then((newLayers) => {
+        setLayers(newLayers);
+        setRasterLayers(newLayers);
+        setLoadingLayer(false);
+        setMapTitle({ name: `HH promedio · ${period}` });
+      })
+      .catch((e) => {
+        if (e.toString() !== "Error: request canceled") {
+          setLayerError(e.toString());
+        }
+      });
+  }, [period]);
+
+  const switchLayer = (period: string) => {
+    setLoadingLayer(true);
+    controller
+      .getCurrentHFLayers(period)
+      .then((layers) => {
+        setRasterLayers(layers);
+        setLoadingLayer(false);
+        setMapTitle({
+          name: `HH promedio · ${period}`,
+        });
+      })
+      .catch((e) => {
+        if (e.toString() != "Error: request canceled") {
+          setLayerError(e.toString());
+        }
+      });
   };
 
-  render() {
-    const { areaType, areaId } = this.context as LegacyContextValues;
-    const {
-      hfCurrent,
-      hfCurrentValue,
-      hfCurrentCategory,
-      showInfoGraph,
-      message,
-      texts,
-    } = this.state;
+  const toggleInfoGraph = () => {
+    setShowInfoGraph((prev) => !prev);
+  };
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
-
-    return (
-      <div className="graphcontainer pt6">
-        <h2>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
-              onClick={() => this.toggleInfoGraph()}
-            />
-          </IconTooltip>
-        </h2>
-        {showInfoGraph && (
-          <ShortInfo
-            description={`<p>${texts.hfCurrent.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-        <div>
-          <h6>Huella humana promedio · 2018</h6>
-          <h5
-            style={{
-              backgroundColor: matchColor("hfCurrent")(hfCurrentCategory),
-            }}
-          >
-            {hfCurrentValue}
-          </h5>
-        </div>
-        <h6>Natural, Baja, Media y Alta</h6>
-        <div>
-          <LargeStackedBar
-            data={hfCurrent}
-            message={message}
-            labelX="Hectáreas"
-            labelY="Huella Humana Actual"
-            units="ha"
-            colors={matchColor("hfCurrent")}
-            padding={0.25}
-            onClickGraphHandler={this.clickOnGraph}
-          />
-        </div>
-        <TextBoxes
-          consText={texts.hfCurrent.cons}
-          metoText={texts.hfCurrent.meto}
-          quoteText={texts.hfCurrent.quote}
-          downloadData={hfCurrent}
-          downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
-          isInfoOpen={showInfoGraph}
-          toggleInfo={this.toggleInfoGraph}
-        />
-      </div>
-    );
-  }
-
-  clickOnGraph = (selectedKey: string) => {
-    const { setRasterLayers } = this.context as LegacyContextValues;
-    const { layers } = this.state;
-
+  const clickOnGraph = (selectedKey: string) => {
     setRasterLayers(
       layers.map((layer) => ({
         ...layer,
@@ -216,29 +132,60 @@ class CurrentFootprint extends React.Component<Props, currentHFState> {
     );
   };
 
-  switchLayer = (period: string) => {
-    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      this.context as LegacyContextValues;
+  return (
+    <div className="graphcontainer pt6">
+      <h2>
+        <IconTooltip title="Interpretación">
+          <InfoIcon
+            className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
+            onClick={toggleInfoGraph}
+          />
+        </IconTooltip>
+      </h2>
 
-    setLoadingLayer(true);
-    this.CurrentHFController.getCurrentHFLayers(period)
-      .then((layers) => {
-        this.setState({ layers: layers });
+      {showInfoGraph && (
+        <ShortInfo
+          description={`<p>${texts.hfCurrent.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
 
-        if (this.mounted) {
-          setRasterLayers(layers);
-          setLoadingLayer(false);
-          setMapTitle({
-            name: `HH promedio · ${period}`,
-          });
-        }
-      })
-      .catch((e) => {
-        if (e.toString() != "Error: request canceled") {
-          setLayerError(e.toString());
-        }
-      });
-  };
-}
+      <div>
+        <h6>Huella humana promedio · 2018</h6>
+        <h5
+          style={{
+            backgroundColor: matchColor("hfCurrent")(hfCurrentCategory),
+          }}
+        >
+          {hfCurrentValue}
+        </h5>
+      </div>
+
+      <h6>Natural, Baja, Media y Alta</h6>
+
+      <LargeStackedBar
+        data={hfCurrent}
+        message={message}
+        labelX="Hectáreas"
+        labelY="Huella Humana Actual"
+        units="ha"
+        colors={matchColor("hfCurrent")}
+        padding={0.25}
+        onClickGraphHandler={clickOnGraph}
+      />
+
+      <TextBoxes
+        consText={texts.hfCurrent.cons}
+        metoText={texts.hfCurrent.meto}
+        quoteText={texts.hfCurrent.quote}
+        downloadData={hfCurrent}
+        downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
+        isInfoOpen={showInfoGraph}
+        toggleInfo={toggleInfoGraph}
+      />
+    </div>
+  );
+};
 
 export default CurrentFootprint;
