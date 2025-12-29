@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -6,6 +6,7 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
+
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import matchColor from "pages/search/utils/matchColor";
@@ -17,14 +18,93 @@ import {
   LargeStackedBar,
   LargeStackedBarData,
 } from "@composites/charts/LargeStackedBar";
+
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 
-interface Props {}
+interface State {
+  showInfoGraph: boolean;
+  period: string;
+  hfCurrent: LargeStackedBarData[];
+  hfCurrentValue: string;
+  hfCurrentCategory: string;
+  message: MessageWrapperType;
+  texts: { hfCurrent: textsObject };
+  layers: RasterLayer[];
+}
 
-const CurrentFootprint: React.FC<Props> = () => {
+type Action =
+  | { type: "TOGGLE_INFO_GRAPH" }
+  | { type: "SET_PERIOD"; payload: string }
+  | { type: "SET_HF_CURRENT"; payload: LargeStackedBarData[] }
+  | { type: "SET_MESSAGE"; payload: MessageWrapperType }
+  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "SET_LAYERS"; payload: RasterLayer[] };
+
+const initialState: State = {
+  showInfoGraph: true,
+  period: "",
+  hfCurrent: [],
+  hfCurrentValue: "0",
+  hfCurrentCategory: "",
+  message: "loading",
+  texts: {
+    hfCurrent: {
+      info: "",
+      cons: "",
+      meto: "",
+      quote: "",
+    },
+  },
+  layers: [],
+};
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "TOGGLE_INFO_GRAPH":
+      return {
+        ...state,
+        showInfoGraph: !state.showInfoGraph,
+      };
+
+    case "SET_PERIOD":
+      return {
+        ...state,
+        period: action.payload,
+      };
+
+    case "SET_HF_CURRENT":
+      return {
+        ...state,
+        hfCurrent: action.payload,
+      };
+
+    case "SET_MESSAGE":
+      return {
+        ...state,
+        message: action.payload,
+      };
+
+    case "SET_TEXTS":
+      return {
+        ...state,
+        texts: { hfCurrent: action.payload },
+      };
+
+    case "SET_LAYERS":
+      return {
+        ...state,
+        layers: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
+
+export function CurrentFootprint() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
   const {
     areaType,
@@ -35,16 +115,18 @@ const CurrentFootprint: React.FC<Props> = () => {
     setMapTitle,
   } = context;
 
-  const [showInfoGraph, setShowInfoGraph] = useState(true);
-  const [period, setPeriod] = useState("");
-  const [hfCurrent, setHfCurrent] = useState<LargeStackedBarData[]>([]);
-  const [hfCurrentValue] = useState("0");
-  const [hfCurrentCategory] = useState("");
-  const [message, setMessage] = useState<MessageWrapperType>("loading");
-  const [texts, setTexts] = useState<{ hfCurrent: textsObject }>({
-    hfCurrent: { info: "", cons: "", meto: "", quote: "" },
-  });
-  const [layers, setLayers] = useState<RasterLayer[]>([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const {
+    showInfoGraph,
+    period,
+    hfCurrent,
+    hfCurrentValue,
+    hfCurrentCategory,
+    message,
+    texts,
+    layers,
+  } = state;
 
   const controller = new CurrentFootprintController();
 
@@ -52,27 +134,53 @@ const CurrentFootprint: React.FC<Props> = () => {
   const areaIdId = areaId!.id.toString();
 
   useEffect(() => {
+    setLoadingLayer(true);
     controller.setArea(areaTypeId, areaIdId);
 
     SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
       .then((res) => {
         const obtainedPeriod = res[0]?.ano ?? "";
-        setHfCurrent(controller.transformData(res));
-        setPeriod(obtainedPeriod);
-        setMessage(null);
+
+        dispatch({
+          type: "SET_HF_CURRENT",
+          payload: controller.transformData(res),
+        });
+
+        dispatch({
+          type: "SET_PERIOD",
+          payload: obtainedPeriod,
+        });
+
+        dispatch({
+          type: "SET_MESSAGE",
+          payload: null,
+        });
+
         switchLayer(obtainedPeriod);
       })
       .catch(() => {
-        setMessage("no-data");
+        dispatch({
+          type: "SET_MESSAGE",
+          payload: "no-data",
+        });
       });
 
     BackendAPI.requestSectionTexts("hfCurrent")
       .then((res) => {
-        setTexts({ hfCurrent: res });
+        dispatch({
+          type: "SET_TEXTS",
+          payload: res,
+        });
       })
       .catch(() => {
-        setTexts({
-          hfCurrent: { info: "", cons: "", meto: "", quote: "" },
+        dispatch({
+          type: "SET_TEXTS",
+          payload: {
+            info: "",
+            cons: "",
+            meto: "",
+            quote: "",
+          },
         });
       });
 
@@ -81,46 +189,29 @@ const CurrentFootprint: React.FC<Props> = () => {
     };
   }, [areaTypeId, areaIdId]);
 
-  useEffect(() => {
-    if (!period) return;
-
+  const switchLayer = (period: string) => {
     setLoadingLayer(true);
 
     controller
       .getCurrentHFLayers(period)
-      .then((newLayers) => {
-        setLayers(newLayers);
-        setRasterLayers(newLayers);
+      .then((layersRes) => {
+        dispatch({ type: "SET_LAYERS", payload: layersRes });
+        setRasterLayers(layersRes);
         setLoadingLayer(false);
-        setMapTitle({ name: `HH promedio · ${period}` });
+
+        setMapTitle({
+          name: `HH promedio · ${period}`,
+        });
       })
       .catch((e) => {
         if (e.toString() !== "Error: request canceled") {
           setLayerError(e.toString());
         }
       });
-  }, [period]);
-
-  const switchLayer = (period: string) => {
-    setLoadingLayer(true);
-    controller
-      .getCurrentHFLayers(period)
-      .then((layers) => {
-        setRasterLayers(layers);
-        setLoadingLayer(false);
-        setMapTitle({
-          name: `HH promedio · ${period}`,
-        });
-      })
-      .catch((e) => {
-        if (e.toString() != "Error: request canceled") {
-          setLayerError(e.toString());
-        }
-      });
   };
 
   const toggleInfoGraph = () => {
-    setShowInfoGraph((prev) => !prev);
+    dispatch({ type: "TOGGLE_INFO_GRAPH" });
   };
 
   const clickOnGraph = (selectedKey: string) => {
@@ -136,10 +227,12 @@ const CurrentFootprint: React.FC<Props> = () => {
     <div className="graphcontainer pt6">
       <h2>
         <IconTooltip title="Interpretación">
-          <InfoIcon
-            className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
-            onClick={toggleInfoGraph}
-          />
+          <span className="iconWrapper">
+            <InfoIcon
+              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
+              onClick={toggleInfoGraph}
+            />
+          </span>
         </IconTooltip>
       </h2>
 
@@ -186,6 +279,4 @@ const CurrentFootprint: React.FC<Props> = () => {
       />
     </div>
   );
-};
-
-export default CurrentFootprint;
+}

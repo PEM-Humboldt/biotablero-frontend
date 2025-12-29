@@ -168,7 +168,7 @@ export class CurrentFootprintController {
       return {
         key,
         area,
-        percentage: totalArea ? (area / totalArea) * 100 : 0,
+        percentage: totalArea ? area / totalArea : 0,
         label: key.charAt(0).toUpperCase() + key.slice(1),
       };
     });

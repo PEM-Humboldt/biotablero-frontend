@@ -16,10 +16,7 @@ export type MetricTypesMap = {
     "periodo",
     "perdida" | "persistencia" | "no_bosque"
   >;
-  CurrentHF: MetricDataStructure<
-    "ano",
-    "natural" | "baja" | "media" | "alta"
-  >;
+  CurrentHF: MetricDataStructure<"ano", "natural" | "baja" | "media" | "alta">;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
