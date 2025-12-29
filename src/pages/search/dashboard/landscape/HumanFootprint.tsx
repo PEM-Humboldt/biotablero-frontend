@@ -1,7 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 
 import Accordion from "pages/search/Accordion";
-import CurrentFootprint from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprint";
+import { CurrentFootprint } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprint";
 import PersistenceFooprint from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprint";
 import TimelineFootprint from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
 import { accordionComponent, componentProps } from "pages/search/types/ui";

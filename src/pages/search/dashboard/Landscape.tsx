@@ -133,7 +133,7 @@ class Landscape extends React.Component<Props, State> {
         selected = ["fc", "hf", "forest", "connectivity"];
         break;
       default:
-        selected = ["forest"];
+        selected = ["hf", "forest"];
         break;
     }
 
