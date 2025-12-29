@@ -16,7 +16,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
-import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { StrValidator } from "@utils/validator";
 
 import type {
@@ -82,14 +82,15 @@ export function ContactInfoInput({
   };
 
   return (
-    <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-      <label htmlFor="email">
-        <TextAndErrorForLabel
+    <div className="flex gap-2 [&>div]:flex-1 [&>div]:last:flex-0 items-end mb-4">
+      <div>
+        <LabelAndErrors
+          htmlFor="email"
           errID="errors_email"
           validationErrors={inputErr.email ?? []}
         >
           <span className="sr-only">Correo</span>
-        </TextAndErrorForLabel>
+        </LabelAndErrors>
         <InputGroup>
           <InputGroupAddon>
             <Mail aria-hidden="true" />
@@ -108,15 +109,16 @@ export function ContactInfoInput({
             aria-describedby={inputErr.email ? "errors_email" : undefined}
           />
         </InputGroup>
-      </label>
+      </div>
 
-      <label htmlFor="phone">
-        <TextAndErrorForLabel
+      <div>
+        <LabelAndErrors
+          htmlFor="phone"
           errID="errors_phone"
           validationErrors={inputErr.phone ?? []}
         >
           <span className="sr-only">Teléfono</span>
-        </TextAndErrorForLabel>
+        </LabelAndErrors>
         <InputGroup>
           <InputGroupAddon>
             <Phone aria-hidden="true" />
@@ -134,7 +136,7 @@ export function ContactInfoInput({
             aria-describedby={inputErr.phone ? "errors_phone" : undefined}
           />
         </InputGroup>
-      </label>
+      </div>
 
       <ButtonGroup>
         <Button

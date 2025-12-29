@@ -28,6 +28,18 @@ export type InitiativeDataForm = {
   users: UserData[];
 };
 
+export type InitiativeDataFormErr = {
+  general: {
+    root: string[];
+    name: string[];
+    shortName: string[];
+    description: string[];
+  };
+  locations: string[];
+  contacts: string[];
+  users: string[];
+};
+
 export type InitiativeToUpadate = {
   id: number;
   name: string;

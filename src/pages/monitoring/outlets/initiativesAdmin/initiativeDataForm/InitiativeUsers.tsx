@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { CirclePlus, Trash } from "lucide-react";
-import { Label } from "@ui/shadCN/component/label";
 import { Combobox } from "@ui/ComboBox";
-import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
 
 import type {
   ItemEditorProps,
@@ -76,13 +75,14 @@ export function UsersInfoInput({
 
   return (
     <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-      <Label className="flex-1" htmlFor="leaders">
-        <TextAndErrorForLabel
+      <div className="flex-1">
+        <LabelAndErrors
           errID="errors_leaders"
+          htmlFor="leaders"
           validationErrors={inputErr?.leaders ?? []}
         >
           <span className="sr-only">Selecciona un lider o lidereza</span>
-        </TextAndErrorForLabel>
+        </LabelAndErrors>
         <Combobox
           id="leaders"
           items={usersAvailable}
@@ -98,7 +98,7 @@ export function UsersInfoInput({
           aria-invalid={inputErr.leaders !== undefined}
           aria-describedby={inputErr.location ? "errors_leaders" : undefined}
         />
-      </Label>
+      </div>
 
       <Button onClick={handleSave} type="button" variant="outline" size="icon">
         <span className="sr-only">Incorporar como lider a la iniciativa</span>

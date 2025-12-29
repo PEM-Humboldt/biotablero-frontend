@@ -9,21 +9,25 @@ import type {
   ItemEditorProps,
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { LegendAndErrors } from "@ui/LabelingWithErrors";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function FormListManager<T>({
+  title,
   sectionInfo,
   sectionUpdater,
   maxItems,
   AddItemComponent,
   CurrentItemsComponent,
-  serverValidationErrors,
+  validationErrors,
 }: {
+  title: string;
   sectionInfo: T[];
   sectionUpdater: (value: T[]) => void;
   maxItems: number;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   CurrentItemsComponent: ElementType<ItemsRenderProps<T>>;
-  serverValidationErrors: { [key: string]: string[] };
+  validationErrors: string[];
 }) {
   const [selectedItems, setSelectedItems] = useState<T[]>(sectionInfo);
   const [updateItem, setUpdateItem] = useState<T | null>(null);
@@ -53,7 +57,16 @@ export function FormListManager<T>({
   };
 
   return (
-    <>
+    <fieldset
+      className={cn(
+        "px-4 pt-3 rounded-lg",
+        validationErrors.length > 0 ? "bg-red-50 outline-2 outline-accent" : "",
+      )}
+    >
+      <LegendAndErrors validationErrors={validationErrors}>
+        {title}
+      </LegendAndErrors>
+
       {selectedItems.length > 0 && (
         <CurrentItemsComponent
           selectedItems={selectedItems}
@@ -69,6 +82,6 @@ export function FormListManager<T>({
           update={updateItem}
         />
       )}
-    </>
+    </fieldset>
   );
 }

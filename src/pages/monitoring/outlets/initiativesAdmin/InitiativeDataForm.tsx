@@ -15,6 +15,7 @@ import {
 
 import type {
   InitiativeDataForm,
+  InitiativeDataFormErr,
   InitiativeToUpadate,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
@@ -39,6 +40,9 @@ export function InitiativeDataForm({
   dataToUpdate?: InitiativeToUpadate;
 }) {
   const [formID, setformID] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<
+    Partial<InitiativeDataFormErr>
+  >({});
   const initiativeData = useRef<InitiativeDataForm>(
     getInitialInfo(dataToUpdate),
   );
@@ -46,6 +50,7 @@ export function InitiativeDataForm({
   const handleReset = () => {
     initiativeData.current = getInitialInfo(dataToUpdate);
     setformID((prev) => prev + 1);
+    setValidationErrors({});
   };
 
   function handleSectionUpate<K extends keyof InitiativeDataForm>(key: K) {
@@ -61,6 +66,27 @@ export function InitiativeDataForm({
 
     try {
       console.log(initiativeData.current);
+
+      const currentErrors: {
+        [K in keyof InitiativeDataForm]?: string[];
+      } = {};
+
+      // if (initiativeData.current.locations.length === 0) {
+      //   currentErrors.locations = ["debe asignarse al menos una locacion"];
+      //   setValidationErrors((oldErr) => ({
+      //     ...oldErr,
+      //     locations: [...(oldErr?.locations ?? []), ...currentErrors.locations],
+      //   }));
+      // }
+
+      setValidationErrors((oldErr) => ({
+        ...oldErr,
+        general: { root: ["nnnnn"], description: ["bla bla "] },
+        locations: ["nnnnn"],
+        contacts: ["nnnnn"],
+        users: ["nnnnn"],
+      }));
+
       // const res = await monitoringAPI({
       //   type: dataToUpdate === undefined ? "put" : "post",
       //   endpoint: `initiative${dataToUpdate !== undefined && `/${dataToUpdate.id}`}`,
@@ -89,52 +115,44 @@ export function InitiativeDataForm({
       action=""
       key={formID}
       onReset={handleReset}
-      className="bg-white flex flex-col gap-8 m-4 p-4 rounded-lg"
+      className="bg-white flex flex-col gap-3 m-4 p-4 rounded-lg"
     >
-      <fieldset>
-        <legend>Información general</legend>
-        <InitiativeGeneralInfo
-          sectionInfo={initiativeData.current.general}
-          sectionUpdater={handleSectionUpate("general")}
-          serverValidationErrors={{}}
-        />
-      </fieldset>
+      <InitiativeGeneralInfo
+        title="Información general"
+        sectionInfo={initiativeData.current.general}
+        sectionUpdater={handleSectionUpate("general")}
+        validationErrorsObj={validationErrors?.general ?? {}}
+      />
 
-      <fieldset>
-        <legend>Ubicación de la iniciativa</legend>
-        <FormListManager
-          maxItems={3}
-          sectionInfo={initiativeData.current.locations}
-          sectionUpdater={handleSectionUpate("locations")}
-          AddItemComponent={LocationInput}
-          CurrentItemsComponent={LocationDisplay}
-          serverValidationErrors={{}}
-        />
-      </fieldset>
+      <FormListManager
+        title="Ubicación de la iniciativa"
+        maxItems={3}
+        sectionInfo={initiativeData.current.locations}
+        sectionUpdater={handleSectionUpate("locations")}
+        AddItemComponent={LocationInput}
+        CurrentItemsComponent={LocationDisplay}
+        validationErrors={validationErrors?.locations ?? []}
+      />
 
-      <fieldset>
-        <legend>Información de contacto</legend>
-        <FormListManager
-          maxItems={5}
-          sectionInfo={initiativeData.current.contacts}
-          sectionUpdater={handleSectionUpate("contacts")}
-          AddItemComponent={ContactInfoInput}
-          CurrentItemsComponent={ContactInfoDisplay}
-          serverValidationErrors={{}}
-        />
-      </fieldset>
+      <FormListManager
+        title="Información de contacto"
+        maxItems={5}
+        sectionInfo={initiativeData.current.contacts}
+        sectionUpdater={handleSectionUpate("contacts")}
+        AddItemComponent={ContactInfoInput}
+        CurrentItemsComponent={ContactInfoDisplay}
+        validationErrors={validationErrors?.contacts ?? []}
+      />
 
-      <fieldset>
-        <legend>líderezas y líderes de la iniciativa</legend>
-        <FormListManager
-          maxItems={3}
-          sectionInfo={initiativeData.current.users}
-          sectionUpdater={handleSectionUpate("users")}
-          AddItemComponent={UsersInfoInput}
-          CurrentItemsComponent={UsersInfoDisplay}
-          serverValidationErrors={{}}
-        />
-      </fieldset>
+      <FormListManager
+        title="líderezas y líderes de la iniciativa"
+        maxItems={3}
+        sectionInfo={initiativeData.current.users}
+        sectionUpdater={handleSectionUpate("users")}
+        AddItemComponent={UsersInfoInput}
+        CurrentItemsComponent={UsersInfoDisplay}
+        validationErrors={validationErrors?.users ?? []}
+      />
 
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
       <div className="flex flex-row-reverse gap-4">

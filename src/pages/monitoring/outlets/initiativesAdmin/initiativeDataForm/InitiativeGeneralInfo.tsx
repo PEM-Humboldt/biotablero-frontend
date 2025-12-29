@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
 import {
   InputGroup,
   InputGroupInput,
@@ -15,26 +15,38 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/validator";
+import { cn } from "@ui/shadCN/lib/utils";
 
-import type { GeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type {
+  GeneralInfo,
+  InitiativeDataFormErr,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
 const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
 
 export function InitiativeGeneralInfo({
+  title,
   sectionInfo,
   sectionUpdater,
-  serverValidationErrors,
+  validationErrorsObj,
 }: {
+  title: string;
   sectionInfo: GeneralInfo;
   sectionUpdater: (value: GeneralInfo) => void;
-  serverValidationErrors: { [key: string]: string[] };
+  validationErrorsObj: Partial<InitiativeDataFormErr["general"]>;
 }) {
   const [name, setName] = useState(sectionInfo.name ?? "");
   const [shortName, setShortName] = useState(sectionInfo.shortName ?? "");
   const [description, setDescription] = useState(sectionInfo.description ?? "");
-  const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
+  const [inputErr, setInputErr] = useState<
+    Partial<InitiativeDataFormErr["general"]>
+  >({});
+
+  useEffect(() => {
+    sectionUpdater({ name, shortName, description });
+  }, [name, shortName, description, sectionUpdater]);
 
   useEffect(() => {
     setName(sectionInfo.name);
@@ -43,74 +55,85 @@ export function InitiativeGeneralInfo({
   }, [sectionInfo.name, sectionInfo.shortName, sectionInfo.description]);
 
   useEffect(() => {
-    sectionUpdater({ name, shortName, description });
-  }, [name, shortName, description, sectionUpdater]);
+    if (Object.keys(validationErrorsObj).length === 0) {
+      return;
+    }
 
-  const validationOnBlur = useCallback(
+    setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
+  }, [validationErrorsObj]);
+
+  const validateField = useCallback(
     (
-      fieldName: string,
-      res: StrValidator,
+      fieldName: keyof InitiativeDataFormErr["general"],
       fieldSetter: Dispatch<SetStateAction<string>>,
+      validation: StrValidator,
     ) => {
-      const [cleanValue, errors] = res.result;
+      const [cleanValue, errors] = validation.result;
 
       if (errors.length > 0) {
-        setInputErr((oldErr) => ({
-          ...oldErr,
-          [fieldName]: [
-            ...errors,
-            ...(serverValidationErrors?.[fieldName] ?? []),
-          ],
-        }));
+        setInputErr((oldErr) => ({ ...oldErr, [fieldName]: errors }));
         return;
       }
 
       setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
       fieldSetter(cleanValue);
     },
-    [serverValidationErrors],
+    [],
   );
 
   const nameOnBlur = () =>
-    validationOnBlur(
+    validateField(
       "name",
+      setName,
       new StrValidator(name)
         .sanitize()
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH),
-      setName,
     );
 
   const shortNameOnBlur = () =>
-    validationOnBlur(
+    validateField(
       "shortName",
+      setShortName,
       new StrValidator(shortName)
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIAVIVE_SHORTNAME_MAX_LENGTH),
-      setShortName,
     );
 
   const descriptionOnBlur = () =>
-    validationOnBlur(
+    validateField(
       "description",
+      setDescription,
       new StrValidator(description)
         .sanitize()
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
-      setDescription,
     );
 
   return (
-    <>
-      <div className="flex flex-wrap items-end gap-4 [&>label]:flex-1 [&>label]:my-1 [&>label]:first:flex-2 [&>label]:min-w-[200px]">
-        <label htmlFor="name">
-          <TextAndErrorForLabel
+    <fieldset
+      className={cn(
+        "p-4 rounded-lg flex flex-col gap-2",
+        inputErr.root !== undefined && inputErr.root.length > 0
+          ? "bg-red-50 outline-2 outline-accent"
+          : "",
+      )}
+    >
+      <LegendAndErrors validationErrors={inputErr?.root ?? []}>
+        {title}
+      </LegendAndErrors>
+
+      <div className="flex gap-2 [&>div]:flex-1 items-end">
+        <div>
+          <LabelAndErrors
+            htmlFor="name"
             errID="errors_name"
             validationErrors={inputErr.name ?? []}
           >
-            Nombre completo *
-          </TextAndErrorForLabel>
+            Nombre completo <span aria-hidden="true">*</span>
+          </LabelAndErrors>
+
           <InputGroup>
             <InputGroupInput
               name="name"
@@ -133,15 +156,17 @@ export function InitiativeGeneralInfo({
               {inputLengthCount(name, INITIAVIVE_NAME_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
-        </label>
+        </div>
 
-        <label htmlFor="shortName">
-          <TextAndErrorForLabel
+        <div>
+          <LabelAndErrors
             errID="errors_shortName"
+            htmlFor="shortName"
             validationErrors={inputErr.shortName ?? []}
           >
             Nombre corto
-          </TextAndErrorForLabel>
+          </LabelAndErrors>
+
           <InputGroup>
             <InputGroupInput
               name="shortName"
@@ -173,16 +198,17 @@ export function InitiativeGeneralInfo({
               )}
             </InputGroupAddon>
           </InputGroup>
-        </label>
+        </div>
       </div>
 
-      <label htmlFor="description">
-        <TextAndErrorForLabel
+      <div>
+        <LabelAndErrors
           errID="errors_description"
+          htmlFor="description"
           validationErrors={inputErr.description ?? []}
         >
-          Descripción *
-        </TextAndErrorForLabel>
+          Descripción <span aria-hidden="true">*</span>
+        </LabelAndErrors>
 
         <InputGroup>
           <InputGroupTextarea
@@ -208,10 +234,10 @@ export function InitiativeGeneralInfo({
             )} flex-row-reverse`}
           >
             {`${description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
-            `}
+		  `}
           </InputGroupAddon>
         </InputGroup>
-      </label>
-    </>
+      </div>
+    </fieldset>
   );
 }

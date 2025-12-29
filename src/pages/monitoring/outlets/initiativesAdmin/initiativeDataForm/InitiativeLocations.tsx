@@ -14,7 +14,7 @@ import type {
   ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { Label } from "@ui/shadCN/component/label";
-import { TextAndErrorForLabel } from "@ui/TextAndErrorForLabel";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
@@ -51,6 +51,8 @@ export function LocationInput({
       setMunicipalities([]);
       return;
     }
+
+    setInputErr((oldErr) => ({ ...oldErr, location: [] }));
 
     const getMunicipalities = async () => {
       try {
@@ -141,61 +143,62 @@ export function LocationInput({
 
   return (
     <>
-      <TextAndErrorForLabel
+      <LabelAndErrors
         errID="errors_location"
         validationErrors={inputErr.location ?? []}
+        htmlFor="department"
       >
         {inputErr?.location && (
-          <span className="sr-only">Errores de ubicación:</span>
+          <span className="sr-only">Selecciona un Departamento</span>
         )}
-      </TextAndErrorForLabel>
+      </LabelAndErrors>
 
       <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-        <Label className="flex-1" htmlFor="department">
-          <span className="sr-only">Selecciona un Departamento</span>
-          <Combobox
-            id="department"
-            items={COLOMBIAN_DEPARTMENTS}
-            value={department}
-            setValue={setDepartment}
-            keys={{ forValue: "value", forLabel: "name" }}
-            uiText={{
-              itemNotFound: "Departamento no encontrado",
-              trigger: "Selecciona un departamento",
-              inputPlaceholder: "buscar departamento",
-            }}
-            aria-required="true"
-            aria-invalid={inputErr.location !== undefined}
-            aria-describedby={inputErr.location ? "errors_location" : undefined}
-          />
-        </Label>
+        <Combobox
+          id="department"
+          items={COLOMBIAN_DEPARTMENTS}
+          value={department}
+          setValue={setDepartment}
+          keys={{ forValue: "value", forLabel: "name" }}
+          uiText={{
+            itemNotFound: "Departamento no encontrado",
+            trigger: "Selecciona un departamento",
+            inputPlaceholder: "buscar departamento",
+          }}
+          aria-required="true"
+          aria-invalid={inputErr.location !== undefined}
+          aria-describedby={inputErr.location ? "errors_location" : undefined}
+          className="flex-1"
+        />
 
-        <Label className="flex-1" htmlFor="municipality">
-          <span className="sr-only">Selecciona un municipio</span>
-          <Combobox
-            id="municipality"
-            items={municipalities}
-            value={municipality}
-            setValue={setMunicipality}
-            keys={{ forValue: "value", forLabel: "name" }}
-            uiText={{
-              itemNotFound: "Municipio no encontrado",
-              trigger: "Selecciona un municipio",
-              inputPlaceholder: "buscar municipio",
-            }}
-            disabled={municipalities.length === 0}
-            aria-invalid={inputErr.location !== undefined}
-            aria-describedby={inputErr.location ? "errors_location" : undefined}
-          />
+        <Label className="sr-only" htmlFor="municipality">
+          Selecciona un municipio
         </Label>
+        <Combobox
+          id="municipality"
+          items={municipalities}
+          value={municipality}
+          setValue={setMunicipality}
+          keys={{ forValue: "value", forLabel: "name" }}
+          uiText={{
+            itemNotFound: "Municipio no encontrado",
+            trigger: "Selecciona un municipio",
+            inputPlaceholder: "buscar municipio",
+          }}
+          disabled={municipalities.length === 0}
+          aria-invalid={inputErr.location !== undefined}
+          aria-describedby={inputErr.location ? "errors_location" : undefined}
+          className="flex-1"
+        />
 
-        <Label className="flex-1" htmlFor="locality">
-          <TextAndErrorForLabel
+        <div className="flex-1">
+          <LabelAndErrors
+            htmlFor="locality"
             errID="errors_locality"
             validationErrors={inputErr.locality ?? []}
           >
             <span className="sr-only">Escribe el nombre de la vereda</span>
-          </TextAndErrorForLabel>
+          </LabelAndErrors>
           <InputGroup>
             <InputGroupInput
               name="locality"
@@ -224,7 +227,7 @@ export function LocationInput({
               {inputLengthCount(locality, INITIATIVE_LOCALITY_MAX_LENGTH, 0.6)}
             </InputGroupAddon>
           </InputGroup>
-        </Label>
+        </div>
 
         <ButtonGroup>
           <Button
