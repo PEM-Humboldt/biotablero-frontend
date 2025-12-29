@@ -38,16 +38,19 @@ export function Coverage({
     <>
       <div className="graphcontainer">
         <h4>
-          <button type="button" className="titleBtn" onClick={resetActiveSE}>
+          <button type="button" onClick={resetActiveSE}>
             Cobertura
           </button>
         </h4>
 
         <IconTooltip title="Interpretación">
-          <InfoIcon
-            className={`downSpecial${infoOpen ? " activeBox" : ""}`}
-            onClick={toggleInfo}
-          />
+          <span className="iconWrapper">
+            <InfoIcon
+              fontSize="inherit"
+              className={`downSpecial${infoOpen ? " activeBox" : ""}`}
+              onClick={toggleInfo}
+            />
+          </span>
         </IconTooltip>
 
         {infoOpen && (
