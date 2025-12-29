@@ -12,11 +12,14 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="input-group"
       role="group"
       className={cn(
-        "group/input-group border-input shadow-xs relative flex w-full items-center rounded-md border transition-[color,box-shadow]",
+        "group/input-group border-input shadow-xs relative flex w-full items-center rounded-md border bg-white transition-[color,box-shadow]",
         "h-9 has-[>textarea]:h-auto",
 
         // desactivar el foco de los elementos internos
         "[&_input]:focus-within:outline-none [&_textarea]:focus-within:outline-none",
+
+        // Estilos de disabled
+        "has-disabled:opacity-50 ",
 
         // Variants based on alignment.
         "has-[>[data-align=inline-start]]:[&>input]:pl-2",
@@ -28,7 +31,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
         "has-[[data-slot=input-group-control]:focus-visible]:outline-2 has-[[data-slot=input-group-control]:focus-visible]:outline-primary has-[[data-slot=input-group-control]:focus-visible]:outline-offset-2",
 
         // Error state.
-        "has-[[data-slot][aria-invalid=true]]:bg-red-50 has-[[data-slot][aria-invalid=true]]:border-2 has-[[data-slot][aria-invalid=true]]:border-secondary",
+        "has-[[data-slot][aria-invalid=true]]:outline-2 has-[[data-slot][aria-invalid=true]]:outline-secondary has-[[data-slot][aria-invalid=true]]:border-accent",
 
         className,
       )}

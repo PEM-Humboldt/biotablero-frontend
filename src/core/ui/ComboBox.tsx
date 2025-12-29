@@ -25,6 +25,7 @@ type ComboBoxProps<T> = {
   setValue: React.Dispatch<React.SetStateAction<string>>;
   disabled?: boolean;
   uiText: { itemNotFound: string; trigger: string; inputPlaceholder: string };
+  className?: string;
 } & (
   | { keys: { forLabel?: keyof T; forValue: keyof T } }
   | { keys: { forLabel: keyof T; forValue?: keyof T } }
@@ -39,6 +40,7 @@ export function Combobox<T>({
   keys,
   uiText,
   disabled = false,
+  className = "",
 }: ComboBoxProps<T>) {
   const [open, setOpen] = React.useState(false);
 
@@ -56,7 +58,7 @@ export function Combobox<T>({
           variant="combobox"
           role="combobox"
           aria-expanded={open}
-          className={cn(componentWidth, "justify-between")}
+          className={cn(className, componentWidth, "justify-between")}
         >
           {value
             ? String(

@@ -21,7 +21,7 @@ const buttonVariants = cva(
         "ghost-clean": "text-accent hover:text-primary",
         link: "text-primary underline-offset-4 hover:underline",
         combobox:
-          "font-light text rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors md:text-sm",
+          "font-light text rounded-md bg-white! border border-input bg-transparent px-3 py-1 text-base shadow-sm disabled:shadow-none disabled:text-black/30 transition-colors md:text-sm",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
