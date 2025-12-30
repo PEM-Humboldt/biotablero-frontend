@@ -153,7 +153,7 @@ export function LocationInput({
         )}
       </LabelAndErrors>
 
-      <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
+      <div className="form-input-list">
         <Combobox
           id="department"
           items={COLOMBIAN_DEPARTMENTS}
@@ -168,7 +168,6 @@ export function LocationInput({
           aria-required="true"
           aria-invalid={inputErr.location !== undefined}
           aria-describedby={inputErr.location ? "errors_location" : undefined}
-          className="flex-1"
         />
 
         <Label className="sr-only" htmlFor="municipality">
@@ -188,7 +187,6 @@ export function LocationInput({
           disabled={municipalities.length === 0}
           aria-invalid={inputErr.location !== undefined}
           aria-describedby={inputErr.location ? "errors_location" : undefined}
-          className="flex-1"
         />
 
         <div className="flex-1">
@@ -273,55 +271,60 @@ export function LocationDisplay({
   deleteItem,
 }: ItemsRenderProps<LocationData>) {
   return (
-    <table className="w-full [&_th]:px-2 [&_td]:px-2">
-      <caption className="text-left border-b h4">
-        Ubicación de la iniciativa
-      </caption>
+    <div className="table-form-display-container">
+      <table className="table-form-display">
+        <caption className="sr-only">
+          Ubicaciones registradas de la iniciativa
+        </caption>
 
-      <thead className="sr-only">
-        <tr className="text-left [&_th]:font-normal">
-          <th>Departamento</th>
-          <th>Municipio</th>
-          <th>Localidad</th>
-          <th className="w-px"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {selectedItems.map((values, i) => (
-          <tr key={`${values.locationId}_${i}`} className="hover:bg-muted">
-            <LocationDataCells values={values} />
-
-            <td className="whitespace-nowrap w-px">
-              <Button
-                type="button"
-                onClick={() => editItem(i)}
-                variant="ghost-clean"
-                className="mr-2"
-                size="icon-sm"
-              >
-                <span className="sr-only">editar</span>
-                <span aria-hidden="true">
-                  <SquarePen className="size-4" />
-                </span>
-              </Button>
-
-              <Button
-                type="button"
-                onClick={() => deleteItem(i)}
-                variant="ghost-clean"
-                size="icon-sm"
-              >
-                <span className="sr-only">borrar</span>
-                <span aria-hidden="true">
-                  <Eraser className="size-4" />
-                </span>
-              </Button>
-            </td>
+        <thead>
+          <tr>
+            <th>Departamento</th>
+            <th>Municipio</th>
+            <th>Vereda</th>
+            <th className="w-24">
+              <span className="sr-only">Acciones</span>
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {selectedItems.map((values, i) => (
+            <tr key={`${values.locationId}_${i}`}>
+              <LocationDataCells values={values} />
+
+              <td className="table-form-actions">
+                <Button
+                  type="button"
+                  onClick={() => editItem(i)}
+                  variant="ghost-clean"
+                  size="icon-sm"
+                  title="Editar"
+                >
+                  <span className="sr-only">Editar esta ubicación</span>
+                  <span aria-hidden="true">
+                    <SquarePen className="size-4" />
+                  </span>
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={() => deleteItem(i)}
+                  variant="ghost-clean"
+                  size="icon-sm"
+                  title="Borrar"
+                >
+                  <span className="sr-only">Borrar esta ubicación</span>
+                  <span aria-hidden="true">
+                    <Eraser className="size-4" />
+                  </span>
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -335,23 +338,19 @@ function LocationDataCells({ values }: { values: LocationData }) {
       setLocationInfo(await getLocationInfoById(values.locationId));
     };
     void fetchLocationInfo();
-  }, [values.locationId, values.locality]);
+  }, [values.locationId]);
 
   return locationInfo === null ? (
     <td colSpan={3}>No se encontró la información intenta más tarde</td>
   ) : (
     <>
-      <td className="whitespace-nowrap">
+      <td>
         {locationInfo?.parent !== undefined
           ? locationInfo.parent.name
           : locationInfo.name}
       </td>
-      <td className="whitespace-nowrap">
-        {locationInfo?.parent !== undefined ? locationInfo.name : "----"}
-      </td>
-      <td className="whitespace-nowrap">
-        {values.locality ? values.locality : "--------"}
-      </td>
+      <td>{locationInfo?.parent !== undefined ? locationInfo.name : "---"}</td>
+      <td>{values.locality ? values.locality : "---"}</td>
     </>
   );
 }

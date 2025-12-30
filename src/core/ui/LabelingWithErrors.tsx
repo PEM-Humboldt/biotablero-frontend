@@ -20,7 +20,7 @@ export function LabelAndErrors({
   return (
     <div
       className={cn(
-        "p-0 mb-1 flex flex-wrap gap-x-2 items-baseline text-base",
+        "p-0 flex flex-wrap gap-x-2 items-baseline text-base",
         className,
       )}
     >

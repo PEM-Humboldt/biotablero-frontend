@@ -74,8 +74,8 @@ export function UsersInfoInput({
   };
 
   return (
-    <div className="flex gap-2 [&>label]:flex-1 items-end mb-4">
-      <div className="flex-1">
+    <div className="form-input-list">
+      <div>
         <LabelAndErrors
           errID="errors_leaders"
           htmlFor="leaders"
@@ -100,12 +100,19 @@ export function UsersInfoInput({
         />
       </div>
 
-      <Button onClick={handleSave} type="button" variant="outline" size="icon">
-        <span className="sr-only">Incorporar como lider a la iniciativa</span>
-        <span aria-hidden="true">
-          <CirclePlus className="size-5" />
-        </span>
-      </Button>
+      <div>
+        <Button
+          onClick={handleSave}
+          type="button"
+          variant="outline"
+          size="icon"
+        >
+          <span className="sr-only">Incorporar como lider a la iniciativa</span>
+          <span aria-hidden="true">
+            <CirclePlus className="size-5" />
+          </span>
+        </Button>
+      </div>
     </div>
   );
 }
@@ -117,34 +124,42 @@ export function UsersInfoDisplay({
 }: ItemsRenderProps<User>) {
   return (
     items.length > 0 && (
-      <>
-        <h3 id="initiativeLeadersList" className="border-b h4">
-          Líderes inscritos actualmente
-        </h3>
+      <div className="table-form-display-container">
+        <table className="table-form-display">
+          <caption className="sr-only">Líderes inscritos actualmente</caption>
 
-        <ul aria-labelledby="initiativeLeadersList">
-          {items.map((user, i) => (
-            <li
-              key={`${user.userName}_${i}`}
-              className="flex items-center justify-between hover:bg-muted"
-            >
-              {user.userName}
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th className="w-24">
+                <span className="sr-only">Acciones</span>
+              </th>
+            </tr>
+          </thead>
 
-              <Button
-                type="button"
-                onClick={() => deleteItem(i)}
-                variant="ghost-clean"
-                size="icon-sm"
-              >
-                <span className="sr-only">Quitar como administrador</span>
-                <span aria-hidden="true">
-                  <Trash className="size-4" />
-                </span>
-              </Button>
-            </li>
-          ))}
-        </ul>
-      </>
+          <tbody>
+            {items.map((user, i) => (
+              <tr key={`${user.userName}_${i}`}>
+                <td>{user.userName}</td>
+
+                <td className="table-form-actions">
+                  <Button
+                    type="button"
+                    onClick={() => deleteItem(i)}
+                    variant="ghost-clean"
+                    size="icon-sm"
+                  >
+                    <span className="sr-only">Quitar como administrador</span>
+                    <span aria-hidden="true">
+                      <Trash className="size-4" />
+                    </span>
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     )
   );
 }

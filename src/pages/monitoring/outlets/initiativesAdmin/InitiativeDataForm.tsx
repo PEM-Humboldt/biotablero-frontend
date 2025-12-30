@@ -110,8 +110,6 @@ export function InitiativeDataForm({
     }
   };
 
-  console.log(initiativeData.current, dataToUpdate);
-
   return (
     <Form
       action=""

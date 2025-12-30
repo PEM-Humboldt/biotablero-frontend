@@ -1,4 +1,33 @@
 @layer components {
+  .table-form-display-container {
+    @apply border border-primary/30 rounded-lg my-2 overflow-hidden;
+  }
+
+  .table-form-display {
+    @apply table-fixed w-full;
+
+    & thead {
+      @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+    }
+
+    & tr {
+      @apply hover:bg-muted;
+    }
+
+    & td,
+    & th {
+      @apply px-2;
+    }
+  }
+
+  .table-form-actions {
+    @apply p-0! m-0! *:p-0! *:m-0 text-right flex gap-1 justify-end;
+  }
+
+  .form-input-list {
+    @apply flex gap-2 [&>button]:flex-1 [&>div]:flex-1 [&>div]:last:flex-0 items-end mb-4;
+  }
+
   .loading-backdrop {
     position: absolute;
     width: 100%;

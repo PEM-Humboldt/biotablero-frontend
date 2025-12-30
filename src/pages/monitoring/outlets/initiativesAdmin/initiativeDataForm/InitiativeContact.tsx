@@ -86,7 +86,7 @@ export function ContactInfoInput({
   };
 
   return (
-    <div className="flex gap-2 [&>div]:flex-1 [&>div]:last:flex-0 items-end mb-4">
+    <div className="form-input-list">
       <div>
         <LabelAndErrors
           htmlFor="email"
@@ -193,55 +193,56 @@ export function ContactInfoDisplay({
   }
 
   return (
-    <table className="w-full [&_th]:px-2 [&_td]:px-2">
-      <caption className="text-left border-b h4">
-        Información de contacto inscrita
-      </caption>
+    <div className="table-form-display-container">
+      <table className="table-form-display">
+        <caption className="sr-only">Información de contacto inscrita</caption>
 
-      <thead className="sr-only">
-        <tr className="text-left [&_th]:font-normal">
-          <th>Correo</th>
-          <th>Teléfono</th>
-          <th className="w-px"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {selectedItems.map((values, i) => (
-          <tr key={`${values.email}_${i}`} className="hover:bg-muted">
-            <td className="whitespace-nowrap">{values.email}</td>
-            <td className="whitespace-nowrap">
-              {values.phone ? values.phone : "---"}
-            </td>
-            <td className="whitespace-nowrap w-px">
-              <Button
-                type="button"
-                onClick={() => editItem(i)}
-                variant="ghost-clean"
-                className="mr-2"
-                size="icon-sm"
-              >
-                <span className="sr-only">editar la siguiente información</span>
-                <span aria-hidden="true">
-                  <SquarePen className="size-4" />
-                </span>
-              </Button>
-
-              <Button
-                type="button"
-                onClick={() => deleteItem(i)}
-                variant="ghost-clean"
-                size="icon-sm"
-              >
-                <span className="sr-only">borrar la siguiente información</span>
-                <span aria-hidden="true">
-                  <Eraser className="size-4" />
-                </span>
-              </Button>
-            </td>
+        <thead>
+          <tr>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th className="w-24">
+              <span className="sr-only">Acciones</span>
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody>
+          {selectedItems.map((values, i) => (
+            <tr key={`${values.email}_${i}`}>
+              <td>{values.email}</td>
+              <td>{values.phone ? values.phone : "---"}</td>
+              <td className="table-form-actions">
+                <Button
+                  type="button"
+                  onClick={() => editItem(i)}
+                  variant="ghost-clean"
+                  size="icon-sm"
+                  title="Editar"
+                >
+                  <span className="sr-only">editar esta información</span>
+                  <span aria-hidden="true">
+                    <SquarePen className="size-4" />
+                  </span>
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={() => deleteItem(i)}
+                  variant="ghost-clean"
+                  size="icon-sm"
+                  title="Borrar"
+                >
+                  <span className="sr-only">borrar esta información</span>
+                  <span aria-hidden="true">
+                    <Eraser className="size-4" />
+                  </span>
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
