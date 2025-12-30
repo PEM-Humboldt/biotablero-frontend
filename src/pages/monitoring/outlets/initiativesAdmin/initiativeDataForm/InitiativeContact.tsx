@@ -61,7 +61,11 @@ export function ContactInfoInput({
       .isOptional()
       .sanitize()
       .isColombianPhone()
-      .isUniqueIn(new Set(selectedItems?.map((e) => e.phone))).result;
+      .isUniqueIn(
+        new Set(
+          selectedItems?.map((e) => e.phone).filter((e) => e !== undefined),
+        ),
+      ).result;
 
     const errors = {
       ...(emailErrors.length > 0 && { email: emailErrors }),

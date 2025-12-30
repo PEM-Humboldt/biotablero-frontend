@@ -1,24 +1,26 @@
+import type { UserLevel } from "pages/monitoring/types/monitoring";
 import type { Dispatch, SetStateAction } from "react";
 
+// NOTE: Información a suministrar para crear una iniciativa
 export type GeneralInfo = {
   name: string;
-  shortName: string;
+  shortName?: string;
   description: string;
 };
 
 export type LocationData = {
   locationId: number;
-  locality: string;
+  locality?: string;
 };
 
 export type InitiativeContact = {
-  phone: string;
+  phone?: string;
   email: string;
 };
 
 export type UserData = {
   userName: string;
-  level: { id: number; name: string };
+  level: UserLevel;
 };
 
 export type InitiativeDataForm = {
@@ -28,28 +30,40 @@ export type InitiativeDataForm = {
   users: UserData[];
 };
 
+// NOTE: tipos para los errores
+type ErrorFields<T> = { [K in keyof T]?: string[] };
+
 export type InitiativeDataFormErr = {
-  general: {
-    root: string[];
-    name: string[];
-    shortName: string[];
-    description: string[];
-  };
+  general: ErrorFields<GeneralInfo> & { root: string[] };
   locations: string[];
   contacts: string[];
   users: string[];
 };
 
-export type InitiativeToUpadate = {
-  id: number;
-  name: string;
-  shortName: string;
-  description: string;
-  locations: LocationData[];
-  contacts: InitiativeContact[];
-  users: UserData[];
-};
+// NOTE: Data recibida del Servidor
+type WithID<T> = T & { id: number };
+type LocationDetailSRC = { id: number; name: string; code: string };
+type LocationDataSRC = LocationDetailSRC & { parent?: LocationDetailSRC };
+type LocationSRC = WithID<LocationData & { location: LocationDataSRC }>;
+type ContactSRC = WithID<InitiativeContact & { initiativeId: number }>;
+type UserSRC = WithID<
+  UserData & { initiativeId: number; creationDate: string }
+>;
 
+export type InitiativeToUpadate = WithID<
+  GeneralInfo & {
+    locations: LocationSRC[];
+    contacts: ContactSRC[];
+    users: UserSRC[];
+    creationDate: string;
+    coordinate: [number, number];
+    polygonArea: number;
+    enabled: boolean;
+    tags: string[];
+  }
+>;
+
+// NOTE: Interfaz de los componentes del formulario
 export type ItemsRenderProps<T> = {
   selectedItems: T[];
   editItem: (itemIndex: number) => void;

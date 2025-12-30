@@ -110,6 +110,8 @@ export function InitiativeDataForm({
     }
   };
 
+  console.log(initiativeData.current, dataToUpdate);
+
   return (
     <Form
       action=""
@@ -175,23 +177,14 @@ function getInitialInfo(
   dataToUpdate?: InitiativeToUpadate,
 ): InitiativeDataForm {
   if (dataToUpdate) {
-    const {
-      id: _,
-      name,
-      shortName,
-      description,
-      ...oldInitiativeData
-    } = dataToUpdate;
+    const { name, shortName, description, ...initiativeData } = dataToUpdate;
+    const general = { name, shortName: shortName ?? "", description };
 
-    return { ...oldInitiativeData, general: { name, shortName, description } };
+    return { ...initiativeData, general };
   }
 
   return {
-    general: {
-      name: "",
-      shortName: "",
-      description: "",
-    },
+    general: { name: "", shortName: "", description: "" },
     locations: [],
     contacts: [],
     users: [],

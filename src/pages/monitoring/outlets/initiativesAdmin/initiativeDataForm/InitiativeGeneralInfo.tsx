@@ -50,7 +50,7 @@ export function InitiativeGeneralInfo({
 
   useEffect(() => {
     setName(sectionInfo.name);
-    setShortName(sectionInfo.shortName);
+    setShortName(sectionInfo.shortName ?? "");
     setDescription(sectionInfo.description);
   }, [sectionInfo.name, sectionInfo.shortName, sectionInfo.description]);
 

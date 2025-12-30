@@ -10,6 +10,7 @@ import type { ODataInitiative } from "pages/monitoring/types/requestParams";
 import { getInitiatives } from "pages/monitoring/api/monitoringAPI";
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
+import { updateMock } from "./initiativesAdmin/updateMock";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<ODataInitiative | null>(null);
@@ -58,7 +59,7 @@ export function InitiativesAdmin() {
         reset={"reset"}
         className="bg-red-500"
       />
-      <InitiativeDataForm />
+      <InitiativeDataForm dataToUpdate={updateMock} />
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         iniciativas
         <div className="bg-red-300 my-8">formulario edicion</div>
