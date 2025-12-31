@@ -48,23 +48,27 @@ export function InitiativesAdmin() {
   const initiativesAvailable = initiatives ? initiatives["@odata.count"] : 0;
 
   return (
-    <div className="ml-[60px] bg-grey-light rounded-2xl p-8">
+    <div className="ml-[60px] bg-grey-light">
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         <h3>Administrador de iniciativas</h3>
         <Button>Crear iniciativa</Button>
       </div>
+
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
         reset={"reset"}
         className="bg-red-500"
       />
+
       <InitiativeDataForm dataToUpdate={updateMock} />
+
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         iniciativas
         <div className="bg-red-300 my-8">formulario edicion</div>
         <div className="bg-red-300 my-8">barra iniciativa</div>
       </div>
+
       <TablePager
         currentPage={currentPage}
         recordsAvailable={initiativesAvailable}
