@@ -21,6 +21,10 @@ import type {
   GeneralInfo,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import {
+  getInitiatives,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
@@ -81,14 +85,18 @@ export function InitiativeGeneralInfo({
     [],
   );
 
-  const nameOnBlur = () =>
+  const nameOnBlur = async () =>
     validateField(
       "name",
       setName,
-      new StrValidator(name)
+      await new StrValidator(name)
         .sanitize()
         .isRequired()
-        .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH),
+        .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH)
+        .customAsync(
+          initiativeNameNotExist,
+          "Este nombre de iniciativa ya existe",
+        ),
     );
 
   const shortNameOnBlur = () =>
@@ -141,7 +149,7 @@ export function InitiativeGeneralInfo({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              onBlur={nameOnBlur}
+              onBlur={() => void nameOnBlur()}
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
               maxLength={INITIAVIVE_NAME_MAX_LENGTH}
@@ -240,4 +248,16 @@ export function InitiativeGeneralInfo({
       </div>
     </fieldset>
   );
+}
+
+async function initiativeNameNotExist(initiativeName: string) {
+  const existingInitiative = await getInitiatives({
+    filter: `name eq '${initiativeName}'`,
+  });
+
+  if (isMonitoringAPIError(existingInitiative)) {
+    throw new Error(existingInitiative.message);
+  }
+
+  return existingInitiative["@odata.count"] === 0;
 }

@@ -221,8 +221,9 @@ export class StrValidator {
         this.errors.push(errorStr);
       }
     } catch (err: unknown) {
+      console.error(err);
       const message = err instanceof Error ? err.message : String(err);
-      this.errors.push(`${errorStr}: ${message}`);
+      this.errors.push(`Algo sucedió, intenta más tarde: ${message}`);
     }
 
     return this;
