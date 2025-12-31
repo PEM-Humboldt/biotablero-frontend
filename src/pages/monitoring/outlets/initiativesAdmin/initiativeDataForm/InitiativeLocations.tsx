@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { type SetStateAction, useCallback, useEffect, useState } from "react";
 import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
@@ -44,9 +44,6 @@ export function LocationInput({
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
-    setMunicipality("");
-    setLocality("");
-
     if (department === "") {
       setMunicipalities([]);
       return;
@@ -118,7 +115,7 @@ export function LocationInput({
       return;
     }
 
-    if (!isLocalityValid) {
+    if (!isLocalityValid()) {
       return;
     }
 
@@ -141,6 +138,12 @@ export function LocationInput({
     setLocality("");
   };
 
+  const handleChangeDepartment = (action: SetStateAction<string>) => {
+    setDepartment(action);
+    setMunicipality("");
+    setLocality("");
+  };
+
   return (
     <>
       <LabelAndErrors
@@ -158,7 +161,7 @@ export function LocationInput({
           id="department"
           items={COLOMBIAN_DEPARTMENTS}
           value={department}
-          setValue={setDepartment}
+          setValue={(e) => handleChangeDepartment(e)}
           keys={{ forValue: "value", forLabel: "name" }}
           uiText={{
             itemNotFound: "Departamento no encontrado",
@@ -189,7 +192,7 @@ export function LocationInput({
           aria-describedby={inputErr.location ? "errors_location" : undefined}
         />
 
-        <div className="flex-1">
+        <div>
           <LabelAndErrors
             htmlFor="locality"
             errID="errors_locality"

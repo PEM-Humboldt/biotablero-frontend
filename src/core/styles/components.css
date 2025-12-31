@@ -25,7 +25,7 @@
   }
 
   .form-input-list {
-    @apply flex gap-2 [&>button]:flex-1 [&>div]:flex-1 [&>div]:last:flex-0 items-end mb-4;
+    @apply flex flex-wrap gap-2 [&>button]:flex-[1_0_250px] [&>div]:flex-[1_0_250px] [&>div]:last:flex-0 justify-end items-end mb-4;
   }
 
   .loading-backdrop {

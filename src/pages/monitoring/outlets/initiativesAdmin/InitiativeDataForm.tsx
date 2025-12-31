@@ -115,7 +115,7 @@ export function InitiativeDataForm({
       action=""
       key={formID}
       onReset={handleReset}
-      className="bg-white flex flex-col gap-3 m-4 p-4 rounded-lg"
+      className="flex flex-col gap-2 p-4 m-4 md:m-8 xl:mx-auto rounded-xl bg-white w-full max-w-7xl"
     >
       <InitiativeGeneralInfo
         title="Información general"
@@ -134,28 +134,30 @@ export function InitiativeDataForm({
         validationErrors={validationErrors?.locations ?? []}
       />
 
-      <FormListManager
-        title="Información de contacto"
-        maxItems={5}
-        sectionInfo={initiativeData.current.contacts}
-        sectionUpdater={handleSectionUpate("contacts")}
-        AddItemComponent={ContactInfoInput}
-        CurrentItemsComponent={ContactInfoDisplay}
-        validationErrors={validationErrors?.contacts ?? []}
-      />
+      <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
+        <FormListManager
+          title="Información de contacto"
+          maxItems={5}
+          sectionInfo={initiativeData.current.contacts}
+          sectionUpdater={handleSectionUpate("contacts")}
+          AddItemComponent={ContactInfoInput}
+          CurrentItemsComponent={ContactInfoDisplay}
+          validationErrors={validationErrors?.contacts ?? []}
+        />
 
-      <FormListManager
-        title="líderezas y líderes de la iniciativa"
-        maxItems={3}
-        sectionInfo={initiativeData.current.users}
-        sectionUpdater={handleSectionUpate("users")}
-        AddItemComponent={UsersInfoInput}
-        CurrentItemsComponent={UsersInfoDisplay}
-        validationErrors={validationErrors?.users ?? []}
-      />
+        <FormListManager
+          title="líderezas y líderes de la iniciativa"
+          maxItems={3}
+          sectionInfo={initiativeData.current.users}
+          sectionUpdater={handleSectionUpate("users")}
+          AddItemComponent={UsersInfoInput}
+          CurrentItemsComponent={UsersInfoDisplay}
+          validationErrors={validationErrors?.users ?? []}
+        />
+      </div>
 
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
-      <div className="flex flex-row-reverse gap-4">
+      <div className="flex flex-row-reverse gap-4 p-4">
         <ButtonGroup>
           <Button onClick={handleSubmit}>Crear y cargar archivos</Button>
           <ButtonGroupSeparator />

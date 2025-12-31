@@ -124,7 +124,7 @@ export function InitiativeGeneralInfo({
         {title}
       </LegendAndErrors>
 
-      <div className="flex gap-2 [&>div]:flex-1 items-end">
+      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
         <div>
           <LabelAndErrors
             htmlFor="name"
