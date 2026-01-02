@@ -207,6 +207,7 @@ export class StrValidator {
    *
    * * @remarks
    * If this method is used, the entire chain becomes asynchronous and must be awaited.
+   * If the string has errors, the evaluation isn't made to preven unnecesary API calls.
    *
    * @param validatorCallback - Async function that returns true if valid.
    * @param errorStr - Message to push if validation fails or throws.
@@ -215,6 +216,10 @@ export class StrValidator {
     validatorCallback: (str: string) => Promise<boolean>,
     errorStr: string,
   ): Promise<this> {
+    if (this.errors.length > 0) {
+      return this;
+    }
+
     try {
       const isValid = await validatorCallback(this.strToValidate);
       if (!isValid) {

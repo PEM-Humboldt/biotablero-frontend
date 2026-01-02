@@ -1,4 +1,8 @@
-import { StrValidator } from "@utils/validator";
+import { StrValidator } from "@utils/strValidator";
+import {
+  getInitiatives,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 /**
@@ -33,4 +37,22 @@ export function locationAlreadyExist(
 
     return lookfor.locationId === location.locationId;
   });
+}
+
+/*
+ * Checks if a initiative name does not exist
+ *
+ * @param initiativeName - the name of the initiative
+ * @returns `true` if the initiative name does not exist; otherwise, `false`.
+ */
+export async function initiativeNameNotExist(initiativeName: string) {
+  const existingInitiative = await getInitiatives({
+    filter: `name eq '${initiativeName}'`,
+  });
+
+  if (isMonitoringAPIError(existingInitiative)) {
+    throw new Error(existingInitiative.message);
+  }
+
+  return existingInitiative["@odata.count"] === 0;
 }

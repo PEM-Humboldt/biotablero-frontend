@@ -32,9 +32,10 @@ export type InitiativeDataForm = {
 
 // NOTE: tipos para los errores
 type ErrorFields<T> = { [K in keyof T]?: string[] };
+type ErrorsGeneral = ErrorFields<GeneralInfo & { root: string[] }>;
 
 export type InitiativeDataFormErr = {
-  general: ErrorFields<GeneralInfo> & { root: string[] };
+  general: ErrorsGeneral;
   locations: string[];
   contacts: string[];
   users: string[];
