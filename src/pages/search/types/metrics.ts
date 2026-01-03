@@ -12,9 +12,8 @@ export type MetricTypesMap = {
     "id",
     "Natural" | "Secundaria" | "Transformada"
   >;
-  LossPersistence: MetricDataStructure<
-    "periodo",
-    "perdida" | "persistencia" | "no_bosque"
+  lossPersistence: Array<
+    MetricDataStructure<"id", "perdida" | "persistencia" | "no_bosque">
   >;
   currentHF: MetricDataStructure<
     "id",
