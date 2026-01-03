@@ -76,17 +76,22 @@ export function Combobox<T>({
         <Command>
           <CommandInput placeholder={uiText.inputPlaceholder} className="h-9" />
 
-          <CommandList>
+          <CommandList
+            className={cn(
+              !maxItems ? "overflow-y-auto max-h-[300px]" : "overflow-y-hidden",
+            )}
+            style={maxItems ? { maxHeight: `${33 * maxItems}px` } : undefined}
+          >
             <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>
             <CommandGroup>
-              {(maxItems ? items.slice(0, maxItems) : items).map((item) => {
+              {items.map((item) => {
                 const itemValueStr = String(item[itemValue]);
                 const itemLabelStr = String(item[itemLabel]);
 
                 return (
                   <CommandItem
                     key={itemValueStr}
-                    value={itemValueStr}
+                    value={itemLabelStr}
                     onSelect={() => {
                       const stringId = String(item[itemValue]);
                       setValue(stringId === value ? "" : stringId);
