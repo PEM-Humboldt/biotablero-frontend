@@ -24,11 +24,11 @@ import { oDataToString } from "@utils/odata";
 import type {
   Location,
   UserLevel,
-  User,
+  UserKC,
 } from "pages/monitoring/types/monitoring";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
-import { usersMock } from "./usersMock";
+import usersMock from "pages/monitoring/api/usersMock.json";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -324,10 +324,10 @@ export async function getUserLevels() {
  */
 export async function getUsers(
   byInitiativeId?: number | string,
-): Promise<User[]> {
-  // NOTE: Llamado temporal al mock para llamar los usuarios
+): Promise<UserKC[]> {
   if (byInitiativeId === undefined) {
-    return usersMock;
+    // NOTE: Llamado temporal al mock con la lista de usuarios
+    return usersMock as UserKC[];
   }
 
   const reqOptions: MonitoringAPIParams = {
@@ -339,7 +339,7 @@ export async function getUsers(
   };
 
   try {
-    const res = await monitoringAPI<User[]>(reqOptions);
+    const res = await monitoringAPI<UserKC[]>(reqOptions);
 
     if (isMonitoringAPIError(res)) {
       throw new Error(res.message);
