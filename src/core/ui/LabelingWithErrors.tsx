@@ -30,7 +30,7 @@ export function LabelAndErrors({
 
       {areErrors && (
         <ul id={errID} className="contents">
-          {validationErrors.map((errorTxt) => (
+          {[...new Set(validationErrors)].map((errorTxt) => (
             <li
               key={errorTxt}
               className="inline-flex items-baseline text-accent gap-1"
@@ -72,7 +72,7 @@ export function LegendAndErrors({
 
         {areErrors && (
           <ul role="alert" className="contents">
-            {validationErrors.map((errorTxt) => (
+            {[...new Set(validationErrors)].map((errorTxt) => (
               <li
                 key={errorTxt}
                 className="inline-flex items-baseline text-accent gap-1"

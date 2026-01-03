@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Form } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
@@ -7,10 +7,10 @@ import {
   ButtonGroupSeparator,
 } from "@ui/shadCN/component/button-group";
 
-// import {
-//   isMonitoringAPIError,
-//   monitoringAPI,
-// } from "pages/monitoring/api/monitoringAPI";
+import {
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 // import { debouncer } from "@utils/debouncer";
 
 import type {
@@ -30,9 +30,10 @@ import {
   ContactInfoDisplay,
   ContactInfoInput,
 } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeContact";
-import { InitiativeImages } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeImages";
 import { InitiativeGeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeGeneralInfo";
 import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/FormListManager";
+import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
+import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
 
 export function InitiativeDataForm({
   dataToUpdate,
@@ -47,6 +48,8 @@ export function InitiativeDataForm({
     getInitialInfo(dataToUpdate),
   );
 
+  const isUpdate = dataToUpdate !== undefined;
+
   const handleReset = () => {
     initiativeData.current = getInitialInfo(dataToUpdate);
     setformID((prev) => prev + 1);
@@ -55,58 +58,55 @@ export function InitiativeDataForm({
 
   function handleSectionUpate<K extends keyof InitiativeDataForm>(key: K) {
     function updateRef(value: InitiativeDataForm[K]) {
+      // setValidationErrors(({ [key]: _, ...oldErr }) => oldErr);
       initiativeData.current[key] = value;
     }
 
     return updateRef;
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
 
+    const currentErrors = validateFormClient(
+      initiativeData.current,
+      formClientValidations,
+    );
+    setValidationErrors(currentErrors);
+
+    if (Object.keys(currentErrors).length > 0) {
+      return;
+    }
+
     try {
-      console.log(initiativeData.current);
+      const { general, ...partialPayload } = { ...initiativeData.current };
+      const payload = { ...general, ...partialPayload };
 
-      const currentErrors: {
-        [K in keyof InitiativeDataForm]?: string[];
-      } = {};
+      const res = await monitoringAPI({
+        type: isUpdate ? "post" : "put",
+        endpoint: `initiative${isUpdate ? `/${dataToUpdate.id}` : ""}`,
+        options: {
+          data: payload,
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        },
+      });
 
-      // if (initiativeData.current.locations.length === 0) {
-      //   currentErrors.locations = ["debe asignarse al menos una locacion"];
-      //   setValidationErrors((oldErr) => ({
-      //     ...oldErr,
-      //     locations: [...(oldErr?.locations ?? []), ...currentErrors.locations],
-      //   }));
-      // }
+      if (isMonitoringAPIError(res)) {
+        throw new Error(res.message);
+      }
 
-      setValidationErrors((oldErr) => ({
-        ...oldErr,
-        general: { root: ["nnnnn"], description: ["bla bla "] },
-        locations: ["nnnnn"],
-        contacts: ["nnnnn"],
-        users: ["nnnnn"],
-      }));
-
-      // const res = await monitoringAPI({
-      //   type: dataToUpdate === undefined ? "put" : "post",
-      //   endpoint: `initiative${dataToUpdate !== undefined && `/${dataToUpdate.id}`}`,
-      //   options: {
-      //     data: initiativeData,
-      //     headers: {
-      //       accept: "application/json",
-      //       "Content-Type": "application/json",
-      //     },
-      //   },
-      // });
-      //
-      // if (isMonitoringAPIError(res)) {
-      //   throw new Error(res.message);
-      // }
-
+      console.log(res);
       // TODO: Confirmación de usuario y cerrar pantalla
       // console.log(res);
     } catch (err) {
-      console.error(err);
+      console.error("carajo", err);
     }
   };
 
@@ -115,6 +115,7 @@ export function InitiativeDataForm({
       action=""
       key={formID}
       onReset={handleReset}
+      onSubmit={(e) => void handleSubmit(e)}
       className="flex flex-col gap-2 p-4 m-4 md:m-8 xl:mx-auto rounded-xl bg-white w-full max-w-7xl"
     >
       <InitiativeGeneralInfo
@@ -159,11 +160,11 @@ export function InitiativeDataForm({
       {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
       <div className="flex flex-row-reverse gap-4 p-4">
         <ButtonGroup>
-          <Button onClick={handleSubmit}>Crear y cargar archivos</Button>
-          <ButtonGroupSeparator />
-          <Button onClick={handleSubmit} type="button">
-            Crear
+          <Button onClick={(e) => void handleSubmit(e)} type="button">
+            Crear y cargar archivos
           </Button>
+          <ButtonGroupSeparator />
+          <Button>Crear</Button>
         </ButtonGroup>
         <Button type="reset" variant="outline_destructive">
           Reiniciar el formulario

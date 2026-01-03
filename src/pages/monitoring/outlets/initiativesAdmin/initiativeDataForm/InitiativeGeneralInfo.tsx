@@ -14,17 +14,14 @@ import {
   InputGroupTextarea,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import { StrValidator } from "@utils/validator";
+import { StrValidator } from "@utils/strValidator";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import type {
   GeneralInfo,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import {
-  getInitiatives,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { initiativeNameNotExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
 
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
@@ -34,7 +31,7 @@ export function InitiativeGeneralInfo({
   title,
   sectionInfo,
   sectionUpdater,
-  validationErrorsObj,
+  validationErrorsObj = {},
 }: {
   title: string;
   sectionInfo: GeneralInfo;
@@ -49,14 +46,13 @@ export function InitiativeGeneralInfo({
   >({});
 
   useEffect(() => {
-    sectionUpdater({ name, shortName, description });
+    const infoClean = Object.fromEntries(
+      Object.entries({ name, shortName, description }).filter(([_, value]) =>
+        Boolean(value),
+      ),
+    ) as GeneralInfo;
+    sectionUpdater({ ...infoClean });
   }, [name, shortName, description, sectionUpdater]);
-
-  useEffect(() => {
-    setName(sectionInfo.name);
-    setShortName(sectionInfo.shortName ?? "");
-    setDescription(sectionInfo.description);
-  }, [sectionInfo.name, sectionInfo.shortName, sectionInfo.description]);
 
   useEffect(() => {
     if (Object.keys(validationErrorsObj).length === 0) {
@@ -248,16 +244,4 @@ export function InitiativeGeneralInfo({
       </div>
     </fieldset>
   );
-}
-
-async function initiativeNameNotExist(initiativeName: string) {
-  const existingInitiative = await getInitiatives({
-    filter: `name eq '${initiativeName}'`,
-  });
-
-  if (isMonitoringAPIError(existingInitiative)) {
-    throw new Error(existingInitiative.message);
-  }
-
-  return existingInitiative["@odata.count"] === 0;
 }

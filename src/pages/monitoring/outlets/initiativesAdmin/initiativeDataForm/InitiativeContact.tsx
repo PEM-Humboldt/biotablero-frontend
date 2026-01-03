@@ -17,7 +17,7 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { StrValidator } from "@utils/validator";
+import { StrValidator } from "@utils/strValidator";
 
 import type {
   InitiativeContact,
@@ -77,7 +77,10 @@ export function ContactInfoInput({
       return;
     }
 
-    const newContact = { phone: cleanPhone, email: cleanEmail };
+    const newContact: InitiativeContact = { email: cleanEmail };
+    if (cleanPhone !== "") {
+      newContact.phone = cleanPhone;
+    }
 
     setter((savedData) => [...savedData, newContact]);
     setInputErr({});

@@ -61,7 +61,7 @@ export function InitiativesAdmin() {
         className="bg-red-500"
       />
 
-      <InitiativeDataForm dataToUpdate={updateMock} />
+      <InitiativeDataForm />
 
       <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
         iniciativas

@@ -14,7 +14,10 @@ import {
   getUsers,
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
-import { NEW_ADMIN_CREDENTIALS } from "pages/monitoring/utils/manageUsers";
+import {
+  NEW_ADMIN_CREDENTIALS,
+  normalizeUsersFromKC,
+} from "pages/monitoring/utils/manageUsers";
 
 const INITIATIVE_DISPLAY_LEADERS_SEARCH = 5;
 
@@ -23,17 +26,19 @@ export function UsersInfoInput({
   setter,
   update,
 }: ItemEditorProps<User>) {
-  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [allUsers, setAllUsers] = useState<Partial<User>[]>([]);
   const [user, setUser] = useState<string>("");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
     const getUsersInfo = async () => {
       try {
-        const usersInfo = await getUsers();
-        if (isMonitoringAPIError(usersInfo)) {
-          throw new Error(usersInfo.message);
+        const usersKC = await getUsers();
+        if (isMonitoringAPIError(usersKC)) {
+          throw new Error(usersKC.message);
         }
+
+        const usersInfo = normalizeUsersFromKC(usersKC);
         setAllUsers(usersInfo);
       } catch (err) {
         console.error(err);
@@ -51,12 +56,14 @@ export function UsersInfoInput({
     setUser(update !== null ? update.userName : "");
   }, [update]);
 
-  const usersAvailable = useMemo((): User[] => {
+  const usersAvailable = useMemo((): Partial<User>[] => {
     if (selectedItems === undefined || !Array.isArray(selectedItems)) {
       return allUsers;
     }
     const selectedUsers = new Set(selectedItems.map((u: User) => u.userName));
-    return allUsers.filter((u: User) => !selectedUsers.has(u.userName));
+    return allUsers.filter(
+      (u: Partial<User>) => !selectedUsers.has(u.userName!),
+    );
   }, [selectedItems, allUsers]);
 
   const handleSave = () => {

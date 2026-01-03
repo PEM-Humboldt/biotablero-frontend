@@ -20,8 +20,8 @@ import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { LocationList } from "pages/monitoring/types/monitoring";
 import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
-import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/validations";
-import { StrValidator } from "@utils/validator";
+import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
+import { StrValidator } from "@utils/strValidator";
 import {
   InputGroup,
   InputGroupAddon,
@@ -119,10 +119,13 @@ export function LocationInput({
       return;
     }
 
-    const newLocation = {
+    const newLocation: LocationData = {
       locationId: Number(municipality) || Number(department),
-      locality,
     };
+
+    if (locality !== "") {
+      newLocation.locality = locality;
+    }
 
     if (selectedItems && locationAlreadyExist(newLocation, selectedItems)) {
       setInputErr((oldErr) => ({
@@ -211,7 +214,7 @@ export function LocationInput({
               autoComplete="off"
               placeholder="Nombre de la vereda"
               maxLength={INITIATIVE_LOCALITY_MAX_LENGTH}
-              disabled={municipalities.length === 0}
+              disabled={municipality === ""}
               aria-invalid={inputErr.locality !== undefined}
               aria-describedby={
                 inputErr.locality ? "errors_locality" : undefined
