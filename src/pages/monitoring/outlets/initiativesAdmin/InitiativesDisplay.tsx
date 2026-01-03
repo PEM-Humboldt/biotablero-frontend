@@ -15,11 +15,13 @@ export function InitiativesDisplay({
   return initiativesInfo.length === 0 ? (
     <div>No hay iniciativas</div>
   ) : (
-    <Accordion type="single" className="w-full">
+    <Accordion type="single" collapsible className="w-full space-y-3">
       {initiativesInfo.map((initiative) => (
         <AccordionItem value={initiative.name}>
           <AccordionTrigger>
-            {initiative.shortName ?? initiative.name}
+            {initiative.shortName
+              ? `${initiative.shortName} // ${initiative.name}`
+              : initiative.name}
           </AccordionTrigger>
           <AccordionContent>
             <h4>{initiative.name}</h4>

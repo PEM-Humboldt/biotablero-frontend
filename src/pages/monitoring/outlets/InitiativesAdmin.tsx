@@ -49,7 +49,7 @@ export function InitiativesAdmin() {
   const initiativesAvailable = initiatives ? initiatives["@odata.count"] : 0;
 
   return (
-    <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center">
+    <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
       <div className="p-6 pb-0 w-full flex justify-between">
         <h3 className="h1 text-primary">Administrador de iniciativas</h3>
         <Button>
@@ -64,7 +64,7 @@ export function InitiativesAdmin() {
         className="bg-muted w-full"
       />
 
-      <InitiativeDataForm />
+      {false && <InitiativeDataForm />}
 
       <InitiativesDisplay initiativesInfo={initiatives?.value ?? []} />
 

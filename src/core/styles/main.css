@@ -195,6 +195,28 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+
+  /* Component animations */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  /* Definir las Utilidades de Animación */
+  --animate-accordion-down: accordion-down 0.1s ease-in-out;
+  --animate-accordion-up: accordion-up 0.1s ease-in-out;
 }
 
 @import "./base.css";
