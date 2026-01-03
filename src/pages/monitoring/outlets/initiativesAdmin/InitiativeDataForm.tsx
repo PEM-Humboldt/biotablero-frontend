@@ -7,16 +7,15 @@ import {
   ButtonGroupSeparator,
 } from "@ui/shadCN/component/button-group";
 
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
-
 import type {
   InitiativeDataForm,
   InitiativeDataFormErr,
   InitiativeToUpadate,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import {
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 import {
   LocationInput,
   LocationDisplay,
@@ -102,74 +101,77 @@ export function InitiativeDataForm({
       }
 
       console.log(res);
-      // TODO: Confirmación de usuario y cerrar pantalla
-      // console.log(res);
     } catch (err) {
       console.error("carajo", err);
     }
   };
 
   return (
-    <Form
-      action=""
-      key={formID}
-      onReset={handleReset}
-      onSubmit={(e) => void handleSubmit(e)}
-      className="flex flex-col gap-2 p-4 m-4 md:m-8 xl:mx-auto rounded-xl bg-white w-full max-w-7xl"
-    >
-      <InitiativeGeneralInfo
-        title="Información general"
-        sectionInfo={initiativeData.current.general}
-        sectionUpdater={handleSectionUpate("general")}
-        validationErrorsObj={validationErrors?.general ?? {}}
-      />
-
-      <FormListManager
-        title="Ubicación de la iniciativa"
-        maxItems={3}
-        sectionInfo={initiativeData.current.locations}
-        sectionUpdater={handleSectionUpate("locations")}
-        AddItemComponent={LocationInput}
-        CurrentItemsComponent={LocationDisplay}
-        validationErrors={validationErrors?.locations ?? []}
-      />
-
-      <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
-        <FormListManager
-          title="Información de contacto"
-          maxItems={5}
-          sectionInfo={initiativeData.current.contacts}
-          sectionUpdater={handleSectionUpate("contacts")}
-          AddItemComponent={ContactInfoInput}
-          CurrentItemsComponent={ContactInfoDisplay}
-          validationErrors={validationErrors?.contacts ?? []}
+    <div className="w-full rounded-xl bg-white overflow-hidden">
+      <h4 className="px-6 py-2 mb-0 text-base bg-primary text-primary-foreground">
+        Nueva iniciativa
+      </h4>
+      <Form
+        action=""
+        key={formID}
+        onReset={handleReset}
+        onSubmit={(e) => void handleSubmit(e)}
+        className="flex flex-col gap-2 p-6"
+      >
+        <InitiativeGeneralInfo
+          title="Información general"
+          sectionInfo={initiativeData.current.general}
+          sectionUpdater={handleSectionUpate("general")}
+          validationErrorsObj={validationErrors?.general ?? {}}
         />
 
         <FormListManager
-          title="líderezas y líderes de la iniciativa"
+          title="Ubicación de la iniciativa"
           maxItems={3}
-          sectionInfo={initiativeData.current.users}
-          sectionUpdater={handleSectionUpate("users")}
-          AddItemComponent={UsersInfoInput}
-          CurrentItemsComponent={UsersInfoDisplay}
-          validationErrors={validationErrors?.users ?? []}
+          sectionInfo={initiativeData.current.locations}
+          sectionUpdater={handleSectionUpate("locations")}
+          AddItemComponent={LocationInput}
+          CurrentItemsComponent={LocationDisplay}
+          validationErrors={validationErrors?.locations ?? []}
         />
-      </div>
 
-      {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
-      <div className="flex flex-row-reverse gap-4 p-4">
-        <ButtonGroup>
-          <Button onClick={(e) => void handleSubmit(e)} type="button">
-            Crear y cargar archivos
+        <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
+          <FormListManager
+            title="Información de contacto"
+            maxItems={5}
+            sectionInfo={initiativeData.current.contacts}
+            sectionUpdater={handleSectionUpate("contacts")}
+            AddItemComponent={ContactInfoInput}
+            CurrentItemsComponent={ContactInfoDisplay}
+            validationErrors={validationErrors?.contacts ?? []}
+          />
+
+          <FormListManager
+            title="líderezas y líderes de la iniciativa"
+            maxItems={3}
+            sectionInfo={initiativeData.current.users}
+            sectionUpdater={handleSectionUpate("users")}
+            AddItemComponent={UsersInfoInput}
+            CurrentItemsComponent={UsersInfoDisplay}
+            validationErrors={validationErrors?.users ?? []}
+          />
+        </div>
+
+        {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
+        <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
+          <ButtonGroup>
+            <Button>Crear</Button>
+            <ButtonGroupSeparator />
+            <Button onClick={(e) => void handleSubmit(e)} type="button">
+              Crear y cargar archivos
+            </Button>
+          </ButtonGroup>
+          <Button type="reset" variant="outline_destructive">
+            Reiniciar el formulario
           </Button>
-          <ButtonGroupSeparator />
-          <Button>Crear</Button>
-        </ButtonGroup>
-        <Button type="reset" variant="outline_destructive">
-          Reiniciar el formulario
-        </Button>
-      </div>
-    </Form>
+        </div>
+      </Form>
+    </div>
   );
 }
 

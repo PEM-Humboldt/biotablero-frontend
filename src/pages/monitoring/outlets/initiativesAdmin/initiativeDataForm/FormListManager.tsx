@@ -60,7 +60,9 @@ export function FormListManager<T>({
     <fieldset
       className={cn(
         "px-4 pt-3 rounded-lg",
-        validationErrors.length > 0 ? "bg-red-50 outline-2 outline-accent" : "",
+        validationErrors.length > 0
+          ? "bg-red-50 outline-2 outline-accent"
+          : "bg-muted",
       )}
     >
       <LegendAndErrors validationErrors={validationErrors}>

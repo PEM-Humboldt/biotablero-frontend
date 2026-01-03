@@ -64,7 +64,7 @@ export function LegendAndErrors({
     <legend className="contents">
       <div
         className={cn(
-          "p-0 flex flex-wrap gap-2 items-baseline text-lg",
+          "p-0 flex flex-wrap gap-2 text-primary items-baseline text-lg",
           className,
         )}
       >

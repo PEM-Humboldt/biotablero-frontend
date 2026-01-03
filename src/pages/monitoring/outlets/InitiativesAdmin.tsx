@@ -10,7 +10,8 @@ import type { ODataInitiative } from "pages/monitoring/types/requestParams";
 import { getInitiatives } from "pages/monitoring/api/monitoringAPI";
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
-import { updateMock } from "./initiativesAdmin/updateMock";
+import { ListPlus } from "lucide-react";
+import { InitiativesDisplay } from "./initiativesAdmin/InitiativesDisplay";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<ODataInitiative | null>(null);
@@ -48,26 +49,24 @@ export function InitiativesAdmin() {
   const initiativesAvailable = initiatives ? initiatives["@odata.count"] : 0;
 
   return (
-    <div className="ml-[60px] bg-grey-light">
-      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
-        <h3>Administrador de iniciativas</h3>
-        <Button>Crear iniciativa</Button>
+    <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center">
+      <div className="p-6 pb-0 w-full flex justify-between">
+        <h3 className="h1 text-primary">Administrador de iniciativas</h3>
+        <Button>
+          Crear iniciativa <ListPlus />
+        </Button>
       </div>
 
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
         reset={"reset"}
-        className="bg-red-500"
+        className="bg-muted w-full"
       />
 
       <InitiativeDataForm />
 
-      <div className="bg-red-100 text-3xl text-center my-8 p-8 ">
-        iniciativas
-        <div className="bg-red-300 my-8">formulario edicion</div>
-        <div className="bg-red-300 my-8">barra iniciativa</div>
-      </div>
+      <InitiativesDisplay initiativesInfo={initiatives?.value ?? []} />
 
       <TablePager
         currentPage={currentPage}

@@ -6,6 +6,7 @@ import {
   type SetStateAction,
 } from "react";
 
+import { cn } from "@ui/shadCN/lib/utils";
 import { debouncer } from "@utils/debouncer";
 import { makeODataFilterString } from "@utils/odata";
 import type {
@@ -124,7 +125,10 @@ export function ODataSearchBar<T>({
   return (
     <form
       onSubmit={submitSearch}
-      className={`flex flex-wrap bg-white gap-2 justify-center rounded-lg m-4 px-4 py-4 items-end ${className}`}
+      className={cn(
+        "flex flex-wrap gap-2 justify-center rounded-lg px-4 py-4 items-end",
+        className,
+      )}
     >
       {components.map((component, i) => (
         <label

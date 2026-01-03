@@ -77,9 +77,7 @@ export function Combobox<T>({
           <CommandInput placeholder={uiText.inputPlaceholder} className="h-9" />
 
           <CommandList
-            className={cn(
-              !maxItems ? "overflow-y-auto max-h-[300px]" : "overflow-y-hidden",
-            )}
+            className={cn(!maxItems ? "overflow-y-auto max-h-[300px]" : "")}
             style={maxItems ? { maxHeight: `${33 * maxItems}px` } : undefined}
           >
             <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>

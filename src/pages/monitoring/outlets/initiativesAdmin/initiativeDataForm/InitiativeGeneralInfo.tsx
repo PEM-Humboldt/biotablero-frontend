@@ -118,10 +118,10 @@ export function InitiativeGeneralInfo({
   return (
     <fieldset
       className={cn(
-        "p-4 rounded-lg flex flex-col gap-2",
+        "rounded-lg flex flex-col gap-2 p-4 ",
         inputErr.root !== undefined && inputErr.root.length > 0
           ? "bg-red-50 outline-2 outline-accent"
-          : "",
+          : "bg-muted",
       )}
     >
       <LegendAndErrors validationErrors={inputErr?.root ?? []}>
