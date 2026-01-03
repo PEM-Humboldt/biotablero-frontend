@@ -36,7 +36,7 @@ export class CurrentFootprintController {
           "CurrentHF",
           period,
           index + 1,
-          Number(this.areaId),
+          Number(this.areaId)
         );
         requests.push(request);
         this.activeRequests.set(categoryId, source);
@@ -102,7 +102,7 @@ export class CurrentFootprintController {
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
         <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip,
+        optionsTooltip
       )
       .openTooltip();
 
@@ -151,26 +151,39 @@ export class CurrentFootprintController {
   };
 
   transformData = (
-    resData: Array<MetricTypesMap["CurrentHF"]>,
+    resData: MetricTypesMap["currentHF"]
   ): LargeStackedBarData[] => {
-    if (!resData.length) return [];
+    if (!resData) return [];
 
-    const { ano, ...categories } = resData[0];
+    const { id, ...categories } = resData;
 
     const totalArea: number = Object.values(categories).reduce(
       (total: number, value) => total + Number(value),
-      0,
+      0
     );
 
-    return Object.entries(categories).map(([key, value]) => {
-      const area = Number(value);
+    /**
+     * TODO: No sé si hay uan mejor forma de ordenar el objeto resultado,
+     * intenté sacar los valores directamente de las keys de MetricTypesMap["currentHF"]
+     * pero el mismo interprete de typescript me los pasaba ya desordenados
+     */
+    const order = ["Natural", "Baja", "Media", "Alta", "Muy Alta"];
 
-      return {
-        key,
-        area,
-        percentage: totalArea ? area / totalArea : 0,
-        label: key.charAt(0).toUpperCase() + key.slice(1),
-      };
-    });
+    return Object.entries(categories)
+      .map(([key, value]) => {
+        const area = Number(value);
+
+        return {
+          key,
+          area,
+          percentage: totalArea ? area / totalArea : 0,
+          label: key.charAt(0).toUpperCase() + key.slice(1),
+        };
+      })
+      .sort(
+        (a, b) =>
+          order.findIndex((key) => key === a.key) -
+          order.findIndex((key) => key === b.key)
+      );
   };
 }

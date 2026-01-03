@@ -137,9 +137,9 @@ export function CurrentFootprint() {
     setLoadingLayer(true);
     controller.setArea(areaTypeId, areaIdId);
 
-    SearchAPI.requestMetricsValues<"CurrentHF">("CurrentHF", Number(areaIdId))
+    SearchAPI.requestMetricsValues<"currentHF">("currentHF", Number(areaIdId))
       .then((res) => {
-        const obtainedPeriod = res[0]?.ano ?? "";
+        const obtainedPeriod = res?.id ?? "";
 
         dispatch({
           type: "SET_HF_CURRENT",
@@ -219,7 +219,7 @@ export function CurrentFootprint() {
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      })),
+      }))
     );
   };
 
