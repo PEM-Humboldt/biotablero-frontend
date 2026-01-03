@@ -7,7 +7,7 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 
 export const transformPAValues = (
   rawData: Array<SEPAData>,
-  totalArea: number,
+  totalArea: number
 ) => {
   if (!rawData || rawData.length === 0) return [];
   let PATotalArea = 0;
@@ -40,18 +40,17 @@ export const transformPAValues = (
 };
 
 export const transformCoverageValues = (
-  rawData: Array<MetricTypesMap["Coverage"]>,
+  rawData: MetricTypesMap["coverage"]
 ) => {
   if (!rawData) return [];
-  const data = rawData[0];
 
   const items = [
-    { key: "N", label: "Natural", area: data.natural },
-    { key: "S", label: "Secundaria", area: data.secundaria },
-    { key: "T", label: "Transformada", area: data.transformada },
+    { key: "N", label: "Natural", area: rawData.Natural },
+    { key: "S", label: "Secundaria", area: rawData.Secundaria },
+    { key: "T", label: "Transformada", area: rawData.Transformada },
   ];
 
-  const totalArea = data.natural + data.secundaria + data.transformada;
+  const totalArea = rawData.Natural + rawData.Secundaria + rawData.Transformada;
 
   return items.map((item) => ({
     area: item.area,
@@ -63,7 +62,7 @@ export const transformCoverageValues = (
 
 export const transformSEValues = (
   seRawData: SEPADataExt,
-  SETotalArea: number,
+  SETotalArea: number
 ) => {
   if (!seRawData) return [];
   const transformedData = [
@@ -85,7 +84,7 @@ export const transformSEValues = (
 
 export const transformSEAreas = (
   rawData: Array<SEPAData>,
-  generalArea: number,
+  generalArea: number
 ) => {
   if (!rawData) return [];
   const transformedSEAData: Array<SEPADataExt> = rawData.map((obj) => ({

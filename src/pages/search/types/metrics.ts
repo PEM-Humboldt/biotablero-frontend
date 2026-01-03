@@ -8,9 +8,9 @@ export type MetricDataStructure<
 };
 
 export type MetricTypesMap = {
-  Coverage: MetricDataStructure<
-    "ano",
-    "natural" | "secundaria" | "transformada"
+  coverage: MetricDataStructure<
+    "id",
+    "Natural" | "Secundaria" | "Transformada"
   >;
   LossPersistence: MetricDataStructure<
     "periodo",

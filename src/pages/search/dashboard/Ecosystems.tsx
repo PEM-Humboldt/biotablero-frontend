@@ -113,7 +113,7 @@ type EcosystemsAction =
 
 function ecosystemsReducer(
   state: EcosystemsState,
-  action: EcosystemsAction,
+  action: EcosystemsAction
 ): EcosystemsState {
   switch (action.type) {
     case "TOGGLE_MAIN_INFO":
@@ -210,7 +210,7 @@ export function Ecosystems() {
           }
         });
     },
-    [period],
+    [period]
   );
 
   useEffect(() => {
@@ -223,9 +223,9 @@ export function Ecosystems() {
 
     controller.setArea(areaTypeId, areaIdId);
 
-    SearchAPI.requestMetricsValues<"Coverage">("Coverage", Number(areaIdId))
+    SearchAPI.requestMetricsValues<"coverage">("coverage", Number(areaIdId))
       .then((res) => {
-        const obtainedPeriod = res[0]?.ano ?? "";
+        const obtainedPeriod = res?.id ?? "";
         dispatch({ type: "SET_PERIOD", payload: obtainedPeriod });
 
         dispatch({
@@ -308,7 +308,7 @@ export function Ecosystems() {
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      })),
+      }))
     );
   };
 

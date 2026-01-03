@@ -57,7 +57,7 @@ class SearchAPI {
    * @returns Polygon identifier
    */
   static requestAreaPolygon(
-    polygon: geojson.Feature<geojson.Polygon>,
+    polygon: geojson.Feature<geojson.Polygon>
   ): Promise<{ polygon_id: number }> {
     const requestBody = {
       polygon: polygon,
@@ -80,8 +80,8 @@ class SearchAPI {
    */
   static requestMetricsValues<Metric extends MetricsTypes>(
     metricId: Metric,
-    polygonId: number,
-  ): Promise<Array<MetricTypesMap[Metric]>> {
+    polygonId: number
+  ): Promise<MetricTypesMap[Metric]> {
     return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 
@@ -97,12 +97,12 @@ class SearchAPI {
     metricId: MetricsTypes,
     itemId: string,
     category: number,
-    polygonId: number,
+    polygonId: number
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: SearchAPI.makeGetRequest(
-        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&category=${category}`,
+        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&category=${category}`
       ),
       source: source,
     };
@@ -182,7 +182,7 @@ class SearchAPI {
       .post(
         `${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`,
         requestBody,
-        config,
+        config
       )
       .then((res) => res.data)
       .catch((error) => {
