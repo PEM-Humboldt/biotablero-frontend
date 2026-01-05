@@ -60,6 +60,49 @@ export function InitiativeDataForm({
     return updateRef;
   }
 
+  const submitImages = async (initiativeId: number) => {
+    const { images } = initiativeData.current;
+
+    if (Object.keys(images).length === 0) {
+      return;
+    }
+
+    const serverError: string[] = [];
+    const imagesToUpload = [
+      { file: images.imageUrl, path: "UploadImage" },
+      { file: images.bannerUrl, path: "UploadBanner" },
+    ];
+
+    try {
+      for (const image of imagesToUpload) {
+        if (!(image.file instanceof File)) {
+          continue;
+        }
+
+        const formData = new FormData();
+        formData.append("formFile", image.file);
+        const res = await monitoringAPI({
+          type: "post",
+          endpoint: `initiative/${image.path}/${initiativeId}`,
+          options: { data: formData, headers: { accept: "*/*" } },
+        });
+
+        if (isMonitoringAPIError(res)) {
+          serverError.push(`Error cargando ${image.file.name}: ${res.message}`);
+        }
+      }
+    } catch (err) {
+      serverError.push("No se pudieron cargar las imagene, intenta más tarde");
+      console.error(err);
+    } finally {
+      setValidationErrors(
+        serverError.length > 0
+          ? (oldErr) => ({ ...oldErr, images: { root: serverError } })
+          : {},
+      );
+    }
+  };
+
   const handleSubmit = async (
     event:
       | React.FormEvent<HTMLFormElement>
@@ -73,17 +116,19 @@ export function InitiativeDataForm({
     );
     setValidationErrors(currentErrors);
 
-    console.log(initiativeData.current);
-
     if (Object.keys(currentErrors).length > 0) {
       return;
     }
 
     try {
-      const { general, ...partialPayload } = { ...initiativeData.current };
-      const payload = { ...general, ...partialPayload };
+      const { general, images: _, ...rest } = { ...initiativeData.current };
+      const payload = { ...general, ...rest };
 
-      const res = await monitoringAPI({
+      if (Object.keys(currentErrors).length > 0) {
+        return;
+      }
+
+      const res = await monitoringAPI<InitiativeToUpadate>({
         type: isUpdate ? "post" : "put",
         endpoint: `initiative${isUpdate ? `/${dataToUpdate.id}` : ""}`,
         options: {
@@ -100,7 +145,7 @@ export function InitiativeDataForm({
         return;
       }
 
-      console.log(res);
+      void submitImages(res.id);
     } catch (err) {
       console.error("carajo", err);
     }

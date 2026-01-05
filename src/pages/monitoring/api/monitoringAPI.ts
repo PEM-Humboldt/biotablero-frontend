@@ -34,6 +34,8 @@ interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
+type RequestData = RequestBody | FormData;
+
 type MonitoringAPIParams = {
   endpoint: string;
 } & (
@@ -55,7 +57,7 @@ type MonitoringAPIParams = {
   | {
       type: "put" | "post";
       options?: {
-        data?: RequestBody;
+        data?: RequestData;
         headers?: Record<string, string>;
       };
     }
@@ -171,11 +173,19 @@ export async function monitoringAPI<T>({
 
       response = await monitoringClient[type]<T>(fullEndpoint);
     } else {
-      // reqParams.append("client_id", "bt-mc-client");
-      const payload = {
-        client_id: "bt-mc-client",
-        ...data,
-      };
+      let payload: RequestData;
+
+      if (data instanceof FormData) {
+        payload = data;
+        if (!payload.has("client_id")) {
+          payload.append("client_id", "bt-mc-client");
+        }
+      } else {
+        payload = {
+          client_id: "bt-mc-client",
+          ...data,
+        };
+      }
 
       response = await monitoringClient[type]<T>(
         `${baseURL}/${endpoint}`,

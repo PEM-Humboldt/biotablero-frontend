@@ -55,6 +55,10 @@ export function FormImagesInfo({
     sectionUpdater(infoClean);
   }, [imagesInfo, sectionUpdater]);
 
+  useEffect(() => {
+    setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
+  }, [validationErrorsObj]);
+
   const handleOnChangeImage =
     (
       image: keyof ImagesData,
@@ -131,7 +135,9 @@ export function FormImagesInfo({
           : "bg-muted",
       )}
     >
-      <LegendAndErrors>{title}</LegendAndErrors>
+      <LegendAndErrors validationErrors={inputErr.root ?? []}>
+        {title}
+      </LegendAndErrors>
 
       <div className="flex gap-8 flex-wrap items-end *:flex-[1_1_350px]">
         <ImageLoadField
@@ -156,6 +162,10 @@ export function FormImagesInfo({
           removeHandler={handleRemoveImage}
         />
       </div>
+
+      {Object.keys(inputErr).length > 0 && (
+        <Button type="button">Cargar de nuevo</Button>
+      )}
     </fieldset>
   );
 }
