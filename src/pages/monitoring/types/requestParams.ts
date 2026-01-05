@@ -36,7 +36,7 @@ export type LocationBasicInfo = {
   };
 };
 
-type LocationCompleteInfo = {
+export type LocationCompleteInfo = {
   id: number;
   locationId: number;
   locality: string;

@@ -1,10 +1,4 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
 import {
@@ -26,6 +20,8 @@ import { initiativeNameNotExist } from "pages/monitoring/outlets/initiativesAdmi
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
 const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
+const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 300;
+const INITIAVIVE_INFLUENCE_MAX_LENGTH = 250;
 
 export function InitiativeGeneralInfo({
   title,
@@ -38,21 +34,17 @@ export function InitiativeGeneralInfo({
   sectionUpdater: (value: GeneralInfo) => void;
   validationErrorsObj: Partial<InitiativeDataFormErr["general"]>;
 }) {
-  const [name, setName] = useState(sectionInfo.name ?? "");
-  const [shortName, setShortName] = useState(sectionInfo.shortName ?? "");
-  const [description, setDescription] = useState(sectionInfo.description ?? "");
+  const [generalInfo, setGeneralInfo] = useState<Required<GeneralInfo>>({
+    name: sectionInfo.name ?? "",
+    shortName: sectionInfo.shortName ?? "",
+    description: sectionInfo.description ?? "",
+    objective: sectionInfo.objective ?? "",
+    influenceArea: sectionInfo.influenceArea ?? "",
+  });
+
   const [inputErr, setInputErr] = useState<
     Partial<InitiativeDataFormErr["general"]>
   >({});
-
-  useEffect(() => {
-    const infoClean = Object.fromEntries(
-      Object.entries({ name, shortName, description }).filter(([_, value]) =>
-        Boolean(value),
-      ),
-    ) as GeneralInfo;
-    sectionUpdater({ ...infoClean });
-  }, [name, shortName, description, sectionUpdater]);
 
   useEffect(() => {
     if (Object.keys(validationErrorsObj).length === 0) {
@@ -62,12 +54,12 @@ export function InitiativeGeneralInfo({
     setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
   }, [validationErrorsObj]);
 
+  const setGeneralInfoItem = (key: keyof GeneralInfo) => (value: string) => {
+    setGeneralInfo((oldObj) => ({ ...oldObj, [key]: value }));
+  };
+
   const validateField = useCallback(
-    (
-      fieldName: keyof InitiativeDataFormErr["general"],
-      fieldSetter: Dispatch<SetStateAction<string>>,
-      validation: StrValidator,
-    ) => {
+    (fieldName: keyof GeneralInfo, validation: StrValidator) => {
       const [cleanValue, errors] = validation.result;
 
       if (errors.length > 0) {
@@ -76,16 +68,21 @@ export function InitiativeGeneralInfo({
       }
 
       setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
-      fieldSetter(cleanValue);
+      setGeneralInfoItem(fieldName)(cleanValue);
+
+      const infoClean = Object.fromEntries(
+        Object.entries(generalInfo).filter(([_, value]) => Boolean(value)),
+      ) as GeneralInfo;
+
+      sectionUpdater(infoClean);
     },
-    [],
+    [generalInfo, sectionUpdater],
   );
 
   const nameOnBlur = async () =>
     validateField(
       "name",
-      setName,
-      await new StrValidator(name)
+      await new StrValidator(generalInfo.name)
         .sanitize()
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH)
@@ -98,8 +95,7 @@ export function InitiativeGeneralInfo({
   const shortNameOnBlur = () =>
     validateField(
       "shortName",
-      setShortName,
-      new StrValidator(shortName)
+      new StrValidator(generalInfo.shortName)
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIAVIVE_SHORTNAME_MAX_LENGTH),
@@ -108,10 +104,27 @@ export function InitiativeGeneralInfo({
   const descriptionOnBlur = () =>
     validateField(
       "description",
-      setDescription,
-      new StrValidator(description)
+      new StrValidator(generalInfo.description)
         .sanitize()
         .isRequired()
+        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+    );
+
+  const objectiveOnBlur = () =>
+    validateField(
+      "objective",
+      new StrValidator(generalInfo.objective)
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+    );
+
+  const influenceOnBlur = () =>
+    validateField(
+      "influenceArea",
+      new StrValidator(generalInfo.influenceArea)
+        .isOptional()
+        .sanitize()
         .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
     );
 
@@ -143,8 +156,8 @@ export function InitiativeGeneralInfo({
               name="name"
               id="name"
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={generalInfo.name}
+              onChange={(e) => setGeneralInfoItem("name")(e.target.value)}
               onBlur={() => void nameOnBlur()}
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
@@ -155,9 +168,12 @@ export function InitiativeGeneralInfo({
             />
             <InputGroupAddon
               align="inline-end"
-              className={inputWarnColor(name, INITIAVIVE_NAME_MAX_LENGTH)}
+              className={inputWarnColor(
+                generalInfo.name,
+                INITIAVIVE_NAME_MAX_LENGTH,
+              )}
             >
-              {inputLengthCount(name, INITIAVIVE_NAME_MAX_LENGTH)}
+              {inputLengthCount(generalInfo.name, INITIAVIVE_NAME_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -177,8 +193,8 @@ export function InitiativeGeneralInfo({
               id="shortName"
               placeholder="JPLA"
               type="text"
-              value={shortName}
-              onChange={(e) => setShortName(e.target.value)}
+              value={generalInfo.shortName}
+              onChange={(e) => setGeneralInfoItem("shortName")(e.target.value)}
               onBlur={shortNameOnBlur}
               autoComplete="off"
               maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
@@ -190,13 +206,13 @@ export function InitiativeGeneralInfo({
             <InputGroupAddon
               align="inline-end"
               className={inputWarnColor(
-                shortName,
+                generalInfo.shortName,
                 INITIAVIVE_SHORTNAME_MAX_LENGTH,
                 0.8,
               )}
             >
               {inputLengthCount(
-                shortName,
+                generalInfo.shortName,
                 INITIAVIVE_SHORTNAME_MAX_LENGTH,
                 0.6,
               )}
@@ -219,8 +235,8 @@ export function InitiativeGeneralInfo({
             id="description"
             name="description"
             placeholder="Esta iniciativa busca..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={generalInfo.description}
+            onChange={(e) => setGeneralInfoItem("description")(e.target.value)}
             onBlur={descriptionOnBlur}
             maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             aria-invalid={inputErr.description !== undefined}
@@ -232,15 +248,95 @@ export function InitiativeGeneralInfo({
           <InputGroupAddon
             align="block-end"
             className={`${inputWarnColor(
-              description,
+              generalInfo.description,
               INITIAVIVE_DESCRIPTION_MAX_LENGTH,
               0.95,
             )} flex-row-reverse`}
           >
-            {`${description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+            {`${generalInfo.description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
 		  `}
           </InputGroupAddon>
         </InputGroup>
+      </div>
+
+      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
+        <div>
+          <LabelAndErrors
+            errID="errors_objective"
+            htmlFor="objective"
+            validationErrors={inputErr.objective ?? []}
+          >
+            Objetivo
+          </LabelAndErrors>
+
+          <InputGroup>
+            <InputGroupTextarea
+              id="objective"
+              name="objective"
+              placeholder="El objetivo de esta iniciativa es..."
+              value={generalInfo.objective}
+              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
+              onBlur={objectiveOnBlur}
+              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+              aria-invalid={inputErr.objective !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.objective ? "errors_objective" : undefined
+              }
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.objective,
+                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div>
+          <LabelAndErrors
+            errID="errors_influenceArea"
+            htmlFor="influenceArea"
+            validationErrors={inputErr.influenceArea ?? []}
+          >
+            Área de influencia
+          </LabelAndErrors>
+
+          <InputGroup>
+            <InputGroupTextarea
+              id="influenceArea"
+              name="influenceArea"
+              placeholder="El área de influencia de esta iniciativa es..."
+              value={generalInfo.influenceArea}
+              onChange={(e) =>
+                setGeneralInfoItem("influenceArea")(e.target.value)
+              }
+              onBlur={influenceOnBlur}
+              maxLength={INITIAVIVE_INFLUENCE_MAX_LENGTH}
+              aria-invalid={inputErr.influenceArea !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.influenceArea ? "errors_influenceArea" : undefined
+              }
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.influenceArea,
+                INITIAVIVE_INFLUENCE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.influenceArea.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
       </div>
     </fieldset>
   );
