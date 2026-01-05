@@ -1,4 +1,4 @@
-export type ValidatorResponse = [sanitized: string, errors: string[]];
+export type strValidatorResponse = [sanitized: string, errors: string[]];
 
 /**
  * String validation and sanitization utility.
@@ -237,7 +237,7 @@ export class StrValidator {
   /**
    * Gets the final sanitized string and error collection.
    */
-  get result(): ValidatorResponse {
+  get result(): strValidatorResponse {
     if (this.optional && this.originalStr === "") {
       return [this.strToValidate, []];
     }
