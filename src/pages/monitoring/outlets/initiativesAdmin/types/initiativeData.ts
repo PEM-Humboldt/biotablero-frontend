@@ -6,6 +6,13 @@ export type GeneralInfo = {
   name: string;
   shortName?: string;
   description: string;
+  objective?: string;
+  influenceArea?: string;
+};
+
+export type ImagesData = {
+  imageUrl?: File | string | null;
+  bannerUrl?: File | string | null;
 };
 
 export type LocationData = {
@@ -28,6 +35,7 @@ export type InitiativeDataForm = {
   locations: LocationData[];
   contacts: InitiativeContact[];
   users: UserData[];
+  images: ImagesData;
 };
 
 // NOTE: tipos para los errores
@@ -39,6 +47,7 @@ export type InitiativeDataFormErr = {
   locations: string[];
   contacts: string[];
   users: string[];
+  images: { imageUrl: string[]; bannerUrl: string[] };
 };
 
 // NOTE: Data recibida del Servidor
@@ -52,16 +61,17 @@ type UserSRC = WithID<
 >;
 
 export type InitiativeToUpadate = WithID<
-  GeneralInfo & {
-    locations: LocationSRC[];
-    contacts: ContactSRC[];
-    users: UserSRC[];
-    creationDate: string;
-    coordinate: [number, number];
-    polygonArea: number;
-    enabled: boolean;
-    tags: string[];
-  }
+  GeneralInfo &
+    ImagesData & {
+      locations: LocationSRC[];
+      contacts: ContactSRC[];
+      users: UserSRC[];
+      creationDate: string;
+      coordinate: [number, number];
+      polygonArea: number;
+      enabled: boolean;
+      tags: string[];
+    }
 >;
 
 // NOTE: Interfaz de los componentes del formulario

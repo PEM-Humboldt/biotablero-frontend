@@ -2,10 +2,6 @@ import { useRef, useState } from "react";
 import { Form } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-} from "@ui/shadCN/component/button-group";
 
 import type {
   InitiativeDataForm,
@@ -32,6 +28,7 @@ import { InitiativeGeneralInfo } from "pages/monitoring/outlets/initiativesAdmin
 import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/FormListManager";
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
 import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
+import { FormImagesInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeImages";
 
 export function InitiativeDataForm({
   dataToUpdate,
@@ -76,6 +73,8 @@ export function InitiativeDataForm({
     );
     setValidationErrors(currentErrors);
 
+    console.log(initiativeData.current);
+
     if (Object.keys(currentErrors).length > 0) {
       return;
     }
@@ -97,7 +96,8 @@ export function InitiativeDataForm({
       });
 
       if (isMonitoringAPIError(res)) {
-        throw new Error(res.message);
+        setValidationErrors((oldErr) => ({ ...oldErr, root: [res.message] }));
+        return;
       }
 
       console.log(res);
@@ -157,15 +157,16 @@ export function InitiativeDataForm({
           />
         </div>
 
+        <FormImagesInfo
+          title="Imágenes"
+          sectionInfo={initiativeData.current.images}
+          sectionUpdater={handleSectionUpate("images")}
+          validationErrorsObj={validationErrors?.images ?? {}}
+        />
+
         {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <ButtonGroup>
-            <Button>Crear</Button>
-            <ButtonGroupSeparator />
-            <Button onClick={(e) => void handleSubmit(e)} type="button">
-              Crear y cargar archivos
-            </Button>
-          </ButtonGroup>
+          <Button>Crear</Button>
           <Button type="reset" variant="outline_destructive">
             Reiniciar el formulario
           </Button>
@@ -179,10 +180,18 @@ function getInitialInfo(
   dataToUpdate?: InitiativeToUpadate,
 ): InitiativeDataForm {
   if (dataToUpdate) {
-    const { name, shortName, description, ...initiativeData } = dataToUpdate;
+    const {
+      name,
+      shortName,
+      description,
+      imageUrl,
+      bannerUrl,
+      ...initiativeData
+    } = dataToUpdate;
     const general = { name, shortName: shortName ?? "", description };
+    const images = { imageUrl: imageUrl ?? "", bannerUrl: bannerUrl ?? "" };
 
-    return { ...initiativeData, general };
+    return { ...initiativeData, general, images };
   }
 
   return {
@@ -190,5 +199,6 @@ function getInitialInfo(
     locations: [],
     contacts: [],
     users: [],
+    images: { imageUrl: "", bannerUrl: "" },
   };
 }

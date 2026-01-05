@@ -64,7 +64,7 @@ export function InitiativesAdmin() {
         className="bg-muted w-full"
       />
 
-      {false && <InitiativeDataForm />}
+      {true && <InitiativeDataForm />}
 
       <InitiativesDisplay initiativesInfo={initiatives?.value ?? []} />
 
