@@ -39,15 +39,16 @@ export type InitiativeDataForm = {
 };
 
 // NOTE: tipos para los errores
-type ErrorFields<T> = { [K in keyof T]?: string[] };
+export type ErrorFields<T> = { [K in keyof T]?: string[] };
 type ErrorsGeneral = ErrorFields<GeneralInfo & { root: string[] }>;
+type ErrorsImages = ErrorFields<ImagesData & { root: string[] }>;
 
 export type InitiativeDataFormErr = {
   general: ErrorsGeneral;
   locations: string[];
   contacts: string[];
   users: string[];
-  images: { imageUrl: string[]; bannerUrl: string[] };
+  images: ErrorsImages;
 };
 
 // NOTE: Data recibida del Servidor

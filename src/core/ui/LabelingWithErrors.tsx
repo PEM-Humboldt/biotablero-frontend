@@ -24,7 +24,7 @@ export function LabelAndErrors({
         className,
       )}
     >
-      <label htmlFor={htmlFor} className="has-[.sr-only]:sr-only">
+      <label htmlFor={htmlFor} className="w-full has-[.sr-only]:sr-only">
         {children}
       </label>
 

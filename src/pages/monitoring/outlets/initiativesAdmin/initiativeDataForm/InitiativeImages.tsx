@@ -7,6 +7,7 @@ import {
   useState,
 } from "react";
 import type {
+  ErrorFields,
   ImagesData,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
@@ -14,6 +15,7 @@ import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
 import type { ImageMimeType } from "@appTypes/formats";
 import { ImgValidator } from "@utils/imgValidator";
 import { Button } from "@ui/shadCN/component/button";
+import { ImageUp, Trash, UndoDot } from "lucide-react";
 
 const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/jpeg",
@@ -37,8 +39,7 @@ export function FormImagesInfo({
     bannerUrl: sectionInfo.bannerUrl ?? null,
   });
   const [imagesPreview, setImagesPreview] = useState<{
-    imageUrl: string | null;
-    bannerUrl: string | null;
+    [K in keyof ImagesData]?: string | null;
   }>({ imageUrl: null, bannerUrl: null });
   const [inputErr, setInputErr] = useState<
     Partial<InitiativeDataFormErr["images"]>
@@ -125,134 +126,141 @@ export function FormImagesInfo({
     <fieldset
       className={cn(
         "rounded-lg flex flex-col gap-2 p-4 ",
-        Object.keys(inputErr).length > 0
+        inputErr.root !== undefined && inputErr.root.length > 0
           ? "bg-red-50 outline-2 outline-accent"
           : "bg-muted",
       )}
     >
       <LegendAndErrors>{title}</LegendAndErrors>
 
-      <div className="flex gap-2 items-end *:flex-1">
-        <div>
-          <LabelAndErrors
-            htmlFor="imageUrl"
-            errID="errors_imageUrl"
-            validationErrors={inputErr.imageUrl ?? []}
-          >
-            <span className="sr-only">
-              Selecciona una imagen para la iniciativa
-            </span>
-          </LabelAndErrors>
+      <div className="flex gap-8 flex-wrap items-end *:flex-[1_1_350px]">
+        <ImageLoadField
+          title="Imagen de la iniciativa"
+          fieldName="imageUrl"
+          errorObject={inputErr}
+          previewObject={imagesPreview}
+          inputRef={imageUrlRef}
+          validFormats={INITIATIVES_IMG_ALLOWED_FORMATS}
+          onChangeCallback={onChangeImageUrl}
+          removeHandler={handleRemoveImage}
+        />
 
-          <input
-            ref={imageUrlRef}
-            name="imageUrl"
-            id="imageUrl"
-            type="file"
-            className="hidden"
-            accept={INITIATIVES_IMG_ALLOWED_FORMATS.join(", ")}
-            onChange={(e) => void onChangeImageUrl(e)}
-            aria-invalid={inputErr.imageUrl !== undefined}
-            aria-describedby={inputErr.imageUrl ? "errors_imageUrl" : undefined}
-          />
-
-          <ImagePreview imgUrl={imagesPreview.imageUrl} />
-
-          <SetImageButtons
-            imgLabel="imagen"
-            imgName="imageUrl"
-            imgUrl={imagesPreview.imageUrl}
-            inputRef={imageUrlRef}
-            removeHandler={handleRemoveImage}
-          />
-        </div>
-
-        <div>
-          <LabelAndErrors
-            htmlFor="bannerUrl"
-            errID="errors_bannerUrl"
-            validationErrors={inputErr.bannerUrl ?? []}
-          >
-            <span className="sr-only">
-              Selecciona una imagen para la iniciativa
-            </span>
-          </LabelAndErrors>
-
-          <input
-            ref={bannerUrlRef}
-            name="bannerUrl"
-            id="bannerUrl"
-            type="file"
-            className="hidden"
-            accept={INITIATIVES_IMG_ALLOWED_FORMATS.join(", ")}
-            onChange={(e) => void onChangeBannerUrl(e)}
-            aria-invalid={inputErr.bannerUrl !== undefined}
-            aria-describedby={
-              inputErr.bannerUrl ? "errors_bannerUrl" : undefined
-            }
-          />
-
-          <ImagePreview imgUrl={imagesPreview.bannerUrl} />
-
-          <SetImageButtons
-            imgLabel="banner"
-            imgName="bannerUrl"
-            imgUrl={imagesPreview.bannerUrl}
-            inputRef={bannerUrlRef}
-            removeHandler={handleRemoveImage}
-          />
-        </div>
+        <ImageLoadField
+          title="Banner"
+          fieldName="bannerUrl"
+          errorObject={inputErr}
+          previewObject={imagesPreview}
+          inputRef={bannerUrlRef}
+          validFormats={INITIATIVES_IMG_ALLOWED_FORMATS}
+          onChangeCallback={onChangeBannerUrl}
+          removeHandler={handleRemoveImage}
+        />
       </div>
     </fieldset>
   );
 }
 
-function ImagePreview({ imgUrl }: { imgUrl: string | null }) {
-  return (
-    imgUrl && (
-      <div className="mb-2 overflow-hidden rounded-md border bg-white">
-        <img
-          src={imgUrl}
-          alt={`Vista previa de ${imgUrl}`}
-          className="h-auto w-full object-contain max-h-[300px]"
-        />
-      </div>
-    )
-  );
-}
-
-function SetImageButtons({
-  imgLabel,
-  imgName,
-  imgUrl,
+function ImageLoadField({
+  title,
+  fieldName,
+  errorObject,
+  previewObject,
   inputRef,
+  validFormats,
+  onChangeCallback,
   removeHandler,
 }: {
-  imgLabel: string;
-  imgName: keyof ImagesData;
-  imgUrl: string | null;
+  title: string;
+  fieldName: keyof ImagesData;
+  errorObject: ErrorFields<ImagesData>;
+  previewObject: { [K in keyof ImagesData]?: string | null };
   inputRef: RefObject<HTMLInputElement>;
+  validFormats: ImageMimeType[];
+  onChangeCallback: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
   removeHandler: (
     imgName: keyof ImagesData,
     ref: RefObject<HTMLInputElement>,
   ) => void;
 }) {
-  return imgUrl ? (
-    <div className="flex gap-2">
-      <Button type="button" onClick={() => inputRef.current?.click()}>
-        Cambiar {imgLabel}
-      </Button>
-      <Button
-        type="button"
-        variant="destructive"
-        onClick={() => removeHandler(imgName, inputRef)}
+  const imgUrl = previewObject[fieldName];
+
+  return (
+    <div>
+      <LabelAndErrors
+        htmlFor={fieldName}
+        errID={`errors_${fieldName}`}
+        validationErrors={errorObject[fieldName] ?? []}
       >
-        Borrar
-      </Button>
+        {title}
+      </LabelAndErrors>
+
+      <div
+        className={cn(
+          "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white h-[200px] transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
+          errorObject[fieldName] !== undefined
+            ? "bg-red-50 focus-within:outline-accent border-accent"
+            : "",
+        )}
+      >
+        <button
+          type="button"
+          className="absolute inset-0 w-full h-full cursor-pointer z-0 opacity-0"
+          onClick={() => inputRef.current?.click()}
+          aria-label={`Cargar imagen para ${title}`}
+        />
+
+        <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
+          {imgUrl ? (
+            <img
+              src={imgUrl}
+              alt={`Vista previa de ${title}`}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              <ImageUp className="w-16 h-16 opacity-30 text-primary" />
+              <span className="text-base text-primary">
+                Clic para cargar una imagen
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="absolute bottom-3 right-3 flex gap-2 z-10">
+          {(imgUrl || errorObject[fieldName]) && (
+            <Button
+              type="button"
+              variant="outline_destructive"
+              className="bg-white shadow-md h-9 w-9"
+              onClick={(e) => {
+                e.stopPropagation(); // IMPORTANTE
+                removeHandler(fieldName, inputRef);
+              }}
+            >
+              <span className="sr-only">Borrar imagen</span>
+              {errorObject[fieldName] ? (
+                <UndoDot aria-hidden="true" />
+              ) : (
+                <Trash aria-hidden="true" />
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <input
+        ref={inputRef}
+        name={fieldName}
+        id={fieldName}
+        type="file"
+        className="sr-only"
+        accept={validFormats.join(", ")}
+        onChange={(e) => void onChangeCallback(e)}
+        aria-invalid={errorObject[fieldName] !== undefined}
+        aria-describedby={
+          errorObject[fieldName] ? `errors_${fieldName}` : undefined
+        }
+      />
     </div>
-  ) : (
-    <Button type="button" onClick={() => inputRef.current?.click()}>
-      Cargar {imgLabel}
-    </Button>
   );
 }

@@ -20,8 +20,8 @@ import { initiativeNameNotExist } from "pages/monitoring/outlets/initiativesAdmi
 const INITIAVIVE_NAME_MAX_LENGTH = 100;
 const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
 const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
-const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 300;
-const INITIAVIVE_INFLUENCE_MAX_LENGTH = 250;
+const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
+const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
 
 export function InitiativeGeneralInfo({
   title,
@@ -227,7 +227,8 @@ export function InitiativeGeneralInfo({
           htmlFor="description"
           validationErrors={inputErr.description ?? []}
         >
-          Descripción <span aria-hidden="true">*</span>
+          ¿Quienes somos? <span aria-hidden="true">*</span>{" "}
+          <i>Descripción de la iniciativa</i>
         </LabelAndErrors>
 
         <InputGroup>
@@ -262,49 +263,11 @@ export function InitiativeGeneralInfo({
       <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
         <div>
           <LabelAndErrors
-            errID="errors_objective"
-            htmlFor="objective"
-            validationErrors={inputErr.objective ?? []}
-          >
-            Objetivo
-          </LabelAndErrors>
-
-          <InputGroup>
-            <InputGroupTextarea
-              id="objective"
-              name="objective"
-              placeholder="El objetivo de esta iniciativa es..."
-              value={generalInfo.objective}
-              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
-              onBlur={objectiveOnBlur}
-              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
-              aria-invalid={inputErr.objective !== undefined}
-              aria-required="true"
-              aria-describedby={
-                inputErr.objective ? "errors_objective" : undefined
-              }
-            />
-            <InputGroupAddon
-              align="block-end"
-              className={`${inputWarnColor(
-                generalInfo.objective,
-                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
-                0.95,
-              )} flex-row-reverse`}
-            >
-              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
-		  `}
-            </InputGroupAddon>
-          </InputGroup>
-        </div>
-
-        <div>
-          <LabelAndErrors
             errID="errors_influenceArea"
             htmlFor="influenceArea"
             validationErrors={inputErr.influenceArea ?? []}
           >
-            Área de influencia
+            ¿Dónde estamos? <i>Contexto territorial y área de influencia</i>
           </LabelAndErrors>
 
           <InputGroup>
@@ -333,6 +296,44 @@ export function InitiativeGeneralInfo({
               )} flex-row-reverse`}
             >
               {`${generalInfo.influenceArea.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div>
+          <LabelAndErrors
+            errID="errors_objective"
+            htmlFor="objective"
+            validationErrors={inputErr.objective ?? []}
+          >
+            ¿Cuál es el objetivo? <i>Objetivos y enfoque de la iniciativa</i>
+          </LabelAndErrors>
+
+          <InputGroup>
+            <InputGroupTextarea
+              id="objective"
+              name="objective"
+              placeholder="El objetivo de esta iniciativa es..."
+              value={generalInfo.objective}
+              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
+              onBlur={objectiveOnBlur}
+              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+              aria-invalid={inputErr.objective !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.objective ? "errors_objective" : undefined
+              }
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.objective,
+                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
 		  `}
             </InputGroupAddon>
           </InputGroup>
