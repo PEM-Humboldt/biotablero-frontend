@@ -77,7 +77,7 @@ export class ForestLossPersistenceController {
 
     return SearchAPI.requestMetricsValues<"lossPersistence">(
       "lossPersistence",
-      Number(this.areaId)
+      Number(this.areaId),
     )
       .then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((item) => {
@@ -110,7 +110,7 @@ export class ForestLossPersistenceController {
         }));
 
         const periodData = mappedData.find(
-          ({ period }) => period === latestPeriod
+          ({ period }) => period === latestPeriod,
         );
         const forestPersistenceValue = periodData?.persistence ?? 0;
 
@@ -209,7 +209,7 @@ export class ForestLossPersistenceController {
           area: obj.area,
           percentage: obj.percentage,
         });
-      })
+      }),
     );
     return result;
   }
@@ -228,7 +228,7 @@ export class ForestLossPersistenceController {
           "LossPersistence",
           period,
           value,
-          Number(this.areaId)
+          Number(this.areaId),
         );
         requests.push(request);
         this.activeRequests.set(`${period}-${value}`, source);

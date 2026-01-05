@@ -36,7 +36,7 @@ export class CurrentFootprintController {
           "CurrentHF",
           period,
           index + 1,
-          Number(this.areaId)
+          Number(this.areaId),
         );
         requests.push(request);
         this.activeRequests.set(categoryId, source);
@@ -102,7 +102,7 @@ export class CurrentFootprintController {
       .bindTooltip(
         `<b>${tooltipLabel[key]}:</b>
         <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip
+        optionsTooltip,
       )
       .openTooltip();
 
@@ -151,7 +151,7 @@ export class CurrentFootprintController {
   };
 
   transformData = (
-    resData: MetricTypesMap["currentHF"]
+    resData: MetricTypesMap["currentHF"],
   ): LargeStackedBarData[] => {
     if (!resData) return [];
 
@@ -159,7 +159,7 @@ export class CurrentFootprintController {
 
     const totalArea: number = Object.values(categories).reduce(
       (total: number, value) => total + Number(value),
-      0
+      0,
     );
 
     /**
@@ -183,7 +183,7 @@ export class CurrentFootprintController {
       .sort(
         (a, b) =>
           order.findIndex((key) => key === a.key) -
-          order.findIndex((key) => key === b.key)
+          order.findIndex((key) => key === b.key),
       );
   };
 }

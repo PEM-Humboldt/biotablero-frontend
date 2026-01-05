@@ -7,7 +7,7 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 
 export const transformPAValues = (
   rawData: Array<SEPAData>,
-  totalArea: number
+  totalArea: number,
 ) => {
   if (!rawData || rawData.length === 0) return [];
   let PATotalArea = 0;
@@ -40,7 +40,7 @@ export const transformPAValues = (
 };
 
 export const transformCoverageValues = (
-  rawData: MetricTypesMap["coverage"]
+  rawData: MetricTypesMap["coverage"],
 ) => {
   if (!rawData) return [];
 
@@ -62,7 +62,7 @@ export const transformCoverageValues = (
 
 export const transformSEValues = (
   seRawData: SEPADataExt,
-  SETotalArea: number
+  SETotalArea: number,
 ) => {
   if (!seRawData) return [];
   const transformedData = [
@@ -84,7 +84,7 @@ export const transformSEValues = (
 
 export const transformSEAreas = (
   rawData: Array<SEPAData>,
-  generalArea: number
+  generalArea: number,
 ) => {
   if (!rawData) return [];
   const transformedSEAData: Array<SEPADataExt> = rawData.map((obj) => ({

@@ -219,7 +219,7 @@ export function CurrentFootprint() {
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
-      }))
+      })),
     );
   };
 

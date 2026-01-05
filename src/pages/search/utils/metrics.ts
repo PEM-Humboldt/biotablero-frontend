@@ -19,7 +19,7 @@ export class MetricsUtils {
    * @returns Loss Persistence mapped data
    */
   static mapLPResponse(
-    lpData: MetricTypesMap["lossPersistence"][number]
+    lpData: MetricTypesMap["lossPersistence"][number],
   ): LPResponse {
     return {
       period: lpData.id,
