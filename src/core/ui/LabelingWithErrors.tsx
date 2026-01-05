@@ -54,11 +54,11 @@ export function LegendAndErrors({
   className,
   children,
 }: {
-  validationErrors: string[];
+  validationErrors?: string[];
   className?: string;
   children: ReactNode;
 }) {
-  const areErrors = validationErrors.length > 0;
+  const areErrors = validationErrors && validationErrors.length > 0;
 
   return (
     <legend className="contents">

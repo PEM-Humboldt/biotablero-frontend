@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@ui/shadCN/component/accordion";
+import { InitiativeInfoDetail } from "./initiativesDisplay/InitiativeInfoDetail";
 
 export function InitiativesDisplay({
   initiativesInfo,
@@ -17,15 +18,14 @@ export function InitiativesDisplay({
   ) : (
     <Accordion type="single" collapsible className="w-full space-y-3">
       {initiativesInfo.map((initiative) => (
-        <AccordionItem value={initiative.name}>
+        <AccordionItem value={initiative.name} key={initiative.name}>
           <AccordionTrigger>
             {initiative.shortName
-              ? `${initiative.shortName} // ${initiative.name}`
+              ? `${initiative.shortName} » ${initiative.name}`
               : initiative.name}
           </AccordionTrigger>
           <AccordionContent>
-            <h4>{initiative.name}</h4>
-            <p>{initiative.description}</p>
+            <InitiativeInfoDetail initiativeId={initiative.id} />
           </AccordionContent>
         </AccordionItem>
       ))}
