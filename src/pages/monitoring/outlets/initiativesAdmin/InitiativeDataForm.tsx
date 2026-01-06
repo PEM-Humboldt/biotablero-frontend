@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { Form } from "react-router";
+import { useCallback, useRef, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 
@@ -11,6 +10,7 @@ import type {
 import {
   isMonitoringAPIError,
   monitoringAPI,
+  uploadImages,
 } from "pages/monitoring/api/monitoringAPI";
 import {
   LocationInput,
@@ -29,6 +29,10 @@ import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initi
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
 import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
 import { FormImagesInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeImages";
+import {
+  getInitialInfo,
+  setFormField,
+} from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
 
 export function InitiativeDataForm({
   dataToUpdate,
@@ -36,101 +40,41 @@ export function InitiativeDataForm({
   dataToUpdate?: InitiativeToUpadate;
 }) {
   const [formID, setformID] = useState(0);
-  const [validationErrors, setValidationErrors] = useState<
-    Partial<InitiativeDataFormErr>
-  >({});
-  const initiativeData = useRef<InitiativeDataForm>(
-    getInitialInfo(dataToUpdate),
+  const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
+  const initiative = useRef<InitiativeDataForm>(getInitialInfo(dataToUpdate));
+
+  const handleFormUpdate = useCallback(
+    <K extends keyof InitiativeDataForm>(key: K) =>
+      setFormField(initiative, key),
+    [],
   );
 
-  const isUpdate = dataToUpdate !== undefined;
-
-  const handleReset = () => {
-    initiativeData.current = getInitialInfo(dataToUpdate);
+  const handleFormReset = () => {
+    initiative.current = getInitialInfo(dataToUpdate);
     setformID((prev) => prev + 1);
-    setValidationErrors({});
+    setErrors({});
   };
 
-  function handleSectionUpate<K extends keyof InitiativeDataForm>(key: K) {
-    function updateRef(value: InitiativeDataForm[K]) {
-      // setValidationErrors(({ [key]: _, ...oldErr }) => oldErr);
-      initiativeData.current[key] = value;
-    }
-
-    return updateRef;
-  }
-
-  const submitImages = async (initiativeId: number) => {
-    const { images } = initiativeData.current;
-
-    if (Object.keys(images).length === 0) {
-      return;
-    }
-
-    const serverError: string[] = [];
-    const imagesToUpload = [
-      { file: images.imageUrl, path: "UploadImage" },
-      { file: images.bannerUrl, path: "UploadBanner" },
-    ];
-
-    try {
-      for (const image of imagesToUpload) {
-        if (!(image.file instanceof File)) {
-          continue;
-        }
-
-        const formData = new FormData();
-        formData.append("formFile", image.file);
-        const res = await monitoringAPI({
-          type: "post",
-          endpoint: `initiative/${image.path}/${initiativeId}`,
-          options: { data: formData, headers: { accept: "*/*" } },
-        });
-
-        if (isMonitoringAPIError(res)) {
-          serverError.push(`Error cargando ${image.file.name}: ${res.message}`);
-        }
-      }
-    } catch (err) {
-      serverError.push("No se pudieron cargar las imagene, intenta más tarde");
-      console.error(err);
-    } finally {
-      setValidationErrors(
-        serverError.length > 0
-          ? (oldErr) => ({ ...oldErr, images: { root: serverError } })
-          : {},
-      );
-    }
-  };
-
-  const handleSubmit = async (
-    event:
-      | React.FormEvent<HTMLFormElement>
-      | React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const currentErrors = validateFormClient(
-      initiativeData.current,
+      initiative.current,
       formClientValidations,
     );
-    setValidationErrors(currentErrors);
+    setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
       return;
     }
 
     try {
-      const { general, images: _, ...rest } = { ...initiativeData.current };
+      const { general, images, ...rest } = { ...initiative.current };
       const payload = { ...general, ...rest };
 
-      if (Object.keys(currentErrors).length > 0) {
-        return;
-      }
-
       const res = await monitoringAPI<InitiativeToUpadate>({
-        type: isUpdate ? "post" : "put",
-        endpoint: `initiative${isUpdate ? `/${dataToUpdate.id}` : ""}`,
+        type: "put",
+        endpoint: "initiative",
         options: {
           data: payload,
           headers: {
@@ -141,109 +85,93 @@ export function InitiativeDataForm({
       });
 
       if (isMonitoringAPIError(res)) {
-        setValidationErrors((oldErr) => ({ ...oldErr, root: [res.message] }));
+        setErrors((oldErr) => ({ ...oldErr, root: [res.message] }));
         return;
       }
 
-      void submitImages(res.id);
+      const imagesToUpload = [
+        { file: images.imageUrl, path: `initiative/UploadImage/${res.id}` },
+        { file: images.bannerUrl, path: `initiative/UploadBanner/${res.id}` },
+      ];
+
+      const imageUploadErrors = await uploadImages(imagesToUpload);
+
+      if (imageUploadErrors?.length > 0) {
+        setErrors((oldErr) => ({
+          ...oldErr,
+          images: { root: imageUploadErrors },
+        }));
+      }
     } catch (err) {
-      console.error("carajo", err);
+      console.error("Error al crear la iniciativa, intenta más tarde", err);
     }
-  };
+  }
 
   return (
     <div className="w-full rounded-xl bg-white overflow-hidden">
       <h4 className="px-6 py-2 mb-0 text-base bg-primary text-primary-foreground">
         Nueva iniciativa
       </h4>
-      <Form
+      <form
         action=""
         key={formID}
-        onReset={handleReset}
+        onReset={handleFormReset}
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-2 p-6"
       >
         <InitiativeGeneralInfo
           title="Información general"
-          sectionInfo={initiativeData.current.general}
-          sectionUpdater={handleSectionUpate("general")}
-          validationErrorsObj={validationErrors?.general ?? {}}
+          sectionInfo={initiative.current.general}
+          sectionUpdater={handleFormUpdate("general")}
+          validationErrorsObj={errors?.general ?? {}}
         />
 
         <FormListManager
           title="Ubicación de la iniciativa"
           maxItems={3}
-          sectionInfo={initiativeData.current.locations}
-          sectionUpdater={handleSectionUpate("locations")}
+          sectionInfo={initiative.current.locations}
+          sectionUpdater={handleFormUpdate("locations")}
           AddItemComponent={LocationInput}
           CurrentItemsComponent={LocationDisplay}
-          validationErrors={validationErrors?.locations ?? []}
+          validationErrors={errors?.locations ?? []}
         />
 
         <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListManager
             title="Información de contacto"
             maxItems={5}
-            sectionInfo={initiativeData.current.contacts}
-            sectionUpdater={handleSectionUpate("contacts")}
+            sectionInfo={initiative.current.contacts}
+            sectionUpdater={handleFormUpdate("contacts")}
             AddItemComponent={ContactInfoInput}
             CurrentItemsComponent={ContactInfoDisplay}
-            validationErrors={validationErrors?.contacts ?? []}
+            validationErrors={errors?.contacts ?? []}
           />
 
           <FormListManager
             title="líderezas y líderes de la iniciativa"
             maxItems={3}
-            sectionInfo={initiativeData.current.users}
-            sectionUpdater={handleSectionUpate("users")}
+            sectionInfo={initiative.current.users}
+            sectionUpdater={handleFormUpdate("users")}
             AddItemComponent={UsersInfoInput}
             CurrentItemsComponent={UsersInfoDisplay}
-            validationErrors={validationErrors?.users ?? []}
+            validationErrors={errors?.users ?? []}
           />
         </div>
 
         <FormImagesInfo
-          title="Imágenes"
-          sectionInfo={initiativeData.current.images}
-          sectionUpdater={handleSectionUpate("images")}
-          validationErrorsObj={validationErrors?.images ?? {}}
+          title="Imágenes (Opcional)"
+          sectionInfo={initiative.current.images}
+          sectionUpdater={handleFormUpdate("images")}
+          validationErrorsObj={errors?.images ?? {}}
         />
 
-        {/* NOTE: Se invierten los elementos para que reset sea el ultimo tab */}
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button>Crear</Button>
+          <Button>Crear iniciativa</Button>
           <Button type="reset" variant="outline_destructive">
             Reiniciar el formulario
           </Button>
         </div>
-      </Form>
+      </form>
     </div>
   );
-}
-
-function getInitialInfo(
-  dataToUpdate?: InitiativeToUpadate,
-): InitiativeDataForm {
-  if (dataToUpdate) {
-    const {
-      name,
-      shortName,
-      description,
-      imageUrl,
-      bannerUrl,
-      ...initiativeData
-    } = dataToUpdate;
-    const general = { name, shortName: shortName ?? "", description };
-    const images = { imageUrl: imageUrl ?? "", bannerUrl: bannerUrl ?? "" };
-
-    return { ...initiativeData, general, images };
-  }
-
-  return {
-    general: { name: "", shortName: "", description: "" },
-    locations: [],
-    contacts: [],
-    users: [],
-    images: { imageUrl: "", bannerUrl: "" },
-  };
 }
