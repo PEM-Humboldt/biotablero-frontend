@@ -3,12 +3,5 @@ import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdm
 export type FormClientValidation = {
   condition: (data: InitiativeDataForm) => boolean;
   message: string;
-} & (
-  | {
-      path: keyof Omit<InitiativeDataForm, "general">;
-    }
-  | {
-      path: "general";
-      child: keyof InitiativeDataForm["general"] | "root";
-    }
-);
+  path: string;
+};

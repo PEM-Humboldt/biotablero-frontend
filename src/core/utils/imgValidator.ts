@@ -55,8 +55,10 @@ export class ImgValidator {
    */
   maxSize(mb: number) {
     if (this.imgFile && this.imgFile.size > mb * 1024 * 1024) {
+      const actualMB = (this.imgFile.size / (1024 * 1024)).toFixed(2);
+
       this.errors.push(
-        `El archivo supera los ${mb}MB, tamaño actual: ${this.imgFile.size}.`,
+        `El archivo supera los ${mb}MB, tamaño actual: ${actualMB}MB.`,
       );
     }
     return this;

@@ -33,7 +33,9 @@ import {
   getInitialInfo,
   setFormField,
 } from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
+import { ErrorsList } from "@ui/LabelingWithErrors";
 
+// TODO: Cargar solo las imagenes cuando solo falla ese pedazo y se creo la Ini
 export function InitiativeDataForm({
   dataToUpdate,
 }: {
@@ -41,6 +43,7 @@ export function InitiativeDataForm({
 }) {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
+  const [isPending, setIsPending] = useState(false);
   const initiative = useRef<InitiativeDataForm>(getInitialInfo(dataToUpdate));
 
   const handleFormUpdate = useCallback(
@@ -57,6 +60,7 @@ export function InitiativeDataForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setIsPending(true);
 
     const currentErrors = validateFormClient(
       initiative.current,
@@ -65,6 +69,7 @@ export function InitiativeDataForm({
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
+      setIsPending(false);
       return;
     }
 
@@ -85,7 +90,21 @@ export function InitiativeDataForm({
       });
 
       if (isMonitoringAPIError(res)) {
-        setErrors((oldErr) => ({ ...oldErr, root: [res.message] }));
+        const { status, message } = res;
+        let uiMessage = message;
+
+        if (status === 401) {
+          uiMessage = "Sesión expirada. Ingresa de nuevo.";
+        }
+        if (status === 403) {
+          uiMessage = "No tienes permisos para esta acción.";
+        }
+        if (status >= 500) {
+          uiMessage = "Error en el servidor monitoreo.";
+        }
+
+        setErrors((oldErr) => ({ ...oldErr, root: [uiMessage] }));
+        setIsPending(false);
         return;
       }
 
@@ -103,7 +122,10 @@ export function InitiativeDataForm({
         }));
       }
     } catch (err) {
-      console.error("Error al crear la iniciativa, intenta más tarde", err);
+      setErrors((oldErr) => ({ ...oldErr, root: ["Error interno de la app"] }));
+      console.error("Critical error:", err);
+    } finally {
+      setIsPending(false);
     }
   }
 
@@ -165,9 +187,20 @@ export function InitiativeDataForm({
           validationErrorsObj={errors?.images ?? {}}
         />
 
+        <ErrorsList
+          errorItems={errors.root ?? []}
+          className="bg-red-50 p-6 mt-4 rounded-lg md:w-[50%] outline-2 outline-accent self-end"
+        />
+
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button>Crear iniciativa</Button>
-          <Button type="reset" variant="outline_destructive">
+          <Button disabled={isPending}>
+            {isPending ? "Creando iniciativa..." : "Crear iniciativa"}
+          </Button>
+          <Button
+            type="reset"
+            variant="outline_destructive"
+            disabled={isPending}
+          >
             Reiniciar el formulario
           </Button>
         </div>

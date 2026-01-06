@@ -44,6 +44,7 @@ type ErrorsGeneral = ErrorFields<GeneralInfo & { root: string[] }>;
 type ErrorsImages = ErrorFields<ImagesData & { root: string[] }>;
 
 export type InitiativeDataFormErr = {
+  root: string[];
   general: ErrorsGeneral;
   locations: string[];
   contacts: string[];

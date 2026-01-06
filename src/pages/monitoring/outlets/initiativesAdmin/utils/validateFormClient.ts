@@ -17,26 +17,32 @@ export function validateFormClient(
 
     const { path, message } = validation;
 
-    if (path === "general") {
-      const child = validation.child;
-
-      if (foundErrors[path] === undefined) {
-        foundErrors[path] = {};
-        foundErrors[path].root = [""];
-      }
-
-      if (foundErrors[path][child] === undefined) {
-        foundErrors[path][child] = [];
-      }
-
-      foundErrors[path][child].push(message);
-    } else {
-      if (foundErrors[path] === undefined) {
-        foundErrors[path] = [];
-      }
-      foundErrors[path].push(message);
-    }
+    resolveErrorPath(foundErrors, path).push(message);
   }
 
   return foundErrors;
+}
+
+function resolveErrorPath<T>(
+  errorObject: Record<string, unknown>,
+  path: string,
+): string[] {
+  const keyChain = path.split("/");
+  let current: Record<string, unknown> = errorObject;
+
+  for (let i = 0; i < keyChain.length - 1; i++) {
+    const key = keyChain[i];
+
+    if (!current[key] || typeof current[key] !== "object") {
+      current[key] = {};
+    }
+
+    current = current[key] as Record<string, unknown>;
+  }
+
+  if (current[keyChain[keyChain.length - 1]] === undefined) {
+    current[keyChain[keyChain.length - 1]] = [];
+  }
+
+  return current[keyChain[keyChain.length - 1]] as string[];
 }

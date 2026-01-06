@@ -20,9 +20,7 @@ export function InitiativesDisplay({
       {initiativesInfo.map((initiative) => (
         <AccordionItem value={initiative.name} key={initiative.name}>
           <AccordionTrigger>
-            {initiative.shortName
-              ? `${initiative.shortName} » ${initiative.name}`
-              : initiative.name}
+            <InitiativeBar initiativeInfo={initiative} />
           </AccordionTrigger>
           <AccordionContent>
             <InitiativeInfoDetail initiativeId={initiative.id} />
@@ -30,5 +28,19 @@ export function InitiativesDisplay({
         </AccordionItem>
       ))}
     </Accordion>
+  );
+}
+
+function InitiativeBar({
+  initiativeInfo,
+}: {
+  initiativeInfo: ODataInitiativeEntry;
+}) {
+  return (
+    <>
+      {initiativeInfo.shortName
+        ? `${initiativeInfo.shortName} » ${initiativeInfo.name}`
+        : initiativeInfo.name}
+    </>
   );
 }

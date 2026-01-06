@@ -2,31 +2,33 @@ import type { FormClientValidation } from "pages/monitoring/outlets/initiativesA
 
 export const formClientValidations: FormClientValidation[] = [
   {
-    condition: (f) => f.general.name !== undefined && f.general.name !== "",
-    path: "general",
-    child: "name",
-    message: "La iniciativa debe tener un nombre",
+    condition: (f) => Boolean(f.general.name) || Boolean(f.general.description),
+    path: "general/root",
+    message: "Faltan campos por diligenciar.",
   },
   {
-    condition: (f) =>
-      f.general.description !== undefined && f.general.description !== "",
-    path: "general",
-    child: "description",
-    message: "La iniciativa debe tener una descripción",
+    condition: (f) => Boolean(f.general.name),
+    path: "general/name",
+    message: "La iniciativa debe tener un nombre.",
+  },
+  {
+    condition: (f) => Boolean(f.general.description),
+    path: "general/description",
+    message: "La iniciativa debe tener una descripción.",
   },
   {
     condition: (f) => f.locations.length > 0,
     path: "locations",
-    message: "La iniciativa debe tener al menos una locación asignada",
+    message: "Debe registrarse al menos una locación.",
   },
   {
     condition: (f) => f.contacts.length > 0,
     path: "contacts",
-    message: "La iniciativa debe tener al menos un correo de contacto",
+    message: "Debe registrarse al menos un correo de contacto.",
   },
   {
     condition: (f) => f.users.length > 0,
     path: "users",
-    message: "La iniciativa debe tener al menos un lider o lidereza asignado",
+    message: "Debe registrarse al menos un lider o lidereza.",
   },
 ];
