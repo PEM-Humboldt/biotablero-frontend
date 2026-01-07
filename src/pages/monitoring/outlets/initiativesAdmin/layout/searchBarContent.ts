@@ -22,7 +22,7 @@ export const searchBarItems: SearchBarComponent<ODataInitiativeEntry>[] = [
   {
     label: "Departamento",
     type: "select",
-    source: ["location/id"],
+    source: ["location/id", "location/parent/id"],
     values: COLOMBIAN_DEPARTMENTS,
     oDataEntity: "InitiativeLocations",
     childUpdater: getMunicipalitiesByDepartment,
