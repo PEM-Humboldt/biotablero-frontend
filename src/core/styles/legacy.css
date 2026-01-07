@@ -1330,6 +1330,10 @@ div[class*="eaRHYv"] {
   margin-left: 10px;
   text-transform: none;
 }
+.graphcontainer h4 button {
+  all: unset;
+  cursor: pointer;
+}
 .graphcontainer h5 {
   padding: 2px 4px;
   font-weight: 600;

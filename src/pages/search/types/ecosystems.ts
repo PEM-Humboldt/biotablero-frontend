@@ -25,4 +25,8 @@ export interface seDetails {
   total_area: string;
 }
 
-export const coverageKeys = ["N", "S", "T"] as const;
+export const coverageKeys: Record<string, number> = {
+  N: 1,
+  S: 2,
+  T: 3,
+} as const;
