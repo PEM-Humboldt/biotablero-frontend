@@ -86,7 +86,7 @@ class Landscape extends React.Component<Props, State> {
           collapsed: areaType?.id !== "ea",
         },
         component: CompensationFactor,
-      },
+      },*/
       {
         label: {
           id: "hf",
@@ -97,7 +97,7 @@ class Landscape extends React.Component<Props, State> {
           handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.hf,
         },
-      },*/
+      },
       {
         label: {
           id: "forest",
@@ -133,7 +133,7 @@ class Landscape extends React.Component<Props, State> {
         selected = ["fc", "hf", "forest", "connectivity"];
         break;
       default:
-        selected = ["forest"];
+        selected = ["hf", "forest"];
         break;
     }
 
