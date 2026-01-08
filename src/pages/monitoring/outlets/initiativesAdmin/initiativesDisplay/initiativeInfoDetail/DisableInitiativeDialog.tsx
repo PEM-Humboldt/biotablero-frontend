@@ -1,0 +1,59 @@
+import { Button } from "@ui/shadCN/component/button";
+import { Eye, EyeClosed } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@ui/shadCN/component/alert-dialog";
+
+export function EnabledInitiativeStatusDialog({
+  active,
+  name,
+  handler,
+}: {
+  active: boolean;
+  name: string;
+  handler: () => void;
+}) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="icon" variant="destructive">
+          {active ? <Eye /> : <EyeClosed />}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {active ? (
+              <>
+                Vas a desactivar la iniciativa <em>{name}</em>,
+              </>
+            ) : (
+              <>
+                Vas a reactivar la iniciativa <em>{name}</em>,
+              </>
+            )}
+            <br />
+            <strong>¿realmente quieres hacerlo?</strong>
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
+            {active
+              ? "Al desactivarla, la información de esta iniciativa dejará de ser pública. Se perderá el permiso de acceso y edición para quienes tengan perfiles de usuario, participante o administrador."
+              : "Al reactivarla, la información de esta iniciativa volverá a ser pública. Las personas que tengan perfil de usuario, participante o administrador de esta iniciativa, volverán a tener permiso de acceso y edición."}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handler}>Sí</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
