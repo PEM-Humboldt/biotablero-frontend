@@ -1,11 +1,11 @@
 import { type MutableRefObject } from "react";
 import type {
   InitiativeDataForm,
-  InitiativeToUpadate,
+  InitiativeFullInfo,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 export function getInitialInfo(
-  dataToUpdate?: InitiativeToUpadate,
+  dataToUpdate?: InitiativeFullInfo,
 ): InitiativeDataForm {
   if (dataToUpdate) {
     const {

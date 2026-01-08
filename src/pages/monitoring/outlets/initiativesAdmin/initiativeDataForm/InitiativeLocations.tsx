@@ -3,7 +3,10 @@ import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 
-import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type {
+  LocationData,
+  LocationObj,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   COLOMBIAN_DEPARTMENTS,
   getLocationInfoById,
@@ -28,6 +31,7 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { makeLocationObj } from "../utils/builders";
 
 const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 
@@ -335,28 +339,24 @@ export function LocationDisplay({
 }
 
 function LocationDataCells({ values }: { values: LocationData }) {
-  const [locationInfo, setLocationInfo] = useState<LocationBasicInfo | null>(
-    null,
-  );
+  const [locationInfo, setLocationInfo] = useState<LocationObj | null>(null);
 
   useEffect(() => {
     const fetchLocationInfo = async () => {
-      setLocationInfo(await getLocationInfoById(values.locationId));
+      setLocationInfo(
+        await makeLocationObj(values.locationId, values.locality),
+      );
     };
     void fetchLocationInfo();
-  }, [values.locationId]);
+  }, [values.locationId, values.locality]);
 
   return locationInfo === null ? (
     <td colSpan={3}>No se encontró la información intenta más tarde</td>
   ) : (
     <>
-      <td>
-        {locationInfo?.parent !== undefined
-          ? locationInfo.parent.name
-          : locationInfo.name}
-      </td>
-      <td>{locationInfo?.parent !== undefined ? locationInfo.name : "---"}</td>
-      <td>{values.locality ? values.locality : "---"}</td>
+      <td>{locationInfo.department}</td>
+      <td>{locationInfo.municipality ?? "---"}</td>
+      <td>{locationInfo.locality ?? "---"}</td>
     </>
   );
 }

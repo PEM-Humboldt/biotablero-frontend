@@ -10,6 +10,14 @@ export type GeneralInfo = {
   influenceArea?: string;
 };
 
+type InitiativeAditionalInfo = {
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  tags: string[];
+};
+
 export type ImagesData = {
   imageUrl?: File | string | null;
   bannerUrl?: File | string | null;
@@ -62,17 +70,13 @@ type UserSRC = WithID<
   UserData & { initiativeId: number; creationDate: string }
 >;
 
-export type InitiativeToUpadate = WithID<
+export type InitiativeFullInfo = WithID<
   GeneralInfo &
-    ImagesData & {
+    ImagesData &
+    InitiativeAditionalInfo & {
       locations: LocationSRC[];
       contacts: ContactSRC[];
       users: UserSRC[];
-      creationDate: string;
-      coordinate: [number, number];
-      polygonArea: number;
-      enabled: boolean;
-      tags: string[];
     }
 >;
 
@@ -87,4 +91,11 @@ export type ItemEditorProps<T> = {
   selectedItems?: T[];
   setter: Dispatch<SetStateAction<T[]>>;
   update: T | null;
+};
+
+// NOTE: Objetos para facilitar la manipulacion de la información
+export type LocationObj = {
+  department: string;
+  municipality: string | null;
+  locality: string | null;
 };

@@ -5,7 +5,7 @@ import { Button } from "@ui/shadCN/component/button";
 import type {
   InitiativeDataForm,
   InitiativeDataFormErr,
-  InitiativeToUpadate,
+  InitiativeFullInfo,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   isMonitoringAPIError,
@@ -39,7 +39,7 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 export function InitiativeDataForm({
   dataToUpdate,
 }: {
-  dataToUpdate?: InitiativeToUpadate;
+  dataToUpdate?: InitiativeFullInfo;
 }) {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
@@ -77,7 +77,7 @@ export function InitiativeDataForm({
       const { general, images, ...rest } = { ...initiative.current };
       const payload = { ...general, ...rest };
 
-      const res = await monitoringAPI<InitiativeToUpadate>({
+      const res = await monitoringAPI<InitiativeFullInfo>({
         type: "put",
         endpoint: "initiative",
         options: {
