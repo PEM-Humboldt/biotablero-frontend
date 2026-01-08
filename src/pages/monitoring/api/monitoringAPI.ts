@@ -18,6 +18,7 @@ import type { ODataParams } from "@appTypes/odata";
 import type {
   LocationBasicInfo,
   ODataInitiative,
+  ODataInitiativeEntry,
   ODataLog,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
@@ -29,6 +30,7 @@ import type {
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import usersMock from "pages/monitoring/api/usersMock.json";
+import { InitiativeFullInfo } from "../outlets/initiativesAdmin/types/initiativeData";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -250,6 +252,27 @@ export const getLogs = createODataGetter<ODataLog>("Logs");
  * @returns A `Promise` that resolves to an `ODataInitiatives` object.
  */
 export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
+
+/**
+ * Retrieves all the info about the initiative that has the specified id.
+ *
+ * @param id - The number of the initiative in DB
+ * @returns A Promise that resolves in a detailed object with all the initiative info
+ */
+export async function getInitiative(id: number) {
+  try {
+    const res = await monitoringAPI<InitiativeFullInfo>({
+      type: "get",
+      endpoint: `Initiative/${id}`,
+    });
+    if (isMonitoringAPIError(res)) {
+      throw new Error(res.message);
+    }
+    return res;
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 /**
  * Retrieves the list of available all the locations from the Monitoring API.
