@@ -9,6 +9,8 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { EnabledInitiativeStatusDialog } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/DisableInitiativeDialog";
 import { EditModeTrigger } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/EditModeTrigger";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { commonErrorMessage } from "@utils/ui";
 
 export function InitiativeInfoDetail({
   initiativeId,
@@ -17,15 +19,16 @@ export function InitiativeInfoDetail({
 }) {
   const [initiativeInfo, setInitiativeInfo] = useState<InitiativeFullInfo>();
   const [edit, setEdit] = useState(false);
-
-  const getInitiativeInfo = useCallback(async () => {
-    const info = await getInitiative(initiativeId);
-    setInitiativeInfo(info);
-  }, [initiativeId]);
+  const [cardErrors, setCardErrors] = useState<string[]>([]);
 
   useEffect(() => {
+    const getInitiativeInfo = async () => {
+      const info = await getInitiative(initiativeId);
+      setInitiativeInfo(info);
+    };
+
     void getInitiativeInfo();
-  }, [getInitiativeInfo]);
+  }, [initiativeId]);
 
   const handleDisableInitiative = async () => {
     if (initiativeInfo === undefined) {
@@ -34,16 +37,22 @@ export function InitiativeInfoDetail({
 
     const endpoint = initiativeInfo.enabled ? "Disable" : "Enable";
     const method = initiativeInfo.enabled ? "delete" : "post";
-    const res = await monitoringAPI({
+    const res = await monitoringAPI<InitiativeFullInfo>({
       type: method,
       endpoint: `Initiative/${endpoint}/${initiativeId}`,
     });
 
     if (isMonitoringAPIError(res)) {
-      console.error("pailas");
+      const { status, message } = res;
+      setCardErrors((oldErr) => [
+        ...oldErr,
+        commonErrorMessage[status] ?? message,
+      ]);
+      console.error(res);
+      return;
     }
 
-    void getInitiativeInfo();
+    void setInitiativeInfo(res);
   };
 
   return initiativeInfo === undefined ? (
@@ -54,9 +63,21 @@ export function InitiativeInfoDetail({
         "p-4 mt-1 mb-2 rounded-lg",
         edit ? "outline outline-accent bg-white" : "",
       )}
+      data-enabled={initiativeInfo.enabled}
     >
       <div className="flex justify-end gap-2">
-        <EditModeTrigger state={edit} setState={setEdit} />
+        {cardErrors.length > 0 && (
+          <ErrorsList
+            errId="card_errors"
+            errorItems={cardErrors}
+            className="flex items-center"
+          />
+        )}
+
+        {initiativeInfo.enabled && (
+          <EditModeTrigger state={edit} setState={setEdit} />
+        )}
+
         <EnabledInitiativeStatusDialog
           active={initiativeInfo.enabled}
           name={initiativeInfo.name}

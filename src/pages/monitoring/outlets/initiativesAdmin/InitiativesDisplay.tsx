@@ -24,36 +24,34 @@ export function InitiativesDisplay({
   ) : (
     <Accordion type="single" collapsible className="w-full space-y-3">
       {initiativesInfo.map((initiative) => (
-        <AccordionInitiativeItem key={initiative.name} info={initiative} />
+        <AccordionInitiativeItem
+          key={initiative.name}
+          initiative={initiative}
+        />
       ))}
     </Accordion>
   );
 }
 
-function AccordionInitiativeItem({ info }: { info: ODataInitiativeEntry }) {
-  const [locations, setLocations] = useState<LocationObj[]>([]);
+function AccordionInitiativeItem({
+  initiative,
+}: {
+  initiative: ODataInitiativeEntry;
+}) {
+  const [location, setLocation] = useState<LocationObj[]>([]);
 
   useEffect(() => {
-    const fetchLocations = async () => {
-      const promises = info.locations.map(
-        async ({ locationId, locality }) =>
-          await makeLocationObj(locationId, locality),
-      );
-
-      const results = await Promise.all(promises);
-      setLocations(results.filter((location) => location !== null));
-    };
-
-    void fetchLocations();
-  }, [info.locations]);
+    const locationsInfo = initiative.locations.map(makeLocationObj);
+    setLocation(locationsInfo);
+  }, [initiative.locations]);
 
   return (
-    <AccordionItem value={info.name}>
-      <AccordionTrigger className={cn(!info.enabled && "bg-red-100")}>
-        <InitiativeAccordeonBar info={info} locations={locations} />
+    <AccordionItem value={initiative.name}>
+      <AccordionTrigger className="cursor-pointer">
+        <InitiativeAccordeonBar info={initiative} locations={location} />
       </AccordionTrigger>
       <AccordionContent className="px-2">
-        <InitiativeInfoDetail initiativeId={info.id} />
+        <InitiativeInfoDetail initiativeId={initiative.id} />
       </AccordionContent>
     </AccordionItem>
   );

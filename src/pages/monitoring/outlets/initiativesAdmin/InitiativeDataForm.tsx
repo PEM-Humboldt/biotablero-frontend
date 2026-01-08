@@ -34,6 +34,7 @@ import {
   setFormField,
 } from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+import { commonErrorMessage } from "@utils/ui";
 
 // TODO: Cargar solo las imagenes cuando solo falla ese pedazo y se creo la Ini
 export function InitiativeDataForm({
@@ -91,19 +92,11 @@ export function InitiativeDataForm({
 
       if (isMonitoringAPIError(res)) {
         const { status, message } = res;
-        let uiMessage = message;
 
-        if (status === 401) {
-          uiMessage = "Sesión expirada. Ingresa de nuevo.";
-        }
-        if (status === 403) {
-          uiMessage = "No tienes permisos para esta acción.";
-        }
-        if (status >= 500) {
-          uiMessage = "Error en el servidor monitoreo.";
-        }
-
-        setErrors((oldErr) => ({ ...oldErr, root: [uiMessage] }));
+        setErrors((oldErr) => ({
+          ...oldErr,
+          root: [commonErrorMessage[status] ?? message],
+        }));
         setIsPending(false);
         return;
       }

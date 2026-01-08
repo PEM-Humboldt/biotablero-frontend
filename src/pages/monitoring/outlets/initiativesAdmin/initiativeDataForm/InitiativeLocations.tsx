@@ -31,7 +31,7 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import { makeLocationObj } from "../utils/builders";
+import { fetchAndMakeLocationObj } from "../utils/builders";
 
 const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 
@@ -344,7 +344,7 @@ function LocationDataCells({ values }: { values: LocationData }) {
   useEffect(() => {
     const fetchLocationInfo = async () => {
       setLocationInfo(
-        await makeLocationObj(values.locationId, values.locality),
+        await fetchAndMakeLocationObj(values.locationId, values.locality),
       );
     };
     void fetchLocationInfo();

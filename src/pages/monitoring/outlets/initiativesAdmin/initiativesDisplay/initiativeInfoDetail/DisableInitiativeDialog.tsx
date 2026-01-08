@@ -31,15 +31,10 @@ export function EnabledInitiativeStatusDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {active ? (
-              <>
-                Vas a desactivar la iniciativa <em>{name}</em>,
-              </>
-            ) : (
-              <>
-                Vas a reactivar la iniciativa <em>{name}</em>,
-              </>
-            )}
+            {active
+              ? "Vas a desactivar la iniciativa"
+              : "Vas a reactivar la iniciativa"}{" "}
+            <strong>{name}</strong>,
             <br />
             <strong>¿realmente quieres hacerlo?</strong>
           </AlertDialogTitle>
