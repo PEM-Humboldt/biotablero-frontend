@@ -163,27 +163,27 @@ export class CurrentFootprintController {
     );
 
     /**
-     * TODO: No sé si hay uan mejor forma de ordenar el objeto resultado,
+     * TODO: No sé si hay una mejor forma de ordenar el objeto resultado,
      * intenté sacar los valores directamente de las keys de MetricTypesMap["currentHF"]
      * pero el mismo interprete de typescript me los pasaba ya desordenados
      */
-    const order = ["Natural", "Baja", "Media", "Alta", "Muy Alta"];
+    const order: (keyof Omit<MetricTypesMap["currentHF"], "id">)[] = [
+      "Natural",
+      "Baja",
+      "Media",
+      "Alta",
+      "Muy Alta",
+    ];
 
-    return Object.entries(categories)
-      .map(([key, value]) => {
-        const area = Number(value);
+    return order.map((key) => {
+      const area = Number(categories[key]) || 0;
 
-        return {
-          key,
-          area,
-          percentage: totalArea ? area / totalArea : 0,
-          label: key.charAt(0).toUpperCase() + key.slice(1),
-        };
-      })
-      .sort(
-        (a, b) =>
-          order.findIndex((key) => key === a.key) -
-          order.findIndex((key) => key === b.key),
-      );
+      return {
+        key,
+        area,
+        percentage: totalArea ? area / totalArea : 0,
+        label: key.charAt(0).toUpperCase() + key.slice(1),
+      };
+    });
   };
 }
