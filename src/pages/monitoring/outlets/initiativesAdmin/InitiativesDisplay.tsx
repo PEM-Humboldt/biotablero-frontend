@@ -31,7 +31,9 @@ export function InitiativesDisplay({
       {Object.entries(initiativesInfo).map(([id, initiative]) => (
         <AccordionItem value={String(id)} key={String(id)}>
           <AccordionTrigger
-            className={cn("cursor-pointer", !initiative.enabled && "bg-red-50")}
+            className={cn(
+              !initiative.enabled && "bg-red-50 data-[state=open]:bg-accent",
+            )}
           >
             <InitiativeAccordeonBar initiative={initiative} />
           </AccordionTrigger>

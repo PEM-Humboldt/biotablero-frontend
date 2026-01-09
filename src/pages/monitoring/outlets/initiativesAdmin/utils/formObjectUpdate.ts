@@ -1,7 +1,10 @@
 import { type MutableRefObject } from "react";
-import type {
-  InitiativeDataForm,
-  InitiativeFullInfo,
+import {
+  type InitiativeDataFormFormatted,
+  isInitiativeDisplayInfo,
+  type InitiativeDataForm,
+  type InitiativeDisplayInfo,
+  type InitiativeFullInfo,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 export function getInitialInfo(
@@ -29,6 +32,35 @@ export function getInitialInfo(
     users: [],
     images: { imageUrl: "", bannerUrl: "" },
   };
+}
+
+export function groupInitiativeInfo(
+  initiativeInfo: unknown,
+): InitiativeDataFormFormatted | null {
+  if (!isInitiativeDisplayInfo(initiativeInfo)) {
+    return null;
+  }
+
+  const {
+    name,
+    shortName,
+    description,
+    imageUrl,
+    bannerUrl,
+    objective,
+    influenceArea,
+    ...initiative
+  } = initiativeInfo;
+  const general = {
+    name,
+    shortName: shortName ?? "",
+    description,
+    influenceArea: influenceArea ?? "",
+    objective: objective ?? "",
+  };
+  const images = { imageUrl: imageUrl ?? "", bannerUrl: bannerUrl ?? "" };
+
+  return { ...initiative, general, images };
 }
 
 export function setFormField<F extends object, K extends keyof F>(

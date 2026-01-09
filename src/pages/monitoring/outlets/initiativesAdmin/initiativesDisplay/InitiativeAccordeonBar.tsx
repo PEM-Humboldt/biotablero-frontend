@@ -1,4 +1,3 @@
-import { cn } from "@ui/shadCN/lib/utils";
 import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
@@ -9,7 +8,6 @@ export function InitiativeAccordeonBar({
 }: {
   initiative: InitiativeDisplayInfoShort | InitiativeDisplayInfo;
 }) {
-  const enable = initiative.enabled ? "Activa" : "Inactiva";
   const date = new Date(initiative.creationDate).toLocaleDateString("es-CO");
   const displayName = initiative.shortName
     ? `${initiative.name}, ${initiative.shortName}`
@@ -25,26 +23,24 @@ export function InitiativeAccordeonBar({
 
   return (
     <>
-      <div className="shrink-0 text-center">
-        {!initiative.enabled && (
-          <>
-            <strong className="text-lg" aria-hidden="true">
-              Inactiva
-            </strong>
-            <br />
-          </>
-        )}
-        {date}
-      </div>
+      <div className="shrink-0 text-center">{date}</div>
       <div className="flex-1 min-w-0 *:px-2 *:truncate">
-        <div className="text-lg font-semibold border-b border-b-primary/10">
+        <div className="text-base font-semibold border-b border-b-primary/10">
           {displayName}
           {!initiative.enabled && (
-            <span className="sr-only"> Iniciativa inactiva</span>
+            <span className="sr-only">, Iniciativa inactiva</span>
           )}
         </div>
-        <div className="text-sm ">{initiativeLocations}</div>
+        <div className="text-sm">
+          <span className="sr-only">Iniciativa ubicada en:</span>
+          {initiativeLocations}
+        </div>
       </div>
+      {!initiative.enabled && (
+        <strong className="shrink-0 text-base " aria-hidden="true">
+          Inactiva
+        </strong>
+      )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { type FormEvent, useCallback, useRef, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 
@@ -59,7 +59,7 @@ export function InitiativeDataForm({
     setErrors({});
   };
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsPending(true);
 

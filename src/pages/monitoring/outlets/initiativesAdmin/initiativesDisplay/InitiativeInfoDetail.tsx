@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import { cn } from "@ui/shadCN/lib/utils";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { commonErrorMessage } from "@utils/ui";
 
 import type {
   InitiativeDisplayInfo,
@@ -13,8 +16,15 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { EnabledInitiativeStatusDialog } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/DisableInitiativeDialog";
 import { EditModeTrigger } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/EditModeTrigger";
-import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
+import { groupInitiativeInfo } from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
+import {
+  DisplayContacts,
+  DisplayGeneral,
+  DisplayImages,
+  DisplayLocations,
+  DisplayUsers,
+  InitiativeSection,
+} from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/InitiativeSection";
 
 export function InitiativeInfoDetail({
   initiative,
@@ -43,7 +53,7 @@ export function InitiativeInfoDetail({
       if (info === undefined) {
         setCardErrors((oldErr) => [
           ...oldErr,
-          "No es posible actualizar la información, intente de nuevo más tarde",
+          "No es posible obtener la información completa, intente de nuevo más tarde",
         ]);
 
         return;
@@ -77,10 +87,16 @@ export function InitiativeInfoDetail({
       return;
     }
 
+    setEdit(false);
     void updater(res);
   };
 
-  return initiative === undefined ? (
+  const groupedInfo = useMemo(
+    () => groupInitiativeInfo(initiative),
+    [initiative],
+  );
+
+  return initiative === undefined || !groupedInfo ? (
     <div>No fue posible cargar la información, intenta de nuevo más tarde.</div>
   ) : (
     <div
@@ -109,7 +125,48 @@ export function InitiativeInfoDetail({
           handler={() => void handleDisableInitiative()}
         />
       </div>
-      <h4>{initiative.id}</h4>
+
+      <article>
+        <InitiativeSection
+          edit={edit}
+          title="Información general"
+          group="general"
+          info={groupedInfo}
+          DisplayInfo={DisplayGeneral}
+        />
+
+        <InitiativeSection
+          edit={edit}
+          title="Ubicación de la iniciativa"
+          group="locations"
+          info={groupedInfo}
+          DisplayInfo={DisplayLocations}
+        />
+
+        <InitiativeSection
+          edit={edit}
+          title="Cómo contactarse con la iniciativa"
+          group="contacts"
+          info={groupedInfo}
+          DisplayInfo={DisplayContacts}
+        />
+
+        <InitiativeSection
+          edit={edit}
+          title="Lideres y liderezas de la iniciativa"
+          group="users"
+          info={groupedInfo}
+          DisplayInfo={DisplayUsers}
+        />
+
+        <InitiativeSection
+          edit={edit}
+          title="Imégenes de la iniciativa"
+          group="images"
+          info={groupedInfo}
+          DisplayInfo={DisplayImages}
+        />
+      </article>
     </div>
   );
 }

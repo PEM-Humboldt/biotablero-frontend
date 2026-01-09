@@ -50,6 +50,13 @@ export type InitiativeDataForm = {
   images: ImagesData;
 };
 
+export type InitiativeDataFormFormatted = Omit<
+  InitiativeDataForm,
+  "locations"
+> & {
+  locations: LocationObj[];
+};
+
 // NOTE: tipos para los errores
 export type ErrorFields<T> = { [K in keyof T]?: string[] };
 type ErrorsGeneral = ErrorFields<GeneralInfo & { root: string[] }>;
@@ -92,6 +99,32 @@ export type InitiativeDisplayInfoShort = Omit<
 > & {
   locations: LocationObj[];
 };
+
+export function isInitiativeDisplayInfo(
+  e: unknown,
+): e is InitiativeDisplayInfo {
+  return (
+    typeof e === "object" &&
+    e !== null &&
+    "name" in e &&
+    (!("shortName" in e) || typeof e["shortName"] === "string") &&
+    "description" in e &&
+    (!("objective" in e) || typeof e["objective"] === "string") &&
+    (!("influenceArea" in e) || typeof e["influenceArea"] === "string") &&
+    typeof e["description"] === "string" &&
+    "creationDate" in e &&
+    typeof e["creationDate"] === "string" &&
+    "coordinate" in e &&
+    Array.isArray(e["coordinate"]) &&
+    "polygonArea" in e &&
+    typeof e["polygonArea"] === "number" &&
+    "enabled" in e &&
+    typeof e["enabled"] === "boolean" &&
+    "locations" in e &&
+    "contacts" in e &&
+    "users" in e
+  );
+}
 
 // NOTE: Interfaz de los componentes del formulario
 export type ItemsRenderProps<T> = {
