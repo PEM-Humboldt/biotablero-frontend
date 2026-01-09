@@ -1,4 +1,8 @@
 import type { UserLevel } from "pages/monitoring/types/monitoring";
+import type {
+  LocationCompleteInfo,
+  ODataInitiativeShortEntry,
+} from "pages/monitoring/types/requestParams";
 import type { Dispatch, SetStateAction } from "react";
 
 // NOTE: Información a suministrar para crear una iniciativa
@@ -62,9 +66,7 @@ export type InitiativeDataFormErr = {
 
 // NOTE: Data recibida del Servidor
 type WithID<T> = T & { id: number };
-type LocationDetailSRC = { id: number; name: string; code: string };
-type LocationDataSRC = LocationDetailSRC & { parent?: LocationDetailSRC };
-type LocationSRC = WithID<LocationData & { location: LocationDataSRC }>;
+type LocationSRC = LocationCompleteInfo;
 type ContactSRC = WithID<InitiativeContact & { initiativeId: number }>;
 type UserSRC = WithID<
   UserData & { initiativeId: number; creationDate: string }
@@ -79,6 +81,17 @@ export type InitiativeFullInfo = WithID<
       users: UserSRC[];
     }
 >;
+
+export type InitiativeDisplayInfo = Omit<InitiativeFullInfo, "locations"> & {
+  locations: LocationObj[];
+};
+
+export type InitiativeDisplayInfoShort = Omit<
+  ODataInitiativeShortEntry,
+  "locations"
+> & {
+  locations: LocationObj[];
+};
 
 // NOTE: Interfaz de los componentes del formulario
 export type ItemsRenderProps<T> = {

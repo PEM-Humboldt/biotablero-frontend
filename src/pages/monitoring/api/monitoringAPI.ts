@@ -18,7 +18,7 @@ import type { ODataParams } from "@appTypes/odata";
 import type {
   LocationBasicInfo,
   ODataInitiative,
-  ODataInitiativeEntry,
+  ODataInitiativeShortEntry,
   ODataLog,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";

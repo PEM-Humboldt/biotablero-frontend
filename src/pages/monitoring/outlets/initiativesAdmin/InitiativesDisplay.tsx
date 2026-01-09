@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import {
   Accordion,
   AccordionContent,
@@ -7,52 +5,41 @@ import {
   AccordionTrigger,
 } from "@ui/shadCN/component/accordion";
 
-import type { ODataInitiativeEntry } from "pages/monitoring/types/requestParams";
-import type { LocationObj } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type {
+  InitiativeDisplayInfo,
+  InitiativeDisplayInfoShort,
+  InitiativeFullInfo,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { InitiativeInfoDetail } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeInfoDetail";
-import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
-import { cn } from "@ui/shadCN/lib/utils";
 import { InitiativeAccordeonBar } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeAccordeonBar";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function InitiativesDisplay({
   initiativesInfo,
+  updater: updater,
 }: {
-  initiativesInfo: ODataInitiativeEntry[];
+  initiativesInfo: Record<
+    string,
+    InitiativeDisplayInfoShort | InitiativeDisplayInfo
+  > | null;
+  updater: (value: InitiativeFullInfo) => void;
 }) {
-  return initiativesInfo.length === 0 ? (
+  return initiativesInfo === null ? (
     <div>No hay iniciativas</div>
   ) : (
     <Accordion type="single" collapsible className="w-full space-y-3">
-      {initiativesInfo.map((initiative) => (
-        <AccordionInitiativeItem
-          key={initiative.name}
-          initiative={initiative}
-        />
+      {Object.entries(initiativesInfo).map(([id, initiative]) => (
+        <AccordionItem value={String(id)} key={String(id)}>
+          <AccordionTrigger
+            className={cn("cursor-pointer", !initiative.enabled && "bg-red-50")}
+          >
+            <InitiativeAccordeonBar initiative={initiative} />
+          </AccordionTrigger>
+          <AccordionContent className="px-2">
+            <InitiativeInfoDetail initiative={initiative} updater={updater} />
+          </AccordionContent>
+        </AccordionItem>
       ))}
     </Accordion>
-  );
-}
-
-function AccordionInitiativeItem({
-  initiative,
-}: {
-  initiative: ODataInitiativeEntry;
-}) {
-  const [location, setLocation] = useState<LocationObj[]>([]);
-
-  useEffect(() => {
-    const locationsInfo = initiative.locations.map(makeLocationObj);
-    setLocation(locationsInfo);
-  }, [initiative.locations]);
-
-  return (
-    <AccordionItem value={initiative.name}>
-      <AccordionTrigger className="cursor-pointer">
-        <InitiativeAccordeonBar info={initiative} locations={location} />
-      </AccordionTrigger>
-      <AccordionContent className="px-2">
-        <InitiativeInfoDetail initiativeId={initiative.id} />
-      </AccordionContent>
-    </AccordionItem>
   );
 }

@@ -43,7 +43,7 @@ export type LocationCompleteInfo = {
   location: LocationBasicInfo;
 };
 
-export type ODataInitiativeEntry = {
+export type ODataInitiativeShortEntry = {
   id: number;
   name: string;
   shortName: string;
@@ -63,4 +63,4 @@ type ODataResponse<T> = {
 };
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
-export type ODataInitiative = ODataResponse<ODataInitiativeEntry>;
+export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;

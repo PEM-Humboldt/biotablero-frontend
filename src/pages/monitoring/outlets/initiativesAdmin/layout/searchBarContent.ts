@@ -1,11 +1,11 @@
 import { type SearchBarComponent } from "@appTypes/odata";
-import { type ODataInitiativeEntry } from "pages/monitoring/types/requestParams";
+import { type ODataInitiativeShortEntry } from "pages/monitoring/types/requestParams";
 import {
   COLOMBIAN_DEPARTMENTS,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 
-export const searchBarItems: SearchBarComponent<ODataInitiativeEntry>[] = [
+export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
   { label: "Nombre de la iniciativa", type: "text", source: ["name"] },
   {
     label: "desde",

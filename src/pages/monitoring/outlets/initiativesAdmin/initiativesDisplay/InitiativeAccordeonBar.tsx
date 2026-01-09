@@ -1,19 +1,20 @@
-import type { ODataInitiativeEntry } from "pages/monitoring/types/requestParams";
-import type { LocationObj } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { cn } from "@ui/shadCN/lib/utils";
+import type {
+  InitiativeDisplayInfo,
+  InitiativeDisplayInfoShort,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 export function InitiativeAccordeonBar({
-  info,
-  locations,
+  initiative,
 }: {
-  info: ODataInitiativeEntry;
-  locations: LocationObj[];
+  initiative: InitiativeDisplayInfoShort | InitiativeDisplayInfo;
 }) {
-  const enable = info.enabled ? "Active" : "Inactiva";
-  const date = new Date(info.creationDate).toLocaleDateString("es-CO");
-  const displayName = info.shortName
-    ? `${info.name}, ${info.shortName}`
-    : info.name;
-  const initiativeLocations = locations
+  const enable = initiative.enabled ? "Activa" : "Inactiva";
+  const date = new Date(initiative.creationDate).toLocaleDateString("es-CO");
+  const displayName = initiative.shortName
+    ? `${initiative.name}, ${initiative.shortName}`
+    : initiative.name;
+  const initiativeLocations = initiative.locations
     .map((l) => {
       const municipality = l.municipality !== null ? `, ${l.municipality}` : "";
       const locality = l.locality !== null ? ` - ${l.locality}` : "";
@@ -24,10 +25,23 @@ export function InitiativeAccordeonBar({
 
   return (
     <>
-      <div className="shrink-0">{date}</div>
+      <div className="shrink-0 text-center">
+        {!initiative.enabled && (
+          <>
+            <strong className="text-lg" aria-hidden="true">
+              Inactiva
+            </strong>
+            <br />
+          </>
+        )}
+        {date}
+      </div>
       <div className="flex-1 min-w-0 *:px-2 *:truncate">
         <div className="text-lg font-semibold border-b border-b-primary/10">
-          {displayName} {!info.enabled && <span>({enable})</span>}
+          {displayName}
+          {!initiative.enabled && (
+            <span className="sr-only"> Iniciativa inactiva</span>
+          )}
         </div>
         <div className="text-sm ">{initiativeLocations}</div>
       </div>

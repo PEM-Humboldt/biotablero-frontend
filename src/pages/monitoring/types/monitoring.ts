@@ -49,7 +49,7 @@ export interface UserKC {
       displayName: string;
       required: boolean;
       readOnly: boolean;
-      validators: Record<string, unknown>; // Flexibilidad para los validadores dinámicos
+      validators: Record<string, unknown>;
       multivalued: boolean;
     }>;
     groups: Array<{
