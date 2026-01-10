@@ -3,13 +3,13 @@ import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 
-import type {
-  LocationData,
-  LocationObj,
+import {
+  isLocationObj,
+  type LocationData,
+  type LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   COLOMBIAN_DEPARTMENTS,
-  getLocationInfoById,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 import type {
@@ -22,7 +22,6 @@ import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { LocationList } from "pages/monitoring/types/monitoring";
-import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
 import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import {
@@ -31,7 +30,7 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import { fetchAndMakeLocationObj } from "../utils/builders";
+import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 
 const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 
@@ -81,14 +80,21 @@ export function LocationInput({
       return;
     }
 
-    const loc = await getLocationInfoById(update.locationId);
+    const loc = isLocationObj(update)
+      ? update
+      : await fetchAndMakeLocationObj(update.locationId, update.locality);
+
     if (loc === null) {
+      setInputErr((oldErr) => ({
+        ...oldErr,
+        location: ["No se pudo actualizar la información, intente más tarde."],
+      }));
       return;
     }
 
-    setDepartment(loc?.parent ? String(loc.parent.id) : String(loc.id));
-    setMunicipality(loc?.parent ? String(loc.id) : "");
-    setLocality(update?.locality ?? "");
+    setDepartment(String(loc.departmentId));
+    setMunicipality(loc.municipalityId ? String(loc.municipalityId) : "");
+    setLocality(loc.locality ?? "");
   }, [update]);
 
   useEffect(() => {
@@ -338,17 +344,22 @@ export function LocationDisplay({
   );
 }
 
-function LocationDataCells({ values }: { values: LocationData }) {
+function LocationDataCells({ values }: { values: LocationData | LocationObj }) {
   const [locationInfo, setLocationInfo] = useState<LocationObj | null>(null);
 
   useEffect(() => {
+    if (isLocationObj(values)) {
+      setLocationInfo(values);
+      return;
+    }
+
     const fetchLocationInfo = async () => {
       setLocationInfo(
         await fetchAndMakeLocationObj(values.locationId, values.locality),
       );
     };
     void fetchLocationInfo();
-  }, [values.locationId, values.locality]);
+  }, [values]);
 
   return locationInfo === null ? (
     <td colSpan={3}>No se encontró la información intenta más tarde</td>

@@ -15,6 +15,7 @@ export function InitiativeSection<K extends keyof InitiativeDataFormFormatted>({
   group: K;
   info: InitiativeDataFormFormatted;
   DisplayInfo: ElementType<{ info: InitiativeDataFormFormatted[K] }>;
+  // EditInfo: ElementType<{title: string, sectionInfo: InitiativeDataFormFormatted[K], sectionUpdater:  (key: K) => void, validationErrors:string[]}>
 }) {
   return (
     <>
@@ -95,7 +96,6 @@ export function DisplayImages({
 }: {
   info: InitiativeDataFormFormatted["images"];
 }) {
-  console.log(info);
   return (
     <>
       {info.imageUrl && (

@@ -174,7 +174,7 @@ export function InitiativeDataForm({
         </div>
 
         <FormImagesInfo
-          title="Imágenes (Opcional)"
+          title="Imágenes"
           sectionInfo={initiative.current.images}
           sectionUpdater={handleFormUpdate("images")}
           validationErrorsObj={errors?.images ?? {}}

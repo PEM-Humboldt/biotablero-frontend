@@ -63,7 +63,7 @@ export function InitiativesAdmin() {
                 ...cur,
                 locations: cur.locations.map(makeLocationObj),
               };
-              acc[String(cur.id)] = updatedEntry;
+              acc[cur.id] = updatedEntry;
               return acc;
             },
             {} as Record<number, InitiativeDisplayInfoShort>,

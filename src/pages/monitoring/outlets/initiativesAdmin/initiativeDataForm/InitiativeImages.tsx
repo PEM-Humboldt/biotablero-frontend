@@ -23,6 +23,9 @@ const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/webp",
 ];
 
+const setInitialImageInfo = (e: unknown) => (e instanceof File ? e : null);
+const setInitialImagePrv = (e: unknown) => (typeof e === "string" ? e : null);
+
 export function FormImagesInfo({
   title,
   sectionInfo,
@@ -35,12 +38,15 @@ export function FormImagesInfo({
   validationErrorsObj: Partial<InitiativeDataFormErr["images"]>;
 }) {
   const [imagesInfo, setImagesInfo] = useState<ImagesData>({
-    imageUrl: sectionInfo.imageUrl ?? null,
-    bannerUrl: sectionInfo.bannerUrl ?? null,
+    imageUrl: setInitialImageInfo(sectionInfo.imageUrl),
+    bannerUrl: setInitialImageInfo(sectionInfo.bannerUrl),
   });
   const [imagesPreview, setImagesPreview] = useState<{
     [K in keyof ImagesData]?: string | null;
-  }>({ imageUrl: null, bannerUrl: null });
+  }>({
+    imageUrl: setInitialImagePrv(sectionInfo.imageUrl),
+    bannerUrl: setInitialImagePrv(sectionInfo.bannerUrl),
+  });
   const [inputErr, setInputErr] = useState<
     Partial<InitiativeDataFormErr["images"]>
   >({});

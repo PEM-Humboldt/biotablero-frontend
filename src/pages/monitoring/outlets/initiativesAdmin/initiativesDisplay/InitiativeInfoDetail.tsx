@@ -25,6 +25,21 @@ import {
   DisplayUsers,
   InitiativeSection,
 } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/initiativeInfoDetail/InitiativeSection";
+import { InitiativeGeneralInfo } from "../initiativeDataForm/InitiativeGeneralInfo";
+import { FormListManager } from "../initiativeDataForm/FormListManager";
+import {
+  LocationDisplay,
+  LocationInput,
+} from "../initiativeDataForm/InitiativeLocations";
+import {
+  ContactInfoDisplay,
+  ContactInfoInput,
+} from "../initiativeDataForm/InitiativeContact";
+import {
+  UsersInfoDisplay,
+  UsersInfoInput,
+} from "../initiativeDataForm/InitiativeUsers";
+import { FormImagesInfo } from "../initiativeDataForm/InitiativeImages";
 
 export function InitiativeInfoDetail({
   initiative,
@@ -135,12 +150,29 @@ export function InitiativeInfoDetail({
           DisplayInfo={DisplayGeneral}
         />
 
+        <InitiativeGeneralInfo
+          title="Información general"
+          sectionInfo={groupedInfo.general}
+          sectionUpdater={() => {}}
+          validationErrorsObj={{}}
+        />
+
         <InitiativeSection
           edit={edit}
           title="Ubicación de la iniciativa"
           group="locations"
           info={groupedInfo}
           DisplayInfo={DisplayLocations}
+        />
+
+        <FormListManager
+          title="Ubicación de la iniciativa"
+          maxItems={3}
+          sectionInfo={groupedInfo.locations}
+          sectionUpdater={() => {}}
+          AddItemComponent={LocationInput}
+          CurrentItemsComponent={LocationDisplay}
+          validationErrors={[]}
         />
 
         <InitiativeSection
@@ -151,6 +183,16 @@ export function InitiativeInfoDetail({
           DisplayInfo={DisplayContacts}
         />
 
+        <FormListManager
+          title="Información de contacto"
+          maxItems={5}
+          sectionInfo={groupedInfo.contacts}
+          sectionUpdater={() => {}}
+          AddItemComponent={ContactInfoInput}
+          CurrentItemsComponent={ContactInfoDisplay}
+          validationErrors={[]}
+        />
+
         <InitiativeSection
           edit={edit}
           title="Lideres y liderezas de la iniciativa"
@@ -159,12 +201,29 @@ export function InitiativeInfoDetail({
           DisplayInfo={DisplayUsers}
         />
 
+        <FormListManager
+          title="líderezas y líderes de la iniciativa"
+          maxItems={3}
+          sectionInfo={groupedInfo.users}
+          sectionUpdater={() => {}}
+          AddItemComponent={UsersInfoInput}
+          CurrentItemsComponent={UsersInfoDisplay}
+          validationErrors={[]}
+        />
+
         <InitiativeSection
           edit={edit}
           title="Imégenes de la iniciativa"
           group="images"
           info={groupedInfo}
           DisplayInfo={DisplayImages}
+        />
+
+        <FormImagesInfo
+          title="Imágenes"
+          sectionInfo={groupedInfo.images}
+          sectionUpdater={() => {}}
+          validationErrorsObj={{}}
         />
       </article>
     </div>
