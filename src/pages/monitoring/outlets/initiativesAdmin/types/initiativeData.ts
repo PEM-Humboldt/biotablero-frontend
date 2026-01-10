@@ -141,7 +141,28 @@ export type ItemEditorProps<T> = {
 
 // NOTE: Objetos para facilitar la manipulacion de la información
 export type LocationObj = {
+  departmentId: number;
   department: string;
+  municipalityId: number | null;
   municipality: string | null;
   locality: string | null;
 };
+
+export function isLocationObj(location: unknown): location is LocationObj {
+  return (
+    typeof location === "object" &&
+    location !== null &&
+    "departmentId" in location &&
+    typeof location.departmentId === "number" &&
+    "department" in location &&
+    typeof location.department === "string" &&
+    "municipalityId" in location &&
+    (location.municipalityId === null ||
+      typeof location.municipalityId === "number") &&
+    "municipality" in location &&
+    (location.municipality === null ||
+      typeof location.municipality === "string") &&
+    "locality" in location &&
+    (location.locality === null || typeof location.locality === "string")
+  );
+}

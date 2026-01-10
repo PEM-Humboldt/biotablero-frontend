@@ -13,7 +13,9 @@ export async function fetchAndMakeLocationObj(
   const isMunicipality = !!info.parent;
 
   return {
+    departmentId: isMunicipality ? info.parent!.id : info.id,
     department: isMunicipality ? info.parent!.name : info.name,
+    municipalityId: isMunicipality ? info.id : null,
     municipality: isMunicipality ? info.name : null,
     locality: locality ?? null,
   };
@@ -26,7 +28,9 @@ export function makeLocationObj(
   const isMunicipality = !!location.parent;
 
   return {
+    departmentId: isMunicipality ? location.parent!.id : location.id,
     department: isMunicipality ? location.parent!.name : location.name,
+    municipalityId: isMunicipality ? location.id : null,
     municipality: isMunicipality ? location.name : null,
     locality: locality ?? null,
   };
