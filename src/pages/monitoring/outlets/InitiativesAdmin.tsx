@@ -12,7 +12,7 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
-import { ListPlus } from "lucide-react";
+import { CircleXIcon, ListPlus } from "lucide-react";
 import { InitiativesDisplay } from "pages/monitoring/outlets/initiativesAdmin/InitiativesDisplay";
 import type {
   InitiativeDisplayInfo,
@@ -22,7 +22,7 @@ import type {
 import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 
 export function InitiativesAdmin() {
-  const [initiatives, setInitiatives] = useState<Record<
+  const [initiatives, setInitiatives] = useState<Map<
     number,
     InitiativeDisplayInfoShort | InitiativeDisplayInfo
   > | null>(null);
@@ -32,6 +32,7 @@ export function InitiativesAdmin() {
     top: INITIATIVES_PER_PAGE,
     orderby: "creationDate desc",
   });
+  const [newInitiative, setNewInitiative] = useState(false);
   const prevSearchParamsRef = useRef(searchParams);
 
   // NOTE: desplegar la iniciativa que está como param en la url
@@ -56,18 +57,15 @@ export function InitiativesAdmin() {
           return;
         }
 
-        const initiativesObj: Record<number, InitiativeDisplayInfoShort> =
-          res.value.reduce(
-            (acc, cur) => {
-              const updatedEntry = {
-                ...cur,
-                locations: cur.locations.map(makeLocationObj),
-              };
-              acc[cur.id] = updatedEntry;
-              return acc;
-            },
-            {} as Record<number, InitiativeDisplayInfoShort>,
-          );
+        const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
+          res.value.reduce((acc, cur) => {
+            const updatedEntry = {
+              ...cur,
+              locations: cur.locations.map(makeLocationObj),
+            };
+            acc.set(cur.id, updatedEntry);
+            return acc;
+          }, new Map<number, InitiativeDisplayInfoShort>());
 
         setInitiatives(initiativesObj);
         setInitiativesFound(res["@odata.count"]);
@@ -85,42 +83,48 @@ export function InitiativesAdmin() {
       locations: value.locations.map(makeLocationObj),
     } satisfies InitiativeDisplayInfo;
 
-    setInitiatives((oldInitiatives) => ({
-      ...oldInitiatives,
-      [String(value.id)]: updatedValue,
-    }));
+    setInitiatives((oldInitiatives) => {
+      const newMap = new Map(oldInitiatives);
+      newMap.set(value.id, updatedValue);
+      return newMap;
+    });
   }, []);
 
   return (
     <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
       <div className="p-6 pb-0 w-full flex justify-between">
         <h3 className="h1 text-primary">Administrador de iniciativas</h3>
-        <Button>
-          Crear iniciativa <ListPlus />
+        <Button onClick={() => setNewInitiative((v) => !v)}>
+          {newInitiative
+            ? "Cancelar creación de una nueva iniciativa"
+            : "Crear iniciativa"}
+          {newInitiative ? <CircleXIcon /> : <ListPlus />}
         </Button>
       </div>
 
-      <ODataSearchBar
-        components={searchBarItems}
-        setSearchParams={setSearchParams}
-        reset={"reset"}
-        className="bg-muted w-full"
-      />
-
-      {false && <InitiativeDataForm />}
-
-      <InitiativesDisplay
-        initiativesInfo={initiatives}
-        updater={initiativeUpdater}
-      />
-
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={initiativesFound}
-        onPageChange={setCurrentPage}
-        recordsPerPage={INITIATIVES_PER_PAGE}
-        paginated={3}
-      />
+      {newInitiative ? (
+        <InitiativeDataForm />
+      ) : (
+        <>
+          <ODataSearchBar
+            components={searchBarItems}
+            setSearchParams={setSearchParams}
+            reset={"reset"}
+            className="bg-muted w-full"
+          />
+          <InitiativesDisplay
+            initiativesInfo={initiatives}
+            updater={initiativeUpdater}
+          />
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={initiativesFound}
+            onPageChange={setCurrentPage}
+            recordsPerPage={INITIATIVES_PER_PAGE}
+            paginated={3}
+          />
+        </>
+      )}
     </div>
   );
 }

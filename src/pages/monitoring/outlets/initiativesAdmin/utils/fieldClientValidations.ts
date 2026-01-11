@@ -3,7 +3,11 @@ import {
   getInitiatives,
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
-import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import {
+  isLocationObj,
+  type LocationData,
+  type LocationObj,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 /**
  * Checks if a location already exists in a given collection.
@@ -14,25 +18,30 @@ import type { LocationData } from "pages/monitoring/outlets/initiativesAdmin/typ
  */
 export function locationAlreadyExist(
   lookfor: LocationData,
-  inLocations: LocationData[],
+  inLocations: (LocationData | LocationObj)[],
 ): boolean {
   if (inLocations.length === 0) {
     return false;
   }
 
-  const normalizedLookfor = lookfor?.locality
+  const normalizedLookforLocality = lookfor?.locality
     ? StrValidator.normalize(lookfor.locality)
     : null;
 
   return inLocations.some((location) => {
-    if (normalizedLookfor && location.locality) {
-      const nomalizedInLocation = StrValidator.normalize(location.locality);
+    const normalizedInLocationLocality = location.locality
+      ? StrValidator.normalize(location.locality)
+      : null;
 
-      if (normalizedLookfor !== nomalizedInLocation) {
-        return false;
-      }
+    if (normalizedLookforLocality !== normalizedInLocationLocality) {
+      return false;
+    }
 
-      return lookfor.locationId === location.locationId;
+    if (isLocationObj(location)) {
+      return (
+        lookfor.locationId === location.municipalityId ||
+        lookfor.locationId === location.departmentId
+      );
     }
 
     return lookfor.locationId === location.locationId;

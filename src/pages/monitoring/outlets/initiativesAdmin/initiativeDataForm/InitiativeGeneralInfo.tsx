@@ -116,7 +116,7 @@ export function InitiativeGeneralInfo({
       new StrValidator(generalInfo.objective)
         .isOptional()
         .sanitize()
-        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+        .hasLengthLessOrEqualThan(INITIAVIVE_OBJECTIVE_MAX_LENGTH),
     );
 
   const influenceOnBlur = () =>
@@ -125,7 +125,7 @@ export function InitiativeGeneralInfo({
       new StrValidator(generalInfo.influenceArea)
         .isOptional()
         .sanitize()
-        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+        .hasLengthLessOrEqualThan(INITIAVIVE_INFLUENCE_MAX_LENGTH),
     );
 
   return (
@@ -245,6 +245,7 @@ export function InitiativeGeneralInfo({
             aria-describedby={
               inputErr.description ? "errors_description" : undefined
             }
+            data-slot="input-group-control"
           />
           <InputGroupAddon
             align="block-end"

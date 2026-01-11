@@ -16,10 +16,10 @@ import { cn } from "@ui/shadCN/lib/utils";
 
 export function InitiativesDisplay({
   initiativesInfo,
-  updater: updater,
+  updater,
 }: {
-  initiativesInfo: Record<
-    string,
+  initiativesInfo: Map<
+    number,
     InitiativeDisplayInfoShort | InitiativeDisplayInfo
   > | null;
   updater: (value: InitiativeFullInfo) => void;
@@ -28,7 +28,7 @@ export function InitiativesDisplay({
     <div>No hay iniciativas</div>
   ) : (
     <Accordion type="single" collapsible className="w-full space-y-3">
-      {Object.entries(initiativesInfo).map(([id, initiative]) => (
+      {[...initiativesInfo.entries()].map(([id, initiative]) => (
         <AccordionItem value={String(id)} key={String(id)}>
           <AccordionTrigger
             className={cn(

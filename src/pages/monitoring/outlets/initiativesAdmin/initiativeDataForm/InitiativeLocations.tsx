@@ -5,8 +5,8 @@ import { Button } from "@ui/shadCN/component/button";
 
 import {
   isLocationObj,
-  type LocationData,
   type LocationObj,
+  type LocationData,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   COLOMBIAN_DEPARTMENTS,
@@ -124,11 +124,9 @@ export function LocationInput({
       }));
       return;
     }
-
     if (!isLocalityValid()) {
       return;
     }
-
     const newLocation: LocationData = {
       locationId: Number(municipality) || Number(department),
     };
@@ -149,6 +147,7 @@ export function LocationInput({
     setDepartment("");
     setMunicipality("");
     setLocality("");
+    setInputErr({});
   };
 
   const handleChangeDepartment = (action: SetStateAction<string>) => {
@@ -306,7 +305,7 @@ export function LocationDisplay({
 
         <tbody>
           {selectedItems.map((values, i) => (
-            <tr key={`${values.locationId}_${i}`}>
+            <tr key={`${values.locality}_${i}`}>
               <LocationDataCells values={values} />
 
               <td className="table-form-actions">

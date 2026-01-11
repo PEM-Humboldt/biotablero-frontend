@@ -168,6 +168,7 @@ export function InitiativeInfoDetail({
         <FormListManager
           title="Ubicación de la iniciativa"
           maxItems={3}
+          // @ts-expect-error Polymorphic state avoids redundant re-mapping
           sectionInfo={groupedInfo.locations}
           sectionUpdater={() => {}}
           AddItemComponent={LocationInput}
