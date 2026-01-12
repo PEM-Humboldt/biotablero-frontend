@@ -18,7 +18,6 @@ import type { ODataParams } from "@appTypes/odata";
 import type {
   LocationBasicInfo,
   ODataInitiative,
-  ODataInitiativeShortEntry,
   ODataLog,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
@@ -30,7 +29,7 @@ import type {
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import usersMock from "pages/monitoring/api/usersMock.json";
-import { InitiativeFullInfo } from "../outlets/initiativesAdmin/types/initiativeData";
+import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -40,6 +39,7 @@ type RequestData = RequestBody | FormData;
 
 type MonitoringAPIParams = {
   endpoint: string;
+  getStatus?: boolean;
 } & (
   | {
       type: "get";
@@ -139,6 +139,11 @@ monitoringClient.interceptors.response.use(
   },
 );
 
+type ResponseWithStatus<T> = {
+  data: T;
+  status: number;
+};
+
 /**
  * Wrapper around Axios to standardize requests to the Monitoring module.
  *
@@ -148,17 +153,25 @@ monitoringClient.interceptors.response.use(
  * @typeParam T - The expected response payload type.
  * @param type - The HTTP method (`get`, `post`, `put`, or `delete`).
  * @param endpoint - The API endpoint relative to the Monitoring backend base URL.
- * @param options - Optional request configuration, including:
- *  - `data`: Key-value pairs to send as query parameters or form data.
- *  - `headers`: Custom request headers.
- *  - `oData`: OData query parameters for GET requests.
- * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
+ * @param options - Optional request configuration (data, headers, oData).
+ * @param getStatus - If true, returns the data wrapped with the HTTP status code.
+ * @returns A `Promise` resolving to:
+ * - If `getStatus` is true: An object `{ data: T, status: number }`.
+ * - If `getStatus` is false/omitted: The parsed response of type `T`.
+ * - On failure: A `RequestError` object.
  */
+export async function monitoringAPI<T>(
+  params: MonitoringAPIParams & { getStatus: true },
+): Promise<ResponseWithStatus<T> | RequestError>;
+export async function monitoringAPI<T>(
+  params: MonitoringAPIParams & { getStatus?: false },
+): Promise<T | RequestError>;
 export async function monitoringAPI<T>({
   type,
   endpoint,
   options,
-}: MonitoringAPIParams): Promise<T | RequestError> {
+  getStatus = false,
+}: MonitoringAPIParams): Promise<T | ResponseWithStatus<T> | RequestError> {
   try {
     const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
@@ -198,7 +211,9 @@ export async function monitoringAPI<T>({
       );
     }
 
-    return response.data;
+    return getStatus
+      ? { data: response.data, status: response.status }
+      : response.data;
   } catch (err) {
     if (isAxiosError(err) && err.response) {
       return {
@@ -365,16 +380,14 @@ export async function getUsers(
     return usersMock as UserKC[];
   }
 
-  const reqOptions: MonitoringAPIParams = {
-    type: "get",
-    endpoint:
-      byInitiativeId === undefined
-        ? `InitiativeUser/`
-        : `InitiativeUser/GetByInitiative/${byInitiativeId}`,
-  };
-
   try {
-    const res = await monitoringAPI<UserKC[]>(reqOptions);
+    const res = await monitoringAPI<UserKC[]>({
+      type: "get",
+      endpoint:
+        byInitiativeId === undefined
+          ? `InitiativeUser/`
+          : `InitiativeUser/GetByInitiative/${byInitiativeId}`,
+    });
 
     if (isMonitoringAPIError(res)) {
       throw new Error(res.message);
