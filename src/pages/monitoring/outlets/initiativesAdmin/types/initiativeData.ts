@@ -133,14 +133,25 @@ export type ItemsRenderProps<T> = {
   deleteItem: (itemIndex: number) => void;
 };
 
+export type TableRenderProps<T, R extends object> = {
+  title: string;
+  items: T[];
+  rowInfoCallback?: (item: T) => Promise<R | null>;
+  editItem?: (itemId: number) => void;
+  deleteItem: (itemId: number) => void;
+  render: Map<string, keyof R>;
+  edit: boolean;
+};
+
 export type ItemEditorProps<T> = {
   selectedItems?: T[];
-  setter: Dispatch<SetStateAction<T[]>>;
+  setter: (value: T) => void;
   update: T | null;
 };
 
 // NOTE: Objetos para facilitar la manipulacion de la información
 export type LocationObj = {
+  locationId: number;
   departmentId: number;
   department: string;
   municipalityId: number | null;

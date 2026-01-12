@@ -10,6 +10,13 @@ import {
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/strValidator";
 import { cn } from "@ui/shadCN/lib/utils";
+import {
+  INITIAVIVE_NAME_MAX_LENGTH,
+  INITIAVIVE_SHORTNAME_MAX_LENGTH,
+  INITIAVIVE_DESCRIPTION_MAX_LENGTH,
+  INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+  INITIAVIVE_INFLUENCE_MAX_LENGTH,
+} from "@config/monitoring";
 
 import type {
   GeneralInfo,
@@ -17,13 +24,7 @@ import type {
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { initiativeNameNotExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
 
-const INITIAVIVE_NAME_MAX_LENGTH = 100;
-const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
-const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
-const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
-const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
-
-export function InitiativeGeneralInfo({
+export function GeneralInfoInput({
   title,
   sectionInfo,
   sectionUpdater,

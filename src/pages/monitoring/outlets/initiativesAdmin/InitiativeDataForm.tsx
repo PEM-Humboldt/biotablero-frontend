@@ -1,51 +1,47 @@
 import { type FormEvent, useCallback, useRef, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { commonErrorMessage } from "@utils/ui";
+import {
+  INITIATIVE_CONTACTS_MAX_AMOUNT,
+  INITIATIVE_LOCATIONS_MAX_AMOUNT,
+  INITIATIVE_LEADERS_MAX_AMOUNT,
+} from "@config/monitoring";
 
+import type { User } from "pages/monitoring/types/monitoring";
 import type {
+  InitiativeContact,
   InitiativeDataForm,
   InitiativeDataFormErr,
   InitiativeFullInfo,
+  LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   isMonitoringAPIError,
   monitoringAPI,
   uploadImages,
 } from "pages/monitoring/api/monitoringAPI";
-import {
-  LocationInput,
-  LocationDisplay,
-} from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeLocations";
-import {
-  UsersInfoInput,
-  UsersInfoDisplay,
-} from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeUsers";
-import {
-  ContactInfoDisplay,
-  ContactInfoInput,
-} from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeContact";
-import { InitiativeGeneralInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeGeneralInfo";
+import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
 import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/FormListManager";
+import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/LocationInput";
+import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
+import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
 import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
-import { FormImagesInfo } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InitiativeImages";
+import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
   getInitialInfo,
   setFormField,
 } from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
-import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
+import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 
 // TODO: Cargar solo las imagenes cuando solo falla ese pedazo y se creo la Ini
-export function InitiativeDataForm({
-  dataToUpdate,
-}: {
-  dataToUpdate?: InitiativeFullInfo;
-}) {
+export function InitiativeDataForm() {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [isPending, setIsPending] = useState(false);
-  const initiative = useRef<InitiativeDataForm>(getInitialInfo(dataToUpdate));
+  const initiative = useRef<InitiativeDataForm>(getInitialInfo());
 
   const handleFormUpdate = useCallback(
     <K extends keyof InitiativeDataForm>(key: K) =>
@@ -54,7 +50,7 @@ export function InitiativeDataForm({
   );
 
   const handleFormReset = () => {
-    initiative.current = getInitialInfo(dataToUpdate);
+    initiative.current = getInitialInfo();
     setformID((prev) => prev + 1);
     setErrors({});
   };
@@ -127,6 +123,7 @@ export function InitiativeDataForm({
       <h4 className="px-6 py-2 mb-0 text-base bg-primary text-primary-foreground">
         Nueva iniciativa
       </h4>
+
       <form
         action=""
         key={formID}
@@ -134,7 +131,7 @@ export function InitiativeDataForm({
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-2 p-6"
       >
-        <InitiativeGeneralInfo
+        <GeneralInfoInput
           title="Información general"
           sectionInfo={initiative.current.general}
           sectionUpdater={handleFormUpdate("general")}
@@ -143,37 +140,49 @@ export function InitiativeDataForm({
 
         <FormListManager
           title="Ubicación de la iniciativa"
-          maxItems={3}
           sectionInfo={initiative.current.locations}
-          sectionUpdater={handleFormUpdate("locations")}
           AddItemComponent={LocationInput}
-          CurrentItemsComponent={LocationDisplay}
+          maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
+          renderMap={
+            new Map<string, keyof LocationObj>([
+              ["Departamento", "department"],
+              ["Municipio", "municipality"],
+              ["loca", "locality"],
+            ])
+          }
+          renderRowCallback={fetchAndMakeLocationObj}
+          sectionUpdater={handleFormUpdate("locations")}
           validationErrors={errors?.locations ?? []}
         />
 
         <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListManager
             title="Información de contacto"
-            maxItems={5}
             sectionInfo={initiative.current.contacts}
+            AddItemComponent={ContactInput}
+            maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+            renderMap={
+              new Map<string, keyof InitiativeContact>([
+                ["Correo 666", "email"],
+                ["Teléfono", "phone"],
+              ])
+            }
             sectionUpdater={handleFormUpdate("contacts")}
-            AddItemComponent={ContactInfoInput}
-            CurrentItemsComponent={ContactInfoDisplay}
             validationErrors={errors?.contacts ?? []}
           />
 
           <FormListManager
             title="líderezas y líderes de la iniciativa"
-            maxItems={3}
             sectionInfo={initiative.current.users}
+            AddItemComponent={UsersInput}
+            maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
+            renderMap={new Map<string, keyof User>([["Nombre", "userName"]])}
             sectionUpdater={handleFormUpdate("users")}
-            AddItemComponent={UsersInfoInput}
-            CurrentItemsComponent={UsersInfoDisplay}
             validationErrors={errors?.users ?? []}
           />
         </div>
 
-        <FormImagesInfo
+        <ImagesInput
           title="Imágenes"
           sectionInfo={initiative.current.images}
           sectionUpdater={handleFormUpdate("images")}

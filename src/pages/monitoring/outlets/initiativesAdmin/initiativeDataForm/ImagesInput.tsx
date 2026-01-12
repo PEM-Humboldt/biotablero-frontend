@@ -1,4 +1,3 @@
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   type ChangeEvent,
   type RefObject,
@@ -6,27 +5,25 @@ import {
   useRef,
   useState,
 } from "react";
+import { ImageUp, Trash, UndoDot } from "lucide-react";
+
+import { cn } from "@ui/shadCN/lib/utils";
+import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
+import type { ImageMimeType } from "@appTypes/formats";
+import { ImgValidator } from "@utils/imgValidator";
+import { Button } from "@ui/shadCN/component/button";
+import { INITIATIVES_IMG_ALLOWED_FORMATS } from "@config/monitoring";
+
 import type {
   ErrorFields,
   ImagesData,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
-import type { ImageMimeType } from "@appTypes/formats";
-import { ImgValidator } from "@utils/imgValidator";
-import { Button } from "@ui/shadCN/component/button";
-import { ImageUp, Trash, UndoDot } from "lucide-react";
-
-const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-];
 
 const setInitialImageInfo = (e: unknown) => (e instanceof File ? e : null);
 const setInitialImagePrv = (e: unknown) => (typeof e === "string" ? e : null);
 
-export function FormImagesInfo({
+export function ImagesInput({
   title,
   sectionInfo,
   sectionUpdater,

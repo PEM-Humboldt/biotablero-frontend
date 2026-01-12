@@ -1,14 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus, Trash } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { Combobox } from "@ui/ComboBox";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
-import type {
-  ItemEditorProps,
-  ItemsRenderProps,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { User } from "pages/monitoring/types/monitoring";
 import {
   getUsers,
@@ -19,9 +17,7 @@ import {
   normalizeUsersFromKC,
 } from "pages/monitoring/utils/manageUsers";
 
-const INITIATIVE_DISPLAY_LEADERS_SEARCH = 5;
-
-export function UsersInfoInput({
+export function UsersInput({
   selectedItems,
   setter,
   update,
@@ -75,9 +71,9 @@ export function UsersInfoInput({
       level: NEW_ADMIN_CREDENTIALS,
     } as User;
 
+    setter(newUser);
     setUser("");
     setInputErr({});
-    setter((savedData) => [...savedData, newUser]);
   };
 
   return (
@@ -121,52 +117,5 @@ export function UsersInfoInput({
         </Button>
       </div>
     </div>
-  );
-}
-
-export function UsersInfoDisplay({
-  selectedItems: items,
-  editItem: _,
-  deleteItem,
-}: ItemsRenderProps<User>) {
-  return (
-    items.length > 0 && (
-      <div className="table-form-display-container">
-        <table className="table-form-display">
-          <caption className="sr-only">Líderes inscritos actualmente</caption>
-
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th className="w-24">
-                <span className="sr-only">Acciones</span>
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {items.map((user, i) => (
-              <tr key={`${user.userName}_${i}`}>
-                <td>{user.userName}</td>
-
-                <td className="table-form-actions">
-                  <Button
-                    type="button"
-                    onClick={() => deleteItem(i)}
-                    variant="ghost-clean"
-                    size="icon-sm"
-                  >
-                    <span className="sr-only">Quitar como administrador</span>
-                    <span aria-hidden="true">
-                      <Trash className="size-4" />
-                    </span>
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    )
   );
 }

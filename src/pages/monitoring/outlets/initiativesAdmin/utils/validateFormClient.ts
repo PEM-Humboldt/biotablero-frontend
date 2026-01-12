@@ -23,7 +23,7 @@ export function validateFormClient(
   return foundErrors;
 }
 
-function resolveErrorPath<T>(
+function resolveErrorPath(
   errorObject: Record<string, unknown>,
   path: string,
 ): string[] {

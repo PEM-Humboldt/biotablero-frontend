@@ -1,38 +1,33 @@
 import { type SetStateAction, useCallback, useEffect, useState } from "react";
-import { Check, CirclePlus, Eraser, SquarePen, UndoDot } from "lucide-react";
+import { Check, CirclePlus, UndoDot } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
+import { Label } from "@ui/shadCN/component/label";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { Combobox } from "@ui/ComboBox";
+import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { StrValidator } from "@utils/strValidator";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+import { INITIATIVE_LOCALITY_MAX_LENGTH } from "@config/monitoring";
 
 import {
   isLocationObj,
-  type LocationObj,
   type LocationData,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   COLOMBIAN_DEPARTMENTS,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
-import type {
-  ItemEditorProps,
-  ItemsRenderProps,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { Label } from "@ui/shadCN/component/label";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { Combobox } from "@ui/ComboBox";
-import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { LocationList } from "pages/monitoring/types/monitoring";
 import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
-import { StrValidator } from "@utils/strValidator";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@ui/shadCN/component/input-group";
-import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
-
-const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 
 export function LocationInput({
   selectedItems,
@@ -82,7 +77,7 @@ export function LocationInput({
 
     const loc = isLocationObj(update)
       ? update
-      : await fetchAndMakeLocationObj(update.locationId, update.locality);
+      : await fetchAndMakeLocationObj(update);
 
     if (loc === null) {
       setInputErr((oldErr) => ({
@@ -143,7 +138,7 @@ export function LocationInput({
       return;
     }
 
-    setter((savedData) => [...savedData, newLocation]);
+    setter(newLocation);
     setDepartment("");
     setMunicipality("");
     setLocality("");
@@ -276,97 +271,6 @@ export function LocationInput({
           </Button>
         </ButtonGroup>
       </div>
-    </>
-  );
-}
-
-export function LocationDisplay({
-  selectedItems,
-  editItem,
-  deleteItem,
-}: ItemsRenderProps<LocationData>) {
-  return (
-    <div className="table-form-display-container">
-      <table className="table-form-display">
-        <caption className="sr-only">
-          Ubicaciones registradas de la iniciativa
-        </caption>
-
-        <thead>
-          <tr>
-            <th>Departamento</th>
-            <th>Municipio</th>
-            <th>Vereda</th>
-            <th className="w-24">
-              <span className="sr-only">Acciones</span>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {selectedItems.map((values, i) => (
-            <tr key={`${values.locality}_${i}`}>
-              <LocationDataCells values={values} />
-
-              <td className="table-form-actions">
-                <Button
-                  type="button"
-                  onClick={() => editItem(i)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                  title="Editar"
-                >
-                  <span className="sr-only">Editar esta ubicación</span>
-                  <span aria-hidden="true">
-                    <SquarePen className="size-4" />
-                  </span>
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={() => deleteItem(i)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                  title="Borrar"
-                >
-                  <span className="sr-only">Borrar esta ubicación</span>
-                  <span aria-hidden="true">
-                    <Eraser className="size-4" />
-                  </span>
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function LocationDataCells({ values }: { values: LocationData | LocationObj }) {
-  const [locationInfo, setLocationInfo] = useState<LocationObj | null>(null);
-
-  useEffect(() => {
-    if (isLocationObj(values)) {
-      setLocationInfo(values);
-      return;
-    }
-
-    const fetchLocationInfo = async () => {
-      setLocationInfo(
-        await fetchAndMakeLocationObj(values.locationId, values.locality),
-      );
-    };
-    void fetchLocationInfo();
-  }, [values]);
-
-  return locationInfo === null ? (
-    <td colSpan={3}>No se encontró la información intenta más tarde</td>
-  ) : (
-    <>
-      <td>{locationInfo.department}</td>
-      <td>{locationInfo.municipality ?? "---"}</td>
-      <td>{locationInfo.locality ?? "---"}</td>
     </>
   );
 }

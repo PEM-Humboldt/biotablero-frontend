@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-  Check,
-  CirclePlus,
-  Eraser,
-  Mail,
-  Phone,
-  SquarePen,
-  UndoDot,
-} from "lucide-react";
+import { Check, CirclePlus, Mail, Phone, UndoDot } from "lucide-react";
 
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
@@ -18,17 +10,17 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { StrValidator } from "@utils/strValidator";
+import {
+  INITIATIVE_EMAIL_MAX_LENGHT,
+  INITIATIVE_PHONE_MAX_LENGHT,
+} from "@config/monitoring";
 
 import type {
   InitiativeContact,
   ItemEditorProps,
-  ItemsRenderProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
-const INITIATIVE_EMAIL_MAX_LENGHT = 120;
-const INITIATIVE_PHONE_MAX_LENGHT = 10;
-
-export function ContactInfoInput({
+export function ContactInput({
   selectedItems,
   setter,
   update,
@@ -82,7 +74,7 @@ export function ContactInfoInput({
       newContact.phone = cleanPhone;
     }
 
-    setter((savedData) => [...savedData, newContact]);
+    setter(newContact);
     setInputErr({});
     setEmail("");
     setPhone("");
@@ -178,74 +170,6 @@ export function ContactInfoInput({
           </span>
         </Button>
       </ButtonGroup>
-    </div>
-  );
-}
-
-export function ContactInfoDisplay({
-  selectedItems,
-  editItem,
-  deleteItem,
-}: ItemsRenderProps<InitiativeContact>) {
-  if (!selectedItems || selectedItems.length === 0) {
-    return (
-      <p className="text-gray-500">
-        No hay información de contacto registrada.
-      </p>
-    );
-  }
-
-  return (
-    <div className="table-form-display-container">
-      <table className="table-form-display">
-        <caption className="sr-only">Información de contacto inscrita</caption>
-
-        <thead>
-          <tr>
-            <th>Correo</th>
-            <th>Teléfono</th>
-            <th className="w-24">
-              <span className="sr-only">Acciones</span>
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {selectedItems.map((values, i) => (
-            <tr key={`${values.email}_${i}`}>
-              <td>{values.email}</td>
-              <td>{values.phone ? values.phone : "---"}</td>
-              <td className="table-form-actions">
-                <Button
-                  type="button"
-                  onClick={() => editItem(i)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                  title="Editar"
-                >
-                  <span className="sr-only">editar esta información</span>
-                  <span aria-hidden="true">
-                    <SquarePen className="size-4" />
-                  </span>
-                </Button>
-
-                <Button
-                  type="button"
-                  onClick={() => deleteItem(i)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                  title="Borrar"
-                >
-                  <span className="sr-only">borrar esta información</span>
-                  <span aria-hidden="true">
-                    <Eraser className="size-4" />
-                  </span>
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
   );
 }

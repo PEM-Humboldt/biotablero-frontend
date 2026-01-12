@@ -10,8 +10,8 @@ import type {
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { InitiativeInfoDetail } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeInfoDetail";
-import { InitiativeAccordeonBar } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeAccordeonBar";
+import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeCard";
+import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/initiativesDisplay/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
 
 export function InitiativesDisplay({
@@ -35,10 +35,10 @@ export function InitiativesDisplay({
               !initiative.enabled && "bg-red-50 data-[state=open]:bg-accent",
             )}
           >
-            <InitiativeAccordeonBar initiative={initiative} />
+            <InitiativeTag initiative={initiative} />
           </AccordionTrigger>
           <AccordionContent className="px-2">
-            <InitiativeInfoDetail initiative={initiative} updater={updater} />
+            <InitiativeCard initiative={initiative} updater={updater} />
           </AccordionContent>
         </AccordionItem>
       ))}
