@@ -9,11 +9,8 @@ import axios, {
   type InternalAxiosRequestConfig,
   type AxiosError,
 } from "axios";
-import {
-  isResponseRequestError,
-  refreshAccessToken,
-  type RequestError,
-} from "@api/auth";
+import { isResponseRequestError, refreshAccessToken } from "@api/auth";
+import type { ApiRequestError } from "@appTypes/api";
 import type { ODataParams } from "@appTypes/odata";
 import type {
   LocationBasicInfo,
@@ -82,7 +79,7 @@ const monitoringClient = axios.create({
  */
 export function isMonitoringAPIError(
   response: unknown,
-): response is RequestError {
+): response is ApiRequestError {
   return (
     typeof response === "object" &&
     response !== null &&
@@ -162,16 +159,16 @@ type ResponseWithStatus<T> = {
  */
 export async function monitoringAPI<T>(
   params: MonitoringAPIParams & { getStatus: true },
-): Promise<ResponseWithStatus<T> | RequestError>;
+): Promise<ResponseWithStatus<T> | ApiRequestError>;
 export async function monitoringAPI<T>(
   params: MonitoringAPIParams & { getStatus?: false },
-): Promise<T | RequestError>;
+): Promise<T | ApiRequestError>;
 export async function monitoringAPI<T>({
   type,
   endpoint,
   options,
   getStatus = false,
-}: MonitoringAPIParams): Promise<T | ResponseWithStatus<T> | RequestError> {
+}: MonitoringAPIParams): Promise<T | ResponseWithStatus<T> | ApiRequestError> {
   try {
     const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
@@ -216,9 +213,15 @@ export async function monitoringAPI<T>({
       : response.data;
   } catch (err) {
     if (isAxiosError(err) && err.response) {
+      const serverData =
+        typeof err.response.data === "string"
+          ? err.response.data
+          : JSON.stringify(err.response.data);
+
       return {
         status: err.response.status,
         message: err?.message || "Request failed",
+        data: serverData,
       };
     }
     return { status: 503, message: "Couldn't connect with the server" };
