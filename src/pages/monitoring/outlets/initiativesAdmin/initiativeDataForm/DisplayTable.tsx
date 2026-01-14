@@ -3,6 +3,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { SquarePen, Trash } from "lucide-react";
 
 import type { TableRenderProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function DisplayTable<T, R extends object>({
   title,
@@ -12,9 +13,9 @@ export function DisplayTable<T, R extends object>({
   deleteItem,
   render,
   edit,
+  className,
 }: TableRenderProps<T, R>) {
   const [displayItems, setDisplayItems] = useState<R[]>([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,8 +24,6 @@ export function DisplayTable<T, R extends object>({
       setDisplayItems(items as unknown as R[]);
       return;
     }
-
-    setLoading(true);
 
     const fetchItems = async () => {
       try {
@@ -36,17 +35,10 @@ export function DisplayTable<T, R extends object>({
       } catch (err) {
         console.error(err);
         isMounted = false;
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
       }
     };
 
     void fetchItems();
-    return () => {
-      isMounted = false;
-    };
   }, [rowInfoCallback, items]);
 
   if (items.length === 0) {
@@ -54,71 +46,71 @@ export function DisplayTable<T, R extends object>({
   }
 
   return (
-    <div className="table-form-display-container">
-      {loading ? (
-        <p>Cargando información...</p>
-      ) : (
-        <table className="table-form-display">
-          <caption className="sr-only">{title}</caption>
+    <div className={"table-form-display-container"}>
+      <table className={cn("table-form-display", className)}>
+        <caption className="sr-only">{title}</caption>
 
-          <thead>
-            <tr>
-              {[...render.keys()].map((colName) => (
-                <th key={colName}>{colName}</th>
-              ))}
+        <thead>
+          <tr>
+            {[...render.keys()].map((colName) => (
+              <th key={colName}>{colName}</th>
+            ))}
+
+            {edit && (
+              <th className="w-24">
+                <span className="sr-only">Acciones</span>
+              </th>
+            )}
+          </tr>
+        </thead>
+
+        <tbody>
+          {displayItems.map((row, i) => (
+            <tr key={i}>
+              {[...render.values()].map((colKey, j) => {
+                const value = row[colKey] ? String(row[colKey]) : "---";
+                return (
+                  <td className="h-8" key={`${i}-${j}`}>
+                    {value}
+                  </td>
+                );
+              })}
 
               {edit && (
-                <th className="w-24">
-                  <span className="sr-only">Acciones</span>
-                </th>
-              )}
-            </tr>
-          </thead>
-
-          <tbody>
-            {displayItems.map((row, i) => (
-              <tr key={i}>
-                {[...render.values()].map((colKey, j) => {
-                  const value = row[colKey] ? String(row[colKey]) : "---";
-                  return <td key={`${i}-${j}`}>{value}</td>;
-                })}
-
-                {edit && (
-                  <td className="table-form-actions">
-                    {editItem && (
-                      <Button
-                        type="button"
-                        onClick={() => editItem(i)}
-                        variant="ghost-clean"
-                        size="icon-sm"
-                        title="Editar"
-                      >
-                        <span className="sr-only">editar</span>
-                        <span aria-hidden="true">
-                          <SquarePen className="size-4" />
-                        </span>
-                      </Button>
-                    )}
-
+                <td className="table-form-actions">
+                  {editItem && (
                     <Button
                       type="button"
-                      onClick={() => deleteItem(i)}
+                      onClick={() => editItem(i)}
                       variant="ghost-clean"
                       size="icon-sm"
-                      title="Quitar"
+                      title="Editar"
                     >
-                      <span className="sr-only">Quitar</span>
+                      <span className="sr-only">editar</span>
                       <span aria-hidden="true">
-                        <Trash className="size-4" />
+                        <SquarePen className="size-4" />
                       </span>
                     </Button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                  )}
+
+                  <Button
+                    type="button"
+                    onClick={() => deleteItem(i)}
+                    variant="ghost-clean"
+                    size="icon-sm"
+                    title="Quitar"
+                  >
+                    <span className="sr-only">Quitar</span>
+                    <span aria-hidden="true">
+                      <Trash className="size-4" />
+                    </span>
+                  </Button>
+                </td>
+              )}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -17,11 +17,11 @@ import {
   normalizeUsersFromKC,
 } from "pages/monitoring/utils/manageUsers";
 
-export function UsersInput({
+export function UsersInput<T extends User>({
   selectedItems,
   setter,
   update,
-}: ItemEditorProps<User>) {
+}: ItemEditorProps<T>) {
   const [allUsers, setAllUsers] = useState<Partial<User>[]>([]);
   const [user, setUser] = useState<string>("");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
@@ -71,7 +71,7 @@ export function UsersInput({
       level: NEW_ADMIN_CREDENTIALS,
     } as User;
 
-    setter(newUser);
+    setter(newUser as T);
     setUser("");
     setInputErr({});
   };

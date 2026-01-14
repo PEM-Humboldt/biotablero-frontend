@@ -3,7 +3,6 @@ import type {
   LocationCompleteInfo,
   ODataInitiativeShortEntry,
 } from "pages/monitoring/types/requestParams";
-import type { Dispatch, SetStateAction } from "react";
 
 // NOTE: Información a suministrar para crear una iniciativa
 export type GeneralInfo = {
@@ -27,7 +26,7 @@ export type ImagesData = {
   bannerUrl?: File | string | null;
 };
 
-export type LocationData = {
+export type LocationDataBasic = {
   locationId: number;
   locality?: string;
 };
@@ -44,16 +43,13 @@ export type UserData = {
 
 export type InitiativeDataForm = {
   general: GeneralInfo;
-  locations: LocationData[];
+  locations: LocationDataBasic[];
   contacts: InitiativeContact[];
   users: UserData[];
   images: ImagesData;
 };
 
-export type InitiativeDataFormFormatted = Omit<
-  InitiativeDataForm,
-  "locations"
-> & {
+export type NewInitiativeDataGroups = Omit<InitiativeDataForm, "locations"> & {
   locations: LocationObj[];
 };
 
@@ -72,7 +68,7 @@ export type InitiativeDataFormErr = {
 };
 
 // NOTE: Data recibida del Servidor
-type WithID<T> = T & { id: number };
+export type WithID<T> = T & { id: number };
 type LocationSRC = LocationCompleteInfo;
 type ContactSRC = WithID<InitiativeContact & { initiativeId: number }>;
 type UserSRC = WithID<
@@ -141,17 +137,19 @@ export type TableRenderProps<T, R extends object> = {
   deleteItem: (itemId: number) => void;
   render: Map<string, keyof R>;
   edit: boolean;
+  className?: string;
 };
 
 export type ItemEditorProps<T> = {
   selectedItems?: T[];
   setter: (value: T) => void;
   update: T | null;
+  discard?: (value: number) => void;
 };
 
 // NOTE: Objetos para facilitar la manipulacion de la información
 export type LocationObj = {
-  locationId: number;
+  id: number;
   departmentId: number;
   department: string;
   municipalityId: number | null;

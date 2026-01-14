@@ -13,13 +13,23 @@ import {
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
 import { CircleXIcon, ListPlus } from "lucide-react";
-import { InitiativesDisplay } from "pages/monitoring/outlets/initiativesAdmin/InitiativesDisplay";
 import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@ui/shadCN/component/accordion";
+
+import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
+import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
@@ -34,8 +44,6 @@ export function InitiativesAdmin() {
   });
   const [newInitiative, setNewInitiative] = useState(false);
   const prevSearchParamsRef = useRef(searchParams);
-
-  // NOTE: desplegar la iniciativa que está como param en la url
 
   useEffect(() => {
     const loadInitiatives = async () => {
@@ -112,10 +120,32 @@ export function InitiativesAdmin() {
             reset={"reset"}
             className="bg-muted w-full"
           />
-          <InitiativesDisplay
-            initiativesInfo={initiatives}
-            updater={initiativeUpdater}
-          />
+
+          {initiatives === null ? (
+            <div>No hay iniciativas</div>
+          ) : (
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              {[...initiatives.entries()].map(([id, initiative]) => (
+                <AccordionItem value={String(id)} key={String(id)}>
+                  <AccordionTrigger
+                    className={cn(
+                      !initiative.enabled &&
+                        "bg-red-50 data-[state=open]:bg-accent",
+                    )}
+                  >
+                    <InitiativeTag initiative={initiative} />
+                  </AccordionTrigger>
+                  <AccordionContent className="px-2">
+                    <InitiativeCard
+                      initiative={initiative}
+                      updater={initiativeUpdater}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
+
           <TablePager
             currentPage={currentPage}
             recordsAvailable={initiativesFound}

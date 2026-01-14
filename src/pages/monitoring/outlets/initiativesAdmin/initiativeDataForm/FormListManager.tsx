@@ -72,7 +72,7 @@ export function FormListManager<T, R extends object>({
   return (
     <fieldset
       className={cn(
-        "px-4 pt-3 rounded-lg",
+        "px-4 pt-3 pb-4 rounded-lg",
         validationErrors.length > 0
           ? "bg-red-50 outline-2 outline-accent"
           : "bg-muted",
@@ -90,7 +90,7 @@ export function FormListManager<T, R extends object>({
           deleteItem={handleDelete}
           rowInfoCallback={renderRowCallback}
           render={renderMap}
-          edit={true}
+          edit={updateItem === null}
         />
       )}
 

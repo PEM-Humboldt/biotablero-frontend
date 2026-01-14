@@ -5,7 +5,7 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import {
   isLocationObj,
-  type LocationData,
+  type LocationDataBasic,
   type LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
@@ -17,8 +17,8 @@ import {
  * @returns `true` if a match is found based on name and ID; otherwise, `false`.
  */
 export function locationAlreadyExist(
-  lookfor: LocationData,
-  inLocations: (LocationData | LocationObj)[],
+  lookfor: LocationDataBasic,
+  inLocations: (LocationDataBasic | LocationObj)[],
 ): boolean {
   if (inLocations.length === 0) {
     return false;

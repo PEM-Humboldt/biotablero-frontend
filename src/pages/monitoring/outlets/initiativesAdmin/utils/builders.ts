@@ -1,12 +1,12 @@
 import { getLocationInfoById } from "pages/monitoring/utils/manageLocation";
 import type {
-  LocationData,
+  LocationDataBasic,
   LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { LocationCompleteInfo } from "pages/monitoring/types/requestParams";
 
 export async function fetchAndMakeLocationObj(
-  value: LocationData,
+  value: LocationDataBasic,
 ): Promise<LocationObj | null> {
   const { locationId, locality } = value;
   const info = await getLocationInfoById(locationId);
@@ -16,7 +16,7 @@ export async function fetchAndMakeLocationObj(
   const isMunicipality = !!info.parent;
 
   return {
-    locationId,
+    id: info.id,
     departmentId: isMunicipality ? info.parent!.id : info.id,
     department: isMunicipality ? info.parent!.name : info.name,
     municipalityId: isMunicipality ? info.id : null,
@@ -32,7 +32,7 @@ export function makeLocationObj(
   const isMunicipality = !!location.parent;
 
   return {
-    locationId: locationInfo.id,
+    id: locationInfo.id,
     departmentId: isMunicipality ? location.parent!.id : location.id,
     department: isMunicipality ? location.parent!.name : location.name,
     municipalityId: isMunicipality ? location.id : null,

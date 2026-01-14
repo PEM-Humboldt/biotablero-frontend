@@ -1,10 +1,10 @@
 import { type MutableRefObject } from "react";
 import {
-  type InitiativeDataFormFormatted,
   isInitiativeDisplayInfo,
+  type NewInitiativeDataGroups,
   type InitiativeDataForm,
-  type InitiativeDisplayInfo,
   type InitiativeFullInfo,
+  ExistingInitiativeDataGroups,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
 export function getInitialInfo(
@@ -34,9 +34,9 @@ export function getInitialInfo(
   };
 }
 
-export function groupInitiativeInfo(
+export function makeInitiativeInfoGroups(
   initiativeInfo: unknown,
-): InitiativeDataFormFormatted | null {
+): NewInitiativeDataGroups | null {
   if (!isInitiativeDisplayInfo(initiativeInfo)) {
     return null;
   }

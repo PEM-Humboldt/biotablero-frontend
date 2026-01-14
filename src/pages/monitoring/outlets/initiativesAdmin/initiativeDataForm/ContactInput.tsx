@@ -20,11 +20,11 @@ import type {
   ItemEditorProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 
-export function ContactInput({
+export function ContactInput<T extends InitiativeContact>({
   selectedItems,
   setter,
   update,
-}: ItemEditorProps<InitiativeContact>) {
+}: ItemEditorProps<T>) {
   const [email, setEmail] = useState(update?.email ?? "");
   const [phone, setPhone] = useState(update?.phone ?? "");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
@@ -74,7 +74,7 @@ export function ContactInput({
       newContact.phone = cleanPhone;
     }
 
-    setter(newContact);
+    setter(newContact as T);
     setInputErr({});
     setEmail("");
     setPhone("");
