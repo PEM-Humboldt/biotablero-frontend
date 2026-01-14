@@ -187,13 +187,13 @@ export function FormListUpdater<T, R extends object>({
   return (
     <div
       className={cn(
-        "p-4 rounded-lg",
+        "p-2 rounded-lg",
         viewEditPanel ? "bg-muted outline-2 outline-primary" : "",
       )}
     >
       <div
         id={`${initiativeId}_${listName}`}
-        className="font-normal flex flex-wrap justify-between text-primary items-end text-lg pb-2"
+        className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-2"
       >
         {title}
         {isEditable && <EditModeButton state={edit} setState={setEdit} />}

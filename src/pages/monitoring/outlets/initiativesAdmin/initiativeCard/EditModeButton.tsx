@@ -12,10 +12,12 @@ export function EditModeButton({
   return (
     <Button
       type="button"
-      variant={state ? "outline_destructive" : "outline"}
+      variant={state ? "outline_destructive" : "ghost-clean"}
       onClick={() => setState((s) => !s)}
+      size="icon-sm"
+      title={state ? "Terminar edición" : "Editar"}
     >
-      {state ? "Terminar edición" : "Editar"}
+      <span className="sr-only">{state ? "Terminar edición" : "Editar"}</span>
       {state ? <PencilOff aria-hidden="true" /> : <Pencil aria-hidden="true" />}
     </Button>
   );

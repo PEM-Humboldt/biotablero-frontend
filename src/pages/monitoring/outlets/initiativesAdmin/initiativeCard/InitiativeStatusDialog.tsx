@@ -24,7 +24,14 @@ export function InitiativeStatusDialog({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="icon" variant="destructive">
+        <Button
+          size="icon"
+          variant="destructive"
+          title={active ? "Desactivar iniciativa" : "Activar iniciativa"}
+        >
+          <span className="sr-only">
+            {active ? "Desactivar iniciativa" : "Activar iniciativa"}
+          </span>
           {active ? <Eye /> : <EyeClosed />}
         </Button>
       </AlertDialogTrigger>

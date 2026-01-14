@@ -135,7 +135,7 @@ export function InitiativesAdmin() {
                   >
                     <InitiativeTag initiative={initiative} />
                   </AccordionTrigger>
-                  <AccordionContent className="px-2">
+                  <AccordionContent className="p-0">
                     <InitiativeCard
                       initiative={initiative}
                       updater={initiativeUpdater}

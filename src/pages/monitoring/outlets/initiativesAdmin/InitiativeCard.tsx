@@ -118,48 +118,25 @@ export function InitiativeCard({
         )}
         data-enabled={initiative.enabled}
       >
-        <div className="flex justify-end gap-2">
-          {cardErrors.length > 0 && (
-            <ErrorsList
-              errId="card_errors"
-              errorItems={cardErrors}
-              className="flex items-center"
+        <article className="flex flex-col gap-2">
+          <div className="flex items-baseline gap-2 px-2 ">
+            <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
+              {initiative.name}
+            </h3>
+            {cardErrors.length > 0 && (
+              <ErrorsList
+                errId="card_errors"
+                errorItems={cardErrors}
+                className="flex items-center"
+              />
+            )}
+
+            <InitiativeStatusDialog
+              active={initiative.enabled}
+              name={initiative.name}
+              handler={() => void handleDisableInitiative()}
             />
-          )}
-
-          <InitiativeStatusDialog
-            active={initiative.enabled}
-            name={initiative.name}
-            handler={() => void handleDisableInitiative()}
-          />
-        </div>
-
-        <article>
-          <h1>las maricadas 666</h1>
-          <FormListUpdater
-            title="Información de contacto"
-            listName="contacts"
-            AddItemComponent={ContactInput}
-            maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
-            renderCols={
-              new Map<string, keyof InitiativeContact>([
-                ["correo", "email"],
-                ["tele", "phone"],
-              ])
-            }
-            backEndpoint="InitiativeContact"
-            isEditable={initiative.enabled}
-          />
-
-          <FormListUpdater
-            title="Lideres y liderezas"
-            listName="users"
-            AddItemComponent={UsersInput}
-            maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
-            renderCols={new Map<string, keyof User>([["Lider", "userName"]])}
-            backEndpoint="InitiativeUser"
-            isEditable={initiative.enabled}
-          />
+          </div>
 
           <FormListUpdater
             title="Ubicación de la iniciativa"
@@ -177,6 +154,33 @@ export function InitiativeCard({
             backEndpoint="InitiativeLocation"
             isEditable={initiative.enabled}
           />
+
+          <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
+            <FormListUpdater
+              title="Información de contacto"
+              listName="contacts"
+              AddItemComponent={ContactInput}
+              maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+              renderCols={
+                new Map<string, keyof InitiativeContact>([
+                  ["correo", "email"],
+                  ["tele", "phone"],
+                ])
+              }
+              backEndpoint="InitiativeContact"
+              isEditable={initiative.enabled}
+            />
+
+            <FormListUpdater
+              title="Lideres y liderezas"
+              listName="users"
+              AddItemComponent={UsersInput}
+              maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
+              renderCols={new Map<string, keyof User>([["Lider", "userName"]])}
+              backEndpoint="InitiativeUser"
+              isEditable={initiative.enabled}
+            />
+          </div>
         </article>
       </div>
     </InitiativeContext.Provider>
