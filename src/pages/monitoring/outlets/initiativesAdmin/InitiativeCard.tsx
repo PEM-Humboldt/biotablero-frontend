@@ -5,8 +5,11 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
+  INITIATIVE_CONTACTS_MIN_AMOUNT,
   INITIATIVE_LEADERS_MAX_AMOUNT,
+  INITIATIVE_LEADERS_MIN_AMOUNT,
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
+  INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
 
 import type { User } from "pages/monitoring/types/monitoring";
@@ -29,11 +32,11 @@ import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils
 import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
 
-export type InitiativeContextType = {
+export type InitiativeCtxType = {
   initiative: InitiativeFullInfo | null;
   updater: null | (() => Promise<void>);
 };
-export const InitiativeContext = createContext<InitiativeContextType>({
+export const InitiativeCtx = createContext<InitiativeCtxType>({
   initiative: null,
   updater: null,
 });
@@ -49,7 +52,7 @@ export function InitiativeCard({
   const [edit, setEdit] = useState(false);
   const [cardErrors, setCardErrors] = useState<string[]>([]);
 
-  const getInitiativeInfo = useCallback(async () => {
+  const getCardInfo = useCallback(async () => {
     const info = await getInitiative(initiative.id);
 
     if (isMonitoringAPIError(info)) {
@@ -76,8 +79,8 @@ export function InitiativeCard({
   }, [initiative.id, updater]);
 
   useEffect(() => {
-    void getInitiativeInfo();
-  }, [getInitiativeInfo]);
+    void getCardInfo();
+  }, [getCardInfo]);
 
   const handleDisableInitiative = async () => {
     if (!initiative) {
@@ -108,15 +111,14 @@ export function InitiativeCard({
   return !cardInfo ? (
     <div>No fue posible cargar la información, intenta de nuevo más tarde.</div>
   ) : (
-    <InitiativeContext.Provider
-      value={{ initiative: cardInfo, updater: getInitiativeInfo }}
+    <InitiativeCtx.Provider
+      value={{ initiative: cardInfo, updater: getCardInfo }}
     >
       <div
         className={cn(
           "p-4 mt-1 mb-2 rounded-lg",
           edit ? "outline outline-accent bg-white" : "",
         )}
-        data-enabled={initiative.enabled}
       >
         <article className="flex flex-col gap-2">
           <div className="flex items-baseline gap-2 px-2 ">
@@ -139,10 +141,11 @@ export function InitiativeCard({
           </div>
 
           <FormListUpdater
-            title="Ubicación de la iniciativa"
+            title="Ubicación"
             listName="locations"
             AddItemComponent={LocationInput}
             maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
+            minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
             renderCols={
               new Map<string, keyof LocationObj>([
                 ["Departamento", "department"],
@@ -161,6 +164,7 @@ export function InitiativeCard({
               listName="contacts"
               AddItemComponent={ContactInput}
               maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+              minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
               renderCols={
                 new Map<string, keyof InitiativeContact>([
                   ["correo", "email"],
@@ -176,13 +180,16 @@ export function InitiativeCard({
               listName="users"
               AddItemComponent={UsersInput}
               maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
-              renderCols={new Map<string, keyof User>([["Lider", "userName"]])}
+              minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
+              renderCols={
+                new Map<string, keyof User>([["Nombre de usuario", "userName"]])
+              }
               backEndpoint="InitiativeUser"
               isEditable={initiative.enabled}
             />
           </div>
         </article>
       </div>
-    </InitiativeContext.Provider>
+    </InitiativeCtx.Provider>
   );
 }

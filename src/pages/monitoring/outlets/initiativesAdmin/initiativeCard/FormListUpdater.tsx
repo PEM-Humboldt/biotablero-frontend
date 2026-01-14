@@ -13,15 +13,17 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
-  InitiativeContext,
-  type InitiativeContextType,
+  InitiativeCtx,
+  type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
+import { commonErrorMessage } from "@utils/ui";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
   listName: keyof InitiativeFullInfo;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   maxItems: number;
+  minItems?: number;
   renderCols: Map<string, keyof R>;
   renderRowsCallback?: (item: T) => R | null | Promise<R | null>;
   backEndpoint: string;
@@ -32,29 +34,30 @@ export function FormListUpdater<T, R extends object>({
   title,
   listName,
   AddItemComponent,
-  maxItems,
+  maxItems = Infinity,
+  minItems = 0,
   renderCols,
   renderRowsCallback,
   backEndpoint,
   isEditable,
 }: FormListUpdaterProps<T, R>) {
+  const { initiative, updater } = useContext<InitiativeCtxType>(InitiativeCtx);
   const [isLoading, setIsLoading] = useState(false);
   const [edit, setEdit] = useState(false);
   const [selectedItems, setSelectedItems] = useState<T[]>([]);
   const [updateItem, setUpdateItem] = useState<T | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-
-  const { initiative, updater } =
-    useContext<InitiativeContextType>(InitiativeContext);
-
-  const sectionInfo = initiative
-    ? (initiative[listName] as unknown as T[])
-    : null;
+  const viewEditPanel = isEditable && edit;
 
   useEffect(() => {
+    const sectionInfo = initiative
+      ? (initiative[listName] as unknown as T[])
+      : null;
+
     if (!sectionInfo) {
       return;
     }
+
     if (!renderRowsCallback) {
       setSelectedItems(sectionInfo);
       return;
@@ -67,35 +70,28 @@ export function FormListUpdater<T, R extends object>({
     };
 
     void setInfo();
-  }, [renderRowsCallback, sectionInfo]);
+  }, [renderRowsCallback, initiative, listName]);
 
   if (!initiative || !updater) {
     return null;
   }
 
   const updateInitiativeCallback = updater || null;
-  const totalItems = maxItems === 0 ? Infinity : maxItems;
   const initiativeId = initiative ? initiative.id : null;
-  const viewEditPanel = isEditable && edit;
 
-  const handleDelete = async (itemIndex: number) => {
-    if (isLoading) {
-      return;
-    }
-
-    const item = selectedItems[itemIndex];
+  const getItemId = (item: T | null): number | null => {
     if (
-      typeof item !== "object" ||
       !item ||
+      typeof item !== "object" ||
       !("id" in item) ||
       typeof item.id !== "number"
     ) {
-      console.error("Item sin id válido");
-      return;
+      return null;
     }
+    return item.id;
+  };
 
-    const itemId = item.id;
-
+  const removeItem = async (itemId: number) => {
     try {
       setIsLoading(true);
       const res = await monitoringAPI({
@@ -105,48 +101,42 @@ export function FormListUpdater<T, R extends object>({
       });
 
       if (isMonitoringAPIError(res)) {
-        console.error("apiErr:", res);
-        setErrors((oldErr) => [...oldErr, res.message]);
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          data || commonErrorMessage[status] || message,
+        ]);
+
         return;
       }
 
       if (res.status > 299) {
-        console.error("statusErr:", res);
-        setErrors((oldErr) => [...oldErr, "pailas"]);
+        setErrors((oldErr) => [
+          ...oldErr,
+          "Actualiza la ventana para confirmar la acción",
+        ]);
         return;
       }
 
-      setSelectedItems((oldItems) => [
-        ...oldItems.slice(0, itemIndex),
-        ...oldItems.slice(itemIndex + 1),
-      ]);
-
       await updateInitiativeCallback();
     } catch (err) {
-      console.error(err);
+      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
+      console.error("Critical error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleEdit = (itemId: number) => {
-    setUpdateItem({ ...selectedItems[itemId] });
-    setSelectedItems((oldItems) => [
-      ...oldItems.slice(0, itemId),
-      ...oldItems.slice(itemId + 1),
-    ]);
-  };
-
-  const handleSave: (newItem: T) => Promise<void> = async (newItem) => {
+  const handleSave: (itemInfo: T) => Promise<void> = async (itemInfo) => {
     try {
       setIsLoading(true);
+      const itemId = getItemId(updateItem);
 
       const res = await monitoringAPI<T>({
-        type: "put",
-        endpoint: `${backEndpoint}`,
-
+        type: itemId ? "post" : "put",
+        endpoint: itemId ? `${backEndpoint}/${itemId}` : backEndpoint,
         options: {
-          data: { ...newItem, initiativeId: initiativeId ?? "" },
+          data: { ...itemInfo, initiativeId: initiativeId ?? "" },
           headers: {
             accept: "application/json",
             "Content-Type": "application/json",
@@ -155,33 +145,80 @@ export function FormListUpdater<T, R extends object>({
       });
 
       if (isMonitoringAPIError(res)) {
-        console.error("pailas", res.message);
-        return;
-      }
-
-      if (!newItem) {
+        const { status, message, data } = res;
         setErrors((oldErr) => [
           ...oldErr,
-          "Se añadió el nuevo item pero no pudo renderizarse, actualiza la ventana para ver los cambios",
+          data || commonErrorMessage[status] || message,
         ]);
+
+        return;
       }
 
       const itemRender = renderRowsCallback
         ? (renderRowsCallback(res) as unknown as T)
         : res;
 
+      setUpdateItem(null);
       setSelectedItems((oldItems) => [...oldItems, itemRender]);
       await updateInitiativeCallback();
     } catch (err) {
-      console.error(err);
+      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
+      console.error("Critical error:", err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDiscard: (itemId: number) => Promise<void> = async (itemId) => {
-    await handleDelete(itemId);
+  const handleRemove = async (itemIndex: number) => {
+    if (isLoading) {
+      return;
+    }
+
+    const itemId = getItemId(selectedItems[itemIndex]);
+    if (!itemId) {
+      setErrors((oldErr) => [
+        ...oldErr,
+        "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
+      ]);
+      return;
+    }
+
+    await removeItem(itemId);
+
+    setSelectedItems((oldItems) => [
+      ...oldItems.slice(0, itemIndex),
+      ...oldItems.slice(itemIndex + 1),
+    ]);
+  };
+
+  const handleDiscard: () => Promise<void> = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    const itemId = getItemId(updateItem);
+    if (!itemId) {
+      setErrors((oldErr) => [
+        ...oldErr,
+        "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
+      ]);
+      return;
+    }
+
+    await removeItem(itemId);
     setUpdateItem(null);
+  };
+
+  const handleEdit = (itemId: number) => {
+    if (isLoading) {
+      return;
+    }
+
+    setUpdateItem(selectedItems[itemId]);
+    setSelectedItems((oldItems) => [
+      ...oldItems.slice(0, itemId),
+      ...oldItems.slice(itemId + 1),
+    ]);
   };
 
   return (
@@ -193,31 +230,37 @@ export function FormListUpdater<T, R extends object>({
     >
       <div
         id={`${initiativeId}_${listName}`}
-        className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-2"
+        className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         {title}
         {isEditable && <EditModeButton state={edit} setState={setEdit} />}
+        {edit && selectedItems.length <= minItems && (
+          <div className="text-right font-light text-base flex-1 text-foreground">
+            Siempre deben haber al menos {minItems} elemento
+            {minItems > 1 && "s"}.
+          </div>
+        )}
       </div>
 
       <form aria-labelledby={`${initiativeId}_${listName}`}>
         <ErrorsList errId="id" errorItems={errors} />
         {selectedItems.length > 0 && (
           <DisplayTable<T, R>
-            title="Información lista para guardar"
+            title="Información en la iniciativa"
             items={selectedItems}
             editItem={handleEdit}
-            deleteItem={(item) => void handleDelete(item)}
+            deleteItem={(itemIndex) => void handleRemove(itemIndex)}
             render={renderCols}
-            edit={viewEditPanel}
+            edit={viewEditPanel && selectedItems.length > minItems}
           />
         )}
 
-        {viewEditPanel && selectedItems.length < totalItems && (
+        {viewEditPanel && selectedItems.length < maxItems && (
           <AddItemComponent
             selectedItems={selectedItems}
             setter={(n) => void handleSave(n)}
             update={updateItem}
-            discard={(itemId) => void handleDiscard(itemId)}
+            discard={() => void handleDiscard()}
           />
         )}
       </form>
