@@ -43,8 +43,10 @@ import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiati
 export type InitiativeCtxType = {
   initiative: CardInfoGrouped | null;
   updater: null | (() => Promise<void>);
-  currentEdit: keyof CardInfoGrouped | null;
-  setCurrentEdit: Dispatch<SetStateAction<keyof CardInfoGrouped | null>> | null;
+  currentEdit: keyof CardInfoGrouped | "none" | null;
+  setCurrentEdit: Dispatch<
+    SetStateAction<keyof CardInfoGrouped | "none" | null>
+  > | null;
 };
 
 export const InitiativeCtx = createContext<InitiativeCtxType>({
@@ -63,9 +65,13 @@ export function InitiativeCard({
 }) {
   const [cardInfo, setCardInfo] = useState<InitiativeFullInfo | null>(null);
   const [cardErrors, setCardErrors] = useState<string[]>([]);
-  const [currentEdit, setCurrentEdit] = useState<keyof CardInfoGrouped | null>(
-    null,
-  );
+  const [currentEdit, setCurrentEdit] = useState<
+    keyof CardInfoGrouped | "none" | null
+  >(null);
+
+  useEffect(() => {
+    setCurrentEdit(cardInfo?.enabled ? "none" : null);
+  }, [cardInfo?.enabled]);
 
   const getCardInfo = useCallback(async () => {
     const info = await getInitiative(initiative.id);
@@ -118,6 +124,8 @@ export function InitiativeCard({
       console.error(res);
       return;
     }
+
+    setCurrentEdit(res.enabled ? "none" : null);
 
     void updater(res);
   };

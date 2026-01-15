@@ -46,8 +46,9 @@ export function FormListUpdater<T, R extends object>({
   const [updateItem, setUpdateItem] = useState<T | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const edit = currentEdit === listName;
+  const initiativeId = initiative?.id ?? null;
   const maxAmountItems = maxItems === 0 ? Infinity : maxItems;
+  const editThis = currentEdit === listName;
 
   useEffect(() => {
     const sectionInfo = initiative
@@ -73,23 +74,16 @@ export function FormListUpdater<T, R extends object>({
   }, [renderRowsCallback, initiative, listName]);
 
   useEffect(() => {
-    if (!edit && updateItem) {
-      const hangingItem = { ...updateItem };
+    if (!editThis && updateItem) {
+      setSelectedItems((oldItems) => [...oldItems, updateItem]);
       setUpdateItem(null);
-      setSelectedItems((oldItems) => [...oldItems, hangingItem]);
     }
-  }, [edit, updateItem]);
+  }, [editThis, updateItem]);
 
   if (!initiative || !updater) {
     return null;
   }
-
-  const isEditable = initiative.general.enabled;
-  const viewEditPanel = isEditable && edit;
-  const updateInitiativeCallback = updater || null;
-  const initiativeId = initiative ? initiative.id : null;
-
-  console.log(viewEditPanel);
+  const updateInitiativeCallback = updater;
 
   const getItemId = (item: T | null): number | null => {
     if (
@@ -234,20 +228,14 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const editPanelAction = () => {
-    setCurrentEdit!((curEdit) => (curEdit === listName ? null : listName));
-
-    if (!edit && updateItem) {
-      const hangingItem = { ...updateItem };
-      setUpdateItem(null);
-      setSelectedItems((oldItems) => [...oldItems, hangingItem]);
-    }
+    setCurrentEdit!((curEdit) => (curEdit === listName ? "none" : listName));
   };
 
   return (
     <div
       className={cn(
         "p-2 rounded-lg",
-        viewEditPanel ? "bg-muted outline-2 outline-primary" : "",
+        editThis ? "bg-muted outline-2 outline-primary" : "",
       )}
     >
       <div
@@ -255,10 +243,10 @@ export function FormListUpdater<T, R extends object>({
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         {title}
-        {isEditable && (
-          <EditModeButton state={edit} setState={() => editPanelAction()} />
+        {currentEdit && (
+          <EditModeButton state={editThis} setState={() => editPanelAction()} />
         )}
-        {viewEditPanel && selectedItems.length <= minItems && (
+        {editThis && selectedItems.length <= minItems && (
           <div className="text-right font-light text-base flex-1 text-foreground">
             Siempre deben haber al menos {minItems} elemento
             {minItems > 1 && "s"}.
@@ -275,11 +263,11 @@ export function FormListUpdater<T, R extends object>({
             editItem={handleEdit}
             deleteItem={(itemIndex) => void handleRemove(itemIndex)}
             render={renderCols}
-            edit={viewEditPanel && selectedItems.length > minItems}
+            edit={editThis && selectedItems.length > minItems}
           />
         )}
 
-        {viewEditPanel && selectedItems.length < maxAmountItems && (
+        {editThis && selectedItems.length < maxAmountItems && (
           <AddItemComponent
             selectedItems={selectedItems}
             setter={(n) => void handleSave(n)}
