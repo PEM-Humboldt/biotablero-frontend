@@ -149,11 +149,10 @@ export function LocationInput<T extends LocationDataBasic>({
   const handleDiscard = () => {
     if (update && discard) {
       discard();
-    } else {
-      setDepartment("");
-      setMunicipality("");
-      setLocality("");
     }
+    setDepartment("");
+    setMunicipality("");
+    setLocality("");
 
     setInputErr({});
   };

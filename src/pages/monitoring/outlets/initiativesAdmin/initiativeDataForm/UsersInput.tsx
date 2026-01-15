@@ -79,9 +79,8 @@ export function UsersInput<T extends User>({
   const handleDiscard = () => {
     if (update && discard) {
       discard();
-    } else {
-      setUser("");
     }
+    setUser("");
 
     setInputErr({});
   };

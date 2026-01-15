@@ -4,9 +4,10 @@ import {
   createContext,
   useState,
   useMemo,
+  type SetStateAction,
+  type Dispatch,
 } from "react";
 
-import { cn } from "@ui/shadCN/lib/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
 import {
@@ -42,10 +43,15 @@ import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiati
 export type InitiativeCtxType = {
   initiative: CardInfoGrouped | null;
   updater: null | (() => Promise<void>);
+  currentEdit: keyof CardInfoGrouped | null;
+  setCurrentEdit: Dispatch<SetStateAction<keyof CardInfoGrouped | null>> | null;
 };
+
 export const InitiativeCtx = createContext<InitiativeCtxType>({
   initiative: null,
   updater: null,
+  currentEdit: null,
+  setCurrentEdit: null,
 });
 
 export function InitiativeCard({
@@ -56,8 +62,10 @@ export function InitiativeCard({
   updater: (value: InitiativeFullInfo) => void;
 }) {
   const [cardInfo, setCardInfo] = useState<InitiativeFullInfo | null>(null);
-  const [edit, setEdit] = useState(false);
   const [cardErrors, setCardErrors] = useState<string[]>([]);
+  const [currentEdit, setCurrentEdit] = useState<keyof CardInfoGrouped | null>(
+    null,
+  );
 
   const getCardInfo = useCallback(async () => {
     const info = await getInitiative(initiative.id);
@@ -111,7 +119,6 @@ export function InitiativeCard({
       return;
     }
 
-    setEdit(false);
     void updater(res);
   };
 
@@ -135,84 +142,79 @@ export function InitiativeCard({
     <div>No fue posible cargar la información, intenta de nuevo más tarde.</div>
   ) : (
     <InitiativeCtx.Provider
-      value={{ initiative: cardInfoGrouped, updater: getCardInfo }}
+      value={{
+        initiative: cardInfoGrouped,
+        updater: getCardInfo,
+        currentEdit,
+        setCurrentEdit,
+      }}
     >
-      <div
-        className={cn(
-          "p-4 mt-1 mb-2 rounded-lg",
-          edit ? "outline outline-accent bg-white" : "",
-        )}
-      >
-        <article className="flex flex-col gap-2">
-          <div className="flex items-baseline gap-2 px-2 ">
-            <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
-              {initiative.name}
-            </h3>
-            {cardErrors.length > 0 && (
-              <ErrorsList
-                errId="card_errors"
-                errorItems={cardErrors}
-                className="flex items-center"
-              />
-            )}
-
-            <InitiativeStatusDialog
-              active={initiative.enabled}
-              name={initiative.name}
-              handler={() => void handleDisableInitiative()}
+      <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
+        <div className="flex items-baseline gap-2 px-2 ">
+          <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
+            {initiative.name}
+          </h3>
+          {cardErrors.length > 0 && (
+            <ErrorsList
+              errId="card_errors"
+              errorItems={cardErrors}
+              className="flex items-center"
             />
-          </div>
+          )}
 
+          <InitiativeStatusDialog
+            active={initiative.enabled}
+            name={initiative.name}
+            handler={() => void handleDisableInitiative()}
+          />
+        </div>
+
+        <FormListUpdater
+          title="Ubicación"
+          listName="locations"
+          AddItemComponent={LocationInput}
+          maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
+          minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
+          renderCols={
+            new Map<string, keyof LocationObj>([
+              ["Departamento", "department"],
+              ["Municipio", "municipality"],
+              ["Vereda", "locality"],
+            ])
+          }
+          renderRowsCallback={makeLocationObj}
+          backEndpoint="InitiativeLocation"
+        />
+
+        <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListUpdater
-            title="Ubicación"
-            listName="locations"
-            AddItemComponent={LocationInput}
-            maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
-            minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
+            title="Información de contacto"
+            listName="contacts"
+            AddItemComponent={ContactInput}
+            maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+            minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
             renderCols={
-              new Map<string, keyof LocationObj>([
-                ["Departamento", "department"],
-                ["Municipio", "municipality"],
-                ["Vereda", "locality"],
+              new Map<string, keyof InitiativeContact>([
+                ["correo", "email"],
+                ["tele", "phone"],
               ])
             }
-            renderRowsCallback={makeLocationObj}
-            backEndpoint="InitiativeLocation"
-            isEditable={initiative.enabled}
+            backEndpoint="InitiativeContact"
           />
 
-          <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
-            <FormListUpdater
-              title="Información de contacto"
-              listName="contacts"
-              AddItemComponent={ContactInput}
-              maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
-              minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
-              renderCols={
-                new Map<string, keyof InitiativeContact>([
-                  ["correo", "email"],
-                  ["tele", "phone"],
-                ])
-              }
-              backEndpoint="InitiativeContact"
-              isEditable={initiative.enabled}
-            />
-
-            <FormListUpdater
-              title="Lideres y liderezas"
-              listName="users"
-              AddItemComponent={UsersInput}
-              maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
-              minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
-              renderCols={
-                new Map<string, keyof User>([["Nombre de usuario", "userName"]])
-              }
-              backEndpoint="InitiativeUser"
-              isEditable={initiative.enabled}
-            />
-          </div>
-        </article>
-      </div>
+          <FormListUpdater
+            title="Lideres y liderezas"
+            listName="users"
+            AddItemComponent={UsersInput}
+            maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
+            minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
+            renderCols={
+              new Map<string, keyof User>([["Nombre de usuario", "userName"]])
+            }
+            backEndpoint="InitiativeUser"
+          />
+        </div>
+      </article>
     </InitiativeCtx.Provider>
   );
 }

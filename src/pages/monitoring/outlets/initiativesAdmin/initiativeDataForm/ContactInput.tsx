@@ -83,10 +83,9 @@ export function ContactInput<T extends InitiativeContact>({
   const handleDiscard = () => {
     if (update && discard) {
       discard();
-    } else {
-      setEmail("");
-      setPhone("");
     }
+    setEmail("");
+    setPhone("");
 
     setInputErr({});
   };

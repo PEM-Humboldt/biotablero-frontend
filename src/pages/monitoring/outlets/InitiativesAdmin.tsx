@@ -136,7 +136,7 @@ export function InitiativesAdmin() {
                   <AccordionTrigger
                     className={cn(
                       !initiative.enabled &&
-                        "bg-red-50 data-[state=open]:bg-accent",
+                        "bg-red-50 hover:bg-accent! data-[state=open]:bg-accent",
                     )}
                   >
                     <InitiativeTag initiative={initiative} />

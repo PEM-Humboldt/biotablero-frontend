@@ -27,7 +27,6 @@ type FormListUpdaterProps<T, R extends object> = {
   renderCols: Map<string, keyof R>;
   renderRowsCallback?: (item: T) => R | null | Promise<R | null>;
   backEndpoint: string;
-  isEditable: boolean;
 };
 
 export function FormListUpdater<T, R extends object>({
@@ -39,15 +38,15 @@ export function FormListUpdater<T, R extends object>({
   renderCols,
   renderRowsCallback,
   backEndpoint,
-  isEditable,
 }: FormListUpdaterProps<T, R>) {
-  const { initiative, updater } = useContext<InitiativeCtxType>(InitiativeCtx);
+  const { initiative, updater, currentEdit, setCurrentEdit } =
+    useContext<InitiativeCtxType>(InitiativeCtx);
   const [isLoading, setIsLoading] = useState(false);
-  const [edit, setEdit] = useState(false);
   const [selectedItems, setSelectedItems] = useState<T[]>([]);
   const [updateItem, setUpdateItem] = useState<T | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const viewEditPanel = isEditable && edit;
+
+  const edit = currentEdit === listName;
   const maxAmountItems = maxItems === 0 ? Infinity : maxItems;
 
   useEffect(() => {
@@ -73,12 +72,24 @@ export function FormListUpdater<T, R extends object>({
     void setInfo();
   }, [renderRowsCallback, initiative, listName]);
 
+  useEffect(() => {
+    if (!edit && updateItem) {
+      const hangingItem = { ...updateItem };
+      setUpdateItem(null);
+      setSelectedItems((oldItems) => [...oldItems, hangingItem]);
+    }
+  }, [edit, updateItem]);
+
   if (!initiative || !updater) {
     return null;
   }
 
+  const isEditable = initiative.general.enabled;
+  const viewEditPanel = isEditable && edit;
   const updateInitiativeCallback = updater || null;
   const initiativeId = initiative ? initiative.id : null;
+
+  console.log(viewEditPanel);
 
   const getItemId = (item: T | null): number | null => {
     if (
@@ -222,6 +233,16 @@ export function FormListUpdater<T, R extends object>({
     ]);
   };
 
+  const editPanelAction = () => {
+    setCurrentEdit!((curEdit) => (curEdit === listName ? null : listName));
+
+    if (!edit && updateItem) {
+      const hangingItem = { ...updateItem };
+      setUpdateItem(null);
+      setSelectedItems((oldItems) => [...oldItems, hangingItem]);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -234,8 +255,10 @@ export function FormListUpdater<T, R extends object>({
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         {title}
-        {isEditable && <EditModeButton state={edit} setState={setEdit} />}
-        {edit && selectedItems.length <= minItems && (
+        {isEditable && (
+          <EditModeButton state={edit} setState={() => editPanelAction()} />
+        )}
+        {viewEditPanel && selectedItems.length <= minItems && (
           <div className="text-right font-light text-base flex-1 text-foreground">
             Siempre deben haber al menos {minItems} elemento
             {minItems > 1 && "s"}.

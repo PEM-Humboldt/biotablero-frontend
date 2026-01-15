@@ -50,7 +50,7 @@ export function FormListManager<T, R extends object>({
   }, [selectedItems, sectionUpdater]);
 
   const handleEdit = (itemIndex: number) => {
-    setUpdateItem({ ...selectedItems[itemIndex] });
+    setUpdateItem(selectedItems[itemIndex]);
     setSelectedItems((oldItems) => [
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),
@@ -62,6 +62,7 @@ export function FormListManager<T, R extends object>({
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),
     ]);
+    setUpdateItem(null);
   };
 
   const handleSave: (newItem: T) => void = (newItem) => {
@@ -99,6 +100,7 @@ export function FormListManager<T, R extends object>({
           selectedItems={selectedItems}
           setter={handleSave}
           update={updateItem}
+          discard={() => setUpdateItem(null)}
         />
       )}
     </fieldset>
