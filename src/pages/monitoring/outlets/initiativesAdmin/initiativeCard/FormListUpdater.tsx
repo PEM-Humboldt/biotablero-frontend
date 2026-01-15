@@ -1,6 +1,6 @@
 import { type ElementType, useContext, useEffect, useState } from "react";
 import type {
-  InitiativeFullInfo,
+  CardInfoGrouped,
   ItemEditorProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { cn } from "@ui/shadCN/lib/utils";
@@ -20,7 +20,7 @@ import { commonErrorMessage } from "@utils/ui";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
-  listName: keyof InitiativeFullInfo;
+  listName: keyof CardInfoGrouped;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   maxItems: number;
   minItems?: number;
@@ -48,6 +48,7 @@ export function FormListUpdater<T, R extends object>({
   const [updateItem, setUpdateItem] = useState<T | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const viewEditPanel = isEditable && edit;
+  const maxAmountItems = maxItems === 0 ? Infinity : maxItems;
 
   useEffect(() => {
     const sectionInfo = initiative
@@ -255,7 +256,7 @@ export function FormListUpdater<T, R extends object>({
           />
         )}
 
-        {viewEditPanel && selectedItems.length < maxItems && (
+        {viewEditPanel && selectedItems.length < maxAmountItems && (
           <AddItemComponent
             selectedItems={selectedItems}
             setter={(n) => void handleSave(n)}

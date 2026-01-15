@@ -31,7 +31,7 @@ import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/ut
 import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
 import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
-  getInitialInfo,
+  makeInitialInfo,
   setFormField,
 } from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
 import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
@@ -41,7 +41,7 @@ export function InitiativeDataForm() {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [isPending, setIsPending] = useState(false);
-  const initiative = useRef<InitiativeDataForm>(getInitialInfo());
+  const initiative = useRef<InitiativeDataForm>(makeInitialInfo());
 
   const handleFormUpdate = useCallback(
     <K extends keyof InitiativeDataForm>(key: K) =>
@@ -50,7 +50,7 @@ export function InitiativeDataForm() {
   );
 
   const handleFormReset = () => {
-    initiative.current = getInitialInfo();
+    initiative.current = makeInitialInfo();
     setformID((prev) => prev + 1);
     setErrors({});
   };

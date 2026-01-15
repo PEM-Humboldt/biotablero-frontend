@@ -31,6 +31,12 @@ import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/Initia
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
 
+// TODO:
+// 1. Montar componente de info e imágenes
+// 2. atrapar los errores raritos del servidor (revisar todos los componentes)
+// 3. montar anuncios de carga
+// 4. complementar la barra de búsqueda
+
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
     number,

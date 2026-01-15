@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { Check, CirclePlus, Mail, Phone, UndoDot } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { Button } from "@ui/shadCN/component/button";
 import {
   InputGroup,
   InputGroupAddon,
@@ -19,20 +17,23 @@ import type {
   InitiativeContact,
   ItemEditorProps,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
 export function ContactInput<T extends InitiativeContact>({
   selectedItems,
   setter,
   update,
+  discard,
 }: ItemEditorProps<T>) {
   const [email, setEmail] = useState(update?.email ?? "");
   const [phone, setPhone] = useState(update?.phone ?? "");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   const reset = useCallback(() => {
-    setInputErr({});
     setEmail(update?.email ?? "");
     setPhone(update?.phone ?? "");
+
+    setInputErr({});
   }, [update?.email, update?.phone]);
 
   useEffect(() => {
@@ -40,8 +41,6 @@ export function ContactInput<T extends InitiativeContact>({
   }, [reset]);
 
   const handleSave = () => {
-    setInputErr({});
-
     const [cleanEmail, emailErrors] = new StrValidator(email)
       .sanitize()
       .isRequired()
@@ -75,9 +74,21 @@ export function ContactInput<T extends InitiativeContact>({
     }
 
     setter(newContact as T);
-    setInputErr({});
     setEmail("");
     setPhone("");
+
+    setInputErr({});
+  };
+
+  const handleDiscard = () => {
+    if (update && discard) {
+      discard();
+    } else {
+      setEmail("");
+      setPhone("");
+    }
+
+    setInputErr({});
   };
 
   return (
@@ -137,39 +148,12 @@ export function ContactInput<T extends InitiativeContact>({
         </InputGroup>
       </div>
 
-      <ButtonGroup>
-        <Button
-          onClick={handleSave}
-          type="button"
-          variant="outline"
-          size="icon"
-          title={update !== null ? "Guardar cambios" : "Añadir contacto"}
-        >
-          <span className="sr-only">
-            {update !== null ? "Guardar cambios" : "Añadir contacto"}
-          </span>
-          <span aria-hidden="true">
-            {update !== null ? (
-              <Check className="size-5" />
-            ) : (
-              <CirclePlus className="size-5" />
-            )}
-          </span>
-        </Button>
-
-        <Button
-          onClick={reset}
-          type="button"
-          variant="outline"
-          size="icon"
-          title="Restablecer campos"
-        >
-          <span className="sr-only">Restablecer campos</span>
-          <span aria-hidden="true">
-            <UndoDot className="size-5" />
-          </span>
-        </Button>
-      </ButtonGroup>
+      <InputListActionButtons
+        update={update}
+        handleSave={handleSave}
+        handleDiscard={handleDiscard}
+        reset={() => void reset()}
+      />
     </div>
   );
 }

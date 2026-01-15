@@ -1,4 +1,10 @@
-import { useCallback, useEffect, createContext, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  createContext,
+  useState,
+  useMemo,
+} from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -14,6 +20,7 @@ import {
 
 import type { User } from "pages/monitoring/types/monitoring";
 import type {
+  CardInfoGrouped,
   InitiativeContact,
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
@@ -33,7 +40,7 @@ import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiative
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
 
 export type InitiativeCtxType = {
-  initiative: InitiativeFullInfo | null;
+  initiative: CardInfoGrouped | null;
   updater: null | (() => Promise<void>);
 };
 export const InitiativeCtx = createContext<InitiativeCtxType>({
@@ -108,11 +115,27 @@ export function InitiativeCard({
     void updater(res);
   };
 
-  return !cardInfo ? (
+  const cardInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
+    if (!cardInfo) {
+      return null;
+    }
+    const { locations, users, contacts, ...rest } = cardInfo;
+    const { imageUrl, bannerUrl, ...general } = rest;
+    return {
+      id: general.id,
+      general,
+      locations,
+      contacts,
+      users,
+      images: { imageUrl, bannerUrl },
+    };
+  }, [cardInfo]);
+
+  return !cardInfoGrouped ? (
     <div>No fue posible cargar la información, intenta de nuevo más tarde.</div>
   ) : (
     <InitiativeCtx.Provider
-      value={{ initiative: cardInfo, updater: getCardInfo }}
+      value={{ initiative: cardInfoGrouped, updater: getCardInfo }}
     >
       <div
         className={cn(

@@ -1,12 +1,9 @@
 import { type SetStateAction, useCallback, useEffect, useState } from "react";
-import { Check, CirclePlus, Trash2, UndoDot } from "lucide-react";
 
-import { Button } from "@ui/shadCN/component/button";
 import { Label } from "@ui/shadCN/component/label";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { StrValidator } from "@utils/strValidator";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import {
@@ -28,6 +25,7 @@ import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/
 import type { LocationList } from "pages/monitoring/types/monitoring";
 import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
 import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
+import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
 export function LocationInput<T extends LocationDataBasic>({
   selectedItems,
@@ -69,6 +67,7 @@ export function LocationInput<T extends LocationDataBasic>({
 
   const reset = useCallback(async () => {
     setInputErr({});
+
     if (update === null) {
       setDepartment("");
       setMunicipality("");
@@ -143,6 +142,19 @@ export function LocationInput<T extends LocationDataBasic>({
     setDepartment("");
     setMunicipality("");
     setLocality("");
+
+    setInputErr({});
+  };
+
+  const handleDiscard = () => {
+    if (update && discard) {
+      discard();
+    } else {
+      setDepartment("");
+      setMunicipality("");
+      setLocality("");
+    }
+
     setInputErr({});
   };
 
@@ -151,14 +163,6 @@ export function LocationInput<T extends LocationDataBasic>({
     setMunicipality("");
     setLocality("");
   };
-
-  const handleDiscard = discard
-    ? discard
-    : () => {
-        setDepartment("");
-        setMunicipality("");
-        setLocality("");
-      };
 
   return (
     <>
@@ -246,58 +250,12 @@ export function LocationInput<T extends LocationDataBasic>({
           </InputGroup>
         </div>
 
-        <ButtonGroup>
-          <ButtonGroup>
-            <Button
-              onClick={handleSave}
-              type="button"
-              variant="outline"
-              size="icon"
-              title={update !== null ? "Guardar cambios" : "Añadir ubicación"}
-            >
-              <span className="sr-only">
-                {update !== null ? "Guardar cambios" : "Añadir ubicación"}
-              </span>
-              <span aria-hidden="true">
-                {update !== null ? (
-                  <Check className="size-5" />
-                ) : (
-                  <CirclePlus className="size-5" />
-                )}
-              </span>
-            </Button>
-
-            <Button
-              onClick={() => void reset()}
-              type="button"
-              variant="outline"
-              size="icon"
-              title="Restablecer campos"
-            >
-              <span className="sr-only">Restablecer campos</span>
-              <span aria-hidden="true">
-                <UndoDot className="size-5" />
-              </span>
-            </Button>
-          </ButtonGroup>
-
-          {update && (
-            <ButtonGroup>
-              <Button
-                onClick={handleDiscard}
-                type="button"
-                variant="outline_destructive"
-                size="icon"
-                title="Desechar"
-              >
-                <span className="sr-only">Desechar elemento</span>
-                <span aria-hidden="true">
-                  <Trash2 className="size-5" />
-                </span>
-              </Button>
-            </ButtonGroup>
-          )}
-        </ButtonGroup>
+        <InputListActionButtons
+          update={update}
+          handleSave={handleSave}
+          handleDiscard={handleDiscard}
+          reset={() => void reset()}
+        />
       </div>
     </>
   );

@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus } from "lucide-react";
 import { Combobox } from "@ui/ComboBox";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
@@ -16,11 +14,13 @@ import {
   NEW_ADMIN_CREDENTIALS,
   normalizeUsersFromKC,
 } from "pages/monitoring/utils/manageUsers";
+import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
 export function UsersInput<T extends User>({
   selectedItems,
   setter,
   update,
+  discard,
 }: ItemEditorProps<T>) {
   const [allUsers, setAllUsers] = useState<Partial<User>[]>([]);
   const [user, setUser] = useState<string>("");
@@ -76,6 +76,16 @@ export function UsersInput<T extends User>({
     setInputErr({});
   };
 
+  const handleDiscard = () => {
+    if (update && discard) {
+      discard();
+    } else {
+      setUser("");
+    }
+
+    setInputErr({});
+  };
+
   return (
     <div className="form-input-list">
       <div>
@@ -103,19 +113,11 @@ export function UsersInput<T extends User>({
         />
       </div>
 
-      <div>
-        <Button
-          onClick={handleSave}
-          type="button"
-          variant="outline"
-          size="icon"
-        >
-          <span className="sr-only">Incorporar como lider a la iniciativa</span>
-          <span aria-hidden="true">
-            <CirclePlus className="size-5" />
-          </span>
-        </Button>
-      </div>
+      <InputListActionButtons
+        update={update}
+        handleSave={handleSave}
+        handleDiscard={handleDiscard}
+      />
     </div>
   );
 }
