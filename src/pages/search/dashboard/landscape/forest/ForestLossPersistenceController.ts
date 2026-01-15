@@ -75,11 +75,11 @@ export class ForestLossPersistenceController {
       throw Error("Area undefined");
     }
 
-    return SearchAPI.requestMetricsValues<"LossPersistence">(
-      "LossPersistence",
+    return SearchAPI.requestMetricsValues<"lossPersistence">(
+      "lossPersistence",
       Number(this.areaId),
     )
-      .then((data: Array<MetricTypesMap["LossPersistence"]>) => {
+      .then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((item) => {
           const itemMapped = MetricsUtils.mapLPResponse(item);
           return MetricsUtils.calcLPAreas(itemMapped);

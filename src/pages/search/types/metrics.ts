@@ -8,15 +8,17 @@ export type MetricDataStructure<
 };
 
 export type MetricTypesMap = {
-  Coverage: MetricDataStructure<
-    "ano",
-    "natural" | "secundaria" | "transformada"
+  coverage: MetricDataStructure<
+    "id",
+    "Natural" | "Secundaria" | "Transformada"
   >;
-  LossPersistence: MetricDataStructure<
-    "periodo",
-    "perdida" | "persistencia" | "no_bosque"
+  lossPersistence: Array<
+    MetricDataStructure<"id", "perdida" | "persistencia" | "no_bosque">
   >;
-  CurrentHF: MetricDataStructure<"ano", "natural" | "baja" | "media" | "alta">;
+  currentHF: MetricDataStructure<
+    "id",
+    "Natural" | "Baja" | "Media" | "Alta" | "Muy Alta"
+  >;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;

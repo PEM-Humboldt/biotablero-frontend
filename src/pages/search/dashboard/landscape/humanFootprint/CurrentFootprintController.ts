@@ -151,19 +151,32 @@ export class CurrentFootprintController {
   };
 
   transformData = (
-    resData: Array<MetricTypesMap["CurrentHF"]>,
+    resData: MetricTypesMap["currentHF"],
   ): LargeStackedBarData[] => {
-    if (!resData.length) return [];
+    if (!resData) return [];
 
-    const { ano, ...categories } = resData[0];
+    const { id, ...categories } = resData;
 
     const totalArea: number = Object.values(categories).reduce(
       (total: number, value) => total + Number(value),
       0,
     );
 
-    return Object.entries(categories).map(([key, value]) => {
-      const area = Number(value);
+    /**
+     * TODO: No sé si hay una mejor forma de ordenar el objeto resultado,
+     * intenté sacar los valores directamente de las keys de MetricTypesMap["currentHF"]
+     * pero el mismo interprete de typescript me los pasaba ya desordenados
+     */
+    const order: (keyof Omit<MetricTypesMap["currentHF"], "id">)[] = [
+      "Natural",
+      "Baja",
+      "Media",
+      "Alta",
+      "Muy Alta",
+    ];
+
+    return order.map((key) => {
+      const area = Number(categories[key]) || 0;
 
       return {
         key,

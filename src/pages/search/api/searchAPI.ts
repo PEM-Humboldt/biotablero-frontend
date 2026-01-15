@@ -81,7 +81,7 @@ class SearchAPI {
   static requestMetricsValues<Metric extends MetricsTypes>(
     metricId: Metric,
     polygonId: number,
-  ): Promise<Array<MetricTypesMap[Metric]>> {
+  ): Promise<MetricTypesMap[Metric]> {
     return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 

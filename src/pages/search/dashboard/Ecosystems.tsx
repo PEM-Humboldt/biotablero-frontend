@@ -223,9 +223,9 @@ export function Ecosystems() {
 
     controller.setArea(areaTypeId, areaIdId);
 
-    SearchAPI.requestMetricsValues<"Coverage">("Coverage", Number(areaIdId))
+    SearchAPI.requestMetricsValues<"coverage">("coverage", Number(areaIdId))
       .then((res) => {
-        const obtainedPeriod = res[0]?.ano ?? "";
+        const obtainedPeriod = res?.id ?? "";
         dispatch({ type: "SET_PERIOD", payload: obtainedPeriod });
 
         dispatch({
