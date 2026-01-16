@@ -37,7 +37,7 @@ import {
 import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 
 // TODO: Cargar solo las imagenes cuando solo falla ese pedazo y se creo la Ini
-export function InitiativeDataForm() {
+export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -117,6 +117,8 @@ export function InitiativeDataForm() {
           images: { root: imageUploadErrors },
         }));
       }
+
+      onSuccess();
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: ["Error interno de la app"] }));
       console.error("Critical error:", err);

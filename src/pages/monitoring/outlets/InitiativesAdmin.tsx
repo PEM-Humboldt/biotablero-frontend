@@ -34,6 +34,7 @@ import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
 // TODO:
+// 1. textarea auto altura...
 // 4. complementar la barra de búsqueda
 
 export function InitiativesAdmin() {
@@ -52,53 +53,53 @@ export function InitiativesAdmin() {
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadInitiatives = async () => {
-      if (prevSearchParamsRef.current !== searchParams) {
-        setCurrentPage(1);
-        prevSearchParamsRef.current = searchParams;
+  const loadInitiatives = useCallback(async () => {
+    if (prevSearchParamsRef.current !== searchParams) {
+      setCurrentPage(1);
+      prevSearchParamsRef.current = searchParams;
+    }
+
+    const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
+    const newSearchParams = { ...searchParams, skip };
+
+    try {
+      const res = await getInitiatives(newSearchParams);
+
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setError(
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        );
+        console.error(res);
+
+        setInitiatives(null);
+        setInitiativesFound(0);
+        return;
       }
 
-      const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
-      const newSearchParams = { ...searchParams, skip };
+      const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
+        res.value.reduce((acc, cur) => {
+          const updatedEntry = {
+            ...cur,
+            locations: cur.locations.map(makeLocationObj),
+          };
+          acc.set(cur.id, updatedEntry);
+          return acc;
+        }, new Map<number, InitiativeDisplayInfoShort>());
 
-      try {
-        const res = await getInitiatives(newSearchParams);
-
-        if (isMonitoringAPIError(res)) {
-          const { status, message, data } = res;
-          setError(
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          );
-          console.error(res);
-
-          setInitiatives(null);
-          setInitiativesFound(0);
-          return;
-        }
-
-        const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
-          res.value.reduce((acc, cur) => {
-            const updatedEntry = {
-              ...cur,
-              locations: cur.locations.map(makeLocationObj),
-            };
-            acc.set(cur.id, updatedEntry);
-            return acc;
-          }, new Map<number, InitiativeDisplayInfoShort>());
-
-        setError("");
-        setInitiatives(initiativesObj);
-        setInitiativesFound(res["@odata.count"]);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void loadInitiatives();
+      setError("");
+      setInitiatives(initiativesObj);
+      setInitiativesFound(res["@odata.count"]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }, [searchParams, currentPage]);
+
+  useEffect(() => {
+    void loadInitiatives();
+  }, [loadInitiatives]);
 
   const initiativeUpdater = useCallback((value: InitiativeFullInfo) => {
     const updatedValue = {
@@ -112,6 +113,11 @@ export function InitiativesAdmin() {
       return newMap;
     });
   }, []);
+
+  const onCreateSuccess = () => {
+    setNewInitiative(false);
+    void loadInitiatives();
+  };
 
   return (
     <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
@@ -128,7 +134,7 @@ export function InitiativesAdmin() {
       {error !== "" && <ErrorsList errorItems={[error]} />}
 
       {newInitiative ? (
-        <InitiativeDataForm />
+        <InitiativeDataForm onSuccess={onCreateSuccess} />
       ) : (
         <>
           <ODataSearchBar
