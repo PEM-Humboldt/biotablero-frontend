@@ -1,4 +1,5 @@
 import type { ImageMimeType } from "@appTypes/formats";
+import { Dispatch, SetStateAction } from "react";
 
 export type ImgValidatorResponse = [file: File | null, errors: string[]];
 
@@ -7,18 +8,28 @@ export type ImgValidatorResponse = [file: File | null, errors: string[]];
  * Chain methods to validate file metadata and image properties.
  *
  * * @remarks
- * If `validateDimensions` is used in the chain, the execution becomes asynchronous
- * and the final result must be awaited.
+ * If `validateDimensions` is used in the chain, the execution becomes asynchronous and the final result must be awaited.
+ * It is recommended to provide a `submitBlocker` to prevent race conditions between the validation process and the form submission when using asynchronous methods.
  */
 export class ImgValidator {
   private imgFile: File | null;
   private errors: string[] = [];
+  private submitBlocker?:
+    | Dispatch<SetStateAction<boolean>>
+    | ((block: boolean) => void);
 
   /**
    * @param imgFile - Initial File object to validate.
+   * @param submitBlocker - Optional state setter to manage UI blocking during async operations.
    */
-  constructor(imgFile: File | null) {
+  constructor(
+    imgFile: File | null,
+    submitBlocker?:
+      | Dispatch<SetStateAction<boolean>>
+      | ((block: boolean) => void),
+  ) {
     this.imgFile = imgFile || null;
+    this.submitBlocker = submitBlocker;
   }
 
   /**
@@ -66,6 +77,7 @@ export class ImgValidator {
 
   /**
    * Asynchronously validates image dimensions and aspect ratio.
+   * It Triggers `submitBlocker(true)` before execution.
    *
    * @param constraints - Object containing dimension limits and aspect ratio units.
    * @param constraints.minWidth - Minimum width required in pixels.
@@ -86,6 +98,10 @@ export class ImgValidator {
   }) {
     if (!this.imgFile || !this.imgFile.type.startsWith("image/")) {
       return this;
+    }
+
+    if (this.submitBlocker) {
+      this.submitBlocker(true);
     }
 
     return new Promise<ImgValidator>((resolve) => {
@@ -148,9 +164,13 @@ export class ImgValidator {
   }
 
   /**
-   * Gets the original file and the collection of validation errors.
+   * Gets the original file and the collection of validation errors and triggers `submitBlocker(false)`.
    */
   get result(): ImgValidatorResponse {
+    if (this.submitBlocker) {
+      this.submitBlocker(false);
+    }
+
     return [this.imgFile, this.errors];
   }
 }

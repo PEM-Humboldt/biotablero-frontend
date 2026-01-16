@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 import {
   ErrorsList,
@@ -36,11 +42,15 @@ export function GeneralInfoInput<T extends GeneralInfo>({
   sectionInfo,
   sectionUpdater,
   validationErrorsObj = {},
+  submitBlocker,
 }: {
   title?: string;
   sectionInfo: GeneralInfo;
   sectionUpdater: (value: T) => void;
   validationErrorsObj: Partial<InitiativeDataFormErr["general"]>;
+  submitBlocker?:
+    | Dispatch<SetStateAction<boolean>>
+    | ((value: boolean) => void);
 }) {
   const [generalInfo, setGeneralInfo] = useState<Required<GeneralInfo>>({
     name: sectionInfo.name ?? "",
@@ -62,16 +72,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
     setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
   }, [validationErrorsObj]);
 
-  const setGeneralInfoItem = useCallback(
-    (key: keyof GeneralInfo, value: string) => {
-      setGeneralInfo((oldObj) => {
-        const provitionalInfo = { ...oldObj, [key]: value };
-        sectionUpdater(provitionalInfo as T);
-        return provitionalInfo;
-      });
-    },
-    [sectionUpdater],
-  );
+  const setGeneralInfoItem = (key: keyof GeneralInfo) => (value: string) => {
+    setGeneralInfo((oldObj) => ({ ...oldObj, [key]: value }));
+  };
 
   const validateField = useCallback(
     (fieldName: keyof GeneralInfo, validation: StrValidator) => {
@@ -83,15 +86,21 @@ export function GeneralInfoInput<T extends GeneralInfo>({
       }
 
       setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
-      setGeneralInfoItem(fieldName, cleanValue);
+      setGeneralInfoItem(fieldName)(cleanValue);
+
+      const infoClean = Object.fromEntries(
+        Object.entries(generalInfo).filter(([_, value]) => Boolean(value)),
+      ) as T;
+
+      sectionUpdater(infoClean);
     },
-    [setGeneralInfoItem],
+    [generalInfo, sectionUpdater],
   );
 
   const nameOnBlur = async () =>
     validateField(
       "name",
-      await new StrValidator(generalInfo.name)
+      await new StrValidator(generalInfo.name, submitBlocker)
         .sanitize()
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH)
@@ -169,7 +178,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               id="name"
               type="text"
               value={generalInfo.name}
-              onChange={(e) => setGeneralInfoItem("name", e.target.value)}
+              onChange={(e) => setGeneralInfoItem("name")(e.target.value)}
               onBlur={() => void nameOnBlur()}
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
@@ -206,7 +215,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               placeholder="JPLA"
               type="text"
               value={generalInfo.shortName}
-              onChange={(e) => setGeneralInfoItem("shortName", e.target.value)}
+              onChange={(e) => setGeneralInfoItem("shortName")(e.target.value)}
               onBlur={shortNameOnBlur}
               autoComplete="off"
               maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
@@ -249,7 +258,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             name="description"
             placeholder="Esta iniciativa busca..."
             value={generalInfo.description}
-            onChange={(e) => setGeneralInfoItem("description", e.target.value)}
+            onChange={(e) => setGeneralInfoItem("description")(e.target.value)}
             onBlur={descriptionOnBlur}
             maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             aria-invalid={inputErr.description !== undefined}
@@ -290,7 +299,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               placeholder="El área de influencia de esta iniciativa es..."
               value={generalInfo.influenceArea}
               onChange={(e) =>
-                setGeneralInfoItem("influenceArea", e.target.value)
+                setGeneralInfoItem("influenceArea")(e.target.value)
               }
               onBlur={influenceOnBlur}
               maxLength={INITIAVIVE_INFLUENCE_MAX_LENGTH}
@@ -330,7 +339,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               name="objective"
               placeholder="El objetivo de esta iniciativa es..."
               value={generalInfo.objective}
-              onChange={(e) => setGeneralInfoItem("objective", e.target.value)}
+              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
               onBlur={objectiveOnBlur}
               maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
               aria-invalid={inputErr.objective !== undefined}

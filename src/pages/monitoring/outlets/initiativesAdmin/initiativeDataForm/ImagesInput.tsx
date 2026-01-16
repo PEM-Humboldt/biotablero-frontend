@@ -1,6 +1,8 @@
 import {
   type ChangeEvent,
+  type Dispatch,
   type RefObject,
+  type SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -33,11 +35,15 @@ export function ImagesInput({
   sectionInfo,
   sectionUpdater,
   validationErrorsObj = {},
+  submitBlocker,
 }: {
   title?: string;
   sectionInfo: ImagesData;
   sectionUpdater: (value: ImagesData) => void;
   validationErrorsObj: Partial<InitiativeDataFormErr["images"]>;
+  submitBlocker?:
+    | Dispatch<SetStateAction<boolean>>
+    | ((value: boolean) => void);
 }) {
   const [imagesInfo, setImagesInfo] = useState<ImagesData>({
     imageUrl: setInitialImageInfo(sectionInfo.imageUrl),
@@ -78,7 +84,7 @@ export function ImagesInput({
         return;
       }
 
-      const imageToValidate = new ImgValidator(fileInput);
+      const imageToValidate = new ImgValidator(fileInput, submitBlocker);
       const validatedImg = await validation(imageToValidate);
       const [file, errors] = validatedImg.result;
 

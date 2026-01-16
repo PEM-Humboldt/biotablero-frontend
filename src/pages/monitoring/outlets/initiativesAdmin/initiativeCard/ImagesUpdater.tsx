@@ -17,10 +17,10 @@ import {
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
+import { ImagePreview } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagePreview";
 import { Button } from "@ui/shadCN/component/button";
 import { uploadImages } from "pages/monitoring/api/monitoringAPI";
 import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
-import { ImageOff } from "lucide-react";
 
 type ImagesUpdaterProps = {
   title: string;
@@ -123,58 +123,18 @@ export function ImagesUpdater({
 
       {!editThis ? (
         <div className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]">
-          <div>
-            Imagen de la iniciativa
-            <div
-              className={cn(
-                "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white h-[200px] transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
-              )}
-            >
-              <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
-                {sectionInfo.current?.imageUrl &&
-                typeof sectionInfo.current.imageUrl === "string" ? (
-                  <img
-                    src={sectionInfo.current.imageUrl}
-                    alt={`Vista previa de la imagen de a iniciativa`}
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <ImageOff className="w-16 h-16 opacity-30 text-primary" />
-                    <span className="text-base text-primary">
-                      Sin imagen asignada
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div>
-            Banner
-            <div
-              className={cn(
-                "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white h-[200px] transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
-              )}
-            >
-              <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
-                {sectionInfo.current?.bannerUrl &&
-                typeof sectionInfo.current.bannerUrl === "string" ? (
-                  <img
-                    src={sectionInfo.current.bannerUrl}
-                    alt={`Vista previa del banner de a iniciativa`}
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <ImageOff className="w-16 h-16 opacity-30 text-primary" />
-                    <span className="text-base text-primary">
-                      Sin imagen asignada
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          <ImagePreview
+            title="Imagen de la iniciativa"
+            imageUrl={sectionInfo.current?.imageUrl}
+            altTxt="Vista previa de la imagen de a iniciativa"
+            fallbackTxt="Sin imagen asignada"
+          />
+          <ImagePreview
+            title="Banner"
+            imageUrl={sectionInfo.current?.bannerUrl}
+            altTxt="Vista previa del banner de a iniciativa"
+            fallbackTxt="Sin imagen asignada"
+          />
         </div>
       ) : (
         <form aria-labelledby={`${initiativeId}_${"images"}`}>
@@ -194,9 +154,10 @@ export function ImagesUpdater({
             <Button
               disabled={isLoading}
               type="button"
-              onClick={(e) => void handleSubmit(e)}
+              onClick={(e) => setTimeout(() => void handleSubmit(e), 0)}
+              title="Guardar"
             >
-              {isLoading ? "Guadando cambios..." : "Guardar cambios"}
+              {isLoading ? "Espera..." : "Guardar"}
             </Button>
             <Button
               disabled={isLoading}

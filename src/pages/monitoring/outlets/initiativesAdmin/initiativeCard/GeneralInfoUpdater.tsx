@@ -178,6 +178,7 @@ export function GeneralInfoUpdater({
             sectionInfo={sectionInfo.current!}
             sectionUpdater={updateInfo}
             validationErrorsObj={errors.general ?? {}}
+            submitBlocker={setIsLoading}
           />
 
           <ErrorsList
@@ -189,9 +190,10 @@ export function GeneralInfoUpdater({
             <Button
               disabled={isLoading}
               type="button"
-              onClick={(e) => void handleSubmit(e)}
+              onClick={(e) => setTimeout(() => void handleSubmit(e), 0)}
+              title="Guardar"
             >
-              {isLoading ? "Guadando cambios..." : "Guardar cambios"}
+              {isLoading ? "Espera..." : "Guardar"}
             </Button>
             <Button
               disabled={isLoading}

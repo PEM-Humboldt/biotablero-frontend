@@ -265,7 +265,7 @@ export function InitiativeCard({
         </div>
 
         <ImagesUpdater
-          title="me la suda"
+          title="Imágenes de la iniciativa"
           backEndpointImage="Initiative/UploadImage"
           backEndpointBanner="Initiative/UploadBanner"
         />

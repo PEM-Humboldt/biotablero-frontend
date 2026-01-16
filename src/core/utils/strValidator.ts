@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export type strValidatorResponse = [sanitized: string, errors: string[]];
 
 /**
@@ -6,22 +8,33 @@ export type strValidatorResponse = [sanitized: string, errors: string[]];
  *
  * * @remarks
  * If `customAsync` is used in the chain, the entire execution becomes asynchronous and the final result must be awaited.
+ * It is recommended to provide a `submitBlocker` to prevent race conditions between the validation process and the form submission when using asynchronous methods.
  */
 export class StrValidator {
   private readonly originalStr: string;
   private strToValidate: string;
   private errors: string[];
   private optional: boolean;
+  private submitBlocker?:
+    | Dispatch<SetStateAction<boolean>>
+    | ((block: boolean) => void);
 
   /**
    * @param str - Initial string to validate.
+   * @param submitBlocker - Optional state setter to manage UI blocking during async operations.
    */
-  constructor(str: string | number) {
+  constructor(
+    str: string | number,
+    submitBlocker?:
+      | Dispatch<SetStateAction<boolean>>
+      | ((block: boolean) => void),
+  ) {
     const instanceStr = String(str);
     this.strToValidate = instanceStr;
     this.errors = [];
     this.optional = false;
     this.originalStr = instanceStr;
+    this.submitBlocker = submitBlocker;
   }
 
   /**
@@ -90,13 +103,10 @@ export class StrValidator {
   }
 
   /**
-   * Marks the field as optional. If the string is empty, the `result` getter
-   * will return no errors regardless of other validation checks.
+   * Marks the field as optional. If the sanitized string is empty at the end of the chain, the `result` getter will ignore all previous validation errors.
    */
   isOptional(): this {
-    if (this.originalStr === "") {
-      this.optional = true;
-    }
+    this.optional = true;
     return this;
   }
 
@@ -203,11 +213,12 @@ export class StrValidator {
   }
 
   /**
-   * Runs a custom asynchronous validation on the instance string.
+   * Runs a custom asynchronous validation.
    *
    * * @remarks
    * If this method is used, the entire chain becomes asynchronous and must be awaited.
    * If the string has errors, the evaluation isn't made to preven unnecesary API calls.
+   * Triggers `submitBlocker(true)` before execution.
    *
    * @param validatorCallback - Async function that returns true if valid.
    * @param errorStr - Message to push if validation fails or throws.
@@ -219,6 +230,10 @@ export class StrValidator {
   ): Promise<this> {
     if (this.errors.length > 0 || exception) {
       return this;
+    }
+
+    if (this.submitBlocker) {
+      this.submitBlocker(true);
     }
 
     try {
@@ -236,12 +251,17 @@ export class StrValidator {
   }
 
   /**
-   * Gets the final sanitized string and error collection.
+   * Finalizes the validation chain, triggers `submitBlocker(false)` and returns the sanitized value with the error collection.
    */
   get result(): strValidatorResponse {
+    if (this.submitBlocker) {
+      this.submitBlocker(false);
+    }
+
     if (this.optional && this.originalStr === "") {
       return [this.strToValidate, []];
     }
+
     return [this.strToValidate, this.errors];
   }
 }
