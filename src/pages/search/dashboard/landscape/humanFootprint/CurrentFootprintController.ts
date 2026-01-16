@@ -1,8 +1,7 @@
 import { formatNumber } from "@utils/format";
 import BackendAPI from "pages/search/api/backendAPI";
 import { RasterLayer } from "pages/search/types/layers";
-import matchColor from "pages/search/utils/matchColor";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
 
 import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";

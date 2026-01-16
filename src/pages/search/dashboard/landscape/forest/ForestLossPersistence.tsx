@@ -7,7 +7,7 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import { formatNumber } from "@utils/format";
 import TextBoxes from "@ui/TextBoxes";
 

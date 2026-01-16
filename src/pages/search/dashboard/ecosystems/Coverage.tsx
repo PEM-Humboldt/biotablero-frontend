@@ -5,7 +5,7 @@ import SmallStackedBar, {
   SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import TextBoxes from "@ui/TextBoxes";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 
 interface Props {
