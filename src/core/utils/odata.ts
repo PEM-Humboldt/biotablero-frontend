@@ -46,6 +46,12 @@ export function makeODataFilterString<T>(
   const prefix = component.oDataEntity ? `${alias}/` : "";
   const filterStrings: string[] = [];
 
+  const selectFormatters: Record<string, (val: string) => string> = {
+    boolean: (val) => val,
+    number: (val) => val,
+    string: (val) => `'${val}'`,
+  };
+
   for (const source of component.source) {
     let base: string | null;
 
@@ -58,7 +64,15 @@ export function makeODataFilterString<T>(
 
       case "number":
       case "select": {
-        const valueFormatted = isNaN(Number(value)) ? `'${value}'` : value;
+        let type: keyof typeof selectFormatters = "string";
+
+        if (value === "true" || value === "false") {
+          type = "boolean";
+        } else if (!isNaN(Number(value)) && value.trim() !== "") {
+          type = "number";
+        }
+
+        const valueFormatted = selectFormatters[type](value);
         base = `${prefix}${source as string} eq ${valueFormatted}`;
         break;
       }

@@ -35,4 +35,13 @@ export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
     values: null,
     dependsOnLabel: "Departamento",
   },
+  {
+    label: "Estado",
+    type: "select",
+    source: ["enabled"],
+    values: [
+      { value: "false", name: "inactivas" },
+      { value: "true", name: "activas" },
+    ],
+  },
 ];
