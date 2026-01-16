@@ -32,9 +32,9 @@ import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/Initiat
 import { cn } from "@ui/shadCN/lib/utils";
 import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
 // TODO:
-// 1. textarea auto altura...
 // 4. complementar la barra de búsqueda
 
 export function InitiativesAdmin() {
@@ -125,8 +125,8 @@ export function InitiativesAdmin() {
         <h3 className="h1 text-primary">Administrador de iniciativas</h3>
         <Button onClick={() => setNewInitiative((v) => !v)}>
           {newInitiative
-            ? "Cancelar creación de una nueva iniciativa"
-            : "Crear iniciativa"}
+            ? uiText.initiative.cancelCreation
+            : uiText.initiative.createNew}
           {newInitiative ? <CircleXIcon /> : <ListPlus />}
         </Button>
       </div>
@@ -146,7 +146,7 @@ export function InitiativesAdmin() {
 
           {initiatives === null ? (
             <div className="text-2xl text-primary font-semibold p-10">
-              {loading ? "cargando..." : "No hay iniciativas."}
+              {loading ? uiText.loading : uiText.initiative.noInitiatives}
             </div>
           ) : (
             <Accordion type="single" collapsible className="w-full space-y-3">

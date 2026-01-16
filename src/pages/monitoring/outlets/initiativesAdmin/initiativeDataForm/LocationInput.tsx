@@ -13,6 +13,7 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { INITIATIVE_LOCALITY_MAX_LENGTH } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import {
   isLocationObj,
   type LocationDataBasic,
@@ -82,7 +83,7 @@ export function LocationInput<T extends LocationDataBasic>({
     if (loc === null) {
       setInputErr((oldErr) => ({
         ...oldErr,
-        location: ["No se pudo actualizar la información, intente más tarde."],
+        location: [uiText.error.noUpdateData],
       }));
       return;
     }
@@ -115,7 +116,9 @@ export function LocationInput<T extends LocationDataBasic>({
     if (department === "") {
       setInputErr((oldErr) => ({
         ...oldErr,
-        location: ["se debe seleccionar al menos un departamento"],
+        location: [
+          uiText.initiative.module.locations.validation.atLeastOneDepartment,
+        ],
       }));
       return;
     }
@@ -133,7 +136,7 @@ export function LocationInput<T extends LocationDataBasic>({
     if (selectedItems && locationAlreadyExist(newLocation, selectedItems)) {
       setInputErr((oldErr) => ({
         ...oldErr,
-        location: ["Ya existe esa ubicación"],
+        location: [uiText.initiative.module.locations.validation.alreadyExist],
       }));
       return;
     }
@@ -171,7 +174,9 @@ export function LocationInput<T extends LocationDataBasic>({
         htmlFor="department"
       >
         {inputErr?.location && (
-          <span className="sr-only">Selecciona un Departamento</span>
+          <span className="sr-only">
+            {uiText.initiative.module.locations.field.dept.label}
+          </span>
         )}
       </LabelAndErrors>
 
@@ -183,9 +188,11 @@ export function LocationInput<T extends LocationDataBasic>({
           setValue={(e) => handleChangeDepartment(e)}
           keys={{ forValue: "value", forLabel: "name" }}
           uiText={{
-            itemNotFound: "Departamento no encontrado",
-            trigger: "Selecciona un departamento",
-            inputPlaceholder: "buscar departamento",
+            itemNotFound:
+              uiText.initiative.module.locations.field.dept.notFound,
+            trigger: uiText.initiative.module.locations.field.dept.trigger,
+            inputPlaceholder:
+              uiText.initiative.module.locations.field.dept.placeholder,
           }}
           aria-required="true"
           aria-invalid={inputErr.location !== undefined}
@@ -193,7 +200,7 @@ export function LocationInput<T extends LocationDataBasic>({
         />
 
         <Label className="sr-only" htmlFor="municipality">
-          Selecciona un municipio
+          {uiText.initiative.module.locations.field.muni.notFound}
         </Label>
         <Combobox
           id="municipality"
@@ -202,9 +209,11 @@ export function LocationInput<T extends LocationDataBasic>({
           setValue={setMunicipality}
           keys={{ forValue: "value", forLabel: "name" }}
           uiText={{
-            itemNotFound: "Municipio no encontrado",
-            trigger: "Selecciona un municipio",
-            inputPlaceholder: "buscar municipio",
+            itemNotFound:
+              uiText.initiative.module.locations.field.muni.notFound,
+            trigger: uiText.initiative.module.locations.field.muni.trigger,
+            inputPlaceholder:
+              uiText.initiative.module.locations.field.muni.placeholder,
           }}
           disabled={municipalities.length === 0}
           aria-invalid={inputErr.location !== undefined}
@@ -217,7 +226,9 @@ export function LocationInput<T extends LocationDataBasic>({
             errID="errors_locality"
             validationErrors={inputErr.locality ?? []}
           >
-            <span className="sr-only">Escribe el nombre de la vereda</span>
+            <span className="sr-only">
+              {uiText.initiative.module.locations.field.local.label}
+            </span>
           </LabelAndErrors>
           <InputGroup>
             <InputGroupInput
@@ -228,7 +239,9 @@ export function LocationInput<T extends LocationDataBasic>({
               onChange={(e) => setLocality(e.target.value)}
               onBlur={isLocalityValid}
               autoComplete="off"
-              placeholder="Nombre de la vereda"
+              placeholder={
+                uiText.initiative.module.locations.field.local.placeholder
+              }
               maxLength={INITIATIVE_LOCALITY_MAX_LENGTH}
               disabled={municipality === ""}
               aria-invalid={inputErr.locality !== undefined}

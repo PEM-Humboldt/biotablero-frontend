@@ -19,6 +19,7 @@ import {
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { User } from "pages/monitoring/types/monitoring";
 import type {
   CardInfoGrouped,
@@ -93,10 +94,7 @@ export function InitiativeCard({
       }
 
       if (!res) {
-        setErrors((oldErr) => [
-          ...oldErr,
-          "No es posible obtener los detalles de la iniciativa, intenta de nuevo más tarde",
-        ]);
+        setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
 
         return;
       }
@@ -104,8 +102,8 @@ export function InitiativeCard({
       setCardInfo(res);
       updater(res);
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
-      console.error("Critical error:", err);
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -144,8 +142,8 @@ export function InitiativeCard({
 
       void updater(res);
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
-      console.error("Critical error:", err);
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -170,12 +168,10 @@ export function InitiativeCard({
   return !cardInfoGrouped ? (
     <div className="text-center font-light text-4xl text-primary px-12 py-24">
       {isLoading ? (
-        "cargando..."
+        uiText.loading
       ) : (
         <>
-          <span className="text-accent">
-            No fue posible cargar la información, intenta de nuevo más tarde.
-          </span>
+          <span className="text-accent">{uiText.error.noGetData}</span>
           <ErrorsList
             errId="card_errors"
             errorItems={errors}
@@ -214,21 +210,21 @@ export function InitiativeCard({
         </div>
 
         <GeneralInfoUpdater
-          title="Información general"
+          title={uiText.initiative.module.general.title}
           backEndpoint="Initiative"
         />
 
         <FormListUpdater
-          title="Ubicación"
-          initiativeInfoSection="locations"
+          title={uiText.initiative.module.locations.title}
+          initiativeSection="locations"
           AddItemComponent={LocationInput}
           maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
           minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
           renderCols={
             new Map<string, keyof LocationObj>([
-              ["Departamento", "department"],
-              ["Municipio", "municipality"],
-              ["Vereda", "locality"],
+              [uiText.initiative.module.locations.tableCol[0], "department"],
+              [uiText.initiative.module.locations.tableCol[1], "municipality"],
+              [uiText.initiative.module.locations.tableCol[2], "locality"],
             ])
           }
           renderRowsCallback={makeLocationObj}
@@ -237,35 +233,37 @@ export function InitiativeCard({
 
         <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListUpdater
-            title="Información de contacto"
-            initiativeInfoSection="contacts"
+            title={uiText.initiative.module.contacts.title}
+            initiativeSection="contacts"
             AddItemComponent={ContactInput}
             maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
             minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
             renderCols={
               new Map<string, keyof InitiativeContact>([
-                ["correo", "email"],
-                ["tele", "phone"],
+                [uiText.initiative.module.contacts.tableCol[0], "email"],
+                [uiText.initiative.module.contacts.tableCol[1], "phone"],
               ])
             }
             backEndpoint="InitiativeContact"
           />
 
           <FormListUpdater
-            title="Lideres y liderezas"
-            initiativeInfoSection="users"
+            title={uiText.initiative.module.users.title}
+            initiativeSection="users"
             AddItemComponent={UsersInput}
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([["Nombre de usuario", "userName"]])
+              new Map<string, keyof User>([
+                [uiText.initiative.module.contacts.tableCol[0], "userName"],
+              ])
             }
             backEndpoint="InitiativeUser"
           />
         </div>
 
         <ImagesUpdater
-          title="Imágenes de la iniciativa"
+          title={uiText.initiative.module.images.title}
           backEndpointImage="Initiative/UploadImage"
           backEndpointBanner="Initiative/UploadBanner"
         />

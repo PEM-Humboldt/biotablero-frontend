@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import { SquarePen, Trash } from "lucide-react";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { TableRenderProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -59,7 +60,9 @@ export function DisplayTable<T, R extends object>({
 
             {edit && (
               <th className="w-24">
-                <span className="sr-only">Acciones</span>
+                <span className="sr-only">
+                  {uiText.initiative.displayTables.actionsColTitle}
+                </span>
               </th>
             )}
           </tr>
@@ -69,7 +72,9 @@ export function DisplayTable<T, R extends object>({
           {displayItems.map((row, i) => (
             <tr key={i}>
               {[...render.values()].map((colKey, j) => {
-                const value = row[colKey] ? String(row[colKey]) : "---";
+                const value = row[colKey]
+                  ? String(row[colKey])
+                  : uiText.initiative.displayTables.nullValuePlaceholder;
                 return (
                   <td className="h-8" key={`${i}-${j}`}>
                     {value}
@@ -85,10 +90,12 @@ export function DisplayTable<T, R extends object>({
                       onClick={() => editItem(i)}
                       variant="ghost-clean"
                       size="icon-sm"
-                      title="Editar"
+                      title={uiText.initiative.displayTables.actions.edit}
                       disabled={disabled}
                     >
-                      <span className="sr-only">editar</span>
+                      <span className="sr-only">
+                        {uiText.initiative.displayTables.actions.edit}
+                      </span>
                       <span aria-hidden="true">
                         <SquarePen className="size-4" />
                       </span>
@@ -100,10 +107,12 @@ export function DisplayTable<T, R extends object>({
                     onClick={() => deleteItem(i)}
                     variant="ghost-clean"
                     size="icon-sm"
-                    title="Quitar"
+                    title={uiText.initiative.displayTables.actions.remove}
                     disabled={disabled}
                   >
-                    <span className="sr-only">Quitar</span>
+                    <span className="sr-only">
+                      {uiText.initiative.displayTables.actions.remove}
+                    </span>
                     <span aria-hidden="true">
                       <Trash className="size-4" />
                     </span>

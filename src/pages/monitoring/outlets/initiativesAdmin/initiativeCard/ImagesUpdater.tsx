@@ -1,8 +1,3 @@
-import type {
-  CardInfoGrouped,
-  InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   type MouseEvent,
   useCallback,
@@ -11,6 +6,14 @@ import {
   useRef,
   useState,
 } from "react";
+
+import { cn } from "@ui/shadCN/lib/utils";
+
+import type {
+  CardInfoGrouped,
+  InitiativeDataFormErr,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import {
   InitiativeCtx,
   type InitiativeCtxType,
@@ -84,8 +87,8 @@ export function ImagesUpdater({
       await updater!();
       setCurrentEdit!("none");
     } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: ["Error interno de la app"] }));
-      console.error("Critical error:", err);
+      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -124,16 +127,16 @@ export function ImagesUpdater({
       {!editThis ? (
         <div className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]">
           <ImagePreview
-            title="Imagen de la iniciativa"
+            title={uiText.initiative.module.images.imageUrl.title}
             imageUrl={sectionInfo.current?.imageUrl}
-            altTxt="Vista previa de la imagen de a iniciativa"
-            fallbackTxt="Sin imagen asignada"
+            altTxt={uiText.initiative.module.images.bannerUrl.alt}
+            fallbackTxt={uiText.initiative.unasignedFallback}
           />
           <ImagePreview
-            title="Banner"
+            title={uiText.initiative.module.images.bannerUrl.title}
             imageUrl={sectionInfo.current?.bannerUrl}
-            altTxt="Vista previa del banner de a iniciativa"
-            fallbackTxt="Sin imagen asignada"
+            altTxt={uiText.initiative.module.images.bannerUrl.alt}
+            fallbackTxt={uiText.initiative.unasignedFallback}
           />
         </div>
       ) : (
@@ -155,9 +158,9 @@ export function ImagesUpdater({
               disabled={isLoading}
               type="button"
               onClick={(e) => setTimeout(() => void handleSubmit(e), 0)}
-              title="Guardar"
+              title={uiText.save}
             >
-              {isLoading ? "Espera..." : "Guardar"}
+              {isLoading ? uiText.wait : uiText.save}
             </Button>
             <Button
               disabled={isLoading}
@@ -165,7 +168,7 @@ export function ImagesUpdater({
               variant="outline_destructive"
               onClick={() => undoChanges()}
             >
-              Deshacer cambios
+              {uiText.undo}
             </Button>
           </div>
         </form>

@@ -16,7 +16,6 @@ import {
   InputGroup,
   InputGroupInput,
   InputGroupAddon,
-  InputGroupTextarea,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/strValidator";
@@ -28,6 +27,7 @@ import {
   INITIAVIVE_INFLUENCE_MAX_LENGTH,
 } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type {
   GeneralInfo,
   InitiativeDataFormErr,
@@ -110,7 +110,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             initiativeNameNotExist,
             generalInfo.name === sectionInfo.name,
           ),
-          "Este nombre de iniciativa ya existe",
+          uiText.initiative.module.general.validation.uniqueName,
         ),
     );
 
@@ -170,7 +170,8 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             errID="errors_name"
             validationErrors={inputErr.name ?? []}
           >
-            Nombre completo <span aria-hidden="true">*</span>
+            {uiText.initiative.module.general.field.name}{" "}
+            <span aria-hidden="true">*</span>
           </LabelAndErrors>
 
           <InputGroup>
@@ -182,7 +183,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               onChange={(e) => setGeneralInfoItem("name")(e.target.value)}
               onBlur={() => void nameOnBlur()}
               autoComplete="off"
-              placeholder="Juntos por la Amazonía"
+              placeholder={
+                uiText.initiative.module.general.field.namePlaceholder
+              }
               maxLength={INITIAVIVE_NAME_MAX_LENGTH}
               aria-required="true"
               aria-invalid={inputErr.name !== undefined}
@@ -206,14 +209,14 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             htmlFor="shortName"
             validationErrors={inputErr.shortName ?? []}
           >
-            Nombre corto
+            {uiText.initiative.module.general.field.shortName}
           </LabelAndErrors>
 
           <InputGroup>
             <InputGroupInput
               name="shortName"
               id="shortName"
-              placeholder="JPLA"
+              placeholder={uiText.initiative.module.general.field.shortName}
               type="text"
               value={generalInfo.shortName}
               onChange={(e) => setGeneralInfoItem("shortName")(e.target.value)}
@@ -249,8 +252,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
           htmlFor="description"
           validationErrors={inputErr.description ?? []}
         >
-          ¿Quienes somos? <span aria-hidden="true">*</span>{" "}
-          <i>Descripción de la iniciativa</i>
+          {uiText.initiative.module.general.field.description}{" "}
+          <span aria-hidden="true">*</span>{" "}
+          <i>{uiText.initiative.module.general.field.descriptionHelper}</i>
         </LabelAndErrors>
 
         <InputGroup>
@@ -259,7 +263,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
             id="description"
             name="description"
-            placeholder="Esta iniciativa busca..."
+            placeholder={
+              uiText.initiative.module.general.field.descriptionPlaceholder
+            }
             value={generalInfo.description}
             onChange={(e) => setGeneralInfoItem("description")(e.target.value)}
             onBlur={descriptionOnBlur}
@@ -291,7 +297,8 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             htmlFor="influenceArea"
             validationErrors={inputErr.influenceArea ?? []}
           >
-            ¿Dónde estamos? <i>Contexto territorial y área de influencia</i>
+            {uiText.initiative.module.general.field.influenceAreaQuestion}{" "}
+            <i>{uiText.initiative.module.general.field.influenceAreaHelper}</i>
           </LabelAndErrors>
 
           <InputGroup>
@@ -300,7 +307,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
               id="influenceArea"
               name="influenceArea"
-              placeholder="El área de influencia de esta iniciativa es..."
+              placeholder={
+                uiText.initiative.module.general.field.influenceAreaPlaceholder
+              }
               value={generalInfo.influenceArea}
               onChange={(e) =>
                 setGeneralInfoItem("influenceArea")(e.target.value)
@@ -334,7 +343,8 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             htmlFor="objective"
             validationErrors={inputErr.objective ?? []}
           >
-            ¿Cuál es el objetivo? <i>Objetivos y enfoque de la iniciativa</i>
+            {uiText.initiative.module.general.field.objectiveQuestion}{" "}
+            <i>{uiText.initiative.module.general.field.objectiveHelper}</i>
           </LabelAndErrors>
 
           <InputGroup>
@@ -343,7 +353,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
               id="objective"
               name="objective"
-              placeholder="El objetivo de esta iniciativa es..."
+              placeholder={
+                uiText.initiative.module.general.field.objectiveHelper
+              }
               value={generalInfo.objective}
               onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
               onBlur={objectiveOnBlur}

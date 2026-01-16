@@ -20,6 +20,7 @@ import { ImgValidator } from "@utils/imgValidator";
 import { Button } from "@ui/shadCN/component/button";
 import { INITIATIVES_IMG_ALLOWED_FORMATS } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type {
   ErrorFields,
   ImagesData,
@@ -155,7 +156,7 @@ export function ImagesInput({
 
       <div className="flex gap-8 flex-wrap items-end *:flex-[1_1_350px]">
         <ImageLoadField
-          title="Imagen de la iniciativa"
+          title={uiText.initiative.module.images.imageUrl.title}
           fieldName="imageUrl"
           errorObject={inputErr}
           previewObject={imagesPreview}
@@ -166,7 +167,7 @@ export function ImagesInput({
         />
 
         <ImageLoadField
-          title="Banner"
+          title={uiText.initiative.module.images.bannerUrl.title}
           fieldName="bannerUrl"
           errorObject={inputErr}
           previewObject={imagesPreview}
@@ -178,7 +179,9 @@ export function ImagesInput({
       </div>
 
       {Object.keys(inputErr).length > 0 && (
-        <Button type="button">Cargar de nuevo</Button>
+        <Button type="button">
+          {uiText.initiative.module.images.userAction.uploadAgain}
+        </Button>
       )}
     </PlainInputContainer>
   );
@@ -237,14 +240,14 @@ function ImageLoadField({
           {imgUrl ? (
             <img
               src={imgUrl}
-              alt={`Vista previa de ${title}`}
+              alt={uiText.initiative.module.images[fieldName].alt}
               className="w-full h-full object-contain"
             />
           ) : (
             <div className="flex flex-col items-center gap-2 text-muted-foreground">
               <ImageUp className="w-16 h-16 opacity-30 text-primary" />
               <span className="text-base text-primary">
-                Clic para cargar una imagen
+                {uiText.initiative.module.images.userAction.upload}
               </span>
             </div>
           )}
@@ -261,7 +264,9 @@ function ImageLoadField({
                 removeHandler(fieldName, inputRef);
               }}
             >
-              <span className="sr-only">Borrar imagen</span>
+              <span className="sr-only">
+                {uiText.initiative.module.images.userAction.removeImage}
+              </span>
               {errorObject[fieldName] ? (
                 <UndoDot aria-hidden="true" />
               ) : (

@@ -12,6 +12,8 @@ import {
   AlertDialogTrigger,
 } from "@ui/shadCN/component/alert-dialog";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+
 export function InitiativeStatusDialog({
   active,
   name,
@@ -27,33 +29,47 @@ export function InitiativeStatusDialog({
         <Button
           size="icon"
           variant="destructive"
-          title={active ? "Desactivar iniciativa" : "Activar iniciativa"}
+          title={
+            active
+              ? uiText.initiative.module.status.disable
+              : uiText.initiative.module.status.enable
+          }
         >
           <span className="sr-only">
-            {active ? "Desactivar iniciativa" : "Activar iniciativa"}
+            {active
+              ? uiText.initiative.module.status.disable
+              : uiText.initiative.module.status.enable}
           </span>
-          {active ? <Eye /> : <EyeClosed />}
+          {active ? (
+            <Eye aria-hidden="true" />
+          ) : (
+            <EyeClosed aria-hidden="true" />
+          )}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
             {active
-              ? "Vas a desactivar la iniciativa"
-              : "Vas a reactivar la iniciativa"}{" "}
+              ? uiText.initiative.module.status.confirmation.disable
+              : uiText.initiative.module.status.confirmation.enable}{" "}
             <strong>{name}</strong>,
             <br />
-            <strong>¿realmente quieres hacerlo?</strong>
+            <strong>
+              {uiText.initiative.module.status.confirmation.question}
+            </strong>
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
             {active
-              ? "Al desactivarla, la información de esta iniciativa dejará de ser pública. Se perderá el permiso de acceso y edición para quienes tengan perfiles de usuario, participante o administrador."
-              : "Al reactivarla, la información de esta iniciativa volverá a ser pública. Las personas que tengan perfil de usuario, participante o administrador de esta iniciativa, volverán a tener permiso de acceso y edición."}
+              ? uiText.initiative.module.status.disclaimer.disable
+              : uiText.initiative.module.status.disclaimer.enable}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handler}>Sí</AlertDialogAction>
+          <AlertDialogCancel>{uiText.cancel}</AlertDialogCancel>
+          <AlertDialogAction onClick={handler}>
+            {uiText.confirm}
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

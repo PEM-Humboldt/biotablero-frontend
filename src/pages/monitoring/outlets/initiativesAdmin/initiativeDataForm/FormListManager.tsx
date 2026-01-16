@@ -1,4 +1,6 @@
 import { type ElementType, useEffect, useState } from "react";
+
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { LegendAndErrors } from "@ui/LabelingWithErrors";
 import { cn } from "@ui/shadCN/lib/utils";
@@ -6,10 +8,10 @@ import { DisplayTable } from "pages/monitoring/outlets/initiativesAdmin/initiati
 
 type FormListManagerProps<T, R extends object> = {
   title: string;
-  sectionInfo: T[];
+  initiativeSection: T[];
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   maxItems: number;
-  renderMap: Map<string, keyof R>;
+  renderCols: Map<string, keyof R>;
   renderRowCallback?: (item: T) => Promise<R | null>;
   sectionUpdater: (value: T[]) => void;
   validationErrors: string[];
@@ -23,7 +25,7 @@ type FormListManagerProps<T, R extends object> = {
  * @template R - The object type used for display purposes.
  *
  * @param title - The label for the fieldset legend.
- * @param sectionInfo - The initial state of the list.
+ * @param initiativeSection - The initial state of the list.
  * @param AddItemComponent - Component rendered to handle the addition or update of an item.
  * @param maxItems - Limit of items allowed. If 0, the limit is Infinity.
  * @param renderMap - A Map defining the columns to display ([col name - property name of R or T if no renderRowCallback is provided]).
@@ -33,15 +35,15 @@ type FormListManagerProps<T, R extends object> = {
  */
 export function FormListManager<T, R extends object>({
   title,
-  sectionInfo,
+  initiativeSection,
   AddItemComponent,
   maxItems,
-  renderMap,
+  renderCols: renderMap,
   renderRowCallback,
   sectionUpdater,
   validationErrors,
 }: FormListManagerProps<T, R>) {
-  const [selectedItems, setSelectedItems] = useState<T[]>(sectionInfo);
+  const [selectedItems, setSelectedItems] = useState<T[]>(initiativeSection);
   const [updateItem, setUpdateItem] = useState<T | null>(null);
   const totalItems = maxItems === 0 ? Infinity : maxItems;
 
@@ -85,13 +87,14 @@ export function FormListManager<T, R extends object>({
 
       {selectedItems.length > 0 && (
         <DisplayTable<T, R>
-          title="Información lista para guardar"
+          title={uiText.initiative.listManager.tableTitle}
           items={selectedItems}
           editItem={handleEdit}
           deleteItem={handleDelete}
           rowInfoCallback={renderRowCallback}
           render={renderMap}
           edit={updateItem === null}
+          disabled={false}
         />
       )}
 

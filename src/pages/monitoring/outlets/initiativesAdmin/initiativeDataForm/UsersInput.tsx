@@ -4,6 +4,7 @@ import { Combobox } from "@ui/ComboBox";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { User } from "pages/monitoring/types/monitoring";
 import {
@@ -94,7 +95,9 @@ export function UsersInput<T extends User>({
           htmlFor="leaders"
           validationErrors={inputErr?.leaders ?? []}
         >
-          <span className="sr-only">Selecciona un lider o lidereza</span>
+          <span className="sr-only">
+            {uiText.initiative.module.users.field.username.label}
+          </span>
         </LabelAndErrors>
         <Combobox
           id="leaders"
@@ -104,9 +107,11 @@ export function UsersInput<T extends User>({
           setValue={setUser}
           keys={{ forLabel: "userName" }}
           uiText={{
-            itemNotFound: "Usuario no encontrado",
-            trigger: "Selecciona un usuario ",
-            inputPlaceholder: "buscar lider",
+            itemNotFound:
+              uiText.initiative.module.users.field.username.notFound,
+            trigger: uiText.initiative.module.users.field.username.trigger,
+            inputPlaceholder:
+              uiText.initiative.module.users.field.username.placeholder,
           }}
           aria-invalid={inputErr.leaders !== undefined}
           aria-describedby={inputErr.location ? "errors_leaders" : undefined}

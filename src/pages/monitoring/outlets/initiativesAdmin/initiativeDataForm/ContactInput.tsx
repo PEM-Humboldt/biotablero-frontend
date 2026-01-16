@@ -13,6 +13,7 @@ import {
   INITIATIVE_PHONE_MAX_LENGHT,
 } from "@config/monitoring";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type {
   InitiativeContact,
   ItemEditorProps,
@@ -99,7 +100,9 @@ export function ContactInput<T extends InitiativeContact>({
           errID="errors_email"
           validationErrors={inputErr.email ?? []}
         >
-          <span className="sr-only">Correo</span>
+          <span className="sr-only">
+            {uiText.initiative.module.contacts.field.mail}
+          </span>
         </LabelAndErrors>
         <InputGroup>
           <InputGroupAddon>
@@ -112,7 +115,9 @@ export function ContactInput<T extends InitiativeContact>({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="off"
-            placeholder="mi_iniciativa@dominio.com"
+            placeholder={
+              uiText.initiative.module.contacts.field.mailPlaceholder
+            }
             maxLength={INITIATIVE_EMAIL_MAX_LENGHT}
             aria-required="true"
             aria-invalid={inputErr.email !== undefined}
@@ -127,7 +132,9 @@ export function ContactInput<T extends InitiativeContact>({
           errID="errors_phone"
           validationErrors={inputErr.phone ?? []}
         >
-          <span className="sr-only">Teléfono</span>
+          <span className="sr-only">
+            {uiText.initiative.module.contacts.field.phone}
+          </span>
         </LabelAndErrors>
         <InputGroup>
           <InputGroupAddon>
@@ -140,7 +147,9 @@ export function ContactInput<T extends InitiativeContact>({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             autoComplete="off"
-            placeholder="3046669666"
+            placeholder={
+              uiText.initiative.module.contacts.field.phonePlaceholder
+            }
             maxLength={INITIATIVE_PHONE_MAX_LENGHT}
             aria-invalid={inputErr.phone !== undefined}
             aria-describedby={inputErr.phone ? "errors_phone" : undefined}

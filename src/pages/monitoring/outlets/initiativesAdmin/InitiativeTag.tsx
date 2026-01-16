@@ -2,6 +2,7 @@ import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
 export function InitiativeTag({
   initiative,
@@ -28,17 +29,21 @@ export function InitiativeTag({
         <div className="text-base font-semibold border-b border-b-primary/10">
           {displayName}
           {!initiative.enabled && (
-            <span className="sr-only">, Iniciativa inactiva</span>
+            <span className="sr-only">
+              {uiText.initiative.accordionResume.disabledPresentation}
+            </span>
           )}
         </div>
         <div className="text-sm">
-          <span className="sr-only">Iniciativa ubicada en:</span>
+          <span className="sr-only">
+            {uiText.initiative.accordionResume.locationPresentation}
+          </span>
           {initiativeLocations}
         </div>
       </div>
       {!initiative.enabled && (
         <strong className="shrink-0 text-base " aria-hidden="true">
-          Inactiva
+          {uiText.initiative.disabled}
         </strong>
       )}
     </>

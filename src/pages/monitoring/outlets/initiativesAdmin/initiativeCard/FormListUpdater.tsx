@@ -7,6 +7,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { DisplayTable } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/DisplayTable";
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import {
   isMonitoringAPIError,
   monitoringAPI,
@@ -20,7 +21,7 @@ import { commonErrorMessage } from "@utils/ui";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
-  initiativeInfoSection: keyof CardInfoGrouped;
+  initiativeSection: keyof CardInfoGrouped;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   maxItems: number;
   minItems?: number;
@@ -29,9 +30,24 @@ type FormListUpdaterProps<T, R extends object> = {
   backEndpoint: string;
 };
 
+/**
+ * A specialized updater component for managing collections within an initiative with real-time API synchronization and UI blocking.
+ *
+ * @template T - The raw data type for each item
+ * @template R - The object type used for display in the table.
+ *
+ * @param title - The label for the section header.
+ * @param initiativeSection - The key of the initiative object to be managed.
+ * @param AddItemComponent - The form component used to create or edit an individual item.
+ * @param maxItems - Maximum number of items allowed (default: Infinity).
+ * @param minItems - Minimum number of items required before allowing deletions (default: 0).
+ * @param renderCols - A Map defining the table columns and their data mapping.
+ * @param renderRowsCallback - Optional async transform function to prepare items for display.
+ * @param backEndpoint - API base URL for handling the element actions
+ */
 export function FormListUpdater<T, R extends object>({
   title,
-  initiativeInfoSection,
+  initiativeSection,
   AddItemComponent,
   maxItems = Infinity,
   minItems = 0,
@@ -48,11 +64,11 @@ export function FormListUpdater<T, R extends object>({
 
   const initiativeId = initiative?.id ?? null;
   const maxAmountItems = maxItems === 0 ? Infinity : maxItems;
-  const editThis = currentEdit === initiativeInfoSection;
+  const editThis = currentEdit === initiativeSection;
 
   useEffect(() => {
     const sectionInfo = initiative
-      ? (initiative[initiativeInfoSection] as unknown as T[])
+      ? (initiative[initiativeSection] as unknown as T[])
       : null;
 
     if (!sectionInfo) {
@@ -83,7 +99,7 @@ export function FormListUpdater<T, R extends object>({
     };
 
     void setInfo();
-  }, [renderRowsCallback, initiative, initiativeInfoSection]);
+  }, [renderRowsCallback, initiative, initiativeSection]);
 
   useEffect(() => {
     if (!editThis && updateItem) {
@@ -131,7 +147,7 @@ export function FormListUpdater<T, R extends object>({
 
       await updateInitiativeCallback();
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
       console.error("Critical error:", err);
     } finally {
       setIsLoading(false);
@@ -174,8 +190,8 @@ export function FormListUpdater<T, R extends object>({
       setSelectedItems((oldItems) => [...oldItems, itemRender]);
       await updateInitiativeCallback();
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
-      console.error("Critical error:", err);
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -188,10 +204,7 @@ export function FormListUpdater<T, R extends object>({
 
     const itemId = getItemId(selectedItems[itemIndex]);
     if (!itemId) {
-      setErrors((oldErr) => [
-        ...oldErr,
-        "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
-      ]);
+      setErrors((oldErr) => [...oldErr, uiText.error.actionError]);
       return;
     }
 
@@ -210,10 +223,7 @@ export function FormListUpdater<T, R extends object>({
 
     const itemId = getItemId(updateItem);
     if (!itemId) {
-      setErrors((oldErr) => [
-        ...oldErr,
-        "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
-      ]);
+      setErrors((oldErr) => [...oldErr, uiText.error.actionError]);
       return;
     }
 
@@ -235,7 +245,7 @@ export function FormListUpdater<T, R extends object>({
 
   const editPanelAction = () => {
     setCurrentEdit!((curEdit) =>
-      curEdit === initiativeInfoSection ? "none" : initiativeInfoSection,
+      curEdit === initiativeSection ? "none" : initiativeSection,
     );
   };
 
@@ -247,7 +257,7 @@ export function FormListUpdater<T, R extends object>({
       )}
     >
       <div
-        id={`${initiativeId}_${initiativeInfoSection}`}
+        id={`${initiativeId}_${initiativeSection}`}
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         {title}
@@ -256,15 +266,14 @@ export function FormListUpdater<T, R extends object>({
         )}
         {editThis && selectedItems.length <= minItems && (
           <div className="text-right font-light text-base flex-1 text-foreground">
-            Siempre deben haber al menos {minItems} elemento
-            {minItems > 1 && "s"}.
+            {uiText.initiative.listManager.validation.minAmount(minItems)}
           </div>
         )}
       </div>
 
-      <form aria-labelledby={`${initiativeId}_${initiativeInfoSection}`}>
+      <form aria-labelledby={`${initiativeId}_${initiativeSection}`}>
         <ErrorsList
-          errId={`${initiativeId}_${initiativeInfoSection}_errors`}
+          errId={`${initiativeId}_${initiativeSection}_errors`}
           errorItems={errors}
         />
         {selectedItems.length > 0 && (

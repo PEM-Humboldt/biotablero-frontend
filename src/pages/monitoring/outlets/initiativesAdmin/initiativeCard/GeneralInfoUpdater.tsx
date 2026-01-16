@@ -1,8 +1,3 @@
-import type {
-  CardInfoGrouped,
-  InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   type MouseEvent,
   useCallback,
@@ -11,26 +6,35 @@ import {
   useRef,
   useState,
 } from "react";
+
+import { cn } from "@ui/shadCN/lib/utils";
+import { commonErrorMessage } from "@utils/ui";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { Button } from "@ui/shadCN/component/button";
+
+import type {
+  CardInfoGrouped,
+  InitiativeDataFormErr,
+} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   InitiativeCtx,
   type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
 import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
-import { Button } from "@ui/shadCN/component/button";
 import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { commonErrorMessage } from "@utils/ui";
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
 import { updateInitiativeGeneralValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
 type GeneralInfoUpdaterProps = {
   title: string;
   backEndpoint: string;
 };
+
 export function GeneralInfoUpdater({
   title,
   backEndpoint,
@@ -110,8 +114,8 @@ export function GeneralInfoUpdater({
       await updater!();
       setCurrentEdit!("none");
     } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: ["Error interno de la app"] }));
-      console.error("Critical error:", err);
+      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -149,26 +153,33 @@ export function GeneralInfoUpdater({
       {!editThis ? (
         <div className="flex flex-col gap-4">
           <div>
-            <h5 className="inline! text-primary">Nombre corto:</h5>{" "}
-            {sectionInfo.current?.shortName ?? "Sin asignar"}
+            <h5 className="inline! text-primary">
+              {uiText.initiative.module.general.field.shortName}
+            </h5>{" "}
+            {sectionInfo.current?.shortName ??
+              uiText.initiative.unasignedFallback}
           </div>
           <div className="max-w-[65ch]">
-            <h5 className="text-primary mb-0!">Descripción de la iniciativa</h5>
+            <h5 className="text-primary mb-0!">
+              {uiText.initiative.module.general.field.descriptionHelper}
+            </h5>
             {sectionInfo.current?.description}
           </div>
 
           <div className="flex flex-wrap gap-x-10 gap-y-4">
             <div className="flex-1 min-w-[350px] max-w-[65ch]">
               <h5 className="text-primary mb-0!">
-                Objetivos y enfoque de la iniciativa
+                {uiText.initiative.module.general.field.objectiveHelper}
               </h5>
-              {sectionInfo.current?.objective ?? "Sin asignar"}
+              {sectionInfo.current?.objective ??
+                uiText.initiative.unasignedFallback}
             </div>
             <div className="flex-1 min-w-[300px] max-w-[65ch]">
               <h5 className="text-primary mb-0!">
-                Contexto territorial y área de influencia
+                {uiText.initiative.module.general.field.influenceAreaHelper}
               </h5>
-              {sectionInfo.current?.influenceArea ?? "Sin asignar"}
+              {sectionInfo.current?.influenceArea ??
+                uiText.initiative.unasignedFallback}
             </div>
           </div>
         </div>
@@ -191,17 +202,18 @@ export function GeneralInfoUpdater({
               disabled={isLoading}
               type="button"
               onClick={(e) => setTimeout(() => void handleSubmit(e), 0)}
-              title="Guardar"
+              title={uiText.save}
             >
-              {isLoading ? "Espera..." : "Guardar"}
+              {isLoading ? uiText.wait : uiText.save}
             </Button>
             <Button
               disabled={isLoading}
               type="button"
               variant="outline_destructive"
               onClick={() => undoChanges()}
+              title={uiText.undo}
             >
-              Deshacer cambios
+              {uiText.undo}
             </Button>
           </div>
         </form>

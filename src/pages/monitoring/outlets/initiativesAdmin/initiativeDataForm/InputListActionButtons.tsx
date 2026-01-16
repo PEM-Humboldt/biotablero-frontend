@@ -3,6 +3,8 @@ import { Check, CirclePlus, Trash2, UndoDot } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+
 export function InputListActionButtons<T>({
   update,
   handleSave,
@@ -24,11 +26,17 @@ export function InputListActionButtons<T>({
           type="button"
           variant="outline"
           size="icon"
-          title={update !== null ? "Guardar cambios" : "Añadir"}
+          title={
+            update !== null
+              ? uiText.initiative.listManager.actionButtons.update
+              : uiText.initiative.listManager.actionButtons.save
+          }
           disabled={disabled}
         >
           <span className="sr-only">
-            {update !== null ? "Guardar cambios" : "Añadir"}
+            {update !== null
+              ? uiText.initiative.listManager.actionButtons.update
+              : uiText.initiative.listManager.actionButtons.save}
           </span>
           <span aria-hidden="true">
             {update !== null ? (
@@ -45,10 +53,12 @@ export function InputListActionButtons<T>({
             type="button"
             variant="outline"
             size="icon"
-            title="Restablecer"
+            title={uiText.initiative.listManager.actionButtons.undo}
             disabled={disabled}
           >
-            <span className="sr-only">Restablecer</span>
+            <span className="sr-only">
+              {uiText.initiative.listManager.actionButtons.undo}
+            </span>
             <span aria-hidden="true">
               <UndoDot className="size-5" />
             </span>
@@ -63,10 +73,12 @@ export function InputListActionButtons<T>({
             type="button"
             variant="outline_destructive"
             size="icon"
-            title="Desechar"
+            title={uiText.initiative.listManager.actionButtons.discard}
             disabled={disabled}
           >
-            <span className="sr-only">Desechar elemento</span>
+            <span className="sr-only">
+              {uiText.initiative.listManager.actionButtons.discard}
+            </span>
             <span aria-hidden="true">
               <Trash2 className="size-5" />
             </span>
