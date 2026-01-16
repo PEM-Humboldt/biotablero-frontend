@@ -306,4 +306,3 @@ export const matchColor = (
       return (): ColorResult => palette[0];
   }
 };
-

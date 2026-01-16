@@ -4,7 +4,7 @@ import "leaflet-draw";
 import type L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 
 export function DrawControl() {
   const { drawControlsRef, setAreDrawControlMounted } =
