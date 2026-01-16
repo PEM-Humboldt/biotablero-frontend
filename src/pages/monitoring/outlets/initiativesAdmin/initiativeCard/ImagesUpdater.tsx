@@ -39,11 +39,11 @@ export function ImagesUpdater({
     useContext<InitiativeCtxType>(InitiativeCtx);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
+  const [forceRender, setForceRender] = useState(0);
 
   const sectionInfo = useRef<CardInfoGrouped["images"] | null>(null);
   const initiativeId = initiative?.id ?? null;
   const editThis = currentEdit === "images";
-  const [forceRender, setForceRender] = useState(0);
 
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.images } : null;

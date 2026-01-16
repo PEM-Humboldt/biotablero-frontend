@@ -43,6 +43,7 @@ export function GeneralInfoUpdater({
     useContext<InitiativeCtxType>(InitiativeCtx);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
+  const [forceRender, setForceRender] = useState(0);
 
   const sectionInfo = useRef<CardInfoGrouped["general"] | null>(null);
   const initiativeId = initiative?.id ?? null;
@@ -50,6 +51,7 @@ export function GeneralInfoUpdater({
 
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.general } : null;
+    setForceRender((n) => n + 1);
   }, [initiative]);
 
   useEffect(() => {
@@ -111,6 +113,7 @@ export function GeneralInfoUpdater({
         return;
       }
 
+      setForceRender((n) => n + 1);
       await updater!();
       setCurrentEdit!("none");
     } catch (err) {
@@ -186,6 +189,7 @@ export function GeneralInfoUpdater({
       ) : (
         <form aria-labelledby={`${initiativeId}_${"general"}`}>
           <GeneralInfoInput
+            key={forceRender}
             sectionInfo={sectionInfo.current!}
             sectionUpdater={updateInfo}
             validationErrorsObj={errors.general ?? {}}
