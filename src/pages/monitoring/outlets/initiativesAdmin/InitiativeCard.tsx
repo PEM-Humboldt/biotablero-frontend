@@ -40,6 +40,7 @@ import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils
 import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
+import { ImagesUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagesUpdater";
 
 export type InitiativeCtxType = {
   initiative: CardInfoGrouped | null;
@@ -214,7 +215,6 @@ export function InitiativeCard({
 
         <GeneralInfoUpdater
           title="Información general"
-          initiativeInfoSection="general"
           backEndpoint="Initiative"
         />
 
@@ -263,6 +263,12 @@ export function InitiativeCard({
             backEndpoint="InitiativeUser"
           />
         </div>
+
+        <ImagesUpdater
+          title="me la suda"
+          backEndpointImage="Initiative/UploadImage"
+          backEndpointBanner="Initiative/UploadBanner"
+        />
       </article>
     </InitiativeCtx.Provider>
   );

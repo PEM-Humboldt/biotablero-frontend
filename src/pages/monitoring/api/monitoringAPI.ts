@@ -27,6 +27,7 @@ import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import usersMock from "pages/monitoring/api/usersMock.json";
 import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { commonErrorMessage } from "@utils/ui";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -437,9 +438,11 @@ export async function uploadImages(
     });
 
     if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
       imageUploadErrors.push(
-        `Error cargando ${image.file.name}: ${res.message}`,
+        `Error cargando ${image.file.name}: ${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
       );
+      console.error(res);
     }
   }
 

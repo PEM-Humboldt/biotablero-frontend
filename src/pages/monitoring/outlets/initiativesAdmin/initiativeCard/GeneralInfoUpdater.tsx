@@ -29,12 +29,10 @@ import { updateInitiativeGeneralValidations } from "pages/monitoring/outlets/ini
 
 type GeneralInfoUpdaterProps = {
   title: string;
-  initiativeInfoSection: keyof CardInfoGrouped;
   backEndpoint: string;
 };
 export function GeneralInfoUpdater({
   title,
-  initiativeInfoSection,
   backEndpoint,
 }: GeneralInfoUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
@@ -44,7 +42,7 @@ export function GeneralInfoUpdater({
 
   const sectionInfo = useRef<CardInfoGrouped["general"] | null>(null);
   const initiativeId = initiative?.id ?? null;
-  const editThis = currentEdit === initiativeInfoSection;
+  const editThis = currentEdit === "general";
 
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.general } : null;
@@ -128,9 +126,7 @@ export function GeneralInfoUpdater({
   };
 
   const editPanelAction = () => {
-    setCurrentEdit!((curEdit) =>
-      curEdit === initiativeInfoSection ? "none" : initiativeInfoSection,
-    );
+    setCurrentEdit!((curEdit) => (curEdit === "general" ? "none" : "general"));
   };
 
   return (
@@ -141,7 +137,7 @@ export function GeneralInfoUpdater({
       )}
     >
       <div
-        id={`${initiativeId}_${initiativeInfoSection}`}
+        id={`${initiativeId}_${"general"}`}
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         <h4 className="font-normal text-primary text-lg p-0! m-0!">{title}</h4>
@@ -177,7 +173,7 @@ export function GeneralInfoUpdater({
           </div>
         </div>
       ) : (
-        <form aria-labelledby={`${initiativeId}_${initiativeInfoSection}`}>
+        <form aria-labelledby={`${initiativeId}_${"general"}`}>
           <GeneralInfoInput
             sectionInfo={sectionInfo.current!}
             sectionUpdater={updateInfo}

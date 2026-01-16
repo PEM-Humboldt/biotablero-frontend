@@ -8,7 +8,11 @@ import {
 import { ImageUp, Trash, UndoDot } from "lucide-react";
 
 import { cn } from "@ui/shadCN/lib/utils";
-import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
+import {
+  ErrorsList,
+  LabelAndErrors,
+  LegendAndErrors,
+} from "@ui/LabelingWithErrors";
 import type { ImageMimeType } from "@appTypes/formats";
 import { ImgValidator } from "@utils/imgValidator";
 import { Button } from "@ui/shadCN/component/button";
@@ -19,6 +23,7 @@ import type {
   ImagesData,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";
 
 const setInitialImageInfo = (e: unknown) => (e instanceof File ? e : null);
 const setInitialImagePrv = (e: unknown) => (typeof e === "string" ? e : null);
@@ -29,7 +34,7 @@ export function ImagesInput({
   sectionUpdater,
   validationErrorsObj = {},
 }: {
-  title: string;
+  title?: string;
   sectionInfo: ImagesData;
   sectionUpdater: (value: ImagesData) => void;
   validationErrorsObj: Partial<InitiativeDataFormErr["images"]>;
@@ -130,17 +135,17 @@ export function ImagesInput({
   );
 
   return (
-    <fieldset
-      className={cn(
-        "rounded-lg flex flex-col gap-2 p-4 ",
-        inputErr.root !== undefined && inputErr.root.length > 0
-          ? "bg-red-50 outline-2 outline-accent"
-          : "bg-muted",
-      )}
+    <PlainInputContainer
+      isFieldset={!!title}
+      hasError={inputErr.root !== undefined && inputErr.root.length > 0}
     >
-      <LegendAndErrors validationErrors={inputErr.root ?? []}>
-        {title}
-      </LegendAndErrors>
+      {title ? (
+        <LegendAndErrors validationErrors={inputErr?.root ?? []}>
+          {title}
+        </LegendAndErrors>
+      ) : (
+        <ErrorsList errorItems={inputErr?.root ?? []} />
+      )}
 
       <div className="flex gap-8 flex-wrap items-end *:flex-[1_1_350px]">
         <ImageLoadField
@@ -169,7 +174,7 @@ export function ImagesInput({
       {Object.keys(inputErr).length > 0 && (
         <Button type="button">Cargar de nuevo</Button>
       )}
-    </fieldset>
+    </PlainInputContainer>
   );
 }
 

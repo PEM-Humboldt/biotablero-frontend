@@ -34,7 +34,6 @@ import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
 // TODO:
-// 1. Montar componente de imágenes
 // 4. complementar la barra de búsqueda
 
 export function InitiativesAdmin() {
