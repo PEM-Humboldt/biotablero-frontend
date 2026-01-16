@@ -34,9 +34,6 @@ import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
-// TODO:
-// 4. complementar la barra de búsqueda
-
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
     number,
