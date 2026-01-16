@@ -125,8 +125,8 @@ export type LegacyContextValues = {
 
   // dispatch
   setSearchType: (searchType: SrchType) => void;
-  setAreaType: (areaType: AreaType) => void;
-  setAreaId: (areaId: AreaIdBasic) => void;
+  setAreaType: (areaType?: AreaType) => void;
+  setAreaId: (areaId?: AreaIdBasic) => void;
   setAreaHa: (value?: number) => void;
   setAreaLayer: (layer?: geojson.GeoJsonObject) => void;
   setRasterLayers: (layers: Array<RasterLayer>) => void;
@@ -172,10 +172,10 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
       setLayerError: (layerError: string | undefined) =>
         searchDispatch({ type: SearchUpdated.LAYER_ERROR, layerError }),
 
-      setAreaType: (areaType: AreaType) =>
+      setAreaType: (areaType?: AreaType) =>
         searchDispatch({ type: SearchUpdated.AREA_TYPE, areaType }),
 
-      setAreaId: (areaId: AreaIdBasic) =>
+      setAreaId: (areaId?: AreaIdBasic) =>
         searchDispatch({ type: SearchUpdated.AREA_ID, areaId }),
 
       setAreaLayer: (areaLayerJSON: geojson.GeoJsonObject | undefined) =>
