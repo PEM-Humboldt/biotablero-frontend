@@ -65,3 +65,22 @@ export async function initiativeNameNotExist(initiativeName: string) {
 
   return existingInitiative["@odata.count"] === 0;
 }
+
+/**
+ * Higher-order function that makes a validation bypass based on an exception flag.
+ *
+ * @template T - The return type of the callback, either `boolean` or `Promise<boolean>`.
+ * @param callback - The validation function to execute if exemption is false.
+ * @param exception - If `true`, the validation is bypassed and returns a callback tthat return true.
+ * @returns  returns a callback that resolves in boolean.
+ */
+export function validationExemption<T extends boolean | Promise<boolean>>(
+  callback: (str: string) => T,
+  exception: boolean,
+): (str: string) => T {
+  if (exception) {
+    return (_: string) => true as T;
+  }
+
+  return callback;
+}

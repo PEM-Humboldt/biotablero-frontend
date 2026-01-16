@@ -28,7 +28,7 @@ import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiat
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
 import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
-import { formClientValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
+import { newInitiativeValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
 import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
   makeInitialInfo,
@@ -61,7 +61,7 @@ export function InitiativeDataForm() {
 
     const currentErrors = validateFormClient(
       initiative.current,
-      formClientValidations,
+      newInitiativeValidations,
     );
     setErrors(currentErrors);
 
@@ -72,7 +72,12 @@ export function InitiativeDataForm() {
 
     try {
       const { general, images, ...rest } = { ...initiative.current };
-      const payload = { ...general, ...rest };
+
+      const cleanGeneral = Object.fromEntries(
+        Object.entries(general).filter(([_, value]) => Boolean(value)),
+      ) as Record<string, string>;
+
+      const payload = { ...cleanGeneral, ...rest };
 
       const res = await monitoringAPI<InitiativeFullInfo>({
         type: "put",
@@ -87,13 +92,15 @@ export function InitiativeDataForm() {
       });
 
       if (isMonitoringAPIError(res)) {
-        const { status, message } = res;
-
+        const { status, message, data } = res;
         setErrors((oldErr) => ({
           ...oldErr,
-          root: [commonErrorMessage[status] ?? message],
+          root: [
+            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+          ],
         }));
-        setIsPending(false);
+        console.error(res);
+
         return;
       }
 

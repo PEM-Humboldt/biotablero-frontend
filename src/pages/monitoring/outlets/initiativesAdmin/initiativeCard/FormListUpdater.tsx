@@ -20,7 +20,7 @@ import { commonErrorMessage } from "@utils/ui";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
-  listName: keyof CardInfoGrouped;
+  initiativeInfoSection: keyof CardInfoGrouped;
   AddItemComponent: ElementType<ItemEditorProps<T>>;
   maxItems: number;
   minItems?: number;
@@ -31,7 +31,7 @@ type FormListUpdaterProps<T, R extends object> = {
 
 export function FormListUpdater<T, R extends object>({
   title,
-  listName,
+  initiativeInfoSection,
   AddItemComponent,
   maxItems = Infinity,
   minItems = 0,
@@ -48,11 +48,11 @@ export function FormListUpdater<T, R extends object>({
 
   const initiativeId = initiative?.id ?? null;
   const maxAmountItems = maxItems === 0 ? Infinity : maxItems;
-  const editThis = currentEdit === listName;
+  const editThis = currentEdit === initiativeInfoSection;
 
   useEffect(() => {
     const sectionInfo = initiative
-      ? (initiative[listName] as unknown as T[])
+      ? (initiative[initiativeInfoSection] as unknown as T[])
       : null;
 
     if (!sectionInfo) {
@@ -66,12 +66,24 @@ export function FormListUpdater<T, R extends object>({
 
     const setInfo = async () => {
       const res = await Promise.all(sectionInfo.map(renderRowsCallback));
+
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        ]);
+        console.error(res);
+
+        return;
+      }
+
       const allLocations = res.filter((item) => item !== null) as T[];
       setSelectedItems(allLocations);
     };
 
     void setInfo();
-  }, [renderRowsCallback, initiative, listName]);
+  }, [renderRowsCallback, initiative, initiativeInfoSection]);
 
   useEffect(() => {
     if (!editThis && updateItem) {
@@ -110,17 +122,10 @@ export function FormListUpdater<T, R extends object>({
         const { status, message, data } = res;
         setErrors((oldErr) => [
           ...oldErr,
-          data || commonErrorMessage[status] || message,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
         ]);
+        console.error(res);
 
-        return;
-      }
-
-      if (res.status > 299) {
-        setErrors((oldErr) => [
-          ...oldErr,
-          "Actualiza la ventana para confirmar la acción",
-        ]);
         return;
       }
 
@@ -154,8 +159,9 @@ export function FormListUpdater<T, R extends object>({
         const { status, message, data } = res;
         setErrors((oldErr) => [
           ...oldErr,
-          data || commonErrorMessage[status] || message,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
         ]);
+        console.error(res);
 
         return;
       }
@@ -228,7 +234,9 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const editPanelAction = () => {
-    setCurrentEdit!((curEdit) => (curEdit === listName ? "none" : listName));
+    setCurrentEdit!((curEdit) =>
+      curEdit === initiativeInfoSection ? "none" : initiativeInfoSection,
+    );
   };
 
   return (
@@ -239,7 +247,7 @@ export function FormListUpdater<T, R extends object>({
       )}
     >
       <div
-        id={`${initiativeId}_${listName}`}
+        id={`${initiativeId}_${initiativeInfoSection}`}
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         {title}
@@ -254,8 +262,11 @@ export function FormListUpdater<T, R extends object>({
         )}
       </div>
 
-      <form aria-labelledby={`${initiativeId}_${listName}`}>
-        <ErrorsList errId="id" errorItems={errors} />
+      <form aria-labelledby={`${initiativeId}_${initiativeInfoSection}`}>
+        <ErrorsList
+          errId={`${initiativeId}_${initiativeInfoSection}_errors`}
+          errorItems={errors}
+        />
         {selectedItems.length > 0 && (
           <DisplayTable<T, R>
             title="Información en la iniciativa"

@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { LabelAndErrors, LegendAndErrors } from "@ui/LabelingWithErrors";
+import {
+  ErrorsList,
+  LabelAndErrors,
+  LegendAndErrors,
+} from "@ui/LabelingWithErrors";
 import {
   InputGroup,
   InputGroupInput,
@@ -9,7 +13,6 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/strValidator";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   INITIAVIVE_NAME_MAX_LENGTH,
   INITIAVIVE_SHORTNAME_MAX_LENGTH,
@@ -22,17 +25,21 @@ import type {
   GeneralInfo,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { initiativeNameNotExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
+import {
+  initiativeNameNotExist,
+  validationExemption,
+} from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
+import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";
 
-export function GeneralInfoInput({
+export function GeneralInfoInput<T extends GeneralInfo>({
   title,
   sectionInfo,
   sectionUpdater,
   validationErrorsObj = {},
 }: {
-  title: string;
+  title?: string;
   sectionInfo: GeneralInfo;
-  sectionUpdater: (value: GeneralInfo) => void;
+  sectionUpdater: (value: T) => void;
   validationErrorsObj: Partial<InitiativeDataFormErr["general"]>;
 }) {
   const [generalInfo, setGeneralInfo] = useState<Required<GeneralInfo>>({
@@ -55,9 +62,16 @@ export function GeneralInfoInput({
     setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
   }, [validationErrorsObj]);
 
-  const setGeneralInfoItem = (key: keyof GeneralInfo) => (value: string) => {
-    setGeneralInfo((oldObj) => ({ ...oldObj, [key]: value }));
-  };
+  const setGeneralInfoItem = useCallback(
+    (key: keyof GeneralInfo, value: string) => {
+      setGeneralInfo((oldObj) => {
+        const provitionalInfo = { ...oldObj, [key]: value };
+        sectionUpdater(provitionalInfo as T);
+        return provitionalInfo;
+      });
+    },
+    [sectionUpdater],
+  );
 
   const validateField = useCallback(
     (fieldName: keyof GeneralInfo, validation: StrValidator) => {
@@ -69,15 +83,9 @@ export function GeneralInfoInput({
       }
 
       setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
-      setGeneralInfoItem(fieldName)(cleanValue);
-
-      const infoClean = Object.fromEntries(
-        Object.entries(generalInfo).filter(([_, value]) => Boolean(value)),
-      ) as GeneralInfo;
-
-      sectionUpdater(infoClean);
+      setGeneralInfoItem(fieldName, cleanValue);
     },
-    [generalInfo, sectionUpdater],
+    [setGeneralInfoItem],
   );
 
   const nameOnBlur = async () =>
@@ -88,7 +96,10 @@ export function GeneralInfoInput({
         .isRequired()
         .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH)
         .customAsync(
-          initiativeNameNotExist,
+          validationExemption(
+            initiativeNameNotExist,
+            generalInfo.name === sectionInfo.name,
+          ),
           "Este nombre de iniciativa ya existe",
         ),
     );
@@ -130,17 +141,17 @@ export function GeneralInfoInput({
     );
 
   return (
-    <fieldset
-      className={cn(
-        "rounded-lg flex flex-col gap-2 p-4 ",
-        inputErr.root !== undefined && inputErr.root.length > 0
-          ? "bg-red-50 outline-2 outline-accent"
-          : "bg-muted",
-      )}
+    <PlainInputContainer
+      isFieldset={!!title}
+      hasError={inputErr.root !== undefined && inputErr.root.length > 0}
     >
-      <LegendAndErrors validationErrors={inputErr?.root ?? []}>
-        {title}
-      </LegendAndErrors>
+      {title ? (
+        <LegendAndErrors validationErrors={inputErr?.root ?? []}>
+          {title}
+        </LegendAndErrors>
+      ) : (
+        <ErrorsList errorItems={inputErr?.root ?? []} />
+      )}
 
       <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
         <div>
@@ -158,7 +169,7 @@ export function GeneralInfoInput({
               id="name"
               type="text"
               value={generalInfo.name}
-              onChange={(e) => setGeneralInfoItem("name")(e.target.value)}
+              onChange={(e) => setGeneralInfoItem("name", e.target.value)}
               onBlur={() => void nameOnBlur()}
               autoComplete="off"
               placeholder="Juntos por la Amazonía"
@@ -195,7 +206,7 @@ export function GeneralInfoInput({
               placeholder="JPLA"
               type="text"
               value={generalInfo.shortName}
-              onChange={(e) => setGeneralInfoItem("shortName")(e.target.value)}
+              onChange={(e) => setGeneralInfoItem("shortName", e.target.value)}
               onBlur={shortNameOnBlur}
               autoComplete="off"
               maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
@@ -238,7 +249,7 @@ export function GeneralInfoInput({
             name="description"
             placeholder="Esta iniciativa busca..."
             value={generalInfo.description}
-            onChange={(e) => setGeneralInfoItem("description")(e.target.value)}
+            onChange={(e) => setGeneralInfoItem("description", e.target.value)}
             onBlur={descriptionOnBlur}
             maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
             aria-invalid={inputErr.description !== undefined}
@@ -246,7 +257,7 @@ export function GeneralInfoInput({
             aria-describedby={
               inputErr.description ? "errors_description" : undefined
             }
-            data-slot="input-group-control"
+            rows={3}
           />
           <InputGroupAddon
             align="block-end"
@@ -279,7 +290,7 @@ export function GeneralInfoInput({
               placeholder="El área de influencia de esta iniciativa es..."
               value={generalInfo.influenceArea}
               onChange={(e) =>
-                setGeneralInfoItem("influenceArea")(e.target.value)
+                setGeneralInfoItem("influenceArea", e.target.value)
               }
               onBlur={influenceOnBlur}
               maxLength={INITIAVIVE_INFLUENCE_MAX_LENGTH}
@@ -288,6 +299,7 @@ export function GeneralInfoInput({
               aria-describedby={
                 inputErr.influenceArea ? "errors_influenceArea" : undefined
               }
+              rows={10}
             />
             <InputGroupAddon
               align="block-end"
@@ -318,7 +330,7 @@ export function GeneralInfoInput({
               name="objective"
               placeholder="El objetivo de esta iniciativa es..."
               value={generalInfo.objective}
-              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
+              onChange={(e) => setGeneralInfoItem("objective", e.target.value)}
               onBlur={objectiveOnBlur}
               maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
               aria-invalid={inputErr.objective !== undefined}
@@ -326,6 +338,7 @@ export function GeneralInfoInput({
               aria-describedby={
                 inputErr.objective ? "errors_objective" : undefined
               }
+              rows={10}
             />
             <InputGroupAddon
               align="block-end"
@@ -341,6 +354,6 @@ export function GeneralInfoInput({
           </InputGroup>
         </div>
       </div>
-    </fieldset>
+    </PlainInputContainer>
   );
 }

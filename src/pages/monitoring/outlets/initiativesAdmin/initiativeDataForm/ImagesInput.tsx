@@ -246,7 +246,7 @@ function ImageLoadField({
               variant="outline_destructive"
               className="bg-white shadow-md h-9 w-9"
               onClick={(e) => {
-                e.stopPropagation(); // IMPORTANTE
+                e.stopPropagation();
                 removeHandler(fieldName, inputRef);
               }}
             >

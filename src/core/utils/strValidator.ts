@@ -215,8 +215,9 @@ export class StrValidator {
   async customAsync(
     validatorCallback: (str: string) => Promise<boolean>,
     errorStr: string,
+    exception?: boolean,
   ): Promise<this> {
-    if (this.errors.length > 0) {
+    if (this.errors.length > 0 || exception) {
       return this;
     }
 

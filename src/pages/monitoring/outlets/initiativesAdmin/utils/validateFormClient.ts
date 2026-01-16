@@ -1,12 +1,9 @@
-import type {
-  InitiativeDataForm,
-  InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { InitiativeDataFormErr } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { FormClientValidation } from "pages/monitoring/outlets/initiativesAdmin/types/form";
 
-export function validateFormClient(
-  formData: InitiativeDataForm,
-  formClientValidations: FormClientValidation[],
+export function validateFormClient<T>(
+  formData: T,
+  formClientValidations: FormClientValidation<T>[],
 ): Partial<InitiativeDataFormErr> {
   const foundErrors: Partial<InitiativeDataFormErr> = {};
 

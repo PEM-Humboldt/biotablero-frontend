@@ -30,9 +30,11 @@ import {
 import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
+import { commonErrorMessage } from "@utils/ui";
+import { ErrorsList } from "@ui/LabelingWithErrors";
 
 // TODO:
-// 1. Montar componente de info e imágenes
+// 1. Montar componente de imágenes
 // 2. atrapar los errores raritos del servidor (revisar todos los componentes)
 // 3. montar anuncios de carga
 // 4. complementar la barra de búsqueda
@@ -50,6 +52,8 @@ export function InitiativesAdmin() {
   });
   const [newInitiative, setNewInitiative] = useState(false);
   const prevSearchParamsRef = useRef(searchParams);
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadInitiatives = async () => {
@@ -65,7 +69,12 @@ export function InitiativesAdmin() {
         const res = await getInitiatives(newSearchParams);
 
         if (isMonitoringAPIError(res)) {
-          console.log("pailas");
+          const { status, message, data } = res;
+          setError(
+            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+          );
+          console.error(res);
+
           setInitiatives(null);
           setInitiativesFound(0);
           return;
@@ -81,10 +90,13 @@ export function InitiativesAdmin() {
             return acc;
           }, new Map<number, InitiativeDisplayInfoShort>());
 
+        setError("");
         setInitiatives(initiativesObj);
         setInitiativesFound(res["@odata.count"]);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -116,6 +128,8 @@ export function InitiativesAdmin() {
         </Button>
       </div>
 
+      {error !== "" && <ErrorsList errorItems={[error]} />}
+
       {newInitiative ? (
         <InitiativeDataForm />
       ) : (
@@ -128,7 +142,9 @@ export function InitiativesAdmin() {
           />
 
           {initiatives === null ? (
-            <div>No hay iniciativas</div>
+            <div className="text-2xl text-primary font-semibold p-10">
+              {loading ? "cargando..." : "No hay iniciativas."}
+            </div>
           ) : (
             <Accordion type="single" collapsible className="w-full space-y-3">
               {[...initiatives.entries()].map(([id, initiative]) => (

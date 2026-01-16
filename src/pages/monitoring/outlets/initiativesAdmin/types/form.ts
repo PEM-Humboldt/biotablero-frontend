@@ -1,7 +1,5 @@
-import type { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-
-export type FormClientValidation = {
-  condition: (data: InitiativeDataForm) => boolean;
+export type FormClientValidation<T> = {
+  condition: (data: T) => boolean;
   message: string;
   path: string;
 };

@@ -39,6 +39,7 @@ import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiat
 import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
+import { GeneralInfoUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
 
 export type InitiativeCtxType = {
   initiative: CardInfoGrouped | null;
@@ -177,9 +178,15 @@ export function InitiativeCard({
           />
         </div>
 
+        <GeneralInfoUpdater
+          title="Información general"
+          initiativeInfoSection="general"
+          backEndpoint="Initiative"
+        />
+
         <FormListUpdater
           title="Ubicación"
-          listName="locations"
+          initiativeInfoSection="locations"
           AddItemComponent={LocationInput}
           maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
           minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
@@ -197,7 +204,7 @@ export function InitiativeCard({
         <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListUpdater
             title="Información de contacto"
-            listName="contacts"
+            initiativeInfoSection="contacts"
             AddItemComponent={ContactInput}
             maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
             minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
@@ -212,7 +219,7 @@ export function InitiativeCard({
 
           <FormListUpdater
             title="Lideres y liderezas"
-            listName="users"
+            initiativeInfoSection="users"
             AddItemComponent={UsersInput}
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
