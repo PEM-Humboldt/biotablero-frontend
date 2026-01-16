@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 import {
   ErrorsList,
@@ -253,7 +254,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
         </LabelAndErrors>
 
         <InputGroup>
-          <InputGroupTextarea
+          <TextareaAutosize
+            data-slot="input-group-control"
+            className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
             id="description"
             name="description"
             placeholder="Esta iniciativa busca..."
@@ -266,7 +269,6 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             aria-describedby={
               inputErr.description ? "errors_description" : undefined
             }
-            rows={3}
           />
           <InputGroupAddon
             align="block-end"
@@ -282,7 +284,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
         </InputGroup>
       </div>
 
-      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
+      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-start">
         <div>
           <LabelAndErrors
             errID="errors_influenceArea"
@@ -293,7 +295,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
           </LabelAndErrors>
 
           <InputGroup>
-            <InputGroupTextarea
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
               id="influenceArea"
               name="influenceArea"
               placeholder="El área de influencia de esta iniciativa es..."
@@ -334,7 +338,9 @@ export function GeneralInfoInput<T extends GeneralInfo>({
           </LabelAndErrors>
 
           <InputGroup>
-            <InputGroupTextarea
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
               id="objective"
               name="objective"
               placeholder="El objetivo de esta iniciativa es..."

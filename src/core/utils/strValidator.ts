@@ -78,7 +78,9 @@ export class StrValidator {
         .trim()
         // NOTE: Se desactiva para permitir la limpieza de caracteres escapados
         // eslint-disable-next-line no-control-regex
-        .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+        .replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "")
+        .replace(/(\r\n|\n|\r){3,}/g, "$1$1")
+        .replace(/[^\S\r\n]+/g, " ")
         .replace(/ +/g, " ")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")

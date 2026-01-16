@@ -60,6 +60,7 @@
     "react-masonry-component": "~6.3.0",
     "react-router": "^7.9.1",
     "react-slick": "^0.31.0",
+    "react-textarea-autosize": "^8.5.9",
     "slick-carousel": "^1.8.1",
     "styled-components": "~5.3.11",
     "tailwind-merge": "^3.4.0",
