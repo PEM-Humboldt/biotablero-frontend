@@ -117,6 +117,7 @@ export type TableRenderProps<T, R extends object> = {
   render: Map<string, keyof R>;
   edit: boolean;
   className?: string;
+  disabled: boolean;
 };
 
 export type ItemEditorProps<T> = {
@@ -124,6 +125,7 @@ export type ItemEditorProps<T> = {
   setter: (value: T) => void;
   update: T | null;
   discard?: () => void;
+  disabled?: boolean;
 };
 
 // NOTE: Objetos para facilitar la manipulacion de la información

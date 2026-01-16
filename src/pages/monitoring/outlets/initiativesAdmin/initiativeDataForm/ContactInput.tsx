@@ -24,6 +24,7 @@ export function ContactInput<T extends InitiativeContact>({
   setter,
   update,
   discard,
+  disabled = false,
 }: ItemEditorProps<T>) {
   const [email, setEmail] = useState(update?.email ?? "");
   const [phone, setPhone] = useState(update?.phone ?? "");
@@ -152,6 +153,7 @@ export function ContactInput<T extends InitiativeContact>({
         handleSave={handleSave}
         handleDiscard={handleDiscard}
         reset={() => void reset()}
+        disabled={disabled}
       />
     </div>
   );

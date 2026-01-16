@@ -40,7 +40,7 @@ import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdm
 export function InitiativeDataForm() {
   const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
-  const [isPending, setIsPending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const initiative = useRef<InitiativeDataForm>(makeInitialInfo());
 
   const handleFormUpdate = useCallback(
@@ -57,7 +57,7 @@ export function InitiativeDataForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setIsPending(true);
+    setIsLoading(true);
 
     const currentErrors = validateFormClient(
       initiative.current,
@@ -66,7 +66,7 @@ export function InitiativeDataForm() {
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
-      setIsPending(false);
+      setIsLoading(false);
       return;
     }
 
@@ -121,7 +121,7 @@ export function InitiativeDataForm() {
       setErrors((oldErr) => ({ ...oldErr, root: ["Error interno de la app"] }));
       console.error("Critical error:", err);
     } finally {
-      setIsPending(false);
+      setIsLoading(false);
     }
   }
 
@@ -202,13 +202,13 @@ export function InitiativeDataForm() {
         />
 
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button disabled={isPending}>
-            {isPending ? "Creando iniciativa..." : "Crear iniciativa"}
+          <Button disabled={isLoading}>
+            {isLoading ? "Creando iniciativa..." : "Crear iniciativa"}
           </Button>
           <Button
             type="reset"
             variant="outline_destructive"
-            disabled={isPending}
+            disabled={isLoading}
           >
             Reiniciar el formulario
           </Button>

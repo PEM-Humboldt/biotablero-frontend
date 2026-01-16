@@ -14,6 +14,7 @@ export function DisplayTable<T, R extends object>({
   render,
   edit,
   className,
+  disabled,
 }: TableRenderProps<T, R>) {
   const [displayItems, setDisplayItems] = useState<R[]>([]);
 
@@ -85,6 +86,7 @@ export function DisplayTable<T, R extends object>({
                       variant="ghost-clean"
                       size="icon-sm"
                       title="Editar"
+                      disabled={disabled}
                     >
                       <span className="sr-only">editar</span>
                       <span aria-hidden="true">
@@ -99,6 +101,7 @@ export function DisplayTable<T, R extends object>({
                     variant="ghost-clean"
                     size="icon-sm"
                     title="Quitar"
+                    disabled={disabled}
                   >
                     <span className="sr-only">Quitar</span>
                     <span aria-hidden="true">

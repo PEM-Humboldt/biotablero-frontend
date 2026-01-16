@@ -275,6 +275,7 @@ export function FormListUpdater<T, R extends object>({
             deleteItem={(itemIndex) => void handleRemove(itemIndex)}
             render={renderCols}
             edit={editThis && selectedItems.length > minItems}
+            disabled={isLoading}
           />
         )}
 
@@ -284,6 +285,7 @@ export function FormListUpdater<T, R extends object>({
             setter={(n) => void handleSave(n)}
             update={updateItem}
             discard={() => void handleDiscard()}
+            disabled={isLoading}
           />
         )}
       </form>

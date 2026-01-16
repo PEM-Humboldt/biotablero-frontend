@@ -32,12 +32,12 @@ export function LocationInput<T extends LocationDataBasic>({
   setter,
   update,
   discard,
+  disabled = false,
 }: ItemEditorProps<T>) {
   const [department, setDepartment] = useState<string>("");
   const [municipalities, setMunicipalities] = useState<LocationList[]>([]);
   const [municipality, setMunicipality] = useState<string>("");
   const [locality, setLocality] = useState("");
-
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
@@ -254,6 +254,7 @@ export function LocationInput<T extends LocationDataBasic>({
           handleSave={handleSave}
           handleDiscard={handleDiscard}
           reset={() => void reset()}
+          disabled={disabled}
         />
       </div>
     </>

@@ -195,7 +195,7 @@ export function GeneralInfoUpdater({
               type="button"
               onClick={(e) => void handleSubmit(e)}
             >
-              Guardar cambios
+              {isLoading ? "Guadando cambios..." : "Guardar cambios"}
             </Button>
             <Button
               disabled={isLoading}

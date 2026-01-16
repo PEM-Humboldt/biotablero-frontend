@@ -8,11 +8,13 @@ export function InputListActionButtons<T>({
   handleSave,
   reset,
   handleDiscard,
+  disabled,
 }: {
   update: T | null;
   handleSave: () => void;
   reset?: () => void;
   handleDiscard?: () => void;
+  disabled: boolean;
 }) {
   return (
     <ButtonGroup>
@@ -23,6 +25,7 @@ export function InputListActionButtons<T>({
           variant="outline"
           size="icon"
           title={update !== null ? "Guardar cambios" : "Añadir"}
+          disabled={disabled}
         >
           <span className="sr-only">
             {update !== null ? "Guardar cambios" : "Añadir"}
@@ -43,6 +46,7 @@ export function InputListActionButtons<T>({
             variant="outline"
             size="icon"
             title="Restablecer"
+            disabled={disabled}
           >
             <span className="sr-only">Restablecer</span>
             <span aria-hidden="true">
@@ -60,6 +64,7 @@ export function InputListActionButtons<T>({
             variant="outline_destructive"
             size="icon"
             title="Desechar"
+            disabled={disabled}
           >
             <span className="sr-only">Desechar elemento</span>
             <span aria-hidden="true">

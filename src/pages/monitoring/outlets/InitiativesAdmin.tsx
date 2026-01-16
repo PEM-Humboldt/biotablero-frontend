@@ -35,8 +35,6 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 
 // TODO:
 // 1. Montar componente de imágenes
-// 2. atrapar los errores raritos del servidor (revisar todos los componentes)
-// 3. montar anuncios de carga
 // 4. complementar la barra de búsqueda
 
 export function InitiativesAdmin() {

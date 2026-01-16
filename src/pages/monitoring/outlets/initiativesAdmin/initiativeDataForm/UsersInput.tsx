@@ -21,6 +21,7 @@ export function UsersInput<T extends User>({
   setter,
   update,
   discard,
+  disabled = false,
 }: ItemEditorProps<T>) {
   const [allUsers, setAllUsers] = useState<Partial<User>[]>([]);
   const [user, setUser] = useState<string>("");
@@ -116,6 +117,7 @@ export function UsersInput<T extends User>({
         update={update}
         handleSave={handleSave}
         handleDiscard={handleDiscard}
+        disabled={disabled}
       />
     </div>
   );

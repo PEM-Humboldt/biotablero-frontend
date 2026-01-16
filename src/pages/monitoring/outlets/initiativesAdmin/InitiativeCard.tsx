@@ -64,8 +64,9 @@ export function InitiativeCard({
   initiative: InitiativeDisplayInfoShort | InitiativeDisplayInfo;
   updater: (value: InitiativeFullInfo) => void;
 }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [cardInfo, setCardInfo] = useState<InitiativeFullInfo | null>(null);
-  const [cardErrors, setCardErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<
     keyof CardInfoGrouped | "none" | null
   >(null);
@@ -75,29 +76,38 @@ export function InitiativeCard({
   }, [cardInfo?.enabled]);
 
   const getCardInfo = useCallback(async () => {
-    const info = await getInitiative(initiative.id);
+    try {
+      setIsLoading(true);
+      const res = await getInitiative(initiative.id);
 
-    if (isMonitoringAPIError(info)) {
-      const { status, message } = info;
-      setCardErrors((oldErr) => [
-        ...oldErr,
-        commonErrorMessage[status] ?? message,
-      ]);
-      console.error(info);
-      return;
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        ]);
+        console.error(res);
+
+        return;
+      }
+
+      if (!res) {
+        setErrors((oldErr) => [
+          ...oldErr,
+          "No es posible obtener los detalles de la iniciativa, intenta de nuevo más tarde",
+        ]);
+
+        return;
+      }
+
+      setCardInfo(res);
+      updater(res);
+    } catch (err) {
+      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
+      console.error("Critical error:", err);
+    } finally {
+      setIsLoading(false);
     }
-
-    if (info === undefined) {
-      setCardErrors((oldErr) => [
-        ...oldErr,
-        "No es posible obtener los detalles de la iniciativa, intenta de nuevo más tarde",
-      ]);
-
-      return;
-    }
-
-    setCardInfo(info);
-    updater(info);
   }, [initiative.id, updater]);
 
   useEffect(() => {
@@ -109,26 +119,35 @@ export function InitiativeCard({
       return;
     }
 
-    const endpoint = initiative.enabled ? "Disable" : "Enable";
-    const method = initiative.enabled ? "delete" : "post";
-    const res = await monitoringAPI<InitiativeFullInfo>({
-      type: method,
-      endpoint: `Initiative/${endpoint}/${initiative.id}`,
-    });
+    try {
+      setIsLoading(true);
+      const endpoint = initiative.enabled ? "Disable" : "Enable";
+      const method = initiative.enabled ? "delete" : "post";
+      const res = await monitoringAPI<InitiativeFullInfo>({
+        type: method,
+        endpoint: `Initiative/${endpoint}/${initiative.id}`,
+      });
 
-    if (isMonitoringAPIError(res)) {
-      const { status, message } = res;
-      setCardErrors((oldErr) => [
-        ...oldErr,
-        commonErrorMessage[status] ?? message,
-      ]);
-      console.error(res);
-      return;
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        ]);
+        console.error(res);
+
+        return;
+      }
+
+      setCurrentEdit(res.enabled ? "none" : null);
+
+      void updater(res);
+    } catch (err) {
+      setErrors((oldErr) => [...oldErr, "Error interno de la app"]);
+      console.error("Critical error:", err);
+    } finally {
+      setIsLoading(false);
     }
-
-    setCurrentEdit(res.enabled ? "none" : null);
-
-    void updater(res);
   };
 
   const cardInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
@@ -148,7 +167,22 @@ export function InitiativeCard({
   }, [cardInfo]);
 
   return !cardInfoGrouped ? (
-    <div>No fue posible cargar la información, intenta de nuevo más tarde.</div>
+    <div className="text-center font-light text-4xl text-primary px-12 py-24">
+      {isLoading ? (
+        "cargando..."
+      ) : (
+        <>
+          <span className="text-accent">
+            No fue posible cargar la información, intenta de nuevo más tarde.
+          </span>
+          <ErrorsList
+            errId="card_errors"
+            errorItems={errors}
+            className="bg-red-50 border border-accent flex flex-col gap-2 items-center w-[50%] mx-auto my-4 p-6 rounded-lg"
+          />
+        </>
+      )}
+    </div>
   ) : (
     <InitiativeCtx.Provider
       value={{
@@ -163,10 +197,10 @@ export function InitiativeCard({
           <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
             {initiative.name}
           </h3>
-          {cardErrors.length > 0 && (
+          {errors.length > 0 && (
             <ErrorsList
               errId="card_errors"
-              errorItems={cardErrors}
+              errorItems={errors}
               className="flex items-center"
             />
           )}
