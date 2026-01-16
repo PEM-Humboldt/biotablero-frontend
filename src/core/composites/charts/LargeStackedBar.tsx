@@ -1,7 +1,7 @@
 import { ResponsiveBar } from "@nivo/bar";
 
 import { formatNumber } from "@utils/format";
-import withMessageWrapper from "@composites/charts/withMessageWrapper";
+import { withMessageWrapper } from "@composites/charts/withMessageWrapper";
 
 interface Props {
   data: Array<LargeStackedBarData>;
@@ -27,7 +27,7 @@ const darkColors: { [key: string]: string } = {
   "#902130": "#902130",
 };
 
-const LargeStackedBar = (props: Props) => {
+export const LargeStackedBar = (props: Props) => {
   const {
     data,
     labelX = "",

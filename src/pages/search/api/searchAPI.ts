@@ -1,11 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RasterAPIObject } from "pages/search/types/api";
 import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
-import { ForestLPRawDataPolygon } from "pages/search/types/forest";
+import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
 import * as geojson from "geojson";
-
-type MetricsTypes = "LossPersistence";
-type RawDataPolygon = ForestLPRawDataPolygon;
 
 class SearchAPI {
   /**
@@ -81,10 +78,10 @@ class SearchAPI {
    * @param polygonId Polygon identifier
    * @returns List of metrics values
    */
-  static requestMetricsValues(
-    metricId: MetricsTypes,
+  static requestMetricsValues<Metric extends MetricsTypes>(
+    metricId: Metric,
     polygonId: number,
-  ): Promise<Array<RawDataPolygon>> {
+  ): Promise<MetricTypesMap[Metric]> {
     return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
   }
 
