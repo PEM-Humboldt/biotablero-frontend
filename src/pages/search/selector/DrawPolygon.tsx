@@ -230,7 +230,9 @@ export function DrawPolygon() {
             className="action-button"
             disabled={
               drawnPolygon === null ||
-              drawMode !== DrawMode.DONE ||
+              drawMode === DrawMode.EDIT ||
+              drawMode === DrawMode.DELETE ||
+              drawMode === DrawMode.DRAW ||
               !areDrawControlsMounted
             }
             onClick={sendClick}
@@ -238,6 +240,11 @@ export function DrawPolygon() {
             <Done />
             <span>{uiText.sendButton.title}</span>
           </button>
+          <p className="instruction-text">
+            {drawnPolygon !== null
+              ? uiText.sendButton.instruction[DrawMode.DONE]
+              : uiText.sendButton.instruction[drawMode]}
+          </p>
         </div>
       </div>
     </div>
