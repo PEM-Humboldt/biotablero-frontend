@@ -51,7 +51,9 @@ export class EcosystemsController {
         this.activeRequests.delete(categoryKey);
       });
 
-      if (res.includes("request canceled")) throw Error("request canceled");
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
 
       const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {

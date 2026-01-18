@@ -47,8 +47,9 @@ export class CurrentFootprintController {
         this.activeRequests.delete(categoryId);
       });
 
-      if (res.includes("request canceled")) throw Error("request canceled");
-
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
       const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {
         const request = SearchAPI.getLayerData(response);
