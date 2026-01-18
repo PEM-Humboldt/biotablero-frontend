@@ -36,7 +36,7 @@ export class EcosystemsController {
 
       Object.keys(coverageKeys).forEach((categoryId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "Coverage",
+          "coverage",
           period,
           coverageKeys[categoryId],
           Number(this.areaId),

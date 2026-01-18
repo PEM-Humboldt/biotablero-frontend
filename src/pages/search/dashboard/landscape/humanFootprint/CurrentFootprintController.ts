@@ -32,7 +32,7 @@ export class CurrentFootprintController {
 
       currentHFCategories.forEach((categoryId, index) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "CurrentHF",
+          "currentHF",
           period,
           index + 1,
           Number(this.areaId),

@@ -225,7 +225,7 @@ export class ForestLossPersistenceController {
 
       Object.values(ForestLPCategories).forEach((value) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "LossPersistence",
+          "lossPersistence",
           period,
           value,
           Number(this.areaId),
