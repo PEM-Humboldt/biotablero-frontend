@@ -8,8 +8,7 @@ interface MatchInfo {
 
 type ColorValue = string | number;
 type ColorResult = string | null;
-type ColorMapper = (value: string | number) => string | null;
-
+type ColorMapper = (value?: string | number) => ColorResult;
 interface CyclicCache {
   counter: number;
   [key: string]: string | number;
@@ -226,18 +225,23 @@ export const matchColor = (
 
   switch (type) {
     case "fc":
-      return (value: ColorValue): ColorResult => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const numValue = Number(value);
         if (Number.isNaN(numValue)) return null;
 
         let idx = sort.indexOf(numValue);
         if (idx === -1) idx = sort.indexOf(numValue + 0.25);
+
         return idx === -1 ? null : palette[idx];
       };
 
     case "biomas":
     case "bioticReg":
-      return (value: ColorValue): ColorResult => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const key = String(value);
         const bucket = cache[type];
 
@@ -254,7 +258,9 @@ export const matchColor = (
     case "pa":
       if (resetCache) cache.pa_counter = 1;
 
-      return (value: ColorValue): ColorResult => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
         if (idx !== -1) return palette[idx];
 
@@ -278,7 +284,9 @@ export const matchColor = (
     case "timelinePAConn":
     case "caTargets":
     case "se":
-      return (value: ColorValue): ColorResult => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
         return idx === -1 ? palette[palette.length - 1] : palette[idx];
       };
@@ -295,7 +303,9 @@ export const matchColor = (
     case "functionalDFFeatureSLA":
     case "functionalDFFeatureSSD":
     case "functionalDFFeatureSM":
-      return (value: ColorValue): ColorResult => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
         return idx === -1 ? null : palette[idx];
       };

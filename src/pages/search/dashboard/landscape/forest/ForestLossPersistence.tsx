@@ -17,6 +17,7 @@ import { textsObject } from "pages/search/types/texts";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 interface Props {}
 interface State {
@@ -142,7 +143,10 @@ class ForestLossPersistence extends React.Component<Props, State> {
         <div>
           <h6>Cobertura actual</h6>
           <h5
-            style={{ backgroundColor: matchColor("forestLP")("persistencia") }}
+            style={{
+              backgroundColor:
+                matchColor("forestLP")("persistencia") || colorPalettes.default[0],
+            }}
           >
             {`${formatNumber(forestPersistenceValue, 0)} ha `}
           </h5>
@@ -168,7 +172,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
               legend: "Hectáreas",
               format: ".2s",
             }}
-            colors={matchColor("forestLP")}
+            colors={(key: string) =>
+              matchColor("forestLP")(key) || colorPalettes.default[0]
+            }
             onClickHandler={(period, category) => {
               if (period === this.currentPeriod) {
                 setRasterLayers(

@@ -5,6 +5,7 @@ import type L from "leaflet";
 import { FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import { matchColor } from "pages/search/utils/matchColor";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 export function DrawControl() {
   const { drawControlsRef, setAreDrawControlMounted } =
@@ -44,7 +45,7 @@ export function DrawControl() {
                 "<strong>No se permite polígonos con intersecciones<strong>",
             },
             shapeOptions: {
-              color: matchColor("polygon")(),
+              color: matchColor("polygon")() || colorPalettes.default[0],
               opacity: 0.8,
               clickable: true,
             },
