@@ -145,7 +145,8 @@ class ForestLossPersistence extends React.Component<Props, State> {
           <h5
             style={{
               backgroundColor:
-                matchColor("forestLP")("persistencia") || colorPalettes.default[0],
+                matchColor("forestLP")("persistencia") ||
+                colorPalettes.default[0],
             }}
           >
             {`${formatNumber(forestPersistenceValue, 0)} ha `}
