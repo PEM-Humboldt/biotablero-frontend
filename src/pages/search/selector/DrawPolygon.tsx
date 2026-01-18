@@ -82,22 +82,30 @@ export function DrawPolygon() {
 
   const drawClick = () => {
     setDrawMode(DrawMode.DRAW);
-    (drawControlsRef!.current as any)._toolbars.draw._modes.polygon.handler.enable();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.draw._modes.polygon.handler.enable();
   };
 
   const editClick = () => {
     setDrawMode(DrawMode.EDIT);
-    (drawControlsRef!.current as any)._toolbars.edit._modes.edit.handler.enable();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.edit._modes.edit.handler.enable();
   };
 
   const finishEdit = () => {
     setDrawMode(DrawMode.DONE);
-    (drawControlsRef!.current as any)._toolbars.edit._actionButtons[0].button.click();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.edit._actionButtons[0].button.click();
   };
 
   const removeClick = () => {
     setDrawMode(DrawMode.DELETE);
-    (drawControlsRef!.current as any)._toolbars.edit._modes.remove.handler.enable();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.edit._modes.remove.handler.enable();
   };
 
   const finishRemove = () => {
@@ -109,12 +117,16 @@ export function DrawPolygon() {
     }
 
     setDrawMode(DrawMode.IDLE);
-    (drawControlsRef!.current as any)._toolbars.edit._actionButtons[0].button.click();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.edit._actionButtons[0].button.click();
   };
 
   const cancelChange = () => {
     setDrawMode(DrawMode.DONE);
-    (drawControlsRef!.current as any)._toolbars.edit._actionButtons[1].button.click();
+    (
+      drawControlsRef!.current as any
+    )._toolbars.edit._actionButtons[1].button.click();
   };
 
   const sendClick = () => {
