@@ -44,6 +44,7 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
 
 export function Logs() {
   const preloadedLogs = useLoaderData<LoadedLogs>();
+  const [isDownloading, setIsDownloading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
@@ -59,6 +60,7 @@ export function Logs() {
   const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
+    setIsDownloading(true);
     const filterChange = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
         setCurrentPage(1);
@@ -89,6 +91,8 @@ export function Logs() {
         });
 
         console.error("Unexpected error while getting the logs:", err);
+      } finally {
+        setIsDownloading(false);
       }
     };
 
@@ -97,6 +101,7 @@ export function Logs() {
 
   const handleDownload = async () => {
     const { top: _, ...downloadParams } = searchParams;
+    setIsDownloading(true);
 
     try {
       const result = await downloadLogs(downloadParams);
@@ -127,19 +132,34 @@ export function Logs() {
         message: "Error inesperado en la descarga",
         type: "error",
       });
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   const recordsAvailable = logs ? logs["@odata.count"] : 0;
+  const downloadDisabled = logs && logs["@odata.count"] > 10_000;
 
   return (
-    <main className="logs">
-      <header>
-        <h2>{uiText.logsTitle}</h2>
-        <Button type="button" onClick={() => void handleDownload()}>
-          Descargar resultados
-          <FileDown aria-hidden="true" />
-        </Button>
+    <main className="logs ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
+      <header className="p-6 pb-0 w-full flex justify-between items-center ml-[60px] max-w-6xl">
+        <h3 className="h1! text-primary w-max">{uiText.logsTitle}</h3>
+        <div className="max-w-[500px] text-right text-base">
+          {downloadDisabled ? (
+            uiText.download.warn
+          ) : (
+            <Button
+              type="button"
+              onClick={() => void handleDownload()}
+              disabled={recordsAvailable === 0}
+            >
+              {isDownloading
+                ? uiText.download.button.isDownloading
+                : uiText.download.button.isReady}
+              {!isDownloading && <FileDown aria-hidden="true" />}
+            </Button>
+          )}
+        </div>
       </header>
 
       <ODataSearchBar
