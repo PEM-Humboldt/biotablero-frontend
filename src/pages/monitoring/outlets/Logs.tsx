@@ -7,8 +7,17 @@ import { TablePager } from "@composites/TablePager";
 import { LOG_RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
+import { Button } from "@ui/shadCN/component/button";
+import {
+  LoadStatusMsgBar,
+  type LoadStatusMsgBarProp,
+} from "@ui/loadStatusSecction";
 
-import { getLogs } from "pages/monitoring/api/monitoringAPI";
+import {
+  downloadLogs,
+  getLogs,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
 import { LogsTable } from "pages/monitoring/outlets/logs/Table";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
@@ -17,10 +26,7 @@ import type {
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/requestParams";
-import {
-  LoadStatusMsgBar,
-  type LoadStatusMsgBarProp,
-} from "@ui/loadStatusSecction";
+import { FileDown } from "lucide-react";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 
@@ -89,13 +95,53 @@ export function Logs() {
     void filterChange();
   }, [searchParams, currentPage]);
 
+  const handleDownload = async () => {
+    const { top: _, ...downloadParams } = searchParams;
+
+    try {
+      const result = await downloadLogs(downloadParams);
+
+      if (isMonitoringAPIError(result)) {
+        console.error("Error descargando el archivo:", result.message);
+        setLoadMsg({
+          message: "Error en la descarga del archivo, intenta más tarde.",
+          type: "error",
+        });
+        return;
+      }
+
+      const url = window.URL.createObjectURL(result);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", "reporte_registro-de-eventos.xlsx");
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error descargando el archivo:", err);
+      setLoadMsg({
+        message: "Error inesperado en la descarga",
+        type: "error",
+      });
+    }
+  };
+
   const recordsAvailable = logs ? logs["@odata.count"] : 0;
 
   return (
     <main className="logs">
       <header>
         <h2>{uiText.logsTitle}</h2>
+        <Button type="button" onClick={() => void handleDownload()}>
+          Descargar resultados
+          <FileDown aria-hidden="true" />
+        </Button>
       </header>
+
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
@@ -103,6 +149,7 @@ export function Logs() {
         reset={uiText.searchBar.resetBtn}
         className="search-bar"
       />
+
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       ) : (
