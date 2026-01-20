@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { Done } from "@mui/icons-material";
-import L, { type Polygon, type LeafletEvent } from "leaflet";
+import L, {
+  type Polygon,
+  type LeafletEvent,
+  type Map,
+  type Control,
+} from "leaflet";
 import type { DrawEvents } from "leaflet";
 import type * as geojson from "geojson";
 
@@ -14,6 +19,35 @@ import {
 import { uiText } from "pages/search/selector/drawPolygon/layout/uiText";
 import "pages/search/selector/drawPolygon/layout/DrawPolygon.css";
 import { DrawMode } from "pages/search/selector/drawPolygon/types/drawPolygon";
+interface DrawModeHandler {
+  handler: {
+    enable(): void;
+  };
+}
+
+interface DrawToolbar {
+  _modes: {
+    polygon: DrawModeHandler;
+  };
+}
+
+interface EditToolbar {
+  _modes: {
+    edit: DrawModeHandler;
+    remove: DrawModeHandler;
+  };
+  _actionButtons: Array<{
+    button: HTMLButtonElement;
+  }>;
+}
+
+interface DrawControlExtend extends Control.Draw {
+  _map: Map;
+  _toolbars: {
+    draw: DrawToolbar;
+    edit: EditToolbar;
+  };
+}
 
 export function DrawPolygon() {
   const { drawControlsRef, areDrawControlsMounted } =
@@ -29,7 +63,9 @@ export function DrawPolygon() {
     setDrawMode(DrawMode.DRAW);
   }, []);
 
-  const onDrawStop = useCallback(() => {}, []);
+  const onDrawStop = useCallback(() => {
+    setDrawMode(drawnPolygon ? DrawMode.DONE : DrawMode.IDLE);
+  }, [drawnPolygon]);
 
   const onPolygonDrawn = useCallback((e: LeafletEvent) => {
     const event = e as DrawEvents.Created;
@@ -55,7 +91,9 @@ export function DrawPolygon() {
   useEffect(() => {
     if (!areDrawControlsMounted || !drawControlsRef?.current) return;
 
-    const map = (drawControlsRef.current as any)._map as L.Map;
+    const drawControl = drawControlsRef.current as DrawControlExtend;
+
+    const map = drawControl._map;
 
     map.on("draw:created", onPolygonDrawn);
     map.on("draw:edited", onPolygonEdited);
@@ -83,49 +121,51 @@ export function DrawPolygon() {
   const drawClick = () => {
     setDrawMode(DrawMode.DRAW);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.draw._modes.polygon.handler.enable();
   };
 
   const editClick = () => {
     setDrawMode(DrawMode.EDIT);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.edit._modes.edit.handler.enable();
   };
 
   const finishEdit = () => {
     setDrawMode(DrawMode.DONE);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.edit._actionButtons[0].button.click();
   };
 
   const removeClick = () => {
     setDrawMode(DrawMode.DELETE);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.edit._modes.remove.handler.enable();
   };
 
   const finishRemove = () => {
     if (
       drawnPolygon &&
-      (drawControlsRef!.current as any)._map.hasLayer(drawnPolygon)
+      (drawControlsRef!.current as DrawControlExtend)._map.hasLayer(
+        drawnPolygon,
+      )
     ) {
       drawnPolygon.remove();
     }
 
     setDrawMode(DrawMode.IDLE);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.edit._actionButtons[0].button.click();
   };
 
   const cancelChange = () => {
     setDrawMode(DrawMode.DONE);
     (
-      drawControlsRef!.current as any
+      drawControlsRef!.current as DrawControlExtend
     )._toolbars.edit._actionButtons[1].button.click();
   };
 
