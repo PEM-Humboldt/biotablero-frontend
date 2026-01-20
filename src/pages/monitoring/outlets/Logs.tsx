@@ -90,7 +90,7 @@ export function Logs() {
           type: "error",
         });
 
-        console.error("Unexpected error while getting the logs:", err);
+        console.error(uiText.criticalError, err);
       } finally {
         setIsDownloading(false);
       }
@@ -100,16 +100,16 @@ export function Logs() {
   }, [searchParams, currentPage]);
 
   const handleDownload = async () => {
-    const { top: _, ...downloadParams } = searchParams;
+    const { top: _top, skip: _skip, ...downloadParams } = searchParams;
     setIsDownloading(true);
 
     try {
       const result = await downloadLogs(downloadParams);
 
       if (isMonitoringAPIError(result)) {
-        console.error("Error descargando el archivo:", result.message);
+        console.error(uiText.download.error, result.message);
         setLoadMsg({
-          message: "Error en la descarga del archivo, intenta más tarde.",
+          message: `${uiText.download.error}. ${uiText.download.tryAgain}`,
           type: "error",
         });
         return;
@@ -119,7 +119,7 @@ export function Logs() {
       const link = document.createElement("a");
 
       link.href = url;
-      link.setAttribute("download", "reporte_registro-de-eventos.xlsx");
+      link.setAttribute("download", uiText.download.filename);
 
       document.body.appendChild(link);
       link.click();
@@ -127,9 +127,9 @@ export function Logs() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Error descargando el archivo:", err);
+      console.error(uiText.download.error, err);
       setLoadMsg({
-        message: "Error inesperado en la descarga",
+        message: uiText.download.error,
         type: "error",
       });
     } finally {

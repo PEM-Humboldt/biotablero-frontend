@@ -1,6 +1,7 @@
 export const uiText = {
   logsTitle: "Registros del sistema",
   noLogsAvailable: "No hay registros disponibles",
+  criticalError: "Critical error:",
 
   logLoadingStates: {
     loaded: null,
@@ -14,6 +15,9 @@ export const uiText = {
       isDownloading: "Generando xlsx...",
     },
     warn: "No puede generar reportes con más de 10.000 registros. Modifique los filtros para reducir los resultados y habilitar la descarga.",
+    error: "Error al descargar el archivo",
+    tryAgain: "Intenta de nuevo más tarde.",
+    filename: "reporte_registro-de-eventos.xlsx",
   },
 
   searchBar: {
