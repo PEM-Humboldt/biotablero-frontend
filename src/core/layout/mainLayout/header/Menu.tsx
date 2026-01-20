@@ -4,15 +4,17 @@ import { Link, NavLink } from "react-router";
 import isFlagEnabled from "@utils/isFlagEnabled";
 import Alert from "@assets/alertas-tempranas-icono.svg";
 import {
-  type DisplayModule,
-  displayModules,
+  type DisplayModule
 } from "core/layout/mainLayout/modules";
 import { useUserCTX } from "@hooks/UserContext";
+import { useAuth } from "core/context/AuthContext";
+import { displayModules } from "@config/modules.config";
 
 export function Menu() {
   const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [showAlerts, setShowAlerts] = useState<boolean>(false);
-  const { user } = useUserCTX();
+  // const { user } = useUserCTX();
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -37,9 +39,15 @@ export function Menu() {
     return { opacity: isActive ? "0.5" : "1" };
   };
 
+    // Obtener roles del usuario
+  const userRoles = user?.roles.map(role => role.toString()) || [];
+  const username = user?.username || user?.email?.split('@')[0];
+  const company = user?.organization;
+
   const modules = useMemo<DisplayModule[]>(() => {
-    return displayModules(user?.username, user?.company?.name);
-  }, [user?.username, user?.company]);
+    return displayModules(isAuthenticated,
+    userRoles, username, company);
+  }, [username, company]);
 
   return (
     <nav>

@@ -1,9 +1,11 @@
+import { UserRole } from "./auth.types";
+
 export type Tokens = {
   accessToken: string | null;
   refreshToken: string | null;
 };
 
-export type Role = "Admin" | "User";
+export type Role = UserRole.BT_ADMIN_COMP_AMB | UserRole.BT_ADMIN_MONIT_COM | UserRole.BT_ADMIN_COMP_AMB;
 
 export type Company = {
   id: number;
@@ -14,8 +16,6 @@ export type UserType = {
   roles: Role[];
   username: string;
   email: string;
-
-  // NOTE: Sacar estos campos del token
   id?: number;
   company?: Company;
   name?: string;

@@ -12,6 +12,7 @@ import NewProjectForm from "pages/compensation/NewProjectForm";
 import Selector from "pages/compensation/Selector";
 import Description from "pages/compensation/SelectorData";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
+import geoServerService from "@api/geoServer.service";
 
 export class Compensation extends Component {
   constructor(props) {
@@ -532,7 +533,8 @@ export class Compensation extends Component {
         <div className="appSearcher wrappergrid">
           <MapViewer
             layers={layers}
-            geoServerUrl={GeoServerAPI.getRequestURL()}
+            // geoServerUrl={GeoServerAPI.getRequestURL()}
+            geoServerUrl={geoServerService.getBaseURL()}
             userLogged={this.props.user}
           />
           <div className="contentView">

@@ -1,3 +1,5 @@
+// src/Routes.tsx
+
 import { createBrowserRouter } from "react-router";
 
 import { MainLayout } from "core/layout/MainLayout";
@@ -6,10 +8,10 @@ import { Indicators } from "pages/Indicators";
 import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Dashboard } from "pages/monitoring/outlets/Dashboard";
-
-import { checkNLoad } from "@utils/userLoader";
-import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
+
+import { requireAuth, checkNLoad, requireAdmin  } from "core/guards/routeGuards";
+import type { UserType } from "@appTypes/user";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 
 const randomNum = (_user: UserType) => {
@@ -42,7 +44,7 @@ export const routes = createBrowserRouter([
         lazy: async () => {
           const { Search } = await import("pages/Search");
           return { Component: Search };
-        },
+        }
       },
       {
         path: "Monitoreo",
@@ -50,15 +52,14 @@ export const routes = createBrowserRouter([
           const { Monitoring } = await import("pages/Monitoring");
           return { Component: Monitoring };
         },
+        loader: () => requireAuth("/"),
         children: [
-          { index: true, Component: InitiativesMap },
+          { 
+            index: true, 
+            Component: InitiativesMap,
+          },
           {
             path: "dashboard",
-            loader: () =>
-              checkNLoad({
-                requirements: {},
-                redirectPath: "/Monitoreo",
-              }),
             children: [
               {
                 index: true,
@@ -66,7 +67,7 @@ export const routes = createBrowserRouter([
                 loader: () =>
                   checkNLoad({
                     requirements: {},
-                    redirectPath: "/Monitoreo",
+                    redirectPath: "/Monitoring",
                     fetchData: randomNum,
                     fetchCriticalData: randomNumCritical,
                   }),
@@ -78,8 +79,10 @@ export const routes = createBrowserRouter([
             Component: Logs,
             loader: () =>
               checkNLoad({
-                requirements: { roles: ["Admin"] },
-                redirectPath: "/Monitoreo",
+                requirements: { 
+                  roles: ["Admin"],
+                },
+                redirectPath: "/Monitoring",
                 fetchCriticalData: () => getLogs(),
               }),
           },
@@ -88,6 +91,7 @@ export const routes = createBrowserRouter([
       {
         path: "Indicadores",
         Component: Indicators,
+        loader: () => requireAuth("/"),
       },
       {
         path: "/:user/Compensaciones",
@@ -95,6 +99,7 @@ export const routes = createBrowserRouter([
           const { RenderCompensation } = await import("pages/CompensationAuth");
           return { Component: RenderCompensation };
         },
+        loader: () => requireAuth("/"),
       },
       {
         path: "Portafolios",

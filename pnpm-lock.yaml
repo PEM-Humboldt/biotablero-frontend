@@ -89,6 +89,9 @@ dependencies:
   firebase:
     specifier: ~12.2.1
     version: 12.2.1
+  keycloak-js:
+    specifier: ^26.2.2
+    version: 26.2.2
   leaflet:
     specifier: 1.9.4
     version: 1.9.4
@@ -5240,6 +5243,10 @@ packages:
       object.assign: 4.1.7
       object.values: 1.2.1
     dev: true
+
+  /keycloak-js@26.2.2:
+    resolution: {integrity: sha512-ug7pNZ1xNkd7PPkerOJCEU2VnUhS7CYStDOCFJgqCNQ64h53ppxaKrh4iXH0xM8hFu5b1W6e6lsyYWqBMvaQFg==}
+    dev: false
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}

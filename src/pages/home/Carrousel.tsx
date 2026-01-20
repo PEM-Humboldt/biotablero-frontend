@@ -11,9 +11,10 @@ import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 
 import {
   type DisplayModule,
-  displayModules,
 } from "core/layout/mainLayout/modules";
 import { useUserCTX } from "@hooks/UserContext";
+import { useAuth } from "core/context/AuthContext";
+import { displayModules } from "@config/modules.config";
 
 type ArrowProps = {
   onClick?: () => void;
@@ -61,14 +62,20 @@ const makeCarrouselSettings = (
 };
 
 export function Carrousel({ setActiveTab }: CarrouselProps) {
-  const { user } = useUserCTX();
+  // const { user } = useUserCTX();
+  const { user, isAuthenticated } = useAuth();
   const [activeModule, setActiveModule] = useState<null | number>(null);
 
   const settings = makeCarrouselSettings(<PrevArrow />, <NextArrow />);
+  
+  const userRoles = user?.roles.map(role => role.toString()) || [];
+  const username = user?.username || user?.email?.split('@')[0];
+  const company = user?.organization;
 
   const modules = useMemo<DisplayModule[]>(() => {
-    return displayModules(user?.username, user?.company?.name);
-  }, [user?.username, user?.company?.name]);
+    return displayModules(isAuthenticated,
+    userRoles, username, company);
+  }, [username, company]);  
 
   const handleClick = (id: number | null) => {
     if (activeModule === id) {

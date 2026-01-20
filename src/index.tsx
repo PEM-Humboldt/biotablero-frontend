@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import ReactGA from "react-ga4";
 import { App } from "App";
+import { AuthProvider } from "core/context/AuthContext";
 
 if (import.meta.env.VITE_ENVIRONMENT === "production") {
   ReactGA.initialize(import.meta.env.VITE_GA_TRACKING_ID, {
@@ -27,6 +28,8 @@ root.render(
   // componente indicators
   //
   // <StrictMode>
-  <App />,
+   <AuthProvider>
+     <App />,
+   </AuthProvider>
   // </StrictMode>,
 );

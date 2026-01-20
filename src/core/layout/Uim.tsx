@@ -10,6 +10,8 @@ import { ConfirmationModal } from "@composites/ConfirmationModal";
 import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
+import { useAuth } from "core/context/AuthContext";
+import { AuthButton } from "@composites/AuthButton";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -25,8 +27,10 @@ const defaultModalsValues: LogModalsTypes = {
 
 export function Uim() {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
-  const { user, logout } = useUserCTX();
+  // const { user, logout } = useUserCTX();
   const userCard = useRef<HTMLDivElement>(null);
+
+  const { user, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     if (!userCard.current) {
@@ -53,6 +57,10 @@ export function Uim() {
   const whichModal = user
     ? { modal: "userModal", state: modals.userModal }
     : { modal: "loginModal", state: modals.loginModal };
+
+  if (!isAuthenticated) {
+    return <AuthButton />
+  }
 
   return (
     <div className="loginBtnCont">

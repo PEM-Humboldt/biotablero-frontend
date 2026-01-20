@@ -5,17 +5,21 @@ import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "@appTypes/layout";
 import { useUserCTX } from "@hooks/UserContext";
+import { useAuth } from "core/context/AuthContext";
+import { UserRole } from "@appTypes/auth.types";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función
 export function RenderCompensation() {
-  const { user } = useUserCTX();
+  // const { user } = useUserCTX();
+  const { user, hasRole } = useAuth();
   const { layoutDispatch } = useOutletContext<UiManager>();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const renderCompensation = user?.username === "geb";
+  // const renderCompensation = user?.username === "geb";
+  const renderCompensation = hasRole(UserRole.BT_ADMIN_COMP_AMB);
 
   useEffect(() => {
     if (!renderCompensation) {
