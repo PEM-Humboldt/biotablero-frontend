@@ -3,7 +3,7 @@ import {
   ShapeLayer,
   CompensationFactorPropierties,
 } from "pages/search/types/layers";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 

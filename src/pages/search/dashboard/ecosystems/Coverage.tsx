@@ -5,8 +5,9 @@ import SmallStackedBar, {
   SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import TextBoxes from "@ui/TextBoxes";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 interface Props {
   coverage: SmallStackedBarData[];
@@ -70,7 +71,9 @@ export function Coverage({
             loadStatus={messages}
             data={coverage}
             units="ha"
-            colors={matchColor("coverage")}
+            colors={(key: string) =>
+              matchColor("coverage")(key) || colorPalettes.default[0]
+            }
             onClickGraphHandler={onClickGraph}
           />
         </div>
