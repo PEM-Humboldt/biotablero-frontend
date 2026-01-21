@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link, NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 import isFlagEnabled from "@utils/isFlagEnabled";
 import Alert from "@assets/alertas-tempranas-icono.svg";
@@ -8,11 +8,20 @@ import {
   displayModules,
 } from "core/layout/mainLayout/modules";
 import { useUserCTX } from "@hooks/UserContext";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuLink,
+} from "@ui/shadCN/component/navigation-menu";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function Menu() {
-  const [openMenu, setOpenMenu] = useState<boolean>(false);
   const [showAlerts, setShowAlerts] = useState<boolean>(false);
   const { user } = useUserCTX();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     let isMounted = true;
@@ -28,62 +37,63 @@ export function Menu() {
     };
   }, []);
 
-  const changeMenuState = () => {
-    setOpenMenu(!openMenu);
-  };
-
-  // TODO: Setear en CSS la clase para el link activo
-  const handleActiveLink = ({ isActive }: { isActive: boolean }) => {
-    return { opacity: isActive ? "0.5" : "1" };
-  };
-
   const modules = useMemo<DisplayModule[]>(() => {
     return displayModules(user?.username, user?.company?.name);
   }, [user?.username, user?.company]);
 
   return (
-    <nav>
-      <div id="menuToggle">
-        <input type="checkbox" checked={openMenu} onChange={changeMenuState} />
-        <span />
-        <span />
-        <span />
-        <ul id="menu">
-          <p>
-            <strong>Explora nuestros módulos</strong>
-          </p>
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem className="">
+          <NavigationMenuTrigger>Módulos</NavigationMenuTrigger>
+          <NavigationMenuContent className="p-3 md:p-6 border-l-6 border-l-accent">
+            <div className="text-xl font-normal mb-4">
+              Explora nuestros módulos
+            </div>
+            <ul className="grid w-max gap-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+              {modules.map((module) => {
+                return (
+                  <li key={module.id}>
+                    <NavigationMenuLink asChild>
+                      <NavLink
+                        to={module.link}
+                        className={cn(
+                          "flex gap-1 items-center",
+                          pathname === module.link
+                            ? "opacity-50"
+                            : "opacity-100",
+                        )}
+                      >
+                        <img
+                          src={module.image}
+                          alt=""
+                          className="w-9 h-9 md:w-12 md:h-12 invert"
+                        />
+                        <span className="text-lg font-normal">
+                          {module.title}
+                        </span>
+                      </NavLink>
+                    </NavigationMenuLink>
+                  </li>
+                );
+              })}
 
-          {modules.map((module) => {
-            return (
-              <NavLink
-                key={module.id}
-                to={module.link}
-                onClick={changeMenuState}
-                style={handleActiveLink}
-              >
+              {showAlerts && (
                 <li>
-                  <img src={module.image} alt="" width="43" height="auto" />
-                  {module.title}
+                  <NavLink to="/Alertas">
+                    <img
+                      src={Alert}
+                      alt=""
+                      className="w-9 h-9 md:w-12 md:h-12 invert"
+                    />
+                    Alertas Tempranas
+                  </NavLink>
                 </li>
-              </NavLink>
-            );
-          })}
-          {showAlerts && (
-            <Link to="/Alertas" onClick={changeMenuState}>
-              <li>
-                {" "}
-                <img
-                  src={Alert}
-                  alt="Alertas Tempranas"
-                  width="40"
-                  height="auto"
-                />
-                Alertas Tempranas
-              </li>
-            </Link>
-          )}
-        </ul>
-      </div>
-    </nav>
+              )}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 }

@@ -231,9 +231,6 @@ img.Modulos {
   .imagen-fondo {
     background-repeat: inherit;
   }
-  #Colaboradores.Colaboradores {
-    text-align: center;
-  }
   .imagen-fondo h1 {
     font-size: 1.5rem;
     text-align: center;
@@ -347,9 +344,6 @@ img.Modulos {
   div#Tab {
     padding-top: 42px;
   }
-  #Colaboradores.Colaboradores {
-    text-align: center;
-  }
   #Tabs .Espaciado h1 {
     display: block;
   }
@@ -380,9 +374,6 @@ img.Modulos {
   }
   .css-f2xmkk-MuiGrid-root > .MuiGrid-item {
     padding-left: 0;
-  }
-  #Colaboradores.Colaboradores {
-    text-align: center;
   }
   .cenefa-izquierda {
     display: none;
@@ -429,9 +420,6 @@ img.Modulos {
   .imagen-fondo {
     background-repeat: no-repeat;
   }
-  .Colaboradores {
-    text-align: right;
-  }
   .Cenefa h1 {
     padding: 36px 0;
     font-size: 2em;
@@ -470,9 +458,6 @@ img.Modulos {
   }
   #CarrouselBio .contenedor {
     padding: 19px 4px;
-  }
-  #Colaboradores.Colaboradores {
-    text-align: right;
   }
   #CarrouselBio .ModuloPrincipal span {
     font-size: 18px;

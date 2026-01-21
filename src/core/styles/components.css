@@ -53,7 +53,7 @@
   }
 
   .moduleIcon {
-    @apply block w-[65px] h-[65px] bg-contain float-right bg-no-repeat bg-center;
+    @apply block w-14 h-14 bg-contain float-right bg-no-repeat bg-center;
 
     &.ConsultasGeográficas {
       background-image: url("src/core/assets/geografico.png");

@@ -16,7 +16,7 @@ export function Footer({ logos }: FooterProps) {
   const collaborators = logos ? [...logos] : [];
 
   return (
-    <footer className="flex justify-between items-center py-2 px-1">
+    <footer className="flex flex-wrap gap-4 justify-between items-center py-4 px-2">
       <div>
         {collaborators.length > 0 && (
           <a href={footerInfo.IAVH.url}>
@@ -30,9 +30,9 @@ export function Footer({ logos }: FooterProps) {
         </div>
       </div>
 
-      <div className="colaboradoresDiv">
+      <div className="">
         {collaborators.length > 0 && (
-          <div className="colaboradores flex">
+          <div className="colaboradores flex w-20 h-20 bg-red-300 object-contain object-center">
             <span>{footerInfo.uiTxt.collaboratorsTitle}</span>
             {collaborators.map((collaborator) => (
               <a

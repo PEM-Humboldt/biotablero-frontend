@@ -11,6 +11,8 @@ import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { CircleUserRound, DoorOpen, Bell } from "lucide-react";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -56,25 +58,59 @@ export function Uim() {
     : { modal: "loginModal", state: modals.loginModal };
 
   return (
-    <div>
-      {/* <div className="loginBtnCont"> */}
-      <Button
-        variant="outline"
-        size="bigIcon"
-        onClick={showModal(whichModal.modal)}
-      >
+    <>
+      <div className="flex ml-auto px-3">
         {user ? (
           <>
-            <span className="sr-only">Iniciar sesión</span>
-            <AccountCircle className="px-2.5 pt-[4] text-[4rem]!" />
+            <Button
+              onClick={() => console.log("Notificaciones")}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Notificaciones"
+            >
+              <span className="sr-only">Notificaciones</span>
+              <Bell className="size-4 md:size-5" aria-hidden="true" />
+            </Button>
+
+            <Button
+              onClick={() => {
+                console.log("Perfil");
+                showModal(whichModal.modal)();
+              }}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Mi perfil"
+            >
+              <span className="sr-only">Mi perfil</span>
+              <CircleUserRound
+                className="size-4 md:size-5"
+                aria-hidden="true"
+              />
+            </Button>
+
+            <Button
+              onClick={() => console.log("Cerrar sesión")}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Cerrar sesión"
+            >
+              <span className="sr-only">Cerrar sesión</span>
+              <DoorOpen className="size-4 md:size-5" aria-hidden="true" />
+            </Button>
           </>
         ) : (
-          <>
-            <span className="sr-only">Ver mi perfil</span>
-            <AccountCircleOutlined className="px-2.5 pt-[4] text-[4rem]!" />
-          </>
+          <Button
+            onClick={showModal(whichModal.modal)}
+            variant="link"
+            className="h-9 w-9 md:h-12 md:w-12"
+          >
+            <span className="sr-only">
+              {user ? "Iniciar sesión" : "Ver mi perfil"}
+            </span>
+            <CircleUserRound className="size-6" />
+          </Button>
         )}
-      </Button>
+      </div>
 
       <Modal
         aria-labelledby="simple-modal-title"
@@ -96,6 +132,7 @@ export function Uim() {
           {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
         </div>
       </Modal>
+
       <ConfirmationModal
         open={modals.logoutModal}
         styleCustom="newBiomeAlarm nBA2"
@@ -104,22 +141,6 @@ export function Uim() {
         onContinue={logoutUser}
         onCancel={hideModal("logoutModal")}
       />
-    </div>
+    </>
   );
 }
-
-// <button
-//   type="button"
-//   className="loginBtn"
-//   onClick={showModal(whichModal.modal)}
-//   title="Iniciar sesión"
-// >
-//   {user ? (
-//     <AccountCircle className="userBox" style={{ fontSize: "4rem" }} />
-//   ) : (
-//     <AccountCircleOutlined
-//       className="userBox"
-//       style={{ fontSize: "4rem" }}
-//     />
-//   )}
-// </button>

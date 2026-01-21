@@ -18,41 +18,40 @@ export function Header({ activeModule, headerNames }: HeaderProps) {
   const renderCompositeTitle = title !== "" && subtitle !== "";
 
   return (
-    <header className="flex h-[90px] justify-between border-b border-b-grey">
-      <div className="flex self-center px-8">
+    <header className="flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]!">
+      <div className="flex gap-2 items-baseline p-2 md:px-8">
         <Link to="/">
-          <h1 className="text-secondary font-semibold! m-0! text-xl sm:text-5xl!">
+          <h1 className="text-secondary font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">
             BioTablero
             <span className="sr-only">{activeModule}</span>
           </h1>
         </Link>
 
         <Menu />
-      </div>
 
-      <div className="flex items-stretch">
-        <Uim />
-
-        {activeModule !== "" && (
-          <div className="flex px-8 items-center bg-grey-light">
-            {renderCompositeTitle ? (
-              <h2 className="text-lg font-semibold text-right text-grey-dark">
-                {title}
-                <br />
-                <span>{subtitle}</span>
-              </h2>
-            ) : (
-              <h2
-                className="text-lg font-normal! p-[18px] text-right m-0! text-grey-dark"
-                aria-hidden="true"
-              >
-                {activeModule}
-              </h2>
-            )}
-            <span className={`moduleIcon ${activeModule.replace(" ", "")}`} />
-          </div>
+        {renderCompositeTitle && (
+          <h2 className="text-xl! font-light! border-l border-l-grey-light px-4! m-0!">
+            {title} / {subtitle}
+          </h2>
         )}
       </div>
+
+      <Uim />
+
+      {activeModule !== "" && (
+        <div
+          className="flex gap-2 pl-8 pr-2 items-center bg-grey-light h-full"
+          aria-hidden="true"
+        >
+          <span className="text-base md:text-lg font-normal">
+            {activeModule}
+          </span>
+          <span
+            className={`moduleIcon ${activeModule.replace(" ", "")}`}
+            aria-hidden="true"
+          />
+        </div>
+      )}
     </header>
   );
 }
