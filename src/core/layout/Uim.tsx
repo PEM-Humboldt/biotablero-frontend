@@ -1,6 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
 
@@ -11,8 +9,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { CircleUserRound, DoorOpen, Bell } from "lucide-react";
+import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -107,11 +104,12 @@ export function Uim() {
             <span className="sr-only">
               {user ? "Iniciar sesión" : "Ver mi perfil"}
             </span>
-            <CircleUserRound className="size-6" />
+            <DoorClosed className="size-6" />
           </Button>
         )}
       </div>
 
+      {/* NOTE: todo lo que sique se va apenas entre el nuevo sistema de usuarios */}
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"

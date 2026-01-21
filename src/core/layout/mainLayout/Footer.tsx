@@ -4,12 +4,14 @@ import {
   footerInfo,
 } from "core/layout/mainLayout/footer/footerData";
 import { Button } from "@ui/shadCN/component/button";
+import { cn } from "@ui/shadCN/lib/utils";
 
 interface FooterProps {
   logos: Set<Collaborators>;
+  className?: string;
 }
 
-export function Footer({ logos }: FooterProps) {
+export function Footer({ logos, className }: FooterProps) {
   const handleCitationClick = () => {
     void navigator.clipboard.writeText(footerInfo.citationClipboard);
   };
@@ -17,7 +19,12 @@ export function Footer({ logos }: FooterProps) {
   const collaborators = logos ? [...logos] : [];
 
   return (
-    <footer className="bg-grey-dark p-4 md:px-8 flex text-background justify-between items-start">
+    <footer
+      className={cn(
+        "bg-grey-dark p-4 md:px-8 flex text-background justify-between items-start",
+        className,
+      )}
+    >
       <div>
         {collaborators.length > 0 && (
           <a href={footerInfo.IAVH.url}>
@@ -58,18 +65,18 @@ export function Footer({ logos }: FooterProps) {
           </div>
         )}
 
-        <div className="text-right mt-2 text-sm">
+        <div className="text-right mt-2">
           <Button
             title={footerInfo.citationTooltip}
             variant="link"
-            className="text-accent"
+            className="text-accent text-sm"
             onClick={handleCitationClick}
           >
             {footerInfo.uiTxt.links.citation}
           </Button>
           <a
             href={`mailto:${footerInfo.IAVH.contact}`}
-            className="underline-offset-4 hover:underline! hover:text-accent text-accent font-normal"
+            className="underline-offset-4 text-sm hover:underline hover:text-accent text-accent font-normal"
           >
             {footerInfo.uiTxt.links.contact}
           </a>

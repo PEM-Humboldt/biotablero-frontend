@@ -1,6 +1,7 @@
 import { Menu } from "core/layout/mainLayout/header/Menu";
 import { Uim } from "core/layout/Uim";
 import { Link } from "react-router";
+import { cn } from "@ui/shadCN/lib/utils";
 
 interface Names {
   title?: string;
@@ -10,15 +11,21 @@ interface Names {
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
+  className?: string;
 }
 
-export function Header({ activeModule, headerNames }: HeaderProps) {
+export function Header({ activeModule, headerNames, className }: HeaderProps) {
   const { title, subtitle } = headerNames;
 
   const renderCompositeTitle = title !== "" && subtitle !== "";
 
   return (
-    <header className="flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]!">
+    <header
+      className={cn(
+        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]!",
+        className,
+      )}
+    >
       <div className="flex gap-2 items-baseline p-2 md:px-8">
         <Link to="/">
           <h1 className="text-secondary font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">

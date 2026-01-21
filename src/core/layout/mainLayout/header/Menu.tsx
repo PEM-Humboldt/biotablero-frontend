@@ -47,7 +47,7 @@ export function Menu() {
         <NavigationMenuItem className="">
           <NavigationMenuTrigger>Módulos</NavigationMenuTrigger>
           <NavigationMenuContent className="p-3 md:p-6 border-l-6 border-l-accent">
-            <div className="text-xl font-normal mb-4">
+            <div className="text-xl font-light mb-4">
               Explora nuestros módulos
             </div>
             <ul className="grid w-max gap-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
@@ -58,7 +58,7 @@ export function Menu() {
                       <NavLink
                         to={module.link}
                         className={cn(
-                          "flex gap-1 items-center",
+                          "flex gap-1 items-center hover:text-accent",
                           pathname === module.link
                             ? "opacity-50"
                             : "opacity-100",

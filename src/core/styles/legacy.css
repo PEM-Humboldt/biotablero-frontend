@@ -23,39 +23,6 @@ iframe#webpack-dev-server-client-overlay {
   display: none !important;
 }
 
-.fullgrid {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-areas: "header" "wrappergrid" "footer";
-  gap: 0px 0px;
-  height: 100vh;
-}
-.wrappergrid {
-  grid-area: wrappergrid;
-  overflow: auto;
-}
-header {
-  grid-area: header;
-}
-footer {
-  grid-area: footer;
-}
-.clearfix:before,
-.clearfix:after {
-  content: " ";
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-.clearfix {
-  zoom: 1;
-}
-a,
-.linkText {
-  text-decoration: none;
-  cursor: pointer;
-}
 #tooltip {
   position: absolute;
   background: #e84a5f;
@@ -115,16 +82,6 @@ a,
   color: #5a5050;
   font-weight: 400;
 }
-/* .userBox { */
-/*   display: inline-block; */
-/*   position: relative; */
-/*   padding: 4px 10px 0; */
-/*   resize: both; */
-/*   color: #fff; */
-/* } */
-/* .userBox:hover { */
-/*   color: #2a363b; */
-/* } */
 .userInfo {
   display: inline-block;
   position: relative;
@@ -143,36 +100,10 @@ a,
   padding: 15px 0 15px 15px;
   color: #2a363b;
 }
-.iconUserLogged {
-  background: url("/src/core/assets/logout.png") no-repeat center;
-  float: right;
-  width: 20px;
-  height: 22px;
-  margin-top: 18px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-}
-.finderline {
-  width: 100%;
-  min-height: 400px;
-  background: url("/src/core/assets/sky.jpg") no-repeat center center;
-  background-size: cover;
-  background-color: #2a363b;
-  padding: 20px 0;
-  text-align: center;
-}
 .maint {
   text-transform: uppercase;
   margin-bottom: 35px;
   margin-top: 5px;
-}
-h2 {
-  color: #6f6f6f;
-  font-size: 22px;
-  font-weight: 300;
-  margin-bottom: 10px;
-  text-align: center;
 }
 .finder {
   width: 280px;
@@ -318,9 +249,6 @@ h2 {
   -ms-transition: all 1s;
   -o-transition: all 1s;
   transition: all 1s;
-}
-.hidden {
-  display: none;
 }
 .invisible {
   display: none;
@@ -805,13 +733,6 @@ a#reset-filters {
   color: #547a82;
   font-weight: 300;
 }
-.appSearcher {
-  background-color: #eeeeec;
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-flow: row;
-  flex-flow: row;
-}
 .drawPAcc {
   width: 100%;
 }
@@ -902,7 +823,8 @@ a#reset-filters {
   -webkit-order: 1;
   order: 1;
 }
-/*All information container*/
+/* NOTE: se mantiene por compensations */
+/* All information container */
 .contentView {
   overflow: auto;
   -webkit-flex: 1 1 40%;
@@ -2733,9 +2655,6 @@ h3.warningNote {
   }
   .wrapperPort {
     background: none;
-  }
-  .fullgrid .indicatorCard {
-    width: 58%;
   }
   .links {
     position: absolute;
