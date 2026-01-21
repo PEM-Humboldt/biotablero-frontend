@@ -1,19 +1,12 @@
 import { useState } from "react";
 import { Box, IconButton, Paper } from "@mui/material";
-import {
-  ChevronLeft,
-  ChevronRight,
-  HomeOutlined,
-  SlideshowOutlined,
-  ContactSupportOutlined,
-  SearchOutlined,
-  SettingsApplicationsOutlined,
-  DashboardCustomize,
-} from "@mui/icons-material";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 import { useUserCTX } from "@hooks/UserContext";
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
-import { DashboardButtons } from "pages/monitoring/outlet/dashboard/DashboardButtons";
+import { DashboardButtons } from "pages/monitoring/layout/sideBar/DashboardButtons";
+import { generalItems } from "pages/monitoring/layout/sideBar/generalItems";
+import { userItems } from "pages/monitoring/layout/sideBar/userItems";
+import { adminItems } from "pages/monitoring/layout/sideBar/adminItems";
 
 const drawerWidth = 400;
 const collapsedWidth = 60;
@@ -23,33 +16,6 @@ export function SideBar() {
   const toggleDrawer = () => setCollapsed((prev) => !prev);
   const { user } = useUserCTX();
   const role = user ? user.roles[0] : null;
-
-  const items: DashboardItem[] = [
-    { description: "Inicio", icon: <HomeOutlined />, linkTo: "/Monitoreo" },
-    { description: "Buscar", icon: <SearchOutlined />, linkTo: "/" },
-    { description: "Tutorial", icon: <SlideshowOutlined />, linkTo: "/" },
-    {
-      description: "Preguntas Frecuentes",
-      icon: <ContactSupportOutlined />,
-      linkTo: "/",
-    },
-  ];
-
-  const userItems: DashboardItem[] = [
-    {
-      description: "Dashboard",
-      icon: <DashboardCustomize />,
-      linkTo: "Dashboard/user",
-    },
-  ];
-
-  const adminItems: DashboardItem[] = [
-    {
-      description: "Dashboard",
-      icon: <SettingsApplicationsOutlined />,
-      linkTo: "Dashboard/admin",
-    },
-  ];
 
   const renderAdminTools = role === "Admin";
   const renderUserTools = role === "User";
@@ -64,7 +30,7 @@ export function SideBar() {
         }}
       >
         <DashboardButtons
-          items={items}
+          items={generalItems}
           collapsed={collapsed}
           setCollapsed={setCollapsed}
         />

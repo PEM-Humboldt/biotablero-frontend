@@ -1108,6 +1108,7 @@ div[class*="eaRHYv"] {
   background-color: #2a363b;
   font-weight: 400;
   color: #e84a5f;
+  margin-bottom: 0px;
 }
 .HAgen h4 b {
   text-transform: none;
@@ -1144,6 +1145,10 @@ div[class*="eaRHYv"] {
   color: #2a363b;
   margin-left: 10px;
   text-transform: none;
+}
+.graphcontainer h4 button {
+  all: unset;
+  cursor: pointer;
 }
 .graphcontainer h5 {
   padding: 2px 4px;
@@ -2413,6 +2418,7 @@ h3.warningNote {
   padding: 15px 0 0 5px;
   color: #bbbbbb;
   cursor: pointer;
+  font-size: 28px;
 }
 .downSpecial2 {
   vertical-align: top;
@@ -2426,6 +2432,9 @@ h3.warningNote {
   margin-left: 35px;
   margin-top: -2px;
   position: absolute;
+}
+.iconWrapper {
+  font-size: 38px;
 }
 @keyframes loadingA {
   0% {

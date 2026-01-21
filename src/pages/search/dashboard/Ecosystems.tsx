@@ -1,57 +1,38 @@
-import React from "react";
+import { useEffect, useContext, useCallback, useReducer } from "react";
+
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import TextBoxes from "@ui/TextBoxes";
-import {
-  transformPAValues,
-  transformCoverageValues,
-  transformSEAreas,
-} from "pages/search/dashboard/ecosystems/transformData";
-import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
+
+import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
+
 import {
   SearchLegacyCTX,
-  type LegacyContextValues,
+  LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import { formatNumber } from "@utils/format";
-import matchColor from "pages/search/utils/matchColor";
+
 import BackendAPI from "pages/search/api/backendAPI";
-import SmallStackedBar, {
-  SmallStackedBarData,
-} from "@composites/charts/SmallStackedBar";
-import { textsObject } from "pages/search/types/texts";
-import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import SearchAPI from "pages/search/api/searchAPI";
+import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
-/**
- * Calculate percentage for a given value according to total
- *
- * @param {number} part value for the given part
- * @param {number} total value obtained by adding all parts
- *
- * @returns {number} percentage associated to each part
- */
-const getPercentage = (part: number, total: number): number =>
-  parseFloat(((part * 100) / total).toFixed(2));
+import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
+import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
+import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
+import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
-/**
- * Ecosystems components props.
- */
-interface Props {}
+type TextsContent = { info: string; cons: string; meto: string; quote: string };
 
-/**
- * Internal state of the Ecosystems component.
- */
-interface State {
+type EcosystemsState = {
   showInfoMain: boolean;
-  infoShown: {
-    has: (arg0: string) => any;
-    delete: (arg0: string) => void;
-    add: (arg0: string) => void;
-  };
-  coverage: Array<SmallStackedBarData>;
+  infoShown: Set<string>;
+  period: string;
+
+  coverageData: SmallStackedBarData[];
+
   PAAreas: Array<{
     area: number;
     label: string;
@@ -60,472 +41,343 @@ interface State {
   }>;
   PATotalArea: number;
   PADivergentData: boolean;
-  SEAreas: Array<SEPAData>;
+
+  SEAreas: SEPAData[];
   SETotalArea: number;
   activeSE: string;
+
+  layers: RasterLayer[];
+
   messages: {
     cov: MessageWrapperType;
     pa: MessageWrapperType;
     se: MessageWrapperType;
   };
+
   texts: {
-    ecosystems: textsObject;
-    coverage: textsObject;
-    pa: textsObject;
-    se: textsObject;
+    ecosystems: TextsContent;
+    coverage: TextsContent;
+    pa: TextsContent;
+    se: TextsContent;
   };
-  layers: Array<RasterLayer>;
+};
+
+type TextSection = keyof EcosystemsState["texts"];
+
+const initialState: EcosystemsState = {
+  showInfoMain: false,
+  infoShown: new Set(),
+  period: "",
+
+  coverageData: [],
+
+  PAAreas: [],
+  PATotalArea: 0,
+  PADivergentData: false,
+
+  SEAreas: [],
+  SETotalArea: 0,
+  activeSE: "",
+
+  layers: [],
+
+  messages: {
+    cov: "loading",
+    pa: "loading",
+    se: "loading",
+  },
+
+  texts: {
+    ecosystems: { info: "", cons: "", meto: "", quote: "" },
+    coverage: { info: "", cons: "", meto: "", quote: "" },
+    pa: { info: "", cons: "", meto: "", quote: "" },
+    se: { info: "", cons: "", meto: "", quote: "" },
+  },
+};
+
+type EcosystemsAction =
+  | { type: "TOGGLE_MAIN_INFO" }
+  | { type: "TOGGLE_SECTION_INFO"; payload: string }
+  | { type: "SET_PERIOD"; payload: string }
+  | { type: "SET_COVERAGE_DATA"; payload: SmallStackedBarData[] }
+  | { type: "SET_LAYERS"; payload: RasterLayer[] }
+  | { type: "SET_ACTIVE_SE"; payload: string }
+  | {
+      type: "SET_MESSAGE";
+      payload: { key: "cov" | "pa" | "se"; value: MessageWrapperType };
+    }
+  | {
+      type: "SET_TEXTS";
+      payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
+    };
+
+function ecosystemsReducer(
+  state: EcosystemsState,
+  action: EcosystemsAction,
+): EcosystemsState {
+  switch (action.type) {
+    case "TOGGLE_MAIN_INFO":
+      return { ...state, showInfoMain: !state.showInfoMain };
+
+    case "TOGGLE_SECTION_INFO": {
+      const newSet = new Set(state.infoShown);
+      newSet.has(action.payload)
+        ? newSet.delete(action.payload)
+        : newSet.add(action.payload);
+
+      return { ...state, infoShown: newSet };
+    }
+
+    case "SET_PERIOD":
+      return { ...state, period: action.payload };
+
+    case "SET_COVERAGE_DATA":
+      return { ...state, coverageData: action.payload };
+
+    case "SET_LAYERS":
+      return { ...state, layers: action.payload };
+
+    case "SET_ACTIVE_SE":
+      return { ...state, activeSE: action.payload };
+
+    case "SET_MESSAGE":
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          [action.payload.key]: action.payload.value,
+        },
+      };
+
+    case "SET_TEXTS":
+      return {
+        ...state,
+        texts: {
+          ...state.texts,
+          [action.payload.section]: action.payload.value,
+        },
+      };
+
+    default:
+      return state;
+  }
 }
 
-/**
- * Ecosystems Component
- * @class
- */
-class Ecosystems extends React.Component<Props, State> {
-  static contextType = SearchLegacyCTX;
-  mounted = false;
-  EcosystemsController;
-  constructor(props: Props) {
-    super(props);
-    this.EcosystemsController = new EcosystemsController();
-    this.state = {
-      showInfoMain: false,
-      infoShown: new Set(),
-      coverage: [],
-      PAAreas: [],
-      PATotalArea: 0,
-      PADivergentData: false,
-      SEAreas: [],
-      SETotalArea: 0,
-      activeSE: "",
-      messages: {
-        cov: "loading",
-        pa: "loading",
-        se: "loading",
-      },
-      texts: {
-        ecosystems: { info: "", cons: "", meto: "", quote: "" },
-        coverage: { info: "", cons: "", meto: "", quote: "" },
-        pa: { info: "", cons: "", meto: "", quote: "" },
-        se: { info: "", cons: "", meto: "", quote: "" },
-      },
-      layers: [],
-    };
-  }
+const controller = new EcosystemsController();
 
-  componentDidMount() {
-    this.mounted = true;
-    const { areaType, areaId, areaHa } = this.context as LegacyContextValues;
+export function Ecosystems() {
+  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
+  const { areaType, areaId, areaHa } = context;
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
+  const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
-    this.EcosystemsController.setArea(areaTypeId, areaIdId);
+  const {
+    showInfoMain,
+    infoShown,
+    period,
+    coverageData,
+    layers,
+    activeSE,
+    messages,
+    texts,
+  } = state;
 
-    this.switchLayer();
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id.toString();
+  const areaIdStr = areaIdId ?? "";
 
-    BackendAPI.requestCoverage(areaTypeId, areaIdId)
-      .then((res) => {
-        if (this.mounted) {
-          this.setState((prev) => ({
-            coverage: transformCoverageValues(res),
-            messages: {
-              ...prev.messages,
-              cov: null,
-            },
-          }));
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            cov: "no-data",
-          },
-        }));
-      });
+  const switchLayer = useCallback(
+    (currentPeriod?: string) => {
+      const layerPeriod = currentPeriod ?? period;
+      if (!layerPeriod) {
+        context.setRasterLayers([]);
+        context.setLoadingLayer(false);
+        return;
+      }
 
-    BackendAPI.requestProtectedAreas(areaTypeId, areaIdId)
-      .then((res) => {
-        if (this.mounted) {
-          if (Array.isArray(res) && res[0]) {
-            const PATotalArea = res
-              .map((i) => i.area)
-              .reduce((prev, next) => prev + next);
-            const PAAreas = transformPAValues(res, areaHa!);
-            const noProtectedArea = PAAreas.find(
-              (item) => item.key === "No Protegida",
-            );
-
-            let PADivergentData = false;
-            if (
-              noProtectedArea &&
-              noProtectedArea.percentage &&
-              noProtectedArea.percentage >= 0.97
-            ) {
-              PADivergentData = true;
-            }
-
-            this.setState((prev) => ({
-              PAAreas,
-              PATotalArea,
-              PADivergentData,
-              messages: {
-                ...prev.messages,
-                pa: null,
-              },
-            }));
+      controller
+        .getCoveragesLayers(layerPeriod)
+        .then((layersRes) => {
+          dispatch({ type: "SET_LAYERS", payload: layersRes });
+          context.setRasterLayers(layersRes);
+          context.setLoadingLayer(false);
+          context.setMapTitle({ name: "Coberturas" });
+        })
+        .catch((e) => {
+          context.setLoadingLayer(false);
+          if (!e.toString().includes("request canceled")) {
+            context.setLayerError?.(e.toString());
           }
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            pa: "no-data",
-          },
-        }));
-      });
+        });
+    },
+    [period],
+  );
 
-    BackendAPI.requestStrategicEcosystems(areaTypeId, areaIdId)
+  useEffect(() => {
+    context.setLoadingLayer(true);
+
+    if (!areaTypeId || !areaIdId) {
+      context.setLoadingLayer(false);
+      return;
+    }
+
+    controller.setArea(areaTypeId, areaIdId);
+
+    SearchAPI.requestMetricsValues<"coverage">("coverage", Number(areaIdId))
       .then((res) => {
-        if (this.mounted) {
-          if (Array.isArray(res)) {
-            const SETotal = res.find((obj) => obj.type === "Total");
-            const SETotalArea = SETotal ? SETotal.area : 0;
-            const SEAreas = res.slice(1);
-            this.setState((prev) => ({
-              SEAreas,
-              SETotalArea,
-              messages: {
-                ...prev.messages,
-                se: null,
-              },
-            }));
-          }
-        }
+        const obtainedPeriod = res?.id ?? "";
+        dispatch({ type: "SET_PERIOD", payload: obtainedPeriod });
+
+        dispatch({
+          type: "SET_COVERAGE_DATA",
+          payload: transformCoverageValues(res),
+        });
+        dispatch({
+          type: "SET_MESSAGE",
+          payload: { key: "cov", value: null },
+        });
+
+        switchLayer(obtainedPeriod);
       })
       .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            se: "no-data",
-          },
-        }));
+        dispatch({
+          type: "SET_MESSAGE",
+          payload: { key: "cov", value: "no-data" },
+        });
+        context.setLoadingLayer(false);
       });
 
-    ["ecosystems", "coverage", "pa", "se"].forEach((item) => {
-      BackendAPI.requestSectionTexts(item)
+    const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
+
+    TEXT_SECTIONS.forEach((section) => {
+      BackendAPI.requestSectionTexts(section)
         .then((res) => {
-          if (this.mounted) {
-            this.setState((prevState) => ({
-              texts: { ...prevState.texts, [item]: res },
-            }));
-          }
+          dispatch({
+            type: "SET_TEXTS",
+            payload: { section, value: res },
+          });
         })
         .catch(() => {
-          this.setState((prevState) => ({
-            texts: { ...prevState.texts, [item]: {} },
-          }));
+          dispatch({
+            type: "SET_TEXTS",
+            payload: {
+              section,
+              value: { info: "", cons: "", meto: "", quote: "" },
+            },
+          });
         });
     });
-  }
 
-  componentWillUnmount() {
-    const { clearLayers } = this.context as LegacyContextValues;
-
-    this.mounted = false;
-    clearLayers();
-    this.EcosystemsController.cancelActiveRequests();
-  }
+    return () => {
+      context.clearLayers();
+      controller.cancelActiveRequests();
+    };
+  }, [areaTypeId, areaIdId, controller, switchLayer]);
 
   /**
    * Toggles the visibility state of the main tooltip.
    */
-  toggleInfoGeneral = () => {
-    this.setState((prevState) => ({
-      showInfoMain: !prevState.showInfoMain,
-    }));
-  };
+  const toggleInfoGeneral = () => dispatch({ type: "TOGGLE_MAIN_INFO" });
 
   /**
    * Toggles the display of a specific help section.
    *
-   * @param {string} value - Section id
+   * @param {TextSection} value - Section id
    */
-  toggleInfo = (value: string) => {
-    this.setState((prev) => {
-      const newState = prev;
-      if (prev.infoShown.has(value)) {
-        newState.infoShown.delete(value);
-        return newState;
-      }
-      newState.infoShown.add(value);
-      return newState;
-    });
-  };
-
-  /**
-   * Returns the component EcosystemsBox that contains the list of strategic ecosystems
-   * @param {Array<SEPADataExt>} SEAreas area of each strategic ecosystem
-   * @param {Number} SETotalArea total area of all strategic ecosystems
-   *
-   * @returns {node} Component to be rendered
-   */
-  renderEcosystemsBox = (SEAreas: Array<SEPAData>, SETotalArea: number) => {
-    const {
-      activeSE,
-      messages: { se },
-    } = this.state;
-    const { areaHa } = this.context as LegacyContextValues;
-
-    if (se === "loading") return "Cargando...";
-    if (se === "no-data")
-      return "No hay información de áreas protegidas en el área de consulta";
-    if (areaHa !== 0) {
-      return (
-        <EcosystemsBox
-          SETotalArea={Number(SETotalArea)}
-          SEAreas={transformSEAreas(SEAreas, areaHa!)}
-          activeSE={activeSE}
-          setActiveSE={this.switchActiveSE}
-        />
-      );
-    }
-    return null;
-  };
+  const toggleInfo = (value: TextSection) =>
+    dispatch({ type: "TOGGLE_SECTION_INFO", payload: value });
 
   /**
    * Set active strategic ecosystem graph
    *
    * @param {String} se selected strategic ecosystem
    */
-  switchActiveSE = (se: string) => {
-    this.setState((prevState) => {
-      const isNewActiveSE = prevState.activeSE !== se && se !== "";
-      const newActiveSE = isNewActiveSE ? se : "";
+  const switchActiveSEHandler = (se: string) => {
+    const newVal = activeSE !== se && se !== "" ? se : "";
+    dispatch({ type: "SET_ACTIVE_SE", payload: newVal });
 
-      if (!isNewActiveSE) {
-        this.switchLayer();
-      }
-
-      return { activeSE: newActiveSE };
-    });
-  };
-
-  render() {
-    const {
-      showInfoMain,
-      infoShown,
-      coverage,
-      PAAreas,
-      PATotalArea,
-      PADivergentData,
-      SEAreas,
-      SETotalArea,
-      activeSE,
-      messages: { cov, pa },
-      texts,
-    } = this.state;
-
-    const { areaId, areaHa } = this.context as LegacyContextValues;
-
-    const areaIdId = areaId!.id.toString();
-
-    return (
-      <div className="graphcard">
-        <h2>
-          <IconTooltip title="¿Cómo interpretar las gráficas?">
-            <InfoIcon
-              className="graphinfo"
-              onClick={() => this.toggleInfoGeneral()}
-            />
-          </IconTooltip>
-        </h2>
-        {showInfoMain && (
-          <ShortInfo
-            description={`<p>${texts.ecosystems.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-        <div className="graphcontainer pt5">
-          <button
-            onClick={() => {
-              if (activeSE !== "") {
-                this.switchActiveSE("");
-              }
-            }}
-            type="button"
-            className="tittlebtn"
-          >
-            <h4>Cobertura</h4>
-          </button>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`downSpecial${
-                infoShown.has("coverage") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("coverage")}
-            />
-          </IconTooltip>
-          {infoShown.has("coverage") && (
-            <ShortInfo
-              description={`<p>${texts.coverage.info}</p>`}
-              className="graphinfo3"
-              collapseButton={false}
-            />
-          )}
-          <h6>Natural, Secundaria y Transformada:</h6>
-          <div className="graficaeco">
-            <div className="svgPointer">
-              <SmallStackedBar
-                loadStatus={cov}
-                data={coverage}
-                units="ha"
-                colors={matchColor("coverage")}
-                onClickGraphHandler={(selected) => {
-                  this.clickOnGraph(selected);
-                }}
-              />
-            </div>
-          </div>
-          <TextBoxes
-            downloadData={coverage}
-            downloadName={`eco_coverages_${areaId}_${areaIdId}.csv`}
-            quoteText={texts.coverage.quote}
-            metoText={texts.coverage.meto}
-            consText={texts.coverage.cons}
-            toggleInfo={() => this.toggleInfo("coverage")}
-            isInfoOpen={infoShown.has("coverage")}
-          />
-          <h4>
-            Áreas protegidas
-            <b>{`${formatNumber(PATotalArea, 0)} ha `}</b>
-          </h4>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`downSpecial${
-                infoShown.has("pa") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("pa")}
-            />
-          </IconTooltip>
-          <h5>{`${getPercentage(PATotalArea, areaHa!)} %`}</h5>
-          {infoShown.has("pa") && (
-            <ShortInfo
-              description={`<p>${texts.pa.info}</p>`}
-              className="graphinfo3"
-              collapseButton={false}
-            />
-          )}
-          <div className="graficaeco">
-            <h6>Distribución por áreas protegidas:</h6>
-            <SmallStackedBar
-              loadStatus={pa}
-              data={PAAreas}
-              units="ha"
-              colors={matchColor("pa", true)}
-              scaleType={PADivergentData ? "symlog" : "linear"}
-            />
-          </div>
-          <TextBoxes
-            downloadData={PAAreas}
-            downloadName={`eco_protected_areas_${areaId}_${areaIdId}.csv`}
-            quoteText={texts.pa.quote}
-            metoText={texts.pa.meto}
-            consText={texts.pa.cons}
-            toggleInfo={() => this.toggleInfo("pa")}
-            isInfoOpen={infoShown.has("pa")}
-          />
-          <div className="ecoest">
-            <h4 className="minus20">
-              Ecosistemas estratégicos
-              <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
-            </h4>
-            <IconTooltip title="Interpretación">
-              <InfoIcon
-                className={`downSpecial2${
-                  infoShown.has("se") ? " activeBox" : ""
-                }`}
-                onClick={() => this.toggleInfo("se")}
-              />
-            </IconTooltip>
-            <h5 className="minusperc">
-              {`${getPercentage(SETotalArea, areaHa!)} %`}
-            </h5>
-            <h3 className="warningNote">
-              {getPercentage(SETotalArea, areaHa!) > 100
-                ? "La superposición de ecosistemas estratégicos puede resultar en que su valor total exceda el área de consulta, al contar múltiples veces zonas donde coexisten."
-                : ""}
-            </h3>
-            {infoShown.has("se") && (
-              <ShortInfo
-                description={`<p>${texts.se.info}</p>`}
-                className="graphinfo3"
-                collapseButton={false}
-              />
-            )}
-            {this.renderEcosystemsBox(SEAreas, SETotalArea)}
-            <TextBoxes
-              downloadData={SEAreas}
-              downloadName={`eco_strategic_ecosystems_${areaId}_${areaIdId}.csv`}
-              quoteText={texts.se.quote}
-              metoText={texts.se.meto}
-              consText={texts.se.cons}
-              toggleInfo={() => this.toggleInfo("se")}
-              isInfoOpen={infoShown.has("se")}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  /**
-   * Requests and updates raster layers corresponding to coverages.
-   */
-
-  switchLayer = () => {
-    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      this.context as LegacyContextValues;
-
-    setLoadingLayer(true);
-    this.EcosystemsController.getCoveragesLayers()
-      .then((layers) => {
-        this.setState({ layers: layers });
-
-        if (this.mounted) {
-          setRasterLayers(layers);
-          setLoadingLayer(false);
-          setMapTitle({
-            name: `Coberturas`,
-          });
-        }
-      })
-      .catch((e) => {
-        if (e.toString() != "Error: request canceled") {
-          setLayerError(e.toString());
-        }
-      });
+    if (newVal === "") switchLayer();
   };
 
   /**
    * Set the selected layer to highlight
    *  @param {string} selectedKey Special Ecosystem type
    */
-
-  clickOnGraph = (selectedKey: string) => {
-    const { layers } = this.state;
-    const { setRasterLayers } = this.context as LegacyContextValues;
-
-    setRasterLayers(
+  const clickOnGraph = (selectedKey: string) => {
+    context.setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
       })),
     );
   };
-}
 
-export default Ecosystems;
+  const resetActiveSE = () => {
+    if (activeSE) dispatch({ type: "SET_ACTIVE_SE", payload: "" });
+  };
+
+  return (
+    <div className="graphcard">
+      <h2>
+        <IconTooltip title="¿Cómo interpretar las gráficas?">
+          <InfoIcon className="graphinfo" onClick={toggleInfoGeneral} />
+        </IconTooltip>
+      </h2>
+
+      {showInfoMain && (
+        <ShortInfo
+          description={`<p>${texts.ecosystems.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
+
+      <div className="graphcontainer pt5">
+        {/* COVERAGE */}
+        <Coverage
+          coverage={coverageData}
+          infoOpen={infoShown.has("coverage")}
+          toggleInfo={() => toggleInfo("coverage")}
+          texts={texts.coverage}
+          messages={messages.cov}
+          areaIdStr={areaIdStr}
+          onClickGraph={clickOnGraph}
+          resetActiveSE={resetActiveSE}
+        />
+
+        {/* PROTECTED AREAS */}
+        {/*}
+        <ProtectedAreas
+          PAAreas={PAAreas}
+          PATotalArea={PATotalArea}
+          PADivergentData={PADivergentData}
+          areaHa={areaHa!}
+          infoOpen={infoShown.has("pa")}
+          toggleInfo={() => toggleInfo("pa")}
+          texts={texts.pa}
+          messages={messages.pa}
+          areaIdStr={areaIdStr}
+        />
+        {*/}
+
+        {/* STRATEGIC ECOSYSTEMS */}
+        {/*}
+        <StrategicEcosystems
+          SEAreas={SEAreas}
+          SETotalArea={SETotalArea}
+          areaHa={areaHa!}
+          activeSE={activeSE}
+          infoOpen={infoShown.has("se")}
+          toggleInfo={() => toggleInfo("se")}
+          texts={texts.se}
+          messages={messages.se}
+          areaIdStr={areaIdStr}
+          setActiveSE={setActiveSE}
+          isLoading={messages.se === "loading"}
+          noData={messages.se === "no-data"}
+        />
+        {*/}
+      </div>
+    </div>
+  );
+}

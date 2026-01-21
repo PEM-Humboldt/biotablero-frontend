@@ -1,4 +1,5 @@
 import type { UserType } from "@appTypes/user";
+import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import { getCredentials, partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
 
@@ -12,38 +13,36 @@ type CheckNLoadProps<ReturnType, CriticalReturnType> = {
   onFetchFailure?: () => void;
 };
 
-export type CheckNLoadReturn<ReturnType, CriticalReturnType> = Promise<{
-  userData: Promise<ReturnType> | null;
-  criticalUserData: CriticalReturnType | null;
-} | null>;
-
 /**
  * Validates the current user and fetches optional critical and non-critical data.
  *
- * @template T - Type returned by the non-critical data fetcher.
- * @template U - Type returned by the critical data fetcher.
+ * @template T - Type of the non-critical data returned by `fetchData`.
+ * @template U - Type of the critical data returned by `fetchCriticalData`.
  *
- * @param obj an object with the following shape:
- * @param obj.requirements - A Partial<UserType> object with properties that must be verified.
- * @param obj.redirectPath - Path to redirect if validation fails.
- * @param obj.fetchCriticalData - Async callback for critical user data.
- * @param obj.fetchData - Async callback for additional user data.
- * @param obj.onFetchFailiure - Optional callback when any data fetcher fails.
+ * @param obj - Configuration object with the following properties:
+ * @param obj.requirements - Subset of user properties that must exactly match those of the authenticated user.
+ *   - If this object is **empty**, no property validation is performed, any authenticated user passes.
+ * @param obj.redirectPath - Path to redirect if validation fails. Optional.
+ * @param obj.fetchCriticalData - Async callback for critical user data. Optional.
+ * @param obj.fetchData - Async callback for additional user data. Optional.
+ * @param obj.onFetchFailure - Callback invoked when any data fetch fails. Optional.
  *
  * @returns A promise resolving to:
- * - `{ userData, criticalUserData }` if validation succeeds.
- * - `null` if validation fails or user is not available.
+ * - An object `{ userData, criticalUserData }` when validation succeeds:
+ *   - `userData` — a promise resolving to `T | null`, which can be used with React Suspense.
+ *   - `criticalUserData` — a resolved value of type `U | null`, available immediately.
+ * - `null` if validation fails or no user is authenticated.
  *
  * Notes:
- * - `userData` is wrapped in a promise to enable Suspense/partial loading.
- * - `criticalUserData` is awaited immediately and required before continuing.
+ * - `userData` is wrapped in a promise to support deferred or partial loading.
+ * - `criticalUserData` is awaited immediately and required before proceeding.
  */
 export async function checkNLoad<T, U>({
   requirements,
   redirectPath,
   fetchCriticalData,
   fetchData,
-  onFetchFailure: onFetchFailiure,
+  onFetchFailure,
 }: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
   const user = await getCredentials();
   if (!user) {
@@ -51,7 +50,10 @@ export async function checkNLoad<T, U>({
     return null;
   }
 
-  if (!partialComparison(user, requirements)) {
+  if (
+    Object.keys(requirements).length !== 0 &&
+    !partialComparison(user, requirements)
+  ) {
     redirectTo(redirectPath);
     return null;
   }
@@ -61,8 +63,8 @@ export async function checkNLoad<T, U>({
     criticalUserData = fetchCriticalData ? await fetchCriticalData(user) : null;
   } catch (err) {
     console.error("Cannot retrieve critical user data:", err);
-    if (onFetchFailiure) {
-      onFetchFailiure();
+    if (onFetchFailure) {
+      onFetchFailure();
     }
     throw err;
   }
@@ -71,8 +73,8 @@ export async function checkNLoad<T, U>({
     ? Promise.resolve(
         fetchData(user).catch((err) => {
           console.error("Cannot retrieve user data:", err);
-          if (onFetchFailiure) {
-            onFetchFailiure();
+          if (onFetchFailure) {
+            onFetchFailure();
           }
           throw err;
         }),

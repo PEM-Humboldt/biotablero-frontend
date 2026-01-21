@@ -14,14 +14,56 @@ import {
   refreshAccessToken,
   type RequestError,
 } from "@api/auth";
+import type { ODataParams } from "@appTypes/odata";
+import type { ODataLog } from "pages/monitoring/types/requestParams";
+import { oDataToString } from "@utils/odata";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
+interface MonitoringAPIOptions {
+  data?: Record<string, string>;
+  oData?: Partial<ODataParams>;
+  headers?: Record<string, string>;
+}
+
+type MonitoringAPIParams = {
+  endpoint: string;
+} & (
+  | {
+      type: "get";
+      options?: MonitoringAPIOptions;
+    }
+  | {
+      type: "put" | "delete" | "post";
+      options?: Omit<MonitoringAPIOptions, "oData">;
+    }
+);
+
 const monitoringClient = axios.create({
   baseURL: import.meta.env.VITE_MONITORING_BACKEND_URL,
 });
+
+/**
+ * Type guard to determine whether a response object is a `RequestError`.
+ *
+ * Useful for distinguishing between successful API responses and normalized
+ * error objects returned by `monitoringAPI`.
+ *
+ * @param response - The value to check.
+ * @returns `true` if the value is a `RequestError`, otherwise `false`.
+ */
+export function isMonitoringAPIError(
+  response: unknown,
+): response is RequestError {
+  return (
+    typeof response === "object" &&
+    response !== null &&
+    "status" in response &&
+    "message" in response
+  );
+}
 
 monitoringClient.interceptors.request.use(
   (config) => {
@@ -64,6 +106,7 @@ monitoringClient.interceptors.response.use(
       );
       return monitoringClient(originalReq);
     } catch (refreshError) {
+      deleteTokensFromLS();
       console.error("Refresh token failed:", refreshError);
       throw refreshError;
     }
@@ -71,25 +114,29 @@ monitoringClient.interceptors.response.use(
 );
 
 /**
- * Wrapper around Axios to standardize requests to the Auth module.
+ * Wrapper around Axios to standardize requests to the Monitoring module.
  *
- * Handles query parameter encoding, error normalization, and token injection through interceptors.
+ * Handles query parameter encoding, OData query composition, error normalization,
+ * and optional custom headers. Automatically appends `client_id` for non-GET requests.
  *
  * @typeParam T - The expected response payload type.
  * @param type - The HTTP method (`get`, `post`, `put`, or `delete`).
- * @param endpoint - The API endpoint relative to the Auth backend base URL.
- * @param data - Optional key-value pairs to send as query parameters or request body.
- * @param headers - Optional custom headers for the request.
+ * @param endpoint - The API endpoint relative to the Monitoring backend base URL.
+ * @param options - Optional request configuration, including:
+ *  - `data`: Key-value pairs to send as query parameters or form data.
+ *  - `headers`: Custom request headers.
+ *  - `oData`: OData query parameters for GET requests.
  * @returns A `Promise` resolving to the parsed response of type `T`, or a `RequestError` on failure.
  */
-export async function authRequest<T>(
-  type: "get" | "post" | "put" | "delete",
-  endpoint: string,
-  data?: Record<string, string>,
-  headers?: Record<string, string>,
-): Promise<T | RequestError> {
+export async function monitoringAPI<T>({
+  type,
+  endpoint,
+  options,
+}: MonitoringAPIParams): Promise<T | RequestError> {
   try {
+    const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
+    const { data, headers } = options ?? {};
     const reqParams = new URLSearchParams();
     if (data) {
       Object.entries(data).forEach(([key, value]) =>
@@ -98,13 +145,26 @@ export async function authRequest<T>(
     }
 
     if (type === "get" || type === "delete") {
-      const fullEndpoint = `${endpoint}?${reqParams.toString()}`;
+      const oDataParams =
+        type === "get" && options?.oData !== undefined
+          ? oDataToString(options.oData)
+          : "";
+
+      const params = [reqParams.toString(), oDataParams]
+        .filter(Boolean)
+        .join("&");
+
+      const fullEndpoint = `${baseURL}/${endpoint}${params ? `?${params}` : ""}`;
+
       response = await monitoringClient[type]<T>(fullEndpoint);
     } else {
       reqParams.append("client_id", "bt-mc-client");
-      response = await monitoringClient[type]<T>(endpoint, reqParams, {
-        headers,
-      });
+
+      response = await monitoringClient[type]<T>(
+        `${baseURL}/${endpoint}`,
+        reqParams,
+        { headers },
+      );
     }
 
     return response.data;
@@ -117,4 +177,30 @@ export async function authRequest<T>(
     }
     return { status: 503, message: "Couldn't connect with the server" };
   }
+}
+
+/**
+ * Fetches logs from the Monitoring API with optional OData query parameters.
+ *
+ * This function is a thin wrapper around `monitoringAPI` specialized for the `"Logs"` endpoint.
+ * Throws an error if the request fails or the backend returns an error response.
+ *
+ * @param odataParams - Optional OData query parameters to filter, sort, or paginate results.
+ * @returns A `Promise` resolving to an `ODataLog` object containing the logs data.
+ * @throws If the API returns a `RequestError` or the request fails.
+ */
+export async function getLogs(
+  odataParams: ODataParams = {},
+): Promise<ODataLog> {
+  const result = await monitoringAPI<ODataLog>({
+    endpoint: "Logs",
+    type: "get",
+    options: { oData: odataParams },
+  });
+
+  if (isMonitoringAPIError(result)) {
+    throw new Error(result.message);
+  }
+
+  return result;
 }
