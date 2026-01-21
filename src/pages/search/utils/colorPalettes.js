@@ -53,7 +53,7 @@ export default {
     "#95b4db",
     "#2964ac",
   ],
-  hfCurrent: ["#3fbf9f", "#d5a529", "#e66c29", "#cf324e"],
+  hfCurrent: ["#3fbf9f", "#d5a529", "#e66c29", "#cf324e", "#691926"],
   hfPersistence: ["#61a5a2", "#caaf71", "#e0526b"],
   paramo: ["#b7a0f2"],
   dryForest: ["#8cb64c"],

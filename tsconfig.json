@@ -24,6 +24,7 @@
       "@assets/*": ["core/assets/*"],
       "@utils/*": ["core/utils/*"],
       "@hooks/*": ["core/hooks/*"],
+      "@config/*": ["core/config/*"],
       "@appTypes/*": ["core/types/*"]
     }
   },

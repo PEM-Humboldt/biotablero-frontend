@@ -46,7 +46,7 @@ const match = {
   hfCurrent: {
     palette: "hfCurrent",
     // TODO: This could change once the API endpoint is implemented
-    sort: ["natural", "baja", "media", "alta"],
+    sort: ["Natural", "Baja", "Media", "Alta", "Muy Alta"],
   },
   hfPersistence: {
     palette: "hfPersistence",
