@@ -45,10 +45,8 @@ export function MainLayout() {
           className="z-10"
         />
 
-        <main className="">
-          <OnLoadingModal open={navigation.state === "loading"} />
-          <Outlet context={{ layoutState, layoutDispatch }} />
-        </main>
+        <OnLoadingModal open={navigation.state === "loading"} />
+        <Outlet context={{ layoutState, layoutDispatch }} />
 
         <Footer logos={layoutState.logos} className="z-10" />
       </div>

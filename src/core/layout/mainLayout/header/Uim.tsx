@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
 
-import { Login } from "core/layout/uim/Login";
-import { UserCard } from "core/layout/uim/UserInfo";
+import { Login } from "core/layout/mainLayout/header/uim/Login";
+import { UserCard } from "core/layout/mainLayout/header/uim/UserInfo";
 import { ConfirmationModal } from "@composites/ConfirmationModal";
 import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";

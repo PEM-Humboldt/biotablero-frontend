@@ -1,5 +1,5 @@
 import { Menu } from "core/layout/mainLayout/header/Menu";
-import { Uim } from "core/layout/Uim";
+import { Uim } from "core/layout/mainLayout/header/Uim";
 import { Link } from "react-router";
 import { cn } from "@ui/shadCN/lib/utils";
 
