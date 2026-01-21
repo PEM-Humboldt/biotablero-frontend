@@ -9,7 +9,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { formatNumber } from "@utils/format";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 

@@ -1,8 +1,7 @@
 import { formatNumber } from "@utils/format";
 import BackendAPI from "pages/search/api/backendAPI";
 import { RasterLayer } from "pages/search/types/layers";
-import matchColor from "pages/search/utils/matchColor";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
 
 import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
@@ -33,7 +32,7 @@ export class CurrentFootprintController {
 
       currentHFCategories.forEach((categoryId, index) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "CurrentHF",
+          "currentHF",
           period,
           index + 1,
           Number(this.areaId),
@@ -48,8 +47,9 @@ export class CurrentFootprintController {
         this.activeRequests.delete(categoryId);
       });
 
-      if (res.includes("request canceled")) throw Error("request canceled");
-
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
       const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {
         const request = SearchAPI.getLayerData(response);

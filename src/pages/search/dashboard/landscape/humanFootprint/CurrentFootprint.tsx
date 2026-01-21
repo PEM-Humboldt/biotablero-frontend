@@ -9,7 +9,7 @@ import {
 
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import TextBoxes from "@ui/TextBoxes";
@@ -23,6 +23,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 interface State {
   showInfoGraph: boolean;
@@ -248,7 +249,9 @@ export function CurrentFootprint() {
         <h6>Huella humana promedio · 2018</h6>
         <h5
           style={{
-            backgroundColor: matchColor("hfCurrent")(hfCurrentCategory),
+            backgroundColor:
+              matchColor("hfCurrent")(hfCurrentCategory) ||
+              colorPalettes.default[0],
           }}
         >
           {hfCurrentValue}
@@ -259,11 +262,12 @@ export function CurrentFootprint() {
 
       <LargeStackedBar
         data={hfCurrent}
-        message={message}
         labelX="Hectáreas"
         labelY="Huella Humana Actual"
         units="ha"
-        colors={matchColor("hfCurrent")}
+        colors={(key) =>
+          matchColor("hfCurrent")(key) || colorPalettes.default[0]
+        }
         padding={0.25}
         onClickGraphHandler={clickOnGraph}
       />

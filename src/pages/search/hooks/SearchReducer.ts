@@ -10,7 +10,7 @@ import type {
   ShapeLayer,
 } from "pages/search/types/layers";
 import { hasInvalidGeoJson } from "pages/search/utils/GeoJsonUtils";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import type * as geojson from "geojson";
 
 export enum SearchUpdated {
@@ -54,8 +54,8 @@ export type SearchState = {
 
 export type SearchActions =
   | { type: SearchUpdated.SEARCH_TYPE; searchType: SrchType } // -> searchType
-  | { type: SearchUpdated.AREA_TYPE; areaType: AreaType } // handleAreaTypeUpdate
-  | { type: SearchUpdated.AREA_ID; areaId: AreaIdBasic } // handleAreaIdUpdate
+  | { type: SearchUpdated.AREA_TYPE; areaType: AreaType | undefined } // handleAreaTypeUpdate
+  | { type: SearchUpdated.AREA_ID; areaId: AreaIdBasic | undefined } // handleAreaIdUpdate
   | { type: SearchUpdated.AREA_NAMES_LIST; areaNamesList: AreaIdBasic[] }
   | { type: SearchUpdated.AREA_HA; areaHa: number | undefined }
   | {

@@ -7,7 +7,7 @@ import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import processDataCsv from "pages/search/utils/processDataCsv";
 import TextBoxes from "@ui/TextBoxes";
 import {
