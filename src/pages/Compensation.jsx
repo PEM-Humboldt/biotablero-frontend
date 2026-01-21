@@ -533,8 +533,7 @@ export class Compensation extends Component {
         <div className="appSearcher wrappergrid">
           <MapViewer
             layers={layers}
-            // geoServerUrl={GeoServerAPI.getRequestURL()}
-            geoServerUrl={geoServerService.getBaseURL()}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
             userLogged={this.props.user}
           />
           <div className="contentView">
