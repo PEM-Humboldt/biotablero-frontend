@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import AccountCircleOutlined from "@mui/icons-material/AccountCircleOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import Modal from "@mui/material/Modal";
 
-import { Login } from "core/layout/uim/Login";
-import { UserCard } from "core/layout/uim/UserInfo";
+import { Login } from "core/layout/mainLayout/header/uim/Login";
+import { UserCard } from "core/layout/mainLayout/header/uim/UserInfo";
 import { ConfirmationModal } from "@composites/ConfirmationModal";
 import { useUserCTX } from "@hooks/UserContext";
 import { deleteTokensFromLS } from "@utils/JWTstorage";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
+import { Button } from "@ui/shadCN/component/button";
+import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
 
 interface LogModalsTypes {
   loginModal: boolean;
@@ -55,22 +55,61 @@ export function Uim() {
     : { modal: "loginModal", state: modals.loginModal };
 
   return (
-    <div className="loginBtnCont">
-      <button
-        type="button"
-        className="loginBtn"
-        onClick={showModal(whichModal.modal)}
-        title="Iniciar sesión"
-      >
+    <>
+      <div className="flex ml-auto px-3">
         {user ? (
-          <AccountCircle className="userBox" style={{ fontSize: "4rem" }} />
+          <>
+            <Button
+              onClick={() => console.log("Notificaciones")}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Notificaciones"
+            >
+              <span className="sr-only">Notificaciones</span>
+              <Bell className="size-4 md:size-5" aria-hidden="true" />
+            </Button>
+
+            <Button
+              onClick={() => {
+                console.log("Perfil");
+                showModal(whichModal.modal)();
+              }}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Mi perfil"
+            >
+              <span className="sr-only">Mi perfil</span>
+              <CircleUserRound
+                className="size-4 md:size-5"
+                aria-hidden="true"
+              />
+            </Button>
+
+            <Button
+              onClick={() => console.log("Cerrar sesión")}
+              variant="link"
+              className="h-9 w-9 md:h-12 md:w-12"
+              title="Cerrar sesión"
+            >
+              <span className="sr-only">Cerrar sesión</span>
+              <DoorOpen className="size-4 md:size-5" aria-hidden="true" />
+            </Button>
+          </>
         ) : (
-          <AccountCircleOutlined
-            className="userBox"
-            style={{ fontSize: "4rem" }}
-          />
+          <Button
+            onClick={showModal(whichModal.modal)}
+            variant="link"
+            className="h-9 w-9 md:h-12 md:w-12"
+          >
+            <span className="sr-only">
+              {user ? "Iniciar sesión" : "Ver mi perfil"}
+            </span>
+            <DoorClosed className="size-6" />
+          </Button>
         )}
-      </button>
+      </div>
+
+      {/* NOTE: todo lo que sique se va apenas entre el nuevo sistema de usuarios */}
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
@@ -91,6 +130,7 @@ export function Uim() {
           {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
         </div>
       </Modal>
+
       <ConfirmationModal
         open={modals.logoutModal}
         styleCustom="newBiomeAlarm nBA2"
@@ -99,6 +139,6 @@ export function Uim() {
         onContinue={logoutUser}
         onCancel={hideModal("logoutModal")}
       />
-    </div>
+    </>
   );
 }
