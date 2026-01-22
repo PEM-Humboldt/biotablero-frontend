@@ -118,7 +118,6 @@ export function Logs() {
             onPageChange={setCurrentPage}
             recordsPerPage={LOG_RECORDS_PER_PAGE}
             paginated={3}
-            className="table-pager"
           />
         </div>
       )}

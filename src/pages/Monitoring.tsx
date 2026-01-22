@@ -21,6 +21,7 @@ export function Monitoring() {
   }, [layoutDispatch]);
 
   return (
+    // NOTE: Pendiente de borrar clase
     <div className="monitoring-root">
       <SideBar />
 
