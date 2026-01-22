@@ -1,4 +1,63 @@
 @layer components {
+  /* NOTE: Para marcación de páginas */
+  .page-main {
+    @apply ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen;
+
+    & > header {
+      @apply p-6 pb-0 w-full flex justify-between;
+
+      & > h3 {
+        @apply text-primary;
+      }
+    }
+  }
+
+  /* NOTE: Para la tabla del log */
+  .table-logs {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col id */
+        &:first-child {
+          @apply w-[30%];
+        }
+
+        /* NOTE: Cols fecha y usuario */
+        &:nth-child(2),
+        &:nth-child(3) {
+          @apply w-[15%];
+        }
+
+        /* NOTE: Col tipo */
+        &:nth-child(4) {
+          @apply w-[10%];
+        }
+
+        /* NOTE: Col descripcion completa el 100% */
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply w-[10%] text-center;
+        }
+      }
+    }
+  }
+
+  /* NOTE: Para inputs de lista */
   .table-form-display-container {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
   }
@@ -28,6 +87,7 @@
     @apply flex flex-wrap gap-2 [&>button]:flex-[1_0_210px] [&>div]:flex-[1_0_210px] [&>div]:last:flex-0 justify-end items-end;
   }
 
+  /* NOTE: pantalla de loading */
   .loading-backdrop {
     position: absolute;
     width: 100%;
@@ -81,6 +141,7 @@
     }
   }
 
+  /* NOTE: pantalla de loading */
   .moduleIcon {
     @apply block w-14 h-14 bg-contain float-right bg-no-repeat bg-center;
 

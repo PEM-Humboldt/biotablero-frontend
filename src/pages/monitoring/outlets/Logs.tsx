@@ -1,16 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useLoaderData } from "react-router";
-import "pages/monitoring/outlets/logs/layout/logStyles.css";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
-import { LOG_RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
+import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
 
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
-import { LogsTable } from "pages/monitoring/outlets/logs/Table";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {
   ODataLogEntryShort,
@@ -21,6 +19,8 @@ import {
   LoadStatusMsgBar,
   type LoadStatusMsgBarProp,
 } from "@ui/loadStatusSecction";
+import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
+import { ODataTable } from "@composites/ODataTable";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 
@@ -92,25 +92,29 @@ export function Logs() {
   const recordsAvailable = logs ? logs["@odata.count"] : 0;
 
   return (
-    <main className="logs">
+    <main className="page-main">
       <header>
-        <h2>{uiText.logsTitle}</h2>
+        <h3>{uiText.logsTitle}</h3>
       </header>
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
         submit={uiText.searchBar.submitBtn}
         reset={uiText.searchBar.resetBtn}
-        className="search-bar"
+        className="w-full bg-muted"
       />
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       ) : (
-        <div id={LOGS_ELEMENT_ID}>
+        <div className="space-y-4">
           {logs === null || logs.value.length === 0 ? (
             <p>{uiText.noLogsAvailable}</p>
           ) : (
-            <LogsTable records={parseODataLogs(logs)} />
+            <ODataTable
+              cols={tableContent}
+              values={parseODataLogs(logs)}
+              className="table-logs"
+            />
           )}
           <TablePager
             currentPage={currentPage}

@@ -15,14 +15,12 @@ export function Monitoring() {
       sectionData: {
         moduleName: "Monitoreo Comunitario",
         logos: new Set(["usaid", "geobon", "umed", "temple"]),
-        className: "mingrid",
       },
     });
   }, [layoutDispatch]);
 
   return (
-    // NOTE: Pendiente de borrar clase
-    <div className="monitoring-root">
+    <div>
       <SideBar />
 
       <Outlet />

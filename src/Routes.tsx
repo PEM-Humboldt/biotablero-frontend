@@ -90,7 +90,6 @@ export const routes = createBrowserRouter([
               checkNLoad({
                 requirements: { roles: ["Admin"] },
                 redirectPath: "/Monitoreo",
-                fetchCriticalData: () => getLogs(),
               }),
           },
         ],
