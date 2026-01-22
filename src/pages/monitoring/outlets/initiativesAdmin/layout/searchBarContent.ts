@@ -1,7 +1,7 @@
 import { type SearchBarComponent } from "@appTypes/odata";
 import { type ODataInitiativeShortEntry } from "pages/monitoring/types/requestParams";
 import {
-  COLOMBIAN_DEPARTMENTS,
+  getColombianDepartments,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 
@@ -23,7 +23,7 @@ export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
     label: "Departamento",
     type: "select",
     source: ["location/id", "location/parent/id"],
-    values: COLOMBIAN_DEPARTMENTS,
+    values: await getColombianDepartments(),
     oDataEntity: "InitiativeLocations",
     childUpdater: getMunicipalitiesByDepartment,
   },
