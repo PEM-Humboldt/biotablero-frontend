@@ -107,5 +107,5 @@ export const withAuth = <P extends object>(
  * Componente específico para rutas de administrador
  */
 export const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <ProtectedRoute roles={[UserRole.ADMIN]}>{children}</ProtectedRoute>;
+  return <ProtectedRoute roles={[UserRole.BT_ADMIN_GENERAL]}>{children}</ProtectedRoute>;
 };

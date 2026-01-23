@@ -173,10 +173,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
    * Actualiza el perfil del usuario (caso de prueba 021)
    */
   const updateProfile = useCallback(() => {
-    if (!keycloak.authenticated) {
-      console.warn('Usuario no autenticado. No se puede acceder a gestión de cuenta.');
-      return;
-    }
+    // if (!keycloak.authenticated) {
+    //   console.warn('Usuario no autenticado. No se puede acceder a gestión de cuenta.');
+    //   return;
+    // }
 
     try {
       console.log('Redirigiendo a Account Management de Keycloak...');
@@ -185,7 +185,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
       console.error('Error al redirigir a gestión de cuenta:', error);
 
       const accountUrl = `${import.meta.env.VITE_APP_KEYCLOAK_URL}/realms/${import.meta.env.VITE_APP_KEYCLOAK_REALM}/account`;
-      console.log('🔄 Intentando redirección manual a:', accountUrl);
+      console.log('Intentando redirección manual a:', accountUrl);
       window.location.href = accountUrl;
     }
   }, [])

@@ -2,7 +2,7 @@ import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
     // url: import.meta.env.VITE_APP_KEYCLOAK_URL || "http://192.168.11.44:8080",
-    url: import.meta.env.VITE_APP_KEYCLOAK_URL || "http://localhost:3000",
+    url: import.meta.env.VITE_APP_KEYCLOAK_URL || "https://keycloakdev.humboldt.org.co",
     realm: import.meta.env.VITE_APP_KEYCLOAK_REALM || "humboldt-dev",
     clientId: import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID || "front-dev-humboldt"
 }
