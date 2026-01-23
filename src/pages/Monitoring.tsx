@@ -1,10 +1,11 @@
 import { Outlet, useOutletContext } from "react-router";
 import { useEffect } from "react";
 
-import { SideBar } from "pages/monitoring/layout/SideBar";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import { SidebarProvider, SidebarTrigger } from "@ui/shadCN/component/sidebar";
+import { MonitoringSidebar } from "./monitoring/layout/sidebar";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -20,10 +21,12 @@ export function Monitoring() {
   }, [layoutDispatch]);
 
   return (
-    <div>
-      <SideBar />
-
+    <SidebarProvider>
+      <div className="relative">
+        <MonitoringSidebar className="pt-14" />
+        <SidebarTrigger className="absolute -right-4 top-4 z-10" />
+      </div>
       <Outlet />
-    </div>
+    </SidebarProvider>
   );
 }

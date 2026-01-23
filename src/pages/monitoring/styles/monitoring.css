@@ -1,67 +1,14 @@
-.sidebar-root {
-  position: absolute;
-  isolation: isolate;
-  height: 100%;
-  z-index: 1000;
-}
-
-.sidebar-paper {
-  overflow: hidden;
-
-  height: 100%;
-  background-color: #f5f5f5;
-  display: flex;
-  flex-direction: column;
-  transition: width 0.3s;
-  border-radius: 0 !important;
-}
-
-.sidebar-list {
-  margin-top: 6rem;
-}
-
-.sidebar-button {
-  padding: 0.75rem 0.5rem;
-}
-
-.sidebar-icon {
-  min-width: 0;
-  margin-right: 1rem;
-}
-
-.sidebar-icon-collapsed {
-  margin-right: auto;
-}
-
-.sidebar-toggle {
-  position: absolute;
-  top: 0.5rem;
-  transform: translateX(-20%);
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 50%;
-  z-index: 1300;
-}
-
 #search-bar {
-  position: fixed;
+  position: relative;
   display: flex;
+  gap: 1rem;
   height: min-content;
-  width: 100%;
   padding: 0.5rem 1rem;
   justify-content: center;
   align-items: center;
-  padding: 0.5rem 1rem;
   background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   isolation: isolate;
-  z-index: 900;
-}
-
-.search-bar-container {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
+  z-index: 1;
 }
 
 .search-bar-field {
@@ -104,12 +51,6 @@
   height: 18px;
 }
 
-.leaflet-top.leaflet-left {
-  right: 30px;
-  left: auto;
-  top: 50px;
-}
-
 .browser-container {
   position: absolute;
   margin-left: 100px;
@@ -120,7 +61,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding-top: 60px;
-  z-index: 800;
+  z-index: 1;
   isolation: isolate;
 }
 

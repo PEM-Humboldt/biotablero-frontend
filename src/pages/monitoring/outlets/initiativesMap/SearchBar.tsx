@@ -26,60 +26,26 @@ export const SearchBar: React.FC = () => {
 
   return (
     <div id="search-bar">
-      <div className="search-bar-container  ">
-        <div className="search-bar-field">
-          <input
-            type="text"
-            placeholder="Explorar el contenido"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="search-bar-input"
-          />
-          <img src={SearchIconSvg} className="search-bar-icon" />
-        </div>
+      <div className="search-bar-field">
+        <input
+          type="text"
+          placeholder="Explorar el contenido"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="search-bar-input"
+        />
+        <img src={SearchIconSvg} className="search-bar-icon" />
+      </div>
 
-        <div className="search-bar-field">
-          <div className="custom-select-wrapper">
-            <select
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              className="search-bar-select"
-            >
-              <option value="">Departamento</option>
-              {statesOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
-                </option>
-              ))}
-            </select>
-            <img src={ArrowDownIconSvg} className="search-bar-icon" />
-          </div>
-        </div>
-
-        <div className="search-bar-field">
+      <div className="search-bar-field">
+        <div className="custom-select-wrapper">
           <select
-            value={initiative}
-            onChange={(e) => setInitiative(e.target.value)}
+            value={state}
+            onChange={(e) => setState(e.target.value)}
             className="search-bar-select"
           >
-            <option value="">Iniciativas</option>
-            {initiativesOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <img src={IniciativeIconSvg} className="search-bar-icon" />
-        </div>
-
-        <div className="search-bar-field">
-          <select
-            value={naturalLevel}
-            onChange={(e) => setNaturalLevel(e.target.value)}
-            className="search-bar-select"
-          >
-            <option value="">Nivel natural</option>
-            {naturalLevelsOptions.map((opt) => (
+            <option value="">Departamento</option>
+            {statesOptions.map((opt) => (
               <option key={opt} value={opt}>
                 {opt}
               </option>
@@ -87,22 +53,54 @@ export const SearchBar: React.FC = () => {
           </select>
           <img src={ArrowDownIconSvg} className="search-bar-icon" />
         </div>
-
-        <div className="search-bar-field">
-          <input
-            type="text"
-            placeholder="Año de Inicio"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            className="search-bar-input"
-          />
-          <img src={CalendarIconSvg} className="search-bar-icon" />
-        </div>
-
-        <button className="search-bar-button" onClick={handleSearch}>
-          Buscar
-        </button>
       </div>
+
+      <div className="search-bar-field">
+        <select
+          value={initiative}
+          onChange={(e) => setInitiative(e.target.value)}
+          className="search-bar-select"
+        >
+          <option value="">Iniciativas</option>
+          {initiativesOptions.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <img src={IniciativeIconSvg} className="search-bar-icon" />
+      </div>
+
+      <div className="search-bar-field">
+        <select
+          value={naturalLevel}
+          onChange={(e) => setNaturalLevel(e.target.value)}
+          className="search-bar-select"
+        >
+          <option value="">Nivel natural</option>
+          {naturalLevelsOptions.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+        <img src={ArrowDownIconSvg} className="search-bar-icon" />
+      </div>
+
+      <div className="search-bar-field">
+        <input
+          type="text"
+          placeholder="Año de Inicio"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          className="search-bar-input"
+        />
+        <img src={CalendarIconSvg} className="search-bar-icon" />
+      </div>
+
+      <button className="search-bar-button" onClick={handleSearch}>
+        Buscar
+      </button>
     </div>
   );
 };

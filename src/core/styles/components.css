@@ -1,7 +1,7 @@
 @layer components {
   /* NOTE: Para marcación de páginas */
   .page-main {
-    @apply ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen;
+    @apply bg-[#f5f5f5] w-full p-4 *:max-w-6xl flex flex-col gap-4 items-center h-min;
 
     & > header {
       @apply p-6 pb-0 w-full flex justify-between;
@@ -141,7 +141,7 @@
     }
   }
 
-  /* NOTE: pantalla de loading */
+  /* NOTE: iconos de los modulos */
   .moduleIcon {
     @apply block w-14 h-14 bg-contain float-right bg-no-repeat bg-center;
 
