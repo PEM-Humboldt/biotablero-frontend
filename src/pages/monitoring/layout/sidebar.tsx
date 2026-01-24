@@ -27,12 +27,12 @@ export function MonitoringSidebar({ className }: { className: string }) {
   return (
     <Sidebar collapsible="icon" className={className}>
       <SidebarContent>
-        <SidebarGroupButtons title="Application" items={generalItems} />
+        <SidebarGroupButtons title="Monitoreo" items={generalItems} />
         {isUser && (
           <SidebarGroupButtons title="Usuario registrado" items={userItems} />
         )}
         {isAdmin && (
-          <SidebarGroupButtons title="Adminisrtradores" items={adminItems} />
+          <SidebarGroupButtons title="Adminisrtrador" items={adminItems} />
         )}
       </SidebarContent>
     </Sidebar>

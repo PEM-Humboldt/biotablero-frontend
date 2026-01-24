@@ -30,6 +30,14 @@ const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
+const uiText = {
+  sidebarTitle: "Barra lateral",
+  toggleSidebar: "Alternar la barra lateral",
+  mobile: {
+    sidebarDescription: "Muestra la barra lateral en dispositivos móviles",
+  },
+};
+
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
   open: boolean;
@@ -219,8 +227,10 @@ const Sidebar = React.forwardRef<
             side={side}
           >
             <SheetHeader className="sr-only">
-              <SheetTitle>Sidebar</SheetTitle>
-              <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+              <SheetTitle>{uiText.sidebarTitle}</SheetTitle>
+              <SheetDescription>
+                {uiText.mobile.sidebarDescription}
+              </SheetDescription>
             </SheetHeader>
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
@@ -302,7 +312,7 @@ const SidebarTrigger = React.forwardRef<
           open ? "rotate-180" : "rotate-0",
         )}
       />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">{uiText.toggleSidebar}</span>
     </Button>
   );
 });
@@ -318,7 +328,7 @@ const SidebarRail = React.forwardRef<
     <button
       ref={ref}
       data-sidebar="rail"
-      aria-label="Toggle Sidebar"
+      aria-label={uiText.toggleSidebar}
       tabIndex={-1}
       onClick={toggleSidebar}
       title="Toggle Sidebar"
