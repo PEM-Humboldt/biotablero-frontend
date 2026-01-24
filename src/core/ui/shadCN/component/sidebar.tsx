@@ -25,7 +25,7 @@ import {
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = "16rem";
+const SIDEBAR_WIDTH = "17rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
@@ -153,7 +153,7 @@ const SidebarProvider = React.forwardRef<
               } as React.CSSProperties
             }
             className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-sidebar",
+              "group/sidebar-wrapper flex h-full w-full has-data-[variant=inset]:bg-sidebar",
               className,
             )}
             ref={ref}
@@ -231,7 +231,7 @@ const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="group peer text-sidebar-foreground md:block"
+        className="group peer text-sidebar-foreground md:block border-r border-r-sidebar-border h-full"
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
@@ -249,14 +249,14 @@ const Sidebar = React.forwardRef<
         />
         <div
           className={cn(
-            "relative inset-y-0 z-10 h-svh w-sidebar-width transition-[left,right,width] duration-200 ease-linear md:flex",
+            "relative inset-y-0 z-10 w-sidebar-width transition-[left,right,width] duration-200 ease-linear md:flex",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
             // Adjust the padding for floating and inset variants.
             variant === "floating" || variant === "inset"
               ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
-              : "group-data-[collapsible=icon]:w-sidebar-width-icon group-data-[side=left]:border-r-sidebar-border group-data-[side=left]:border-r group-data-[side=right]:border-l",
+              : "group-data-[collapsible=icon]:w-sidebar-width-icon group-data-[side=right]:border-l",
             className,
           )}
           {...props}
@@ -287,7 +287,7 @@ const SidebarTrigger = React.forwardRef<
       variant="outline"
       size="icon-sm"
       className={cn(
-        "border-grey-light text-foreground hover:text-accent-foreground",
+        "border-sidebar-border text-foreground hover:text-accent-foreground",
         className,
       )}
       onClick={(event) => {

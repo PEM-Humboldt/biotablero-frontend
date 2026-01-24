@@ -22,7 +22,7 @@ export function Header({ activeModule, headerNames, className }: HeaderProps) {
   return (
     <header
       className={cn(
-        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]!",
+        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]! isolate",
         className,
       )}
     >

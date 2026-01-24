@@ -21,7 +21,7 @@ export function Monitoring() {
   }, [layoutDispatch]);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <div className="relative">
         <MonitoringSidebar className="pt-14" />
         <SidebarTrigger className="absolute -right-4 top-4 z-10" />

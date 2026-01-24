@@ -53,29 +53,36 @@ function SidebarGroupButtons({
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.description}>
-              <SidebarMenuButton
-                asChild
-                size="lg"
-                variant="outline"
-                tooltip={item.description}
-              >
-                <NavLink
+          {items.map((item) => {
+            return (
+              <SidebarMenuItem key={item.description}>
+                <SidebarMenuButton
+                  asChild={!("action" in item)}
+                  size="lg"
+                  variant="outline"
+                  tooltip={item.description}
                   onClick={() => {
                     setOpen(false);
                     if ("action" in item) {
                       item.action();
                     }
                   }}
-                  to={"action" in item ? "#" : item.linkTo}
                 >
-                  <item.icon strokeWidth={1.5} />
-                  <span>{item.description}</span>
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                  {"action" in item ? (
+                    <>
+                      <item.icon strokeWidth={1.5} />
+                      <span>{item.description}</span>
+                    </>
+                  ) : (
+                    <NavLink to={item.linkTo}>
+                      <item.icon strokeWidth={1.5} />
+                      <span>{item.description}</span>
+                    </NavLink>
+                  )}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>

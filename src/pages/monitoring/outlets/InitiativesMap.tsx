@@ -6,7 +6,7 @@ import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 export function InitiativesMap() {
   return (
     <>
-      <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col h-full w-full">
         <SearchBar />
         <Browser title="" subtitle="">
           {null}

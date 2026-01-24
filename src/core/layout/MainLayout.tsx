@@ -46,7 +46,10 @@ export function MainLayout() {
         />
 
         <OnLoadingModal open={navigation.state === "loading"} />
-        <Outlet context={{ layoutState, layoutDispatch }} />
+
+        <div className="isolate">
+          <Outlet context={{ layoutState, layoutDispatch }} />
+        </div>
 
         <Footer logos={layoutState.logos} className="z-10" />
       </div>
