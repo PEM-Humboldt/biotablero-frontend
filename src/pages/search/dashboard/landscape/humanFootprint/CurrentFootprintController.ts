@@ -1,10 +1,14 @@
 import { formatNumber } from "@utils/format";
 import BackendAPI from "pages/search/api/backendAPI";
-import { ShapeLayer } from "pages/search/types/layers";
-import matchColor from "pages/search/utils/matchColor";
-import { ShapeAPIObject } from "pages/search/types/api";
+import { RasterLayer } from "pages/search/types/layers";
+import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
 
+import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
+import { MetricTypesMap } from "pages/search/types/metrics";
+import SearchAPI from "pages/search/api/searchAPI";
+import { currentHFCategories } from "pages/search/types/humanFootprint";
+import { MetricsUtils } from "pages/search/utils/metrics";
 export class CurrentFootprintController {
   areaType: string = "";
   areaId: string = "";
@@ -22,35 +26,55 @@ export class CurrentFootprintController {
    *
    * @returns { Promise<ShapeLayer> } object with the parameters of the layer
    */
-  getLayer = async (): Promise<ShapeLayer> => {
-    const layerId = "hfCurrent";
+  getCurrentHFLayers = async (period: string): Promise<Array<RasterLayer>> => {
+    if (this.areaId) {
+      const requests: Array<Promise<{ layer: string }>> = [];
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestCurrentHFLayer(
-      this.areaType,
-      this.areaId,
-    );
-
-    const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
-      layer.on({
-        mouseover: (event) => this.highlightShapeFeature(event),
-        mouseout: (event) => this.resetShapeHighlight(event),
+      currentHFCategories.forEach((categoryId, index) => {
+        const { request, source } = SearchAPI.requestMetricsLayer(
+          "currentHF",
+          period,
+          index + 1,
+          Number(this.areaId),
+        );
+        requests.push(request);
+        this.activeRequests.set(categoryId, source);
       });
-    };
 
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
+      const res = await Promise.all(requests);
 
-    const layerData = {
-      id: layerId,
-      paneLevel: 1,
-      json: res,
-      onEachFeature: onEachFeature,
-      layerStyle: this.setLayerStyle(),
-    };
+      currentHFCategories.forEach((categoryId) => {
+        this.activeRequests.delete(categoryId);
+      });
 
-    return layerData;
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
+      const layersRequests: Array<Promise<Blob>> = [];
+      res.forEach((response) => {
+        const request = SearchAPI.getLayerData(response);
+        layersRequests.push(request);
+      });
+
+      const layerResponses = await Promise.all(layersRequests);
+
+      const layersBase64Promises: Array<Promise<string>> = [];
+
+      layerResponses.forEach((response) => {
+        const layerBase64 = MetricsUtils.blobToBase64(response);
+        layersBase64Promises.push(layerBase64);
+      });
+
+      const layersBase64 = await Promise.all(layersBase64Promises);
+
+      return currentHFCategories.map((category, index) => ({
+        id: category,
+        data: layersBase64[index],
+        selected: false,
+        paneLevel: 2,
+      }));
+    }
+    throw Error("Polygon and area undefined");
   };
 
   /**
@@ -123,6 +147,43 @@ export class CurrentFootprintController {
     this.activeRequests.forEach((value, key) => {
       value.cancel();
       this.activeRequests.delete(key);
+    });
+  };
+
+  transformData = (
+    resData: MetricTypesMap["currentHF"],
+  ): LargeStackedBarData[] => {
+    if (!resData) return [];
+
+    const { id, ...categories } = resData;
+
+    const totalArea: number = Object.values(categories).reduce(
+      (total: number, value) => total + Number(value),
+      0,
+    );
+
+    /**
+     * TODO: No sé si hay una mejor forma de ordenar el objeto resultado,
+     * intenté sacar los valores directamente de las keys de MetricTypesMap["currentHF"]
+     * pero el mismo interprete de typescript me los pasaba ya desordenados
+     */
+    const order: (keyof Omit<MetricTypesMap["currentHF"], "id">)[] = [
+      "Natural",
+      "Baja",
+      "Media",
+      "Alta",
+      "Muy Alta",
+    ];
+
+    return order.map((key) => {
+      const area = Number(categories[key]) || 0;
+
+      return {
+        key,
+        area,
+        percentage: totalArea ? area / totalArea : 0,
+        label: key.charAt(0).toUpperCase() + key.slice(1),
+      };
     });
   };
 }

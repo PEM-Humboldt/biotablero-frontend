@@ -55,7 +55,7 @@ function Selector({ showDrawControls }: SelectorProps) {
         setAreaTypes(areaTypesReq);
         setAreasError("none");
       } catch (err) {
-        setAreasError(`request-failed: ${err.message}`);
+        setAreasError("request-failed");
       } finally {
         setIsLoadingAreaTypes(false);
       }
@@ -84,7 +84,7 @@ function Selector({ showDrawControls }: SelectorProps) {
     ComponentToRender = () => <LoadingMessage />;
   } else if (areasError !== "none") {
     ComponentToRender = () => (
-      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError.split(":")[0]]} />
+      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError]} />
     );
   } else {
     ComponentToRender = SearchAreas;

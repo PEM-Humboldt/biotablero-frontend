@@ -17,6 +17,7 @@ import { polygonFeature } from "pages/search/types/dashboard";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
+import { MetricTypesMap } from "pages/search/types/metrics";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -74,11 +75,11 @@ export class ForestLossPersistenceController {
       throw Error("Area undefined");
     }
 
-    return SearchAPI.requestMetricsValues(
-      "LossPersistence",
+    return SearchAPI.requestMetricsValues<"lossPersistence">(
+      "lossPersistence",
       Number(this.areaId),
     )
-      .then((data: ForestLPRawDataPolygon[]) => {
+      .then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((item) => {
           const itemMapped = MetricsUtils.mapLPResponse(item);
           return MetricsUtils.calcLPAreas(itemMapped);
@@ -220,11 +221,11 @@ export class ForestLossPersistenceController {
    */
   async getLayers(period: string): Promise<Array<RasterLayer>> {
     if (this.areaId) {
-      const requests: Array<Promise<any>> = [];
+      const requests: Array<Promise<{ layer: string }>> = [];
 
       Object.values(ForestLPCategories).forEach((value) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "LossPersistence",
+          "lossPersistence",
           period,
           value,
           Number(this.areaId),
@@ -239,8 +240,9 @@ export class ForestLossPersistenceController {
         this.activeRequests.delete(`${period}-${category}`);
       });
 
-      if (res.includes("request canceled")) throw Error("request canceled");
-
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
       const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {
         const request = SearchAPI.getLayerData(response);

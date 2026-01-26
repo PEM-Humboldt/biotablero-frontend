@@ -1,4 +1,9 @@
-import { ForestLPRawDataPolygon, LPAreas, LPResponse } from "../types/forest";
+import {
+  ForestLPRawDataPolygon,
+  LPAreas,
+  LPResponse,
+} from "pages/search/types/forest";
+import { MetricTypesMap } from "pages/search/types/metrics";
 
 /**
  * Metrics utils
@@ -13,9 +18,11 @@ export class MetricsUtils {
    * @param lpData Loss Persistence back end data
    * @returns Loss Persistence mapped data
    */
-  static mapLPResponse(lpData: ForestLPRawDataPolygon): LPResponse {
+  static mapLPResponse(
+    lpData: MetricTypesMap["lossPersistence"][number],
+  ): LPResponse {
     return {
-      period: lpData.periodo,
+      period: lpData.id,
       loss: lpData.perdida,
       persistence: lpData.persistencia,
       noForest: lpData.no_bosque,

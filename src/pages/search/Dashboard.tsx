@@ -8,7 +8,7 @@ import Paisaje from "@mui/icons-material/FilterHdr";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
 import Species from "pages/search/dashboard/Species";
-import Ecosystems from "pages/search/dashboard/Ecosystems";
+import { Ecosystems } from "pages/search/dashboard/Ecosystems";
 import { formatNumber } from "@utils/format";
 import TabContainer from "@ui/TabContainer";
 
@@ -17,14 +17,7 @@ type DashboardProps = {
 };
 
 export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
-  const { searchType, areaHa } = useSearchStateCTX();
-  const [selectedIndex, setSelectedIndex] = useState(1); //TODO: Devolver el indice a 0 cuando este listo Ecosistemas en el backend de consultas
-
-  useEffect(() => {
-    if (searchType === "drawPolygon") {
-      setSelectedIndex(1);
-    }
-  }, [searchType]);
+  const { areaHa } = useSearchStateCTX();
 
   //TODO: Habilitar las secciones comentadas cuando se conecte el nuevo backend de consultas
 
@@ -42,9 +35,9 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
         </div>
       </div>
       <TabContainer
-        initialSelectedIndex={selectedIndex}
+        initialSelectedIndex={0}
         titles={[
-          //{ label: "Ecosistemas", icon: <Ecosistemas /> },
+          { label: "Ecosistemas", icon: <Ecosistemas /> },
           { label: "Paisaje", icon: <Paisaje /> },
           // { label: "Especies", icon: <Especies />, showTab: false },
         ]}
