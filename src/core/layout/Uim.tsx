@@ -96,7 +96,8 @@ export function Uim() {
           >
             <CloseIcon />
           </button>
-          {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
+          {/* {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />} */}
+          {!user ? <Login /> : <UserCard logout={logoutUser} />}
         </div>
       </Modal>
       <ConfirmationModal

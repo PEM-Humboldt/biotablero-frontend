@@ -1,7 +1,11 @@
 import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "core/context/AuthContext";
 
-export function UserCard({ logout }: { logout: () => void }) {
+interface ConfirmationModalTypes {
+  logout: () => void;
+}
+
+export function UserCard({ logout }: ConfirmationModalTypes) {
   const { user, updateProfile } = useAuth();
 
   return (
@@ -9,7 +13,7 @@ export function UserCard({ logout }: { logout: () => void }) {
     <>
       <AccountCircle
         className="userBo"
-        style={{ fontSize: "20rem" }}
+        style={{ fontSize: "4rem" }}
       />
 
       <div className="user_info">

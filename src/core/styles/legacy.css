@@ -131,6 +131,13 @@ a,
   resize: both;
   color: #fff;
 }
+.userBo {
+  display: inline-block;
+  position: relative;
+  padding: 4px 10px 0;
+  resize: both;
+  color: #2a363b;
+}
 .userBox:hover {
   color: #2a363b;
 }
