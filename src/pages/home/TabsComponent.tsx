@@ -7,7 +7,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
-import { parseSimpleMarkdown } from "@utils/textParser";
 
 export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
   const currentCategory = activeTab ? (uiText.tabs[activeTab] ?? null) : null;
