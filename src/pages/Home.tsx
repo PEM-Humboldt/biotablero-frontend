@@ -4,7 +4,7 @@ import { useOutletContext } from "react-router";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { ModulesCarousel } from "pages/home/Carousel";
-import { TabsModules } from "pages/home/TabsComponent";
+import { ModulesTabs } from "pages/home/TabsComponent";
 
 import "pages/home/layout/newStyles.css";
 
@@ -26,7 +26,7 @@ export function Home() {
   return (
     <div>
       <ModulesCarousel activeTab={activeTab} setActiveTab={setActiveTab} />
-      <TabsModules activeTab={activeTab} />
+      <ModulesTabs activeTab={activeTab} />
     </div>
   );
 }

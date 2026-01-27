@@ -1,27 +1,22 @@
-import { useState } from "react";
-import { Tabs, Tab, Box, Typography, Container } from "@mui/material";
-import {
-  categories,
-  type Category,
-} from "pages/home/tabsComponent/modulesData";
 import { uiText } from "pages/home/layout/uiText";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@ui/shadCN/component/tabs";
 
 type TabsModulesProps = {
   activeTab: number | null;
 };
 
-export function TabsModules({ activeTab }: TabsModulesProps) {
-  const [subTab, setSubTab] = useState(0);
-
-  const handleSubTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    setSubTab(newValue);
-  };
-
-  const currentCategory = activeTab !== null ? categories[activeTab] : null;
+export function ModulesTabs({ activeTab }: TabsModulesProps) {
+  const currentCategory =
+    uiText.tabs.find((tab) => tab.id === activeTab) ?? null;
 
   return (
     <section className="bg-grey-light">
-      {activeTab === null ? (
+      {activeTab === null || !currentCategory ? (
         <>
           <h2 className="bg-accent m-0 py-8 px-4 uppercase text-5xl! text-accent-foreground font-normal! text-center">
             {uiText.main.title}
@@ -43,162 +38,36 @@ export function TabsModules({ activeTab }: TabsModulesProps) {
           </div>
         </>
       ) : (
-        <div id="Tabs">
-          <Container maxWidth="lg" sx={{ py: 0, px: 6 }}>
-            <Box
-              sx={{ display: "flex", flexDirection: "column", height: "auto" }}
-            >
-              <Box
-                id="Tab"
-                sx={{
-                  display: "flex",
-                  justifyContent: activeTab === 0 ? "center" : "flex-start",
-                  width: "100%",
-                }}
-              >
-                {activeTab === 0 ? (
-                  <Box sx={{ mt: 0 }}>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                      className={activeTab === 0 ? "titulo-centrado" : ""}
-                      sx={{ mb: 0, color: "white" }}
-                    />
-                    {"content" in categories[0] && categories[0].content}
-                  </Box>
-                ) : (
-                  <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
-                    <Tabs
-                      orientation="vertical"
-                      variant="scrollable"
-                      value={subTab}
-                      onChange={handleSubTabChange}
-                      sx={{
-                        marginTop: { xs: "77px", sm: "23px" },
-                        width: { xs: "100%", sm: 290 },
-                        alignSelf: "flex-start",
-                      }}
-                    >
-                      {currentCategory !== null &&
-                        "subcategories" in currentCategory &&
-                        currentCategory.subcategories.map(
-                          (sub: Category, index: number) => (
-                            <Tab
-                              key={index}
-                              label={sub.title}
-                              sx={{ border: "none !important" }}
-                            />
-                          ),
-                        )}
-                    </Tabs>
+        <>
+          <h2 className="bg-accent m-0 py-8 px-4 uppercase text-5xl! text-accent-foreground font-normal! text-center">
+            {currentCategory.title}
+          </h2>
 
-                    <Box className="Espaciado" sx={{ flex: 1 }}>
-                      <Typography
-                        component="h1"
-                        variant="h4"
-                        sx={{
-                          mb: 0,
-                          color: "white",
-                          textAlign: activeTab === 0 ? "center" : "left",
-                        }}
-                      >
-                        {currentCategory !== null && currentCategory.title}
-                      </Typography>
-                      <Typography
-                        component="div"
-                        dangerouslySetInnerHTML={{
-                          __html:
-                            currentCategory !== null &&
-                            "subcategories" in currentCategory
-                              ? currentCategory.subcategories[subTab].content
-                              : "",
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          </Container>
-        </div>
+          <Tabs
+            orientation="vertical"
+            defaultValue={currentCategory.sections[0].title}
+          >
+            <TabsList>
+              {currentCategory.sections.map((section) => (
+                <TabsTrigger
+                  key={`${section.title}_${activeTab}`}
+                  value={section.title}
+                >
+                  {section.title}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            {currentCategory.sections.map((section) => (
+              <TabsContent
+                key={`${section.title}_${activeTab}`}
+                value={section.title}
+              >
+                {section.content}
+              </TabsContent>
+            ))}
+          </Tabs>
+        </>
       )}
     </section>
   );
 }
-
-// <div id="Tabs">
-//   <Container maxWidth="lg" sx={{ py: 0, px: 6 }}>
-//     <Box sx={{ display: "flex", flexDirection: "column", height: "auto" }}>
-//       <Box
-//         id="Tab"
-//         sx={{
-//           display: "flex",
-//           justifyContent: activeTab === 0 ? "center" : "flex-start",
-//           width: "100%",
-//         }}
-//       >
-//         {activeTab === 0 ? (
-//           <Box sx={{ mt: 0 }}>
-//             <Typography
-//               component="h1"
-//               variant="h4"
-//               className={activeTab === 0 ? "titulo-centrado" : ""}
-//               sx={{ mb: 0, color: "white" }}
-//             />
-//             {"content" in categories[0] && categories[0].content}
-//           </Box>
-//         ) : (
-//           <Box sx={{ display: "flex", flexDirection: "column", mt: 2 }}>
-//             <Tabs
-//               orientation="vertical"
-//               variant="scrollable"
-//               value={subTab}
-//               onChange={handleSubTabChange}
-//               sx={{
-//                 marginTop: { xs: "77px", sm: "23px" },
-//                 width: { xs: "100%", sm: 290 },
-//                 alignSelf: "flex-start",
-//               }}
-//             >
-//               {currentCategory !== null &&
-//                 "subcategories" in currentCategory &&
-//                 currentCategory.subcategories.map(
-//                   (sub: Category, index: number) => (
-//                     <Tab
-//                       key={index}
-//                       label={sub.title}
-//                       sx={{ border: "none !important" }}
-//                     />
-//                   ),
-//                 )}
-//             </Tabs>
-//
-//             <Box className="Espaciado" sx={{ flex: 1 }}>
-//               <Typography
-//                 component="h1"
-//                 variant="h4"
-//                 sx={{
-//                   mb: 0,
-//                   color: "white",
-//                   textAlign: activeTab === 0 ? "center" : "left",
-//                 }}
-//               >
-//                 {currentCategory !== null && currentCategory.title}
-//               </Typography>
-//               <Typography
-//                 component="div"
-//                 dangerouslySetInnerHTML={{
-//                   __html:
-//                     currentCategory !== null &&
-//                     "subcategories" in currentCategory
-//                       ? currentCategory.subcategories[subTab].content
-//                       : "",
-//                 }}
-//               />
-//             </Box>
-//           </Box>
-//         )}
-//       </Box>
-//     </Box>
-//   </Container>
-// </div>
