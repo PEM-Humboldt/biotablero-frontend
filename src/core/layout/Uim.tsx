@@ -32,13 +32,12 @@ export function Uim() {
 
   const { user, isAuthenticated, logout } = useAuth();
 
-  useEffect(() => {
-    if (!userCard.current) {
-      return;
-    }
-    const imageURL = user?.profileImg ?? defaultProfileImageUrl;
-    userCard.current.style.setProperty("--profile-img", `url("${imageURL}")`);
-  }, [user]);
+  // useEffect(() => {
+  //   if (!userCard.current || !whichModal.state) return;
+
+  //   const imageURL = user?.profileImg ?? defaultProfileImageUrl;
+  //   userCard.current.style.setProperty("--profile-img", `url("${imageURL}")`);
+  // }, [user]);
 
   const showModal = (modal: string) => () => {
     setModals({ ...defaultModalsValues, [modal]: true });
@@ -87,7 +86,11 @@ export function Uim() {
         disableAutoFocus
         keepMounted
       >
-        <div ref={userCard} className={`uim_modal ${whichModal.modal}`}>
+        <div ref={userCard}
+          className={`uim_modal ${whichModal.modal}`}
+          style={{
+            '--profile-img': `url("${user?.profileImg ?? defaultProfileImageUrl}")`,
+          } as React.CSSProperties}>
           <button
             type="button"
             className="closebtn"
@@ -96,8 +99,7 @@ export function Uim() {
           >
             <CloseIcon />
           </button>
-          {/* {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />} */}
-          {!user ? <Login /> : <UserCard logout={logoutUser} />}
+          {!user ? <Login /> : <UserCard logout={showModal("logoutModal")} />}
         </div>
       </Modal>
       <ConfirmationModal

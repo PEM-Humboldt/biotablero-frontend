@@ -6,6 +6,7 @@ import { routes } from "Routes";
 import "core/styles/main.css";
 import "core/styles/legacy.css";
 import { AuthProvider } from "core/context/AuthContext";
+import { NavigationBridge } from "pages/utils/NavigationBridge";
 
 // Tema de Material-UI (puedes personalizarlo según tu diseño)
 const theme = createTheme({
@@ -38,13 +39,11 @@ export function App() {
             }}
           >
             <div className="spinner" />
-            <p>Iniciando autenticación...</p>
+            {/* <p>Iniciando autenticación...</p> */}
           </div>
         }
         onAuthSuccess={(user) => {
-          console.log("Usuario autenticado:", user);
           if (import.meta.env.VITE_ENVIRONMENT === "production") {
-            // Enviar evento a Yandex Metrika si se desea
           }
         }}
         onAuthError={(error) => {

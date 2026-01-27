@@ -1,5 +1,3 @@
-// src/Routes.tsx
-
 import { createBrowserRouter } from "react-router";
 
 import { MainLayout } from "core/layout/MainLayout";
@@ -91,15 +89,13 @@ export const routes = createBrowserRouter([
       {
         path: "Indicadores",
         Component: Indicators,
-        loader: () => requireAuth("/"),
       },
       {
         path: "/:user/Compensaciones",
         lazy: async () => {
           const { RenderCompensation } = await import("pages/CompensationAuth");
           return { Component: RenderCompensation };
-        },
-        loader: () => requireAuth("/"),
+        }
       },
       {
         path: "Portafolios",

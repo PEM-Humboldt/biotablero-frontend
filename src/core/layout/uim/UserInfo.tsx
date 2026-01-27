@@ -1,4 +1,3 @@
-import { AccountCircle } from "@mui/icons-material";
 import { useAuth } from "core/context/AuthContext";
 
 interface ConfirmationModalTypes {
@@ -6,28 +5,23 @@ interface ConfirmationModalTypes {
 }
 
 export function UserCard({ logout }: ConfirmationModalTypes) {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, changePassword } = useAuth();
 
   return (
 
     <>
-      <AccountCircle
-        className="userBo"
-        style={{ fontSize: "4rem" }}
-      />
-
       <div className="user_info">
-        Usuario:
+        <b>Usuario</b>
         <br />
-        <b>{user?.firstName} {user?.lastName}</b>
+        {user?.firstName} {user?.lastName}
         <br />
-        Email registrado:
+        <b>Email registrado</b>
         <br />
-        <b>{user?.email}</b>
+        {user?.email}
         <br />
         <button
           className="logoutbtn"
-          title="Salir"
+          title="Editar"
           type="button"
           onClick={updateProfile}
         >
@@ -42,6 +36,14 @@ export function UserCard({ logout }: ConfirmationModalTypes) {
         >
           Cerrar Sesión
         </button>
+        {/* <button
+          className="logoutbtn"
+          title="Cambiar contraseña"
+          type="button"
+          onClick={changePassword}
+        >
+          Cambiar contraseña
+        </button> */}
       </div>
 
     </>

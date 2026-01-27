@@ -56,7 +56,7 @@ const getUserRoles = (): string[] => {
   }
 
   // Roles del cliente específico
-  const clientId = import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "front-dev-humboldt";
+  const clientId = import.meta.env.VITE_KEYCLOAK_CLIENT_ID || "biotablero";
   if (token.resource_access?.[clientId]?.roles) {
     roles.push(...token.resource_access[clientId].roles);
   }

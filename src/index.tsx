@@ -28,8 +28,8 @@ root.render(
   // componente indicators
   //
   // <StrictMode>
-   <AuthProvider>
+  //  <AuthProvider>
      <App />,
-   </AuthProvider>
+  //  </AuthProvider>
   // </StrictMode>,
 );

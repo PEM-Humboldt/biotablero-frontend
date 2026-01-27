@@ -1300,7 +1300,6 @@ div[class*="eaRHYv"] {
   background-color: #2a363b;
   font-weight: 400;
   color: #e84a5f;
-  margin-bottom: 0px;
 }
 .HAgen h4 b {
   text-transform: none;
@@ -1337,10 +1336,6 @@ div[class*="eaRHYv"] {
   color: #2a363b;
   margin-left: 10px;
   text-transform: none;
-}
-.graphcontainer h4 button {
-  all: unset;
-  cursor: pointer;
 }
 .graphcontainer h5 {
   padding: 2px 4px;
@@ -2203,16 +2198,16 @@ tspan,
   position: fixed;
   left: 0;
   right: 0;
-  /* top: 29%; */
-  top: 15%;
+  top: 29%;
   margin: auto;
-  /* width: 300px; */
+  width: 300px;
   background-color: #ffffff;
   box-shadow:
     0 3px 3px rgba(0, 0, 0, 0.12),
     0 3px 3px rgba(0, 0, 0, 0.14);
   border-radius: 5px 0 0 5px;
-  padding: 30px 20px 30px;
+  padding: 190px 20px 30px;
+  /* padding: 30px 20px 30px; */
 }
 .uim_modal.loginModal {
   background-image: url("/src/core/assets/login.png");
@@ -2220,15 +2215,15 @@ tspan,
 }
 
 .uim_modal.userModal {
+  background-image: var(--profile-img);
   display: flex;
-  width: 24rem;
+  /* width: 24rem; */
   justify-content: end;
   flex-direction: column;
   align-items: center;
-  /* background-image: var(--profile-img);
   background-position: 50% 20%;
   background-size: 35%;
-  background-repeat: no-repeat; */
+  background-repeat: no-repeat;
 }
 
 .uim_modal:hover {
@@ -2257,7 +2252,7 @@ tspan,
   width: 100%;
   background-color: #e84a5f;
   padding: 9px 10px;
-  font-size: 18px;
+  font-size: 12px;
   font-weight: 600;
 }
 .uim_modal .closebtn {
@@ -2616,7 +2611,6 @@ h3.warningNote {
   padding: 15px 0 0 5px;
   color: #bbbbbb;
   cursor: pointer;
-  font-size: 28px;
 }
 .downSpecial2 {
   vertical-align: top;
@@ -2630,9 +2624,6 @@ h3.warningNote {
   margin-left: 35px;
   margin-top: -2px;
   position: absolute;
-}
-.iconWrapper {
-  font-size: 38px;
 }
 @keyframes loadingA {
   0% {

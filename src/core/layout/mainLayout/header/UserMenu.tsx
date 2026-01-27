@@ -74,9 +74,9 @@ export const UserMenu: React.FC = () => {
   // Determinar color del rol
   const getRoleColor = (role: UserRole) => {
     switch (role) {
-      case UserRole.ADMIN:
+      case UserRole.BT_ADMIN_GENERAL:
         return 'error';
-      case UserRole.VIEWER:
+      case UserRole.BT_ADMIN_MONIT_COM:
         return 'info';
       default:
         return 'default';
@@ -165,7 +165,7 @@ export const UserMenu: React.FC = () => {
         </MenuItem>
 
         {/* Mostrar opción de admin solo si tiene el rol - Caso de prueba 013 */}
-        {hasRole(UserRole.ADMIN) && (
+        {hasRole(UserRole.BT_ADMIN_GENERAL) && (
           <>
             <Divider />
             <MenuItem onClick={handleAdmin}>

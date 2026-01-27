@@ -1,5 +1,3 @@
-// src/context/AuthContext.tsx
-
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import keycloak, { keycloakInitOptions } from '../config/keycloak.config';
 import {
@@ -10,9 +8,11 @@ import {
   type AuthProviderProps,
   UserRole,
 } from '../types/auth.types';
+import { routes } from 'Routes';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// const navigate = useNavigate();
 export const AuthProvider: React.FC<AuthProviderProps> = ({
   children,
   fallback = <div>Cargando autenticación...</div>,
@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     const roles = new Set<string>();
     token.realm_access?.roles?.forEach(role => roles.add(role));
     const clientId =
-      import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID || 'front-dev-humboldt';
+      import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID || 'biotablero';
 
     token.resource_access?.[clientId]?.roles?.forEach(role =>
       roles.add(role)
@@ -116,12 +116,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
           }
           return;
         }
-
-        const authenticated = await keycloak.init(keycloakInitOptions);
-
         if (!isMounted) return;
 
+        const cameFromAccount = !!localStorage.getItem('postAccountRedirect');
+        const authenticated = await keycloak.init({
+          ...keycloakInitOptions,
+          onLoad: cameFromAccount ? 'login-required' : 'check-sso',
+        });
+
         await updateAuthState(authenticated);
+
+        if (authenticated) {
+          const redirect = localStorage.getItem('postAccountRedirect');
+
+          if (redirect) {
+            localStorage.removeItem('postAccountRedirect');
+            routes.navigate("/", { replace: true });
+          }
+        }
 
         keycloak.onTokenExpired = () => {
           keycloak.updateToken(30).catch(() => logout());
@@ -143,7 +155,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   }, [updateAuthState]);
 
   const login = useCallback(() => {
-    console.log(keycloak)
     if (!keycloak.didInitialize) {
       console.warn('Keycloak aún no está inicializado');
       return;
@@ -173,22 +184,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
    * Actualiza el perfil del usuario (caso de prueba 021)
    */
   const updateProfile = useCallback(() => {
-    // if (!keycloak.authenticated) {
-    //   console.warn('Usuario no autenticado. No se puede acceder a gestión de cuenta.');
-    //   return;
-    // }
-
     try {
+      localStorage.setItem(
+        'postAccountRedirect',
+        window.location.pathname + window.location.search
+      );
+
       console.log('Redirigiendo a Account Management de Keycloak...');
       keycloak.accountManagement();
     } catch (error) {
       console.error('Error al redirigir a gestión de cuenta:', error);
 
-      const accountUrl = `${import.meta.env.VITE_APP_KEYCLOAK_URL}/realms/${import.meta.env.VITE_APP_KEYCLOAK_REALM}/account`;
-      console.log('Intentando redirección manual a:', accountUrl);
-      window.location.href = accountUrl;
+      window.location.href = `${import.meta.env.VITE_APP_KEYCLOAK_URL}/realms/${import.meta.env.VITE_APP_KEYCLOAK_REALM}/account`;
     }
-  }, [])
+  }, []);
 
   /**
    * Verifica si el usuario tiene un rol específico (caso de prueba 013)
@@ -237,12 +246,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   }, []);
 
+  const changePassword = useCallback(() => {
+    keycloak.login({
+      action: 'UPDATE_PASSWORD',
+      redirectUri: window.location.origin
+    })
+  }, [])
+
   const contextValue: AuthContextType = {
     ...authState,
     login,
     logout,
     register,
     updateProfile,
+    changePassword,
     hasRole,
     hasAnyRole,
     refreshAccessToken,

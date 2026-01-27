@@ -85,11 +85,6 @@ class ApiService {
           }
         }
 
-        // Log en desarrollo
-        if (import.meta.env.DEV) {
-          console.log('📤 Request:', config.method?.toUpperCase(), config.url);
-        }
-
         return config;
       },
       (error) => {
@@ -102,9 +97,6 @@ class ApiService {
     this.client.interceptors.response.use(
       (response) => {
         // Log en desarrollo
-        if (import.meta.env.DEV) {
-          console.log('📥 Response:', response.status, response.config.url);
-        }
         return response;
       },
       async (error: AxiosError) => {
