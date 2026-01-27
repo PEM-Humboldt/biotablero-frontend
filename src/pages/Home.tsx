@@ -10,7 +10,7 @@ import "pages/home/layout/newStyles.css";
 
 export function Home() {
   const { layoutDispatch } = useOutletContext<UiManager>();
-  const [activeTab, setActiveTab] = useState<number | null>(0);
+  const [activeTab, setActiveTab] = useState<number | null>(null);
 
   useEffect(() => {
     layoutDispatch({
