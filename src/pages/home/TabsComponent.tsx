@@ -1,10 +1,11 @@
-import { uiText } from "pages/home/layout/uiText";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
+
+import { uiText } from "pages/home/layout/uiText";
 
 export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
   const currentCategory = activeTab ? (uiText.tabs[activeTab] ?? null) : null;

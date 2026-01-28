@@ -1,4 +1,6 @@
 import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { Link } from "react-router";
+import { Info } from "lucide-react";
 
 import {
   Carousel,
@@ -9,14 +11,12 @@ import {
 } from "@ui/shadCN/component/carousel";
 import { Button } from "@ui/shadCN/component/button";
 import { useUserCTX } from "@hooks/UserContext";
+import { cn } from "@ui/shadCN/lib/utils";
 
 import {
   type DisplayModule,
   displayModules,
 } from "core/layout/mainLayout/modules";
-import { Link } from "react-router";
-import { Info } from "lucide-react";
-import { cn } from "@ui/shadCN/lib/utils";
 
 type CarrouselProps = {
   activeTab: number | null;
@@ -31,7 +31,6 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
   }, [user?.username, user?.company?.name]);
 
   const handleClick = (id: number) => {
-    console.log(id);
     if (activeTab === id) {
       setActiveTab(null);
     } else {
