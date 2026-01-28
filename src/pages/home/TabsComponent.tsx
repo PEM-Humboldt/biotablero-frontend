@@ -4,11 +4,13 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
+import { parseSimpleMarkdown } from "@utils/textParser";
 
 import { uiText } from "pages/home/layout/uiText";
 
 export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
   const currentCategory = activeTab ? (uiText.tabs[activeTab] ?? null) : null;
+
   return (
     <section className="border-t-100 border-t-accent">
       {!currentCategory ? (
@@ -37,6 +39,7 @@ export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
         </>
       ) : (
         <Tabs
+          key={activeTab}
           defaultValue={currentCategory.sections[0].title}
           orientation="vertical"
           className="flex flex-row -mt-17 max-w-[1000px] mx-auto gap-8 pb-8"
@@ -48,7 +51,7 @@ export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
                 value={section.title}
                 className="flex gap-4 bg-background items-center justify-start py-4 px-8 m-0 text-xl group border-b border-b-grey-light data-[state=active]:bg-primary data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-blue-800 hover:text-primary-foreground hover:data-[state=inactive]:cursor-pointer"
               >
-                <span className="flex items-center justify-center shrink-0 w-8 h-8 outline-2 outline-background data-[state=inactive]:outline-foreground text-base">
+                <span className="flex items-center justify-center shrink-0 w-8 h-8 outline-2 outline-muted-foreground group-data-[state=active]:outline-background group-hover:outline-background text-base">
                   0{i + 1}
                 </span>
                 {section.title}
@@ -63,9 +66,9 @@ export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
               <TabsContent
                 key={`${section.title}_${activeTab}`}
                 value={section.title}
-                className="flex-3 px-4 py-12"
+                className="flex-3 px-4 py-12 [&_a]:text-primary [&_a]:hover:text-accent"
               >
-                {section.content}
+                {parseSimpleMarkdown(section.content)}
               </TabsContent>
             ))}
           </div>

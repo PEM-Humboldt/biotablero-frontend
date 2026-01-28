@@ -5,6 +5,7 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { uiText } from "pages/portfolio/layout/uiText";
 
 import { CirclePlus } from "lucide-react";
+import { parseSimpleMarkdown } from "@utils/textParser";
 
 export function Portfolio() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -23,7 +24,7 @@ export function Portfolio() {
     <div className="grid grid-cols-1 p-8 md:p-0 md:grid-cols-[2fr_3fr] min-h-full">
       <div className="md:bg-[url(/src/core/assets/bg2Port.png)] bg-no-repeat bg-top-left bg-contain md:p-16 xl:p-[15%] mx-auto flex flex-col justify-center">
         <h3 className="text-[4rem] border-b font-bold">{uiText.title}</h3>
-        <p>{uiText.main}</p>
+        {parseSimpleMarkdown(uiText.main)}
       </div>
       <div className="md:bg-[url(/src/core/assets/bg1Port.png)] bg-no-repeat bg-top-right bg-contain">
         <div className="flex h-full max-w-[900px] mx-auto flex-wrap gap-8 items-center content-center justify-center">
