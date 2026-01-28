@@ -21,8 +21,8 @@ export const keycloakInitOptions = {
   onLoad: 'check-sso' as const,
   pkceMethod: 'S256' as const,
   checkLoginIframe: false,
-  checkLoginIframeInterval: 30,
-  silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+  // checkLoginIframeInterval: 30,
+  // silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso`,
   enableLogging: import.meta.env.DEV,
 };
 

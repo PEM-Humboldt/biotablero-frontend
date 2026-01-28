@@ -1,21 +1,11 @@
 <!DOCTYPE html>
-<!-- public/silent-check-sso.html -->
-<!-- 
-  Página para renovación silenciosa de tokens de Keycloak
-  Keycloak la carga en un iframe oculto para verificar la sesión
-  sin interrumpir la experiencia del usuario
--->
 <html>
-
 <head>
-    <meta charset="UTF-8">
-    <title>SSO Check</title>
+    <title>Silent SSO Check</title>
 </head>
-
 <body>
     <script>
         parent.postMessage(location.href, location.origin);
     </script>
 </body>
-
 </html>
