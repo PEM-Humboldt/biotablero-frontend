@@ -1,4 +1,4 @@
-import { cn } from "@ui/shadCN/lib/utils"
+import { cn } from "@ui/shadCN/lib/utils";
 
 function Skeleton({
   className,
@@ -9,7 +9,7 @@ function Skeleton({
       className={cn("animate-pulse rounded-md bg-primary/10", className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Skeleton }
+export { Skeleton };
