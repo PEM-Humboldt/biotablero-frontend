@@ -25,10 +25,11 @@ type HomeUiText = {
     cards: { title: string; image: ModuleIcon; content: string }[];
   };
   tabs: {
-    title: string;
-    id: number; // NOTE: This id must correspond the module id
-    sections: { title: string; content: string }[];
-  }[];
+    [key: number]: {
+      title: string;
+      sections: { title: string; content: string }[];
+    };
+  };
 };
 
 export const uiText: HomeUiText = {
@@ -61,10 +62,9 @@ export const uiText: HomeUiText = {
       },
     ],
   },
-  tabs: [
-    {
+  tabs: {
+    1: {
       title: "Consultas Geográficas",
-      id: 1,
       sections: [
         {
           title: "¿Qué es?",
@@ -88,9 +88,8 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-    {
+    2: {
       title: "Monitoreo Comunitario",
-      id: 2,
       sections: [
         {
           title: "¿Qué es?",
@@ -114,9 +113,8 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-    {
+    3: {
       title: "Indicadores de Biodiversidad",
-      id: 3,
       sections: [
         {
           title: "¿Qué es?",
@@ -139,9 +137,8 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-    {
+    4: {
       title: "Portafolios",
-      id: 4,
       sections: [
         {
           title: "¿Qué es?",
@@ -165,9 +162,8 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-    {
+    5: {
       title: "Compensaciones Ambientales",
-      id: 5,
       sections: [
         {
           title: "¿Qué es?",
@@ -191,9 +187,8 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-    {
+    6: {
       title: "Alertas Tempranas",
-      id: 6,
       sections: [
         {
           title: "¿Qué es?",
@@ -217,5 +212,5 @@ export const uiText: HomeUiText = {
         },
       ],
     },
-  ],
+  },
 };

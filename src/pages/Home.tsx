@@ -6,8 +6,6 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { ModulesCarousel } from "pages/home/Carousel";
 import { ModulesTabs } from "pages/home/TabsComponent";
 
-import "pages/home/layout/newStyles.css";
-
 export function Home() {
   const { layoutDispatch } = useOutletContext<UiManager>();
   const [activeTab, setActiveTab] = useState<number | null>(null);
@@ -24,7 +22,7 @@ export function Home() {
   }, [layoutDispatch]);
 
   return (
-    <div>
+    <div className="bg-grey-light h-full">
       <ModulesCarousel activeTab={activeTab} setActiveTab={setActiveTab} />
       <ModulesTabs activeTab={activeTab} />
     </div>
