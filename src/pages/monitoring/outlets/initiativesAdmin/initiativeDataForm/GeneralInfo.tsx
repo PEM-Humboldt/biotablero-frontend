@@ -297,7 +297,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             htmlFor="influenceArea"
             validationErrors={inputErr.influenceArea ?? []}
           >
-            {uiText.initiative.module.general.field.influenceAreaQuestion}{" "}
+            {uiText.initiative.module.general.field.influenceArea}{" "}
             <i>{uiText.initiative.module.general.field.influenceAreaHelper}</i>
           </LabelAndErrors>
 
@@ -343,7 +343,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
             htmlFor="objective"
             validationErrors={inputErr.objective ?? []}
           >
-            {uiText.initiative.module.general.field.objectiveQuestion}{" "}
+            {uiText.initiative.module.general.field.objective}{" "}
             <i>{uiText.initiative.module.general.field.objectiveHelper}</i>
           </LabelAndErrors>
 

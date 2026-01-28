@@ -161,7 +161,7 @@ export function ContactInput<T extends InitiativeContact>({
         update={update}
         handleSave={handleSave}
         handleDiscard={handleDiscard}
-        reset={() => void reset()}
+        reset={reset}
         disabled={disabled}
       />
     </div>

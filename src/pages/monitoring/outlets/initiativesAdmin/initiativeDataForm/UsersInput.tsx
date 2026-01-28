@@ -47,10 +47,6 @@ export function UsersInput<T extends User>({
   }, []);
 
   useEffect(() => {
-    if (!update) {
-      return;
-    }
-
     setUser(update !== null ? update.userName : "");
   }, [update]);
 
@@ -114,7 +110,7 @@ export function UsersInput<T extends User>({
               uiText.initiative.module.users.field.username.placeholder,
           }}
           aria-invalid={inputErr.leaders !== undefined}
-          aria-describedby={inputErr.location ? "errors_leaders" : undefined}
+          aria-describedby={inputErr.leaders ? "errors_leaders" : undefined}
         />
       </div>
 
