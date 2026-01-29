@@ -12,7 +12,6 @@ import { routes } from 'Routes';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// const navigate = useNavigate();
 export const AuthProvider: React.FC<AuthProviderProps> = ({
   children,
   fallback = <div>Cargando autenticación...</div>,
@@ -110,7 +109,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     const initKeycloak = async () => {
       try {
         if (keycloak.didInitialize) {
-          console.log('Keycloak ya inicializado correctamente');
           if (isMounted) {
             await updateAuthState(!!keycloak.authenticated);
           }
@@ -190,7 +188,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         window.location.pathname + window.location.search
       );
 
-      console.log('Redirigiendo a Account Management de Keycloak...');
       keycloak.accountManagement();
     } catch (error) {
       console.error('Error al redirigir a gestión de cuenta:', error);
@@ -246,6 +243,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     }
   }, []);
 
+  const getToken = useCallback(async (): Promise<string | null> => {
+    if (!keycloak.authenticated) return null;
+    try {
+      await keycloak.updateToken(30);
+      return keycloak.token ?? null;
+    } catch (error) {
+      console.error("Error actualizando token", error)
+      return null;
+    }
+  }, []);
+
   const changePassword = useCallback(() => {
     keycloak.login({
       action: 'UPDATE_PASSWORD',
@@ -263,6 +271,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
     hasRole,
     hasAnyRole,
     refreshAccessToken,
+    getToken,
   };
 
   if (authState.isLoading) {

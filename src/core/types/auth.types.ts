@@ -71,6 +71,7 @@ export interface AuthContextType extends AuthState {
   hasRole: (role: UserRole | UserRole[]) => boolean;
   hasAnyRole: (roles: UserRole[]) => boolean;
   refreshAccessToken: () => Promise<boolean>;
+  getToken: () => Promise<string | null>;
 }
 
 /**
