@@ -312,6 +312,12 @@ class Search extends Component {
       scibaja_moderada: 'Bajo Moderado',
     };
     const feature = event.target;
+
+    if (this.currentTooltip) {
+      this.currentTooltip.remove();
+      this.currentTooltip = null;
+    }
+
     let changeStyle = true;
     const optionsTooltip = { sticky: true };
     switch (layerName) {
@@ -355,6 +361,12 @@ class Search extends Component {
         changeStyle = false;
         break;
     }
+
+    this.currentTooltip = L.tooltip(optionsTooltip)
+      .setLatLng(event.latlng)
+      .setContent(content)
+      .addTo(feature._map);
+
     if (changeStyle) {
       feature.setStyle({
         weight: 1,
