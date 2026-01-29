@@ -57,6 +57,21 @@ export type ODataInitiativeShortEntry = {
   locations: LocationCompleteInfo[];
 };
 
+export type UserRequestStatus = {
+  id: number;
+  status: string;
+};
+
+export type ODataInitiativeUserRequest = {
+  id: number;
+  userName: string;
+  reviewerUserName: string;
+  creationDate: string;
+  responseDate: string;
+  initiativeId: number;
+  status: UserRequestStatus[];
+};
+
 type ODataResponse<T> = {
   "@odata.count": number;
   value: T[];
@@ -64,3 +79,4 @@ type ODataResponse<T> = {
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
+export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;

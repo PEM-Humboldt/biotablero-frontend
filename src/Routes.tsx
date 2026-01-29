@@ -12,6 +12,7 @@ import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
+import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -75,6 +76,15 @@ export const routes = createBrowserRouter([
             ],
           },
           {
+            path: "gestionarIniciativas",
+            Component: InitiativesManagement,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["User"] },
+                redirectPath: "/Monitoreo",
+              }),
+          },
+          {
             path: "administrarIniciativas",
             Component: InitiativesAdmin,
             loader: () =>
@@ -90,7 +100,7 @@ export const routes = createBrowserRouter([
               checkNLoad({
                 requirements: { roles: ["Admin"] },
                 redirectPath: "/Monitoreo",
-                fetchCriticalData: () => getLogs(),
+                // fetchCriticalData: () => getLogs(), // NOTE: Pendiente para precarga
               }),
           },
         ],
