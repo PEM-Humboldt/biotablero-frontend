@@ -11,21 +11,18 @@ import axios, {
 } from "axios";
 import { isResponseRequestError, refreshAccessToken } from "@api/auth";
 import type { ApiRequestError } from "@appTypes/api";
-import type { ODataParams } from "@appTypes/odata";
+import { isODataParams, type ODataParams } from "@appTypes/odata";
 import type {
+  InitiativeUser,
   LocationBasicInfo,
   ODataInitiative,
   ODataLog,
+  ODataUserInfo,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
-import type {
-  Location,
-  UserLevel,
-  UserKC,
-} from "pages/monitoring/types/monitoring";
+import type { Location, UserLevel } from "pages/monitoring/types/monitoring";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
-import usersMock from "pages/monitoring/api/usersMock.json";
 import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { commonErrorMessage } from "@utils/ui";
 
@@ -369,28 +366,36 @@ export async function getUserLevels() {
 }
 
 /**
- * Retrieves a list of users, optionally filtered by a specific Initiative ID.
+ * Retrieves users from the Monitoring API.
  *
- * @param byInitiativeId - OPTIONAL. The ID of the initiative to retrieve all associated users. If omitted, all users are returned.
- *
- * @returns A `Promise` resolving to an array of User objects.
- * @throws An `Error` if the Monitoring API returns an error status or if the request fails.
+ * @param idOrOdata - OPTIONAL. Can be an Initiative ID (number/string) to get associated users, or an ODataParams object to filter the general user list. If no param is passed, it will return all the users
+ * @returns A `Promise` resolving to:
+ * - `InitiativeUser[]` if an Initiative ID is provided.
+ * - `ODataUserInfo[]` if an OData object is provided or if called without arguments.
  */
 export async function getUsers(
-  byInitiativeId?: number | string,
-): Promise<UserKC[]> {
-  if (byInitiativeId === undefined) {
-    // NOTE: Llamado temporal al mock con la lista de usuarios
-    return usersMock as UserKC[];
-  }
+  oDataParams?: ODataParams,
+): Promise<ODataUserInfo[]>;
+export async function getUsers(
+  byInitiativeId: number | string,
+): Promise<InitiativeUser[]>;
+export async function getUsers(
+  idOrOdata?: ODataParams | number | string,
+): Promise<InitiativeUser[] | ODataUserInfo[]> {
+  const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
+  const endpoint = isId
+    ? `InitiativeUser/GetByInitiative/${idOrOdata}`
+    : "User";
+  const oDataParams =
+    idOrOdata !== undefined && !isId && isODataParams(idOrOdata)
+      ? idOrOdata
+      : undefined;
 
   try {
-    const res = await monitoringAPI<UserKC[]>({
+    const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo[]>({
       type: "get",
-      endpoint:
-        byInitiativeId === undefined
-          ? `InitiativeUser/`
-          : `InitiativeUser/GetByInitiative/${byInitiativeId}`,
+      endpoint,
+      options: { oData: oDataParams },
     });
 
     if (isMonitoringAPIError(res)) {
