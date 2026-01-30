@@ -1,6 +1,11 @@
-import { ODataParams } from "@appTypes/odata";
+import type { ODataParams } from "@appTypes/odata";
 import { TablePager } from "@composites/TablePager";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  getInitiativeRequests,
+  getUserInitiativesInfo,
+} from "../api/monitoringAPI";
+import { ODataInitiativeUserRequest } from "../types/requestParams";
 
 const REQUESTS_PER_PAGE = 5;
 
@@ -13,11 +18,38 @@ export function InitiativesManagement() {
     orderby: "creationDate desc",
   });
 
+  useEffect(() => {
+    const loadUserInitiatives = async () => {
+      const initiatives = await getUserInitiativesInfo();
+
+      const initiativesRequests = initiatives.map(async (initiative) => {
+        const requestsOData = await getInitiativeRequests(initiative.id);
+        const hasRequests =
+          requestsOData &&
+          (requestsOData?.value || requestsOData.value.length > 0);
+
+        return hasRequests
+          ? {
+              ...initiative,
+              requests: requestsOData.value,
+            }
+          : initiative;
+      });
+
+      const initiativesWithRequests = await Promise.all(initiativesRequests);
+
+      console.log(initiativesWithRequests);
+    };
+
+    void loadUserInitiatives();
+  }, []);
+
   return (
     <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
       <div className="p-6 pb-0 w-full flex justify-between">
         <h3 className="h1 text-primary">Nuevos miembros de la iniciativa</h3>
       </div>
+
       <div>LAS SOLICITUDES</div>
 
       <TablePager

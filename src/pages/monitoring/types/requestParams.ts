@@ -89,7 +89,21 @@ export type InitiativeUser = {
   initiativeId: number;
   userName: string;
   level: UserLevel;
-  creationDate: "2026-01-15T22:55:29.578869";
+  creationDate: string;
+};
+
+export type UserInitiatives = {
+  id: number;
+  name: string;
+  shortName: string;
+  description: string;
+  baseline: string;
+  objective: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  users: InitiativeUser;
 };
 
 type ODataResponse<T> = {

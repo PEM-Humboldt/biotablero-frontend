@@ -18,6 +18,8 @@ import type {
   ODataInitiative,
   ODataLog,
   ODataUserInfo,
+  ODataUserRequest,
+  UserInitiatives,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
 import type { Location, UserLevel } from "pages/monitoring/types/monitoring";
@@ -452,4 +454,43 @@ export async function uploadImages(
   }
 
   return imageUploadErrors;
+}
+
+export async function getUserInitiativesInfo() {
+  try {
+    const res = await monitoringAPI<UserInitiatives[]>({
+      type: "get",
+      endpoint: "Auth/InitiativesData",
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
+      console.error(
+        commonErrorMessage[status] ?? message,
+        data ? `: ${data}` : ".",
+      );
+      return [];
+    }
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+export async function getInitiativeRequests(initiativeId: number) {
+  try {
+    const res = await monitoringAPI<ODataUserRequest>({
+      type: "get",
+      endpoint: `JoinRequest?initiativeId=${initiativeId}`,
+    });
+
+    if (isMonitoringAPIError(res)) {
+      console.error("pailas");
+      return;
+    }
+
+    return res;
+  } catch (err) {}
 }
