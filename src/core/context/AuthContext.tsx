@@ -134,7 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
         }
 
         keycloak.onTokenExpired = () => {
-          keycloak.updateToken(30).catch(() => logout());
+          keycloak.updateToken(import.meta.env.VITE_APP_UPDATE_TOKEN_TIME).catch(() => logout());
         };
 
         keycloak.onAuthSuccess = () => updateAuthState(true);
@@ -246,7 +246,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({
   const getToken = useCallback(async (): Promise<string | null> => {
     if (!keycloak.authenticated) return null;
     try {
-      await keycloak.updateToken(30);
+      await keycloak.updateToken(import.meta.env.VITE_APP_UPDATE_TOKEN_TIME);
       return keycloak.token ?? null;
     } catch (error) {
       console.error("Error actualizando token", error)

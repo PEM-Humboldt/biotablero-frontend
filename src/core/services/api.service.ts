@@ -61,7 +61,7 @@ class ApiService {
             // Verificar si hay usuario autenticado
             if (keycloak.authenticated) {
               // Renovar token si está por expirar (30 segundos de margen)
-              await keycloak.updateToken(30);
+              await keycloak.updateToken(import.meta.env.VITE_APP_UPDATE_TOKEN_TIME);
               
               // Agregar token al header
               const token = keycloak.token;

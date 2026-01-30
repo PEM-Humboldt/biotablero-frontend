@@ -130,7 +130,7 @@ export const checkNLoad = async <T = any, C = any>(
 
     // 2. Renovar token si está por expirar (30 segundos de margen)
     try {
-      await keycloak.updateToken(30);
+      await keycloak.updateToken(import.meta.env.VITE_APP_UPDATE_TOKEN_TIME);
     } catch (error) {
       console.error("Error al renovar token:", error);
       keycloak.logout();
@@ -209,7 +209,7 @@ export const requireAuth = async (redirectTo = "/") => {
   }
 
   try {
-    await keycloak.updateToken(30);
+    await keycloak.updateToken(import.meta.env.VITE_APP_UPDATE_TOKEN_TIME);
     const user = await buildUserFromKeycloak();
     return { user, isAuthenticated: true };
   } catch (error) {
