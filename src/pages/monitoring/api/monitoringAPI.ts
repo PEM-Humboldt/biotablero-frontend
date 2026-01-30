@@ -375,13 +375,13 @@ export async function getUserLevels() {
  */
 export async function getUsers(
   oDataParams?: ODataParams,
-): Promise<ODataUserInfo[]>;
+): Promise<ODataUserInfo>;
 export async function getUsers(
   byInitiativeId: number | string,
 ): Promise<InitiativeUser[]>;
 export async function getUsers(
   idOrOdata?: ODataParams | number | string,
-): Promise<InitiativeUser[] | ODataUserInfo[]> {
+): Promise<InitiativeUser[] | ODataUserInfo> {
   const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
   const endpoint = isId
     ? `InitiativeUser/GetByInitiative/${idOrOdata}`
@@ -392,7 +392,7 @@ export async function getUsers(
       : undefined;
 
   try {
-    const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo[]>({
+    const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
       type: "get",
       endpoint,
       options: { oData: oDataParams },
