@@ -23,18 +23,4 @@ export const uiText = {
       },
     },
   },
-
-  pager: {
-    buttons: {
-      prev: { text: "Anterior", icon: "<" },
-      next: { text: "siguiente", icon: ">" },
-      first: { text: "Primera", icon: "«" },
-      last: { text: "Última", icon: "»" },
-    },
-    texts: {
-      registryPageName: "Página",
-      registryPageOf: "de",
-      gotoAltText: "ir a",
-    },
-  },
 };
