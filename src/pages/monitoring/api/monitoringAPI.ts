@@ -456,6 +456,15 @@ export async function uploadImages(
   return imageUploadErrors;
 }
 
+/**
+ * Fetches the basic information of initiatives associated with the current user.
+ *
+ * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInitiatives}; returns an empty array if the request fails or no initiatives are found.
+ *
+ * @remarks
+ * - This function handles API errors internally by logging them to the console and returning an empty collection.
+ * - It specifically catches both structured API errors (via `isMonitoringAPIError`) and unexpected runtime exceptions.
+ */
 export async function getUserInitiativesInfo() {
   try {
     const res = await monitoringAPI<UserInitiatives[]>({
@@ -479,18 +488,36 @@ export async function getUserInitiativesInfo() {
   }
 }
 
-export async function getInitiativeRequests(initiativeId: number) {
+/**
+ * Retrieves a paginated and filtered list of join requests for a specific initiative using OData parameters.
+ *
+ * @param initiativeId The unique identifier of the initiative.
+ * @param oData An object of type {@link ODataParams} containing query transformations.
+ * @returns a `Promise<ODataUserRequest | null>`.
+ *
+ * @remarks
+ * - Failed requests are logged to the console and return `null` to be handled by the caller's state management.
+ * - A `try/catch` block is included to prevent network-level exceptions from bubbling up unhandled.
+ */
+export async function getInitiativeRequests(
+  initiativeId: number,
+  oData: ODataParams,
+) {
   try {
     const res = await monitoringAPI<ODataUserRequest>({
       type: "get",
-      endpoint: `JoinRequest?initiativeId=${initiativeId}`,
+      endpoint: "JoinRequest",
+      options: { data: { initiativeId }, oData },
     });
 
     if (isMonitoringAPIError(res)) {
-      console.error("pailas");
-      return;
+      console.error(res.message);
+      return null;
     }
 
     return res;
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 }

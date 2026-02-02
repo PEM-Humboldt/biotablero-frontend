@@ -61,7 +61,7 @@ export type ODataInitiativeShortEntry = {
 
 export type UserRequestStatus = {
   id: number;
-  status: string;
+  name: string;
 };
 
 export type ODataInitiativeUserRequest = {
@@ -71,7 +71,7 @@ export type ODataInitiativeUserRequest = {
   creationDate: string;
   responseDate: string;
   initiativeId: number;
-  status: UserRequestStatus[];
+  status: UserRequestStatus;
 };
 
 export interface ODataUser {
