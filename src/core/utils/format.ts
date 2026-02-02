@@ -4,7 +4,7 @@
  * @param {Number} decimals percentage value
  */
 
-export function formatNumber(value, decimals) {
+export function formatNumber(value: string | number, decimals: number) {
   return Number(value).toLocaleString("en-US", {
     maximumFractionDigits: decimals,
   });

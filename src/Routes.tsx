@@ -11,6 +11,7 @@ import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
+import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -72,6 +73,15 @@ export const routes = createBrowserRouter([
                   }),
               },
             ],
+          },
+          {
+            path: "administrarIniciativas",
+            Component: InitiativesAdmin,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["Admin"] },
+                redirectPath: "/Monitoreo",
+              }),
           },
           {
             path: "logs",

@@ -1,4 +1,5 @@
 import axios, { isAxiosError } from "axios";
+import type { ApiRequestError } from "@appTypes/api";
 
 const AUTH_SERVER = "/realms/bt-cm/protocol/openid-connect/token";
 const LOGIN_ENDPOINT = `${AUTH_SERVER}?password`;
@@ -7,11 +8,6 @@ const TOKEN_REFRESH_ENDPOINT = `${AUTH_SERVER}?refresh`;
 type AuthData = {
   access_token: string;
   refresh_token: string;
-};
-
-export type RequestError = {
-  status: number;
-  message: string;
 };
 
 type AuthParams =
@@ -47,7 +43,7 @@ export function isResponseAuthData(res: unknown): res is AuthData {
  * @param res - The value to validate.
  * @returns `true` if the object contains both `status` and `message`, otherwise `false`.
  */
-export function isResponseRequestError(res: unknown): res is RequestError {
+export function isResponseRequestError(res: unknown): res is ApiRequestError {
   return (
     res !== undefined &&
     res !== null &&
@@ -60,7 +56,7 @@ export function isResponseRequestError(res: unknown): res is RequestError {
 async function makeAuthRequest(
   endpoint: string,
   params: AuthParams,
-): Promise<AuthData | RequestError> {
+): Promise<AuthData | ApiRequestError> {
   const url = `${import.meta.env.VITE_AUTH_BACKEND_URL}${endpoint}`;
 
   const body = new URLSearchParams();
@@ -103,7 +99,7 @@ async function makeAuthRequest(
 export async function requestAccessToken(
   username: string,
   password: string,
-): Promise<AuthData | RequestError> {
+): Promise<AuthData | ApiRequestError> {
   return makeAuthRequest(LOGIN_ENDPOINT, {
     grant_type: "password",
     username,
@@ -119,7 +115,7 @@ export async function requestAccessToken(
  */
 export async function refreshAccessToken(
   refreshToken: string,
-): Promise<AuthData | RequestError> {
+): Promise<AuthData | ApiRequestError> {
   return makeAuthRequest(TOKEN_REFRESH_ENDPOINT, {
     grant_type: "refresh_token",
     refresh_token: refreshToken,

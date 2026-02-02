@@ -37,15 +37,18 @@ function ButtonGroup({
   );
 }
 
+
 interface ButtonGroupTextProps extends React.HTMLAttributes<HTMLDivElement> {
   asChild?: boolean;
 }
-
 function ButtonGroupText({
   className,
   asChild = false,
   ...props
-}: ButtonGroupTextProps) {
+
+}: React.ComponentProps<"div"> & {
+  asChild?: boolean;
+}) {
   const Comp = asChild ? Slot : "div";
 
   return (
@@ -69,7 +72,7 @@ function ButtonGroupSeparator({
       data-slot="button-group-separator"
       orientation={orientation}
       className={cn(
-        "bg-input relative !m-0 self-stretch data-[orientation=vertical]:h-auto",
+        "bg-input relative m-0! self-stretch data-[orientation=vertical]:h-auto",
         className,
       )}
       {...props}
