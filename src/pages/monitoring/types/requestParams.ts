@@ -103,7 +103,7 @@ export type UserInitiatives = {
   coordinate: [number, number];
   polygonArea: number;
   enabled: boolean;
-  users: InitiativeUser;
+  users: InitiativeUser[];
 };
 
 type ODataResponse<T> = {

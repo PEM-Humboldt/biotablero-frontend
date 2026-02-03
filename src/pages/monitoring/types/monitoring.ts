@@ -27,7 +27,6 @@ export type User = {
   level: UserLevel;
 };
 
-// NOTE: Pendiente de decidir si lo borro o no
-export type GetStringKeys<T> = {
+export type GetKeysWithStringValues<T> = {
   [K in keyof T]: T[K] extends string ? K : never;
 }[keyof T];
