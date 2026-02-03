@@ -1,9 +1,9 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakConfig = {
-    url: import.meta.env.VITE_APP_KEYCLOAK_URL || "https://keycloakdev.humboldt.org.co",
-    realm: import.meta.env.VITE_APP_KEYCLOAK_REALM || "humboldt-dev",
-    clientId: import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID || "biotablero"
+    url: `${import.meta.env.VITE_APP_KEYCLOAK_URL}` || "https://keycloak.humboldt.org.co",
+    realm: `${import.meta.env.VITE_APP_KEYCLOAK_REALM}` || "humboldt",
+    clientId: `${import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID}` || "biotablero"
 }
 
 let keycloakInstance: Keycloak | null = null;

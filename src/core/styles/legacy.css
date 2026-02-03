@@ -2206,7 +2206,7 @@ tspan,
     0 3px 3px rgba(0, 0, 0, 0.12),
     0 3px 3px rgba(0, 0, 0, 0.14);
   border-radius: 5px 0 0 5px;
-  padding: 190px 20px 30px;
+  padding: 190px 20px 30px 20px;
   /* padding: 30px 20px 30px; */
 }
 .uim_modal.loginModal {
@@ -2231,6 +2231,13 @@ tspan,
     0 10px 20px rgba(0, 0, 0, 0.19),
     0 6px 6px rgba(0, 0, 0, 0.23);
 }
+
+.uim_modal .user_info {
+  max-width: 100%;
+  width: fit-content;
+  overflow-wrap: break-word;
+}
+
 .login input {
   padding: 0 10px;
   box-sizing: border-box;
