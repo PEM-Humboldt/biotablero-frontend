@@ -18,8 +18,10 @@ import type {
   UserInitiatives,
 } from "pages/monitoring/types/requestParams";
 import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
+import { Ban, SquareCheckBig } from "lucide-react";
+import { cn } from "@ui/shadCN/lib/utils";
 
-const REQUESTS_PER_PAGE = 5;
+const REQUESTS_PER_PAGE = 1;
 
 enum Role {
   LEADER = 1,
@@ -75,12 +77,11 @@ export function InitiativesManagement() {
   }, [user?.username]);
 
   return (
-    <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
+    <div className="ml-[60px] bg-[#f5f5f5] p-4 flex flex-col gap-4 items-center min-h-screen">
       <div className="p-6 pb-0 w-full flex justify-between">
         <h3 className="h1 text-primary">Tablero de iniciativas</h3>
       </div>
 
-      <h4>Administración de solicitudes de ingreso</h4>
       <JoinRequests InitiativesAsLeader={userInitiatives[Role.LEADER]} />
     </div>
   );
@@ -165,6 +166,24 @@ export function JoinRequests({
     [userInitiatives, getJoinRequestsByInitiative],
   );
 
+  const handleAproveJoinRequest = (requestId: number) => {
+    console.log(requestId);
+  };
+
+  const handleRejectJoinRequest = (requestId: number) => {
+    console.log(requestId);
+  };
+
+  const initiativesDictionary = useMemo(() => {
+    return userInitiatives?.reduce<{ [key: number]: string }>(
+      (all, initiative) => {
+        all[initiative.id] = initiative.name;
+        return all;
+      },
+      {},
+    );
+  }, [userInitiatives]);
+
   const requests = useMemo(
     () => ({
       pendant: () =>
@@ -184,74 +203,151 @@ export function JoinRequests({
   }, [userInitiatives, requests]);
 
   return (
-    <>
-      <ButtonGroup>
-        <Button onClick={() => void requests.pendant()}>pendientes</Button>
-        <Button onClick={() => void requests.rejected()}>negadas</Button>
-        <Button onClick={() => void requests.approved()}>aprovadas</Button>
+    <div className="bg-background w-full max-w-[600px] rounded-lg p-2 md:p-4 flex flex-col">
+      <h4 className="self-start">Solicitudes de ingreso</h4>
+
+      <ButtonGroup className="self-end">
+        <Button
+          variant="outline"
+          className={cn(
+            activeFilter.current === Request.UNDER_REVIEW
+              ? "bg-primary text-primary-foreground"
+              : "",
+          )}
+          onClick={() => void requests.pendant()}
+        >
+          Pendientes
+        </Button>
+        <Button
+          variant="outline"
+          className={cn(
+            activeFilter.current === Request.APPROVED
+              ? "bg-primary text-primary-foreground"
+              : "",
+          )}
+          onClick={() => void requests.approved()}
+        >
+          Aprovadas
+        </Button>
+        <Button
+          variant="outline"
+          className={cn(
+            activeFilter.current === Request.REJECTED
+              ? "bg-primary text-primary-foreground"
+              : "",
+          )}
+          onClick={() => void requests.rejected()}
+        >
+          Rechazadas
+        </Button>
       </ButtonGroup>
 
       {errors.length > 0 && <ErrorsList errorItems={errors} />}
 
       {requestLists.map((initiative) => (
-        <table key={initiative.initiativeId}>
-          <caption>Solicitudes a {initiative.initiativeId}</caption>
-          <thead>
-            <tr>
-              {[...joinRequestTable.keys()].map((col) => (
-                <th key={col}>{col}</th>
-              ))}
-              <th>
-                {activeFilter.current !== null &&
-                [Request.UNDER_REVIEW].includes(activeFilter.current) ? (
-                  <span className="sr-only">accion a realizar</span>
-                ) : (
-                  "responsable"
-                )}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {initiative.requests.map((request) => (
-              <tr key={request.id}>
-                {[...joinRequestTable.values()].map((property, i) => {
-                  return (
-                    <td key={i}>
-                      {formatCellValue(
-                        property.value,
-                        request,
-                        property.callback,
-                      )}
-                    </td>
-                  );
-                })}
-
-                <td>
+        <div className="@container">
+          <table
+            key={initiative.initiativeId}
+            className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0"
+          >
+            <caption className="text-left">
+              <span className="sr-only">iniciativa </span>
+              <span className="font-normal text-base">
+                {initiativesDictionary?.[initiative.initiativeId] ??
+                  `número${initiative.initiativeId}`}
+              </span>
+            </caption>
+            <thead className="bg-muted/30">
+              <tr className="text-primary text-left">
+                {[...joinRequestTable.keys()].map((col, i) => (
+                  <th
+                    key={col}
+                    className={
+                      i > 0 ? "hidden @lg:table-cell! text-center" : ""
+                    }
+                  >
+                    {col}
+                  </th>
+                ))}
+                <th className="text-right w-[25%]">
                   {activeFilter.current !== null &&
                   [Request.UNDER_REVIEW].includes(activeFilter.current) ? (
-                    <ButtonGroup>
-                      <Button>aceptar</Button>
-                      <Button>rechazar</Button>
-                    </ButtonGroup>
+                    <span className="sr-only">accion a realizar</span>
                   ) : (
-                    request.reviewerUserName
+                    "Responsable"
                   )}
-                </td>
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ))}
+            </thead>
 
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={0}
-        onPageChange={setCurrentPage}
-        recordsPerPage={REQUESTS_PER_PAGE}
-        paginated={3}
-      />
-    </>
+            <tbody className="[&_tr]:hover:bg-muted">
+              {initiative.requests.map((request) => (
+                <tr key={request.id} className="h-10!">
+                  {[...joinRequestTable.values()].map((property, i) => {
+                    return (
+                      <td
+                        key={i}
+                        className={
+                          i > 0 ? "hidden @lg:table-cell! text-center" : ""
+                        }
+                      >
+                        {formatCellValue(
+                          property.value,
+                          request,
+                          property.callback,
+                        )}
+                      </td>
+                    );
+                  })}
+
+                  <td className="text-right">
+                    {activeFilter.current !== null &&
+                    [Request.UNDER_REVIEW].includes(activeFilter.current) ? (
+                      <ButtonGroup className="flex justify-end w-full">
+                        <Button
+                          size="icon"
+                          variant="ghost-clean"
+                          title="aceptar solicitud"
+                          onClick={() =>
+                            void handleAproveJoinRequest(request.id)
+                          }
+                        >
+                          <span className="sr-only">aceptar solicitud</span>
+                          <SquareCheckBig
+                            aria-hidden="true"
+                            className="size-5"
+                          />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost-clean"
+                          title="rechazar solicitud"
+                          onClick={() =>
+                            void handleRejectJoinRequest(request.id)
+                          }
+                        >
+                          <span className="sr-only">rechazar solicitud</span>
+                          <Ban aria-hidden="true" className="size-5" />
+                        </Button>
+                      </ButtonGroup>
+                    ) : (
+                      request.reviewerUserName
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={requestLists.length}
+            onPageChange={setCurrentPage}
+            recordsPerPage={REQUESTS_PER_PAGE}
+            paginated={3}
+          />
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -281,9 +377,9 @@ const joinRequestTable = new Map<
     callback?: (v: ODataInitiativeUserRequest) => string;
   }
 >([
-  ["Nombre completo", { value: "userName" }],
+  ["Nombre de usuario", { value: "userName" }],
   [
-    "fecha de creacion",
+    "fecha solicitud",
     {
       value: "creationDate",
       callback: (v: ODataInitiativeUserRequest) =>
