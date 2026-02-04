@@ -32,4 +32,4 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 ];
 
 // initiative admin
-export const JOIN_REQUESTS_PER_PAGE = 20;
+export const JOIN_REQUESTS_PER_PAGE = 2;

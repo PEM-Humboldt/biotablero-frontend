@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
+import { commonErrorMessage } from "@utils/ui";
 
 import type {
   ODataInitiativeUserRequest,
@@ -18,6 +19,7 @@ import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiat
 import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
 import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
@@ -36,7 +38,7 @@ export function JoinRequests({
     [userInitiatives],
   );
 
-  const { getRequestPage, resetPool, getTotalRequests } =
+  const { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest } =
     useInitiativeJoinRequest(initiativesIds);
 
   const loadData = useCallback(
@@ -105,12 +107,44 @@ export function JoinRequests({
     }
   }, [initiativesIds, currentStatus, handleFilterChange]);
 
+  const changeJoinRequestStatus = async (
+    requestId: number,
+    newStatus: "Approved" | "Rejected",
+  ) => {
+    setErrors([]);
+    setLoading(true);
+
+    try {
+      const [ok, err] = await resolveJoinRequest(requestId, newStatus);
+
+      if (!ok) {
+        const detail =
+          err && typeof err === "object"
+            ? `${commonErrorMessage[err.status] ?? ""} ${err.message ?? err.data ?? ""}`.trim()
+            : "";
+
+        setErrors([
+          `No fue posible realizar la acción${detail ? `: ${detail}` : "."}`,
+        ]);
+        return;
+      }
+
+      void handleFilterChange(null, "creationDate", false);
+      void handleFilterChange(Request.UNDER_REVIEW, "creationDate", false);
+    } catch (err) {
+      setErrors(["Error crítico al procesar la solicitud."]);
+      console.error("Critical error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAproveJoinRequest = (requestId: number) => {
-    console.log(requestId);
+    void changeJoinRequestStatus(requestId, "Approved");
   };
 
   const handleRejectJoinRequest = (requestId: number) => {
-    console.log(requestId);
+    void changeJoinRequestStatus(requestId, "Rejected");
   };
 
   const initiativesDictionary = useMemo(() => {
@@ -137,22 +171,35 @@ export function JoinRequests({
   }, [initiativesDictionary, currentStatus]);
 
   return (
-    <div className="bg-background w-full max-w-[600px] rounded-lg p-2 md:p-4 flex flex-col">
-      <h4 className="self-start">Solicitudes de ingreso</h4>
+    <div className="bg-background w-full max-w-[600px] space-y-4 rounded-xl p-2 md:p-4 flex flex-col">
+      <div className="flex flex-wrap items-center justify-between bg-muted/50 p-4 rounded-lg">
+        <h4 className="m-0! text-primary">Solicitudes de ingreso</h4>
+        <JoinRequestFilterButtons
+          currentStatus={currentStatus}
+          menuSettings={filterJoinRequestButtonsConfig}
+          filteringCallback={handleFilterChange}
+        />
+      </div>
 
-      {errors.length > 0 && <ErrorsList errorItems={errors} />}
-      {loading && <div>cargando</div>}
-
-      <JoinRequestFilterButtons
-        currentStatus={currentStatus}
-        menuSettings={filterJoinRequestButtonsConfig}
-        filteringCallback={handleFilterChange}
+      <ErrorsList
+        className="bg-accent/20 p-4 rounded-lg flex flex-col gap-2"
+        errorItems={errors}
       />
+
+      {loading && (
+        <div
+          className={cn(
+            "bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg",
+          )}
+        >
+          cargando información de solicitudes...
+        </div>
+      )}
 
       {tableStructure !== null && (
         <div className="@container">
           <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
-            <thead className="bg-muted/30">
+            <thead className="sr-only bg-muted/30">
               <tr className="text-primary text-left">
                 {[...tableStructure.keys()].map((col, i) => (
                   <th
@@ -175,12 +222,9 @@ export function JoinRequests({
               </tr>
             </thead>
 
-            <tbody className="[&_tr]:hover:bg-muted">
+            <tbody className="[&_tr]:hover:bg-muted [&_td]:py-2!">
               {requests.map((request) => (
-                <tr
-                  key={`${request.initiativeId}_${request.id}`}
-                  className="h-10!"
-                >
+                <tr key={`${request.initiativeId}_${request.id}`}>
                   {[...tableStructure.values()].map((property, i) => {
                     return (
                       <td
@@ -218,7 +262,8 @@ export function JoinRequests({
             recordsAvailable={totalRequest}
             onPageChange={(page: number) => void handlePageChange(page)}
             recordsPerPage={JOIN_REQUESTS_PER_PAGE}
-            paginated={3}
+            paginated={null}
+            className="pt-2"
           />
         </div>
       )}

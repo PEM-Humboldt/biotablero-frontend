@@ -4,7 +4,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
-import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
 
 type FilterJoinRequestsCallback = (
   status: Request,
@@ -29,7 +29,7 @@ export function JoinRequestFilterButtons({
   filteringCallback: FilterJoinRequestsCallback;
 }) {
   return (
-    <ButtonGroup className="self-end">
+    <ButtonGroup>
       {menuSettings.map(({ label, status, sortBy, newerFirst }) => (
         <Button
           key={status}

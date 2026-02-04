@@ -4,9 +4,12 @@ import type { ODataParams } from "@appTypes/odata";
 
 import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import { getInitiativeRequests } from "pages/monitoring/api/monitoringAPI";
+import {
+  getInitiativeRequests,
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
-import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 
 type JoinRequestsPool = {
   initialized: boolean;
@@ -152,5 +155,22 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
     };
   };
 
-  return { getRequestPage, resetPool, getTotalRequests };
+  const resolveJoinRequest = async (
+    requestId: number,
+    newStatus: "Approved" | "Rejected",
+  ) => {
+    const res = await monitoringAPI({
+      type: "post",
+      endpoint: `JoinRequest/${requestId}?requestStatus=${newStatus}`,
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { message, status, data } = res;
+      return [false, { message, status, data }];
+    }
+
+    return [true, null];
+  };
+
+  return { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest };
 }
