@@ -6,6 +6,7 @@ import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring"
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 import { getInitiativeRequests } from "pages/monitoring/api/monitoringAPI";
 import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 
 type JoinRequestsPool = {
   initialized: boolean;
@@ -16,8 +17,6 @@ type JoinRequestsPool = {
   initiativesPages: Record<string, ODataInitiativeUserRequest[]>;
 };
 
-const JOIN_REQUESTS_BUFFER_SIZE = 20;
-
 export function useInitiativeJoinRequest(initiativesIds: number[]) {
   const requestsPool = useRef<JoinRequestsPool>({
     initialized: false,
@@ -27,6 +26,27 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
     localBuffer: {},
     initiativesPages: {},
   });
+
+  const getTotalRequests = useCallback(
+    async (statusId: Request) => {
+      const req = initiativesIds.map((id) => {
+        const params: Partial<ODataParams> = {
+          top: 0,
+          filter: `status/id eq ${statusId}`,
+        };
+
+        return getInitiativeRequests(id, params);
+      });
+
+      const reqestAmounts = await Promise.all(req);
+
+      return reqestAmounts.reduce(
+        (total, current) => total + (current?.["@odata.count"] ?? 0),
+        0,
+      );
+    },
+    [initiativesIds],
+  );
 
   const getRequestPage = useCallback(
     async (
@@ -61,7 +81,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
             pool.offset[id] < pool.totalRegisters[id]
           ) {
             const params: Partial<ODataParams> = {
-              top: JOIN_REQUESTS_BUFFER_SIZE,
+              top: requestsPerPage,
               skip: pool.offset[id],
               orderby: `${sortBy} ${newerFirst ? "desc" : "asc"}`,
               filter: `status/id eq ${statusId}`,
@@ -109,7 +129,14 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
           break;
         }
       }
-      return pool.initiativesPages[statusId].slice(requestStart, requestEnd);
+
+      return {
+        requests: pool.initiativesPages[statusId].slice(
+          requestStart,
+          requestEnd,
+        ),
+        errors: [],
+      };
     },
     [initiativesIds],
   );
@@ -125,5 +152,5 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
     };
   };
 
-  return { getRequestPage, resetPool };
+  return { getRequestPage, resetPool, getTotalRequests };
 }

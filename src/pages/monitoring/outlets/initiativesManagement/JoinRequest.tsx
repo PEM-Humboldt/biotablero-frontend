@@ -6,6 +6,7 @@ import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { cn } from "@ui/shadCN/lib/utils";
+import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 
 import type {
   ODataInitiativeUserRequest,
@@ -15,8 +16,6 @@ import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring"
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
 
-const REQUESTS_PER_PAGE = 1;
-
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
 }: {
@@ -24,6 +23,7 @@ export function JoinRequests({
 }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [requests, setRequests] = useState<ODataInitiativeUserRequest[]>([]);
+  const [totalRequest, setTotalRequest] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentStatus, setCurrentStatus] = useState<Request | null>(null);
@@ -33,7 +33,7 @@ export function JoinRequests({
     [userInitiatives],
   );
 
-  const { getRequestPage, resetPool } =
+  const { getRequestPage, resetPool, getTotalRequests } =
     useInitiativeJoinRequest(initiativesIds);
 
   const loadData = useCallback(
@@ -45,21 +45,24 @@ export function JoinRequests({
     ) => {
       setLoading(true);
       try {
+        const requestsAmount = await getTotalRequests(status);
         const data = await getRequestPage(
           status,
           page,
-          REQUESTS_PER_PAGE,
+          JOIN_REQUESTS_PER_PAGE,
           sortBy,
           newerFirst,
         );
-        setRequests(data);
+        setRequests(data.requests);
+        setErrors(data.errors);
+        setTotalRequest(requestsAmount);
       } catch (err) {
         setErrors((prev) => [...prev, "Error cargando solicitudes"]);
       } finally {
         setLoading(false);
       }
     },
-    [getRequestPage],
+    [getRequestPage, getTotalRequests],
   );
 
   const handleFilterChange = useCallback(
@@ -134,7 +137,6 @@ export function JoinRequests({
     <div className="bg-background w-full max-w-[600px] rounded-lg p-2 md:p-4 flex flex-col">
       <h4 className="self-start">Solicitudes de ingreso</h4>
 
-      {loading && <div>cargando</div>}
       <ButtonGroup className="self-end">
         <Button
           variant="outline"
@@ -172,13 +174,11 @@ export function JoinRequests({
       </ButtonGroup>
 
       {errors.length > 0 && <ErrorsList errorItems={errors} />}
+      {loading && <div>cargando</div>}
 
       {requests.map((initiative) => (
-        <div className="@container">
-          <table
-            key={initiative.initiativeId}
-            className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0"
-          >
+        <div className="@container" key={initiative.initiativeId}>
+          <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
             <thead className="bg-muted/30">
               <tr className="text-primary text-left">
                 <th>Iniciativa</th>
@@ -270,9 +270,9 @@ export function JoinRequests({
           </table>
           <TablePager
             currentPage={currentPage}
-            recordsAvailable={10}
-            onPageChange={handlePageChange}
-            recordsPerPage={REQUESTS_PER_PAGE}
+            recordsAvailable={totalRequest}
+            onPageChange={(page: number) => void handlePageChange(page)}
+            recordsPerPage={JOIN_REQUESTS_PER_PAGE}
             paginated={3}
           />
         </div>
