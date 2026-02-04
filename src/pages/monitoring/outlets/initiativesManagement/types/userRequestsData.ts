@@ -1,3 +1,6 @@
+import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
+
 export enum Request {
   UNDER_REVIEW = 1,
   APPROVED = 2,
@@ -9,4 +12,17 @@ export type UserRequestData = {
   userName: string;
   creationDate: Date;
   responseDate: Date | null;
+};
+
+export type FilterJoinRequestsCallback = (
+  status: Request,
+  sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
+  newerFirst?: boolean,
+) => Promise<void>;
+
+export type FilterJoinRequestSettings = {
+  label: string;
+  status: Request;
+  sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>;
+  newerFirst: boolean;
 };

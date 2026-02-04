@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Ban, SquareCheckBig } from "lucide-react";
 
 import { TablePager } from "@composites/TablePager";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { cn } from "@ui/shadCN/lib/utils";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 
 import type {
@@ -14,19 +10,26 @@ import type {
 } from "pages/monitoring/types/requestParams";
 import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
-import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import {
+  type FilterJoinRequestsCallback,
+  Request,
+} from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestFilterButtons";
+import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
+import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
+import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
 
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
 }: {
   InitiativesAsLeader?: UserInitiatives[];
 }) {
+  const [currentStatus, setCurrentStatus] = useState<Request | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [requests, setRequests] = useState<ODataInitiativeUserRequest[]>([]);
   const [totalRequest, setTotalRequest] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [currentStatus, setCurrentStatus] = useState<Request | null>(null);
 
   const initiativesIds = useMemo(
     () => userInitiatives?.map((initiative) => initiative.id) ?? [],
@@ -65,7 +68,7 @@ export function JoinRequests({
     [getRequestPage, getTotalRequests],
   );
 
-  const handleFilterChange = useCallback(
+  const handleFilterChange: FilterJoinRequestsCallback = useCallback(
     async (
       status: Request,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
@@ -102,6 +105,14 @@ export function JoinRequests({
     }
   }, [initiativesIds, currentStatus, handleFilterChange]);
 
+  const handleAproveJoinRequest = (requestId: number) => {
+    console.log(requestId);
+  };
+
+  const handleRejectJoinRequest = (requestId: number) => {
+    console.log(requestId);
+  };
+
   const initiativesDictionary = useMemo(() => {
     return userInitiatives?.reduce<{ [key: number]: string }>(
       (all, initiative) => {
@@ -112,81 +123,42 @@ export function JoinRequests({
     );
   }, [userInitiatives]);
 
-  const requestsStatus = useMemo(
-    () => ({
-      pendant: () =>
-        handleFilterChange(Request.UNDER_REVIEW, "creationDate", false),
-      rejected: () =>
-        handleFilterChange(Request.REJECTED, "responseDate", true),
-      approved: () =>
-        handleFilterChange(Request.APPROVED, "responseDate", true),
-    }),
-
-    [handleFilterChange],
-  );
-
-  const handleAproveJoinRequest = (requestId: number) => {
-    console.log(requestId);
-  };
-
-  const handleRejectJoinRequest = (requestId: number) => {
-    console.log(requestId);
-  };
+  const tableStructure = useMemo(() => {
+    if (!initiativesDictionary) {
+      return new Map<
+        string,
+        {
+          value: keyof ODataInitiativeUserRequest;
+          callback?: (v: ODataInitiativeUserRequest) => string;
+        }
+      >();
+    }
+    return joinRequestTableParams(initiativesDictionary, currentStatus);
+  }, [initiativesDictionary, currentStatus]);
 
   return (
     <div className="bg-background w-full max-w-[600px] rounded-lg p-2 md:p-4 flex flex-col">
       <h4 className="self-start">Solicitudes de ingreso</h4>
 
-      <ButtonGroup className="self-end">
-        <Button
-          variant="outline"
-          className={cn(
-            currentStatus === Request.UNDER_REVIEW
-              ? "bg-primary text-primary-foreground"
-              : "",
-          )}
-          onClick={() => void requestsStatus.pendant()}
-        >
-          Pendientes
-        </Button>
-        <Button
-          variant="outline"
-          className={cn(
-            currentStatus === Request.APPROVED
-              ? "bg-primary text-primary-foreground"
-              : "",
-          )}
-          onClick={() => void requestsStatus.approved()}
-        >
-          Aprovadas
-        </Button>
-        <Button
-          variant="outline"
-          className={cn(
-            currentStatus === Request.REJECTED
-              ? "bg-primary text-primary-foreground"
-              : "",
-          )}
-          onClick={() => void requestsStatus.rejected()}
-        >
-          Rechazadas
-        </Button>
-      </ButtonGroup>
-
       {errors.length > 0 && <ErrorsList errorItems={errors} />}
       {loading && <div>cargando</div>}
 
-      {requests.map((initiative) => (
-        <div className="@container" key={initiative.initiativeId}>
+      <JoinRequestFilterButtons
+        currentStatus={currentStatus}
+        menuSettings={filterJoinRequestButtonsConfig}
+        filteringCallback={handleFilterChange}
+      />
+
+      {tableStructure !== null && (
+        <div className="@container">
           <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
             <thead className="bg-muted/30">
               <tr className="text-primary text-left">
-                <th>Iniciativa</th>
-                {[...joinRequestTable.keys()].map((col, i) => (
+                {[...tableStructure.keys()].map((col, i) => (
                   <th
                     key={col}
                     className={
-                      i > 0 ? "hidden @lg:table-cell! text-center" : ""
+                      i > 0 ? "hidden @lg:table-cell! text-center" : "w-[40%]"
                     }
                   >
                     {col}
@@ -205,61 +177,33 @@ export function JoinRequests({
 
             <tbody className="[&_tr]:hover:bg-muted">
               {requests.map((request) => (
-                <tr key={request.id} className="h-10!">
-                  <td>
-                    <span className="sr-only">iniciativa </span>
-                    <span className="font-normal text-base">
-                      {initiativesDictionary?.[initiative.initiativeId] ??
-                        `número${initiative.initiativeId}`}
-                    </span>
-                  </td>
-                  {[...joinRequestTable.values()].map((property, i) => {
+                <tr
+                  key={`${request.initiativeId}_${request.id}`}
+                  className="h-10!"
+                >
+                  {[...tableStructure.values()].map((property, i) => {
                     return (
                       <td
-                        key={i}
+                        key={`${property.value}_${i}`}
                         className={
                           i > 0 ? "hidden @lg:table-cell! text-center" : ""
                         }
                       >
-                        {formatCellValue(
-                          property.value,
-                          request,
-                          property.callback,
-                        )}
+                        {property.callback
+                          ? property.callback(request)
+                          : property.value}
                       </td>
                     );
                   })}
 
                   <td className="text-right">
                     {currentStatus !== null &&
-                    [Request.UNDER_REVIEW].includes(currentStatus) ? (
-                      <ButtonGroup className="flex justify-end w-full">
-                        <Button
-                          size="icon"
-                          variant="ghost-clean"
-                          title="aceptar solicitud"
-                          onClick={() =>
-                            void handleAproveJoinRequest(request.id)
-                          }
-                        >
-                          <span className="sr-only">aceptar solicitud</span>
-                          <SquareCheckBig
-                            aria-hidden="true"
-                            className="size-5"
-                          />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost-clean"
-                          title="rechazar solicitud"
-                          onClick={() =>
-                            void handleRejectJoinRequest(request.id)
-                          }
-                        >
-                          <span className="sr-only">rechazar solicitud</span>
-                          <Ban aria-hidden="true" className="size-5" />
-                        </Button>
-                      </ButtonGroup>
+                    [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
+                      <JoinRequestReviewButtons
+                        requestId={request.id}
+                        handleApprove={handleAproveJoinRequest}
+                        handleReject={handleRejectJoinRequest}
+                      />
                     ) : (
                       request.reviewerUserName
                     )}
@@ -268,6 +212,7 @@ export function JoinRequests({
               ))}
             </tbody>
           </table>
+
           <TablePager
             currentPage={currentPage}
             recordsAvailable={totalRequest}
@@ -276,44 +221,7 @@ export function JoinRequests({
             paginated={3}
           />
         </div>
-      ))}
+      )}
     </div>
   );
 }
-
-function formatCellValue(
-  row: keyof ODataInitiativeUserRequest,
-  value: ODataInitiativeUserRequest,
-  callback?: (v: ODataInitiativeUserRequest) => string,
-): string {
-  if (callback) {
-    return callback(value);
-  }
-
-  if (value[row] && typeof value[row] === "object") {
-    console.error(
-      "Provide a callback or make sure the value is a string o number",
-    );
-    return "---";
-  }
-
-  return String(value[row]);
-}
-
-const joinRequestTable = new Map<
-  string,
-  {
-    value: keyof ODataInitiativeUserRequest;
-    callback?: (v: ODataInitiativeUserRequest) => string;
-  }
->([
-  ["Nombre de usuario", { value: "userName" }],
-  [
-    "fecha solicitud",
-    {
-      value: "creationDate",
-      callback: (v: ODataInitiativeUserRequest) =>
-        new Date(v.creationDate).toLocaleDateString(),
-    },
-  ],
-]);
