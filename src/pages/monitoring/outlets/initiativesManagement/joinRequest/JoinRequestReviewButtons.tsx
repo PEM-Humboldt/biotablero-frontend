@@ -2,15 +2,16 @@ import { Ban, SquareCheckBig } from "lucide-react";
 
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 
 export function JoinRequestReviewButtons({
-  requestId,
+  request,
   handleApprove,
   handleReject,
 }: {
-  requestId: number;
-  handleApprove: (requestId: number) => Promise<void> | void;
-  handleReject: (requestId: number) => Promise<void> | void;
+  request: ODataInitiativeUserRequest;
+  handleApprove: (request: ODataInitiativeUserRequest) => Promise<void> | void;
+  handleReject: (request: ODataInitiativeUserRequest) => Promise<void> | void;
 }) {
   return (
     <ButtonGroup className="flex justify-end w-full">
@@ -18,7 +19,7 @@ export function JoinRequestReviewButtons({
         size="icon"
         variant="ghost-clean"
         title="aceptar solicitud"
-        onClick={() => void handleApprove(requestId)}
+        onClick={() => void handleApprove(request)}
       >
         <span className="sr-only">aceptar solicitud</span>
         <SquareCheckBig aria-hidden="true" className="size-5" />
@@ -27,7 +28,7 @@ export function JoinRequestReviewButtons({
         size="icon"
         variant="ghost-clean"
         title="rechazar solicitud"
-        onClick={() => void handleReject(requestId)}
+        onClick={() => void handleReject(request)}
       >
         <span className="sr-only">rechazar solicitud</span>
         <Ban aria-hidden="true" className="size-5" />

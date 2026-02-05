@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { UserRoundCheck, UserRoundX } from "lucide-react";
 
+import { cn } from "@ui/shadCN/lib/utils";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
@@ -19,7 +22,6 @@ import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiat
 import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
 import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
-import { cn } from "@ui/shadCN/lib/utils";
 
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
@@ -49,6 +51,8 @@ export function JoinRequests({
       newerFirst: boolean,
     ) => {
       setLoading(true);
+      setRequests([]);
+
       try {
         const requestsAmount = await getTotalRequests(status);
         const data = await getRequestPage(
@@ -58,11 +62,13 @@ export function JoinRequests({
           sortBy,
           newerFirst,
         );
+
         setRequests(data.requests);
         setErrors(data.errors);
         setTotalRequest(requestsAmount);
       } catch (err) {
-        setErrors((prev) => [...prev, "Error cargando solicitudes"]);
+        setErrors(["Error crítico al procesar la solicitud."]);
+        console.error("Critical error:", err);
       } finally {
         setLoading(false);
       }
@@ -144,12 +150,24 @@ export function JoinRequests({
     }
   };
 
-  const handleAproveJoinRequest = (requestId: number) => {
-    void changeJoinRequestStatus(requestId, "Approved");
+  const handleAproveJoinRequest = (request: ODataInitiativeUserRequest) => {
+    void changeJoinRequestStatus(request.id, "Approved");
+    toast("Solicitud aprobada", {
+      position: "bottom-right",
+      description: `Has aprobado la solicitud de ${request.userName} para ingresar a ${initiativesDictionary?.[request.initiativeId] ?? request.initiativeId}`,
+      icon: <UserRoundCheck className="size-8 text-primary" />,
+      className: "px-6! gap-6! border-2! border-primary!",
+    });
   };
 
-  const handleRejectJoinRequest = (requestId: number) => {
-    void changeJoinRequestStatus(requestId, "Rejected");
+  const handleRejectJoinRequest = (request: ODataInitiativeUserRequest) => {
+    void changeJoinRequestStatus(request.id, "Rejected");
+    toast("Solicitud rechazada", {
+      position: "bottom-right",
+      description: `Has rechazado la solicitud de ${request.userName} para ingresar a ${initiativesDictionary?.[request.initiativeId] ?? request.initiativeId}`,
+      icon: <UserRoundX className="size-8 text-accent" />,
+      className: "px-6! gap-6! border-2! border-accent!",
+    });
   };
 
   const initiativesDictionary = useMemo(() => {
@@ -257,7 +275,7 @@ export function JoinRequests({
                         {currentStatus !== null &&
                         [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
                           <JoinRequestReviewButtons
-                            requestId={request.id}
+                            request={request}
                             handleApprove={handleAproveJoinRequest}
                             handleReject={handleRejectJoinRequest}
                           />

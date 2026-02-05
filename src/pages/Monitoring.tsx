@@ -5,6 +5,7 @@ import { SideBar } from "pages/monitoring/layout/SideBar";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import { Toaster } from "sonner";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -25,6 +26,7 @@ export function Monitoring() {
       <SideBar />
 
       <Outlet />
+      <Toaster />
     </div>
   );
 }
