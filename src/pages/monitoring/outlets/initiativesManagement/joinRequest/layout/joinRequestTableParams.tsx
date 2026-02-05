@@ -3,17 +3,22 @@ import { CornerDownRight } from "lucide-react";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export function joinRequestTableParams(
   initiativeNames: { [key: number]: string },
   status: Request | null,
 ) {
   const isPending = status === Request.UNDER_REVIEW;
-  const dateLabel = isPending ? "Fecha de solicitud" : "Fecha de resolución";
-  const datePrefix = isPending ? "solicitado el" : "solicitud resuelta el";
+  const dateLabel = isPending
+    ? uiText.module.tableParams.dateLabel.pending
+    : uiText.module.tableParams.dateLabel.resolved;
+  const datePrefix = isPending
+    ? uiText.module.tableParams.datePrefix.pending
+    : uiText.module.tableParams.datePrefix.resolved;
   const cellTitleTxt = isPending
-    ? "solicita el ingreso a la iniciativa:"
-    : "solicitó el ingreso a la iniciativa:";
+    ? uiText.module.tableParams.cellTitle.pending
+    : uiText.module.tableParams.cellTitle.resolved;
 
   return !status
     ? null

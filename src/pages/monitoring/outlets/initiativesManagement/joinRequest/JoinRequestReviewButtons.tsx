@@ -3,6 +3,7 @@ import { Ban, SquareCheckBig } from "lucide-react";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export function JoinRequestReviewButtons({
   request,
@@ -18,19 +19,19 @@ export function JoinRequestReviewButtons({
       <Button
         size="icon"
         variant="ghost-clean"
-        title="aceptar solicitud"
+        title={uiText.module.actionsOnRequest.aprove}
         onClick={() => void handleApprove(request)}
       >
-        <span className="sr-only">aceptar solicitud</span>
+        <span className="sr-only">{uiText.module.actionsOnRequest.aprove}</span>
         <SquareCheckBig aria-hidden="true" className="size-5" />
       </Button>
       <Button
         size="icon"
         variant="ghost-clean"
-        title="rechazar solicitud"
+        title={uiText.module.actionsOnRequest.reject}
         onClick={() => void handleReject(request)}
       >
-        <span className="sr-only">rechazar solicitud</span>
+        <span className="sr-only">{uiText.module.actionsOnRequest.reject}</span>
         <Ban aria-hidden="true" className="size-5" />
       </Button>
     </ButtonGroup>

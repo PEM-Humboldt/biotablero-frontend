@@ -10,6 +10,7 @@ import {
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
 import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 type JoinRequestsPool = {
   initialized: boolean;
@@ -62,6 +63,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
       const pool = requestsPool.current;
       const requestStart = (page - 1) * requestsPerPage;
       const requestEnd = requestStart + requestsPerPage;
+      const errors: string[] = [];
 
       if (!pool.initialized) {
         pool.initialized = true;
@@ -91,6 +93,11 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
             };
 
             const res = await getInitiativeRequests(id, params);
+
+            if (isMonitoringAPIError(res)) {
+              console.error(res);
+              errors.push(uiText.error.fetchJoinRequest);
+            }
 
             if (res?.value) {
               pool.totalRegisters[id] = res["@odata.count"];

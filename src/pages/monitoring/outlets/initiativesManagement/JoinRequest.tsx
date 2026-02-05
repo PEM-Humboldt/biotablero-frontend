@@ -22,6 +22,7 @@ import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiat
 import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
 import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
@@ -67,8 +68,8 @@ export function JoinRequests({
         setErrors(data.errors);
         setTotalRequest(requestsAmount);
       } catch (err) {
-        setErrors(["Error crítico al procesar la solicitud."]);
-        console.error("Critical error:", err);
+        setErrors([uiText.error.critical.user]);
+        console.error(uiText.error.critical.console, err);
       } finally {
         setLoading(false);
       }
@@ -127,11 +128,11 @@ export function JoinRequests({
       if (!ok) {
         const detail =
           err && typeof err === "object"
-            ? `${commonErrorMessage[err.status] ?? ""} ${err.message ?? err.data ?? ""}`.trim()
+            ? `${commonErrorMessage[err.status] ?? ""} ${err.message ?? err.data ?? ""}`
             : "";
 
         setErrors([
-          `No fue posible realizar la acción${detail ? `: ${detail}` : "."}`,
+          `${uiText.error.changeJoinRequestStatus}${detail ? `: ${detail}` : "."}`,
         ]);
         return;
       }
@@ -143,8 +144,8 @@ export function JoinRequests({
         true,
       );
     } catch (err) {
-      setErrors(["Error crítico al procesar la solicitud."]);
-      console.error("Critical error:", err);
+      setErrors([uiText.error.critical.user]);
+      console.error(uiText.error.critical.console, err);
     } finally {
       setLoading(false);
     }
@@ -152,9 +153,13 @@ export function JoinRequests({
 
   const handleAproveJoinRequest = (request: ODataInitiativeUserRequest) => {
     void changeJoinRequestStatus(request.id, "Approved");
-    toast("Solicitud aprobada", {
+    toast(uiText.toast.aproved.title, {
       position: "bottom-right",
-      description: `Has aprobado la solicitud de ${request.userName} para ingresar a ${initiativesDictionary?.[request.initiativeId] ?? request.initiativeId}`,
+      description: uiText.toast.aproved.description(
+        request.userName,
+        initiativesDictionary?.[request.initiativeId] ??
+          String(request.initiativeId),
+      ),
       icon: <UserRoundCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
     });
@@ -162,9 +167,13 @@ export function JoinRequests({
 
   const handleRejectJoinRequest = (request: ODataInitiativeUserRequest) => {
     void changeJoinRequestStatus(request.id, "Rejected");
-    toast("Solicitud rechazada", {
+    toast(uiText.toast.rejected.title, {
       position: "bottom-right",
-      description: `Has rechazado la solicitud de ${request.userName} para ingresar a ${initiativesDictionary?.[request.initiativeId] ?? request.initiativeId}`,
+      description: uiText.toast.rejected.description(
+        request.userName,
+        initiativesDictionary?.[request.initiativeId] ??
+          String(request.initiativeId),
+      ),
       icon: <UserRoundX className="size-8 text-accent" />,
       className: "px-6! gap-6! border-2! border-accent!",
     });
@@ -196,7 +205,7 @@ export function JoinRequests({
   return (
     <div className="bg-background w-full max-w-[600px] space-y-4 rounded-xl p-2 md:p-4 flex flex-col">
       <div className="flex flex-wrap items-center justify-between bg-muted/50 p-4 rounded-lg">
-        <h4 className="m-0! text-primary">Solicitudes de ingreso</h4>
+        <h4 className="m-0! text-primary">{uiText.module.title}</h4>
         <JoinRequestFilterButtons
           currentStatus={currentStatus}
           menuSettings={filterJoinRequestButtonsConfig}
@@ -215,7 +224,7 @@ export function JoinRequests({
             "bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg",
           )}
         >
-          Cargando solicitudes...
+          {uiText.module.loading}
         </div>
       )}
 
@@ -223,7 +232,7 @@ export function JoinRequests({
         <div className="@container">
           {requests.length === 0 ? (
             <div className="bg-muted text-muted-foreground text-2xl text-center font-normal p-4 rounded-lg">
-              Sin solicitudes
+              {uiText.module.empty}
             </div>
           ) : (
             <>
@@ -245,9 +254,11 @@ export function JoinRequests({
                     <th className="text-right w-[20%]">
                       {currentStatus !== null &&
                       [Request.UNDER_REVIEW].includes(currentStatus) ? (
-                        <span className="sr-only">accion a realizar</span>
+                        <span className="sr-only">
+                          {uiText.module.actionsOnRequest.colTitle}
+                        </span>
                       ) : (
-                        "solicitud resuelta por"
+                        uiText.module.actionsResolved.colTitle
                       )}
                     </th>
                   </tr>
@@ -281,7 +292,9 @@ export function JoinRequests({
                           />
                         ) : (
                           <div
-                            title={`${request.reviewerUserName} resolvió esta solicitud`}
+                            title={uiText.module.actionsResolved.resolvedBy(
+                              request.reviewerUserName,
+                            )}
                           >
                             {request.reviewerUserName}
                           </div>

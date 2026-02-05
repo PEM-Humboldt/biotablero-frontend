@@ -1,20 +1,24 @@
-import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import {
+  type FilterJoinRequestSettings,
+  Request,
+} from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export const filterJoinRequestButtonsConfig: FilterJoinRequestSettings[] = [
   {
-    label: "Pendientes",
+    label: uiText.module.filteringLabels.underReview,
     status: Request.UNDER_REVIEW,
     sortBy: "creationDate",
     newerFirst: false,
   },
   {
-    label: "Aprobadas",
+    label: uiText.module.filteringLabels.aproved,
     status: Request.APPROVED,
     sortBy: "responseDate",
     newerFirst: false,
   },
   {
-    label: "Rechazadas",
+    label: uiText.module.filteringLabels.rejected,
     status: Request.REJECTED,
     sortBy: "responseDate",
     newerFirst: false,
