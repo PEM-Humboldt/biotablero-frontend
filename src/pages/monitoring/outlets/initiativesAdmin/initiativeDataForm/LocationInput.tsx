@@ -54,14 +54,16 @@ export function LocationInput<T extends LocationDataBasic>({
       return;
     }
 
-    setInputErr((oldErr) => ({ ...oldErr, location: [] }));
-
     const getMunicipalities = async () => {
       try {
         const municipalitiesList =
           await getMunicipalitiesByDepartment(currentDepartment);
         if (isMonitoringAPIError(municipalitiesList)) {
-          throw new Error(municipalitiesList.message);
+          setInputErr((oldErr) => ({
+            ...oldErr,
+            location: [municipalitiesList.message],
+          }));
+          return;
         }
 
         setMunicipalities(municipalitiesList);

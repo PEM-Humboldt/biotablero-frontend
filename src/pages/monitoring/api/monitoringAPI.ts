@@ -418,7 +418,7 @@ export async function getUsers(
 export async function uploadImages(
   images: ImageUploadInfo[],
 ): Promise<string[]> {
-  if (Object.keys(images).length === 0) {
+  if (images.length === 0) {
     return [];
   }
 
