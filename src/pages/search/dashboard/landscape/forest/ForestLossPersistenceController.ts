@@ -221,11 +221,11 @@ export class ForestLossPersistenceController {
    */
   async getLayers(period: string): Promise<Array<RasterLayer>> {
     if (this.areaId) {
-      const requests: Array<Promise<any>> = [];
+      const requests: Array<Promise<{ layer: string }>> = [];
 
       Object.values(ForestLPCategories).forEach((value) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "LossPersistence",
+          "lossPersistence",
           period,
           value,
           Number(this.areaId),
@@ -240,8 +240,9 @@ export class ForestLossPersistenceController {
         this.activeRequests.delete(`${period}-${category}`);
       });
 
-      if (res.includes("request canceled")) throw Error("request canceled");
-
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
       const layersRequests: Array<Promise<Blob>> = [];
       res.forEach((response) => {
         const request = SearchAPI.getLayerData(response);

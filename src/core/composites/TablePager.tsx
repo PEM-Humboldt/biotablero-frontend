@@ -1,32 +1,43 @@
+import { Button } from "@ui/shadCN/component/button";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { useMemo, type ReactNode } from "react";
+import { defaultUI } from "@composites/tablePager/layout/uiText";
 
 type ButtonData = {
   text: string;
   icon?: string | ReactNode;
 };
 
-type PagerButtons = {
+type ButtonDataConditional =
+  | {
+      enabled: true;
+      text: string;
+      icon?: string | ReactNode;
+    }
+  | { enabled: false };
+
+export type PagerButtons = {
   prev: ButtonData;
   next: ButtonData;
-  first?: ButtonData;
-  last?: ButtonData;
+  first: ButtonDataConditional;
+  last: ButtonDataConditional;
 };
 
-type PagerTexts = {
-  registryPageName: string;
-  registryPageOf: string;
-  gotoAltText?: string;
+export type PagerTexts = {
+  registryName: string;
+  registryAmountOf: string;
+  gotoAltText: string;
 };
 
 type PagerProps = {
   currentPage: number;
   recordsAvailable: number;
-  buttons: PagerButtons;
-  texts: PagerTexts;
   recordsPerPage: number;
   onPageChange: (page: number) => void;
   paginated: number | null;
-  className: string;
+  buttons?: Partial<PagerButtons>;
+  pagination?: Partial<PagerTexts>;
+  className?: string;
 };
 
 /**
@@ -60,7 +71,7 @@ export function TablePager({
   currentPage,
   recordsAvailable,
   buttons,
-  texts,
+  pagination,
   recordsPerPage,
   onPageChange,
   paginated,
@@ -89,56 +100,65 @@ export function TablePager({
     [currentPage, totalPages, paginated],
   );
 
-  return totalPages <= 1 ? null : (
-    <div className={className}>
-      {buttons.first && (
-        <PagerButton
-          icon={buttons.first.icon}
-          text={buttons.first.text}
-          onClick={() => handleGoToPage(1)}
-          disabled={currentPage === 1}
-        />
-      )}
+  const btnData = { ...defaultUI.buttons, ...buttons };
+  const txtData = { ...defaultUI.pagination, ...pagination };
 
-      <PagerButton
-        onClick={handlePrevious}
-        disabled={currentPage === 1}
-        icon={buttons.prev.icon}
-        text={buttons.prev.text}
-      />
+  return totalPages <= 1 ? null : (
+    <div className={`flex gap-2 justify-center ${className}`}>
+      <ButtonGroup className="">
+        {btnData.first.enabled && (
+          <PagerButton
+            icon={btnData.first.icon}
+            text={btnData.first.text}
+            onClick={() => handleGoToPage(1)}
+            disabled={currentPage === 1}
+          />
+        )}
+
+        <PagerButton
+          onClick={handlePrevious}
+          disabled={currentPage === 1}
+          icon={btnData.prev.icon}
+          text={btnData.prev.text}
+        />
+      </ButtonGroup>
 
       {pages ? (
-        pages.map((page) => (
-          <PagerButton
-            key={`page_${page}`}
-            onClick={() => handleGoToPage(page)}
-            disabled={currentPage === page}
-            text={texts.gotoAltText ?? ""}
-            icon={page}
-          />
-        ))
+        <ButtonGroup>
+          {pages.map((page) => (
+            <PagerButton
+              key={`page_${page}`}
+              onClick={() => handleGoToPage(page)}
+              disabled={currentPage === page}
+              text={txtData.gotoAltText ?? ""}
+              icon={page}
+            />
+          ))}
+        </ButtonGroup>
       ) : (
         <span>
-          {texts.registryPageName} {currentPage} {texts.registryPageOf}{" "}
+          {txtData.registryName} {currentPage} {txtData.registryAmountOf}{" "}
           {totalPages}
         </span>
       )}
 
-      <PagerButton
-        onClick={handleNext}
-        disabled={currentPage >= totalPages}
-        icon={buttons.next.icon}
-        text={buttons.next.text}
-      />
-
-      {buttons.last && (
+      <ButtonGroup>
         <PagerButton
-          onClick={() => handleGoToPage(totalPages)}
+          onClick={handleNext}
           disabled={currentPage >= totalPages}
-          icon={buttons.last.icon}
-          text={buttons.last.text}
+          icon={btnData.next.icon}
+          text={btnData.next.text}
         />
-      )}
+
+        {btnData.last.enabled && (
+          <PagerButton
+            onClick={() => handleGoToPage(totalPages)}
+            disabled={currentPage >= totalPages}
+            icon={btnData.last.icon}
+            text={btnData.last.text}
+          />
+        )}
+      </ButtonGroup>
     </div>
   );
 }
@@ -181,14 +201,22 @@ function PagerButton({
   icon,
   onClick,
   disabled,
+  className = "",
 }: {
   text: string;
   icon?: string | ReactNode;
   onClick: () => void;
   disabled: boolean;
+  className?: string;
 }) {
   return (
-    <button type="button" onClick={() => onClick()} disabled={disabled}>
+    <Button
+      variant="outline"
+      className={`border-grey px-2 aspect-square hover:border-secondary text-sm ${className}`}
+      size="sm"
+      onClick={() => onClick()}
+      disabled={disabled}
+    >
       {icon ? (
         <>
           <span className="sr-only">{text}</span>
@@ -197,6 +225,6 @@ function PagerButton({
       ) : (
         <span>{text}</span>
       )}
-    </button>
+    </Button>
   );
 }

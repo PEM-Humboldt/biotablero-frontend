@@ -15,8 +15,10 @@
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.6368 0.1924 17.3023);
   --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.8559 0.0284 225.7509);
-  --muted-foreground: oklch(0.3211 0 0);
+  /* --muted: oklch(0.8559 0.0284 225.7509); */
+  --muted: oklch(0.9376 0.005 228.82);
+  /* --muted-foreground: oklch(0.3211 0 0); */
+  --muted-foreground: oklch(0.6 0 89.88);
   --accent: oklch(0.6368 0.1924 17.3023);
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.6368 0.1924 17.3023);
@@ -193,6 +195,28 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+
+  /* Component animations */
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  /* Definir las Utilidades de Animación */
+  --animate-accordion-down: accordion-down 0.1s ease-in-out;
+  --animate-accordion-up: accordion-up 0.1s ease-in-out;
 }
 
 @import "./base.css";

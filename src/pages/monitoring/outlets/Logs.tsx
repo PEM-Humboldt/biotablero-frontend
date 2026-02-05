@@ -183,8 +183,6 @@ export function Logs() {
             currentPage={currentPage}
             recordsAvailable={recordsAvailable}
             onPageChange={setCurrentPage}
-            buttons={uiText.pager.buttons}
-            texts={uiText.pager.texts}
             recordsPerPage={LOG_RECORDS_PER_PAGE}
             paginated={3}
             className="table-pager"

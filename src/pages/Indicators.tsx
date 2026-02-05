@@ -44,7 +44,7 @@ export function Indicators() {
   }, []);
 
   const filterData = useCallback(
-    (filters: boolean) => {
+    (filters: string[]) => {
       updateFilters(filters);
     },
     [updateFilters],

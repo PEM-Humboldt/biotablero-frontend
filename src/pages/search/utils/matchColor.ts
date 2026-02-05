@@ -1,8 +1,23 @@
 import colorPalettes from "pages/search/utils/colorPalettes";
 
+type MatchColorType = keyof typeof match;
+interface MatchInfo {
+  palette: keyof typeof colorPalettes;
+  sort?: (string | number)[];
+}
+
+type ColorValue = string | number;
+type ColorResult = string | null;
+type ColorMapper = (value?: string | number) => ColorResult;
+interface CyclicCache {
+  counter: number;
+  [key: string]: string | number;
+}
+
 // Structure to define the relation among the type of information, the palette to use and
 // the order to assign the colors in the palette to the values (if any)
-const match = {
+// first values, then limits, then backgrounds
+export const match = {
   fc: {
     palette: "rainbowFc",
     sort: [10, 9.5, 9, 8.5, 8, 7.5, 7, 6.5, 6, 5.5, 5, 4.5, 4],
@@ -31,7 +46,6 @@ const match = {
   },
   hfTimeline: {
     palette: "hfTimeline",
-    // TODO: The id part could change once the API endpoint is implemented
     sort: [
       "aTotal",
       "aTotalSel",
@@ -50,7 +64,6 @@ const match = {
   },
   hfPersistence: {
     palette: "hfPersistence",
-    // TODO: This could change once the API endpoint is implemented
     sort: ["estable_natural", "dinamica", "estable_alta"],
   },
   paramo: {
@@ -65,18 +78,13 @@ const match = {
     palette: "wetland",
     sort: ["wetland"],
   },
-  paramoPAConn: {
-    palette: "sePAConn",
-  },
-  dryForestPAConn: {
-    palette: "sePAConn",
-  },
-  wetlandPAConn: {
-    palette: "sePAConn",
-  },
   forestLP: {
     palette: "forestLP",
     sort: ["persistencia", "perdida", "ganancia", "no_bosque"],
+  },
+  forestIntegrity: {
+    palette: "forestIntegrity",
+    sort: [],
   },
   SciHf: {
     palette: "SciHf",
@@ -103,7 +111,6 @@ const match = {
   },
   richnessNos: {
     palette: "richnessNos",
-    // first values, then limits, then backgrounds, then legend limits
     sort: [
       "inferred",
       "observed",
@@ -121,7 +128,6 @@ const match = {
   },
   richnessGaps: {
     palette: "richnessGaps",
-    // first values, then limits, then backgrounds
     sort: [
       "value",
       "min",
@@ -152,32 +158,26 @@ const match = {
   },
   functionalDFFeatureLA: {
     palette: "functionalDFFeatureLA",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   functionalDFFeatureLN: {
     palette: "functionalDFFeatureLN",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   functionalDFFeaturePH: {
     palette: "functionalDFFeaturePH",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   functionalDFFeatureSLA: {
     palette: "functionalDFFeatureSLA",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   functionalDFFeatureSSD: {
     palette: "functionalDFFeatureSSD",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   functionalDFFeatureSM: {
     palette: "functionalDFFeatureSM",
-    // first values, then limits, then backgrounds
     sort: ["value", "min", "max", "area"],
   },
   polygon: {
@@ -189,9 +189,13 @@ const match = {
   default: {
     palette: "default",
   },
-};
+} as const satisfies Record<string, MatchInfo>;
 
-const cache = {
+const cache: {
+  biomas: CyclicCache;
+  bioticReg: CyclicCache;
+  pa_counter: number;
+} = {
   biomas: { counter: 0 },
   bioticReg: { counter: 0 },
   pa_counter: 1,
@@ -210,39 +214,63 @@ const cache = {
  *
  * @returns {function(string | number): (string | null)} A function that takes a value and returns a color string or null.
  */
-const matchColor = (type, resetCache = false) => {
-  const info = match[type] || match.default;
+
+export const matchColor = (
+  type: MatchColorType,
+  resetCache = false,
+): ColorMapper => {
+  const info: MatchInfo = match[type] ?? match.default;
   const palette = colorPalettes[info.palette];
-  const sort = info.sort || [];
+  const sort = info.sort ?? [];
+
   switch (type) {
     case "fc":
-      return (value) => {
-        const numValue = parseFloat(value);
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
+        const numValue = Number(value);
+        if (Number.isNaN(numValue)) return null;
+
         let idx = sort.indexOf(numValue);
         if (idx === -1) idx = sort.indexOf(numValue + 0.25);
-        if (idx === -1) return null;
-        return palette[idx];
+
+        return idx === -1 ? null : palette[idx];
       };
+
     case "biomas":
     case "bioticReg":
-      return (value) => {
-        if (cache[type][value]) return cache[type][value];
-        const { counter } = cache[type];
-        cache[type][value] = palette[counter];
-        cache[type].counter = counter === palette.length - 1 ? 0 : counter + 1;
-        return palette[counter];
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
+        const key = String(value);
+        const bucket = cache[type];
+
+        if (bucket[key]) return bucket[key] as string;
+
+        const color = palette[bucket.counter];
+        bucket[key] = color;
+        bucket.counter =
+          bucket.counter === palette.length - 1 ? 0 : bucket.counter + 1;
+
+        return color;
       };
+
     case "pa":
-      if (resetCache) {
-        cache.pa_counter = 1;
-      }
-      return (value) => {
+      if (resetCache) cache.pa_counter = 1;
+
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
         if (idx !== -1) return palette[idx];
-        const { pa_counter: counter } = cache;
-        cache.pa_counter = counter === palette.length - 1 ? 1 : counter + 1;
-        return palette[counter];
+
+        const color = palette[cache.pa_counter];
+        cache.pa_counter =
+          cache.pa_counter === palette.length - 1 ? 1 : cache.pa_counter + 1;
+
+        return color;
       };
+
     case "hfPersistence":
     case "hfCurrent":
     case "coverage":
@@ -256,11 +284,13 @@ const matchColor = (type, resetCache = false) => {
     case "timelinePAConn":
     case "caTargets":
     case "se":
-      return (value) => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
-        if (idx === -1) return palette[palette.length - 1];
-        return palette[idx];
+        return idx === -1 ? palette[palette.length - 1] : palette[idx];
       };
+
     case "paramo":
     case "dryForest":
     case "wetland":
@@ -273,16 +303,16 @@ const matchColor = (type, resetCache = false) => {
     case "functionalDFFeatureSLA":
     case "functionalDFFeatureSSD":
     case "functionalDFFeatureSM":
-      return (value) => {
+      return (value?: ColorValue): ColorResult => {
+        if (value === undefined) return null;
+
         const idx = sort.indexOf(value);
-        if (idx === -1) return null;
-        return palette[idx];
+        return idx === -1 ? null : palette[idx];
       };
-    case "border":
+
     case "polygon":
+    case "border":
     default:
-      return () => palette[0];
+      return (): ColorResult => palette[0];
   }
 };
-
-export default matchColor;

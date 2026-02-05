@@ -7,7 +7,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import TextBoxes from "@ui/TextBoxes";
 import { IconTooltip } from "@ui/Tooltips";
 
-import matchColor from "pages/search/utils/matchColor";
+import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 
 import {
