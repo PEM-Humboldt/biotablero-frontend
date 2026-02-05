@@ -75,8 +75,9 @@ export function JoinRequests({
       status: Request,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
       newerFirst: boolean = true,
+      force: boolean = false,
     ) => {
-      if (currentStatus === status) {
+      if (!force && currentStatus === status) {
         return;
       }
 
@@ -129,8 +130,12 @@ export function JoinRequests({
         return;
       }
 
-      void handleFilterChange(null, "creationDate", false);
-      void handleFilterChange(Request.UNDER_REVIEW, "creationDate", false);
+      void handleFilterChange(
+        Request.UNDER_REVIEW,
+        "creationDate",
+        false,
+        true,
+      );
     } catch (err) {
       setErrors(["Error crítico al procesar la solicitud."]);
       console.error("Critical error:", err);
@@ -192,79 +197,93 @@ export function JoinRequests({
             "bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg",
           )}
         >
-          cargando información de solicitudes...
+          Cargando solicitudes...
         </div>
       )}
 
       {tableStructure !== null && (
         <div className="@container">
-          <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
-            <thead className="sr-only bg-muted/30">
-              <tr className="text-primary text-left">
-                {[...tableStructure.keys()].map((col, i) => (
-                  <th
-                    key={col}
-                    className={
-                      i > 0 ? "hidden @lg:table-cell! text-center" : "w-[40%]"
-                    }
-                  >
-                    {col}
-                  </th>
-                ))}
-                <th className="text-right w-[25%]">
-                  {currentStatus !== null &&
-                  [Request.UNDER_REVIEW].includes(currentStatus) ? (
-                    <span className="sr-only">accion a realizar</span>
-                  ) : (
-                    "Responsable"
-                  )}
-                </th>
-              </tr>
-            </thead>
-
-            <tbody className="[&_tr]:hover:bg-muted [&_td]:py-2!">
-              {requests.map((request) => (
-                <tr key={`${request.initiativeId}_${request.id}`}>
-                  {[...tableStructure.values()].map((property, i) => {
-                    return (
-                      <td
-                        key={`${property.value}_${i}`}
+          {requests.length === 0 ? (
+            <div className="bg-muted text-muted-foreground text-2xl text-center font-normal p-4 rounded-lg">
+              Sin solicitudes
+            </div>
+          ) : (
+            <>
+              <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
+                <thead className="sr-only bg-muted/30">
+                  <tr className="text-primary text-left">
+                    {[...tableStructure.keys()].map((col, i) => (
+                      <th
+                        key={col}
                         className={
-                          i > 0 ? "hidden @lg:table-cell! text-center" : ""
+                          i > 0
+                            ? "hidden @lg:table-cell! text-center"
+                            : "w-[40%]"
                         }
                       >
-                        {property.callback
-                          ? property.callback(request)
-                          : property.value}
+                        {col}
+                      </th>
+                    ))}
+                    <th className="text-right w-[20%]">
+                      {currentStatus !== null &&
+                      [Request.UNDER_REVIEW].includes(currentStatus) ? (
+                        <span className="sr-only">accion a realizar</span>
+                      ) : (
+                        "solicitud resuelta por"
+                      )}
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="[&_tr]:hover:bg-muted [&_td]:py-2!">
+                  {requests.map((request) => (
+                    <tr key={`${request.initiativeId}_${request.id}`}>
+                      {[...tableStructure.values()].map((property, i) => {
+                        return (
+                          <td
+                            key={`${property.value}_${i}`}
+                            className={
+                              i > 0 ? "hidden @lg:table-cell! text-center" : ""
+                            }
+                          >
+                            {property.callback
+                              ? property.callback(request)
+                              : property.value}
+                          </td>
+                        );
+                      })}
+
+                      <td className="text-right">
+                        {currentStatus !== null &&
+                        [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
+                          <JoinRequestReviewButtons
+                            requestId={request.id}
+                            handleApprove={handleAproveJoinRequest}
+                            handleReject={handleRejectJoinRequest}
+                          />
+                        ) : (
+                          <div
+                            title={`${request.reviewerUserName} resolvió esta solicitud`}
+                          >
+                            {request.reviewerUserName}
+                          </div>
+                        )}
                       </td>
-                    );
-                  })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-                  <td className="text-right">
-                    {currentStatus !== null &&
-                    [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
-                      <JoinRequestReviewButtons
-                        requestId={request.id}
-                        handleApprove={handleAproveJoinRequest}
-                        handleReject={handleRejectJoinRequest}
-                      />
-                    ) : (
-                      request.reviewerUserName
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-
-          <TablePager
-            currentPage={currentPage}
-            recordsAvailable={totalRequest}
-            onPageChange={(page: number) => void handlePageChange(page)}
-            recordsPerPage={JOIN_REQUESTS_PER_PAGE}
-            paginated={null}
-            className="pt-2"
-          />
+              <TablePager
+                currentPage={currentPage}
+                recordsAvailable={totalRequest}
+                onPageChange={(page: number) => void handlePageChange(page)}
+                recordsPerPage={JOIN_REQUESTS_PER_PAGE}
+                paginated={null}
+                className="pt-2"
+              />
+            </>
+          )}
         </div>
       )}
     </div>

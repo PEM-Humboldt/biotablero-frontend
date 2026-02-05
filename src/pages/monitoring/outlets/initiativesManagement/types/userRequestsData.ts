@@ -18,6 +18,7 @@ export type FilterJoinRequestsCallback = (
   status: Request,
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
   newerFirst?: boolean,
+  force?: boolean,
 ) => Promise<void>;
 
 export type FilterJoinRequestSettings = {
