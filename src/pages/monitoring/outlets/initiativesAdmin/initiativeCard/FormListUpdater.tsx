@@ -67,6 +67,8 @@ export function FormListUpdater<T, R extends object>({
   const editThis = currentEdit === initiativeSection;
 
   useEffect(() => {
+    setErrors([]);
+
     const sectionInfo = initiative
       ? (initiative[initiativeSection] as unknown as T[])
       : null;
@@ -82,15 +84,20 @@ export function FormListUpdater<T, R extends object>({
 
     const setInfo = async () => {
       const res = await Promise.all(sectionInfo.map(renderRowsCallback));
+      const err: string[] = [];
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+      for (const response of res) {
+        if (isMonitoringAPIError(response)) {
+          const { status, message, data } = response;
+          err.push(
+            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+          );
+          console.error(response);
+        }
+      }
 
+      if (err.length > 0) {
+        setErrors((oldErr) => [...oldErr, ...err]);
         return;
       }
 
@@ -126,6 +133,8 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const removeItem = async (itemId: number) => {
+    setErrors([]);
+
     try {
       setIsLoading(true);
       const res = await monitoringAPI({
@@ -155,6 +164,8 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const handleSave: (itemInfo: T) => Promise<void> = async (itemInfo) => {
+    setErrors([]);
+
     try {
       setIsLoading(true);
       const itemId = getItemId(updateItem);
@@ -183,7 +194,7 @@ export function FormListUpdater<T, R extends object>({
       }
 
       const itemRender = renderRowsCallback
-        ? (renderRowsCallback(res) as unknown as T)
+        ? ((await renderRowsCallback(res)) as unknown as T)
         : res;
 
       setUpdateItem(null);
@@ -198,6 +209,8 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const handleRemove = async (itemIndex: number) => {
+    setErrors([]);
+
     if (isLoading) {
       return;
     }
@@ -217,6 +230,8 @@ export function FormListUpdater<T, R extends object>({
   };
 
   const handleDiscard: () => Promise<void> = async () => {
+    setErrors([]);
+
     if (isLoading) {
       return;
     }
