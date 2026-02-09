@@ -1,22 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { MinusIcon, PlusIcon } from "@ui/IconsIndicators";
 import type { UiManager } from "core/layout/MainLayout";
 import { CardManager } from "pages/indicators/CardManager";
 import { TagManager } from "pages/indicators/TagManager";
-import { useUpdateResults } from "pages/indicators/hooks/useUpdateResults";
-import { getTags } from "pages/indicators/utils/firebase";
+import { useCardTags } from "pages/indicators/hooks/useCardTags";
+import { useIndicatorsCards } from "pages/indicators/hooks/useIndicatorsCards";
 
 import "pages/indicators/layout/main.css";
 import { useOutletContext } from "react-router";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import { Sheet, SheetContent, SheetTrigger } from "@ui/shadCN/component/sheet";
 
 export function Indicators() {
   const { layoutDispatch } = useOutletContext<UiManager>();
   const [openFilter, setOpenFilter] = useState(true);
-  const [tags, setTags] = useState(new Map<string, string[]>());
-  const [loadingTags, setLoadingTags] = useState(true);
-  const { isLoading, result: cardsData, updateFilters } = useUpdateResults();
+  const { isLoadingTags, tags } = useCardTags();
+  const { isLoadingCards, cards, updateCardFilters } = useIndicatorsCards();
 
   useEffect(() => {
     layoutDispatch({
@@ -29,76 +29,52 @@ export function Indicators() {
     });
   }, [layoutDispatch]);
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const tagsData = await getTags();
-        setTags(tagsData);
-      } catch (err) {
-        console.warn("cannot get tag data:", err);
-      } finally {
-        setLoadingTags(false);
-      }
-    };
-    void fetchTags();
-  }, []);
-
-  const filterData = useCallback(
-    (filters: string[]) => {
-      updateFilters(filters);
-    },
-    [updateFilters],
-  );
+  const hasTags = tags.size > 0;
+  const hasCards = cards.length > 0;
+  const showFilters = openFilter && !isLoadingTags && hasTags;
 
   return (
-    <div className={`wrapperIndicators${openFilter ? "" : " full-content"}`}>
-      <div className={`leftnav-title${openFilter ? "" : " closed-filters"}`}>
-        <div className="card2">
+    <main className="">
+      <aside className="bg-muted">
+        <header>
           <h3>
             <button
-              className="openFilters"
-              title="Ocultar filtros"
+              className=""
               type="button"
               onClick={() => setOpenFilter(!openFilter)}
+              title={openFilter ? "Ocultar filtros" : "Mostrar filtros"}
             >
               {openFilter ? (
                 <MinusIcon fontSize={30} color="#fff" />
               ) : (
                 <PlusIcon fontSize={30} color="#fff" />
               )}
+              <span className="">Filtros de búsqueda</span>
             </button>
-            <div className="text">Filtros de búsqueda</div>
           </h3>
-          {loadingTags && (
-            <div style={{ color: "#fff", margin: "5px 15px" }}>
-              Cargando filtros...
+        </header>
+        <nav>
+          <p style={{ color: "#fff", margin: "5px 15px" }}>
+            {isLoadingTags && "Cargando filtros..."}
+            {!isLoadingTags && !hasTags && "No hay filtros disponibles"}
+          </p>
+
+          {showFilters && (
+            <div className={`leftnav-filters${openFilter ? "" : " hide"}`}>
+              <TagManager data={tags} filterData={updateCardFilters} />
             </div>
           )}
-          {!loadingTags && tags.size <= 0 && (
-            <div style={{ color: "#fff", margin: "5px 15px" }}>
-              No hay filtros disponibles
-            </div>
-          )}
-        </div>
-      </div>
-      {!loadingTags && tags.size > 0 && (
-        <div className={`leftnav-filters${openFilter ? "" : " hide"}`}>
-          <TagManager data={tags} filterData={filterData} />
-        </div>
-      )}
-      <div className="countD">
-        {loadingTags && "Cargando información..."}
-        {!loadingTags && cardsData.length <= 0 && "No hay indicadores"}
-        {!loadingTags && cardsData.length > 0 && (
-          <>
-            {cardsData.length}
-            indicadores
-          </>
-        )}
-      </div>
-      <div className="masonry-cards">
-        <CardManager cardsData={cardsData} />
-      </div>
-    </div>
+        </nav>
+      </aside>
+      <section className="">
+        <header>
+          {isLoadingTags && "Cargando información..."}
+          {!isLoadingTags && hasCards
+            ? `${cards.length} indicadores`
+            : "No hay indicadores"}
+        </header>
+        {hasCards && <CardManager cardsData={cards} />}
+      </section>
+    </main>
   );
 }

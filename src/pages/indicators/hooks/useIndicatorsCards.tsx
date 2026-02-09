@@ -4,36 +4,35 @@ import {
   filterIndicators,
 } from "pages/indicators/utils/firebase";
 
-// NOTE: Es necesario llamar a FireBase cada que se hace un cambio?  puede cachearse?
-export const useUpdateResults = () => {
-  const [filters, setFilters] = useState([]);
-  const [result, setResult] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+export const useIndicatorsCards = () => {
+  const [filters, setFilters] = useState<string[]>([]);
+  const [cards, setCards] = useState<{ id: string }[]>([]);
+  const [isLoadingCards, setIsLoadingCards] = useState(true);
 
   useEffect(() => {
     const indicatorsController = async () => {
-      setIsLoading(true);
+      setIsLoadingCards(true);
       try {
         if (filters.length === 0) {
           const indicators = await getIndicators();
-          setResult(indicators);
+          setCards(indicators);
         } else {
           const indicators = await filterIndicators(filters);
-          setResult(indicators);
+          setCards(indicators);
         }
       } catch (err) {
         console.warn("Error fetching indicators:", err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingCards(false);
       }
     };
 
     void indicatorsController();
   }, [filters]);
 
-  const updateFilters = useCallback((newFilters) => {
+  const updateCardFilters = useCallback((newFilters: string[]) => {
     setFilters(newFilters);
   }, []);
 
-  return { isLoading, updateFilters, result };
+  return { isLoadingCards, updateCardFilters, cards };
 };
