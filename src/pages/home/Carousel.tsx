@@ -33,7 +33,6 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
   }, [user?.username, user?.company?.name]);
 
   const handleClick = (id: number) => {
-    console.log(id);
     if (activeTab === id) {
       setActiveTab(null);
     } else {
