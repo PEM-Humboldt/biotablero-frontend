@@ -13,6 +13,8 @@ import { Button } from "@ui/shadCN/component/button";
 import { useUserCTX } from "@hooks/UserContext";
 import { cn } from "@ui/shadCN/lib/utils";
 
+import backgroundImage from "pages/home/assets/biotablero-slider.webp";
+
 import {
   type DisplayModule,
   displayModules,
@@ -31,7 +33,6 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
   }, [user?.username, user?.company?.name]);
 
   const handleClick = (id: number) => {
-    console.log(id);
     if (activeTab === id) {
       setActiveTab(null);
     } else {
@@ -40,7 +41,10 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
   };
 
   return (
-    <div className="bg-[url(/src/pages/home/assets/biotablero-slider.webp)] bg-cover bg-center">
+    <div
+      className="bg-cover bg-center"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <h3 className="text-center p-6 text-5xl uppercase font-light bg-grey-light">
         Explora nuestros módulos
       </h3>
