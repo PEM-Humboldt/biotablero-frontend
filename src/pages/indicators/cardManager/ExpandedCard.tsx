@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 import { URLIcon, MinusIcon } from "@ui/IconsIndicators";
 
-export type ExpandedCardItem = {
+export type CardItem = {
   id: string;
   title: string;
   target: string;
@@ -19,7 +19,7 @@ export type ExpandedCardItem = {
 };
 
 export type ExpandedCardProps = {
-  item: ExpandedCardItem;
+  item: CardItem;
   expandClick: () => void;
 };
 
