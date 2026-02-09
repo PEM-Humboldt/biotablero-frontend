@@ -32,7 +32,7 @@ export function MonitoringSidebar({ className }: { className: string }) {
           <SidebarGroupButtons title="Usuario registrado" items={userItems} />
         )}
         {isAdmin && (
-          <SidebarGroupButtons title="Adminisrtrador" items={adminItems} />
+          <SidebarGroupButtons title="Administrador" items={adminItems} />
         )}
       </SidebarContent>
     </Sidebar>
