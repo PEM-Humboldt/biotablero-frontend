@@ -1,46 +1,32 @@
 import { useEffect, useState } from "react";
+import { Dot, CircleMinus, CircleX } from "lucide-react";
+
 import {
   Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import DotIcon from "@material-ui/icons/FiberManualRecord";
-import { CloseIcon } from "@ui/IconsIndicators";
-
-import { Button } from "@ui/shadCN/component/button";
-import "pages/indicators/layout/main.css";
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@ui/shadCN/component/accordion";
 import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
   useSidebar,
-  SidebarFooter,
 } from "@ui/shadCN/component/sidebar";
+import { Button } from "@ui/shadCN/component/button";
+
+import "pages/indicators/layout/main.css";
 import { useCardTags } from "pages/indicators/hooks/useCardTags";
-import { CircleMinus } from "lucide-react";
 
-const boxColors = [
-  "#b1babc",
-  "#b1b2b7",
-  "#666a72",
-  "#b8bfcf",
-  "#8792af",
-  "#697f9f",
-  "#5a6e7e",
-  "#b8bcaf",
-  "#7b8780",
-  "#988b7d",
-] as const;
-
-type BoxColor = (typeof boxColors)[number];
-type TagWithColor = [tag: string, color: BoxColor];
 type TagManagerProps = {
   filterData: (filters: string[]) => void;
 };
 
+type TagWithReference = [tag: string, reference: string];
+const referenceString = (ref: string, element: string) => `${ref}. ${element}`;
+
 export function TagManager({ filterData }: TagManagerProps) {
-  const [selected, setSelected] = useState<TagWithColor[]>([]);
+  const [selected, setSelected] = useState<TagWithReference[]>([]);
   const { isLoadingTags, tags } = useCardTags();
   const { setOpen } = useSidebar();
 
@@ -48,16 +34,12 @@ export function TagManager({ filterData }: TagManagerProps) {
     filterData(selected.map((pair) => pair[0]));
   }, [selected, filterData]);
 
-  const clearTags = () => {
-    setSelected([]);
-  };
-
-  const toggleTag = (tag: string, color: BoxColor) => {
+  const toggleTag = (tag: string, parent: string) => {
     setSelected((prev) => {
       const filtered = prev.filter((item) => item[0] !== tag);
 
       if (filtered.length === prev.length) {
-        filtered.push([tag, color]);
+        filtered.push([tag, parent]);
       }
 
       return filtered;
@@ -68,97 +50,98 @@ export function TagManager({ filterData }: TagManagerProps) {
     return selected.some((item) => item[0] === tag);
   };
 
-  const isCategorySelected = (color: BoxColor): boolean => {
-    return selected.some((item) => item[1] === color);
+  const isCategorySelected = (reference: string): boolean => {
+    return selected.some((item) => item[1] === reference);
+  };
+
+  const clearTags = () => {
+    setSelected([]);
   };
 
   const hasTags = tags.size > 0;
 
   return (
-    <Sidebar collapsible="offcanvas" className="bg-blue-700">
+    <Sidebar collapsible="offcanvas" className="bg-primary border-primary">
       <SidebarHeader>
         <Button
           onClick={() => setOpen(false)}
-          title="Ocultar selector de filtros"
+          title="Ocultar selector"
           size="lg"
-          variant="ghost"
-          className="text-xl text-primary-foreground font-normal"
+          variant="link"
+          className="text-xl justify-start px-2! text-primary-foreground hover:text-primary-foreground font-normal"
         >
           <CircleMinus className="size-6" />
-          Filtros de búsqueda
+          Filtros
         </Button>
       </SidebarHeader>
 
-      {selected.length > 0 && (
-        <div className="tagCount">
-          <h4>
-            <button
-              className="clearFilters"
-              title="Limpiar filtros"
-              type="button"
-              onClick={clearTags}
-            >
-              <CloseIcon />
-            </button>
-            {`${selected.length} filtro${selected.length > 1 ? "s" : ""}`}
-          </h4>
-        </div>
-      )}
-
       <SidebarContent>
+        <Accordion type="single" collapsible className="">
+          {Array.from(tags).map(([title, list], idx) => {
+            // NOTE:Generates a letter for referencig the tags group
+            const reference = String.fromCharCode(97 + idx);
+
+            return (
+              <AccordionItem
+                value={title}
+                key={title}
+                className="rounded-none border-none! outline-none!"
+              >
+                <AccordionTrigger className="gap-0 py-3 items-center rounded-none bg-grey-light hover:bg-blue-800 hover:underline border-b border-b-background">
+                  {referenceString(reference, title)}
+                  {isCategorySelected(reference) && <Dot className="mr-auto" />}
+                </AccordionTrigger>
+                <AccordionContent className="py-4">
+                  {list.map((tag) => (
+                    <label key={tag} className="flex gap-2">
+                      <input
+                        type="checkbox"
+                        value={tag}
+                        checked={isTagSelected(tag)}
+                        onChange={() => toggleTag(tag, reference)}
+                      />
+                      {tag}
+                    </label>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+
+        {selected.length > 0 && (
+          <Button
+            title="Limpiar filtros"
+            type="button"
+            variant="link"
+            className="px-4! mt-2 justify-start hover:text-primary-foreground text-primary-foreground"
+            onClick={clearTags}
+          >
+            <CircleX className="size-4" />
+            Borrar{" "}
+            {`${selected.length} filtro${selected.length > 1 ? "s" : ""}`}
+          </Button>
+        )}
+
         {isLoadingTags && <p>Cargando filtros...</p>}
         {!isLoadingTags && !hasTags ? (
           <p>No hay filtros disponibles</p>
         ) : (
-          <div className="tagList">
-            {Array.from(tags).map(([title, list], idx) => {
-              const color = boxColors[idx];
-
-              return (
-                <Accordion className="tagBox" key={title}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`${title}-content`}
-                    id={title}
-                    className="tagCat"
-                    style={{ backgroundColor: color }}
-                  >
-                    <div>{title}</div>
-                    {isCategorySelected(color) && (
-                      <div>
-                        <DotIcon fontSize="inherit" />
-                      </div>
-                    )}
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <div className="tagOptions">
-                      {list.map((tag) => (
-                        <div key={tag}>
-                          <input
-                            type="checkbox"
-                            value={tag}
-                            checked={isTagSelected(tag)}
-                            onChange={() => toggleTag(tag, color)}
-                          />
-                          {tag}
-                        </div>
-                      ))}
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
-              );
-            })}
-          </div>
+          <div></div>
         )}
-      </SidebarContent>
 
-      <div className="selectedTags">
-        {selected.map(([tag, color]) => (
-          <div key={`${tag}-selected`} style={{ backgroundColor: color }}>
-            {tag}
-          </div>
-        ))}
-      </div>
+        <div className="flex flex-wrap gap-2 px-2">
+          <span className="sr-only">Filtros aplicados</span>
+          {selected.map(([tag, reference]) => (
+            <div
+              key={`${tag}-selected`}
+              className="px-2 py-1 rounded-lg text-sm bg-grey-light"
+            >
+              {referenceString(reference, tag)}
+            </div>
+          ))}
+        </div>
+      </SidebarContent>
     </Sidebar>
   );
 }

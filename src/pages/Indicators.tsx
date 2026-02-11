@@ -20,7 +20,6 @@ export function Indicators() {
       sectionData: {
         moduleName: "Indicadores",
         logos: new Set(),
-        className: "fullgrid",
       },
     });
   }, [layoutDispatch]);
