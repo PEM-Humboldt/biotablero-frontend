@@ -3,11 +3,11 @@ import {
   getIndicators,
   filterIndicators,
 } from "pages/indicators/utils/firebase";
-import { type CardItem } from "pages/indicators/cardManager/ExpandedCard";
+import type { IndicatorsCardInfo } from "pages/indicators/types/card";
 
 export const useIndicatorsCards = () => {
   const [filters, setFilters] = useState<string[]>([]);
-  const [cards, setCards] = useState<CardItem[]>([]);
+  const [cards, setCards] = useState<IndicatorsCardInfo[]>([]);
   const [isLoadingCards, setIsLoadingCards] = useState(true);
 
   useEffect(() => {
@@ -17,11 +17,11 @@ export const useIndicatorsCards = () => {
         if (filters.length === 0) {
           const indicators = await getIndicators();
           // NOTE: aserción temporal mientras se pasa la utilidad de firebase a TS
-          setCards(indicators as CardItem[]);
+          setCards(indicators as IndicatorsCardInfo[]);
         } else {
           const indicators = await filterIndicators(filters);
           // NOTE: aserción temporal mientras se pasa la utilidad de firebase a TS
-          setCards(indicators as CardItem[]);
+          setCards(indicators as IndicatorsCardInfo[]);
         }
       } catch (err) {
         console.warn("Error fetching indicators:", err);

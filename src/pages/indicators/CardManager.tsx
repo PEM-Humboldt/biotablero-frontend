@@ -1,50 +1,34 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-import Masonry from "react-masonry-component";
 import { Card } from "pages/indicators/cardManager/Card";
-import { type CardItem } from "pages/indicators/cardManager/ExpandedCard";
-import { SidebarInset } from "@ui/shadCN/component/sidebar";
-
-const masonryOptions = {
-  transitionDuration: 0,
-  itemSelector: ".indicatorCard",
-  columnWidth: 360,
-  horizontalOrder: true,
-};
+import type { IndicatorsCardInfo } from "pages/indicators/types/card";
+import { SidebarInset, useSidebar } from "@ui/shadCN/component/sidebar";
+import { CirclePlus } from "lucide-react";
+import { Button } from "@ui/shadCN/component/button";
+import { useNavigate } from "react-router";
 
 export function CardManager({
   cardsData,
   isLoading,
 }: {
   isLoading: boolean;
-  cardsData: CardItem[];
+  cardsData: IndicatorsCardInfo[];
 }) {
-  const [expanded, setExpanded] = useState<CardItem | null>(null);
-  const prevExpanded = useRef<CardItem>();
+  const { setOpen, open } = useSidebar();
+  const [cardOpen, setCardOpen] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!prevExpanded || !expanded) {
-      return;
-    }
-
-    prevExpanded.current = expanded;
-  }, [expanded]);
-
-  const isExpanded = (elem: CardItem) => expanded?.id === elem.id;
-
-  const wasExpanded = (elem: CardItem) => {
-    if (!prevExpanded.current) {
-      return false;
-    }
-
-    return prevExpanded.current.id === elem.id;
-  };
-
-  const expandClickHandler = (cardData: CardItem) => () => {
-    if (isExpanded(cardData)) {
-      setExpanded(null);
-    } else {
-      setExpanded(cardData);
+  const expandCardHandler = (cardId: string) => {
+    setCardOpen((prvCard) => (cardId === prvCard ? null : cardId));
+    void navigate(`#${cardId}`);
+    const element = document.getElementById(cardId);
+    if (element) {
+      // NOTE: el timer ayuda a que los cálculos en windowY se hagan cuando ya
+      // la tarjeta anterior cambio de tamaño y no haya error
+      setTimeout(
+        () => element.scrollIntoView({ behavior: "smooth", block: "start" }),
+        0,
+      );
     }
   };
 
@@ -53,26 +37,34 @@ export function CardManager({
   return (
     <SidebarInset>
       <header className="flex gap-2 p-2 items-center text-foreground text-xl text-center font-normal">
+        {!open && (
+          <Button
+            onClick={() => setOpen(true)}
+            title="Ocultar selector de filtros"
+            size="lg"
+            variant="ghost"
+            className="text-xl text-primary font-normal"
+          >
+            <CirclePlus className="size-6" />
+            Ver filtros
+          </Button>
+        )}
         {isLoading && "Cargando información..."}
         {!isLoading && hasCards
           ? `${cardsData.length} indicadores`
           : "No hay indicadores"}
       </header>
-      {hasCards && (
-        <Masonry options={masonryOptions} enableResizableChildren>
-          {cardsData.map((card) => {
-            return (
-              <Card
-                key={card.id}
-                item={card}
-                isExpanded={isExpanded(card)}
-                wasExpanded={wasExpanded(card)}
-                expandClick={expandClickHandler(card)}
-              />
-            );
-          })}
-        </Masonry>
-      )}
+
+      <div>
+        {hasCards &&
+          cardsData.map((card) => (
+            <Card
+              item={card}
+              nowOpen={cardOpen}
+              expandCard={expandCardHandler}
+            />
+          ))}
+      </div>
     </SidebarInset>
   );
 }
