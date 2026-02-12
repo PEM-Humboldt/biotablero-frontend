@@ -12,7 +12,7 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Indicators() {
   const { layoutDispatch } = useOutletContext<UiManager>();
-  const { isLoadingCards, cards, updateCardFilters } = useIndicatorsCards();
+  const { isLoadingCards, cards, setFilters } = useIndicatorsCards();
 
   useEffect(() => {
     layoutDispatch({
@@ -26,7 +26,7 @@ export function Indicators() {
 
   return (
     <SidebarProvider>
-      <TagManager filterData={updateCardFilters} />
+      <TagManager filterData={setFilters} />
       <CardManager isLoading={isLoadingCards} cardsData={cards} />
     </SidebarProvider>
   );

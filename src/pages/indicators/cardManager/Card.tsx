@@ -1,10 +1,5 @@
 import type { IndicatorsCardInfo } from "pages/indicators/types/card";
-import {
-  LinkIcon,
-  CircleMinus,
-  CirclePlus,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { CircleMinus, CirclePlus, SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { cn } from "@ui/shadCN/lib/utils";
@@ -15,6 +10,7 @@ const itemInfoCategoriesDictionary = {
   title: "Título",
   target: "Objetivo",
   scale: "Escala",
+  tags: "Etiquetas",
   lastUpdate: "Última actualización",
   goals: "Metas",
   periodicity: "Periodicidad",

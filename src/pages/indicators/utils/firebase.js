@@ -45,17 +45,6 @@ const getIndicators = async () => {
   }));
 };
 
-const filterIndicators = async (filters) => {
-  const db = getDB();
-  const ref = collection(db, "indicators");
-  const q = query(ref, where("tags", "array-contains-any", filters));
-  const list = await getDocs(q);
-  return list.docs.map((indicatorDoc) => ({
-    id: indicatorDoc.id,
-    ...indicatorDoc.data(),
-  }));
-};
-
 const getTags = async () => {
   const tags = new Map();
   const db = getDB();
@@ -81,4 +70,4 @@ const getTags = async () => {
   );
 };
 
-export { getIndicators, getTags, filterIndicators };
+export { getIndicators, getTags };

@@ -3,6 +3,7 @@ export type IndicatorsCardInfo = {
   title: string;
   target: string;
   scale: string[];
+  tags: string[];
   lastUpdate: string;
   goals?: string[];
   periodicity?: string;
