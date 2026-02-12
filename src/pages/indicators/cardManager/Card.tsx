@@ -1,7 +1,14 @@
 import type { IndicatorsCardInfo } from "pages/indicators/types/card";
-import { LinkIcon, CircleMinus, CirclePlus } from "lucide-react";
+import {
+  LinkIcon,
+  CircleMinus,
+  CirclePlus,
+  SquareArrowOutUpRight,
+} from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { parseSimpleMarkdown } from "@utils/textParser";
+import { cn } from "@ui/shadCN/lib/utils";
+import { StrValidator } from "@utils/strValidator";
 
 const itemInfoCategoriesDictionary = {
   id: "id",
@@ -40,13 +47,20 @@ export function Card({
     ? new Date(item.lastUpdate).toLocaleDateString()
     : null;
 
-  const isOpen = item.id === nowOpen;
+  const sanitizedID = StrValidator.sanitizeToURLSlug(item.id);
+  const isOpen = sanitizedID === nowOpen;
 
   return (
-    <section id={item.id} className="@container m-2 p-2 border rounded-3xl">
+    <section
+      id={sanitizedID}
+      className={cn(
+        "@container border border-grey rounded-3xl p-2 scroll-mt-2 col-span-1",
+        isOpen && "col-span-full xl:col-span-3 shadow-lg",
+      )}
+    >
       <header>
-        <div className="flex gap-2 items-baseline border-b border-b-grey">
-          <h3 className="text-2xl pl-4 font-normal flex-1 text-balance">
+        <div className="flex gap-2 items-baseline border-b border-b-grey-light">
+          <h3 className="text-2xl pl-4 font-normal text-balance">
             {item.title}
           </h3>
 
@@ -55,15 +69,11 @@ export function Card({
               href={item.externalLink}
               target="_blank"
               rel="noreferrer"
-              className="text-accent hover:text-primary"
+              className="text-accent hover:text-primary self-baseline -translate-1"
               title="Ir al enlace"
             >
               <span className="sr-only">Ir al enlace externo</span>
-              <LinkIcon
-                className="size-6"
-                strokeWidth="1.5"
-                aria-hidden="true"
-              />
+              <SquareArrowOutUpRight className="size-4" aria-hidden="true" />
             </a>
           )}
 
@@ -74,6 +84,7 @@ export function Card({
             size="icon"
             variant="ghost-clean"
             title={isOpen ? "Ampliar" : "Cerrar"}
+            className="ml-auto"
           >
             <span className="sr-only">
               {isOpen
@@ -159,8 +170,10 @@ function RenderItemInfo({
 
   return (
     <>
-      <h4 className="uppercase text-accent text-base mb-0">{title}</h4>
-      <div className="mb-5">{content}</div>
+      <h4 className="uppercase text-accent text-base! leading-none! my-0!">
+        {title}
+      </h4>
+      <div className="text-base [&>p]:last:mb-0 mb-[2em]">{content}</div>
     </>
   );
 }
