@@ -51,7 +51,7 @@ export class StrValidator {
   }
 
   /**
-   * Transforms the string into a slug safe to in a URL
+   * Transforms the string into a slug safe for the URL
    *
    * @param str - The string to normalize.
    */
