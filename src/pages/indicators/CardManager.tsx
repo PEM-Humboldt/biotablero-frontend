@@ -6,8 +6,9 @@ import { SidebarInset, useSidebar } from "@ui/shadCN/component/sidebar";
 import { Button } from "@ui/shadCN/component/button";
 import { StrValidator } from "@utils/strValidator";
 
-import { Card } from "pages/indicators/cardManager/Card";
 import type { IndicatorsCardInfo } from "pages/indicators/types/card";
+import { Card } from "pages/indicators/cardManager/Card";
+import { uiText } from "pages/indicators/layout/uiTetx";
 
 export function CardManager({
   cardsData,
@@ -55,19 +56,20 @@ export function CardManager({
         {!open && (
           <Button
             onClick={() => setOpen(true)}
-            title="Ocultar selector de filtros"
+            title={uiText.cards.showFiltersBtnTitle}
             size="lg"
             variant="ghost"
             className="text-xl text-primary font-normal"
           >
             <CirclePlus className="size-6" />
-            Ver filtros
+            {uiText.cards.showFiltersBtnLabel}
           </Button>
         )}
-        {isLoading && "Cargando información..."}
-        {!isLoading && hasCards
-          ? `${cardsData.length} indicadores`
-          : "No hay indicadores"}
+
+        {isLoading && uiText.cards.loadingIndicatorsCards}
+        {!isLoading &&
+          hasCards &&
+          uiText.cards.availableIndicatorsAmount(cardsData.length)}
       </header>
 
       <div className="@container px-4 pb-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 grid-flow-dense">

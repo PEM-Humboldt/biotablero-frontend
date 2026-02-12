@@ -1,33 +1,20 @@
-import type { IndicatorsCardInfo } from "pages/indicators/types/card";
 import { CircleMinus, CirclePlus, SquareArrowOutUpRight } from "lucide-react";
+
 import { Button } from "@ui/shadCN/component/button";
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { cn } from "@ui/shadCN/lib/utils";
 import { StrValidator } from "@utils/strValidator";
 
-const itemInfoCategoriesDictionary = {
-  id: "id",
-  title: "Título",
-  target: "Objetivo",
-  scale: "Escala",
-  tags: "Etiquetas",
-  lastUpdate: "Última actualización",
-  goals: "Metas",
-  periodicity: "Periodicidad",
-  use: "Contexto de uso",
-  description: "Descripción del indicador",
-  ebv: "VEBs",
-  source: "Fuente",
-  requirements: "Requerimientos de información para su cálculo",
-  externalLink: "Enlace",
-} as const;
+import type { IndicatorsCardInfo } from "pages/indicators/types/card";
+import { uiText } from "pages/indicators/layout/uiTetx";
 
+const itemInfoCategoriesDictionary = uiText.cards.infoDictionary;
 type CategoryKey = keyof typeof itemInfoCategoriesDictionary;
 
 const renderColumn: { [column: string]: CategoryKey[] } = {
+  resume: ["target", "scale"],
   left: ["target", "scale", "goals", "periodicity"],
   right: ["description", "requirements", "ebv", "use", "source"],
-  resume: ["target", "scale"],
 };
 
 export function Card({
@@ -66,9 +53,9 @@ export function Card({
               target="_blank"
               rel="noreferrer"
               className="text-accent hover:text-primary self-baseline -translate-1"
-              title="Ir al enlace"
+              title={uiText.cards.externalLinkTilte}
             >
-              <span className="sr-only">Ir al enlace externo</span>
+              <span className="sr-only">{uiText.cards.externalLinkSR}</span>
               <SquareArrowOutUpRight className="size-4" aria-hidden="true" />
             </a>
           )}
@@ -79,13 +66,17 @@ export function Card({
             tabIndex={0}
             size="icon"
             variant="ghost-clean"
-            title={isOpen ? "Ampliar" : "Cerrar"}
+            title={
+              isOpen
+                ? uiText.cards.expandCardTitle
+                : uiText.cards.collapseCardTitle
+            }
             className="ml-auto"
           >
             <span className="sr-only">
               {isOpen
-                ? "Ampliar información sobre el indicador"
-                : "Reducir informacion sobre el indicador"}
+                ? uiText.cards.externalLinkSR
+                : uiText.cards.externalLinkSR}
             </span>
             {isOpen ? (
               <CircleMinus className="size-6" strokeWidth="1.5" />
@@ -101,7 +92,9 @@ export function Card({
           <>
             {lastUpdate && (
               <div className="text-right">
-                <span className="sr-only">última actualización</span>
+                <span className="sr-only">
+                  {uiText.cards.infoDictionary.lastUpdate}
+                </span>
                 <time dateTime={lastUpdate}>{lastUpdate}</time>
               </div>
             )}

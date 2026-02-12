@@ -7,7 +7,6 @@ import type { UiManager } from "core/layout/MainLayout";
 import { CardManager } from "pages/indicators/CardManager";
 import { TagManager } from "pages/indicators/TagManager";
 import { useIndicatorsCards } from "pages/indicators/hooks/useIndicatorsCards";
-import "pages/indicators/layout/main.css";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
 export function Indicators() {

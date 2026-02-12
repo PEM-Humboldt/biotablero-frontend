@@ -15,8 +15,8 @@ import {
 } from "@ui/shadCN/component/sidebar";
 import { Button } from "@ui/shadCN/component/button";
 
-import "pages/indicators/layout/main.css";
 import { useCardTags } from "pages/indicators/hooks/useCardTags";
+import { uiText } from "pages/indicators/layout/uiTetx";
 
 type TagManagerProps = {
   filterData: (filters: string[]) => void;
@@ -65,13 +65,13 @@ export function TagManager({ filterData }: TagManagerProps) {
       <SidebarHeader>
         <Button
           onClick={() => setOpen(false)}
-          title="Ocultar selector"
+          title={uiText.sidebar.hideFiltersBtnTitle}
           size="lg"
           variant="link"
           className="text-xl justify-start px-2! text-primary-foreground hover:text-primary-foreground font-normal"
         >
           <CircleMinus className="size-6" />
-          Filtros
+          {uiText.sidebar.headerText}
         </Button>
       </SidebarHeader>
 
@@ -111,27 +111,24 @@ export function TagManager({ filterData }: TagManagerProps) {
 
         {selected.length > 0 && (
           <Button
-            title="Limpiar filtros"
             type="button"
             variant="link"
             className="px-4! mt-2 justify-start hover:text-primary-foreground text-primary-foreground"
             onClick={clearTags}
+            title={uiText.sidebar.removeFiltersTitle}
           >
             <CircleX className="size-4" />
-            Borrar{" "}
-            {`${selected.length} filtro${selected.length > 1 ? "s" : ""}`}
+            {uiText.sidebar.removeFiltersLabel(selected.length)}
           </Button>
         )}
 
-        {isLoadingTags && <p>Cargando filtros...</p>}
-        {!isLoadingTags && !hasTags ? (
-          <p>No hay filtros disponibles</p>
-        ) : (
-          <div></div>
+        {isLoadingTags && <p>{uiText.sidebar.loadingFilters}</p>}
+        {!isLoadingTags && !hasTags && (
+          <p>{uiText.sidebar.noFiltersAvailable}</p>
         )}
 
         <div className="flex flex-wrap gap-2 px-2">
-          <span className="sr-only">Filtros aplicados</span>
+          <span className="sr-only">{uiText.sidebar.apliedFilters}</span>
           {selected.map(([tag, reference]) => (
             <div
               key={`${tag}-selected`}
