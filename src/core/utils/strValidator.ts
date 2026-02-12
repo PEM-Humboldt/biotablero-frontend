@@ -51,6 +51,22 @@ export class StrValidator {
   }
 
   /**
+   * Transforms the string into a slug safe to in a URL
+   *
+   * @param str - The string to normalize.
+   */
+  static sanitizeToURLSlug(str: string): string {
+    return str
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9-]+/g, "")
+      .replace(/-+/g, "-");
+  }
+
+  /**
    * Static sanitization: trims, removes control chars, and escapes HTML.
    * 1. Removes custom characters if provided.
    * 2. Trims whitespace and removes non-printable control characters.
