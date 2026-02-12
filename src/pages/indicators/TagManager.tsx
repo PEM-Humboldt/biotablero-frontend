@@ -61,7 +61,7 @@ export function TagManager({ filterData }: TagManagerProps) {
   const hasTags = tags.size > 0;
 
   return (
-    <Sidebar collapsible="offcanvas" className="bg-primary border-primary">
+    <Sidebar collapsible="offcanvas" className="bg-primary">
       <SidebarHeader>
         <Button
           onClick={() => setOpen(false)}
@@ -76,7 +76,7 @@ export function TagManager({ filterData }: TagManagerProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        <Accordion type="single" collapsible className="">
+        <Accordion type="single" collapsible>
           {Array.from(tags).map(([title, list], idx) => {
             // NOTE:Generates a letter for referencig the tags group
             const reference = String.fromCharCode(97 + idx);
