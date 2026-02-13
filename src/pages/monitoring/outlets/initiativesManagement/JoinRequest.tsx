@@ -7,12 +7,12 @@ import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 import { commonErrorMessage } from "@utils/ui";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type {
   ODataInitiativeUserRequest,
   UserInitiatives,
 } from "pages/monitoring/types/requestParams";
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import {
   type FilterJoinRequestsCallback,

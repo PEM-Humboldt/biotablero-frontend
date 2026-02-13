@@ -1,12 +1,13 @@
+import type { HasId, ODataResponse } from "@appTypes/odata";
 import type { UserLevel } from "pages/monitoring/types/monitoring";
 
-export type ODataLogEntryShort = {
-  id: string;
+// NOTE: registros del log
+export interface ODataLogEntryShort extends HasId {
   timeStamp: string;
   type: string;
   shortMessage: string;
   userName: string;
-};
+}
 
 export interface ODataLogEntryFull extends ODataLogEntryShort {
   clientAgent: string;
@@ -27,6 +28,7 @@ export interface LogEntryFull
   properties: Record<string, unknown>;
 }
 
+// NOTE: Ubicacion
 export type LocationBasicInfo = {
   id: number;
   name: string;
@@ -45,8 +47,8 @@ export type LocationCompleteInfo = {
   location: LocationBasicInfo;
 };
 
-export type ODataInitiativeShortEntry = {
-  id: number;
+// NOTE: Iniciativas
+export interface ODataInitiativeShortEntry extends HasId {
   name: string;
   shortName: string;
   description: string;
@@ -57,25 +59,25 @@ export type ODataInitiativeShortEntry = {
   polygonArea: number;
   enabled: boolean;
   locations: LocationCompleteInfo[];
-};
+}
 
+// NOTE: solicitudes
 export type UserRequestStatus = {
   id: number;
   name: string;
 };
 
-export type ODataInitiativeUserRequest = {
-  id: number;
+export interface ODataInitiativeUserRequest extends HasId {
   userName: string;
   reviewerUserName: string;
   creationDate: string;
   responseDate: string;
   initiativeId: number;
   status: UserRequestStatus;
-};
+}
 
-export interface ODataUser {
-  id: string;
+// NOTE: Usuarios
+export interface ODataUser extends HasId {
   email: string;
   emailVerified: boolean;
   username: string;
@@ -104,11 +106,6 @@ export type UserInitiatives = {
   polygonArea: number;
   enabled: boolean;
   users: InitiativeUser[];
-};
-
-type ODataResponse<T> = {
-  "@odata.count": number;
-  value: T[];
 };
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;

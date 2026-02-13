@@ -1,4 +1,5 @@
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
+
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 
 export enum Request {

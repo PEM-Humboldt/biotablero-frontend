@@ -1,9 +1,9 @@
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
 
 type FilterJoinRequestsCallback = (

@@ -1,8 +1,8 @@
 import { useCallback, useRef } from "react";
 
 import type { ODataParams } from "@appTypes/odata";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
 import {
   getInitiativeRequests,

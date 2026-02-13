@@ -10,7 +10,7 @@ export type Company = {
   name: string;
 };
 
-export type UserType = {
+export type UserType<T = unknown> = {
   roles: Role[];
   username: string;
   email: string;
@@ -20,7 +20,7 @@ export type UserType = {
   company?: Company;
   name?: string;
   profileImg?: string;
-};
+} & T;
 
 export function isUserType(user: unknown): user is UserType {
   return (

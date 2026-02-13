@@ -20,7 +20,7 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { User } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/monitoring";
 import type {
   CardInfoGrouped,
   InitiativeContact,
@@ -254,7 +254,7 @@ export function InitiativeCard({
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([
+              new Map<string, keyof UserItem>([
                 [uiText.initiative.module.contacts.tableCol[0], "userName"],
               ])
             }

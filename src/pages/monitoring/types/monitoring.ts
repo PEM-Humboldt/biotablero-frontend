@@ -21,12 +21,8 @@ export type UserLevel = {
   name: string;
 };
 
-export type User = {
+export type UserItem = {
   id?: number;
   userName: string;
   level: UserLevel;
 };
-
-export type GetKeysWithStringValues<T> = {
-  [K in keyof T]: T[K] extends string ? K : never;
-}[keyof T];
