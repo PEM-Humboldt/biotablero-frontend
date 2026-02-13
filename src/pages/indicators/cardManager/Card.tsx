@@ -162,7 +162,9 @@ function RenderItemInfo({
       <h4 className="uppercase text-accent text-base! leading-none! my-0!">
         {title}
       </h4>
-      <div className="text-base [&>p]:last:mb-0 mb-[2em]">{content}</div>
+      <div className="text-base [&>p]:last:mb-0 mb-[2em] last:mb-0">
+        {content}
+      </div>
     </>
   );
 }

@@ -13,6 +13,7 @@ export const useIndicatorsCards = () => {
 
       try {
         const indicators = await getIndicators();
+        // NOTE: Aserción mientras se pasa el getIndicatos a TS
         setAllIndicators(indicators as IndicatorsCardInfo[]);
       } catch (err) {
         console.warn("Error fetching indicators:", err);
