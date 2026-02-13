@@ -42,19 +42,23 @@ export function LocationInput<T extends LocationDataBasic>({
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
+    setInputErr({});
+
     if (department === "") {
       setMunicipalities([]);
       return;
     }
-
-    setInputErr((oldErr) => ({ ...oldErr, location: [] }));
 
     const getMunicipalities = async () => {
       try {
         const municipalitiesList =
           await getMunicipalitiesByDepartment(department);
         if (isMonitoringAPIError(municipalitiesList)) {
-          throw new Error(municipalitiesList.message);
+          setInputErr((oldErr) => ({
+            ...oldErr,
+            location: [municipalitiesList.message],
+          }));
+          return;
         }
 
         setMunicipalities(municipalitiesList);

@@ -34,6 +34,14 @@ interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
 
 type RequestData = RequestBody | FormData;
 
+type ResponseType =
+  | "arraybuffer"
+  | "blob"
+  | "document"
+  | "json"
+  | "text"
+  | "stream";
+
 type MonitoringAPIParams = {
   endpoint: string;
   getStatus?: boolean;
@@ -44,6 +52,7 @@ type MonitoringAPIParams = {
         data?: QueryParams;
         oData?: Partial<ODataParams>;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
   | {
@@ -51,6 +60,7 @@ type MonitoringAPIParams = {
       options?: {
         data?: QueryParams;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
   | {
@@ -58,6 +68,7 @@ type MonitoringAPIParams = {
       options?: {
         data?: RequestData;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
 );
@@ -185,7 +196,9 @@ export async function monitoringAPI<T>({
       const params = [queryParams, oDataParams].filter(Boolean).join("&");
       const fullEndpoint = `${baseURL}/${endpoint}${params ? `?${params}` : ""}`;
 
-      response = await monitoringClient[type]<T>(fullEndpoint);
+      response = await monitoringClient[type]<T>(fullEndpoint, {
+        responseType: options?.responseType,
+      });
     } else {
       let payload: RequestData;
 
@@ -520,4 +533,28 @@ export async function getInitiativeRequests(
     console.error(err);
     return null;
   }
+}
+
+/**
+ * Makes the reques for the xslx file with optional OData query parameters.
+ *
+ * This function is a thin wrapper around `monitoringAPI` specialized for the `"Logs/xlsx"` endpoint.
+ * Throws an error if the request fails or the backend returns an error response.
+ *
+ * @param odataParams - Optional OData query parameters to filter, sort, or paginate results.
+ * @returns A `Promise` resolving to a `Blob` object containing the logs data.
+ * @throws If the API returns a `RequestError` or the request fails.
+ */
+export async function downloadLogs(odataParams: ODataParams = {}) {
+  const result = await monitoringAPI<Blob>({
+    endpoint: "Logs/xlsx",
+    type: "get",
+    options: { oData: odataParams, responseType: "blob" },
+  });
+
+  if (isMonitoringAPIError(result)) {
+    throw new Error(result.message);
+  }
+
+  return result;
 }

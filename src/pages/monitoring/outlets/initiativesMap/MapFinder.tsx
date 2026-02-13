@@ -19,10 +19,11 @@ export function MapFinder({
 
   return (
     <MapContainer
+      id="map"
       ref={mapRef}
       center={bounds}
       zoom={6}
-      className="map-container"
+      className="h-full bg-accent"
     >
       <TileLayer
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'

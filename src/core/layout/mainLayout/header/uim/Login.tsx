@@ -4,7 +4,7 @@ import {
   isResponseRequestError,
   isResponseAuthData,
 } from "@api/auth";
-import { uiText } from "core/layout/uim/login/uiText";
+import { uiText } from "core/layout/mainLayout/header/uim/login/uiText";
 import { parseUserFromJwt, setTokensInLS } from "@utils/JWTstorage";
 import { useUserCTX } from "@hooks/UserContext";
 
