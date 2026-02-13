@@ -7,13 +7,10 @@ export function InitiativesMap() {
   return (
     <>
       <SearchBar />
-      <div className="monitoring-body">
-        <Browser title="" subtitle="">
-          {null}
-        </Browser>
-      </div>
-
-      <div className="map-wrapper">
+      <Browser title="" subtitle="">
+        {null}
+      </Browser>
+      <div className="flex h-full">
         <MapFinder />
       </div>
     </>

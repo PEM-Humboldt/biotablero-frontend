@@ -529,7 +529,7 @@ export class Compensation extends Component {
 
         <OnLoadingModal open={loadingModal} containerID="map" />
 
-        <div className="appSearcher wrappergrid">
+        <div className="flex h-full">
           <MapViewer
             layers={layers}
             geoServerUrl={GeoServerAPI.getRequestURL()}

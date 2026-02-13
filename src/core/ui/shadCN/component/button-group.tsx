@@ -37,6 +37,9 @@ function ButtonGroup({
   );
 }
 
+interface ButtonGroupTextProps extends React.HTMLAttributes<HTMLDivElement> {
+  asChild?: boolean;
+}
 function ButtonGroupText({
   className,
   asChild = false,
