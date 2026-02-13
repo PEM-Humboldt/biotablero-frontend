@@ -11,7 +11,7 @@ import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type {
   ODataInitiativeUserRequest,
-  UserInitiatives,
+  UserInInitiative,
 } from "pages/monitoring/types/requestParams";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import {
@@ -27,7 +27,7 @@ import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinReque
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
 }: {
-  InitiativesAsLeader?: UserInitiatives[];
+  InitiativesAsLeader?: UserInInitiative[];
 }) {
   const [currentStatus, setCurrentStatus] = useState<Request | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);

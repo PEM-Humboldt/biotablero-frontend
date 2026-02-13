@@ -19,7 +19,7 @@ import type {
   ODataLog,
   ODataUserInfo,
   ODataUserRequest,
-  UserInitiatives,
+  UserInInitiative,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
 import type { Location, UserLevel } from "pages/monitoring/types/monitoring";
@@ -253,7 +253,7 @@ export async function monitoringAPI<T>({
  * @throws If the API returns a `RequestError` or the underlying request fails.
  */
 function createODataGetter<T>(endpoint: string) {
-  return async (odataParams: ODataParams): Promise<T> => {
+  return async (odataParams?: ODataParams): Promise<T> => {
     const result = await monitoringAPI<T>({
       endpoint,
       type: "get",
@@ -472,7 +472,7 @@ export async function uploadImages(
 /**
  * Fetches the basic information of initiatives associated with the current user.
  *
- * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInitiatives}; returns an empty array if the request fails or no initiatives are found.
+ * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInInitiative}; returns an empty array if the request fails or no initiatives are found.
  *
  * @remarks
  * - This function handles API errors internally by logging them to the console and returning an empty collection.
@@ -480,7 +480,7 @@ export async function uploadImages(
  */
 export async function getUserInitiativesInfo() {
   try {
-    const res = await monitoringAPI<UserInitiatives[]>({
+    const res = await monitoringAPI<UserInInitiative[]>({
       type: "get",
       endpoint: "Auth/InitiativesData",
     });

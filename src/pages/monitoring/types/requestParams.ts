@@ -94,7 +94,7 @@ export type InitiativeUser = {
   creationDate: string;
 };
 
-export type UserInitiatives = {
+export type UserInInitiative = {
   id: number;
   name: string;
   shortName: string;
