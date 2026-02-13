@@ -6,7 +6,7 @@ export type ODataResponse<T> = {
 };
 
 export type HasId = {
-  id: string;
+  id: number;
 };
 
 export type ODataColumn<T> = {

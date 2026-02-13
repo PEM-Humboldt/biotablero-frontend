@@ -1,11 +1,13 @@
-import { Outlet, useOutletContext } from "react-router";
 import { useEffect } from "react";
+import { Outlet, useOutletContext } from "react-router";
+import { Toaster } from "sonner";
 
 import { SideBar } from "pages/monitoring/layout/SideBar";
 import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
-import { Toaster } from "sonner";
+
+import { MonitoringContext } from "pages/monitoring/hooks/useUserInitiatives";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -22,11 +24,13 @@ export function Monitoring() {
   }, [layoutDispatch]);
 
   return (
-    <div className="monitoring-root">
-      <SideBar />
+    <MonitoringContext>
+      <div className="monitoring-root">
+        <SideBar />
 
-      <Outlet />
-      <Toaster />
-    </div>
+        <Outlet />
+        <Toaster />
+      </div>
+    </MonitoringContext>
   );
 }

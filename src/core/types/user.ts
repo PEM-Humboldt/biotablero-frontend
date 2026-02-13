@@ -4,6 +4,11 @@ export type Tokens = {
 };
 
 export type Role = "Admin" | "User";
+export enum RoleInInitiative {
+  LEADER = 1,
+  USER = 2,
+  VIEWER = 3,
+}
 
 export type Company = {
   id: number;
