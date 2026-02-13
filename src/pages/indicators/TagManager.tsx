@@ -122,9 +122,15 @@ export function TagManager({ filterData }: TagManagerProps) {
           </Button>
         )}
 
-        {isLoadingTags && <p>{uiText.sidebar.loadingFilters}</p>}
+        {isLoadingTags && (
+          <p className="p-4 text-primary-foreground">
+            {uiText.sidebar.loadingFilters}
+          </p>
+        )}
         {!isLoadingTags && !hasTags && (
-          <p>{uiText.sidebar.noFiltersAvailable}</p>
+          <p className="p-4 text-primary-foreground">
+            {uiText.sidebar.noFiltersAvailable}
+          </p>
         )}
 
         <div className="flex flex-wrap gap-2 px-2">
