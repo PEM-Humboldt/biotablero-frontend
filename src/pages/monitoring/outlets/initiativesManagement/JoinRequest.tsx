@@ -123,12 +123,12 @@ export function JoinRequests({
     setLoading(true);
 
     try {
-      const [ok, err] = await resolveJoinRequest(requestId, newStatus);
+      const reqError = await resolveJoinRequest(requestId, newStatus);
 
-      if (!ok) {
+      if (reqError) {
         const detail =
-          err && typeof err === "object"
-            ? `${commonErrorMessage[err.status] ?? ""} ${err.message ?? err.data ?? ""}`
+          reqError && typeof reqError === "object"
+            ? `${commonErrorMessage[reqError.status] ?? ""} ${reqError.message ?? reqError.data ?? ""}`
             : "";
 
         setErrors([
@@ -151,7 +151,7 @@ export function JoinRequests({
     }
   };
 
-  const handleAproveJoinRequest = (request: ODataInitiativeUserRequest) => {
+  const handleApproveJoinRequest = (request: ODataInitiativeUserRequest) => {
     void changeJoinRequestStatus(request.id, "Approved");
     toast(uiText.toast.aproved.title, {
       position: "bottom-right",
@@ -287,7 +287,7 @@ export function JoinRequests({
                         [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
                           <JoinRequestReviewButtons
                             request={request}
-                            handleApprove={handleAproveJoinRequest}
+                            handleApprove={handleApproveJoinRequest}
                             handleReject={handleRejectJoinRequest}
                           />
                         ) : (

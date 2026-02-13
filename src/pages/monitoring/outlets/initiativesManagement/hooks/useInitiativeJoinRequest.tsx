@@ -145,7 +145,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
           requestStart,
           requestEnd,
         ),
-        errors: [],
+        errors,
       };
     },
     [initiativesIds],
@@ -173,10 +173,10 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
 
     if (isMonitoringAPIError(res)) {
       const { message, status, data } = res;
-      return [false, { message, status, data }];
+      return { message, status, data };
     }
 
-    return [true, null];
+    return null;
   };
 
   return { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest };

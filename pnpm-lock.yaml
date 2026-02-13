@@ -77,12 +77,9 @@ dependencies:
   '@radix-ui/react-label':
     specifier: ^2.1.8
     version: 2.1.8(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
-<<<<<<< HEAD
-=======
   '@radix-ui/react-navigation-menu':
     specifier: ^1.2.14
     version: 1.2.14(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
->>>>>>> develop
   '@radix-ui/react-popover':
     specifier: ^1.1.15
     version: 1.1.15(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
@@ -163,14 +160,10 @@ dependencies:
     version: 8.5.9(@types/react@18.3.24)(react@18.3.1)
   slick-carousel:
     specifier: ^1.8.1
-<<<<<<< HEAD
-    version: 1.8.1(jquery@3.7.1)
+    version: 1.8.1(jquery@4.0.0)
   sonner:
     specifier: ^2.0.7
     version: 2.0.7(react-dom@18.3.1)(react@18.3.1)
-=======
-    version: 1.8.1(jquery@4.0.0)
->>>>>>> develop
   styled-components:
     specifier: ~5.3.11
     version: 5.3.11(@babel/core@7.28.4)(react-dom@18.3.1)(react-is@19.1.1)(react@18.3.1)
@@ -2591,8 +2584,6 @@ packages:
       '@radix-ui/react-primitive': 2.1.4(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
       '@types/react': 18.3.24
       '@types/react-dom': 18.3.7(@types/react@18.3.24)
-<<<<<<< HEAD
-=======
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: false
@@ -2626,7 +2617,6 @@ packages:
       '@radix-ui/react-visually-hidden': 1.2.3(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
       '@types/react': 18.3.24
       '@types/react-dom': 18.3.7(@types/react@18.3.24)
->>>>>>> develop
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: false
@@ -2890,8 +2880,6 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.3.24
-<<<<<<< HEAD
-=======
       react: 18.3.1
     dev: false
 
@@ -2905,7 +2893,6 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.3.24
->>>>>>> develop
       react: 18.3.1
     dev: false
 
@@ -5844,13 +5831,8 @@ packages:
     hasBin: true
     dev: false
 
-<<<<<<< HEAD
-  /jquery@3.7.1:
-    resolution: {integrity: sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==}
-=======
   /jquery@4.0.0:
     resolution: {integrity: sha512-TXCHVR3Lb6TZdtw1l3RTLf8RBWVGexdxL6AC8/e0xZKEpBflBsjh9/8LXw+dkNFuOyW9B7iB3O1sP7hS0Kiacg==}
->>>>>>> develop
     dev: false
 
   /js-tokens@4.0.0:
@@ -6955,11 +6937,7 @@ packages:
       side-channel-weakmap: 1.0.2
     dev: true
 
-<<<<<<< HEAD
-  /slick-carousel@1.8.1(jquery@3.7.1):
-=======
   /slick-carousel@1.8.1(jquery@4.0.0):
->>>>>>> develop
     resolution: {integrity: sha512-XB9Ftrf2EEKfzoQXt3Nitrt/IPbT+f1fgqBdoxO3W/+JYvtEOW6EgxnWfr9GH6nmULv7Y2tPmEX3koxThVmebA==}
     peerDependencies:
       jquery: '>=1.8.0'
