@@ -6,21 +6,21 @@ import {
 } from "pages/monitoring/utils/manageLocation";
 
 export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
-  { label: "Nombre de la iniciativa", type: "text", source: ["name"] },
+  { label: "", type: "text", source: ["name"] },
   {
-    label: "desde",
+    label: "",
     type: "date",
     source: ["creationDate"],
     dateOperator: "ge",
   },
   {
-    label: "hasta",
+    label: "",
     type: "date",
     source: ["creationDate"],
     dateOperator: "le",
   },
   {
-    label: "Departamento",
+    label: "",
     type: "select",
     source: ["location/id", "location/parent/id"],
     values: await getColombianDepartments(),
@@ -28,20 +28,11 @@ export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
     childUpdater: getMunicipalitiesByDepartment,
   },
   {
-    label: "Municipio",
+    label: "",
     type: "select",
     source: ["location/id"],
     oDataEntity: "InitiativeLocations",
     values: null,
     dependsOnLabel: "Departamento",
-  },
-  {
-    label: "Estado",
-    type: "select",
-    source: ["enabled"],
-    values: [
-      { value: "false", name: "inactivas" },
-      { value: "true", name: "activas" },
-    ],
   },
 ];

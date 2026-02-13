@@ -1,9 +1,12 @@
-import { type ReactNode } from "react";
+import type { LucideProps } from "lucide-react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
-export type DashboardItem = { description: string; icon: ReactNode } & (
-  | { linkTo: string }
-  | { action: () => void }
-);
+export type DashboardItem = {
+  description: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+} & ({ linkTo: string } | { action: () => void });
 
 export type LocationList = {
   name: string;

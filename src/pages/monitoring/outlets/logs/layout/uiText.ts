@@ -31,7 +31,7 @@ export const uiText = {
       loadStatus: {
         loaded: null,
         loading: "Cargando...",
-        error: "Registro no disponible, intenta de nuevo más tarde",
+        error: "No disponible",
       },
     },
   },
