@@ -1,13 +1,11 @@
 import { RoleInInitiative } from "@appTypes/user";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiatives";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { Button } from "@ui/shadCN/component/button";
+import { useInitiativeCTX } from "../hooks/useInitiativeCTX";
 
-export function JoinInitiativeRequestButton({
-  initiativeId,
-}: {
-  initiativeId: number;
-}) {
+export function JoinInitiativeRequestButton() {
   const { userRoleByInitiativeId } = useUserInMonitoringCTX();
+  const { initiativeId } = useInitiativeCTX();
 
   // TODO: Obtener las solicitudes de esta pag
   // Crear juego de estados
@@ -19,7 +17,8 @@ export function JoinInitiativeRequestButton({
   // conectar accion con las api correspondiente
   // montar modal
 
-  switch (userRoleByInitiativeId[initiativeId]) {
+  console.log(initiativeId);
+  switch (userRoleByInitiativeId[initiativeId ?? 0]) {
     case RoleInInitiative.LEADER:
       return <Button>Lider</Button>;
     case RoleInInitiative.USER:

@@ -1,7 +1,7 @@
 import { RoleInInitiative } from "@appTypes/user";
 
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiatives";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 export function InitiativesManagement() {
   const { userInitiativesAs } = useUserInMonitoringCTX();

@@ -22,11 +22,10 @@ type CurrentInitiativeCTXProps = {
   isLoading: boolean;
   error: string | null;
 };
-const CurrentInitiativeCTX = createContext<CurrentInitiativeCTXProps | null>(
-  null,
-);
+const CurrentInitiativeContext =
+  createContext<CurrentInitiativeCTXProps | null>(null);
 
-export function CurrentInitiativeContext({
+export function CurrentInitiativeCTX({
   initialInitiative,
   children,
 }: {
@@ -39,6 +38,7 @@ export function CurrentInitiativeContext({
 
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
+      setInitiative(null);
       return;
     }
 
@@ -71,7 +71,7 @@ export function CurrentInitiativeContext({
   }, [initialInitiative, fetchInitiative]);
 
   return (
-    <CurrentInitiativeCTX.Provider
+    <CurrentInitiativeContext.Provider
       value={{
         initiativeId: initiative?.id ?? null,
         initiativeInfo: initiative,
@@ -81,12 +81,12 @@ export function CurrentInitiativeContext({
       }}
     >
       {children}
-    </CurrentInitiativeCTX.Provider>
+    </CurrentInitiativeContext.Provider>
   );
 }
 
 export function useInitiativeCTX() {
-  const context = useContext(CurrentInitiativeCTX);
+  const context = useContext(CurrentInitiativeContext);
   if (!context) {
     throw new Error(
       "useInitiativeCTX must be used within the CurrentInitiativeContext",
