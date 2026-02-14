@@ -4,14 +4,19 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
 import { RoleInInitiative } from "@appTypes/user";
 import { useUserCTX } from "@hooks/UserContext";
+import { commonErrorMessage, getErrorMessage } from "@utils/ui";
 
 import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
-import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
+import {
+  getUserInitiativesInfo,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 
 type MonitoringContextProps = {
   userInitiativesAs: { [K in RoleInInitiative]?: UserInInitiative[] };
@@ -19,22 +24,16 @@ type MonitoringContextProps = {
   userRoleByInitiativeId: Record<number, RoleInInitiative>;
   reloadUserInitiativesData: () => Promise<void>;
   isLoading: boolean;
+  error: string | null;
 };
 
 const UserMonitoringCTX = createContext<MonitoringContextProps | null>(null);
 
 export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
   const { user } = useUserCTX();
+  const [initiatives, setInitiatives] = useState<UserInInitiative[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [userInitiativesAs, setUserInitiativesAs] = useState<{
-    [K in RoleInInitiative]?: UserInInitiative[];
-  }>({});
-  const [userInitiativesById, setUserInitiativesById] = useState<
-    Record<number, UserInInitiative>
-  >({});
-  const [userRoleByInitiativeId, setUserRoleByInitiativeId] = useState<
-    Record<number, RoleInInitiative>
-  >({});
+  const [error, setError] = useState<string | null>(null);
 
   const fetchInitiatives = useCallback(async () => {
     if (!user?.username) {
@@ -43,16 +42,39 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
 
     try {
       setIsLoading(true);
-      const initiatives = await getUserInitiativesInfo();
+      const initiativesInfo = await getUserInitiativesInfo();
 
-      const initiativesById: Record<number, UserInInitiative> = {};
-      const rolesByInitiativeId: Record<number, RoleInInitiative> = {};
-      const initiativesByRole: {
-        [k in RoleInInitiative]?: UserInInitiative[];
-      } = {};
+      if (isMonitoringAPIError(initiativesInfo)) {
+        const { status, message, data } = initiativesInfo;
+        setError(
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        );
 
+        setInitiatives([]);
+        return;
+      }
+
+      setInitiatives(initiativesInfo);
+    } catch (err) {
+      console.error(err);
+      setError(`Error crítico: ${getErrorMessage(err)}`);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.username]);
+
+  useEffect(() => {
+    void fetchInitiatives();
+  }, [user?.username, fetchInitiatives]);
+
+  const arrangedInitiatives = useMemo(() => {
+    const byId: Record<number, UserInInitiative> = {};
+    const rolesById: Record<number, RoleInInitiative> = {};
+    const byRole: { [k in RoleInInitiative]?: UserInInitiative[] } = {};
+
+    if (user?.username) {
       for (const initiative of initiatives) {
-        initiativesById[initiative.id] = initiative;
+        byId[initiative.id] = initiative;
 
         const userDataInInitiative = initiative.users.find(
           (u) => u.userName === user.username,
@@ -64,35 +86,26 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
         }
 
         const roleId = userRoleId as RoleInInitiative;
-        if (!initiativesByRole[roleId]) {
-          initiativesByRole[roleId] = [];
+        if (!byRole[roleId]) {
+          byRole[roleId] = [];
         }
-        rolesByInitiativeId[initiative.id] = roleId;
-        initiativesByRole[roleId].push(initiative);
+        rolesById[initiative.id] = roleId;
+        byRole[roleId].push(initiative);
       }
-
-      setUserInitiativesAs(initiativesByRole);
-      setUserRoleByInitiativeId(rolesByInitiativeId);
-      setUserInitiativesById(initiativesById);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsLoading(false);
     }
-  }, [user?.username]);
 
-  useEffect(() => {
-    void fetchInitiatives();
-  }, [user?.username, fetchInitiatives]);
+    return { byId, rolesById, byRole };
+  }, [initiatives, user?.username]);
 
   return (
     <UserMonitoringCTX.Provider
       value={{
-        isLoading,
-        userInitiativesAs,
-        userInitiativesById,
-        userRoleByInitiativeId,
+        userInitiativesAs: arrangedInitiatives.byRole,
+        userInitiativesById: arrangedInitiatives.byId,
+        userRoleByInitiativeId: arrangedInitiatives.rolesById,
         reloadUserInitiativesData: fetchInitiatives,
+        isLoading,
+        error,
       }}
     >
       {children}
