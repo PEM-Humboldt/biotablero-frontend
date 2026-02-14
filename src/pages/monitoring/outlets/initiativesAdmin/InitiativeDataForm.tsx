@@ -10,7 +10,7 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { UserItem } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
   InitiativeDataForm,

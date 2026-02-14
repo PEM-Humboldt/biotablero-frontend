@@ -12,12 +12,12 @@ import type { GetKeysWithStringValues } from "@appTypes/utils";
 import type {
   ODataInitiativeUserRequest,
   UserInInitiative,
-} from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/odataResponse";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import {
   type FilterJoinRequestsCallback,
   Request,
-} from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+} from "pages/monitoring/types/userJoinRequest";
 import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestFilterButtons";
 import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";

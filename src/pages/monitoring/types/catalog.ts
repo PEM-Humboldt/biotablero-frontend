@@ -26,3 +26,8 @@ export type UserItem = {
   userName: string;
   level: UserLevel;
 };
+
+export type JoinRequestStatus = {
+  id: number;
+  name: string;
+};

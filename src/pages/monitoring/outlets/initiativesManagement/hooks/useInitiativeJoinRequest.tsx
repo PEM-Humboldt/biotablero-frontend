@@ -3,13 +3,13 @@ import { useCallback, useRef } from "react";
 import type { ODataParams } from "@appTypes/odata";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 import {
   getInitiativeRequests,
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { Request } from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 type JoinRequestsPool = {

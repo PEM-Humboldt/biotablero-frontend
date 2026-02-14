@@ -23,7 +23,7 @@ import {
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { LocationList } from "pages/monitoring/types/monitoring";
+import type { LocationList } from "pages/monitoring/types/catalog";
 import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
 import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";

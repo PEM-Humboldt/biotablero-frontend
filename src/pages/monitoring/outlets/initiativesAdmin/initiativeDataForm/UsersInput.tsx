@@ -6,7 +6,7 @@ import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { UserItem } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import {
   getUsers,
   isMonitoringAPIError,

@@ -3,7 +3,7 @@ import {
   DockOutlined,
 } from "@mui/icons-material";
 import { InitiativesAdministrationIcon } from "@ui/IconsMonitoringSidebar";
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
+import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const adminItems: DashboardItem[] = [
   {

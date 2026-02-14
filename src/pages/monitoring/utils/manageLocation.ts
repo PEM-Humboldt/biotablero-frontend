@@ -2,7 +2,7 @@ import {
   getLocationInfo,
   getLocationList,
 } from "pages/monitoring/api/monitoringAPI";
-import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
+import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 
 export const COLOMBIAN_DEPARTMENTS = await getLocationList();
 

@@ -1,5 +1,5 @@
 import type { ODataColumn } from "@appTypes/odata";
-import type { LogEntryShort } from "pages/monitoring/types/requestParams";
+import type { LogEntryShort } from "pages/monitoring/types/odataResponse";
 import { formatLogDate } from "pages/monitoring/utils/formatters";
 import { ShowLogDetailsButton } from "pages/monitoring/outlets/logs/table/ShowDetailBtn";
 

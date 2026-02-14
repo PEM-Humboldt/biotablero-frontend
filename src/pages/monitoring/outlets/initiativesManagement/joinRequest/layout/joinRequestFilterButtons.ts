@@ -1,7 +1,7 @@
 import {
   type FilterJoinRequestSettings,
   Request,
-} from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+} from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export const filterJoinRequestButtonsConfig: FilterJoinRequestSettings[] = [

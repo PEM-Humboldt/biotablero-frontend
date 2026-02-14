@@ -5,7 +5,7 @@ import {
   SearchOutlined,
 } from "@mui/icons-material";
 
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
+import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const generalItems: DashboardItem[] = [
   { description: "Inicio", icon: <HomeOutlined />, linkTo: "/Monitoreo" },

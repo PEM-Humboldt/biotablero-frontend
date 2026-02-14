@@ -8,7 +8,7 @@ import {
   getInitiatives,
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
-import type { ODataInitiative } from "pages/monitoring/types/requestParams";
+import type { ODataInitiative } from "pages/monitoring/types/odataResponse";
 import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
 
 import { SearchBar } from "pages/monitoring/outlets/initiativesMap/SearchBar";

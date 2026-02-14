@@ -1,8 +1,8 @@
-import type { UserLevel } from "pages/monitoring/types/monitoring";
+import type { UserLevel } from "pages/monitoring/types/catalog";
 import type {
   LocationCompleteInfo,
   ODataInitiativeShortEntry,
-} from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/odataResponse";
 
 // NOTE: Información a suministrar para crear una iniciativa
 export type GeneralInfo = {

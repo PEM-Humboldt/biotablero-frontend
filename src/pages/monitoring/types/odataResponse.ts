@@ -1,7 +1,10 @@
 import type { HasId, ODataResponse } from "@appTypes/odata";
-import type { UserLevel } from "pages/monitoring/types/monitoring";
+import type {
+  JoinRequestStatus,
+  UserLevel,
+} from "pages/monitoring/types/catalog";
 
-// NOTE: registros del log
+// NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
   timeStamp: string;
   type: string;
@@ -62,10 +65,6 @@ export interface ODataInitiativeShortEntry extends HasId {
 }
 
 // NOTE: solicitudes
-export type UserRequestStatus = {
-  id: number;
-  name: string;
-};
 
 export interface ODataInitiativeUserRequest extends HasId {
   userName: string;
@@ -73,11 +72,11 @@ export interface ODataInitiativeUserRequest extends HasId {
   creationDate: string;
   responseDate: string;
   initiativeId: number;
-  status: UserRequestStatus;
+  status: JoinRequestStatus;
 }
 
 // NOTE: Usuarios
-export interface ODataUser extends HasId {
+interface ODataUser extends HasId {
   email: string;
   emailVerified: boolean;
   username: string;

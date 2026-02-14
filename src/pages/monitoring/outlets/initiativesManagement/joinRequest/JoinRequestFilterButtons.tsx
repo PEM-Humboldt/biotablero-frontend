@@ -3,8 +3,8 @@ import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
+import type { Request } from "pages/monitoring/types/userJoinRequest";
 
 type FilterJoinRequestsCallback = (
   status: Request,

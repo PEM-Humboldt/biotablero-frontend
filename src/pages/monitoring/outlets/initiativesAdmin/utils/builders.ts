@@ -3,7 +3,7 @@ import type {
   LocationDataBasic,
   LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { LocationCompleteInfo } from "pages/monitoring/types/requestParams";
+import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
 
 export async function fetchAndMakeLocationObj(
   value: LocationDataBasic,

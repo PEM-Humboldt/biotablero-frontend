@@ -1,8 +1,8 @@
 import { type ReactNode } from "react";
 import { CornerDownRight } from "lucide-react";
 
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
+import type { Request } from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export function joinRequestTableParams(

@@ -7,7 +7,7 @@ import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 
-import { MonitoringContext } from "pages/monitoring/hooks/useUserInitiatives";
+import { UserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiatives";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -24,13 +24,13 @@ export function Monitoring() {
   }, [layoutDispatch]);
 
   return (
-    <MonitoringContext>
+    <UserInMonitoringCTX>
       <div className="monitoring-root">
         <SideBar />
 
         <Outlet />
         <Toaster />
       </div>
-    </MonitoringContext>
+    </UserInMonitoringCTX>
   );
 }

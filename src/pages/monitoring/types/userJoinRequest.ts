@@ -1,6 +1,5 @@
 import type { GetKeysWithStringValues } from "@appTypes/utils";
-
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 
 export enum Request {
   UNDER_REVIEW = 1,

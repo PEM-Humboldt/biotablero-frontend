@@ -2,7 +2,7 @@ import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import type { LogEntryFull } from "pages/monitoring/types/requestParams";
+import type { LogEntryFull } from "pages/monitoring/types/odataResponse";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { LOGS_ELEMENT_ID } from "@config/monitoring";

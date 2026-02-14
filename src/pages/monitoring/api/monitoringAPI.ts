@@ -20,9 +20,9 @@ import type {
   ODataUserInfo,
   ODataUserRequest,
   UserInInitiative,
-} from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/odataResponse";
 import { oDataToString } from "@utils/odata";
-import type { Location, UserLevel } from "pages/monitoring/types/monitoring";
+import type { Location, UserLevel } from "pages/monitoring/types/catalog";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";

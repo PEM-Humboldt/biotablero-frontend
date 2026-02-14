@@ -1,6 +1,6 @@
 import { getUserLevels } from "pages/monitoring/api/monitoringAPI";
-import type { UserItem, UserLevel } from "pages/monitoring/types/monitoring";
-import type { ODataUserInfo } from "pages/monitoring/types/requestParams";
+import type { UserItem, UserLevel } from "pages/monitoring/types/catalog";
+import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 
 export const USER_LEVELS: UserLevel[] = await getUserLevels();
 export const NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { LogEntryFull } from "pages/monitoring/types/requestParams";
+import type { LogEntryFull } from "pages/monitoring/types/odataResponse";
 
 export function DetailCard({
   log,
