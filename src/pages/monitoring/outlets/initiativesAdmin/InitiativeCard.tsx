@@ -22,13 +22,13 @@ import {
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { UserItem } from "pages/monitoring/types/catalog";
 import type {
-  CardInfoGrouped,
   InitiativeContact,
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
   LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
+import type { CardInfoGrouped } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   getInitiative,
   isMonitoringAPIError,
@@ -99,8 +99,13 @@ export function InitiativeCard({
         return;
       }
 
-      setCardInfo(res);
-      updater(res);
+      const initiativeAdminInfo = {
+        ...res,
+        users: res.users.filter((user) => user.level.id === 1),
+      } satisfies InitiativeFullInfo;
+
+      setCardInfo(initiativeAdminInfo);
+      updater(initiativeAdminInfo);
     } catch (err) {
       setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
       console.error(uiText.criticalError.log, err);

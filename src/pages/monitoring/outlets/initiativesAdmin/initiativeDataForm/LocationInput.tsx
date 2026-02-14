@@ -17,7 +17,7 @@ import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText"
 import {
   isLocationObj,
   type LocationDataBasic,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
 import {
   COLOMBIAN_DEPARTMENTS,
   getMunicipalitiesByDepartment,

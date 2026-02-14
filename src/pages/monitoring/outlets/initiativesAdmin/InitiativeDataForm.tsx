@@ -13,10 +13,12 @@ import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText"
 import type { UserItem } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
-  InitiativeDataForm,
-  InitiativeDataFormErr,
   InitiativeFullInfo,
   LocationObj,
+} from "pages/monitoring/types/initiative";
+import type {
+  InitiativeDataForm,
+  InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   isMonitoringAPIError,

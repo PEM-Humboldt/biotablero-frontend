@@ -25,7 +25,7 @@ import { oDataToString } from "@utils/odata";
 import type { Location, UserLevel } from "pages/monitoring/types/catalog";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
-import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { InitiativeFullInfo } from "pages/monitoring/types/initiative";
 import { commonErrorMessage } from "@utils/ui";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {

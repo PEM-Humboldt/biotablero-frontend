@@ -10,7 +10,7 @@ import {
 import { RoleInInitiative } from "@appTypes/user";
 import { useUserCTX } from "@hooks/UserContext";
 
-import type { UserInInitiative } from "pages/monitoring/types/requestParams";
+import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
 import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
 
 type MonitoringContextProps = {
@@ -21,9 +21,9 @@ type MonitoringContextProps = {
   isLoading: boolean;
 };
 
-const MonitoringCTX = createContext<MonitoringContextProps | null>(null);
+const UserMonitoringCTX = createContext<MonitoringContextProps | null>(null);
 
-export function MonitoringContext({ children }: { children: ReactNode }) {
+export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
   const { user } = useUserCTX();
   const [isLoading, setIsLoading] = useState(true);
   const [userInitiativesAs, setUserInitiativesAs] = useState<{
@@ -86,7 +86,7 @@ export function MonitoringContext({ children }: { children: ReactNode }) {
   }, [user?.username, fetchInitiatives]);
 
   return (
-    <MonitoringCTX.Provider
+    <UserMonitoringCTX.Provider
       value={{
         isLoading,
         userInitiativesAs,
@@ -96,12 +96,12 @@ export function MonitoringContext({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </MonitoringCTX.Provider>
+    </UserMonitoringCTX.Provider>
   );
 }
 
-export function useMonitoringCTX() {
-  const context = useContext(MonitoringCTX);
+export function useUserInMonitoringCTX() {
+  const context = useContext(UserMonitoringCTX);
   if (!context) {
     throw new Error(
       "useMonitoringCTX must be used within the MonitoringContext",
