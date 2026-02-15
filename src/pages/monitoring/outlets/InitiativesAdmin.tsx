@@ -117,16 +117,16 @@ export function InitiativesAdmin() {
   };
 
   return (
-    <div className="ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
-      <div className="p-6 pb-0 w-full flex justify-between">
-        <h3 className="h1 text-primary">Administrador de iniciativas</h3>
+    <main className="page-main">
+      <header>
+        <h3>{uiText.title}</h3>
         <Button onClick={() => setNewInitiative((v) => !v)}>
           {newInitiative
             ? uiText.initiative.cancelCreation
             : uiText.initiative.createNew}
           {newInitiative ? <CircleXIcon /> : <ListPlus />}
         </Button>
-      </div>
+      </header>
 
       {error !== "" && <ErrorsList errorItems={[error]} />}
 
@@ -177,6 +177,6 @@ export function InitiativesAdmin() {
           />
         </>
       )}
-    </div>
+    </main>
   );
 }

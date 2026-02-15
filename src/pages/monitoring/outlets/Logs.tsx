@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useLoaderData } from "react-router";
-import "pages/monitoring/outlets/logs/layout/logStyles.css";
+import { FileDown } from "lucide-react";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
-import { LOG_RECORDS_PER_PAGE, LOGS_ELEMENT_ID } from "@config/monitoring";
+import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
 import { Button } from "@ui/shadCN/component/button";
@@ -12,6 +12,7 @@ import {
   LoadStatusMsgBar,
   type LoadStatusMsgBarProp,
 } from "@ui/loadStatusSecction";
+import { ODataTable } from "@composites/ODataTable";
 
 import {
   downloadLogs,
@@ -19,14 +20,13 @@ import {
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
-import { LogsTable } from "pages/monitoring/outlets/logs/Table";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {
   ODataLogEntryShort,
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/odataResponse";
-import { FileDown } from "lucide-react";
+import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 
@@ -141,9 +141,9 @@ export function Logs() {
   const downloadDisabled = logs && logs["@odata.count"] > 10_000;
 
   return (
-    <main className="logs ml-[60px] bg-[#f5f5f5] p-4 *:max-w-6xl flex flex-col gap-4 items-center min-h-screen">
-      <header className="p-6 pb-0 w-full flex justify-between items-center ml-[60px] max-w-6xl">
-        <h3 className="h1! text-primary w-max">{uiText.logsTitle}</h3>
+    <main className="page-main">
+      <header>
+        <h3>{uiText.logsTitle}</h3>
         <div className="max-w-[500px] text-right text-base">
           {downloadDisabled ? (
             uiText.download.warn
@@ -167,17 +167,21 @@ export function Logs() {
         setSearchParams={setSearchParams}
         submit={uiText.searchBar.submitBtn}
         reset={uiText.searchBar.resetBtn}
-        className="search-bar"
+        className="w-full bg-muted"
       />
 
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       ) : (
-        <div id={LOGS_ELEMENT_ID}>
+        <div className="space-y-4">
           {logs === null || logs.value.length === 0 ? (
             <p>{uiText.noLogsAvailable}</p>
           ) : (
-            <LogsTable records={parseODataLogs(logs)} />
+            <ODataTable
+              cols={tableContent}
+              values={parseODataLogs(logs)}
+              className="table-logs"
+            />
           )}
           <TablePager
             currentPage={currentPage}
@@ -185,7 +189,6 @@ export function Logs() {
             onPageChange={setCurrentPage}
             recordsPerPage={LOG_RECORDS_PER_PAGE}
             paginated={3}
-            className="table-pager"
           />
         </div>
       )}

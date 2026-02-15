@@ -4,7 +4,37 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 
-export const COLOMBIAN_DEPARTMENTS = await getLocationList();
+export const getColombianDepartments = (() => {
+  let cachedDeps: { name: string; value: number }[] = [];
+  let currentPromise: Promise<{ name: string; value: number }[]> | null = null;
+
+  return async () => {
+    if (cachedDeps.length > 0) {
+      return cachedDeps;
+    }
+
+    if (currentPromise) {
+      return currentPromise;
+    }
+
+    currentPromise = getLocationList()
+      .then((deps) => {
+        cachedDeps = deps;
+        return deps;
+      })
+      .catch((err) => {
+        console.error("Cannot fetch departments list", err);
+        return [];
+      })
+      .finally(() => {
+        currentPromise = null;
+      });
+
+    return currentPromise;
+  };
+})();
+
+void getColombianDepartments();
 
 const municipalitiesCache: {
   [key: string | number]: { name: string; value: number }[];

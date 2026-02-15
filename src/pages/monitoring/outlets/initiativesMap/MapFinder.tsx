@@ -23,7 +23,7 @@ export function MapFinder({
       ref={mapRef}
       center={bounds}
       zoom={6}
-      className="h-full bg-accent"
+      className="bg-accent"
     >
       <TileLayer
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'

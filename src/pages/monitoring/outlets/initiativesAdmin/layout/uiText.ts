@@ -1,4 +1,5 @@
 export const uiText = {
+  title: "Administrador de iniciativas",
   loading: "Cargando...",
   wait: "Espera...",
   save: "Guardar",

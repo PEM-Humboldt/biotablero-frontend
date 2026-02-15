@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { Outlet, useOutletContext } from "react-router";
 import { Toaster } from "sonner";
 
-import { SideBar } from "pages/monitoring/layout/SideBar";
-import "pages/monitoring/styles/monitoring.css";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { SidebarProvider, SidebarTrigger } from "@ui/shadCN/component/sidebar";
+import { MonitoringSidebar } from "pages/monitoring/layout/sidebar";
 
 export function Monitoring() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -17,19 +17,20 @@ export function Monitoring() {
       sectionData: {
         moduleName: "Monitoreo Comunitario",
         logos: new Set(["usaid", "geobon", "umed", "temple"]),
-        className: "mingrid",
       },
     });
   }, [layoutDispatch]);
 
   return (
     <UserInMonitoringCTX>
-      <div className="monitoring-root">
-        <SideBar />
-
+      <SidebarProvider defaultOpen={false}>
+        <div className="relative">
+          <MonitoringSidebar className="pt-14" />
+          <SidebarTrigger className="absolute -right-4 top-4 z-10" />
+        </div>
         <Outlet />
-        <Toaster />
-      </div>
+      </SidebarProvider>
+      <Toaster />
     </UserInMonitoringCTX>
   );
 }
