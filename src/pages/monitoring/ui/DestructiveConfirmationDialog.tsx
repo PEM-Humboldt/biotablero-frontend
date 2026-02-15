@@ -17,7 +17,7 @@ import {
 type DestructiveConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
-    dialog: { title: string; description?: string };
+    dialog: { title: string; description: string };
     actionBtns?: { confirm?: string; cancel?: string; exit?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
@@ -50,11 +50,9 @@ export function DestructiveConfirmationDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{texts.dialog.title}</AlertDialogTitle>
-          {texts.dialog?.description !== undefined && (
-            <AlertDialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
-              {texts.dialog.description}
-            </AlertDialogDescription>
-          )}
+          <AlertDialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
+            {texts.dialog.description}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>

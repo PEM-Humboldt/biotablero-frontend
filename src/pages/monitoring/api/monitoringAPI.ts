@@ -541,7 +541,7 @@ export async function requestJoinInitiative(
   asRole: RoleInInitiative,
 ) {
   const res = await monitoringAPI({
-    type: "put",
+    type: "post",
     endpoint: "JoinRequest",
     options: { data: { initiativeId, level: { id: asRole } } },
   });
@@ -552,6 +552,20 @@ export async function requestJoinInitiative(
   }
 
   return res;
+}
+
+export async function leaveInitiative(userIdInInitiative: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `InitiativeUser/${userIdInInitiative}`,
+  });
+
+  if (isMonitoringAPIError(res)) {
+    console.error(res.message);
+    return "Algo malio sal";
+  }
+
+  return null;
 }
 
 /**

@@ -16,7 +16,7 @@ import {
 type ConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
-    dialog: { title: string; description?: string };
+    dialog: { title: string; description: string };
     actionBtns?: { confirm?: string; cancel?: string; exit?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
@@ -49,11 +49,9 @@ export function ConfirmationDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{texts.dialog.title}</DialogTitle>
-          {texts.dialog?.description !== undefined && (
-            <DialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
-              {texts.dialog.description}
-            </DialogDescription>
-          )}
+          <DialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
+            {texts.dialog.description}
+          </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
