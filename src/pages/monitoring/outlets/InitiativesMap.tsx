@@ -4,6 +4,7 @@ import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { searchBarItems } from "pages/monitoring/outlets/initiativesMap/layout/searchBarContent";
 import { useState } from "react";
+import { Browser } from "pages/monitoring/outlets/initiativesMap/Browser";
 
 export function InitiativesMap() {
   const [searchParams, setSearchParams] = useState<ODataParams>({});
@@ -17,7 +18,7 @@ export function InitiativesMap() {
           reset={"reset"}
           className="bg-background w-full px-16"
         />
-        <div className="absolute w-[25%] h-[50%] bg-background top-19 left-13 z-10 rounded-lg"></div>
+        <Browser>carajo</Browser>
         <MapFinder />
       </div>
     </CurrentInitiativeCTX>

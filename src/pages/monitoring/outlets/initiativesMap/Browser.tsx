@@ -11,7 +11,6 @@ import {
 } from "@ui/shadCN/component/native-select";
 import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
 
-import "pages/monitoring/styles/monitoring.css";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
 export function Browser({ children }: { children: ReactNode }) {
@@ -45,22 +44,19 @@ export function Browser({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="browser-container">
-      <div className="p-4">
-        <NativeSelect onChange={handleInitiativeChange}>
-          <NativeSelectOption value="">
-            Selecciona una iniciativa
+    <div className="absolute p-4 w-[25%] h-[50%] bg-background top-19 left-13 z-10 rounded-lg">
+      <NativeSelect onChange={handleInitiativeChange}>
+        <NativeSelectOption value={0}>
+          Selecciona una iniciativa
+        </NativeSelectOption>
+        {allInitiatives.map((initiative) => (
+          <NativeSelectOption key={initiative.id} value={initiative.id}>
+            nombre:{initiative.name} id:{initiative.id}
           </NativeSelectOption>
-          {allInitiatives.map((initiative) => (
-            <NativeSelectOption key={initiative.id} value={initiative.id}>
-              nombre:{initiative.name} id:{initiative.id}
-            </NativeSelectOption>
-          ))}
-        </NativeSelect>
+        ))}
+      </NativeSelect>
 
-        <JoinInitiativeRequestButton />
-      </div>
-      <div className="browser-content">{children}</div>
+      {/* <JoinInitiativeRequestButton initiativeId={currentInitiative} /> */}
     </div>
   );
 }
