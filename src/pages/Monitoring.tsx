@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Outlet, useOutletContext } from "react-router";
-import { Toaster } from "sonner";
 
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
@@ -30,7 +29,6 @@ export function Monitoring() {
         </div>
         <Outlet />
       </SidebarProvider>
-      <Toaster />
     </UserInMonitoringCTX>
   );
 }

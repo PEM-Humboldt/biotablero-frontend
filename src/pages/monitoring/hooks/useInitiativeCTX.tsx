@@ -9,15 +9,20 @@ import {
 
 import { commonErrorMessage, getErrorMessage } from "@utils/ui";
 
-import type { InitiativeFullInfo } from "pages/monitoring/types/initiative";
+import type {
+  InitiativeFullInfo,
+  UserSRC,
+} from "pages/monitoring/types/initiative";
 import {
   getInitiative,
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
+import { useUserCTX } from "@hooks/UserContext";
 
 type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
   initiativeInfo: InitiativeFullInfo | null;
+  userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<void>;
   isLoading: boolean;
   error: string | null;
@@ -35,6 +40,7 @@ export function CurrentInitiativeCTX({
   const [initiative, setInitiative] = useState<InitiativeFullInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useUserCTX();
 
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
@@ -75,6 +81,9 @@ export function CurrentInitiativeCTX({
       value={{
         initiativeId: initiative?.id ?? null,
         initiativeInfo: initiative,
+        userInInitiativeInfo:
+          initiative?.users.filter((u) => u.userName === user?.username)[0] ??
+          null,
         setInitiative: fetchInitiative,
         isLoading,
         error,

@@ -44,7 +44,7 @@ export function Browser({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="absolute p-4 w-[25%] h-[50%] bg-background top-19 left-13 z-10 rounded-lg">
+    <div className="absolute p-4 w-[25%] h-[50%] bg-background top-19 left-13 z-10 rounded-lg flex flex-col gap-4">
       <NativeSelect onChange={handleInitiativeChange}>
         <NativeSelectOption value={0}>
           Selecciona una iniciativa
@@ -56,7 +56,7 @@ export function Browser({ children }: { children: ReactNode }) {
         ))}
       </NativeSelect>
 
-      {/* <JoinInitiativeRequestButton initiativeId={currentInitiative} /> */}
+      <JoinInitiativeRequestButton />
     </div>
   );
 }
