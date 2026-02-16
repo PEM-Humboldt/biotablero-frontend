@@ -5,6 +5,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
+import { InitiativeUpdater } from "./initiativesManagement/InitiativeUpdater";
 
 enum Role {
   LEADER = 1,
@@ -60,6 +61,7 @@ export function InitiativesManagement() {
       </header>
 
       <JoinRequests InitiativesAsLeader={userInitiatives[Role.LEADER]} />
+      <InitiativeUpdater initiativesAsLeader={userInitiatives[Role.LEADER]} />
     </main>
   );
 }
