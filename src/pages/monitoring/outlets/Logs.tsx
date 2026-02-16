@@ -1,13 +1,24 @@
 import { useEffect, useState, useRef } from "react";
 import { useLoaderData } from "react-router";
+import { FileDown } from "lucide-react";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
 import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
+import { Button } from "@ui/shadCN/component/button";
+import {
+  LoadStatusMsgBar,
+  type LoadStatusMsgBarProp,
+} from "@ui/loadStatusSecction";
+import { ODataTable } from "@composites/ODataTable";
 
-import { getLogs } from "pages/monitoring/api/monitoringAPI";
+import {
+  downloadLogs,
+  getLogs,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {
@@ -15,12 +26,7 @@ import type {
   ODataLog,
   LogEntryShort,
 } from "pages/monitoring/types/requestParams";
-import {
-  LoadStatusMsgBar,
-  type LoadStatusMsgBarProp,
-} from "@ui/loadStatusSecction";
 import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
-import { ODataTable } from "@composites/ODataTable";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
 
@@ -38,6 +44,7 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
 
 export function Logs() {
   const preloadedLogs = useLoaderData<LoadedLogs>();
+  const [isDownloading, setIsDownloading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [logs, setLogs] = useState<ODataLog | null>(
     preloadedLogs?.criticalUserData ?? null,
@@ -53,6 +60,7 @@ export function Logs() {
   const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
+    setIsDownloading(true);
     const filterChange = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
         setCurrentPage(1);
@@ -82,20 +90,78 @@ export function Logs() {
           type: "error",
         });
 
-        console.error("Unexpected error while getting the logs:", err);
+        console.error(uiText.criticalError, err);
+      } finally {
+        setIsDownloading(false);
       }
     };
 
     void filterChange();
   }, [searchParams, currentPage]);
 
+  const handleDownload = async () => {
+    const { top: _top, skip: _skip, ...downloadParams } = searchParams;
+    setIsDownloading(true);
+
+    try {
+      const result = await downloadLogs(downloadParams);
+
+      if (isMonitoringAPIError(result)) {
+        console.error(uiText.download.error, result.message);
+        setLoadMsg({
+          message: `${uiText.download.error}. ${uiText.download.tryAgain}`,
+          type: "error",
+        });
+        return;
+      }
+
+      const url = window.URL.createObjectURL(result);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", uiText.download.filename);
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(uiText.download.error, err);
+      setLoadMsg({
+        message: uiText.download.error,
+        type: "error",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const recordsAvailable = logs ? logs["@odata.count"] : 0;
+  const downloadDisabled = logs && logs["@odata.count"] > 10_000;
 
   return (
     <main className="page-main">
       <header>
         <h3>{uiText.logsTitle}</h3>
+        <div className="max-w-[500px] text-right text-base">
+          {downloadDisabled ? (
+            uiText.download.warn
+          ) : (
+            <Button
+              type="button"
+              onClick={() => void handleDownload()}
+              disabled={recordsAvailable === 0}
+            >
+              {isDownloading
+                ? uiText.download.button.isDownloading
+                : uiText.download.button.isReady}
+              {!isDownloading && <FileDown aria-hidden="true" />}
+            </Button>
+          )}
+        </div>
       </header>
+
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setSearchParams}
@@ -103,6 +169,7 @@ export function Logs() {
         reset={uiText.searchBar.resetBtn}
         className="w-full bg-muted"
       />
+
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       ) : (

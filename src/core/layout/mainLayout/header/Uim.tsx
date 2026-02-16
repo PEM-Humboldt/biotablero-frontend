@@ -102,7 +102,7 @@ export function Uim() {
             className="h-9 w-9 md:h-12 md:w-12"
           >
             <span className="sr-only">
-              {user ? "Iniciar sesión" : "Ver mi perfil"}
+              {user ? "Ver mi perfil" : "Iniciar sesión"}
             </span>
             <DoorClosed className="size-6" />
           </Button>
