@@ -2,7 +2,7 @@ import type {
   InitiativeUser,
   UserInitiatives,
 } from "pages/monitoring/types/requestParams";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RoleInInitiative } from "pages/monitoring/outlets/InitiativesManagement";
 import { Combobox } from "@ui/ComboBox";
@@ -12,6 +12,21 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@ui/shadCN/component/tabs";
+
+const usersManagementTabs: {
+  label: string;
+  value: keyof typeof RoleInInitiative;
+}[] = [
+  { label: "Gestión de líderes", value: "LEADER" },
+  { label: "gestión de participanter", value: "USER" },
+  { label: "gestión de observadores", value: "VIEWER" },
+];
 
 export function InitiativeUpdater({
   initiativesAsLeader,
@@ -77,49 +92,70 @@ export function InitiativeUpdater({
       {isLoading && <div>Cargando mi perro...</div>}
       {error && <ErrorsList errorItems={[error]} />}
 
-      {initiativesAsLeader && initiativesAsLeader?.length > 1 && (
-        <Combobox
-          items={initiativesAsLeader}
-          value={selectedId}
-          setValue={setSelectedId}
-          keys={{ forLabel: "name", forValue: "id" }}
-          uiText={{
-            itemNotFound: "Iniciativa no encontrada",
-            trigger: "Selecciona la iniciativa",
-            inputPlaceholder: "carajo",
-          }}
-        />
-      )}
+      <div className="w-full p-4 bg-background rounded-xl">
+        {initiativesAsLeader && initiativesAsLeader?.length > 1 && (
+          <Combobox
+            items={initiativesAsLeader}
+            value={selectedId}
+            setValue={setSelectedId}
+            keys={{ forLabel: "name", forValue: "id" }}
+            uiText={{
+              itemNotFound: "Iniciativa no encontrada",
+              trigger: "Selecciona la iniciativa",
+              inputPlaceholder: "carajo",
+            }}
+            className="mb-2 w-[25%]!"
+          />
+        )}
 
-      {currentInitiative && (
-        <>
-          <UsersListForManagement
-            title="Líderes y lideresas de la iniciativa"
-            users={initiativeUsers}
-            inRole={RoleInInitiative.LEADER}
-          />
-          <UsersListForManagement
-            title="Participantes de la iniciativa"
-            users={initiativeUsers}
-            inRole={RoleInInitiative.USER}
-          />
-          <UsersListForManagement
-            title="Observadores de la iniciativa"
-            users={initiativeUsers}
-            inRole={RoleInInitiative.VIEWER}
-          />
-        </>
-      )}
+        {currentInitiative && (
+          <Tabs
+            defaultValue={usersManagementTabs[0].value}
+            className="common-tabs"
+          >
+            <TabsList className="tabs-list">
+              {usersManagementTabs.map((tab) => (
+                <TabsTrigger
+                  key={`trigger_${tab.value}`}
+                  value={tab.value}
+                  className="tabs-trigger"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+
+              <TabsTrigger value="initiative" className="tabs-trigger">
+                Gestión de la iniciativa
+              </TabsTrigger>
+            </TabsList>
+
+            {usersManagementTabs.map((tab) => (
+              <TabsContent
+                value={tab.value}
+                key={`content_${tab.value}`}
+                className="tabs-content"
+              >
+                <UsersListForManagement
+                  users={initiativeUsers}
+                  inRole={RoleInInitiative[tab.value]}
+                />
+              </TabsContent>
+            ))}
+
+            <TabsContent value="initiative" className="tabs-content">
+              carajo
+            </TabsContent>
+          </Tabs>
+        )}
+      </div>
     </>
   );
 }
 
 function UsersListForManagement({
-  title,
   users,
   inRole,
 }: {
-  title: string;
   users: InitiativeUser[];
   inRole: RoleInInitiative;
 }) {
@@ -128,18 +164,19 @@ function UsersListForManagement({
   );
 
   return (
-    <div className="bg-background w-full p-4 rounded-xl">
-      <h4>{title}</h4>
+    <div>
       {usersInRole.length === 0 ? (
-        <div>No hay usuarios dentro de la iniciativa en esta categoría</div>
+        <div className="text-2xl text-foreground text-center p-8">
+          Actualmente no hay usuarios dentro de la iniciativa en esta categoría
+        </div>
       ) : (
-        <ul className="w-full space-y-2">
+        <ul className="w-full p-2 space-y-2">
           {usersInRole.map((user) => {
             const formatedDate = new Date(user.creationDate).toLocaleString();
             return (
               <li
                 key={user.id}
-                className="flex gap-4 bg-muted py-2 px-4 items-center rounded-lg border border-primary/50"
+                className="flex gap-4 hover:bg-background py-2 px-4 items-center rounded-lg hover:outline hover:shadow-lg hover:outline-primary/50"
               >
                 <div className="flex-1 flex gap-4 items-center">
                   <img
