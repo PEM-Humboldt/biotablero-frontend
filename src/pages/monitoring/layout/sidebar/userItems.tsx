@@ -8,7 +8,7 @@ export const userItems: DashboardItem[] = [
     linkTo: "Dashboard",
   },
   {
-    description: "Initiatives",
+    description: "Gestión de iniciativas",
     icon: UserRoundCheck,
     linkTo: "gestionarIniciativas",
   },
