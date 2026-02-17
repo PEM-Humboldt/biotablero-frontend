@@ -658,3 +658,32 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
 
   return result;
 }
+
+export async function changeUserRoleInInitiative(
+  userIdInInitiative: number,
+  newRole: RoleInInitiative,
+  focusArea?: string,
+) {
+  try {
+    const res = await monitoringAPI({
+      type: "put",
+      endpoint: `InitiativeUser/${userIdInInitiative}`,
+      options: {
+        data: {
+          level: { id: newRole },
+          ...(focusArea ? { focusArea } : {}),
+        },
+      },
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
+      return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
+    }
+
+    return null;
+  } catch (err) {
+    console.error(err);
+    return err instanceof Error ? err.message : JSON.stringify(err);
+  }
+}

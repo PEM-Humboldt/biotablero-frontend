@@ -1,10 +1,6 @@
-import type {
-  InitiativeUser,
-  UserInitiatives,
-} from "pages/monitoring/types/requestParams";
 import { useEffect, useState } from "react";
 
-import { RoleInInitiative } from "pages/monitoring/outlets/InitiativesManagement";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Combobox } from "@ui/ComboBox";
 import {
   getUsers,
@@ -18,6 +14,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
+import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
+import type {
+  InitiativeUser,
+  UserInInitiative,
+} from "pages/monitoring/types/odataResponse";
 
 const usersManagementTabs: {
   label: string;
@@ -31,7 +32,7 @@ const usersManagementTabs: {
 export function InitiativeUpdater({
   initiativesAsLeader,
 }: {
-  initiativesAsLeader: UserInitiatives[] | undefined;
+  initiativesAsLeader: UserInInitiative[] | undefined;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,7 +105,7 @@ export function InitiativeUpdater({
               trigger: "Selecciona la iniciativa",
               inputPlaceholder: "carajo",
             }}
-            className="mb-2 w-[25%]!"
+            className="mb-2"
           />
         )}
 
@@ -150,73 +151,4 @@ export function InitiativeUpdater({
       </div>
     </>
   );
-}
-
-function UsersListForManagement({
-  users,
-  inRole,
-}: {
-  users: InitiativeUser[];
-  inRole: RoleInInitiative;
-}) {
-  const usersInRole = users.filter(
-    (user) => Number(user.level.id) === Number(inRole),
-  );
-
-  return (
-    <div>
-      {usersInRole.length === 0 ? (
-        <div className="text-2xl text-foreground text-center p-8">
-          Actualmente no hay usuarios dentro de la iniciativa en esta categoría
-        </div>
-      ) : (
-        <ul className="w-full p-2 space-y-2">
-          {usersInRole.map((user) => {
-            const formatedDate = new Date(user.creationDate).toLocaleString();
-            return (
-              <li
-                key={user.id}
-                className="flex gap-4 hover:bg-background py-2 px-4 items-center rounded-lg hover:outline hover:shadow-lg hover:outline-primary/50"
-              >
-                <div className="flex-1 flex gap-4 items-center">
-                  <img
-                    src={`https://picsum.photos/seed/${Math.round(Math.random() * 100)}/50/50`}
-                    alt=""
-                    className="w-12 h-12 rounded-full"
-                  />
-                  <span>{user.userName}</span>
-                </div>
-                <time dateTime={formatedDate}>{formatedDate}</time>
-                {/* <ActionsToUserByRole user={user} role={inRole} /> */}
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-function ActionsToUserByRole({
-  user,
-  role,
-}: {
-  user: InitiativeUser;
-  initiativeId: number;
-  role: RoleInInitiative;
-}) {
-  const changeUserRole = async (user, role) => {};
-
-  const removeUserFromInitiative = async (user, initiativeId) => {};
-
-  switch (role) {
-    case RoleInInitiative.LEADER:
-      return <div>a</div>;
-    case RoleInInitiative.USER:
-      return <div>b</div>;
-    case RoleInInitiative.VIEWER:
-      return <div>c</div>;
-    default:
-      return null;
-  }
 }
