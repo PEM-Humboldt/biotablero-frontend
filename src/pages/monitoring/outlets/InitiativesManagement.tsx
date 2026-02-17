@@ -7,7 +7,7 @@ import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
 import { InitiativeUpdater } from "./initiativesManagement/InitiativeUpdater";
 
-enum Role {
+export enum RoleInInitiative {
   LEADER = 1,
   USER = 2,
   VIEWER = 3,
@@ -16,7 +16,7 @@ enum Role {
 export function InitiativesManagement() {
   const { user } = useUserCTX();
   const [userInitiatives, setUserInitiatives] = useState<
-    Partial<Record<Role, UserInitiatives[]>>
+    Partial<Record<RoleInInitiative, UserInitiatives[]>>
   >({});
 
   useEffect(() => {
@@ -28,18 +28,18 @@ export function InitiativesManagement() {
       const initiatives = await getUserInitiativesInfo();
 
       const initiativesByRole = initiatives.reduce<
-        Partial<Record<Role, UserInitiatives[]>>
+        Partial<Record<RoleInInitiative, UserInitiatives[]>>
       >((groups, initiative) => {
         const userInInitiative = initiative.users.find(
           (u) => u.userName === user?.username,
         );
         const roleId = userInInitiative?.level.id ?? 0;
 
-        if (!roleId || !(roleId in Role)) {
+        if (!roleId || !(roleId in RoleInInitiative)) {
           return groups;
         }
 
-        const role = roleId as Role;
+        const role = roleId as RoleInInitiative;
         if (!groups[role]) {
           groups[role] = [];
         }
@@ -60,8 +60,12 @@ export function InitiativesManagement() {
         <h3>Tablero de iniciativas</h3>
       </header>
 
-      <JoinRequests InitiativesAsLeader={userInitiatives[Role.LEADER]} />
-      <InitiativeUpdater initiativesAsLeader={userInitiatives[Role.LEADER]} />
+      <JoinRequests
+        InitiativesAsLeader={userInitiatives[RoleInInitiative.LEADER]}
+      />
+      <InitiativeUpdater
+        initiativesAsLeader={userInitiatives[RoleInInitiative.LEADER]}
+      />
     </main>
   );
 }
