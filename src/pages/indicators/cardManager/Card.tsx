@@ -6,7 +6,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { StrValidator } from "@utils/strValidator";
 
 import type { IndicatorsCardInfo } from "pages/indicators/types/card";
-import { uiText } from "pages/indicators/layout/uiTetx";
+import { uiText } from "pages/indicators/layout/uiText";
 
 const itemInfoCategoriesDictionary = uiText.cards.infoDictionary;
 type CategoryKey = keyof typeof itemInfoCategoriesDictionary;
@@ -74,10 +74,9 @@ export function Card({
             className="ml-auto"
           >
             <span className="sr-only">
-              {isOpen
-                ? uiText.cards.externalLinkSR
-                : uiText.cards.externalLinkSR}
+              {isOpen ? uiText.cards.expandCardSR : uiText.cards.collapseCardSR}
             </span>
+
             {isOpen ? (
               <CircleMinus className="size-6" strokeWidth="1.5" />
             ) : (

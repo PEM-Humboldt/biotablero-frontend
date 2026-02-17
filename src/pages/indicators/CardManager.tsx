@@ -8,7 +8,7 @@ import { StrValidator } from "@utils/strValidator";
 
 import type { IndicatorsCardInfo } from "pages/indicators/types/card";
 import { Card } from "pages/indicators/cardManager/Card";
-import { uiText } from "pages/indicators/layout/uiTetx";
+import { uiText } from "pages/indicators/layout/uiText";
 
 export function CardManager({
   cardsData,

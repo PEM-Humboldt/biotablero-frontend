@@ -16,7 +16,7 @@ import {
 import { Button } from "@ui/shadCN/component/button";
 
 import { useCardTags } from "pages/indicators/hooks/useCardTags";
-import { uiText } from "pages/indicators/layout/uiTetx";
+import { uiText } from "pages/indicators/layout/uiText";
 
 type TagManagerProps = {
   filterData: (filters: string[]) => void;
