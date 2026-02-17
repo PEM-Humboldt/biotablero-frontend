@@ -27,6 +27,7 @@ import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { commonErrorMessage } from "@utils/ui";
+import { RoleInInitiative } from "../outlets/InitiativesManagement";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -557,4 +558,33 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
   }
 
   return result;
+}
+
+export async function changeUserRoleInInitiative(
+  userIdInInitiative: number,
+  newRole: RoleInInitiative,
+  focusArea?: string,
+) {
+  try {
+    const res = await monitoringAPI({
+      type: "put",
+      endpoint: `InitiativeUser/${userIdInInitiative}`,
+      options: {
+        data: {
+          level: { id: newRole },
+          ...(focusArea ? { focusArea } : {}),
+        },
+      },
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
+      return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
+    }
+
+    return null;
+  } catch (err) {
+    console.error(err);
+    return err instanceof Error ? err.message : JSON.stringify(err);
+  }
 }
