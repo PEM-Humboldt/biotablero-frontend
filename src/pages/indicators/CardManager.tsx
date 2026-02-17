@@ -1,60 +1,88 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
+import { CirclePlus } from "lucide-react";
 
-import Masonry from "react-masonry-component";
+import { SidebarInset, useSidebar } from "@ui/shadCN/component/sidebar";
+import { Button } from "@ui/shadCN/component/button";
+import { StrValidator } from "@utils/strValidator";
+
+import type { IndicatorsCardInfo } from "pages/indicators/types/card";
 import { Card } from "pages/indicators/cardManager/Card";
-import { type ExpandedCardItem } from "pages/indicators/cardManager/ExpandedCard";
+import { uiText } from "pages/indicators/layout/uiText";
 
-const masonryOptions = {
-  transitionDuration: 0,
-  itemSelector: ".indicatorCard",
-  columnWidth: 360,
-  horizontalOrder: true,
-};
-
-export function CardManager({ cardsData }: { cardsData: ExpandedCardItem[] }) {
-  const [expanded, setExpanded] = useState<ExpandedCardItem | null>(null);
-  const prevExpanded = useRef<ExpandedCardItem>();
+export function CardManager({
+  cardsData,
+  isLoading,
+}: {
+  isLoading: boolean;
+  cardsData: IndicatorsCardInfo[];
+}) {
+  const { setOpen, open } = useSidebar();
+  const navigate = useNavigate();
+  const { hash, pathname } = useLocation();
+  const cardOpen = !hash ? null : hash.slice(1);
 
   useEffect(() => {
-    if (!prevExpanded || !expanded) {
+    if (cardOpen) {
+      const element = document.getElementById(cardOpen);
+      if (!element) {
+        return;
+      }
+
+      // NOTE: el timer está para asegurar que el Reflow y Repaint del DOM
+      // terminó en el eventLoop y evitar errores de cálculo en la posición.
+      setTimeout(
+        () => element.scrollIntoView({ behavior: "smooth", block: "start" }),
+        0,
+      );
+    }
+  }, [cardOpen]);
+
+  const expandCardHandler = (cardId: string) => {
+    const sanitizedID = StrValidator.sanitizeToURLSlug(cardId);
+    if (sanitizedID === cardOpen) {
+      void navigate(pathname, { replace: true });
       return;
     }
 
-    prevExpanded.current = expanded;
-  }, [expanded]);
-
-  const isExpanded = (elem: ExpandedCardItem) => expanded?.id === elem.id;
-  const wasExpanded = (elem: ExpandedCardItem) => {
-    if (!prevExpanded.current) {
-      return false;
-    }
-
-    return prevExpanded.current.id === elem.id;
+    void navigate(`#${sanitizedID}`);
   };
-  const expandClickHandler = (cardData: ExpandedCardItem) => () => {
-    if (isExpanded(cardData)) {
-      setExpanded(null);
-    } else {
-      setExpanded(cardData);
-    }
-  };
+
+  const hasCards = cardsData.length > 0;
 
   return (
-    <>
-      {/* @ts-expect-error react-masonry-component has no updated types*/}
-      <Masonry options={masonryOptions} enableResizableChildren>
-        {cardsData.map((card) => {
-          return (
+    <SidebarInset className="bg-background">
+      <header className="flex min-h-14 gap-2 p-2 text-xl! items-center text-primary! font-normal!">
+        {!open && (
+          <Button
+            onClick={() => setOpen(true)}
+            title={uiText.cards.showFiltersBtnTitle}
+            size="lg"
+            variant="ghost"
+            className="text-xl text-primary font-normal"
+          >
+            <CirclePlus className="size-6" />
+            {uiText.cards.showFiltersBtnLabel}
+          </Button>
+        )}
+
+        {isLoading && uiText.cards.loadingIndicatorsCards}
+        {!isLoading &&
+          hasCards &&
+          uiText.cards.availableIndicatorsAmount(cardsData.length)}
+      </header>
+
+      <div className="@container px-4 pb-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4 grid-flow-dense">
+        {hasCards &&
+          cardsData.map((card) => (
             <Card
               key={card.id}
               item={card}
-              isExpanded={isExpanded(card)}
-              wasExpanded={wasExpanded(card)}
-              expandClick={expandClickHandler(card)}
+              nowOpen={cardOpen}
+              expandCard={expandCardHandler}
             />
-          );
-        })}
-      </Masonry>
-    </>
+          ))}
+      </div>
+    </SidebarInset>
   );
 }

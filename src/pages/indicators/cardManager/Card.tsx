@@ -1,72 +1,169 @@
-import { useEffect, useRef } from "react";
+import { CircleMinus, CirclePlus, SquareArrowOutUpRight } from "lucide-react";
 
-import { PlusIcon, URLIcon } from "@ui/IconsIndicators";
-import {
-  ExpandedCard,
-  type ExpandedCardProps,
-} from "pages/indicators/cardManager/ExpandedCard";
+import { Button } from "@ui/shadCN/component/button";
+import { parseSimpleMarkdown } from "@utils/textParser";
+import { cn } from "@ui/shadCN/lib/utils";
+import { StrValidator } from "@utils/strValidator";
 
-export interface CardProps extends ExpandedCardProps {
-  isExpanded: boolean;
-  wasExpanded: boolean;
-}
+import type { IndicatorsCardInfo } from "pages/indicators/types/card";
+import { uiText } from "pages/indicators/layout/uiText";
+
+const itemInfoCategoriesDictionary = uiText.cards.infoDictionary;
+type CategoryKey = keyof typeof itemInfoCategoriesDictionary;
+
+const renderColumn: { [column: string]: CategoryKey[] } = {
+  resume: ["target", "scale"],
+  left: ["target", "scale", "goals", "periodicity"],
+  right: ["description", "requirements", "ebv", "use", "source"],
+};
 
 export function Card({
   item,
-  expandClick,
-  isExpanded,
-  wasExpanded,
-}: CardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { id, title, target, lastUpdate, scale, externalLink } = item;
+  nowOpen,
+  expandCard,
+}: {
+  item: IndicatorsCardInfo;
+  nowOpen: string | null;
+  expandCard: (itemId: string) => void;
+}) {
+  const lastUpdate = item.lastUpdate
+    ? new Date(item.lastUpdate).toLocaleDateString()
+    : null;
 
-  useEffect(() => {
-    if (cardRef.current && wasExpanded) {
-      cardRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [wasExpanded]);
-
-  if (isExpanded) {
-    return <ExpandedCard item={item} expandClick={expandClick} />;
-  }
+  const sanitizedID = StrValidator.sanitizeToURLSlug(item.id);
+  const isOpen = sanitizedID === nowOpen;
 
   return (
-    <div
-      id={id}
-      className={`indicatorCard${wasExpanded ? " no-transition" : ""}`}
-      ref={cardRef}
+    <section
+      id={sanitizedID}
+      className={cn(
+        "@container border border-grey rounded-3xl p-2 scroll-mt-2 col-span-1",
+        isOpen && "col-span-full xl:col-span-3 shadow-lg",
+      )}
     >
-      <div className="cardTitles">
-        <h1>{title}</h1>
-        <div className="links">
-          {externalLink && (
+      <header>
+        <div className="flex gap-2 items-baseline border-b border-b-grey-light">
+          <h3 className="text-2xl pl-4 font-normal text-balance">
+            {item.title}
+          </h3>
+
+          {item.externalLink && (
             <a
-              className="linkURL"
-              href={externalLink}
-              title="Ir al enlace"
+              href={item.externalLink}
               target="_blank"
               rel="noreferrer"
+              className="text-accent hover:text-primary self-baseline -translate-1"
+              title={uiText.cards.externalLinkTilte}
             >
-              <URLIcon fontSize={19} />
+              <span className="sr-only">{uiText.cards.externalLinkSR}</span>
+              <SquareArrowOutUpRight className="size-4" aria-hidden="true" />
             </a>
           )}
-          <div
-            className="expandIndicatorButton"
-            onClick={expandClick}
-            onKeyDown={() => {}}
+
+          <Button
+            onClick={() => expandCard(item.id)}
             role="button"
-            title="Abrir indicador"
             tabIndex={0}
+            size="icon"
+            variant="ghost-clean"
+            title={
+              isOpen
+                ? uiText.cards.expandCardTitle
+                : uiText.cards.collapseCardTitle
+            }
+            className="ml-auto"
           >
-            <PlusIcon fontSize={30} color="#e84a60" />
-          </div>
+            <span className="sr-only">
+              {isOpen ? uiText.cards.expandCardSR : uiText.cards.collapseCardSR}
+            </span>
+
+            {isOpen ? (
+              <CircleMinus className="size-6" strokeWidth="1.5" />
+            ) : (
+              <CirclePlus className="size-6" strokeWidth="1.5" />
+            )}
+          </Button>
         </div>
+      </header>
+
+      <main className="p-4">
+        {isOpen ? (
+          <>
+            {lastUpdate && (
+              <div className="text-right">
+                <span className="sr-only">
+                  {uiText.cards.infoDictionary.lastUpdate}
+                </span>
+                <time dateTime={lastUpdate}>{lastUpdate}</time>
+              </div>
+            )}
+
+            <div className="flex flex-col @[600px]:flex-row gap-0 @[600px]:gap-8">
+              <div className="flex-1">
+                {renderColumn.left.map((key) => (
+                  <RenderItemInfo
+                    key={key}
+                    category={key}
+                    info={item[key]}
+                    join={key === "goals" ? "\n" : ", "}
+                  />
+                ))}
+              </div>
+              <div className="flex-3">
+                {renderColumn.right.map((key) => (
+                  <RenderItemInfo
+                    key={key}
+                    category={key}
+                    info={item[key]}
+                    join={key === "goals" ? "\n" : ", "}
+                  />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div>
+            {renderColumn.resume.map((key) => (
+              <RenderItemInfo
+                key={key}
+                category={key}
+                info={item[key]}
+                join={key === "goals" ? "\n" : ", "}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+    </section>
+  );
+}
+
+function RenderItemInfo({
+  category,
+  info,
+  join,
+}: {
+  category: CategoryKey;
+  info?: string | string[];
+  join?: string;
+}) {
+  if (!info || (Array.isArray(info) && info.length === 0)) {
+    return null;
+  }
+
+  const title = itemInfoCategoriesDictionary[category];
+  const content = Array.isArray(info)
+    ? info.join(join)
+    : parseSimpleMarkdown(info);
+
+  return (
+    <>
+      <h4 className="uppercase text-accent text-base! leading-none! my-0!">
+        {title}
+      </h4>
+      <div className="text-base [&>p]:last:mb-0 mb-[2em] last:mb-0">
+        {content}
       </div>
-      <h2>{lastUpdate}</h2>
-      <h3>OBJETIVO</h3>
-      <h4>{target}</h4>
-      <h3>ESCALA</h3>
-      <h4>{scale.join(", ")}</h4>
-    </div>
+    </>
   );
 }
