@@ -31,6 +31,27 @@ export interface ODataParams {
   search?: string;
 }
 
+export function isODataParams(args: unknown): args is ODataParams {
+  const oDataKeys: (keyof ODataParams)[] = [
+    "filter",
+    "select",
+    "orderby",
+    "top",
+    "skip",
+    "expand",
+    "count",
+    "search",
+  ];
+
+  return (
+    args !== undefined &&
+    args !== null &&
+    typeof args === "object" &&
+    !Array.isArray(args) &&
+    oDataKeys.some((key) => key in args)
+  );
+}
+
 export type SelectValue = string | { value: string | number; name: string };
 
 export type SearchBarComponent<T> = {

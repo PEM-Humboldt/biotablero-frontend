@@ -29,3 +29,6 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/png",
   "image/webp",
 ];
+
+// initiative admin
+export const JOIN_REQUESTS_PER_PAGE = 10;

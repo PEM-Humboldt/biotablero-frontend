@@ -12,6 +12,7 @@ import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
+import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -73,6 +74,15 @@ export const routes = createBrowserRouter([
                   }),
               },
             ],
+          },
+          {
+            path: "gestionarIniciativas",
+            Component: InitiativesManagement,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["User"] },
+                redirectPath: "/Monitoreo",
+              }),
           },
           {
             path: "administrarIniciativas",

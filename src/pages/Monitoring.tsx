@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import { Toaster } from "sonner";
 import { SidebarProvider, SidebarTrigger } from "@ui/shadCN/component/sidebar";
 import { MonitoringSidebar } from "pages/monitoring/layout/sidebar";
 
@@ -26,6 +27,7 @@ export function Monitoring() {
         <SidebarTrigger className="absolute -right-4 top-4 z-10" />
       </div>
       <Outlet />
+      <Toaster />
     </SidebarProvider>
   );
 }
