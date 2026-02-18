@@ -1,50 +1,45 @@
 import { useEffect, useState } from "react";
+import { Dot, CircleMinus, CircleX } from "lucide-react";
+
 import {
   Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import DotIcon from "@material-ui/icons/FiberManualRecord";
-import { CloseIcon } from "@ui/IconsIndicators";
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@ui/shadCN/component/accordion";
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  useSidebar,
+} from "@ui/shadCN/component/sidebar";
+import { Button } from "@ui/shadCN/component/button";
 
-const boxColors = [
-  "#b1babc",
-  "#b1b2b7",
-  "#666a72",
-  "#b8bfcf",
-  "#8792af",
-  "#697f9f",
-  "#5a6e7e",
-  "#b8bcaf",
-  "#7b8780",
-  "#988b7d",
-] as const;
+import { useCardTags } from "pages/indicators/hooks/useCardTags";
+import { uiText } from "pages/indicators/layout/uiText";
 
-type BoxColor = (typeof boxColors)[number];
-type TagWithColor = [tag: string, color: BoxColor];
 type TagManagerProps = {
-  data: Map<string, string[]>;
   filterData: (filters: string[]) => void;
 };
 
-export function TagManager({ data, filterData }: TagManagerProps) {
-  const [selected, setSelected] = useState<TagWithColor[]>([]);
+type TagWithReference = [tag: string, reference: string];
+const referenceString = (ref: string, element: string) => `${ref}. ${element}`;
+
+export function TagManager({ filterData }: TagManagerProps) {
+  const [selected, setSelected] = useState<TagWithReference[]>([]);
+  const { isLoadingTags, tags } = useCardTags();
+  const { setOpen } = useSidebar();
 
   useEffect(() => {
     filterData(selected.map((pair) => pair[0]));
   }, [selected, filterData]);
 
-  const clearTags = () => {
-    setSelected([]);
-  };
-
-  const toggleTag = (tag: string, color: BoxColor) => {
+  const toggleTag = (tag: string, parent: string) => {
     setSelected((prev) => {
       const filtered = prev.filter((item) => item[0] !== tag);
 
       if (filtered.length === prev.length) {
-        filtered.push([tag, color]);
+        filtered.push([tag, parent]);
       }
 
       return filtered;
@@ -55,73 +50,101 @@ export function TagManager({ data, filterData }: TagManagerProps) {
     return selected.some((item) => item[0] === tag);
   };
 
-  const isCategorySelected = (color: BoxColor): boolean => {
-    return selected.some((item) => item[1] === color);
+  const isCategorySelected = (reference: string): boolean => {
+    return selected.some((item) => item[1] === reference);
   };
 
-  return (
-    <>
-      <div className="tagList">
-        <div className="tagCount">
-          {selected.length > 0 && (
-            <h4>
-              <button
-                className="clearFilters"
-                title="Limpiar filtros"
-                type="button"
-                onClick={clearTags}
-              >
-                <CloseIcon />
-              </button>
-              {`${selected.length} filtro${selected.length > 1 ? "s" : ""}`}
-            </h4>
-          )}
-        </div>
-        {Array.from(data).map(([title, list], idx) => {
-          const color = boxColors[idx];
+  const clearTags = () => {
+    setSelected([]);
+  };
 
-          return (
-            <Accordion className="tagBox" key={title}>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`${title}-content`}
-                id={title}
-                className="tagCat"
-                style={{ backgroundColor: color }}
+  const hasTags = tags.size > 0;
+
+  return (
+    <Sidebar collapsible="offcanvas" className="bg-primary">
+      <SidebarHeader>
+        <Button
+          onClick={() => setOpen(false)}
+          title={uiText.sidebar.hideFiltersBtnTitle}
+          size="lg"
+          variant="link"
+          className="text-xl justify-start px-2! text-primary-foreground hover:text-primary-foreground font-normal"
+        >
+          <CircleMinus className="size-6" />
+          {uiText.sidebar.headerText}
+        </Button>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <Accordion type="single" collapsible>
+          {Array.from(tags).map(([title, list], idx) => {
+            // NOTE:Generates a letter for referencig the tags group
+            const reference = String.fromCharCode(97 + idx);
+
+            return (
+              <AccordionItem
+                value={title}
+                key={title}
+                className="rounded-none border-none! outline-none!"
               >
-                <div>{title}</div>
-                {isCategorySelected(color) && (
-                  <div>
-                    <DotIcon fontSize="inherit" />
-                  </div>
-                )}
-              </AccordionSummary>
-              <AccordionDetails>
-                <div className="tagOptions">
+                <AccordionTrigger className="gap-0 py-3 items-center rounded-none bg-grey-light hover:bg-blue-800 hover:underline border-b border-b-background">
+                  {referenceString(reference, title)}
+                  {isCategorySelected(reference) && <Dot className="mr-auto" />}
+                </AccordionTrigger>
+                <AccordionContent className="py-4">
                   {list.map((tag) => (
-                    <div key={tag}>
+                    <label key={tag} className="flex gap-2">
                       <input
                         type="checkbox"
                         value={tag}
                         checked={isTagSelected(tag)}
-                        onChange={() => toggleTag(tag, color)}
+                        onChange={() => toggleTag(tag, reference)}
                       />
                       {tag}
-                    </div>
+                    </label>
                   ))}
-                </div>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-      </div>
-      <div className="selectedTags">
-        {selected.map(([tag, color]) => (
-          <div key={`${tag}-selected`} style={{ backgroundColor: color }}>
-            {tag}
-          </div>
-        ))}
-      </div>
-    </>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+
+        {selected.length > 0 && (
+          <Button
+            type="button"
+            variant="link"
+            className="px-4! mt-2 justify-start hover:text-primary-foreground text-primary-foreground"
+            onClick={clearTags}
+            title={uiText.sidebar.removeFiltersTitle}
+          >
+            <CircleX className="size-4" />
+            {uiText.sidebar.removeFiltersLabel(selected.length)}
+          </Button>
+        )}
+
+        {isLoadingTags && (
+          <p className="p-4 text-primary-foreground">
+            {uiText.sidebar.loadingFilters}
+          </p>
+        )}
+        {!isLoadingTags && !hasTags && (
+          <p className="p-4 text-primary-foreground">
+            {uiText.sidebar.noFiltersAvailable}
+          </p>
+        )}
+
+        <div className="flex flex-wrap gap-2 px-2">
+          <span className="sr-only">{uiText.sidebar.apliedFilters}</span>
+          {selected.map(([tag, reference]) => (
+            <div
+              key={`${tag}-selected`}
+              className="px-2 py-1 rounded-lg text-sm bg-grey-light"
+            >
+              {referenceString(reference, tag)}
+            </div>
+          ))}
+        </div>
+      </SidebarContent>
+    </Sidebar>
   );
 }
