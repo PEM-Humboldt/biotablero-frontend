@@ -35,7 +35,7 @@ class ApiService {
     this.client = axios.create({
       baseURL: kongConfig.enabled 
         ? kongConfig.apiUrl 
-        : import.meta.env.VITE_APP_API_URL || 'http://localhost:3000/api',
+        : 'http://localhost:3000/api',
       timeout: 30000,
       headers: {
         'Content-Type': 'application/json',
