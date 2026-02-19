@@ -27,8 +27,8 @@ export const keycloakInitOptions = {
 };
 
 export const kongConfig = {
-  enabled: import.meta.env.VITE_APP_KONG_ENABLED === 'true',
-  apiUrl: import.meta.env.VITE_APP_KONG_API_URL || 'http://localhost:8000',
+  enabled: 'true',
+  apiUrl: 'http://localhost:8000',
   headers: {
     'X-Kong-Request-ID': true,
   },
