@@ -1,4 +1,4 @@
-import { RoleInInitiative } from "@appTypes/user";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
 
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";

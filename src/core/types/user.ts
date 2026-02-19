@@ -3,12 +3,7 @@ export type Tokens = {
   refreshToken: string | null;
 };
 
-export type Role = "Admin" | "User";
-export enum RoleInInitiative {
-  LEADER = 1,
-  USER = 2,
-  VIEWER = 3,
-}
+export type RoleKC = "Admin" | "User";
 
 export type Company = {
   id: number;
@@ -16,7 +11,7 @@ export type Company = {
 };
 
 export type UserType<T = unknown> = {
-  roles: Role[];
+  roles: RoleKC[];
   username: string;
   email: string;
 

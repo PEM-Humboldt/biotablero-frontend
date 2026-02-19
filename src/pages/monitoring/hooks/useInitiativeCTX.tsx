@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -18,12 +19,19 @@ import {
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
 import { useUserCTX } from "@hooks/UserContext";
+import {
+  JoinRequestStatus,
+  UserStateInInitiative,
+} from "pages/monitoring/types/userJoinRequest";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
   initiativeInfo: InitiativeFullInfo | null;
   userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<void>;
+  userStateInInitiative: UserStateInInitiative;
   isLoading: boolean;
   error: string | null;
 };
@@ -41,6 +49,7 @@ export function CurrentInitiativeCTX({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useUserCTX();
+  const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
 
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
@@ -76,6 +85,37 @@ export function CurrentInitiativeCTX({
     void fetchInitiative(initialInitiative);
   }, [initialInitiative, fetchInitiative]);
 
+  const userStateInInitiative = useMemo<UserStateInInitiative>(() => {
+    if (isLoading || !initiative) {
+      return UserStateInInitiative.IDLE;
+    }
+    if (!user) {
+      return UserStateInInitiative.GUEST;
+    }
+    if (user.roles.includes("Admin")) {
+      return UserStateInInitiative.ADMIN;
+    }
+
+    const member = initiative.users.find((u) => u.userName === user.username);
+
+    if (!member) {
+      const isPending =
+        joinRequestsByInitiativeId[initiative.id]?.status.name ===
+        JoinRequestStatus.UNDER_REVIEW;
+      return isPending
+        ? UserStateInInitiative.USER_ASPIRING
+        : UserStateInInitiative.USER_NONE;
+    }
+
+    const roleMap: Record<number, UserStateInInitiative> = {
+      [RoleInInitiative.LEADER]: UserStateInInitiative.USER_LEADER,
+      [RoleInInitiative.USER]: UserStateInInitiative.USER_PARTICIPANT,
+      [RoleInInitiative.VIEWER]: UserStateInInitiative.USER_VIEWER,
+    };
+
+    return roleMap[member.level.id] ?? UserStateInInitiative.GUEST;
+  }, [initiative, isLoading, joinRequestsByInitiativeId, user]);
+
   return (
     <CurrentInitiativeContext.Provider
       value={{
@@ -85,6 +125,7 @@ export function CurrentInitiativeCTX({
           initiative?.users.filter((u) => u.userName === user?.username)[0] ??
           null,
         setInitiative: fetchInitiative,
+        userStateInInitiative,
         isLoading,
         error,
       }}

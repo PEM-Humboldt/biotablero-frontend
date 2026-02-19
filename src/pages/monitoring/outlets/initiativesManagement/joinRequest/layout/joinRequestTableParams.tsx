@@ -2,14 +2,14 @@ import { type ReactNode } from "react";
 import { CornerDownRight } from "lucide-react";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import type { Request } from "pages/monitoring/types/userJoinRequest";
+import { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 export function joinRequestTableParams(
   initiativeNames: { [key: number]: string },
-  status: Request | null,
+  status: JoinRequestStatus | null,
 ) {
-  const isPending = status === Request.UNDER_REVIEW;
+  const isPending = status === JoinRequestStatus.UNDER_REVIEW;
   const dateLabel = isPending
     ? uiText.module.tableParams.dateLabel.pending
     : uiText.module.tableParams.dateLabel.resolved;

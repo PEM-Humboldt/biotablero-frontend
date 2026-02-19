@@ -1,5 +1,11 @@
 import { type ReactNode } from "react";
 
+export enum RoleInInitiative {
+  LEADER = 1,
+  USER,
+  VIEWER,
+}
+
 export type DashboardItem = { description: string; icon: ReactNode } & (
   | { linkTo: string }
   | { action: () => void }
@@ -17,7 +23,7 @@ export type Location = {
 };
 
 export type UserLevel = {
-  id: number;
+  id: RoleInInitiative;
   name: string;
 };
 

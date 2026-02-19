@@ -27,7 +27,8 @@ import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 import type { InitiativeFullInfo } from "pages/monitoring/types/initiative";
 import { commonErrorMessage } from "@utils/ui";
-import type { RoleInInitiative } from "@appTypes/user";
+import type { RoleInInitiative } from "pages/monitoring/types/catalog";
+import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 
 interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -534,6 +535,20 @@ export async function getInitiativeRequests(
     console.error(err);
     return null;
   }
+}
+
+export async function getUserJoinRequests() {
+  const res = await monitoringAPI<UserJoinRequestData[]>({
+    type: "get",
+    endpoint: "JoinRequest/MyRequests",
+  });
+
+  if (isMonitoringAPIError(res)) {
+    console.error(res);
+    return [];
+  }
+
+  return res;
 }
 
 export async function requestJoinInitiative(

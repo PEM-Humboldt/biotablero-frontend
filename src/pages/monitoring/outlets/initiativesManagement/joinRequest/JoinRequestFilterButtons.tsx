@@ -4,17 +4,17 @@ import { cn } from "@ui/shadCN/lib/utils";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import type { Request } from "pages/monitoring/types/userJoinRequest";
+import type { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
 
 type FilterJoinRequestsCallback = (
-  status: Request,
+  status: JoinRequestStatus,
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
   newerFirst?: boolean,
 ) => Promise<void>;
 
 type FilterJoinRequestSettings = {
   label: string;
-  status: Request;
+  status: JoinRequestStatus;
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>;
   newerFirst: boolean;
 };
@@ -24,7 +24,7 @@ export function JoinRequestFilterButtons({
   menuSettings,
   filteringCallback,
 }: {
-  currentStatus: Request | null;
+  currentStatus: JoinRequestStatus | null;
   menuSettings: FilterJoinRequestSettings[];
   filteringCallback: FilterJoinRequestsCallback;
 }) {

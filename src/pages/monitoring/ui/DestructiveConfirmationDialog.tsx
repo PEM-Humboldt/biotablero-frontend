@@ -23,6 +23,7 @@ type DestructiveConfirmationDialogProps = {
   triggerBtnVariant?: ButtonProps["variant"];
   handler: () => void;
   isLoading?: boolean;
+  disabled?: boolean;
 };
 
 export function DestructiveConfirmationDialog({
@@ -30,6 +31,7 @@ export function DestructiveConfirmationDialog({
   triggerBtnVariant: btnVatiant,
   handler,
   isLoading,
+  disabled,
 }: DestructiveConfirmationDialogProps) {
   return (
     <AlertDialog>
@@ -37,7 +39,7 @@ export function DestructiveConfirmationDialog({
         <Button
           variant={btnVatiant}
           title={texts.trigger.title ?? texts.trigger.label}
-          disabled={isLoading}
+          disabled={isLoading || disabled}
         >
           {isLoading && <Spinner />}
           {texts.trigger.sr && (
