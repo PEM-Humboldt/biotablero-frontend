@@ -20,10 +20,10 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { useUserCTX } from "@hooks/UserContext";
 import {
+  initiativeRoleToState,
   JoinRequestStatus,
   UserStateInInitiative,
 } from "pages/monitoring/types/userJoinRequest";
-import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 type CurrentInitiativeCTXProps = {
@@ -86,7 +86,10 @@ export function CurrentInitiativeCTX({
   }, [initialInitiative, fetchInitiative]);
 
   const userStateInInitiative = useMemo<UserStateInInitiative>(() => {
-    if (isLoading || !initiative) {
+    if (!initiative) {
+      return UserStateInInitiative.NO_INITIATIVE;
+    }
+    if (isLoading) {
       return UserStateInInitiative.IDLE;
     }
     if (!user) {
@@ -107,13 +110,9 @@ export function CurrentInitiativeCTX({
         : UserStateInInitiative.USER_NONE;
     }
 
-    const roleMap: Record<number, UserStateInInitiative> = {
-      [RoleInInitiative.LEADER]: UserStateInInitiative.USER_LEADER,
-      [RoleInInitiative.USER]: UserStateInInitiative.USER_PARTICIPANT,
-      [RoleInInitiative.VIEWER]: UserStateInInitiative.USER_VIEWER,
-    };
-
-    return roleMap[member.level.id] ?? UserStateInInitiative.GUEST;
+    return (
+      initiativeRoleToState[member.level.id] ?? UserStateInInitiative.GUEST
+    );
   }, [initiative, isLoading, joinRequestsByInitiativeId, user]);
 
   return (

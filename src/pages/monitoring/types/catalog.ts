@@ -1,7 +1,8 @@
 import { type ReactNode } from "react";
 
 export enum RoleInInitiative {
-  LEADER = 1,
+  NONE = 0,
+  LEADER,
   USER,
   VIEWER,
 }

@@ -1,5 +1,6 @@
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
+import { RoleInInitiative } from "./catalog";
 
 export enum JoinRequestStatus {
   UNDER_REVIEW = "UnderReview",
@@ -9,7 +10,8 @@ export enum JoinRequestStatus {
 }
 
 export enum UserStateInInitiative {
-  IDLE = 0,
+  NO_INITIATIVE = 0,
+  IDLE,
   GUEST,
   ADMIN,
   USER_NONE,
@@ -25,10 +27,35 @@ export enum RoleEvents {
   REMOVE,
 }
 
+export const initiativeRoleToState: Record<
+  RoleInInitiative,
+  UserStateInInitiative
+> = {
+  [RoleInInitiative.NONE]: UserStateInInitiative.USER_NONE,
+  [RoleInInitiative.LEADER]: UserStateInInitiative.USER_LEADER,
+  [RoleInInitiative.USER]: UserStateInInitiative.USER_PARTICIPANT,
+  [RoleInInitiative.VIEWER]: UserStateInInitiative.USER_VIEWER,
+};
+
+export const stateToInitiativeRole: Partial<
+  Record<UserStateInInitiative, RoleInInitiative>
+> = {
+  [UserStateInInitiative.NO_INITIATIVE]: RoleInInitiative.NONE,
+  [UserStateInInitiative.IDLE]: RoleInInitiative.NONE,
+  [UserStateInInitiative.GUEST]: RoleInInitiative.NONE,
+  [UserStateInInitiative.ADMIN]: RoleInInitiative.NONE,
+  [UserStateInInitiative.USER_NONE]: RoleInInitiative.NONE,
+  [UserStateInInitiative.USER_LEADER]: RoleInInitiative.LEADER,
+  [UserStateInInitiative.USER_PARTICIPANT]: RoleInInitiative.USER,
+  [UserStateInInitiative.USER_VIEWER]: RoleInInitiative.VIEWER,
+  [UserStateInInitiative.USER_ASPIRING]: RoleInInitiative.NONE,
+};
+
 export const userPosibleRoleChanges: Record<
   UserStateInInitiative,
   Partial<Record<RoleEvents, UserStateInInitiative>>
 > = {
+  [UserStateInInitiative.NO_INITIATIVE]: {},
   [UserStateInInitiative.IDLE]: {},
   [UserStateInInitiative.GUEST]: {},
   [UserStateInInitiative.ADMIN]: {},
@@ -53,7 +80,7 @@ export const userPosibleRoleChanges: Record<
   },
 };
 
-export function canPerformRoleStateChange(
+export function canPerformRoleStateEvent(
   role: UserStateInInitiative,
   action: RoleEvents,
 ): boolean {
