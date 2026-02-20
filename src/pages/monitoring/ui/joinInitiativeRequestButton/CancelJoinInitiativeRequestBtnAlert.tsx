@@ -12,17 +12,20 @@ import {
   isMonitoringAPIError,
 } from "pages/monitoring/api/monitoringAPI";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 export function CancelJoinInitiativeRequestBtnAlert() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { userInInitiativeInfo, initiativeInfo, userStateInInitiative } =
+  const { joinRequestsByInitiativeId, reloadUserInMonitoringData } =
+    useUserInMonitoringCTX();
+  const { initiativeInfo, userStateInInitiative, updateInitiative } =
     useInitiativeCTX();
 
   const handleCancelRequest = async () => {
     if (
       !initiativeInfo ||
-      !userInInitiativeInfo ||
+      !joinRequestsByInitiativeId[initiativeInfo.id] ||
       userStateInInitiative !== UserStateInInitiative.USER_ASPIRING
     ) {
       return;
@@ -32,13 +35,16 @@ export function CancelJoinInitiativeRequestBtnAlert() {
 
     try {
       const cancelRequest = await cancelJoinRequestToInitiative(
-        userInInitiativeInfo.id,
+        joinRequestsByInitiativeId[initiativeInfo.id].id,
       );
 
       if (isMonitoringAPIError(cancelRequest)) {
         setError(cancelRequest);
         return;
       }
+
+      await updateInitiative();
+      await reloadUserInMonitoringData();
 
       toast(uiText.cancelJoinRequestToInitiative.toast.title, {
         position: "bottom-right",

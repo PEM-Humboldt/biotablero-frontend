@@ -10,6 +10,8 @@ import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInit
 export function JoinInitiativeRequestButton() {
   const { userStateInInitiative } = useInitiativeCTX();
 
+  console.log(UserStateInInitiative[userStateInInitiative]);
+
   switch (userStateInInitiative) {
     case UserStateInInitiative.IDLE:
       return (

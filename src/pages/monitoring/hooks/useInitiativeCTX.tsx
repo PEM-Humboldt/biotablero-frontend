@@ -31,6 +31,7 @@ type CurrentInitiativeCTXProps = {
   initiativeInfo: InitiativeFullInfo | null;
   userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<void>;
+  updateInitiative: () => Promise<void>;
   userStateInInitiative: UserStateInInitiative;
   isLoading: boolean;
   error: string | null;
@@ -105,6 +106,7 @@ export function CurrentInitiativeCTX({
       const isPending =
         joinRequestsByInitiativeId[initiative.id]?.status.name ===
         JoinRequestStatus.UNDER_REVIEW;
+      console.log("pend", isPending, joinRequestsByInitiativeId);
       return isPending
         ? UserStateInInitiative.USER_ASPIRING
         : UserStateInInitiative.USER_NONE;
@@ -124,6 +126,7 @@ export function CurrentInitiativeCTX({
           initiative?.users.filter((u) => u.userName === user?.username)[0] ??
           null,
         setInitiative: fetchInitiative,
+        updateInitiative: () => void fetchInitiative(initiative?.id),
         userStateInInitiative,
         isLoading,
         error,

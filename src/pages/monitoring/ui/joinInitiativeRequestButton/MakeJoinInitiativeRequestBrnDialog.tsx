@@ -12,17 +12,25 @@ import {
   makeJoinRequestToInitiative,
 } from "pages/monitoring/api/monitoringAPI";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 export function MakeJoinInitiativeRequestBtnDialog() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { initiativeInfo } = useInitiativeCTX();
+  const { initiativeInfo, updateInitiative } = useInitiativeCTX();
+  const { joinRequestsByInitiativeId, reloadUserInMonitoringData } =
+    useUserInMonitoringCTX();
 
   const handleJoinInitiative = async () => {
     if (!initiativeInfo) {
       return;
     }
     setIsLoading(true);
+
+    console.log(
+      joinRequestsByInitiativeId[initiativeInfo.id],
+      initiativeInfo.id,
+    );
 
     try {
       const joinRequest = await makeJoinRequestToInitiative(
@@ -34,6 +42,9 @@ export function MakeJoinInitiativeRequestBtnDialog() {
         setError(joinRequest);
         return;
       }
+
+      await updateInitiative();
+      await reloadUserInMonitoringData();
 
       toast(uiText.makeJoinRequestToInitiative.toast.title, {
         position: "bottom-right",

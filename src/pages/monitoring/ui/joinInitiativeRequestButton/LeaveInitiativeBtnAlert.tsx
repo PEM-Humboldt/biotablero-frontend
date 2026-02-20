@@ -13,8 +13,12 @@ import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/u
 export function LeaveInitiativeBtnAlert() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { userInInitiativeInfo, initiativeInfo, userStateInInitiative } =
-    useInitiativeCTX();
+  const {
+    userInInitiativeInfo,
+    initiativeInfo,
+    userStateInInitiative,
+    updateInitiative,
+  } = useInitiativeCTX();
 
   const handelLeaveInitiative = async () => {
     if (
@@ -34,6 +38,8 @@ export function LeaveInitiativeBtnAlert() {
         setError(errorInResponse);
         return;
       }
+
+      await updateInitiative();
 
       toast(uiText.leaveInitiative.toast.title, {
         position: "bottom-right",

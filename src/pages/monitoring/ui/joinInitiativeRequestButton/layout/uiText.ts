@@ -12,16 +12,16 @@ export const uiText = {
   makeJoinRequestToInitiative: {
     dialog: {
       trigger: {
-        label: "Cancelar solicitud",
+        label: "Unirse a la iniciativa",
         title: undefined,
         sr: undefined,
         icon: TicketCheck,
       },
       dialog: {
         title: (initiativeName: string) =>
-          `Vas a cancelar tu solicitud a ${initiativeName}`,
+          `Estas solicitando unirte a la iniciativa ${initiativeName}`,
         description:
-          "Al hacerlo las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.",
+          "Al hacerlo, se notificará a las y los líderes de esta iniciativa, quienes de podrán ver tus datos y decidir si aceptan tu solicitud o no.",
       },
       actionBtns: {
         confirm: undefined,
