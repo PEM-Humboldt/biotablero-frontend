@@ -537,6 +537,14 @@ export async function getInitiativeRequests(
   }
 }
 
+/**
+ * Retrieves the list of join requests submitted by the current authenticated user.
+ *
+ * @returns a `Promise<UserJoinRequestData[]>`.
+ *
+ * @remarks
+ * - If the request fails or an error is detected, it logs the error and returns an empty array `[]`.
+ */
 export async function getUserJoinRequests() {
   const res = await monitoringAPI<UserJoinRequestData[]>({
     type: "get",
@@ -551,7 +559,18 @@ export async function getUserJoinRequests() {
   return res;
 }
 
-export async function requestJoinInitiative(
+/**
+ * Submits a new request for the current authenticated user to join a specific initiative with a designated role.
+ *
+ * @param initiativeId - The unique identifier of the initiative.
+ * @param asRole - The role defined by {@link RoleInInitiative} the user is requesting.
+ * @returns a `Promise<string | null>` containing a formatted error message if the request fails, or `null` on success.
+ *
+ * @remarks
+ * - Error messages are localized using `commonErrorMessage` and may include additional server-provided data.
+ * - Success is represented by `null`, indicating the request was processed correctly.
+ */
+export async function makeJoinRequestToInitiative(
   initiativeId: number,
   asRole: RoleInInitiative,
 ) {
@@ -562,13 +581,43 @@ export async function requestJoinInitiative(
   });
 
   if (isMonitoringAPIError(res)) {
-    console.error(res.message);
-    // return null;
+    const { status, message, data } = res;
+    console.error(message);
+
+    return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
   }
 
-  return res;
+  return null;
 }
 
+/**
+ * Cancels a pending join request.
+ *
+ * @param requestId - The id of the user's relation with the request.
+ * @returns a `Promise<string | null>` containing a formatted error message if the deletion fails, or `null` on success.
+ */
+export async function cancelJoinRequestToInitiative(requestId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `JoinRequest/Cancel/${requestId}`,
+  });
+
+  if (isMonitoringAPIError(res)) {
+    const { status, message, data } = res;
+    console.error(message);
+
+    return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
+  }
+
+  return null;
+}
+
+/**
+ * Removes the current user from an initiative they are already a member of.
+ *
+ * @param userIdInInitiative - The unique identifier of the membership record.
+ * @returns a `Promise<string | null>` containing a formatted error message if the operation fails, or `null` on success.
+ */
 export async function leaveInitiative(userIdInInitiative: number) {
   const res = await monitoringAPI({
     type: "delete",
@@ -576,8 +625,10 @@ export async function leaveInitiative(userIdInInitiative: number) {
   });
 
   if (isMonitoringAPIError(res)) {
-    console.error(res.message);
-    return "Algo malio sal";
+    const { status, message, data } = res;
+    console.error(message);
+
+    return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
   }
 
   return null;
