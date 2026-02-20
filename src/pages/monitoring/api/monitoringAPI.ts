@@ -619,6 +619,7 @@ export async function cancelJoinRequestToInitiative(requestId: number) {
  * @returns a `Promise<string | null>` containing a formatted error message if the operation fails, or `null` on success.
  */
 export async function leaveInitiative(userIdInInitiative: number) {
+  // NOTE: Actualizar el endpoint cuando esté listo
   const res = await monitoringAPI({
     type: "delete",
     endpoint: `InitiativeUser/${userIdInInitiative}`,

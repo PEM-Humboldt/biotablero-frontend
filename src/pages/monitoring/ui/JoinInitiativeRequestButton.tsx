@@ -35,13 +35,16 @@ export function JoinInitiativeRequestButton() {
     case UserStateInInitiative.USER_NONE:
       return <MakeJoinInitiativeRequestBtnDialog />;
 
-    case UserStateInInitiative.USER_PARTICIPANT:
-    case UserStateInInitiative.USER_VIEWER:
-      return <LeaveInitiativeBtnAlert />;
-
     case UserStateInInitiative.USER_ASPIRING:
       return <CancelJoinInitiativeRequestBtnAlert />;
 
+    // NOTE: se desactiva mientras se resuelve el endpoin para salirse de una iniciativa
+    // case UserStateInInitiative.USER_PARTICIPANT:
+    // case UserStateInInitiative.USER_VIEWER:
+    // return <LeaveInitiativeBtnAlert />;
+
+    case UserStateInInitiative.USER_PARTICIPANT:
+    case UserStateInInitiative.USER_VIEWER:
     case UserStateInInitiative.NO_INITIATIVE:
     case UserStateInInitiative.USER_LEADER:
     case UserStateInInitiative.ADMIN:
