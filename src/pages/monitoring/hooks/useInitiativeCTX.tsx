@@ -106,7 +106,6 @@ export function CurrentInitiativeCTX({
       const isPending =
         joinRequestsByInitiativeId[initiative.id]?.status.name ===
         JoinRequestStatus.UNDER_REVIEW;
-      console.log("pend", isPending, joinRequestsByInitiativeId);
       return isPending
         ? UserStateInInitiative.USER_ASPIRING
         : UserStateInInitiative.USER_NONE;
@@ -126,7 +125,11 @@ export function CurrentInitiativeCTX({
           initiative?.users.filter((u) => u.userName === user?.username)[0] ??
           null,
         setInitiative: fetchInitiative,
-        updateInitiative: () => void fetchInitiative(initiative?.id),
+        updateInitiative: async () => {
+          if (initiative) {
+            await fetchInitiative(initiative.id);
+          }
+        },
         userStateInInitiative,
         isLoading,
         error,
