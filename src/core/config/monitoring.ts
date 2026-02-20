@@ -2,8 +2,9 @@ import type { ImageMimeType } from "@appTypes/formats";
 
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
+export const LOGIN_URL = "/";
 
-// Initiatives
+// Initiative description and properties
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
 export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
