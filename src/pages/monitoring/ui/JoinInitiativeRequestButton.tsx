@@ -3,14 +3,12 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { LOGIN_URL } from "@config/monitoring";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
-import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
+// import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
 import { CancelJoinInitiativeRequestBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/CancelJoinInitiativeRequestBtnAlert";
 import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInitiativeRequestButton/MakeJoinInitiativeRequestBrnDialog";
 
 export function JoinInitiativeRequestButton() {
   const { userStateInInitiative } = useInitiativeCTX();
-
-  console.log(UserStateInInitiative[userStateInInitiative]);
 
   switch (userStateInInitiative) {
     case UserStateInInitiative.IDLE:

@@ -106,7 +106,6 @@ export function CurrentInitiativeCTX({
       const isPending =
         joinRequestsByInitiativeId[initiative.id]?.status.name ===
         JoinRequestStatus.UNDER_REVIEW;
-      console.log("pend", isPending, joinRequestsByInitiativeId);
       return isPending
         ? UserStateInInitiative.USER_ASPIRING
         : UserStateInInitiative.USER_NONE;
