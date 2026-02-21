@@ -80,8 +80,8 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       const payload = { ...cleanGeneral, ...rest };
 
       const res = await monitoringAPI<InitiativeFullInfo>({
-        type: "put",
-        endpoint: "initiative",
+        type: "post",
+        endpoint: "Initiative",
         options: {
           data: payload,
           headers: {

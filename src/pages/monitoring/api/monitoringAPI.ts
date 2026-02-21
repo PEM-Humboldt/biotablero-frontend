@@ -451,6 +451,7 @@ export async function uploadImages(
 
     const formData = new FormData();
     formData.append("formFile", image.file);
+
     const res = await monitoringAPI({
       type: "post",
       endpoint: image.path,

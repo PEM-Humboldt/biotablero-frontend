@@ -171,7 +171,7 @@ export function FormListUpdater<T, R extends object>({
       const itemId = getItemId(updateItem);
 
       const res = await monitoringAPI<T>({
-        type: itemId ? "post" : "put",
+        type: itemId ? "put" : "post",
         endpoint: itemId ? `${backEndpoint}/${itemId}` : backEndpoint,
         options: {
           data: { ...itemInfo, initiativeId: initiativeId ?? "" },
