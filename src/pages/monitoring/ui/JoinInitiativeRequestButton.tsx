@@ -3,9 +3,9 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { LOGIN_URL } from "@config/monitoring";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
-// import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
+import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
 import { CancelJoinInitiativeRequestBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/CancelJoinInitiativeRequestBtnAlert";
-import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInitiativeRequestButton/MakeJoinInitiativeRequestBrnDialog";
+import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInitiativeRequestButton/MakeJoinInitiativeRequestBtnDialog";
 
 export function JoinInitiativeRequestButton() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -36,13 +36,13 @@ export function JoinInitiativeRequestButton() {
     case UserStateInInitiative.USER_ASPIRING:
       return <CancelJoinInitiativeRequestBtnAlert />;
 
-    // NOTE: se desactiva mientras se resuelve el endpoin para salirse de una iniciativa
-    // case UserStateInInitiative.USER_PARTICIPANT:
-    // case UserStateInInitiative.USER_VIEWER:
-    // return <LeaveInitiativeBtnAlert />;
-
+    // TODO: actualizar el endpoint de `leaveInitiative` dentro de
+    // `src/pages/monitoring/api/monitoringAPI.ts` cuando esté disponible,
+    // de lo contrario va a arrojar error
     case UserStateInInitiative.USER_PARTICIPANT:
     case UserStateInInitiative.USER_VIEWER:
+      return <LeaveInitiativeBtnAlert />;
+
     case UserStateInInitiative.NO_INITIATIVE:
     case UserStateInInitiative.USER_LEADER:
     case UserStateInInitiative.ADMIN:

@@ -18,19 +18,13 @@ export function MakeJoinInitiativeRequestBtnDialog() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { initiativeInfo, updateInitiative } = useInitiativeCTX();
-  const { joinRequestsByInitiativeId, reloadUserInMonitoringData } =
-    useUserInMonitoringCTX();
+  const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
 
   const handleJoinInitiative = async () => {
     if (!initiativeInfo) {
       return;
     }
     setIsLoading(true);
-
-    console.log(
-      joinRequestsByInitiativeId[initiativeInfo.id],
-      initiativeInfo.id,
-    );
 
     try {
       const joinRequest = await makeJoinRequestToInitiative(
@@ -52,9 +46,9 @@ export function MakeJoinInitiativeRequestBtnDialog() {
           initiativeInfo?.name ?? "",
         ),
         icon: (
-          <uiText.makeJoinRequestToInitiative.toast.icon className="size-8 text-accent" />
+          <uiText.makeJoinRequestToInitiative.toast.icon className="size-8 text-primary" />
         ),
-        className: "px-6! gap-6! border-2! border-accent!",
+        className: "px-6! gap-6! border-2! border-primary!",
         duration:
           uiText.makeJoinRequestToInitiative.toast.durationInSeconds * 1000,
       });
