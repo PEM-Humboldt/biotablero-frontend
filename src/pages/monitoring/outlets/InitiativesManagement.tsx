@@ -15,9 +15,7 @@ export function InitiativesManagement() {
       <JoinRequests
         InitiativesAsLeader={userInitiativesAs[RoleInInitiative.LEADER]}
       />
-      <InitiativeUpdater
-        initiativesAsLeader={userInitiativesAs[RoleInInitiative.LEADER]}
-      />
+      <InitiativeUpdater />
     </main>
   );
 }

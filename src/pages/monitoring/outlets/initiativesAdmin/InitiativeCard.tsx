@@ -20,7 +20,10 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { UserItem } from "pages/monitoring/types/catalog";
+import {
+  RoleInInitiative,
+  type UserItem,
+} from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
   InitiativeDisplayInfo,
@@ -101,7 +104,9 @@ export function InitiativeCard({
 
       const initiativeAdminInfo = {
         ...res,
-        users: res.users.filter((user) => user.level.id === 1),
+        users: res.users.filter(
+          (user) => user.level.id === RoleInInitiative.LEADER,
+        ),
       } satisfies InitiativeFullInfo;
 
       setCardInfo(initiativeAdminInfo);
@@ -166,9 +171,7 @@ export function InitiativeCard({
       locations,
       contacts,
 
-      // TODO: EL tipo de usuario está definido en otra rama, cuando se integre
-      // es necesario actualizar el valor de comparación del usuario
-      users: users.filter((user) => user.level.id === 1),
+      users: users.filter((user) => user.level.id === RoleInInitiative.LEADER),
       images: { imageUrl, bannerUrl },
     };
   }, [cardInfo]);

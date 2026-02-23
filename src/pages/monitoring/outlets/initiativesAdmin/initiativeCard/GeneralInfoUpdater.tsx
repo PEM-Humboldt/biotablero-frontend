@@ -84,7 +84,7 @@ export function GeneralInfoUpdater({
           shortName: sectionInfo.current.shortName,
           description: sectionInfo.current.description,
           objective: sectionInfo.current.objective,
-          influenceArea: sectionInfo.current.influenceArea,
+          baseline: sectionInfo.current.baseline,
         }).filter(([_, value]) => Boolean(value)),
       ) as Record<string, string>;
 
@@ -179,9 +179,9 @@ export function GeneralInfoUpdater({
             </div>
             <div className="flex-1 min-w-[300px] max-w-[65ch]">
               <h5 className="text-primary mb-0!">
-                {uiText.initiative.module.general.field.influenceAreaHelper}
+                {uiText.initiative.module.general.field.baselineHelper}
               </h5>
-              {sectionInfo.current?.influenceArea ??
+              {sectionInfo.current?.baseline ??
                 uiText.initiative.unasignedFallback}
             </div>
           </div>

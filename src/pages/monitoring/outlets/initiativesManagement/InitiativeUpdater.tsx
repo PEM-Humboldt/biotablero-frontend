@@ -15,10 +15,8 @@ import {
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
 import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
-import type {
-  InitiativeUser,
-  UserInInitiative,
-} from "pages/monitoring/types/odataResponse";
+import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 const usersManagementTabs: {
   label: string;
@@ -29,15 +27,14 @@ const usersManagementTabs: {
   { label: "gestión de observadores", value: "VIEWER" },
 ];
 
-export function InitiativeUpdater({
-  initiativesAsLeader,
-}: {
-  initiativesAsLeader: UserInInitiative[] | undefined;
-}) {
+export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState("");
   const [initiativeUsers, setInitiativeUsers] = useState<InitiativeUser[]>([]);
+
+  const { userInitiativesAs } = useUserInMonitoringCTX();
+  const initiativesAsLeader = userInitiativesAs[RoleInInitiative.LEADER];
 
   useEffect(() => {
     if (!initiativesAsLeader || initiativesAsLeader.length !== 1) {

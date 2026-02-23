@@ -95,10 +95,9 @@ export const uiText = {
           description: "¿Quienes somos?",
           descriptionHelper: "Descripción de la iniciativa",
           descriptionPlaceholder: "Esta iniciativa busca...",
-          influenceArea: "¿Dónde estamos?",
-          influenceAreaHelper: "Contexto territorial y área de influencia",
-          influenceAreaPlaceholder:
-            "El área de influencia de esta iniciativa es...",
+          baseline: "¿Dónde estamos?",
+          baselineHelper: "Contexto territorial y área de influencia",
+          baselinePlaceholder: "El área de influencia de esta iniciativa es...",
           objective: "¿Cuál es el objetivo?",
           objectiveHelper: "Objetivos y enfoque de la iniciativa",
           objectivePlaceholder: "El objetivo de esta iniciativa es...",
