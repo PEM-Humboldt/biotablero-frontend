@@ -167,7 +167,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
     newStatus: "Approved" | "Rejected",
   ) => {
     const res = await monitoringAPI({
-      type: "post",
+      type: "put",
       endpoint: `JoinRequest/${requestId}?requestStatus=${newStatus}`,
     });
 

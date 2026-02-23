@@ -165,7 +165,10 @@ export function InitiativeCard({
       general,
       locations,
       contacts,
-      users,
+
+      // TODO: EL tipo de usuario está definido en otra rama, cuando se integre
+      // es necesario actualizar el valor de comparación del usuario
+      users: users.filter((user) => user.level.id === 1),
       images: { imageUrl, bannerUrl },
     };
   }, [cardInfo]);

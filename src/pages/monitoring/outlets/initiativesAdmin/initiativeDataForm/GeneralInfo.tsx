@@ -291,6 +291,50 @@ export function GeneralInfoInput<T extends GeneralInfo>({
       <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-start">
         <div>
           <LabelAndErrors
+            errID="errors_objective"
+            htmlFor="objective"
+            validationErrors={inputErr.objective ?? []}
+          >
+            {uiText.initiative.module.general.field.objective}{" "}
+            <i>{uiText.initiative.module.general.field.objectiveHelper}</i>
+          </LabelAndErrors>
+
+          <InputGroup>
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+              id="objective"
+              name="objective"
+              placeholder={
+                uiText.initiative.module.general.field.objectiveHelper
+              }
+              value={generalInfo.objective}
+              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
+              onBlur={objectiveOnBlur}
+              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+              aria-invalid={inputErr.objective !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.objective ? "errors_objective" : undefined
+              }
+              rows={10}
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.objective,
+                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div>
+          <LabelAndErrors
             errID="errors_influenceArea"
             htmlFor="influenceArea"
             validationErrors={inputErr.influenceArea ?? []}
@@ -330,50 +374,6 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               )} flex-row-reverse`}
             >
               {`${generalInfo.influenceArea.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
-		  `}
-            </InputGroupAddon>
-          </InputGroup>
-        </div>
-
-        <div>
-          <LabelAndErrors
-            errID="errors_objective"
-            htmlFor="objective"
-            validationErrors={inputErr.objective ?? []}
-          >
-            {uiText.initiative.module.general.field.objective}{" "}
-            <i>{uiText.initiative.module.general.field.objectiveHelper}</i>
-          </LabelAndErrors>
-
-          <InputGroup>
-            <TextareaAutosize
-              data-slot="input-group-control"
-              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
-              id="objective"
-              name="objective"
-              placeholder={
-                uiText.initiative.module.general.field.objectiveHelper
-              }
-              value={generalInfo.objective}
-              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
-              onBlur={objectiveOnBlur}
-              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
-              aria-invalid={inputErr.objective !== undefined}
-              aria-required="true"
-              aria-describedby={
-                inputErr.objective ? "errors_objective" : undefined
-              }
-              rows={10}
-            />
-            <InputGroupAddon
-              align="block-end"
-              className={`${inputWarnColor(
-                generalInfo.objective,
-                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
-                0.95,
-              )} flex-row-reverse`}
-            >
-              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
 		  `}
             </InputGroupAddon>
           </InputGroup>
