@@ -19,7 +19,7 @@ import {
   type LocationDataBasic,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
-  COLOMBIAN_DEPARTMENTS,
+  getColombianDepartments,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
@@ -35,16 +35,21 @@ export function LocationInput<T extends LocationDataBasic>({
   discard,
   disabled = false,
 }: ItemEditorProps<T>) {
-  const [department, setDepartment] = useState<string>("");
+  const [departments, setDepartments] = useState<
+    { name: string; value: number }[]
+  >([]);
+  const [currentDepartment, setCurrentDepartment] = useState<string>("");
   const [municipalities, setMunicipalities] = useState<LocationList[]>([]);
   const [municipality, setMunicipality] = useState<string>("");
   const [locality, setLocality] = useState("");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
-    setInputErr({});
+    void getColombianDepartments().then((reps) => setDepartments(reps));
+  }, []);
 
-    if (department === "") {
+  useEffect(() => {
+    if (currentDepartment === "") {
       setMunicipalities([]);
       return;
     }
@@ -52,7 +57,7 @@ export function LocationInput<T extends LocationDataBasic>({
     const getMunicipalities = async () => {
       try {
         const municipalitiesList =
-          await getMunicipalitiesByDepartment(department);
+          await getMunicipalitiesByDepartment(currentDepartment);
         if (isMonitoringAPIError(municipalitiesList)) {
           setInputErr((oldErr) => ({
             ...oldErr,
@@ -68,13 +73,13 @@ export function LocationInput<T extends LocationDataBasic>({
     };
 
     void getMunicipalities();
-  }, [department]);
+  }, [currentDepartment]);
 
   const reset = useCallback(async () => {
     setInputErr({});
 
     if (update === null) {
-      setDepartment("");
+      setCurrentDepartment("");
       setMunicipality("");
       setLocality("");
       return;
@@ -92,7 +97,7 @@ export function LocationInput<T extends LocationDataBasic>({
       return;
     }
 
-    setDepartment(String(loc.departmentId));
+    setCurrentDepartment(String(loc.departmentId));
     setMunicipality(loc.municipalityId ? String(loc.municipalityId) : "");
     setLocality(loc.locality ?? "");
   }, [update]);
@@ -117,7 +122,7 @@ export function LocationInput<T extends LocationDataBasic>({
   };
 
   const handleSave = () => {
-    if (department === "") {
+    if (currentDepartment === "") {
       setInputErr((oldErr) => ({
         ...oldErr,
         location: [
@@ -130,7 +135,7 @@ export function LocationInput<T extends LocationDataBasic>({
       return;
     }
     const newLocation: LocationDataBasic = {
-      locationId: Number(municipality) || Number(department),
+      locationId: Number(municipality) || Number(currentDepartment),
     };
 
     if (locality !== "") {
@@ -146,7 +151,7 @@ export function LocationInput<T extends LocationDataBasic>({
     }
 
     setter(newLocation as T);
-    setDepartment("");
+    setCurrentDepartment("");
     setMunicipality("");
     setLocality("");
 
@@ -157,7 +162,7 @@ export function LocationInput<T extends LocationDataBasic>({
     if (update && discard) {
       discard();
     }
-    setDepartment("");
+    setCurrentDepartment("");
     setMunicipality("");
     setLocality("");
 
@@ -165,7 +170,7 @@ export function LocationInput<T extends LocationDataBasic>({
   };
 
   const handleChangeDepartment = (action: SetStateAction<string>) => {
-    setDepartment(action);
+    setCurrentDepartment(action);
     setMunicipality("");
     setLocality("");
   };
@@ -187,8 +192,8 @@ export function LocationInput<T extends LocationDataBasic>({
       <div className="form-input-list">
         <Combobox
           id="department"
-          items={COLOMBIAN_DEPARTMENTS}
-          value={department}
+          items={departments}
+          value={currentDepartment}
           setValue={(e) => handleChangeDepartment(e)}
           keys={{ forValue: "value", forLabel: "name" }}
           uiText={{

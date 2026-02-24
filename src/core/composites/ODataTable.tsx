@@ -1,46 +1,47 @@
 import type { HasId, ODataColumn } from "@appTypes/odata";
 
 /**
- * Creates a reusable OData table component with typed columns and dynamic rows.
- * The generated component renders a header and body based on the provided column definitions.
+ * Renders a data table based on OData column definitions and a dataset.
  *
  * @template T - Row data type. Must include an `id` property.
  *
- * @param cols - Column definitions describing how each field of type `T` should be rendered.
- *   Each column has a `name` (display label) and a `source` (key from the row data).
- *   Columns can be one of two types:
- *   - **Text columns (`type: "text"`)**: display string or formatted values.
- *     Optional:
- *       - `sortBy` — indicates whether the column supports sorting.
- *       - `processValue` — function to transform or format the raw value before rendering.
- *   - **Action columns (`type: "action"`)**: render custom React components for each row.
- *     Required:
- *       - `label` — accessible label for the action.
- *       - `actions` — render function that receives `{ value }` and returns a `ReactNode`.
+ * @param props - The component props.
+ * @param props.cols - An array of column definitions (`ODataColumn<T>[]`).
+ * Columns can be:
+ * - **Text columns (`type: "text"`)**: For string/formatted values.
+ * Supports `sortBy` and `processValue` for transformations.
+ * - **Action columns (`type: "action"`)**: For custom React elements.
+ * Requires `label` and an `actions` render function.
+ * @param props.values - The array of data records to be displayed in the rows.
+ * @param props.className - Optional CSS classes for the table container.
  *
- * @returns A React component that renders a table for the given dataset.
+ * @returns A React component rendering a complete table with typed headers and rows.
  *
  * @remarks
  * - Non-primitive values (e.g., objects) are automatically stringified.
  * - Action columns allow embedding interactive components such as buttons or menus.
  */
-export function ODataTableFactory<T extends HasId>(cols: ODataColumn<T>[]) {
-  function Table({ values }: { values: T[] }) {
-    return (
-      <div className="table-container">
-        <table>
-          <OdataTableHead cols={cols} />
-          <tbody>
-            {values.map((row) => (
-              <ODataTableRow key={row.id} cols={cols} row={row} />
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  return Table;
+export function ODataTable<T extends HasId>({
+  cols,
+  values,
+  className,
+}: {
+  cols: ODataColumn<T>[];
+  values: T[];
+  className?: string;
+}) {
+  return (
+    <div className={className}>
+      <table>
+        <OdataTableHead cols={cols} />
+        <tbody>
+          {values.map((row) => (
+            <ODataTableRow key={row.id} cols={cols} row={row} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 function OdataTableHead<T extends HasId>({ cols }: { cols: ODataColumn<T>[] }) {
@@ -49,7 +50,11 @@ function OdataTableHead<T extends HasId>({ cols }: { cols: ODataColumn<T>[] }) {
       <tr>
         {cols.map((col, i) => (
           <th scope="col" key={`i${col.name}_${i}`}>
-            {col.name}
+            {col.type === "action" ? (
+              <span className="sr-only">{col.name}</span>
+            ) : (
+              col.name
+            )}
           </th>
         ))}
       </tr>

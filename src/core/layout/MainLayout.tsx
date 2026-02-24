@@ -38,16 +38,20 @@ export function MainLayout() {
 
   return (
     <UserCTX>
-      <div className={layoutState.className}>
+      <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header
           activeModule={layoutState.moduleName}
           headerNames={layoutState.headerNames}
+          className="z-10"
         />
 
         <OnLoadingModal open={navigation.state === "loading"} />
-        <Outlet context={{ layoutState, layoutDispatch }} />
 
-        <Footer logos={layoutState.logos} />
+        <div className="isolate">
+          <Outlet context={{ layoutState, layoutDispatch }} />
+        </div>
+
+        <Footer logos={layoutState.logos} className="z-10" />
       </div>
     </UserCTX>
   );

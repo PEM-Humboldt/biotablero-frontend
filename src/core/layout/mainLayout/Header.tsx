@@ -1,6 +1,7 @@
 import { Menu } from "core/layout/mainLayout/header/Menu";
-import { Title } from "core/layout/mainLayout/header/Title";
-import { Uim } from "core/layout/Uim";
+import { Uim } from "core/layout/mainLayout/header/Uim";
+import { Link } from "react-router";
+import { cn } from "@ui/shadCN/lib/utils";
 
 interface Names {
   title?: string;
@@ -10,38 +11,54 @@ interface Names {
 interface HeaderProps {
   activeModule: string;
   headerNames: Names;
+  className?: string;
 }
 
-export function Header({ activeModule, headerNames }: HeaderProps) {
+export function Header({ activeModule, headerNames, className }: HeaderProps) {
   const { title, subtitle } = headerNames;
 
   const renderCompositeTitle = title !== "" && subtitle !== "";
 
   return (
-    <header className="cabezote">
-      <div className="cabezoteLeft">
-        <Title title="BioTablero" />
-      </div>
-      <div className="cabezoteRight">
+    <header
+      className={cn(
+        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]! isolate",
+        className,
+      )}
+    >
+      <div className="flex gap-2 items-baseline p-2 md:px-8">
+        <Link to="/">
+          <h1 className="text-secondary font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">
+            BioTablero
+            <span className="sr-only">{activeModule}</span>
+          </h1>
+        </Link>
+
         <Menu />
 
-        <div className="header_info">
-          <div className="cabezoteRight">
-            {renderCompositeTitle ? (
-              <h1>
-                <b>{title}</b>
-                <br />
-                {subtitle}
-              </h1>
-            ) : (
-              <h2>{activeModule}</h2>
-            )}
-            <span className={`${activeModule.replace(" ", "")}`} />
-          </div>
-
-          <Uim />
-        </div>
+        {renderCompositeTitle && (
+          <h2 className="text-xl! font-light! border-l border-l-grey-light px-4! m-0!">
+            {title} / {subtitle}
+          </h2>
+        )}
       </div>
+
+      <Uim />
+
+      {activeModule !== "" && (
+        <div
+          className=" flex gap-2 pl-8 pr-2 items-center bg-grey-light h-full"
+          aria-hidden="true"
+        >
+          <span className="text-base md:text-lg font-normal">
+            {activeModule}
+          </span>
+          <span
+            className={`moduleIcon ${activeModule.replace(" ", "")}`}
+            aria-hidden="true"
+          />
+        </div>
+      )}
     </header>
   );
 }

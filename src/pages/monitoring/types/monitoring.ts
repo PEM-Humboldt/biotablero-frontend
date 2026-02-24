@@ -1,9 +1,12 @@
-import { type ReactNode } from "react";
+import type { LucideProps } from "lucide-react";
+import type { ForwardRefExoticComponent, RefAttributes } from "react";
 
-export type DashboardItem = { description: string; icon: ReactNode } & (
-  | { linkTo: string }
-  | { action: () => void }
-);
+export type DashboardItem = {
+  description: string;
+  icon: ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
+  >;
+} & ({ linkTo: string } | { action: () => void });
 
 export type LocationList = {
   name: string;
@@ -27,40 +30,6 @@ export type User = {
   level: UserLevel;
 };
 
-// NOTE: Pendiente de decidir si lo borro o no
-export type GetStringKeys<T> = {
+export type GetKeysWithStringValues<T> = {
   [K in keyof T]: T[K] extends string ? K : never;
 }[keyof T];
-
-// NOTE: objeto de usuario retornado por Keycloak
-export interface UserKC {
-  id: string;
-  username: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  emailVerified: boolean;
-  enabled: boolean;
-  totp: boolean;
-  notBefore: number;
-  userProfileMetadata: {
-    attributes: Array<{
-      name: string;
-      displayName: string;
-      required: boolean;
-      readOnly: boolean;
-      validators: Record<string, unknown>;
-      multivalued: boolean;
-    }>;
-    groups: Array<{
-      name: string;
-      displayHeader: string;
-      displayDescription: string;
-    }>;
-  };
-  disableableCredentialTypes: string[];
-  requiredActions: string[];
-  access: {
-    manage: boolean;
-  };
-}

@@ -10,6 +10,7 @@ interface Module {
   image: string;
   link: string | ((username: string) => string);
   authModule: boolean;
+  imgSrc: string;
 }
 
 export interface DisplayModule extends Module {
@@ -23,6 +24,7 @@ const modules: Module[] = [
     image: Search,
     link: "/Consultas",
     authModule: false,
+    imgSrc: "src/core/assets/geografico.png",
   },
   {
     id: 2,
@@ -30,6 +32,7 @@ const modules: Module[] = [
     image: Monitoring,
     link: "/Monitoreo",
     authModule: false,
+    imgSrc: "src/core/assets/mcomunitario.png",
   },
   {
     id: 3,
@@ -37,6 +40,7 @@ const modules: Module[] = [
     image: Indicators,
     link: "/Indicadores",
     authModule: false,
+    imgSrc: "src/core/assets/indicadores.png",
   },
   {
     id: 4,
@@ -44,6 +48,7 @@ const modules: Module[] = [
     image: Portfolio,
     link: "/Portafolios",
     authModule: false,
+    imgSrc: "src/core/assets/portafolios.png",
   },
   {
     id: 5,
@@ -51,6 +56,7 @@ const modules: Module[] = [
     image: Compensations,
     link: (username: string) => `/${username.toUpperCase()}/Compensaciones`,
     authModule: true,
+    imgSrc: "src/core/assets/compensaciones.png",
   },
 ];
 

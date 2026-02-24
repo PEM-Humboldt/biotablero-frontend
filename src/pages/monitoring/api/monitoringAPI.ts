@@ -11,21 +11,20 @@ import axios, {
 } from "axios";
 import { isResponseRequestError, refreshAccessToken } from "@api/auth";
 import type { ApiRequestError } from "@appTypes/api";
-import type { ODataParams } from "@appTypes/odata";
+import { isODataParams, type ODataParams } from "@appTypes/odata";
 import type {
+  InitiativeUser,
   LocationBasicInfo,
   ODataInitiative,
   ODataLog,
+  ODataUserInfo,
+  ODataUserRequest,
+  UserInitiatives,
 } from "pages/monitoring/types/requestParams";
 import { oDataToString } from "@utils/odata";
-import type {
-  Location,
-  UserLevel,
-  UserKC,
-} from "pages/monitoring/types/monitoring";
+import type { Location, UserLevel } from "pages/monitoring/types/monitoring";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
-import usersMock from "pages/monitoring/api/usersMock.json";
 import type { InitiativeFullInfo } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { commonErrorMessage } from "@utils/ui";
 
@@ -34,6 +33,14 @@ interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
 }
 
 type RequestData = RequestBody | FormData;
+
+type ResponseType =
+  | "arraybuffer"
+  | "blob"
+  | "document"
+  | "json"
+  | "text"
+  | "stream";
 
 type MonitoringAPIParams = {
   endpoint: string;
@@ -45,6 +52,7 @@ type MonitoringAPIParams = {
         data?: QueryParams;
         oData?: Partial<ODataParams>;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
   | {
@@ -52,6 +60,7 @@ type MonitoringAPIParams = {
       options?: {
         data?: QueryParams;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
   | {
@@ -59,6 +68,7 @@ type MonitoringAPIParams = {
       options?: {
         data?: RequestData;
         headers?: Record<string, string>;
+        responseType?: ResponseType;
       };
     }
 );
@@ -186,7 +196,9 @@ export async function monitoringAPI<T>({
       const params = [queryParams, oDataParams].filter(Boolean).join("&");
       const fullEndpoint = `${baseURL}/${endpoint}${params ? `?${params}` : ""}`;
 
-      response = await monitoringClient[type]<T>(fullEndpoint);
+      response = await monitoringClient[type]<T>(fullEndpoint, {
+        responseType: options?.responseType,
+      });
     } else {
       let payload: RequestData;
 
@@ -369,28 +381,36 @@ export async function getUserLevels() {
 }
 
 /**
- * Retrieves a list of users, optionally filtered by a specific Initiative ID.
+ * Retrieves users from the Monitoring API.
  *
- * @param byInitiativeId - OPTIONAL. The ID of the initiative to retrieve all associated users. If omitted, all users are returned.
- *
- * @returns A `Promise` resolving to an array of User objects.
- * @throws An `Error` if the Monitoring API returns an error status or if the request fails.
+ * @param idOrOdata - OPTIONAL. Can be an Initiative ID (number/string) to get associated users, or an ODataParams object to filter the general user list. If no param is passed, it will return all the users
+ * @returns A `Promise` resolving to:
+ * - `InitiativeUser[]` if an Initiative ID is provided.
+ * - `ODataUserInfo[]` if an OData object is provided or if called without arguments.
  */
 export async function getUsers(
-  byInitiativeId?: number | string,
-): Promise<UserKC[]> {
-  if (byInitiativeId === undefined) {
-    // NOTE: Llamado temporal al mock con la lista de usuarios
-    return usersMock as UserKC[];
-  }
+  oDataParams?: ODataParams,
+): Promise<ODataUserInfo>;
+export async function getUsers(
+  byInitiativeId: number | string,
+): Promise<InitiativeUser[]>;
+export async function getUsers(
+  idOrOdata?: ODataParams | number | string,
+): Promise<InitiativeUser[] | ODataUserInfo> {
+  const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
+  const endpoint = isId
+    ? `InitiativeUser/GetByInitiative/${idOrOdata}`
+    : "User";
+  const oDataParams =
+    idOrOdata !== undefined && !isId && isODataParams(idOrOdata)
+      ? idOrOdata
+      : undefined;
 
   try {
-    const res = await monitoringAPI<UserKC[]>({
+    const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
       type: "get",
-      endpoint:
-        byInitiativeId === undefined
-          ? `InitiativeUser/`
-          : `InitiativeUser/GetByInitiative/${byInitiativeId}`,
+      endpoint,
+      options: { oData: oDataParams },
     });
 
     if (isMonitoringAPIError(res)) {
@@ -447,4 +467,94 @@ export async function uploadImages(
   }
 
   return imageUploadErrors;
+}
+
+/**
+ * Fetches the basic information of initiatives associated with the current user.
+ *
+ * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInitiatives}; returns an empty array if the request fails or no initiatives are found.
+ *
+ * @remarks
+ * - This function handles API errors internally by logging them to the console and returning an empty collection.
+ * - It specifically catches both structured API errors (via `isMonitoringAPIError`) and unexpected runtime exceptions.
+ */
+export async function getUserInitiativesInfo() {
+  try {
+    const res = await monitoringAPI<UserInitiatives[]>({
+      type: "get",
+      endpoint: "Auth/InitiativesData",
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
+      console.error(
+        commonErrorMessage[status] ?? message,
+        data ? `: ${data}` : ".",
+      );
+      return [];
+    }
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+/**
+ * Retrieves a paginated and filtered list of join requests for a specific initiative using OData parameters.
+ *
+ * @param initiativeId The unique identifier of the initiative.
+ * @param oData An object of type {@link ODataParams} containing query transformations.
+ * @returns a `Promise<ODataUserRequest | null>`.
+ *
+ * @remarks
+ * - Failed requests are logged to the console and return `null` to be handled by the caller's state management.
+ * - A `try/catch` block is included to prevent network-level exceptions from bubbling up unhandled.
+ */
+export async function getInitiativeRequests(
+  initiativeId: number,
+  oData: ODataParams,
+) {
+  try {
+    const res = await monitoringAPI<ODataUserRequest>({
+      type: "get",
+      endpoint: "JoinRequest",
+      options: { data: { initiativeId }, oData },
+    });
+
+    if (isMonitoringAPIError(res)) {
+      console.error(res.message);
+      return null;
+    }
+
+    return res;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+/**
+ * Makes the reques for the xslx file with optional OData query parameters.
+ *
+ * This function is a thin wrapper around `monitoringAPI` specialized for the `"Logs/xlsx"` endpoint.
+ * Throws an error if the request fails or the backend returns an error response.
+ *
+ * @param odataParams - Optional OData query parameters to filter, sort, or paginate results.
+ * @returns A `Promise` resolving to a `Blob` object containing the logs data.
+ * @throws If the API returns a `RequestError` or the request fails.
+ */
+export async function downloadLogs(odataParams: ODataParams = {}) {
+  const result = await monitoringAPI<Blob>({
+    endpoint: "Logs/xlsx",
+    type: "get",
+    options: { oData: odataParams, responseType: "blob" },
+  });
+
+  if (isMonitoringAPIError(result)) {
+    throw new Error(result.message);
+  }
+
+  return result;
 }

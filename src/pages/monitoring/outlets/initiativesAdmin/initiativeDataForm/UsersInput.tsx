@@ -13,7 +13,7 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import {
   NEW_ADMIN_CREDENTIALS,
-  normalizeUsersFromKC,
+  normalizeUsersFromOData,
 } from "pages/monitoring/utils/manageUsers";
 import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
@@ -31,12 +31,12 @@ export function UsersInput<T extends User>({
   useEffect(() => {
     const getUsersInfo = async () => {
       try {
-        const usersKC = await getUsers();
-        if (isMonitoringAPIError(usersKC)) {
-          throw new Error(usersKC.message);
+        const users = await getUsers();
+        if (isMonitoringAPIError(users)) {
+          throw new Error(users.message);
         }
 
-        const usersInfo = normalizeUsersFromKC(usersKC);
+        const usersInfo = normalizeUsersFromOData(users);
         setAllUsers(usersInfo);
       } catch (err) {
         console.error(err);

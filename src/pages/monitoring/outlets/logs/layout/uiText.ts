@@ -1,11 +1,23 @@
 export const uiText = {
   logsTitle: "Registros del sistema",
   noLogsAvailable: "No hay registros disponibles",
+  criticalError: "Critical error:",
 
   logLoadingStates: {
     loaded: null,
     loading: "Cargando registros...",
     error: "No fue posible cargar los registros, intenta más tarde.",
+  },
+
+  download: {
+    button: {
+      isReady: "Descargar resultados",
+      isDownloading: "Generando xlsx...",
+    },
+    warn: "No puede generar reportes con más de 10.000 registros. Modifique los filtros para reducir los resultados y habilitar la descarga.",
+    error: "Error al descargar el archivo",
+    tryAgain: "Intenta de nuevo más tarde.",
+    filename: "reporte_registro-de-eventos.xlsx",
   },
 
   searchBar: {
@@ -19,7 +31,7 @@ export const uiText = {
       loadStatus: {
         loaded: null,
         loading: "Cargando...",
-        error: "Registro no disponible, intenta de nuevo más tarde",
+        error: "No disponible",
       },
     },
   },

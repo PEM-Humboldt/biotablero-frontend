@@ -1,5 +1,6 @@
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { cn } from "@ui/shadCN/lib/utils";
 import { useMemo, type ReactNode } from "react";
 import { defaultUI } from "@composites/tablePager/layout/uiText";
 
@@ -104,8 +105,8 @@ export function TablePager({
   const txtData = { ...defaultUI.pagination, ...pagination };
 
   return totalPages <= 1 ? null : (
-    <div className={`flex gap-2 justify-center ${className}`}>
-      <ButtonGroup className="">
+    <div className={cn("flex gap-2 justify-center", className)}>
+      <ButtonGroup>
         {btnData.first.enabled && (
           <PagerButton
             icon={btnData.first.icon}
@@ -212,7 +213,10 @@ function PagerButton({
   return (
     <Button
       variant="outline"
-      className={`border-grey px-2 aspect-square hover:border-secondary text-sm ${className}`}
+      className={cn(
+        "border-grey px-2 aspect-square hover:border-secondary text-sm",
+        className,
+      )}
       size="sm"
       onClick={() => onClick()}
       disabled={disabled}

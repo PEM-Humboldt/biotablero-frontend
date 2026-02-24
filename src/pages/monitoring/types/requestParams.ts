@@ -1,3 +1,5 @@
+import type { UserLevel } from "pages/monitoring/types/monitoring";
+
 export type ODataLogEntryShort = {
   id: string;
   timeStamp: string;
@@ -57,6 +59,53 @@ export type ODataInitiativeShortEntry = {
   locations: LocationCompleteInfo[];
 };
 
+export type UserRequestStatus = {
+  id: number;
+  name: string;
+};
+
+export type ODataInitiativeUserRequest = {
+  id: number;
+  userName: string;
+  reviewerUserName: string;
+  creationDate: string;
+  responseDate: string;
+  initiativeId: number;
+  status: UserRequestStatus;
+};
+
+export interface ODataUser {
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  username: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+}
+
+export type InitiativeUser = {
+  id: number;
+  initiativeId: number;
+  userName: string;
+  level: UserLevel;
+  creationDate: string;
+};
+
+export type UserInitiatives = {
+  id: number;
+  name: string;
+  shortName: string;
+  description: string;
+  baseline: string;
+  objective: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  users: InitiativeUser[];
+};
+
 type ODataResponse<T> = {
   "@odata.count": number;
   value: T[];
@@ -64,3 +113,5 @@ type ODataResponse<T> = {
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
+export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
+export type ODataUserInfo = ODataResponse<ODataUser>;

@@ -35,14 +35,15 @@
   --chart-5: oklch(0.6334 0 0);
 
   /* Colors for the ShadCN sidebar */
-  --sidebar: oklch(0.9491 0 0);
-  --sidebar-foreground: oklch(0.1776 0 0);
+  --sidebar: oklch(1 0 0);
+  --sidebar-foreground: oklch(0.3211 0 0);
   --sidebar-primary: oklch(0.8677 0.0735 7.0855);
   --sidebar-primary-foreground: oklch(0 0 0);
   --sidebar-accent: oklch(0.8559 0.0284 225.7509);
   --sidebar-accent-foreground: oklch(0 0 0);
-  --sidebar-border: oklch(0.6334 0 0);
+  --sidebar-border: oklch(0.9491 0 0);
   --sidebar-ring: oklch(0.6368 0.1924 17.3023);
+  /* --color-grey-light: oklch(0.9491 0 0); */
 
   /* fonts */
   --font-sans: Lato, ui-sans-serif, sans-serif, system-ui;
@@ -145,7 +146,8 @@
 
   /* Regular colors */
   --color-white: oklch(100% 0 0);
-  --color-grey-light: oklch(85% 0 89.88);
+  --color-grey-light: oklch(0.9491 0 0);
+  --color-grey: oklch(85% 0 89.88);
   --color-grey-dark: oklch(15.91% 0 89.88);
   --color-black: oklch(0% 0 0);
   --color-red-50: oklch(96% 0.015 17.3);
@@ -196,6 +198,8 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 
+  --spacing-sidebar-width: var(--sidebar-width);
+  --spacing-sidebar-width-icon: var(--sidebar-width-icon);
   /* Component animations */
   @keyframes accordion-down {
     from {
