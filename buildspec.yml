@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    ENV_VARS_LIST: "REACT_APP_BACKEND_URL REACT_APP_GEOSERVER_URL REACT_APP_BACKEND_KEY"
+    ENV_VARS_LIST: "REACT_APP_BACKEND_URL REACT_APP_GEOSERVER_URL REACT_APP_BACKEND_KEY REACT_APP_ENVIRONMENT REACT_APP_API_KEY REACT_APP_DOMAIN REACT_APP_PROJECT_ID REACT_APP_STORAGE_BUCKET REACT_APP_SENDER_ID REACT_APP_APP_ID REACT_APP_BACKEND_BIAB_URL REACT_APP_GA_TRACKING_ID REACT_APP_YM_ID"
 
 phases:
   pre_build:
@@ -24,7 +24,6 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cat .env
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       - echo Build completed on `date`
@@ -42,6 +41,6 @@ phases:
       - export AWS_SECRET_ACCESS_KEY=$(echo $CREDS | awk '{print $2}')
       - export AWS_SESSION_TOKEN=$(echo $CREDS | awk '{print $3}')
       - echo "Deploying to ECS..."
-      # - aws ecs update-service --cluster arn:aws:ecs:us-east-1:005235113454:cluster/humbolt-cluster-dev  --service biotablero-frontend  --force-new-deployment
+      - aws ecs update-service --cluster arn:aws:ecs:us-east-1:005235113454:cluster/humbolt-cluster-dev  --service biotablero-frontend  --force-new-deployment
 artifacts:
     files: imagedefinitions.json
