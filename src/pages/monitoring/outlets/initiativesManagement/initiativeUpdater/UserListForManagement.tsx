@@ -105,13 +105,13 @@ function ActionsToUserByRole({
   const posibleActions = Array.from(userPosibleRoleChanges[usersState].keys());
 
   const changeUserRole = async (action: RoleEvents) => {
-    const actionInfo = roleEventInfo[action];
+    const actionInfo = roleEventInfo[action](user.userName, role);
     const userNextState = userPosibleRoleChanges[usersState].get(action);
     const newRoleId = userNextState
       ? stateToInitiativeRole[userNextState]
       : null;
 
-    if (!newRoleId) {
+    if (newRoleId === null) {
       console.error("This role action is not allowed");
       return;
     }
@@ -138,13 +138,13 @@ function ActionsToUserByRole({
       return;
     }
 
-    const toastInfo = actionInfo.toast(user.userName, role);
-
     toast(actionInfo.confirmationTitle, {
       position: "bottom-right",
-      description: toastInfo.description,
-      icon: <toastInfo.icon className={toastInfo.iconClassName} />,
-      className: toastInfo.className,
+      description: actionInfo.toast.description,
+      icon: (
+        <actionInfo.toast.icon className={actionInfo.toast.iconClassName} />
+      ),
+      className: actionInfo.toast.className,
     });
   };
 
@@ -158,25 +158,23 @@ function ActionsToUserByRole({
           dialog,
           triggerBtnVariant,
           triggerBtnSize,
-        } = roleEventInfo[action];
+        } = roleEventInfo[action](user.userName, role);
 
         const isDisabled = buttonConditional[role]?.find(
           (cond) => cond.action === action,
         );
 
-        const baseDialogTexts = dialog(user.userName, role);
-
         const dialogTexts = isDisabled?.condition
           ? {
-              ...baseDialogTexts,
+              ...dialog,
               trigger: {
-                ...baseDialogTexts.trigger,
+                ...dialog.trigger,
                 title: isDisabled.textToRender,
                 sr: isDisabled.textToRender,
                 icon: CircleOff,
               },
             }
-          : baseDialogTexts;
+          : dialog;
 
         return (
           <Comp

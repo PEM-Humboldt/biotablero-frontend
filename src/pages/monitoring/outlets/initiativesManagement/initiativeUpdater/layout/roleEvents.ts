@@ -20,10 +20,7 @@ import {
   type ConfirmationDialogProps,
   ConfirmationDialog,
 } from "@ui/ConfirmationDialog";
-import {
-  roleDictionary,
-  userStateInInitiativeDictionary,
-} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { userStateInInitiativeDictionary } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 import { type ButtonProps } from "@ui/shadCN/component/button";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
@@ -31,39 +28,30 @@ import {
   INITIATIVE_LEADERS_MIN_AMOUNT,
 } from "@config/monitoring";
 
-type RoleEventInfo = Record<
-  RoleEvents,
-  {
-    dialog: (
-      username: string,
-      role: RoleInInitiative,
-    ) => {
-      trigger: {
-        title?: string;
-        sr?: string;
-        label: string;
-        icon?: LucideIcon;
-      };
-      dialog: { title: string; description: string };
-      actionBtns?: { confirm?: string; cancel?: string; exit?: string };
+type RoleEventInfo = {
+  dialog: {
+    trigger: {
+      title?: string;
+      sr?: string;
+      label: string;
+      icon?: LucideIcon;
     };
-    triggerBtnVariant: ButtonProps["variant"];
-    triggerBtnSize: ButtonProps["size"];
-    confirmationTitle: string;
-    toast: (
-      name: string,
-      role: RoleInInitiative,
-    ) => {
-      description: string;
-      icon: LucideIcon;
-      className: string;
-      iconClassName: string;
-    };
-    component: ComponentType<
-      DestructiveConfirmationDialogProps | ConfirmationDialogProps
-    >;
-  }
->;
+    dialog: { title: string; description: string };
+    actionBtns?: { confirm?: string; cancel?: string; exit?: string };
+  };
+  triggerBtnVariant: ButtonProps["variant"];
+  triggerBtnSize: ButtonProps["size"];
+  confirmationTitle: string;
+  toast: {
+    description: string;
+    icon: LucideIcon;
+    className: string;
+    iconClassName: string;
+  };
+  component: ComponentType<
+    DestructiveConfirmationDialogProps | ConfirmationDialogProps
+  >;
+};
 
 function getNewStateInInitiative(role: RoleInInitiative, action: RoleEvents) {
   return userPosibleRoleChanges[initiativeRoleToState[role]].get(action);
@@ -102,83 +90,104 @@ export function roleEventRestrictions(
   };
 }
 
-export const roleEventInfo: RoleEventInfo = {
-  [RoleEvents.PROMOTE]: {
-    dialog: (username: string, role: RoleInInitiative) => ({
-      trigger: {
-        title: `Asignar rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.PROMOTE) ?? UserStateInInitiative.IDLE]}'`,
-        sr: `Asignar rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.PROMOTE) ?? UserStateInInitiative.IDLE]}'`,
+export const roleEventInfo: Record<
+  RoleEvents,
+  (username: string, role: RoleInInitiative) => RoleEventInfo
+> = {
+  [RoleEvents.PROMOTE]: (username: string, role: RoleInInitiative) => {
+    const newStateStr =
+      userStateInInitiativeDictionary[
+        getNewStateInInitiative(role, RoleEvents.PROMOTE) ??
+          UserStateInInitiative.IDLE
+      ];
+
+    return {
+      dialog: {
+        trigger: {
+          title: `Asignar rol de '${newStateStr}'`,
+          sr: `Asignar rol de '${newStateStr}'`,
+          icon: UserRoundCheck,
+          label: "",
+        },
+        dialog: {
+          title: `Vas a asignar a ${username} el rol de '${newStateStr}'`,
+          description: "Al hacerlo ... ",
+        },
+        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
+      },
+      triggerBtnVariant: "default",
+      triggerBtnSize: "icon",
+      confirmationTitle: "Usuario promovido",
+      toast: {
+        description: `El rol de ${username} ahora es '${newStateStr}'.`,
         icon: UserRoundCheck,
-        label: "",
+        iconClassName: "size-8 text-primary",
+        className: "px-6! gap-6! border-2! border-primary!",
       },
-      dialog: {
-        title: `Vas a asignar a ${username} el rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.REASING) ?? UserStateInInitiative.IDLE]}'`,
-        description: "Al hacerlo ... ",
-      },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
-    triggerBtnVariant: "default",
-    triggerBtnSize: "icon",
-    confirmationTitle: "Usuario promovido",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${getNewStateInInitiative(role, RoleEvents.PROMOTE)}}.`,
-      icon: UserRoundCheck,
-      iconClassName: "size-8 text-primary",
-      className: "px-6! gap-6! border-2! border-primary!",
-    }),
-    component: ConfirmationDialog,
+      component: ConfirmationDialog,
+    };
   },
 
-  [RoleEvents.REASING]: {
-    dialog: (username: string, role: RoleInInitiative) => ({
-      trigger: {
-        title: `Asignar rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.REASING) ?? UserStateInInitiative.IDLE]}'`,
-        sr: `Asignar rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.REASING) ?? UserStateInInitiative.IDLE]}'`,
-        icon: UserRoundPen,
-        label: "",
-      },
+  [RoleEvents.REASING]: (username: string, role: RoleInInitiative) => {
+    const newStateStr =
+      userStateInInitiativeDictionary[
+        getNewStateInInitiative(role, RoleEvents.REASING) ??
+          UserStateInInitiative.IDLE
+      ];
+
+    return {
       dialog: {
-        title: `Vas a asignar a ${username} el rol de '${userStateInInitiativeDictionary[getNewStateInInitiative(role, RoleEvents.REASING) ?? UserStateInInitiative.IDLE]}'`,
-        description: "Al hacerlo ... ",
+        trigger: {
+          title: `Asignar rol de '${newStateStr}'`,
+          sr: `Asignar rol de '${newStateStr}'`,
+          icon: UserRoundPen,
+          label: "",
+        },
+        dialog: {
+          title: `Vas a asignar a ${username} el rol de '${newStateStr}'`,
+          description: "Al hacerlo ... ",
+        },
+        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
       },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
-    triggerBtnVariant: "default",
-    triggerBtnSize: "icon",
-    confirmationTitle: "Rol de usuario reasignado",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${roleDictionary[role]}.`,
-      icon: UserRoundCheck,
-      iconClassName: "size-8 text-accent",
-      className: "px-6! gap-6! border-2! border-accent!",
-    }),
-    component: ConfirmationDialog,
+      triggerBtnVariant: "default",
+      triggerBtnSize: "icon",
+      confirmationTitle: "Rol de usuario reasignado",
+      toast: {
+        description: `El rol de ${username} ahora es '${newStateStr}'.`,
+        icon: UserRoundCheck,
+        iconClassName: "size-8 text-accent",
+        className: "px-6! gap-6! border-2! border-accent!",
+      },
+      component: ConfirmationDialog,
+    };
   },
 
-  [RoleEvents.REMOVE]: {
-    component: DestructiveConfirmationDialog,
-    triggerBtnVariant: "outline_destructive",
-    triggerBtnSize: "icon",
-    dialog: (username: string, _: RoleInInitiative) => ({
-      trigger: {
-        title: "Retirar de la iniciativa",
-        sr: "Retirar de la iniciativa",
-        icon: UserRoundXIcon,
-        label: "",
-      },
+  [RoleEvents.REMOVE]: (username: string, _: RoleInInitiative) => {
+    return {
+      component: DestructiveConfirmationDialog,
+      triggerBtnVariant: "outline_destructive",
+      triggerBtnSize: "icon",
       dialog: {
-        title: `Vas a retirar a ${username} de la iniciativa`,
-        description: "Al hacerlo ... ",
+        trigger: {
+          title: "Retirar de la iniciativa",
+          sr: "Retirar de la iniciativa",
+          icon: UserRoundXIcon,
+          label: "",
+        },
+        dialog: {
+          title: `Vas a retirar a ${username} de la iniciativa`,
+          description: "Al hacerlo ... ",
+        },
+        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
       },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
 
-    confirmationTitle: "El usuario ya no hace parte de la iniciativa",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${roleDictionary[role]}.`,
-      icon: UserRoundCheck,
-      iconClassName: "size-8 text-accent",
-      className: "px-6! gap-6! border-2! border-accent!",
-    }),
+      confirmationTitle: "El usuario ya no hace parte de la iniciativa",
+      toast: {
+        description: `${username} ya no hace parte de esta iniciativa.`,
+        icon: UserRoundCheck,
+        iconClassName: "size-8 text-accent",
+        className: "px-6! gap-6! border-2! border-accent!",
+      },
+    };
   },
 };
