@@ -1,16 +1,6 @@
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
-import {
-  DestructiveConfirmationDialog,
-  type DestructiveConfirmationDialogProps,
-} from "pages/monitoring/ui/DestructiveConfirmationDialog";
-import {
-  Ban,
-  UserRoundCheck,
-  type LucideIcon,
-  UserRoundPen,
-  UserRoundXIcon,
-} from "lucide-react";
-import { type ComponentType, type ReactNode, useState } from "react";
+import { Ban, CircleOff } from "lucide-react";
+import { useState } from "react";
 import {
   changeUserRoleInInitiative,
   removeUserFromInitiative,
@@ -23,123 +13,10 @@ import {
   stateToInitiativeRole,
   userPosibleRoleChanges,
 } from "pages/monitoring/types/userJoinRequest";
-import { type ConfirmationDialogProps } from "pages/monitoring/ui/ConfirmationDialog";
-import { ConfirmationDialog } from "@ui/ConfirmationDialog";
-import { roleDictionary } from "./layout/uiText";
-import { type ButtonProps } from "@ui/shadCN/component/button";
-
-function getNewStateInInitiative(role: RoleInInitiative, action: RoleEvents) {
-  return userPosibleRoleChanges[initiativeRoleToState[role]].get(action);
-}
-
-const roleChangeDictionary: Record<
-  RoleEvents,
-  {
-    dialog: (
-      username: string,
-      role: RoleInInitiative,
-    ) => {
-      trigger: {
-        title?: string;
-        sr?: string;
-        label: string;
-        icon?: LucideIcon;
-      };
-      dialog: { title: string; description: string };
-      actionBtns?: { confirm?: string; cancel?: string; exit?: string };
-    };
-    triggerBtnVariant: ButtonProps["variant"];
-    triggerBtnSize: ButtonProps["size"];
-    confirmationTitle: string;
-    toast: (
-      name: string,
-      role: RoleInInitiative,
-    ) => {
-      description: string;
-      icon: ReactNode;
-      className: string;
-    };
-    component: ComponentType<
-      DestructiveConfirmationDialogProps | ConfirmationDialogProps
-    >;
-  }
-> = {
-  [RoleEvents.PROMOTE]: {
-    dialog: (username: string, role: RoleInInitiative) => ({
-      trigger: {
-        title: `Convertir en ${getNewStateInInitiative(role, RoleEvents.PROMOTE)}`,
-        sr: `Convertir en ${getNewStateInInitiative(role, RoleEvents.PROMOTE)}`,
-        icon: UserRoundCheck,
-        label: "",
-      },
-      dialog: {
-        title: `Vas a convertir a ${username} en un usuario ${getNewStateInInitiative(role, RoleEvents.PROMOTE)}`,
-        description: "Al hacerlo ... ",
-      },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
-    triggerBtnVariant: "default",
-    triggerBtnSize: "icon",
-    confirmationTitle: "Usuario promovido",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${getNewStateInInitiative(role, RoleEvents.PROMOTE)}}.`,
-      icon: <UserRoundCheck className="size-8 text-primary" />,
-      className: "px-6! gap-6! border-2! border-primary!",
-    }),
-    component: ConfirmationDialog,
-  },
-
-  [RoleEvents.REASING]: {
-    dialog: (username: string, role: RoleInInitiative) => ({
-      trigger: {
-        title: `Convertir en ${getNewStateInInitiative(role, RoleEvents.REASING)}`,
-        sr: `Convertir en ${getNewStateInInitiative(role, RoleEvents.REASING)}`,
-        icon: UserRoundPen,
-        label: "",
-      },
-      dialog: {
-        title: `Vas a convertir a ${username} en un usuario ${getNewStateInInitiative(role, RoleEvents.REASING)}`,
-        description: "Al hacerlo ... ",
-      },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
-    triggerBtnVariant: "default",
-    triggerBtnSize: "icon",
-    confirmationTitle: "Rol de usuario reasignado",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${roleDictionary[role]}.`,
-      icon: <UserRoundCheck className="size-8 text-accent" />,
-      className: "px-6! gap-6! border-2! border-accent!",
-    }),
-    component: ConfirmationDialog,
-  },
-
-  [RoleEvents.REMOVE]: {
-    component: DestructiveConfirmationDialog,
-    triggerBtnVariant: "outline_destructive",
-    triggerBtnSize: "icon",
-    dialog: (username: string, _: RoleInInitiative) => ({
-      trigger: {
-        title: "Retirar de la iniciativa",
-        sr: "Retirar de la iniciativa",
-        icon: UserRoundXIcon,
-        label: "",
-      },
-      dialog: {
-        title: `Vas a retirar a ${username} de la iniciativa`,
-        description: "Al hacerlo ... ",
-      },
-      actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
-    }),
-
-    confirmationTitle: "El usuario ya no hace parte de la iniciativa",
-    toast: (name: string, role: RoleInInitiative) => ({
-      description: `El rol de ${name} ahora es ${roleDictionary[role]}.`,
-      icon: <UserRoundCheck className="size-8 text-accent" />,
-      className: "px-6! gap-6! border-2! border-accent!",
-    }),
-  },
-};
+import {
+  roleEventInfo,
+  roleEventRestrictions,
+} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
 
 export function UsersListForManagement({
   users,
@@ -150,13 +27,23 @@ export function UsersListForManagement({
   inRole: RoleInInitiative;
   updater: () => Promise<void>;
 }) {
-  const usersInRole = users.filter(
-    (user) => Number(user.level.id) === Number(inRole),
-  );
+  const usersByRole = users.reduce<
+    Partial<Record<RoleInInitiative, InitiativeUser[]>>
+  >((all, user) => {
+    const roleId = user.level.id;
+    if (all[roleId] === undefined) {
+      all[roleId] = [] as InitiativeUser[];
+    }
+    all[roleId].push(user);
+
+    return all;
+  }, {});
+
+  const usersInRole = usersByRole[inRole] ?? 0;
 
   return (
     <div>
-      {usersInRole.length === 0 ? (
+      {usersInRole === 0 ? (
         <div className="text-2xl text-foreground text-center p-8">
           Actualmente no hay usuarios dentro de la iniciativa en esta categoría
         </div>
@@ -177,11 +64,19 @@ export function UsersListForManagement({
                   />
                   <span>{user.userName}</span>
                 </div>
-                <time dateTime={formatedDate}>{formatedDate}</time>
+                <time
+                  title="fecha de ingreso a la iniciativa"
+                  dateTime={formatedDate}
+                >
+                  <span className="sr-only">
+                    fecha de ingreso a la iniciativa
+                  </span>
+                  {formatedDate}
+                </time>
                 <ActionsToUserByRole
                   user={user}
                   role={inRole}
-                  currentUsers={usersInRole.length}
+                  usersByRole={usersByRole}
                   updater={updater}
                 />
               </li>
@@ -196,10 +91,12 @@ export function UsersListForManagement({
 function ActionsToUserByRole({
   user,
   role,
+  usersByRole,
   updater,
 }: {
   user: InitiativeUser;
   role: RoleInInitiative;
+  usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>;
   updater: () => Promise<void>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -208,7 +105,7 @@ function ActionsToUserByRole({
   const posibleActions = Array.from(userPosibleRoleChanges[usersState].keys());
 
   const changeUserRole = async (action: RoleEvents) => {
-    const actionInfo = roleChangeDictionary[action];
+    const actionInfo = roleEventInfo[action];
     const userNextState = userPosibleRoleChanges[usersState].get(action);
     const newRoleId = userNextState
       ? stateToInitiativeRole[userNextState]
@@ -241,28 +138,58 @@ function ActionsToUserByRole({
       return;
     }
 
+    const toastInfo = actionInfo.toast(user.userName, role);
+
     toast(actionInfo.confirmationTitle, {
       position: "bottom-right",
-      ...actionInfo.toast(user.userName, role),
+      description: toastInfo.description,
+      icon: <toastInfo.icon className={toastInfo.iconClassName} />,
+      className: toastInfo.className,
     });
   };
 
-  return posibleActions.map((action) => {
-    const {
-      component: Comp,
-      dialog,
-      triggerBtnVariant,
-      triggerBtnSize,
-    } = roleChangeDictionary[action];
-    return (
-      <Comp
-        key={Math.random()}
-        texts={{ ...dialog(user.userName, role) }}
-        triggerBtnVariant={triggerBtnVariant}
-        triggerBtnSize={triggerBtnSize}
-        handler={() => void changeUserRole(action)}
-        isLoading={isLoading}
-      />
-    );
-  });
+  const buttonConditional = roleEventRestrictions(usersByRole);
+
+  return (
+    <div className="space-x-2">
+      {posibleActions.map((action) => {
+        const {
+          component: Comp,
+          dialog,
+          triggerBtnVariant,
+          triggerBtnSize,
+        } = roleEventInfo[action];
+
+        const isDisabled = buttonConditional[role]?.find(
+          (cond) => cond.action === action,
+        );
+
+        const baseDialogTexts = dialog(user.userName, role);
+
+        const dialogTexts = isDisabled?.condition
+          ? {
+              ...baseDialogTexts,
+              trigger: {
+                ...baseDialogTexts.trigger,
+                title: isDisabled.textToRender,
+                sr: isDisabled.textToRender,
+                icon: CircleOff,
+              },
+            }
+          : baseDialogTexts;
+
+        return (
+          <Comp
+            key={Math.random()}
+            texts={{ ...dialogTexts }}
+            triggerBtnVariant={triggerBtnVariant}
+            triggerBtnSize={triggerBtnSize}
+            handler={() => void changeUserRole(action)}
+            isLoading={isLoading}
+            isDisabled={isDisabled?.condition}
+          />
+        );
+      })}
+    </div>
+  );
 }

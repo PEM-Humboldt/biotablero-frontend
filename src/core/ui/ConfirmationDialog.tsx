@@ -13,7 +13,7 @@ import {
   DialogClose,
 } from "@ui/shadCN/component/dialog";
 
-type ConfirmationDialogProps = {
+export type ConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
     dialog: { title: string; description: string };
@@ -23,6 +23,7 @@ type ConfirmationDialogProps = {
   triggerBtnSize?: ButtonProps["size"];
   handler: () => void;
   isLoading?: boolean;
+  isDisabled?: boolean;
 };
 
 export function ConfirmationDialog({
@@ -31,6 +32,7 @@ export function ConfirmationDialog({
   triggerBtnSize,
   handler,
   isLoading,
+  isDisabled,
 }: ConfirmationDialogProps) {
   return (
     <Dialog>
@@ -39,7 +41,7 @@ export function ConfirmationDialog({
           variant={triggerBtnVariant}
           title={texts.trigger.title ?? texts.trigger.label}
           size={triggerBtnSize}
-          disabled={isLoading}
+          disabled={isDisabled || isLoading}
         >
           {isLoading && <Spinner />}
           {texts.trigger.sr && (

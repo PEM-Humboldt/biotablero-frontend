@@ -22,6 +22,7 @@ export type ConfirmationDialogProps = {
   triggerBtnVariant?: ButtonProps["variant"];
   handler: () => void;
   isLoading?: boolean;
+  isDisabled?: boolean;
 };
 
 export function ConfirmationDialog({
@@ -29,6 +30,7 @@ export function ConfirmationDialog({
   triggerBtnVariant,
   handler,
   isLoading,
+  isDisabled,
 }: ConfirmationDialogProps) {
   return (
     <Dialog>
@@ -36,7 +38,7 @@ export function ConfirmationDialog({
         <Button
           variant={triggerBtnVariant}
           title={texts.trigger.title ?? texts.trigger.label}
-          disabled={isLoading}
+          disabled={isDisabled}
         >
           {isLoading && <Spinner />}
           {texts.trigger.sr && (

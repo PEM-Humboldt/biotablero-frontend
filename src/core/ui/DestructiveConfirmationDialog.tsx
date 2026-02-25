@@ -14,16 +14,17 @@ import {
   AlertDialogTrigger,
 } from "@ui/shadCN/component/alert-dialog";
 
-type DestructiveConfirmationDialogProps = {
+export type DestructiveConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
     dialog: { title: string; description: string };
     actionBtns?: { confirm?: string; cancel?: string; exit?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
+  triggerBtnSize?: ButtonProps["size"];
   handler: () => void;
   isLoading?: boolean;
-  disabled?: boolean;
+  isDisabled?: boolean;
 };
 
 export function DestructiveConfirmationDialog({
@@ -31,7 +32,7 @@ export function DestructiveConfirmationDialog({
   triggerBtnVariant: btnVatiant,
   handler,
   isLoading,
-  disabled,
+  isDisabled,
 }: DestructiveConfirmationDialogProps) {
   return (
     <AlertDialog>
@@ -39,7 +40,7 @@ export function DestructiveConfirmationDialog({
         <Button
           variant={btnVatiant}
           title={texts.trigger.title ?? texts.trigger.label}
-          disabled={isLoading || disabled}
+          disabled={isDisabled || isLoading}
         >
           {isLoading && <Spinner />}
           {texts.trigger.sr && (
