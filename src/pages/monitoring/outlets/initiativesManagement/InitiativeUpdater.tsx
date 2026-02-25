@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Combobox } from "@ui/ComboBox";
@@ -44,41 +44,40 @@ export function InitiativeUpdater() {
     setSelectedId(String(initiativesAsLeader[0].id));
   }, [initiativesAsLeader, selectedId]);
 
-  useEffect(() => {
-    // NOTE: Aunque en este momento la mayoría de info de usuarios se puede obtener
-    // de las iniciativas como líder, creo que a futuro van a distanciarse y la
-    // info más completa va a ser llamada del endpoint que se usó acá
+  // NOTE: Aunque en este momento la mayoría de info de usuarios se puede obtener
+  // de las iniciativas como líder, creo que a futuro van a distanciarse y la
+  // info más completa va a ser llamada del endpoint que se usó acá
+  const getUsersDetail = useCallback(async () => {
+    if (!selectedId) {
+      return;
+    }
 
-    const getUsersDetail = async () => {
-      if (!selectedId) {
+    setIsLoading(true);
+    try {
+      const res = await getUsers(selectedId);
+
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setError(
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        );
+
+        setInitiativeUsers([]);
         return;
       }
 
-      setIsLoading(true);
-      try {
-        const res = await getUsers(selectedId);
-
-        if (isMonitoringAPIError(res)) {
-          const { status, message, data } = res;
-          setError(
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          );
-
-          setInitiativeUsers([]);
-          return;
-        }
-
-        setInitiativeUsers(res);
-      } catch (err) {
-        console.error(err);
-        setError("Error crítico");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    void getUsersDetail();
+      setInitiativeUsers(res);
+    } catch (err) {
+      console.error(err);
+      setError("Error crítico");
+    } finally {
+      setIsLoading(false);
+    }
   }, [selectedId]);
+
+  useEffect(() => {
+    void getUsersDetail();
+  }, [getUsersDetail]);
 
   const currentInitiative =
     initiativesAsLeader?.filter(
@@ -136,6 +135,7 @@ export function InitiativeUpdater() {
                 <UsersListForManagement
                   users={initiativeUsers}
                   inRole={RoleInInitiative[tab.value]}
+                  updater={getUsersDetail}
                 />
               </TabsContent>
             ))}

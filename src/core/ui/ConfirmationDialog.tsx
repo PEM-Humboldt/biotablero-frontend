@@ -20,6 +20,7 @@ type ConfirmationDialogProps = {
     actionBtns?: { confirm?: string; cancel?: string; exit?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
+  triggerBtnSize?: ButtonProps["size"];
   handler: () => void;
   isLoading?: boolean;
 };
@@ -27,6 +28,7 @@ type ConfirmationDialogProps = {
 export function ConfirmationDialog({
   texts,
   triggerBtnVariant,
+  triggerBtnSize,
   handler,
   isLoading,
 }: ConfirmationDialogProps) {
@@ -36,6 +38,7 @@ export function ConfirmationDialog({
         <Button
           variant={triggerBtnVariant}
           title={texts.trigger.title ?? texts.trigger.label}
+          size={triggerBtnSize}
           disabled={isLoading}
         >
           {isLoading && <Spinner />}

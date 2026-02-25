@@ -688,3 +688,22 @@ export async function changeUserRoleInInitiative(
     return err instanceof Error ? err.message : JSON.stringify(err);
   }
 }
+
+export async function removeUserFromInitiative(userIdInInitiative: number) {
+  try {
+    const res = await monitoringAPI({
+      type: "delete",
+      endpoint: `InitiativeUser/${userIdInInitiative}`,
+    });
+
+    if (isMonitoringAPIError(res)) {
+      const { status, message, data } = res;
+      return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
+    }
+
+    return null;
+  } catch (err) {
+    console.error(err);
+    return err instanceof Error ? err.message : JSON.stringify(err);
+  }
+}

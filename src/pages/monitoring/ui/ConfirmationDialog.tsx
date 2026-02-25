@@ -13,7 +13,7 @@ import {
   DialogClose,
 } from "@ui/shadCN/component/dialog";
 
-type ConfirmationDialogProps = {
+export type ConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
     dialog: { title: string; description: string };
