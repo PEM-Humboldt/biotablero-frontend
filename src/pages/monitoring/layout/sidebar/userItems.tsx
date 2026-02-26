@@ -1,4 +1,4 @@
-import { UserRoundCheck, ChevronLeft } from "lucide-react";
+import { UserRoundCheck, ChevronLeft, Send } from "lucide-react";
 import type { DashboardItem } from "pages/monitoring/types/monitoring";
 
 export const userItems: DashboardItem[] = [
@@ -11,5 +11,10 @@ export const userItems: DashboardItem[] = [
     description: "Gestión de iniciativas",
     icon: UserRoundCheck,
     linkTo: "gestionarIniciativas",
+  },
+  {
+    description: "Invitaciones a unirse a iniciativas",
+    icon: Send,
+    linkTo: "invitacionIniciativa",
   },
 ];
