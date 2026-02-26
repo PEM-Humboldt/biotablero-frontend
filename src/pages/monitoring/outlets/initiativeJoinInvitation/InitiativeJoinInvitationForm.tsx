@@ -3,6 +3,11 @@ import { Button } from "@ui/shadCN/component/button";
 import { Input } from "@ui/shadCN/component/input";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { sendJoinInvitation } from "pages/monitoring/api/monitoringAPI";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import {
+    validateInvitationForm,
+    type InitiativeInvitationFormErr,
+} from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 
 interface InitiativeInvitationFormProps {
     initiativesAsLeader?: UserInitiatives[];
@@ -16,11 +21,22 @@ export function InitiativeInvitationForm({
     const [customMessage, setCustomMessage] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
+    const [errors, setErrors] = useState<InitiativeInvitationFormErr>({});
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         setMessage(null);
+        setErrors({});
+
+        const formData = { initiativeId, guestEmail, customMessage };
+        const newErrors = validateInvitationForm(formData);
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            setIsLoading(false);
+            return;
+        }
 
         const emailList = guestEmail
             .split(",")
@@ -64,7 +80,6 @@ export function InitiativeInvitationForm({
                         value={initiativeId}
                         onChange={(e) => setInitiativeId(e.target.value)}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
-                        required
                     >
                         <option value="" disabled>
                             -- Elige una iniciativa --
@@ -75,6 +90,9 @@ export function InitiativeInvitationForm({
                             </option>
                         ))}
                     </select>
+                    {errors.initiative && (
+                        <ErrorsList errorItems={errors.initiative} className="mt-1 flex flex-col gap-1" />
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -87,9 +105,11 @@ export function InitiativeInvitationForm({
                         placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
                         value={guestEmail}
                         onChange={(e) => setGuestEmail(e.target.value)}
-                        required
                         disabled={isLoading}
                     />
+                    {errors.email && (
+                        <ErrorsList errorItems={errors.email} className="mt-1 flex flex-col gap-1" />
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-2">
