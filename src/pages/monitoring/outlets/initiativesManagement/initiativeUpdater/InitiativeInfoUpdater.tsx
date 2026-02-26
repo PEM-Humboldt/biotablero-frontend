@@ -1,0 +1,234 @@
+import { useCallback, useEffect, useState, useMemo } from "react";
+
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { commonErrorMessage } from "@utils/ui";
+import {
+  INITIATIVE_CONTACTS_MAX_AMOUNT,
+  INITIATIVE_CONTACTS_MIN_AMOUNT,
+  INITIATIVE_LOCATIONS_MAX_AMOUNT,
+  INITIATIVE_LOCATIONS_MIN_AMOUNT,
+} from "@config/monitoring";
+
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import type {
+  InitiativeContact,
+  InitiativeFullInfo,
+  LocationObj,
+} from "pages/monitoring/types/initiative";
+import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
+import {
+  getInitiative,
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
+import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
+import { InitiativeStatusDialog } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
+import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/FormListUpdater";
+import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
+import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
+import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
+import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+
+export function InitiativeInfoUpdater({
+  initiativeId,
+}: {
+  initiativeId: number;
+}) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [initiativeInfo, setInitiativeInfo] =
+    useState<InitiativeFullInfo | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [currentEdit, setCurrentEdit] = useState<
+    keyof CardInfoGrouped | "none" | null
+  >(null);
+
+  useEffect(() => {
+    setCurrentEdit(initiativeInfo?.enabled ? "none" : null);
+  }, [initiativeInfo?.enabled]);
+
+  const getInitiativeInfo = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await getInitiative(initiativeId);
+
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        ]);
+        console.error(res);
+
+        return;
+      }
+
+      if (!res) {
+        setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
+
+        return;
+      }
+
+      const initiativeAdminInfo = {
+        ...res,
+        users: res.users.filter(
+          (user) => user.level.id === RoleInInitiative.LEADER,
+        ),
+      } satisfies InitiativeFullInfo;
+
+      setInitiativeInfo(initiativeAdminInfo);
+    } catch (err) {
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
+      console.error(uiText.criticalError.log, err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [initiativeId]);
+
+  useEffect(() => {
+    void getInitiativeInfo();
+  }, [getInitiativeInfo]);
+
+  const handleDisableInitiative = async () => {
+    if (!initiativeInfo) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const endpoint = initiativeInfo.enabled ? "Disable" : "Enable";
+      const method = initiativeInfo.enabled ? "delete" : "post";
+      const res = await monitoringAPI<InitiativeFullInfo>({
+        type: method,
+        endpoint: `Initiative/${endpoint}/${initiativeInfo.id}`,
+      });
+
+      if (isMonitoringAPIError(res)) {
+        const { status, message, data } = res;
+        setErrors((oldErr) => [
+          ...oldErr,
+          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        ]);
+        console.error(res);
+
+        return;
+      }
+
+      setCurrentEdit(res.enabled ? "none" : null);
+
+      void getInitiativeInfo();
+    } catch (err) {
+      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
+      console.error(uiText.criticalError.log, err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const initiativeInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
+    if (!initiativeInfo) {
+      return null;
+    }
+    const { locations, users, contacts, ...rest } = initiativeInfo;
+    const { imageUrl, bannerUrl, ...general } = rest;
+    return {
+      id: general.id,
+      general,
+      locations,
+      contacts,
+      users,
+      images: { imageUrl, bannerUrl },
+    };
+  }, [initiativeInfo]);
+
+  return !initiativeInfoGrouped ? (
+    <div className="text-center font-light text-4xl text-primary px-12 py-24">
+      {isLoading ? (
+        uiText.loading
+      ) : (
+        <>
+          <span className="text-accent">{uiText.error.noGetData}</span>
+          <ErrorsList
+            errId="card_errors"
+            errorItems={errors}
+            className="bg-red-50 border border-accent flex flex-col gap-2 items-center w-[50%] mx-auto my-4 p-6 rounded-lg"
+          />
+        </>
+      )}
+    </div>
+  ) : (
+    <LeaderInitiativeUpdateCtx.Provider
+      value={{
+        initiative: initiativeInfoGrouped,
+        updater: getInitiativeInfo,
+        currentEdit,
+        setCurrentEdit,
+      }}
+    >
+      <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
+        <div className="flex items-baseline gap-2 px-2 ">
+          <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
+            {initiativeInfoGrouped.general.name}
+          </h3>
+          {errors.length > 0 && (
+            <ErrorsList
+              errId="card_errors"
+              errorItems={errors}
+              className="flex items-center"
+            />
+          )}
+
+          <InitiativeStatusDialog
+            active={initiativeInfoGrouped.general.enabled}
+            name={initiativeInfoGrouped.general.name}
+            handler={() => void handleDisableInitiative()}
+          />
+        </div>
+
+        <GeneralInfoUpdater
+          title={uiText.initiative.module.general.title}
+          backEndpoint="Initiative"
+        />
+
+        <FormListUpdater
+          title={uiText.initiative.module.locations.title}
+          initiativeSection="locations"
+          AddItemComponent={LocationInput}
+          maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
+          minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
+          renderCols={
+            new Map<string, keyof LocationObj>([
+              [uiText.initiative.module.locations.tableCol[0], "department"],
+              [uiText.initiative.module.locations.tableCol[1], "municipality"],
+              [uiText.initiative.module.locations.tableCol[2], "locality"],
+            ])
+          }
+          renderRowsCallback={makeLocationObj}
+          backEndpoint="InitiativeLocation"
+        />
+
+        <FormListUpdater
+          title={uiText.initiative.module.contacts.title}
+          initiativeSection="contacts"
+          AddItemComponent={ContactInput}
+          maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+          minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
+          renderCols={
+            new Map<string, keyof InitiativeContact>([
+              [uiText.initiative.module.contacts.tableCol[0], "email"],
+              [uiText.initiative.module.contacts.tableCol[1], "phone"],
+            ])
+          }
+          backEndpoint="InitiativeContact"
+        />
+
+        <ImagesUpdater
+          title={uiText.initiative.module.images.title}
+          backEndpointImage="Initiative/UploadImage"
+          backEndpointBanner="Initiative/UploadBanner"
+        />
+      </article>
+    </LeaderInitiativeUpdateCtx.Provider>
+  );
+}

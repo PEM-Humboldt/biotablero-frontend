@@ -17,6 +17,7 @@ import {
 import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { InitiativeInfoUpdater } from "./initiativeUpdater/InitiativeInfoUpdater";
 
 const usersManagementTabs: {
   label: string;
@@ -141,7 +142,7 @@ export function InitiativeUpdater() {
             ))}
 
             <TabsContent value="initiative" className="tabs-content">
-              carajo
+              <InitiativeInfoUpdater initiativeId={currentInitiative.id} />
             </TabsContent>
           </Tabs>
         )}
