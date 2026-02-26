@@ -1,15 +1,16 @@
-import type { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { Ban, CircleOff } from "lucide-react";
 import { useState } from "react";
+import { Ban, CircleOff } from "lucide-react";
+import { toast } from "sonner";
+
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
   changeUserRoleInInitiative,
   removeUserFromInitiative,
 } from "pages/monitoring/api/monitoringAPI";
-import { toast } from "sonner";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
-  initiativeRoleToState,
   RoleEvents,
+  initiativeRoleToState,
   stateToInitiativeRole,
   userPosibleRoleChanges,
 } from "pages/monitoring/types/userJoinRequest";
@@ -17,6 +18,8 @@ import {
   roleEventInfo,
   roleEventRestrictions,
 } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { useUserCTX } from "@hooks/UserContext";
 
 export function UsersListForManagement({
   users,
@@ -45,7 +48,7 @@ export function UsersListForManagement({
     <div>
       {usersInRole === 0 ? (
         <div className="text-2xl text-foreground text-center p-8">
-          Actualmente no hay usuarios dentro de la iniciativa en esta categoría
+          {uiText.tabsContent.usersManagement.noUsers}
         </div>
       ) : (
         <ul className="w-full p-2 space-y-2">
@@ -65,12 +68,13 @@ export function UsersListForManagement({
                   <span>{user.userName}</span>
                 </div>
                 <time
-                  title="fecha de ingreso a la iniciativa"
+                  title={uiText.tabsContent.usersManagement.joiningDate.title}
                   dateTime={formatedDate}
                 >
                   <span className="sr-only">
-                    fecha de ingreso a la iniciativa
+                    {uiText.tabsContent.usersManagement.joiningDate.sr}
                   </span>
+                  {uiText.tabsContent.usersManagement.joiningDate.label}
                   {formatedDate}
                 </time>
                 <ActionsToUserByRole
@@ -99,6 +103,7 @@ function ActionsToUserByRole({
   usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>;
   updater: () => Promise<void>;
 }) {
+  const { user: admin } = useUserCTX();
   const [isLoading, setIsLoading] = useState(false);
 
   const usersState = initiativeRoleToState[role];
@@ -111,8 +116,8 @@ function ActionsToUserByRole({
       ? stateToInitiativeRole[userNextState]
       : null;
 
-    if (newRoleId === null) {
-      console.error("This role action is not allowed");
+    if (newRoleId === null || newRoleId === undefined) {
+      console.error(uiText.tabsContent.usersManagement.actions.notAllowedError);
       return;
     }
 
@@ -146,6 +151,14 @@ function ActionsToUserByRole({
       ),
       className: actionInfo.toast.className,
     });
+
+    if (
+      action === RoleEvents.REASING &&
+      user.level.id === RoleInInitiative.LEADER &&
+      user.userName === admin?.username
+    ) {
+      window.location.reload();
+    }
   };
 
   const buttonConditional = roleEventRestrictions(usersByRole);

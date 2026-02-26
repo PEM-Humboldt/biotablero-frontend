@@ -1,11 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { Combobox } from "@ui/ComboBox";
-import {
-  getUsers,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
 import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
@@ -14,19 +8,18 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
+
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import { Combobox } from "@ui/ComboBox";
+import {
+  getUsers,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { InitiativeInfoUpdater } from "./initiativeUpdater/InitiativeInfoUpdater";
-
-const usersManagementTabs: {
-  label: string;
-  value: keyof typeof RoleInInitiative;
-}[] = [
-  { label: "Gestión de líderes", value: "LEADER" },
-  { label: "gestión de participanter", value: "USER" },
-  { label: "gestión de observadores", value: "VIEWER" },
-];
+import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,8 +62,8 @@ export function InitiativeUpdater() {
 
       setInitiativeUsers(res);
     } catch (err) {
-      console.error(err);
-      setError("Error crítico");
+      console.error(uiText.error.critical.log, err);
+      setError(uiText.error.critical.user);
     } finally {
       setIsLoading(false);
     }
@@ -87,7 +80,11 @@ export function InitiativeUpdater() {
 
   return (
     <>
-      {isLoading && <div>Cargando mi perro...</div>}
+      {isLoading && (
+        <div className="bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg">
+          {uiText.loading}
+        </div>
+      )}
       {error && <ErrorsList errorItems={[error]} />}
 
       <div className="w-full p-4 bg-background rounded-xl">
@@ -108,11 +105,11 @@ export function InitiativeUpdater() {
 
         {currentInitiative && (
           <Tabs
-            defaultValue={usersManagementTabs[0].value}
+            defaultValue={uiText.tabsLabels.usersManagement[0].value}
             className="common-tabs"
           >
             <TabsList className="tabs-list">
-              {usersManagementTabs.map((tab) => (
+              {uiText.tabsLabels.usersManagement.map((tab) => (
                 <TabsTrigger
                   key={`trigger_${tab.value}`}
                   value={tab.value}
@@ -123,11 +120,11 @@ export function InitiativeUpdater() {
               ))}
 
               <TabsTrigger value="initiative" className="tabs-trigger">
-                Gestión de la iniciativa
+                {uiText.tabsLabels.initiativeManagement.label}
               </TabsTrigger>
             </TabsList>
 
-            {usersManagementTabs.map((tab) => (
+            {uiText.tabsLabels.usersManagement.map((tab) => (
               <TabsContent
                 value={tab.value}
                 key={`content_${tab.value}`}
@@ -135,7 +132,9 @@ export function InitiativeUpdater() {
               >
                 <UsersListForManagement
                   users={initiativeUsers}
-                  inRole={RoleInInitiative[tab.value]}
+                  inRole={
+                    RoleInInitiative[tab.value as keyof typeof RoleInInitiative]
+                  }
                   updater={getUsersDetail}
                 />
               </TabsContent>

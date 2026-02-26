@@ -27,8 +27,8 @@ import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiative
 import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
-import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+
 import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 export function InitiativeInfoUpdater({
@@ -79,8 +79,8 @@ export function InitiativeInfoUpdater({
 
       setInitiativeInfo(initiativeAdminInfo);
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
+      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
+      console.error(uiText.error.critical.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -119,8 +119,8 @@ export function InitiativeInfoUpdater({
 
       void getInitiativeInfo();
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
+      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
+      console.error(uiText.error.critical.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -187,21 +187,30 @@ export function InitiativeInfoUpdater({
         </div>
 
         <GeneralInfoUpdater
-          title={uiText.initiative.module.general.title}
+          title={uiText.tabsContent.initiativeManagement.general.title}
           backEndpoint="Initiative"
         />
 
         <FormListUpdater
-          title={uiText.initiative.module.locations.title}
+          title={uiText.tabsContent.initiativeManagement.locations.title}
           initiativeSection="locations"
           AddItemComponent={LocationInput}
           maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
           minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
           renderCols={
             new Map<string, keyof LocationObj>([
-              [uiText.initiative.module.locations.tableCol[0], "department"],
-              [uiText.initiative.module.locations.tableCol[1], "municipality"],
-              [uiText.initiative.module.locations.tableCol[2], "locality"],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[0],
+                "department",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[1],
+                "municipality",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[2],
+                "locality",
+              ],
             ])
           }
           renderRowsCallback={makeLocationObj}
@@ -209,24 +218,24 @@ export function InitiativeInfoUpdater({
         />
 
         <FormListUpdater
-          title={uiText.initiative.module.contacts.title}
+          title={uiText.tabsContent.initiativeManagement.contacts.title}
           initiativeSection="contacts"
           AddItemComponent={ContactInput}
           maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
           minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
           renderCols={
             new Map<string, keyof InitiativeContact>([
-              [uiText.initiative.module.contacts.tableCol[0], "email"],
-              [uiText.initiative.module.contacts.tableCol[1], "phone"],
+              [
+                uiText.tabsContent.initiativeManagement.contacts.tableCol[0],
+                "email",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.contacts.tableCol[1],
+                "phone",
+              ],
             ])
           }
           backEndpoint="InitiativeContact"
-        />
-
-        <ImagesUpdater
-          title={uiText.initiative.module.images.title}
-          backEndpointImage="Initiative/UploadImage"
-          backEndpointBanner="Initiative/UploadBanner"
         />
       </article>
     </LeaderInitiativeUpdateCtx.Provider>
