@@ -43,7 +43,7 @@ export function InitiativeInvitation() {
 
         return groups;
       }, {});
-      
+
       setUserInitiatives(initiativesByRole);
     };
 

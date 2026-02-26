@@ -8,7 +8,10 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
-import { sendJoinInvitation, isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
+import {
+  sendJoinInvitation,
+  isMonitoringAPIError,
+} from "pages/monitoring/api/monitoringAPI";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
 import {
@@ -27,7 +30,10 @@ export function InitiativeInvitationForm({
   const [guestEmail, setGuestEmail] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
+  const [message, setMessage] = useState<{
+    text: string;
+    error: boolean;
+  } | null>(null);
   const [errors, setErrors] = useState<InitiativeInvitationFormErr>({});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -76,7 +82,9 @@ export function InitiativeInvitationForm({
     } catch (error) {
       setErrors((oldErr) => ({
         ...oldErr,
-        root: ["No se ha podido procesar la solicitud. Por favor intenta de nuevo."],
+        root: [
+          "No se ha podido procesar la solicitud. Por favor intenta de nuevo.",
+        ],
       }));
       console.error(error);
     } finally {
@@ -106,7 +114,9 @@ export function InitiativeInvitationForm({
             onChange={(e) => setInitiativeId(e.target.value)}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
             aria-invalid={errors.initiative !== undefined}
-            aria-describedby={errors.initiative ? "errors_initiative" : undefined}
+            aria-describedby={
+              errors.initiative ? "errors_initiative" : undefined
+            }
           >
             <option value="" disabled>
               -- Elige una iniciativa --
@@ -126,7 +136,8 @@ export function InitiativeInvitationForm({
             validationErrors={errors.email ?? []}
             className="mb-1 text-sm font-medium"
           >
-            Correos electrónicos de los invitados (separados por coma) <span aria-hidden="true">*</span>
+            Correos electrónicos de los invitados (separados por coma){" "}
+            <span aria-hidden="true">*</span>
           </LabelAndErrors>
           <InputGroup>
             <InputGroupInput
@@ -175,9 +186,7 @@ export function InitiativeInvitationForm({
         </div>
 
         {message && !message.error && (
-          <p className="text-sm text-green-600">
-            {message.text}
-          </p>
+          <p className="text-sm text-green-600">{message.text}</p>
         )}
 
         <ErrorsList
@@ -186,7 +195,11 @@ export function InitiativeInvitationForm({
         />
 
         <div className="pt-4">
-          <Button type="submit" disabled={isLoading || initiativesAsLeader.length === 0} className="w-full">
+          <Button
+            type="submit"
+            disabled={isLoading || initiativesAsLeader.length === 0}
+            className="w-full"
+          >
             {isLoading ? "Enviando..." : "Enviar Invitación"}
           </Button>
         </div>

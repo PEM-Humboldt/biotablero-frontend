@@ -21,36 +21,36 @@ export const invitationValidations: FormClientValidation<
   InitiativeInvitationFormState,
   InitiativeInvitationFormErr
 >[] = [
-    {
-      condition: (f) => Boolean(f.initiativeId),
-      path: "initiative",
-      message: "Debes seleccionar una iniciativa.",
+  {
+    condition: (f) => Boolean(f.initiativeId),
+    path: "initiative",
+    message: "Debes seleccionar una iniciativa.",
+  },
+  {
+    condition: (f) => {
+      const emails = f.guestEmail
+        .split(",")
+        .map((e) => e.trim())
+        .filter((e) => e !== "");
+      return emails.length > 0;
     },
-    {
-      condition: (f) => {
-        const emails = f.guestEmail
-          .split(",")
-          .map((e) => e.trim())
-          .filter((e) => e !== "");
-        return emails.length > 0;
-      },
-      path: "email",
-      message: "Debes ingresar al menos un correo electrónico válido.",
+    path: "email",
+    message: "Debes ingresar al menos un correo electrónico válido.",
+  },
+  {
+    condition: (f) => {
+      const emails = f.guestEmail
+        .split(",")
+        .map((e) => e.trim())
+        .filter((e) => e !== "");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emails.length === 0) return true;
+      return emails.every((email) => emailRegex.test(email));
     },
-    {
-      condition: (f) => {
-        const emails = f.guestEmail
-          .split(",")
-          .map((e) => e.trim())
-          .filter((e) => e !== "");
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emails.length === 0) return true;
-        return emails.every((email) => emailRegex.test(email));
-      },
-      path: "email",
-      message: "Los correos no tienen un formato válido",
-    },
-  ];
+    path: "email",
+    message: "Los correos no tienen un formato válido",
+  },
+];
 
 export function validateInvitationForm(
   formData: InitiativeInvitationFormState,
