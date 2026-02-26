@@ -660,6 +660,17 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
   return result;
 }
 
+/**
+ * Updates the role and optionally the focus area of a specific user within an initiative.
+ *
+ * it catches internal errors and returns them as a string instead of throwing,
+ * or `null` if the operation is successful.
+ *
+ * @param userIdInInitiative - The unique identifier of the user-initiative relationship.
+ * @param newRole - The new role level to assign to the user.
+ * @param focusArea - Optional string to define or update the user's area of focus.
+ * @returns A `Promise` resolving to `null` on success, or a `string` containing the error message.
+ */
 export async function changeUserRoleInInitiative(
   userIdInInitiative: number,
   newRole: RoleInInitiative,
@@ -689,6 +700,15 @@ export async function changeUserRoleInInitiative(
   }
 }
 
+/**
+ * Removes a user from an initiative by deleting their user-initiative record.
+ *
+ * It returns an error message if the API returns a `RequestError`
+ * or if an exception occurs during execution.
+ *
+ * @param userIdInInitiative - The unique identifier of the user-initiative relationship to be deleted.
+ * @returns A `Promise` resolving to `null` if the user was removed, or a `string` with the error details.
+ */
 export async function removeUserFromInitiative(userIdInInitiative: number) {
   try {
     const res = await monitoringAPI({
