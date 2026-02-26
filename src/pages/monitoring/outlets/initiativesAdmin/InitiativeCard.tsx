@@ -1,12 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  createContext,
-  useState,
-  useMemo,
-  type SetStateAction,
-  type Dispatch,
-} from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
@@ -45,22 +37,7 @@ import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDat
 import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
 import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-
-export type InitiativeCtxType = {
-  initiative: CardInfoGrouped | null;
-  updater: null | (() => Promise<void>);
-  currentEdit: keyof CardInfoGrouped | "none" | null;
-  setCurrentEdit: Dispatch<
-    SetStateAction<keyof CardInfoGrouped | "none" | null>
-  > | null;
-};
-
-export const InitiativeCtx = createContext<InitiativeCtxType>({
-  initiative: null,
-  updater: null,
-  currentEdit: null,
-  setCurrentEdit: null,
-});
+import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 export function InitiativeCard({
   initiative,
@@ -192,7 +169,7 @@ export function InitiativeCard({
       )}
     </div>
   ) : (
-    <InitiativeCtx.Provider
+    <AdminInitiativeUpdateCtx.Provider
       value={{
         initiative: cardInfoGrouped,
         updater: getCardInfo,
@@ -279,6 +256,6 @@ export function InitiativeCard({
           backEndpointBanner="Initiative/UploadBanner"
         />
       </article>
-    </InitiativeCtx.Provider>
+    </AdminInitiativeUpdateCtx.Provider>
   );
 }

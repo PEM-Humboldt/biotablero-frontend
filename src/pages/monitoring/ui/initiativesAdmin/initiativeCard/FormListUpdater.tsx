@@ -1,4 +1,4 @@
-import { type ElementType, useContext, useEffect, useState } from "react";
+import { type ElementType, useEffect, useState } from "react";
 
 import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -14,11 +14,8 @@ import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import {
-  InitiativeCtx,
-  type InitiativeCtxType,
-} from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
@@ -57,7 +54,7 @@ export function FormListUpdater<T, R extends object>({
   backEndpoint,
 }: FormListUpdaterProps<T, R>) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
-    useContext<InitiativeCtxType>(InitiativeCtx);
+    useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState<T[]>([]);
   const [updateItem, setUpdateItem] = useState<T | null>(null);

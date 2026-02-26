@@ -1,7 +1,6 @@
 import {
   type MouseEvent,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -16,10 +15,6 @@ import type {
   CardInfoGrouped,
   InitiativeDataFormErr,
 } from "pages/monitoring/types/initiativeData";
-import {
-  InitiativeCtx,
-  type InitiativeCtxType,
-} from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
 import { GeneralInfoInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/GeneralInfo";
 import {
@@ -29,6 +24,7 @@ import {
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { updateInitiativeGeneralValidations } from "pages/monitoring/ui/initiativesAdmin/utils/formClientValidations";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 type GeneralInfoUpdaterProps = {
   title: string;
@@ -40,7 +36,7 @@ export function GeneralInfoUpdater({
   backEndpoint,
 }: GeneralInfoUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
-    useContext<InitiativeCtxType>(InitiativeCtx);
+    useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [forceRender, setForceRender] = useState(0);
@@ -136,6 +132,7 @@ export function GeneralInfoUpdater({
     setCurrentEdit!((curEdit) => (curEdit === "general" ? "none" : "general"));
   };
 
+  console.log(sectionInfo);
   return (
     <div
       className={cn(
