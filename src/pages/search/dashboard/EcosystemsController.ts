@@ -1,7 +1,6 @@
 import SearchAPI from "pages/search/api/searchAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
-import { coverageKeys } from "pages/search/types/ecosystems";
 import { MetricsUtils } from "pages/search/utils/metrics";
 
 /**
@@ -30,25 +29,28 @@ export class EcosystemsController {
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
-  async getCoveragesLayers(period: string): Promise<Array<RasterLayer>> {
+  async getCoveragesLayers(
+    period: string,
+    classes: Set<string>,
+  ): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
-      Object.keys(coverageKeys).forEach((categoryId) => {
+      classes.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "coverage",
           period,
-          coverageKeys[categoryId],
+          classId,
           Number(this.areaId),
         );
         requests.push(request);
-        this.activeRequests.set(categoryId, source);
+        this.activeRequests.set(classId, source);
       });
 
       const res = await Promise.all(requests);
 
-      Object.keys(coverageKeys).forEach((categoryKey) => {
-        this.activeRequests.delete(categoryKey);
+      classes.forEach((classId) => {
+        this.activeRequests.delete(classId);
       });
 
       if (res.some((result) => typeof result === "string")) {
@@ -72,8 +74,8 @@ export class EcosystemsController {
 
       const layersBase64 = await Promise.all(layersBase64Promises);
 
-      return Object.keys(coverageKeys).map((category, index) => ({
-        id: category,
+      return [...classes].map((classId, index) => ({
+        id: classId,
         data: layersBase64[index],
         selected: false,
         paneLevel: 2,

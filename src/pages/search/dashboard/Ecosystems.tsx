@@ -30,6 +30,7 @@ type EcosystemsState = {
   showInfoMain: boolean;
   infoShown: Set<string>;
   period: string;
+  classes: Set<string>;
 
   coverageData: SmallStackedBarData[];
 
@@ -68,6 +69,7 @@ const initialState: EcosystemsState = {
   showInfoMain: false,
   infoShown: new Set(),
   period: "",
+  classes: new Set(),
 
   coverageData: [],
 
@@ -99,6 +101,7 @@ type EcosystemsAction =
   | { type: "TOGGLE_MAIN_INFO" }
   | { type: "TOGGLE_SECTION_INFO"; payload: string }
   | { type: "SET_PERIOD"; payload: string }
+  | { type: "SET_CLASSES"; payload: Set<string> }
   | { type: "SET_COVERAGE_DATA"; payload: SmallStackedBarData[] }
   | { type: "SET_LAYERS"; payload: RasterLayer[] }
   | { type: "SET_ACTIVE_SE"; payload: string }
@@ -130,6 +133,9 @@ function ecosystemsReducer(
 
     case "SET_PERIOD":
       return { ...state, period: action.payload };
+
+    case "SET_CLASSES":
+      return { ...state, classes: action.payload };
 
     case "SET_COVERAGE_DATA":
       return { ...state, coverageData: action.payload };
@@ -175,6 +181,7 @@ export function Ecosystems() {
     showInfoMain,
     infoShown,
     period,
+    classes,
     coverageData,
     layers,
     activeSE,
@@ -196,7 +203,7 @@ export function Ecosystems() {
       }
 
       controller
-        .getCoveragesLayers(layerPeriod)
+        .getCoveragesLayers(layerPeriod, classes)
         .then((layersRes) => {
           dispatch({ type: "SET_LAYERS", payload: layersRes });
           context.setRasterLayers(layersRes);
@@ -225,8 +232,13 @@ export function Ecosystems() {
 
     SearchAPI.requestMetricsValues<"coverage">("coverage", Number(areaIdId))
       .then((res) => {
-        const obtainedPeriod = res?.id ?? "";
+        const { id, ...classes } = res;
+        const obtainedPeriod = id ?? "";
         dispatch({ type: "SET_PERIOD", payload: obtainedPeriod });
+        dispatch({
+          type: "SET_CLASSES",
+          payload: new Set(Object.keys(classes)),
+        });
 
         dispatch({
           type: "SET_COVERAGE_DATA",

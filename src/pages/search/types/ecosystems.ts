@@ -24,9 +24,3 @@ export interface seDetails {
   national_percentage: number;
   total_area: string;
 }
-
-export const coverageKeys: Record<string, number> = {
-  N: 1,
-  S: 2,
-  T: 3,
-} as const;
