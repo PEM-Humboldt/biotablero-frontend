@@ -59,16 +59,16 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
     event.preventDefault();
     setIsLoading(true);
 
-    const currentErrors = validateFormClient(
-      initiative.current,
-      newInitiativeValidations,
-    );
-    setErrors(currentErrors);
+    // const currentErrors = validateFormClient(
+    //   initiative.current,
+    //   newInitiativeValidations,
+    // );
+    // setErrors(currentErrors);
 
-    if (Object.keys(currentErrors).length > 0) {
-      setIsLoading(false);
-      return;
-    }
+    // if (Object.keys(currentErrors).length > 0) {
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     try {
       const { general, images, ...rest } = { ...initiative.current };
