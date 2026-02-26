@@ -61,7 +61,7 @@ export const uiText = {
         minAmount: (
           amount: number,
         ) => `Siempre deben haber al menos ${amount} elemento
-            ${amount > 1 && "s"}.
+            ${amount > 1 ? "s" : ""}.
 		 `,
       },
     },
