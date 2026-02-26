@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
-import { Input } from "@ui/shadCN/component/input";
+import TextareaAutosize from "react-textarea-autosize";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+} from "@ui/shadCN/component/input-group";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { sendJoinInvitation, isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
-import { ErrorsList } from "@ui/LabelingWithErrors";
+import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
 import {
   validateInvitationForm,
@@ -85,15 +91,22 @@ export function InitiativeInvitationForm({
       </h4>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="initiative" className="text-sm font-medium">
-            Selecciona la iniciativa
-          </label>
+        <div>
+          <LabelAndErrors
+            htmlFor="initiative"
+            errID="errors_initiative"
+            validationErrors={errors.initiative ?? []}
+            className="mb-1 text-sm font-medium"
+          >
+            Selecciona la iniciativa <span aria-hidden="true">*</span>
+          </LabelAndErrors>
           <select
             id="initiative"
             value={initiativeId}
             onChange={(e) => setInitiativeId(e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+            aria-invalid={errors.initiative !== undefined}
+            aria-describedby={errors.initiative ? "errors_initiative" : undefined}
           >
             <option value="" disabled>
               -- Elige una iniciativa --
@@ -104,42 +117,61 @@ export function InitiativeInvitationForm({
               </option>
             ))}
           </select>
-          {errors.initiative && (
-            <ErrorsList errorItems={errors.initiative} className="mt-1 flex flex-col gap-1" />
-          )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-sm font-medium">
-            Correos electrónicos de los invitados (separados por coma)
-          </label>
-          <Input
-            id="email"
-            type="text"
-            placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
-            value={guestEmail}
-            onChange={(e) => setGuestEmail(e.target.value)}
-            disabled={isLoading}
-          />
-          {errors.email && (
-            <ErrorsList errorItems={errors.email} className="mt-1 flex flex-col gap-1" />
-          )}
+        <div>
+          <LabelAndErrors
+            htmlFor="email"
+            errID="errors_email"
+            validationErrors={errors.email ?? []}
+            className="mb-1 text-sm font-medium"
+          >
+            Correos electrónicos de los invitados (separados por coma) <span aria-hidden="true">*</span>
+          </LabelAndErrors>
+          <InputGroup>
+            <InputGroupInput
+              id="email"
+              type="text"
+              placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
+              value={guestEmail}
+              onChange={(e) => setGuestEmail(e.target.value)}
+              disabled={isLoading}
+              aria-invalid={errors.email !== undefined}
+              aria-describedby={errors.email ? "errors_email" : undefined}
+            />
+          </InputGroup>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <label htmlFor="message" className="text-sm font-medium">
+        <div>
+          <LabelAndErrors
+            htmlFor="message"
+            errID="errors_message"
+            validationErrors={errors.message ?? []}
+            className="mb-1 text-sm font-medium"
+          >
             Mensaje personalizado (opcional)
-          </label>
-          <textarea
-            id="message"
-            placeholder="Escribe un mensaje de hasta 200 caracteres..."
-            value={customMessage}
-            onChange={(e) => setCustomMessage(e.target.value)}
-            maxLength={200}
-            rows={3}
-            disabled={isLoading}
-            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-          />
+          </LabelAndErrors>
+          <InputGroup>
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              id="message"
+              placeholder="Escribe un mensaje de hasta 200 caracteres..."
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
+              maxLength={200}
+              rows={3}
+              disabled={isLoading}
+              aria-invalid={errors.message !== undefined}
+              aria-describedby={errors.message ? "errors_message" : undefined}
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(customMessage, 200, 0.95)} flex-row-reverse`}
+            >
+              {inputLengthCount(customMessage, 200)}
+            </InputGroupAddon>
+          </InputGroup>
         </div>
 
         {message && !message.error && (
