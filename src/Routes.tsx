@@ -13,7 +13,7 @@ import { Logs } from "pages/monitoring/outlets/Logs";
 import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
-import { InitiativeJoinInvitation } from "pages/monitoring/outlets/InitiativeJoinInvitation";
+import { InitiativeInvitation } from "pages/monitoring/outlets/InitiativeInvitation";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -96,7 +96,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "invitacionIniciativa",
-            Component: InitiativeJoinInvitation,
+            Component: InitiativeInvitation,
             loader: () =>
               checkNLoad({
                 requirements: { roles: ["User"] },

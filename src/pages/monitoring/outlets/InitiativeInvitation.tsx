@@ -4,13 +4,13 @@ import { useUserCTX } from "@hooks/UserContext";
 import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 
-import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeJoinInvitationForm";
+import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
 
 enum Role {
   LEADER = 1,
 }
 
-export function InitiativeJoinInvitation() {
+export function InitiativeInvitation() {
   const { user } = useUserCTX();
   const [userInitiatives, setUserInitiatives] = useState<
     Partial<Record<Role, UserInitiatives[]>>

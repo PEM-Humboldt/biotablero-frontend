@@ -575,9 +575,5 @@ export async function sendJoinInvitation(payload: {
     options: { data: payload },
   });
 
-  if (isMonitoringAPIError(res)) {
-    throw new Error(res.message);
-  }
-
   return res;
 }
