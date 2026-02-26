@@ -1,5 +1,5 @@
 import { type MutableRefObject } from "react";
-import { type InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import { type InitiativeDataForm } from "pages/monitoring/types/initiativeData";
 
 export function makeInitialInfo(): InitiativeDataForm {
   return {

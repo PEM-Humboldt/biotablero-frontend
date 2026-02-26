@@ -15,20 +15,20 @@ import { Button } from "@ui/shadCN/component/button";
 import type {
   CardInfoGrouped,
   InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiativeData";
 import {
   InitiativeCtx,
   type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
-import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
+import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
+import { GeneralInfoInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/GeneralInfo";
 import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
-import { updateInitiativeGeneralValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
+import { updateInitiativeGeneralValidations } from "pages/monitoring/ui/initiativesAdmin/utils/formClientValidations";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 type GeneralInfoUpdaterProps = {
   title: string;

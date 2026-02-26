@@ -1,5 +1,5 @@
-import type { InitiativeDataFormErr } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { FormClientValidation } from "pages/monitoring/outlets/initiativesAdmin/types/form";
+import type { InitiativeDataFormErr } from "pages/monitoring/types/initiativeData";
+import type { FormClientValidation } from "pages/monitoring/types/formValidation";
 
 export function validateFormClient<T>(
   formData: T,

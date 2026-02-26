@@ -1,23 +1,24 @@
 import { type ElementType, useContext, useEffect, useState } from "react";
+
+import { commonErrorMessage } from "@utils/ui";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { cn } from "@ui/shadCN/lib/utils";
+
 import type {
   CardInfoGrouped,
   ItemEditorProps,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { cn } from "@ui/shadCN/lib/utils";
-import { DisplayTable } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/DisplayTable";
-import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
-
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+} from "pages/monitoring/types/initiativeData";
+import { DisplayTable } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/DisplayTable";
+import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
 import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
   InitiativeCtx,
   type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { commonErrorMessage } from "@utils/ui";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;

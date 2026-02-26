@@ -14,9 +14,9 @@ import {
 } from "@config/monitoring";
 
 import type { InitiativeContact } from "pages/monitoring/types/initiative";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
+import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function ContactInput<T extends InitiativeContact>({
   selectedItems,

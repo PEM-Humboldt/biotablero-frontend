@@ -3,7 +3,7 @@ import { Check, CirclePlus, Trash2, UndoDot } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function InputListActionButtons<T>({
   update,

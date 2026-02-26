@@ -27,14 +27,14 @@ import {
   INITIAVIVE_INFLUENCE_MAX_LENGTH,
 } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { GeneralInfo } from "pages/monitoring/types/initiative";
-import type { InitiativeDataFormErr } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { InitiativeDataFormErr } from "pages/monitoring/types/initiativeData";
 import {
   initiativeNameNotExist,
   validationExemption,
-} from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
-import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";
+} from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
 
 export function GeneralInfoInput<T extends GeneralInfo>({
   title,
