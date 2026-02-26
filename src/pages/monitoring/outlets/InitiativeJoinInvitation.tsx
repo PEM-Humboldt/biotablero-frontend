@@ -53,7 +53,7 @@ export function InitiativeJoinInvitation() {
   return (
     <main className="page-main">
       <header>
-        <h3>Invitación a unirse a una iniciativa</h3>
+        <h3>Invitar personas a una iniciativa</h3>
       </header>
 
       <InitiativeInvitationForm

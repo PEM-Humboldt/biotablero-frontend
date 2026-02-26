@@ -13,7 +13,7 @@ export const userItems: DashboardItem[] = [
     linkTo: "gestionarIniciativas",
   },
   {
-    description: "Invitaciones a unirse a iniciativas",
+    description: "Invitar personas",
     icon: Send,
     linkTo: "invitacionIniciativa",
   },

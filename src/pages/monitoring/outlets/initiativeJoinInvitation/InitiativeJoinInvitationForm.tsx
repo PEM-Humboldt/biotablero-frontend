@@ -13,6 +13,7 @@ export function InitiativeInvitationForm({
 }: InitiativeInvitationFormProps) {
     const [initiativeId, setInitiativeId] = useState<string>("");
     const [guestEmail, setGuestEmail] = useState<string>("");
+    const [customMessage, setCustomMessage] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
 
@@ -21,14 +22,21 @@ export function InitiativeInvitationForm({
         setIsLoading(true);
         setMessage(null);
 
+        const emailList = guestEmail
+            .split(",")
+            .map((email) => email.trim())
+            .filter((email) => email !== "");
+
         try {
             await sendJoinInvitation({
                 initiativeId: Number(initiativeId),
-                guests: [{ email: guestEmail }],
+                message: customMessage || undefined,
+                guests: emailList.map((email) => ({ email })),
             });
 
             setMessage({ text: "¡Invitación enviada con éxito!", error: false });
             setGuestEmail("");
+            setCustomMessage("");
             setInitiativeId("");
         } catch (error) {
             setMessage({
@@ -71,16 +79,32 @@ export function InitiativeInvitationForm({
 
                 <div className="flex flex-col gap-2">
                     <label htmlFor="email" className="text-sm font-medium">
-                        Correo electrónico del invitado
+                        Correos electrónicos de los invitados (separados por coma)
                     </label>
                     <Input
                         id="email"
-                        type="email"
-                        placeholder="ejemplo@correo.com"
+                        type="text"
+                        placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
                         value={guestEmail}
                         onChange={(e) => setGuestEmail(e.target.value)}
                         required
                         disabled={isLoading}
+                    />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <label htmlFor="message" className="text-sm font-medium">
+                        Mensaje personalizado (opcional)
+                    </label>
+                    <textarea
+                        id="message"
+                        placeholder="Escribe un mensaje de hasta 200 caracteres..."
+                        value={customMessage}
+                        onChange={(e) => setCustomMessage(e.target.value)}
+                        maxLength={200}
+                        rows={3}
+                        disabled={isLoading}
+                        className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
                 </div>
 
