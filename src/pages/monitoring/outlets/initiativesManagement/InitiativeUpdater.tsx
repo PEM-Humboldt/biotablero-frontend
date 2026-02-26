@@ -94,11 +94,7 @@ export function InitiativeUpdater() {
             value={selectedId}
             setValue={setSelectedId}
             keys={{ forLabel: "name", forValue: "id" }}
-            uiText={{
-              itemNotFound: "Iniciativa no encontrada",
-              trigger: "Selecciona la iniciativa",
-              inputPlaceholder: "carajo",
-            }}
+            uiText={{ ...uiText.initiativeSelector }}
             className="mb-2"
           />
         )}

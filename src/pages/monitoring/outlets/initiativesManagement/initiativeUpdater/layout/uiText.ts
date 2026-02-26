@@ -35,6 +35,12 @@ export const uiText = {
     },
   },
 
+  initiativeSelector: {
+    itemNotFound: "Iniciativa no encontrada",
+    trigger: "Selecciona la iniciativa",
+    inputPlaceholder: "carajo",
+  },
+
   tabsLabels: {
     usersManagement: [
       { label: "Gestión de líderes", value: "LEADER" },
@@ -54,7 +60,90 @@ export const uiText = {
         label: "",
       },
       actions: { notAllowedError: "This role action is not allowed" },
+
+      roleEvents: {
+        conditional: {
+          minLeaderAmount:
+            "Promueva un participante como lider antes de reasignar este Lider",
+          maxLeaderAmount: (amount: number) =>
+            `No pueden haber más de ${amount} líderes por iniciativa`,
+        },
+
+        promote: {
+          trigger: (newUserState: string) => ({
+            title: `Asignar rol de '${newUserState}'`,
+            sr: `Asignar rol de '${newUserState}'`,
+            label: "",
+          }),
+
+          dialog: (username: string, newUserState: string) => ({
+            title: `Vas a asignar a ${username} el rol de '${newUserState}'`,
+            description: "Al hacerlo ... ",
+          }),
+
+          confirmBtns: {
+            confirm: undefined,
+            cancel: undefined,
+            exit: undefined,
+          },
+          toast: {
+            title: "Usuario promovido",
+            description: (username: string, newUserState: string) =>
+              `El rol de ${username} ahora es '${newUserState}'.`,
+          },
+        },
+
+        reasign: {
+          trigger: (newUserState: string) => ({
+            title: `Asignar rol de '${newUserState}'`,
+            sr: `Asignar rol de '${newUserState}'`,
+            label: "",
+          }),
+
+          dialog: (username: string, newUserState: string) => ({
+            title: `Vas a asignar a ${username} el rol de '${newUserState}'`,
+            description: "Al hacerlo ... ",
+          }),
+
+          confirmBtns: {
+            confirm: undefined,
+            cancel: undefined,
+            exit: undefined,
+          },
+          toast: {
+            title: "Usuario reasignado",
+            description: (username: string, newUserState: string) =>
+              `El rol de ${username} ahora es '${newUserState}'.`,
+          },
+        },
+
+        remove: {
+          trigger: {
+            title: "Retirar de la iniciativa",
+            sr: "Retirar de la iniciativa",
+            label: "",
+          },
+
+          dialog: (username: string, userState: string) => ({
+            title: `Vas a retirar al ${userState} ${username} de la iniciativa`,
+            description: "Al hacerlo ... ",
+          }),
+
+          confirmBtns: {
+            confirm: undefined,
+            cancel: undefined,
+            exit: undefined,
+          },
+
+          toast: {
+            title: "El usuario ya no hace parte de la iniciativa",
+            description: (username: string) =>
+              `${username} ya no hace parte de esta iniciativa.`,
+          },
+        },
+      },
     },
+
     initiativeManagement: {
       general: {
         title: "Información general",

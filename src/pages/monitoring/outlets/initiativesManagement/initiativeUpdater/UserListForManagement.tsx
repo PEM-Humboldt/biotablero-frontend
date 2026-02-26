@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Ban, CircleOff } from "lucide-react";
 import { toast } from "sonner";
 
+import { useUserCTX } from "@hooks/UserContext";
+
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
@@ -19,7 +21,6 @@ import {
   roleEventRestrictions,
 } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
-import { useUserCTX } from "@hooks/UserContext";
 
 export function UsersListForManagement({
   users,

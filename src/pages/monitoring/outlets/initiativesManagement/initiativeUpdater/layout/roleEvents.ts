@@ -20,13 +20,17 @@ import {
   type ConfirmationDialogProps,
   ConfirmationDialog,
 } from "@ui/ConfirmationDialog";
-import { userStateInInitiativeDictionary } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import {
+  roleDictionary,
+  userStateInInitiativeDictionary,
+} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 import { type ButtonProps } from "@ui/shadCN/component/button";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
   INITIATIVE_LEADERS_MAX_AMOUNT,
   INITIATIVE_LEADERS_MIN_AMOUNT,
 } from "@config/monitoring";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 
 type RoleEventInfo = {
   dialog: {
@@ -75,7 +79,8 @@ export function roleEventRestrictions(
           leadersAmount !== null &&
           leadersAmount <= INITIATIVE_LEADERS_MIN_AMOUNT,
         textToRender:
-          "Promueva un participante como lider antes de reasignar este Lider",
+          uiText.tabsContent.usersManagement.roleEvents.conditional
+            .minLeaderAmount,
       },
     ],
     [RoleInInitiative.USER]: [
@@ -84,7 +89,10 @@ export function roleEventRestrictions(
         condition:
           leadersAmount !== null &&
           leadersAmount >= INITIATIVE_LEADERS_MAX_AMOUNT,
-        textToRender: `No pueden haber más de ${INITIATIVE_LEADERS_MAX_AMOUNT} líderes por iniciativa`,
+        textToRender:
+          uiText.tabsContent.usersManagement.roleEvents.conditional.maxLeaderAmount(
+            INITIATIVE_LEADERS_MAX_AMOUNT,
+          ),
       },
     ],
   };
@@ -104,26 +112,32 @@ export const roleEventInfo: Record<
     return {
       dialog: {
         trigger: {
-          title: `Asignar rol de '${newStateStr}'`,
-          sr: `Asignar rol de '${newStateStr}'`,
           icon: UserRoundCheck,
-          label: "",
+          ...uiText.tabsContent.usersManagement.roleEvents.promote.trigger(
+            newStateStr,
+          ),
         },
-        dialog: {
-          title: `Vas a asignar a ${username} el rol de '${newStateStr}'`,
-          description: "Al hacerlo ... ",
-        },
-        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
+        dialog: uiText.tabsContent.usersManagement.roleEvents.promote.dialog(
+          username,
+          newStateStr,
+        ),
+        actionBtns:
+          uiText.tabsContent.usersManagement.roleEvents.promote.confirmBtns,
       },
-      triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
-      confirmationTitle: "Usuario promovido",
+      confirmationTitle:
+        uiText.tabsContent.usersManagement.roleEvents.promote.toast.title,
       toast: {
-        description: `El rol de ${username} ahora es '${newStateStr}'.`,
+        description:
+          uiText.tabsContent.usersManagement.roleEvents.promote.toast.description(
+            username,
+            newStateStr,
+          ),
         icon: UserRoundCheck,
         iconClassName: "size-8 text-primary",
         className: "px-6! gap-6! border-2! border-primary!",
       },
+      triggerBtnVariant: "default",
+      triggerBtnSize: "icon",
       component: ConfirmationDialog,
     };
   },
@@ -138,56 +152,67 @@ export const roleEventInfo: Record<
     return {
       dialog: {
         trigger: {
-          title: `Asignar rol de '${newStateStr}'`,
-          sr: `Asignar rol de '${newStateStr}'`,
           icon: UserRoundPen,
-          label: "",
+          ...uiText.tabsContent.usersManagement.roleEvents.reasign.trigger(
+            newStateStr,
+          ),
         },
-        dialog: {
-          title: `Vas a asignar a ${username} el rol de '${newStateStr}'`,
-          description: "Al hacerlo ... ",
-        },
-        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
+        dialog: uiText.tabsContent.usersManagement.roleEvents.reasign.dialog(
+          username,
+          newStateStr,
+        ),
+        actionBtns:
+          uiText.tabsContent.usersManagement.roleEvents.reasign.confirmBtns,
       },
-      triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
-      confirmationTitle: "Rol de usuario reasignado",
+      confirmationTitle:
+        uiText.tabsContent.usersManagement.roleEvents.reasign.toast.title,
       toast: {
-        description: `El rol de ${username} ahora es '${newStateStr}'.`,
+        description:
+          uiText.tabsContent.usersManagement.roleEvents.reasign.toast.description(
+            username,
+            newStateStr,
+          ),
         icon: UserRoundCheck,
         iconClassName: "size-8 text-accent",
         className: "px-6! gap-6! border-2! border-accent!",
       },
+      triggerBtnVariant: "default",
+      triggerBtnSize: "icon",
       component: ConfirmationDialog,
     };
   },
 
-  [RoleEvents.REMOVE]: (username: string, _: RoleInInitiative) => {
+  [RoleEvents.REMOVE]: (username: string, role: RoleInInitiative) => {
+    const userCurrentRole = roleDictionary[role];
+
     return {
-      component: DestructiveConfirmationDialog,
-      triggerBtnVariant: "outline_destructive",
-      triggerBtnSize: "icon",
       dialog: {
         trigger: {
-          title: "Retirar de la iniciativa",
-          sr: "Retirar de la iniciativa",
           icon: UserRoundXIcon,
-          label: "",
+          ...uiText.tabsContent.usersManagement.roleEvents.remove.trigger,
         },
-        dialog: {
-          title: `Vas a retirar a ${username} de la iniciativa`,
-          description: "Al hacerlo ... ",
-        },
-        actionBtns: { confirm: undefined, cancel: undefined, exit: undefined },
+        dialog: uiText.tabsContent.usersManagement.roleEvents.remove.dialog(
+          username,
+          userCurrentRole,
+        ),
+        actionBtns:
+          uiText.tabsContent.usersManagement.roleEvents.remove.confirmBtns,
       },
 
-      confirmationTitle: "El usuario ya no hace parte de la iniciativa",
+      confirmationTitle:
+        uiText.tabsContent.usersManagement.roleEvents.remove.toast.title,
       toast: {
-        description: `${username} ya no hace parte de esta iniciativa.`,
+        description:
+          uiText.tabsContent.usersManagement.roleEvents.remove.toast.description(
+            username,
+          ),
         icon: UserRoundCheck,
         iconClassName: "size-8 text-accent",
         className: "px-6! gap-6! border-2! border-accent!",
       },
+      triggerBtnVariant: "outline_destructive",
+      triggerBtnSize: "icon",
+      component: DestructiveConfirmationDialog,
     };
   },
 };
