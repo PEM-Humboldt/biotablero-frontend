@@ -30,7 +30,7 @@ export const match = {
   },
   coverage: {
     palette: "coverage",
-    sort: ["N", "S", "T"],
+    sort: ["Natural", "Secundaria", "Transformada"],
   },
   pa: {
     palette: "pa",
