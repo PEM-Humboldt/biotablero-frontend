@@ -30,12 +30,12 @@ type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
   initiativeInfo: InitiativeFullInfo | null;
   userInInitiativeInfo: UserSRC | null;
-  setInitiative: (initiativeId?: number) => Promise<void>;
+  setInitiative: (initiativeId?: number) => Promise<null | string>;
   updateInitiative: () => Promise<void>;
   userStateInInitiative: UserStateInInitiative;
   isLoading: boolean;
-  error: string | null;
 };
+
 const CurrentInitiativeContext =
   createContext<CurrentInitiativeCTXProps | null>(null);
 
@@ -48,35 +48,31 @@ export function CurrentInitiativeCTX({
 }) {
   const [initiative, setInitiative] = useState<InitiativeFullInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
 
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
       setInitiative(null);
-      return;
+      return null;
     }
 
     setIsLoading(true);
-    setError(null);
     try {
       const initiativeInfo = await getInitiative(initiativeId);
 
       if (isMonitoringAPIError(initiativeInfo)) {
         const { status, message, data } = initiativeInfo;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
 
         setInitiative(null);
-        return;
+        return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
       }
 
       setInitiative(initiativeInfo ?? null);
+      return null;
     } catch (err) {
       console.error(err);
-      setError(`Error crítico: ${getErrorMessage(err)}`);
+      return `Error crítico: ${getErrorMessage(err)}`;
     } finally {
       setIsLoading(false);
     }
@@ -132,7 +128,6 @@ export function CurrentInitiativeCTX({
         },
         userStateInInitiative,
         isLoading,
-        error,
       }}
     >
       {children}
