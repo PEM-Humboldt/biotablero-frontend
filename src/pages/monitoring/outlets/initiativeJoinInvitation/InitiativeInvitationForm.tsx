@@ -18,7 +18,7 @@ import {
   invitationValidations,
 } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
-import { INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH } from "@config/monitoring";
+import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
 import { makeInitialInfo, setFormField } from "./utils/formObjectUpdate";
 import { JoinInitiativeDataForm, JoinInitiativeGuest, JoinInitiativeDataFormErr } from "./types/initiativeInvitationData";
 import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient";
@@ -35,6 +35,7 @@ export function InitiativeInvitationForm({
   const [errors, setErrors] = useState<Partial<JoinInitiativeDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
+  const [customMessage, setCustomMessage] = useState<string>("");
   const formData = useRef<JoinInitiativeDataForm>(makeInitialInfo());
   const [message, setMessage] = useState<{
     text: string;
@@ -69,6 +70,7 @@ export function InitiativeInvitationForm({
   const handleFormReset = () => {
     formData.current = makeInitialInfo();
     setGuestEmails("");
+    setCustomMessage("");
     setformID((prev) => prev + 1);
     setErrors({});
     setMessage(null);
@@ -80,7 +82,7 @@ export function InitiativeInvitationForm({
       new StrValidator(formData.current.message || "")
         .isOptional()
         .sanitize()
-        .hasLengthLessOrEqualThan(INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH),
+        .hasLengthLessOrEqualThan(INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH),
       (val) => setMessageField(val)
     );
 
@@ -129,11 +131,16 @@ export function InitiativeInvitationForm({
       return;
     }
 
+    const emailList = guestEmails
+      .split(",")
+      .map((email) => email.trim())
+      .filter((email) => email !== "");
+
     try {
       const payload: JoinInitiativeDataForm = {
         initiativeId: formData.current.initiativeId,
-        message: formData.current.message || undefined,
-        guests: formData.current.guests,
+        message: customMessage,
+        guests: emailList.map((email) => ({ email } as JoinInitiativeGuest)),
       };
 
       const res = await monitoringAPI<JoinInitiativeDataForm>({
@@ -156,8 +163,8 @@ export function InitiativeInvitationForm({
         return;
       }
 
-      setMessage({ text: uiText.success, error: false });
       handleFormReset();
+      setMessage({ text: uiText.success, error: false });
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.error.noUpdateData] }));
       console.error(uiText.criticalError.log, err);
@@ -227,8 +234,7 @@ export function InitiativeInvitationForm({
               placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
               value={guestEmails}
               onChange={(e) => setGuestEmails(e.target.value)}
-              onBlur={emailsOnBlur}
-              disabled={isLoading}
+              onBlur={emailsOnBlur}              
               aria-invalid={errors.guests !== undefined}
               aria-describedby={errors.guests ? "errors_guests" : undefined}
             />
@@ -250,19 +256,17 @@ export function InitiativeInvitationForm({
               className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
               id="message"
               placeholder="Escribe un mensaje..."
-              value={formData.current.message || ""}
-              onChange={(e) => setMessageField(e.target.value)}
+              value={customMessage}
+              onChange={(e) => setCustomMessage(e.target.value)}
               onBlur={messageOnBlur}
               rows={3}
-              disabled={isLoading}
-              aria-invalid={errors.message !== undefined}
               aria-describedby={errors.message ? "errors_message" : undefined}
             />
             <InputGroupAddon
               align="block-end"
-              className={`${inputWarnColor(formData.current.message || "", INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH, 0.95)} flex-row-reverse`}
+              className={`${inputWarnColor(customMessage, INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH, 0.95)} flex-row-reverse`}
             >
-              {inputLengthCount(formData.current.message || "", INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH)}
+              {inputLengthCount(customMessage, INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </div>
