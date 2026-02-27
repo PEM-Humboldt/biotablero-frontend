@@ -28,7 +28,7 @@ export interface ForestLPExt {
   id: string;
   data: Array<{
     area: number;
-    key: (typeof ForestLPKeys)[number];
+    key: string;
     percentage: number;
     label: string;
   }>;

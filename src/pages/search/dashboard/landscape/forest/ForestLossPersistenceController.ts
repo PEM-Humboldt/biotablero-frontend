@@ -21,19 +21,20 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
-  forestPersistenceValue: number;
-  forestLPArea?: number;
+  currentPersistence: number;
 }
 
 export class ForestLossPersistenceController {
   areaType: string = "";
-  areaId: string = "";
+  areaId: number = 0;
   polygon: polygonFeature | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
+  classes: Set<string> = new Set();
+  itemId: string = "";
 
   constructor() {}
 
-  setArea(areaType: string, areaId: string) {
+  setArea(areaType: string, areaId: number) {
     this.areaType = areaType;
     this.areaId = areaId;
   }
@@ -65,63 +66,55 @@ export class ForestLossPersistenceController {
   /**
    * Returns forest LP data and persistence value in a given area
    *
-   * @param latestPeriod string with range of years for latest period
-   * @param searchType string to identify the type of search
-   *
    * @returns Object with forest LP data and persistence value
    */
-  getForestLPData = (latestPeriod: string): Promise<ForestLPData> => {
-    if (this.areaId === "") {
-      throw Error("Area undefined");
-    }
-
+  getForestLPData = (): Promise<ForestLPData> => {
     return SearchAPI.requestMetricsValues<"lossPersistence">(
       "lossPersistence",
-      Number(this.areaId),
+      this.areaId,
     )
       .then((data: MetricTypesMap["lossPersistence"]) => {
-        const mappedData = data.map((item) => {
-          const itemMapped = MetricsUtils.mapLPResponse(item);
-          return MetricsUtils.calcLPAreas(itemMapped);
+        const mappedData = data.map((periodObj) => {
+          const { id, ...classes } = periodObj;
+          // Aquí se guarda el del primero, tenemos que asegurarnos de guardar el
+          // de todos para evitar pedir capas q ue no existen
+          if (this.itemId === "") {
+            this.itemId = id;
+            this.classes = new Set(
+              Object.keys(classes).filter(
+                (classId) => classes[classId as keyof typeof classes] != 0.0,
+              ),
+            );
+          }
+          const totalHa = Object.values(classes).reduce(
+            (prev, curr) => prev + curr,
+            0,
+          );
+          return {
+            id,
+            data: Object.keys(classes).map((classId) => ({
+              area: periodObj[classId as keyof typeof classes],
+              key: classId,
+              percentage:
+                (periodObj[classId as keyof typeof classes] * 100) / totalHa,
+              label: classId,
+            })),
+          };
         });
 
-        const forestLP: Array<ForestLPExt> = mappedData.map((item) => ({
-          id: item.period,
-          data: [
-            {
-              label: "Pérdida",
-              key: "perdida",
-              area: item.loss,
-              percentage: item.percentagesLoss,
-            },
-            {
-              label: "Persistencia",
-              key: "persistencia",
-              area: item.persistence,
-              percentage: item.percentagesPersistence,
-            },
-            {
-              label: "No bosque",
-              key: "no_bosque",
-              area: item.noForest,
-              percentage: item.percentagesNoForest,
-            },
-          ],
-        }));
-
-        const periodData = mappedData.find(
-          ({ period }) => period === latestPeriod,
-        );
-        const forestPersistenceValue = periodData?.persistence ?? 0;
-
-        forestLP.sort((pA, pB) => {
+        mappedData.sort((pA, pB) => {
           const yearA = parseInt(pA.id.substring(0, pA.id.indexOf("-")));
           const yearB = parseInt(pB.id.substring(0, pB.id.indexOf("-")));
           return yearA - yearB;
         });
+        // Ni modo, tocó quemar el Persistencia aquí
+        const currentPersistence =
+          data.find((period) => period.id === mappedData[0].id)?.Persistencia ||
+          0;
+
         return {
-          forestLP,
-          forestPersistenceValue,
+          forestLP: mappedData,
+          currentPersistence,
         };
       })
       .catch(() => {
