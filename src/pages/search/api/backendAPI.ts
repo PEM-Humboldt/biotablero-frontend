@@ -26,7 +26,7 @@ import {
   targetOrPortfolio,
 } from "pages/search/types/portfolios";
 import { geofenceDetails } from "pages/search/types/dashboard";
-import { RasterAPIObject, ShapeAPIObject } from "pages/search/types/api";
+import { ShapeAPIObject } from "pages/search/types/api";
 
 class BackendAPI {
   /** ****** */
@@ -188,7 +188,6 @@ class BackendAPI {
   /** HUMAN FOOTPRINT */
   /** *************** */
   /**
-
 
   /**
    * Get the persistence of human footprint data in the given area.

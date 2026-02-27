@@ -4,12 +4,8 @@ import {
 } from "@composites/charts/SmallBars";
 import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
-import {
-  ForestLPExt,
-  ForestLPRawDataPolygon,
-  ForestLPKeys,
-  ForestLPCategories,
-} from "pages/search/types/forest";
+import LayerAPI from "pages/search/api/layerAPI";
+import { ForestLPExt } from "pages/search/types/forest";
 import { textsObject } from "pages/search/types/texts";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
@@ -29,8 +25,7 @@ export class ForestLossPersistenceController {
   areaId: number = 0;
   polygon: polygonFeature | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
-  classes: Set<string> = new Set();
-  itemId: string = "";
+  allClasses: Map<string, Set<string>> = new Map();
 
   constructor() {}
 
@@ -76,16 +71,14 @@ export class ForestLossPersistenceController {
       .then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((periodObj) => {
           const { id, ...classes } = periodObj;
-          // Aquí se guarda el del primero, tenemos que asegurarnos de guardar el
-          // de todos para evitar pedir capas q ue no existen
-          if (this.itemId === "") {
-            this.itemId = id;
-            this.classes = new Set(
+          this.allClasses.set(
+            id,
+            new Set(
               Object.keys(classes).filter(
                 (classId) => classes[classId as keyof typeof classes] != 0.0,
               ),
-            );
-          }
+            ),
+          );
           const totalHa = Object.values(classes).reduce(
             (prev, curr) => prev + curr,
             0,
@@ -109,8 +102,9 @@ export class ForestLossPersistenceController {
         });
         // Ni modo, tocó quemar el Persistencia aquí
         const currentPersistence =
-          data.find((period) => period.id === mappedData[0].id)?.Persistencia ||
-          0;
+          data.find(
+            (period) => period.id === mappedData[mappedData.length - 1].id,
+          )?.Persistencia || 0;
 
         return {
           forestLP: mappedData,
@@ -216,33 +210,41 @@ export class ForestLossPersistenceController {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
-      Object.values(ForestLPCategories).forEach((value) => {
+      this.allClasses.get(period)!.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "lossPersistence",
           period,
-          value,
-          Number(this.areaId),
+          classId,
+          this.areaId,
         );
         requests.push(request);
-        this.activeRequests.set(`${period}-${value}`, source);
+        this.activeRequests.set(`${period}-${classId}`, source);
       });
 
       const res = await Promise.all(requests);
 
-      ForestLPKeys.forEach((category) => {
-        this.activeRequests.delete(`${period}-${category}`);
+      this.allClasses.get(period)!.forEach((classId) => {
+        this.activeRequests.delete(`${period}-${classId}`);
       });
 
       if (res.some((result) => typeof result === "string")) {
         throw new Error("request canceled");
       }
       const layersRequests: Array<Promise<Blob>> = [];
-      res.forEach((response) => {
-        const request = SearchAPI.getLayerData(response);
+      res.forEach((layerObj) => {
+        const { request, source } = LayerAPI.getLayerData(layerObj);
         layersRequests.push(request);
+        this.activeRequests.set(layerObj.layer, source);
       });
 
       const layerResponses = await Promise.all(layersRequests);
+      res.forEach((layerObj) => {
+        this.activeRequests.delete(layerObj.layer);
+      });
+
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
 
       const layersBase64Promises: Array<Promise<string>> = [];
 
@@ -253,12 +255,14 @@ export class ForestLossPersistenceController {
 
       const layersBase64 = await Promise.all(layersBase64Promises);
 
-      let response = ForestLPKeys.map((category, index) => ({
-        id: category,
-        data: layersBase64[index],
-        selected: false,
-        paneLevel: 2,
-      }));
+      let response = [...this.allClasses.get(period)!].map(
+        (classId, index) => ({
+          id: classId,
+          data: layersBase64[index],
+          selected: false,
+          paneLevel: 2,
+        }),
+      );
 
       return response;
     }

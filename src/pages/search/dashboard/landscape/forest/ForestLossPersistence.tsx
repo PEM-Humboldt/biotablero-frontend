@@ -68,9 +68,11 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
     this.flpController.setArea(areaTypeId, areaIdId);
 
+    setLoadingLayer(true);
     this.flpController
       .getForestLPData()
       .then((data) => {
+        this.currentPeriod = data.forestLP[data.forestLP.length - 1].id;
         this.switchLayer(this.currentPeriod);
         if (this.mounted) {
           this.setState({
@@ -194,7 +196,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 this.switchLayer(period);
               }
             }}
-            selectedIndexValue={"2016-2021"}
+            selectedIndexValue={selectedIndex}
           />
         </div>
         <TextBoxes
