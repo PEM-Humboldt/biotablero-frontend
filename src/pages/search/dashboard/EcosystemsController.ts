@@ -1,7 +1,9 @@
 import SearchAPI from "pages/search/api/searchAPI";
+import LayerAPI from "../api/layerAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
+import { transformCoverageValues } from "./ecosystems/transformData";
 
 /**
  * Controller for Ecosystems Component
@@ -9,37 +11,52 @@ import { MetricsUtils } from "pages/search/utils/metrics";
  */
 export class EcosystemsController {
   areaType: string = "";
-  areaId: string = "";
+  areaId: number = 0;
   activeRequests: Map<string, CancelTokenSource> = new Map();
-
+  classes: Set<string> = new Set();
+  itemId: string = "";
   constructor() {}
 
   /**
    * Set area values for the controller
    *  @param {string} areaType Value for the type of area selected
-   *  @param {string} areaId Value for the id of area selected
+   *  @param {number} areaId Value for the id of area selected
    */
-  setArea(areaType: string, areaId: string) {
+  setArea(areaType: string, areaId: number) {
     this.areaType = areaType;
     this.areaId = areaId;
   }
 
   /**
-   * Get the raster layers required for a Coverage type
+   * Get the coverage values for the current area
+   *
+   * @returns { Promise<SmallStackedBarData[]>}
+   */
+  getCoverageValues() {
+    return SearchAPI.requestMetricsValues<"coverage">(
+      "coverage",
+      this.areaId,
+    ).then((res) => {
+      const { id, ...classes } = res;
+      this.itemId = id;
+      this.classes = new Set(Object.keys(classes));
+      return transformCoverageValues(res);
+    });
+  }
+
+  /**
+   * Get the coverage raster layers for the current area
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
    */
-  async getCoveragesLayers(
-    period: string,
-    classes: Set<string>,
-  ): Promise<Array<RasterLayer>> {
+  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
-      classes.forEach((classId) => {
+      this.classes.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "coverage",
-          period,
+          this.itemId,
           classId,
           Number(this.areaId),
         );
@@ -49,7 +66,7 @@ export class EcosystemsController {
 
       const res = await Promise.all(requests);
 
-      classes.forEach((classId) => {
+      this.classes.forEach((classId) => {
         this.activeRequests.delete(classId);
       });
 
@@ -58,12 +75,20 @@ export class EcosystemsController {
       }
 
       const layersRequests: Array<Promise<Blob>> = [];
-      res.forEach((response) => {
-        const request = SearchAPI.getLayerData(response);
+      res.forEach((layerObj) => {
+        const { request, source } = LayerAPI.getLayerData(layerObj);
         layersRequests.push(request);
+        this.activeRequests.set(layerObj.layer, source);
       });
 
       const layerResponses = await Promise.all(layersRequests);
+      res.forEach((layerObj) => {
+        this.activeRequests.delete(layerObj.layer);
+      });
+
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
 
       const layersBase64Promises: Array<Promise<string>> = [];
 
@@ -74,7 +99,7 @@ export class EcosystemsController {
 
       const layersBase64 = await Promise.all(layersBase64Promises);
 
-      return [...classes].map((classId, index) => ({
+      return [...this.classes].map((classId, index) => ({
         id: classId,
         data: layersBase64[index],
         selected: false,

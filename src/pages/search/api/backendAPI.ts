@@ -18,7 +18,7 @@ import {
   textResponse,
   textsObject,
 } from "pages/search/types/texts";
-import { Coverage, SEPAData, seDetails } from "pages/search/types/ecosystems";
+import { SEPAData, seDetails } from "pages/search/types/ecosystems";
 import {
   concentration,
   gaps,
@@ -351,45 +351,6 @@ class BackendAPI {
     return BackendAPI.makeGetRequest(
       `/pa?areaType=${areaType}&areaId=${areaId}`,
     );
-  }
-
-  /**
-   * Get coverage area by selected area
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   */
-  static requestCoverage(
-    areaType: string,
-    areaId: string | number,
-  ): Promise<Array<Coverage>> {
-    return BackendAPI.makeGetRequest(
-      `ecosystems/coverage?areaType=${areaType}&areaId=${areaId}`,
-    );
-  }
-
-  /**
-   * Get the coverage layer divided by categories in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} coverageType coverage category
-   *
-   * @return {Promise<RasterAPIObject>} layer object to be loaded in the map
-   */
-  static requestCoveragesLayer(
-    areaType: string,
-    areaId: number | string,
-    coverageType: string,
-  ) {
-    const source = axios.CancelToken.source();
-    return {
-      request: BackendAPI.makeGetRequest(
-        `ecosystems/coverage/layer?areaType=${areaType}&areaId=${areaId}&coverageType=${coverageType}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true,
-      ),
-      source,
-    };
   }
 
   /**
