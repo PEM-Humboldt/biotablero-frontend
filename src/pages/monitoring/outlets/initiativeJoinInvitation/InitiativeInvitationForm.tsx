@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { FormEvent, useCallback, useRef, useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import TextareaAutosize from "react-textarea-autosize";
 import {
@@ -9,15 +9,20 @@ import {
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import {
-  sendJoinInvitation,
   isMonitoringAPIError,
+  monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
 import {
-  validateInvitationForm,
-  type InitiativeInvitationFormErr,
+  invitationValidations,
 } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
+import { StrValidator } from "@utils/strValidator";
+import { INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH } from "@config/monitoring";
+import { makeInitialInfo, setFormField } from "./utils/formObjectUpdate";
+import { JoinInitiativeDataForm, JoinInitiativeGuest, JoinInitiativeDataFormErr } from "./types/initiativeInvitationData";
+import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient";
+import { uiText } from "./layout/uiText";
 
 interface InitiativeInvitationFormProps {
   initiativesAsLeader?: UserInitiatives[];
@@ -26,41 +31,117 @@ interface InitiativeInvitationFormProps {
 export function InitiativeInvitationForm({
   initiativesAsLeader = [],
 }: InitiativeInvitationFormProps) {
-  const [initiativeId, setInitiativeId] = useState<string>("");
-  const [guestEmail, setGuestEmail] = useState<string>("");
-  const [customMessage, setCustomMessage] = useState<string>("");
+  const [formID, setformID] = useState(0);
+  const [errors, setErrors] = useState<Partial<JoinInitiativeDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [guestEmails, setGuestEmails] = useState<string>("");
+  const formData = useRef<JoinInitiativeDataForm>(makeInitialInfo());
   const [message, setMessage] = useState<{
     text: string;
     error: boolean;
   } | null>(null);
-  const [errors, setErrors] = useState<InitiativeInvitationFormErr>({});
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormUpdate = useCallback(
+    <K extends keyof JoinInitiativeDataForm>(key: K) =>
+      setFormField(formData, key),
+    [],
+  );
+
+  const setInitiativeId = handleFormUpdate("initiativeId");
+  const setMessageField = handleFormUpdate("message");
+  const setGuests = handleFormUpdate("guests");
+
+  const validateField = useCallback(
+    (fieldName: keyof JoinInitiativeDataForm, validation: StrValidator, onClean?: (cleanValue: string) => void) => {
+      const [cleanValue, fieldErrors] = validation.result;
+
+      if (fieldErrors.length > 0) {
+        setErrors((oldErr) => ({ ...oldErr, [fieldName]: fieldErrors }));
+        return;
+      }
+
+      setErrors(({ [fieldName]: _, ...oldErr }) => oldErr);
+      if (onClean) onClean(cleanValue);
+    },
+    [],
+  );
+
+  const handleFormReset = () => {
+    formData.current = makeInitialInfo();
+    setGuestEmails("");
+    setformID((prev) => prev + 1);
+    setErrors({});
+    setMessage(null);
+  };
+
+  const messageOnBlur = () =>
+    validateField(
+      "message",
+      new StrValidator(formData.current.message || "")
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH),
+      (val) => setMessageField(val)
+    );
+
+  const initiativeOnBlur = () => {
+    const initId = formData.current.initiativeId;
+    if (!initId || initId <= 0) {
+      setErrors((old) => ({ ...old, initiativeId: [uiText.form.validation.initiativeIdRequired] }));
+    } else {
+      setErrors(({ initiativeId, ...old }) => old);
+    }
+  };
+
+  const emailsOnBlur = () => {
+    validateField(
+      "guests",
+      new StrValidator(guestEmails)
+        .sanitize(),
+      (val) => {
+        setGuestEmails(val);
+        const emailList = val
+          .split(",")
+          .map((email) => email.trim())
+          .filter((email) => email !== "");
+
+        setGuests(emailList.map((email) => ({ email } as JoinInitiativeGuest)));
+      }
+    );
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage(null);
-    setErrors({});
 
-    const formData = { initiativeId, guestEmail, customMessage };
-    const newErrors = validateInvitationForm(formData);
+    emailsOnBlur();
+    messageOnBlur();
+    initiativeOnBlur();
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const currentErrors = validateFormClient(
+      formData.current,
+      invitationValidations,
+    );
+    setErrors(currentErrors);
+
+    if (Object.keys(currentErrors).length > 0) {
       setIsLoading(false);
       return;
     }
 
-    const emailList = guestEmail
-      .split(",")
-      .map((email) => email.trim())
-      .filter((email) => email !== "");
-
     try {
-      const res = await sendJoinInvitation({
-        initiativeId: Number(initiativeId),
-        message: customMessage || undefined,
-        guests: emailList.map((email) => ({ email })),
+      const payload: JoinInitiativeDataForm = {
+        initiativeId: formData.current.initiativeId,
+        message: formData.current.message || undefined,
+        guests: formData.current.guests,
+      };
+
+      const res = await monitoringAPI<JoinInitiativeDataForm>({
+        type: "post",
+        endpoint: "JoinInvitation",
+        options: {
+          data: payload
+        },
       });
 
       if (isMonitoringAPIError(res)) {
@@ -75,18 +156,11 @@ export function InitiativeInvitationForm({
         return;
       }
 
-      setMessage({ text: "¡Invitación enviada con éxito!", error: false });
-      setGuestEmail("");
-      setCustomMessage("");
-      setInitiativeId("");
-    } catch (error) {
-      setErrors((oldErr) => ({
-        ...oldErr,
-        root: [
-          "No se ha podido procesar la solicitud. Por favor intenta de nuevo.",
-        ],
-      }));
-      console.error(error);
+      setMessage({ text: uiText.success, error: false });
+      handleFormReset();
+    } catch (err) {
+      setErrors((oldErr) => ({ ...oldErr, root: [uiText.error.noUpdateData] }));
+      console.error(uiText.criticalError.log, err);
     } finally {
       setIsLoading(false);
     }
@@ -95,31 +169,38 @@ export function InitiativeInvitationForm({
   return (
     <div className="bg-background w-full max-w-[600px] rounded-xl p-6 shadow-sm flex flex-col gap-4 mt-6 border border-muted">
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
-        Enviar invitación
+        {uiText.title}
       </h4>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form
+        action=""
+        key={formID}
+        onReset={handleFormReset}
+        onSubmit={(e) => void handleSubmit(e)}
+        className="flex flex-col gap-4"
+      >
         <div>
           <LabelAndErrors
             htmlFor="initiative"
             errID="errors_initiative"
-            validationErrors={errors.initiative ?? []}
+            validationErrors={errors.initiativeId ?? []}
             className="mb-1 text-sm font-medium"
           >
-            Selecciona la iniciativa <span aria-hidden="true">*</span>
+            {uiText.form.selectInitiativeLabel} <span aria-hidden="true">*</span>
           </LabelAndErrors>
           <select
             id="initiative"
-            value={initiativeId}
-            onChange={(e) => setInitiativeId(e.target.value)}
+            value={formData.current.initiativeId || ""}
+            onChange={(e) => setInitiativeId(Number(e.target.value))}
+            onBlur={initiativeOnBlur}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-            aria-invalid={errors.initiative !== undefined}
+            aria-invalid={errors.initiativeId !== undefined}
             aria-describedby={
-              errors.initiative ? "errors_initiative" : undefined
+              errors.initiativeId ? "errors_initiative" : undefined
             }
           >
             <option value="" disabled>
-              -- Elige una iniciativa --
+              {uiText.form.defaultInitiativeTitle}
             </option>
             {initiativesAsLeader.map((initiative) => (
               <option key={initiative.id} value={initiative.id}>
@@ -132,11 +213,11 @@ export function InitiativeInvitationForm({
         <div>
           <LabelAndErrors
             htmlFor="email"
-            errID="errors_email"
-            validationErrors={errors.email ?? []}
+            errID="errors_guests"
+            validationErrors={errors.guests ?? []}
             className="mb-1 text-sm font-medium"
           >
-            Correos electrónicos de los invitados (separados por coma){" "}
+            {uiText.form.emailsLabel}
             <span aria-hidden="true">*</span>
           </LabelAndErrors>
           <InputGroup>
@@ -144,11 +225,12 @@ export function InitiativeInvitationForm({
               id="email"
               type="text"
               placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
-              value={guestEmail}
-              onChange={(e) => setGuestEmail(e.target.value)}
+              value={guestEmails}
+              onChange={(e) => setGuestEmails(e.target.value)}
+              onBlur={emailsOnBlur}
               disabled={isLoading}
-              aria-invalid={errors.email !== undefined}
-              aria-describedby={errors.email ? "errors_email" : undefined}
+              aria-invalid={errors.guests !== undefined}
+              aria-describedby={errors.guests ? "errors_guests" : undefined}
             />
           </InputGroup>
         </div>
@@ -160,17 +242,17 @@ export function InitiativeInvitationForm({
             validationErrors={errors.message ?? []}
             className="mb-1 text-sm font-medium"
           >
-            Mensaje personalizado (opcional)
+            {uiText.form.messageLabel}
           </LabelAndErrors>
           <InputGroup>
             <TextareaAutosize
               data-slot="input-group-control"
               className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
               id="message"
-              placeholder="Escribe un mensaje de hasta 200 caracteres..."
-              value={customMessage}
-              onChange={(e) => setCustomMessage(e.target.value)}
-              maxLength={200}
+              placeholder="Escribe un mensaje..."
+              value={formData.current.message || ""}
+              onChange={(e) => setMessageField(e.target.value)}
+              onBlur={messageOnBlur}
               rows={3}
               disabled={isLoading}
               aria-invalid={errors.message !== undefined}
@@ -178,9 +260,9 @@ export function InitiativeInvitationForm({
             />
             <InputGroupAddon
               align="block-end"
-              className={`${inputWarnColor(customMessage, 200, 0.95)} flex-row-reverse`}
+              className={`${inputWarnColor(formData.current.message || "", INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH, 0.95)} flex-row-reverse`}
             >
-              {inputLengthCount(customMessage, 200)}
+              {inputLengthCount(formData.current.message || "", INITIATIVE_INVITATION_CUSTOM_MESSAGE_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -200,7 +282,7 @@ export function InitiativeInvitationForm({
             disabled={isLoading || initiativesAsLeader.length === 0}
             className="w-full"
           >
-            {isLoading ? "Enviando..." : "Enviar Invitación"}
+            {isLoading ? uiText.loading : uiText.save}
           </Button>
         </div>
       </form>

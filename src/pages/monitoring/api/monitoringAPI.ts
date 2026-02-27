@@ -558,22 +558,3 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
 
   return result;
 }
-
-/**
- * Sends a join invitation to a list of guests for a specific initiative.
- *
- * @param payload The invitation details containing the initiative ID, optional message, and a list of guests.
- */
-export async function sendJoinInvitation(payload: {
-  initiativeId: number;
-  message?: string;
-  guests: { email: string }[];
-}) {
-  const res = await monitoringAPI({
-    type: "post",
-    endpoint: "JoinInvitation",
-    options: { data: payload },
-  });
-
-  return res;
-}
