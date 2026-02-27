@@ -19,6 +19,7 @@ export type MetricTypesMap = {
     "id",
     "Natural" | "Baja" | "Media" | "Alta" | "Muy Alta"
   >;
+  currentHF_average: MetricDataStructure<"id", "average">;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;

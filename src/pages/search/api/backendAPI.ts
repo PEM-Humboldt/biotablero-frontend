@@ -7,12 +7,7 @@ import {
   DPC,
   timelinePAConn,
 } from "pages/search/types/connectivity";
-import {
-  currentHFValue,
-  currentHFCategories,
-  hfPersistence,
-  hfTimeline,
-} from "pages/search/types/humanFootprint";
+import { hfPersistence, hfTimeline } from "pages/search/types/humanFootprint";
 import {
   helperText,
   textResponse,
@@ -193,36 +188,7 @@ class BackendAPI {
   /** HUMAN FOOTPRINT */
   /** *************** */
   /**
-   * Get the current human footprint value in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Object} Object with value and category for the current human footprint
-   */
-  static requestCurrentHFValue(
-    areaType: string,
-    areaId: string | number,
-  ): Promise<currentHFValue> {
-    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/current/value`);
-  }
 
-  /**
-   * Get the current human footprint data by categories in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with data for the current human footprint
-   */
-  static requestCurrentHFCategories(
-    areaType: string,
-    areaId: string | number,
-  ): Promise<Array<currentHFCategories>> {
-    return BackendAPI.makeGetRequest(
-      `${areaType}/${areaId}/hf/current/categories`,
-    );
-  }
 
   /**
    * Get the persistence of human footprint data in the given area.
@@ -599,25 +565,6 @@ class BackendAPI {
     return {
       request: BackendAPI.makeGetRequest(
         `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
-        { cancelToken: source.token },
-      ),
-      source,
-    };
-  }
-
-  /**
-   * Get the geometry associated for the current human footprint in the given area.
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {ShapeAPIObject} layer object to be loaded in the map
-   */
-  static requestCurrentHFLayer(areaType: string, areaId: number | string) {
-    const source = axios.CancelToken.source();
-    return {
-      request: BackendAPI.makeGetRequest(
-        `${areaType}/${areaId}/hf/layers/current/categories`,
         { cancelToken: source.token },
       ),
       source,
