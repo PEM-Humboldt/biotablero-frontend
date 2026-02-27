@@ -39,7 +39,11 @@ export class EcosystemsController {
     ).then((res) => {
       const { id, ...classes } = res;
       this.itemId = id;
-      this.classes = new Set(Object.keys(classes));
+      this.classes = new Set(
+        Object.keys(classes).filter(
+          (classId) => classes[classId as keyof typeof classes] != 0.0,
+        ),
+      );
       return transformCoverageValues(res);
     });
   }
@@ -47,7 +51,7 @@ export class EcosystemsController {
   /**
    * Get the coverage raster layers for the current area
    *
-   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
+   * @returns { Promise<Array<RasterLayer>> } layers for the classes in the current area
    */
   async getCoveragesLayers(): Promise<Array<RasterLayer>> {
     if (this.areaId) {
