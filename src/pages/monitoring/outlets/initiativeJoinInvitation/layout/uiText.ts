@@ -5,7 +5,8 @@ export const uiText = {
   success: "¡Invitación enviada con éxito!",
 
   error: {
-    noUpdateData: "No se ha podido procesar la solicitud. Por favor intenta de nuevo.",
+    noUpdateData:
+      "No se ha podido procesar la solicitud. Por favor intenta de nuevo.",
     actionError:
       "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
     noGetData:
@@ -28,5 +29,5 @@ export const uiText = {
       emailsRequired: "Debes ingresar al menos un correo electrónico válido.",
       badEmailFormat: "Los correos no tienen un formato válido",
     },
-  }
+  },
 };

@@ -14,13 +14,15 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { commonErrorMessage } from "@utils/ui";
-import {
-  invitationValidations,
-} from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
+import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
 import { makeInitialInfo, setFormField } from "./utils/formObjectUpdate";
-import { JoinInitiativeDataForm, JoinInitiativeGuest, JoinInitiativeDataFormErr } from "./types/initiativeInvitationData";
+import {
+  JoinInitiativeDataForm,
+  JoinInitiativeGuest,
+  JoinInitiativeDataFormErr,
+} from "./types/initiativeInvitationData";
 import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient";
 import { uiText } from "./layout/uiText";
 
@@ -53,7 +55,11 @@ export function InitiativeInvitationForm({
   const setGuests = handleFormUpdate("guests");
 
   const validateField = useCallback(
-    (fieldName: keyof JoinInitiativeDataForm, validation: StrValidator, onClean?: (cleanValue: string) => void) => {
+    (
+      fieldName: keyof JoinInitiativeDataForm,
+      validation: StrValidator,
+      onClean?: (cleanValue: string) => void,
+    ) => {
       const [cleanValue, fieldErrors] = validation.result;
 
       if (fieldErrors.length > 0) {
@@ -83,33 +89,31 @@ export function InitiativeInvitationForm({
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH),
-      (val) => setMessageField(val)
+      (val) => setMessageField(val),
     );
 
   const initiativeOnBlur = () => {
     const initId = formData.current.initiativeId;
     if (!initId || initId <= 0) {
-      setErrors((old) => ({ ...old, initiativeId: [uiText.form.validation.initiativeIdRequired] }));
+      setErrors((old) => ({
+        ...old,
+        initiativeId: [uiText.form.validation.initiativeIdRequired],
+      }));
     } else {
       setErrors(({ initiativeId, ...old }) => old);
     }
   };
 
   const emailsOnBlur = () => {
-    validateField(
-      "guests",
-      new StrValidator(guestEmails)
-        .sanitize(),
-      (val) => {
-        setGuestEmails(val);
-        const emailList = val
-          .split(",")
-          .map((email) => email.trim())
-          .filter((email) => email !== "");
+    validateField("guests", new StrValidator(guestEmails).sanitize(), (val) => {
+      setGuestEmails(val);
+      const emailList = val
+        .split(",")
+        .map((email) => email.trim())
+        .filter((email) => email !== "");
 
-        setGuests(emailList.map((email) => ({ email } as JoinInitiativeGuest)));
-      }
-    );
+      setGuests(emailList.map((email) => ({ email }) as JoinInitiativeGuest));
+    });
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -140,14 +144,14 @@ export function InitiativeInvitationForm({
       const payload: JoinInitiativeDataForm = {
         initiativeId: formData.current.initiativeId,
         message: customMessage,
-        guests: emailList.map((email) => ({ email } as JoinInitiativeGuest)),
+        guests: emailList.map((email) => ({ email }) as JoinInitiativeGuest),
       };
 
       const res = await monitoringAPI<JoinInitiativeDataForm>({
         type: "post",
         endpoint: "JoinInvitation",
         options: {
-          data: payload
+          data: payload,
         },
       });
 
@@ -193,7 +197,8 @@ export function InitiativeInvitationForm({
             validationErrors={errors.initiativeId ?? []}
             className="mb-1 text-sm font-medium"
           >
-            {uiText.form.selectInitiativeLabel} <span aria-hidden="true">*</span>
+            {uiText.form.selectInitiativeLabel}{" "}
+            <span aria-hidden="true">*</span>
           </LabelAndErrors>
           <select
             id="initiative"
@@ -234,7 +239,7 @@ export function InitiativeInvitationForm({
               placeholder="ejemplo1@correo.com, ejemplo2@correo.com"
               value={guestEmails}
               onChange={(e) => setGuestEmails(e.target.value)}
-              onBlur={emailsOnBlur}              
+              onBlur={emailsOnBlur}
               aria-invalid={errors.guests !== undefined}
               aria-describedby={errors.guests ? "errors_guests" : undefined}
             />
@@ -266,7 +271,10 @@ export function InitiativeInvitationForm({
               align="block-end"
               className={`${inputWarnColor(customMessage, INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH, 0.95)} flex-row-reverse`}
             >
-              {inputLengthCount(customMessage, INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH)}
+              {inputLengthCount(
+                customMessage,
+                INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH,
+              )}
             </InputGroupAddon>
           </InputGroup>
         </div>
