@@ -1,4 +1,10 @@
-export const monitoringApiErrorsCategory = {
+export const statusError: Record<number, string> = {
+  401: "Tu sesión ha expirado, ingresa de nuevo",
+  403: "No tienes permisos para esta acción",
+  500: "Error en el servidor monitoreo, vuelve a intentarlo más tarde",
+};
+
+export const apiErrorCategory = {
   SYS: "Sistema (errores generales)",
   FIL: "Manejo de archivos",
   INI: "Iniciativas",
@@ -18,7 +24,7 @@ export const monitoringApiErrorsCategory = {
   USR: "Usuarios",
 };
 
-export const monitoringApiErrorsMsg = {
+export const apiErrorMsg = {
   SYS_001: "Los datos de la entidad no pueden ser nulos",
   SYS_002: "La propiedad es obligatoria",
   SYS_003: "Valor de propiedad inválido",
