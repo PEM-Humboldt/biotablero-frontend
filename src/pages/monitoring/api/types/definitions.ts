@@ -57,3 +57,8 @@ export type ImageUploadInfo = {
   file: File | null | undefined | string;
   path: string;
 };
+
+export type LogTypeValue = {
+  id: number;
+  name: string;
+};

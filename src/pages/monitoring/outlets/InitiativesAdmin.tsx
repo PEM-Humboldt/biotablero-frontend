@@ -6,10 +6,8 @@ import { INITIATIVES_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
 
 import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout/searchBarContent";
-import {
-  getInitiatives,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiatives } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
 import { CircleXIcon, ListPlus } from "lucide-react";
@@ -30,7 +28,7 @@ import {
 import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 

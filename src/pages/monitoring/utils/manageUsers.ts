@@ -1,4 +1,4 @@
-import { getUserLevels } from "pages/monitoring/api/monitoringAPI";
+import { getUserLevels } from "pages/monitoring/api/services/user";
 import type { User, UserLevel } from "pages/monitoring/types/monitoring";
 import type { ODataUserInfo } from "pages/monitoring/types/requestParams";
 

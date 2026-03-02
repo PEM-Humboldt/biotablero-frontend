@@ -10,12 +10,10 @@ import {
   DialogTrigger,
 } from "@ui/shadCN/component/dialog";
 
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { LogEntryFull } from "pages/monitoring/types/requestParams";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
+import { fetchLogDetails } from "pages/monitoring/api/services/logs";
 
 export function ShowLogDetailsButton({ value }: { value: unknown }) {
   const [visible, setVisible] = useState(false);
@@ -31,10 +29,7 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
   const loadLogData = async () => {
     try {
       setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
-      const logData = await monitoringAPI<LogEntryFull>({
-        type: "get",
-        endpoint: `Logs/${value}`,
-      });
+      const logData = await fetchLogDetails(value);
 
       if (isMonitoringAPIError(logData)) {
         throw new Error(logData.message);

@@ -22,7 +22,7 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
 import { ImagePreview } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagePreview";
 import { Button } from "@ui/shadCN/component/button";
-import { uploadImages } from "pages/monitoring/api/monitoringAPI";
+import { uploadImages } from "pages/monitoring/api/services/assets";
 import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
 
 type ImagesUpdaterProps = {

@@ -7,10 +7,8 @@ import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import type { User } from "pages/monitoring/types/monitoring";
-import {
-  getUsers,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getUsers } from "pages/monitoring/api/services/user";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   NEW_ADMIN_CREDENTIALS,
   normalizeUsersFromOData,

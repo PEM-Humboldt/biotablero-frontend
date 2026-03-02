@@ -1,4 +1,4 @@
-import { errorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";

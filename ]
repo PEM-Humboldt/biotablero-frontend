@@ -10,7 +10,7 @@ import type {
   LocationDataBasic,
   UserData,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
+import { commonErrorMessage } from "@utils/ui";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -146,13 +146,10 @@ export async function changeInitiativeStatus(
   return res;
 }
 
-export async function updateInitiativeGeneralInfo(
-  initiativeId: number,
-  payload: Record<string, string>,
-) {
+export async function updateInitiativeGeneralInfo() {
   const res = await monitoringAPI({
     type: "put",
-    endpoint: `Initiative/${initiativeId}`,
+    endpoint: `${backEndpoint}/${initiativeId}`,
     options: {
       data: payload,
       headers: {
@@ -161,8 +158,6 @@ export async function updateInitiativeGeneralInfo(
       },
     },
   });
-
-  return res;
 }
 
 export async function updateInitiativeItem<T>(
@@ -194,21 +189,4 @@ export async function removeInitiativeItem(endpoint: string, itemId: number) {
   });
 
   return res;
-}
-
-export async function resolveJoinRequest(
-  requestId: number,
-  resolvedInto: "Approved" | "Rejected",
-) {
-  const res = await monitoringAPI({
-    type: "put",
-    endpoint: `JoinRequest/${requestId}?requestStatus=${resolvedInto}`,
-  });
-
-  if (isMonitoringAPIError(res)) {
-    const { message, status, data } = res;
-    return { message, status, data };
-  }
-
-  return null;
 }

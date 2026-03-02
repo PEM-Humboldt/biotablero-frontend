@@ -6,7 +6,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 import type {
   ODataInitiativeUserRequest,

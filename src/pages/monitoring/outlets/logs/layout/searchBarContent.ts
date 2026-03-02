@@ -1,32 +1,6 @@
 import { type SearchBarComponent } from "@appTypes/odata";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { getLogTypes } from "pages/monitoring/api/services/logs";
 import { type ODataLogEntryShort } from "pages/monitoring/types/requestParams";
-
-type TypeValue = {
-  id: number;
-  name: string;
-};
-
-const getTypeValues = async () => {
-  try {
-    const res = await monitoringAPI<TypeValue[]>({
-      type: "get",
-      endpoint: "LogType",
-    });
-
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
-
-    return res.map(({ name }) => name);
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-};
 
 export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
   await (async () => [
@@ -48,6 +22,6 @@ export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
       placeholder: "Seleciona el tipo",
       type: "select",
       source: ["type"],
-      values: await getTypeValues(),
+      values: await getLogTypes(),
     },
   ])();

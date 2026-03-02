@@ -1,8 +1,6 @@
 import { StrValidator } from "@utils/strValidator";
-import {
-  getInitiatives,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiatives } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   isLocationObj,
   type LocationDataBasic,

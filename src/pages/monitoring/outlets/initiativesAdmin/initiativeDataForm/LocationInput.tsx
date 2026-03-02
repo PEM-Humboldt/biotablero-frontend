@@ -3,7 +3,7 @@ import { type SetStateAction, useCallback, useEffect, useState } from "react";
 import { Label } from "@ui/shadCN/component/label";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Combobox } from "@ui/ComboBox";
-import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { StrValidator } from "@utils/strValidator";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import {

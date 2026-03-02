@@ -1,4 +1,4 @@
-export const statusError: Record<number, string> = {
+export const commonErrorMessage: Record<number, string> = {
   401: "Tu sesión ha expirado, ingresa de nuevo",
   403: "No tienes permisos para esta acción",
   500: "Error en el servidor monitoreo, vuelve a intentarlo más tarde",

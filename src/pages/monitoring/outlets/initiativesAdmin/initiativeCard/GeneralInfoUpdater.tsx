@@ -8,7 +8,7 @@ import {
 } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 
@@ -22,23 +22,17 @@ import {
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
 import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
 import { updateInitiativeGeneralValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { updateInitiativeGeneralInfo } from "pages/monitoring/api/services/initiatives";
 
 type GeneralInfoUpdaterProps = {
   title: string;
-  backEndpoint: string;
 };
 
-export function GeneralInfoUpdater({
-  title,
-  backEndpoint,
-}: GeneralInfoUpdaterProps) {
+export function GeneralInfoUpdater({ title }: GeneralInfoUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
     useContext<InitiativeCtxType>(InitiativeCtx);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +54,7 @@ export function GeneralInfoUpdater({
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (isLoading || !sectionInfo.current) {
+    if (isLoading || !sectionInfo.current || !initiativeId) {
       return;
     }
 
@@ -88,17 +82,7 @@ export function GeneralInfoUpdater({
         }).filter(([_, value]) => Boolean(value)),
       ) as Record<string, string>;
 
-      const res = await monitoringAPI({
-        type: "put",
-        endpoint: `${backEndpoint}/${initiativeId}`,
-        options: {
-          data: payload,
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        },
-      });
+      const res = await updateInitiativeGeneralInfo(initiativeId, payload);
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;

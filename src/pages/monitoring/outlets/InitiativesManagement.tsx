@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useUserCTX } from "@hooks/UserContext";
 
-import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
+import { getUserInitiativesInfo } from "pages/monitoring/api/services/initiatives";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
 

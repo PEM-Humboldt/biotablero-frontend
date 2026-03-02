@@ -8,16 +8,17 @@ import { DisplayTable } from "pages/monitoring/outlets/initiativesAdmin/initiati
 import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
   InitiativeCtx,
   type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
+import {
+  removeInitiativeItem,
+  updateInitiativeItem,
+} from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
@@ -137,11 +138,7 @@ export function FormListUpdater<T, R extends object>({
 
     try {
       setIsLoading(true);
-      const res = await monitoringAPI({
-        type: "delete",
-        endpoint: `${backEndpoint}/${itemId}`,
-        getStatus: true,
-      });
+      const res = await removeInitiativeItem(backEndpoint, itemId);
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;
@@ -170,17 +167,12 @@ export function FormListUpdater<T, R extends object>({
       setIsLoading(true);
       const itemId = getItemId(updateItem);
 
-      const res = await monitoringAPI<T>({
-        type: itemId ? "put" : "post",
-        endpoint: itemId ? `${backEndpoint}/${itemId}` : backEndpoint,
-        options: {
-          data: { ...itemInfo, initiativeId: initiativeId ?? "" },
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        },
-      });
+      const res = await updateInitiativeItem(
+        initiativeId,
+        backEndpoint,
+        itemInfo,
+        itemId,
+      );
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;

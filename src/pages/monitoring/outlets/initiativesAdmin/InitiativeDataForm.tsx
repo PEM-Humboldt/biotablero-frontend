@@ -2,7 +2,7 @@ import { type FormEvent, useCallback, useRef, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
@@ -15,14 +15,11 @@ import type {
   InitiativeContact,
   InitiativeDataForm,
   InitiativeDataFormErr,
-  InitiativeFullInfo,
   LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-  uploadImages,
-} from "pages/monitoring/api/monitoringAPI";
+import { uploadImages } from "pages/monitoring/api/services/assets";
+import { createInitiative } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
 import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/FormListManager";
 import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/LocationInput";
@@ -59,16 +56,16 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
     event.preventDefault();
     setIsLoading(true);
 
-    // const currentErrors = validateFormClient(
-    //   initiative.current,
-    //   newInitiativeValidations,
-    // );
-    // setErrors(currentErrors);
+    const currentErrors = validateFormClient(
+      initiative.current,
+      newInitiativeValidations,
+    );
+    setErrors(currentErrors);
 
-    // if (Object.keys(currentErrors).length > 0) {
-    //   setIsLoading(false);
-    //   return;
-    // }
+    if (Object.keys(currentErrors).length > 0) {
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { general, images, ...rest } = { ...initiative.current };
@@ -79,17 +76,7 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
 
       const payload = { ...cleanGeneral, ...rest };
 
-      const res = await monitoringAPI<InitiativeFullInfo>({
-        type: "post",
-        endpoint: "Initiative",
-        options: {
-          data: payload,
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        },
-      });
+      const res = await createInitiative(payload);
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;

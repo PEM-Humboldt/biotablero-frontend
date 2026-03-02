@@ -4,13 +4,11 @@ import type { ODataParams } from "@appTypes/odata";
 
 import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import {
-  getInitiativeRequests,
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiativeRequests } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { resolveJoinRequest } from "pages/monitoring/api/services/initiatives";
 
 type JoinRequestsPool = {
   initialized: boolean;
@@ -162,22 +160,10 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
     };
   };
 
-  const resolveJoinRequest = async (
-    requestId: number,
-    newStatus: "Approved" | "Rejected",
-  ) => {
-    const res = await monitoringAPI({
-      type: "put",
-      endpoint: `JoinRequest/${requestId}?requestStatus=${newStatus}`,
-    });
-
-    if (isMonitoringAPIError(res)) {
-      const { message, status, data } = res;
-      return { message, status, data };
-    }
-
-    return null;
+  return {
+    getRequestPage,
+    resetPool,
+    getTotalRequests,
+    resolveJoinRequest: resolveJoinRequest,
   };
-
-  return { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest };
 }

@@ -14,11 +14,8 @@ import {
 } from "@ui/loadStatusSecction";
 import { ODataTable } from "@composites/ODataTable";
 
-import {
-  downloadLogs,
-  getLogs,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { downloadLogs, getLogs } from "pages/monitoring/api/services/logs";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import type {

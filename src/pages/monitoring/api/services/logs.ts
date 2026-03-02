@@ -1,6 +1,10 @@
 import { type ODataParams } from "@appTypes/odata";
-import type { ODataLog } from "pages/monitoring/types/requestParams";
 
+import type {
+  LogEntryFull,
+  ODataLog,
+} from "pages/monitoring/types/requestParams";
+import type { LogTypeValue } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
@@ -35,4 +39,31 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
   }
 
   return result;
+}
+
+export async function getLogTypes() {
+  try {
+    const res = await monitoringAPI<LogTypeValue[]>({
+      type: "get",
+      endpoint: "LogType",
+    });
+
+    if (isMonitoringAPIError(res)) {
+      throw new Error(res.message);
+    }
+
+    return res.map(({ name }) => name);
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
+
+export async function fetchLogDetails(logId: string) {
+  const res = await monitoringAPI<LogEntryFull>({
+    type: "get",
+    endpoint: `Logs/${logId}`,
+  });
+
+  return res;
 }

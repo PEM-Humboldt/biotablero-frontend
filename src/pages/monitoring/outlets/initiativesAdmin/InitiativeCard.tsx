@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_CONTACTS_MIN_AMOUNT,
@@ -29,11 +29,8 @@ import type {
   InitiativeFullInfo,
   LocationObj,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import {
-  getInitiative,
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { InitiativeStatusDialog } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
 import { FormListUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/FormListUpdater";
 import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/LocationInput";
@@ -42,6 +39,7 @@ import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiative
 import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
 import { ImagesUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagesUpdater";
+import { changeInitiativeStatus } from "pages/monitoring/api/services/initiatives";
 
 export type InitiativeCtxType = {
   initiative: CardInfoGrouped | null;
@@ -120,12 +118,10 @@ export function InitiativeCard({
 
     try {
       setIsLoading(true);
-      const endpoint = initiative.enabled ? "Disable" : "Enable";
-      const method = initiative.enabled ? "delete" : "post";
-      const res = await monitoringAPI<InitiativeFullInfo>({
-        type: method,
-        endpoint: `Initiative/${endpoint}/${initiative.id}`,
-      });
+      const res = await changeInitiativeStatus(
+        initiative.enabled,
+        initiative.id,
+      );
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;
@@ -212,10 +208,7 @@ export function InitiativeCard({
           />
         </div>
 
-        <GeneralInfoUpdater
-          title={uiText.initiative.module.general.title}
-          backEndpoint="Initiative"
-        />
+        <GeneralInfoUpdater title={uiText.initiative.module.general.title} />
 
         <FormListUpdater
           title={uiText.initiative.module.locations.title}

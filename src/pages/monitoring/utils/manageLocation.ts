@@ -1,7 +1,7 @@
 import {
   getLocationInfo,
   getLocationList,
-} from "pages/monitoring/api/monitoringAPI";
+} from "pages/monitoring/api/services/location";
 import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
 
 export const getColombianDepartments = (() => {
