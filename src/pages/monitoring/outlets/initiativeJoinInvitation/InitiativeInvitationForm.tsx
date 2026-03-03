@@ -272,6 +272,7 @@ export function InitiativeInvitationForm({
               onBlur={messageOnBlur}
               rows={3}
               aria-describedby={errors.message ? "errors_message" : undefined}
+              maxLength={INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH}
             />
             <InputGroupAddon
               align="block-end"
