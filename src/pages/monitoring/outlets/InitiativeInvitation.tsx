@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useUserCTX } from "@hooks/UserContext";
 
@@ -18,12 +18,8 @@ export function InitiativeInvitation({
   }, [user?.username]);
 
   return (
-    <main className="page-main">
-      <header>
-        <h3>Invitar personas a una iniciativa</h3>
-      </header>
-
+    <div className="text-center font-light text-4xl text-primary px-12 py-6">
       <InitiativeInvitationForm  initiativeId={initiativeId}/>
-    </main>
+    </div>
   );
 }

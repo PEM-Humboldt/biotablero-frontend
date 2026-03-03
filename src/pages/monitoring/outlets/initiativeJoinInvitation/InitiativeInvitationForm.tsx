@@ -173,7 +173,7 @@ export function InitiativeInvitationForm({
   };
 
   return (
-    <div className="bg-background w-full max-w-[600px] rounded-xl p-6 shadow-sm flex flex-col gap-4 mt-6 border border-muted">
+    <div className="bg-background w-full rounded-xl p-6 shadow-sm flex flex-col gap-4 border border-muted">
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
         {uiText.title}
       </h4>
