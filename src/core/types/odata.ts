@@ -1,7 +1,12 @@
 import { type ReactNode } from "react";
 
+export type ODataResponse<T> = {
+  "@odata.count": number;
+  value: T[];
+};
+
 export type HasId = {
-  id: string;
+  id: number;
 };
 
 export type ODataColumn<T> = {

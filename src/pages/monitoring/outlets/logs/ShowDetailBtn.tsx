@@ -14,7 +14,7 @@ import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import type { LogEntryFull } from "pages/monitoring/types/requestParams";
+import type { LogEntryFull } from "pages/monitoring/types/odataResponse";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 
 export function ShowLogDetailsButton({ value }: { value: unknown }) {

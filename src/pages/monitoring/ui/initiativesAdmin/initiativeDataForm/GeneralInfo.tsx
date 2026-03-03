@@ -1,0 +1,382 @@
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import TextareaAutosize from "react-textarea-autosize";
+
+import {
+  ErrorsList,
+  LabelAndErrors,
+  LegendAndErrors,
+} from "@ui/LabelingWithErrors";
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupAddon,
+} from "@ui/shadCN/component/input-group";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { StrValidator } from "@utils/strValidator";
+import {
+  INITIAVIVE_NAME_MAX_LENGTH,
+  INITIAVIVE_SHORTNAME_MAX_LENGTH,
+  INITIAVIVE_DESCRIPTION_MAX_LENGTH,
+  INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+  INITIAVIVE_INFLUENCE_MAX_LENGTH,
+} from "@config/monitoring";
+
+import type { GeneralInfo } from "pages/monitoring/types/initiative";
+import type { InitiativeDataFormErr } from "pages/monitoring/types/initiativeData";
+import {
+  initiativeNameNotExist,
+  validationExemption,
+} from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
+
+export function GeneralInfoInput<T extends GeneralInfo>({
+  title,
+  sectionInfo,
+  sectionUpdater,
+  validationErrorsObj = {},
+  submitBlocker,
+}: {
+  title?: string;
+  sectionInfo: GeneralInfo;
+  sectionUpdater: (value: T) => void;
+  validationErrorsObj: Partial<InitiativeDataFormErr["general"]>;
+  submitBlocker?:
+    | Dispatch<SetStateAction<boolean>>
+    | ((value: boolean) => void);
+}) {
+  const [generalInfo, setGeneralInfo] = useState<Required<GeneralInfo>>({
+    name: sectionInfo.name ?? "",
+    shortName: sectionInfo.shortName ?? "",
+    description: sectionInfo.description ?? "",
+    objective: sectionInfo.objective ?? "",
+    baseline: sectionInfo.baseline ?? "",
+  });
+
+  const [inputErr, setInputErr] = useState<
+    Partial<InitiativeDataFormErr["general"]>
+  >({});
+
+  useEffect(() => {
+    if (Object.keys(validationErrorsObj).length === 0) {
+      return;
+    }
+
+    setInputErr((oldErr) => ({ ...oldErr, ...validationErrorsObj }));
+  }, [validationErrorsObj]);
+
+  const setGeneralInfoItem = (key: keyof GeneralInfo) => (value: string) => {
+    setGeneralInfo((oldObj) => ({ ...oldObj, [key]: value }));
+  };
+
+  const validateField = useCallback(
+    (fieldName: keyof GeneralInfo, validation: StrValidator) => {
+      const [cleanValue, errors] = validation.result;
+
+      if (errors.length > 0) {
+        setInputErr((oldErr) => ({ ...oldErr, [fieldName]: errors }));
+        return;
+      }
+
+      setInputErr(({ [fieldName]: _, ...oldErr }) => oldErr);
+      setGeneralInfoItem(fieldName)(cleanValue);
+
+      const infoClean = Object.fromEntries(
+        Object.entries(generalInfo).filter(([_, value]) => Boolean(value)),
+      ) as T;
+
+      sectionUpdater(infoClean);
+    },
+    [generalInfo, sectionUpdater],
+  );
+
+  const nameOnBlur = async () =>
+    validateField(
+      "name",
+      await new StrValidator(generalInfo.name, submitBlocker)
+        .sanitize()
+        .isRequired()
+        .hasLengthLessOrEqualThan(INITIAVIVE_NAME_MAX_LENGTH)
+        .customAsync(
+          validationExemption(
+            initiativeNameNotExist,
+            generalInfo.name === sectionInfo.name,
+          ),
+          uiText.initiative.module.general.validation.uniqueName,
+        ),
+    );
+
+  const shortNameOnBlur = () =>
+    validateField(
+      "shortName",
+      new StrValidator(generalInfo.shortName)
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIAVIVE_SHORTNAME_MAX_LENGTH),
+    );
+
+  const descriptionOnBlur = () =>
+    validateField(
+      "description",
+      new StrValidator(generalInfo.description)
+        .sanitize()
+        .isRequired()
+        .hasLengthLessOrEqualThan(INITIAVIVE_DESCRIPTION_MAX_LENGTH),
+    );
+
+  const objectiveOnBlur = () =>
+    validateField(
+      "objective",
+      new StrValidator(generalInfo.objective)
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIAVIVE_OBJECTIVE_MAX_LENGTH),
+    );
+
+  const influenceOnBlur = () =>
+    validateField(
+      "baseline",
+      new StrValidator(generalInfo.baseline)
+        .isOptional()
+        .sanitize()
+        .hasLengthLessOrEqualThan(INITIAVIVE_INFLUENCE_MAX_LENGTH),
+    );
+
+  return (
+    <PlainInputContainer
+      isFieldset={!!title}
+      hasError={inputErr.root !== undefined && inputErr.root.length > 0}
+    >
+      {title ? (
+        <LegendAndErrors validationErrors={inputErr?.root ?? []}>
+          {title}
+        </LegendAndErrors>
+      ) : (
+        <ErrorsList errorItems={inputErr?.root ?? []} />
+      )}
+
+      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-end">
+        <div>
+          <LabelAndErrors
+            htmlFor="name"
+            errID="errors_name"
+            validationErrors={inputErr.name ?? []}
+          >
+            {uiText.initiative.module.general.field.name}{" "}
+            <span aria-hidden="true">*</span>
+          </LabelAndErrors>
+
+          <InputGroup>
+            <InputGroupInput
+              name="name"
+              id="name"
+              type="text"
+              value={generalInfo.name}
+              onChange={(e) => setGeneralInfoItem("name")(e.target.value)}
+              onBlur={() => void nameOnBlur()}
+              autoComplete="off"
+              placeholder={
+                uiText.initiative.module.general.field.namePlaceholder
+              }
+              maxLength={INITIAVIVE_NAME_MAX_LENGTH}
+              aria-required="true"
+              aria-invalid={inputErr.name !== undefined}
+              aria-describedby={inputErr.name ? "errors_name" : undefined}
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className={inputWarnColor(
+                generalInfo.name,
+                INITIAVIVE_NAME_MAX_LENGTH,
+              )}
+            >
+              {inputLengthCount(generalInfo.name, INITIAVIVE_NAME_MAX_LENGTH)}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div>
+          <LabelAndErrors
+            errID="errors_shortName"
+            htmlFor="shortName"
+            validationErrors={inputErr.shortName ?? []}
+          >
+            {uiText.initiative.module.general.field.shortName}
+          </LabelAndErrors>
+
+          <InputGroup>
+            <InputGroupInput
+              name="shortName"
+              id="shortName"
+              placeholder={uiText.initiative.module.general.field.shortName}
+              type="text"
+              value={generalInfo.shortName}
+              onChange={(e) => setGeneralInfoItem("shortName")(e.target.value)}
+              onBlur={shortNameOnBlur}
+              autoComplete="off"
+              maxLength={INITIAVIVE_SHORTNAME_MAX_LENGTH}
+              aria-invalid={inputErr.shortName !== undefined}
+              aria-describedby={
+                inputErr.shortName ? "errors_shortName" : undefined
+              }
+            />
+            <InputGroupAddon
+              align="inline-end"
+              className={inputWarnColor(
+                generalInfo.shortName,
+                INITIAVIVE_SHORTNAME_MAX_LENGTH,
+                0.8,
+              )}
+            >
+              {inputLengthCount(
+                generalInfo.shortName,
+                INITIAVIVE_SHORTNAME_MAX_LENGTH,
+                0.6,
+              )}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </div>
+
+      <div>
+        <LabelAndErrors
+          errID="errors_description"
+          htmlFor="description"
+          validationErrors={inputErr.description ?? []}
+        >
+          {uiText.initiative.module.general.field.description}{" "}
+          <span aria-hidden="true">*</span>{" "}
+          <i>{uiText.initiative.module.general.field.descriptionHelper}</i>
+        </LabelAndErrors>
+
+        <InputGroup>
+          <TextareaAutosize
+            data-slot="input-group-control"
+            className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+            id="description"
+            name="description"
+            placeholder={
+              uiText.initiative.module.general.field.descriptionPlaceholder
+            }
+            value={generalInfo.description}
+            onChange={(e) => setGeneralInfoItem("description")(e.target.value)}
+            onBlur={descriptionOnBlur}
+            maxLength={INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+            aria-invalid={inputErr.description !== undefined}
+            aria-required="true"
+            aria-describedby={
+              inputErr.description ? "errors_description" : undefined
+            }
+          />
+          <InputGroupAddon
+            align="block-end"
+            className={`${inputWarnColor(
+              generalInfo.description,
+              INITIAVIVE_DESCRIPTION_MAX_LENGTH,
+              0.95,
+            )} flex-row-reverse`}
+          >
+            {`${generalInfo.description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
+		  `}
+          </InputGroupAddon>
+        </InputGroup>
+      </div>
+
+      <div className="flex flex-wrap [&>div]:flex-[1_0_250px] gap-2 items-start">
+        <div>
+          <LabelAndErrors
+            errID="errors_objective"
+            htmlFor="objective"
+            validationErrors={inputErr.objective ?? []}
+          >
+            {uiText.initiative.module.general.field.objective}{" "}
+            <i>{uiText.initiative.module.general.field.objectiveHelper}</i>
+          </LabelAndErrors>
+
+          <InputGroup>
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+              id="objective"
+              name="objective"
+              placeholder={
+                uiText.initiative.module.general.field.objectiveHelper
+              }
+              value={generalInfo.objective}
+              onChange={(e) => setGeneralInfoItem("objective")(e.target.value)}
+              onBlur={objectiveOnBlur}
+              maxLength={INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+              aria-invalid={inputErr.objective !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.objective ? "errors_objective" : undefined
+              }
+              rows={10}
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.objective,
+                INITIAVIVE_OBJECTIVE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.objective.length} / ${INITIAVIVE_OBJECTIVE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+
+        <div>
+          <LabelAndErrors
+            errID="errors_baseline"
+            htmlFor="baseline"
+            validationErrors={inputErr.baseline ?? []}
+          >
+            {uiText.initiative.module.general.field.baseline}{" "}
+            <i>{uiText.initiative.module.general.field.baselineHelper}</i>
+          </LabelAndErrors>
+
+          <InputGroup>
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
+              id="baseline"
+              name="baseline"
+              placeholder={
+                uiText.initiative.module.general.field.baselinePlaceholder
+              }
+              value={generalInfo.baseline}
+              onChange={(e) => setGeneralInfoItem("baseline")(e.target.value)}
+              onBlur={influenceOnBlur}
+              maxLength={INITIAVIVE_INFLUENCE_MAX_LENGTH}
+              aria-invalid={inputErr.baseline !== undefined}
+              aria-required="true"
+              aria-describedby={
+                inputErr.baseline ? "errors_baseline" : undefined
+              }
+              rows={10}
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                generalInfo.baseline,
+                INITIAVIVE_INFLUENCE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {`${generalInfo.baseline.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
+		  `}
+            </InputGroupAddon>
+          </InputGroup>
+        </div>
+      </div>
+    </PlainInputContainer>
+  );
+}

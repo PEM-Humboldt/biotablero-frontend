@@ -1,20 +1,20 @@
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
-import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
+import type { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
 
 type FilterJoinRequestsCallback = (
-  status: Request,
+  status: JoinRequestStatus,
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
   newerFirst?: boolean,
 ) => Promise<void>;
 
 type FilterJoinRequestSettings = {
   label: string;
-  status: Request;
+  status: JoinRequestStatus;
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>;
   newerFirst: boolean;
 };
@@ -24,7 +24,7 @@ export function JoinRequestFilterButtons({
   menuSettings,
   filteringCallback,
 }: {
-  currentStatus: Request | null;
+  currentStatus: JoinRequestStatus | null;
   menuSettings: FilterJoinRequestSettings[];
   filteringCallback: FilterJoinRequestsCallback;
 }) {

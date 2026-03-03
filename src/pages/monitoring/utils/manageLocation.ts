@@ -2,7 +2,7 @@ import {
   getLocationInfo,
   getLocationList,
 } from "pages/monitoring/api/monitoringAPI";
-import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
+import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 
 export const getColombianDepartments = (() => {
   let cachedDeps: { name: string; value: number }[] = [];

@@ -1,7 +1,7 @@
 import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
 export function InitiativeTag({
