@@ -42,6 +42,10 @@ export async function getUsers(
   return res;
 }
 
+/**
+ * Fetches the available security or access levels for initiative users.
+ * * @returns A `Promise` resolving to an array of {@link UserLevel}.
+ */
 export async function getUserLevels() {
   const res = await monitoringAPI<UserLevel[]>({
     type: "get",

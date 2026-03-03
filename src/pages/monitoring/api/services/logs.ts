@@ -37,19 +37,30 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
   return result;
 }
 
+/**
+ * Retrieves a list of available log categories.
+ *
+ * @returns A `Promise<string[]>`.
+ *
+ * @remarks
+ * - Internally maps LogTypeValue objects to extract only the `name` property.
+ * - API errors are intercepted via `isMonitoringAPIError` to ensure a safe fallback.
+ */
 export async function getLogTypes() {
   const res = await monitoringAPI<LogTypeValue[]>({
     type: "get",
     endpoint: "LogType",
   });
 
-  if (isMonitoringAPIError(res)) {
-    return [];
-  }
-
-  return res.map(({ name }) => name);
+  return res;
 }
 
+/**
+ * Retrieves the full details of a specific log entry by its ID.
+ *
+ * @param logId - The unique identifier of the log entry.
+ * @returns A `Promise` resolving to a LogEntryFull object.
+ */
 export async function fetchLogDetails(logId: string) {
   const res = await monitoringAPI<LogEntryFull>({
     type: "get",

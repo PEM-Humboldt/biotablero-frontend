@@ -1,6 +1,16 @@
 import { type SearchBarComponent } from "@appTypes/odata";
 import { getLogTypes } from "pages/monitoring/api/services/logs";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { type ODataLogEntryShort } from "pages/monitoring/types/requestParams";
+
+async function getLogTypesNames() {
+  const res = await getLogTypes();
+  if (isMonitoringAPIError(res)) {
+    return [];
+  }
+
+  return res.map(({ name }) => name);
+}
 
 export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
   await (async () => [
@@ -22,6 +32,6 @@ export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
       placeholder: "Seleciona el tipo",
       type: "select",
       source: ["type"],
-      values: await getLogTypes(),
+      values: await getLogTypesNames(),
     },
   ])();
