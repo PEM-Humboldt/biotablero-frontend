@@ -9,7 +9,6 @@ import {
 } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_CONTACTS_MIN_AMOUNT,
@@ -76,35 +75,24 @@ export function InitiativeCard({
   }, [cardInfo?.enabled]);
 
   const getCardInfo = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await getInitiative(initiative.id);
+    setIsLoading(true);
+    const res = await getInitiative(initiative.id);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      if (!res) {
-        setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
-
-        return;
-      }
-
-      setCardInfo(res);
-      updater(res);
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    if (!res) {
+      setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
+
+      return;
+    }
+
+    setCardInfo(res);
+    updater(res);
+    setIsLoading(false);
   }, [initiative.id, updater]);
 
   useEffect(() => {
@@ -116,33 +104,19 @@ export function InitiativeCard({
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const res = await changeInitiativeStatus(
-        initiative.enabled,
-        initiative.id,
-      );
+    setIsLoading(true);
+    const res = await changeInitiativeStatus(initiative.enabled, initiative.id);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      setCurrentEdit(res.enabled ? "none" : null);
-
-      void updater(res);
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    setCurrentEdit(res.enabled ? "none" : null);
+
+    void updater(res);
+    setIsLoading(false);
   };
 
   const cardInfoGrouped = useMemo<CardInfoGrouped | null>(() => {

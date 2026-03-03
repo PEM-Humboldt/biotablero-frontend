@@ -5,6 +5,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import { getUserInitiativesInfo } from "pages/monitoring/api/services/initiatives";
 import type { UserInitiatives } from "pages/monitoring/types/requestParams";
 import { JoinRequests } from "pages/monitoring/outlets/initiativesManagement/JoinRequest";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 enum Role {
   LEADER = 1,
@@ -25,6 +26,11 @@ export function InitiativesManagement() {
 
     const fetchInitiatives = async () => {
       const initiatives = await getUserInitiativesInfo();
+
+      if (isMonitoringAPIError(initiatives)) {
+        setUserInitiatives({});
+        return;
+      }
 
       const initiativesByRole = initiatives.reduce<
         Partial<Record<Role, UserInitiatives[]>>

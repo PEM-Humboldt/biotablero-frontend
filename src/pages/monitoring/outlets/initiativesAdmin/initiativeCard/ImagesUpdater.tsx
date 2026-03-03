@@ -60,38 +60,33 @@ export function ImagesUpdater({
       return;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      const imagesToUpload = [
-        {
-          file: sectionInfo.current.imageUrl,
-          path: `${backEndpointImage}/${initiativeId}`,
-        },
-        {
-          file: sectionInfo.current.bannerUrl,
-          path: `${backEndpointBanner}/${initiativeId}`,
-        },
-      ];
+    const imagesToUpload = [
+      {
+        file: sectionInfo.current.imageUrl,
+        path: `${backEndpointImage}/${initiativeId}`,
+      },
+      {
+        file: sectionInfo.current.bannerUrl,
+        path: `${backEndpointBanner}/${initiativeId}`,
+      },
+    ];
 
-      const imageUploadErrors = await uploadImages(imagesToUpload);
+    const imageUploadErrors = await uploadImages(imagesToUpload);
 
-      if (imageUploadErrors?.length > 0) {
-        setErrors((oldErr) => ({
-          ...oldErr,
-          images: { root: imageUploadErrors },
-        }));
-      }
-
-      setForceRender((n) => n + 1);
-      await updater!();
-      setCurrentEdit!("none");
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
+    if (imageUploadErrors?.length > 0) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        images: { root: imageUploadErrors },
+      }));
       setIsLoading(false);
+      return;
     }
+
+    setForceRender((n) => n + 1);
+    await updater!();
+    setCurrentEdit!("none");
   };
 
   const undoChanges = () => {

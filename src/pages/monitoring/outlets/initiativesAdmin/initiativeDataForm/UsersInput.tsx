@@ -28,17 +28,15 @@ export function UsersInput<T extends User>({
 
   useEffect(() => {
     const getUsersInfo = async () => {
-      try {
-        const users = await getUsers();
-        if (isMonitoringAPIError(users)) {
-          throw new Error(users.message);
-        }
+      const users = await getUsers();
 
-        const usersInfo = normalizeUsersFromOData(users);
-        setAllUsers(usersInfo);
-      } catch (err) {
-        console.error(err);
+      if (isMonitoringAPIError(users)) {
+        setAllUsers([]);
+        return;
       }
+
+      const usersInfo = normalizeUsersFromOData(users);
+      setAllUsers(usersInfo);
     };
 
     void getUsersInfo();

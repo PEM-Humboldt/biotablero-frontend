@@ -2,7 +2,6 @@ import { type FormEvent, useCallback, useRef, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
@@ -67,51 +66,44 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       return;
     }
 
-    try {
-      const { general, images, ...rest } = { ...initiative.current };
+    const { general, images, ...rest } = { ...initiative.current };
 
-      const cleanGeneral = Object.fromEntries(
-        Object.entries(general).filter(([_, value]) => Boolean(value)),
-      ) as Record<string, string>;
+    const cleanGeneral = Object.fromEntries(
+      Object.entries(general).filter(([_, value]) => Boolean(value)),
+    ) as Record<string, string>;
 
-      const payload = { ...cleanGeneral, ...rest };
+    const payload = { ...cleanGeneral, ...rest };
 
-      const res = await createInitiative(payload);
+    const res = await createInitiative(payload);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => ({
-          ...oldErr,
-          root: [
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          ],
-        }));
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        root: res.data.map((error) => error.msg),
+      }));
 
-        return;
-      }
+      setIsLoading(false);
+      return;
+    }
 
-      const imagesToUpload = [
-        { file: images.imageUrl, path: `initiative/UploadImage/${res.id}` },
-        { file: images.bannerUrl, path: `initiative/UploadBanner/${res.id}` },
-      ];
+    const imagesToUpload = [
+      { file: images.imageUrl, path: `initiative/UploadImage/${res.id}` },
+      { file: images.bannerUrl, path: `initiative/UploadBanner/${res.id}` },
+    ];
 
-      const imageUploadErrors = await uploadImages(imagesToUpload);
+    const imageUploadErrors = await uploadImages(imagesToUpload);
 
-      if (imageUploadErrors?.length > 0) {
-        setErrors((oldErr) => ({
-          ...oldErr,
-          images: { root: imageUploadErrors },
-        }));
-      }
+    if (imageUploadErrors?.length > 0) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        images: { root: imageUploadErrors },
+      }));
 
-      onSuccess();
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
       setIsLoading(false);
     }
+
+    onSuccess();
+    setIsLoading(false);
   }
 
   return (

@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 
@@ -69,43 +68,34 @@ export function GeneralInfoUpdater({ title }: GeneralInfoUpdaterProps) {
       return;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      const payload = Object.fromEntries(
-        Object.entries({
-          name: sectionInfo.current.name,
-          shortName: sectionInfo.current.shortName,
-          description: sectionInfo.current.description,
-          objective: sectionInfo.current.objective,
-          influenceArea: sectionInfo.current.influenceArea,
-        }).filter(([_, value]) => Boolean(value)),
-      ) as Record<string, string>;
+    const payload = Object.fromEntries(
+      Object.entries({
+        name: sectionInfo.current.name,
+        shortName: sectionInfo.current.shortName,
+        description: sectionInfo.current.description,
+        objective: sectionInfo.current.objective,
+        influenceArea: sectionInfo.current.influenceArea,
+      }).filter(([_, value]) => Boolean(value)),
+    ) as Record<string, string>;
 
-      const res = await updateInitiativeGeneralInfo(initiativeId, payload);
+    const res = await updateInitiativeGeneralInfo(initiativeId, payload);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => ({
-          ...oldErr,
-          root: [
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          ],
-        }));
-        console.error(res);
-
-        return;
-      }
-
-      setForceRender((n) => n + 1);
-      await updater!();
-      setCurrentEdit!("none");
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        root: res.data.map((error) => error.msg),
+      }));
       setIsLoading(false);
+
+      return;
     }
+
+    setForceRender((n) => n + 1);
+    await updater!();
+    setCurrentEdit!("none");
+    setIsLoading(false);
   };
 
   const undoChanges = () => {

@@ -13,7 +13,6 @@ import {
   InitiativeCtx,
   type InitiativeCtxType,
 } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import {
   removeInitiativeItem,
   updateInitiativeItem,
@@ -89,11 +88,7 @@ export function FormListUpdater<T, R extends object>({
 
       for (const response of res) {
         if (isMonitoringAPIError(response)) {
-          const { status, message, data } = response;
-          err.push(
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          );
-          console.error(response);
+          err.push(response.data[0].msg);
         }
       }
 
@@ -136,68 +131,47 @@ export function FormListUpdater<T, R extends object>({
   const removeItem = async (itemId: number) => {
     setErrors([]);
 
-    try {
-      setIsLoading(true);
-      const res = await removeInitiativeItem(backEndpoint, itemId);
+    setIsLoading(true);
+    const res = await removeInitiativeItem(backEndpoint, itemId);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      await updateInitiativeCallback();
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error("Critical error:", err);
-    } finally {
       setIsLoading(false);
+
+      return;
     }
+
+    await updateInitiativeCallback();
   };
 
   const handleSave: (itemInfo: T) => Promise<void> = async (itemInfo) => {
     setErrors([]);
 
-    try {
-      setIsLoading(true);
-      const itemId = getItemId(updateItem);
+    setIsLoading(true);
+    const itemId = getItemId(updateItem);
 
-      const res = await updateInitiativeItem(
-        initiativeId,
-        backEndpoint,
-        itemInfo,
-        itemId,
-      );
+    const res = await updateInitiativeItem(
+      initiativeId,
+      backEndpoint,
+      itemInfo,
+      itemId,
+    );
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      const itemRender = renderRowsCallback
-        ? ((await renderRowsCallback(res)) as unknown as T)
-        : res;
-
-      setUpdateItem(null);
-      setSelectedItems((oldItems) => [...oldItems, itemRender]);
-      await updateInitiativeCallback();
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
       setIsLoading(false);
+      return;
     }
+
+    const itemRender = renderRowsCallback
+      ? ((await renderRowsCallback(res)) as unknown as T)
+      : res;
+
+    setUpdateItem(null);
+    setSelectedItems((oldItems) => [...oldItems, itemRender]);
+    await updateInitiativeCallback();
   };
 
   const handleRemove = async (itemIndex: number) => {

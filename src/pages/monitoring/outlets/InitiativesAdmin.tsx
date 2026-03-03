@@ -28,7 +28,6 @@ import {
 import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
@@ -61,12 +60,7 @@ export function InitiativesAdmin() {
       const res = await getInitiatives(newSearchParams);
 
       if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
-        console.error(res);
-
+        setError(res.data[0].msg);
         setInitiatives(null);
         setInitiativesFound(0);
         return;

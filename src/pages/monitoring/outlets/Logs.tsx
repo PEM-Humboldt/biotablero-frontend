@@ -1,11 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { useLoaderData } from "react-router";
 import { FileDown } from "lucide-react";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
 import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
-import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import type { ODataParams } from "@appTypes/odata";
 import { Button } from "@ui/shadCN/component/button";
 import {
@@ -25,8 +23,6 @@ import type {
 } from "pages/monitoring/types/requestParams";
 import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
 
-type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
-
 function parseLogEntry(rawODataLog: ODataLogEntryShort): LogEntryShort {
   return {
     ...rawODataLog,
@@ -40,12 +36,9 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
 }
 
 export function Logs() {
-  const preloadedLogs = useLoaderData<LoadedLogs>();
   const [isDownloading, setIsDownloading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [logs, setLogs] = useState<ODataLog | null>(
-    preloadedLogs?.criticalUserData ?? null,
-  );
+  const [logs, setLogs] = useState<ODataLog | null>(null);
   const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
     message: uiText.logLoadingStates.loading,
     type: "normal",
@@ -74,23 +67,19 @@ export function Logs() {
         skip: skip,
       };
 
-      try {
-        const updatedLogs = await getLogs(newSearchParams);
-        setLogs(updatedLogs);
-        setLoadMsg({
-          message: null,
-          type: "normal",
-        });
-      } catch (err) {
-        setLoadMsg({
-          message: uiText.logLoadingStates.error,
-          type: "error",
-        });
-
-        console.error(uiText.criticalError, err);
-      } finally {
+      const updatedLogs = await getLogs(newSearchParams);
+      if (isMonitoringAPIError(updatedLogs)) {
         setIsDownloading(false);
+        setLogs(null);
+        return;
       }
+
+      setLogs(updatedLogs);
+      setLoadMsg({
+        message: null,
+        type: "normal",
+      });
+      setIsDownloading(false);
     };
 
     void filterChange();
@@ -101,18 +90,17 @@ export function Logs() {
     setIsDownloading(true);
 
     try {
-      const result = await downloadLogs(downloadParams);
+      const res = await downloadLogs(downloadParams);
 
-      if (isMonitoringAPIError(result)) {
-        console.error(uiText.download.error, result.message);
+      if (isMonitoringAPIError(res)) {
         setLoadMsg({
-          message: `${uiText.download.error}. ${uiText.download.tryAgain}`,
+          message: res.data.map((error) => error.msg).join(". "),
           type: "error",
         });
         return;
       }
 
-      const url = window.URL.createObjectURL(result);
+      const url = window.URL.createObjectURL(res);
       const link = document.createElement("a");
 
       link.href = url;

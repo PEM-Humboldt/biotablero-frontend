@@ -58,7 +58,7 @@ export async function initiativeNameNotExist(initiativeName: string) {
   });
 
   if (isMonitoringAPIError(existingInitiative)) {
-    throw new Error(existingInitiative.message);
+    return false;
   }
 
   return existingInitiative["@odata.count"] === 0;

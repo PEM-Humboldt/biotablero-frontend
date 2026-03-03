@@ -45,7 +45,12 @@ export function LocationInput<T extends LocationDataBasic>({
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
-    void getColombianDepartments().then((reps) => setDepartments(reps));
+    const getDepts = async () => {
+      const depts = await getColombianDepartments();
+      setDepartments(depts);
+    };
+
+    void getDepts();
   }, []);
 
   useEffect(() => {
@@ -61,7 +66,7 @@ export function LocationInput<T extends LocationDataBasic>({
         if (isMonitoringAPIError(municipalitiesList)) {
           setInputErr((oldErr) => ({
             ...oldErr,
-            location: [municipalitiesList.message],
+            location: municipalitiesList.data.map((err) => err.msg),
           }));
           return;
         }
