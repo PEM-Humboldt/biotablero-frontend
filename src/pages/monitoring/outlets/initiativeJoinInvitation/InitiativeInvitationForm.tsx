@@ -37,7 +37,6 @@ interface InitiativeInvitationFormProps {
 export function InitiativeInvitationForm({
   initiativesAsLeader = [],
 }: InitiativeInvitationFormProps) {
-  const [formID, setformID] = useState(0);
   const [errors, setErrors] = useState<Partial<JoinInitiativeDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
@@ -83,7 +82,6 @@ export function InitiativeInvitationForm({
     formData.current = makeInitialInfo();
     setGuestEmails("");
     setCustomMessage("");
-    setformID((prev) => prev + 1);
     setErrors({});
     setMessage(null);
   };
@@ -191,7 +189,6 @@ export function InitiativeInvitationForm({
 
       <form
         action=""
-        key={formID}
         onReset={handleFormReset}
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-4"
