@@ -1,6 +1,7 @@
 import type { FormClientValidation } from "pages/monitoring/types/formValidation";
 import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
 import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
+import { StrValidator } from "@utils/strValidator";
 
 export const invitationValidations: FormClientValidation<JoinInitiativeDataForm>[] =
   [
@@ -21,10 +22,10 @@ export const invitationValidations: FormClientValidation<JoinInitiativeDataForm>
         if (!f.guests || f.guests.length === 0) {
           return true;
         }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return f.guests.every((g: { email: string }) =>
-          emailRegex.test(g.email),
-        );
+        return f.guests.every((g: { email: string }) => {
+          const [, errors] = new StrValidator(g.email).isEmail().result;
+          return errors.length === 0;
+        });
       },
       path: "guests",
       message: uiText.form.validation.badEmailFormat,

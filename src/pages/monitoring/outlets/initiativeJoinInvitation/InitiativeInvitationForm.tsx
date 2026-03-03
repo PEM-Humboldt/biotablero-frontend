@@ -100,18 +100,39 @@ export function InitiativeInvitationForm({
   };
 
   const emailsOnBlur = () => {
-    validateField("guests", new StrValidator(guestEmails).sanitize(), (val) => {
-      setGuestEmails(val);
-      const emailList = val
-        .split(",")
-        .map((email) => email.trim())
-        .filter((email) => email !== "");
+    validateField(
+      "guests",
+      new StrValidator(guestEmails)
+        .sanitize()
+        .isRequired()
+        .custom((val) => {
+          const emailList = val
+            .split(",")
+            .map((email) => email.trim())
+            .filter((email) => email !== "");
 
-      setFormData((old) => ({
-        ...old,
-        guests: emailList.map((email) => ({ email }) as JoinInitiativeGuest),
-      }));
-    });
+          if (emailList.length === 0) {
+            return false;
+          }
+
+          return emailList.every((email) => {
+            const [, errors] = new StrValidator(email).isEmail().result;
+            return errors.length === 0;
+          });
+        }, uiText.form.validation.badEmailFormat),
+      (val) => {
+        setGuestEmails(val);
+        const emailList = val
+          .split(",")
+          .map((email) => email.trim())
+          .filter((email) => email !== "");
+
+        setFormData((old) => ({
+          ...old,
+          guests: emailList.map((email) => ({ email }) as JoinInitiativeGuest),
+        }));
+      },
+    );
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
