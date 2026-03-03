@@ -7,12 +7,6 @@ export const invitationValidations: FormClientValidation<JoinInitiativeDataForm>
   [
     {
       condition: (f: JoinInitiativeDataForm) =>
-        Boolean(f.initiativeId) && f.initiativeId > 0,
-      path: "initiativeId",
-      message: uiText.form.validation.initiativeIdRequired,
-    },
-    {
-      condition: (f: JoinInitiativeDataForm) =>
         Boolean(f.guests) && f.guests.length > 0,
       path: "guests",
       message: uiText.form.validation.emailsRequired,
