@@ -1,5 +1,5 @@
 import { type MutableRefObject } from "react";
-import { JoinInitiativeDataForm } from "../types/initiativeInvitationData";
+import type { JoinInitiativeDataForm } from "../types/initiativeInvitationData";
 
 export function makeInitialInfo(): JoinInitiativeDataForm {
   return {

@@ -1,4 +1,5 @@
-import { FormEvent, useCallback, useRef, useState } from "react";
+import type { FormEvent } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import TextareaAutosize from "react-textarea-autosize";
 import {
@@ -18,7 +19,7 @@ import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinIn
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
 import { makeInitialInfo, setFormField } from "./utils/formObjectUpdate";
-import {
+import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
@@ -68,7 +69,9 @@ export function InitiativeInvitationForm({
       }
 
       setErrors(({ [fieldName]: _, ...oldErr }) => oldErr);
-      if (onClean) onClean(cleanValue);
+      if (onClean) {
+        onClean(cleanValue);
+      }
     },
     [],
   );
