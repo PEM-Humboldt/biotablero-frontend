@@ -28,7 +28,11 @@ export function InitiativeInvitation() {
         );
         const roleId = userInInitiative?.level.id ?? 0;
 
-        if (!roleId || !(roleId in RoleInInitiative) || roleId != RoleInInitiative.LEADER) {
+        if (
+          !roleId ||
+          !(roleId in RoleInInitiative) ||
+          roleId != RoleInInitiative.LEADER
+        ) {
           return groups;
         }
 
