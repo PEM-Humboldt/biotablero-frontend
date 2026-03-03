@@ -1,5 +1,4 @@
 import { LogOut, Merge, TicketCheck, TicketX, UserRoundX } from "lucide-react";
-import { title } from "process";
 
 export const uiText = {
   loadind: "Cargando...",
@@ -19,9 +18,9 @@ export const uiText = {
       },
       dialog: {
         title: (initiativeName: string) =>
-          `Estas solicitando unirte a la iniciativa ${initiativeName}`,
+          `Estas solicitando unirte a la iniciativa '${initiativeName}'`,
         description:
-          "Al hacerlo, se notificará a las y los líderes de esta iniciativa, quienes de podrán ver tus datos y decidir si aceptan tu solicitud o no.",
+          "¿Realmente perteneces a este territorio y su trabajo por la biodiversidad?",
       },
       actionBtns: {
         confirm: undefined,
@@ -32,7 +31,7 @@ export const uiText = {
     toast: {
       title: `Solicitud enviada`,
       description: (initiativeName: string) =>
-        `Tu solicitud de ingreso a ${initiativeName} ha sido enviada, las y los líderes de la iniciativa han sido notificados, pronto estaremos comunicando su respuesta.`,
+        `Tu solicitud de ingreso a '${initiativeName}' ha sido enviada, las y los líderes de la iniciativa han sido notificados, pronto estaremos comunicando su respuesta.`,
       icon: TicketCheck,
       durationInSeconds: 4,
     },
@@ -48,7 +47,7 @@ export const uiText = {
       },
       dialog: {
         title: (initiativeName: string) =>
-          `Vas a cancelar tu solicitud a ${initiativeName}`,
+          `Ya tienes una solicitud pendiente a la iniciativa '${initiativeName}'. ¿Deseas cancelarla? `,
         description:
           "Al hacerlo las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.",
       },
@@ -61,7 +60,7 @@ export const uiText = {
     toast: {
       title: "Solicitud  cancelada",
       description: (initiativeName: string) =>
-        `Tu solicitud de ingreso a ${initiativeName} ha sido cancelada, las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.`,
+        `Tu solicitud de ingreso a '${initiativeName}' ha sido cancelada, las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.`,
       icon: TicketX,
       durationInSeconds: 4,
     },
@@ -77,7 +76,7 @@ export const uiText = {
       },
       dialog: {
         title: (initiativeName: string) =>
-          `Estás a punto de abandonar a ${initiativeName}`,
+          `Estás a punto de abandonar la iniciativa '${initiativeName}'`,
         description:
           "Al hacerlo perderás acceso a la información interna de esta iniciativa y dejarás de recibir notificaciones. Si es un error, comunícate con alguno de los administradores",
       },
@@ -90,7 +89,7 @@ export const uiText = {
     toast: {
       title: "Iniciativa abandonada",
       description: (initiativeName: string) =>
-        `Lamentamos tu partida, a partir de este momento pierdes acceso a la información interna y dejarás de recibir notificaciones de ${initiativeName}. Si es un error, comunícate con alguno de los administradores`,
+        `Lamentamos tu partida, a partir de este momento pierdes acceso a la información interna y dejarás de recibir notificaciones de '${initiativeName}'. Si es un error, comunícate con alguno de los administradores`,
       icon: UserRoundX,
       durationInSeconds: 10,
     },
