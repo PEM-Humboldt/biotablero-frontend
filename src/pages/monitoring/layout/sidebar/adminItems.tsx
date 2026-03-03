@@ -1,5 +1,5 @@
 import { ChevronLeft, Logs, UserRoundCog } from "lucide-react";
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
+import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const adminItems: DashboardItem[] = [
   {

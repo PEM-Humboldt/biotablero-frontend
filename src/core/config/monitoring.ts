@@ -7,8 +7,8 @@ export const LOGIN_URL = "/";
 // Initiative description and properties
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
-export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
-export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
+export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
+export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 300;
 export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
 export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
 
