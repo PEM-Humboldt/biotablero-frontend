@@ -19,7 +19,7 @@ export function InitiativeInvitation({
 
   return (
     <div className="text-center font-light text-4xl text-primary px-12 py-6">
-      <InitiativeInvitationForm  initiativeId={initiativeId}/>
+      <InitiativeInvitationForm initiativeId={initiativeId} />
     </div>
   );
 }

@@ -35,8 +35,9 @@ export function InitiativeInvitationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
-  const [formData, setFormData] =
-    useState<JoinInitiativeDataForm>(makeInitialInfo(initiativeId));
+  const [formData, setFormData] = useState<JoinInitiativeDataForm>(
+    makeInitialInfo(initiativeId),
+  );
   const [message, setMessage] = useState<{
     text: string;
     error: boolean;
@@ -254,10 +255,7 @@ export function InitiativeInvitationForm({
         />
 
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button
-            type="submit"
-            disabled={isLoading}
-          >
+          <Button type="submit" disabled={isLoading}>
             {isLoading ? uiText.loading : uiText.save}
           </Button>
           <Button
