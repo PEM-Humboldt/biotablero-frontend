@@ -8,7 +8,6 @@ import {
   InputGroupAddon,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
 import {
   isMonitoringAPIError,
   monitoringAPI,
@@ -27,19 +26,17 @@ import type {
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
 
-interface InitiativeInvitationFormProps {
-  initiativesAsLeader?: UserInInitiative[];
-}
-
 export function InitiativeInvitationForm({
-  initiativesAsLeader = [],
-}: InitiativeInvitationFormProps) {
+  initiativeId,
+}: {
+  initiativeId: number;
+}) {
   const [errors, setErrors] = useState<Partial<JoinInitiativeDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
   const [formData, setFormData] =
-    useState<JoinInitiativeDataForm>(makeInitialInfo());
+    useState<JoinInitiativeDataForm>(makeInitialInfo(initiativeId));
   const [message, setMessage] = useState<{
     text: string;
     error: boolean;
@@ -67,7 +64,7 @@ export function InitiativeInvitationForm({
   );
 
   const handleFormReset = () => {
-    setFormData(makeInitialInfo());
+    setFormData(makeInitialInfo(initiativeId));
     setGuestEmails("");
     setCustomMessage("");
     setErrors({});
@@ -86,18 +83,6 @@ export function InitiativeInvitationForm({
         setFormData((old) => ({ ...old, message: val }));
       },
     );
-
-  const initiativeOnBlur = () => {
-    const initId = formData.initiativeId;
-    if (!initId || initId <= 0) {
-      setErrors((old) => ({
-        ...old,
-        initiativeId: [uiText.form.validation.initiativeIdRequired],
-      }));
-    } else {
-      setErrors(({ initiativeId: _, ...old }) => old);
-    }
-  };
 
   const emailsOnBlur = () => {
     validateField(
@@ -141,7 +126,6 @@ export function InitiativeInvitationForm({
 
     emailsOnBlur();
     messageOnBlur();
-    initiativeOnBlur();
 
     const currentErrors = validateFormClient(formData, invitationValidations);
     setErrors(currentErrors);
@@ -153,7 +137,7 @@ export function InitiativeInvitationForm({
 
     try {
       const payload: JoinInitiativeDataForm = {
-        initiativeId: formData.initiativeId,
+        initiativeId: initiativeId,
         message: formData.message,
         guests: formData.guests,
       };
@@ -200,43 +184,6 @@ export function InitiativeInvitationForm({
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-4"
       >
-        <div>
-          <LabelAndErrors
-            htmlFor="initiative"
-            errID="errors_initiative"
-            validationErrors={errors.initiativeId ?? []}
-            className="mb-1 text-sm font-medium"
-          >
-            {uiText.form.selectInitiativeLabel}{" "}
-            <span aria-hidden="true">*</span>
-          </LabelAndErrors>
-          <select
-            id="initiative"
-            value={formData.initiativeId || ""}
-            onChange={(e) =>
-              setFormData((old) => ({
-                ...old,
-                initiativeId: Number(e.target.value),
-              }))
-            }
-            onBlur={initiativeOnBlur}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-            aria-invalid={errors.initiativeId !== undefined}
-            aria-describedby={
-              errors.initiativeId ? "errors_initiative" : undefined
-            }
-          >
-            <option value="" disabled>
-              {uiText.form.defaultInitiativeTitle}
-            </option>
-            {initiativesAsLeader.map((initiative) => (
-              <option key={initiative.id} value={initiative.id}>
-                {initiative.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div>
           <LabelAndErrors
             htmlFor="email"
@@ -309,7 +256,7 @@ export function InitiativeInvitationForm({
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button
             type="submit"
-            disabled={isLoading || initiativesAsLeader.length === 0}
+            disabled={isLoading}
           >
             {isLoading ? uiText.loading : uiText.save}
           </Button>

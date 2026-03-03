@@ -20,13 +20,10 @@ export const uiText = {
   },
 
   form: {
-    selectInitiativeLabel: "Seleccione la iniciativa",
-    defaultInitiativeTitle: "-- Elige una iniciativa --",
     emailsLabel: "Correos electrónicos de los invitados (separados por coma)",
     messageLabel: "Mensaje personalizado (opcional)",
 
     validation: {
-      initiativeIdRequired: "Se requiere seleccionar una iniciativa",
       emailsRequired: "Debes ingresar al menos un correo electrónico válido.",
       badEmailFormat: "Los correos no tienen un formato válido",
     },
