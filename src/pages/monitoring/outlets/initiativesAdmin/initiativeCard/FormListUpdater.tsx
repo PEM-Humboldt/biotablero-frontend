@@ -130,19 +130,18 @@ export function FormListUpdater<T, R extends object>({
 
   const removeItem = async (itemId: number) => {
     setErrors([]);
-
     setIsLoading(true);
+
     const res = await removeInitiativeItem(backEndpoint, itemId);
 
     if (isMonitoringAPIError(res)) {
       setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-      setIsLoading(false);
-
       return;
     }
 
     await updateInitiativeCallback();
+    setIsLoading(false);
   };
 
   const handleSave: (itemInfo: T) => Promise<void> = async (itemInfo) => {
@@ -172,6 +171,7 @@ export function FormListUpdater<T, R extends object>({
     setUpdateItem(null);
     setSelectedItems((oldItems) => [...oldItems, itemRender]);
     await updateInitiativeCallback();
+    setIsLoading(false);
   };
 
   const handleRemove = async (itemIndex: number) => {
@@ -181,6 +181,7 @@ export function FormListUpdater<T, R extends object>({
       return;
     }
 
+    setIsLoading(true);
     const itemId = getItemId(selectedItems[itemIndex]);
     if (!itemId) {
       setErrors((oldErr) => [...oldErr, uiText.error.actionError]);
@@ -189,6 +190,7 @@ export function FormListUpdater<T, R extends object>({
 
     await removeItem(itemId);
 
+    setIsLoading(false);
     setSelectedItems((oldItems) => [
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),

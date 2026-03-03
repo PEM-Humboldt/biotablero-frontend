@@ -60,21 +60,18 @@ export function LocationInput<T extends LocationDataBasic>({
     }
 
     const getMunicipalities = async () => {
-      try {
-        const municipalitiesList =
-          await getMunicipalitiesByDepartment(currentDepartment);
-        if (isMonitoringAPIError(municipalitiesList)) {
-          setInputErr((oldErr) => ({
-            ...oldErr,
-            location: municipalitiesList.data.map((err) => err.msg),
-          }));
-          return;
-        }
-
-        setMunicipalities(municipalitiesList);
-      } catch (err) {
-        console.error(err);
+      const municipalitiesList =
+        await getMunicipalitiesByDepartment(currentDepartment);
+      if (isMonitoringAPIError(municipalitiesList)) {
+        setInputErr((oldErr) => ({
+          ...oldErr,
+          location: municipalitiesList.data.map((err) => err.msg),
+        }));
+        setMunicipalities([]);
+        return;
       }
+
+      setMunicipalities(municipalitiesList);
     };
 
     void getMunicipalities();

@@ -6,7 +6,6 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 import type {
   ODataInitiativeUserRequest,
@@ -23,6 +22,7 @@ import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesMa
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
 import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
@@ -53,26 +53,26 @@ export function JoinRequests({
     ) => {
       setLoading(true);
       setRequests([]);
+      setTotalRequest(0);
 
-      try {
-        const requestsAmount = await getTotalRequests(status);
-        const data = await getRequestPage(
-          status,
-          page,
-          JOIN_REQUESTS_PER_PAGE,
-          sortBy,
-          newerFirst,
-        );
+      const requestsAmount = await getTotalRequests(status);
+      const data = await getRequestPage(
+        status,
+        page,
+        JOIN_REQUESTS_PER_PAGE,
+        sortBy,
+        newerFirst,
+      );
 
-        setRequests(data.requests);
-        setErrors(data.errors);
-        setTotalRequest(requestsAmount);
-      } catch (err) {
-        setErrors([uiText.error.critical.user]);
-        console.error(uiText.error.critical.console, err);
-      } finally {
+      if (isMonitoringAPIError(requestsAmount) || isMonitoringAPIError(data)) {
         setLoading(false);
+        setErrors([uiText.error.critical.user]);
+        return;
       }
+
+      setRequests(data.requests);
+      setErrors(data.errors);
+      setTotalRequest(requestsAmount);
     },
     [getRequestPage, getTotalRequests],
   );
@@ -122,33 +122,18 @@ export function JoinRequests({
     setErrors([]);
     setLoading(true);
 
-    try {
-      const reqError = await resolveJoinRequest(requestId, newStatus);
+    const reqError = await resolveJoinRequest(requestId, newStatus);
 
-      if (reqError) {
-        const detail =
-          reqError && typeof reqError === "object"
-            ? `${commonErrorMessage[reqError.status] ?? ""} ${reqError.message ?? reqError.data ?? ""}`
-            : "";
-
-        setErrors([
-          `${uiText.error.changeJoinRequestStatus}${detail ? `: ${detail}` : "."}`,
-        ]);
-        return;
-      }
-
-      void handleFilterChange(
-        Request.UNDER_REVIEW,
-        "creationDate",
-        false,
-        true,
-      );
-    } catch (err) {
-      setErrors([uiText.error.critical.user]);
-      console.error(uiText.error.critical.console, err);
-    } finally {
+    if (isMonitoringAPIError(reqError)) {
+      setErrors([
+        ...reqError.data.map((error) => error.msg),
+        uiText.error.critical.user,
+      ]);
       setLoading(false);
+      return;
     }
+
+    void handleFilterChange(Request.UNDER_REVIEW, "creationDate", false, true);
   };
 
   const handleApproveJoinRequest = (request: ODataInitiativeUserRequest) => {

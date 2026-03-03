@@ -89,37 +89,28 @@ export function Logs() {
     const { top: _top, skip: _skip, ...downloadParams } = searchParams;
     setIsDownloading(true);
 
-    try {
-      const res = await downloadLogs(downloadParams);
+    const res = await downloadLogs(downloadParams);
 
-      if (isMonitoringAPIError(res)) {
-        setLoadMsg({
-          message: res.data.map((error) => error.msg).join(". "),
-          type: "error",
-        });
-        return;
-      }
-
-      const url = window.URL.createObjectURL(res);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.setAttribute("download", uiText.download.filename);
-
-      document.body.appendChild(link);
-      link.click();
-
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error(uiText.download.error, err);
+    if (isMonitoringAPIError(res)) {
       setLoadMsg({
-        message: uiText.download.error,
+        message: res.data.map((error) => error.msg).join(". "),
         type: "error",
       });
-    } finally {
       setIsDownloading(false);
+      return;
     }
+
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.setAttribute("download", uiText.download.filename);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   };
 
   const recordsAvailable = logs ? logs["@odata.count"] : 0;

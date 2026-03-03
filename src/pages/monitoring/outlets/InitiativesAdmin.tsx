@@ -56,34 +56,29 @@ export function InitiativesAdmin() {
     const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
     const newSearchParams = { ...searchParams, skip };
 
-    try {
-      const res = await getInitiatives(newSearchParams);
+    const res = await getInitiatives(newSearchParams);
 
-      if (isMonitoringAPIError(res)) {
-        setError(res.data[0].msg);
-        setInitiatives(null);
-        setInitiativesFound(0);
-        return;
-      }
-
-      const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
-        res.value.reduce((acc, cur) => {
-          const updatedEntry = {
-            ...cur,
-            locations: cur.locations.map(makeLocationObj),
-          };
-          acc.set(cur.id, updatedEntry);
-          return acc;
-        }, new Map<number, InitiativeDisplayInfoShort>());
-
-      setError("");
-      setInitiatives(initiativesObj);
-      setInitiativesFound(res["@odata.count"]);
-    } catch (err) {
-      console.error(err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setError(res.data[0].msg);
+      setInitiatives(null);
+      setInitiativesFound(0);
       setLoading(false);
+      return;
     }
+
+    const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
+      res.value.reduce((acc, cur) => {
+        const updatedEntry = {
+          ...cur,
+          locations: cur.locations.map(makeLocationObj),
+        };
+        acc.set(cur.id, updatedEntry);
+        return acc;
+      }, new Map<number, InitiativeDisplayInfoShort>());
+
+    setError("");
+    setInitiatives(initiativesObj);
+    setInitiativesFound(res["@odata.count"]);
   }, [searchParams, currentPage]);
 
   useEffect(() => {
