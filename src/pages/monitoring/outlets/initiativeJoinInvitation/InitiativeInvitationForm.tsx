@@ -38,7 +38,8 @@ export function InitiativeInvitationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
-  const [formData, setFormData] = useState<JoinInitiativeDataForm>(makeInitialInfo());
+  const [formData, setFormData] =
+    useState<JoinInitiativeDataForm>(makeInitialInfo());
   const [message, setMessage] = useState<{
     text: string;
     error: boolean;
