@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import TextareaAutosize from "react-textarea-autosize";
 import {
@@ -18,10 +18,7 @@ import { commonErrorMessage } from "@utils/ui";
 import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
-import {
-  makeInitialInfo,
-  setFormField,
-} from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formObjectUpdate";
+import { makeInitialInfo } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formObjectUpdate";
 import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
@@ -41,21 +38,11 @@ export function InitiativeInvitationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
-  const formData = useRef<JoinInitiativeDataForm>(makeInitialInfo());
+  const [formData, setFormData] = useState<JoinInitiativeDataForm>(makeInitialInfo());
   const [message, setMessage] = useState<{
     text: string;
     error: boolean;
   } | null>(null);
-
-  const handleFormUpdate = useCallback(
-    <K extends keyof JoinInitiativeDataForm>(key: K) =>
-      setFormField(formData, key),
-    [],
-  );
-
-  const setInitiativeId = handleFormUpdate("initiativeId");
-  const setMessageField = handleFormUpdate("message");
-  const setGuests = handleFormUpdate("guests");
 
   const validateField = useCallback(
     (
@@ -79,7 +66,7 @@ export function InitiativeInvitationForm({
   );
 
   const handleFormReset = () => {
-    formData.current = makeInitialInfo();
+    setFormData(makeInitialInfo());
     setGuestEmails("");
     setCustomMessage("");
     setErrors({});
@@ -89,15 +76,18 @@ export function InitiativeInvitationForm({
   const messageOnBlur = () =>
     validateField(
       "message",
-      new StrValidator(formData.current.message || "")
+      new StrValidator(customMessage)
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH),
-      (val) => setMessageField(val),
+      (val) => {
+        setCustomMessage(val);
+        setFormData((old) => ({ ...old, message: val }));
+      },
     );
 
   const initiativeOnBlur = () => {
-    const initId = formData.current.initiativeId;
+    const initId = formData.initiativeId;
     if (!initId || initId <= 0) {
       setErrors((old) => ({
         ...old,
@@ -116,7 +106,10 @@ export function InitiativeInvitationForm({
         .map((email) => email.trim())
         .filter((email) => email !== "");
 
-      setGuests(emailList.map((email) => ({ email }) as JoinInitiativeGuest));
+      setFormData((old) => ({
+        ...old,
+        guests: emailList.map((email) => ({ email }) as JoinInitiativeGuest),
+      }));
     });
   };
 
@@ -128,10 +121,7 @@ export function InitiativeInvitationForm({
     messageOnBlur();
     initiativeOnBlur();
 
-    const currentErrors = validateFormClient(
-      formData.current,
-      invitationValidations,
-    );
+    const currentErrors = validateFormClient(formData, invitationValidations);
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
@@ -139,16 +129,11 @@ export function InitiativeInvitationForm({
       return;
     }
 
-    const emailList = guestEmails
-      .split(",")
-      .map((email) => email.trim())
-      .filter((email) => email !== "");
-
     try {
       const payload: JoinInitiativeDataForm = {
-        initiativeId: formData.current.initiativeId,
-        message: customMessage,
-        guests: emailList.map((email) => ({ email }) as JoinInitiativeGuest),
+        initiativeId: formData.initiativeId,
+        message: formData.message,
+        guests: formData.guests,
       };
 
       const res = await monitoringAPI<JoinInitiativeDataForm>({
@@ -205,8 +190,13 @@ export function InitiativeInvitationForm({
           </LabelAndErrors>
           <select
             id="initiative"
-            value={formData.current.initiativeId || ""}
-            onChange={(e) => setInitiativeId(Number(e.target.value))}
+            value={formData.initiativeId || ""}
+            onChange={(e) =>
+              setFormData((old) => ({
+                ...old,
+                initiativeId: Number(e.target.value),
+              }))
+            }
             onBlur={initiativeOnBlur}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
             aria-invalid={errors.initiativeId !== undefined}
@@ -243,6 +233,7 @@ export function InitiativeInvitationForm({
               value={guestEmails}
               onChange={(e) => setGuestEmails(e.target.value)}
               onBlur={emailsOnBlur}
+              disabled={isLoading}
               aria-invalid={errors.guests !== undefined}
               aria-describedby={errors.guests ? "errors_guests" : undefined}
             />
@@ -268,6 +259,7 @@ export function InitiativeInvitationForm({
               onChange={(e) => setCustomMessage(e.target.value)}
               onBlur={messageOnBlur}
               rows={3}
+              disabled={isLoading}
               aria-describedby={errors.message ? "errors_message" : undefined}
               maxLength={INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH}
             />
