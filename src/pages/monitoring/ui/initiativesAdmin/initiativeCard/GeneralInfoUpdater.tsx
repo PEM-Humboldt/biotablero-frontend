@@ -130,9 +130,9 @@ export function GeneralInfoUpdater({
 
   const editPanelAction = () => {
     setCurrentEdit!((curEdit) => (curEdit === "general" ? "none" : "general"));
+    reset();
   };
 
-  console.log(sectionInfo);
   return (
     <div
       className={cn(
