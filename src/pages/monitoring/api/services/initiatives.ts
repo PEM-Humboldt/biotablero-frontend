@@ -10,10 +10,8 @@ import type {
   LocationDataBasic,
   UserData,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 
 /**
@@ -23,18 +21,12 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
  * @returns A Promise that resolves in a detailed object with all the initiative info
  */
 export async function getInitiative(id: number) {
-  try {
-    const res = await monitoringAPI<InitiativeFullInfo>({
-      type: "get",
-      endpoint: `Initiative/${id}`,
-    });
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
-    return res;
-  } catch (err) {
-    console.error(err);
-  }
+  const res = await monitoringAPI<InitiativeFullInfo>({
+    type: "get",
+    endpoint: `Initiative/${id}`,
+  });
+
+  return res;
 }
 
 /**
@@ -55,26 +47,12 @@ export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
  * - It specifically catches both structured API errors (via `isMonitoringAPIError`) and unexpected runtime exceptions.
  */
 export async function getUserInitiativesInfo() {
-  try {
-    const res = await monitoringAPI<UserInitiatives[]>({
-      type: "get",
-      endpoint: "Auth/InitiativesData",
-    });
+  const res = await monitoringAPI<UserInitiatives[]>({
+    type: "get",
+    endpoint: "Auth/InitiativesData",
+  });
 
-    if (isMonitoringAPIError(res)) {
-      const { status, message, data } = res;
-      console.error(
-        commonErrorMessage[status] ?? message,
-        data ? `: ${data}` : ".",
-      );
-      return [];
-    }
-
-    return res;
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+  return res;
 }
 
 /**
@@ -92,23 +70,13 @@ export async function getInitiativeRequests(
   initiativeId: number,
   oData: ODataParams,
 ) {
-  try {
-    const res = await monitoringAPI<ODataUserRequest>({
-      type: "get",
-      endpoint: "JoinRequest",
-      options: { data: { initiativeId }, oData },
-    });
+  const res = await monitoringAPI<ODataUserRequest>({
+    type: "get",
+    endpoint: "JoinRequest",
+    options: { data: { initiativeId }, oData },
+  });
 
-    if (isMonitoringAPIError(res)) {
-      console.error(res.message);
-      return null;
-    }
-
-    return res;
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
+  return res;
 }
 
 export async function createInitiative(payload: {
@@ -196,7 +164,7 @@ export async function removeInitiativeItem(endpoint: string, itemId: number) {
   return res;
 }
 
-export async function resolveJoinRequest(
+export async function updateJoinRequest(
   requestId: number,
   resolvedInto: "Approved" | "Rejected",
 ) {
@@ -205,10 +173,5 @@ export async function resolveJoinRequest(
     endpoint: `JoinRequest/${requestId}?requestStatus=${resolvedInto}`,
   });
 
-  if (isMonitoringAPIError(res)) {
-    const { message, status, data } = res;
-    return { message, status, data };
-  }
-
-  return null;
+  return res;
 }

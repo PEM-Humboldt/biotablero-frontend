@@ -1,5 +1,3 @@
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
-
 import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -39,11 +37,9 @@ export async function uploadImages(
     });
 
     if (isMonitoringAPIError(res)) {
-      const { status, message, data } = res;
       imageUploadErrors.push(
-        `Error cargando ${image.file.name}: ${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
+        `Error cargando ${image.file.name}: ${res.data[0].msg}`,
       );
-      console.error(res);
     }
   }
 

@@ -1,10 +1,11 @@
 export const commonErrorMessage: Record<number, string> = {
+  400: "Error en solicitud",
   401: "Tu sesión ha expirado, ingresa de nuevo",
   403: "No tienes permisos para esta acción",
   500: "Error en el servidor monitoreo, vuelve a intentarlo más tarde",
 };
 
-export const apiErrorCategory = {
+export const apiErrorCategory: Record<string, string> = {
   SYS: "Sistema (errores generales)",
   FIL: "Manejo de archivos",
   INI: "Iniciativas",
@@ -24,7 +25,7 @@ export const apiErrorCategory = {
   USR: "Usuarios",
 };
 
-export const apiErrorMsg = {
+export const apiErrorMsg: Record<string, string> = {
   SYS_001: "Los datos de la entidad no pueden ser nulos",
   SYS_002: "La propiedad es obligatoria",
   SYS_003: "Valor de propiedad inválido",

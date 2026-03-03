@@ -5,7 +5,7 @@ import type {
 } from "pages/monitoring/types/requestParams";
 import type { UserLevel } from "pages/monitoring/types/monitoring";
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { ApiRequestError } from "@appTypes/api";
 
 /**
  * Retrieves users from the Monitoring API.
@@ -23,7 +23,7 @@ export async function getUsers(
 ): Promise<InitiativeUser[]>;
 export async function getUsers(
   idOrOdata?: ODataParams | number | string,
-): Promise<InitiativeUser[] | ODataUserInfo> {
+): Promise<InitiativeUser[] | ODataUserInfo | ApiRequestError> {
   const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
   const endpoint = isId
     ? `InitiativeUser/GetByInitiative/${idOrOdata}`
@@ -33,38 +33,20 @@ export async function getUsers(
       ? idOrOdata
       : undefined;
 
-  try {
-    const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
-      type: "get",
-      endpoint,
-      options: { oData: oDataParams },
-    });
+  const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
+    type: "get",
+    endpoint,
+    options: { oData: oDataParams },
+  });
 
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
-
-    return res;
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
+  return res;
 }
 
 export async function getUserLevels() {
-  try {
-    const res = await monitoringAPI<UserLevel[]>({
-      type: "get",
-      endpoint: "InitiativeUserLevel",
-    });
+  const res = await monitoringAPI<UserLevel[]>({
+    type: "get",
+    endpoint: "InitiativeUserLevel",
+  });
 
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
-
-    return res;
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+  return res;
 }

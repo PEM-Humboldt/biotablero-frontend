@@ -2,7 +2,6 @@ import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
 import type { Location } from "pages/monitoring/types/monitoring";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 /**
  * Retrieves the list of available all the locations from the Monitoring API.
@@ -16,22 +15,14 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
  * - `name`: The location's name.
  * - `value`: The location's numeric ID.
  */
-export async function getLocationList(parentId?: number | string) {
-  try {
-    const queryParam = parentId !== undefined ? `?parentId=${parentId}` : "";
-    const res = await monitoringAPI<Location[]>({
-      type: "get",
-      endpoint: `Location${queryParam}`,
-    });
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
+export async function getLocationsList(parentId?: number | string) {
+  const queryParam = parentId !== undefined ? `?parentId=${parentId}` : "";
+  const res = await monitoringAPI<Location[]>({
+    type: "get",
+    endpoint: `Location${queryParam}`,
+  });
 
-    return res.map(({ name, id }) => ({ name, value: id }));
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
+  return res;
 }
 
 /**
@@ -46,17 +37,10 @@ export async function getLocationList(parentId?: number | string) {
  * - `undefined` if an error occurs during the fetch process.
  */
 export async function getLocationInfo(locationId: number | string) {
-  try {
-    const res = await monitoringAPI<LocationBasicInfo>({
-      type: "get",
-      endpoint: `Location/${locationId}`,
-    });
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
+  const res = await monitoringAPI<LocationBasicInfo>({
+    type: "get",
+    endpoint: `Location/${locationId}`,
+  });
 
-    return res;
-  } catch (err) {
-    console.error(err);
-  }
+  return res;
 }

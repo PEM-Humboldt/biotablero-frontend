@@ -1,6 +1,6 @@
+import type { ApiRequestError } from "@appTypes/api";
 import { type ODataParams } from "@appTypes/odata";
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 /**
  * Creates a specialized async function to fetch data from a given API endpoint.
@@ -14,16 +14,12 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
  * @throws If the API returns a `RequestError` or the underlying request fails.
  */
 export function createODataGetter<T>(endpoint: string) {
-  return async (odataParams: ODataParams): Promise<T> => {
+  return async (odataParams: ODataParams): Promise<T | ApiRequestError> => {
     const result = await monitoringAPI<T>({
       endpoint,
       type: "get",
       options: { oData: odataParams },
     });
-
-    if (isMonitoringAPIError(result)) {
-      throw new Error(result.message);
-    }
 
     return result;
   };

@@ -34,29 +34,20 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
     options: { oData: odataParams, responseType: "blob" },
   });
 
-  if (isMonitoringAPIError(result)) {
-    throw new Error(result.message);
-  }
-
   return result;
 }
 
 export async function getLogTypes() {
-  try {
-    const res = await monitoringAPI<LogTypeValue[]>({
-      type: "get",
-      endpoint: "LogType",
-    });
+  const res = await monitoringAPI<LogTypeValue[]>({
+    type: "get",
+    endpoint: "LogType",
+  });
 
-    if (isMonitoringAPIError(res)) {
-      throw new Error(res.message);
-    }
-
-    return res.map(({ name }) => name);
-  } catch (err) {
-    console.error(err);
+  if (isMonitoringAPIError(res)) {
     return [];
   }
+
+  return res.map(({ name }) => name);
 }
 
 export async function fetchLogDetails(logId: string) {
