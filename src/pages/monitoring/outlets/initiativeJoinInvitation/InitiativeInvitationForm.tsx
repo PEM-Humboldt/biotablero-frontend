@@ -8,7 +8,7 @@ import {
   InputGroupAddon,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import type { UserInitiatives } from "pages/monitoring/types/requestParams";
+import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
 import {
   isMonitoringAPIError,
   monitoringAPI,
@@ -24,11 +24,11 @@ import type {
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
-import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
+import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
 
 interface InitiativeInvitationFormProps {
-  initiativesAsLeader?: UserInitiatives[];
+  initiativesAsLeader?: UserInInitiative[];
 }
 
 export function InitiativeInvitationForm({

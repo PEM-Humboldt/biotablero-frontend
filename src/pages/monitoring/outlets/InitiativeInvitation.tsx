@@ -2,18 +2,15 @@ import { useEffect, useState } from "react";
 
 import { useUserCTX } from "@hooks/UserContext";
 import { getUserInitiativesInfo } from "pages/monitoring/api/monitoringAPI";
-import type { UserInitiatives } from "pages/monitoring/types/requestParams";
+import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
 
 import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
-
-enum Role {
-  LEADER = 1,
-}
+import { RoleInInitiative } from "../types/catalog";
 
 export function InitiativeInvitation() {
   const { user } = useUserCTX();
   const [userInitiatives, setUserInitiatives] = useState<
-    Partial<Record<Role, UserInitiatives[]>>
+    Partial<Record<RoleInInitiative, UserInInitiative[]>>
   >({});
 
   useEffect(() => {
@@ -24,18 +21,18 @@ export function InitiativeInvitation() {
     const fetchInitiatives = async () => {
       const initiatives = await getUserInitiativesInfo();
       const initiativesByRole = initiatives.reduce<
-        Partial<Record<Role, UserInitiatives[]>>
+        Partial<Record<RoleInInitiative, UserInInitiative[]>>
       >((groups, initiative) => {
         const userInInitiative = initiative.users.find(
           (u) => u.userName === user?.username,
         );
         const roleId = userInInitiative?.level.id ?? 0;
 
-        if (!roleId || !(roleId in Role)) {
+        if (!roleId || !(roleId in RoleInInitiative) || roleId != RoleInInitiative.LEADER) {
           return groups;
         }
 
-        const role = roleId as Role;
+        const role = roleId as RoleInInitiative;
         if (!groups[role]) {
           groups[role] = [];
         }
@@ -57,7 +54,7 @@ export function InitiativeInvitation() {
       </header>
 
       <InitiativeInvitationForm
-        initiativesAsLeader={userInitiatives[Role.LEADER]}
+        initiativesAsLeader={userInitiatives[RoleInInitiative.LEADER]}
       />
     </main>
   );
