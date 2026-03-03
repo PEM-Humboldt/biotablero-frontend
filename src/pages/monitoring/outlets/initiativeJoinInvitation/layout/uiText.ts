@@ -4,6 +4,7 @@ export const uiText = {
   save: "Guardar",
   success: "¡Invitación enviada con éxito!",
 
+  restartForm: "Reiniciar el formulario",
   error: {
     noUpdateData:
       "No se ha podido procesar la solicitud. Por favor intenta de nuevo.",

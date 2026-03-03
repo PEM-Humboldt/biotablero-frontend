@@ -295,13 +295,19 @@ export function InitiativeInvitationForm({
           className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
         />
 
-        <div className="pt-4">
+        <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button
             type="submit"
             disabled={isLoading || initiativesAsLeader.length === 0}
-            className="w-full"
           >
             {isLoading ? uiText.loading : uiText.save}
+          </Button>
+          <Button
+            type="reset"
+            variant="outline_destructive"
+            disabled={isLoading}
+          >
+            {uiText.restartForm}
           </Button>
         </div>
       </form>
