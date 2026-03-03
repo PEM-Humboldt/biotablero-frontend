@@ -18,14 +18,17 @@ import { commonErrorMessage } from "@utils/ui";
 import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
-import { makeInitialInfo, setFormField } from "./utils/formObjectUpdate";
+import {
+  makeInitialInfo,
+  setFormField,
+} from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formObjectUpdate";
 import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
-} from "./types/initiativeInvitationData";
-import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient";
-import { uiText } from "./layout/uiText";
+} from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
+import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
 
 interface InitiativeInvitationFormProps {
   initiativesAsLeader?: UserInitiatives[];
@@ -103,7 +106,7 @@ export function InitiativeInvitationForm({
         initiativeId: [uiText.form.validation.initiativeIdRequired],
       }));
     } else {
-      setErrors(({ initiativeId, ...old }) => old);
+      setErrors(({ initiativeId: _, ...old }) => old);
     }
   };
 
