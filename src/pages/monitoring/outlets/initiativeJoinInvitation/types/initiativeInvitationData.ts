@@ -11,7 +11,6 @@ export type JoinInitiativeDataForm = {
 };
 
 // NOTE: tipos para los errores
-export type ErrorFields<T> = { [K in keyof T]?: string[] };
 
 export type JoinInitiativeDataFormErr = {
   root: string[];
