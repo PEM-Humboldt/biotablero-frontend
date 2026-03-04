@@ -1,5 +1,6 @@
 import React, { useReducer } from "react";
 import { Outlet, useNavigation } from "react-router";
+import { Toaster } from "sonner";
 
 import { Footer } from "core/layout/mainLayout/Footer";
 import { Header } from "core/layout/mainLayout/Header";
@@ -53,6 +54,7 @@ export function MainLayout() {
 
         <Footer logos={layoutState.logos} className="z-10" />
       </div>
+      <Toaster />
     </UserCTX>
   );
 }

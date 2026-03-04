@@ -17,7 +17,7 @@ import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
 import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
 
 import {

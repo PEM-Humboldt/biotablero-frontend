@@ -3,7 +3,7 @@ import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { type ODataLogEntryShort } from "pages/monitoring/types/requestParams";
+import { type ODataLogEntryShort } from "pages/monitoring/types/odataResponse";
 
 type TypeValue = {
   id: number;

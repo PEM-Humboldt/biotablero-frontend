@@ -2,8 +2,8 @@ import { getLocationInfoById } from "pages/monitoring/utils/manageLocation";
 import type {
   LocationDataBasic,
   LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { LocationCompleteInfo } from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/initiative";
+import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
 
 export async function fetchAndMakeLocationObj(
   value: LocationDataBasic,

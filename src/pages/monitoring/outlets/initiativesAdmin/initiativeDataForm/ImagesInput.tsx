@@ -21,9 +21,9 @@ import { Button } from "@ui/shadCN/component/button";
 import { INITIATIVES_IMG_ALLOWED_FORMATS } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import type { ImagesData } from "pages/monitoring/types/initiative";
 import type {
   ErrorFields,
-  ImagesData,
   InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";

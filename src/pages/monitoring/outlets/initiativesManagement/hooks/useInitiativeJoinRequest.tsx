@@ -1,15 +1,15 @@
 import { useCallback, useRef } from "react";
 
 import type { ODataParams } from "@appTypes/odata";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
-import type { ODataInitiativeUserRequest } from "pages/monitoring/types/requestParams";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 import {
   getInitiativeRequests,
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import type { Request } from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+import type { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 type JoinRequestsPool = {
@@ -32,11 +32,11 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
   });
 
   const getTotalRequests = useCallback(
-    async (statusId: Request) => {
+    async (statusId: JoinRequestStatus) => {
       const req = initiativesIds.map((id) => {
         const params: Partial<ODataParams> = {
           top: 0,
-          filter: `status/id eq ${statusId}`,
+          filter: `status/name eq '${statusId}'`,
         };
 
         return getInitiativeRequests(id, params);
@@ -54,7 +54,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
 
   const getRequestPage = useCallback(
     async (
-      statusId: Request,
+      statusId: JoinRequestStatus,
       page: number,
       requestsPerPage: number,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
@@ -89,7 +89,7 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
               top: requestsPerPage,
               skip: pool.offset[id],
               orderby: `${sortBy} ${newerFirst ? "desc" : "asc"}`,
-              filter: `status/id eq ${statusId}`,
+              filter: `status/name eq '${statusId}'`,
             };
 
             const res = await getInitiativeRequests(id, params);

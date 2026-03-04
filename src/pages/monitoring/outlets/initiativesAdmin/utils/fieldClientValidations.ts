@@ -7,7 +7,7 @@ import {
   isLocationObj,
   type LocationDataBasic,
   type LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
 
 /**
  * Checks if a location already exists in a given collection.

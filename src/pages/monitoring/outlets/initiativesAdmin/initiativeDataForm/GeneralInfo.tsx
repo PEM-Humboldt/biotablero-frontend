@@ -28,10 +28,8 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type {
-  GeneralInfo,
-  InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { GeneralInfo } from "pages/monitoring/types/initiative";
+import type { InitiativeDataFormErr } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   initiativeNameNotExist,
   validationExemption,
