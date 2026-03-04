@@ -14,7 +14,7 @@ import {
   RoleEvents,
   initiativeRoleToState,
   stateToInitiativeRole,
-  userPosibleRoleChanges,
+  userPossibleRoleChanges,
 } from "pages/monitoring/types/userJoinRequest";
 import {
   roleEventInfo,
@@ -108,11 +108,11 @@ function ActionsToUserByRole({
   const [isLoading, setIsLoading] = useState(false);
 
   const usersState = initiativeRoleToState[role];
-  const posibleActions = Array.from(userPosibleRoleChanges[usersState].keys());
+  const posibleActions = Array.from(userPossibleRoleChanges[usersState].keys());
 
   const changeUserRole = async (action: RoleEvents) => {
     const actionInfo = roleEventInfo[action](user.userName, role);
-    const userNextState = userPosibleRoleChanges[usersState].get(action);
+    const userNextState = userPossibleRoleChanges[usersState].get(action);
     const newRoleId = userNextState
       ? stateToInitiativeRole[userNextState]
       : null;

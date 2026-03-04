@@ -51,7 +51,7 @@ export const stateToInitiativeRole: Partial<
   [UserStateInInitiative.USER_ASPIRING]: RoleInInitiative.NONE,
 };
 
-export const userPosibleRoleChanges: Record<
+export const userPossibleRoleChanges: Record<
   UserStateInInitiative,
   Map<RoleEvents, UserStateInInitiative>
 > = {

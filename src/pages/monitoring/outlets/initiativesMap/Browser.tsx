@@ -1,4 +1,4 @@
-import { type ChangeEvent, type ReactNode, useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 
 import {
   getInitiatives,
@@ -13,7 +13,7 @@ import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeR
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
-export function Browser({ children }: { children: ReactNode }) {
+export function Browser() {
   // NOTE: Esto es para poder probar el botón de solicitud de ingreso,
   // el llamado de iniciativas para el buscador corresponde a
   // otro ticket y será manejado mejor

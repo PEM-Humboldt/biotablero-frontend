@@ -13,7 +13,7 @@ import { type ComponentType } from "react";
 import {
   initiativeRoleToState,
   RoleEvents,
-  userPosibleRoleChanges,
+  userPossibleRoleChanges,
   UserStateInInitiative,
 } from "pages/monitoring/types/userJoinRequest";
 import {
@@ -58,7 +58,7 @@ type RoleEventInfo = {
 };
 
 function getNewStateInInitiative(role: RoleInInitiative, action: RoleEvents) {
-  return userPosibleRoleChanges[initiativeRoleToState[role]].get(action);
+  return userPossibleRoleChanges[initiativeRoleToState[role]].get(action);
 }
 
 export function roleEventRestrictions(

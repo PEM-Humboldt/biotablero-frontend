@@ -18,7 +18,7 @@ export function InitiativesMap() {
           reset={"reset"}
           className="bg-background w-full px-16"
         />
-        <Browser>carajo</Browser>
+        <Browser />
         <MapFinder />
       </div>
     </CurrentInitiativeCTX>
