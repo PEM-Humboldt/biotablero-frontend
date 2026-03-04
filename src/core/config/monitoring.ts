@@ -33,3 +33,7 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 
 // initiative admin
 export const JOIN_REQUESTS_PER_PAGE = 10;
+
+// Tag admin
+export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_URL_MAX_LENGTH = 150;

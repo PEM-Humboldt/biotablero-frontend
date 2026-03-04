@@ -6,6 +6,8 @@ export const uiText = {
   undo: "Deshacer cambios",
   cancel: "Cancelar",
   confirm: "Sí",
+  successCreate: "¡Etiqueta creada con éxito!",
+  successEdit: "¡Etiqueta editada con éxito!",
 
   restartForm: "Reiniciar el formulario",
   error: {
@@ -29,6 +31,11 @@ export const uiText = {
   },
 
   form: {
+    selectCategoryLabel: "Seleccione la categoría",
+    defaultCategoryTitle: "-- Elige una categoría --",
+    nameLabel: "Nombre de la etiqueta",
+    urlLabel: "URL de la etiqueta (opcional)",
+    
     validation: {
       categoryIdRequired: "Se requiere seleccionar una categoría",
     },

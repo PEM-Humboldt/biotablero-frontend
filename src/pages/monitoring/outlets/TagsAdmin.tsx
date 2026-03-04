@@ -2,40 +2,42 @@ import { useEffect, useState } from "react";
 
 import { useUserCTX } from "@hooks/UserContext";
 import { uiText } from "./tagsAdmin/layout/uiText";
-import { Button } from "@ui/shadCN/component/button";
-import { CircleXIcon, ListPlus } from "lucide-react";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { TagForm } from "./tagsAdmin/TagForm";
-
-const [newTag, setNewTag] = useState(false);
-const [error, setError] = useState<string>("");
+import { TagCategory } from "./tagsAdmin/types/tagData";
+import { isMonitoringAPIError, monitoringAPI } from "../api/monitoringAPI";
 
 export function TagsAdmin() {
   const { user } = useUserCTX();
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
   useEffect(() => {
     if (!user?.username) {
       return;
     }
-  }, [user?.username]);
 
-  const onCreateSuccess = () => {
-    setNewTag(false);
-  };
+    const fetchTagCategories = async () => {
+      const result = await monitoringAPI<TagCategory[]>({
+        type: "get",
+        endpoint: "TagCategory",
+      });
+
+      if (isMonitoringAPIError(result)) {
+        throw new Error(result.message);
+      }
+
+      setTagCategories(result);
+    };
+
+    void fetchTagCategories();
+  }, [user?.username]);
 
   return (
     <main className="page-main">
       <header>
         <h3>{uiText.title}</h3>
-        <Button onClick={() => setNewTag((v) => !v)}>
-          {newTag ? uiText.tag.cancelCreation : uiText.tag.createNew}
-          {newTag ? <CircleXIcon /> : <ListPlus />}
-        </Button>
       </header>
 
-      {error !== "" && <ErrorsList errorItems={[error]} />}
-
-      {newTag ? <TagForm onSuccess={onCreateSuccess} /> : <></>}
+      <TagForm tagCategories={tagCategories} />
     </main>
   );
 }
