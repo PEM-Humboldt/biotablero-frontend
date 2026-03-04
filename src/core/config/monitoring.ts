@@ -33,3 +33,7 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 
 // initiative admin
 export const JOIN_REQUESTS_PER_PAGE = 10;
+
+// Initiative Join Invitations
+
+export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;

@@ -20,6 +20,7 @@ import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { InitiativeInvitation } from "../InitiativeInvitation";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
@@ -118,6 +119,10 @@ export function InitiativeUpdater() {
               <TabsTrigger value="initiative" className="tabs-trigger">
                 {uiText.tabsLabels.initiativeManagement.label}
               </TabsTrigger>
+
+              <TabsTrigger value="invitation" className="tabs-trigger">
+                {uiText.tabsLabels.initiativeInvitation.label}
+              </TabsTrigger>
             </TabsList>
 
             {uiText.tabsLabels.usersManagement.map((tab) => (
@@ -138,6 +143,10 @@ export function InitiativeUpdater() {
 
             <TabsContent value="initiative" className="tabs-content">
               <InitiativeInfoUpdater initiativeId={currentInitiative.id} />
+            </TabsContent>
+
+            <TabsContent value="invitation" className="tabs-content">
+              <InitiativeInvitation initiativeId={currentInitiative.id} />
             </TabsContent>
           </Tabs>
         )}
