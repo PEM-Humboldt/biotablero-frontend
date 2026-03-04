@@ -1,6 +1,6 @@
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import { RoleInInitiative } from "./catalog";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
 
 export enum JoinRequestStatus {
   UNDER_REVIEW = "UnderReview",
@@ -23,7 +23,7 @@ export enum UserStateInInitiative {
 
 export enum RoleEvents {
   PROMOTE = 0,
-  REASING,
+  REASIGN,
   REMOVE,
 }
 
@@ -51,7 +51,7 @@ export const stateToInitiativeRole: Partial<
   [UserStateInInitiative.USER_ASPIRING]: RoleInInitiative.NONE,
 };
 
-export const userPosibleRoleChanges: Record<
+export const userPossibleRoleChanges: Record<
   UserStateInInitiative,
   Partial<Record<RoleEvents, UserStateInInitiative>>
 > = {
@@ -60,10 +60,10 @@ export const userPosibleRoleChanges: Record<
   [UserStateInInitiative.GUEST]: {},
   [UserStateInInitiative.ADMIN]: {},
   [UserStateInInitiative.USER_LEADER]: {
-    [RoleEvents.REASING]: UserStateInInitiative.USER_PARTICIPANT,
+    [RoleEvents.REASIGN]: UserStateInInitiative.USER_PARTICIPANT,
   },
   [UserStateInInitiative.USER_PARTICIPANT]: {
-    [RoleEvents.REASING]: UserStateInInitiative.USER_VIEWER,
+    [RoleEvents.REASIGN]: UserStateInInitiative.USER_VIEWER,
     [RoleEvents.REMOVE]: UserStateInInitiative.USER_NONE,
     [RoleEvents.PROMOTE]: UserStateInInitiative.USER_LEADER,
   },
@@ -84,7 +84,7 @@ export function canPerformRoleStateEvent(
   role: UserStateInInitiative,
   action: RoleEvents,
 ): boolean {
-  return Boolean(userPosibleRoleChanges[role][action]);
+  return Boolean(userPossibleRoleChanges[role][action]);
 }
 
 export type UserJoinRequestData = {

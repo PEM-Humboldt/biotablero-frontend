@@ -14,7 +14,7 @@ export function JoinInitiativeRequestButton() {
     case UserStateInInitiative.IDLE:
       return (
         <div className="bg-muted text-muted-foreground text-center font-normal rounded-lg p-2">
-          {uiText.loadind}
+          {uiText.loading}
         </div>
       );
 

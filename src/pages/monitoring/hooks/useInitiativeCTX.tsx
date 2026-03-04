@@ -118,8 +118,7 @@ export function CurrentInitiativeCTX({
         initiativeId: initiative?.id ?? null,
         initiativeInfo: initiative,
         userInInitiativeInfo:
-          initiative?.users.filter((u) => u.userName === user?.username)[0] ??
-          null,
+          initiative?.users.find((u) => u.userName === user?.username) ?? null,
         setInitiative: fetchInitiative,
         updateInitiative: async () => await fetchInitiative(initiative?.id),
         userStateInInitiative,

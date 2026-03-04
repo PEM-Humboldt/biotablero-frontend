@@ -1,7 +1,7 @@
 import { LogOut, Merge, TicketCheck, TicketX, UserRoundX } from "lucide-react";
 
 export const uiText = {
-  loadind: "Cargando...",
+  loading: "Cargando...",
 
   noUser: {
     label: "Unirse a la iniciativa",
@@ -18,7 +18,7 @@ export const uiText = {
       },
       dialog: {
         title: (initiativeName: string) =>
-          `Estas solicitando unirte a la iniciativa '${initiativeName}'`,
+          `Estás solicitando unirte a la iniciativa '${initiativeName}'`,
         description:
           "¿Realmente perteneces a este territorio y su trabajo por la biodiversidad?",
       },
@@ -58,7 +58,6 @@ export const uiText = {
       },
     },
     toast: {
-      title: "Solicitud  cancelada",
       description: (initiativeName: string) =>
         `Tu solicitud de ingreso a '${initiativeName}' ha sido cancelada, las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.`,
       icon: TicketX,

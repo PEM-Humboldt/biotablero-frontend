@@ -17,7 +17,7 @@ type ConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
     dialog: { title: string; description: string };
-    actionBtns?: { confirm?: string; cancel?: string; exit?: string };
+    actionBtns?: { confirm?: string; cancel?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
   handler: () => void;

@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { LucideIcon } from "lucide-react";
 
 export enum RoleInInitiative {
   NONE = 0,
@@ -7,7 +7,7 @@ export enum RoleInInitiative {
   VIEWER,
 }
 
-export type DashboardItem = { description: string; icon: ReactNode } & (
+export type DashboardItem = { description: string; icon: LucideIcon } & (
   | { linkTo: string }
   | { action: () => void }
 );

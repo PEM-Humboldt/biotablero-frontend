@@ -56,26 +56,11 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
           `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
         );
 
+        setJoinRequests({});
         setInitiatives([]);
         return;
       }
 
-      setInitiatives(initiativesInfo);
-    } catch (err) {
-      console.error(err);
-      setError(`Error crítico: ${getErrorMessage(err)}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user?.username]);
-
-  const fetchJoinRequests = useCallback(async () => {
-    if (!user?.username) {
-      return;
-    }
-
-    try {
-      setIsLoading(true);
       const requestsInfo = await getUserJoinRequests();
 
       if (isMonitoringAPIError(requestsInfo)) {
@@ -85,6 +70,7 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
         );
 
         setJoinRequests({});
+        setInitiatives([]);
         return;
       }
 
@@ -96,6 +82,7 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
       }, {});
 
       setJoinRequests(requestsDictionary);
+      setInitiatives(initiativesInfo);
     } catch (err) {
       console.error(err);
       setError(`Error crítico: ${getErrorMessage(err)}`);
@@ -106,8 +93,7 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void fetchInitiatives();
-    void fetchJoinRequests();
-  }, [fetchInitiatives, fetchJoinRequests]);
+  }, [fetchInitiatives]);
 
   const arrangedInitiatives = useMemo(() => {
     const byId: Record<number, UserInInitiative> = {};
@@ -147,7 +133,6 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
         userRoleByInitiativeId: arrangedInitiatives.rolesById,
         reloadUserInMonitoringData: async () => {
           await fetchInitiatives();
-          await fetchJoinRequests();
         },
         joinRequestsByInitiativeId: joinRequests,
         isLoading,

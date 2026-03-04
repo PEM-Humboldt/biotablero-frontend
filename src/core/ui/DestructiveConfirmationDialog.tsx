@@ -18,7 +18,7 @@ type DestructiveConfirmationDialogProps = {
   texts: {
     trigger: { title?: string; sr?: string; label: string; icon?: LucideIcon };
     dialog: { title: string; description: string };
-    actionBtns?: { confirm?: string; cancel?: string; exit?: string };
+    actionBtns?: { confirm?: string; cancel?: string };
   };
   triggerBtnVariant?: ButtonProps["variant"];
   handler: () => void;
@@ -28,7 +28,7 @@ type DestructiveConfirmationDialogProps = {
 
 export function DestructiveConfirmationDialog({
   texts,
-  triggerBtnVariant: btnVatiant,
+  triggerBtnVariant,
   handler,
   isLoading,
   disabled,
@@ -37,7 +37,7 @@ export function DestructiveConfirmationDialog({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant={btnVatiant}
+          variant={triggerBtnVariant}
           title={texts.trigger.title ?? texts.trigger.label}
           disabled={isLoading || disabled}
         >
