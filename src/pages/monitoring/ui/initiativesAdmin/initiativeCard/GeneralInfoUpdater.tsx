@@ -47,12 +47,13 @@ export function GeneralInfoUpdater({
 
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.general } : null;
+    setErrors({});
     setForceRender((n) => n + 1);
   }, [initiative]);
 
   useEffect(() => {
     reset();
-  }, [reset]);
+  }, [reset, editThis]);
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -130,7 +131,6 @@ export function GeneralInfoUpdater({
 
   const editPanelAction = () => {
     setCurrentEdit!((curEdit) => (curEdit === "general" ? "none" : "general"));
-    reset();
   };
 
   return (
