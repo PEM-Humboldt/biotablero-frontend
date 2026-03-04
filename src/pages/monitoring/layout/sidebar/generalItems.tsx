@@ -6,7 +6,7 @@ import {
   ZoomIn,
 } from "lucide-react";
 
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
+import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const generalItems: DashboardItem[] = [
   { description: "Mapa de iniciativas", icon: House, linkTo: "/Monitoreo" },

@@ -10,13 +10,15 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { User } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
-  InitiativeDataForm,
-  InitiativeDataFormErr,
   InitiativeFullInfo,
   LocationObj,
+} from "pages/monitoring/types/initiative";
+import type {
+  InitiativeDataForm,
+  InitiativeDataFormErr,
 } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   isMonitoringAPIError,
@@ -80,8 +82,8 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       const payload = { ...cleanGeneral, ...rest };
 
       const res = await monitoringAPI<InitiativeFullInfo>({
-        type: "put",
-        endpoint: "initiative",
+        type: "post",
+        endpoint: "Initiative",
         options: {
           data: payload,
           headers: {
@@ -186,7 +188,7 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
             AddItemComponent={UsersInput}
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([
+              new Map<string, keyof UserItem>([
                 [uiText.initiative.module.contacts.tableCol[0], "userName"],
               ])
             }

@@ -7,17 +7,17 @@ import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 import { commonErrorMessage } from "@utils/ui";
+import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type {
   ODataInitiativeUserRequest,
-  UserInitiatives,
-} from "pages/monitoring/types/requestParams";
-import type { GetKeysWithStringValues } from "pages/monitoring/types/monitoring";
+  UserInInitiative,
+} from "pages/monitoring/types/odataResponse";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import {
   type FilterJoinRequestsCallback,
-  Request,
-} from "pages/monitoring/outlets/initiativesManagement/types/userRequestsData";
+  JoinRequestStatus,
+} from "pages/monitoring/types/userJoinRequest";
 import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestFilterButtons";
 import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
@@ -27,9 +27,11 @@ import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinReque
 export function JoinRequests({
   InitiativesAsLeader: userInitiatives,
 }: {
-  InitiativesAsLeader?: UserInitiatives[];
+  InitiativesAsLeader?: UserInInitiative[];
 }) {
-  const [currentStatus, setCurrentStatus] = useState<Request | null>(null);
+  const [currentStatus, setCurrentStatus] = useState<JoinRequestStatus | null>(
+    null,
+  );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [requests, setRequests] = useState<ODataInitiativeUserRequest[]>([]);
   const [totalRequest, setTotalRequest] = useState<number>(0);
@@ -46,7 +48,7 @@ export function JoinRequests({
 
   const loadData = useCallback(
     async (
-      status: Request,
+      status: JoinRequestStatus,
       page: number,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
       newerFirst: boolean,
@@ -79,7 +81,7 @@ export function JoinRequests({
 
   const handleFilterChange: FilterJoinRequestsCallback = useCallback(
     async (
-      status: Request,
+      status: JoinRequestStatus,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
       newerFirst: boolean = true,
       force: boolean = false,
@@ -102,16 +104,22 @@ export function JoinRequests({
     }
     setCurrentPage(newPage);
 
-    const isNewerFirst = currentStatus !== Request.UNDER_REVIEW;
+    const isNewerFirst = currentStatus !== JoinRequestStatus.UNDER_REVIEW;
     const sortField =
-      currentStatus === Request.UNDER_REVIEW ? "creationDate" : "responseDate";
+      currentStatus === JoinRequestStatus.UNDER_REVIEW
+        ? "creationDate"
+        : "responseDate";
 
     await loadData(currentStatus, newPage, sortField, isNewerFirst);
   };
 
   useEffect(() => {
     if (initiativesIds.length > 0 && !currentStatus) {
-      void handleFilterChange(Request.UNDER_REVIEW, "creationDate", false);
+      void handleFilterChange(
+        JoinRequestStatus.UNDER_REVIEW,
+        "creationDate",
+        false,
+      );
     }
   }, [initiativesIds, currentStatus, handleFilterChange]);
 
@@ -138,7 +146,7 @@ export function JoinRequests({
       }
 
       void handleFilterChange(
-        Request.UNDER_REVIEW,
+        JoinRequestStatus.UNDER_REVIEW,
         "creationDate",
         false,
         true,
@@ -253,7 +261,9 @@ export function JoinRequests({
                     ))}
                     <th className="text-right w-[20%]">
                       {currentStatus !== null &&
-                      [Request.UNDER_REVIEW].includes(currentStatus) ? (
+                      [JoinRequestStatus.UNDER_REVIEW].includes(
+                        currentStatus,
+                      ) ? (
                         <span className="sr-only">
                           {uiText.module.actionsOnRequest.colTitle}
                         </span>
@@ -284,7 +294,9 @@ export function JoinRequests({
 
                       <td className="text-right">
                         {currentStatus !== null &&
-                        [Request.UNDER_REVIEW].includes(currentStatus ?? "") ? (
+                        [JoinRequestStatus.UNDER_REVIEW].includes(
+                          currentStatus ?? "",
+                        ) ? (
                           <JoinRequestReviewButtons
                             request={request}
                             handleApprove={handleApproveJoinRequest}

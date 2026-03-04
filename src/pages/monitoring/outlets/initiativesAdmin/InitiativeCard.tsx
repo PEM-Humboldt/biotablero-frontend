@@ -20,15 +20,15 @@ import {
 } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { User } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import type {
-  CardInfoGrouped,
   InitiativeContact,
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
   LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
+import type { CardInfoGrouped } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import {
   getInitiative,
   isMonitoringAPIError,
@@ -99,8 +99,13 @@ export function InitiativeCard({
         return;
       }
 
-      setCardInfo(res);
-      updater(res);
+      const initiativeAdminInfo = {
+        ...res,
+        users: res.users.filter((user) => user.level.id === 1),
+      } satisfies InitiativeFullInfo;
+
+      setCardInfo(initiativeAdminInfo);
+      updater(initiativeAdminInfo);
     } catch (err) {
       setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
       console.error(uiText.criticalError.log, err);
@@ -160,7 +165,10 @@ export function InitiativeCard({
       general,
       locations,
       contacts,
-      users,
+
+      // TODO: EL tipo de usuario está definido en otra rama, cuando se integre
+      // es necesario actualizar el valor de comparación del usuario
+      users: users.filter((user) => user.level.id === 1),
       images: { imageUrl, bannerUrl },
     };
   }, [cardInfo]);
@@ -254,7 +262,7 @@ export function InitiativeCard({
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([
+              new Map<string, keyof UserItem>([
                 [uiText.initiative.module.contacts.tableCol[0], "userName"],
               ])
             }

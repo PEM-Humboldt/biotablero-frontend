@@ -13,11 +13,9 @@ import {
   INITIATIVE_PHONE_MAX_LENGHT,
 } from "@config/monitoring";
 
+import type { InitiativeContact } from "pages/monitoring/types/initiative";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type {
-  InitiativeContact,
-  ItemEditorProps,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
 export function ContactInput<T extends InitiativeContact>({

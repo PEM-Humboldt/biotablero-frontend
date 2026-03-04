@@ -6,7 +6,7 @@ import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import type { User } from "pages/monitoring/types/monitoring";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import {
   getUsers,
   isMonitoringAPIError,
@@ -17,14 +17,14 @@ import {
 } from "pages/monitoring/utils/manageUsers";
 import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 
-export function UsersInput<T extends User>({
+export function UsersInput<T extends UserItem>({
   selectedItems,
   setter,
   update,
   discard,
   disabled = false,
 }: ItemEditorProps<T>) {
-  const [allUsers, setAllUsers] = useState<Partial<User>[]>([]);
+  const [allUsers, setAllUsers] = useState<Partial<UserItem>[]>([]);
   const [user, setUser] = useState<string>("");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
@@ -50,13 +50,15 @@ export function UsersInput<T extends User>({
     setUser(update !== null ? update.userName : "");
   }, [update]);
 
-  const usersAvailable = useMemo((): Partial<User>[] => {
+  const usersAvailable = useMemo((): Partial<UserItem>[] => {
     if (selectedItems === undefined || !Array.isArray(selectedItems)) {
       return allUsers;
     }
-    const selectedUsers = new Set(selectedItems.map((u: User) => u.userName));
+    const selectedUsers = new Set(
+      selectedItems.map((u: UserItem) => u.userName),
+    );
     return allUsers.filter(
-      (u: Partial<User>) => !selectedUsers.has(u.userName!),
+      (u: Partial<UserItem>) => !selectedUsers.has(u.userName!),
     );
   }, [selectedItems, allUsers]);
 
@@ -67,7 +69,7 @@ export function UsersInput<T extends User>({
     const newUser = {
       userName: user,
       level: NEW_ADMIN_CREDENTIALS,
-    } as User;
+    } as UserItem;
 
     setter(newUser as T);
     setUser("");

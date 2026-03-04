@@ -1,12 +1,16 @@
-import type { UserLevel } from "pages/monitoring/types/monitoring";
+import type { HasId, ODataResponse } from "@appTypes/odata";
+import type {
+  JoinRequestStatus,
+  UserLevel,
+} from "pages/monitoring/types/catalog";
 
-export type ODataLogEntryShort = {
-  id: string;
+// NOTE: Logs
+export interface ODataLogEntryShort extends HasId {
   timeStamp: string;
   type: string;
   shortMessage: string;
   userName: string;
-};
+}
 
 export interface ODataLogEntryFull extends ODataLogEntryShort {
   clientAgent: string;
@@ -27,6 +31,7 @@ export interface LogEntryFull
   properties: Record<string, unknown>;
 }
 
+// NOTE: Ubicacion
 export type LocationBasicInfo = {
   id: number;
   name: string;
@@ -45,8 +50,8 @@ export type LocationCompleteInfo = {
   location: LocationBasicInfo;
 };
 
-export type ODataInitiativeShortEntry = {
-  id: number;
+// NOTE: Iniciativas
+export interface ODataInitiativeShortEntry extends HasId {
   name: string;
   shortName: string;
   description: string;
@@ -57,25 +62,21 @@ export type ODataInitiativeShortEntry = {
   polygonArea: number;
   enabled: boolean;
   locations: LocationCompleteInfo[];
-};
+}
 
-export type UserRequestStatus = {
-  id: number;
-  name: string;
-};
+// NOTE: solicitudes
 
-export type ODataInitiativeUserRequest = {
-  id: number;
+export interface ODataInitiativeUserRequest extends HasId {
   userName: string;
   reviewerUserName: string;
   creationDate: string;
   responseDate: string;
   initiativeId: number;
-  status: UserRequestStatus;
-};
+  status: JoinRequestStatus;
+}
 
-export interface ODataUser {
-  id: string;
+// NOTE: Usuarios
+interface ODataUser extends HasId {
   email: string;
   emailVerified: boolean;
   username: string;
@@ -92,7 +93,7 @@ export type InitiativeUser = {
   creationDate: string;
 };
 
-export type UserInitiatives = {
+export type UserInInitiative = {
   id: number;
   name: string;
   shortName: string;
@@ -104,11 +105,6 @@ export type UserInitiatives = {
   polygonArea: number;
   enabled: boolean;
   users: InitiativeUser[];
-};
-
-type ODataResponse<T> = {
-  "@odata.count": number;
-  value: T[];
 };
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;

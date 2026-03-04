@@ -89,7 +89,7 @@ export function GeneralInfoUpdater({
       ) as Record<string, string>;
 
       const res = await monitoringAPI({
-        type: "post",
+        type: "put",
         endpoint: `${backEndpoint}/${initiativeId}`,
         options: {
           data: payload,

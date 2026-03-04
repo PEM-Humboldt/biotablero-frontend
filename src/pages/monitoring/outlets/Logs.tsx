@@ -25,7 +25,7 @@ import type {
   ODataLogEntryShort,
   ODataLog,
   LogEntryShort,
-} from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/odataResponse";
 import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
 
 type LoadedLogs = Awaited<CheckNLoadReturn<null, ODataLog>>;
