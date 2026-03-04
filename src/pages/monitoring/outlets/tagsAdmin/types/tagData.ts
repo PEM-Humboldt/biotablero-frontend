@@ -8,7 +8,7 @@ export type TagCategory = {
 export type TagDataForm = {
   name: string;
   url?: string;
-  categoryId: number;
+  category: TagCategory;
 };
 
 // NOTE: tipos para los errores
@@ -18,5 +18,5 @@ export type TagDataFormErr = {
   root: string[];
   name: string[];
   url: string[];
-  categoryId: string[];
+  category: string[];
 };

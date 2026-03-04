@@ -8,4 +8,9 @@ export const tagValidations: FormClientValidation<TagDataForm>[] = [
     path: "categoryId",
     message: uiText.form.validation.categoryIdRequired,
   },
+  {
+    condition: (f) => Boolean(f.name),
+    path: "name",
+    message: uiText.form.validation.nameRequired,
+  },
 ];

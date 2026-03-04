@@ -1,7 +1,7 @@
-import { type FormEvent, useCallback, useRef, useState } from "react";
+import { type FormEvent, useCallback, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { commonErrorMessage } from "@utils/ui";
+import { commonErrorMessage, inputLengthCount, inputWarnColor } from "@utils/ui";
 
 import {
   isMonitoringAPIError,
@@ -14,8 +14,8 @@ import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient
 import { makeInitialInfo } from "./utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
 import { TAG_NAME_MAX_LENGTH, TAG_URL_MAX_LENGTH } from "@config/monitoring";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { InputGroup, InputGroupInput } from "@ui/shadCN/component/input-group";
+import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@ui/shadCN/component/input-group";
 
 export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
@@ -54,14 +54,14 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   };
 
   const categoryOnBlur = () => {
-    const categoryId = formData.categoryId;
+    const categoryId = formData.category.id;
     if (!categoryId || categoryId <= 0) {
       setErrors((old) => ({
         ...old,
         categoryId: [uiText.form.validation.categoryIdRequired],
       }));
     } else {
-      setErrors(({ categoryId: _, ...old }) => old);
+      setErrors(({ category: _, ...old }) => old);
     }
   };
 
@@ -88,7 +88,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
         setFormData((old) => ({ ...old, url: val }));
       },
     );
-  
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -109,7 +109,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
       const payload: TagDataForm = {
         name: formData.name,
         url: formData.url,
-        categoryId: formData.categoryId,
+        category: formData.category,
       };
 
       const res = await monitoringAPI<TagDataForm>({
@@ -159,7 +159,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
           <LabelAndErrors
             htmlFor="category"
             errID="errors_category"
-            validationErrors={errors.categoryId ?? []}
+            validationErrors={errors.category ?? []}
             className="mb-1 text-sm font-medium"
           >
             {uiText.form.selectCategoryLabel}{" "}
@@ -167,18 +167,21 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
           </LabelAndErrors>
           <select
             id="category"
-            value={formData.categoryId || ""}
+            value={formData.category.id || ""}
             onChange={(e) =>
               setFormData((old) => ({
                 ...old,
-                categoryId: Number(e.target.value),
+                category: {
+                  id: Number(e.target.value),
+                  name: "",
+                },
               }))
             }
             onBlur={categoryOnBlur}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-            aria-invalid={errors.categoryId !== undefined}
+            aria-invalid={errors.category !== undefined}
             aria-describedby={
-              errors.categoryId ? "errors_category" : undefined
+              errors.category ? "errors_category" : undefined
             }
           >
             <option value="" disabled>
@@ -206,14 +209,24 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
             <InputGroupInput
               id="name"
               type="text"
-              placeholder="Etiqueta"
+              placeholder="Nombre de la etiqueta"
               value={formData.name}
               onChange={(e) => setFormData((old) => ({ ...old, name: e.target.value }))}
               onBlur={nameOnBlur}
               disabled={isLoading}
               aria-invalid={errors.name !== undefined}
               aria-describedby={errors.name ? "errors_name" : undefined}
+              maxLength={TAG_NAME_MAX_LENGTH}
             />
+             <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(formData.name, TAG_NAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
+            >
+              {inputLengthCount(
+                formData.name,
+                TAG_NAME_MAX_LENGTH,
+              )}
+            </InputGroupAddon>
           </InputGroup>
         </div>
 
@@ -232,18 +245,37 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
               id="url"
               type="text"
               placeholder="http://google.com"
-              value={formData.url}
+              value={formData.url ?? ""}
               onChange={(e) => setFormData((old) => ({ ...old, url: e.target.value }))}
               onBlur={urlOnBlur}
               disabled={isLoading}
               aria-invalid={errors.url !== undefined}
               aria-describedby={errors.url ? "errors_url" : undefined}
+              maxLength={TAG_URL_MAX_LENGTH}
             />
+             <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(formData.url ?? "", TAG_URL_MAX_LENGTH, 0.95)} flex-row-reverse`}
+            >
+              {inputLengthCount(
+                formData.url ?? "",
+                TAG_URL_MAX_LENGTH,
+              )}
+            </InputGroupAddon>
           </InputGroup>
         </div>
 
+        {message && !message.error && (
+          <p className="text-sm text-green-600">{message.text}</p>
+        )}
+
+        <ErrorsList
+          errorItems={errors.root ?? []}
+          className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
+        />
+
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button disabled={isLoading || tagCategories.length === 0}>
+          <Button type="submit" disabled={isLoading || tagCategories.length === 0}>
             {isLoading ? uiText.tag.creatingNew : uiText.tag.createNew}
           </Button>
           <Button

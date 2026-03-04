@@ -38,6 +38,7 @@ export const uiText = {
     
     validation: {
       categoryIdRequired: "Se requiere seleccionar una categoría",
+      nameRequired: "La etiqueta requiere un nombre",
     },
   },
 };
