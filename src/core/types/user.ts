@@ -3,15 +3,15 @@ export type Tokens = {
   refreshToken: string | null;
 };
 
-export type Role = "Admin" | "User";
+export type RoleKC = "Admin" | "User";
 
 export type Company = {
   id: number;
   name: string;
 };
 
-export type UserType = {
-  roles: Role[];
+export type UserType<T = unknown> = {
+  roles: RoleKC[];
   username: string;
   email: string;
 
@@ -20,7 +20,7 @@ export type UserType = {
   company?: Company;
   name?: string;
   profileImg?: string;
-};
+} & T;
 
 export function isUserType(user: unknown): user is UserType {
   return (

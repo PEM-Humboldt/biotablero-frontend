@@ -3,10 +3,9 @@ import { type ODataParams } from "@appTypes/odata";
 import type {
   LogEntryFull,
   ODataLog,
-} from "pages/monitoring/types/requestParams";
+} from "pages/monitoring/types/odataResponse";
 import type { LogTypeValue } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 
 /**

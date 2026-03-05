@@ -1,5 +1,5 @@
 import { isAxiosError, type AxiosResponse } from "axios";
-import type { ApiRequestError, DataError } from "@appTypes/api";
+import type { ApiRequestError, DataError, ErrorUIMessage } from "@appTypes/api";
 import { oDataToString } from "@utils/odata";
 import { serializeQueryParams } from "@utils/htmlRequest";
 import type { QueryParams } from "@appTypes/htmlRequest";
@@ -88,43 +88,48 @@ export async function monitoringAPI<T>({
       ? { data: response.data, status: response.status }
       : response.data;
   } catch (err) {
-    console.error("Error trace", err);
+    if (import.meta.env.VITE_ENVIRONMENT === "develop") {
+      console.error("error trace", err);
+    }
 
     if (isAxiosError(err) && err.response) {
-      const errors = err.response.data as {
+      const responseData = err.response.data as {
         data: DataError[];
       };
+      const responseUI: ErrorUIMessage[] = [];
 
-      const responseUI =
-        typeof errors === "string"
-          ? [
-              {
-                msg:
-                  apiErrorMsg[err.status ?? 500] ??
-                  commonErrorMessage[err.response.status],
-                field: undefined,
-              },
-            ]
-          : errors.data.map((error) => {
-              const category = apiErrorCategory[error.code.slice(0, 3)];
-              const message = apiErrorMsg[error.code];
-              const fieldStr = error.field
-                ? ` dentro del campo '${error.field}'`
-                : "";
+      const errorItems =
+        responseData &&
+        typeof responseData === "object" &&
+        "data" in responseData
+          ? responseData.data
+          : [];
 
-              return {
-                msg: `Error en ${category}${fieldStr}: ${message}.`,
-                field: error.field,
-              };
-            });
+      if (errorItems.length > 0) {
+        errorItems.forEach((error) => {
+          const category = apiErrorCategory[error.code.slice(0, 3)] ?? "Error";
+          const message = apiErrorMsg[error.code] ?? "Detalle no disponible";
+          const fieldStr = error.field ? ` en el campo '${error.field}'` : "";
+
+          responseUI.push({
+            msg: `Error en ${category}${fieldStr}: ${message}.`,
+            field: error.field,
+          });
+        });
+      } else {
+        responseUI.push({
+          msg:
+            apiErrorMsg[err.response.status] ??
+            commonErrorMessage[err.response.status] ??
+            "Error no especificado",
+          field: undefined,
+        });
+      }
 
       return {
         status: err.response.status,
         message: commonErrorMessage[err.response.status] || "Request failed",
-        data:
-          responseUI.length === 0
-            ? [{ msg: "Error desconocido", field: undefined }]
-            : responseUI,
+        data: responseUI,
       };
     }
 

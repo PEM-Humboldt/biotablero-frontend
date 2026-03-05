@@ -2,7 +2,7 @@ import {
   getLocationInfo,
   getLocationsList,
 } from "pages/monitoring/api/services/location";
-import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
+import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export const getColombianDepartments = (() => {

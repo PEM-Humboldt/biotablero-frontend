@@ -1,5 +1,5 @@
-import type { LocationBasicInfo } from "pages/monitoring/types/requestParams";
-import type { Location } from "pages/monitoring/types/monitoring";
+import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
+import type { Location } from "pages/monitoring/types/catalog";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
 

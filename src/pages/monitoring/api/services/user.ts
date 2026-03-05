@@ -2,8 +2,11 @@ import { isODataParams, type ODataParams } from "@appTypes/odata";
 import type {
   InitiativeUser,
   ODataUserInfo,
-} from "pages/monitoring/types/requestParams";
-import type { UserLevel } from "pages/monitoring/types/monitoring";
+} from "pages/monitoring/types/odataResponse";
+import type {
+  RoleInInitiative,
+  UserLevel,
+} from "pages/monitoring/types/catalog";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import type { ApiRequestError } from "@appTypes/api";
 
@@ -50,6 +53,54 @@ export async function getUserLevels() {
   const res = await monitoringAPI<UserLevel[]>({
     type: "get",
     endpoint: "InitiativeUserLevel",
+  });
+
+  return res;
+}
+
+/**
+ * Updates the role and optionally the focus area of a specific user within an initiative.
+ *
+ * it catches internal errors and returns them as a string instead of throwing,
+ * or `null` if the operation is successful.
+ *
+ * @param userIdInInitiative - The unique identifier of the user-initiative relationship.
+ * @param newRole - The new role level to assign to the user.
+ * @param focusArea - Optional string to define or update the user's area of focus.
+ * @returns A `Promise` resolving to `null` on success, or a `string` containing the error message.
+ */
+export async function changeUserRoleInInitiative(
+  userIdInInitiative: number,
+  newRole: RoleInInitiative,
+  focusArea?: string,
+) {
+  const res = await monitoringAPI({
+    type: "put",
+    endpoint: `InitiativeUser/${userIdInInitiative}`,
+    options: {
+      data: {
+        level: { id: newRole },
+        ...(focusArea ? { focusArea } : {}),
+      },
+    },
+  });
+
+  return res;
+}
+
+/**
+ * Removes a user from an initiative by deleting their user-initiative record.
+ *
+ * It returns an error message if the API returns a `RequestError`
+ * or if an exception occurs during execution.
+ *
+ * @param userIdInInitiative - The unique identifier of the user-initiative relationship to be deleted.
+ * @returns A `Promise` resolving to `null` if the user was removed, or a `string` with the error details.
+ */
+export async function removeUserFromInitiative(userIdInInitiative: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `InitiativeUser/${userIdInInitiative}`,
   });
 
   return res;

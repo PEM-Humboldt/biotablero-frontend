@@ -11,7 +11,7 @@ import {
 } from "@ui/shadCN/component/dialog";
 
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import type { LogEntryFull } from "pages/monitoring/types/requestParams";
+import type { LogEntryFull } from "pages/monitoring/types/odataResponse";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
 import { fetchLogDetails } from "pages/monitoring/api/services/logs";
 

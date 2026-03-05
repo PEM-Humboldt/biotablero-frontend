@@ -1,6 +1,6 @@
 import { getUserLevels } from "pages/monitoring/api/services/user";
-import type { User, UserLevel } from "pages/monitoring/types/monitoring";
-import type { ODataUserInfo } from "pages/monitoring/types/requestParams";
+import type { UserItem, UserLevel } from "pages/monitoring/types/catalog";
+import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export const USER_LEVELS: UserLevel[] = await (async () => {
@@ -8,20 +8,20 @@ export const USER_LEVELS: UserLevel[] = await (async () => {
   if (isMonitoringAPIError(userLevels)) {
     return [];
   }
-  return userLevels;
+  return userLevels as UserLevel[];
 })();
 
 export const NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];
 
 export function normalizeUsersFromOData(
   usersRaw: ODataUserInfo,
-): Partial<User>[] {
+): Partial<UserItem>[] {
   const { value: users } = usersRaw;
 
   return users.map((user) => {
-    const userInfo: Partial<User> = {};
+    const userInfo: Partial<UserItem> = {};
     userInfo.userName = user.username;
 
-    return userInfo as User;
+    return userInfo as UserItem;
   });
 }

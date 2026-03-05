@@ -2,17 +2,20 @@ import { type ODataParams } from "@appTypes/odata";
 import type {
   ODataInitiative,
   ODataUserRequest,
-  UserInitiatives,
-} from "pages/monitoring/types/requestParams";
+  UserInInitiative,
+} from "pages/monitoring/types/odataResponse";
 import type {
   InitiativeContact,
   InitiativeFullInfo,
   LocationDataBasic,
   UserData,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
+import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
+import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+import type { RoleInInitiative } from "pages/monitoring/types/catalog";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -40,14 +43,14 @@ export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
 /**
  * Fetches the basic information of initiatives associated with the current user.
  *
- * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInitiatives}; returns an empty array if the request fails or no initiatives are found.
+ * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInInitiative}; returns an empty array if the request fails or no initiatives are found.
  *
  * @remarks
  * - This function handles API errors internally by logging them to the console and returning an empty collection.
  * - It specifically catches both structured API errors (via `isMonitoringAPIError`) and unexpected runtime exceptions.
  */
 export async function getUserInitiativesInfo() {
-  const res = await monitoringAPI<UserInitiatives[]>({
+  const res = await monitoringAPI<UserInInitiative[]>({
     type: "get",
     endpoint: "Auth/InitiativesData",
   });
@@ -214,6 +217,85 @@ export async function updateJoinRequest(
   const res = await monitoringAPI({
     type: "put",
     endpoint: `JoinRequest/${requestId}?requestStatus=${resolvedInto}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves the list of join requests submitted by the current authenticated user.
+ *
+ * @returns a `Promise<UserJoinRequestData[]>`.
+ */
+export async function getUserJoinRequests() {
+  const res = await monitoringAPI<UserJoinRequestData[]>({
+    type: "get",
+    endpoint: "JoinRequest/MyRequests",
+  });
+
+  return res;
+}
+
+export async function sendJoinInitiativeInvitation(
+  payload: JoinInitiativeDataForm,
+) {
+  const res = await monitoringAPI<JoinInitiativeDataForm>({
+    type: "post",
+    endpoint: "JoinInvitation",
+    options: {
+      data: payload,
+    },
+  });
+
+  return res;
+}
+
+/**
+ * Removes the current user from an initiative they are already a member of.
+ *
+ * @param userIdInInitiative - The unique identifier of the membership record.
+ * @returns a `Promise<string | null>` containing a formatted error message if the operation fails, or `null` on success.
+ */
+export async function leaveInitiative(userIdInInitiative: number) {
+  // NOTE: Actualizar el endpoint cuando esté listo
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `InitiativeUser/${userIdInInitiative}`,
+  });
+
+  return res;
+}
+
+/**
+ * Cancels a pending join request.
+ *
+ * @param requestId - The id of the user's relation with the request.
+ * @returns a `Promise<string | null>` containing a formatted error message if the deletion fails, or `null` on success.
+ */
+export async function cancelJoinRequestToInitiative(requestId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `JoinRequest/Cancel/${requestId}`,
+  });
+
+  return res;
+}
+
+/**
+ * Submits a new request for the current authenticated user to join a specific initiative with a designated role.
+ *
+ * @param initiativeId - The unique identifier of the initiative.
+ * @param asRole - The role defined by {@link RoleInInitiative} the user is requesting.
+ * @returns a `Promise<string | null>` containing a formatted error message if the request fails, or `null` on success.
+ */
+export async function makeJoinRequestToInitiative(
+  initiativeId: number,
+  asRole: RoleInInitiative,
+) {
+  const res = await monitoringAPI({
+    type: "post",
+    endpoint: "JoinRequest",
+    options: { data: { initiativeId, level: { id: asRole } } },
   });
 
   return res;

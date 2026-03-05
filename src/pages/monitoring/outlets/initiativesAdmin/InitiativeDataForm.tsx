@@ -8,30 +8,32 @@ import {
   INITIATIVE_LEADERS_MAX_AMOUNT,
 } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { User } from "pages/monitoring/types/monitoring";
-import type {
-  InitiativeContact,
-  InitiativeDataForm,
-  InitiativeDataFormErr,
-  LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { uploadImages } from "pages/monitoring/api/services/assets";
+import type { UserItem } from "pages/monitoring/types/catalog";
 import { createInitiative } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
-import { FormListManager } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/FormListManager";
-import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/LocationInput";
-import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
-import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
-import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
-import { newInitiativeValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
-import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
+import type {
+  InitiativeContact,
+  LocationObj,
+} from "pages/monitoring/types/initiative";
+import type {
+  InitiativeDataForm,
+  InitiativeDataFormErr,
+} from "pages/monitoring/types/initiativeData";
+import { uploadImages } from "pages/monitoring/api/services/assets";
+import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
+import { newInitiativeValidations } from "pages/monitoring/ui/initiativesAdmin/utils/formClientValidations";
+import { GeneralInfoInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/GeneralInfo";
+import { FormListManager } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/FormListManager";
+import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
+import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
+import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/UsersInput";
+import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
   makeInitialInfo,
   setFormField,
-} from "pages/monitoring/outlets/initiativesAdmin/utils/formObjectUpdate";
-import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
+} from "pages/monitoring/ui/initiativesAdmin/utils/formObjectUpdate";
+import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
 export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
@@ -165,7 +167,7 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
             AddItemComponent={UsersInput}
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([
+              new Map<string, keyof UserItem>([
                 [uiText.initiative.module.contacts.tableCol[0], "userName"],
               ])
             }

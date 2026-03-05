@@ -8,7 +8,7 @@ import {
   ListItemText,
   Tooltip,
 } from "@mui/material";
-import type { DashboardItem } from "pages/monitoring/types/monitoring";
+import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 type DashboardButtonsProps = {
   items: DashboardItem[];

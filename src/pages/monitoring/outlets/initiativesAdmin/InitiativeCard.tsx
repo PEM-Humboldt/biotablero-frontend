@@ -1,12 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  createContext,
-  useState,
-  useMemo,
-  type SetStateAction,
-  type Dispatch,
-} from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
@@ -18,43 +10,31 @@ import {
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { User } from "pages/monitoring/types/monitoring";
+import {
+  RoleInInitiative,
+  type UserItem,
+} from "pages/monitoring/types/catalog";
 import type {
-  CardInfoGrouped,
   InitiativeContact,
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
   LocationObj,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiative";
+import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
 import { getInitiative } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { InitiativeStatusDialog } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
-import { FormListUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/FormListUpdater";
-import { LocationInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/LocationInput";
-import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
-import { UsersInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/UsersInput";
-import { ContactInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ContactInput";
-import { GeneralInfoUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
-import { ImagesUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagesUpdater";
 import { changeInitiativeStatus } from "pages/monitoring/api/services/initiatives";
-
-export type InitiativeCtxType = {
-  initiative: CardInfoGrouped | null;
-  updater: null | (() => Promise<void>);
-  currentEdit: keyof CardInfoGrouped | "none" | null;
-  setCurrentEdit: Dispatch<
-    SetStateAction<keyof CardInfoGrouped | "none" | null>
-  > | null;
-};
-
-export const InitiativeCtx = createContext<InitiativeCtxType>({
-  initiative: null,
-  updater: null,
-  currentEdit: null,
-  setCurrentEdit: null,
-});
+import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
+import { InitiativeStatusDialog } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
+import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/FormListUpdater";
+import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
+import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/UsersInput";
+import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
+import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
+import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 export function InitiativeCard({
   initiative,
@@ -131,9 +111,7 @@ export function InitiativeCard({
       locations,
       contacts,
 
-      // TODO: EL tipo de usuario está definido en otra rama, cuando se integre
-      // es necesario actualizar el valor de comparación del usuario
-      users: users.filter((user) => user.level.id === 1),
+      users: users.filter((user) => user.level.id === RoleInInitiative.LEADER),
       images: { imageUrl, bannerUrl },
     };
   }, [cardInfo]);
@@ -154,7 +132,7 @@ export function InitiativeCard({
       )}
     </div>
   ) : (
-    <InitiativeCtx.Provider
+    <AdminInitiativeUpdateCtx.Provider
       value={{
         initiative: cardInfoGrouped,
         updater: getCardInfo,
@@ -224,7 +202,7 @@ export function InitiativeCard({
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
             renderCols={
-              new Map<string, keyof User>([
+              new Map<string, keyof UserItem>([
                 [uiText.initiative.module.contacts.tableCol[0], "userName"],
               ])
             }
@@ -238,6 +216,6 @@ export function InitiativeCard({
           backEndpointBanner="Initiative/UploadBanner"
         />
       </article>
-    </InitiativeCtx.Provider>
+    </AdminInitiativeUpdateCtx.Provider>
   );
 }
