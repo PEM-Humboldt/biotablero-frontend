@@ -10,12 +10,12 @@ import {
 import { uiText } from "./layout/uiText";
 import { TagCategory, TagDataForm, TagDataFormErr } from "./types/tagData";
 import { tagValidations } from "./utils/formClientValidations";
-import { validateFormClient } from "../initiativesAdmin/utils/validateFormClient";
 import { makeInitialInfo } from "./utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
 import { TAG_NAME_MAX_LENGTH, TAG_URL_MAX_LENGTH } from "@config/monitoring";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@ui/shadCN/component/input-group";
+import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 
 export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});

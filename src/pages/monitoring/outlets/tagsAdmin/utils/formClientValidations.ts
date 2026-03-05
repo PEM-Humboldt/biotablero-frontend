@@ -1,6 +1,6 @@
-import { FormClientValidation } from "pages/monitoring/outlets/initiativesAdmin/types/form";
 import { TagDataForm } from "../types/tagData";
 import { uiText } from "../layout/uiText";
+import { FormClientValidation } from "pages/monitoring/types/formValidation";
 
 export const tagValidations: FormClientValidation<TagDataForm>[] = [
   {
