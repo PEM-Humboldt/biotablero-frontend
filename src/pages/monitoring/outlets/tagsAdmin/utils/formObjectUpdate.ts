@@ -7,6 +7,6 @@ export function makeInitialInfo(): TagDataForm {
     category: {
       id: 0,
       name: "",
-    }
+    },
   };
 }

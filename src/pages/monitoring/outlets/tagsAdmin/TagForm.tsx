@@ -1,7 +1,11 @@
 import { type FormEvent, useCallback, useState } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { commonErrorMessage, inputLengthCount, inputWarnColor } from "@utils/ui";
+import {
+  commonErrorMessage,
+  inputLengthCount,
+  inputWarnColor,
+} from "@utils/ui";
 
 import {
   isMonitoringAPIError,
@@ -14,7 +18,11 @@ import { makeInitialInfo } from "./utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
 import { TAG_NAME_MAX_LENGTH, TAG_URL_MAX_LENGTH } from "@config/monitoring";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@ui/shadCN/component/input-group";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 
 export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
@@ -141,7 +149,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full rounded-xl bg-white overflow-hidden">
@@ -162,8 +170,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
             validationErrors={errors.category ?? []}
             className="mb-1 text-sm font-medium"
           >
-            {uiText.form.selectCategoryLabel}{" "}
-            <span aria-hidden="true">*</span>
+            {uiText.form.selectCategoryLabel} <span aria-hidden="true">*</span>
           </LabelAndErrors>
           <select
             id="category"
@@ -180,9 +187,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
             onBlur={categoryOnBlur}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
             aria-invalid={errors.category !== undefined}
-            aria-describedby={
-              errors.category ? "errors_category" : undefined
-            }
+            aria-describedby={errors.category ? "errors_category" : undefined}
           >
             <option value="" disabled>
               {uiText.form.defaultCategoryTitle}
@@ -211,21 +216,20 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
               type="text"
               placeholder="Nombre de la etiqueta"
               value={formData.name}
-              onChange={(e) => setFormData((old) => ({ ...old, name: e.target.value }))}
+              onChange={(e) =>
+                setFormData((old) => ({ ...old, name: e.target.value }))
+              }
               onBlur={nameOnBlur}
               disabled={isLoading}
               aria-invalid={errors.name !== undefined}
               aria-describedby={errors.name ? "errors_name" : undefined}
               maxLength={TAG_NAME_MAX_LENGTH}
             />
-             <InputGroupAddon
+            <InputGroupAddon
               align="block-end"
               className={`${inputWarnColor(formData.name, TAG_NAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
             >
-              {inputLengthCount(
-                formData.name,
-                TAG_NAME_MAX_LENGTH,
-              )}
+              {inputLengthCount(formData.name, TAG_NAME_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -246,21 +250,20 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
               type="text"
               placeholder="http://google.com"
               value={formData.url ?? ""}
-              onChange={(e) => setFormData((old) => ({ ...old, url: e.target.value }))}
+              onChange={(e) =>
+                setFormData((old) => ({ ...old, url: e.target.value }))
+              }
               onBlur={urlOnBlur}
               disabled={isLoading}
               aria-invalid={errors.url !== undefined}
               aria-describedby={errors.url ? "errors_url" : undefined}
               maxLength={TAG_URL_MAX_LENGTH}
             />
-             <InputGroupAddon
+            <InputGroupAddon
               align="block-end"
               className={`${inputWarnColor(formData.url ?? "", TAG_URL_MAX_LENGTH, 0.95)} flex-row-reverse`}
             >
-              {inputLengthCount(
-                formData.url ?? "",
-                TAG_URL_MAX_LENGTH,
-              )}
+              {inputLengthCount(formData.url ?? "", TAG_URL_MAX_LENGTH)}
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -275,7 +278,10 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
         />
 
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-          <Button type="submit" disabled={isLoading || tagCategories.length === 0}>
+          <Button
+            type="submit"
+            disabled={isLoading || tagCategories.length === 0}
+          >
             {isLoading ? uiText.tag.creatingNew : uiText.tag.createNew}
           </Button>
           <Button

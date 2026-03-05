@@ -35,7 +35,7 @@ export const uiText = {
     defaultCategoryTitle: "-- Elige una categoría --",
     nameLabel: "Nombre de la etiqueta",
     urlLabel: "URL de la etiqueta (opcional)",
-    
+
     validation: {
       categoryIdRequired: "Se requiere seleccionar una categoría",
       nameRequired: "La etiqueta requiere un nombre",
