@@ -111,7 +111,9 @@ export function TagForm({
   };
 
   const categoryOnBlur = () => {
-    if (mode === "edit") return;
+    if (mode === "edit") {
+      return;
+    }
     const categoryId = formData.category.id;
     if (!categoryId || categoryId <= 0) {
       setErrors((old) => ({
@@ -170,18 +172,16 @@ export function TagForm({
 
     try {
       const finalUrl = formData.url?.trim() || null;
-      const payload = (
-        mode === "create"
-          ? {
-              name: formData.name,
-              url: finalUrl,
-              category: formData.category,
-            }
-          : {
-              name: formData.name,
-              url: finalUrl,
-            }
-      ) as any;
+      const payload = (mode === "create"
+        ? {
+            name: formData.name,
+            url: finalUrl,
+            category: formData.category,
+          }
+        : {
+            name: formData.name,
+            url: finalUrl,
+          }) as unknown as TagDataForm;
 
       const method = mode === "create" ? "post" : "put";
       const endpointStr = mode === "create" ? "Tag" : `Tag/${tagId}`;
@@ -221,6 +221,13 @@ export function TagForm({
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getSubmitButtonText = () => {
+    if (isLoading) {
+      return mode === "create" ? uiText.tag.creatingNew : "Actualizando...";
+    }
+    return mode === "create" ? uiText.tag.createNew : "Actualizar etiqueta";
   };
 
   return (
@@ -360,13 +367,7 @@ export function TagForm({
               (mode === "edit" && !tagId)
             }
           >
-            {isLoading
-              ? mode === "create"
-                ? uiText.tag.creatingNew
-                : "Actualizando..."
-              : mode === "create"
-                ? uiText.tag.createNew
-                : "Actualizar etiqueta"}
+            {getSubmitButtonText()}
           </Button>
           <Button
             type="reset"
