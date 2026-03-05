@@ -95,7 +95,8 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
       new StrValidator(formData.url ?? "")
         .isOptional()
         .sanitize()
-        .hasLengthLessOrEqualThan(TAG_URL_MAX_LENGTH),
+        .hasLengthLessOrEqualThan(TAG_URL_MAX_LENGTH)
+        .isURL(),
       (val) => {
         setFormData((old) => ({ ...old, url: val }));
       },
@@ -156,8 +157,8 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   };
 
   return (
-    <div className="w-full rounded-xl bg-white overflow-hidden">
-      <h4 className="px-6 py-2 mb-0 text-base bg-primary text-primary-foreground">
+    <div className="bg-background w-full max-w-[600px] rounded-xl p-6 shadow-sm flex flex-col gap-4 mt-6 border border-muted">
+      <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
         Nueva etiqueta
       </h4>
 
@@ -252,7 +253,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
             <InputGroupInput
               id="url"
               type="text"
-              placeholder="http://google.com"
+              placeholder="https://ejemplo.co"
               value={formData.url ?? ""}
               onChange={(e) =>
                 setFormData((old) => ({ ...old, url: e.target.value }))
