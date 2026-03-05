@@ -41,7 +41,7 @@ export function TagsAdmin() {
         result.map((category) => ({
           ...category,
           name: CATEGORY_TRANSLATIONS[category.name] || category.name,
-        }))
+        })),
       );
     };
 
@@ -71,7 +71,10 @@ export function TagsAdmin() {
 
       {mode === "edit" && (
         <div className="mt-4 max-w-[600px]">
-          <label htmlFor="tagIdInput" className="block text-sm font-medium mb-1">
+          <label
+            htmlFor="tagIdInput"
+            className="block text-sm font-medium mb-1"
+          >
             ID de la etiqueta a editar
           </label>
           <input

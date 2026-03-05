@@ -156,7 +156,10 @@ export function TagForm({
     nameOnBlur();
     urlOnBlur();
 
-    const validations = mode === "edit" ? tagValidations.filter(v => v.path !== "categoryId") : tagValidations;
+    const validations =
+      mode === "edit"
+        ? tagValidations.filter((v) => v.path !== "categoryId")
+        : tagValidations;
     const currentErrors = validateFormClient(formData, validations);
     setErrors(currentErrors);
 
@@ -167,14 +170,18 @@ export function TagForm({
 
     try {
       const finalUrl = formData.url?.trim() || null;
-      const payload = (mode === "create" ? {
-        name: formData.name,
-        url: finalUrl,
-        category: formData.category,
-      } : {
-        name: formData.name,
-        url: finalUrl,
-      }) as any;
+      const payload = (
+        mode === "create"
+          ? {
+              name: formData.name,
+              url: finalUrl,
+              category: formData.category,
+            }
+          : {
+              name: formData.name,
+              url: finalUrl,
+            }
+      ) as any;
 
       const method = mode === "create" ? "post" : "put";
       const endpointStr = mode === "create" ? "Tag" : `Tag/${tagId}`;
@@ -201,7 +208,13 @@ export function TagForm({
       }
 
       handleFormReset();
-      setMessage({ text: mode === "create" ? uiText.successCreate : "Etiqueta actualizada exitosamente", error: false });
+      setMessage({
+        text:
+          mode === "create"
+            ? uiText.successCreate
+            : "Etiqueta actualizada exitosamente",
+        error: false,
+      });
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
       console.error(uiText.criticalError.log, err);
@@ -229,7 +242,8 @@ export function TagForm({
             validationErrors={errors.category ?? []}
             className="mb-1 text-sm font-medium"
           >
-            {uiText.form.selectCategoryLabel} {mode === "create" && <span aria-hidden="true">*</span>}
+            {uiText.form.selectCategoryLabel}{" "}
+            {mode === "create" && <span aria-hidden="true">*</span>}
           </LabelAndErrors>
           <select
             id="category"
@@ -340,11 +354,19 @@ export function TagForm({
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button
             type="submit"
-            disabled={isLoading || (mode === "create" && tagCategories.length === 0) || (mode === "edit" && !tagId)}
+            disabled={
+              isLoading ||
+              (mode === "create" && tagCategories.length === 0) ||
+              (mode === "edit" && !tagId)
+            }
           >
             {isLoading
-              ? (mode === "create" ? uiText.tag.creatingNew : "Actualizando...")
-              : (mode === "create" ? uiText.tag.createNew : "Actualizar etiqueta")}
+              ? mode === "create"
+                ? uiText.tag.creatingNew
+                : "Actualizando..."
+              : mode === "create"
+                ? uiText.tag.createNew
+                : "Actualizar etiqueta"}
           </Button>
           <Button
             type="reset"
