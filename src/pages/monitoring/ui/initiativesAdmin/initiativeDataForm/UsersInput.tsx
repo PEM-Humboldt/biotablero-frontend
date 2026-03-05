@@ -4,8 +4,7 @@ import { Combobox } from "@ui/ComboBox";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
 import type { UserItem } from "pages/monitoring/types/catalog";
 import {
   getUsers,
@@ -15,7 +14,8 @@ import {
   NEW_ADMIN_CREDENTIALS,
   normalizeUsersFromOData,
 } from "pages/monitoring/utils/manageUsers";
-import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function UsersInput<T extends UserItem>({
   selectedItems,

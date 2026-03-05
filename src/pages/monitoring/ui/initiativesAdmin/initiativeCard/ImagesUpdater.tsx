@@ -1,7 +1,6 @@
 import {
   type MouseEvent,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -12,18 +11,15 @@ import { cn } from "@ui/shadCN/lib/utils";
 import type {
   CardInfoGrouped,
   InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import {
-  InitiativeCtx,
-  type InitiativeCtxType,
-} from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
+} from "pages/monitoring/types/initiativeData";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
-import { ImagePreview } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/ImagePreview";
+import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
+import { ImagePreview } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagePreview";
+import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
 import { Button } from "@ui/shadCN/component/button";
 import { uploadImages } from "pages/monitoring/api/monitoringAPI";
-import { ImagesInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/ImagesInput";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 type ImagesUpdaterProps = {
   title: string;
@@ -36,7 +32,7 @@ export function ImagesUpdater({
   backEndpointBanner,
 }: ImagesUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
-    useContext<InitiativeCtxType>(InitiativeCtx);
+    useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [forceRender, setForceRender] = useState(0);

@@ -7,8 +7,8 @@ export const LOGIN_URL = "/";
 // Initiative description and properties
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
-export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 15;
-export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 500;
+export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
+export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 300;
 export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
 export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
 
@@ -33,6 +33,10 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 
 // initiative admin
 export const JOIN_REQUESTS_PER_PAGE = 10;
+
+// Initiative Join Invitations
+
+export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
 
 // Tag admin
 export const TAG_NAME_MAX_LENGTH = 40;

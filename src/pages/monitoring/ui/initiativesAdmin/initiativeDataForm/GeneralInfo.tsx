@@ -27,14 +27,14 @@ import {
   INITIAVIVE_INFLUENCE_MAX_LENGTH,
 } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { GeneralInfo } from "pages/monitoring/types/initiative";
-import type { InitiativeDataFormErr } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { InitiativeDataFormErr } from "pages/monitoring/types/initiativeData";
 import {
   initiativeNameNotExist,
   validationExemption,
-} from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
-import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";
+} from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
 
 export function GeneralInfoInput<T extends GeneralInfo>({
   title,
@@ -56,7 +56,7 @@ export function GeneralInfoInput<T extends GeneralInfo>({
     shortName: sectionInfo.shortName ?? "",
     description: sectionInfo.description ?? "",
     objective: sectionInfo.objective ?? "",
-    influenceArea: sectionInfo.influenceArea ?? "",
+    baseline: sectionInfo.baseline ?? "",
   });
 
   const [inputErr, setInputErr] = useState<
@@ -141,8 +141,8 @@ export function GeneralInfoInput<T extends GeneralInfo>({
 
   const influenceOnBlur = () =>
     validateField(
-      "influenceArea",
-      new StrValidator(generalInfo.influenceArea)
+      "baseline",
+      new StrValidator(generalInfo.baseline)
         .isOptional()
         .sanitize()
         .hasLengthLessOrEqualThan(INITIAVIVE_INFLUENCE_MAX_LENGTH),
@@ -335,45 +335,43 @@ export function GeneralInfoInput<T extends GeneralInfo>({
 
         <div>
           <LabelAndErrors
-            errID="errors_influenceArea"
-            htmlFor="influenceArea"
-            validationErrors={inputErr.influenceArea ?? []}
+            errID="errors_baseline"
+            htmlFor="baseline"
+            validationErrors={inputErr.baseline ?? []}
           >
-            {uiText.initiative.module.general.field.influenceArea}{" "}
-            <i>{uiText.initiative.module.general.field.influenceAreaHelper}</i>
+            {uiText.initiative.module.general.field.baseline}{" "}
+            <i>{uiText.initiative.module.general.field.baselineHelper}</i>
           </LabelAndErrors>
 
           <InputGroup>
             <TextareaAutosize
               data-slot="input-group-control"
               className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
-              id="influenceArea"
-              name="influenceArea"
+              id="baseline"
+              name="baseline"
               placeholder={
-                uiText.initiative.module.general.field.influenceAreaPlaceholder
+                uiText.initiative.module.general.field.baselinePlaceholder
               }
-              value={generalInfo.influenceArea}
-              onChange={(e) =>
-                setGeneralInfoItem("influenceArea")(e.target.value)
-              }
+              value={generalInfo.baseline}
+              onChange={(e) => setGeneralInfoItem("baseline")(e.target.value)}
               onBlur={influenceOnBlur}
               maxLength={INITIAVIVE_INFLUENCE_MAX_LENGTH}
-              aria-invalid={inputErr.influenceArea !== undefined}
+              aria-invalid={inputErr.baseline !== undefined}
               aria-required="true"
               aria-describedby={
-                inputErr.influenceArea ? "errors_influenceArea" : undefined
+                inputErr.baseline ? "errors_baseline" : undefined
               }
               rows={10}
             />
             <InputGroupAddon
               align="block-end"
               className={`${inputWarnColor(
-                generalInfo.influenceArea,
+                generalInfo.baseline,
                 INITIAVIVE_INFLUENCE_MAX_LENGTH,
                 0.95,
               )} flex-row-reverse`}
             >
-              {`${generalInfo.influenceArea.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
+              {`${generalInfo.baseline.length} / ${INITIAVIVE_INFLUENCE_MAX_LENGTH}
 		  `}
             </InputGroupAddon>
           </InputGroup>

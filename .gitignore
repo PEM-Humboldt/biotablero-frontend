@@ -18,7 +18,3 @@ dist
 
 packages/**/package-lock.json
 
-# Mock files
-*Mock*
-# But allows MockFiles generators
-!*Mock*.sh

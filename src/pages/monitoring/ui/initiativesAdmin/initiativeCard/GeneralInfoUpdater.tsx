@@ -1,7 +1,6 @@
 import {
   type MouseEvent,
   useCallback,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -15,20 +14,17 @@ import { Button } from "@ui/shadCN/component/button";
 import type {
   CardInfoGrouped,
   InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import {
-  InitiativeCtx,
-  type InitiativeCtxType,
-} from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
-import { EditModeButton } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/EditModeButton";
-import { GeneralInfoInput } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/GeneralInfo";
+} from "pages/monitoring/types/initiativeData";
+import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
+import { GeneralInfoInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/GeneralInfo";
 import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { validateFormClient } from "pages/monitoring/outlets/initiativesAdmin/utils/validateFormClient";
-import { updateInitiativeGeneralValidations } from "pages/monitoring/outlets/initiativesAdmin/utils/formClientValidations";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
+import { updateInitiativeGeneralValidations } from "pages/monitoring/ui/initiativesAdmin/utils/formClientValidations";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
 type GeneralInfoUpdaterProps = {
   title: string;
@@ -40,7 +36,7 @@ export function GeneralInfoUpdater({
   backEndpoint,
 }: GeneralInfoUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
-    useContext<InitiativeCtxType>(InitiativeCtx);
+    useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
   const [forceRender, setForceRender] = useState(0);
@@ -51,12 +47,13 @@ export function GeneralInfoUpdater({
 
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.general } : null;
+    setErrors({});
     setForceRender((n) => n + 1);
   }, [initiative]);
 
   useEffect(() => {
     reset();
-  }, [reset]);
+  }, [reset, editThis]);
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -84,7 +81,7 @@ export function GeneralInfoUpdater({
           shortName: sectionInfo.current.shortName,
           description: sectionInfo.current.description,
           objective: sectionInfo.current.objective,
-          influenceArea: sectionInfo.current.influenceArea,
+          baseline: sectionInfo.current.baseline,
         }).filter(([_, value]) => Boolean(value)),
       ) as Record<string, string>;
 
@@ -179,9 +176,9 @@ export function GeneralInfoUpdater({
             </div>
             <div className="flex-1 min-w-[300px] max-w-[65ch]">
               <h5 className="text-primary mb-0!">
-                {uiText.initiative.module.general.field.influenceAreaHelper}
+                {uiText.initiative.module.general.field.baselineHelper}
               </h5>
-              {sectionInfo.current?.influenceArea ??
+              {sectionInfo.current?.baseline ??
                 uiText.initiative.unasignedFallback}
             </div>
           </div>

@@ -18,7 +18,7 @@ import type {
   InitiativeDisplayInfoShort,
   InitiativeFullInfo,
 } from "pages/monitoring/types/initiative";
-import { makeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
+import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 
 import {
   Accordion,

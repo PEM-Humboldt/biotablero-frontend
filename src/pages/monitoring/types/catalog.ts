@@ -1,4 +1,4 @@
-import { LucideIcon } from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 
 export enum RoleInInitiative {
   NONE = 0,

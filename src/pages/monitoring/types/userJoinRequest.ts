@@ -10,21 +10,21 @@ export enum JoinRequestStatus {
 }
 
 export enum UserStateInInitiative {
-  NO_INITIATIVE = 0,
-  IDLE,
-  GUEST,
-  ADMIN,
-  USER_NONE,
-  USER_LEADER,
-  USER_PARTICIPANT,
-  USER_VIEWER,
-  USER_ASPIRING,
+  NO_INITIATIVE = "no_initiative",
+  IDLE = "idle",
+  GUEST = "guest",
+  ADMIN = "admin",
+  USER_NONE = "user_none",
+  USER_LEADER = "user_leader",
+  USER_PARTICIPANT = "user_participant",
+  USER_VIEWER = "user_viewer",
+  USER_ASPIRING = "user_aspiring",
 }
 
 export enum RoleEvents {
-  PROMOTE = 0,
-  REASIGN,
-  REMOVE,
+  PROMOTE = "promote",
+  REASING = "reasing",
+  REMOVE = "remove",
 }
 
 export const initiativeRoleToState: Record<
@@ -53,39 +53,32 @@ export const stateToInitiativeRole: Partial<
 
 export const userPossibleRoleChanges: Record<
   UserStateInInitiative,
-  Partial<Record<RoleEvents, UserStateInInitiative>>
+  Map<RoleEvents, UserStateInInitiative>
 > = {
-  [UserStateInInitiative.NO_INITIATIVE]: {},
-  [UserStateInInitiative.IDLE]: {},
-  [UserStateInInitiative.GUEST]: {},
-  [UserStateInInitiative.ADMIN]: {},
-  [UserStateInInitiative.USER_LEADER]: {
-    [RoleEvents.REASIGN]: UserStateInInitiative.USER_PARTICIPANT,
-  },
-  [UserStateInInitiative.USER_PARTICIPANT]: {
-    [RoleEvents.REASIGN]: UserStateInInitiative.USER_VIEWER,
-    [RoleEvents.REMOVE]: UserStateInInitiative.USER_NONE,
-    [RoleEvents.PROMOTE]: UserStateInInitiative.USER_LEADER,
-  },
-  [UserStateInInitiative.USER_VIEWER]: {
-    [RoleEvents.PROMOTE]: UserStateInInitiative.USER_PARTICIPANT,
-    [RoleEvents.REMOVE]: UserStateInInitiative.USER_NONE,
-  },
-  [UserStateInInitiative.USER_ASPIRING]: {
-    [RoleEvents.PROMOTE]: UserStateInInitiative.USER_PARTICIPANT,
-    [RoleEvents.REMOVE]: UserStateInInitiative.USER_NONE,
-  },
-  [UserStateInInitiative.USER_NONE]: {
-    [RoleEvents.PROMOTE]: UserStateInInitiative.USER_ASPIRING,
-  },
+  [UserStateInInitiative.NO_INITIATIVE]: new Map(),
+  [UserStateInInitiative.IDLE]: new Map(),
+  [UserStateInInitiative.GUEST]: new Map(),
+  [UserStateInInitiative.ADMIN]: new Map(),
+  [UserStateInInitiative.USER_LEADER]: new Map([
+    [RoleEvents.REASING, UserStateInInitiative.USER_PARTICIPANT],
+  ]),
+  [UserStateInInitiative.USER_PARTICIPANT]: new Map([
+    [RoleEvents.PROMOTE, UserStateInInitiative.USER_LEADER],
+    [RoleEvents.REASING, UserStateInInitiative.USER_VIEWER],
+    [RoleEvents.REMOVE, UserStateInInitiative.USER_NONE],
+  ]),
+  [UserStateInInitiative.USER_VIEWER]: new Map([
+    [RoleEvents.PROMOTE, UserStateInInitiative.USER_PARTICIPANT],
+    [RoleEvents.REMOVE, UserStateInInitiative.USER_NONE],
+  ]),
+  [UserStateInInitiative.USER_ASPIRING]: new Map([
+    [RoleEvents.PROMOTE, UserStateInInitiative.USER_PARTICIPANT],
+    [RoleEvents.REMOVE, UserStateInInitiative.USER_NONE],
+  ]),
+  [UserStateInInitiative.USER_NONE]: new Map([
+    [RoleEvents.PROMOTE, UserStateInInitiative.USER_ASPIRING],
+  ]),
 };
-
-export function canPerformRoleStateEvent(
-  role: UserStateInInitiative,
-  action: RoleEvents,
-): boolean {
-  return Boolean(userPossibleRoleChanges[role][action]);
-}
 
 export type UserJoinRequestData = {
   id: number;

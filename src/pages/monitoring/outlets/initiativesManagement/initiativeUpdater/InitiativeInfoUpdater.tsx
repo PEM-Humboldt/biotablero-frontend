@@ -5,20 +5,13 @@ import { commonErrorMessage } from "@utils/ui";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_CONTACTS_MIN_AMOUNT,
-  INITIATIVE_LEADERS_MAX_AMOUNT,
-  INITIATIVE_LEADERS_MIN_AMOUNT,
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
 
-import {
-  RoleInInitiative,
-  type UserItem,
-} from "pages/monitoring/types/catalog";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
-  InitiativeDisplayInfo,
-  InitiativeDisplayInfoShort,
   InitiativeFullInfo,
   LocationObj,
 } from "pages/monitoring/types/initiative";
@@ -32,35 +25,33 @@ import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/buil
 import { InitiativeStatusDialog } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
 import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/FormListUpdater";
 import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
-import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/UsersInput";
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
-import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 
-export function InitiativeCard({
-  initiative,
-  updater,
+import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+
+export function InitiativeInfoUpdater({
+  initiativeId,
 }: {
-  initiative: InitiativeDisplayInfoShort | InitiativeDisplayInfo;
-  updater: (value: InitiativeFullInfo) => void;
+  initiativeId: number;
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [cardInfo, setCardInfo] = useState<InitiativeFullInfo | null>(null);
+  const [initiativeInfo, setInitiativeInfo] =
+    useState<InitiativeFullInfo | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<
     keyof CardInfoGrouped | "none" | null
   >(null);
 
   useEffect(() => {
-    setCurrentEdit(cardInfo?.enabled ? "none" : null);
-  }, [cardInfo?.enabled]);
+    setCurrentEdit(initiativeInfo?.enabled ? "none" : null);
+  }, [initiativeInfo?.enabled]);
 
-  const getCardInfo = useCallback(async () => {
+  const getInitiativeInfo = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await getInitiative(initiative.id);
+      const res = await getInitiative(initiativeId);
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;
@@ -86,32 +77,31 @@ export function InitiativeCard({
         ),
       } satisfies InitiativeFullInfo;
 
-      setCardInfo(initiativeAdminInfo);
-      updater(initiativeAdminInfo);
+      setInitiativeInfo(initiativeAdminInfo);
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
+      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
+      console.error(uiText.error.critical.log, err);
     } finally {
       setIsLoading(false);
     }
-  }, [initiative.id, updater]);
+  }, [initiativeId]);
 
   useEffect(() => {
-    void getCardInfo();
-  }, [getCardInfo]);
+    void getInitiativeInfo();
+  }, [getInitiativeInfo]);
 
   const handleDisableInitiative = async () => {
-    if (!initiative) {
+    if (!initiativeInfo) {
       return;
     }
 
     try {
       setIsLoading(true);
-      const endpoint = initiative.enabled ? "Disable" : "Enable";
-      const method = initiative.enabled ? "delete" : "post";
+      const endpoint = initiativeInfo.enabled ? "Disable" : "Enable";
+      const method = initiativeInfo.enabled ? "delete" : "post";
       const res = await monitoringAPI<InitiativeFullInfo>({
         type: method,
-        endpoint: `Initiative/${endpoint}/${initiative.id}`,
+        endpoint: `Initiative/${endpoint}/${initiativeInfo.id}`,
       });
 
       if (isMonitoringAPIError(res)) {
@@ -127,33 +117,32 @@ export function InitiativeCard({
 
       setCurrentEdit(res.enabled ? "none" : null);
 
-      void updater(res);
+      void getInitiativeInfo();
     } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
+      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
+      console.error(uiText.error.critical.log, err);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const cardInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
-    if (!cardInfo) {
+  const initiativeInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
+    if (!initiativeInfo) {
       return null;
     }
-    const { locations, users, contacts, ...rest } = cardInfo;
+    const { locations, users, contacts, ...rest } = initiativeInfo;
     const { imageUrl, bannerUrl, ...general } = rest;
     return {
       id: general.id,
       general,
       locations,
       contacts,
-
-      users: users.filter((user) => user.level.id === RoleInInitiative.LEADER),
+      users,
       images: { imageUrl, bannerUrl },
     };
-  }, [cardInfo]);
+  }, [initiativeInfo]);
 
-  return !cardInfoGrouped ? (
+  return !initiativeInfoGrouped ? (
     <div className="text-center font-light text-4xl text-primary px-12 py-24">
       {isLoading ? (
         uiText.loading
@@ -169,10 +158,10 @@ export function InitiativeCard({
       )}
     </div>
   ) : (
-    <AdminInitiativeUpdateCtx.Provider
+    <LeaderInitiativeUpdateCtx.Provider
       value={{
-        initiative: cardInfoGrouped,
-        updater: getCardInfo,
+        initiative: initiativeInfoGrouped,
+        updater: getInitiativeInfo,
         currentEdit,
         setCurrentEdit,
       }}
@@ -180,7 +169,7 @@ export function InitiativeCard({
       <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
         <div className="flex items-baseline gap-2 px-2 ">
           <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
-            {initiative.name}
+            {initiativeInfoGrouped.general.name}
           </h3>
           {errors.length > 0 && (
             <ErrorsList
@@ -191,71 +180,64 @@ export function InitiativeCard({
           )}
 
           <InitiativeStatusDialog
-            active={initiative.enabled}
-            name={initiative.name}
+            active={initiativeInfoGrouped.general.enabled}
+            name={initiativeInfoGrouped.general.name}
             handler={() => void handleDisableInitiative()}
           />
         </div>
 
         <GeneralInfoUpdater
-          title={uiText.initiative.module.general.title}
+          title={uiText.tabsContent.initiativeManagement.general.title}
           backEndpoint="Initiative"
         />
 
         <FormListUpdater
-          title={uiText.initiative.module.locations.title}
+          title={uiText.tabsContent.initiativeManagement.locations.title}
           initiativeSection="locations"
           AddItemComponent={LocationInput}
           maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
           minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
           renderCols={
             new Map<string, keyof LocationObj>([
-              [uiText.initiative.module.locations.tableCol[0], "department"],
-              [uiText.initiative.module.locations.tableCol[1], "municipality"],
-              [uiText.initiative.module.locations.tableCol[2], "locality"],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[0],
+                "department",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[1],
+                "municipality",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.locations.tableCol[2],
+                "locality",
+              ],
             ])
           }
           renderRowsCallback={makeLocationObj}
           backEndpoint="InitiativeLocation"
         />
 
-        <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
-          <FormListUpdater
-            title={uiText.initiative.module.contacts.title}
-            initiativeSection="contacts"
-            AddItemComponent={ContactInput}
-            maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
-            minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
-            renderCols={
-              new Map<string, keyof InitiativeContact>([
-                [uiText.initiative.module.contacts.tableCol[0], "email"],
-                [uiText.initiative.module.contacts.tableCol[1], "phone"],
-              ])
-            }
-            backEndpoint="InitiativeContact"
-          />
-
-          <FormListUpdater
-            title={uiText.initiative.module.users.title}
-            initiativeSection="users"
-            AddItemComponent={UsersInput}
-            maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
-            minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
-            renderCols={
-              new Map<string, keyof UserItem>([
-                [uiText.initiative.module.contacts.tableCol[0], "userName"],
-              ])
-            }
-            backEndpoint="InitiativeUser"
-          />
-        </div>
-
-        <ImagesUpdater
-          title={uiText.initiative.module.images.title}
-          backEndpointImage="Initiative/UploadImage"
-          backEndpointBanner="Initiative/UploadBanner"
+        <FormListUpdater
+          title={uiText.tabsContent.initiativeManagement.contacts.title}
+          initiativeSection="contacts"
+          AddItemComponent={ContactInput}
+          maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+          minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
+          renderCols={
+            new Map<string, keyof InitiativeContact>([
+              [
+                uiText.tabsContent.initiativeManagement.contacts.tableCol[0],
+                "email",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.contacts.tableCol[1],
+                "phone",
+              ],
+            ])
+          }
+          backEndpoint="InitiativeContact"
         />
       </article>
-    </AdminInitiativeUpdateCtx.Provider>
+    </LeaderInitiativeUpdateCtx.Provider>
   );
 }

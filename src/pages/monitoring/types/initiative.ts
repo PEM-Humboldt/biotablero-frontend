@@ -9,7 +9,7 @@ export type GeneralInfo = {
   shortName?: string;
   description: string;
   objective?: string;
-  influenceArea?: string;
+  baseline?: string;
 };
 
 export type InitiativeAditionalInfo = {

@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@ui/shadCN/component/alert-dialog";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function InitiativeStatusDialog({
   active,
