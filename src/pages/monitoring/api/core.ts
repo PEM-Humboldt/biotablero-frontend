@@ -30,7 +30,7 @@ import {
  * @returns A `Promise` resolving to:
  * - If `getStatus` is true: An object `{ data: T, status: number }`.
  * - If `getStatus` is false/omitted: The parsed response of type `T`.
- * - On failure: A `RequestError` object.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function monitoringAPI<T>(
   params: MonitoringAPIParams & { getStatus: true },

@@ -21,7 +21,10 @@ import type { RoleInInitiative } from "pages/monitoring/types/catalog";
  * Retrieves all the info about the initiative that has the specified id.
  *
  * @param id - The number of the initiative in DB
- * @returns A Promise that resolves in a detailed object with all the initiative info
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: Empta detailed object with all the initiative info
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getInitiative(id: number) {
   const res = await monitoringAPI<InitiativeFullInfo>({
@@ -36,18 +39,19 @@ export async function getInitiative(id: number) {
  * Fetches initiative data from the "Initiative" endpoint of the Monitoring API.
  *
  * @param odataParams Optional OData query parameters (filtering, pagination, etc.).
- * @returns A `Promise` that resolves to an `ODataInitiatives` object.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: an `ODataInitiatives` object.
+ * - On failure: A `ApiRequestError` object.
  */
 export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
 
 /**
  * Fetches the basic information of initiatives associated with the current user.
  *
- * @returns a `Promise<UserInitiatives[]>`. An array of {@link UserInInitiative}; returns an empty array if the request fails or no initiatives are found.
- *
- * @remarks
- * - This function handles API errors internally by logging them to the console and returning an empty collection.
- * - It specifically catches both structured API errors (via `isMonitoringAPIError`) and unexpected runtime exceptions.
+ * @returns A `Promise` resolving to:
+ * - On success: an n array of UserInInitiative objects.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getUserInitiativesInfo() {
   const res = await monitoringAPI<UserInInitiative[]>({
@@ -63,11 +67,10 @@ export async function getUserInitiativesInfo() {
  *
  * @param initiativeId The unique identifier of the initiative.
  * @param oData An object of type {@link ODataParams} containing query transformations.
- * @returns a `Promise<ODataUserRequest | null>`.
  *
- * @remarks
- * - Failed requests are logged to the console and return `null` to be handled by the caller's state management.
- * - A `try/catch` block is included to prevent network-level exceptions from bubbling up unhandled.
+ * @returns A `Promise` resolving to:
+ * - On success: an ODataUserRequest object.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getInitiativeRequests(
   initiativeId: number,
@@ -86,7 +89,10 @@ export async function getInitiativeRequests(
  * Creates a new initiative with its associated locations, contacts, and users.
  *
  * @param payload - An object containing arrays of LocationDataBasic, InitiativeContact and UserData, and the general info (key-value pair of strings).
- * @returns A `Promise` resolving to the {@link InitiativeFullInfo} of the created initiative.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: an InitiativeFullInfo of the created initiative.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function createInitiative(payload: {
   locations: LocationDataBasic[];
@@ -113,7 +119,10 @@ export async function createInitiative(payload: {
  *
  * @param isEnabled - Current status; if true, the initiative will be disabled. If false, it will be enabled.
  * @param initiativeId - The unique identifier of the initiative.
- * @returns A `Promise` resolving to the updated InitiativeFullInfo.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: An updated InitiativeFullInfo.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function changeInitiativeStatus(
   isEnabled: boolean,
@@ -135,7 +144,10 @@ export async function changeInitiativeStatus(
  *
  * @param initiativeId - The unique identifier of the initiative to update.
  * @param payload - A record of strings containing the updated fields.
- * @returns A `Promise` from the `monitoringAPI` call.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: An object with the general items of the initiative updated.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function updateInitiativeGeneralInfo(
   initiativeId: number,
@@ -163,7 +175,10 @@ export async function updateInitiativeGeneralInfo(
  * @param endpoint - The API endpoint string.
  * @param itemInfo - The generic data object of type T to be sent.
  * @param itemId - The ID of the item; if provided, triggers a PUT request, otherwise a POST request.
- * @returns A `Promise` resolving to the created or updated item of type T.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: An object of the created or updated item of type T.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function updateInitiativeItem<T>(
   initiativeId: number | null,
@@ -191,7 +206,10 @@ export async function updateInitiativeItem<T>(
  *
  * @param endpoint - The API endpoint string.
  * @param itemId - The unique identifier of the item to remove.
- * @returns A `Promise` resolving to the API response status.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void
+ * - On failure: A `ApiRequestError` object.
  */
 export async function removeInitiativeItem(endpoint: string, itemId: number) {
   const res = await monitoringAPI({
@@ -208,7 +226,10 @@ export async function removeInitiativeItem(endpoint: string, itemId: number) {
  *
  * @param requestId - The unique identifier of the join request.
  * @param resolvedInto - The resolution status: "Approved" or "Rejected".
- * @returns A `Promise` from the `monitoringAPI` call.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: a JoinRequest object
+ * - On failure: A `ApiRequestError` object.
  */
 export async function updateJoinRequest(
   requestId: number,
@@ -225,7 +246,9 @@ export async function updateJoinRequest(
 /**
  * Retrieves the list of join requests submitted by the current authenticated user.
  *
- * @returns a `Promise<UserJoinRequestData[]>`.
+ * @returns A `Promise` resolving to:
+ * - On success: UserJoinRequestData[]
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getUserJoinRequests() {
   const res = await monitoringAPI<UserJoinRequestData[]>({
@@ -236,6 +259,13 @@ export async function getUserJoinRequests() {
   return res;
 }
 
+/**
+ * Sends an email to the emails in the payload inviting them to the initiative
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: JoinInitiativeDataForm
+ * - On failure: A `ApiRequestError` object.
+ */
 export async function sendJoinInitiativeInvitation(
   payload: JoinInitiativeDataForm,
 ) {
@@ -254,7 +284,10 @@ export async function sendJoinInitiativeInvitation(
  * Removes the current user from an initiative they are already a member of.
  *
  * @param userIdInInitiative - The unique identifier of the membership record.
- * @returns a `Promise<string | null>` containing a formatted error message if the operation fails, or `null` on success.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void
+ * - On failure: A `ApiRequestError` object.
  */
 export async function leaveInitiative(userIdInInitiative: number) {
   // NOTE: Actualizar el endpoint cuando esté listo
@@ -270,7 +303,10 @@ export async function leaveInitiative(userIdInInitiative: number) {
  * Cancels a pending join request.
  *
  * @param requestId - The id of the user's relation with the request.
- * @returns a `Promise<string | null>` containing a formatted error message if the deletion fails, or `null` on success.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void
+ * - On failure: A `ApiRequestError` object.
  */
 export async function cancelJoinRequestToInitiative(requestId: number) {
   const res = await monitoringAPI({
@@ -286,7 +322,10 @@ export async function cancelJoinRequestToInitiative(requestId: number) {
  *
  * @param initiativeId - The unique identifier of the initiative.
  * @param asRole - The role defined by {@link RoleInInitiative} the user is requesting.
- * @returns a `Promise<string | null>` containing a formatted error message if the request fails, or `null` on success.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void
+ * - On failure: A `ApiRequestError` object.
  */
 export async function makeJoinRequestToInitiative(
   initiativeId: number,

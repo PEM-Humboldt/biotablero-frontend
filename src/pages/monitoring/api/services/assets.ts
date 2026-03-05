@@ -6,12 +6,10 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
  * Uploads a collection of images to their respective API endpoints.
  *
  * @param images An array of {@link ImageUploadInfo} containing the File and its destination path.
- * @returns a `Promise<string[]>`. The array contains error messages for any failed uploads; an empty array indicates total success.
  *
- * @remarks
- * - Non-File instances in the input array are silently skipped.
- * - This function does not throw on API errors, it collects server error messages in the returned array to be handled by the caller.
- * - A `try/catch` is only necessary if you need to catch unexpected runtime or network exceptions not handled by `monitoringAPI`.
+ * @returns A `Promise` resolving to:
+ * - On success: Empty string[].
+ * - On failure: A `ApiRequestError` object.
  */
 export async function uploadImages(
   images: ImageUploadInfo[],

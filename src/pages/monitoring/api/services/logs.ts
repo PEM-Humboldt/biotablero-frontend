@@ -12,19 +12,21 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
  * Fetches log records from the "Logs" endpoint of the Monitoring API.
  *
  * @param odataParams Optional OData query parameters (filtering, pagination, etc.).
- * @returns A `Promise` that resolves to an `ODataLog` object.
+ *
+ * @returns A Promise that resolves to:
+ * - On success: A `ODataLog` object.
+ * - On failure: A `ApiRequestError` object.
  */
 export const getLogs = createODataGetter<ODataLog>("Logs");
 
 /**
- * Makes the reques for the xslx file with optional OData query parameters.
- *
- * This function is a thin wrapper around `monitoringAPI` specialized for the `"Logs/xlsx"` endpoint.
- * Throws an error if the request fails or the backend returns an error response.
+ * Makes the request for the xslx file with optional OData query parameters.
  *
  * @param odataParams - Optional OData query parameters to filter, sort, or paginate results.
- * @returns A `Promise` resolving to a `Blob` object containing the logs data.
- * @throws If the API returns a `RequestError` or the request fails.
+ *
+ * @returns A Promise that resolves to:
+ * - On success: a `Blob` object containing the logs data.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function downloadLogs(odataParams: ODataParams = {}) {
   const result = await monitoringAPI<Blob>({
@@ -39,11 +41,9 @@ export async function downloadLogs(odataParams: ODataParams = {}) {
 /**
  * Retrieves a list of available log categories.
  *
- * @returns A `Promise<string[]>`.
- *
- * @remarks
- * - Internally maps LogTypeValue objects to extract only the `name` property.
- * - API errors are intercepted via `isMonitoringAPIError` to ensure a safe fallback.
+ * @returns A Promise that resolves to:
+ * - On success: a list with the LogTypeValues.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getLogTypes() {
   const res = await monitoringAPI<LogTypeValue[]>({
@@ -58,7 +58,10 @@ export async function getLogTypes() {
  * Retrieves the full details of a specific log entry by its ID.
  *
  * @param logId - The unique identifier of the log entry.
- * @returns A `Promise` resolving to a LogEntryFull object.
+ *
+ * @returns A Promise that resolves to:
+ * - On success: the entire log object.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function fetchLogDetails(logId: string) {
   const res = await monitoringAPI<LogEntryFull>({

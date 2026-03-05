@@ -10,10 +10,9 @@ import { monitoringAPI } from "pages/monitoring/api/core";
  * @param parentId [Optional] The ID of the parent location from which to fetch
  * sub-locations. If omitted, the function returns all the parent locations.
  *
- * @returns A Promise that resolves to an array of location objects formatted
- * for a selector:
- * - `name`: The location's name.
- * - `value`: The location's numeric ID.
+ * @returns A `Promise` resolving to:
+ * - On success: Location[]
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getLocationsList(parentId?: number | string) {
   const queryParam = parentId !== undefined ? `?parentId=${parentId}` : "";
@@ -33,8 +32,8 @@ export async function getLocationsList(parentId?: number | string) {
  * @param locationId - The unique numeric or string ID of the location to retrieve.
  *
  * @returns A Promise that resolves to:
- * - A `LocationBasicInfo` object containing the location's details if successful.
- * - `undefined` if an error occurs during the fetch process.
+ * - On success: A `LocationBasicInfo` object.
+ * - On failure: A `ApiRequestError` object.
  */
 export async function getLocationInfo(locationId: number | string) {
   const res = await monitoringAPI<LocationBasicInfo>({
