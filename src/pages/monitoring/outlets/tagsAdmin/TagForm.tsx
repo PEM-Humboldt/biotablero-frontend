@@ -29,7 +29,15 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 
-export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
+export function TagForm({
+  tagCategories,
+  mode = "create",
+  tagId,
+}: {
+  tagCategories: TagCategory[];
+  mode?: "create" | "edit";
+  tagId?: string;
+}) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
@@ -66,6 +74,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   };
 
   const categoryOnBlur = () => {
+    if (mode === "edit") return;
     const categoryId = formData.category.id;
     if (!categoryId || categoryId <= 0) {
       setErrors((old) => ({
@@ -110,7 +119,8 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
     nameOnBlur();
     urlOnBlur();
 
-    const currentErrors = validateFormClient(formData, tagValidations);
+    const validations = mode === "edit" ? tagValidations.filter(v => v.path !== "categoryId") : tagValidations;
+    const currentErrors = validateFormClient(formData, validations);
     setErrors(currentErrors);
 
     if (Object.keys(currentErrors).length > 0) {
@@ -119,15 +129,21 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
     }
 
     try {
-      const payload: TagDataForm = {
+      const payload = (mode === "create" ? {
         name: formData.name,
         url: formData.url,
         category: formData.category,
-      };
+      } : {
+        name: formData.name,
+        url: formData.url,
+      }) as any;
+
+      const method = mode === "create" ? "post" : "put";
+      const endpointStr = mode === "create" ? "Tag" : `Tag/${tagId}`;
 
       const res = await monitoringAPI<TagDataForm>({
-        type: "post",
-        endpoint: "Tag",
+        type: method,
+        endpoint: endpointStr,
         options: {
           data: payload,
         },
@@ -147,7 +163,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
       }
 
       handleFormReset();
-      setMessage({ text: uiText.successCreate, error: false });
+      setMessage({ text: mode === "create" ? uiText.successCreate : "Etiqueta actualizada exitosamente", error: false });
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
       console.error(uiText.criticalError.log, err);
@@ -159,7 +175,7 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
   return (
     <div className="bg-background w-full max-w-[600px] rounded-xl p-6 shadow-sm flex flex-col gap-4 mt-6 border border-muted">
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
-        Nueva etiqueta
+        {mode === "create" ? "Nueva etiqueta" : `Editar etiqueta ${tagId}`}
       </h4>
 
       <form
@@ -168,42 +184,44 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-2 p-6"
       >
-        <div>
-          <LabelAndErrors
-            htmlFor="category"
-            errID="errors_category"
-            validationErrors={errors.category ?? []}
-            className="mb-1 text-sm font-medium"
-          >
-            {uiText.form.selectCategoryLabel} <span aria-hidden="true">*</span>
-          </LabelAndErrors>
-          <select
-            id="category"
-            value={formData.category.id || ""}
-            onChange={(e) =>
-              setFormData((old) => ({
-                ...old,
-                category: {
-                  id: Number(e.target.value),
-                  name: "",
-                },
-              }))
-            }
-            onBlur={categoryOnBlur}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-            aria-invalid={errors.category !== undefined}
-            aria-describedby={errors.category ? "errors_category" : undefined}
-          >
-            <option value="" disabled>
-              {uiText.form.defaultCategoryTitle}
-            </option>
-            {tagCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
+        {mode === "create" && (
+          <div>
+            <LabelAndErrors
+              htmlFor="category"
+              errID="errors_category"
+              validationErrors={errors.category ?? []}
+              className="mb-1 text-sm font-medium"
+            >
+              {uiText.form.selectCategoryLabel} <span aria-hidden="true">*</span>
+            </LabelAndErrors>
+            <select
+              id="category"
+              value={formData.category.id || ""}
+              onChange={(e) =>
+                setFormData((old) => ({
+                  ...old,
+                  category: {
+                    id: Number(e.target.value),
+                    name: "",
+                  },
+                }))
+              }
+              onBlur={categoryOnBlur}
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+              aria-invalid={errors.category !== undefined}
+              aria-describedby={errors.category ? "errors_category" : undefined}
+            >
+              <option value="" disabled>
+                {uiText.form.defaultCategoryTitle}
               </option>
-            ))}
-          </select>
-        </div>
+              {tagCategories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <LabelAndErrors
@@ -285,9 +303,11 @@ export function TagForm({ tagCategories }: { tagCategories: TagCategory[] }) {
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button
             type="submit"
-            disabled={isLoading || tagCategories.length === 0}
+            disabled={isLoading || (mode === "create" && tagCategories.length === 0) || (mode === "edit" && !tagId)}
           >
-            {isLoading ? uiText.tag.creatingNew : uiText.tag.createNew}
+            {isLoading
+              ? (mode === "create" ? uiText.tag.creatingNew : "Actualizando...")
+              : (mode === "create" ? uiText.tag.createNew : "Actualizar etiqueta")}
           </Button>
           <Button
             type="reset"

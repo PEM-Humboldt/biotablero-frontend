@@ -12,6 +12,8 @@ import {
 export function TagsAdmin() {
   const { user } = useUserCTX();
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+  const [mode, setMode] = useState<"create" | "edit">("create");
+  const [tagIdStr, setTagIdStr] = useState("");
 
   useEffect(() => {
     if (!user?.username) {
@@ -40,7 +42,42 @@ export function TagsAdmin() {
         <h3>{uiText.title}</h3>
       </header>
 
-      <TagForm tagCategories={tagCategories} />
+      <div className="flex gap-4 mt-6">
+        <button
+          className={`px-4 py-2 rounded-md ${mode === "create" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+          onClick={() => setMode("create")}
+        >
+          Crear Etiqueta
+        </button>
+        <button
+          className={`px-4 py-2 rounded-md ${mode === "edit" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+          onClick={() => setMode("edit")}
+        >
+          Editar Etiqueta
+        </button>
+      </div>
+
+      {mode === "edit" && (
+        <div className="mt-4 max-w-[600px]">
+          <label htmlFor="tagIdInput" className="block text-sm font-medium mb-1">
+            ID de la etiqueta a editar
+          </label>
+          <input
+            id="tagIdInput"
+            type="text"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="Ingrese el identificador"
+            value={tagIdStr}
+            onChange={(e) => setTagIdStr(e.target.value)}
+          />
+        </div>
+      )}
+
+      {mode === "create" ? (
+        <TagForm tagCategories={tagCategories} mode="create" />
+      ) : (
+        <TagForm tagCategories={tagCategories} mode="edit" tagId={tagIdStr} />
+      )}
     </main>
   );
 }
