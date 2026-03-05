@@ -14,8 +14,6 @@ export const uiText = {
     noUpdateData: "No se pudo actualizar la información, intente más tarde.",
     actionError:
       "Ocurrió un problema al realizar la acción, vuelve a cargarla página.",
-    noGetData:
-      "No es posible obtener los detalles de la iniciativa, intenta de nuevo más tarde",
   },
 
   criticalError: {
@@ -27,7 +25,6 @@ export const uiText = {
     createNew: "Crear etiqueta",
     creatingNew: "Creando etiqueta...",
     cancelCreation: "Cancelar creación de una nueva etiqueta",
-    noInitiatives: "No hay etiquetas.",
   },
 
   form: {
