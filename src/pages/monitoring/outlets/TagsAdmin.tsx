@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { useUserCTX } from "@hooks/UserContext";
-import { uiText } from "./tagsAdmin/layout/uiText";
-import { TagForm } from "./tagsAdmin/TagForm";
-import { TagCategory } from "./tagsAdmin/types/tagData";
-import { isMonitoringAPIError, monitoringAPI } from "../api/monitoringAPI";
+import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
+import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagForm";
+import type { TagCategory } from "pages/monitoring/outlets/tagsAdmin/types/tagData";
+import {
+  isMonitoringAPIError,
+  monitoringAPI,
+} from "pages/monitoring/api/monitoringAPI";
 
 export function TagsAdmin() {
   const { user } = useUserCTX();

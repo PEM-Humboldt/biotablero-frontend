@@ -1,4 +1,4 @@
-import { TagDataForm } from "../types/tagData";
+import type { TagDataForm } from "pages/monitoring/outlets/tagsAdmin/types/tagData";
 
 export function makeInitialInfo(): TagDataForm {
   return {

@@ -11,10 +11,14 @@ import {
   isMonitoringAPIError,
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
-import { uiText } from "./layout/uiText";
-import { TagCategory, TagDataForm, TagDataFormErr } from "./types/tagData";
-import { tagValidations } from "./utils/formClientValidations";
-import { makeInitialInfo } from "./utils/formObjectUpdate";
+import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
+import type {
+  TagCategory,
+  TagDataForm,
+  TagDataFormErr,
+} from "pages/monitoring/outlets/tagsAdmin/types/tagData";
+import { tagValidations } from "pages/monitoring/outlets/tagsAdmin/utils/formClientValidations";
+import { makeInitialInfo } from "pages/monitoring/outlets/tagsAdmin/utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
 import { TAG_NAME_MAX_LENGTH, TAG_URL_MAX_LENGTH } from "@config/monitoring";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
