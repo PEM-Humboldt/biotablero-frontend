@@ -31,7 +31,7 @@ type CurrentInitiativeCTXProps = {
   initiativeInfo: InitiativeFullInfo | null;
   userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<null | string>;
-  updateInitiative: () => Promise<null | string>;
+  updateInitiative: () => Promise<void>;
   userStateInInitiative: UserStateInInitiative;
   isLoading: boolean;
 };
@@ -120,7 +120,11 @@ export function CurrentInitiativeCTX({
         userInInitiativeInfo:
           initiative?.users.find((u) => u.userName === user?.username) ?? null,
         setInitiative: fetchInitiative,
-        updateInitiative: async () => await fetchInitiative(initiative?.id),
+        updateInitiative: async () => {
+          if (initiative) {
+            await fetchInitiative(initiative.id);
+          }
+        },
         userStateInInitiative,
         isLoading,
       }}

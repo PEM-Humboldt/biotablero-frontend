@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import { SquarePen, Trash } from "lucide-react";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { TableRenderProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import type { TableRenderProps } from "pages/monitoring/types/initiativeData";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function DisplayTable<T, R extends object>({
   title,

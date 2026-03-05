@@ -1,10 +1,11 @@
 import { type ElementType, useEffect, useState } from "react";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
 import { LegendAndErrors } from "@ui/LabelingWithErrors";
 import { cn } from "@ui/shadCN/lib/utils";
-import { DisplayTable } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/DisplayTable";
+
+import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
+import { DisplayTable } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/DisplayTable";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 type FormListManagerProps<T, R extends object> = {
   title: string;

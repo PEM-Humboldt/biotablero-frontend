@@ -1,8 +1,9 @@
 import { type Dispatch, type SetStateAction } from "react";
-import { Button } from "@ui/shadCN/component/button";
 import { Pencil, PencilOff } from "lucide-react";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { Button } from "@ui/shadCN/component/button";
+
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function EditModeButton({
   state,

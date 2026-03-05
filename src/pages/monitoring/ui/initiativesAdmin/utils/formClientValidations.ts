@@ -1,8 +1,8 @@
-import type { FormClientValidation } from "pages/monitoring/outlets/initiativesAdmin/types/form";
+import type { FormClientValidation } from "pages/monitoring/types/formValidation";
 import type {
   CardInfoGrouped,
   InitiativeDataForm,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+} from "pages/monitoring/types/initiativeData";
 
 export const newInitiativeValidations: FormClientValidation<InitiativeDataForm>[] =
   [

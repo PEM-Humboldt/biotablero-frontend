@@ -20,13 +20,13 @@ import { ImgValidator } from "@utils/imgValidator";
 import { Button } from "@ui/shadCN/component/button";
 import { INITIATIVES_IMG_ALLOWED_FORMATS } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ImagesData } from "pages/monitoring/types/initiative";
 import type {
   ErrorFields,
   InitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
-import { PlainInputContainer } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/PlainInputContainer";
+} from "pages/monitoring/types/initiativeData";
+import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 const setInitialImageInfo = (e: unknown) => (e instanceof File ? e : null);
 const setInitialImagePrv = (e: unknown) => (typeof e === "string" ? e : null);

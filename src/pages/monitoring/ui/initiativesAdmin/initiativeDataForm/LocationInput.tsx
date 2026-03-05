@@ -13,7 +13,6 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { INITIATIVE_LOCALITY_MAX_LENGTH } from "@config/monitoring";
 
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import {
   isLocationObj,
   type LocationDataBasic,
@@ -22,11 +21,12 @@ import {
   getColombianDepartments,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
-import type { ItemEditorProps } from "pages/monitoring/outlets/initiativesAdmin/types/initiativeData";
+import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
 import type { LocationList } from "pages/monitoring/types/catalog";
-import { locationAlreadyExist } from "pages/monitoring/outlets/initiativesAdmin/utils/fieldClientValidations";
-import { fetchAndMakeLocationObj } from "pages/monitoring/outlets/initiativesAdmin/utils/builders";
-import { InputListActionButtons } from "pages/monitoring/outlets/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import { locationAlreadyExist } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
+import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 export function LocationInput<T extends LocationDataBasic>({
   selectedItems,
