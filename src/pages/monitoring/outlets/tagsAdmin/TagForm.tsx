@@ -1,4 +1,4 @@
-import { type FormEvent, useCallback, useState } from "react";
+import { type FormEvent, useCallback, useState, useEffect } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 import {
@@ -45,6 +45,43 @@ export function TagForm({
     text: string;
     error: boolean;
   } | null>(null);
+
+  useEffect(() => {
+    if (mode === "edit" && tagId) {
+      setIsLoading(true);
+      const fetchTag = async () => {
+        try {
+          const res = await monitoringAPI<TagDataForm>({
+            type: "get",
+            endpoint: `Tag/${tagId}`,
+          });
+
+          if (isMonitoringAPIError(res)) {
+            setErrors({ root: [res.message] });
+          } else {
+            setFormData({
+              name: res.name || "",
+              url: res.url || "",
+              category: res.category || { id: 0, name: "" },
+            });
+            setErrors({});
+            setMessage(null);
+          }
+        } catch (err) {
+          console.error(err);
+          setErrors({ root: ["Error obteniendo la etiqueta."] });
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      void fetchTag();
+    } else if (mode === "create") {
+      setFormData(makeInitialInfo());
+      setErrors({});
+      setMessage(null);
+    }
+  }, [mode, tagId]);
 
   const validateField = useCallback(
     (
@@ -129,13 +166,14 @@ export function TagForm({
     }
 
     try {
+      const finalUrl = formData.url?.trim() || null;
       const payload = (mode === "create" ? {
         name: formData.name,
-        url: formData.url,
+        url: finalUrl,
         category: formData.category,
       } : {
         name: formData.name,
-        url: formData.url,
+        url: finalUrl,
       }) as any;
 
       const method = mode === "create" ? "post" : "put";
@@ -184,44 +222,43 @@ export function TagForm({
         onSubmit={(e) => void handleSubmit(e)}
         className="flex flex-col gap-2 p-6"
       >
-        {mode === "create" && (
-          <div>
-            <LabelAndErrors
-              htmlFor="category"
-              errID="errors_category"
-              validationErrors={errors.category ?? []}
-              className="mb-1 text-sm font-medium"
-            >
-              {uiText.form.selectCategoryLabel} <span aria-hidden="true">*</span>
-            </LabelAndErrors>
-            <select
-              id="category"
-              value={formData.category.id || ""}
-              onChange={(e) =>
-                setFormData((old) => ({
-                  ...old,
-                  category: {
-                    id: Number(e.target.value),
-                    name: "",
-                  },
-                }))
-              }
-              onBlur={categoryOnBlur}
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-              aria-invalid={errors.category !== undefined}
-              aria-describedby={errors.category ? "errors_category" : undefined}
-            >
-              <option value="" disabled>
-                {uiText.form.defaultCategoryTitle}
+        <div>
+          <LabelAndErrors
+            htmlFor="category"
+            errID="errors_category"
+            validationErrors={errors.category ?? []}
+            className="mb-1 text-sm font-medium"
+          >
+            {uiText.form.selectCategoryLabel} {mode === "create" && <span aria-hidden="true">*</span>}
+          </LabelAndErrors>
+          <select
+            id="category"
+            value={formData.category.id || ""}
+            onChange={(e) =>
+              setFormData((old) => ({
+                ...old,
+                category: {
+                  id: Number(e.target.value),
+                  name: "",
+                },
+              }))
+            }
+            onBlur={categoryOnBlur}
+            disabled={mode === "edit" || isLoading}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+            aria-invalid={errors.category !== undefined}
+            aria-describedby={errors.category ? "errors_category" : undefined}
+          >
+            <option value="" disabled>
+              {uiText.form.defaultCategoryTitle}
+            </option>
+            {tagCategories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
               </option>
-              {tagCategories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+            ))}
+          </select>
+        </div>
 
         <div>
           <LabelAndErrors
