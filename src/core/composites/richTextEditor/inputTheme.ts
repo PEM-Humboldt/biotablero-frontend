@@ -1,6 +1,7 @@
 export const inputTheme = {
   paragraph: "editor-paragraph",
-  quote: "editor-quote",
+  quote:
+    "border-l-4 border-muted-foreground/40 pl-4 italic my-2 text-muted-foreground",
   heading: {
     h1: "editor-heading-h1",
     h2: "editor-heading-h2",
@@ -10,19 +11,16 @@ export const inputTheme = {
     h6: "editor-heading-h6",
   },
   list: {
+    ul: "list-disc ml-6 mb-2 space-y-1 editor-list-ul",
+    ol: "list-decimal ml-6 mb-2 space-y-1 editor-list-ol",
+    listitem: "my-1 editor-listItem",
     nested: {
-      listitem: "editor-nested-listitem",
+      listitem: "list-none ml-4 editor-nested-listitem",
     },
-    ol: "editor-list-ol",
-    ul: "editor-list-ul",
-    listitem: "editor-listItem",
-    listitemChecked: "editor-listItemChecked",
-    listitemUnchecked: "editor-listItemUnchecked",
   },
-  link: "editor-link",
+  link: "text-accent underline",
   text: {
     bold: "font-normal",
-    // code: "editor-textCode",
     italic: "italic",
     underline: "underline",
   },

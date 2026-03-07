@@ -1,0 +1,77 @@
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $getSelection,
+  $isRangeSelection,
+  INDENT_CONTENT_COMMAND,
+  KEY_TAB_COMMAND,
+  OUTDENT_CONTENT_COMMAND,
+  COMMAND_PRIORITY_EDITOR,
+  COMMAND_PRIORITY_CRITICAL,
+  FORMAT_TEXT_COMMAND,
+  KEY_DOWN_COMMAND,
+} from "lexical";
+import { useEffect } from "react";
+
+export function CustomShortcuts() {
+  return (
+    <>
+      <TabIndentation />
+      <ToolbarShortcuts />
+    </>
+  );
+}
+
+function TabIndentation() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    // NOTE: Permitir la indentacion sin saltar de focus
+    return editor.registerCommand(
+      KEY_TAB_COMMAND,
+      (payload: KeyboardEvent) => {
+        const selection = $getSelection();
+        if (!$isRangeSelection(selection)) {
+          return false;
+        }
+
+        payload.preventDefault();
+
+        if (payload.shiftKey) {
+          editor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+        } else {
+          editor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
+        }
+
+        return true;
+      },
+      COMMAND_PRIORITY_EDITOR,
+    );
+  }, [editor]);
+
+  return null;
+}
+
+function ToolbarShortcuts() {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerCommand(
+      KEY_DOWN_COMMAND,
+      (payload: KeyboardEvent) => {
+        const { code, ctrlKey, metaKey } = payload;
+        const isModifier = ctrlKey || metaKey;
+
+        if (isModifier && code === "KeyY") {
+          payload.preventDefault();
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+          return true;
+        }
+
+        return false;
+      },
+      COMMAND_PRIORITY_CRITICAL,
+    );
+  }, [editor]);
+
+  return null;
+}
