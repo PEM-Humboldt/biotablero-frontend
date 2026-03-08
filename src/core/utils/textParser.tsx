@@ -1,122 +1,105 @@
 import type { ReactNode } from "react";
 import React from "react";
 
-type Token =
-  | { type: "normal"; content: string }
-  | { type: "link"; url: string; label: Token[] }
-  | { type: "strong"; content: Token[] }
-  | { type: "emphasis"; content: Token[] };
+import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import { createHeadlessEditor } from "@lexical/headless";
+import { $getRoot, type LexicalNode, ElementNode, TextNode } from "lexical";
+import {
+  $isHeadingNode,
+  $isQuoteNode,
+  HeadingNode,
+  QuoteNode,
+} from "@lexical/rich-text";
+import {
+  $isListItemNode,
+  $isListNode,
+  ListItemNode,
+  ListNode,
+} from "@lexical/list";
+import { $isLinkNode, LinkNode } from "@lexical/link";
 
-const parseRules = {
-  link: {
-    split: /(\[[^\]]+\]\([^)]+\))/g,
-    matchRegex: /\[([^\]]+)\]\(([^)]+)\)/,
-  },
-  strong: {
-    split: /(\*\*[^*]+\*\*|__[^_]+__)/g,
-    matchRegex: /(?:\*\*|__)(.+?)(?:\*\*|__)/,
-  },
-  emphasis: {
-    split: /(\*[^*]+\*|_[^_]+_)/g,
-    matchRegex: /(?:\*|_)(.+?)(?:\*|_)/,
-  },
-};
+const nodes = [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode];
 
-function parseLineToTokens(text: string, rulesIndex = 0): Token[] {
-  const ruleKeys = Object.keys(parseRules) as (keyof typeof parseRules)[];
-  if (rulesIndex >= ruleKeys.length) {
-    return [{ type: "normal", content: text }];
+export function parseSimpleMarkdown(markdown: string): ReactNode {
+  if (!markdown) {
+    return null;
   }
 
-  const currentRuleKey = ruleKeys[rulesIndex];
-  const { split, matchRegex } = parseRules[currentRuleKey];
+  const editor = createHeadlessEditor({ nodes });
+  let reactContent: ReactNode = null;
 
-  return text.split(split).flatMap((part): Token[] => {
-    if (!part) {
-      return [];
+  editor.update(() => {
+    $convertFromMarkdownString(markdown, TRANSFORMERS);
+
+    const root = $getRoot();
+    reactContent = lexNodesToReactNodes(root.getChildren());
+  });
+
+  return reactContent;
+}
+
+export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
+  return lexNodes.map((lexNode, i) => {
+    const index = `parsed_md_${i}`;
+
+    if ($isHeadingNode(lexNode)) {
+      const Tag = lexNode.getTag();
+      const children = lexNodesToReactNodes(lexNode.getChildren());
+
+      return <Tag key={index}>{children}</Tag>;
     }
 
-    const match = part.match(matchRegex);
-    if (match) {
-      if (currentRuleKey === "link") {
-        return [
-          {
-            type: "link",
-            url: match[2],
-            label: parseLineToTokens(match[1], rulesIndex + 1),
-          },
-        ];
+    if ($isListNode(lexNode)) {
+      const listType = lexNode.getListType();
+      const Tag = listType === "number" ? "ol" : "ul";
+      return (
+        <Tag key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</Tag>
+      );
+    }
+
+    if ($isListItemNode(lexNode)) {
+      return <li key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</li>;
+    }
+
+    if ($isLinkNode(lexNode)) {
+      const url = lexNode.getURL();
+      return (
+        <a key={index} href={url} target="_blank">
+          {lexNodesToReactNodes(lexNode.getChildren())}
+        </a>
+      );
+    }
+
+    if ($isQuoteNode(lexNode)) {
+      return (
+        <blockquote key={index}>
+          {lexNodesToReactNodes(lexNode.getChildren())}
+        </blockquote>
+      );
+    }
+
+    if (lexNode instanceof TextNode) {
+      let content: ReactNode = lexNode.getTextContent();
+      const format = lexNode.getFormat();
+
+      // NOTE: el manejo de estilos del textnode se hace por bit
+      if (format & 1) {
+        content = <strong key={`b-${index}`}>{content}</strong>;
+      }
+      if (format & 2) {
+        content = <em key={`i-${index}`}>{content}</em>;
+      }
+      if (format & 8) {
+        content = <u key={`u-${index}`}>{content}</u>;
       }
 
-      return [
-        {
-          type: currentRuleKey,
-          content: parseLineToTokens(match[1], rulesIndex + 1),
-        },
-      ];
+      return <React.Fragment key={index}>{content}</React.Fragment>;
     }
 
-    return parseLineToTokens(part, rulesIndex + 1);
-  });
-}
-
-function renderTokens(tokens: Token[]): ReactNode {
-  return tokens.map((token, i) => {
-    switch (token.type) {
-      case "normal":
-        return token.content;
-      case "link":
-        return (
-          <a key={i} href={token.url} className="underline">
-            {renderTokens(token.label)}
-          </a>
-        );
-      case "strong":
-        return <strong key={i}>{renderTokens(token.content)}</strong>;
-      case "emphasis":
-        return <em key={i}>{renderTokens(token.content)}</em>;
-    }
-  });
-}
-
-export function parseSimpleMarkdown(text: string): ReactNode {
-  const blocks = text.split("\n\n");
-
-  return blocks.map((block, index) => {
-    if (/^[-*]\s/.test(block)) {
-      const items = block.split("\n");
-      return (
-        <ul key={index} className="list-disc">
-          {items.map((item, i) => {
-            const text = item.replace(/^[-*]\s/, "");
-            return <li key={i}>{renderTokens(parseLineToTokens(text))}</li>;
-          })}
-        </ul>
-      );
+    if (lexNode instanceof ElementNode) {
+      return <p key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</p>;
     }
 
-    if (/^\d+\.\s/.test(block)) {
-      const items = block.split("\n");
-      return (
-        <ol key={index} className="list-decimal">
-          {items.map((item, i) => {
-            const text = item.replace(/^\d+\.\s/, "");
-            return <li key={i}>{renderTokens(parseLineToTokens(text))}</li>;
-          })}
-        </ol>
-      );
-    }
-
-    const lines = block.split("\n");
-    return (
-      <p key={index} className="mb-4">
-        {lines.map((line, i) => (
-          <React.Fragment key={i}>
-            {renderTokens(parseLineToTokens(line))}
-            {i < lines.length - 1 && <br />}
-          </React.Fragment>
-        ))}
-      </p>
-    );
+    return null;
   });
 }
