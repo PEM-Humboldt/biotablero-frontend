@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { List, ListOrdered } from "lucide-react";
 import { $getSelection, $isRangeSelection } from "lexical";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -12,13 +11,10 @@ import {
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import type { RenderSelector } from "@composites/richTextEditor/toolbar/types/items";
-
-type SupportedListTypes = "ul" | "ol";
-const listTypes: Map<SupportedListTypes, RenderSelector> = new Map([
-  ["ul", { label: "Crear lista", icon: List }],
-  ["ol", { label: "Crear lista ordenada", icon: ListOrdered }],
-]);
+import {
+  listTypes,
+  type SupportedListTypes,
+} from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function ListTypeSelector() {
   const [editor] = useLexicalComposerContext();

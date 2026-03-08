@@ -7,10 +7,10 @@ import {
 } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { useEffect, useState } from "react";
-import { Undo2, Redo2 } from "lucide-react";
 import { mergeRegister } from "@lexical/utils";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { uiText } from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function UndoRedo() {
   const [editor] = useLexicalComposerContext();
@@ -45,9 +45,10 @@ export function UndoRedo() {
         size="icon"
         disabled={!canUndo}
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
-        title="Deshacer (Ctrl+Z)"
+        title={uiText.history.undo.title}
       >
-        <Undo2 className="h-4 w-4" />
+        <span className="sr-only">{uiText.history.undo.sr}</span>
+        <uiText.history.undo.icon aria-hidden="true" className="h-4 w-4" />
       </Button>
 
       <Button
@@ -55,9 +56,10 @@ export function UndoRedo() {
         size="icon"
         disabled={!canRedo}
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
-        title="Rehacer (Ctrl+Y)"
+        title={uiText.history.redo.title}
       >
-        <Redo2 className="h-4 w-4" />
+        <span className="sr-only">{uiText.history.redo.sr}</span>
+        <uiText.history.redo.icon aria-hidden="true" className="h-4 w-4" />
       </Button>
     </ButtonGroup>
   );

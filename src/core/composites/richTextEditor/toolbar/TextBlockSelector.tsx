@@ -14,16 +14,7 @@ import {
 import { $setBlocksType } from "@lexical/selection";
 import { NativeSelect } from "@ui/shadCN/component/native-select";
 import { NativeSelectOption } from "@ui/shadCN/component/native-select";
-
-type SupportedBlockTypes = "p" | "h1" | "h2" | "h3" | "h4";
-
-const blockTypes: Map<SupportedBlockTypes, string> = new Map([
-  ["p", "Párrafo"],
-  ["h1", "Título nivel 1"],
-  ["h2", "Título nivel 2"],
-  ["h3", "Título nivel 3"],
-  ["h4", "Título nivel 4"],
-]);
+import { blockTypes } from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function TextBlockSelector() {
   const [blockType, setBlockType] = useState<string>("p");

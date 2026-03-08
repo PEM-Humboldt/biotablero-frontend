@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-import { Bold, Italic, Underline } from "lucide-react";
 import { $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND } from "lexical";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { Button } from "@ui/shadCN/component/button";
-import type { RenderSelector } from "@composites/richTextEditor/toolbar/types/items";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-
-type SupportedTextFormats = "bold" | "italic" | "underline";
-const textFormats: Map<SupportedTextFormats, RenderSelector> = new Map([
-  ["bold", { label: "Negrita (ctrl + b)", icon: Bold }],
-  ["italic", { label: "Cursiva (ctrl + i)", icon: Italic }],
-  ["underline", { label: "Subrayado (ctrl + u)", icon: Underline }],
-]);
+import {
+  type SupportedTextFormats,
+  textFormats,
+} from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function TextFormatSelector() {
   const [editor] = useLexicalComposerContext();

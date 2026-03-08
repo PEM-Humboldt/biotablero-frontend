@@ -1,5 +1,11 @@
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $createHeadingNode,
+  HeadingNode,
+  HeadingTagType,
+} from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
+import {
   $getSelection,
   $isRangeSelection,
   INDENT_CONTENT_COMMAND,
@@ -11,6 +17,7 @@ import {
   KEY_DOWN_COMMAND,
 } from "lexical";
 import { useEffect } from "react";
+import { HEADINGS_OFFSET } from "./layout/uiTextAndSettings";
 
 export function CustomShortcuts() {
   return (
@@ -61,9 +68,22 @@ function ToolbarShortcuts() {
         const { code, ctrlKey, metaKey } = payload;
         const isModifier = ctrlKey || metaKey;
 
-        if (isModifier && code === "KeyY") {
+        const isHeadingShortcut =
+          isModifier &&
+          payload.altKey &&
+          ["Digit1", "Digit2", "Digit3", "Digit4"].includes(code);
+
+        if (isHeadingShortcut) {
           payload.preventDefault();
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+          const level = code.replace("Digit", "");
+          const tag = `h${Number(level) + HEADINGS_OFFSET}` as HeadingTagType;
+
+          editor.update(() => {
+            const selection = $getSelection();
+            if ($isRangeSelection(selection)) {
+              $setBlocksType(selection, () => $createHeadingNode(tag));
+            }
+          });
           return true;
         }
 

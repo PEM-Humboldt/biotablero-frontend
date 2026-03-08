@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MessageSquareQuote, Link } from "lucide-react";
+import {} from "lucide-react";
 import {
   $createParagraphNode,
   $getSelection,
@@ -13,11 +13,7 @@ import { $setBlocksType } from "@lexical/selection";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-
-const structureModifications = {
-  quote: { label: "Insertar cita", icon: MessageSquareQuote },
-  link: { label: "Insertar enlace", icon: Link },
-};
+import { structureModifications } from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function TextStructureSelector() {
   const [editor] = useLexicalComposerContext();
@@ -81,7 +77,7 @@ export function TextStructureSelector() {
       </Button>
 
       <Button
-        variant={isLink ? "default" : "outline"}
+        variant={isQuote ? "default" : "outline"}
         size="icon"
         onClick={toggleQuote}
         title={structureModifications.quote.label}
