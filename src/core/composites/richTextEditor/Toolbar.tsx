@@ -1,8 +1,8 @@
 import { UndoRedo } from "@composites/richTextEditor/toolbar/UndoRedo";
-import { TextStructureSelector } from "@composites/richTextEditor/toolbar/TextStructureSelector";
 import { TextFormatSelector } from "@composites/richTextEditor/toolbar/TextFormatSelector";
 import { ListTypeSelector } from "@composites/richTextEditor/toolbar/ListTypeSelector";
 import { TextBlockSelector } from "@composites/richTextEditor/toolbar/TextBlockSelector";
+import { SpecialTextInsertion } from "@composites/richTextEditor/toolbar/SpecialTextInsertion";
 
 export function Toolbar() {
   return (
@@ -11,7 +11,7 @@ export function Toolbar() {
       <TextBlockSelector />
       <TextFormatSelector />
       <ListTypeSelector />
-      <TextStructureSelector />
+      <SpecialTextInsertion />
     </div>
   );
 }

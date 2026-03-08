@@ -33,10 +33,10 @@ import { inputTheme } from "@composites/richTextEditor/inputTheme";
 import { CustomShortcuts } from "@composites/richTextEditor/CustomShortcuts";
 import { Toolbar } from "@composites/richTextEditor/Toolbar";
 import { GetEditorState } from "@composites/richTextEditor/GetEditorState";
+import { uiText } from "@composites/richTextEditor/layout/uiTextAndSettings";
 
-export const availableTransformers: Transformer[] = [
+const editorTransformers: Transformer[] = [
   UNORDERED_LIST,
-  HEADING,
   ORDERED_LIST,
   QUOTE,
   BOLD_ITALIC_STAR,
@@ -45,18 +45,27 @@ export const availableTransformers: Transformer[] = [
   BOLD_UNDERSCORE,
   ITALIC_STAR,
   ITALIC_UNDERSCORE,
+];
+
+export const availableTransformers: Transformer[] = [
+  ...editorTransformers,
+  HEADING,
   LINK,
 ];
 
 export function RichTextEditor({
   textToLoad,
   textStateRef,
+  editorNamespace,
+  placeholder,
 }: {
   textToLoad?: string;
   textStateRef: MutableRefObject<EditorState | null>;
+  editorNamespace?: string;
+  placeholder?: string;
 }) {
   const initialConfig = {
-    namespace: "relatosDelTerritorio",
+    namespace: editorNamespace || "richTextEditor",
     theme: inputTheme,
     onError: (err: Error) => console.error("Lexical:", err),
     nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode],
@@ -74,10 +83,10 @@ export function RichTextEditor({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
-                aria-placeholder={"Escribe aquí tu relato..."}
+                aria-placeholder={placeholder || uiText.placeholderDefault}
                 placeholder={
                   <div className="absolute left-0 top-0 m-4 text-primary/60">
-                    Escribe aquí tu relato...
+                    {placeholder || uiText.placeholderDefault}
                   </div>
                 }
                 className="mt-2 p-4 focus-within:outline-none"
@@ -85,15 +94,15 @@ export function RichTextEditor({
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
-          <MarkdownShortcutPlugin transformers={availableTransformers} />
-          <HistoryPlugin />
-          <CustomShortcuts />
-          <ListPlugin />
-          <LinkPlugin />
-          <GetEditorState editorRef={textStateRef} />
-          <AutoFocusPlugin />
         </div>
       </div>
+      <ListPlugin />
+      <LinkPlugin />
+      <AutoFocusPlugin />
+      <HistoryPlugin />
+      <CustomShortcuts />
+      <MarkdownShortcutPlugin transformers={editorTransformers} />
+      <GetEditorState editorRef={textStateRef} />
     </LexicalComposer>
   );
 }

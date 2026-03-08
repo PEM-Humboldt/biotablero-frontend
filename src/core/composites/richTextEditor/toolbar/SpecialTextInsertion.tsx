@@ -6,7 +6,7 @@ import {
   $isRangeSelection,
 } from "lexical";
 
-import { $isLinkNode, TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { $isLinkNode } from "@lexical/link";
 import { $isQuoteNode, $createQuoteNode } from "@lexical/rich-text";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $setBlocksType } from "@lexical/selection";
@@ -14,8 +14,9 @@ import { $setBlocksType } from "@lexical/selection";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { structureModifications } from "@composites/richTextEditor/layout/uiTextAndSettings";
+import { InsertUrlDialog } from "@composites/richTextEditor/toolbar/specialTextInsertion/InsertUrlDialog";
 
-export function TextStructureSelector() {
+export function SpecialTextInsertion() {
   const [editor] = useLexicalComposerContext();
   const [isQuote, setIsQuote] = useState(false);
   const [isLink, setIsLink] = useState(false);
@@ -54,27 +55,19 @@ export function TextStructureSelector() {
     });
   };
 
-  const toggleLink = () => {
-    if (isLink) {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null);
-    } else {
-      const url = window.prompt("Introduce la URL:");
-      if (url) {
-        editor.dispatchCommand(TOGGLE_LINK_COMMAND, url);
-      }
-    }
-  };
-
   return (
     <ButtonGroup>
-      <Button
-        variant={isLink ? "default" : "outline"}
-        size="icon"
-        onClick={toggleLink}
-        title={structureModifications.link.label}
-      >
-        <structureModifications.link.icon className="size-4" />
-      </Button>
+      <InsertUrlDialog
+        trigger={
+          <Button
+            variant={isLink ? "default" : "outline"}
+            size="icon"
+            title={structureModifications.link.label}
+          >
+            <structureModifications.link.icon className="size-4" />
+          </Button>
+        }
+      />
 
       <Button
         variant={isQuote ? "default" : "outline"}

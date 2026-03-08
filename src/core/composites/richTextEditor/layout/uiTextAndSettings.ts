@@ -47,8 +47,26 @@ export const structureModifications = {
 };
 
 export const uiText = {
+  placeholderDefault: "Escribe aquí...",
   history: {
     undo: { title: "Deshacer (Ctrl+Z)", sr: "Deshacer", icon: Undo2 },
     redo: { title: "Rehacer (Ctrl+Y)", sr: "Rehacer", icon: Redo2 },
+  },
+
+  linkObject: {
+    edit: "Editar enlace",
+    new: "Insertar enlace",
+    remove: "Eliminar enlace",
+    confirm: { new: "Crear enlace", update: "Actualizar enlace" },
+
+    inputText: {
+      label: "Texto para el enlace",
+      placeholder: "el nombre del sitio",
+    },
+
+    inputUrl: {
+      label: "Enlace de destino",
+      placeholder: "https://www.mi-ejemplo.com",
+    },
   },
 };
