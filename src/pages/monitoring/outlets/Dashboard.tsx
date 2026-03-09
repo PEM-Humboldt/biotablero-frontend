@@ -7,6 +7,7 @@ import { type EditorState } from "lexical";
 import { type ReactNode, useRef, useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import { parseSimpleMarkdown } from "@utils/textParser";
+import { KeywordInput } from "@composites/keywordInput";
 
 const preloadText = `
 ### entonces careverga
@@ -20,6 +21,7 @@ como va todo
 
 export function Dashboard() {
   const textStateRef = useRef<EditorState | null>(null);
+  const keywordsRef = useRef<string[] | null>(null);
   const [a, setA] = useState<ReactNode>();
   // const [b, setB] = useState();
 
@@ -39,6 +41,10 @@ export function Dashboard() {
     <>
       <RichTextEditor textToLoad={preloadText} textStateRef={textStateRef} />
       <Button onClick={getMarkdown}>get</Button>
+      <KeywordInput
+        listStateRef={keywordsRef}
+        // source={["carai", "lucy", "pendejo"]}
+      />
       <div>{a}</div>
     </>
   );
