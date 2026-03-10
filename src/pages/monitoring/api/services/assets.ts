@@ -1,6 +1,7 @@
 import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
 
 /**
  * Uploads a collection of images to their respective API endpoints.
@@ -42,4 +43,52 @@ export async function uploadImages(
   }
 
   return imageUploadErrors;
+}
+
+export async function postTerritoryHistoryVideo(
+  territoryStoryId: number,
+  fileUrl: string,
+) {
+  const payload = { territoryStoryId, fileUrl };
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "post",
+    endpoint: `/TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+    options: { data: payload },
+  });
+
+  return res;
+}
+
+export async function editTerritoryHistoryVideo(
+  territoryStoryVideoId: number,
+  fileUrl: string,
+) {
+  const payload = { fileUrl };
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "put",
+    endpoint: `/TerritoryStoryVideo/${territoryStoryVideoId}`,
+    options: { data: payload },
+  });
+
+  return res;
+}
+
+export async function deleteTerritoryHistoryVideo(
+  territoryStoryVideoId: number,
+) {
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "delete",
+    endpoint: `/TerritoryStoryVideo/${territoryStoryVideoId}`,
+  });
+
+  return res;
+}
+
+export async function getTerritoryHistoryVideos(territoryStoryId: number) {
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "get",
+    endpoint: `/TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+  });
+
+  return res;
 }

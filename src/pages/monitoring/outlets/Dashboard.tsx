@@ -8,13 +8,15 @@ import { type ReactNode, useRef, useState } from "react";
 import { Button } from "@ui/shadCN/component/button";
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { KeywordInput } from "@composites/keywordInput";
+import { YoutubeVideoInput } from "pages/monitoring/ui/YoutubeVideoInput";
+import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
 
 const preloadText = `
-### entonces careverga
+### Belcebú bendice este terminal
 
 como va todo
 
-[pendejo](https://mmejia.com)
+[testea enlace](https://mmejia.com)
 
 **bien o *no***
 `;
@@ -22,6 +24,9 @@ como va todo
 export function Dashboard() {
   const textStateRef = useRef<EditorState | null>(null);
   const keywordsRef = useRef<string[] | null>(null);
+  const VideosRef = useRef<VideoObjectTS[] | null>([
+    { fileUrl: "https://www.youtube.com/watch?v=5sRh_WXw0WI" },
+  ]);
   const [a, setA] = useState<ReactNode>();
   // const [b, setB] = useState();
 
@@ -41,10 +46,8 @@ export function Dashboard() {
     <>
       <RichTextEditor textToLoad={preloadText} textStateRef={textStateRef} />
       <Button onClick={getMarkdown}>get</Button>
-      <KeywordInput
-        listStateRef={keywordsRef}
-        // source={["carai", "lucy", "pendejo"]}
-      />
+      <KeywordInput listStateRef={keywordsRef} />
+      <YoutubeVideoInput videosUrl={VideosRef} />
       <div>{a}</div>
     </>
   );
