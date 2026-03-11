@@ -60,7 +60,7 @@ async function makeAuthRequest(
   const url = `${import.meta.env.VITE_AUTH_BACKEND_URL}${endpoint}`;
 
   const body = new URLSearchParams();
-  body.append("client_id", "bt-mc-client");
+  body.append("client_id", import.meta.env.VITE_KC_CLIENT);
   Object.entries(params).forEach(([key, value]) => body.append(key, value));
 
   const config = {

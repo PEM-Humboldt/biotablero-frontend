@@ -100,6 +100,7 @@ export function Logs() {
       return;
     }
 
+    setIsDownloading(false);
     const url = window.URL.createObjectURL(res);
     const link = document.createElement("a");
 

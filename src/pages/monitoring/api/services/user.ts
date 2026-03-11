@@ -23,10 +23,10 @@ import type { ApiRequestError } from "@appTypes/api";
  */
 export async function getUsers(
   oDataParams?: ODataParams,
-): Promise<ODataUserInfo>;
+): Promise<ODataUserInfo | ApiRequestError>;
 export async function getUsers(
   byInitiativeId: number | string,
-): Promise<InitiativeUser[]>;
+): Promise<InitiativeUser[] | ApiRequestError>;
 export async function getUsers(
   idOrOdata?: ODataParams | number | string,
 ): Promise<InitiativeUser[] | ODataUserInfo | ApiRequestError> {
@@ -52,7 +52,7 @@ export async function getUsers(
  * Fetches the available security or access levels for initiative users.
  *
  * @returns A `Promise` resolving to:
- * - On success: an array of {@link UserLevel}.
+ * - On success: an array of UserLevel[] -> { id: RoleInInitiative, name: string }[]
  * - On failure: A `ApiRequestError` object.
  */
 export async function getUserLevels() {

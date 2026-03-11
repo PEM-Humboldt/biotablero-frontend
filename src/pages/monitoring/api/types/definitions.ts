@@ -1,7 +1,6 @@
 import { type InternalAxiosRequestConfig } from "axios";
 import { type ODataParams } from "@appTypes/odata";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
-import { type InternalAxiosRequestConfig } from "axios";
 
 export interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
