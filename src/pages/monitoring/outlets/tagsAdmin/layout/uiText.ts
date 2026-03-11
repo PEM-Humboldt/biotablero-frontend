@@ -63,4 +63,10 @@ export const uiText = {
       description: `Se ha editado una etiqueta`,
     },
   },
+
+  table: {
+    detailsBtn: {
+      defaultText: "Editar",
+    },
+  },
 };

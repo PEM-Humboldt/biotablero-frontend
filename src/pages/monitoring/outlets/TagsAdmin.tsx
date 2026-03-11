@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
-import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagForm";
+import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import type { TagCategory } from "pages/monitoring/types/tagData";
 import {
   getTags,
