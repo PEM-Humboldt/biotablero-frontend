@@ -27,6 +27,10 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@ui/shadCN/component/native-select"
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
@@ -247,9 +251,9 @@ export function TagForm({
             {uiText.form.selectCategoryLabel}{" "}
             {mode === "create" && <span aria-hidden="true">*</span>}
           </LabelAndErrors>
-          <select
-            id="category"
-            value={formData.category.id || ""}
+          <NativeSelect 
+            id="category" 
+            value={formData.category.id || ""} 
             onChange={(e) =>
               setFormData((old) => ({
                 ...old,
@@ -257,23 +261,22 @@ export function TagForm({
                   id: Number(e.target.value),
                   name: "",
                 },
-              }))
-            }
+            }))}
             onBlur={categoryOnBlur}
             disabled={mode === "edit" || isLoading}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+            // className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
             aria-invalid={errors.category !== undefined}
-            aria-describedby={errors.category ? "errors_category" : undefined}
-          >
-            <option value="" disabled>
-              {uiText.form.defaultCategoryTitle}
-            </option>
-            {tagCategories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
+            aria-describedby={errors.category ? "errors_category" : undefined}>
+
+              <NativeSelectOption value="" disabled>
+                {uiText.form.defaultCategoryTitle}
+              </NativeSelectOption>
+              {tagCategories.map((category) => (
+                <NativeSelectOption value={category.id}>
+                  {category.name}
+                </NativeSelectOption>
+              ))}
+          </NativeSelect>
         </div>
 
         <div>
