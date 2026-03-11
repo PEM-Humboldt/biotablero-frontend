@@ -14,7 +14,6 @@ export function TagsAdmin() {
   const [tagIdStr, setTagIdStr] = useState("");
 
   useEffect(() => {
-
     const fetchTagCategories = async () => {
       const result = await monitoringAPI<TagCategory[]>({
         type: "get",
@@ -28,7 +27,10 @@ export function TagsAdmin() {
       setTagCategories(
         result.map((category) => ({
           ...category,
-          name: (uiText.categoryTranslations as Record<string, string>)[category.name] || category.name,
+          name:
+            (uiText.categoryTranslations as Record<string, string>)[
+              category.name
+            ] || category.name,
         })),
       );
     };
