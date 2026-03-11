@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-import { useUserCTX } from "@hooks/UserContext";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagForm";
 import type { TagCategory } from "pages/monitoring/types/tagData";
@@ -10,15 +9,11 @@ import {
 } from "pages/monitoring/api/monitoringAPI";
 
 export function TagsAdmin() {
-  const { user } = useUserCTX();
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [tagIdStr, setTagIdStr] = useState("");
 
   useEffect(() => {
-    if (!user?.username) {
-      return;
-    }
 
     const fetchTagCategories = async () => {
       const result = await monitoringAPI<TagCategory[]>({
@@ -39,7 +34,7 @@ export function TagsAdmin() {
     };
 
     void fetchTagCategories();
-  }, [user?.username]);
+  }, []);
 
   return (
     <main className="page-main">
