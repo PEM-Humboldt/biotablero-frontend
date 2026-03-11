@@ -79,9 +79,9 @@ export function TagsAdmin() {
       )}
 
       {mode === "create" ? (
-        <TagForm tagCategories={tagCategories} mode="create" />
+        <TagForm tagCategories={tagCategories} />
       ) : (
-        <TagForm tagCategories={tagCategories} mode="edit" tagId={tagIdStr} />
+        <TagForm tagCategories={tagCategories} tagId={tagIdStr} />
       )}
     </main>
   );

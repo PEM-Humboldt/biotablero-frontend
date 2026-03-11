@@ -37,11 +37,9 @@ import { UserRoundCheck } from "lucide-react";
 
 export function TagForm({
   tagCategories,
-  mode = "create",
   tagId,
 }: {
   tagCategories: TagCategory[];
-  mode?: "create" | "edit";
   tagId?: string;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
@@ -49,7 +47,7 @@ export function TagForm({
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
 
   useEffect(() => {
-    if (mode === "edit" && tagId) {
+    if (tagId) {
       setIsLoading(true);
       const fetchTag = async () => {
         try {
@@ -77,11 +75,11 @@ export function TagForm({
       };
 
       void fetchTag();
-    } else if (mode === "create") {
+    } else {
       setFormData(makeInitialInfo());
       setErrors({});
     }
-  }, [mode, tagId]);
+  }, [tagId]);
 
   const validateField = useCallback(
     (
@@ -110,7 +108,7 @@ export function TagForm({
   };
 
   const categoryOnBlur = () => {
-    if (mode === "edit") {
+    if (tagId) {
       return;
     }
     const categoryId = formData.category.id;
@@ -157,10 +155,9 @@ export function TagForm({
     nameOnBlur();
     urlOnBlur();
 
-    const validations =
-      mode === "edit"
-        ? tagValidations.filter((v) => v.path !== "categoryId")
-        : tagValidations;
+    const validations = tagId
+      ? tagValidations.filter((v) => v.path !== "categoryId")
+      : tagValidations;
     const currentErrors = validateFormClient(formData, validations);
     setErrors(currentErrors);
 
@@ -171,7 +168,7 @@ export function TagForm({
 
     try {
       const finalUrl = formData.url?.trim() || null;
-      const payload = (mode === "create"
+      const payload = (!tagId
         ? {
             name: formData.name,
             url: finalUrl,
@@ -182,8 +179,8 @@ export function TagForm({
             url: finalUrl,
           }) as unknown as TagDataForm;
 
-      const method = mode === "create" ? "post" : "put";
-      const endpointStr = mode === "create" ? "Tag" : `Tag/${tagId}`;
+      const method = !tagId ? "post" : "put";
+      const endpointStr = !tagId ? "Tag" : `Tag/${tagId}`;
 
       const res = await monitoringAPI<TagDataForm>({
         type: method,
@@ -224,15 +221,15 @@ export function TagForm({
 
   const getSubmitButtonText = () => {
     if (isLoading) {
-      return mode === "create" ? uiText.tag.creatingNew : "Actualizando...";
+      return !tagId ? uiText.tag.creatingNew : "Actualizando...";
     }
-    return mode === "create" ? uiText.tag.createNew : "Actualizar etiqueta";
+    return !tagId ? uiText.tag.createNew : "Actualizar etiqueta";
   };
 
   return (
     <div className="bg-background w-full max-w-[600px] rounded-xl p-6 shadow-sm flex flex-col gap-4 mt-6 border border-muted">
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
-        {mode === "create" ? "Nueva etiqueta" : `Editar etiqueta ${tagId}`}
+        {!tagId ? "Nueva etiqueta" : `Editar etiqueta ${tagId}`}
       </h4>
 
       <form
@@ -249,7 +246,7 @@ export function TagForm({
             className="mb-1 text-sm font-medium"
           >
             {uiText.form.selectCategoryLabel}{" "}
-            {mode === "create" && <span aria-hidden="true">*</span>}
+            {!tagId && <span aria-hidden="true">*</span>}
           </LabelAndErrors>
           <NativeSelect
             id="category"
@@ -264,7 +261,7 @@ export function TagForm({
               }))
             }
             onBlur={categoryOnBlur}
-            disabled={mode === "edit" || isLoading}
+            disabled={!!tagId || isLoading}
             // className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
             aria-invalid={errors.category !== undefined}
             aria-describedby={errors.category ? "errors_category" : undefined}
@@ -356,11 +353,7 @@ export function TagForm({
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button
             type="submit"
-            disabled={
-              isLoading ||
-              (mode === "create" && tagCategories.length === 0) ||
-              (mode === "edit" && !tagId)
-            }
+            disabled={isLoading || (!tagId && tagCategories.length === 0)}
           >
             {getSubmitButtonText()}
           </Button>
