@@ -28,6 +28,8 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
+import { toast } from "sonner";
+import { UserRoundCheck } from "lucide-react";
 
 export function TagForm({
   tagCategories,
@@ -41,10 +43,6 @@ export function TagForm({
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
-  const [message, setMessage] = useState<{
-    text: string;
-    error: boolean;
-  } | null>(null);
 
   useEffect(() => {
     if (mode === "edit" && tagId) {
@@ -65,7 +63,6 @@ export function TagForm({
               category: res.category || { id: 0, name: "" },
             });
             setErrors({});
-            setMessage(null);
           }
         } catch (err) {
           console.error(err);
@@ -79,7 +76,6 @@ export function TagForm({
     } else if (mode === "create") {
       setFormData(makeInitialInfo());
       setErrors({});
-      setMessage(null);
     }
   }, [mode, tagId]);
 
@@ -107,7 +103,6 @@ export function TagForm({
   const handleFormReset = () => {
     setFormData(makeInitialInfo());
     setErrors({});
-    setMessage(null);
   };
 
   const categoryOnBlur = () => {
@@ -206,15 +201,15 @@ export function TagForm({
 
         return;
       }
+      
+      toast(uiText.toast.aproved.title, {
+        position: "bottom-right",
+        description: uiText.toast.aproved.description,
+        icon: <UserRoundCheck className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+      });
 
       handleFormReset();
-      setMessage({
-        text:
-          mode === "create"
-            ? uiText.successCreate
-            : "Etiqueta actualizada exitosamente",
-        error: false,
-      });
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
       console.error(uiText.criticalError.log, err);
@@ -348,10 +343,6 @@ export function TagForm({
             </InputGroupAddon>
           </InputGroup>
         </div>
-
-        {message && !message.error && (
-          <p className="text-sm text-green-600">{message.text}</p>
-        )}
 
         <ErrorsList
           errorItems={errors.root ?? []}

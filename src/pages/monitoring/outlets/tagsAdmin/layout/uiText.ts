@@ -38,4 +38,11 @@ export const uiText = {
       nameRequired: "La etiqueta requiere un nombre",
     },
   },
+
+  toast: {
+    aproved: {
+      title: "Proceso exitoso",
+      description: `Ha creado una etiqueta`,
+    },
+  },
 };
