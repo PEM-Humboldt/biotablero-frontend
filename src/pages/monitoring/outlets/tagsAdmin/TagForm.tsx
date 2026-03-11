@@ -203,9 +203,11 @@ export function TagForm({
         return;
       }
 
-      toast(uiText.toast.aproved.title, {
+      toast(uiText.toast.create.title, {
         position: "bottom-right",
-        description: uiText.toast.aproved.description,
+        description: tagId
+          ? uiText.toast.edit.description
+          : uiText.toast.create.description,
         icon: <UserRoundCheck className="size-8 text-primary" />,
         className: "px-6! gap-6! border-2! border-primary!",
       });

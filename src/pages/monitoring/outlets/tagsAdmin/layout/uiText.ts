@@ -47,9 +47,13 @@ export const uiText = {
   },
 
   toast: {
-    aproved: {
+    create: {
       title: "Proceso exitoso",
-      description: `Ha creado una etiqueta`,
+      description: `Se ha creado una etiqueta`,
+    },
+    edit: {
+      title: "Proceso exitoso",
+      description: `Se ha editado una etiqueta`,
     },
   },
 };
