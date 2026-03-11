@@ -1,4 +1,4 @@
-import type { TagDataForm } from "pages/monitoring/outlets/tagsAdmin/types/tagData";
+import type { TagDataForm } from "pages/monitoring/types/tagData";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import type { FormClientValidation } from "pages/monitoring/types/formValidation";
 

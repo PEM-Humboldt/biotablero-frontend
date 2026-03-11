@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useUserCTX } from "@hooks/UserContext";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagForm";
-import type { TagCategory } from "pages/monitoring/outlets/tagsAdmin/types/tagData";
+import type { TagCategory } from "pages/monitoring/types/tagData";
 import {
   isMonitoringAPIError,
   monitoringAPI,

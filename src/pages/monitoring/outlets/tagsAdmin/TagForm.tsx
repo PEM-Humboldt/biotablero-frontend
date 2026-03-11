@@ -16,7 +16,7 @@ import type {
   TagCategory,
   TagDataForm,
   TagDataFormErr,
-} from "pages/monitoring/outlets/tagsAdmin/types/tagData";
+} from "pages/monitoring/types/tagData";
 import { tagValidations } from "pages/monitoring/outlets/tagsAdmin/utils/formClientValidations";
 import { makeInitialInfo } from "pages/monitoring/outlets/tagsAdmin/utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
