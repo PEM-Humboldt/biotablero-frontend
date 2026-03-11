@@ -21,6 +21,13 @@ export const uiText = {
     log: "Critical error:",
   },
 
+  categoryTranslations: {
+    PoliticalContext: "Contexto político",
+    SocialContext: "Contexto social",
+    BiologicalGroup: "Grupo biológico",
+    Ecosystem: "Ecosistema",
+  },
+
   tag: {
     createNew: "Crear etiqueta",
     creatingNew: "Creando etiqueta...",

@@ -9,13 +9,6 @@ import {
   monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
 
-const CATEGORY_TRANSLATIONS: Record<string, string> = {
-  PoliticalContext: "Contexto político",
-  SocialContext: "Contexto social",
-  BiologicalGroup: "Grupo biológico",
-  Ecosystem: "Ecosistema",
-};
-
 export function TagsAdmin() {
   const { user } = useUserCTX();
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
@@ -40,7 +33,7 @@ export function TagsAdmin() {
       setTagCategories(
         result.map((category) => ({
           ...category,
-          name: CATEGORY_TRANSLATIONS[category.name] || category.name,
+          name: (uiText.categoryTranslations as Record<string, string>)[category.name] || category.name,
         })),
       );
     };
