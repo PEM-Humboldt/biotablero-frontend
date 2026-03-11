@@ -1,6 +1,6 @@
 import type { ODataColumn } from "@appTypes/odata";
 import { TagEntryShort } from "pages/monitoring/types/odataResponse";
-import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
+import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 
 export const tableContent: ODataColumn<TagEntryShort>[] = [
   { name: "Categoría", source: "categoryName", type: "text", sortBy: true },
@@ -10,7 +10,7 @@ export const tableContent: ODataColumn<TagEntryShort>[] = [
     name: "Acciones",
     source: "id",
     type: "action",
-    actions: TagForm,
+    actions: TagFormButton,
     label: "Detalles",
   },
 ];

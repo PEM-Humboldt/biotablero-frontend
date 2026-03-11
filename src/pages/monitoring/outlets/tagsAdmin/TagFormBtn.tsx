@@ -36,7 +36,7 @@ import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 
-export function TagForm({
+export function TagFormButton({
   // tagCategories,
   value: tagId,
 }: {
@@ -56,6 +56,7 @@ export function TagForm({
 
   const fetchTag = async () => {
     try {
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
       const res = await monitoringAPI<TagDataForm>({
         type: "get",
         endpoint: `Tag/${tagId}`,
@@ -71,7 +72,10 @@ export function TagForm({
         });
         setErrors({});
       }
+
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
     } catch (err) {
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.error);
       console.error(err);
       setErrors({ root: ["Error obteniendo la etiqueta."] });
     } finally {

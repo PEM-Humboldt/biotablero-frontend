@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
-import { TagForm } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import type { TagCategory } from "pages/monitoring/types/tagData";
 import {
   getTags,
@@ -20,7 +19,7 @@ import { tableContent } from "./tagsAdmin/layout/tableContent";
 
 type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 
-function parseLogEntry(rawODataTag: ODataTag): TagEntryShort {
+function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   return {
     ...rawODataTag,
     categoryName: (uiText.categoryTranslations as Record<string, string>)[
@@ -32,30 +31,27 @@ function parseLogEntry(rawODataTag: ODataTag): TagEntryShort {
 
 function parseODataTags(odataTags: ODataTagInfo): TagEntryShort[] {
   const { value } = odataTags;
-  return value.map(parseLogEntry);
+  return value.map(parseEntry);
 }
 
 export function TagsAdmin() {
-  const preloadedLogs = useLoaderData<LoadedTags>();
-  const [isDownloading, setIsDownloading] = useState(false);
+  const preloadedTags = useLoaderData<LoadedTags>();
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tags, setTags] = useState<ODataTagInfo | null>(
-    preloadedLogs?.criticalUserData ?? null,
+    preloadedTags?.criticalUserData ?? null,
   );
   const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
     message: uiText.loadingStates.loading,
     type: "normal",
   });
-  const [searchParams, setSearchParams] = useState<ODataParams>({
+  const [searchParams] = useState<ODataParams>({
     top: TAG_RECORDS_PER_PAGE,
     orderby: "category/id asc",
   });
   const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
-    setIsDownloading(true);
-
     const fetchTagCategories = async () => {
       const result = await monitoringAPI<TagCategory[]>({
         type: "get",
@@ -94,8 +90,8 @@ export function TagsAdmin() {
       };
 
       try {
-        const updatedLogs = await getTags(newSearchParams);
-        setTags(updatedLogs);
+        const updatedTags = await getTags(newSearchParams);
+        setTags(updatedTags);
         setLoadMsg({
           message: null,
           type: "normal",
@@ -107,8 +103,6 @@ export function TagsAdmin() {
         });
 
         console.error(uiText.criticalError, err);
-      } finally {
-        setIsDownloading(false);
       }
     };
 
@@ -135,7 +129,7 @@ export function TagsAdmin() {
             <ODataTable
               cols={tableContent}
               values={parseODataTags(tags)}
-              className="table-logs"
+              className="table-tags"
             />
           )}
           <TablePager
