@@ -28,8 +28,8 @@
     }
   }
 
-  /* NOTE: Para la tabla del log */
-  .table-logs {
+  /* NOTE: Para las tablas de logs y etiquetas */
+  .table-logs, .table-tags {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
 
     & > table {
