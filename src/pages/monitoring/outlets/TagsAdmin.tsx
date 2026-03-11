@@ -23,7 +23,9 @@ type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 function parseLogEntry(rawODataTag: ODataTag): TagEntryShort {
   return {
     ...rawODataTag,
-    categoryName: rawODataTag.category.name,
+    categoryName: (uiText.categoryTranslations as Record<string, string>)[
+              rawODataTag.category.name
+            ] || rawODataTag.category.name,
     url: rawODataTag.url || "",
   };
 }
@@ -47,6 +49,7 @@ export function TagsAdmin() {
   });
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: TAG_RECORDS_PER_PAGE,
+    orderby: "category/id asc",
   });
   const prevSearchParamsRef = useRef(searchParams);
 
