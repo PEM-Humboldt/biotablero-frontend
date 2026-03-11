@@ -1,5 +1,6 @@
 export const uiText = {
   title: "Administrador de etiquetas",
+  noDataAvailable: "No hay registros disponibles",
   loading: "Cargando...",
   wait: "Espera...",
   save: "Guardar",
@@ -19,6 +20,12 @@ export const uiText = {
   criticalError: {
     user: "Error interno de la app",
     log: "Critical error:",
+  },
+
+  loadingStates: {
+    loaded: null,
+    loading: "Cargando registros...",
+    error: "No fue posible cargar los registros, intenta más tarde.",
   },
 
   categoryTranslations: {

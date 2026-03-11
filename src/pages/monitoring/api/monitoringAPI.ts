@@ -17,6 +17,7 @@ import type {
   LocationBasicInfo,
   ODataInitiative,
   ODataLog,
+  ODataTagInfo,
   ODataUserInfo,
   ODataUserRequest,
   UserInInitiative,
@@ -727,3 +728,11 @@ export async function removeUserFromInitiative(userIdInInitiative: number) {
     return err instanceof Error ? err.message : JSON.stringify(err);
   }
 }
+
+/**
+ * Fetches tags from the "Tags" endpoint of the Monitoring API.
+ *
+ * @param odataParams Optional OData query parameters (filtering, pagination, etc.).
+ * @returns A `Promise` that resolves to an `ODataLog` object.
+ */
+export const getTags = createODataGetter<ODataTagInfo>("Tag");
