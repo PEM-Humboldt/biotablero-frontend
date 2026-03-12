@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import {
   getTags,
-} from "pages/monitoring/api/monitoringAPI";
+} from "pages/monitoring/api/services/tags";
 import { LoadStatusMsgBar, LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
 import { ODataParams } from "@appTypes/odata";
 import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
-import { useLoaderData } from "react-router";
 import { ODataTag, ODataTagInfo, TagEntryShort } from "pages/monitoring/types/odataResponse";
 import { CheckNLoadReturn } from "@appTypes/userLoader";
 import { ODataTable } from "@composites/ODataTable";
@@ -15,6 +14,7 @@ import { TablePager } from "@composites/TablePager";
 import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 
@@ -32,11 +32,8 @@ function parseODataTags(odataTags: ODataTagInfo): TagEntryShort[] {
 }
 
 export function TagsAdmin() {
-  const preloadedTags = useLoaderData<LoadedTags>();
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [tags, setTags] = useState<ODataTagInfo | null>(
-    preloadedTags?.criticalUserData ?? null,
-  );
+  const [tags, setTags] = useState<ODataTagInfo | null>(null);
   const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
     message: uiText.loadingStates.loading,
     type: "normal",
@@ -66,6 +63,11 @@ export function TagsAdmin() {
 
       try {
         const updatedTags = await getTags(newSearchParams);
+        if (isMonitoringAPIError(updatedTags)) {
+          setTags(null);
+          return;
+        }
+
         setTags(updatedTags);
         setLoadMsg({
           message: null,

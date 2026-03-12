@@ -2,15 +2,13 @@ import { type FormEvent, useCallback, useState, useEffect } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
 import {
-  commonErrorMessage,
   inputLengthCount,
   inputWarnColor,
 } from "@utils/ui";
 
 import {
   isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+} from "pages/monitoring/api/types/guards";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import type {
   TagCategory,
@@ -36,6 +34,8 @@ import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { monitoringAPI } from "pages/monitoring/api/core";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 export function TagFormButton({
   value: tagId,
