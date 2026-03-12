@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { $getSelection, $isRangeSelection } from "lexical";
+import { $getSelection, $isRangeSelection, $isRootNode } from "lexical";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
@@ -26,9 +26,13 @@ export function ListTypeSelector() {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
           const anchorNode = selection.anchor.getNode();
-          const element = anchorNode.getTopLevelElementOrThrow();
+          const element = anchorNode.getTopLevelElement();
 
-          if ($isListNode(element)) {
+          if (
+            element !== null &&
+            !$isRootNode(element) &&
+            $isListNode(element)
+          ) {
             const listType = element.getListType();
             setActiveList(listType === "bullet" ? "ul" : "ol");
           } else {

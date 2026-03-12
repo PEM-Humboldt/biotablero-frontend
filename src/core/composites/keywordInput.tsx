@@ -2,11 +2,9 @@ import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { StrValidator } from "@utils/strValidator";
 import {
   type ReactNode,
-  type MutableRefObject,
   useState,
   type ChangeEvent,
   type KeyboardEvent,
-  useEffect,
 } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
@@ -20,7 +18,8 @@ import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { XIcon } from "lucide-react";
 
 type KeywordInputProps = {
-  listStateRef: MutableRefObject<string[] | null>;
+  keywordsList: string[];
+  updateKeywordsList: (updatedKeywordsList: string[]) => void;
   separators?: string[];
   source?: string[];
   keywordsLimit: number;
@@ -34,7 +33,8 @@ type KeywordInputProps = {
 };
 
 export function KeywordInput({
-  listStateRef,
+  keywordsList,
+  updateKeywordsList,
   source,
   separators = [","],
   keywordsLimit = 5,
@@ -47,25 +47,15 @@ export function KeywordInput({
       `${currentAmount} de ${total} palabras clave`,
   },
 }: KeywordInputProps): ReactNode {
-  const [updateComponent, setUpdateComponent] = useState(0);
   const [inputStr, setInputStr] = useState<string>("");
   const [errors, setErrors] = useState<string[] | null>(null);
 
-  useEffect(() => {
-    if (!listStateRef.current || listStateRef.current.length === 0) {
-      listStateRef.current = [];
-    }
-  }, [listStateRef]);
-
   const saveKeyword = (keyword: string) => {
-    if (!listStateRef.current) {
-      return;
-    }
     setErrors(null);
 
     const [cleanStr, inputErr] = new StrValidator(keyword)
       .sanitize()
-      .isUniqueIn(new Set(listStateRef.current)).result;
+      .isUniqueIn(new Set(keywordsList)).result;
 
     if (cleanStr.trim().length === 0) {
       setInputStr(""); // Limpiamos el input si solo había espacios
@@ -78,7 +68,7 @@ export function KeywordInput({
       return;
     }
 
-    listStateRef.current = [...new Set([...listStateRef.current, cleanStr])];
+    updateKeywordsList([...new Set([...keywordsList, cleanStr])]);
     setInputStr("");
   };
 
@@ -103,94 +93,88 @@ export function KeywordInput({
   };
 
   const handleRemoveKeyword = (index: number) => {
-    if (!listStateRef.current || listStateRef.current.length === 0) {
+    if (keywordsList.length === 0) {
       return;
     }
 
-    listStateRef.current.splice(index, 1);
+    updateKeywordsList(keywordsList.filter((_, i) => i !== index));
     setErrors(null);
-    setUpdateComponent((n) => n + 1);
   };
 
   return (
-    listStateRef.current && (
-      <div key={updateComponent} className="max-w-[400px]">
-        <LabelAndErrors
-          htmlFor="keywords"
-          errID="errors_keywords"
-          validationErrors={errors ?? []}
-        >
-          {inputTxt.label}
-          <span className="sr-only">{inputTxt.sr}</span>
-        </LabelAndErrors>
+    <div className="max-w-[400px]">
+      <LabelAndErrors
+        htmlFor="keywords"
+        errID="errors_keywords"
+        validationErrors={errors ?? []}
+      >
+        {inputTxt.label}
+        <span className="sr-only">{inputTxt.sr}</span>
+      </LabelAndErrors>
 
-        <InputGroup>
-          {listStateRef.current.length > 0 && (
-            <InputGroupAddon align="block-start" className="p-2">
-              <ul className="flex flex-wrap justify-start gap-2">
-                {listStateRef.current.map((keyword, index) => (
-                  <li
-                    key={keyword}
-                    className="flex pl-2 items-start bg-muted font-normal text-primary rounded"
+      <InputGroup>
+        {keywordsList.length > 0 && (
+          <InputGroupAddon align="block-start" className="p-2">
+            <ul className="flex flex-wrap justify-start gap-2">
+              {keywordsList.map((keyword, index) => (
+                <li
+                  key={keyword}
+                  className="flex pl-2 items-start bg-muted font-normal text-primary rounded"
+                >
+                  <span className="pr-2 border-r border-r-muted-foreground/30">
+                    {keyword}
+                  </span>
+
+                  <Button
+                    variant="link"
+                    className="w-6! h-6! text-primary"
+                    onClick={() => handleRemoveKeyword(index)}
                   >
-                    <span className="pr-2 border-r border-r-muted-foreground/30">
-                      {keyword}
-                    </span>
-
-                    <Button
-                      variant="link"
-                      className="w-6! h-6! text-primary"
-                      onClick={() => handleRemoveKeyword(index)}
-                    >
-                      <XIcon className="" />
-                    </Button>
-                  </li>
-                ))}
-              </ul>
-            </InputGroupAddon>
-          )}
-
-          {keywordsLimit > listStateRef.current.length && (
-            <InputGroupInput
-              name="keywords"
-              id="keyword"
-              type="text"
-              value={inputStr}
-              list="keywords_source"
-              onChange={handleOnChange}
-              onKeyDown={handleOnKeyDown}
-              autoComplete="on"
-              placeholder={inputTxt.placeholder}
-              maxLength={keywordMaxLength}
-              aria-invalid={errors !== null}
-              aria-describedby={errors !== null ? "errors_keywords" : undefined}
-              disabled={listStateRef.current === null}
-            />
-          )}
-
-          {source && source.length > 0 && (
-            <datalist id="keywords_source">
-              {source.map((s) => (
-                <option value={s}></option>
+                    <XIcon className="" />
+                  </Button>
+                </li>
               ))}
-            </datalist>
-          )}
-
-          <InputGroupAddon
-            align="inline-end"
-            className={cn("p-0!", inputWarnColor(inputStr, keywordMaxLength))}
-          >
-            {inputLengthCount(inputStr, keywordMaxLength)}
+            </ul>
           </InputGroupAddon>
-        </InputGroup>
+        )}
 
-        <div className="text-right">
-          {inputTxt.keywordCounter(
-            listStateRef.current?.length ?? 0,
-            keywordsLimit,
-          )}
-        </div>
+        {keywordsLimit > keywordsList.length && (
+          <InputGroupInput
+            name="keywords"
+            id="keyword"
+            type="text"
+            value={inputStr}
+            list="keywords_source"
+            onChange={handleOnChange}
+            onKeyDown={handleOnKeyDown}
+            autoComplete="on"
+            placeholder={inputTxt.placeholder}
+            maxLength={keywordMaxLength}
+            aria-invalid={errors !== null}
+            aria-describedby={errors !== null ? "errors_keywords" : undefined}
+            disabled={keywordsList === null}
+          />
+        )}
+
+        {source && source.length > 0 && (
+          <datalist id="keywords_source">
+            {source.map((s) => (
+              <option value={s}></option>
+            ))}
+          </datalist>
+        )}
+
+        <InputGroupAddon
+          align="inline-end"
+          className={cn("p-0!", inputWarnColor(inputStr, keywordMaxLength))}
+        >
+          {inputLengthCount(inputStr, keywordMaxLength)}
+        </InputGroupAddon>
+      </InputGroup>
+
+      <div className="text-right">
+        {inputTxt.keywordCounter(keywordsList.length ?? 0, keywordsLimit)}
       </div>
-    )
+    </div>
   );
 }

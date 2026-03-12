@@ -4,6 +4,7 @@ import {
   $createParagraphNode,
   $getSelection,
   $isRangeSelection,
+  $isRootNode,
 } from "lexical";
 
 import { $isLinkNode } from "@lexical/link";
@@ -26,10 +27,15 @@ export function SpecialTextInsertion() {
       editorState.read(() => {
         const selection = $getSelection();
         if ($isRangeSelection(selection)) {
-          const element = selection.anchor
-            .getNode()
-            .getTopLevelElementOrThrow();
-          setIsQuote($isQuoteNode(element));
+          const anchorNode = selection.anchor.getNode();
+
+          const element = anchorNode.getTopLevelElement();
+
+          if (element !== null && !$isRootNode(element)) {
+            setIsQuote($isQuoteNode(element));
+          } else {
+            setIsQuote(false);
+          }
 
           const nodes = selection.getNodes();
           setIsLink(
