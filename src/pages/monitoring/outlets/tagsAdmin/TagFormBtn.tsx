@@ -46,6 +46,7 @@ export function TagFormButton({
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   if (tagId != null && typeof tagId !== "number") {
     throw new Error(
@@ -241,7 +242,7 @@ export function TagFormButton({
         className: "px-6! gap-6! border-2! border-primary!",
       });
 
-      handleFormReset();
+      setOpenDialog(false);
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
       console.error(uiText.criticalError.log, err);
@@ -258,7 +259,7 @@ export function TagFormButton({
   };
 
   return (
-    <Dialog>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       {tagId &&
         <>
           <DialogTrigger asChild>
