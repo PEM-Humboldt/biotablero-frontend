@@ -12,7 +12,7 @@ import {
   useState,
 } from "react";
 import { KeywordInput } from "@composites/keywordInput";
-import { YoutubeVideoInput } from "pages/monitoring/ui/YoutubeVideoInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/territoryStory/formTS/YoutubeVideoInput";
 import type {
   ImageObjectTS,
   TerritoryStoryForm,
@@ -134,7 +134,7 @@ export function TerritoryStoryForm({
   return isLoading ? (
     <div>Cargando...</div>
   ) : (
-    <>
+    <form className="p-4 w-full flex flex-col gap-2">
       <RichTextEditor textToLoad={story.text} textStateRef={textToPull} />
       <KeywordInput
         keywordsList={story.keywords}
@@ -148,10 +148,14 @@ export function TerritoryStoryForm({
             `${currentAmount} de ${total} palabras clave`,
         }}
       />
-      <YoutubeVideoInput videos={story.videos} />
+      <YoutubeVideoInput
+        videos={story.videos}
+        updateVideos={updateField("videos")}
+      />
+
       <button type="button" onClick={handleSubmit}>
         up
       </button>
-    </>
+    </form>
   );
 }

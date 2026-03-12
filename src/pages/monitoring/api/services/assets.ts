@@ -59,20 +59,6 @@ export async function postTerritoryHistoryVideo(
   return res;
 }
 
-export async function editTerritoryHistoryVideo(
-  territoryStoryVideoId: number,
-  fileUrl: string,
-) {
-  const payload = { fileUrl };
-  const res = await monitoringAPI<VideoObjectTS[]>({
-    type: "put",
-    endpoint: `/TerritoryStoryVideo/${territoryStoryVideoId}`,
-    options: { data: payload },
-  });
-
-  return res;
-}
-
 export async function deleteTerritoryHistoryVideo(
   territoryStoryVideoId: number,
 ) {

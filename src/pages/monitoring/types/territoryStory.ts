@@ -1,8 +1,8 @@
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 
 export type VideoObjectTS = {
-  id: number;
-  territoryStoryId: number;
+  id?: number;
+  territoryStoryId?: number;
   fileUrl: string;
 };
 

@@ -92,7 +92,7 @@ export const getYoutubeVideoMetadata = async (
       url: `https://www.youtube.com/watch?v=${videoId}`,
     };
   } catch (error) {
-    // console.error("YoutubeApiCall:", error);
+    console.error("YoutubeApiCall:", error);
 
     if (!axios.isAxiosError(error)) {
       return {
