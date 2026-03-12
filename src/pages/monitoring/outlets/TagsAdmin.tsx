@@ -40,6 +40,7 @@ export function TagsAdmin() {
     orderby: "category/id asc",
   });
   const prevSearchParamsRef = useRef(searchParams);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
 
   useEffect(() => {
     const filterChange = async () => {
@@ -81,7 +82,7 @@ export function TagsAdmin() {
     };
 
     void filterChange();
-  }, [searchParams, currentPage]);
+  }, [searchParams, currentPage, refetchTrigger]);
 
   const recordsAvailable = tags ? tags["@odata.count"] : 0;
 
@@ -90,7 +91,7 @@ export function TagsAdmin() {
       <header>
         <h3>{uiText.title}</h3>
         <div className="max-w-[500px] text-right text-base">
-          <TagFormButton />
+          <TagFormButton onActionSuccess={() => setRefetchTrigger(prev => prev + 1)} />
         </div>
       </header>
       {loadMsg.message !== null ? (
@@ -104,6 +105,7 @@ export function TagsAdmin() {
               cols={tableContent}
               values={parseODataTags(tags)}
               className="table-tags"
+              onActionSuccess={() => setRefetchTrigger(prev => prev + 1)}
             />
           )}
           <TablePager

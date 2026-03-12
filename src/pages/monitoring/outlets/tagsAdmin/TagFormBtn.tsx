@@ -38,8 +38,10 @@ import { addTag, getTagById, getTagCategories, updateTag } from "pages/monitorin
 
 export function TagFormButton({
   value: tagId,
+  onActionSuccess,
 }: {
   value?: unknown;
+  onActionSuccess?: () => void;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -243,6 +245,7 @@ export function TagFormButton({
       });
 
       setOpenDialog(false);
+      onActionSuccess?.();
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
       console.error(uiText.criticalError.log, err);
