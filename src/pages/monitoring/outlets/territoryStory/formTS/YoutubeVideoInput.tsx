@@ -20,7 +20,7 @@ import {
 import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
-import { ExternalLink, Trash2 } from "lucide-react";
+import { ExternalLink, Trash } from "lucide-react";
 import { TERRITORY_STORY_MAX_YOUTUBE_VIDEOS } from "@config/monitoring";
 
 export function YoutubeVideoInput({
@@ -37,7 +37,7 @@ export function YoutubeVideoInput({
     [],
   );
 
-  const firstLoad = useRef(true);
+  const firstLoad = useRef(false);
 
   const getVideo = async (UrlOrID: string) => {
     setIsLoading(true);
@@ -139,15 +139,18 @@ export function YoutubeVideoInput({
   return (
     <div>
       {videoCardsInfo.length > 0 && (
-        <div className="space-y-2">
-          {videoCardsInfo.map((video) => (
-            <VideoPreviewCard
-              key={video.youtubeId}
-              videoInfo={video}
-              removeVideo={removeVideo}
-            />
-          ))}
-        </div>
+        <>
+          <div className="text-primary px-2">Videos adjuntos al relato</div>
+          <div className="space-y-2">
+            {videoCardsInfo.map((video) => (
+              <VideoPreviewCard
+                key={video.youtubeId}
+                videoInfo={video}
+                removeVideo={removeVideo}
+              />
+            ))}
+          </div>
+        </>
       )}
 
       {videoCardsInfo.length < TERRITORY_STORY_MAX_YOUTUBE_VIDEOS && (
@@ -236,7 +239,7 @@ function VideoPreviewCard({
             title="Borrar el video"
           >
             <span className="sr-only">Borrar</span>
-            <Trash2 />
+            <Trash />
           </Button>
         </div>
       </div>

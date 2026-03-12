@@ -165,12 +165,12 @@ export function KeywordInput({
 
         <InputGroupAddon
           align="inline-end"
-          className={cn("p-0!", inputWarnColor(inputStr, keywordMaxLength))}
+          className={inputWarnColor(inputStr, keywordMaxLength)}
         >
           {inputLengthCount(inputStr, keywordMaxLength)}
         </InputGroupAddon>
       </InputGroup>
-      <div className="text-right">
+      <div className="text-right text-sm text-primary">
         {inputTxt.keywordCounter(keywordsList.length ?? 0, keywordsLimit)}
       </div>
     </div>
