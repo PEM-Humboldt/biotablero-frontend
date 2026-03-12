@@ -62,6 +62,10 @@ export const uiText = {
       title: "Proceso exitoso",
       description: `Se ha editado una etiqueta`,
     },
+    delete: {
+      title: "Proceso exitoso",
+      description: `Se ha eliminado una etiqueta`,
+    },
   },
 
   table: {
@@ -81,8 +85,7 @@ export const uiText = {
       },
       dialog: {
         title: "Eliminar etiqueta",
-        description: (tagName: string) =>
-          `Estás a punto de eliminar la etiqueta '${tagName}'. ¿Estás seguro?`,
+        description: "¿Estás seguro de eliminar la etiqueta?"
       },
       actionBtns: {
         confirm: undefined,

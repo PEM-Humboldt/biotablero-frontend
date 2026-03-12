@@ -34,7 +34,7 @@ import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { addTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
+import { addTag, deleteTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
 export function TagFormButton({
@@ -110,6 +110,33 @@ export function TagFormButton({
       setIsLoading(false);
     }
   };
+
+  const removeTag = async () => {
+    try {
+      if (tagId) {
+        setLoadStatusMsg(uiText.table.loadStatus.loading);
+        const result = await deleteTag(tagId);
+
+        if (isMonitoringAPIError(result)) {
+          throw new Error(result.message);
+        }
+
+        setLoadStatusMsg(uiText.table.loadStatus.loaded);
+
+        toast(uiText.toast.delete.title, {
+          position: "bottom-right",
+          description: uiText.toast.delete.description,
+          icon: <UserRoundCheck className="size-8 text-primary" />,
+          className: "px-6! gap-6! border-2! border-primary!",
+        });
+      }
+    } catch (err) {
+      setLoadStatusMsg(uiText.table.loadStatus.error);
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (tagId) {
@@ -283,14 +310,12 @@ export function TagFormButton({
                 trigger: uiText.table.deleteBtn.trigger,
                 dialog: {
                   title: uiText.table.deleteBtn.dialog.title,
-                  description: uiText.table.deleteBtn.dialog.description(
-                    formData?.name ?? "",
-                  ),
+                  description: uiText.table.deleteBtn.dialog.description,
                 },
                 actionBtns: uiText.table.deleteBtn.actionBtns,
               }}
               triggerBtnVariant="ghost"
-              handler={() => void console.log(formData)}
+              handler={() => void removeTag()}
               isDisabled = {loadStatusMsg !== null}
             />
           </>
