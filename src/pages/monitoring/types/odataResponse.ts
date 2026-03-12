@@ -107,7 +107,19 @@ export type UserInInitiative = {
   users: InitiativeUser[];
 };
 
+export type TerritoryStoryShort = {
+  id: number;
+  initiativeId: number;
+  title: string;
+  text: string;
+  restricted: boolean;
+  enabled: boolean;
+  featuredContent: boolean;
+  likes: number;
+};
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
+export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;

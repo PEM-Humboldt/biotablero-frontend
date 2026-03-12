@@ -37,3 +37,6 @@ export const JOIN_REQUESTS_PER_PAGE = 10;
 // Initiative Join Invitations
 
 export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
+
+// territoryStory
+export const TERRITORY_STORY_MAX_YOUTUBE_VIDEOS = 5;
