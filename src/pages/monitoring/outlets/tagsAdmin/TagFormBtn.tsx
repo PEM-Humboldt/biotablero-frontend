@@ -61,6 +61,7 @@ export function TagFormButton({
   const fetchTag = async () => {
     try {
       if (tagId) {
+        handleFormReset();
         setLoadStatusMsg(uiText.table.loadStatus.loading);
         const res = await getTagById(tagId);
 
@@ -72,7 +73,6 @@ export function TagFormButton({
             url: res.url || "",
             category: res.category || { id: 0, name: "" },
           });
-          setErrors({});
         }
 
         setLoadStatusMsg(uiText.table.loadStatus.loaded);
@@ -88,6 +88,7 @@ export function TagFormButton({
   
   const fetchTagCategories = async () => {
     try {
+      handleFormReset();
       setLoadStatusMsg(uiText.table.loadStatus.loading);
       const result = await getTagCategories();
 
@@ -143,6 +144,7 @@ export function TagFormButton({
     } catch (err) {
       setLoadStatusMsg(uiText.table.loadStatus.error);
       console.error(err);
+      setErrors({ root: ["Error al eliminar la etiqueta."] });
     } finally {
       setIsLoading(false);
     }
