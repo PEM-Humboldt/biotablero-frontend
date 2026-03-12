@@ -74,7 +74,21 @@ export const uiText = {
       defaultText: "Editar",
     },
     deleteBtn: {
-      defaultText: "Eliminar",
+      trigger: {
+        label: "Eliminar",
+        title: undefined,
+        sr: undefined,
+      },
+      dialog: {
+        title: "Eliminar etiqueta",
+        description: (tagName: string) =>
+          `Estás a punto de eliminar la etiqueta '${tagName}'. ¿Estás seguro?`,
+      },
+      actionBtns: {
+        confirm: undefined,
+        cancel: undefined,
+        exit: undefined,
+      },
     },
   },
 };
