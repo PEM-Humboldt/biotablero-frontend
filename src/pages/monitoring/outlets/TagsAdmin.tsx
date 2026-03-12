@@ -14,6 +14,7 @@ import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
 import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 
 type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 
@@ -89,8 +90,10 @@ export function TagsAdmin() {
     <main className="page-main">
       <header>
         <h3>{uiText.title}</h3>
+        <div className="max-w-[500px] text-right text-base">
+          <TagFormButton />
+        </div>
       </header>
-
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
       ) : (

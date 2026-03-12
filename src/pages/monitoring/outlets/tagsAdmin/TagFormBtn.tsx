@@ -33,7 +33,7 @@ import {
 } from "@ui/shadCN/component/native-select";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { toast } from "sonner";
-import { UserRoundCheck } from "lucide-react";
+import { PlusIcon, UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
@@ -48,7 +48,7 @@ export function TagFormButton({
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
-  if (typeof tagId !== "number") {
+  if (tagId != null && typeof tagId !== "number") {
     throw new Error(
       `Expected type of value: number, received: ${typeof tagId}`,
     );
@@ -82,9 +82,10 @@ export function TagFormButton({
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchTagCategories = async () => {
+  
+  const fetchTagCategories = async () => {
+    try {
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
       const result = await monitoringAPI<TagCategory[]>({
         type: "get",
         endpoint: "TagCategory",
@@ -100,13 +101,22 @@ export function TagFormButton({
           name: translateTagCategory(category.name),
         })),
       );
-    };
 
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
+    } catch (err) {
+      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.error);
+      console.error(err);
+      setErrors({ root: ["Error obteniendo las categorías."] });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (tagId) {
       setIsLoading(true);
     } else {
-      setFormData(makeInitialInfo());
-      void fetchTagCategories();
+      setFormData(makeInitialInfo());      
       setErrors({});
     }
   }, [tagId]);
@@ -260,17 +270,33 @@ export function TagFormButton({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button
-          onClick={() => void fetchTag()}
-          disabled={loadStatusMsg !== null}
-          variant="ghost"
-        >
-          {loadStatusMsg !== null
-            ? loadStatusMsg
-            : uiText.table.detailsBtn.defaultText}
-        </Button>
-      </DialogTrigger>
+      {tagId &&
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => void fetchTag()}
+            disabled={loadStatusMsg !== null}
+            variant="ghost"
+          >
+            {loadStatusMsg !== null
+              ? loadStatusMsg
+              : uiText.table.detailsBtn.defaultText}
+          </Button>
+        </DialogTrigger>
+      }
+      {!tagId &&
+        <DialogTrigger asChild>
+          <Button
+            onClick={() => void fetchTagCategories()}
+            disabled={loadStatusMsg !== null}
+            variant="ghost"
+          >
+            {loadStatusMsg !== null
+              ? loadStatusMsg
+              : uiText.tag.createNew}
+            <PlusIcon /> 
+          </Button>
+        </DialogTrigger>
+      }
       <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
         <div className="pb-2">
           <DialogHeader>
@@ -314,11 +340,11 @@ export function TagFormButton({
                   aria-invalid={errors.category !== undefined}
                   aria-describedby={errors.category ? "errors_category" : undefined}
                 >
-                  <NativeSelectOption value="" disabled>
+                  <NativeSelectOption key={"tag_category_default"} value="" disabled>
                     {uiText.form.defaultCategoryTitle}
                   </NativeSelectOption>
                   {tagCategories.map((category) => (
-                    <NativeSelectOption value={category.id}>
+                    <NativeSelectOption key={`tag_category_${category.id}`} value={category.id}>
                       {category.name}
                     </NativeSelectOption>
                   ))}
@@ -425,13 +451,15 @@ export function TagFormButton({
               >
                 {getSubmitButtonText()}
               </Button>
-              <Button
-                type="reset"
-                variant="outline_destructive"
-                disabled={isLoading}
-              >
-                {uiText.restartForm}
-              </Button>
+              {!tagId &&
+                <Button
+                  type="reset"
+                  variant="outline_destructive"
+                  disabled={isLoading}
+                >
+                  {uiText.restartForm}
+                </Button>
+              }
             </div>
           </form>
         </div>

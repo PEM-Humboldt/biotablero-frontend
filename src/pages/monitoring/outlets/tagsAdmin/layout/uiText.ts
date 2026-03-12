@@ -38,7 +38,6 @@ export const uiText = {
   tag: {
     createNew: "Crear etiqueta",
     creatingNew: "Creando etiqueta...",
-    cancelCreation: "Cancelar creación de una nueva etiqueta",
   },
 
   form: {
