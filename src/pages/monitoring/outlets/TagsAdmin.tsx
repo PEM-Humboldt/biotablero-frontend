@@ -11,20 +11,19 @@ import { LoadStatusMsgBar, LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
 import { ODataParams } from "@appTypes/odata";
 import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
 import { useLoaderData } from "react-router";
-import { ODataTag, ODataTagInfo, TagEntryShort } from "../types/odataResponse";
+import { ODataTag, ODataTagInfo, TagEntryShort } from "pages/monitoring/types/odataResponse";
 import { CheckNLoadReturn } from "@appTypes/userLoader";
 import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
-import { tableContent } from "./tagsAdmin/layout/tableContent";
+import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
 type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 
 function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   return {
     ...rawODataTag,
-    categoryName: (uiText.categoryTranslations as Record<string, string>)[
-              rawODataTag.category.name
-            ] || rawODataTag.category.name,
+    categoryName: translateTagCategory(rawODataTag.category.name),
     url: rawODataTag.url || "",
   };
 }
@@ -65,10 +64,7 @@ export function TagsAdmin() {
       setTagCategories(
         result.map((category) => ({
           ...category,
-          name:
-            (uiText.categoryTranslations as Record<string, string>)[
-              category.name
-            ] || category.name,
+          name: translateTagCategory(category.name),
         })),
       );
     };

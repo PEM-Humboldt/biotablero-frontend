@@ -44,6 +44,7 @@ export const uiText = {
   form: {
     selectCategoryLabel: "Seleccione la categoría",
     defaultCategoryTitle: "-- Elige una categoría --",
+    category: "Categoría",
     nameLabel: "Nombre de la etiqueta",
     urlLabel: "URL de la etiqueta (opcional)",
 

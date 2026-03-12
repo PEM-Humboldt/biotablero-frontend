@@ -35,13 +35,14 @@ import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/v
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
 export function TagFormButton({
-  // tagCategories,
   value: tagId,
+  // tagCategories,
 }: {
-  // tagCategories: TagCategory[];
   value?: unknown;
+  // tagCategories: TagCategory[] | undefined;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -266,44 +267,65 @@ export function TagFormButton({
             onSubmit={(e) => void handleSubmit(e)}
             className="flex flex-col gap-2 p-6"
           >
-            <div>
-              <LabelAndErrors
-                htmlFor="category"
-                errID="errors_category"
-                validationErrors={errors.category ?? []}
-                className="mb-1 text-sm font-medium"
-              >
-                {uiText.form.selectCategoryLabel}{" "}
-                {!tagId && <span aria-hidden="true">*</span>}
-              </LabelAndErrors>
-              <NativeSelect
-                id="category"
-                value={formData.category.id || ""}
-                onChange={(e) =>
-                  setFormData((old) => ({
-                    ...old,
-                    category: {
-                      id: Number(e.target.value),
-                      name: "",
-                    },
-                  }))
-                }
-                onBlur={categoryOnBlur}
-                disabled={!!tagId || isLoading}
-                // className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-                aria-invalid={errors.category !== undefined}
-                aria-describedby={errors.category ? "errors_category" : undefined}
-              >
-                <NativeSelectOption value="" disabled>
-                  {uiText.form.defaultCategoryTitle}
-                </NativeSelectOption>
-                {/* {tagCategories.map((category) => (
-                  <NativeSelectOption value={category.id}>
-                    {category.name}
+            {!tagId &&
+              <div>
+                <LabelAndErrors
+                  htmlFor="category"
+                  errID="errors_category"
+                  validationErrors={errors.category ?? []}
+                  className="mb-1 text-sm font-medium"
+                >
+                  {uiText.form.selectCategoryLabel}{" "}
+                  {!tagId && <span aria-hidden="true">*</span>}
+                </LabelAndErrors>
+                <NativeSelect
+                  id="category"
+                  value={formData.category.id || ""}
+                  onChange={(e) =>
+                    setFormData((old) => ({
+                      ...old,
+                      category: {
+                        id: Number(e.target.value),
+                        name: "",
+                      },
+                    }))
+                  }
+                  onBlur={categoryOnBlur}
+                  disabled={!!tagId || isLoading}
+                  // className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                  aria-invalid={errors.category !== undefined}
+                  aria-describedby={errors.category ? "errors_category" : undefined}
+                >
+                  <NativeSelectOption value="" disabled>
+                    {uiText.form.defaultCategoryTitle}
                   </NativeSelectOption>
-                ))} */}
-              </NativeSelect>
-            </div>
+                  {/* {tagCategories.map((category) => (
+                    <NativeSelectOption value={category.id}>
+                      {category.name}
+                    </NativeSelectOption>
+                  ))} */}
+                </NativeSelect>
+              </div>
+            }
+
+            {!!tagId &&
+              <div>
+                <label
+                  htmlFor="categoryName"
+                  className="mb-1 text-sm font-medium"
+                >
+                  {uiText.form.category}
+                </label>
+                <InputGroup>
+                  <InputGroupInput
+                    id="categoryName"
+                    type="text"
+                    value={translateTagCategory(formData.category.name)}
+                    disabled={true}
+                  />
+                </InputGroup>
+              </div>
+            }
 
             <div>
               <LabelAndErrors
