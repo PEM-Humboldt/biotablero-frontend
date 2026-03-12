@@ -8,15 +8,12 @@ import { LoadStatusMsgBar, LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
 import { ODataParams } from "@appTypes/odata";
 import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
 import { ODataTag, ODataTagInfo, TagEntryShort } from "pages/monitoring/types/odataResponse";
-import { CheckNLoadReturn } from "@appTypes/userLoader";
 import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
 import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-
-type LoadedTags = Awaited<CheckNLoadReturn<null, ODataTagInfo>>;
 
 function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   return {

@@ -34,7 +34,6 @@ import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 import { addTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
 
 export function TagFormButton({
@@ -224,12 +223,9 @@ export function TagFormButton({
       }
 
       if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
         setErrors((oldErr) => ({
           ...oldErr,
-          root: [
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          ],
+          root: res.data.map((error) => error.msg),
         }));
         console.error(res);
 
