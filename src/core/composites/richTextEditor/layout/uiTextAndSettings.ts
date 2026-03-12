@@ -3,7 +3,6 @@ import {
   Link,
   Bold,
   Italic,
-  Underline,
   List,
   ListOrdered,
   Undo2,
@@ -33,11 +32,10 @@ export const listTypes: Map<SupportedListTypes, RenderSelector> = new Map([
 ]);
 
 // Formato de texto
-export type SupportedTextFormats = "bold" | "italic" | "underline";
+export type SupportedTextFormats = "bold" | "italic";
 export const textFormats: Map<SupportedTextFormats, RenderSelector> = new Map([
   ["bold", { label: "Negrita (Ctrl+B)", icon: Bold }],
   ["italic", { label: "Cursiva (Ctrl+I)", icon: Italic }],
-  ["underline", { label: "Subrayado (Ctrl+U)", icon: Underline }],
 ]);
 
 // Estructuras de texto

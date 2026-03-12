@@ -22,6 +22,5 @@ export const inputTheme = {
   text: {
     bold: "font-normal",
     italic: "italic",
-    underline: "underline",
   },
 };

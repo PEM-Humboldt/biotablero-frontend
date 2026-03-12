@@ -102,7 +102,7 @@ export function KeywordInput({
   };
 
   return (
-    <div className="max-w-[400px]">
+    <div>
       <LabelAndErrors
         htmlFor="keywords"
         errID="errors_keywords"
@@ -111,7 +111,6 @@ export function KeywordInput({
         {inputTxt.label}
         <span className="sr-only">{inputTxt.sr}</span>
       </LabelAndErrors>
-
       <InputGroup>
         {keywordsList.length > 0 && (
           <InputGroupAddon align="block-start" className="p-2">
@@ -171,7 +170,6 @@ export function KeywordInput({
           {inputLengthCount(inputStr, keywordMaxLength)}
         </InputGroupAddon>
       </InputGroup>
-
       <div className="text-right">
         {inputTxt.keywordCounter(keywordsList.length ?? 0, keywordsLimit)}
       </div>

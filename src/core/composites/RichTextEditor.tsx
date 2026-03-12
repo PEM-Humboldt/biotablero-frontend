@@ -77,7 +77,7 @@ export function RichTextEditor({
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="border self-start border-primary/50 focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2 m-4 p-2 rounded-lg">
+      <div className="w-full border self-start border-input focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2 p-2 rounded-lg">
         <Toolbar />
         <div className="relative ">
           <RichTextPlugin

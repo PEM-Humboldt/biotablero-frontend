@@ -14,7 +14,6 @@ export function TextFormatSelector() {
   const [activeFormats, setActiveFormats] = useState({
     bold: false,
     italic: false,
-    underline: false,
   });
 
   useEffect(() => {
@@ -26,7 +25,6 @@ export function TextFormatSelector() {
           setActiveFormats({
             bold: selection.hasFormat("bold"),
             italic: selection.hasFormat("italic"),
-            underline: selection.hasFormat("underline"),
           });
         }
       });
