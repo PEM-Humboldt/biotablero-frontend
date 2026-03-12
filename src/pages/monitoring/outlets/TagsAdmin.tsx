@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
-import type { TagCategory } from "pages/monitoring/types/tagData";
 import {
   getTags,
-  isMonitoringAPIError,
-  monitoringAPI,
 } from "pages/monitoring/api/monitoringAPI";
 import { LoadStatusMsgBar, LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
 import { ODataParams } from "@appTypes/odata";
@@ -35,7 +32,6 @@ function parseODataTags(odataTags: ODataTagInfo): TagEntryShort[] {
 
 export function TagsAdmin() {
   const preloadedTags = useLoaderData<LoadedTags>();
-  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [tags, setTags] = useState<ODataTagInfo | null>(
     preloadedTags?.criticalUserData ?? null,
@@ -51,24 +47,6 @@ export function TagsAdmin() {
   const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
-    const fetchTagCategories = async () => {
-      const result = await monitoringAPI<TagCategory[]>({
-        type: "get",
-        endpoint: "TagCategory",
-      });
-
-      if (isMonitoringAPIError(result)) {
-        throw new Error(result.message);
-      }
-
-      setTagCategories(
-        result.map((category) => ({
-          ...category,
-          name: translateTagCategory(category.name),
-        })),
-      );
-    };
-
     const filterChange = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
         setCurrentPage(1);
@@ -103,8 +81,6 @@ export function TagsAdmin() {
     };
 
     void filterChange();
-
-    void fetchTagCategories();
   }, [searchParams, currentPage]);
 
   const recordsAvailable = tags ? tags["@odata.count"] : 0;

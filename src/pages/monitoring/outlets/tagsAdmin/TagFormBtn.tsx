@@ -39,15 +39,14 @@ import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/t
 
 export function TagFormButton({
   value: tagId,
-  // tagCategories,
 }: {
   value?: unknown;
-  // tagCategories: TagCategory[] | undefined;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
   if (typeof tagId !== "number") {
     throw new Error(
@@ -85,10 +84,29 @@ export function TagFormButton({
   };
 
   useEffect(() => {
+    const fetchTagCategories = async () => {
+      const result = await monitoringAPI<TagCategory[]>({
+        type: "get",
+        endpoint: "TagCategory",
+      });
+
+      if (isMonitoringAPIError(result)) {
+        throw new Error(result.message);
+      }
+
+      setTagCategories(
+        result.map((category) => ({
+          ...category,
+          name: translateTagCategory(category.name),
+        })),
+      );
+    };
+
     if (tagId) {
       setIsLoading(true);
     } else {
       setFormData(makeInitialInfo());
+      void fetchTagCategories();
       setErrors({});
     }
   }, [tagId]);
@@ -292,18 +310,18 @@ export function TagFormButton({
                   }
                   onBlur={categoryOnBlur}
                   disabled={!!tagId || isLoading}
-                  // className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                   aria-invalid={errors.category !== undefined}
                   aria-describedby={errors.category ? "errors_category" : undefined}
                 >
                   <NativeSelectOption value="" disabled>
                     {uiText.form.defaultCategoryTitle}
                   </NativeSelectOption>
-                  {/* {tagCategories.map((category) => (
+                  {tagCategories.map((category) => (
                     <NativeSelectOption value={category.id}>
                       {category.name}
                     </NativeSelectOption>
-                  ))} */}
+                  ))}
                 </NativeSelect>
               </div>
             }
@@ -403,7 +421,7 @@ export function TagFormButton({
             <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
               <Button
                 type="submit"
-                // disabled={isLoading || (!value && tagCategories.length === 0)}
+                disabled={isLoading || (!tagId && tagCategories.length === 0)}
               >
                 {getSubmitButtonText()}
               </Button>
