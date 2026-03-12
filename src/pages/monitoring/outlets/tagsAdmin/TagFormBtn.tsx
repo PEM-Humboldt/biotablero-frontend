@@ -34,8 +34,8 @@ import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { monitoringAPI } from "pages/monitoring/api/core";
 import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
+import { addTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
 
 export function TagFormButton({
   value: tagId,
@@ -56,24 +56,23 @@ export function TagFormButton({
 
   const fetchTag = async () => {
     try {
-      setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const res = await monitoringAPI<TagDataForm>({
-        type: "get",
-        endpoint: `Tag/${tagId}`,
-      });
+      if (tagId) {
+        setLoadStatusMsg(uiText.table.loadStatus.loading);
+        const res = await getTagById(tagId);
 
-      if (isMonitoringAPIError(res)) {
-        setErrors({ root: [res.message] });
-      } else {
-        setFormData({
-          name: res.name || "",
-          url: res.url || "",
-          category: res.category || { id: 0, name: "" },
-        });
-        setErrors({});
+        if (isMonitoringAPIError(res)) {
+          setErrors({ root: [res.message] });
+        } else {
+          setFormData({
+            name: res.name || "",
+            url: res.url || "",
+            category: res.category || { id: 0, name: "" },
+          });
+          setErrors({});
+        }
+
+        setLoadStatusMsg(uiText.table.loadStatus.loaded);
       }
-
-      setLoadStatusMsg(uiText.table.loadStatus.loaded);
     } catch (err) {
       setLoadStatusMsg(uiText.table.loadStatus.error);
       console.error(err);
@@ -86,10 +85,7 @@ export function TagFormButton({
   const fetchTagCategories = async () => {
     try {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const result = await monitoringAPI<TagCategory[]>({
-        type: "get",
-        endpoint: "TagCategory",
-      });
+      const result = await getTagCategories();
 
       if (isMonitoringAPIError(result)) {
         throw new Error(result.message);
@@ -218,17 +214,14 @@ export function TagFormButton({
             name: formData.name,
             url: finalUrl,
           }) as unknown as TagDataForm;
+      
+      let res = null;
 
-      const method = !tagId ? "post" : "put";
-      const endpointStr = !tagId ? "Tag" : `Tag/${tagId}`;
-
-      const res = await monitoringAPI<TagDataForm>({
-        type: method,
-        endpoint: endpointStr,
-        options: {
-          data: payload,
-        },
-      });
+      if (!tagId) {
+        res = await addTag(payload);
+      } else {
+        res = await updateTag(tagId, payload);
+      }
 
       if (isMonitoringAPIError(res)) {
         const { status, message, data } = res;
