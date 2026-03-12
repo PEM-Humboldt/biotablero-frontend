@@ -56,7 +56,7 @@ export function TagFormButton({
 
   const fetchTag = async () => {
     try {
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
+      setLoadStatusMsg(uiText.table.loadStatus.loading);
       const res = await monitoringAPI<TagDataForm>({
         type: "get",
         endpoint: `Tag/${tagId}`,
@@ -73,9 +73,9 @@ export function TagFormButton({
         setErrors({});
       }
 
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
+      setLoadStatusMsg(uiText.table.loadStatus.loaded);
     } catch (err) {
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.error);
+      setLoadStatusMsg(uiText.table.loadStatus.error);
       console.error(err);
       setErrors({ root: ["Error obteniendo la etiqueta."] });
     } finally {
@@ -85,7 +85,7 @@ export function TagFormButton({
   
   const fetchTagCategories = async () => {
     try {
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
+      setLoadStatusMsg(uiText.table.loadStatus.loading);
       const result = await monitoringAPI<TagCategory[]>({
         type: "get",
         endpoint: "TagCategory",
@@ -102,9 +102,9 @@ export function TagFormButton({
         })),
       );
 
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
+      setLoadStatusMsg(uiText.table.loadStatus.loaded);
     } catch (err) {
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.error);
+      setLoadStatusMsg(uiText.table.loadStatus.error);
       console.error(err);
       setErrors({ root: ["Error obteniendo las categorías."] });
     } finally {
@@ -271,24 +271,34 @@ export function TagFormButton({
   return (
     <Dialog>
       {tagId &&
-        <DialogTrigger asChild>
+        <>
+          <DialogTrigger asChild>
+            <Button
+              onClick={() => void fetchTag()}
+              disabled={loadStatusMsg !== null}
+              variant="ghost"
+            >
+              {loadStatusMsg !== null
+                ? loadStatusMsg
+                : uiText.table.editBtn.defaultText}
+            </Button>
+          </DialogTrigger>
           <Button
-            onClick={() => void fetchTag()}
+            onClick={() => console.log("PENDING")}
             disabled={loadStatusMsg !== null}
             variant="ghost"
           >
             {loadStatusMsg !== null
               ? loadStatusMsg
-              : uiText.table.detailsBtn.defaultText}
+              : uiText.table.deleteBtn.defaultText}
           </Button>
-        </DialogTrigger>
+        </>
       }
       {!tagId &&
         <DialogTrigger asChild>
           <Button
             onClick={() => void fetchTagCategories()}
             disabled={loadStatusMsg !== null}
-            variant="ghost"
           >
             {loadStatusMsg !== null
               ? loadStatusMsg

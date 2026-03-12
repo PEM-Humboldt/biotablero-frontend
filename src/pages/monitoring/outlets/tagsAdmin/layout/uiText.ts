@@ -65,13 +65,16 @@ export const uiText = {
   },
 
   table: {
-    detailsBtn: {
+    loadStatus: {
+      loaded: null,
+      loading: "Cargando...",
+      error: "No disponible",
+    },
+    editBtn: {
       defaultText: "Editar",
-      loadStatus: {
-        loaded: null,
-        loading: "Cargando...",
-        error: "No disponible",
-      },
+    },
+    deleteBtn: {
+      defaultText: "Eliminar",
     },
   },
 };
