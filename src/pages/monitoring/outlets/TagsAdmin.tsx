@@ -37,7 +37,7 @@ export function TagsAdmin() {
   });
   const [searchParams] = useState<ODataParams>({
     top: TAG_RECORDS_PER_PAGE,
-    orderby: "category/id asc",
+    orderby: "id asc",
   });
   const prevSearchParamsRef = useRef(searchParams);
   const [refetchTrigger, setRefetchTrigger] = useState(0);

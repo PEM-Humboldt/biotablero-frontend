@@ -32,7 +32,7 @@ import {
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { addTag, deleteTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
@@ -49,7 +49,8 @@ export function TagFormButton({
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogForm, setOpenDialogForm] = useState(false);
+  const [openDialogAlert, setOpenDialogAlert] = useState(false);
 
   if (tagId != null && typeof tagId !== "number") {
     throw new Error(
@@ -115,10 +116,16 @@ export function TagFormButton({
     try {
       if (tagId) {
         setLoadStatusMsg(uiText.table.loadStatus.loading);
-        const result = await deleteTag(tagId);
+        const res = await deleteTag(tagId);
 
-        if (isMonitoringAPIError(result)) {
-          throw new Error(result.message);
+        if (isMonitoringAPIError(res)) {
+          setErrors((oldErr) => ({
+            ...oldErr,
+            root: res.data.map((error) => error.msg),
+          }));
+          console.error(res);
+          setLoadStatusMsg(uiText.table.loadStatus.loaded);
+          return;
         }
 
         setLoadStatusMsg(uiText.table.loadStatus.loaded);
@@ -129,6 +136,9 @@ export function TagFormButton({
           icon: <UserRoundCheck className="size-8 text-primary" />,
           className: "px-6! gap-6! border-2! border-primary!",
         });
+
+        setOpenDialogAlert(false);
+        onActionSuccess?.();
       }
     } catch (err) {
       setLoadStatusMsg(uiText.table.loadStatus.error);
@@ -272,7 +282,7 @@ export function TagFormButton({
         className: "px-6! gap-6! border-2! border-primary!",
       });
 
-      setOpenDialog(false);
+      setOpenDialogForm(false);
       onActionSuccess?.();
     } catch (err) {
       setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
@@ -291,34 +301,19 @@ export function TagFormButton({
 
   return (
     <>
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+      <Dialog open={openDialogForm} onOpenChange={setOpenDialogForm}>
         {tagId &&
-          <>
-            <DialogTrigger asChild>
-              <Button
-                onClick={() => void fetchTag()}
-                disabled={loadStatusMsg !== null}
-                variant="ghost"
-              >
-                {loadStatusMsg !== null
-                  ? loadStatusMsg
-                  : uiText.table.editBtn.defaultText}
-              </Button>
-            </DialogTrigger>
-            <DestructiveConfirmationDialog
-              texts={{
-                trigger: uiText.table.deleteBtn.trigger,
-                dialog: {
-                  title: uiText.table.deleteBtn.dialog.title,
-                  description: uiText.table.deleteBtn.dialog.description,
-                },
-                actionBtns: uiText.table.deleteBtn.actionBtns,
-              }}
-              triggerBtnVariant="ghost"
-              handler={() => void removeTag()}
-              isDisabled = {loadStatusMsg !== null}
-            />
-          </>
+          <DialogTrigger asChild>
+            <Button
+              onClick={() => void fetchTag()}
+              disabled={loadStatusMsg !== null}
+              variant="ghost"
+            >
+              {loadStatusMsg !== null
+                ? loadStatusMsg
+                : uiText.table.editBtn.defaultText}
+            </Button>
+          </DialogTrigger>
         }
         {!tagId &&
           <DialogTrigger asChild>
@@ -501,6 +496,43 @@ export function TagFormButton({
           </div>
         </DialogContent>
       </Dialog>
+      {tagId &&
+        <Dialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
+          <DialogTrigger asChild>
+              <Button
+                onClick={() => void fetchTag()}
+                disabled={loadStatusMsg !== null}
+                variant="ghost"
+              >
+                {loadStatusMsg !== null
+                  ? loadStatusMsg
+                  : uiText.table.deleteBtn.defaultText}
+              </Button>
+            </DialogTrigger>
+          <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
+            <div className="pb-2">
+              <DialogHeader>
+                <DialogTitle>{uiText.table.deleteBtn.dialog.title}</DialogTitle>
+              </DialogHeader>
+            </div>
+            <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+              <>
+                {uiText.table.deleteBtn.dialog.description(formData.name)}
+                <ErrorsList
+                  errorItems={errors.root ?? []}
+                  className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
+                />
+              </>
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">{uiText.table.deleteBtn.actionBtns.cancel}</Button>
+              </DialogClose>
+              <Button onClick={() => void removeTag()}>{uiText.table.deleteBtn.actionBtns.confirm}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      }
     </>
   );
 }
