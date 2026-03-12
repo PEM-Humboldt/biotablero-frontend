@@ -21,6 +21,20 @@ import type {
 } from "pages/monitoring/types/territoryStory";
 import { getTerritoryStory } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { ImagesInput } from "pages/monitoring/outlets/territoryStory/formTS/ImagesInput";
+import {
+  TERRITORY_STORY_KEYWORD_MAX_LENGTH,
+  TERRITORY_STORY_KEYWORDS_MAX_AMOUNT,
+  TERRITORY_STORY_TITLE_MAX_LENGTH,
+} from "@config/monitoring";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { TitleInput } from "./formTS/TitleInput";
 
 const initializeTSForm = (
   territoryStory?: TerritoryStoryFull,
@@ -31,41 +45,21 @@ const initializeTSForm = (
   enabled: territoryStory?.enabled ?? true,
   keywords:
     territoryStory?.keywords.split(",") ?? (["cara", "sello"] as string[]),
-  images: territoryStory?.images ?? ([] as ImageObjectTS[]),
+  images:
+    territoryStory?.images ??
+    ([
+      {
+        fileUrl:
+          "https://notejoy.s3.amazonaws.com/static_images/notejoy_highlight_markdown.png",
+        description: "pato pato ganso",
+      },
+    ] as ImageObjectTS[]),
   videos:
-    territoryStory?.videos ?? ([] as Omit<VideoObjectTS, "territoryStoryId">[]),
+    territoryStory?.videos ??
+    ([
+      { fileUrl: "https://www.youtube.com/watch?v=W1tJ1GKmE4w" },
+    ] as VideoObjectTS[]),
 });
-
-// async function saveVideoChanges(
-//   territoryStoryId: number,
-//   initialVideos: VideoObjectTS[], // Lo que vino de getTerritoryHistoryVideos
-//   draftVideos: VideoDraft[], // El estado actual de tus tarjetas
-// ) {
-//   // 1. Identificar ELIMINACIONES
-//   const draftDbIds = new Set(draftVideos.map((v) => v.dbId).filter(Boolean));
-//   const toDelete = initialVideos.filter((v) => !draftDbIds.has(v.id));
-//
-//   // 2. Identificar CREACIONES
-//   const toCreate = draftVideos.filter((v) => !v.dbId);
-//
-//   // 3. Ejecutar peticiones
-//   const tasks: Promise<any>[] = [];
-//
-//   // Agregar eliminaciones
-//   toDelete.forEach((v) => {
-//     tasks.push(deleteTerritoryHistoryVideo(v.id));
-//   });
-//
-//   // Agregar creaciones
-//   toCreate.forEach((v) => {
-//     tasks.push(postTerritoryHistoryVideo(territoryStoryId, v.url));
-//   });
-//
-//   // Ejecutar todo en paralelo
-//   const results = await Promise.allSettled(tasks);
-//
-//   return results;
-// }
 
 function fromLexicalEditorStateRefToMarkdown(
   textStateRef: MutableRefObject<EditorState | null>,
@@ -122,12 +116,16 @@ export function TerritoryStoryForm({
 
   const handleSubmit = () => {
     console.log(
+      "title",
+      story.title,
       "text",
       fromLexicalEditorStateRefToMarkdown(textToPull),
       "palabras clave",
       story.keywords,
       "video",
       story.videos,
+      "images",
+      story.images,
     );
   };
 
@@ -135,11 +133,15 @@ export function TerritoryStoryForm({
     <div>Cargando...</div>
   ) : (
     <form className="p-4 w-full flex flex-col gap-2">
+      <TitleInput title={story.title} titleUpdater={updateField("title")} />
+
       <RichTextEditor textToLoad={story.text} textStateRef={textToPull} />
+
       <KeywordInput
         keywordsList={story.keywords}
         updateKeywordsList={updateField("keywords")}
-        keywordsLimit={5}
+        keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
+        keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
         inputTxt={{
           label: "Palabras clave del relato",
           placeholder: "agrega una palabra oprimiendo enter",
@@ -148,10 +150,13 @@ export function TerritoryStoryForm({
             `${currentAmount} de ${total} palabras clave`,
         }}
       />
+
       <YoutubeVideoInput
         videos={story.videos}
         updateVideos={updateField("videos")}
       />
+
+      <ImagesInput images={story.images} updateImages={updateField("images")} />
 
       <button type="button" onClick={handleSubmit}>
         up
@@ -159,3 +164,34 @@ export function TerritoryStoryForm({
     </form>
   );
 }
+
+// async function saveVideoChanges(
+//   territoryStoryId: number,
+//   initialVideos: VideoObjectTS[], // Lo que vino de getTerritoryHistoryVideos
+//   draftVideos: VideoDraft[], // El estado actual de tus tarjetas
+// ) {
+//   // 1. Identificar ELIMINACIONES
+//   const draftDbIds = new Set(draftVideos.map((v) => v.dbId).filter(Boolean));
+//   const toDelete = initialVideos.filter((v) => !draftDbIds.has(v.id));
+//
+//   // 2. Identificar CREACIONES
+//   const toCreate = draftVideos.filter((v) => !v.dbId);
+//
+//   // 3. Ejecutar peticiones
+//   const tasks: Promise<any>[] = [];
+//
+//   // Agregar eliminaciones
+//   toDelete.forEach((v) => {
+//     tasks.push(deleteTerritoryHistoryVideo(v.id));
+//   });
+//
+//   // Agregar creaciones
+//   toCreate.forEach((v) => {
+//     tasks.push(postTerritoryHistoryVideo(territoryStoryId, v.url));
+//   });
+//
+//   // Ejecutar todo en paralelo
+//   const results = await Promise.allSettled(tasks);
+//
+//   return results;
+// }

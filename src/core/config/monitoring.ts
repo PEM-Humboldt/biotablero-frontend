@@ -30,6 +30,7 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/png",
   "image/webp",
 ];
+export const INITIATIVES_IMG_MAX_FILE_SIZE = 2; // size in megabytes
 
 // initiative admin
 export const JOIN_REQUESTS_PER_PAGE = 10;
@@ -39,4 +40,15 @@ export const JOIN_REQUESTS_PER_PAGE = 10;
 export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
 
 // territoryStory
-export const TERRITORY_STORY_MAX_YOUTUBE_VIDEOS = 5;
+export const TERRITORY_STORY_TITLE_MAX_LENGTH = 100;
+export const TERRITORY_STORY_KEYWORDS_MAX_AMOUNT = 4;
+export const TERRITORY_STORY_KEYWORD_MAX_LENGTH = 75;
+
+export const TERRITORY_STORY_MAX_YOUTUBE_VIDEOS = 6;
+export const TERRITORY_STORY_MAX_IMAGES = 6;
+export const TERRITORY_STORY_IMAGE_DESCRIPTION_MAX_LENGTH = 150;
+export const TERRITORY_STORY_IMG_MAX_FILE_SIZE = 20; // size in megabytes
+export const TERRITORY_STORY_IMG_MAX_WIDTH = 1200; // size in pixels
+export const TERRITORY_STORY_IMG_MAX_HEIGHT = 900; // size in pixels
+export const TERRITORY_STORY_IMG_MIN_WIDTH = 300; // size in pixels
+export const TERRITORY_STORY_IMG_MIN_HEIGHT = 300; // size in pixels

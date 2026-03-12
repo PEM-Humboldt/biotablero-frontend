@@ -7,10 +7,11 @@ export type VideoObjectTS = {
 };
 
 export type ImageObjectTS = {
-  id: number;
+  id?: number;
   fileUrl: string;
   description: string;
-  featuredContent: boolean;
+  featuredContent?: boolean;
+  file?: File;
 };
 
 export interface TerritoryStoryFull extends TerritoryStoryShort {
