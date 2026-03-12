@@ -33,7 +33,7 @@ export function isYoutubeVideoMetadata(
   return (
     typeof data === "object" &&
     data !== null &&
-    "id" in data &&
+    "youtubeId" in data &&
     "title" in data &&
     "author" in data &&
     "thumbnail" in data &&

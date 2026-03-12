@@ -1,13 +1,19 @@
 import type { ApiRequestError } from "@appTypes/api";
 import axios from "axios";
+import { commonErrorMessage } from "pages/monitoring/api/errorsDictionary";
 
 export type YoutubeVideoMetadata = {
-  id: string;
+  youtubeId: string;
   title: string;
   author: string;
   thumbnail: string;
   url: string;
 };
+
+export interface YoutubeVideoCardInfo extends YoutubeVideoMetadata {
+  territoryStoriId?: number;
+  mediaSourceId?: number;
+}
 
 type YoutubeOEmbedResponse = {
   title: string;
@@ -25,6 +31,15 @@ type YoutubeOEmbedResponse = {
   html: string;
 };
 
+const youtubeApiResponseUiMessage: Record<number, string> = {
+  400: "Parámetros de consulta inválidos o ID mal formado.",
+  401: "El video no está disponible para compartir libremente (No autorizado).",
+  403: "Acceso prohibido: el video tiene restricciones de dominio o edad o de peticiones realizadas.",
+  404: "Video no encontrado o el ID es incorrecto.",
+  429: "Demasiadas solicitudes en poco tiempo. Reintenta más tarde.",
+  503: "No se pudo conectar con los servidores de Google. Revisa tu conexión.",
+};
+
 export type YoutubeError = {
   exists: false;
   error: string;
@@ -34,7 +49,6 @@ export const getYoutubeVideoMetadata = async (
   input: string,
 ): Promise<YoutubeVideoMetadata | ApiRequestError> => {
   const videoRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^"&?/\s]{11})/i;
-  console.log(input);
   const match = input.match(videoRegex);
   let videoId: string | null = null;
 
@@ -71,29 +85,35 @@ export const getYoutubeVideoMetadata = async (
     );
 
     return {
-      id: videoId,
+      youtubeId: videoId,
       title: data.title,
       author: data.author_name,
       thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
       url: `https://www.youtube.com/watch?v=${videoId}`,
     };
   } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
+    // console.error("YoutubeApiCall:", error);
+
+    if (!axios.isAxiosError(error)) {
       return {
-        status: 404,
-        message: "Video not found",
-        data: [
-          {
-            msg: "Video no encontrado, el id es incorrecto o el video es privado",
-          },
-        ],
+        status: 500,
+        message: "Unknown error",
+        data: [],
       };
     }
 
+    const status = error.response?.status ?? 500;
+
     return {
-      status: 500,
-      message: "Unknown error",
-      data: [],
+      status,
+      message: (error.response?.data as string) || error.message,
+      data: [
+        {
+          msg:
+            youtubeApiResponseUiMessage[status] ||
+            commonErrorMessage[error.response?.status ?? 500],
+        },
+      ],
     };
   }
 };
