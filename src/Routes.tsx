@@ -10,7 +10,6 @@ import { Dashboard } from "pages/monitoring/outlets/Dashboard";
 import { checkNLoad } from "@utils/userLoader";
 import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
-import { getLogs } from "pages/monitoring/api/monitoringAPI";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";

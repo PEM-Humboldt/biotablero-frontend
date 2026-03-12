@@ -10,14 +10,14 @@ import {
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useUserCTX } from "@hooks/UserContext";
-import { commonErrorMessage, getErrorMessage } from "@utils/ui";
 
 import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
-  getUserInitiativesInfo,
   getUserJoinRequests,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+  getUserInitiativesInfo,
+} from "pages/monitoring/api/services/initiatives";
+
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 
 type MonitoringContextProps = {
@@ -46,49 +46,35 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const initiativesInfo = await getUserInitiativesInfo();
+    setIsLoading(true);
+    setJoinRequests({});
+    setInitiatives([]);
+    const initiativesInfo = await getUserInitiativesInfo();
 
-      if (isMonitoringAPIError(initiativesInfo)) {
-        const { status, message, data } = initiativesInfo;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
-
-        setJoinRequests({});
-        setInitiatives([]);
-        return;
-      }
-
-      const requestsInfo = await getUserJoinRequests();
-
-      if (isMonitoringAPIError(requestsInfo)) {
-        const { status, message, data } = requestsInfo;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
-
-        setJoinRequests({});
-        setInitiatives([]);
-        return;
-      }
-
-      const requestsDictionary = requestsInfo.reduce<
-        Record<number, UserJoinRequestData>
-      >((all, current) => {
-        all[current.initiativeId] = current;
-        return all;
-      }, {});
-
-      setJoinRequests(requestsDictionary);
-      setInitiatives(initiativesInfo);
-    } catch (err) {
-      console.error(err);
-      setError(`Error crítico: ${getErrorMessage(err)}`);
-    } finally {
+    if (isMonitoringAPIError(initiativesInfo)) {
+      setError(initiativesInfo.data[0].msg);
       setIsLoading(false);
+      return;
     }
+
+    const requestsInfo = await getUserJoinRequests();
+
+    if (isMonitoringAPIError(requestsInfo)) {
+      setError(requestsInfo.data[0].msg);
+      setIsLoading(false);
+      return;
+    }
+
+    const requestsDictionary = requestsInfo.reduce<
+      Record<number, UserJoinRequestData>
+    >((all, current) => {
+      all[current.initiativeId] = current;
+      return all;
+    }, {});
+
+    setJoinRequests(requestsDictionary);
+    setInitiatives(initiativesInfo);
+    setIsLoading(false);
   }, [user?.username]);
 
   useEffect(() => {

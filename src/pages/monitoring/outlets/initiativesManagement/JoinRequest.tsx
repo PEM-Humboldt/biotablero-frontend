@@ -6,13 +6,9 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
-import { commonErrorMessage } from "@utils/ui";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
-import type {
-  ODataInitiativeUserRequest,
-  UserInInitiative,
-} from "pages/monitoring/types/odataResponse";
+import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
 import {
   type FilterJoinRequestsCallback,
@@ -23,12 +19,11 @@ import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesMa
 import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
 import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
 
-export function JoinRequests({
-  InitiativesAsLeader: userInitiatives,
-}: {
-  InitiativesAsLeader?: UserInInitiative[];
-}) {
+export function JoinRequests() {
   const [currentStatus, setCurrentStatus] = useState<JoinRequestStatus | null>(
     null,
   );
@@ -37,6 +32,12 @@ export function JoinRequests({
   const [totalRequest, setTotalRequest] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const { userInitiativesAs } = useUserInMonitoringCTX();
+
+  const userInitiatives = useMemo(
+    () => userInitiativesAs[RoleInInitiative.LEADER],
+    [userInitiativesAs],
+  );
 
   const initiativesIds = useMemo(
     () => userInitiatives?.map((initiative) => initiative.id) ?? [],
@@ -55,26 +56,27 @@ export function JoinRequests({
     ) => {
       setLoading(true);
       setRequests([]);
+      setTotalRequest(0);
 
-      try {
-        const requestsAmount = await getTotalRequests(status);
-        const data = await getRequestPage(
-          status,
-          page,
-          JOIN_REQUESTS_PER_PAGE,
-          sortBy,
-          newerFirst,
-        );
+      const requestsAmount = await getTotalRequests(status);
+      const data = await getRequestPage(
+        status,
+        page,
+        JOIN_REQUESTS_PER_PAGE,
+        sortBy,
+        newerFirst,
+      );
 
-        setRequests(data.requests);
-        setErrors(data.errors);
-        setTotalRequest(requestsAmount);
-      } catch (err) {
-        setErrors([uiText.error.critical.user]);
-        console.error(uiText.error.critical.console, err);
-      } finally {
+      if (isMonitoringAPIError(requestsAmount) || isMonitoringAPIError(data)) {
         setLoading(false);
+        setErrors([uiText.error.critical.user]);
+        return;
       }
+
+      setRequests(data.requests);
+      setErrors(data.errors);
+      setTotalRequest(requestsAmount);
+      setLoading(false);
     },
     [getRequestPage, getTotalRequests],
   );
@@ -130,33 +132,23 @@ export function JoinRequests({
     setErrors([]);
     setLoading(true);
 
-    try {
-      const reqError = await resolveJoinRequest(requestId, newStatus);
+    const reqError = await resolveJoinRequest(requestId, newStatus);
 
-      if (reqError) {
-        const detail =
-          reqError && typeof reqError === "object"
-            ? `${commonErrorMessage[reqError.status] ?? ""} ${reqError.message ?? reqError.data ?? ""}`
-            : "";
-
-        setErrors([
-          `${uiText.error.changeJoinRequestStatus}${detail ? `: ${detail}` : "."}`,
-        ]);
-        return;
-      }
-
-      void handleFilterChange(
-        JoinRequestStatus.UNDER_REVIEW,
-        "creationDate",
-        false,
-        true,
-      );
-    } catch (err) {
-      setErrors([uiText.error.critical.user]);
-      console.error(uiText.error.critical.console, err);
-    } finally {
+    if (isMonitoringAPIError(reqError)) {
+      setErrors([
+        ...reqError.data.map((error) => error.msg),
+        uiText.error.critical.user,
+      ]);
       setLoading(false);
+      return;
     }
+
+    void handleFilterChange(
+      JoinRequestStatus.UNDER_REVIEW,
+      "creationDate",
+      false,
+      true,
+    );
   };
 
   const handleApproveJoinRequest = (request: ODataInitiativeUserRequest) => {

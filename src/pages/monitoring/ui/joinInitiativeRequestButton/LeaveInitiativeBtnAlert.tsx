@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { getErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
-import { leaveInitiative } from "pages/monitoring/api/monitoringAPI";
+import { leaveInitiative } from "pages/monitoring/api/services/initiatives";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function LeaveInitiativeBtnAlert() {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,34 +30,30 @@ export function LeaveInitiativeBtnAlert() {
     }
 
     setIsLoading(true);
+    setError(null);
 
-    try {
-      const errorInResponse = await leaveInitiative(userInInitiativeInfo.id);
+    const res = await leaveInitiative(userInInitiativeInfo.id);
 
-      if (errorInResponse) {
-        setError(errorInResponse);
-        return;
-      }
-
-      await updateInitiative();
-
-      toast(uiText.leaveInitiative.toast.title, {
-        position: "bottom-right",
-        description: uiText.leaveInitiative.toast.description(
-          initiativeInfo?.name ?? "",
-        ),
-        icon: (
-          <uiText.leaveInitiative.toast.icon className="size-8 text-accent" />
-        ),
-        className: "px-6! gap-6! border-2! border-accent!",
-        duration: uiText.leaveInitiative.toast.durationInSeconds * 1000,
-      });
-    } catch (err) {
-      console.error(err);
-      setError(`Error crítico: ${getErrorMessage(err)}`);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setError(res.data[0].msg);
       setIsLoading(false);
+      return;
     }
+
+    await updateInitiative();
+
+    toast(uiText.leaveInitiative.toast.title, {
+      position: "bottom-right",
+      description: uiText.leaveInitiative.toast.description(
+        initiativeInfo?.name ?? "",
+      ),
+      icon: (
+        <uiText.leaveInitiative.toast.icon className="size-8 text-accent" />
+      ),
+      className: "px-6! gap-6! border-2! border-accent!",
+      duration: uiText.leaveInitiative.toast.durationInSeconds * 1000,
+    });
+    setIsLoading(false);
   };
 
   return (
@@ -77,7 +73,7 @@ export function LeaveInitiativeBtnAlert() {
         triggerBtnVariant="outline_destructive"
         handler={() => void handelLeaveInitiative()}
         isLoading={isLoading}
-        disabled={Boolean(error)}
+        isDisabled={error !== null}
       />
     </>
   );

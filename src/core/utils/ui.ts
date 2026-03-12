@@ -17,21 +17,3 @@ export const inputWarnColor = (
     ? "text-accent"
     : "text-primary";
 };
-
-export const getErrorMessage = (error: unknown): string => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
-  if (typeof error === "string") {
-    return error;
-  }
-
-  return "Error desconocido";
-};
-
-export const commonErrorMessage: Record<number, string> = {
-  401: "Tu sesión ha expirado, ingresa de nuevo",
-  403: "No tienes permisos para esta acción",
-  500: "Error en el servidor monitoreo, vuelve a intentarlo más tarde",
-};

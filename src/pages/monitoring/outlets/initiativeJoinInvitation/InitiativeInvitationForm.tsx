@@ -8,12 +8,9 @@ import {
   InputGroupAddon,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
 import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
@@ -25,6 +22,7 @@ import type {
 } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
+import { sendJoinInitiativeInvitation } from "pages/monitoring/api/services/initiatives";
 
 export function InitiativeInvitationForm({
   initiativeId,
@@ -136,45 +134,30 @@ export function InitiativeInvitationForm({
       return;
     }
 
-    try {
-      const payload: JoinInitiativeDataForm = {
-        initiativeId: initiativeId,
-        message: formData.message,
-        guests: formData.guests,
-      };
+    const payload: JoinInitiativeDataForm = {
+      initiativeId: initiativeId,
+      message: formData.message,
+      guests: formData.guests,
+    };
 
-      const res = await monitoringAPI<JoinInitiativeDataForm>({
-        type: "post",
-        endpoint: "JoinInvitation",
-        options: {
-          data: payload,
-        },
-      });
+    const res = await sendJoinInitiativeInvitation(payload);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => ({
-          ...oldErr,
-          root: [
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          ],
-        }));
-        console.error(res);
-        return;
-      }
-
-      handleFormReset();
-      setMessage({ text: uiText.success, error: false });
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.error.noUpdateData] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        root: res.data.map((error) => error.msg),
+      }));
       setIsLoading(false);
+      return;
     }
+
+    handleFormReset();
+    setMessage({ text: uiText.success, error: false });
+    setIsLoading(false);
   };
 
   return (
-    <div className="bg-background w-full rounded-xl p-6 shadow-sm flex flex-col gap-4 border border-muted">
+    <div className="w-full rounded-xl p-6 shadow-sm flex flex-col gap-4 border border-muted">
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
         {uiText.title}
       </h4>
@@ -190,7 +173,6 @@ export function InitiativeInvitationForm({
             htmlFor="email"
             errID="errors_guests"
             validationErrors={errors.guests ?? []}
-            className="mb-1 text-sm font-medium"
           >
             {uiText.form.emailsLabel}
             <span aria-hidden="true">*</span>
@@ -215,14 +197,13 @@ export function InitiativeInvitationForm({
             htmlFor="message"
             errID="errors_message"
             validationErrors={errors.message ?? []}
-            className="mb-1 text-sm font-medium"
           >
             {uiText.form.messageLabel}
           </LabelAndErrors>
           <InputGroup>
             <TextareaAutosize
               data-slot="input-group-control"
-              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
               id="message"
               placeholder="Escribe un mensaje..."
               value={customMessage}
@@ -245,14 +226,9 @@ export function InitiativeInvitationForm({
           </InputGroup>
         </div>
 
-        {message && !message.error && (
-          <p className="text-sm text-green-600">{message.text}</p>
-        )}
+        {message && !message.error && <p>{message.text}</p>}
 
-        <ErrorsList
-          errorItems={errors.root ?? []}
-          className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
-        />
+        <ErrorsList errorItems={errors.root ?? []} />
 
         <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
           <Button type="submit" disabled={isLoading}>

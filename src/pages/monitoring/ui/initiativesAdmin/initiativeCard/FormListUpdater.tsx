@@ -1,6 +1,5 @@
 import { type ElementType, useEffect, useState } from "react";
 
-import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -10,12 +9,13 @@ import type {
 } from "pages/monitoring/types/initiativeData";
 import { DisplayTable } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/DisplayTable";
 import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import {
+  removeInitiativeItem,
+  updateInitiativeItem,
+} from "pages/monitoring/api/services/initiatives";
 
 type FormListUpdaterProps<T, R extends object> = {
   title: string;
@@ -86,11 +86,7 @@ export function FormListUpdater<T, R extends object>({
 
       for (const response of res) {
         if (isMonitoringAPIError(response)) {
-          const { status, message, data } = response;
-          err.push(
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          );
-          console.error(response);
+          err.push(response.data[0].msg);
         }
       }
 
@@ -132,78 +128,48 @@ export function FormListUpdater<T, R extends object>({
 
   const removeItem = async (itemId: number) => {
     setErrors([]);
+    setIsLoading(true);
 
-    try {
-      setIsLoading(true);
-      const res = await monitoringAPI({
-        type: "delete",
-        endpoint: `${backEndpoint}/${itemId}`,
-        getStatus: true,
-      });
+    const res = await removeInitiativeItem(backEndpoint, itemId);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      await updateInitiativeCallback();
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error("Critical error:", err);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    await updateInitiativeCallback();
+    setIsLoading(false);
   };
 
   const handleSave: (itemInfo: T) => Promise<void> = async (itemInfo) => {
     setErrors([]);
 
-    try {
-      setIsLoading(true);
-      const itemId = getItemId(updateItem);
+    setIsLoading(true);
+    const itemId = getItemId(updateItem);
 
-      const res = await monitoringAPI<T>({
-        type: itemId ? "put" : "post",
-        endpoint: itemId ? `${backEndpoint}/${itemId}` : backEndpoint,
-        options: {
-          data: { ...itemInfo, initiativeId: initiativeId ?? "" },
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        },
-      });
+    const res = await updateInitiativeItem(
+      initiativeId,
+      backEndpoint,
+      itemInfo,
+      itemId,
+    );
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      const itemRender = renderRowsCallback
-        ? ((await renderRowsCallback(res)) as unknown as T)
-        : res;
-
-      setUpdateItem(null);
-      setSelectedItems((oldItems) => [...oldItems, itemRender]);
-      await updateInitiativeCallback();
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
       setIsLoading(false);
+      return;
     }
+
+    const itemRender = renderRowsCallback
+      ? ((await renderRowsCallback(res)) as unknown as T)
+      : res;
+
+    setUpdateItem(null);
+    setSelectedItems((oldItems) => [...oldItems, itemRender]);
+    await updateInitiativeCallback();
+    setIsLoading(false);
   };
 
   const handleRemove = async (itemIndex: number) => {
@@ -213,6 +179,7 @@ export function FormListUpdater<T, R extends object>({
       return;
     }
 
+    setIsLoading(true);
     const itemId = getItemId(selectedItems[itemIndex]);
     if (!itemId) {
       setErrors((oldErr) => [...oldErr, uiText.error.actionError]);
@@ -221,6 +188,7 @@ export function FormListUpdater<T, R extends object>({
 
     await removeItem(itemId);
 
+    setIsLoading(false);
     setSelectedItems((oldItems) => [
       ...oldItems.slice(0, itemIndex),
       ...oldItems.slice(itemIndex + 1),

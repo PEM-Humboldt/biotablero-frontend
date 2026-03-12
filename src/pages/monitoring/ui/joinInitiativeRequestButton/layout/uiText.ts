@@ -58,6 +58,7 @@ export const uiText = {
       },
     },
     toast: {
+      title: `Solicitud cancelada`,
       description: (initiativeName: string) =>
         `Tu solicitud de ingreso a '${initiativeName}' ha sido cancelada, las y los líderes de la iniciativa no podrán ver tu solicitud ni tu información.`,
       icon: TicketX,

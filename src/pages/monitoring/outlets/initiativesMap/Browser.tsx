@@ -1,9 +1,7 @@
 import { type ChangeEvent, useEffect, useState } from "react";
 
-import {
-  getInitiatives,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiatives } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { ODataInitiative } from "pages/monitoring/types/odataResponse";
 import {
   NativeSelect,
@@ -24,15 +22,13 @@ export function Browser() {
 
   useEffect(() => {
     const fetchInitiatives = async () => {
-      try {
-        const initiatives = await getInitiatives({ orderby: "id desc" });
-        if (isMonitoringAPIError(initiatives)) {
-          console.error(initiatives.message);
-        }
-        setAllInitiatives(initiatives.value);
-      } catch (err) {
-        console.error(err);
+      const initiatives = await getInitiatives({ orderby: "id desc" });
+      if (isMonitoringAPIError(initiatives)) {
+        setAllInitiatives([]);
+        return;
       }
+
+      setAllInitiatives(initiatives.value);
     };
     void fetchInitiatives();
   }, []);
