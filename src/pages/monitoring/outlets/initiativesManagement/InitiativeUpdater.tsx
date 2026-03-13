@@ -18,6 +18,7 @@ import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiative
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
+import { InitiativeTagForm } from "pages/monitoring/outlets/initiativeTag/InitiativeTagForm";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
@@ -108,6 +109,10 @@ export function InitiativeUpdater() {
                 {uiText.tabsLabels.initiativeManagement.label}
               </TabsTrigger>
 
+              <TabsTrigger value="initiativeTag" className="tabs-trigger">
+                {uiText.tabsLabels.tagManagement.label}
+              </TabsTrigger>
+
               <TabsTrigger value="invitation" className="tabs-trigger">
                 {uiText.tabsLabels.initiativeInvitation.label}
               </TabsTrigger>
@@ -131,6 +136,10 @@ export function InitiativeUpdater() {
 
             <TabsContent value="initiative" className="tabs-content">
               <InitiativeInfoUpdater initiativeId={currentInitiative.id} />
+            </TabsContent>
+
+            <TabsContent value="initiativeTag" className="tabs-content">
+              <InitiativeTagForm initiativeId={currentInitiative.id} />
             </TabsContent>
 
             <TabsContent value="invitation" className="tabs-content">
