@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_CONTACTS_MIN_AMOUNT,
@@ -23,11 +22,9 @@ import type {
   LocationObj,
 } from "pages/monitoring/types/initiative";
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
-import {
-  getInitiative,
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { changeInitiativeStatus } from "pages/monitoring/api/services/initiatives";
 import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 import { InitiativeStatusDialog } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
 import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/FormListUpdater";
@@ -58,42 +55,24 @@ export function InitiativeCard({
   }, [cardInfo?.enabled]);
 
   const getCardInfo = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await getInitiative(initiative.id);
+    setIsLoading(true);
+    const res = await getInitiative(initiative.id);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      if (!res) {
-        setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
-
-        return;
-      }
-
-      const initiativeAdminInfo = {
-        ...res,
-        users: res.users.filter(
-          (user) => user.level.id === RoleInInitiative.LEADER,
-        ),
-      } satisfies InitiativeFullInfo;
-
-      setCardInfo(initiativeAdminInfo);
-      updater(initiativeAdminInfo);
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    if (!res) {
+      setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
+
+      return;
+    }
+
+    setCardInfo(res);
+    updater(res);
+    setIsLoading(false);
   }, [initiative.id, updater]);
 
   useEffect(() => {
@@ -105,35 +84,19 @@ export function InitiativeCard({
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const endpoint = initiative.enabled ? "Disable" : "Enable";
-      const method = initiative.enabled ? "delete" : "post";
-      const res = await monitoringAPI<InitiativeFullInfo>({
-        type: method,
-        endpoint: `Initiative/${endpoint}/${initiative.id}`,
-      });
+    setIsLoading(true);
+    const res = await changeInitiativeStatus(initiative.enabled, initiative.id);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
 
-        return;
-      }
-
-      setCurrentEdit(res.enabled ? "none" : null);
-
-      void updater(res);
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.criticalError.user]);
-      console.error(uiText.criticalError.log, err);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    setCurrentEdit(res.enabled ? "none" : null);
+
+    void updater(res);
+    setIsLoading(false);
   };
 
   const cardInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
@@ -197,10 +160,7 @@ export function InitiativeCard({
           />
         </div>
 
-        <GeneralInfoUpdater
-          title={uiText.initiative.module.general.title}
-          backEndpoint="Initiative"
-        />
+        <GeneralInfoUpdater title={uiText.initiative.module.general.title} />
 
         <FormListUpdater
           title={uiText.initiative.module.locations.title}

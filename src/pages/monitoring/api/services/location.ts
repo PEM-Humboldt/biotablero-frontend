@@ -1,0 +1,45 @@
+import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
+import type { Location } from "pages/monitoring/types/catalog";
+
+import { monitoringAPI } from "pages/monitoring/api/core";
+
+/**
+ * Retrieves the list of available all the locations from the Monitoring API.
+ * This function is typically used to populate cascading dropdown selectors.
+ *
+ * @param parentId [Optional] The ID of the parent location from which to fetch
+ * sub-locations. If omitted, the function returns all the parent locations.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: Location[]
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function getLocationsList(parentId?: number | string) {
+  const queryParam = parentId !== undefined ? `?parentId=${parentId}` : "";
+  const res = await monitoringAPI<Location[]>({
+    type: "get",
+    endpoint: `Location${queryParam}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves detailed information for a specific location from the Monitoring API.
+ * This function is used to fetch the full data of a single location, such as
+ * its department and municipality names, based on its unique identifier.
+ *
+ * @param locationId - The unique numeric or string ID of the location to retrieve.
+ *
+ * @returns A Promise that resolves to:
+ * - On success: A `LocationBasicInfo` object.
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function getLocationInfo(locationId: number | string) {
+  const res = await monitoringAPI<LocationBasicInfo>({
+    type: "get",
+    endpoint: `Location/${locationId}`,
+  });
+
+  return res;
+}

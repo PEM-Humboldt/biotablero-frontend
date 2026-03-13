@@ -1,36 +1,26 @@
 import {
   getLocationInfo,
-  getLocationList,
-} from "pages/monitoring/api/monitoringAPI";
+  getLocationsList,
+} from "pages/monitoring/api/services/location";
 import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export const getColombianDepartments = (() => {
   let cachedDeps: { name: string; value: number }[] = [];
-  let currentPromise: Promise<{ name: string; value: number }[]> | null = null;
 
   return async () => {
     if (cachedDeps.length > 0) {
       return cachedDeps;
     }
 
-    if (currentPromise) {
-      return currentPromise;
+    const departmentsList = await getLocationsList();
+    if (isMonitoringAPIError(departmentsList)) {
+      return [];
     }
 
-    currentPromise = getLocationList()
-      .then((deps) => {
-        cachedDeps = deps;
-        return deps;
-      })
-      .catch((err) => {
-        console.error("Cannot fetch departments list", err);
-        return [];
-      })
-      .finally(() => {
-        currentPromise = null;
-      });
+    cachedDeps = departmentsList.map(({ name, id }) => ({ name, value: id }));
 
-    return currentPromise;
+    return cachedDeps;
   };
 })();
 
@@ -47,7 +37,16 @@ export async function getMunicipalitiesByDepartment(
     return municipalitiesCache[departmentId];
   }
 
-  municipalitiesCache[departmentId] = await getLocationList(departmentId);
+  const municipalities = await getLocationsList(departmentId);
+  if (isMonitoringAPIError(municipalities)) {
+    return [];
+  }
+
+  municipalitiesCache[departmentId] = municipalities.map(({ name, id }) => ({
+    name,
+    value: id,
+  }));
+
   return municipalitiesCache[departmentId];
 }
 
@@ -60,7 +59,7 @@ export async function getLocationInfoById(id: string | number) {
   }
 
   const reqLocationData = await getLocationInfo(id);
-  if (!reqLocationData) {
+  if (isMonitoringAPIError(reqLocationData) || !reqLocationData) {
     return null;
   }
 

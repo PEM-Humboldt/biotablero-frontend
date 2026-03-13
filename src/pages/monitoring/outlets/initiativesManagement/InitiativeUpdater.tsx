@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
   Tabs,
@@ -11,16 +10,14 @@ import {
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Combobox } from "@ui/ComboBox";
-import {
-  getUsers,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { getUsers } from "pages/monitoring/api/services/user";
 import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
-import { InitiativeInvitation } from "../InitiativeInvitation";
+import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,28 +43,19 @@ export function InitiativeUpdater() {
     if (!selectedId) {
       return;
     }
-
+    setInitiativeUsers([]);
     setIsLoading(true);
-    try {
-      const res = await getUsers(selectedId);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
+    const res = await getUsers(selectedId);
+    if (isMonitoringAPIError(res)) {
+      setError(res.data[0].msg);
 
-        setInitiativeUsers([]);
-        return;
-      }
-
-      setInitiativeUsers(res);
-    } catch (err) {
-      console.error(uiText.error.critical.log, err);
-      setError(uiText.error.critical.user);
-    } finally {
       setIsLoading(false);
+      return;
     }
+
+    setInitiativeUsers(res);
+    setIsLoading(false);
   }, [selectedId]);
 
   useEffect(() => {
@@ -146,7 +134,7 @@ export function InitiativeUpdater() {
             </TabsContent>
 
             <TabsContent value="invitation" className="tabs-content">
-              <InitiativeInvitation initiativeId={currentInitiative.id} />
+              <InitiativeInvitationForm initiativeId={currentInitiative.id} />
             </TabsContent>
           </Tabs>
         )}

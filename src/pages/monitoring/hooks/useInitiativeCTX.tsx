@@ -8,16 +8,12 @@ import {
   useState,
 } from "react";
 
-import { commonErrorMessage, getErrorMessage } from "@utils/ui";
-
 import type {
   InitiativeFullInfo,
   UserSRC,
 } from "pages/monitoring/types/initiative";
-import {
-  getInitiative,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserCTX } from "@hooks/UserContext";
 import {
   initiativeRoleToState,
@@ -47,7 +43,7 @@ export function CurrentInitiativeCTX({
   children: ReactNode;
 }) {
   const [initiative, setInitiative] = useState<InitiativeFullInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
 
@@ -58,24 +54,18 @@ export function CurrentInitiativeCTX({
     }
 
     setIsLoading(true);
-    try {
-      const initiativeInfo = await getInitiative(initiativeId);
 
-      if (isMonitoringAPIError(initiativeInfo)) {
-        const { status, message, data } = initiativeInfo;
+    const initiativeInfo = await getInitiative(initiativeId);
 
-        setInitiative(null);
-        return `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`;
-      }
-
-      setInitiative(initiativeInfo ?? null);
-      return null;
-    } catch (err) {
-      console.error(err);
-      return `Error crítico: ${getErrorMessage(err)}`;
-    } finally {
+    if (isMonitoringAPIError(initiativeInfo)) {
+      setInitiative(null);
       setIsLoading(false);
+      return initiativeInfo.data[0].msg;
     }
+
+    setInitiative(initiativeInfo ?? null);
+    setIsLoading(false);
+    return null;
   }, []);
 
   useEffect(() => {
