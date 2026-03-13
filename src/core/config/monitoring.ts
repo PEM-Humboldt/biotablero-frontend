@@ -37,3 +37,8 @@ export const JOIN_REQUESTS_PER_PAGE = 10;
 // Initiative Join Invitations
 
 export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
+
+// Tag admin
+export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_URL_MAX_LENGTH = 150;
+export const TAG_RECORDS_PER_PAGE = 20;
