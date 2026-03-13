@@ -10,6 +10,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type FormEvent,
 } from "react";
 import { KeywordInput } from "@composites/keywordInput";
 import { YoutubeVideoInput } from "pages/monitoring/outlets/territoryStory/formTS/YoutubeVideoInput";
@@ -19,46 +20,26 @@ import type {
   TerritoryStoryFull,
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
-import { getTerritoryStory } from "pages/monitoring/api/services/territoryStory";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ImagesInput } from "pages/monitoring/outlets/territoryStory/formTS/ImagesInput";
 import {
   TERRITORY_STORY_KEYWORD_MAX_LENGTH,
   TERRITORY_STORY_KEYWORDS_MAX_AMOUNT,
-  TERRITORY_STORY_TITLE_MAX_LENGTH,
 } from "@config/monitoring";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@ui/shadCN/component/input-group";
-import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { TitleInput } from "./formTS/TitleInput";
+import { TitleInput } from "pages/monitoring/outlets/territoryStory/formTS/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/territoryStory/formTS/SubmitStory";
+import { getTerritoryStory } from "pages/monitoring/api/services/territoryStory";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 const initializeTSForm = (
   territoryStory?: TerritoryStoryFull,
 ): TerritoryStoryForm => ({
   title: territoryStory?.title ?? "",
-  text: territoryStory?.text ?? "### carahjo\n[pendejo](mmejoa.com)",
+  text: territoryStory?.text ?? "",
   restricted: territoryStory?.restricted ?? false,
   enabled: territoryStory?.enabled ?? true,
-  keywords:
-    territoryStory?.keywords.split(",") ?? (["cara", "sello"] as string[]),
-  images:
-    territoryStory?.images ??
-    ([
-      {
-        fileUrl:
-          "https://notejoy.s3.amazonaws.com/static_images/notejoy_highlight_markdown.png",
-        description: "pato pato ganso",
-      },
-    ] as ImageObjectTS[]),
-  videos:
-    territoryStory?.videos ??
-    ([
-      { fileUrl: "https://www.youtube.com/watch?v=W1tJ1GKmE4w" },
-    ] as VideoObjectTS[]),
+  keywords: territoryStory?.keywords.split(",") ?? ([] as string[]),
+  images: territoryStory?.images ?? ([] as ImageObjectTS[]),
+  videos: territoryStory?.videos ?? ([] as VideoObjectTS[]),
 });
 
 function fromLexicalEditorStateRefToMarkdown(
@@ -80,10 +61,11 @@ export function TerritoryStoryForm({
 }: {
   territoryStoryId?: number;
 }) {
+  const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const textToPull = useRef(null);
+  const textToPull = useRef<EditorState | null>(null);
 
   const updateField = useCallback(
     <K extends keyof TerritoryStoryForm>(field: K) =>
@@ -95,6 +77,7 @@ export function TerritoryStoryForm({
 
   const fetchStoryData = useCallback(async () => {
     if (territoryStoryId === undefined) {
+      setStory(initializeTSForm());
       return;
     }
 
@@ -106,36 +89,55 @@ export function TerritoryStoryForm({
       setIsLoading(false);
       return;
     }
-    setIsLoading(false);
+
     setStory(initializeTSForm(res));
+    setIsLoading(false);
   }, [territoryStoryId]);
 
   useEffect(() => {
     void fetchStoryData();
   }, [fetchStoryData]);
 
-  const handleSubmit = () => {
-    console.log(
-      "title",
-      story.title,
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    console.warn(
+      "story",
+      story,
       "text",
       fromLexicalEditorStateRefToMarkdown(textToPull),
-      "palabras clave",
-      story.keywords,
-      "video",
-      story.videos,
-      "images",
-      story.images,
     );
+  };
+
+  const handleReset = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormKey((oldKey) => oldKey + 1);
+    await fetchStoryData();
   };
 
   return isLoading ? (
     <div>Cargando...</div>
   ) : (
-    <form className="p-4 w-full flex flex-col gap-2">
+    <form
+      key={formKey}
+      onSubmit={handleSubmit}
+      onReset={(e) => void handleReset(e)}
+      className="p-4 w-full max-w-[1200px] flex flex-col gap-2 bg-muted"
+    >
+      <h3>
+        {territoryStoryId ? "Editar relato" : "Crear relato"} del territorio
+      </h3>
       <TitleInput title={story.title} titleUpdater={updateField("title")} />
 
-      <RichTextEditor textToLoad={story.text} textStateRef={textToPull} />
+      <div>
+        <span className="text-primary font-normal">El relato</span>
+        <RichTextEditor
+          textToLoad={story.text}
+          textStateRef={textToPull}
+          placeholder="Mi relato..."
+          className="bg-background"
+        />
+      </div>
 
       <KeywordInput
         keywordsList={story.keywords}
@@ -143,7 +145,7 @@ export function TerritoryStoryForm({
         keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
         keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
         inputTxt={{
-          label: "Palabras clave del relato",
+          label: "Palabras clave",
           placeholder: "agrega una palabra oprimiendo enter",
           sr: "agrega una palabra oprimiendo enter",
           keywordCounter: (currentAmount: number, total: number) =>
@@ -151,16 +153,20 @@ export function TerritoryStoryForm({
         }}
       />
 
+      <ImagesInput images={story.images} updateImages={updateField("images")} />
+
       <YoutubeVideoInput
         videos={story.videos}
         updateVideos={updateField("videos")}
       />
 
-      <ImagesInput images={story.images} updateImages={updateField("images")} />
-
-      <button type="button" onClick={handleSubmit}>
-        up
-      </button>
+      <SubmitStory
+        restricted={story.restricted}
+        setRestricted={updateField("restricted")}
+        enabled={story.enabled}
+        setEnabled={updateField("enabled")}
+        submitErrors={errors}
+      />
     </form>
   );
 }

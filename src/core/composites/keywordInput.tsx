@@ -108,9 +108,17 @@ export function KeywordInput({
         errID="errors_keywords"
         validationErrors={errors ?? []}
       >
-        {inputTxt.label}
-        <span className="sr-only">{inputTxt.sr}</span>
+        <div className="flex w-full justify-between text-primary font-normal px-2">
+          <span>
+            {inputTxt.label}
+            <span className="sr-only">{inputTxt.sr}</span>
+          </span>
+          <span>
+            {inputTxt.keywordCounter(keywordsList.length ?? 0, keywordsLimit)}
+          </span>
+        </div>
       </LabelAndErrors>
+
       <InputGroup>
         {keywordsList.length > 0 && (
           <InputGroupAddon align="block-start" className="p-2">
@@ -163,16 +171,15 @@ export function KeywordInput({
           </datalist>
         )}
 
-        <InputGroupAddon
-          align="inline-end"
-          className={inputWarnColor(inputStr, keywordMaxLength)}
-        >
-          {inputLengthCount(inputStr, keywordMaxLength)}
-        </InputGroupAddon>
+        {inputLengthCount(inputStr, keywordMaxLength) && (
+          <InputGroupAddon
+            align="block-end"
+            className={inputWarnColor(inputStr, keywordMaxLength)}
+          >
+            {inputLengthCount(inputStr, keywordMaxLength)}
+          </InputGroupAddon>
+        )}
       </InputGroup>
-      <div className="text-right text-sm text-primary">
-        {inputTxt.keywordCounter(keywordsList.length ?? 0, keywordsLimit)}
-      </div>
     </div>
   );
 }
