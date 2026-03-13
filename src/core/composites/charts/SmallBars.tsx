@@ -71,6 +71,7 @@ export function SmallBarsElement({
   keys,
   tooltips,
   height = 250,
+  selectedIndexValue: SIVInput = "",
   colors,
   onClickHandler,
   groupMode = "stacked",
@@ -83,7 +84,7 @@ export function SmallBarsElement({
   axisX = { enabled: false, legend: "", format: ".2f", tickValues: undefined },
 }: SmallBarsProps) {
   const [selectedIndexValue, setSelectedIndexValue] =
-    useState<SmallBarsState>("");
+    useState<SmallBarsState>(SIVInput);
 
   const transformData = (rawData: Array<SmallBarsData>) => {
     const transformedData = rawData.map((element) => {

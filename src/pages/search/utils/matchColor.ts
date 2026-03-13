@@ -30,7 +30,7 @@ export const match = {
   },
   coverage: {
     palette: "coverage",
-    sort: ["N", "S", "T"],
+    sort: ["Natural", "Secundaria", "Transformada"],
   },
   pa: {
     palette: "pa",
@@ -59,7 +59,6 @@ export const match = {
   },
   hfCurrent: {
     palette: "hfCurrent",
-    // TODO: This could change once the API endpoint is implemented
     sort: ["Natural", "Baja", "Media", "Alta", "Muy Alta"],
   },
   hfPersistence: {
@@ -80,7 +79,7 @@ export const match = {
   },
   forestLP: {
     palette: "forestLP",
-    sort: ["persistencia", "perdida", "ganancia", "no_bosque"],
+    sort: ["Persistencia", "Perdida", "Ganancia", "No Bosque"],
   },
   forestIntegrity: {
     palette: "forestIntegrity",

@@ -1,8 +1,4 @@
-import {
-  SEPAData,
-  coverageLabels,
-  SEPADataExt,
-} from "pages/search/types/ecosystems";
+import { SEPAData, SEPADataExt } from "pages/search/types/ecosystems";
 import { MetricTypesMap } from "pages/search/types/metrics";
 
 export const transformPAValues = (
@@ -44,13 +40,13 @@ export const transformCoverageValues = (
 ) => {
   if (!rawData) return [];
 
-  const items = [
-    { key: "N", label: "Natural", area: rawData.Natural },
-    { key: "S", label: "Secundaria", area: rawData.Secundaria },
-    { key: "T", label: "Transformada", area: rawData.Transformada },
-  ];
-
-  const totalArea = rawData.Natural + rawData.Secundaria + rawData.Transformada;
+  const { id, ...classes } = rawData;
+  const items = [];
+  let totalArea = 0;
+  for (const [key, value] of Object.entries(classes)) {
+    items.push({ key, label: key, area: value });
+    totalArea += value;
+  }
 
   return items.map((item) => ({
     area: item.area,
