@@ -45,23 +45,29 @@ export type YoutubeError = {
   error: string;
 };
 
-export const getYoutubeVideoMetadata = async (
-  input: string,
-): Promise<YoutubeVideoMetadata | ApiRequestError> => {
-  const videoRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^"&?/\s]{11})/i;
-  const match = input.match(videoRegex);
+const ytUrlRegex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^"&?/\s]{11})/i;
+const ytIdRegex = /^[a-zA-Z0-9_-]{11}$/;
+
+export function getCleanYoutubeId(urlOrId: string) {
+  const match = urlOrId.match(ytUrlRegex);
   let videoId: string | null = null;
 
   if (match) {
     videoId = match[1];
   } else {
-    const directIdRegex = /^[a-zA-Z0-9_-]{11}$/;
-    if (directIdRegex.test(input.trim())) {
-      videoId = input.trim();
+    if (ytIdRegex.test(urlOrId.trim())) {
+      videoId = urlOrId.trim();
     }
   }
+  return videoId;
+}
 
-  if (!videoId) {
+export const getYoutubeVideoMetadata = async (
+  ytVideoId: string | null,
+): Promise<YoutubeVideoMetadata | ApiRequestError> => {
+  const videoId = ytVideoId ? ytVideoId.trim() : "";
+
+  if (!ytIdRegex.test(videoId)) {
     return {
       status: 0,
       message: "Request cancelled",
