@@ -21,7 +21,13 @@ export type ODataColumn<T> = {
   | {
       type: "action";
       label: string;
-      actions: ({ value, onActionSuccess }: { value: unknown; onActionSuccess?: () => void }) => ReactNode;
+      actions: ({
+        value,
+        onActionSuccess,
+      }: {
+        value: unknown;
+        onActionSuccess?: () => void;
+      }) => ReactNode;
     }
 );
 

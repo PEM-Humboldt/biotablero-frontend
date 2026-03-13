@@ -1,14 +1,9 @@
 import { type FormEvent, useCallback, useState, useEffect } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import {
-  inputLengthCount,
-  inputWarnColor,
-} from "@utils/ui";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
 
-import {
-  isMonitoringAPIError,
-} from "pages/monitoring/api/types/guards";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import type {
   TagCategory,
@@ -32,10 +27,23 @@ import {
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { toast } from "sonner";
 import { PlusIcon, UserRoundCheck } from "lucide-react";
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@ui/shadCN/component/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { addTag, deleteTag, getTagById, getTagCategories, updateTag } from "pages/monitoring/api/services/tags";
-import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
+import {
+  addTag,
+  deleteTag,
+  getTagById,
+  getTagCategories,
+  updateTag,
+} from "pages/monitoring/api/services/tags";
 
 export function TagFormButton({
   value: tagId,
@@ -85,7 +93,7 @@ export function TagFormButton({
       setIsLoading(false);
     }
   };
-  
+
   const fetchTagCategories = async () => {
     try {
       handleFormReset();
@@ -148,13 +156,13 @@ export function TagFormButton({
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (tagId) {
       setIsLoading(true);
     } else {
-      setFormData(makeInitialInfo());      
+      setFormData(makeInitialInfo());
       setErrors({});
     }
   }, [tagId]);
@@ -256,7 +264,7 @@ export function TagFormButton({
             name: formData.name,
             url: finalUrl,
           }) as unknown as TagDataForm;
-      
+
       let res = null;
 
       if (!tagId) {
@@ -304,7 +312,7 @@ export function TagFormButton({
   return (
     <>
       <Dialog open={openDialogForm} onOpenChange={setOpenDialogForm}>
-        {tagId &&
+        {tagId && (
           <DialogTrigger asChild>
             <Button
               onClick={() => void fetchTag()}
@@ -316,35 +324,34 @@ export function TagFormButton({
                 : uiText.table.editBtn.defaultText}
             </Button>
           </DialogTrigger>
-        }
-        {!tagId &&
+        )}
+        {!tagId && (
           <DialogTrigger asChild>
             <Button
               onClick={() => void fetchTagCategories()}
               disabled={loadStatusMsg !== null}
             >
-              {loadStatusMsg !== null
-                ? loadStatusMsg
-                : uiText.tag.createNew}
-              <PlusIcon /> 
+              {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.createNew}
+              <PlusIcon />
             </Button>
           </DialogTrigger>
-        }
+        )}
         <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
           <div className="pb-2">
             <DialogHeader>
-              <DialogTitle>{!tagId ? "Nueva etiqueta" : "Editar etiqueta"}</DialogTitle>
+              <DialogTitle>
+                {!tagId ? "Nueva etiqueta" : "Editar etiqueta"}
+              </DialogTitle>
             </DialogHeader>
           </div>
           <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
-            
             <form
               action=""
               onReset={handleFormReset}
               onSubmit={(e) => void handleSubmit(e)}
               className="flex flex-col gap-2 p-6"
             >
-              {!tagId &&
+              {!tagId && (
                 <div>
                   <LabelAndErrors
                     htmlFor="category"
@@ -371,21 +378,30 @@ export function TagFormButton({
                     disabled={!!tagId || isLoading}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                     aria-invalid={errors.category !== undefined}
-                    aria-describedby={errors.category ? "errors_category" : undefined}
+                    aria-describedby={
+                      errors.category ? "errors_category" : undefined
+                    }
                   >
-                    <NativeSelectOption key={"tag_category_default"} value="" disabled>
+                    <NativeSelectOption
+                      key={"tag_category_default"}
+                      value=""
+                      disabled
+                    >
                       {uiText.form.defaultCategoryTitle}
                     </NativeSelectOption>
                     {tagCategories.map((category) => (
-                      <NativeSelectOption key={`tag_category_${category.id}`} value={category.id}>
+                      <NativeSelectOption
+                        key={`tag_category_${category.id}`}
+                        value={category.id}
+                      >
                         {category.name}
                       </NativeSelectOption>
                     ))}
                   </NativeSelect>
                 </div>
-              }
+              )}
 
-              {!!tagId &&
+              {!!tagId && (
                 <div>
                   <label
                     htmlFor="categoryName"
@@ -402,7 +418,7 @@ export function TagFormButton({
                     />
                   </InputGroup>
                 </div>
-              }
+              )}
 
               <div>
                 <LabelAndErrors
@@ -484,7 +500,7 @@ export function TagFormButton({
                 >
                   {getSubmitButtonText()}
                 </Button>
-                {!tagId &&
+                {!tagId && (
                   <Button
                     type="reset"
                     variant="outline_destructive"
@@ -492,25 +508,25 @@ export function TagFormButton({
                   >
                     {uiText.restartForm}
                   </Button>
-                }
+                )}
               </div>
             </form>
           </div>
         </DialogContent>
       </Dialog>
-      {tagId &&
+      {tagId && (
         <Dialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
           <DialogTrigger asChild>
-              <Button
-                onClick={() => void fetchTag()}
-                disabled={loadStatusMsg !== null}
-                variant="ghost"
-              >
-                {loadStatusMsg !== null
-                  ? loadStatusMsg
-                  : uiText.table.deleteBtn.defaultText}
-              </Button>
-            </DialogTrigger>
+            <Button
+              onClick={() => void fetchTag()}
+              disabled={loadStatusMsg !== null}
+              variant="ghost"
+            >
+              {loadStatusMsg !== null
+                ? loadStatusMsg
+                : uiText.table.deleteBtn.defaultText}
+            </Button>
+          </DialogTrigger>
           <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
             <div className="pb-2">
               <DialogHeader>
@@ -528,13 +544,17 @@ export function TagFormButton({
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline">{uiText.table.deleteBtn.actionBtns.cancel}</Button>
+                <Button variant="outline">
+                  {uiText.table.deleteBtn.actionBtns.cancel}
+                </Button>
               </DialogClose>
-              <Button onClick={() => void removeTag()}>{uiText.table.deleteBtn.actionBtns.confirm}</Button>
+              <Button onClick={() => void removeTag()}>
+                {uiText.table.deleteBtn.actionBtns.confirm}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      }
+      )}
     </>
   );
 }

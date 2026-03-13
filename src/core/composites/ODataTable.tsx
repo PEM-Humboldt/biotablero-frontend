@@ -38,7 +38,12 @@ export function ODataTable<T extends HasId>({
         <OdataTableHead cols={cols} />
         <tbody>
           {values.map((row) => (
-            <ODataTableRow key={row.id} cols={cols} row={row} onActionSuccess={onActionSuccess} />
+            <ODataTableRow
+              key={row.id}
+              cols={cols}
+              row={row}
+              onActionSuccess={onActionSuccess}
+            />
           ))}
         </tbody>
       </table>

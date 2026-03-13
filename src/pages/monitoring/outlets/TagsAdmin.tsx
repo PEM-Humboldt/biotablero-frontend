@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
-import {
-  getTags,
-} from "pages/monitoring/api/services/tags";
-import { LoadStatusMsgBar, LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
-import { ODataParams } from "@appTypes/odata";
+import { getTags } from "pages/monitoring/api/services/tags";
+import type { LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
+import { LoadStatusMsgBar } from "@ui/loadStatusSecction";
+import type { ODataParams } from "@appTypes/odata";
 import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
-import { ODataTag, ODataTagInfo, TagEntryShort } from "pages/monitoring/types/odataResponse";
+import type {
+  ODataTag,
+  ODataTagInfo,
+  TagEntryShort,
+} from "pages/monitoring/types/odataResponse";
 import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
 import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
@@ -91,7 +94,9 @@ export function TagsAdmin() {
       <header>
         <h3>{uiText.title}</h3>
         <div className="max-w-[500px] text-right text-base">
-          <TagFormButton onActionSuccess={() => setRefetchTrigger(prev => prev + 1)} />
+          <TagFormButton
+            onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
+          />
         </div>
       </header>
       {loadMsg.message !== null ? (
@@ -105,7 +110,7 @@ export function TagsAdmin() {
               cols={tableContent}
               values={parseODataTags(tags)}
               className="table-tags"
-              onActionSuccess={() => setRefetchTrigger(prev => prev + 1)}
+              onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
             />
           )}
           <TablePager

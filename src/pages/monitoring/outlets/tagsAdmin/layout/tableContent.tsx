@@ -1,5 +1,5 @@
 import type { ODataColumn } from "@appTypes/odata";
-import { TagEntryShort } from "pages/monitoring/types/odataResponse";
+import type { TagEntryShort } from "pages/monitoring/types/odataResponse";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 
 export const tableContent: ODataColumn<TagEntryShort>[] = [
