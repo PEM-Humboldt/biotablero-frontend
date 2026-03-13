@@ -12,6 +12,7 @@ import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
   InitiativeFullInfo,
+  TagDataBasic,
   LocationObj,
 } from "pages/monitoring/types/initiative";
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
@@ -29,6 +30,7 @@ import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiat
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 
 import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import { TagInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagInput";
 
 export function InitiativeInfoUpdater({
   initiativeId,
@@ -119,6 +121,7 @@ export function InitiativeInfoUpdater({
       contacts,
       users,
       images: { imageUrl, bannerUrl },
+      tags: general.tags,
     };
   }, [initiativeInfo]);
 
@@ -215,6 +218,27 @@ export function InitiativeInfoUpdater({
             ])
           }
           backEndpoint="InitiativeContact"
+        />
+
+        <FormListUpdater
+          title={uiText.tabsContent.initiativeManagement.tags.title}
+          initiativeSection="tags"
+          AddItemComponent={TagInput}
+          maxItems={Infinity}
+          minItems={0}
+          renderCols={
+            new Map<string, keyof TagDataBasic>([
+              [
+                uiText.tabsContent.initiativeManagement.tags.tableCol[0],
+                "category",
+              ],
+              [
+                uiText.tabsContent.initiativeManagement.tags.tableCol[1],
+                "name",
+              ],
+            ])
+          }
+          backEndpoint="InitiativeTag"
         />
       </article>
     </LeaderInitiativeUpdateCtx.Provider>

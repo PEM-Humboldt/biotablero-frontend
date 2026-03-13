@@ -132,6 +132,13 @@ export const uiText = {
         },
       },
 
+      tags: {
+        label: "Selecciona una etiqueta",
+        notFound: "Etiqueta no encontrada",
+        trigger: "Selecciona una etiqueta",
+        placeholder: "buscar etiqueta",
+      },
+
       contacts: {
         title: "Información de contacto",
         tableCol: ["Correo", "Teléfono"],

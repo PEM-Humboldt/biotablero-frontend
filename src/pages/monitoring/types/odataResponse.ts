@@ -50,6 +50,16 @@ export type LocationCompleteInfo = {
   location: LocationBasicInfo;
 };
 
+export type TagCompleteInfo = {
+  initiativeTagId: number;
+  tag: {
+    category: {
+      id: number;
+      name: string;
+    }
+  }
+};
+
 // NOTE: Iniciativas
 export interface ODataInitiativeShortEntry extends HasId {
   name: string;

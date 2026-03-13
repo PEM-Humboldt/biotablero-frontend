@@ -17,7 +17,7 @@ export type InitiativeAditionalInfo = {
   coordinate: [number, number];
   polygonArea: number;
   enabled: boolean;
-  tags: string[];
+  tags: InitiativeTag[];
 };
 
 export type ImagesData = {
@@ -33,6 +33,21 @@ export type LocationDataBasic = {
 export type InitiativeContact = {
   phone?: string;
   email: string;
+};
+
+export type InitiativeTag = {
+  initiativeTagId: number;
+  tag: {
+    category: {
+      id: number;
+      name: string;
+    }
+  }
+};
+
+export type TagDataBasic = {
+  category: string;
+  name: string;
 };
 
 export type UserData = {

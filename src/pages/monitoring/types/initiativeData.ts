@@ -8,7 +8,7 @@ import type {
   UserSRC,
   InitiativeAditionalInfo,
 } from "pages/monitoring/types/initiative";
-import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
+import type { LocationCompleteInfo, TagCompleteInfo } from "pages/monitoring/types/odataResponse";
 
 export type InitiativeDataForm = {
   general: GeneralInfo;
@@ -39,6 +39,7 @@ export type CardInfoGrouped = {
   contacts: ContactSRC[];
   users: UserSRC[];
   images: ImagesData;
+  tags: TagCompleteInfo[],
 };
 
 // NOTE: Interfaz de los componentes del formulario

@@ -159,6 +159,11 @@ export const uiText = {
         title: "Información de contacto",
         tableCol: ["Correo", "Teléfono"],
       },
+
+      tags: {
+        title: "Etiquetas",
+        tableCol: ["Categoría", "Nombre"],
+      },
     },
   },
 };
