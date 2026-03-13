@@ -14,7 +14,6 @@ import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPl
 import { LinkNode } from "@lexical/link";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import {
-  $convertFromMarkdownString,
   type Transformer,
   UNORDERED_LIST,
   HEADING,
@@ -34,6 +33,8 @@ import { CustomShortcuts } from "@composites/richTextEditor/CustomShortcuts";
 import { Toolbar } from "@composites/richTextEditor/Toolbar";
 import { GetEditorState } from "@composites/richTextEditor/GetEditorState";
 import { uiText } from "@composites/richTextEditor/layout/uiTextAndSettings";
+import { LoadTextPlugin } from "@composites/richTextEditor/LoadTextPlugin";
+import { cn } from "@ui/shadCN/lib/utils";
 
 const editorTransformers: Transformer[] = [
   UNORDERED_LIST,
@@ -58,26 +59,29 @@ export function RichTextEditor({
   textStateRef,
   editorNamespace,
   placeholder,
+  className,
 }: {
   textToLoad?: string;
   textStateRef: MutableRefObject<EditorState | null>;
   editorNamespace?: string;
   placeholder?: string;
+  className?: string;
 }) {
   const initialConfig = {
     namespace: editorNamespace || "richTextEditor",
     theme: inputTheme,
     onError: (err: Error) => console.error("Lexical:", err),
     nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode],
-    editorState: () =>
-      textToLoad
-        ? $convertFromMarkdownString(textToLoad, availableTransformers)
-        : undefined,
   };
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
-      <div className="w-full border self-start border-input focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2 p-2 rounded-lg">
+      <div
+        className={cn(
+          "w-full border self-start border-input focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2 p-2 rounded-lg",
+          className,
+        )}
+      >
         <Toolbar />
         <div className="relative ">
           <RichTextPlugin
@@ -102,6 +106,7 @@ export function RichTextEditor({
       <HistoryPlugin />
       <CustomShortcuts />
       <MarkdownShortcutPlugin transformers={editorTransformers} />
+      <LoadTextPlugin text={textToLoad} />
       <GetEditorState editorRef={textStateRef} />
     </LexicalComposer>
   );
