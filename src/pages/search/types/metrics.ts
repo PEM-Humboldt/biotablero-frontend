@@ -13,12 +13,13 @@ export type MetricTypesMap = {
     "Natural" | "Secundaria" | "Transformada"
   >;
   lossPersistence: Array<
-    MetricDataStructure<"id", "perdida" | "persistencia" | "no_bosque">
+    MetricDataStructure<"id", "Perdida" | "Persistencia" | "No Bosque">
   >;
   currentHF: MetricDataStructure<
     "id",
     "Natural" | "Baja" | "Media" | "Alta" | "Muy Alta"
   >;
+  currentHF_average: MetricDataStructure<"id", "average">;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;

@@ -111,15 +111,16 @@ export function Search() {
 
       try {
         const areaPolygon = await SearchAPI.requestAreaPolygon(geojson);
-        const areaBasic: AreaIdBasic = {
-          id: areaPolygon.polygon_id,
-          name: "polígono",
-          area_type: searchState.areaType!,
-        };
 
         const areaInfo = await SearchAPI.requestAreaInfo(
           areaPolygon.polygon_id,
         );
+        const areaBasic: AreaIdBasic = {
+          id: areaPolygon.polygon_id,
+          name: "polígono",
+          area: areaInfo.area,
+          area_type: searchState.areaType!,
+        };
 
         searchDispatch({
           type: SearchUpdated.CONSOLE_DRAW,

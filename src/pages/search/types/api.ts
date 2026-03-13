@@ -10,3 +10,8 @@ export interface RasterAPIObject {
   request: Promise<{ layer: string }>;
   source: CancelTokenSource;
 }
+
+export interface BlobAPIObject {
+  request: Promise<Blob>;
+  source: CancelTokenSource;
+}

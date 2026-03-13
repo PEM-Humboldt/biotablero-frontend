@@ -11,7 +11,8 @@ export interface AreaType {
 }
 
 export interface AreaIdBasic {
-  id: string | number;
+  id: number;
+  area: number;
   name: string;
   area_type: AreaType;
 }

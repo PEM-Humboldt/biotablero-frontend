@@ -10,12 +10,7 @@ import {
 } from "pages/search/dashboard/ecosystems/transformData";
 import { matchColor } from "pages/search/utils/matchColor";
 
-import {
-  Coverage,
-  coverageLabels,
-  coverageType,
-  SEPADataExt,
-} from "pages/search/types/ecosystems";
+import { Coverage, SEPADataExt } from "pages/search/types/ecosystems";
 import BackendAPI from "pages/search/api/backendAPI";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -29,8 +24,9 @@ export interface PAData {
   percentage: number;
 }
 export interface CoverageExt extends Coverage {
-  key: coverageType;
-  label: coverageLabels;
+  //TODO: Fijar tipos correctos o cambiar a necesidad
+  key: any;
+  label: any;
 }
 interface State {
   coverageData: Array<CoverageExt>;
