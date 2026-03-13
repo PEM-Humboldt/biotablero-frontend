@@ -8,21 +8,19 @@ import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { useState } from "react";
 import { StrValidator } from "@utils/strValidator";
-import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
 
 export function TitleInput({
   title,
   titleUpdater,
 }: {
   title: string;
-  titleUpdater: (title: sting) => void;
+  titleUpdater: (title: string) => void;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
   const validateTitle = () => {
     setErrors([]);
-    const [cleanTitle, titleErrors] = new StrValidator(title, setIsLoading)
+    const [cleanTitle, titleErrors] = new StrValidator(title)
       .isRequired()
       .hasLengthMoreThan(4)
       .hasLengthLessOrEqualThan(TERRITORY_STORY_TITLE_MAX_LENGTH).result;
@@ -41,8 +39,9 @@ export function TitleInput({
         errID="errors_title"
         validationErrors={errors}
         htmlFor="title"
+        className="text-primary font-normal"
       >
-        ¿Cuál es el título del relato?
+        Título
         <span aria-hidden="true"> *</span>
       </LabelAndErrors>
 
