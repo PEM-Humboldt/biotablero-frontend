@@ -48,7 +48,6 @@ export const uiText = {
       { label: "Gestión de observadores", value: "VIEWER" },
     ],
     initiativeManagement: { label: "Gestión de la iniciativa" },
-    tagManagement: { label: "Gestión de etiquetas" },
     initiativeInvitation: { label: "Invitaciones" },
   },
 
